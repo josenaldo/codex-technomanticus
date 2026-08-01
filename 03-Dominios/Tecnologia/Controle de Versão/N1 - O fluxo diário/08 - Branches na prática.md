@@ -156,6 +156,9 @@ Existe uma discussão inteira sobre *estratégias* de ramificação em equipe �
 
 **Branch é uma linha temporal alternativa que compartilha todo o passado: você experimenta nela, e depois decide se ela vira realidade ou nunca existiu.**
 
+> [!tip] Vídeo — branches com calma
+> [**Git Branches de forma fácil e com exemplo**](https://www.youtube.com/watch?v=xAOBQtSVI_k) (Curso em Vídeo, 50 min) aula longa e didática sobre ramificação; vale pelo tempo dedicado a *por que* ramificar, não só como.
+
 > [!tip] Pratique
 > Este é o assunto para o qual o simulador foi feito. Faça a sequência **"Introdução"** inteira do [Learn Git Branching em português](https://learngitbranching.js.org/?locale=pt_BR) — os quatro níveis cobrem exatamente commit, branch, merge e a troca entre ramos, e você **vê o grafo se ramificando** conforme digita. É a meia hora mais bem investida deste nível inteiro.
 >

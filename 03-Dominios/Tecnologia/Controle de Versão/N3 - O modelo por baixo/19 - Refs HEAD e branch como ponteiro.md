@@ -215,6 +215,9 @@ Essa última linha é a mais importante do nível até aqui: **force push não "
 
 **Branch é um arquivo de 41 bytes com o hash de um commit; `HEAD` é o arquivo que diz qual desses ponteiros o próximo commit vai empurrar para frente.**
 
+> [!tip] Vídeo — HEAD, refs e o modelo de objetos
+> [**Git Internals Explained: HEAD, Hashes, Refs & the Object Model**](https://www.youtube.com/watch?v=Xzj7BhGlDFU) (Learn In Minutes, 8 min) cobre exatamente a sequência desta nota: o que é uma ref, o que o `HEAD` contém e como o commit move o ramo.
+
 > [!tip] Pratique
 > Escave o seu próprio repositório e confirme cada afirmação desta nota:
 > ```bash

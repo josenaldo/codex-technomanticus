@@ -255,6 +255,9 @@ A pergunta "quando é um pedaço coerente?" não tem resposta exata, e no começ
 
 **O Git é uma máquina do tempo para o seu projeto: você escolhe os pontos de retorno, escreve por que cada um existe, e nenhum deles se perde.**
 
+> [!tip] Vídeo — o guia completo, do zero
+> [**APRENDA GIT e GITHUB DO ZERO - guia completo**](https://www.youtube.com/watch?v=pyM5QLS2h6M) (Fernanda Kipper | Dev, 37 min) percorre em vídeo o mesmo caminho deste nível inteiro, do problema à primeira publicação. Bom para assistir uma vez antes de começar, e voltar quando travar.
+
 > [!tip] Pratique
 > Ainda não há o que digitar — a instalação é a próxima nota. Mas se quiser ver a máquina do tempo funcionando antes de instalar qualquer coisa, abra o **[Learn Git Branching em português](https://learngitbranching.js.org/?locale=pt_BR)** e faça só o **nível 1 da sequência "Introdução"** (`commit`). São dois minutos, roda no navegador, e você vê os commits aparecendo em fila — exatamente o diagrama que vimos acima, ao vivo.
 

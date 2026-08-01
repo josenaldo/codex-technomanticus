@@ -154,6 +154,9 @@ A pergunta de diagnóstico é sempre a mesma: **quais desses ramos alguém realm
 
 **A estratégia de ramificação é decidida por como o software chega ao usuário — e qualquer que seja a escolhida, ramo longo é dívida com juros.**
 
+> [!tip] Vídeo — os três fluxos comparados
+> [**3 Git Workflows Every Developer Should Know**](https://www.youtube.com/watch?v=GQQqf-C2ha4) (TechWorld with Nana, 32 min) compara GitHub Flow, Git Flow e trunk-based com diagramas e critérios de escolha.
+
 > [!tip] Pratique
 > No sandbox do **[Learn Git Branching em português](https://learngitbranching.js.org/?locale=pt_BR)** (modo livre, `?NODEMO`), monte o Git Flow à mão: crie `develop`, um `feature/x` que volta para ela, um `release/1.0` que vai para `main` **e** para `develop`, e um `hotfix` que sai da `main`. Ver o grafo resultante explica em dois minutos por que esse modelo é caro.
 >

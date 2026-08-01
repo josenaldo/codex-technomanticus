@@ -172,6 +172,9 @@ Para um projeto acadêmico, três parágrafos bastam: o que é este trabalho, qu
 
 **`commit` protege você de você; `push` protege você do mundo físico — e só depois dos dois o trabalho está de fato seguro.**
 
+> [!tip] Vídeo — do repositório local à nuvem
+> [**GitHub + GitHub Desktop: criar repositório, clonar, commit e push**](https://www.youtube.com/watch?v=nAHVEzDBVeo) (Professor Edson Maia, 7 min) faz o caminho completo desta nota pela interface gráfica — útil se você preferir ver antes de digitar.
+
 > [!tip] Pratique
 > Faça o teste que prova que funcionou: depois do primeiro `push`, apague a pasta do projeto do seu computador (sim, apague — você acabou de subir tudo) e rode `git clone` do zero em outro diretório. Abra o resultado, rode `git log --oneline` e confirme que todos os commits estão lá.
 >

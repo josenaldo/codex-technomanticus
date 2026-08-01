@@ -197,6 +197,9 @@ Quatro hábitos reduzem drasticamente a frequência de conflitos:
 
 **Conflito é o Git recusando-se a escolher entre dois trabalhos legítimos — e a resolução é você escrevendo como o texto deve ficar, não apertando um botão.**
 
+> [!tip] Vídeo — resolvendo um conflito real
+> [**Como Resolver Conflitos de Merge no Git (Passo a Passo)**](https://www.youtube.com/watch?v=B1zzccb_e4E) (PERAI DEV, 12 min) provoca um conflito de propósito e resolve na tela — que é exatamente o exercício sugerido aqui.
+
 > [!tip] Pratique
 > Provoque um conflito de propósito, num projeto de teste: crie um ramo, edite a linha 1 de um arquivo, volte pra `main`, edite a **mesma** linha de outro jeito, e faça o merge. Resolva. Depois provoque de novo e use `git merge --abort` para ver que dá pra sair.
 >

@@ -178,6 +178,9 @@ Sem o `--follow`, o histórico para no ponto em que o arquivo passou a se chamar
 
 **`log` acha o commit, `show` abre o commit, `diff` compara dois pontos — e ler `-`/`+` é toda a alfabetização necessária.**
 
+> [!tip] Vídeo — log e show na tela
+> [**Curso de git - Histórico e Versões com git log e git show**](https://www.youtube.com/watch?v=pVF7snOnqws) (Boson Treinamentos, 11 min) percorre as opções de `log` e a leitura de um commit com `show`, com a saída real no terminal.
+
 > [!tip] Pratique
 > Responda três perguntas sobre o seu próprio projeto, usando só a linha de comando:
 > 1. Quantos commits eu fiz no mês passado? (`git log --oneline --since=...` )

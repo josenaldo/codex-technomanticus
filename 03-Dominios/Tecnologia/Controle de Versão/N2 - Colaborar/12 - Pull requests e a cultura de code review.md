@@ -158,6 +158,9 @@ Para a maioria das equipes, **squash** é o padrão razoável: a `main` fica com
 
 **Pull request é o intervalo em que uma mudança pode ser lida antes de virar oficial — e ele só funciona se a mudança for pequena o bastante para caber numa leitura de verdade.**
 
+> [!tip] Vídeo — o tamanho do PR importa
+> [**Small PRs, Big Impact: The Art of Code Reviews**](https://www.youtube.com/watch?v=AYUNI2Pm6_w) (GOTO Conferences, 44 min) palestra inteira sobre a tese central desta nota: revisão só funciona quando a proposta cabe numa leitura de verdade.
+
 > [!tip] Pratique
 > Faça o curso **[Reviewing pull requests](https://skills.github.com/)** do GitHub Skills — ele roda dentro de um repositório seu, com PRs reais para comentar e aprovar, e cobre sugestões de código, revisão em rascunho e resolução de comentários.
 >

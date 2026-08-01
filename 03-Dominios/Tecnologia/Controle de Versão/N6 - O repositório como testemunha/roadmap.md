@@ -51,7 +51,7 @@ Roadmap do sub-galho `Controle de Versão/N6 - O repositório como testemunha` (
 
 ## Próximos passos
 
-1. ⬜ **M1 — mídia**: 1 vídeo por nota + capstone.
-2. ⬜ **Dicionário**: pickaxe, hotspot, acoplamento temporal, ilha de conhecimento, bus factor, `--ancestry-path`, `blame.ignoreRevsFile`.
-3. ⬜ **Ponte de volta**: acrescentar callouts em `Engenharia/Arqueologia e Restauração de Software` apontando para o N6 como instrumental — a fronteira está declarada deste lado, falta o outro.
+1. 🔶 **M1 — mídia**: ver o estado consolidado no [[03-Dominios/Tecnologia/Controle de Versão/roadmap|roadmap do domínio]] (25/34 embutidos e verificados em 2026-07-31).
+2. ✅ **Dicionário do domínio** — criado 2026-07-31; os termos deste nível já entraram.
+3. ✅ **Ponte de volta**: callouts inseridos em Arqueologia (index + notas 07, 09 e 28) em 2026-07-31.
 4. ⬜ Avaliar broto sobre **code-maat / CodeScene na prática** (rodar as análises de verdade) se o assunto crescer.

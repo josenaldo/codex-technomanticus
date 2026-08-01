@@ -187,6 +187,9 @@ Existem outras estratégias, usadas em casos específicos: `ours` (fica com o se
 
 **Merge compara três pontos e cria um commit que reconhece as duas histórias; rebase reconstrói os seus commits sobre outra base, produzindo objetos novos — e é por isso que um é seguro em ramo público e o outro não.**
 
+> [!tip] Vídeo — fast-forward × three-way
+> [**Git Branch and Merge: Fast Forward vs Three Way Merge**](https://www.youtube.com/watch?v=W5ek8Y3UUs4) (Cloud With Raj, 9 min) separa os dois casos com diagramas, que é a distinção que esta nota faz no meio do caminho.
+
 > [!tip] Pratique
 > Prove que o rebase cria objetos novos, o que é a afirmação central desta nota:
 > ```bash

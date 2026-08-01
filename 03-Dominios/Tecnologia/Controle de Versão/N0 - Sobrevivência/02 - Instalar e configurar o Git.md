@@ -194,6 +194,9 @@ Quando quiser uma camada visual sem abrir mão do terminal, o vault cobre o **La
 
 **Instalar é copiar um programa; configurar é dizer ao Git quem assina o seu trabalho — e sem isso ele se recusa a registrar qualquer coisa.**
 
+> [!tip] Vídeo — instalação passo a passo
+> [**Como Instalar o Git no Windows (instalação + configuração)**](https://www.youtube.com/watch?v=Am46OOLgV4s) (Cryswerton Silva, 3 min) cobre a instalação no Windows e a configuração de identidade em três minutos, incluindo as telas do instalador mencionadas aqui.
+
 > [!tip] Pratique
 > Rode `git config --list --show-origin` na sua máquina agora e leia a saída linha por linha. Você deve encontrar `user.name`, `user.email` e `init.defaultBranch` apontando para um arquivo chamado `.gitconfig` na sua pasta pessoal. Abra esse arquivo num editor de texto: ele é legível, tem umas dez linhas, e ver que "a configuração do Git" é só isso desmistifica bastante coisa.
 

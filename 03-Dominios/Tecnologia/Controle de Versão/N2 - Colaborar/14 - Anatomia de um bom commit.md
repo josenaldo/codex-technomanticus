@@ -178,6 +178,9 @@ Nas plataformas, a tag é o gatilho: criar uma tag costuma disparar o pipeline d
 
 **Commit atômico com mensagem que explica o porquê é o que torna o histórico consultável — e Conventional Commits só vale a pena quando alguma máquina lê o que você escreveu.**
 
+> [!tip] Vídeo — commits que geram versão sozinhos
+> [**Como Utilizar Semantic Versioning e Conventional Commits**](https://www.youtube.com/watch?v=v4jeVNfsJnc) (Caio Delgado, 10 min) mostra a cadeia completa em português: mensagem padronizada → número de versão → changelog automático.
+
 > [!tip] Pratique
 > Use `git add -p` no seu próximo trabalho. Ele mostra pedaço por pedaço do que você mudou e pergunta se entra ou não no commit — respondendo `y`, `n` ou `s` (dividir ainda mais). É a ferramenta que transforma "trabalhei em três coisas ao mesmo tempo" em três commits limpos, e quase ninguém a conhece.
 >

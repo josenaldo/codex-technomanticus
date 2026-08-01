@@ -170,6 +170,9 @@ Agora várias regras deixam de ser arbitrárias:
 
 **O Git é um banco de objetos onde o nome de cada coisa é o hash do que ela contém — e como conteúdo diferente nunca cabe no mesmo nome, nada é editado: tudo é recriado.**
 
+> [!tip] Vídeo — abrindo os objetos
+> [**Git Internals - Git Objects**](https://www.youtube.com/watch?v=MyvyqdQ3OjI) (Brief, 7 min) escava blob, tree e commit com `cat-file`, que é a mesma escavação sugerida no Pratique desta nota.
+
 > [!tip] Pratique
 > Faça a escavação completa num repositório de teste, sem pular passos:
 > ```bash

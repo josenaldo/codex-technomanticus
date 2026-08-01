@@ -147,6 +147,9 @@ E é por isso que a lista de commits que o Git te mostra pode não bater com "a 
 
 **Cada commit é uma fotografia completa ligada às fotografias anteriores; a história é o grafo dessas ligações, e o diff é uma conta feita na hora.**
 
+> [!tip] Vídeo — o modelo em quatro minutos
+> [**How Git Works: Explained in 4 Minutes**](https://www.youtube.com/watch?v=e9lnsKot_SQ) (ByteByteGo, 4 min) resume snapshot × diff e a forma de grafo do histórico com animação — bom como revisão depois de ler.
+
 > [!tip] Pratique
 > Veja a estrutura com os próprios olhos, num repositório com alguns merges:
 > ```bash

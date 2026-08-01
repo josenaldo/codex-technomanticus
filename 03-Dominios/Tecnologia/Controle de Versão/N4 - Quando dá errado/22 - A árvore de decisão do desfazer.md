@@ -171,6 +171,9 @@ A terceira forma é a mais subestimada: ela traz **um arquivo** de um ponto qual
 
 **Pergunte "já publiquei?" para escolher entre reescrever e acrescentar, e "quais das três árvores eu quero mexer?" para escolher a profundidade — o resto é consequência.**
 
+> [!tip] Vídeo — os três resets, visualizados
+> [**Git Reset Mixed, Soft and Hard Explained - Visualized in Realtime**](https://www.youtube.com/watch?v=WqIo4dz1JcM) (A shot of code, 11 min) mostra em tempo real o efeito de cada modo sobre ref, index e diretório — a tabela desta nota, animada.
+
 > [!tip] Pratique
 > Monte um repositório de brinquedo com cinco commits e execute a árvore inteira, conferindo com `git log --oneline` e `git status` depois de cada passo: `--soft HEAD~2` e recommitar · `--mixed HEAD~1` · `--hard HEAD~1` (com algo não commitado, de propósito, para ver a perda) · `revert` do commit do meio · `restore --source`.
 >

@@ -177,6 +177,9 @@ E, para o `gh` como parte de um ambiente de terminal produtivo — junto de Lazy
 
 **O `gh` traz o GitHub para onde você já está, e o `gh pr checkout` é o que transforma revisão de leitura em revisão de execução.**
 
+> [!tip] Vídeo — o gh do começo ao fim
+> [**GitHub CLI (gh) Full Tutorial | Manage GitHub from Terminal**](https://www.youtube.com/watch?v=UBu1P7G7T8U) (Amitabh Soni, 14 min) passa por autenticação, repositórios, PRs e workflows sem sair do terminal.
+
 > [!tip] Pratique
 > Faça o ciclo inteiro sem tocar no navegador, uma vez: `git switch -c`, commit, `git push -u`, `gh pr create --fill`, `gh pr checks`, `gh pr merge --squash --delete-branch`. Cronometre. A diferença em relação ao caminho pelo navegador costuma convencer sozinha.
 >

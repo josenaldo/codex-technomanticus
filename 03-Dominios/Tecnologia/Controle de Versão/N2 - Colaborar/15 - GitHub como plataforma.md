@@ -166,6 +166,9 @@ O `CITATION.cff` merece destaque para quem publica pesquisa: ele faz o GitHub ex
 
 **O Git guarda a história; a plataforma guarda o processo — e processo que não está configurado é só uma intenção.**
 
+> [!tip] Vídeo — proteção de branch e CODEOWNERS
+> [**Branch Protection + CODEOWNERS: Stop Bad Merges**](https://www.youtube.com/watch?v=emt8s5smrjc) (Thetips4you, 18 min) configura na tela as regras que esta nota descreve, incluindo o teste de tentar empurrar direto na `main`.
+
 > [!tip] Pratique
 > Num repositório de teste seu: crie um ruleset exigindo PR e um check de status, e então **tente** empurrar direto na `main`. Ver a recusa acontecer é o que dá confiança de que a configuração está fazendo efeito.
 >

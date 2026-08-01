@@ -138,6 +138,9 @@ graph TB
 
 **Stash é uma gaveta rápida que você esquece que tem; commit é permanente e visível; worktree é abrir uma segunda janela para o mesmo projeto.**
 
+> [!tip] Vídeo — por que o stash é superestimado
+> [**I was wrong about git stash...**](https://www.youtube.com/watch?v=ntM7utSjeVU) (Philomatics, 5 min) chega à mesma conclusão desta nota por outro caminho: o autor conta por que trocou o stash por outras abordagens no dia a dia.
+
 > [!tip] Pratique
 > Simule o telefonema no seu projeto: edite um arquivo sem terminar, e resolva a interrupção das três formas, uma depois da outra — `stash` + `stash pop`; depois commit `wip` + `--amend`; depois `worktree add` numa pasta vizinha, olhando as duas pastas abertas no explorador de arquivos ao mesmo tempo.
 >

@@ -222,6 +222,9 @@ O `fsmonitor` acelera drasticamente o `git status` em projetos enormes, porque o
 
 **O `.gitconfig` é preferência sua, o `.gitattributes` é acordo do time, os hooks são retorno rápido — e a garantia de verdade mora no servidor.**
 
+> [!tip] Vídeo — configurações que valem a pena
+> [**13 Advanced (but useful) Git Techniques and Shortcuts**](https://www.youtube.com/watch?v=ecK3EnyGD8o) (Fireship, 8 min) passa rápido por aliases, hooks e truques de configuração; bom para descobrir o que existe antes de aprofundar.
+
 > [!tip] Pratique
 > Aplique o bloco de configuração do começo desta nota e passe uma semana com ele. Depois teste o `rerere`: crie um conflito, resolva, desfaça com `git reset --hard ORIG_HEAD`, e refaça o merge — o Git deve resolver sozinho e avisar "Resolved ... using previous resolution".
 >

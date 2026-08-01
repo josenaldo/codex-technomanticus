@@ -173,6 +173,9 @@ Os passos 4 e 5 quase sempre podem ser feitos juntos — se o `push` falhar, voc
 
 **`fetch` pergunta, `pull` pergunta e integra, `push` só é aceito se você já souber de tudo que o servidor sabe — e forçar não é resolver, é sobrescrever.**
 
+> [!tip] Vídeo — fetch × pull, visualmente
+> [**Git Pull vs Fetch: When To Use Each**](https://www.youtube.com/watch?v=T13gDBXarj0) (The Modern Coder, 7 min) mostra o efeito de cada um sobre `origin/main` e sobre o seu ramo, que é a distinção central desta nota.
+
 > [!tip] Pratique
 > O exercício do pendrive acima é o melhor deste nível, e leva cinco minutos. Se não tiver pendrive, uma pasta qualquer do seu computador serve — `git init --bare ~/teste-servidor.git` funciona igual.
 >

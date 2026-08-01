@@ -179,6 +179,9 @@ A linha do PR merece ênfase: é comum a pessoa "limpar o histórico" no meio da
 
 **Reescrever é criar commits novos e mover a ref — legítimo e reversível enquanto for só seu, e uma conversa com o time a partir do momento em que não é.**
 
+> [!tip] Vídeo — fixup na prática
+> [**Git rebase using fixup**](https://www.youtube.com/watch?v=z8Gmolj666o) (Kasper Finne Nielsen, 5 min) demonstra o fluxo `--fixup` + `--autosquash` que esta nota recomenda no lugar da edição manual da lista.
+
 > [!tip] Pratique
 > Monte um ramo sujo de propósito — cinco commits, com dois "wip" e um "corrige typo" — e limpe-o com `git rebase -i main`, usando `reword`, `fixup` e uma reordenação. Depois desfaça tudo com `git reset --hard ORIG_HEAD` e refaça pelo caminho do `--fixup` + `--autosquash`. Comparar os dois caminhos é o que mostra por que o segundo virou padrão.
 >

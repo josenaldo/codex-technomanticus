@@ -11,7 +11,7 @@ tags:
 
 # Roadmap — N3 O modelo por baixo
 
-Roadmap do sub-galho `Controle de Versão/N3 - O modelo por baixo` (galho-folha). **Escrita completa em 2026-07-31 — 5/5 notas.** Falta enriquecimento de mídia (M1).
+Roadmap do sub-galho `Controle de Versão/N3 - O modelo por baixo` (galho-folha). **Escrita completa em 2026-07-31 — 5/5 notas.** Mídia (M1) parcial — ver roadmap do domínio.
 
 **Nível:** folha (uma entrada por nota).
 
@@ -26,11 +26,11 @@ Roadmap do sub-galho `Controle de Versão/N3 - O modelo por baixo` (galho-folha)
 | # | Nota | Fase | Estado | Pendências |
 |---|------|------|--------|-----------|
 | — | `index.md` | — | ➖ MOC | — |
-| 17 | Tudo tem hash — o modelo de objetos | Adepto | 🔶 escrita | M1 |
-| 18 | Commit é snapshot, não diff — o DAG | Adepto | 🔶 escrita | M1 |
-| 19 | Refs, HEAD e branch como ponteiro | Adepto | 🔶 escrita | M1 |
-| 20 | O index por dentro | Magus | 🔶 escrita | M1 |
-| 21 | Merge e rebase por dentro | Magus | 🔶 escrita | M1 |
+| 17 | Tudo tem hash — o modelo de objetos | Adepto | 🔶 escrita | — |
+| 18 | Commit é snapshot, não diff — o DAG | Adepto | 🔶 escrita | — |
+| 19 | Refs, HEAD e branch como ponteiro | Adepto | 🔶 escrita | — |
+| 20 | O index por dentro | Magus | 🔶 escrita | — |
+| 21 | Merge e rebase por dentro | Magus | 🔶 escrita | — |
 
 ## Material próprio incorporado
 
@@ -75,6 +75,6 @@ Roadmap do sub-galho `Controle de Versão/N3 - O modelo por baixo` (galho-folha)
 
 ## Próximos passos
 
-1. ⬜ **M1 — mídia**: 1 vídeo por nota. Aqui o material bom é majoritariamente em inglês (talks sobre Git internals).
-2. ⬜ **Dicionário**: blob, tree, commit, tag, DAG, alcançabilidade, ref, HEAD, detached HEAD, index, three-way merge, fast-forward, ort.
+1. 🔶 **M1 — mídia**: ver o estado consolidado no [[03-Dominios/Tecnologia/Controle de Versão/roadmap|roadmap do domínio]] (25/34 embutidos e verificados em 2026-07-31).
+2. ✅ **Dicionário do domínio** — criado 2026-07-31; os termos deste nível já entraram.
 3. ⬜ Considerar um broto sobre **packfiles e `git gc`** se o assunto crescer — hoje ele aparece como callout na 17 e na 18.

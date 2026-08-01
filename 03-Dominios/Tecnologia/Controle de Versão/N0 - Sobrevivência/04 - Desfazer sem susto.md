@@ -163,6 +163,9 @@ E o hábito que resolve o resto: **commite antes de tentar algo grande**. Vai re
 
 **Commit é o ponto de retorno: antes dele você desfaz descartando (e perde), depois dele você desfaz voltando (e não perde).**
 
+> [!tip] Vídeo — desfazer sem perder trabalho
+> [**Curso de Git - Como desfazer mudanças com git reset**](https://www.youtube.com/watch?v=7V2fQBLLVts) (Boson Treinamentos, 17 min) vai além do que esta nota cobre (entra em `reset`, assunto da nota 22), mas a primeira metade é exatamente o desfazer seguro do nível 0.
+
 > [!tip] Pratique
 > No seu projeto, faça o exercício completo: edite um arquivo, rode `git diff` pra ver a mudança, e descarte com `git restore`. Depois edite de novo, faça `git add`, e tire da caixa com `git restore --staged` — confirmando com `git status` que a edição continua lá. Fazer os dois em sequência é o que fixa a diferença entre eles.
 >

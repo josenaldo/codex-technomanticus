@@ -24,7 +24,7 @@ Roadmap do domínio `03-Dominios/Tecnologia/Controle de Versão` (raiz de domín
 | `index.md` | MOC | ➖ não precisa |
 | `Biblioteca de Controle de Versão.md` | reference | ✅ criada 2026-07-31 (bloco internacional + bloco PT-BR; links verificados por HTTP) |
 | `GitHub CLI.md` | reference | ✅ migrada de `Infraestrutura/` em 2026-07-31 (2006 linhas, `type: reference`); capítulo é a nota 16 |
-| `Dicionário de Controle de Versão.md` | glossary | ⬜ pendente — termos do N0 já prontos pra virar verbetes |
+| `Dicionário de Controle de Versão.md` | glossary | ✅ criado 2026-07-31 (~100 verbetes, 8 seções) |
 | `34 - Capstone - assumir um repositório desconhecido.md` | Capstone | 🔶 **escrito 2026-07-31** (falta M1) |
 
 ## Sub-galhos (ordem de construção = ordem de leitura)
@@ -89,9 +89,31 @@ Estrutura pedagógica já validada em sala + diagramas e narrativas próprias. M
 6. ✅ **N5 — Repositórios reais** (4 notas): **escrita completa 2026-07-31**.
 7. ✅ **N6 — O repositório como testemunha** (3 notas): **escrita completa 2026-07-31**.
 8. ✅ **Capstone** (34): **escrito 2026-07-31** — roteiro de 4 horas, costura os 7 níveis.
-9. ⬜ **M1 — mídia** (vídeo YouTube com legenda verificada por nota) — **única pendência de construção do domínio**.
-10. ⬜ **Dicionário de Controle de Versão** — os termos de todos os níveis.
-11. ⬜ **Ponte de volta**: callouts em `Engenharia/Arqueologia e Restauração de Software` apontando o N6 como instrumental.
+9. 🔶 **M1 — mídia**: **25/34 embutidos e verificados**; 9 pendentes por bloqueio do YouTube — candidatos levantados na seção M1 abaixo.
+10. ✅ **Dicionário de Controle de Versão** — criado 2026-07-31.
+11. ✅ **Ponte de volta**: callouts inseridos em Arqueologia (index, notas 07, 09 e 28) apontando as contrapartes instrumentais.
+
+---
+
+## M1 — mídia (estado em 2026-07-31)
+
+**25 de 34 notas com vídeo embutido e verificado por `yt-dlp`** (título, canal, duração e existência de legenda conferidos no momento da inserção). Notas 01-22, 24, 25 e 26.
+
+**9 pendentes.** A verificação foi interrompida porque o YouTube passou a exigir autenticação (`Sign in to confirm you're not a bot`) após o volume de consultas. Os candidatos abaixo **já foram levantados por busca**, mas **não foram verificados** — não embutir sem passar o gate de `yt-dlp` (título + legenda), sob risco de link morto.
+
+| Nota | Candidatos (ordem de preferência) |
+|---|---|
+| 23 — reflog | `fyhYSl-ACPc` (CodeLucky) · `NN-8kP7nClA` (Shakil Tech) · `8g8He9xl2yw` (Sachin Walia) — o candidato original `hsAPjNZHv-E` (Train To Code) **foi descartado: sem legenda pt/en** |
+| 27 — Monorepo e polyrepo | `jOVWHIDvpe8` (Bryant Son, sparse-checkout + filter) · `LMG_-uJVdsw` (GitLab) · `RcqLV1lU408` (GitHub Universe 2020) |
+| 28 — Submódulos e subtrees | `JESI498HSMA` (Philomatics, *Why everyone hates git submodules*) · `8Z4Cmhji_FQ` (GitKraken) |
+| 29 — Cirurgia de repositório | `kBMTLIWkYVQ` (anthonywritescode, split com filter-repo) · `vTguH2ixWLg` (Foxenj) · `P5r_jONyuHo` (Dan Gitschooldude) |
+| 30 — Git no CI/CD e GitOps | `f5EpcWp0THw` (TechWorld with Nana) · `dIaX5IhRqkI` (DevOps Journey) |
+| 31 — Ler história de verdade | `8uuueHkWy-E` (anthonywritescode, *how I use git blame*) · `z3oJjQvg3mQ` · `OH3w6RBXgEE` |
+| 32 — bisect | `3cwWssglZuQ` (Nick Janetakis) · `z-AkSXDqodc` (GitKraken) |
+| 33 — Forense de repositório | `7FApEq8wum4` (GOTO 2016, **Adam Tornhill** — o autor da fonte da nota) · `ymAyzlgN9_8` (Pure Performance, com Tornhill) |
+| 34 — Capstone | `OzwQXGLWI0g` (Boccara, *7 Techniques to understand Legacy Code*) · `jqHXJ3O7WGw` (ForrestKnight) |
+
+**Critérios usados nas 25 já embutidas:** vídeo em **PT-BR** nas notas 01-09 e 14 (público geral / iniciante); inglês a partir do N2, onde o material bom é majoritariamente anglófono. Callout `[!tip]` inserido **antes** do `[!tip] Pratique`, com uma frase dizendo o que aquele vídeo acrescenta à nota — nunca "veja também este vídeo".
 
 > [!important] Convenção de prática (decidida 2026-07-31)
 > Toda nota de **N0 a N4** fecha com callout `[!tip] Pratique` apontando pro **nível/exercício específico** da [[03-Dominios/Tecnologia/Controle de Versão/Biblioteca de Controle de Versão|Biblioteca]] — nunca pra home do site. A nota entrega o modelo; o simulador entrega a repetição.

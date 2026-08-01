@@ -154,6 +154,9 @@ O `filter-repo` serve para mais do que segredo:
 
 **Credencial vazada é credencial rotacionada — reescrever o histórico vem depois, é caro, e nunca alcança as cópias que já saíram.**
 
+> [!tip] Vídeo — removendo segredo do histórico
+> [**How to Remove Secrets from Git History**](https://www.youtube.com/watch?v=z8tIOYg_oho) (Claudio Bernasconi, 5 min) mostra a limpeza na prática — e vale assistir lembrando que, nesta nota, ela é o **passo 4**, não o primeiro.
+
 > [!tip] Pratique
 > Num repositório descartável: commite um arquivo `segredo.txt`, faça mais três commits por cima, e então remova-o com `git filter-repo --invert-paths --path segredo.txt`. Compare `git log --oneline` antes e depois — **todos os hashes mudaram**, e é isso que explica por que todo mundo precisa reclonar.
 >

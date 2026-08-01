@@ -177,6 +177,9 @@ git add -f arquivo-ignorado.pdf
 
 **O `.gitignore` mantém o `git status` legível, decidindo o que o Git nem chega a olhar — mas só sobre arquivos que ele ainda não rastreia, e só daqui pra frente.**
 
+> [!tip] Vídeo — .gitignore na prática
+> [**Curso de Git - Ignorar arquivos com arquivo gitignore**](https://www.youtube.com/watch?v=9rElHOJT-qY) (Boson Treinamentos, 15 min) demonstra as regras de padrão e, principalmente, a pegadinha do arquivo já rastreado que continua aparecendo.
+
 > [!tip] Pratique
 > No seu projeto: crie o `.gitignore` a partir do [gitignore.io](https://www.toptal.com/developers/gitignore), commite-o, e rode `git status`. A saída deve caber em poucas linhas e conter só trabalho de verdade.
 >

@@ -198,6 +198,9 @@ Não precisa ser bonito nem longo. Precisa dizer **o que mudou e, quando não fo
 
 **Repositório é uma pasta com memória: `add` escolhe o que entra na próxima lembrança, `commit` a grava com uma legenda, e nada disso acontece só porque você salvou o arquivo.**
 
+> [!tip] Vídeo — o ciclo de vida dos arquivos
+> [**09. Ciclo de vida dos arquivos - Git e Github para Iniciantes**](https://www.youtube.com/watch?v=MOuN_cYcsJ4) (Willian Justen, 11 min) mostra na tela a transição untracked → staged → committed → modified. É a versão animada do diagrama de estados desta nota.
+
 > [!tip] Pratique
 > Faça os níveis **1 e 2 da sequência "Introdução"** do [Learn Git Branching em português](https://learngitbranching.js.org/?locale=pt_BR) — são os dois primeiros, sobre `git commit`. Leva cinco minutos e você vê os commits se enfileirando na tela conforme digita, o que fixa a ideia de "linha do tempo" muito mais rápido do que ler sobre ela.
 >

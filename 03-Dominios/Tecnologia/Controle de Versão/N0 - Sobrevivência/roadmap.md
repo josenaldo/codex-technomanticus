@@ -11,7 +11,7 @@ tags:
 
 # Roadmap — N0 Sobrevivência
 
-Roadmap do sub-galho `Controle de Versão/N0 - Sobrevivência` (galho-folha). **Escrita completa em 2026-07-31 — 5/5 notas.** Falta enriquecimento de mídia (M1).
+Roadmap do sub-galho `Controle de Versão/N0 - Sobrevivência` (galho-folha). **Escrita completa em 2026-07-31 — 5/5 notas.** Mídia (M1) parcial — ver roadmap do domínio.
 
 **Nível:** folha (uma entrada por nota).
 
@@ -41,6 +41,6 @@ Roadmap do sub-galho `Controle de Versão/N0 - Sobrevivência` (galho-folha). **
 
 ## Próximos passos
 
-1. ⬜ **M1 — mídia**: 1 vídeo YouTube PT-BR com legenda verificada (yt-dlp) por nota.
-2. ⬜ **Dicionário do domínio**: os termos introduzidos aqui (repositório, commit, área de preparação, remoto, clone, push, pull) devem virar verbetes.
+1. 🔶 **M1 — mídia**: ver o estado consolidado no [[03-Dominios/Tecnologia/Controle de Versão/roadmap|roadmap do domínio]] (25/34 embutidos e verificados em 2026-07-31).
+2. ✅ **Dicionário do domínio** — criado 2026-07-31; os termos deste nível já entraram.
 3. ⬜ Passada de `/plantar-duvidas` + `/colher-duvidas` depois que o N1 existir — o teste real do N0 é ser lido por alguém que nunca usou Git.

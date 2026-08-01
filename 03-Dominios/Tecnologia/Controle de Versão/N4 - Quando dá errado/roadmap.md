@@ -11,7 +11,7 @@ tags:
 
 # Roadmap — N4 Quando dá errado
 
-Roadmap do sub-galho `Controle de Versão/N4 - Quando dá errado` (galho-folha). **Escrita completa em 2026-07-31 — 5/5 notas.** Falta enriquecimento de mídia (M1).
+Roadmap do sub-galho `Controle de Versão/N4 - Quando dá errado` (galho-folha). **Escrita completa em 2026-07-31 — 5/5 notas.** Mídia (M1) parcial — ver roadmap do domínio.
 
 **Nível:** folha (uma entrada por nota). **Público:** técnico. **Fase:** Magus nas 5.
 
@@ -66,6 +66,6 @@ Roadmap do sub-galho `Controle de Versão/N4 - Quando dá errado` (galho-folha).
 
 ## Próximos passos
 
-1. ⬜ **M1 — mídia**: 1 vídeo por nota.
-2. ⬜ **Dicionário**: reflog, órfão, alcançável, `ORIG_HEAD`, fixup/autosquash, cherry-pick, filter-repo, rotação de credencial, hook, gitattributes, textconv.
+1. 🔶 **M1 — mídia**: ver o estado consolidado no [[03-Dominios/Tecnologia/Controle de Versão/roadmap|roadmap do domínio]] (25/34 embutidos e verificados em 2026-07-31).
+2. ✅ **Dicionário do domínio** — criado 2026-07-31; os termos deste nível já entraram.
 3. ⬜ Avaliar um broto sobre **assinatura de commits** (GPG/SSH/Sigstore) — hoje aparece só de passagem na 24 e na 26.

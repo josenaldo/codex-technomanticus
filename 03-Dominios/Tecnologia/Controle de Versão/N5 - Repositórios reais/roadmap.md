@@ -11,7 +11,7 @@ tags:
 
 # Roadmap — N5 Repositórios reais
 
-Roadmap do sub-galho `Controle de Versão/N5 - Repositórios reais` (galho-folha). **Escrita completa em 2026-07-31 — 4/4 notas.** Falta enriquecimento de mídia (M1).
+Roadmap do sub-galho `Controle de Versão/N5 - Repositórios reais` (galho-folha). **Escrita completa em 2026-07-31 — 4/4 notas.** Mídia (M1) parcial — ver roadmap do domínio.
 
 **Nível:** folha. **Público:** técnico. **Fase:** Magus nas 4.
 
@@ -50,6 +50,6 @@ Roadmap do sub-galho `Controle de Versão/N5 - Repositórios reais` (galho-folha
 
 ## Próximos passos
 
-1. ⬜ **M1 — mídia**: 1 vídeo por nota.
-2. ⬜ **Dicionário**: monorepo, polyrepo, clone parcial, clone raso, sparse-checkout, LFS, gitlink, submódulo, subtree, `--mirror`, drift, reconciliação.
+1. 🔶 **M1 — mídia**: ver o estado consolidado no [[03-Dominios/Tecnologia/Controle de Versão/roadmap|roadmap do domínio]] (25/34 embutidos e verificados em 2026-07-31).
+2. ✅ **Dicionário do domínio** — criado 2026-07-31; os termos deste nível já entraram.
 3. ⬜ Avaliar broto sobre **migração SVN→Git em repositório sem `stdlayout`** se o assunto voltar — hoje é um parágrafo na 29.

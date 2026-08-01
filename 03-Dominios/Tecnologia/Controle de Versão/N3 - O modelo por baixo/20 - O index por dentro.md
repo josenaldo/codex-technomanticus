@@ -150,6 +150,9 @@ Sem a área de preparação, isso seria impossível — e é o melhor argumento 
 
 **O index é uma lista plana de caminho + hash + metadados que serve de rascunho do próximo commit e de cache do `status` — e é por ele que passa toda diferença entre "editado", "preparado" e "registrado".**
 
+> [!tip] Vídeo — o index a fundo
+> [**Git Index (Staging area)**](https://www.youtube.com/watch?v=b-G92QVXGeY) (Absolute Code, 27 min) tratamento longo e detalhado do arquivo `.git/index`, incluindo os metadados que fazem o `status` ser rápido.
+
 > [!tip] Pratique
 > Veja as três versões coexistirem, que é o experimento que fixa o conceito:
 > ```bash
