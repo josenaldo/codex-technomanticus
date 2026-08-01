@@ -1,7 +1,7 @@
 ---
 title: "Além do básico: property-based, snapshot, contract, smoke"
 created: 2026-06-18
-updated: 2026-06-18
+updated: 2026-08-01
 type: concept
 fase: magus
 status: evergreen
@@ -15,8 +15,12 @@ tags:
 
 # Além do básico: property-based, snapshot, contract, smoke
 
-> [!abstract] Resumo em uma linha
-> Quatro técnicas de nicho — propriedade, snapshot, contrato e fumaça — que não substituem unit/integração, mas rendem muito no contexto certo: a propriedade caça contraexemplos que você não imaginou, o snapshot congela o output, o contrato faz dois serviços concordarem sem subir juntos, e a fumaça pergunta "o sistema acordou?".
+> [!abstract] Resumo
+> Quatro técnicas de nicho que não substituem unit/integração, mas rendem muito no contexto certo.
+> **Property-based** inverte a lógica do teste de exemplo: em vez de você escolher a entrada, declara uma propriedade que vale pra qualquer entrada e o framework caça o contraexemplo que você não imaginou.
+> **Snapshot** congela o output inteiro numa foto e compara — rápido de escrever, mas só protege se alguém realmente olhar o diff.
+> **Contract** faz consumer e provider concordarem sobre a forma da mensagem sem precisar subir os dois juntos, matando o e2e caro entre microserviços.
+> **Smoke** é o pulso pós-deploy: um punhado de checagens em segundos que respondem só "o sistema acordou?", antes de qualquer suite mais cara rodar.
 
 A [[02 - A pirâmide de testes e suas variações|pirâmide]] te deu os andares principais: unit, integração, e2e. Mas existe uma **long tail** de tipos de teste que raramente aparece em tutorial e que, num nível senior, separa quem decora a pirâmide de quem sabe escolher a ferramenta certa pro problema certo.
 
@@ -141,10 +145,7 @@ Na primeira vez, o Jest grava a árvore renderizada num `.snap`. Mudou o compone
 
 ### O risco que define o destino do snapshot
 
-Aqui está a armadilha senior, e ela é grave o suficiente pra merecer um callout próprio.
-
-> [!danger] Snapshot fatigue: o carimbo automático
-> O snapshot empurra **toda** a carga cognitiva pro revisor. O teste é fácil de criar — `toMatchSnapshot()` e pronto. Mas quando ele falha, o Jest te oferece um atalho fatal: aperte `u` e *todos* os snapshots se atualizam. Depois de algumas semanas, o engenheiro entra em **snapshot fatigue** e começa a apertar `u` sem ler o diff. Nesse ponto o teste não testa mais nada — ele carimba qualquer mudança como "esperada". Você tem coverage no relatório e zero proteção na prática.
+Aqui está a armadilha senior — grave o suficiente pra ganhar seção própria em [[#Armadilhas comuns]].
 
 O agravante: capturar uma árvore de componente inteira gera snapshots de centenas de linhas. Ninguém revisa um diff de 500 linhas com atenção, e o snapshot muda por motivos não relacionados (renomeou uma classe CSS lá longe → metade dos snapshots viram vermelho).
 
@@ -241,8 +242,8 @@ test('home renderiza', async () => {
 
 O ponto não é a riqueza das asserções — é a **velocidade** e o **posicionamento**. Smoke roda imediatamente depois do deploy (em staging ou direto em produção), e se ele falha, o build é rejeitado / o deploy é revertido antes que QA mais profunda gaste tempo num sistema instável.
 
-> [!note] Smoke não é a suite, é o disjuntor
-> Um erro comum é inflar o smoke test até ele virar uma suite e2e completa. Não. Se passa de ~30s, deixou de ser smoke. O valor é justamente ser rápido o bastante pra rodar a cada deploy sem ninguém reclamar. Profundidade fica pros outros andares da pirâmide.
+> [!warning] Smoke não é a suite, é o disjuntor
+> Um erro comum é inflar o smoke test até ele virar uma suite e2e completa. Não. Se passa de ~30s, deixou de ser smoke. O valor é justamente ser rápido o bastante pra rodar a cada deploy sem ninguém reclamar. Profundidade fica pros outros andares da pirâmide. Detalhe em [[#Armadilhas comuns]].
 
 ### Quando vale smoke
 
@@ -284,29 +285,68 @@ Leitura do diagrama: a ordem das perguntas não é aleatória. Smoke e contract 
 
 ---
 
+## Armadilhas comuns
+
+As quatro técnicas desta nota têm em comum um perfil de risco: são baratas de adotar e caras de adotar mal, porque o sintoma de "adotou errado" não é o teste vermelho — é o teste verde que não protege nada.
+
+> [!danger] Snapshot fatigue: o carimbo automático
+> O snapshot empurra **toda** a carga cognitiva pro revisor. O teste é fácil de criar — `toMatchSnapshot()` e pronto. Mas quando ele falha, o Jest te oferece um atalho fatal: aperte `u` e *todos* os snapshots se atualizam. Depois de algumas semanas, o engenheiro entra em **snapshot fatigue** e começa a apertar `u` sem ler o diff. Nesse ponto o teste não testa mais nada — ele carimba qualquer mudança como "esperada". Você tem coverage no relatório e zero proteção na prática.
+
+> [!warning] Propriedade fraca: o teste que só repete o bug
+> Property-based só rende se a propriedade for uma lei de verdade independente da implementação. Se você não consegue formular a propriedade sem copiar a lógica do código, o "teste" apenas reimplementa a função ao lado dela — quando o código erra, o teste erra do mesmo jeito, e os dois concordam. Isso já aparece na tabela-resumo acima (linha Property-based, coluna Cuidado) e na seção "[[#Quando vale property-based|Quando vale property-based]]": gerador mal definido produz entradas que não exercitam o invariante real, e a "cobertura" gerada é ilusória — parece rigor estatístico, mas não pega nada que um exemplo fixo não pegasse.
+
+> [!warning] Contract testing fora do lugar: esforço sem retorno
+> A técnica presume que você consegue fazer os dois lados — consumer e provider — rodarem o contrato. Aplicada a um monolito, não há fronteira de rede pra testar: é overhead puro. Aplicada a uma integração com um terceiro que você não controla, o problema é pior — você não convence o time deles a rodar seu Pact broker, então o "contrato" vira documentação que ninguém verifica automaticamente e apodrece na primeira mudança silenciosa do outro lado.
+
+> [!warning] Smoke não é a suite, é o disjuntor
+> Inflar o smoke test até ele virar uma suite e2e completa mata a razão dele existir: a velocidade. Um smoke de 5 minutos não roda a cada deploy sem alguém reclamar — e quando ele deixa de rodar a cada deploy, você perdeu o sinal de vida rápido que justificava separá-lo do resto da pirâmide. (Callout gêmeo em [[#Smoke testing|Smoke testing]].)
+
+---
+
+## O que vem a seguir
+
+Estas quatro técnicas têm parentes diretos em outros galhos do vault que valem a pena visitar em seguida.
+
+Se snapshot testing te interessou, [[03-Dominios/Tecnologia/Testes JS/11 - Snapshot testing]] aprofunda a mecânica específica do Jest/Vitest — como o `.snap` é gerado, versionado e revisado no ecossistema JS. Em legado sem cobertura, a mesma ideia de "fotografar o output" aparece sob outro nome em [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/11 - Approval e Golden Master testing]]: aprovar o comportamento atual como baseline antes de refatorar, o parente arqueológico do snapshot.
+
+Se contract testing te interessou, [[03-Dominios/Tecnologia/Java/Testes/20 - Contract testing — Pact]] mostra o Pact na prática — publish, broker, replay — no ecossistema onde consumer-driven contracts são mais comuns.
+
+E se você trabalha com acessibilidade, vale ver como uma variação do "checar sem subir tudo junto" aparece em [[03-Dominios/Tecnologia/Acessibilidade/Auditar e Testar/14 - Testes de a11y no código]]: testes automatizados de a11y rodando isolados, antes do e2e completo.
+
+---
+
 ## Em entrevista
 
 These four are "differentiator" answers — most candidates stop at unit, integration, and e2e. Mentioning them signals breadth, as long as you frame them as niche tools, not replacements. The cleanest one-liner for **property-based testing**: instead of asserting one example, you declare a property that holds for any input, the framework generates hundreds of random inputs to break it, and **shrinking** reduces the failing case to a minimal counterexample. For **contract testing**, the key phrase is **consumer-driven**: the consumer defines its expectations, the provider verifies them, and neither has to be running at the same time — perfect for microservices that evolve independently. On **snapshot testing**, show maturity by naming the trap: snapshot fatigue, where engineers blindly accept the diff and the test stops protecting anything. And **smoke testing** is your post-deploy sign of life — a handful of checks in seconds, not depth.
 
 ### Vocabulário
 
-- teste baseado em propriedades — property-based testing
-- redução / shrinking — shrinking
-- contraexemplo mínimo — minimal counterexample
-- ida-e-volta — round-trip
-- teste de snapshot — snapshot testing
-- teste de contrato — contract testing
-- contrato dirigido pelo consumidor — consumer-driven contract
-- teste de fumaça — smoke test
-- sinal de vida — sign of life / health check
-- invariante — invariant
+| PT-BR | EN |
+|---|---|
+| teste baseado em propriedades | property-based testing |
+| redução / encolhimento | shrinking |
+| contraexemplo mínimo | minimal counterexample |
+| ida-e-volta | round-trip |
+| teste de snapshot | snapshot testing |
+| carimbo automático (apertar "aceitar" sem revisar) | snapshot fatigue |
+| teste de contrato | contract testing |
+| contrato dirigido pelo consumidor | consumer-driven contract |
+| teste de fumaça | smoke test |
+| sinal de vida | sign of life / health check |
+| invariante | invariant |
 
-> [!info] Lastro
-> - [Martin Fowler — ContractTest](https://martinfowler.com/bliki/ContractTest.html) — define contract test como checar cada aplicação em isolamento contra um entendimento compartilhado documentado num contrato.
-> - [Hypothesis — Integrated vs type based shrinking](https://hypothesis.works/articles/integrated-shrinking/) — diferença entre o shrinking por tipo (QuickCheck) e o integrado (Hypothesis).
-> - [The Perils of Jest Snapshot Testing — Peter Hrynkow](https://peterhrynkow.com/testing/2019/01/07/the-perils-of-snapshot-testing.html) — snapshot fatigue e o carimbo automático de diffs.
-> - [What is Consumer-Driven Contract Testing — Pactflow](https://pactflow.io/what-is-consumer-driven-contract-testing/) — o consumer expressa expectativas, o provider verifica; Pact como padrão de fato.
-> - [Smoke testing (software) — Wikipedia](https://en.wikipedia.org/wiki/Smoke_testing_(software)) — origem do termo no hardware e papel de build verification.
+> [!tip] Vídeo — John Hughes, o criador do QuickCheck
+> [John Hughes — "Don't Write Tests"](https://www.youtube.com/watch?v=hXnS_Xjwk2Y) — o próprio autor do QuickCheck defendendo a tese que dá nome à técnica: em vez de escrever casos de teste um a um, você declara a propriedade e deixa o gerador achar (e encolher) o contraexemplo. Bom complemento pra quem quer ver a motivação original antes de ir direto pro `jqwik`/`fast-check`/`Hypothesis`.
+
+---
+
+## Fontes
+
+- [Martin Fowler — ContractTest](https://martinfowler.com/bliki/ContractTest.html) — define contract test como checar cada aplicação em isolamento contra um entendimento compartilhado documentado num contrato.
+- [Hypothesis — Integrated vs type based shrinking](https://hypothesis.works/articles/integrated-shrinking/) — diferença entre o shrinking por tipo (QuickCheck) e o integrado (Hypothesis).
+- [The Perils of Jest Snapshot Testing — Peter Hrynkow](https://peterhrynkow.com/testing/2019/01/07/the-perils-of-snapshot-testing.html) — snapshot fatigue e o carimbo automático de diffs.
+- [What is Consumer-Driven Contract Testing — Pactflow](https://pactflow.io/what-is-consumer-driven-contract-testing/) — o consumer expressa expectativas, o provider verifica; Pact como padrão de fato.
+- [Smoke testing (software) — Wikipedia](https://en.wikipedia.org/wiki/Smoke_testing_(software)) — origem do termo no hardware e papel de build verification.
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: "Testes em CI/CD"
 created: 2026-06-18
-updated: 2026-06-18
+updated: 2026-08-01
 type: concept
 fase: magus
 status: evergreen
@@ -15,8 +15,10 @@ tags:
 
 # Testes em CI/CD
 
-> [!abstract] Resumo em uma linha
-> Um teste só vale alguma coisa quando roda sozinho, em todo commit — e rápido o bastante pra ninguém querer desligá-lo.
+> [!abstract] Resumo
+> Um teste só vale alguma coisa quando roda sozinho, em todo commit, dentro da esteira — não quando alguém lembra de digitar `mvn test` na própria máquina. A tese desta nota é essa: **teste sem esteira é teatro**, por melhor que a suíte em si seja.
+> CI não é sinônimo de "ter um pipeline no GitHub Actions". Pipeline é a *ferramenta*; integração contínua é a *prática* de integrar na mainline com frequência — idealmente todo dia — e provar, com a suíte verde, que o código convive com o resto do time. Um YAML bonito rodando sobre uma branch de três semanas não é CI; é *CI Theatre*.
+> E isso tudo tem um orçamento: o feedback do PR precisa chegar em menos de dez minutos, o limite empírico abaixo do qual o dev espera em vez de trocar de contexto. Estourar esse orçamento não é só lentidão — é o que transforma a esteira, aos poucos, em decoração que ninguém mais confia.
 
 Imagine uma linha de montagem de carros. A carroceria não vai direto da prensa pro showroom: ela passa por postos de inspeção sucessivos. No primeiro posto, um operário confere a solda à mão em segundos. Mais adiante, uma estação automatizada testa a elétrica em minutos. Lá no fim, antes do carro sair, alguém dá uma volta no quarteirão pra ver se anda. Cada posto pega uma classe de defeito, e quanto mais cedo o defeito aparece, mais barato é consertar.
 
@@ -31,9 +33,6 @@ Aqui mora o mal-entendido mais comum da indústria. Pergunte a dez devs o que é
 Martin Fowler é cirúrgico aqui. Para ele, CI é uma prática em que **cada dev integra seu trabalho na mainline com frequência — idealmente todo dia, no mínimo**. O "integrar" é o verbo que importa: trazer seu código pra linha principal e provar, com a suíte verde, que ele convive com o de todo mundo. O pipeline é só o mecanismo que executa essa prova automaticamente. Sem a frequência de integração, o pipeline está verificando uma ilusão de integração que não aconteceu.
 
 Os três testes que Fowler usa pra saber se um time *de fato* faz CI são reveladores: (1) todo mundo empurra pra `main`/trunk diariamente, **não** pra feature branches de vida longa? (2) todo commit dispara a suíte? (3) quando o build quebra, ele é consertado em ~10 minutos? Repare que dois dos três critérios são sobre *comportamento humano*, não sobre tooling.
-
-> [!warning] O mito do "temos CI porque temos pipeline"
-> Ter um YAML de pipeline não é fazer integração contínua. GoCD cunhou o termo *CI Theatre* pra isso: o time roda testes a cada push, sente que "faz CI", mas integra na mainline a cada duas semanas via PRs gigantes. A ferramenta está lá; a prática, não. CI é uma prática de *frequência de integração* — o pipeline só automatiza a verificação dela. Se você integra raramente, você não faz CI, faz teatro de CI.
 
 ### Trunk-based × feature branches de vida longa
 
@@ -146,9 +145,6 @@ Como manter rápido? As alavancas, da mais barata pra mais cirúrgica:
 - **Cache de dependências.** Não baixar o mundo (Maven, npm, Gradle) em todo run. O cache de dependências do CI costuma cortar minutos.
 - **Test impact analysis.** Rodar só os testes *afetados* pelo diff. Se você mexeu num módulo de pagamento, por que rodar os testes de relatório? Ferramentas comerciais (e o `--changed` do Vitest) fazem isso. É a alavanca mais poderosa e a mais difícil de acertar.
 
-> [!warning] Fail fast
-> A regra é: o pipeline deve te dizer que você errou *o mais rápido possível*. Isso significa colocar os testes rápidos e os que mais quebram na frente, e configurar o CI pra abortar no primeiro estágio que falha — não gastar 30 minutos de E2E quando um lint já reprovou o PR.
-
 ```mermaid
 flowchart LR
     P["PR aberto"] --> S1["Estágio rápido<br/>lint + unit<br/>~1 min"]
@@ -171,9 +167,6 @@ As alavancas acima escalam até um ponto. Numa suíte com 50 mil testes — pens
 Essa é a ideia da **análise de impacto de teste** (*test impact analysis*, TIA): a partir do diff, descobrir quais testes são *afetados* pela mudança e rodar só eles. Como Fowler descreve, isso depende de saber o **grafo de dependências** do código — quais testes exercitam quais módulos. A versão determinística mapeia cobertura: "este teste tocou esta linha, logo se a linha mudou o teste é candidato". Em monorepos, ferramentas como o Nx ou o Bazel (Google) constroem um grafo dirigido de pacotes: se você muda o pacote A, e B e C dependem de A, roda-se A, B e C — mas não D, E, F.
 
 Há uma variante mais nova, **seleção preditiva de teste** (*predictive test selection*, PTS), que Meta e Google usam internamente: em vez de mapear cobertura de forma determinística, um modelo de ML treinado no histórico de execuções estima a *probabilidade* de cada teste falhar dado este diff, e roda só os de risco alto. A vantagem é pegar dependências cruzadas que a cobertura pura não enxerga; na prática os dois compõem bem — TIA pra delimitar o conjunto candidato, PTS pra ranquear e cortar.
-
-> [!warning] O trade-off honesto da seleção de teste
-> TIA e PTS são apostas estatísticas, não garantias. Se o grafo de dependências está incompleto (reflexão, injeção dinâmica, config externa, efeitos colaterais via banco), você pode *pular um teste que era relevante* e deixar passar um bug que a suíte completa pegaria. Por isso o padrão maduro é híbrido: seleção no PR, pra feedback rápido; suíte **completa** no `main` ou no nightly, como rede de segurança. Você troca um pouco de garantia por muito tempo de feedback — mas mantém uma execução completa em algum ponto da esteira, justamente pra cobrir o que a heurística pulou.
 
 Repare na conexão com a [[02 - A pirâmide de testes e suas variações|pirâmide]]: TIA brilha na base (unit, com fronteiras de dependência claras) e é traiçoeira no topo (E2E, onde um clique mexe em meio sistema). É mais uma razão pra base ser larga — testes pequenos e isolados são exatamente os que a seleção consegue mapear com confiança.
 
@@ -208,10 +201,7 @@ flowchart TD
 
 **Leitura do diagrama:** ao primeiro sinal de intermitência, o teste sai do caminho crítico (quarentena) mas *não* desaparece — ele continua rodando pra você medir a taxa de falha, e ganha um dono e um ticket. A seta pontilhada é a armadilha: se a quarentena não tem prazo, vira uma lixeira onde testes morrem e a cobertura real despenca sem ninguém perceber.
 
-Sobre **retry** — é a estratégia mais tentadora e a mais perigosa:
-
-> [!danger] Retry mascara, não cura
-> Reexecutar um teste que falhou *mantém o CI verde, mas esconde o problema*. Times que dependem só de retry veem a flakiness *crescer*, porque ninguém investiga a causa-raiz. A regra de ouro (Harness, GitLab): **use retry pra desbloquear, não pra fechar o ticket**. O retry te tira do bloqueio agora; o ticket de causa-raiz é que resolve. Um estudo industrial estima que flaky tests consomem ~2,5% do tempo produtivo dos devs — não é ruído desprezível.
+Sobre **retry** — é a estratégia mais tentadora e a mais perigosa; ver [[#Armadilhas comuns|Armadilhas comuns]] adiante.
 
 Os quatro pilares de quem leva flaky a sério: **Detectar** (medir taxa de falha por teste no histórico do CI; investigar acima de ~2%), **Notificar** (cada teste tem dono; alerta quando passa do limite), **Triar** (capturar artefatos em toda falha, reproduzir com retry desligado) e **Quarentenar** enquanto conserta.
 
@@ -219,21 +209,13 @@ Os quatro pilares de quem leva flaky a sério: **Detectar** (medir taxa de falha
 
 Uma **porta de qualidade** (*quality gate*) é uma condição que o pipeline impõe pra deixar o código passar: cobertura mínima, *mutation score* mínimo, zero vulnerabilidades críticas, zero issues bloqueantes no SonarQube. É o mecanismo que dá *dentes* à esteira — sem gate, os testes rodam mas não impedem nada.
 
-O problema é que gate é uma métrica, e métrica vira alvo (Lei de Goodhart). O exemplo clássico é exigir **cobertura de 100%**:
-
-> [!warning] Coverage theater
-> Cobertura mede quais linhas *executaram*, não quais foram *verificadas*. Um gate de coverage cego incentiva testes que chamam o código e não asseguram nada — *theater*. O time bate a meta e a suíte continua deixando bugs passar. Por isso [[12 - Coverage e mutation testing|mutation testing]] é o complemento honesto: ele mede se os testes de fato *pegam* defeitos, não só se tocam as linhas. Um gate de *mutation score* é muito mais difícil de fraudar do que um gate de coverage.
+O problema é que gate é uma métrica, e métrica vira alvo (Lei de Goodhart). O exemplo clássico é exigir **cobertura de 100%** — ver *Coverage theater* em [[#Armadilhas comuns|Armadilhas comuns]] adiante.
 
 Gates úteis tendem a ser: **não deixar a cobertura cair** (delta, não absoluto), **mutation score mínimo nos módulos críticos**, **zero CVE crítico** no scan de dependências. Gates contraproducentes: **coverage absoluto alto e uniforme** (vira theater) e **qualquer gate que o time aprendeu a contornar**.
 
 ## Não ignore os warnings
 
 Um detalhe que separa esteira séria de esteira decorativa: **warnings de lint e de tipos no CI não são ignoráveis**. Se o build passa com 200 warnings de TypeScript ou de compilador, esses 200 warnings são ruído onde o 201º — que é um bug real — vai se esconder. A regra é tratar warnings novos como falha (ou ao menos travar a contagem pra não crescer). O build verde tem que significar *"está tudo certo"*, não *"está tudo certo, fora aquelas coisas que a gente convencionou ignorar"*.
-
-> [!example] No MedEspecialista
-> No MedEspecialista, o stack padrão de testes é JUnit 5 + AssertJ + Mockito + Testcontainers. O CI/CD roda no GitHub Actions e executa tudo em paralelo — a suíte de ~800 testes leva cerca de 3 minutos. A regra do time é simples e inegociável: **PR sem teste não é revisado**.
->
-> Esses 3 minutos não são sorte; são consequência de paralelizar. Sem paralelização, 800 testes (vários subindo containers via Testcontainers) levariam muito mais, e aí a pressão pra "pular o teste nesse PR" cresce. Manter rápido é o que permite manter a regra de PR. As duas coisas se sustentam: a esteira é rápida *porque* paraleliza, e o teste é parte do contrato de PR *porque* a esteira é rápida o bastante pra isso não doer. (Mais sobre o ferramental em [[Testes em Java]].)
 
 ## O orçamento de tempo do build
 
@@ -283,6 +265,32 @@ O **monitoramento sintético** (*synthetic monitoring*) é o teste que não para
 
 Vale lembrar que a velocidade da esteira não depende só do CI — depende de quão testável é o código. Um sistema bem desenhado (ver [[Arquitetura de Software]]), com dependências invertidas e camadas isoladas, permite testar a lógica de negócio sem subir banco nem rede, e isso é o que mantém a base da pirâmide rápida. Esteira lenta é, muitas vezes, sintoma de acoplamento — você é *forçado* a integração/E2E porque não consegue testar nada em isolamento.
 
+## Armadilhas comuns
+
+> [!warning] O mito do "temos CI porque temos pipeline"
+> Ter um YAML de pipeline não é fazer integração contínua. GoCD cunhou o termo *CI Theatre* pra isso: o time roda testes a cada push, sente que "faz CI", mas integra na mainline a cada duas semanas via PRs gigantes. A ferramenta está lá; a prática, não. CI é uma prática de *frequência de integração* — o pipeline só automatiza a verificação dela. Se você integra raramente, você não faz CI, faz teatro de CI.
+
+> [!warning] Fail fast
+> A regra é: o pipeline deve te dizer que você errou *o mais rápido possível*. Isso significa colocar os testes rápidos e os que mais quebram na frente, e configurar o CI pra abortar no primeiro estágio que falha — não gastar 30 minutos de E2E quando um lint já reprovou o PR.
+
+> [!warning] O trade-off honesto da seleção de teste
+> TIA e PTS são apostas estatísticas, não garantias. Se o grafo de dependências está incompleto (reflexão, injeção dinâmica, config externa, efeitos colaterais via banco), você pode *pular um teste que era relevante* e deixar passar um bug que a suíte completa pegaria. Por isso o padrão maduro é híbrido: seleção no PR, pra feedback rápido; suíte **completa** no `main` ou no nightly, como rede de segurança. Você troca um pouco de garantia por muito tempo de feedback — mas mantém uma execução completa em algum ponto da esteira, justamente pra cobrir o que a heurística pulou.
+
+> [!danger] Retry mascara, não cura
+> Reexecutar um teste que falhou *mantém o CI verde, mas esconde o problema*. Times que dependem só de retry veem a flakiness *crescer*, porque ninguém investiga a causa-raiz. A regra de ouro (Harness, GitLab): **use retry pra desbloquear, não pra fechar o ticket**. O retry te tira do bloqueio agora; o ticket de causa-raiz é que resolve. Um estudo industrial estima que flaky tests consomem ~2,5% do tempo produtivo dos devs — não é ruído desprezível.
+
+> [!warning] Coverage theater
+> Cobertura mede quais linhas *executaram*, não quais foram *verificadas*. Um gate de coverage cego incentiva testes que chamam o código e não asseguram nada — *theater*. O time bate a meta e a suíte continua deixando bugs passar. Por isso [[12 - Coverage e mutation testing|mutation testing]] é o complemento honesto: ele mede se os testes de fato *pegam* defeitos, não só se tocam as linhas. Um gate de *mutation score* é muito mais difícil de fraudar do que um gate de coverage.
+
+## Casos práticos
+
+> [!example] No MedEspecialista
+> No MedEspecialista, o stack padrão de testes é JUnit 5 + AssertJ + Mockito + Testcontainers. O CI/CD roda no GitHub Actions e executa tudo em paralelo — a suíte de ~800 testes leva cerca de 3 minutos. A regra do time é simples e inegociável: **PR sem teste não é revisado**.
+>
+> Esses 3 minutos não são sorte; são consequência de paralelizar. Sem paralelização, 800 testes (vários subindo containers via Testcontainers) levariam muito mais, e aí a pressão pra "pular o teste nesse PR" cresce. Manter rápido é o que permite manter a regra de PR. As duas coisas se sustentam: a esteira é rápida *porque* paraleliza, e o teste é parte do contrato de PR *porque* a esteira é rápida o bastante pra isso não doer. (Mais sobre o ferramental em [[Testes em Java]].)
+
+Esse é o único caso documentado nesta nota — não é uma comparação entre times, é o único data point real disponível. O padrão que ele ilustra (paralelização como pré-condição pra manter a regra de PR sem gerar atrito) é generalizável; os números (~800 testes, ~3 min) não são — são específicos desse contexto, e não devem ser lidos como benchmark universal.
+
 ## Em entrevista
 
 Talk about CI/CD as where testing actually delivers value, not as an afterthought. **"A test only protects you if it runs automatically on every commit — a suite that runs only when someone remembers to run it locally protects nothing."** Be ready to correct the most common misconception: **CI is not "having a pipeline" — it's the practice of integrating into the mainline frequently, ideally daily, with a green suite proving the integration is safe.** That's why I favor **trunk-based development over long-lived feature branches**: small daily merges avoid the merge hell you get when a branch drifts from `main` for weeks. Explain the staged pipeline: fast pre-commit hooks in seconds, unit and integration on the PR in minutes, expensive E2E and security scans after merge or nightly. Stress that **fast feedback is a requirement, not a luxury** — a slow pipeline trains the team to bypass tests, so the suite becomes theater. Mention concrete levers: parallelization, sharding, dependency caching, and running only the impacted tests. **When a suite gets too large to fit the ten-minute budget, I reach for test impact analysis — running only the tests affected by the diff via the dependency graph — while keeping a full run on `main` as the safety net for whatever the heuristic skipped.** Add that not everything can be caught before deploy: **I pair shift-left with shift-right — canary or blue-green rollouts, feature flags, and synthetic monitoring testing in production — so the blast radius of a bad change stays small and rollback is fast.** On flaky tests, say you **quarantine and assign an owner rather than blindly retry**, because retries keep the build green while hiding the rot. On quality gates, note that a blind 100% coverage gate becomes coverage theater, and that **mutation score is a far harder gate to game.** Close with the contract idea: in my current team, a PR without tests isn't reviewed, and the ~800-test suite runs in about three minutes precisely because it runs in parallel.
@@ -313,14 +321,24 @@ Talk about CI/CD as where testing actually delivers value, not as an afterthough
 | análise estática | static analysis |
 | reexecução / nova tentativa | retry |
 
-> [!info] Lastro
-> - Martin Fowler, [*Continuous Integration*](https://martinfowler.com/articles/continuousIntegration.html) — "self-testing code", a regra dos dez minutos, "nada suga mais o sangue do CI do que um build lento", e o pipeline de implantação em estágios (rápido cedo, minucioso depois).
-> - Martin Fowler, [*Patterns for Managing Source Code Branches*](https://martinfowler.com/articles/branching-patterns.html) — CI como prática de integrar na mainline com frequência (não como ferramenta); trunk-based × feature branches longas e o custo do atraso de integração.
-> - GoCD, [*It's not CI, it's just CI Theatre*](https://www.gocd.org/2017/05/16/its-not-CI-its-CI-theatre.html) — os três testes do CI de verdade (integra diário na trunk? todo commit roda a suíte? build quebrado conserta em 10 min?) e o mito do "temos pipeline logo fazemos CI".
-> - Jez Humble & David Farley, *Continuous Delivery* (Addison-Wesley, 2010) — o *deployment pipeline*: estágios como portões de confiança crescente, *build uma vez e promova o mesmo artefato*, *fail fast* no estágio mais barato; ambientes progressivamente mais parecidos com produção.
-> - Martin Fowler, [*The Rise of Test Impact Analysis*](https://martinfowler.com/articles/rise-test-impact-analysis.html) e CloudBees, [*Predictive Test Selection vs. Test Impact Analysis*](https://www.cloudbees.com/blog/predictive-test-selection-vs-test-impact-analysis) — TIA determinística por grafo de dependência/cobertura, PTS probabilística por ML (Meta/Google), e o trade-off de pular um teste relevante.
-> - Octopus Deploy, [*Blue/green Versus Canary Deployments*](https://octopus.com/devops/software-deployments/blue-green-vs-canary-deployments/) e Unleash, [*Blue-green deployment vs progressive delivery*](https://www.getunleash.io/blog/blue-green-deployment-vs-progressive-delivery) — entrega progressiva, canário, blue-green, feature flags e raio de impacto como o complemento *shift-right* do *shift-left*.
-> - Harness, [*Flaky Tests: How to Find, Fix, and Prevent Them*](https://www.harness.io/blog/flaky-tests-the-quiet-killer-of-productivity-in-your-ci-pipeline) e [GitLab Docs — Unhealthy tests](https://docs.gitlab.com/development/testing_guide/unhealthy_tests/) — quarentena, retry que mascara causa-raiz, e o custo de ~2,5% de produtividade dos flaky tests.
+## Fontes
+
+- Martin Fowler, [*Continuous Integration*](https://martinfowler.com/articles/continuousIntegration.html) — "self-testing code", a regra dos dez minutos, "nada suga mais o sangue do CI do que um build lento", e o pipeline de implantação em estágios (rápido cedo, minucioso depois).
+- Martin Fowler, [*Patterns for Managing Source Code Branches*](https://martinfowler.com/articles/branching-patterns.html) — CI como prática de integrar na mainline com frequência (não como ferramenta); trunk-based × feature branches longas e o custo do atraso de integração.
+- GoCD, [*It's not CI, it's just CI Theatre*](https://www.gocd.org/2017/05/16/its-not-CI-its-CI-theatre.html) — os três testes do CI de verdade (integra diário na trunk? todo commit roda a suíte? build quebrado conserta em 10 min?) e o mito do "temos pipeline logo fazemos CI".
+- Jez Humble & David Farley, *Continuous Delivery* (Addison-Wesley, 2010) — o *deployment pipeline*: estágios como portões de confiança crescente, *build uma vez e promova o mesmo artefato*, *fail fast* no estágio mais barato; ambientes progressivamente mais parecidos com produção.
+- Martin Fowler, [*The Rise of Test Impact Analysis*](https://martinfowler.com/articles/rise-test-impact-analysis.html) e CloudBees, [*Predictive Test Selection vs. Test Impact Analysis*](https://www.cloudbees.com/blog/predictive-test-selection-vs-test-impact-analysis) — TIA determinística por grafo de dependência/cobertura, PTS probabilística por ML (Meta/Google), e o trade-off de pular um teste relevante.
+- Octopus Deploy, [*Blue/green Versus Canary Deployments*](https://octopus.com/devops/software-deployments/blue-green-vs-canary-deployments/) e Unleash, [*Blue-green deployment vs progressive delivery*](https://www.getunleash.io/blog/blue-green-deployment-vs-progressive-delivery) — entrega progressiva, canário, blue-green, feature flags e raio de impacto como o complemento *shift-right* do *shift-left*.
+- Harness, [*Flaky Tests: How to Find, Fix, and Prevent Them*](https://www.harness.io/blog/flaky-tests-the-quiet-killer-of-productivity-in-your-ci-pipeline) e [GitLab Docs — Unhealthy tests](https://docs.gitlab.com/development/testing_guide/unhealthy_tests/) — quarentena, retry que mascara causa-raiz, e o custo de ~2,5% de produtividade dos flaky tests.
+
+> [!tip] Vídeo — Trunk-based Development, com consultores da Thoughtworks
+> [TW presents: Trunk-based Development with Michael Lihs, Chris Ford & Kief Morris](https://www.youtube.com/watch?v=gpskEdOildA) (1h21) é um painel da Thoughtworks aprofundando exatamente o modelo de branching que esta nota defende como pré-condição pra CI de verdade — o porquê de trunk-based reduzir o custo de integração, os obstáculos reais que os times encontram ao migrar de feature branches longas, e como isso se conecta com pipelines de implantação. Bom complemento pra quem quer ver o argumento discutido e questionado ao vivo, não só resumido em texto.
+
+## O que vem a seguir
+
+Esta nota ficou no nível de *prática de teste*: o que roda, em que estágio, e por que a velocidade é requisito e não luxo. Mas a esteira de CI/CD é maior que "onde os testes rodam" — ela é o mecanismo central de uma disciplina inteira. **[[03-Dominios/Engenharia/Operação/index|Operação]] é a casa canônica da esteira**: é lá que ficam as decisões de infraestrutura que esta nota deliberadamente não repete — pipeline como código, deployment strategies aprofundadas além do resumo de canário/blue-green/feature flag acima, e GitOps como forma de versionar o próprio estado do sistema.
+
+Duas fronteiras de ferramental fecham o quadro. Se o seu stack é JavaScript, [[03-Dominios/Tecnologia/Testes JS/17 - Testes na CI]] aplica o mesmo raciocínio — estágios, fail fast, paralelização — só que com Vitest/Playwright do lado do front. E se você quer ver a esteira inteira costurada de ponta a ponta, da suíte ao pipeline, num exemplo de código real, [[03-Dominios/Tecnologia/Python/Testes/09 - Capstone — a suíte de testes da API de Tarefas]] é o capstone que aplica tudo isso numa API de tarefas em Python.
 
 ## Veja também
 

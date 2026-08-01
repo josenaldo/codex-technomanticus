@@ -15,7 +15,7 @@ de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
 
 **Galho:** `03-Dominios/Engenharia/Testes`
 **Diagnóstico:** 2026-08-01
-**Última execução:** 2026-08-01 — ondas 1-4 (notas 01-12)
+**Última execução:** 2026-08-01 — ondas 1-5 (notas 01-15) — parada das 15 atingida
 **Spec do passe:** [[00-Meta/specs/2026-08-01-galho-testes-fechamento-design|passe de fechamento]]
 
 ## Régua de análise
@@ -129,10 +129,10 @@ falha vira buraco declarado — nunca vídeo "provável".
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 16 |
-| ⬜ pendente | 4 |
+| ⬜ pendente | 1 |
 | ➖ não precisa | 0 |
-| ✅ feita | 12 |
-| % concluído | 75% |
+| ✅ feita | 15 |
+| % concluído | 94% |
 | Classe `[substantivo]` | 16 |
 | Classe `[mecânico]` | 0 — reclassificada após o piso voltar a valer |
 | Score médio | ~5,7 |
@@ -319,7 +319,7 @@ falha vira buraco declarado — nunca vídeo "provável".
 - **Resultado:** 500 linhas (era 260; **piso Magus 500 atingido** — o maior déficit do galho, +240, fechado). E1 TL;DR para 4 linhas · E5 ponte para Testes JS/12, Python/Testes/07 e Java/Testes/17 · E7 tabela PT↔EN · E8 os 3 callouts movidos · L2 `## Fontes` com Fowler, PITest/Baeldung e JAVAPRO · M1 PITest em Spring Boot (`46fRzKLPXNI`, legenda baixada e ID reconferido). Conteúdo novo e sourced: problema do mutante equivalente (indecidibilidade, taxa 4–39%, ajuste aritmético do score), weak vs. strong mutation (Howden), mutantes de ordem superior e subsuming HOMs (Offutt; Jia & Harman), MC-DC vs. condition coverage, otimizações do PITest (coverage-first, análise incremental), estados `NO_COVERAGE`/`TIMED_OUT`/`NON_VIABLE`, interação com flaky (Shi et al., ISSTA 2019), Lei de Goodhart aplicada ao mutation score e diagrama da pirâmide de garantias. **E4 = buraco declarado.**
 
 #### 13 - Além do básico - property-based, snapshot, contract, smoke   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-01)
 - **Estado:** 322 linhas reais · fase: magus · status: evergreen
 - **Núcleo/gaps:** E1 (TL;DR `[!abstract]`, linha 19, tem só 1 linha densa, não ≥3) · E4 (sem `## Casos práticos`; nenhum dos 5 casos reais do spec de origem — MedEspecialista, TDD/comissão, tela de 30 campos, mock→fake, Awaitility, Testcontainers×H2 — mapeia pra property-based/snapshot/contract/smoke) · E5 (sem `## O que vem a seguir`; existem só pontes inline soltas e uma `## Veja também` em lista) · E7 (`### Vocabulário`, linha 291-302, é lista com `—`, não tabela PT↔EN) · E8 (só 1 callout de armadilha no corpo — `[!danger] Snapshot fatigue`, linha 146-147 —, a mais pobre do galho; sem seção `## Armadilhas comuns` dedicada) · P1 (todos os exemplos de código — round-trip, snapshot, smoke — são caminho feliz; nenhum demonstra o caso-problema em código, só em prosa) · L2 (callout `[!info] Lastro`, linhas 304-309, tem 5 URLs já clicáveis, mas não está em seção `## Fontes` — gap de formato) · M1 (4 `[!tip]` presentes — linhas 33, 129, 169, 225, todos "Analogia" — nenhum com link de vídeo/podcast)
 - **Score:** 5/12
@@ -331,10 +331,10 @@ falha vira buraco declarado — nunca vídeo "provável".
   - Criar `## Armadilhas comuns` e mover o `[!danger] Snapshot fatigue` (linha 146-147) pra lá; como só há 1 callout de armadilha real no corpo (a mais pobre do galho), completar até 3 **derivando armadilhas do conteúdo técnico já presente na nota** — sem inventar experiência do usuário: (a) property-based com gerador mal definido/propriedade fraca vira "teste inútil" (já apontado na tabela-resumo, linha 261, e no texto "Não vale quando..." linha 117); (b) contract testing aplicado a monolito ou a terceiro que você não controla é esforço desperdiçado (linha 213, "Não vale pra um monolito, nem pra uma integração pontual..."); (c) smoke test inflado até virar suite e2e disfarçada, perdendo a velocidade que é sua única razão de existir (já é o `[!note]` da linha 244-245, que pode ser reclassificado como `[!warning]` individual) → ativa E8
   - Reformular o callout `[!info] Lastro` (linhas 304-309) como seção `## Fontes`, preservando as mesmas 5 URLs em formato de link markdown clicável → ativa L2
   - Pesquisar vídeo/podcast sobre property-based testing (QuickCheck/Hypothesis) ou consumer-driven contract testing (Pact) e embutir como `[!tip]` só se `uvx yt-dlp` baixar legenda de fato (trava de mídia) → ativa M1
-- **Resultado:** —
+- **Resultado:** 362 linhas (era 322). **Piso 500 NÃO atingido — déficit residual de 138 linhas, declarado.** E1 TL;DR para 5 linhas, uma por técnica · E5 ponte para Testes JS/11, Acessibilidade/14, Arqueologia/11 e Java/Testes/20 · E7 tabela PT↔EN · E8 resolvido: era a nota mais pobre do galho (1 callout); o `[!danger] Snapshot fatigue` foi movido e 3 armadilhas derivadas do próprio texto (propriedade fraca, contract em monolito/terceiro, smoke inflado) · L2 `## Fontes` com as 5 URLs · M1 John Hughes, criador do QuickCheck, "Don't Write Tests" no Curry On! (`hXnS_Xjwk2Y`, legenda de 7.096 linhas baixada e ID reconferido). **E4 = buraco declarado.** O executor avaliou não haver mais lacuna técnica sourced sem inflar.
 
 #### 14 - Performance, carga, caos e segurança   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-01)
 - **Estado:** 311 linhas · fase: magus · status: evergreen
 - **Núcleo/gaps:** E4 (sem `## Casos práticos`), E5 (sem `## O que vem a seguir` — há bridging em "Onde cada um entra" mas não a seção literal), E7 (Vocabulário é lista com `→`, não tabela), E8 (sem `## Armadilhas comuns`; só 2 `[!warning]` soltos — linha 69, 207 — mais 1 `[!danger]` linha 48, abaixo do piso de 3), L2 (só callout `[!info] Lastro`, não `## Fontes`), M1 (nenhum `[!tip]` com vídeo/podcast)
 - **Score:** 7/12
@@ -345,10 +345,10 @@ falha vira buraco declarado — nunca vídeo "provável".
   - Criar `## Armadilhas comuns` e MOVER (não duplicar) os `[!warning]` existentes (linha 69, 207); avaliar se o `[!danger]` da linha 48 também migra; registrar que restam só 2-3 warnings, abaixo do piso de 3 — não fabricar novo → E8
   - Renomear/mover o callout `[!info] Lastro` para seção `## Fontes` com as URLs já presentes (linhas 294-301) → L2
   - Adicionar `[!tip]` com link de vídeo/podcast relevante (ex.: sobre chaos engineering, load testing ou JMH) → M1
-- **Resultado:** —
+- **Resultado:** 500 linhas (era 311; **piso Magus 500 atingido**). E1 TL;DR para 3 parágrafos · E5 ponte para Operação/index, Web Performance/index e Java/Testes/18 · E7 tabela PT↔EN com 17 linhas · E8 o `[!danger]` e os 2 `[!warning]` movidos e individualizados · L2 `## Fontes` + 5 citações novas · M1 Casey Rosenthal (Netflix), "Principles of Chaos Engineering", SREcon17 Americas (`6ilMZqKdMMU`, legenda baixada; ID e **autoria** reconferidos — o canal é re-upload, a descrição confirma Rosenthal via USENIX). Déficit de +189 fechado com conteúdo novo e sourced: percentis vs. média com exemplo trabalhado e diagrama, omissão coordenada (Gil Tene/wrk2), Lei de Little com exemplo numérico do joelho da curva, taxonomia de experimentos de caos, os quatro `@BenchmarkMode` do JMH, fuzzing structure-aware e tabela do OWASP Top 10:2025. **E4 = buraco declarado.**
 
 #### 15 - Testes em CI-CD   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-01)
 - **Estado:** 333 linhas reais · fase: magus · status: evergreen
 - **Núcleo/gaps:** E1 (TL;DR `[!abstract]`, linha 18-19, tem só 1 linha densa, não ≥3) · E4 (o caso real do spec de origem — stack MedEspecialista: JUnit 5 + AssertJ + Mockito + Testcontainers, ~800 testes em ~3 min no GitHub Actions, "PR sem teste não é revisado" — está presente como `[!example]` "No MedEspecialista", linha 233-236, embutido dentro de `## Não ignore os warnings`, não em seção dedicada `## Casos práticos`; é só 1 cenário, não fabricar segundo) · E5 (sem `## O que vem a seguir`; existe `## Veja também`, linha 325, lista pura de wikilinks, não ponte narrativa) · E8 (4 `[!warning]`/`[!danger]` espalhados no corpo — linha 35 "O mito do 'temos CI porque temos pipeline'", linha 149 "Fail fast", linha 175 "O trade-off honesto da seleção de teste", linha 213 "Retry mascara, não cura", linha 224 "Coverage theater" — ≥3 disponíveis, mas sem seção `## Armadilhas comuns` dedicada) · L2 (callout `[!info] Lastro`, linhas 316-323, tem 6 URLs já clicáveis, mas não está em seção `## Fontes` — gap de formato)
 - **Score:** 6/11 (P1 N/A — nota conceitual, sem bloco de código-problema; diagramas Mermaid e tabelas ilustram os conceitos)
@@ -359,7 +359,7 @@ falha vira buraco declarado — nunca vídeo "provável".
   - Mover (não duplicar) os 5 callouts existentes (`[!warning]` linha 35; `[!warning]` linha 149; `[!warning]` linha 175; `[!danger]` linha 213; `[!warning]` linha 224) para nova seção `## Armadilhas comuns`, individualizados → ativa E8
   - Reformular o callout `[!info] Lastro` (linhas 316-323) como seção `## Fontes`, preservando as URLs já clicáveis (Fowler ×3, GoCD, Humble & Farley, Octopus Deploy, Unleash, Harness, GitLab Docs) → ativa L2
   - Pesquisar vídeo/podcast sobre CI/CD, trunk-based development ou deployment pipeline (ex.: Martin Fowler falando sobre CI, ou talk sobre progressive delivery/canary) e embutir como `[!tip]` só se `uvx yt-dlp` baixar legenda de fato (trava de mídia) → ativa M1
-- **Resultado:** —
+- **Resultado:** 351 linhas (era 333). **Piso 500 NÃO atingido — déficit residual de 149 linhas, o maior do galho.** Causa declarada pelo executor: ele leu o plano do roadmap como lista fechada de 6 ações e não acrescentou conteúdo novo além dele. E1 TL;DR para 3 parágrafos · E4 `## Casos práticos` formaliza o caso MedEspecialista verbatim (stack, ~800 testes, ~3 min, GitHub Actions, "PR sem teste não é revisado"), com registro de que só há 1 · E5 ponte para Testes JS/17, Python/Testes/09 e Operação/index (despacho obrigatório cumprido; deploy strategies e GitOps deliberadamente não repetidos) · E8 os 5 callouts movidos e individualizados, com os lead-ins órfãos convertidos em ponteiros · L2 `## Fontes` com as 7 URLs · M1 painel Thoughtworks sobre trunk-based development (`gpskEdOildA`, legenda baixada e ID reconferido).
 
 #### 16 - Estratégia de testes em entrevista   [substantivo]
 - **Enriquecimento:** ⬜ pendente
