@@ -1,10 +1,10 @@
 ---
 title: "Versionamento"
 created: 2026-04-01
-updated: 2026-04-02
+updated: 2026-07-31
 type: concept
-progress: backlog
-status: seedling
+progress: done
+status: evergreen
 tags:
   - ferramentas
   - git
@@ -14,205 +14,31 @@ publish: false
 
 # Versionamento
 
-Git — o sistema de controle de versão que todo dev usa. Comandos essenciais, workflows, e boas práticas.
+> [!info] Tronco podado — o conteúdo virou domínio próprio
+> Esta nota era um monólito sobre Git (comandos, merge × rebase, workflows, Conventional Commits, boas práticas). Em **2026-07-31** o assunto ganhou domínio próprio, com 7 níveis do tutorial operacional ao modelo interno: **[[03-Dominios/Tecnologia/Controle de Versão/index|Tecnologia/Controle de Versão]]**.
+>
+> Nada foi perdido — cada seção daqui foi absorvida e expandida numa nota atômica. O mapa está abaixo.
 
-## O que é
+## Para onde foi cada coisa
 
-Git é um sistema de controle de versão distribuído criado por Linus Torvalds (2005). Cada desenvolvedor tem uma cópia completa do repositório. É a base de todo workflow moderno de desenvolvimento — branches, PRs, CI/CD.
+| O que havia aqui | Onde está agora |
+|---|---|
+| O que é Git, VCS distribuído, história | [[03-Dominios/Tecnologia/Controle de Versão/N0 - Sobrevivência/01 - O problema que o Git resolve\|01 — O problema que o Git resolve]] |
+| Configuração inicial (`user.name`, `user.email`) | [[03-Dominios/Tecnologia/Controle de Versão/N0 - Sobrevivência/02 - Instalar e configurar o Git\|02 — Instalar e configurar o Git]] |
+| Áreas do Git, `add`/`commit`/`log`, ciclo de vida | [[03-Dominios/Tecnologia/Controle de Versão/N0 - Sobrevivência/03 - Seu primeiro repositório\|03 — Seu primeiro repositório]] |
+| Desfazer: `restore`, `reset`, `revert`, `amend` | [[03-Dominios/Tecnologia/Controle de Versão/N0 - Sobrevivência/04 - Desfazer sem susto\|04 — Desfazer sem susto]] · árvore de decisão completa na nota 22 (N4) |
+| Remotos, `push`/`pull`/`fetch` | [[03-Dominios/Tecnologia/Controle de Versão/N0 - Sobrevivência/05 - GitHub - colocar o repositório na nuvem\|05 — GitHub]] · [[03-Dominios/Tecnologia/Controle de Versão/N1 - O fluxo diário/11 - Sincronizar com o time\|11 — Sincronizar com o time]] |
+| `.gitignore` | [[03-Dominios/Tecnologia/Controle de Versão/N1 - O fluxo diário/06 - Ignorar arquivos - o gitignore e suas regras\|06 — Ignorar arquivos]] |
+| Branches, merge × rebase, resolução de conflitos | [[03-Dominios/Tecnologia/Controle de Versão/N1 - O fluxo diário/08 - Branches na prática\|08 — Branches na prática]] · [[03-Dominios/Tecnologia/Controle de Versão/N1 - O fluxo diário/09 - Conflito - por que acontece e como resolver\|09 — Conflito]] · mecanismo por baixo na nota 21 (N3) |
+| Stash | [[03-Dominios/Tecnologia/Controle de Versão/N1 - O fluxo diário/10 - Guardar trabalho pela metade - stash e worktrees\|10 — stash e worktrees]] |
+| Git Flow, GitHub Flow, Trunk-Based | [[03-Dominios/Tecnologia/Controle de Versão/N2 - Colaborar/13 - Estratégias de branching\|13 — Estratégias de branching]] |
+| Conventional Commits, semver, tags, boas práticas | [[03-Dominios/Tecnologia/Controle de Versão/N2 - Colaborar/14 - Anatomia de um bom commit\|14 — Anatomia de um bom commit]] |
+| PRs, proteção da `main`, review | [[03-Dominios/Tecnologia/Controle de Versão/N2 - Colaborar/12 - Pull requests e a cultura de code review\|12 — Pull requests]] · [[03-Dominios/Tecnologia/Controle de Versão/N2 - Colaborar/15 - GitHub como plataforma\|15 — GitHub como plataforma]] |
+| Clients gráficos (Sourcetree, GitKraken) | mencionados em [[03-Dominios/Tecnologia/Controle de Versão/N0 - Sobrevivência/02 - Instalar e configurar o Git\|02]]; TUIs em [[03-Dominios/Tecnologia/Terminal/index\|Terminal]] |
+| Recursos externos e material de estudo | [[03-Dominios/Tecnologia/Controle de Versão/Biblioteca de Controle de Versão\|Biblioteca de Controle de Versão]] |
 
-## Como funciona
-
-### Áreas do Git
-
-```text
-Working Directory → Stage (Index) → Local Repository → Remote Repository
-      ↑                  ↑                ↑                    ↑
-   git add          git commit        git push            git fetch/pull
-```
-
-- **Working Directory:** arquivos no disco, com modificações
-- **Stage (Index):** área de preparação — o que vai no próximo commit
-- **Local Repository:** histórico de commits local (`.git/`)
-- **Remote Repository:** servidor (GitHub, GitLab, Bitbucket)
-
-### Comandos essenciais
-
-```bash
-# Configuração
-git config --global user.name "Josenaldo"
-git config --global user.email "josenaldo@email.com"
-
-# Iniciar / clonar
-git init
-git clone https://github.com/user/repo.git
-
-# Status e diff
-git status                     # estado atual
-git diff                       # mudanças não staged
-git diff --staged              # mudanças staged (prontas pro commit)
-git log --oneline -10          # últimos 10 commits
-git log --graph --oneline      # histórico visual
-
-# Stage e commit
-git add file.txt               # stage arquivo específico
-git add .                      # stage tudo (cuidado!)
-git commit -m "feat: add login"
-git commit --amend             # editar último commit (antes de push!)
-
-# Branches
-git branch                     # listar branches
-git branch feature/login       # criar branch
-git checkout feature/login     # mudar para branch
-git checkout -b feature/login  # criar e mudar (atalho)
-git switch feature/login       # mudar (Git 2.23+)
-git switch -c feature/login    # criar e mudar (Git 2.23+)
-
-# Merge e rebase
-git merge feature/login        # merge branch no atual
-git rebase main                # reaplica commits sobre main
-
-# Remote
-git push origin feature/login
-git push -u origin feature/login  # set upstream
-git pull                       # fetch + merge
-git fetch                      # baixar sem merge
-
-# Desfazer
-git restore file.txt           # descartar mudanças no working dir
-git restore --staged file.txt  # unstage (manter mudanças)
-git reset --soft HEAD~1        # desfaz commit, mantém staged
-git reset --mixed HEAD~1       # desfaz commit, mantém no working dir
-git reset --hard HEAD~1        # desfaz commit e descarta tudo (⚠️ destrutivo)
-git revert abc123              # cria commit que desfaz outro (seguro)
-
-# Stash
-git stash                      # guardar mudanças temporariamente
-git stash pop                  # restaurar e remover do stash
-git stash list                 # listar stashes
-git stash apply stash@{0}      # restaurar sem remover
-
-# Tags
-git tag v1.0.0                 # tag leve
-git tag -a v1.0.0 -m "Release 1.0.0"  # tag anotada
-git push origin v1.0.0
-```
-
-### Merge vs Rebase
-
-| Aspecto | Merge | Rebase |
-| --- | --- | --- |
-| Histórico | Preserva (merge commit) | Linear (reescreve) |
-| Quando usar | Branch compartilhada, PRs | Branch local, limpeza |
-| Segurança | Sempre seguro | ⚠️ Não rebase branches publicadas |
-| Conflitos | Resolve uma vez | Resolve por commit |
-
-**Regra de ouro:** nunca rebase em branches que outros usam. Rebase na branch local antes de abrir PR para manter histórico limpo.
-
-### Resolução de conflitos
-
-```text
-<<<<<<< HEAD
-código da sua branch
-=======
-código da branch que está entrando
->>>>>>> feature/login
-```
-
-1. Abrir arquivo com conflito
-2. Escolher qual versão manter (ou combinar)
-3. Remover marcadores (`<<<<<<<`, `=======`, `>>>>>>>`)
-4. Stage e commit
-
-**Dica:** usar `git mergetool` ou o resolver do VS Code/IntelliJ.
-
-## Workflows
-
-### Git Flow
-
-```text
-main ──────────────────────────────────────────
-  └── develop ─────────────────────────────────
-       ├── feature/login ──── merge → develop
-       ├── feature/signup ─── merge → develop
-       └── release/1.0 ───── merge → main + develop
-                                └── tag v1.0.0
-```
-
-Branches: `main`, `develop`, `feature/*`, `release/*`, `hotfix/*`. Bom para releases planejadas.
-
-### GitHub Flow (simplificado)
-
-```text
-main ──────────────────────────────────────
-  └── feature/login ─── PR → review → merge → main
-```
-
-Só `main` + feature branches + PRs. Deploy contínuo. Mais simples, mais comum em startups.
-
-### Trunk-Based Development
-
-Todos commitam direto na `main` (ou branches muito curtas). Requer: feature flags, CI robusto, testes automatizados. Usado por Google, Meta.
-
-## Conventional Commits
-
-Padrão para mensagens de commit semânticas:
-
-```text
-<tipo>[escopo opcional]: <descrição>
-
-[corpo opcional]
-
-[rodapé opcional]
-```
-
-**Tipos:**
-
-| Tipo | Quando usar |
-| --- | --- |
-| `feat` | Nova funcionalidade |
-| `fix` | Correção de bug |
-| `docs` | Documentação |
-| `style` | Formatação (sem mudança de lógica) |
-| `refactor` | Refatoração (sem mudar comportamento) |
-| `test` | Adicionar/corrigir testes |
-| `chore` | Manutenção (build, deps, configs) |
-| `perf` | Melhoria de performance |
-| `ci` | Mudanças de CI/CD |
-
-**Exemplos:**
-
-```text
-feat: add patient search by specialty
-fix: resolve N+1 query in appointment listing
-refactor: extract notification service from controller
-docs: add API documentation for patient endpoints
-chore: upgrade Spring Boot to 3.2.0
-feat!: change authentication from session to JWT
-
-BREAKING CHANGE: session-based auth removed
-```
-
-**Benefícios:** changelogs automáticos, semantic versioning automático, histórico legível.
-
-> **Fonte:** [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
-
-## Boas práticas
-
-- **Commits atômicos:** cada commit faz uma coisa. Revertível individualmente.
-- **Branch por feature:** nunca commitar direto na main. Sempre PR + review.
-- **Pull antes de push:** `git pull --rebase` para evitar merge commits desnecessários.
-- **`.gitignore`:** nunca commitar `node_modules/`, `.env`, `target/`, credentials.
-- **Mensagens claras:** "fix: resolve timeout on patient search" > "fixed stuff"
-- **Squash antes de merge:** limpar commits de "wip", "fix typo" antes de mergear.
-- **Proteger main:** require PR reviews, status checks, no force push.
-
-## Armadilhas comuns
-
-- **Force push em branch compartilhada:** reescreve histórico de outros. Usar `--force-with-lease` se necessário.
-- **Commitar secrets:** `.env`, API keys, passwords. Se acontecer, rotacionar imediatamente (git history guarda tudo).
-- **Merge commits desnecessários:** usar `git pull --rebase` para manter histórico linear.
-- **Branch stale:** branches abertas há semanas divergem muito. Rebase frequente.
-- **Não entender `reset` vs `revert`:** `reset` reescreve histórico (local), `revert` cria commit novo (seguro para branches publicadas).
+> [!note] O que **não** migrou, e por quê
+> As duas seções abaixo são **material de entrevista**, não de trilha: relato pessoal e articulação em inglês. O domínio novo é escrito para público amplo e não incorpora experiência pessoal do autor, então elas ficam preservadas aqui. Se forem trabalhadas, o destino natural é [[03-Dominios/Carreira/Entrevistas/index|Carreira/Entrevistas]].
 
 ## Na prática (da minha experiência)
 
@@ -240,22 +66,7 @@ One thing I always emphasize is protecting the main branch — requiring PR revi
 - histórico → git history / git log
 - tag → tag: marcador de versão
 
-## Git Clients
-
-- **CLI (terminal)** — mais poderoso, mais rápido
-- **VS Code** — Git integrado com diff visual
-- **IntelliJ IDEA** — Git integrado com resolve de conflitos excelente
-- [Sourcetree](https://www.sourcetreeapp.com/) — GUI gratuito para Mac/Windows
-- [GitKraken](https://www.gitkraken.com/) — GUI visual popular
-
-## Recursos
-
-- [Aprendendo Git e Github](https://josenaldo.github.io/aprendendo-git-e-github/) — guia pessoal
-- [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) — especificação
-- [Git Documentation](https://git-scm.com/doc) — referência oficial
-- [Learn Git Branching](https://learngitbranching.js.org/) — exercícios interativos
-
 ## Veja também
 
-- [[Terminal]]
-- [[Docker]]
+- [[03-Dominios/Tecnologia/Controle de Versão/index|Controle de Versão]] — o domínio completo
+- [[03-Dominios/Tecnologia/Terminal/index|Terminal]]

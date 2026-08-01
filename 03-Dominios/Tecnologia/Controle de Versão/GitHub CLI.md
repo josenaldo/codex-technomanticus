@@ -1,20 +1,26 @@
 ---
 title: "GitHub CLI"
 created: 2026-04-12
-updated: 2026-04-12
-type: concept
+updated: 2026-07-31
+type: reference
 progress: backlog
 status: evergreen
 tags:
-  - infraestrutura
-  - devops
+  - controle-de-versao
+  - github
+  - referências
   - ferramentas
 publish: true
 ---
 
 # GitHub CLI
 
-Deep dive no **GitHub CLI (`gh`)** — a ferramenta de linha de comando oficial do GitHub. Repos, PRs, issues, Actions, secrets, Pages, releases, gists, API direta, e automação. Para CI/CD em geral, ver [[CI-CD]]. Para containers, ver [[Docker]]. Para terminal, ver [[Terminal]].
+> [!info] Referência de consulta, não capítulo
+> Esta é a **referência extensa** do `gh` — catálogo por área, para quando você precisa de um comando específico. O **capítulo** que ensina o fluxo (o que usar toda semana e por quê) é [[03-Dominios/Tecnologia/Controle de Versão/N2 - Colaborar/16 - gh CLI e automação do fluxo|16 — gh CLI e automação do fluxo]], no nível 2 do domínio.
+>
+> Migrada de `Tecnologia/Infraestrutura/` para cá em 2026-07-31, quando Git e GitHub ganharam domínio próprio — Git nunca foi infraestrutura. Ver [[03-Dominios/Tecnologia/Controle de Versão/index|Controle de Versão]].
+
+Deep dive no **GitHub CLI (`gh`)** — a ferramenta de linha de comando oficial do GitHub. Repos, PRs, issues, Actions, secrets, Pages, releases, gists, API direta, e automação. Para CI/CD em geral, ver [[CI-CD]]. Para containers, ver [[Docker]]. Para terminal, ver [[03-Dominios/Tecnologia/Terminal/index|Terminal]].
 
 ## O que é
 

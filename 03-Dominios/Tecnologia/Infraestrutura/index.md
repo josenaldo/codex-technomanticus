@@ -35,8 +35,10 @@ Esta estante junta o que sustenta as aplicações depois que elas saem da máqui
 - [[WSL, Docker e Kubernetes]] — integração entre WSL, Docker e Kubernetes
 - [[Docker credential helpers]] — credential helpers do Docker
 - [[Digital Ocean]] — provedor de cloud Digital Ocean
-- [[GitHub CLI]] — CLI do GitHub
 - [[03-Dominios/Tecnologia/Infraestrutura/Linux/index|Linux (galho)]] — notas operacionais de Linux
+
+> [!info] Git e GitHub saíram desta estante (2026-07-31)
+> Esta estante é sobre **o que sustenta a aplicação depois que ela sai da máquina do dev** — containers, orquestração, proxy, SO, provedor. Git é sobre o **histórico do código**, antes de rodar, e por isso ganhou domínio próprio: [[03-Dominios/Tecnologia/Controle de Versão/index|Controle de Versão]] (7 níveis, do tutorial operacional ao modelo interno). O antigo `GitHub CLI.md` daqui virou a **referência de consulta** daquele domínio, e o capítulo que ensina o fluxo é a nota 16 do nível 2.
 
 ## Veja também
 
