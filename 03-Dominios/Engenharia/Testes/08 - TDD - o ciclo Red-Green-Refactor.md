@@ -1,7 +1,7 @@
 ---
 title: "TDD: o ciclo Red-Green-Refactor"
 created: 2026-06-18
-updated: 2026-06-18
+updated: 2026-08-01
 type: concept
 fase: adepto
 status: evergreen
@@ -16,7 +16,9 @@ tags:
 # TDD: o ciclo Red-Green-Refactor
 
 > [!abstract] Resumo em uma linha
-> TDD é um ciclo de três passos — escreva um teste que falha (Red), faça-o passar com o mínimo de código (Green), melhore o design com a rede de segurança verde (Refactor) — repetido em ciclos de minutos, onde o teste vira o primeiro cliente da sua API.
+> TDD é um ciclo de três passos — escreva um teste que falha (Red), faça-o passar com o mínimo de código (Green), melhore o design com a rede de segurança verde (Refactor) — repetido em ciclos de minutos.
+> Pra sair do Red rumo ao Green, Kent Beck descreve três estratégias: Obvious Implementation (escreve o código real quando é óbvio), Fake It (retorna uma constante e generaliza depois) e Triangulação (um segundo teste força a generalização certa).
+> O efeito mais profundo não é a suíte de testes que sobra — é que o teste, escrito antes da implementação, vira o primeiro cliente da sua API, moldando o design antes que ele exista.
 
 Imagine um escalador subindo uma parede de rocha. Ele não sobe trinta metros e só então pensa em proteção. A cada lance, ele prende a corda num ponto fixo, testa o peso, e só depois avança. Se cair, cai um metro — não trinta.
 
@@ -33,9 +35,6 @@ O ciclo tem exatamente três estados. Você nunca está em dois ao mesmo tempo.
 Você começa pelo **teste**, não pelo código de produção. O teste descreve o comportamento que você *quer* que exista. Você roda a suíte. O teste **falha** — vermelho. Tem que falhar. A feature ainda não existe.
 
 Parece contraintuitivo escrever um teste pra algo que não existe. Mas é justamente aí que está o truque: o teste te força a responder, antes de escrever uma linha de produção, *como esse código vai ser usado*. Que método chamo? Que parâmetros passo? O que recebo de volta?
-
-> [!warning] Um teste que nunca falhou é suspeito
-> Se você escreve o código primeiro e o teste depois, e o teste passa de primeira, você não sabe se ele testa *alguma coisa*. Um teste que nunca esteve vermelho pode estar verificando o nada — um `assert true` disfarçado. Ver o vermelho é a prova de que o teste tem dentes.
 
 ### 2. Green — faça passar com o mínimo de código
 
@@ -71,6 +70,9 @@ stateDiagram-v2
 > [!note] Leitura do diagrama
 > O ciclo nunca para de fato — ele dá voltas. Saímos de Red (teste falhando) pro Green (passa com o mínimo), depois pro Refactor (limpa o design). O laço de Refactor sobre si mesmo mostra que você pode fazer várias pequenas melhorias em sequência, sempre conferindo o verde. Do Refactor, volta-se pro Red com o próximo comportamento. Cada volta completa dura minutos.
 
+> [!tip] Vídeo — o ciclo em 6 minutos
+> ["Unit Testing & TDD Explained: Red-Green-Refactor, Mocks"](https://www.youtube.com/watch?v=PI_f2Vgftnk) (programmerCave, ~6 min) percorre test doubles e o ciclo Red-Green-Refactor na mesma ordem desta nota: teste primeiro, mínimo de código pra ficar verde, refatoração só sob rede de segurança. Bom resumo em vídeo pra fixar a sequência antes de entrar nas estratégias de Green, logo abaixo.
+
 ## Por que cada passo importa
 
 Os três passos não são burocracia. Cada um resolve um problema específico de quem escreve software.
@@ -91,6 +93,8 @@ flowchart TD
 - **Red** garante que o teste *funciona como detector*. Ver o vermelho é a calibração do alarme de incêndio: se ele nunca apitou, você não confia nele.
 - **Green** te dá **feedback em segundos**. Você sabe na hora se foi na direção certa. E, ao exigir só o mínimo, ele te impede de construir o que ainda não precisa.
 - **Refactor** é onde mora a qualidade do design. Sem testes, refatorar é apavorante — qualquer mexida pode quebrar algo silenciosamente. Com a suíte verde, refatorar vira uma operação segura e barata.
+
+Note que os três passos são interdependentes, não independentes. Pular o Red enfraquece a garantia do Green — você não sabe se o teste de fato testa alguma coisa. Pular o Refactor acumula dívida que torna o próximo Red mais caro de escrever, porque o código em volta já está mais confuso. É por isso que "fazer TDD pela metade" — escrever testes só depois, ou fazer Green sem nunca refatorar — não entrega as mesmas garantias do ciclo completo; entrega uma fração dele, e a fração mais fraca é sempre a que sustentava as outras duas.
 
 ## O que TDD te força a fazer
 
@@ -136,6 +140,9 @@ As três têm uma ordem natural de preferência. Beck a resume assim: se você s
 
 Quando o código é trivial e você confia nele, não brinque de fingir. `isEmpty()` numa lista? `return size == 0`. Pronto. Inventar um Fake It aqui só adiciona cerimônia. A armadilha é o excesso de confiança: se a "implementação óbvia" der vermelho duas vezes seguidas, é sinal pra reduzir a marcha e voltar pros passos pequenos.
 
+> [!info] Obvious Implementation e a escada de transformações
+> Escrever a implementação óbvia só é seguro quando ela corresponde a uma transformação baixa na escada da TPP — trocar uma constante por uma expressão simples, por exemplo. Se a "implementação óbvia" exige pular direto pra `expressão → função` ou `statement → recursão`, ela não é tão óbvia assim: é sinal pra reduzir a marcha, ir de Fake It e deixar a triangulação decidir o próximo passo.
+
 #### Fake It — retorne a constante e generalize depois
 
 O **Fake It** é o famoso "*fake it till you make it*". Você quer testar uma soma? No primeiro teste, `soma(2, 3)` deve dar `5` — então retorne `5`, cravado:
@@ -147,6 +154,9 @@ int soma(int a, int b) {
 ```
 
 Verde. Absurdo? Por enquanto. Mas você já tem a corda presa, e a duplicação agora está explícita: o `5` do teste e o `5` do código são o mesmo fato dito duas vezes. O próximo passo é remover essa duplicação trocando a constante por variáveis aos poucos — `return a + b` — até não sobrar nada fake.
+
+> [!info] Fake It é psicológico, não preguiça
+> Beck é explícito no livro: Fake It não é atalho por preguiça, é um dispositivo pra manter a confiança quando a forma final ainda não está clara. O "fake" separa duas perguntas que, misturadas, travam gente iniciante — "isso compila e roda?" e "qual é a abstração certa?" — resolvendo uma de cada vez. Assim que a duplicação entre teste e código fica óbvia, ela vira o guia da próxima refatoração: eliminar a duplicação é, por construção, chegar na implementação real.
 
 #### Triangulação — force a generalização com um segundo caso
 
@@ -202,8 +212,61 @@ flowchart TD
 > [!note] Leitura do diagrama
 > Diante de um teste vermelho, a escolha da estratégia depende de duas perguntas. Se a implementação é óbvia, escreva o código real direto. Se não, e a abstração ainda está vaga, "finja" com uma constante (Fake It). Se está *muito* vaga, force a forma certa com um segundo teste (triangulação). Todos os caminhos levam ao verde e seguem pro Refactor.
 
-> [!info] Premissa de prioridade de transformação
-> Uncle Bob (Robert C. Martin) propôs a **Transformation Priority Premise** (premissa de prioridade de transformação): as transformações que fazem o teste passar — trocar uma constante por uma variável, adicionar um `if`, introduzir recursão — têm uma **ordem de preferência**, do mais simples ao mais complexo. Ao escolher sempre a transformação mais alta da lista (a mais simples), você evita impasses em que um único teste te obriga a reescrever um método inteiro. É a triangulação levada ao nível da própria operação de código.
+### A ordem das transformações (Transformation Priority Premise)
+
+Obvious, Fake It e Triangulação escolhem a **estratégia geral** pra sair do Red. Robert C. Martin (Uncle Bob) levou a mesma pergunta um nível mais fundo, pra dentro do código: dado que você vai mudar a implementação pra fazer o teste passar, qual **transformação concreta** aplicar primeiro? Na Transformation Priority Premise (2013), ele lista transformações da mais simples pra mais complexa:
+
+1. `{} → nil` — nenhum código → código que usa nil
+2. `nil → constante` — nil vira um valor constante
+3. `constante → constante+` — uma constante simples vira outra mais elaborada
+4. `constante → escalar` — a constante vira variável ou parâmetro
+5. `statement → statements` — adiciona instruções incondicionais
+6. `incondicional → if` — separa caminhos de execução com uma condicional
+7. `escalar → array` — a variável vira um array
+8. `array → container` — o array vira uma estrutura de dados mais rica
+9. `statement → recursão` — código linear vira uma abordagem recursiva
+10. `if → while` — a condicional vira um laço
+11. `expressão → função` — a expressão vira uma função/algoritmo
+12. `variável → atribuição` — passa a reatribuir valores a uma variável
+
+A regra prática: diante de um teste vermelho, prefira sempre a transformação **mais alta** dessa lista que já resolve o teste. Martin ilustra o custo de não seguir a ordem com o kata do Word Wrap: ao escolher cedo demais uma transformação de alta complexidade (`expressão → função`), ele criou um **impasse** — no terceiro teste, nenhuma transformação pequena resolvia mais, e só reescrever o algoritmo inteiro fazia o teste passar. Escolhendo transformações de baixo pra cima — tratando primeiro palavras longas com `incondicional → if` e `statement → recursão`, antes de qualquer algoritmo elaborado — a solução emergiu incrementalmente, sem impasses.
+
+```mermaid
+flowchart BT
+    T1["1 · {} → nil"] --> T2["2 · nil → constante"]
+    T2 --> T3["3 · constante → constante+"]
+    T3 --> T4["4 · constante → escalar"]
+    T4 --> T5["5 · statement → statements"]
+    T5 --> T6["6 · incondicional → if"]
+    T6 --> T7["7 · escalar → array"]
+    T7 --> T8["8 · array → container"]
+    T8 --> T9["9 · statement → recursão"]
+    T9 --> T10["10 · if → while"]
+    T10 --> T11["11 · expressão → função"]
+    T11 --> T12["12 · variável → atribuição"]
+    style T1 fill:#c8e6c9
+    style T12 fill:#ffcdd2
+```
+
+> [!note] Leitura do diagrama
+> A escada sobe do mais simples (verde, base) ao mais complexo (vermelho, topo). Diante de um teste vermelho, você tenta primeiro a transformação mais baixa que ainda resolve — só sobe a escada quando o degrau atual não é suficiente. É essa disciplina de "não pular degraus" que evita o impasse do Word Wrap.
+
+#### Um exemplo rápido de progressão
+
+Considere testar uma função `valorAbsoluto(n)`. Primeiro teste: `valorAbsoluto(0) == 0`. A menor transformação que resolve é `{} → nil` seguida de `nil → constante`: `return 0`. Verde.
+
+Segundo teste: `valorAbsoluto(5) == 5`. `return 0` falha. A menor transformação que resolve agora é `constante → escalar`: `return n`. Verde — e repare que ainda não precisamos de nenhuma condicional.
+
+Terceiro teste: `valorAbsoluto(-5) == 5`. `return n` falha, porque devolve `-5`. Aqui a menor transformação que resolve é `incondicional → if`: `if (n < 0) return -n; return n;`. Verde de novo — sem pular direto pra uma função elaborada com bibliotecas matemáticas ou bit tricks, que resolveria o mesmo teste mas custaria mais e esconderia a intenção.
+
+Em nenhum ponto pulamos pra uma transformação alta (recursão, função elaborada) quando uma baixa já bastava. Essa é exatamente a disciplina que evita o impasse: cada teste te empurra só um degrau acima do necessário, nunca dois.
+
+> [!info] A mesma lógica da triangulação, um nível mais fundo
+> Prefira sempre o passo mais simples que ainda faz o teste passar, e deixe a generalização emergir do próximo teste — não da sua intuição sobre "a forma certa". É a triangulação aplicada à própria operação de código, não só à API.
+
+### Escolhendo o próximo item da lista com a TPP
+
+A lista de testes diz *o quê* testar a seguir; a Transformation Priority Premise diz *quanto* você vai precisar mexer no código pra fazer esse próximo teste passar. As duas se completam. Ao escolher o próximo item da lista, prefira o caso que força a transformação mais baixa ainda disponível — não necessariamente o mais "importante" do ponto de vista de negócio. Beck não ataca o caso mais complexo primeiro só porque parece mais valioso; ele ataca o caso que o deixa no próximo degrau da escada, não dois degraus acima. É esse casamento entre lista e escada de transformações que mantém os passos de bebê realmente pequenos, ciclo após ciclo.
 
 ## A cadência: ciclos de minutos
 
@@ -216,13 +279,6 @@ Esse ritmo tem dois efeitos psicológicos que importam mais do que parecem. O pr
 
 > [!example] TCR — o commit-no-verde levado ao extremo
 > Anos depois do livro, Kent Beck experimentou um fluxo radical chamado **TCR** — *test && commit || revert*. A ideia: você roda *um único comando* que executa os testes; se passam, **commita automático**; se falham, **reverte automático** pro último verde. O castigo de quebrar a barra não é debugar — é *perder o que você acabou de escrever*. Isso te força a passos minúsculos, porque ninguém quer reescrever vinte minutos de código. É a versão mais agressiva do commit-no-verde e um bom experimento mental pra calibrar o tamanho dos seus passos, mesmo que você não o adote no dia a dia.
-
-> [!warning] Erros comuns no ciclo
-> O ciclo é simples, mas há quatro maneiras clássicas de sabotá-lo:
-> - **Teste grande demais no Red.** Se o teste cobre comportamento demais, o Red demora a virar verde — você fica longos minutos no vermelho, exatamente o estado que TDD existe pra minimizar. Quebre em passos menores.
-> - **Pular o Refactor.** O ciclo "funciona" sem refatorar — os testes passam. Mas a duplicação e a bagunça se acumulam ciclo a ciclo, e a dívida vira juros compostos. O Refactor não é opcional; é onde o design é pago.
-> - **Refatorar com a barra vermelha.** Refatorar é mudar a estrutura *preservando o comportamento* — e a prova de que o comportamento foi preservado é a suíte verde. Mexer no design com um teste vermelho é remover a rede no meio do salto: você não sabe mais se quebrou por causa do refactor ou do bug que já estava lá.
-> - **Otimizar no Green.** Performance, caches, abstrações espertas — nada disso pertence ao Green. O Green quer *só* o verde. Otimização prematura aqui é over-engineering com outro nome, e some o feedback rápido que justifica o ciclo.
 
 ### Um ciclo de ponta a ponta
 
@@ -264,6 +320,27 @@ Nenhuma das duas é "a certa". Muita gente mistura: outside-in pra descobrir as 
 > [!example] Double-loop TDD
 > Freeman e Pryce, no livro *Growing Object-Oriented Software, Guided by Tests*, descrevem o **double-loop TDD** (loop duplo). Há um **loop externo** de testes de **aceitação** (a feature inteira, na perspectiva do usuário) e um **loop interno** de testes de **unidade**. Você roda o loop interno na escala de minutos; o externo, na escala de horas a dias. O teste de aceitação fica vermelho até que vários ciclos Red-Green-Refactor de unidade o tornem verde — aí a fatia de funcionalidade está pronta. É um tema avançado; mencionado aqui só pra você reconhecer o nome.
 
+## Armadilhas comuns
+
+O ciclo é simples de descrever, mas fácil de sabotar sem perceber. Aqui estão as cinco formas mais comuns de fazer isso, do primeiro teste ao último commit — a maioria delas mora exatamente nas transições entre os três passos, não dentro de um passo isolado.
+
+> [!warning] Um teste que nunca falhou é suspeito
+> Se você escreve o código primeiro e o teste depois, e o teste passa de primeira, você não sabe se ele testa *alguma coisa*. Um teste que nunca esteve vermelho pode estar verificando o nada — um `assert true` disfarçado. Ver o vermelho é a prova de que o teste tem dentes.
+
+> [!warning] Teste grande demais no Red
+> Se o teste cobre comportamento demais, o Red demora a virar verde — você fica longos minutos no vermelho, exatamente o estado que TDD existe pra minimizar. Quebre em passos menores.
+
+> [!warning] Pular o Refactor
+> O ciclo "funciona" sem refatorar — os testes passam. Mas a duplicação e a bagunça se acumulam ciclo a ciclo, e a dívida vira juros compostos. O Refactor não é opcional; é onde o design é pago.
+
+> [!warning] Refatorar com a barra vermelha
+> Refatorar é mudar a estrutura *preservando o comportamento* — e a prova de que o comportamento foi preservado é a suíte verde. Mexer no design com um teste vermelho é remover a rede no meio do salto: você não sabe mais se quebrou por causa do refactor ou do bug que já estava lá.
+
+> [!warning] Otimizar no Green
+> Performance, caches, abstrações espertas — nada disso pertence ao Green. O Green quer *só* o verde. Otimização prematura aqui é over-engineering com outro nome, e some o feedback rápido que justifica o ciclo.
+
+Nenhuma dessas cinco armadilhas exige ferramenta nova pra evitar — todas se resolvem olhando pro estado do ciclo antes de agir: "estou vermelho ou verde agora? o que esse estado me autoriza a fazer?".
+
 ## Em entrevista
 
 > [!quote] Como explicar TDD em inglês
@@ -293,12 +370,25 @@ Nenhuma das duas é "a certa". Muita gente mistura: outside-in pra descobrir as 
 | código de produção | production code |
 | over-engineering / exagero de design | over-engineering |
 
-> [!info] Lastro
-> - Kent Beck, *Test-Driven Development by Example* (2002) — fonte original do ciclo Red-Green-Refactor e das três estratégias (Fake It, Obvious Implementation, Triangulation).
-> - Martin Fowler, ["TestDrivenDevelopment"](https://www.martinfowler.com/bliki/TestDrivenDevelopment.html) — definição concisa do ciclo e do framing de TDD como técnica de design.
-> - Steve Freeman e Nat Pryce, *Growing Object-Oriented Software, Guided by Tests* (2009) — origem do double-loop TDD (loop externo de aceitação + loop interno de unidade) e do estilo outside-in/mockista.
-> - Robert C. Martin, ["The Transformation Priority Premise"](https://blog.cleancoder.com/uncle-bob/2013/05/27/TheTransformationPriorityPremise.html) (2013) — transformações ordenadas por complexidade; escolher a mais simples evita impasses no ciclo.
-> - Kent Beck, ["test && commit || revert"](https://medium.com/@kentbeck_7670/test-commit-revert-870bbd756864) (2018) — fluxo TCR; commit automático no verde, revert automático no vermelho, forçando passos minúsculos.
+## Fontes
+
+- Kent Beck, *Test-Driven Development by Example* (2002) — fonte original do ciclo Red-Green-Refactor e das três estratégias (Fake It, Obvious Implementation, Triangulation).
+- Martin Fowler, ["TestDrivenDevelopment"](https://www.martinfowler.com/bliki/TestDrivenDevelopment.html) — definição concisa do ciclo e do framing de TDD como técnica de design.
+- Steve Freeman e Nat Pryce, *Growing Object-Oriented Software, Guided by Tests* (2009) — origem do double-loop TDD (loop externo de aceitação + loop interno de unidade) e do estilo outside-in/mockista.
+- Robert C. Martin, ["The Transformation Priority Premise"](https://blog.cleancoder.com/uncle-bob/2013/05/27/TheTransformationPriorityPremise.html) (2013) — transformações ordenadas por complexidade; escolher a mais simples evita impasses no ciclo.
+- Kent Beck, ["test && commit || revert"](https://medium.com/@kentbeck_7670/test-commit-revert-870bbd756864) (2018) — fluxo TCR; commit automático no verde, revert automático no vermelho, forçando passos minúsculos.
+
+## O que vem a seguir
+
+Esta nota ficou na mecânica: como o ciclo Red-Green-Refactor funciona por dentro, passo a passo, estratégia a estratégia. Duas perguntas continuam em aberto — perguntas que a mecânica sozinha não responde.
+
+A primeira é de julgamento: *quando* vale a pena aplicar TDD, e quando o custo do ciclo supera o benefício — código exploratório, protótipos descartáveis, telas que mudam a cada reunião. Essa conversa, com o pragmatismo do dia a dia, é o assunto de `[[09 - TDD na prática]]`.
+
+A segunda é de ferramenta: como esse mesmo ciclo se materializa em Python, com pytest — fixtures no lugar de setup manual, `parametrize` no lugar de repetir o corpo do teste, e o próprio runner reforçando o ritmo Red-Green-Refactor. Veja `[[03-Dominios/Tecnologia/Python/Testes/08 - TDD na prática com pytest]]`.
+
+Nenhuma das duas notas repete a mecânica descrita aqui — o Red-Green-Refactor, as três estratégias de Green, a escada de transformações. Elas partem dela.
+
+Se você chegou até aqui sem nunca ter feito um ciclo de verdade, o próximo passo natural não é ler mais — é abrir um editor, escolher uma função pequena e boba, e rodar os três passos uma vez. A mecânica só faz sentido no corpo depois que passa pela mão.
 
 ## Veja também
 

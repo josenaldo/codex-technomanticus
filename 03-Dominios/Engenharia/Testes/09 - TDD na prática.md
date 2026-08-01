@@ -1,7 +1,7 @@
 ---
 title: "TDD na prática"
 created: 2026-06-18
-updated: 2026-06-18
+updated: 2026-08-01
 type: concept
 fase: adepto
 status: evergreen
@@ -15,8 +15,10 @@ tags:
 
 # TDD na prática
 
-> [!abstract] Resumo em uma linha
-> TDD é um GPS para terreno desconhecido — indispensável quando o design ou a lógica são incertos, dispensável quando você já sabe o caminho de casa.
+> [!abstract] Resumo
+> TDD é um GPS para terreno desconhecido: você liga o GPS quando dirige por uma cidade estranha à noite, não quando vai do sofá até a cozinha — a mesma lógica separa quando teste-primeiro paga dividendos de quando só adiciona cerimônia.
+> A heurística que decide isso não é gosto pessoal: ligue o GPS quando o **design está incerto** ou a **lógica é complexa** (regras, ramos, exceções); dirija no automático — test-after — quando o caminho já é óbvio, declarativo ou descartável.
+> A prática madura trata isso como leitura de contexto, não como dogma: nem Kent Beck, o criador do TDD, reivindica que ele seja universal — e quem o trata como religião está sendo mais fundamentalista que o próprio Beck.
 
 A mecânica do ciclo — vermelho, verde, refatorar — está em [[08 - TDD - o ciclo Red-Green-Refactor]]. Esta nota não repete o "como". Ela ataca a pergunta que separa o praticante do fanático: **quando** ligar o GPS, e quando guardá-lo no bolso.
 
@@ -39,12 +41,7 @@ Há quatro situações onde escrever o teste primeiro paga dividendos reais, nã
 
 ### Lógica de negócio não-trivial
 
-Regras de cálculo, validações com múltiplas condições, máquinas de estado, precificação. Aqui cada cenário é uma hipótese que você ainda não validou. Escrever o teste primeiro força você a *especificar o comportamento esperado antes de se comprometer com uma estrutura de código* — e é exatamente nesse momento que abstrações erradas se revelam baratas de corrigir.
-
-> [!example] Quando o TDD me salvou
-> A regra de cálculo de comissão tinha cinco condições e múltiplas exceções por especialidade. Comecei escrevendo testes para cada cenário (com Object Mothers) antes de qualquer implementação. O resultado: ao escrever o quinto teste, percebi que minha abstração inicial estava errada — refatorei e recomecei sem medo, porque os testes anteriores pegavam qualquer quebra.
-
-Repare no mecanismo: não foi a "disciplina" que me salvou. Foi o **feedback precoce**. O quinto teste expôs a falha de design enquanto eu ainda tinha quatro testes verdes me segurando. Sem eles, eu teria descoberto o erro três dias depois, em produção, com a comissão de alguém calculada errada.
+Regras de cálculo, validações com múltiplas condições, máquinas de estado, precificação. Aqui cada cenário é uma hipótese que você ainda não validou. Escrever o teste primeiro força você a *especificar o comportamento esperado antes de se comprometer com uma estrutura de código* — e é exatamente nesse momento que abstrações erradas se revelam baratas de corrigir. O caso da comissão em [[#Casos práticos]] é o exemplo concreto desse mecanismo: não foi a "disciplina" que salvou o design, foi o **feedback precoce** de um teste do meio do caminho expondo a falha enquanto os testes anteriores ainda seguravam o código.
 
 ### Correção de bugs
 
@@ -141,10 +138,19 @@ O praticante maduro não é "a favor" ou "contra" TDD. Ele aplica uma heurístic
 - **Teste-primeiro (TDD)** quando o design não está claro *ou* a lógica é complexa. O ciclo de [[08 - TDD - o ciclo Red-Green-Refactor]] te dá feedback no momento mais barato possível para errar.
 - **Test-after** quando o caminho é óbvio. Implemente direto, depois escreva testes focados nos **edge cases** — nulos, limites, formatos inválidos, vazios. Veja [[10 - Técnicas de teste e edge cases]] para o catálogo desses cantos.
 
-> [!example] Quando o test-after venceu
+O caso da tela de cadastro em [[#Casos práticos]] é o espelho do caso da comissão: mesma cabeça, decisões opostas. Lá, o design era incerto e a lógica densa — TDD ganhou. Aqui, o caminho era óbvio e repetitivo — test-after ganhou. **Ambas corretas.** É isso que separa o pragmatismo do dogma.
+
+## Casos práticos
+
+Os dois casos abaixo não são hipotéticos — são o mesmo tipo de decisão, tomada em direções opostas, pela mesma pessoa, no mesmo tipo de projeto. Formalizados aqui lado a lado, o contraste fica mais nítido do que espalhado pela nota.
+
+> [!example] Caso 1 — Quando o TDD me salvou (design incerto + lógica densa)
+> A regra de cálculo de comissão tinha cinco condições e múltiplas exceções por especialidade. Comecei escrevendo testes para cada cenário (com Object Mothers) antes de qualquer implementação. O resultado: ao escrever o quinto teste, percebi que minha abstração inicial estava errada — refatorei e recomecei sem medo, porque os testes anteriores pegavam qualquer quebra.
+
+> [!example] Caso 2 — Quando o test-after venceu (design óbvio + lógica repetitiva)
 > Um caso onde TDD atrapalharia: uma tela de cadastro com 30 campos e validações padrão. Aqui, o pragmatismo venceu: implementei direto e escrevi testes depois focando em edge cases (campos nulos, máximo de caracteres, formatos inválidos).
 
-Repare na simetria com o caso da comissão. Lá, o design era incerto e a lógica densa — TDD ganhou. Aqui, o caminho era óbvio e repetitivo — test-after ganhou. **Mesma cabeça, decisões opostas, ambas corretas.** É isso que separa o pragmatismo do dogma.
+O que separa os dois não é o resultado — os dois deram certo — mas a **leitura da tarefa antes de começar**. No caso 1, a incerteza estava na *forma*: cinco condições e exceções por especialidade são terreno onde a abstração errada é fácil de escolher e cara de descobrir tarde. O teste-primeiro comprou essa descoberta cedo, pelo preço de um quinto teste. No caso 2, não havia incerteza de forma — 30 campos com validação padrão têm uma estrutura conhecida de antemão — então o custo do teste-primeiro (especificar 30 vezes um comportamento óbvio) não tinha contrapartida em risco evitado. A heurística da seção [[#A analogia do GPS|A analogia do GPS]] prevê exatamente essa divergência: mesmo praticante, tarefas diferentes, GPS ligado numa e guardado no bolso na outra.
 
 ## O debate honesto
 
@@ -172,8 +178,7 @@ flowchart TD
 
 **Leitura do diagrama:** o debate nasceu de um post provocativo e escalou via redes sociais, mas o desfecho foi maduro — três das vozes mais influentes da área convergiram para a ideia de que a prática serve ao contexto, não o contrário. Note que nem o criador do TDD reivindica que ele seja universal. Quem o trata como religião está sendo mais dogmático que o próprio Kent Beck.
 
-> [!warning] TDD não garante bom design sozinho
-> Um erro recorrente: achar que o ciclo red-green-refactor *produz* arquitetura limpa automaticamente. Não produz. TDD te dá uma rede de segurança e feedback de uso, mas se você não sabe refatorar nem reconhecer um bom design, vai gerar testes verdes em cima de código ruim. O design vem da sua competência; TDD apenas reduz o medo de exercê-la. Conecte isto a [[01 - O que são testes e por que testar]]: testes são instrumento, não substituto de julgamento.
+Vale a advertência antes de seguir: TDD não garante bom design sozinho — ver [[#Armadilhas comuns]].
 
 ### A crítica do test-induced design damage, com profundidade
 
@@ -182,6 +187,11 @@ Vale destrinchar o argumento central do DHH, porque ele é mais sério do que "T
 É um argumento honesto e há verdade nele. Quem nunca viu um `OrderServiceImpl` que existe só para ter uma `OrderService` que existe só para poder ser mockada num teste que verifica que o controller chama o serviço?
 
 A réplica madura não nega o sintoma — questiona o diagnóstico. O problema descrito não é TDD; é **over-mocking**. Você não precisa mockar tudo para testar primeiro. Pode testar a unidade de lógica com objetos reais e isolar só as fronteiras genuínas (I/O, relógio, aleatoriedade). O dano aparece quando se confunde "testar a unidade" com "mockar todo colaborador" — e aí o teste passa a verificar *como* o código colabora, não *o que* ele entrega. Isso é exatamente a armadilha que [[06 - Testar comportamento, não implementação]] desmonta: teste acoplado à implementação racha a cada refactor e empurra o design para a indireção que o DHH detesta. Em outras palavras, os dois lados concordam no sintoma; a divergência é se a causa é o ritual (DHH) ou o mau uso de dublês (a defesa). Minha leitura: o ritual amplia o estrago de quem já mocka demais, mas não o cria. Tire o over-mocking e boa parte do "dano" evapora.
+
+> [!tip] Uma terceira leitura: o "unit" errado
+> No talk *TDD, Where Did It All Go Wrong* (2013), Ian Cooper propõe uma saída diferente da réplica acima: para ele, o dano nasce de uma confusão sobre o que é a "unidade" testada. Muita gente lê *unit test* como "teste de uma classe isolada" — daí a pressão para mockar toda colaboração da classe. Cooper argumenta que a unidade de Kent Beck nunca foi a classe; é o **módulo**, um agrupamento de classes que entrega um comportamento coeso através de uma interface pública. Testar no nível de módulo, e não de classe, elimina boa parte da necessidade de mock nos colaboradores internos — porque eles deixam de ser "fronteira testável" e viram detalhe de implementação por trás da interface pública do módulo. É uma terceira perna na mesma mesa: DHH culpa o ritual, a réplica culpa o over-mocking, Cooper culpa a unidade errada — e os três apontam, por caminhos diferentes, para o mesmo sintoma de excesso de indireção.
+
+Essa divergência tem nome na literatura: Martin Fowler, em *Mocks Aren't Stubs* (2007), batizou as duas escolas de **classicista** e **mockista**. O classicista testa com objetos reais sempre que possível, isolando só o que é caro ou não-determinístico (banco, rede, relógio) — se o colaborador é barato de instanciar, ele entra de verdade no teste, e a asserção verifica o **estado final**. O mockista isola cada colaborador imediato com um dublê e verifica as **interações** — quais métodos foram chamados, com quais argumentos, em qual ordem. Nenhuma das duas está "errada"; são filosofias de design com trade-offs opostos. O classicista aceita testes um pouco mais lentos e menos precisos ao localizar a falha, em troca de refatorações que não quebram o teste (o teste não sabe nem se importa *como* o resultado foi produzido). O mockista ganha testes rápidos e isolados, com falhas cirurgicamente localizadas, em troca de um teste acoplado à estrutura interna — e é aqui que mora o *test-induced design damage* do DHH: o mockismo levado ao extremo, sem limitar mocks às fronteiras genuínas, é a receita que fabrica os cinco objetos costurados por mock que a citação de Cooper e a réplica anterior descrevem por ângulos diferentes.
 
 ### O que a evidência empírica diz
 
@@ -193,8 +203,7 @@ Quando se sobe da anedota para as revisões sistemáticas, o sinal enfraquece e 
 
 Por que a evidência é tão escorregadia? Por uma razão metodológica difícil de escapar: você não consegue rodar um ensaio clínico de TDD. Não dá para construir o mesmo sistema duas vezes, com os mesmos desenvolvedores, mudando só a ordem dos testes — a segunda vez sempre sabe demais sobre a primeira. O estudo da Microsoft/IBM é tão citado justamente porque chegou perto disso com times-irmãos, mas mesmo ali a adoção de TDD vem amarrada a *outras* boas práticas (passos pequenos, integração frequente), e separar o efeito da ordem do efeito do resto é quase impossível. A conclusão honesta de entrevista: TDD é uma aposta com evidência favorável mas modesta, não uma verdade demonstrada — e quem a vende como dogma está indo além do que os dados sustentam.
 
-> [!warning] Honestidade sobre a evidência
-> Se alguém te disser que "está provado que TDD reduz bugs em X%", desconfie. O que a literatura sustenta é mais modesto: **tende** a melhorar a qualidade externa, com efeito que diminui sob escrutínio metodológico, e **não** mostra ganho claro de produtividade. Confunde-se também *test-first* com *test-last* — alguns estudos sugerem que boa parte do benefício vem de simplesmente *escrever testes e iterar em passos pequenos*, não da ordem ritualística. Trate TDD como uma aposta razoável e contextual, não como lei da física.
+Vale reter essa cautela metodológica antes de citar o estudo em entrevista — ver [[#Armadilhas comuns]].
 
 ## TDD em código legado: você não pode começar pelo teste
 
@@ -242,8 +251,7 @@ A distinção entre **ATDD** e **BDD** é mais de ênfase que de mecânica. ATDD
 
 O que muda na cabeça é o **nível de granularidade**. O teste de unidade pergunta "essa função soma certo?". O teste de aceitação pergunta "o cliente consegue comprar com cupom?". Um fala em objetos e métodos; o outro, em verbos do negócio. Por isso o loop externo é um antídoto contra um vício comum do TDD ingênuo: cobrir 100% das unidades e ainda assim entregar uma feature que não faz o que o usuário queria, porque ninguém testou as peças *juntas* do ponto de vista de fora. O aceite verde é a única prova de que o todo funciona, não só as partes.
 
-> [!warning] O loop externo não substitui o interno
-> A tentação preguiçosa é só escrever testes de aceitação e pular o TDD de unidade. Não funciona: testes de aceitação são lentos, frágeis e péssimos em localizar a causa de uma falha — um aceite vermelho diz "algo quebrou", não "a linha 47 do cálculo está errada". É o anti-padrão do *ice cream cone* (muito teste de ponta-a-ponta, pouco de unidade) que inverte a pirâmide saudável. Os dois loops são complementares: o interno dá precisão e velocidade; o externo dá garantia de valor.
+A tentação preguiçosa — só escrever testes de aceitação e pular o TDD de unidade — é uma armadilha comum; ver [[#Armadilhas comuns]].
 
 ```mermaid
 flowchart LR
@@ -280,6 +288,19 @@ Por isso o caminho de adoção que funciona quase nunca é "amanhã todo mundo f
 > [!tip] A regra de ouro da adoção
 > Não venda TDD como religião ao time — venda como solução para a dor que eles já sentem. "Aquele bug que voltou três vezes? Vamos escrever o teste que o reproduz antes de corrigir, e ele não volta." Ninguém discute com uma dor resolvida. O dogma converte poucos; o resultado converte todos.
 
+## Armadilhas comuns
+
+Três erros de julgamento recorrentes, cada um ligado a uma seção acima onde a discussão completa acontece.
+
+> [!warning] TDD não garante bom design sozinho
+> Um erro recorrente: achar que o ciclo red-green-refactor *produz* arquitetura limpa automaticamente. Não produz. TDD te dá uma rede de segurança e feedback de uso, mas se você não sabe refatorar nem reconhecer um bom design, vai gerar testes verdes em cima de código ruim. O design vem da sua competência; TDD apenas reduz o medo de exercê-la. Conecte isto a [[01 - O que são testes e por que testar]]: testes são instrumento, não substituto de julgamento.
+
+> [!warning] Honestidade sobre a evidência
+> Se alguém te disser que "está provado que TDD reduz bugs em X%", desconfie. O que a literatura sustenta é mais modesto: **tende** a melhorar a qualidade externa, com efeito que diminui sob escrutínio metodológico, e **não** mostra ganho claro de produtividade. Confunde-se também *test-first* com *test-last* — alguns estudos sugerem que boa parte do benefício vem de simplesmente *escrever testes e iterar em passos pequenos*, não da ordem ritualística. Trate TDD como uma aposta razoável e contextual, não como lei da física.
+
+> [!warning] O loop externo não substitui o interno
+> A tentação preguiçosa é só escrever testes de aceitação e pular o TDD de unidade. Não funciona: testes de aceitação são lentos, frágeis e péssimos em localizar a causa de uma falha — um aceite vermelho diz "algo quebrou", não "a linha 47 do cálculo está errada". É o anti-padrão do *ice cream cone* (muito teste de ponta-a-ponta, pouco de unidade) que inverte a pirâmide saudável. Os dois loops são complementares: o interno dá precisão e velocidade; o externo dá garantia de valor.
+
 ## Em entrevista
 
 Use TDD as a lens for judgment, not as a badge. The strongest signal you can send is knowing **when not** to use it.
@@ -287,37 +308,50 @@ Use TDD as a lens for judgment, not as a badge. The strongest signal you can sen
 > [!quote] Em uma entrevista
 > "I treat TDD as a context-dependent tool, like a GPS. I reach for test-first when the design is unclear or the logic is complex — pricing rules, state machines, anything with branching. The tests become a specification that exposes bad abstractions early and cheaply. For bug fixing, I always write a failing test that reproduces the bug first, then fix it — it doubles as a regression guard. But for trivial glue code, declarative config, or visual UI, test-first adds ceremony without feedback, so I implement first and add tests focused on edge cases. For genuine exploration, I spike — throwaway code, no tests — and only stabilize with TDD once I understand the problem. With legacy code I can't start test-first: I write characterization tests to pin down current behavior, find a seam to break the dependency, and only then do TDD on the change. At the feature level I like ATDD as an outer loop — a Given-When-Then acceptance test in the business language drives inside-out, while unit TDD fills in the middle. I'm aware of the 'Is TDD Dead?' debate between DHH, Beck, and Fowler; even Beck doesn't claim it's universal, and the empirical evidence is mixed and context-dependent — it tends to improve external quality but the productivity results are inconclusive. My position is pragmatism over dogma."
 
-### Vocabulário PT → EN
+### Vocabulário PT ↔ EN
 
-- rede de segurança → safety net
-- teste de regressão → regression test
-- correção de bug → bug fix
-- reproduzir o bug → reproduce the bug
-- código descartável → throwaway code / spike
-- caso de borda → edge case
-- código de ligação → glue code
-- dogma / fundamentalismo → dogma / fundamentalism
-- feedback precoce → early feedback
-- prototipagem → prototyping
-- distorção causada pelo teste → test-induced damage
-- código legado → legacy code
-- teste de caracterização → characterization test
-- costura → seam
-- romper dependência → break a dependency
-- dano de design induzido por teste → test-induced design damage
-- desenvolvimento guiado por aceitação → acceptance test-driven development (ATDD)
-- loop externo / loop interno → outer loop / inner loop
-- evidência mista → mixed evidence
-- densidade de defeitos → defect density
+| PT | EN |
+| --- | --- |
+| rede de segurança | safety net |
+| teste de regressão | regression test |
+| correção de bug | bug fix |
+| reproduzir o bug | reproduce the bug |
+| código descartável | throwaway code / spike |
+| caso de borda | edge case |
+| código de ligação | glue code |
+| dogma / fundamentalismo | dogma / fundamentalism |
+| feedback precoce | early feedback |
+| prototipagem | prototyping |
+| distorção causada pelo teste | test-induced damage |
+| código legado | legacy code |
+| teste de caracterização | characterization test |
+| costura | seam |
+| romper dependência | break a dependency |
+| dano de design induzido por teste | test-induced design damage |
+| desenvolvimento guiado por aceitação | acceptance test-driven development (ATDD) |
+| loop externo / loop interno | outer loop / inner loop |
+| evidência mista | mixed evidence |
+| densidade de defeitos | defect density |
 
-> [!info] Lastro
-> - DHH — *TDD is dead. Long live testing.* (2014): https://dhh.dk/2014/tdd-is-dead-long-live-testing.html — o post que abriu o debate; ataca o *test-first fundamentalism*, não os testes.
-> - Martin Fowler — *Is TDD Dead?* (série de conversas com Beck, Fowler e DHH): https://martinfowler.com/articles/is-tdd-dead/ — a síntese madura: contexto sobre dogma.
-> - *How to TDD the Unknown with a Spike Solution* (Quality Coding) e o padrão *spike and stabilize* de Dan North: https://qualitycoding.org/spike-solution/ — quando explorar com spike antes de estabilizar com TDD.
-> - Michael C. Feathers — *Working Effectively with Legacy Code* (2004): https://understandlegacycode.com/blog/key-points-of-working-effectively-with-legacy-code/ — definição de legado (código sem testes), *characterization tests* (capturam o comportamento atual) e *seams* (lugares onde alterar comportamento sem editar no lugar, para injetar dublês).
-> - Nagappan, Maximilien, Bhat & Williams — *Realizing quality improvement through test driven development: results and experiences of four industrial teams*, Empirical Software Engineering 13(3), 2008: https://www.microsoft.com/en-us/research/wp-content/uploads/2009/10/Realizing-Quality-Improvement-Through-Test-Driven-Development-Results-and-Experiences-of-Four-Industrial-Teams-nagappan_tdd.pdf — quatro times na Microsoft e IBM: densidade de defeitos pré-release caiu 40–90%, tempo de desenvolvimento subiu 15–35%.
-> - Turhan et al. e Munir et al. — revisões sistemáticas / meta-análises sobre eficácia de TDD: https://www.researchgate.net/publication/260649027_The_Effects_of_Test-Driven_Development_on_External_Quality_and_Productivity_A_Meta-Analysis — efeito positivo moderado em qualidade externa (que enfraquece nos estudos mais rigorosos), produtividade inconclusiva.
-> - Steve Freeman & Nat Pryce — *Growing Object-Oriented Software, Guided by Tests* (2009): https://www.amazon.com/Growing-Object-Oriented-Software-Guided-Tests/dp/0321503627 — origem do *double-loop*: teste de aceitação no loop externo guiando TDD de unidade no loop interno.
+## Fontes
+
+- DHH — *TDD is dead. Long live testing.* (2014): https://dhh.dk/2014/tdd-is-dead-long-live-testing.html — o post que abriu o debate; ataca o *test-first fundamentalism*, não os testes.
+- Martin Fowler — *Is TDD Dead?* (série de conversas com Beck, Fowler e DHH): https://martinfowler.com/articles/is-tdd-dead/ — a síntese madura: contexto sobre dogma.
+- *How to TDD the Unknown with a Spike Solution* (Quality Coding) e o padrão *spike and stabilize* de Dan North: https://qualitycoding.org/spike-solution/ — quando explorar com spike antes de estabilizar com TDD.
+- Michael C. Feathers — *Working Effectively with Legacy Code* (2004): https://understandlegacycode.com/blog/key-points-of-working-effectively-with-legacy-code/ — definição de legado (código sem testes), *characterization tests* (capturam o comportamento atual) e *seams* (lugares onde alterar comportamento sem editar no lugar, para injetar dublês).
+- Nagappan, Maximilien, Bhat & Williams — *Realizing quality improvement through test driven development: results and experiences of four industrial teams*, Empirical Software Engineering 13(3), 2008: https://www.microsoft.com/en-us/research/wp-content/uploads/2009/10/Realizing-Quality-Improvement-Through-Test-Driven-Development-Results-and-Experiences-of-Four-Industrial-Teams-nagappan_tdd.pdf — quatro times na Microsoft e IBM: densidade de defeitos pré-release caiu 40–90%, tempo de desenvolvimento subiu 15–35%.
+- Turhan et al. e Munir et al. — revisões sistemáticas / meta-análises sobre eficácia de TDD: https://www.researchgate.net/publication/260649027_The_Effects_of_Test-Driven_Development_on_External_Quality_and_Productivity_A_Meta-Analysis — efeito positivo moderado em qualidade externa (que enfraquece nos estudos mais rigorosos), produtividade inconclusiva.
+- Steve Freeman & Nat Pryce — *Growing Object-Oriented Software, Guided by Tests* (2009): https://www.amazon.com/Growing-Object-Oriented-Software-Guided-Tests/dp/0321503627 — origem do *double-loop*: teste de aceitação no loop externo guiando TDD de unidade no loop interno.
+- Ian Cooper — *TDD, Where Did It All Go Wrong* (talk): https://www.youtube.com/watch?v=EZ05e7EMOLM — releitura da proposta original de Kent Beck; argumenta que boa parte do *test-induced design damage* vem de testar métodos em vez de comportamento (unidade = módulo, não classe), o que empurra para o over-mocking discutido acima.
+- Martin Fowler — *Mocks Aren't Stubs* (2007): https://martinfowler.com/articles/mocksArentStubs.html — origem da distinção classicista/mockista que explica por que a mesma crítica de over-mocking soa diferente dependendo da escola de teste do time.
+
+## O que vem a seguir
+
+Esta nota respondeu **quando** ligar o GPS. Duas fronteiras completam o quadro.
+
+A primeira é de linguagem: tudo aqui foi discutido em termos gerais de teste-primeiro, mas a mecânica muda de sabor conforme o ecossistema. Em Python, o par TDD + pytest tem convenções próprias — fixtures no lugar de setup/teardown, parametrize no lugar de loops de teste, e um jeito idiomático de nomear e organizar que difere do que se vê em Java ou TypeScript. Veja [[03-Dominios/Tecnologia/Python/Testes/08 - TDD na prática com pytest]] para a tradução prática dessa heurística para o ferramental do pytest.
+
+A segunda é de terreno: a seção sobre [[#TDD em código legado: você não pode começar pelo teste|TDD em código legado]] tocou de leve em *seams* e testes de caracterização — o suficiente para não fazer TDD ingênuo numa base soldada. Mas Feathers vai muito além disso, e a arqueologia de código trata o problema em profundidade: como decidir *o que* refatorar primeiro num sistema hostil, como isolar mudanças com segurança quando não há rede nenhuma, e como negociar essa mudança com quem depende do sistema. Veja [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/14 - Refactoring em terreno hostil]] para esse aprofundamento.
 
 ## Veja também
 

@@ -15,7 +15,7 @@ de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
 
 **Galho:** `03-Dominios/Engenharia/Testes`
 **Diagnóstico:** 2026-08-01
-**Última execução:** 2026-08-01 — ondas 1-2 (notas 01-06)
+**Última execução:** 2026-08-01 — ondas 1-3 (notas 01-09)
 **Spec do passe:** [[00-Meta/specs/2026-08-01-galho-testes-fechamento-design|passe de fechamento]]
 
 ## Régua de análise
@@ -129,10 +129,10 @@ falha vira buraco declarado — nunca vídeo "provável".
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 16 |
-| ⬜ pendente | 10 |
+| ⬜ pendente | 7 |
 | ➖ não precisa | 0 |
-| ✅ feita | 6 |
-| % concluído | 38% |
+| ✅ feita | 9 |
+| % concluído | 56% |
 | Classe `[substantivo]` | 16 |
 | Classe `[mecânico]` | 0 — reclassificada após o piso voltar a valer |
 | Score médio | ~5,7 |
@@ -232,7 +232,7 @@ falha vira buraco declarado — nunca vídeo "provável".
 - **Resultado:** 397 linhas (era 270). **Piso 400 NÃO atingido — faltam 3 linhas, déficit declarado em vez de preenchido com enchimento** (comportamento correto sob a regra anti-padding). E1 TL;DR para 3 linhas · E4 `## Casos práticos` formaliza o caso real `@Mock`→`InMemoryUserRepository`; segundo cenário não fabricado, gap consciente em callout · E5 ponte para Testes JS/07 e Arqueologia/11 (os dois paths que o diagnóstico errara, agora corretos) · E7 tabela PT↔EN com 16 termos · E8 os 2 callouts movidos + 1 derivada ("mockar por preguiça") · L2 `## Fontes` com Fowler/Dodds/Khorikov · M1 PyCon Greece, Kalaitzis (`QQUwZQvuFCQ`, legenda baixada e ID reconferido). Conteúdo novo: os quatro pilares de Khorikov, diagrama de decisão fake×mock×stub e exemplos Java genéricos.
 
 #### 07 - Testes de integração   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-01)
 - **Estado:** 240 linhas reais · fase: adepto · status: evergreen
 - **Núcleo/gaps:** E1 (TL;DR `[!abstract]`, linha 18-19, tem só 1 linha densa, não ≥3) · E4 (sem `## Casos práticos`; o caso real do spec de origem — Testcontainers vs H2 — está presente só como callout `[!example]` "Como isso mudou meu fluxo", linha 147-148, 1 único cenário, não em seção dedicada) · E5 (sem `## O que vem a seguir`; existe `## Veja também`, linha 232, lista pura, não ponte narrativa) · E8 (só 2 callouts disponíveis — `[!danger]` linha 105 "Por que o drift te trai exatamente quando dói" e `[!warning]` linha 186 "Rede externa = flaky garantido" —, abaixo do piso de 3, sem seção `## Armadilhas comuns` dedicada) · L2 (callout `[!info] Lastro`, linha 227-230, já tem 3 URLs clicáveis, mas não está em seção `## Fontes` — gap de formato) · M1 (2 `[!tip]` presentes — linha 64 e linha 180 — nenhum com link de vídeo/podcast)
 - **Score:** 6/11 (P1 N/A — nota conceitual, sem bloco de código, só diagramas)
@@ -243,10 +243,10 @@ falha vira buraco declarado — nunca vídeo "provável".
   - Mover (não duplicar) os callouts `[!danger]` (linha 105) e `[!warning]` (linha 186) para nova seção `## Armadilhas comuns`; registrar que restam só 2 blocos, abaixo do piso de 3 individuais, sem fabricar novo → ativa E8 parcialmente
   - Reformular o callout `[!info] Lastro` (linhas 227-230) como seção `## Fontes`, preservando os 3 links clicáveis já existentes (Fowler, Testcontainers, Hauer) → ativa L2
   - Pesquisar vídeo/podcast sobre Testcontainers ou environment drift em testes de integração e embutir como `[!tip]` só se `uvx yt-dlp` baixar legenda de fato (trava de mídia) → ativa M1
-- **Resultado:** —
+- **Resultado:** 400 linhas (era 240; **piso 400 atingido**). E1 TL;DR para 4 linhas · E4 `## Casos práticos` formaliza o caso real Testcontainers×H2, com registro explícito de que só há 1 cenário · E5 ponte para Python/Testes 05-06, Java/Testes/11 e Go/15/05 · E8 os 2 callouts movidos + 1 derivada (container por teste vs. por suíte) · L2 `## Fontes` com Fowler/Testcontainers/Hauer · M1 Dreams of Code, "Testcontainers have forever changed the way I write tests" (`sNg0bnMF_qY`, legenda baixada e ID reconferido). Déficit de +160 — o maior da fase — fechado com conteúdo novo e sourced: `@DynamicPropertySource`/`@ServiceConnection`/Ryuk, tabela narrow×broad, exemplo de fluxo assíncrono com idempotência de Kafka, custo de CI em números, rollback transacional vs. TRUNCATE.
 
 #### 08 - TDD - o ciclo Red-Green-Refactor   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-01)
 - **Estado:** 310 linhas reais · fase: adepto · status: evergreen
 - **Núcleo/gaps:** E1 (TL;DR `[!abstract]`, linha 19, tem só 1 linha densa, não ≥3) · E4 (sem `## Casos práticos`; os 5 casos reais do usuário mapeados no spec de origem pertencem à nota 09, não a esta — nenhum caso real aplicável aqui) · E5 (sem `## O que vem a seguir`; existe `## Veja também`, linha 303, lista pura de wikilinks, não ponte narrativa) · E8 (só 2 `[!warning]` no corpo — linha 37 "Um teste que nunca falhou é suspeito" e linha 220 "Erros comuns no ciclo", este último agrupando 4 armadilhas num único callout em vez de individuais —, abaixo do piso de 3 individuais, sem seção `## Armadilhas comuns` dedicada) · L2 (callout `[!info] Lastro`, linha 296, tem 5 URLs já clicáveis, mas não está em seção `## Fontes`) · M1 (4 `[!tip]` presentes — linhas 46, 162, 171, 214 — nenhum com link de vídeo/podcast)
 - **Score:** 7/12
@@ -257,10 +257,10 @@ falha vira buraco declarado — nunca vídeo "provável".
   - Mover os 2 blocos existentes (`[!warning]` linha 37; `[!warning] Erros comuns no ciclo` linha 220, desmembrando seus 4 sub-itens em `[!warning]` individuais) para nova seção `## Armadilhas comuns`, sem duplicar; registrar que restam só 2 blocos-fonte (viram até 5 individuais ao desmembrar o agrupado), sem fabricar armadilha nova → ativa E8
   - Reformular o callout `[!info] Lastro` (linhas 296-301) como seção `## Fontes`, preservando as mesmas 5 URLs em formato de link markdown clicável → ativa L2
   - Pesquisar vídeo/podcast sobre TDD / Red-Green-Refactor (ex.: Kent Beck falando sobre TDD, ou TCR) com legenda baixável via `uvx yt-dlp` e embutir como `[!tip]` só se a legenda baixar de fato (trava de mídia) → ativa M1
-- **Resultado:** —
+- **Resultado:** 400 linhas (era 310; **piso 400 atingido**). E1 TL;DR para 3 linhas · E5 ponte para a nota 09 e Python/Testes/08 · E8 os 2 blocos movidos com os 4 sub-itens do agrupado desmembrados em callouts individuais (5 no total) · L2 `## Fontes` com as 5 URLs clicáveis · M1 programmerCave (`PI_f2Vgftnk`, legenda baixada e ID reconferido). Déficit de +90 fechado com conteúdo novo e sourced: Transformation Priority Premise com as 12 transformações (verificadas via WebFetch na fonte), diagrama da escada e exemplo trabalhado `valorAbsoluto`. **E4 sem ação por desenho** — os casos reais pertencem à nota 09; a fronteira 08/09 (mecanismo vs. prática) foi respeitada.
 
 #### 09 - TDD na prática   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-01)
 - **Estado:** 330 linhas reais · fase: adepto · status: evergreen
 - **Núcleo/gaps:** E1 (TL;DR `[!abstract]`, linha 18-19, tem só 1 linha densa, não ≥3) · E4 (os dois casos reais exigidos — comissão com 5 condições, linha 44-47, e tela de 30 campos, linha 144-145 — estão presentes como `[!example]` embutidos nas seções, não em `## Casos práticos` dedicada) · E5 (sem `## O que vem a seguir`; existe `## Veja também`, linha 322, lista pura sem ponte narrativa) · E7 (`### Vocabulário PT → EN`, linha 290, é lista com `→`, não tabela) · E8 (3 `[!warning]` espalhados no corpo — linhas 175, 196, 245 — sem seção `## Armadilhas comuns` dedicada) · L1 (todos os wikilinks, linhas 21,69,141,142,176,184,324-329, apontam pra dentro da própria pasta Testes; sem alvo cross-galho) · L2 (callout `[!info] Lastro`, linhas 313-320, tem 7 URLs já clicáveis, mas não é seção `## Fontes`) · M1 (2 `[!tip]` presentes — linhas 64 e 280 — nenhum com link de vídeo/podcast)
 - **Score:** 5/12
@@ -272,7 +272,7 @@ falha vira buraco declarado — nunca vídeo "provável".
   - Mover (não duplicar) os 3 `[!warning]` existentes (TDD não garante bom design, linha 175; honestidade sobre a evidência, linha 196; loop externo não substitui o interno, linha 245) para nova seção `## Armadilhas comuns` → ativa E8
   - Reformular o callout `[!info] Lastro` (linhas 313-320) como seção `## Fontes`, preservando as 7 URLs já clicáveis (DHH, Fowler, Quality Coding, Feathers, Nagappan et al., Turhan/Munir, Freeman & Pryce) → ativa L2
   - Pesquisar vídeo/podcast sobre TDD na prática (ex.: Kent Beck sobre quando não fazer TDD, ou a série "Is TDD Dead?") e embutir como `[!tip]` só se `uvx yt-dlp` baixar legenda de fato (trava de mídia) → ativa M1
-- **Resultado:** —
+- **Resultado:** 364 linhas (era 330). **Piso 400 NÃO atingido — déficit residual de 36 linhas, declarado em vez de preenchido.** Justificativa do executor: a nota é prosa longa (parágrafo denso conta 1 linha), e fechar exigiria inflar texto ou inventar sub-tópico fora do plano — ambos vedados. E1 TL;DR para 3 linhas · E4 `## Casos práticos` formaliza os DOIS casos reais (comissão de 5 condições · cadastro de 30 campos) lado a lado, sem alterar fato algum; as menções originais viraram pontes · E5/L1 ponte para Python/Testes/08 e Arqueologia/14 · E7 vocabulário virou tabela · E8 os 3 `[!warning]` movidos · L2 `## Fontes` com as 7 URLs + Ian Cooper e Fowler · M1 Ian Cooper, "TDD, Where Did It All Go Wrong" na DevTernity (`EZ05e7EMOLM`, 12.600 linhas de VTT baixadas, ID reconferido).
 
 #### 10 - Técnicas de teste e edge cases   [substantivo]
 - **Enriquecimento:** ⬜ pendente
