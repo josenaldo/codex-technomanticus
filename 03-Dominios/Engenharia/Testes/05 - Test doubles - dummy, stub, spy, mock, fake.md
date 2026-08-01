@@ -1,7 +1,7 @@
 ---
 title: "Test doubles: dummy, stub, spy, mock, fake"
 created: 2026-06-18
-updated: 2026-06-18
+updated: 2026-08-01
 type: concept
 fase: adepto
 status: evergreen
@@ -15,8 +15,10 @@ tags:
 
 # Test doubles: dummy, stub, spy, mock, fake
 
-> [!abstract] Resumo em uma linha
-> *Test double* é o termo guarda-chuva pra qualquer objeto que substitui uma dependência real no teste; os cinco tipos (dummy, stub, spy, mock, fake) diferem em **quanto fazem** e em **se verificam estado ou interação**.
+> [!abstract] Resumo
+> *Test double* é o termo guarda-chuva pra qualquer objeto que substitui uma dependência real no teste — a analogia é o dublê de cinema: o ator principal (a dependência real) fica de fora de certas cenas, e um dublê especializado entra no lugar dele só pra aquela cena funcionar.
+> Os cinco tipos (dummy, stub, fake, spy, mock) se dividem em dois papéis: uns **alimentam** o SUT com dados ou comportamento pra ele seguir em frente (dummy, stub, fake — a asserção final olha o **estado**); outros **participam da própria verificação** (spy, mock — a asserção olha a **interação**).
+> A confusão mais cara em entrevista é achar que mock e stub são a mesma coisa: um stub **dá** uma resposta pra o SUT seguir, um mock **cobra** uma interação e falha sozinho se ela não acontecer — é a diferença de Fowler entre verificação de estado e verificação de comportamento.
 
 Quando você testa uma classe, ela quase nunca está sozinha. Ela conversa com um banco, um gateway de pagamento, um serviço de e-mail. No teste, você raramente quer o banco de verdade — quer algo no lugar dele. Esse "algo no lugar" tem nome.
 
@@ -58,9 +60,6 @@ flowchart TD
 ```
 
 Leitura do diagrama: tudo é *test double*. O galho da esquerda (dummy, stub, fake) existe pra fazer o SUT rodar — depois você verifica o **estado** do SUT. O galho da direita (spy, mock) entra na própria asserção — você verifica a **interação**. Essa divisão é a coisa mais importante da nota.
-
-> [!warning] Cuidado com o vocabulário do dia a dia
-> Na boca da maioria dos devs, "mock" virou sinônimo de "qualquer dublê". Mockito, Jest, Moq chamam tudo de "mock". A taxonomia de Meszaros é mais precisa, e é ela que separa quem entende de testes de quem só decora framework. Em entrevista, demonstre que você sabe a diferença.
 
 ## Os cinco tipos, lado a lado
 
@@ -205,14 +204,27 @@ Leitura do diagrama: o mock é protagonista da asserção. A pergunta final ("de
 > [!tip] A frase que resolve em entrevista
 > "Um stub me **dá** uma resposta pra eu seguir; um mock me **cobra** uma interação que eu verifico. Stub alimenta verificação de estado; mock é verificação de interação." Dito assim, você passou.
 
+> [!tip] Vídeo: Stubs vs Mocks vs Fake em 3 minutos
+> Pra fixar a distinção rápido, [Stubs vs Mocks vs Fake | In a nutshell](https://www.youtube.com/watch?v=4AxXWjBSIdY) (Keploy, ~3min) passa pelos mesmos três conceitos com exemplos de código, reforçando que a linha entre eles está em *o que você verifica*, não em como o double foi criado.
+
 ## Por que a distinção importa (e onde ela machuca)
 
 Testes baseados em **interação** (mocks) acoplam o teste à **implementação** — ao *como* o SUT faz, não ao *que* ele entrega. Se amanhã você refatorar o SUT pra chamar o colaborador de outro jeito (duas chamadas em vez de uma, outro método equivalente) sem mudar o comportamento observável, o mock **quebra mesmo com tudo funcionando**.
 
 Isso é o famoso teste frágil: vermelho sem bug. E é o gancho direto pra próxima nota — [[06 - Testar comportamento, não implementação]] aprofunda *quando* o acoplamento à implementação vale a pena e quando é veneno. Aqui basta a fronteira: mock pesa a balança pro lado da implementação; stub/estado, pro lado do comportamento.
 
-> [!danger] Sintoma de overmocking
-> Se seu teste tem mais linhas de `when(...)` e `verify(...)` do que de asserção real sobre resultado, ele provavelmente está testando o mock — não o seu código. Você acabou escrevendo um teste que diz "meu código chama os métodos que eu disse que ele chamaria". Tautologia cara de manter.
+## Duas escolas: TDD clássico vs. TDD mockista
+
+Essa fronteira entre estado e interação não é só estilística — ela separa duas escolas de TDD que Fowler nomeou explicitamente no mesmo artigo "Mocks Aren't Stubs".
+
+**TDD clássico** (linhagem de Kent Beck e do próprio Meszaros) prefere usar objetos reais sempre que possível e só troca por um double quando o real é lento, caro ou indisponível (banco, rede, relógio). A verificação, no fim, é sobre o **estado**: o objeto real ficou como devia? Quando um double entra nesse estilo, é tipicamente stub ou fake.
+
+**TDD mockista** (Steve Freeman e Nat Pryce, em *Growing Object-Oriented Software, Guided by Tests*) troca **toda** dependência não-trivial por mock desde o início. A ideia central é usar o mock pra **descobrir o design** — se é estranho programar a expectativa de uma interação, o design provavelmente está errado, e isso é sinal pra refatorar antes mesmo do código existir. A verificação é sobre a **interação**: o SUT conversou do jeito certo com seus colaboradores?
+
+> [!question]- Por que isso importa se eu só quero passar na entrevista?
+> Porque explica *por que* times inteiros divergem sobre "quanto mockar". Não é gosto pessoal — são duas filosofias de design coerentes, cada uma com seu próprio critério de "teste bom". Saber nomear as duas mostra que você enxerga o assunto além do "usa Mockito ou não usa".
+
+Na prática, a maioria dos times sênior pousa no meio: clássico por padrão (fakes e stubs, testando estado), mockista só nas bordas onde o efeito colateral é a única evidência observável (mandou e-mail? publicou evento?). É exatamente a heurística da seção anterior — só que agora com nome pras duas escolas que a sustentam.
 
 ## Qual dublê escolher?
 
@@ -251,6 +263,41 @@ Em prosa, os casos canônicos:
 > [!note] Heurística prática
 > Prefira **fakes e stubs** (verificação de estado) por padrão; recorra a **mocks** só quando o resultado for *invisível* exceto pela interação (e-mail enviado, mensagem publicada, log de auditoria gravado). Isso te mantém testando comportamento, não fiação interna.
 
+## Exemplo completo: um teste usando três dublês juntos
+
+Um teste raramente usa só um tipo de dublê. Veja um cenário realista — `SignupService.register(user)`, que valida o usuário, cobra uma taxa de ativação e manda um e-mail de boas-vindas — e repare como cada dependência recebe o dublê certo pro papel que ela exerce *nesse teste específico*:
+
+```java
+@Test
+void deveRegistrarUsuarioComTaxaAprovada() {
+    // DUMMY — o construtor pede um Clock, mas este teste não
+    // exercita nenhum caminho que consulte a hora.
+    Clock dummyClock = null;
+
+    // STUB — controlo a resposta do gateway pra forçar o caminho
+    // "aprovado". Não me importa quantas vezes foi chamado.
+    PaymentGateway stubGateway = mock(PaymentGateway.class);
+    when(stubGateway.charge(any())).thenReturn(Result.APPROVED);
+
+    // MOCK — o envio de e-mail é o único efeito observável deste
+    // teste; não há estado de retorno pra checar, só a interação.
+    EmailSender mockSender = mock(EmailSender.class);
+
+    SignupService service = new SignupService(stubGateway, mockSender, dummyClock);
+    User user = service.register(newUserRequest());
+
+    // Verificação de ESTADO — respondida pelo SUT, não pelos dublês.
+    assertEquals(Status.ACTIVE, user.status());
+
+    // Verificação de INTERAÇÃO — respondida pelo mock.
+    verify(mockSender).send(argThat(e -> e.template().equals("welcome")));
+}
+```
+
+Repare na disciplina: cada dublê tem exatamente um motivo de existir. O `dummyClock` não faz nada — se `register()` algum dia passar a consultar `Clock`, o teste quebra com `NullPointerException` e avisa que a premissa mudou. O `stubGateway` só empurra o SUT pro caminho "aprovado"; nenhuma linha verifica quantas vezes `charge()` foi chamado — isso seria overmocking, porque o caminho de pagamento já é validado por `Status.ACTIVE`. Só o `mockSender` vira `verify()`, porque enviar e-mail é o único jeito de saber, de fora, que a mensagem de boas-vindas realmente saiu.
+
+Esse é o "Frameworks são ferramenta, não conceito" da próxima seção, na prática: a API é a mesma (`mock()`), mas o *papel* de cada instância é definido pelo que o teste faz com ela depois.
+
 ## Frameworks são ferramenta, não conceito
 
 Mockito (Java), Jest/Sinon (JS), Moq (.NET), unittest.mock (Python) — todos produzem esses dublês. Mas atenção: a API deles **não respeita a taxonomia de Meszaros**. Em Mockito, `mock()` cria um objeto que você pode usar como stub (`when().thenReturn()`) ou como mock (`verify()`) — o *tipo* é definido pelo **uso no teste**, não pela construção.
@@ -258,6 +305,49 @@ Mockito (Java), Jest/Sinon (JS), Moq (.NET), unittest.mock (Python) — todos pr
 Ou seja: a mesma instância vira stub se você só configura respostas, e vira mock se você a verifica. O conceito mora no *teste*, não na *biblioteca*.
 
 Os detalhes de cada ferramenta vivem nas notas de stack: [[Testes em Java]] (JUnit + Mockito) e [[Testes em JavaScript]] (Jest, mocks de módulo, spies). Aqui paramos no conceito.
+
+## Armadilhas comuns
+
+> [!warning] Cuidado com o vocabulário do dia a dia
+> Na boca da maioria dos devs, "mock" virou sinônimo de "qualquer dublê". Mockito, Jest, Moq chamam tudo de "mock". A taxonomia de Meszaros é mais precisa, e é ela que separa quem entende de testes de quem só decora framework. Em entrevista, demonstre que você sabe a diferença.
+
+> [!warning] "usei mock()" não significa "isto é um mock"
+> Como a seção anterior mostrou, `mock()`/`jest.fn()` produz o mesmo objeto genérico pra stub e pra mock — o tipo depende do que o teste *faz* com ele, não de como foi construído. Achar que "chamei `mock()`, logo isto é um mock" é o erro mais comum de quem aprendeu o framework sem aprender a taxonomia: um teste pode ter zero `verify()` e mesmo assim só ter usado stubs disfarçados de mock.
+
+> [!danger] Sintoma de overmocking
+> Se seu teste tem mais linhas de `when(...)` e `verify(...)` do que de asserção real sobre resultado, ele provavelmente está testando o mock — não o seu código. Você acabou escrevendo um teste que diz "meu código chama os métodos que eu disse que ele chamaria". Tautologia cara de manter. Compare os dois testes abaixo:
+
+```java
+// RUIM — overmocking: só configura e verifica chamadas,
+// nenhuma asserção real sobre o resultado do SUT.
+@Test
+void deveProcessarPedido_overmocked() {
+    when(estoque.reservar(any())).thenReturn(true);
+    when(gateway.charge(any())).thenReturn(Result.APPROVED);
+    when(notificador.montarMensagem(any())).thenReturn("ok");
+
+    orderService.checkout(pedido);
+
+    verify(estoque).reservar(pedido.itens());
+    verify(gateway).charge(pedido.valor());
+    verify(notificador).montarMensagem(pedido);
+    verify(notificador).enviar(any());
+    verifyNoMoreInteractions(estoque, gateway, notificador);
+    // Nenhuma linha pergunta "o pedido ficou pago? o estoque baixou?"
+    // O teste só confirma que o código chamou os métodos — refatore
+    // a ordem das chamadas (mesmo comportamento) e ele quebra.
+}
+
+// MELHOR — verifica o efeito observável, não a coreografia interna.
+@Test
+void deveProcessarPedido() {
+    orderService.checkout(pedido);
+
+    assertEquals(Status.PAID, pedido.status());          // estado
+    assertEquals(0, estoqueFake.disponivel(produtoId));  // estado
+    verify(notificador).enviar(any());                   // só a interação que É o resultado
+}
+```
 
 ## Em entrevista
 
@@ -282,10 +372,24 @@ A *test double* is the umbrella term for anything that stands in for a real depe
 | teste frágil | brittle / fragile test |
 | acoplado à implementação | coupled to the implementation |
 
-> [!info] Lastro
-> - Gerard Meszaros, *Mocks, Fakes, Stubs and Dummies* — [xunitpatterns.com](http://xunitpatterns.com/Mocks,%20Fakes,%20Stubs%20and%20Dummies.html) (a taxonomia original do *xUnit Test Patterns*).
-> - Martin Fowler, *Mocks Aren't Stubs* — [martinfowler.com](https://martinfowler.com/articles/mocksArentStubs.html) (state vs. behavior verification; classical vs. mockist TDD).
-> - Martin Fowler, *Test Double* (bliki) — [martinfowler.com/bliki/TestDouble.html](https://martinfowler.com/bliki/TestDouble.html) (resumo dos cinco tipos com a analogia do *stunt double*).
+## O que vem a seguir
+
+Esta nota fica no nível de conceito — a taxonomia que vale pra qualquer linguagem. O próximo passo natural é ver os cinco tipos na mão, na stack que você realmente usa:
+
+- Em JavaScript/TypeScript, [[03-Dominios/Tecnologia/Testes JS/06 - Mocking com Vitest]] mostra como `vi.fn()`, `vi.spyOn()` e mocks de módulo mapeiam pra dummy/stub/spy/mock — e onde o Vitest confunde os limites que esta nota separou.
+- Em Python, [[03-Dominios/Tecnologia/Python/Testes/04 - Mocking com unittest.mock e pytest-mock]] cobre `Mock`, `MagicMock` e `patch()`, além da fixture `mocker` do pytest-mock — o mesmo "mock() cria os dois" da seção de armadilhas, só que na sintaxe do `unittest.mock`.
+- Em Go, [[03-Dominios/Tecnologia/Go/15 - Testes/04 - Test doubles — interfaces e mocks]] mostra o caso mais explícito de todos: sem um framework de mock dinâmico dominante na comunidade, o double costuma ser uma implementação manual de uma interface — o que torna a distinção dummy/stub/fake/spy/mock quase impossível de confundir, porque cada uma vira um `struct` diferente.
+- Quando o double é sobre uma dependência de rede especificamente (uma API HTTP externa), [[03-Dominios/Tecnologia/Testes JS/09 - MSW - mockando a rede]] mostra uma abordagem diferente: interceptar a chamada de rede em si, em vez de dublar a classe que a faz.
+
+Um gap consciente: o caso prático de um stub simples que passa a precisar de lógica real de armazenamento — e por isso "vira" um fake — é mapeado como pertencente à nota [[06 - Testar comportamento, não implementação]], não a esta. Pra não duplicar conteúdo entre as duas, ele fica declarado aqui como fronteira, sem ser desenvolvido: esta nota para na taxonomia.
+
+## Fontes
+
+- Gerard Meszaros, [*Mocks, Fakes, Stubs and Dummies*](http://xunitpatterns.com/Mocks,%20Fakes,%20Stubs%20and%20Dummies.html) — a taxonomia original do *xUnit Test Patterns*.
+- Martin Fowler, [*Mocks Aren't Stubs*](https://martinfowler.com/articles/mocksArentStubs.html) — state vs. behavior verification; TDD clássico vs. mockista.
+- Martin Fowler, [*Test Double*](https://martinfowler.com/bliki/TestDouble.html) (bliki) — resumo dos cinco tipos com a analogia do *stunt double*.
+- Steve Freeman & Nat Pryce, *Growing Object-Oriented Software, Guided by Tests* — origem da escola TDD mockista citada na seção "Duas escolas".
+- [Stubs vs Mocks vs Fake | In a nutshell](https://www.youtube.com/watch?v=4AxXWjBSIdY), Keploy (vídeo, ~3min) — revisão rápida da distinção com exemplos de código; legenda automática verificada via `yt-dlp`.
 
 ## Veja também
 

@@ -1,7 +1,7 @@
 ---
 title: "Testes unitários"
 created: 2026-06-18
-updated: 2026-06-18
+updated: 2026-08-01
 type: concept
 fase: iniciado
 status: evergreen
@@ -17,6 +17,8 @@ tags:
 
 > [!abstract] Resumo em uma linha
 > Teste unitário verifica uma unidade de comportamento isolada do resto do sistema, rápido e determinístico — e a maior briga da área é sobre o que "isolada" significa.
+> A guerra entre a escola de Londres (mockista, isola cada classe atrás de dublês) e a escola de Detroit/Chicago (clássica, deixa colaboradores baratos reais e só mocka o que dói) não é bizantina: ela muda o que o teste protege — localização precisa do defeito de um lado, resistência a refatoração do outro.
+> O critério de qualidade que separa teste unitário maduro de teste unitário só-no-nome é o acrônimo F.I.R.S.T. de `[[03 - Anatomia de um bom teste]]` — aqui, na prática, Rápido, Determinístico, Independente e Legível — e a maioria das dores de suíte (flakiness, ordem de execução, setup gigante) rastreia até a violação de uma dessas propriedades.
 
 Imagine um mecânico testando uma vela de ignição. Ele não liga o carro inteiro pra ver se a vela funciona. Ele monta a vela numa **bancada**, aplica corrente, e olha a faísca. Peça isolada, no banco de testes, resultado óbvio em segundos.
 
@@ -76,11 +78,7 @@ Leitura do diagrama: na escola de Londres, tudo que não é o `Pedido` vira mock
 
 ### O trade-off de verdade
 
-Por que isso importa numa entrevista? Porque revela se você entende o **custo escondido** de cada escolha.
-
-> [!warning] O trade-off: isolamento × acoplamento à implementação
-> - **Londres (solitário)** te dá **isolamento perfeito**: quando o teste quebra, você sabe exatamente qual classe está com defeito — só ela é real. Mas você paga com **acoplamento à implementação**. Pra mockar um colaborador, o teste precisa saber *quais* métodos a classe chama e em que ordem. Mude a colaboração interna sem mudar o comportamento e os mocks quebram mesmo assim. Teste frágil.
-> - **Detroit (sociável)** te dá **acoplamento ao comportamento**: o teste só olha entrada e saída, não liga pra como por dentro. Refatorar a tripa interna não quebra o teste. Mas você perde **localização do defeito**: quando quebra, pode ser o objeto sob teste ou qualquer um dos reais que ele usa.
+Por que isso importa numa entrevista? Porque revela se você entende o **custo escondido** de cada escolha (ver `[[#Armadilhas comuns]]` — trade-off isolamento × acoplamento à implementação).
 
 Essa tensão é o coração de duas outras notas. A escolha de *quais* dublês usar é `[[05 - Test doubles - dummy, stub, spy, mock, fake]]`. E a ideia de que teste deveria amarrar comportamento, não a estrutura interna, é `[[06 - Testar comportamento, não implementação]]` — a defesa principal da escola de Detroit.
 
@@ -153,10 +151,7 @@ Existem três ferramentas pra matar essa repetição, em ordem crescente de sofi
 
 ### Fixture
 
-Estado inicial compartilhado, montado antes do teste rodar. No JUnit, o `@BeforeEach`. No pytest, a `fixture`. É o "cenário base" que vários testes partilham.
-
-> [!warning] Cuidado com fixture compartilhada
-> Fixture estática ou mutável compartilhada entre testes é a porta de entrada da dependência de ordem. Se o teste A altera a fixture e o teste B assume o estado original, você quebrou a propriedade **Independente**. Prefira fixture recriada por teste.
+Estado inicial compartilhado, montado antes do teste rodar. No JUnit, o `@BeforeEach`. No pytest, a `fixture`. É o "cenário base" que vários testes partilham (cuidado com fixture compartilhada — ver `[[#Armadilhas comuns]]`).
 
 ### Factory / Builder
 
@@ -235,10 +230,7 @@ flowchart TD
 
 Lead-in: a object mother empilha sobre a factory, nomeando personas de negócio.
 
-Leitura do diagrama: a `Factory` cuida dos defaults técnicos. A `Object Mother` empilha por cima e dá **nome de negócio** às variações (`preferencial`, `inadimplente`). O teste pede a persona, não o estado bruto — fica auto-explicativo.
-
-> [!warning] O lado escuro da object mother
-> Fowler avisa: a classe tende a **inchar** com o tempo. Cada teste novo quer sua persona, e a mother vira um depósito de mil métodos. Mantenha as personas que representam papéis de negócio reais; pra variações pontuais, prefira o builder direto no teste.
+Leitura do diagrama: a `Factory` cuida dos defaults técnicos. A `Object Mother` empilha por cima e dá **nome de negócio** às variações (`preferencial`, `inadimplente`). O teste pede a persona, não o estado bruto — fica auto-explicativo (cuidado com o lado escuro dessa técnica — ver `[[#Armadilhas comuns]]`).
 
 ## Determinismo: o inimigo silencioso
 
@@ -290,23 +282,51 @@ A unit test exercises a single **unit of behavior** in isolation, and it must be
 
 ### Vocabulário
 
-- unidade sob teste / SUT — *unit under test / system under test (SUT)*
-- dublê de teste — *test double*
-- teste sociável — *sociable test*
-- teste solitário — *solitary test*
-- fixture — *fixture*
-- fábrica de objetos — *object factory / builder*
-- object mother (fábrica por persona) — *object mother*
-- determinístico — *deterministic*
-- não-determinismo / instável — *flakiness / flaky*
-- localização do defeito — *failure localization / pinpointing*
-- defaults sensatos — *sensible defaults*
-- relógio injetável — *injectable clock*
+| PT-BR | EN |
+| --- | --- |
+| unidade sob teste / SUT | *unit under test / system under test (SUT)* |
+| dublê de teste | *test double* |
+| teste sociável | *sociable test* |
+| teste solitário | *solitary test* |
+| fixture | *fixture* |
+| fábrica de objetos | *object factory / builder* |
+| object mother (fábrica por persona) | *object mother* |
+| determinístico | *deterministic* |
+| não-determinismo / instável | *flakiness / flaky* |
+| localização do defeito | *failure localization / pinpointing* |
+| defaults sensatos | *sensible defaults* |
+| relógio injetável | *injectable clock* |
 
-> [!info] Lastro
-> - Martin Fowler, [bliki: "UnitTest"](https://martinfowler.com/bliki/UnitTest.html) — escolas clássica × mockista, e a definição de testes sociáveis × solitários (termos de Jay Fields).
-> - Martin Fowler, [bliki: "ObjectMother"](https://martinfowler.com/bliki/ObjectMother.html) — o padrão Object Mother como factory de fixtures, referência ao paper de Schuh e Punke, e o aviso de inchaço.
-> - Vladimir Khorikov, *Unit Testing: Principles, Practices, and Patterns* (Manning, 2020) — tratamento da escola de Londres × clássica e do trade-off isolamento × acoplamento.
+## Armadilhas comuns
+
+> [!warning] O trade-off: isolamento × acoplamento à implementação
+> - **Londres (solitário)** te dá **isolamento perfeito**: quando o teste quebra, você sabe exatamente qual classe está com defeito — só ela é real. Mas você paga com **acoplamento à implementação**. Pra mockar um colaborador, o teste precisa saber *quais* métodos a classe chama e em que ordem. Mude a colaboração interna sem mudar o comportamento e os mocks quebram mesmo assim. Teste frágil.
+> - **Detroit (sociável)** te dá **acoplamento ao comportamento**: o teste só olha entrada e saída, não liga pra como por dentro. Refatorar a tripa interna não quebra o teste. Mas você perde **localização do defeito**: quando quebra, pode ser o objeto sob teste ou qualquer um dos reais que ele usa.
+
+> [!warning] Cuidado com fixture compartilhada
+> Fixture estática ou mutável compartilhada entre testes é a porta de entrada da dependência de ordem. Se o teste A altera a fixture e o teste B assume o estado original, você quebrou a propriedade **Independente**. Prefira fixture recriada por teste.
+
+> [!warning] O lado escuro da object mother
+> Fowler avisa: a classe tende a **inchar** com o tempo. Cada teste novo quer sua persona, e a mother vira um depósito de mil métodos. Mantenha as personas que representam papéis de negócio reais; pra variações pontuais, prefira o builder direto no teste.
+
+> [!tip] Vídeo — London School vs. Classic TDD
+> Jason Gorman (Codemanship), ["London School vs. Classic TDD"? Nope. It's London School AND Classic TDD.](https://www.youtube.com/watch?v=uVHGt2qbjXI) (18min) — argumenta que TDD em sistemas reais mistura os dois estilos e discute os riscos de abusar de mocks e stubs. Bom contraponto prático à dicotomia Londres × Detroit apresentada acima.
+
+## Fontes
+
+- Martin Fowler, [bliki: "UnitTest"](https://martinfowler.com/bliki/UnitTest.html) — escolas clássica × mockista, e a definição de testes sociáveis × solitários (termos de Jay Fields).
+- Martin Fowler, [bliki: "ObjectMother"](https://martinfowler.com/bliki/ObjectMother.html) — o padrão Object Mother como factory de fixtures, referência ao paper de Schuh e Punke, e o aviso de inchaço.
+- Vladimir Khorikov, *Unit Testing: Principles, Practices, and Patterns* (Manning, 2020) — tratamento da escola de Londres × clássica e do trade-off isolamento × acoplamento.
+
+## O que vem a seguir
+
+Este galho tratou testes unitários no abstrato — escolas, propriedades, ferramentas de setup. A aplicação concreta varia por linguagem e ecossistema:
+
+- Em **Python**, o ferramental de fixture e factory ganha nome próprio: `[[03-Dominios/Tecnologia/Python/Testes/01 - pytest fundamentos — anatomia, discovery e assert introspection]]` mostra a anatomia do pytest, `[[03-Dominios/Tecnologia/Python/Testes/02 - Fixtures — escopos, yield e conftest.py]]` aprofunda escopos e `yield`, e `[[03-Dominios/Tecnologia/Python/Testes/03 - Parametrização e organização de suíte]]` cobre como evitar a repetição de setup que motivou a seção de factories acima.
+- Em **Go**, a filosofia muda — sem framework de mock pesado, testes tendem ao estilo tabular e sociável por convenção da linguagem: `[[03-Dominios/Tecnologia/Go/15 - Testes/index]]`.
+- Em **JavaScript/TypeScript**, o Vitest resolve fixture e ciclo de vida de um jeito próprio: `[[03-Dominios/Tecnologia/Testes JS/02 - Vitest - setup e o primeiro teste]]` pro primeiro contato, e `[[03-Dominios/Tecnologia/Testes JS/04 - Organização e ciclo de vida]]` pro equivalente direto da discussão de fixture/setup feita aqui.
+
+Não há caso real do usuário aplicável a esta nota — nenhum dos projetos documentados no dossiê profissional cobre a escolha entre escola de Londres/Detroit, factories/object mother ou caça a não-determinismo como tema isolado; o gap fica declarado em vez de preenchido com exemplo fabricado.
 
 ## Veja também
 

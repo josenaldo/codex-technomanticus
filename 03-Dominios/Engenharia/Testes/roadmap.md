@@ -15,7 +15,7 @@ de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
 
 **Galho:** `03-Dominios/Engenharia/Testes`
 **Diagnóstico:** 2026-08-01
-**Última execução:** 2026-08-01 — onda 1 (notas 01-03)
+**Última execução:** 2026-08-01 — ondas 1-2 (notas 01-06)
 **Spec do passe:** [[00-Meta/specs/2026-08-01-galho-testes-fechamento-design|passe de fechamento]]
 
 ## Régua de análise
@@ -129,10 +129,10 @@ falha vira buraco declarado — nunca vídeo "provável".
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 16 |
-| ⬜ pendente | 13 |
+| ⬜ pendente | 10 |
 | ➖ não precisa | 0 |
-| ✅ feita | 3 |
-| % concluído | 19% |
+| ✅ feita | 6 |
+| % concluído | 38% |
 | Classe `[substantivo]` | 16 |
 | Classe `[mecânico]` | 0 — reclassificada após o piso voltar a valer |
 | Score médio | ~5,7 |
@@ -187,7 +187,7 @@ falha vira buraco declarado — nunca vídeo "provável".
 - **Resultado:** 311 linhas (era 285; piso 300 atingido). E1 TL;DR para 3 linhas · E5 `## O que vem a seguir` bifurcando para as notas 04 e 06 · E8 os 2 callouts movidos + 1 terceiro derivado da própria seção "Sem lógica no teste" · L1 fechado com Java/Testes/02 e Testes JS/03 (paths verificados) · M1 PyCon UK 2016 sobre AAA (`GGw5T1mw9vU`, legenda baixada e ID reconferido). **E4 = buraco declarado** em callout. **Ressalva:** E8 tem 3 armadilhas mas 2 são `[!warning]` e 1 é `[!danger]` (o original foi movido, não reclassificado). L2 não constava como gap no diagnóstico desta nota — divergência entre auditores, conferir no passe final.
 
 #### 04 - Testes unitários   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-01)
 - **Estado:** 322 linhas · fase: iniciado · status: evergreen
 - **Núcleo/gaps:** E1 (TL;DR `[!abstract]` tem só 1 linha de conteúdo, não ≥3) · E4 (sem `## Casos práticos`; nenhum dos 5 casos reais do spec de origem — MedEspecialista, TDD/comissão, tela de 30 campos, mock→fake, Awaitility, Testcontainers×H2 — mapeia claramente pra "testes unitários" em si) · E5 (sem `## O que vem a seguir`; existe `## Veja também`, lista pura, não ponte narrativa) · E7 (`### Vocabulário`, linha 291, é lista, não tabela PT↔EN) · E8 (3 `[!warning]` espalhados no corpo — linhas 81, 158, 240 — sem seção `## Armadilhas comuns`) · L2 (callout `[!info] Lastro`, linha 306, tem URLs clicáveis mas não é seção `## Fontes`) · M1 (2 `[!tip]` presentes — linhas 87 e 280 — nenhum com link de vídeo/podcast)
 - **Score:** 5/12
@@ -199,10 +199,10 @@ falha vira buraco declarado — nunca vídeo "provável".
   - Mover os 3 `[!warning]` existentes (trade-off isolamento×acoplamento linha 81; fixture compartilhada linha 158; lado escuro da object mother linha 240) para nova seção `## Armadilhas comuns`, sem duplicar → ativa E8
   - Reformular o callout `[!info] Lastro` (linha 306-309) como seção `## Fontes`, preservando as mesmas URLs em formato de link markdown clicável → ativa L2
   - Pesquisar vídeo/podcast sobre escola de Londres × Detroit (mockist vs classicist testing) ou object mother e embutir como `[!tip]` só se `uvx yt-dlp` baixar legenda de fato (trava de mídia) → ativa M1
-- **Resultado:** —
+- **Resultado:** 342 linhas (era 322; piso 300 já atendido). E1 TL;DR para 3 linhas (definição + Londres×Detroit + F.I.R.S.T) · E5 ponte para Python/Testes 01-03, Go/15/index e Testes JS 02/04 — despacho de fronteira quitado, com `/index` correto no alvo de pasta · E7 Vocabulário virou tabela PT↔EN · E8 os 3 `[!warning]` movidos, com referência cruzada nos pontos originais · L2 `## Fontes` com 3 URLs clicáveis · M1 Codemanship, "London School AND Classic TDD" (`uVHGt2qbjXI`, legenda baixada e ID reconferido). **E4 = buraco declarado:** nenhum caso real cobre escolas/factories/object mother.
 
 #### 05 - Test doubles - dummy, stub, spy, mock, fake   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-01)
 - **Estado:** 298 linhas reais · fase: adepto · status: evergreen
 - **Núcleo/gaps:** E1 (TL;DR tem só 1 linha densa, não ≥3) · E4 (sem `## Casos práticos`; nenhum dos 5 casos reais do spec de origem está mapeado explicitamente pra esta nota — avaliar se "mock→fake" se aplica) · E5 (sem `## O que vem a seguir`; existe `## Veja também`, que é lista, não ponte narrativa) · E8 (só 2 callouts disponíveis — `[!warning]` linha 62 e `[!danger]` linha 214 —, abaixo do piso de 3, sem seção `## Armadilhas comuns` dedicada) · P1 (todos os exemplos de código são caminho feliz; o sintoma de overmocking é descrito só em prosa no `[!danger]`, sem exemplo de código-problema) · L2 (callout `[!info] Lastro`, linha 285, tem URLs clicáveis mas não está em seção `## Fontes`) · M1 (callout `[!tip]` na linha 205 é dica textual, sem link de vídeo/podcast)
 - **Score:** 6/12
@@ -214,10 +214,10 @@ falha vira buraco declarado — nunca vídeo "provável".
   - Acrescentar um trecho de código-problema (ex.: teste com `when(...)`/`verify(...)` em excesso e nenhuma asserção real sobre resultado) ilustrando o sintoma de overmocking já descrito em prosa → ativa P1
   - Reformular o callout `[!info] Lastro` (linhas 285-288) como seção `## Fontes`, mantendo as mesmas URLs em formato de link markdown clicável → ativa L2
   - Pesquisar vídeo/podcast sobre test doubles / mocks vs. stubs e embutir como `[!tip]` só se `uvx yt-dlp` baixar legenda de fato (trava de mídia) → ativa M1
-- **Resultado:** —
+- **Resultado:** 402 linhas (era 298; **piso 400 atingido**). E1 TL;DR para 3 linhas · E5 ponte para Testes JS/06, Python/Testes/04, Testes JS/09 e Go/15/04 · E8 os 2 callouts movidos + 1 derivada do texto (ambiguidade do `mock()` que cria os dois tipos) · P1 código-problema de overmocking (`when`/`verify` sem asserção real) vs. versão corrigida · L2 `## Fontes` + Freeman & Pryce citado como origem do TDD mockista · M1 Keploy, "Stubs vs Mocks vs Fake" (`4AxXWjBSIdY`, legenda `en-orig` baixada e ID reconferido). Déficit fechado com conteúdo novo e sourced: seção das duas escolas (Fowler / Freeman-Pryce) + exemplo trabalhado com três dublês juntos. **E4:** o caso mock→fake foi deixado para a nota 06 (casa correta), com gap declarado aqui em vez de duplicar.
 
 #### 06 - Testar comportamento, não implementação   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-01)
 - **Estado:** 270 linhas reais · fase: adepto · status: evergreen
 - **Núcleo/gaps:** E1 (TL;DR tem só 1 linha, não ≥3) · E4 (sem `## Casos práticos`; existe 1 caso real — migração `@Mock UserRepository` → `InMemoryUserRepository` com `HashMap` — mas só como callout `[!example]`, não em seção dedicada, e é só 1 cenário, não ≥2) · E5 (sem `## O que vem a seguir`; existe `## Veja também`, lista pura sem ponte narrativa) · E7 (`### Vocabulário` é lista com `→`, não tabela PT↔EN) · E8 (sem seção `## Armadilhas comuns`; os `[!warning]` (over-mocking) e `[!danger]` (under-mocking) estão espalhados no corpo) · L2 (callout `[!info] Lastro` tem 3 URLs já clicáveis, mas não é uma seção `## Fontes`)
 - **Score:** 6/12
@@ -229,7 +229,7 @@ falha vira buraco declarado — nunca vídeo "provável".
   - Mover (não duplicar) os callouts `[!warning]` (Sinais de over-mocking, linha 111) e `[!danger]` (O perigo do under-mocking, linha 139) para nova seção `## Armadilhas comuns`; registrar que restam só 2 blocos, abaixo do piso de 3 individuais, sem fabricar novo → ativa E8 parcialmente
   - Reformular o callout `[!info] Lastro` (linha 267) como seção `## Fontes`, preservando os 3 links clicáveis já existentes (Fowler, Dodds, Khorikov) → ativa L2
   - Pesquisar vídeo/podcast sobre testar comportamento vs. implementação (ou mocks vs. fakes) com legenda baixável via `uvx yt-dlp` e embutir como `[!tip]` só se a legenda baixar de fato (trava de mídia) → ativa M1
-- **Resultado:** —
+- **Resultado:** 397 linhas (era 270). **Piso 400 NÃO atingido — faltam 3 linhas, déficit declarado em vez de preenchido com enchimento** (comportamento correto sob a regra anti-padding). E1 TL;DR para 3 linhas · E4 `## Casos práticos` formaliza o caso real `@Mock`→`InMemoryUserRepository`; segundo cenário não fabricado, gap consciente em callout · E5 ponte para Testes JS/07 e Arqueologia/11 (os dois paths que o diagnóstico errara, agora corretos) · E7 tabela PT↔EN com 16 termos · E8 os 2 callouts movidos + 1 derivada ("mockar por preguiça") · L2 `## Fontes` com Fowler/Dodds/Khorikov · M1 PyCon Greece, Kalaitzis (`QQUwZQvuFCQ`, legenda baixada e ID reconferido). Conteúdo novo: os quatro pilares de Khorikov, diagrama de decisão fake×mock×stub e exemplos Java genéricos.
 
 #### 07 - Testes de integração   [substantivo]
 - **Enriquecimento:** ⬜ pendente
