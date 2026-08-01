@@ -30,7 +30,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | MÍDIA | M1 Vídeo/podcast embutido |
 
 **Esquema de `fase:` detectado:** COM fase (Iniciado 01-04 · Adepto 05-11 · Magus 12-16)
-**Piso de linhas:** **não aplicado neste diagnóstico** — ver ajustes de régua abaixo.
+**Piso de linhas:** **APLICADO** (Iniciado ≥300 · Adepto ≥400 · Magus ≥500) — decisão do usuário, 2026-08-01.
 
 ### Ajustes de régua (registrados, não compensados)
 
@@ -38,11 +38,42 @@ Herdados da lição de Complexidade de Software: o checklist genérico sub-avali
 conceitual/estratégico. Registrar o ajuste é obrigatório; preencher seção pra cumprir
 agenda é proibido.
 
-1. **Piso de linhas suspenso.** Vigora o padrão capítulo de livro. Medição real: 16/16 notas
-   entre 239 e 333 linhas; sob o piso literal (Iniciado ≥300 · Adepto ≥400 · Magus ≥500),
-   **14/16 reprovariam** — o que transformaria um passe de casca num passe de expansão.
-   Decisão pendente de confirmação do usuário (ver nota de fecho do diagnóstico).
-   Enquanto pendente, "abaixo do piso" **não** classifica a nota como `[substantivo]`.
+1. **Piso de linhas — APLICADO.** ⚠️ **Decisão do usuário em 2026-08-01: o piso vale.** Isto
+   revoga a suspensão provisória usada durante o diagnóstico. O passe deixa de ser só casca e
+   passa a incluir **expansão real de conteúdo**. Piso: Iniciado ≥300 · Adepto ≥400 · Magus ≥500.
+
+   Medição e déficit por nota (linhas reais em 2026-08-01):
+
+   | Nota | Fase | Hoje | Piso | Déficit |
+   |------|------|------|------|---------|
+   | 01 | Iniciado | 301 | 300 | ✅ — |
+   | 02 | Iniciado | 245 | 300 | +55 |
+   | 03 | Iniciado | 285 | 300 | +15 |
+   | 04 | Iniciado | 322 | 300 | ✅ — |
+   | 05 | Adepto | 298 | 400 | +102 |
+   | 06 | Adepto | 270 | 400 | +130 |
+   | 07 | Adepto | 240 | 400 | +160 |
+   | 08 | Adepto | 310 | 400 | +90 |
+   | 09 | Adepto | 330 | 400 | +70 |
+   | 10 | Adepto | 257 | 400 | +143 |
+   | 11 | Adepto | 239 | 400 | +161 |
+   | 12 | Magus | 260 | 500 | +240 |
+   | 13 | Magus | 322 | 500 | +178 |
+   | 14 | Magus | 311 | 500 | +189 |
+   | 15 | Magus | 333 | 500 | +167 |
+   | 16 | Magus | 286 | 500 | +214 |
+
+   **Como fechar o déficit — nesta ordem:**
+   1. **A casca já entrega boa parte.** `## Casos práticos`, `## O que vem a seguir`,
+      `## Armadilhas comuns`, `## Fontes`, tabela PT↔EN e o `[!tip]` de mídia somam tipicamente
+      **60–120 linhas**. Em 02, 03, 08 e 09 isso sozinho pode fechar o piso.
+   2. **O resto é conteúdo técnico NOVO e sourced** — ângulo, mecanismo, exemplo trabalhado,
+      diagrama Mermaid que carrega semântica. Nota substancial mora em ~440–540 linhas.
+   3. **PROIBIDO padding.** Nada de reformular o mesmo parágrafo em outras palavras, listar
+      ferramentas sem raciocínio, ou inflar callout para ganhar linha. Se o piso só fechar com
+      enchimento, **declare o déficit** no roadmap em vez de encher — o registro honesto vale
+      mais que o número batido.
+   4. **Redundância entre notas é reforço** — linkar, nunca podar assunto repetido.
 2. **E4 (Casos práticos)** só onde o caso é real. O galho carrega 5 experiências reais do
    usuário (MedEspecialista, TDD/comissão, tela de 30 campos, mock→fake, Awaitility,
    Testcontainers×H2), mapeadas no spec de origem. **Nunca fabricar** caso novo.
