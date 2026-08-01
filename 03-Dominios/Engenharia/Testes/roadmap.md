@@ -15,7 +15,7 @@ de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
 
 **Galho:** `03-Dominios/Engenharia/Testes`
 **Diagnóstico:** 2026-08-01
-**Última execução:** 2026-08-01 — ondas 1-3 (notas 01-09)
+**Última execução:** 2026-08-01 — ondas 1-4 (notas 01-12)
 **Spec do passe:** [[00-Meta/specs/2026-08-01-galho-testes-fechamento-design|passe de fechamento]]
 
 ## Régua de análise
@@ -129,10 +129,10 @@ falha vira buraco declarado — nunca vídeo "provável".
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 16 |
-| ⬜ pendente | 7 |
+| ⬜ pendente | 4 |
 | ➖ não precisa | 0 |
-| ✅ feita | 9 |
-| % concluído | 56% |
+| ✅ feita | 12 |
+| % concluído | 75% |
 | Classe `[substantivo]` | 16 |
 | Classe `[mecânico]` | 0 — reclassificada após o piso voltar a valer |
 | Score médio | ~5,7 |
@@ -275,7 +275,7 @@ falha vira buraco declarado — nunca vídeo "provável".
 - **Resultado:** 364 linhas (era 330). **Piso 400 NÃO atingido — déficit residual de 36 linhas, declarado em vez de preenchido.** Justificativa do executor: a nota é prosa longa (parágrafo denso conta 1 linha), e fechar exigiria inflar texto ou inventar sub-tópico fora do plano — ambos vedados. E1 TL;DR para 3 linhas · E4 `## Casos práticos` formaliza os DOIS casos reais (comissão de 5 condições · cadastro de 30 campos) lado a lado, sem alterar fato algum; as menções originais viraram pontes · E5/L1 ponte para Python/Testes/08 e Arqueologia/14 · E7 vocabulário virou tabela · E8 os 3 `[!warning]` movidos · L2 `## Fontes` com as 7 URLs + Ian Cooper e Fowler · M1 Ian Cooper, "TDD, Where Did It All Go Wrong" na DevTernity (`EZ05e7EMOLM`, 12.600 linhas de VTT baixadas, ID reconferido).
 
 #### 10 - Técnicas de teste e edge cases   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-01)
 - **Estado:** 257 linhas reais · fase: adepto · status: evergreen
 - **Núcleo/gaps:** E1 (TL;DR `[!abstract]`, linha 18-19, tem só 1 linha densa, não ≥3) · E4 (sem `## Casos práticos`; nenhum dos 5 casos reais do spec de origem — MedEspecialista, TDD/comissão, tela de 30 campos, mock→fake, Awaitility, Testcontainers×H2 — mapeia claramente pra técnicas de particionamento/BVA/tabelas de decisão/edge cases) · E5 (sem `## O que vem a seguir`; existe `## Veja também`, linha 249, lista pura de wikilinks, não ponte narrativa) · E7 (`### Vocabulário`, linha 224, é lista com `→`, não tabela PT↔EN) · E8 (3 `[!warning]` espalhados no corpo — linha 83 "A armadilha da partição de equivalência", linha 163 "O erro clássico", linha 214 "O esquecido que pega em produção" — sem seção `## Armadilhas comuns` dedicada) · L1 (todos os wikilinks — linhas 33, 124, 218, 251-257 — apontam pra dentro da própria pasta Testes; sem alvo cross-galho) · L2 (callout `[!info] Lastro`, linhas 244-247, tem 3 URLs já clicáveis, mas não é seção `## Fontes` — gap de formato) · M1 (4 `[!tip]` presentes — linhas 25, 114, 187, 217 (nota: 3 tips totais além do de mentalidade) — nenhum com link de vídeo/podcast)
 - **Score:** 4/11 (P1 N/A — nota conceitual, sem bloco de código; diagramas Mermaid e tabelas ilustram as técnicas)
@@ -287,10 +287,10 @@ falha vira buraco declarado — nunca vídeo "provável".
   - Mover (não duplicar) os 3 `[!warning]` existentes (linha 83 "A armadilha da partição de equivalência"; linha 163 "O erro clássico"; linha 214 "O esquecido que pega em produção") para nova seção `## Armadilhas comuns` → ativa E8
   - Reformular o callout `[!info] Lastro` (linhas 244-247) como seção `## Fontes`, preservando as 3 URLs já clicáveis (ISTQB syllabus, Myers, ISTQB BVA white paper) → ativa L2
   - Pesquisar vídeo/podcast sobre equivalence partitioning / boundary value analysis / edge case testing e embutir como `[!tip]` só se `uvx yt-dlp` baixar legenda de fato (trava de mídia) → ativa M1
-- **Resultado:** —
+- **Resultado:** 403 linhas (era 257; **piso 400 atingido**). E1 TL;DR para 3 linhas · E5/L1 ponte para Matemática/05 (rigor de prova vs. amostragem) e Go/15/07 (fuzzing como geração automatizada de edge cases) · E7 tabela PT↔EN com 19 termos · E8 os 3 `[!warning]` movidos + 1 novo sobre exagero em worst-case/n-switch · L2 `## Fontes` com as 3 URLs + GeeksforGeeks e TMap · M1 Test-o-blog sobre BVA/EP/tabela de decisão (`b2EZifZtFi8`, legenda baixada e ID reconferido). Déficit de +143 fechado com conteúdo novo e sourced: worst-case/robustness (Myers), N-switch coverage (Chow/TMap), colapso de tabela de decisão, partição multidimensional e exemplo trabalhado de bloqueio de conta com diagrama de state-transition — marcado explicitamente como construção ilustrativa, não caso real. **E4 = buraco declarado.**
 
 #### 11 - Testes flaky   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-01)
 - **Estado:** 239 linhas reais · fase: adepto · status: evergreen
 - **Núcleo/gaps:** E1 (TL;DR `[!abstract]`, linha 18-19, tem só 1 linha densa, não ≥3) · E4 (o caso real do spec de origem — os 3 flaky por race condition, `Thread.sleep(500)` mascarando até o CI lento falhar, solução `Awaitility.await().atMost(...)` — está presente como callout `[!example]` "Os três flaky por race condition (caso real)", linha 108-109, não em seção dedicada `## Casos práticos`; é só 1 cenário, não fabricar segundo) · E5 (sem `## O que vem a seguir`; existe `## Veja também`, linha 231, lista pura, não ponte narrativa) · E8 (3 callouts disponíveis — `[!danger]` linha 58 "O envenenamento é coletivo", `[!danger]` linha 103 "Nunca `Thread.sleep` num teste. Nunca.", `[!warning]` linha 198 "O custo cultural é o custo real" — espalhados no corpo, sem seção `## Armadilhas comuns` dedicada) · L2 (callout `[!info] Lastro`, linhas 226-229, tem 3 URLs em texto puro, não formatadas como link markdown clicável, e não está em seção `## Fontes` — gap de formato) · M1 (1 `[!tip]` presente, linha 145, sem link de vídeo/podcast)
 - **Score:** 6/12
@@ -301,10 +301,10 @@ falha vira buraco declarado — nunca vídeo "provável".
   - Mover (não duplicar) os 3 callouts existentes (`[!danger]` linha 58; `[!danger]` linha 103; `[!warning]` linha 198) para nova seção `## Armadilhas comuns`, individualizados → ativa E8
   - Reformular o callout `[!info] Lastro` (linhas 226-229) como seção `## Fontes`, convertendo as 3 URLs (Fowler, Google Testing Blog, Awaitility) em links markdown clicáveis → ativa L2
   - Pesquisar vídeo/podcast sobre testes flaky, race conditions em testes assíncronos ou Awaitility e embutir como `[!tip]` só se `uvx yt-dlp` baixar legenda de fato (trava de mídia) → ativa M1
-- **Resultado:** —
+- **Resultado:** 297 linhas (era 239). **Piso 400 NÃO atingido — déficit residual de ~103 linhas, declarado em vez de preenchido** (a maior lacuna do galho até aqui). E1 TL;DR para 3 linhas · E4 `## Casos práticos` formaliza o caso real do Awaitility com os fatos preservados literalmente, registrando que só há 1 cenário · E5 ponte para Testes JS/16 · E8 os 3 callouts movidos e individualizados · L2 `## Fontes` com Fowler, Google Testing Blog e Awaitility clicáveis · M1 Andrei Solntsev no Jfokus, 50 min (`18J2_4a4Cl4`, legenda baixada e ID reconferido). Conteúdo novo: seção sobre retry automatizado como paliativo (Gradle Test Retry Plugin e Surefire `rerunFailingTestsCount`, com fonte oficial) e diagrama da semântica de `failOnPassedAfterRetry`.
 
 #### 12 - Coverage e mutation testing   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-01)
 - **Estado:** 260 linhas reais · fase: magus · status: evergreen
 - **Núcleo/gaps:** E1 (TL;DR `[!abstract]`, linha 18-19, tem só 1 linha densa, não ≥3) · E4 (sem `## Casos práticos`; nenhum dos 5 casos reais do spec de origem — MedEspecialista, TDD/comissão, tela de 30 campos, mock→fake, Awaitility, Testcontainers×H2 — mapeia claramente pra coverage/mutation testing) · E5 (sem `## O que vem a seguir`; existe `## Veja também`, linha 252, lista pura, não ponte narrativa) · E7 (`### Vocabulário PT → EN`, linha 228, é lista com `→`, não tabela) · E8 (3 callouts disponíveis — `[!warning]` linha 94 "Coverage não vê asserções", `[!danger]` linha 141 "A meta de 100% é desperdício", `[!warning]` linha 199 "Mutation testing é caro" — atingem o piso de 3, mas sem seção `## Armadilhas comuns` dedicada) · L2 (callout `[!info] Lastro`, linhas 247-250, já tem URLs clicáveis, mas não está em seção `## Fontes` — gap de formato) · M1 (só o `[!tip]` da linha 74 "Configure a ferramenta para branch", sem link de vídeo/podcast)
 - **Score:** 6/12
@@ -316,7 +316,7 @@ falha vira buraco declarado — nunca vídeo "provável".
   - Mover (não duplicar) os 3 callouts existentes (`[!warning]` linha 94 "Coverage não vê asserções"; `[!danger]` linha 141 "A meta de 100% é desperdício"; `[!warning]` linha 199 "Mutation testing é caro") para nova seção `## Armadilhas comuns` → ativa E8
   - Reformular o callout `[!info] Lastro` (linhas 247-250) como seção `## Fontes`, preservando os links clicáveis já existentes (Fowler, PITest/Baeldung, JAVAPRO) → ativa L2
   - Pesquisar vídeo/podcast sobre coverage vs. mutation testing (ex.: overview do PITest, ou talk sobre Goodhart's Law aplicada a métricas de teste) e embutir como `[!tip]` só se `uvx yt-dlp` baixar legenda de fato (trava de mídia) → ativa M1
-- **Resultado:** —
+- **Resultado:** 500 linhas (era 260; **piso Magus 500 atingido** — o maior déficit do galho, +240, fechado). E1 TL;DR para 4 linhas · E5 ponte para Testes JS/12, Python/Testes/07 e Java/Testes/17 · E7 tabela PT↔EN · E8 os 3 callouts movidos · L2 `## Fontes` com Fowler, PITest/Baeldung e JAVAPRO · M1 PITest em Spring Boot (`46fRzKLPXNI`, legenda baixada e ID reconferido). Conteúdo novo e sourced: problema do mutante equivalente (indecidibilidade, taxa 4–39%, ajuste aritmético do score), weak vs. strong mutation (Howden), mutantes de ordem superior e subsuming HOMs (Offutt; Jia & Harman), MC-DC vs. condition coverage, otimizações do PITest (coverage-first, análise incremental), estados `NO_COVERAGE`/`TIMED_OUT`/`NON_VIABLE`, interação com flaky (Shi et al., ISSTA 2019), Lei de Goodhart aplicada ao mutation score e diagrama da pirâmide de garantias. **E4 = buraco declarado.**
 
 #### 13 - Além do básico - property-based, snapshot, contract, smoke   [substantivo]
 - **Enriquecimento:** ⬜ pendente

@@ -1,7 +1,7 @@
 ---
 title: "Testes flaky"
 created: 2026-06-18
-updated: 2026-06-18
+updated: 2026-08-01
 type: concept
 fase: adepto
 status: evergreen
@@ -16,7 +16,9 @@ tags:
 # Testes flaky
 
 > [!abstract] Resumo em uma linha
-> Teste flaky é o que passa às vezes e falha às vezes sem que o código mude — e basta um para erodir a confiança em toda a suíte.
+> Teste flaky é o que passa às vezes e falha às vezes contra o **mesmo código, mesma versão e mesmo ambiente** — o resultado depende de algo que ninguém controlou (ordem, relógio, rede, uma *thread* que não terminou), não de o código ter quebrado.
+> O dano real não é o CI perder minutos em *retry*: é a erosão de confiança. Cada falso vermelho treina o time a desconfiar do sinal, e no dia em que o vermelho for um bug de verdade, ninguém vai olhar — a suíte inteira vira ruído descartável.
+> Por isso a regra de ouro deste capítulo é dura e sem exceção: **nunca `sleep` em teste**. Um `sleep` aposta num prazo fixo; a cura de quase toda causa de flaky é trocar a aposta por uma espera pela condição real.
 
 Imagine um alarme de incêndio que dispara sozinho, sem fogo, três vezes por semana. No começo todo mundo corre. Depois de um mês, ninguém levanta da cadeira — "é só o alarme de novo". No dia em que houver fogo de verdade, o prédio inteiro vai ignorar o som.
 
@@ -55,10 +57,7 @@ flowchart TD
 
 Leitura do diagrama: repare que o estrago não está no passo B (um falso vermelho). Está na cadeia que ele dispara. Cada *retry* que "resolve" treina o reflexo de ignorar. Quando o passo F acontece — um bug real chega vermelho — a reação aprendida já é "é o flaky de novo, dá retry". O bug passa. A partir daí a suíte não protege ninguém; ela só consome tempo de CI.
 
-> [!danger] O envenenamento é coletivo
-> Um flaky não estraga só a si mesmo. Ele estraga a leitura que o time faz de *qualquer* falha vermelha. Por isso a contaminação é desproporcional ao número de testes ruins: 3 flaky numa suíte de 2000 já bastam para alguém dizer "ah, a suíte falha às vezes, é normal". E "é normal" é a frase que mata a suíte.
-
-O Google mediu isso em escala: cerca de **1,5% das execuções de teste** produzem resultado inconsistente, e isso afeta perto de **16% dos testes** ao longo do tempo. Não é um problema de borda — é endêmico em qualquer suíte grande. A diferença entre uma suíte saudável e uma morta é o que a equipe **faz** quando o flaky aparece.
+A contaminação é desproporcional ao número de testes ruins — ver [[#Armadilhas comuns]] para o porquê. O Google mediu isso em escala: cerca de **1,5% das execuções de teste** produzem resultado inconsistente, e isso afeta perto de **16% dos testes** ao longo do tempo. Não é um problema de borda — é endêmico em qualquer suíte grande. A diferença entre uma suíte saudável e uma morta é o que a equipe **faz** quando o flaky aparece.
 
 ## As causas comuns (e o mecanismo de cada uma)
 
@@ -100,15 +99,9 @@ Leitura do diagrama: o mesmo `sleep(500)` que dá folga no laptop é insuficient
 
 ## A regra de ouro: nunca `sleep` em teste
 
-> [!danger] Nunca `Thread.sleep` num teste. Nunca.
-> Um `sleep` não espera que algo aconteça — ele aposta que vai acontecer dentro de N milissegundos. Se você acertar o prazo, o teste fica lento à toa em todo ambiente rápido. Se você errar, o teste fica flaky no ambiente lento. Não existe valor certo, porque o tempo real varia. A alternativa correta é **esperar a condição**, não o relógio.
+Um `sleep` não espera que algo aconteça — ele aposta que vai acontecer dentro de N milissegundos. Se você acertar o prazo, o teste fica lento à toa em todo ambiente rápido; se você errar, o teste fica flaky no ambiente lento. Não existe valor certo, porque o tempo real varia com carga, hardware e coletor de lixo. A alternativa correta é **esperar a condição**, não o relógio (o enunciado completo da regra, como callout, está em [[#Armadilhas comuns]]).
 
-Esta é a heurística mais útil deste capítulo, então vale o caso real que a ensinou:
-
-> [!example] Os três flaky por race condition (caso real)
-> Tive uma suíte com 3 testes flaky por race condition em código assíncrono. A primeira reação foi adicionar `Thread.sleep(500)`. Funcionou... até o CI lento falhar de novo. A solução certa foi `Awaitility.await().atMost(5, SECONDS).until(() -> condição)`. Regra que criei: nunca `sleep` em teste. Nunca.
-
-A lição em uma frase: **`sleep` mascara o problema, esperar-condição resolve.** O `sleep` empurra a aposta para um prazo fixo; o `await().until(...)` faz *polling* na condição real e segue assim que ela for verdade — rápido quando dá, paciente quando precisa, e só falha (com `ConditionTimeoutException`) se o prazo máximo estourar de verdade.
+Esta é a heurística mais útil deste capítulo — o caso real que a ensinou está formalizado em [[#Casos práticos]]. A lição em uma frase: **`sleep` mascara o problema, esperar-condição resolve.** O `sleep` empurra a aposta para um prazo fixo; o `await().until(...)` faz *polling* na condição real e segue assim que ela for verdade — rápido quando dá, paciente quando precisa, e só falha (com `ConditionTimeoutException`) se o prazo máximo estourar de verdade.
 
 ```java
 // FRAGIL: aposta num prazo. Lento no laptop, flaky no CI.
@@ -193,12 +186,70 @@ flowchart TD
 
 Leitura do diagrama: o primeiro losango (B) é o triagem essencial — distinguir bug consistente de flaky intermitente, normalmente rodando a falha algumas vezes. Bug vai consertar o código; flaky vai para quarentena *na hora*, saindo do *gate* para não envenenar o sinal verde dos outros. Mas o passo F é o que separa quarentena de abandono: **ticket, dono, prazo**. Sem isso, a quarentena vira um depósito de testes podres, e o problema só mudou de lugar.
 
-Fowler é explícito sobre o teto: a quarentena deve ter **limite rígido** — ele sugeria no máximo poucos testes (8) e prazo de uma semana. O limite é proposital: se a quarentena pode crescer sem freio, ela deixa de ser pressão para consertar e vira o tapete embaixo do qual se varre tudo.
+Fowler é explícito sobre o teto: a quarentena deve ter **limite rígido** — ele sugeria no máximo poucos testes (8) e prazo de uma semana. O limite é proposital: se a quarentena pode crescer sem freio, ela deixa de ser pressão para consertar e vira o tapete embaixo do qual se varre tudo (o custo real dessa negligência está detalhado em [[#Armadilhas comuns]]).
+
+O Google opera quarentena **automatizada**: um monitor mede a taxa de *flakiness* de cada teste e coloca em quarentena os que passam de um limiar, ao mesmo tempo em que detecta *mudanças* na flakiness para pegar regressões. Onde a esteira de `[[15 - Testes em CI-CD]]` aplica essa política, ela junta o melhor dos dois mundos: o gate fica confiável (flaky não bloqueia) e nenhum flaky some do radar (todo quarentenado tem dono e prazo).
+
+## Retry automatizado: paliativo, não cura
+
+Antes de existir processo de quarentena manual, toda equipe descobre o mesmo atalho: fazer o CI rodar o teste de novo quando ele falha. Ferramentas de build oficializam esse atalho — e vale entender exatamente o que elas fazem, porque o atalho é útil como *instrumento de detecção* e perigoso como *muleta permanente*.
+
+O **Gradle Test Retry Plugin** reexecuta, dentro da mesma *task*, só os testes que falharam, até um teto configurável:
+
+```groovy
+test {
+    retry {
+        maxRetries = 2
+        maxFailures = 20
+        failOnPassedAfterRetry = true
+    }
+}
+```
+
+O parâmetro que decide se o plugin vira instrumento ou muleta é `failOnPassedAfterRetry`. Com `false` (o padrão), um teste que falhou e depois passou no retry deixa o build **verde** — o flaky fica invisível, escondido atrás do retry. Com `true`, o mesmo cenário deixa o build **vermelho**: o retry passou, mas o build denuncia que aquele teste é instável, empurrando-o para quarentena com dono e prazo em vez de deixá-lo se esconder indefinidamente. O Maven Surefire tem o equivalente via `rerunFailingTestsCount`, suportado em JUnit 4.12+, JUnit 5.x e TestNG, com os resultados de cada tentativa registrados no XML como `flakyFailure`/`flakyError` — dado que alimenta a mesma decisão de contabilizar ou esconder a instabilidade.
+
+```mermaid
+flowchart TD
+    A["Suite roda"] --> B{"Teste falhou?"}
+    B -->|"Nao"| C["Build segue verde"]
+    B -->|"Sim"| D["Retry automatico ate maxRetries"]
+    D --> E{"Passou em algum retry?"}
+    E -->|"Nao"| F["Falha real: build vermelho, conserta o codigo"]
+    E -->|"Sim"| G{"failOnPassedAfterRetry?"}
+    G -->|"false (padrao)"| H["Build verde: flaky fica invisivel"]
+    G -->|"true (modo deteccao)"| I["Build vermelho: flaky denunciado"]
+    I --> J["Vai para quarentena com dono e prazo"]
+    H --> K["Ninguem sabe que e flaky: divida invisivel se acumula"]
+```
+
+Leitura do diagrama: os dois ramos de "passou no retry" (G) levam a destinos opostos com a mesma configuração de retry — a diferença é uma flag booleana. É por isso que a documentação oficial do plugin é taxativa: "*retrying tests alone is not a viable flaky test mitigation strategy*" (reexecutar testes sozinho não é uma estratégia viável de mitigação de flaky). Retry sem `failOnPassedAfterRetry=true` (ou processo equivalente de rastreio) não reduz flaky — só o maquia, e o caminho H é exatamente a "confiança zero disfarçada de verde" que a suíte não pode se dar ao luxo de ter.
+
+## Armadilhas comuns
+
+> [!danger] O envenenamento é coletivo
+> Um flaky não estraga só a si mesmo. Ele estraga a leitura que o time faz de *qualquer* falha vermelha. Por isso a contaminação é desproporcional ao número de testes ruins: 3 flaky numa suíte de 2000 já bastam para alguém dizer "ah, a suíte falha às vezes, é normal". E "é normal" é a frase que mata a suíte.
+
+> [!danger] Nunca `Thread.sleep` num teste. Nunca.
+> Um `sleep` não espera que algo aconteça — ele aposta que vai acontecer dentro de N milissegundos. Se você acertar o prazo, o teste fica lento à toa em todo ambiente rápido. Se você errar, o teste fica flaky no ambiente lento. Não existe valor certo, porque o tempo real varia. A alternativa correta é **esperar a condição**, não o relógio.
 
 > [!warning] O custo cultural é o custo real
 > O dinheiro do flaky não está nos minutos de CI desperdiçados em *retry*. Está na confiança. Uma suíte em que "vermelho às vezes é normal" não dá mais nenhuma garantia — você poderia desligá-la e o efeito prático seria o mesmo, com a vantagem de não gastar CI. Defender a confiança da suíte é defender a quarentena com prazo e o "zero flaky no gate" como regra inegociável.
 
-O Google opera quarentena **automatizada**: um monitor mede a taxa de *flakiness* de cada teste e coloca em quarentena os que passam de um limiar, ao mesmo tempo em que detecta *mudanças* na flakiness para pegar regressões. Onde a esteira de `[[15 - Testes em CI-CD]]` aplica essa política, ela junta o melhor dos dois mundos: o gate fica confiável (flaky não bloqueia) e nenhum flaky some do radar (todo quarentenado tem dono e prazo).
+## Casos práticos
+
+Só há um caso registrado nesta nota até agora — não fabricado para preencher espaço. Conforme mais casos aparecerem (e forem resolvidos com o mesmo rigor), entram aqui.
+
+> [!example] Os três flaky por race condition (caso real)
+> Tive uma suíte com 3 testes flaky por race condition em código assíncrono. A primeira reação foi adicionar `Thread.sleep(500)`. Funcionou... até o CI lento falhar de novo. A solução certa foi `Awaitility.await().atMost(5, SECONDS).until(() -> condição)`. Regra que criei: nunca `sleep` em teste. Nunca.
+
+O padrão do caso é o padrão da causa "timing / race condition" descrito em [[#As causas comuns (e o mecanismo de cada uma)]]: o `sleep(500)` era rápido demais para nada no laptop e lento demais para o CI sob carga — não existia prazo fixo certo, porque o tempo real da operação variava com o ambiente. Trocar a aposta por `await().atMost(...).until(...)` resolveu porque deixou de apostar: passou a fazer *polling* na condição real até ela ficar verdadeira, com um teto apenas para não travar para sempre.
+
+> [!tip] Assista: Flaky tests — Andrei Solntsev
+> **Canal/Evento:** Jfokus | **Duração:** ~50min | **Idioma:** EN
+>
+> Palestra de conferência dedicada inteiramente a flaky tests em Java, com exemplos tirados de "projetos reais" (a frase do próprio palestrante) — cobre as mesmas causas raiz desta nota (timing, ordem, estado compartilhado) e reforça o mesmo diagnóstico: retry esconde o sintoma, a cura é eliminar a dependência escondida.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=18J2_4a4Cl4)
 
 ## Em entrevista
 
@@ -223,10 +274,17 @@ A flaky test passes sometimes and fails sometimes against the same code, version
 | serviço externo (mockar) | external service (to mock / stub) |
 | confiança na suíte | trust in the suite |
 
-> [!info] Lastro
-> - Martin Fowler — *Eradicating Non-Determinism in Tests* — https://martinfowler.com/articles/nonDeterminism.html (causas: isolamento, assíncrono, serviços remotos, tempo, *resource leaks*; quarentena com teto e prazo)
-> - Google Testing Blog — *Flaky Tests at Google and How We Mitigate Them* — https://testing.googleblog.com/2016/05/flaky-tests-at-google-and-how-we.html (1,5% das execuções flaky; ~16% dos testes; quarentena automatizada)
-> - Awaitility — DSL Java para sincronizar operações assíncronas — https://github.com/awaitility/awaitility (`await().atMost(...).until(...)`; timeout default 10s; `ConditionTimeoutException`)
+## Fontes
+
+- [Martin Fowler — *Eradicating Non-Determinism in Tests*](https://martinfowler.com/articles/nonDeterminism.html) — causas: isolamento, assíncrono, serviços remotos, tempo, *resource leaks*; quarentena com teto e prazo
+- [Google Testing Blog — *Flaky Tests at Google and How We Mitigate Them*](https://testing.googleblog.com/2016/05/flaky-tests-at-google-and-how-we.html) — 1,5% das execuções flaky; ~16% dos testes; quarentena automatizada
+- [Awaitility — DSL Java para sincronizar operações assíncronas](https://github.com/awaitility/awaitility) — `await().atMost(...).until(...)`; timeout default 10s; `ConditionTimeoutException`
+- [Gradle Test Retry Plugin — README](https://github.com/gradle/test-retry-gradle-plugin) — `maxRetries`/`maxFailures`/`failOnPassedAfterRetry`; "retrying tests alone is not a viable flaky test mitigation strategy"
+- [Apache Maven Surefire — Rerun failing tests](https://maven.apache.org/surefire/maven-surefire-plugin/examples/rerun-failing-tests.html) — `rerunFailingTestsCount`; suporte JUnit 4.12+, JUnit 5.x, TestNG; relatório `flakyFailure`/`flakyError`
+
+## O que vem a seguir
+
+Tudo até aqui foi pensado com testes de backend (JVM, majoritariamente) como pano de fundo — `Thread.sleep`, `Clock` injetável, Testcontainers, Awaitility. Mas a doença é a mesma em qualquer stack assíncrona, e o front-end JS/TS tem sua própria versão dela: promises não aguardadas, `act()` do React, timers de fake que escapam, requisições de rede que resolvem numa ordem diferente a cada corrida. `[[03-Dominios/Tecnologia/Testes JS/16 - Testes flaky em JS]]` retoma exatamente esses mecanismos — mesma regra de ouro (nunca dormir, sempre esperar a condição), ferramental diferente.
 
 ## Veja também
 
