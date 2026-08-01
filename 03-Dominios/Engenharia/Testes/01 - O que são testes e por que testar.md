@@ -1,7 +1,7 @@
 ---
 title: "O que são testes e por que testar"
 created: 2026-06-18
-updated: 2026-06-18
+updated: 2026-08-01
 type: concept
 fase: iniciado
 status: evergreen
@@ -17,7 +17,13 @@ tags:
 > [!abstract] Resumo em uma linha
 > Um teste automatizado é um programa que roda o seu programa e verifica se o resultado bate com o esperado — mas a razão de existir dele não é caçar bug, é te dar velocidade, documentação viva, confiança pra fazer deploy e pressão por bom design.
 
-Comece pela definição mais crua possível. Um teste automatizado é código. Código que chama o seu código, observa o que sai e compara com o que deveria sair. Se bate, passa. Se não bate, falha e te avisa. Só isso.
+## Testar não é caçar bug (essa é a parte rasa)
+
+Pense num teste manual. Você roda o programa, clica nos botões, olha a tela. Funciona? Beleza. Esse é o jeito que todo mundo testa no começo — e funciona, até o programa crescer.
+
+O problema do teste manual não é que ele falha em achar bugs. É que ele **não escala no tempo**. Você corrige um campo no formulário e precisa reclicar os outros quarenta pra ter certeza de que não quebrou nada. Ninguém faz isso. Então você confere só o que mexeu, reza, e descobre o estrago em produção.
+
+É aqui que entra o teste automatizado — e vale começar pela definição mais crua possível. Um teste automatizado é código. Código que chama o seu código, observa o que sai e compara com o que deveria sair. Se bate, passa. Se não bate, falha e te avisa. Só isso.
 
 ```python
 def soma(a, b):
@@ -29,25 +35,16 @@ def test_soma():
 
 Esse é o átomo. Um `assert` que confronta o real com o esperado. Tudo no mundo dos testes — frameworks, mocks, pirâmides, TDD — é elaboração em cima desse átomo.
 
-Mas aqui está a pergunta que separa quem entende de quem decora: **se testar fosse só "achar bug", por que times maduros escrevem testes ANTES de o bug existir?** Por que escrevem testes pra código que já funciona? A resposta é que pegar bug é o efeito mais óbvio dos testes — e o menos importante.
-
-## Testar não é caçar bug (essa é a parte rasa)
-
-Pense num teste manual. Você roda o programa, clica nos botões, olha a tela. Funciona? Beleza. Esse é o jeito que todo mundo testa no começo — e funciona, até o programa crescer.
-
-O problema do teste manual não é que ele falha em achar bugs. É que ele **não escala no tempo**. Você corrige um campo no formulário e precisa reclicar os outros quarenta pra ter certeza de que não quebrou nada. Ninguém faz isso. Então você confere só o que mexeu, reza, e descobre o estrago em produção.
-
-O teste automatizado resolve isso com uma propriedade boba e poderosa: ele é barato de repetir. Escrever custa caro uma vez; rodar custa quase nada infinitas vezes. É essa assimetria que muda tudo.
+O teste automatizado resolve o problema de escala com uma propriedade boba e poderosa: ele é barato de repetir. Escrever custa caro uma vez; rodar custa quase nada infinitas vezes. É essa assimetria que muda tudo.
 
 > [!question] Então por que escrevemos testes de verdade?
 > Não pra "verificar que funciona hoje". É pra **continuar sabendo que funciona depois de mil mudanças**. O valor do teste não está no momento em que você escreve — está em cada `git push` futuro em que ele roda sozinho e te diz "pode seguir".
 
+Mas aqui está a pergunta que separa quem entende de quem decora: **se testar fosse só "achar bug", por que times maduros escrevem testes ANTES de o bug existir?** Por que escrevem testes pra código que já funciona? A resposta é que pegar bug é o efeito mais óbvio dos testes — e o menos importante.
+
 ## O que os testes NÃO podem fazer
 
-Antes de vender testes, é preciso calibrar o que eles não entregam — senão você sai confiando demais. A frase canônica é de Edsger Dijkstra, num relatório da conferência da NATO sobre engenharia de software em 1969:
-
-> [!warning] Testes provam a presença de bugs, não a ausência
-> *"Program testing can be used to show the presence of bugs, but never to show their absence."* — Dijkstra, 1969. Um teste que passa só prova uma coisa: **aquele caminho específico, com aquelas entradas específicas, funcionou**. Diz zero sobre os infinitos caminhos que você não exercitou. Suíte verde não é certificado de "não tem bug" — é "não achei bug nos cenários que pensei em checar".
+Antes de vender testes, é preciso calibrar o que eles não entregam — senão você sai confiando demais. A frase canônica é de Edsger Dijkstra, num relatório da conferência da NATO sobre engenharia de software em 1969: testes provam a presença de bugs, nunca a ausência (a citação completa está em [[#Armadilhas comuns|Armadilhas comuns]], mais adiante).
 
 A razão é matemática. O espaço de entradas de quase qualquer função é grande demais pra testar exaustivamente. Uma função que soma dois inteiros de 64 bits tem mais de 1,8 sextilhão de pares de entrada possíveis (2 elevado a 128); você testa um punhado deles e extrapola. Testar é **amostragem**, não prova. Você escolhe os casos que parecem representativos — limites, zero, negativo, vazio, o "caminho feliz" — e aposta que cobrem as classes de comportamento que importam.
 
@@ -97,6 +94,13 @@ Leitura do diagrama: no trilho de cima, a suíte é uma **rede de segurança** �
 
 > [!tip] A rede de segurança em uma imagem
 > Um trapezista voa solto porque tem rede embaixo. Tire a rede e ele vai parar de soltar das mãos — vai se agarrar à barra. Código sem testes é trapezista sem rede: o time para de ousar refatorar, e o design congela no estado em que estava no dia em que o medo começou.
+
+> [!tip] Assista: Kent Beck On The FIRST Testing Frameworks, TDD, Waterfall & MORE
+> **Canal:** The Engineering Room (Dave Farley), ep. 16 | **Idioma:** EN
+>
+> Entrevista de Dave Farley com Kent Beck sobre a origem dos primeiros frameworks de teste, o nascimento do TDD e os valores do XP — simplicidade, feedback, **coragem** e respeito. Vale ouvir da própria boca de quem cunhou o termo por que "eliminar o medo" é o objetivo central do TDD, não um efeito colateral.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=guycIP56YeY)
 
 É por isso que testes habilitam **refatoração**. Refatorar é mudar a forma do código sem mudar o comportamento. Como você garante que o comportamento não mudou? A suíte verde. Sem ela, "refatorar" vira "reescrever e torcer".
 
@@ -148,10 +152,7 @@ Leia esse teste como uma frase: "sacar mais que o saldo é recusado com `SaldoIn
 
 Por que algumas empresas fazem deploy cinquenta vezes por dia e outras tremem pra subir uma vez por mês? A diferença raramente é ferramenta de CI. É **confiança na suíte**.
 
-Entrega contínua é um pipeline: commit → testes → build → produção, sem mão humana clicando "aprovar". Esse pipeline só pode existir se há um portão automático em que você confia o suficiente pra deixar ir pra produção sem revisão manual. Esse portão é a suíte de testes.
-
-> [!warning] A confiança é frágil e some rápido
-> Basta a suíte deixar passar um bug feio em produção uma vez pra o time perder a fé nela — e voltar pro teste manual de tudo. Confiança em suíte é capital que se constrói devagar e se perde de uma vez. Testes que falham aleatoriamente (os flaky) são o ácido que corrói essa confiança: se metade das falhas é ruído, o time aprende a ignorar TODAS as falhas.
+Entrega contínua é um pipeline: commit → testes → build → produção, sem mão humana clicando "aprovar". Esse pipeline só pode existir se há um portão automático em que você confia o suficiente pra deixar ir pra produção sem revisão manual. Esse portão é a suíte de testes — mas essa confiança é frágil, veja por quê em [[#Armadilhas comuns|Armadilhas comuns]].
 
 ### 4 · Bom design — código difícil de testar é código mal desenhado
 
@@ -210,7 +211,17 @@ Esse segundo custo é o veneno silencioso. Testes acoplados a detalhes de implem
 > [!question] Se custa, por que vale?
 > Porque o custo de escrever e manter testes é pago UMA vez por comportamento, e a economia (refatorar sem medo, deploy sem tremer, onboarding sem perguntar) é colhida MIL vezes ao longo da vida do sistema. A conta só fecha porque software vive muito mais tempo na fase de manutenção do que na de escrita inicial.
 
-A nuance sênior: nem todo código merece o mesmo nível de teste. Um script descartável que roda uma vez não precisa de suíte. Um motor de cálculo de juros que processa milhões de reais por dia precisa de muito teste. Saber **onde** gastar o orçamento de testes é estratégia — não dogma.
+A nuance sênior: nem todo código merece o mesmo nível de teste. Um script descartável que roda uma vez não precisa de suíte. Um motor de cálculo de juros que processa milhões de reais por dia precisa de muito teste. Saber **onde** gastar o orçamento de testes é estratégia — não dogma. E antes de decidir onde investir, vale nomear as armadilhas de raciocínio mais comuns sobre testes — inclusive a mais furada de todas, a de que "não dá tempo" (veja [[#Armadilhas comuns|Armadilhas comuns]] a seguir).
+
+## Armadilhas comuns
+
+Três erros de raciocínio voltam sempre quando o assunto é testes — em conversa de corredor e em entrevista. Valem a pena isolados aqui, porque cada um corrige um excesso de confiança diferente.
+
+> [!warning] Testes provam a presença de bugs, não a ausência
+> *"Program testing can be used to show the presence of bugs, but never to show their absence."* — Dijkstra, 1969. Um teste que passa só prova uma coisa: **aquele caminho específico, com aquelas entradas específicas, funcionou**. Diz zero sobre os infinitos caminhos que você não exercitou. Suíte verde não é certificado de "não tem bug" — é "não achei bug nos cenários que pensei em checar".
+
+> [!warning] A confiança é frágil e some rápido
+> Basta a suíte deixar passar um bug feio em produção uma vez pra o time perder a fé nela — e voltar pro teste manual de tudo. Confiança em suíte é capital que se constrói devagar e se perde de uma vez. Testes que falham aleatoriamente (os flaky) são o ácido que corrói essa confiança: se metade das falhas é ruído, o time aprende a ignorar TODAS as falhas.
 
 > [!warning] A falácia do "não temos tempo pra testar"
 > Essa é a desculpa mais comum e a mais furada. A verdade é que **você sempre testa** — a pergunta é só *como*. Quem não escreve teste automatizado não deixou de testar; está testando à mão, rodando o app e clicando, toda vez que mexe em algo. A escolha real não é "testar ou não testar". É: **testar à mão toda vez** (caro, lento, não repetível, esquecível) ou **automatizar uma vez** (caro uma vez, depois quase grátis pra sempre). "Não temos tempo pra automatizar" quase sempre significa "vamos pagar o teste manual em prestações, eternamente, e fingir que não é custo". Como o teste manual não aparece numa story do board, ele vira trabalho invisível — e trabalho invisível é o mais caro de todos, porque ninguém o questiona.
@@ -283,13 +294,20 @@ Frases prontas em inglês pra defender a importância dos testes sem soar dogmá
 | entrega contínua | continuous delivery |
 | custo de manutenção | maintenance cost |
 
-> [!info] Lastro
-> - Kent Beck, *Test-Driven Development: By Example* (Addison-Wesley, 2002) — testes como rede de segurança que elimina o medo de refatorar; "the tests are the teeth of the ratchet".
-> - Vladimir Khorikov, *Unit Testing Principles, Practices, and Patterns* (Manning, 2020) — as quatro qualidades de um bom teste: proteção contra regressão, resistência a refatoração, feedback rápido e manutenibilidade.
-> - Michael Feathers, *Working Effectively with Legacy Code* (Prentice Hall, 2004) — código legado definido como "código sem testes"; testes como pré-condição pra mudar com segurança.
-> - Edsger W. Dijkstra, em J. N. Buxton e B. Randell (eds.), *Software Engineering Techniques* (NATO Science Committee, conferência de Roma, 1969; publicado 1970) — origem documentada de "testing shows the presence, not the absence of bugs"; também em EWD249, *Notes On Structured Programming*.
-> - IBM Systems Sciences Institute — estimativa clássica do custo crescente do defeito por fase (aprox. 1x design, 6x desenvolvimento, 16x teste, 100x produção); números variam por estudo, lidos como tendência. Base empírica do argumento shift-left.
-> - DORA / DevOps Research and Assessment (Google) — as quatro métricas de performance de entrega (deployment frequency, change lead time, change failure rate e tempo de recuperação de falha, renomeado de MTTR pra *failed deployment recovery time* no relatório de 2024); a suíte de testes como viabilizador de "rápido E estável".
+## Fontes
+
+- Edsger W. Dijkstra, em J. N. Buxton e B. Randell (eds.), *Software Engineering Techniques* — Report on a conference sponsored by the NATO Science Committee, Rome, 27–31 Oct 1969 (publicado abr. 1970), p. 16 — origem documentada, com a citação literal, de "Program testing can be used to show the presence of bugs, but never to show their absence!": [PDF do relatório completo](http://homepages.cs.ncl.ac.uk/brian.randell/NATO/nato1969.PDF). A mesma frase reaparece em EWD249, *Notes On Structured Programming*, disponível no [E.W. Dijkstra Archive](https://www.cs.utexas.edu/~EWD/transcriptions/EWD02xx/EWD249/EWD249.html).
+- IBM Systems Sciences Institute — a estimativa do custo crescente do defeito por fase (aprox. 1x design, 6x desenvolvimento, 16x teste, 100x produção), popularizada por Roger Pressman, tem proveniência frágil: o documento-fonte de 1981 nunca foi publicado formalmente e não é hoje localizável em texto integral. Este [levantamento crítico da trilha de citações](https://gist.github.com/Morendil/ebfa32d10528af04e2ccb8995e3cb4a7) mostra que a curva exata é mais lenda de corredor repetida por décadas do que dado auditável — a tendência qualitativa (bug pego mais tarde custa mais caro) segue amplamente aceita, mas os multiplicadores exatos não devem ser citados como fato duro.
+- Kent Beck, *Test-Driven Development: By Example* (Addison-Wesley, 2002) — testes como rede de segurança que elimina o medo de refatorar; "the tests are the teeth of the ratchet".
+- Vladimir Khorikov, *Unit Testing Principles, Practices, and Patterns* (Manning, 2020) — as quatro qualidades de um bom teste: proteção contra regressão, resistência a refatoração, feedback rápido e manutenibilidade.
+- Michael Feathers, *Working Effectively with Legacy Code* (Prentice Hall, 2004) — código legado definido como "código sem testes"; testes como pré-condição pra mudar com segurança.
+- DORA / DevOps Research and Assessment (Google) — as quatro métricas de performance de entrega (deployment frequency, change lead time, change failure rate e tempo de recuperação de falha, renomeado de MTTR pra *failed deployment recovery time* no relatório de 2024); a suíte de testes como viabilizador de "rápido E estável".
+
+## O que vem a seguir
+
+Tudo até aqui assumiu implicitamente um código nascendo do zero, com testes desde o primeiro commit. Mas boa parte do trabalho sênior de verdade acontece no outro extremo: um sistema que já existe, que ninguém tem coragem de tocar, e que **não tem rede de segurança nenhuma**. É aí que as quatro funções estratégicas desta nota — velocidade, documentação, confiança, bom design — deixam de ser teoria e viram a diferença entre conseguir mexer no sistema ou travar de medo.
+
+Esse é o território de [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/01 - O que é código legado|código legado]]: por que a definição mais útil de "legado" não é "código velho", é "código sem testes" (a mesma definição de Michael Feathers citada acima). E quando não há suíte pra confiar, o primeiro movimento profissional não é sair refatorando — é [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/10 - A rede de segurança primeiro|construir a rede de segurança primeiro]], escrevendo testes de caracterização em cima do comportamento atual antes de qualquer mudança de design.
 
 ## Veja também
 

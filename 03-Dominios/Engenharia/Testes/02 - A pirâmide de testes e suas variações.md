@@ -1,7 +1,7 @@
 ---
 title: "A pirâmide de testes e suas variações"
 created: 2026-06-18
-updated: 2026-06-18
+updated: 2026-08-01
 type: concept
 fase: iniciado
 status: evergreen
@@ -15,8 +15,8 @@ tags:
 
 # A pirâmide de testes e suas variações
 
-> [!abstract] Resumo em uma linha
-> A forma da sua suíte (quantos testes de cada tipo) não é um dogma decorado — é a sombra de onde o risco mora no seu sistema, e a pergunta certa é "qual teste eu quero que falhe quando ESTE bug aparecer?".
+> [!abstract] Resumo
+> A forma da sua suíte (quantos testes de cada tipo) não é um dogma decorado — é a sombra de onde o risco mora no seu sistema. Mike Cohn deu forma à pirâmide (base larga de unit, topo estreito de E2E) pensando em backend rico em regra de negócio; Kent C. Dodds virou essa forma de cabeça para o lado no Testing Trophy porque, no frontend, o compilador e o teste de integração é que carregam o peso. Nenhum dos dois é a resposta certa — os dois são respostas à mesma pergunta, aplicadas a riscos diferentes. A pergunta que substitui os dois dogmas é uma só: "qual teste eu quero que FALHE quando ESTE bug aparecer?" — deixe o bug escolher o nível, e a silhueta da suíte emerge sozinha.
 
 Você já sabe **o que** é um teste e por que escrever um — isso ficou em [[01 - O que são testes e por que testar]]. Agora vem a pergunta que separa quem decora de quem entende: **quantos** testes de cada tipo você deveria ter?
 
@@ -109,6 +109,10 @@ Leitura do diagrama: a base `Análise estática` é o piso de graça. Subindo, `
 
 O troféu é o modelo natural para quem trabalha com [[Testes em JavaScript]] — frontend React + TypeScript + Testing Library. Não porque a pirâmide "esteja errada", mas porque **o risco mora em outro lugar**: muito do que quebraria em unit no backend, no frontend já é pego pelo compilador ou só aparece na colaboração.
 
+> [!tip] Vídeo — The Testing Trophy 🏆 An in depth look (Kent C. Dodds, 35min)
+> O próprio autor do troféu explica, com legenda disponível, de onde veio a forma, por que ela difere da pirâmide clássica e como aplicá-la na prática em frontend React. Bom complemento em vídeo pro texto desta seção.
+> [youtube.com/watch?v=RHKkEiQ58N0](https://www.youtube.com/watch?v=RHKkEiQ58N0)
+
 > [!note] Pirâmide × Troféu não é guerra
 > São o mesmo princípio — "concentre testes onde o risco é alto e o custo é baixo" — aplicado a sistemas com perfis de risco diferentes. Backend rico em lógica de domínio puxa pra base de unit. Frontend rico em interação e tipagem puxa pra base estática e ao miolo de integração. Escolher o modelo é diagnosticar o sistema, não torcer por um time.
 
@@ -151,8 +155,19 @@ flowchart TB
 
 Leitura do diagrama: na **ampulheta**, `Integração` (tracejada) é o buraco no meio — os bugs de colaboração caem nesse vão e só aparecem no E2E caro. No **cone**, o peso está todo em cima, em `E2E manual`, sobre uma base inexistente — a suíte inteira é lenta e quebradiça. Ambas falham pela mesma razão: o investimento não está onde o risco é barato de cobrir.
 
+## Armadilhas comuns
+
 > [!warning] A ampulheta tem uma defesa parcial
 > Em código **legado** sem costuras pra testar em unit, e com ferramentas de E2E mais robustas hoje, alguns defendem a ampulheta como mal menor temporário — você empurra parte da verificação de integração pelo topo. É uma concessão à realidade, não um ideal. Não comece um projeto novo mirando a ampulheta.
+
+> [!warning] Tratar a proporção como dogma numérico
+> "70% unit, 20% integração, 10% E2E" é uma memória decorada, não uma lei física. A pirâmide e o troféu são **modelos de onde o risco costuma morar**, não uma cota a bater em code review. Se seu domínio é matemático e isolado (um parser, um motor de regras), a forma legítima pode ser quase um pilar de unit — e isso não é "quebrar a pirâmide", é aplicar o princípio corretamente. Perseguir a proporção certa em vez da pergunta certa ("qual teste eu quero que falhe?") é decorar a resposta sem entender a pergunta.
+
+> [!warning] "Teste de integração" significa coisas diferentes para times diferentes
+> Um backend Java costuma chamar de "integração" um teste que sobe um banco real (ou container efêmero) e verifica a fiação entre camadas — controller, service, repositório. Um time de frontend, ao usar o mesmo termo dentro do Testing Trophy, geralmente quer dizer "vários componentes React colaborando dentro do mesmo processo, sem rede". São coisas diferentes com o mesmo nome. Numa entrevista ou numa discussão cross-time, vale a pena perguntar "integração de quê com quê?" antes de assumir que todos falam da mesma pirâmide.
+
+> [!info] Só uma armadilha tem lastro direto na nota
+> A ampulheta é o único anti-padrão com um `[!warning]` originalmente presente no corpo (a defesa parcial em legado). As duas seguintes foram derivadas do próprio raciocínio da nota — não de um caso real de produção do autor, que não existe registrado até o momento. Fica como lacuna consciente, não fabricada.
 
 ## A pergunta que substitui o dogma
 
@@ -197,6 +212,42 @@ flowchart TD
 
 Leitura do diagrama: você desce pelas perguntas. `É lógica pura?` → unit. Senão, `é fiação/contrato?` → integração. Senão, `é fluxo crítico?` → E2E. Se nada disso, talvez o caso seja análise estática ou nem precise de teste. A proporção final da suíte é só a soma dessas decisões individuais — ela **emerge** do risco, não é imposta de fora.
 
+## Outra lente: tamanho em vez de forma (Google)
+
+Existe uma terceira forma de fatiar o mesmo problema, e ela vem do time de Testing da Google. Em vez de classificar pelo **nome** do teste (unit, integration, E2E — nomes que, como vimos nas armadilhas, cada time interpreta diferente), a Google classifica pelo **tamanho**: quanto recurso o teste consome e onde ele roda.
+
+> [!question] Por que trocar "tipo" por "tamanho"?
+> Porque "tipo" é ambíguo (o que um time chama de integração, outro chama de unit) e "tamanho" é observável: quantos processos, máquinas e recursos externos reais o teste toca. É um critério operacional, não semântico.
+
+- **Small (pequeno):** roda num único processo, ambiente inteiramente fake (sem rede real, sem disco real, sem sleep/timer real). Determinístico e rápido por construção — mapeia quase 1:1 com "unitário".
+- **Medium (médio):** roda numa única máquina, pode tocar recursos reais ou fake nessa máquina (um banco em container local, por exemplo). Mapeia perto de "integração".
+- **Large (grande):** roda em qualquer lugar, com recursos de produção reais ou próximos disso. Mapeia perto de "E2E", mas sem prometer que é "o app inteiro" — só que o ambiente é real.
+
+A régua da Google é: **escreva sempre o menor teste que ainda prova o que você precisa provar**, porque tamanho pequeno compra velocidade e determinismo — as mesmas duas variáveis que a pirâmide e o troféu já estavam otimizando, só que agora medidas por comportamento de execução, não por rótulo. O mesmo time publicou depois um argumento mais afiado ainda contra o cone de sorvete: *"Just Say No to More End-to-End Tests"* — cada E2E a mais tende a ser lento, quebradiço (*flaky*) e caro de debugar quando falha, então o investimento marginal deveria ir para medium antes de ir para large.
+
+### Exemplo trabalhado: o mesmo domínio, três bugs, três níveis
+
+Pra fixar a pergunta de ouro, veja como ela se aplica dentro de um único domínio — um carrinho de compras com desconto por cupom.
+
+```text
+Bug 1 — "cupom de 10% aplicado sobre valor errado quando há frete grátis"
+  Onde mora: função calcularDesconto(subtotal, cupom) — lógica pura, sem I/O
+  Teste que eu quero ver falhar: UNITÁRIO
+    calcularDesconto(100, "CUPOM10") deve retornar 90, não 90-frete
+
+Bug 2 — "cupom válido no service, mas o repositório salva o pedido sem o desconto"
+  Onde mora: na fiação CarrinhoService -> PedidoRepository -> banco
+  Teste que eu quero ver falhar: INTEGRAÇÃO
+    salvar um pedido com cupom aplicado e reler do banco — o desconto persistiu?
+
+Bug 3 — "usuário aplica o cupom na tela, mas o total exibido não atualiza"
+  Onde mora: em qualquer lugar entre o clique e o render — não dá pra saber sem rodar
+  Teste que eu quero ver falhar: E2E
+    abrir o carrinho, digitar o cupom, clicar aplicar, ler o total na tela
+```
+
+Repare que os três bugs vivem no **mesmo domínio de negócio** (desconto de carrinho), mas cada um só é pego de forma barata e precisa por um nível diferente. Um único teste E2E cobrindo os três casos existiria, mas seria lento, apontaria pro lugar errado quando quebrasse, e você reescreveria a asserção de valor três vezes num teste que já está fazendo login, navegação e render — desperdício de tudo que o unit do Bug 1 resolve em milissegundos.
+
 ## Proporção por contexto
 
 Juntando tudo: a "forma certa" depende de onde seu sistema concentra risco.
@@ -209,6 +260,9 @@ Juntando tudo: a "forma certa" depende de onde seu sistema concentra risco.
 > [!note] A meta-regra
 > Não existe proporção universal porque não existe sistema universal. A pirâmide é o **default sensato** para a maioria dos backends; o troféu, para frontends ricos. Mas o que você está realmente fazendo é responder, bug a bug, "qual teste eu quero que falhe?" — e deixar a silhueta se formar. Quem decora a proporção tropeça quando o contexto muda; quem entende o princípio se adapta.
 
+> [!question]- Lacuna consciente: um caso real de decisão pirâmide × troféu
+> O ideal aqui seria fechar a nota com um caso concreto — um projeto real em que a forma da suíte foi escolhida ou trocada deliberadamente, e o que isso custou/economizou. Não há, até o momento, um caso desse tipo documentado no vault com lastro suficiente para citar sem inventar detalhes. Registrado como gap consciente em vez de preenchido com um exemplo fabricado.
+
 ## Em entrevista
 
 Use estas frases para mostrar que você pensa em risco, não em dogma.
@@ -217,23 +271,36 @@ The test pyramid suggests many fast unit tests at the base and few slow E2E test
 
 ### Vocabulário
 
-- pirâmide de testes → test pyramid
-- forma da suíte → shape of the suite
-- centro de gravidade → center of gravity
-- detalhes de implementação → implementation details
-- retorno sobre investimento → return on investment (ROI)
-- análise estática → static analysis
-- cone de sorvete → ice-cream cone
-- ampulheta → hourglass
-- fiação entre camadas → cross-layer wiring
-- jornada crítica do usuário → critical user journey
-- testes de contrato → contract tests
-- ciclo de feedback → feedback loop
+| Português | Inglês |
+| --- | --- |
+| pirâmide de testes | test pyramid |
+| forma da suíte | shape of the suite |
+| centro de gravidade | center of gravity |
+| detalhes de implementação | implementation details |
+| retorno sobre investimento | return on investment (ROI) |
+| análise estática | static analysis |
+| cone de sorvete | ice-cream cone |
+| ampulheta | hourglass |
+| fiação entre camadas | cross-layer wiring |
+| jornada crítica do usuário | critical user journey |
+| testes de contrato | contract tests |
+| ciclo de feedback | feedback loop |
 
-> [!info] Lastro
-> - Martin Fowler, *The Practical Test Pyramid* (martinfowler.com/articles/practical-test-pyramid.html) e o verbete *TestPyramid* (martinfowler.com/bliki/TestPyramid.html) — origem em Mike Cohn, *Succeeding with Agile* (2009).
-> - Kent C. Dodds, *Static vs Unit vs Integration vs E2E Testing for Frontend Apps* e *Write tests. Not too many. Mostly integration.* (kentcdodds.com) — o Testing Trophy e a base de análise estática.
-> - Discussões do anti-padrão *ice-cream cone* (rotulado pelo Google em 2015) e da *hourglass* — ex.: Octomind, "Testing Pyramid: an evolutionary tale", e Carolina Ramirez, "Testing Anti-Patterns" (Geek Culture / Medium).
+## Fontes
+
+- Martin Fowler — [*The Practical Test Pyramid*](https://martinfowler.com/articles/practical-test-pyramid.html) e o verbete [*TestPyramid*](https://martinfowler.com/bliki/TestPyramid.html) — origem em Mike Cohn, *Succeeding with Agile* (2009).
+- Kent C. Dodds — [*Static vs Unit vs Integration vs E2E Testing for Frontend Apps*](https://kentcdodds.com/blog/static-vs-unit-vs-integration-vs-e2e-tests) e [*Write tests. Not too many. Mostly integration.*](https://kentcdodds.com/blog/write-tests) (kentcdodds.com) — o Testing Trophy e a base de análise estática.
+- Discussões do anti-padrão *ice-cream cone* (rotulado pelo Google em 2015) e da *hourglass* — ex.: [Octomind, "Testing Pyramid: an evolutionary tale"](https://octomind.dev/blog/testing-pyramid-an-evolutionary-tale), e Carolina Ramirez, "Testing Anti-Patterns" (Geek Culture / Medium).
+- Google Testing Blog — [*Test Sizes*](https://testing.googleblog.com/2010/12/test-sizes.html) (2010) e [*Just Say No to More End-to-End Tests*](https://testing.googleblog.com/2015/04/just-say-no-to-more-end-to-end-tests.html) (2015) — a classificação small/medium/large e o argumento contra o cone de sorvete.
+- Kent C. Dodds — [*The Testing Trophy 🏆 An in depth look*](https://www.youtube.com/watch?v=RHKkEiQ58N0) (YouTube, 2018) — o vídeo em que o autor do troféu explica sua origem e aplicação.
+
+## O que vem a seguir
+
+Você já tem os dois modelos (pirâmide e troféu) e o critério que decide entre eles — o risco. Duas pontes naturais a partir daqui.
+
+A primeira é lateral: se o seu trabalho toca frontend, a forma do troféu que você viu aqui em teoria ganha ferramental concreto — TypeScript, ESLint, Testing Library, Vitest, MSW — em [[03-Dominios/Tecnologia/Testes JS/01 - O cenário de testes JS]]. É o mesmo diagnóstico ("o risco mora na interação, não na função isolada"), agora com os nomes das ferramentas que o materializam.
+
+A segunda é adiante no fluxo: uma suíte com a forma certa ainda precisa **rodar** — em CI, a cada commit, com o feedback chegando rápido o suficiente para valer a pena. É aí que a pirâmide encontra a esteira: como esses testes se encaixam no pipeline de entrega contínua é assunto de [[03-Dominios/Engenharia/Operação/index]]. A forma decide *o quê* testar; a operação decide *quando* e *com que rapidez* esse teste te avisa.
 
 ## Veja também
 

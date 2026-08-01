@@ -15,7 +15,7 @@ de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
 
 **Galho:** `03-Dominios/Engenharia/Testes`
 **Diagnóstico:** 2026-08-01
-**Última execução:** —
+**Última execução:** 2026-08-01 — onda 1 (notas 01-03)
 **Spec do passe:** [[00-Meta/specs/2026-08-01-galho-testes-fechamento-design|passe de fechamento]]
 
 ## Régua de análise
@@ -129,10 +129,10 @@ falha vira buraco declarado — nunca vídeo "provável".
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 16 |
-| ⬜ pendente | 16 |
+| ⬜ pendente | 13 |
 | ➖ não precisa | 0 |
-| ✅ feita | 0 |
-| % concluído | 0% |
+| ✅ feita | 3 |
+| % concluído | 19% |
 | Classe `[substantivo]` | 16 |
 | Classe `[mecânico]` | 0 — reclassificada após o piso voltar a valer |
 | Score médio | ~5,7 |
@@ -144,7 +144,7 @@ falha vira buraco declarado — nunca vídeo "provável".
 ## Notas
 
 #### 01 - O que são testes e por que testar   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-01)
 - **Estado:** 301 linhas reais · fase: iniciado · status: evergreen
 - **Núcleo/gaps:** E2 (abre pela definição — "Comece pela definição mais crua possível. Um teste automatizado é código" — não por problema/cenário) · E4 (sem `## Casos práticos`; não há caso real evidente na nota) · E5 (sem `## O que vem a seguir`; existe `## Veja também`, que é lista, não ponte narrativa) · E8 (3 `[!warning]` espalhados no corpo, sem seção `## Armadilhas comuns`) · L2 (callout `[!info] Lastro` cita livros/paper em prosa, sem URL clicável; não há seção `## Fontes`) · M1 (5 callouts `[!tip]` presentes, nenhum com link de vídeo/podcast)
 - **Score:** 7/12
@@ -155,10 +155,10 @@ falha vira buraco declarado — nunca vídeo "provável".
   - Avaliar se há caso real do usuário aplicável a esta nota introdutória para `## Casos práticos`; se não houver, manter o gap declarado — não fabricar → ativa E4 (condicional)
   - Pesquisar e citar ≥1 URL externa verificável (ex.: o relatório NATO 1969 de Dijkstra, ou o paper/relatório do IBM Systems Sciences Institute) em nova seção `## Fontes`, substituindo/complementando o callout `Lastro` em prosa → ativa L2
   - Pesquisar vídeo/podcast relevante (ex.: motivação para testar, TDD de Kent Beck) e embutir como `[!tip]` só se `uvx yt-dlp` baixar legenda de fato (trava de mídia) → ativa M1
-- **Resultado:** —
+- **Resultado:** 319 linhas (era 301). E2 reaberto pelo cenário do teste manual que não escala · E8 os 3 `[!warning]` movidos para `## Armadilhas comuns` · E5 ponte para Arqueologia/01 e /10 (despacho de fronteira quitado) · L2 `## Fontes` com o relatório NATO 1969 verificado (PDF baixado, citação de Dijkstra conferida) e ressalva de proveniência sobre o número do IBM Systems Sciences Institute · M1 Kent Beck no The Engineering Room (`guycIP56YeY`, legenda baixada e ID reconferido). **E4 = buraco declarado:** nenhum caso real do usuário cabe nesta nota introdutória.
 
 #### 02 - A pirâmide de testes e suas variações   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-01)
 - **Estado:** 245 linhas reais · fase: iniciado · status: evergreen
 - **Núcleo/gaps:** E1 (TL;DR tem só 1 linha, não ≥3) · E4 (sem `## Casos práticos`) · E5 (sem `## O que vem a seguir`, só `## Veja também`) · E7 (Vocabulário é lista, não tabela) · E8 (só 1 `[!warning]` no corpo, abaixo do piso de 3, sem seção dedicada) · L2 (fontes em callout `Lastro`, não seção `## Fontes`, URLs sem link clicável) · M1 (nenhum vídeo/podcast embutido)
 - **Score:** 5/11 (P1 N/A — nota conceitual sem código)
@@ -170,10 +170,10 @@ falha vira buraco declarado — nunca vídeo "provável".
   - Mover o `[!warning]` existente (linha 154, "A ampulheta tem uma defesa parcial") para uma seção `## Armadilhas comuns`; registrar que só há 1 disponível no corpo, abaixo do piso de 3, sem fabricar novas → ativa E8 parcialmente
   - Reformular o callout `[!info] Lastro` como seção `## Fontes`, com as mesmas URLs em formato de link markdown clicável → ativa L2
   - Pesquisar vídeo/podcast sobre pirâmide de testes ou Testing Trophy com legenda baixável via `yt-dlp` e embutir como `[!tip]` → ativa M1
-- **Resultado:** —
+- **Resultado:** 312 linhas (era 245; piso 300 atingido). E1 TL;DR para 5 linhas · E5 pontes para Testes JS/01 e Operação/index · E7 Vocabulário virou tabela PT↔EN · E8 o `[!warning]` da ampulheta movido + 2 derivadas do conteúdo técnico (dogma numérico; ambiguidade de "teste de integração" entre times), com `[!info]` declarando qual tem lastro original · L2 `## Fontes` com URLs verificadas · M1 Testing Trophy de Kent C. Dodds (`RHKkEiQ58N0`, legenda baixada e ID reconferido). Déficit fechado com conteúdo novo e sourced — taxonomia small/medium/large do Google Testing Blog + exemplo trabalhado —, não padding. **E4 = lacuna consciente** registrada em callout.
 
 #### 03 - Anatomia de um bom teste   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-01)
 - **Estado:** 285 linhas reais · fase: iniciado · status: evergreen
 - **Núcleo/gaps:** E1 (TL;DR tem só 1 linha, não ≥3) · E4 (sem "Casos práticos"; nenhum dos 5 casos reais do spec de origem mapeia pra esta nota) · E5 (sem "O que vem a seguir"; "Veja também" é lista pura, não ponte narrativa) · E8 (sem seção "Armadilhas comuns"; só 1 `[!warning]` solto no corpo) · L1 (todos os wikilinks apontam pra dentro da própria pasta Testes; sem alvo cross-galho) · M1 (sem vídeo/podcast embutido)
 - **Score:** 7/12
@@ -184,7 +184,7 @@ falha vira buraco declarado — nunca vídeo "provável".
   - Mover os callouts existentes (`[!warning] Nomes que não dizem nada`, linha 123; `[!danger] O mito da "uma assertion por teste"`, linha 157) para uma seção dedicada `## Armadilhas comuns`; avaliar se cabe um terceiro item real sem fabricar → ativa E8
   - A diretriz de fronteira do galho não lista alvo de despacho pra nota 03 (tabela cobre 01,02,04-07,10-16, não 03); avaliar candidato plausível na Fase de execução ou registrar como buraco declarado — não inventar wikilink → avalia L1
   - Pesquisar vídeo/podcast sobre anatomia de um bom teste (AAA, F.I.R.S.T, nomenclatura) e embutir via `uvx yt-dlp` só se a legenda baixar de fato → ativa M1
-- **Resultado:** —
+- **Resultado:** 311 linhas (era 285; piso 300 atingido). E1 TL;DR para 3 linhas · E5 `## O que vem a seguir` bifurcando para as notas 04 e 06 · E8 os 2 callouts movidos + 1 terceiro derivado da própria seção "Sem lógica no teste" · L1 fechado com Java/Testes/02 e Testes JS/03 (paths verificados) · M1 PyCon UK 2016 sobre AAA (`GGw5T1mw9vU`, legenda baixada e ID reconferido). **E4 = buraco declarado** em callout. **Ressalva:** E8 tem 3 armadilhas mas 2 são `[!warning]` e 1 é `[!danger]` (o original foi movido, não reclassificado). L2 não constava como gap no diagnóstico desta nota — divergência entre auditores, conferir no passe final.
 
 #### 04 - Testes unitários   [substantivo]
 - **Enriquecimento:** ⬜ pendente

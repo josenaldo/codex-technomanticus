@@ -1,7 +1,7 @@
 ---
 title: "Anatomia de um bom teste"
 created: 2026-06-18
-updated: 2026-06-18
+updated: 2026-08-01
 type: concept
 fase: iniciado
 status: evergreen
@@ -16,6 +16,8 @@ tags:
 
 > [!abstract] Resumo em uma linha
 > Um bom teste arruma o cenário, executa uma ação e verifica um comportamento (AAA), tem nome que conta o que e quando, falha por uma única razão e obedece ao F.I.R.S.T — Fast, Independent, Repeatable, Self-validating, Timely.
+> Essas cinco propriedades não são um checklist de estilo: cada uma existe porque resolve um jeito específico de teste te trair — teste lento que você para de rodar, teste acoplado que quebra em cascata, teste flaky que mente, teste mudo que não te diz o que quebrou.
+> A anatomia é a mesma em qualquer linguagem — JUnit, pytest, Jest — porque o problema que ela resolve (confiar no build vermelho) também é o mesmo em qualquer stack.
 
 Escrever teste é fácil. Escrever um bom teste é outra coisa.
 
@@ -51,7 +53,7 @@ void deve_aplicar_desconto_quando_cliente_e_vip() {
 }
 ```
 
-Repare nos três blocos separados por linhas em branco. Você lê de cima a baixo e entende a história sem precisar de comentário (os `// Arrange` aqui são só didáticos).
+Repare nos três blocos separados por linhas em branco. Você lê de cima a baixo e entende a história sem precisar de comentário (os `// Arrange` aqui são só didáticos). Se seu dia a dia é Java, [[03-Dominios/Tecnologia/Java/Testes/02 - JUnit 5 — anatomia, lifecycle e o padrão AAA]] mostra como o `@Test`, o `@BeforeEach` e o resto do lifecycle do JUnit 5 se encaixam nesse mesmo esqueleto AAA.
 
 ```mermaid
 flowchart LR
@@ -120,9 +122,6 @@ Convenções comuns (escolha uma e seja consistente no projeto):
 | `should X when Y` (EN) | `should_throw_when_balance_insufficient` |
 | `methodUnderTest_scenario_expectedBehavior` | `saque_saldoInsuficiente_lancaExcecao` |
 
-> [!warning] Nomes que não dizem nada
-> `test1`, `testCreate`, `testHappyPath`, `testIt`. São formas de não nomear. O nome do teste é a primeira linha de documentação que alguém lê quando algo quebra. Trate-o como uma frase, não como um rótulo.
-
 A regra prática: leia o nome em voz alta. Se ele soa como uma frase que descreve uma regra de negócio, está bom. Se soa como o nome de uma variável temporária, refaça.
 
 ## Um teste, uma razão para falhar
@@ -153,9 +152,6 @@ flowchart TB
 **Leitura do diagrama:** no teste gigante, a falha é ambígua — sabe-se que algo quebrou, não o quê. Nos testes focados, dois passam (verde) e um falha (vermelho): o diagnóstico vem de graça, sem abrir o código. Cada teste é um fusível: queima o que estourou, deixa o resto aceso.
 
 A regra é: **um comportamento por teste**. Prefira muitos testes pequenos e focados a um monstro que verifica tudo.
-
-> [!danger] O mito da "uma assertion por teste"
-> Você vai ouvir "use uma única assertion por teste". Isso é meia-verdade — vira dogma e atrapalha. O correto é **um comportamento por teste**, não uma linha de assert por teste. Verificar que um objeto retornado tem `nome`, `email` e `id` corretos pode ser três asserts que validam **um** comportamento ("o objeto foi montado direito"). Tudo bem. O que você não quer é um teste que verifica cadastro, login e exclusão de uma vez só.
 
 ## F.I.R.S.T — as cinco leis
 
@@ -199,7 +195,7 @@ Rodou agora, rodou daqui a uma hora, rodou na máquina do colega, rodou no CI: m
 
 ### Self-validating — auto-validável
 
-O teste decide sozinho se passou ou falhou. Verde ou vermelho, booleano. Sem você ter que ler um log e julgar "hmm, parece certo". Se um humano precisa interpretar a saída, não é teste automatizado — é checklist manual disfarçado. A assertion é o juiz; ela diz sim ou não.
+O teste decide sozinho se passou ou falhou. Verde ou vermelho, booleano. Sem você ter que ler um log e julgar "hmm, parece certo". Se um humano precisa interpretar a saída, não é teste automatizado — é checklist manual disfarçado. A assertion é o juiz; ela diz sim ou não. A qualidade dessa assertion importa: se você trabalha em JavaScript/TypeScript, [[03-Dominios/Tecnologia/Testes JS/03 - Matchers e asserções]] detalha os matchers do Jest/Vitest que tornam o "sim ou não" legível na primeira leitura, em vez de um `assert(x)` mudo.
 
 ### Timely — oportuno
 
@@ -252,6 +248,19 @@ Por isso, **legibilidade vence esperteza**. Um teste que usa um truque genial ma
 > [!info] Comportamento, não implementação
 > A propriedade mais importante de um bom teste — testar **o que** o código faz, não **como** ele faz — é tão central que tem nota dedicada. Um teste amarrado aos detalhes internos quebra a cada refactor mesmo quando o comportamento não mudou. Aprofunde em [[06 - Testar comportamento, não implementação]].
 
+## Armadilhas comuns
+
+Três erros recorrentes que já apareceram nesta nota, reunidos aqui porque quem lê rápido tende a pular os callouts espalhados no meio do texto.
+
+> [!warning] Nomes que não dizem nada
+> `test1`, `testCreate`, `testHappyPath`, `testIt`. São formas de não nomear. O nome do teste é a primeira linha de documentação que alguém lê quando algo quebra. Trate-o como uma frase, não como um rótulo.
+
+> [!danger] O mito da "uma assertion por teste"
+> Você vai ouvir "use uma única assertion por teste". Isso é meia-verdade — vira dogma e atrapalha. O correto é **um comportamento por teste**, não uma linha de assert por teste. Verificar que um objeto retornado tem `nome`, `email` e `id` corretos pode ser três asserts que validam **um** comportamento ("o objeto foi montado direito"). Tudo bem. O que você não quer é um teste que verifica cadastro, login e exclusão de uma vez só.
+
+> [!warning] Lógica condicional dentro do teste
+> `if`, `for`, `while` no corpo do teste (ver "Sem lógica no teste" acima) transformam o teste em código que também pode ter bug — e ninguém testa o teste. É sinal de que vários casos foram espremidos num só; prefira testes parametrizados, um caso por linha de dados.
+
 ## Em entrevista
 
 A good test is structured as **Arrange-Act-Assert** — set up the scenario, perform one action, verify the outcome — which is the same skeleton as **Given-When-Then** in BDD, just spoken in stakeholder language. The test name should tell you *what* and *when* without reading the body, using a convention like `should_X_when_Y` or `methodUnderTest_scenario_expectedBehavior`. I aim for **one reason to fail per test**: many small focused tests beat one giant test, because a focused test that fails points straight at the broken behavior. I keep tests **F.I.R.S.T** — Fast, Independent, Repeatable, Self-validating, Timely — and I avoid conditional logic (`if`/`for`) inside tests, reaching for parameterized tests instead. Well-named tests are the best living documentation: they can't go stale because they run against the code. And the deepest property is testing behavior, not implementation, so the suite survives refactoring.
@@ -274,6 +283,23 @@ A good test is structured as **Arrange-Act-Assert** — set up the scenario, per
 > - Martin Fowler, ["Given When Then"](https://martinfowler.com/bliki/GivenWhenThen.html) — origem do GWT com Dan North e Chris Matts; raciocinar em comportamento, não estado.
 > - Bill Wake / Kent Beck, *Test Driven Development: By Example* (2002) — onde o idioma Arrange-Act-Assert foi popularizado.
 > - Robert C. Martin, *Clean Code* (cap. "Unit Tests") — origem do acrônimo F.I.R.S.T (Fast, Independent, Repeatable, Self-validating, Timely).
+
+> [!tip] Assista: Cleaner unit testing with the Arrange Act Assert pattern
+> **Canal:** PyCon UK 2016 | **Duração:** ~26min | **Idioma:** EN
+>
+> A talk inteira é dedicada só ao AAA, com o mesmo cuidado desta nota mas do lado da convenção de nomes — o palestrante defende escrever o nome (ou docstring) do teste como uma frase afirmativa no formato "X given Y does Z", e reforça a regra de não deixar linha em branco nem assertion escondida dentro do bloco Arrange. É o mesmo esqueleto, olhado pela lente de quem revisa PR de teste todo dia.
+> Trecho de destaque [7:03]: *"I believe that actually every doc string in a test should have a positive statement (...) what I recommend is that we say X given Y does Z."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=GGw5T1mw9vU)
+
+## O que vem a seguir
+
+Esta nota deu os ossos: AAA/Given-When-Then, nome que conta a história, uma razão para falhar, F.I.R.S.T, sem lógica no teste. O próximo passo natural não é aprender mais uma regra — é ver onde essas regras esbarram em decisões maiores.
+
+Duas direções concretas a partir daqui: se a dúvida é "isso que estou testando é uma unidade ou já é integração", vá para [[04 - Testes unitários]], que também sustenta o "Fast" do F.I.R.S.T. Se a dúvida é "por que meu teste bem escrito, seguindo tudo isso, ainda quebra a cada refactor", vá para [[06 - Testar comportamento, não implementação]] — é a propriedade mais profunda de um bom teste, e esta nota só a toca de leve.
+
+> [!info] Buraco declarado
+> Esta nota descreve a anatomia em abstrato — não há, nos casos reais já registrados no vault sobre testes (MedEspecialista, comissão, tela de 30 campos, mock→fake, Awaitility, Testcontainers×H2), um episódio específico de "apliquei AAA/F.I.R.S.T e isso mudou o resultado" que caiba aqui sem forçar. Fica como lacuna consciente até que um caso assim apareça.
 
 ## Veja também
 
