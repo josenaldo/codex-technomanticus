@@ -133,8 +133,8 @@ falha vira buraco declarado — nunca vídeo "provável".
 | ➖ não precisa | 0 |
 | ✅ feita | 0 |
 | % concluído | 0% |
-| Classe `[substantivo]` | 15 |
-| Classe `[mecânico]` | 1 (nota 14) |
+| Classe `[substantivo]` | 16 |
+| Classe `[mecânico]` | 0 — reclassificada após o piso voltar a valer |
 | Score médio | ~5,7 |
 
 > Tabela preenchida ao final do diagnóstico (Fase 3).
@@ -333,7 +333,7 @@ falha vira buraco declarado — nunca vídeo "provável".
   - Pesquisar vídeo/podcast sobre property-based testing (QuickCheck/Hypothesis) ou consumer-driven contract testing (Pact) e embutir como `[!tip]` só se `uvx yt-dlp` baixar legenda de fato (trava de mídia) → ativa M1
 - **Resultado:** —
 
-#### 14 - Performance, carga, caos e segurança   [mecânico]
+#### 14 - Performance, carga, caos e segurança   [substantivo]
 - **Enriquecimento:** ⬜ pendente
 - **Estado:** 311 linhas · fase: magus · status: evergreen
 - **Núcleo/gaps:** E4 (sem `## Casos práticos`), E5 (sem `## O que vem a seguir` — há bridging em "Onde cada um entra" mas não a seção literal), E7 (Vocabulário é lista com `→`, não tabela), E8 (sem `## Armadilhas comuns`; só 2 `[!warning]` soltos — linha 69, 207 — mais 1 `[!danger]` linha 48, abaixo do piso de 3), L2 (só callout `[!info] Lastro`, não `## Fontes`), M1 (nenhum `[!tip]` com vídeo/podcast)
