@@ -1,7 +1,7 @@
 ---
 title: "Testes"
 created: 2026-06-18
-updated: 2026-06-18
+updated: 2026-08-01
 type: moc
 status: growing
 publish: true
@@ -33,14 +33,21 @@ aliases:
 Este galho é a **teoria e estratégia** de testes: o que testar, qual tipo de teste, e por quê. O ferramental
 concreto vive nos galhos de stack — aqui ele entra só como ponteiro.
 
-**Fronteiras (linka, não duplica):**
-- **Ferramental Java** (JUnit 5, AssertJ, Mockito, Testcontainers, Spring Boot Test, JQwik, PITest, JMH) →
-  [[Testes em Java]] e o galho [[03-Dominios/Tecnologia/Java/Testes/index|Java · Testes]].
-- **Ferramental JavaScript/TS** (Vitest, Jest, Testing Library, MSW, Playwright, fast-check) →
-  [[Testes em JavaScript]].
+**Fronteiras (linka, não duplica):** o ferramental concreto por stack — mesmo conceito, ecossistema diferente:
+
+| Stack | Onde mora | Cobertura |
+| --- | --- | --- |
+| Java | [[Testes em Java]] e [[03-Dominios/Tecnologia/Java/Testes/index\|Java · Testes]] | 21 notas — JUnit 5, AssertJ, Mockito, Testcontainers, Spring Boot Test, JQwik, PITest, JMH, Pact |
+| JavaScript/TypeScript | [[Testes em JavaScript]] e [[03-Dominios/Tecnologia/Testes JS/index\|Testes JS]] | 18 notas — Vitest, Jest, Testing Library, MSW, Playwright, fast-check |
+| Python | [[03-Dominios/Tecnologia/Python/Testes/index\|Python · Testes]] | 9 notas — pytest, fixtures, TestClient, Hypothesis |
+| Go | [[03-Dominios/Tecnologia/Go/15 - Testes/index\|Go · Testes]] | 8 notas — `go test`, table-driven, fuzzing nativo |
+
+E as fronteiras conceituais que este galho não cobre:
 - **Testes como rede de segurança contra entropia** → [[03-Dominios/Engenharia/Complexidade de Software/14 - Manutenção e evolução|Manutenção e evolução]].
 - **Código testável é código bem desenhado** (DI, DIP) → [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]] · [[03-Dominios/Engenharia/Design de Software/Orientação a Objetos/index|OO]].
 - **Design testável** (hexagonal, ports & adapters) → [[Arquitetura de Software]].
+- **A esteira que roda esses testes em produção** (deploy, rollback, observabilidade) → [[03-Dominios/Engenharia/Operação/index|Operação]].
+- **Testar legado sem rede de segurança** (characterization tests antes da mudança) → [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/index|Arqueologia e Restauração de Software]].
 
 **Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista"
 com frases prontas em inglês e vocabulário técnico PT→EN.

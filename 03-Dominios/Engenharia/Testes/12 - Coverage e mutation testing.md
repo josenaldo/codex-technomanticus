@@ -5,7 +5,7 @@ updated: 2026-08-01
 type: concept
 fase: magus
 status: evergreen
-publish: false
+publish: true
 tags:
   - engenharia
   - testes

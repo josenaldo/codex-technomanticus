@@ -15,7 +15,7 @@ de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
 
 **Galho:** `03-Dominios/Engenharia/Testes`
 **Diagnóstico:** 2026-08-01
-**Última execução:** 2026-08-01 — ondas 1-5 (notas 01-15); **passe 2 em curso** (déficit de piso)
+**Última execução:** 2026-08-01 — ondas 1-5 + passe 2 — **galho completo, 16/16**
 
 > [!warning] Passe 2 — o plano do roadmap é PISO, não TETO
 > O primeiro passe deixou déficit de piso em 5 notas (06 −3 · 09 −36 · 11 −103 · 13 −138 · 15 −149).
@@ -136,10 +136,10 @@ falha vira buraco declarado — nunca vídeo "provável".
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 16 |
-| ⬜ pendente | 1 |
+| ⬜ pendente | 0 |
 | ➖ não precisa | 0 |
-| ✅ feita | 15 |
-| % concluído | 94% |
+| ✅ feita | 16 |
+| % concluído | **100%** |
 | Classe `[substantivo]` | 16 |
 | Classe `[mecânico]` | 0 — reclassificada após o piso voltar a valer |
 | Score médio | ~5,7 |
@@ -369,7 +369,7 @@ falha vira buraco declarado — nunca vídeo "provável".
 - **Resultado:** 351 linhas (era 333). **Piso 500 NÃO atingido — déficit residual de 149 linhas, o maior do galho.** Causa declarada pelo executor: ele leu o plano do roadmap como lista fechada de 6 ações e não acrescentou conteúdo novo além dele. E1 TL;DR para 3 parágrafos · E4 `## Casos práticos` formaliza o caso MedEspecialista verbatim (stack, ~800 testes, ~3 min, GitHub Actions, "PR sem teste não é revisado"), com registro de que só há 1 · E5 ponte para Testes JS/17, Python/Testes/09 e Operação/index (despacho obrigatório cumprido; deploy strategies e GitOps deliberadamente não repetidos) · E8 os 5 callouts movidos e individualizados, com os lead-ins órfãos convertidos em ponteiros · L2 `## Fontes` com as 7 URLs · M1 painel Thoughtworks sobre trunk-based development (`gpskEdOildA`, legenda baixada e ID reconferido). **Passe 2 (2026-08-01): 351 → 500 linhas, piso Magus atingido, déficit zerado.** Blocos novos sourced: ordem de execução e independência (`pytest-randomly`, googletest) · cache de dependências com chave por lockfile e tabela seguro×arriscado · métricas DORA com diagrama ligando cada prática da nota a uma métrica (dora.dev, *Accelerate*) · pipeline como código e digest pinning vs. `latest` (MinimumCD) · sharding e o problema do straggler com exemplo de matrix do GitHub Actions · fail-fast × run-to-completion (GitHub Docs) · diagrama de decisão de test selection · quarentena com SLA por severidade. Caso MedEspecialista intocado; nenhum wikilink novo inventado.
 
 #### 16 - Estratégia de testes em entrevista   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-01)
 - **Estado:** 286 linhas reais · fase: magus · status: evergreen
 - **Núcleo/gaps:** E1 (o callout de abertura é `[!tip] Resumo em uma linha`, linha 18-19, não `[!abstract]`, e tem só 1 linha densa, não ≥3) · E4 (sem seção `## Casos práticos`; a nota é capstone de síntese e não há caso real do usuário mapeado no spec de origem aplicável aqui — não fabricar) · E5 (sem seção literal `## O que vem a seguir`; existe só `## Veja também`, linha 277, lista pura — e o gap real é de conteúdo, não só de rótulo: a Diretriz de fronteira do galho atribui à nota 16 a "tabela consolidada conceito → ferramenta, por stack (Java · JS/TS · Python · Go)", mas o despacho atual, tanto no `## Veja também` quanto no corpo, cita só `[[Testes em Java]]` e `[[Testes em JavaScript]]` — zero menção às vertentes Testes JS (18 notas), Python/Testes (9), Go/15 - Testes (8) e Java/Testes (21), todas nascidas depois de 2026-06-18) · L2 (existe `## 8. Recursos`, linha 210, com livros e URLs, mas as URLs estão em texto puro — ex. "kentcdodds.com/blog/..." — não como link markdown clicável, e a seção não se chama `## Fontes`; gap de formato) · M1 (nenhum dos `[!tip]` da nota tem link de vídeo/podcast — o único `[!tip]`, linha 18, é o resumo em uma linha)
 - **Isenções aplicadas (não contam no denominador):** E6 e E7 — a nota já é a consolidação canônica de vocabulário do galho (`## 4. How to explain in English`, `## 5. Frases úteis em entrevista`, `## 6. Vocabulário PT→EN consolidado`); E8 — já existe `## 7. Armadilhas consolidadas`, consolidação das armadilhas do galho inteiro; P1 — nota conceitual pura, sem bloco de código (só diagramas Mermaid)
@@ -381,5 +381,5 @@ falha vira buraco declarado — nunca vídeo "provável".
   - Reformular `## 8. Recursos` (linhas 210-228) como `## Fontes`, convertendo as URLs em texto puro (Testing Trophy, Mocks Aren't Stubs, Testcontainers, Awaitility, Testing Library) em links markdown clicáveis; os livros sem URL permanecem em prosa → ativa L2
   - Pesquisar vídeo/podcast sobre estratégia de testes em entrevista técnica (ex.: mock interview de system design de testes, ou talk sobre "how would you test this") e embutir como `[!tip]` só se `uvx yt-dlp` baixar legenda de fato (trava de mídia) → ativa M1
   - Também atualizar `index.md` do galho com a seção "Fronteiras" reescrita (hoje lista só Java e JS) — ação de escopo do galho, não desta nota isoladamente, mas dependente do mesmo levantamento de paths
-- **Resultado:** —
+- **Resultado:** 512 linhas (era 286; **piso Magus 500 atingido** — o maior déficit do galho, +214). E1 abertura virou `[!abstract]` com tese, roteiro e fechamento · **E5, a ação principal: tabela consolidada conceito → ferramenta por stack (Java · JS/TS · Python · Go) + `## O que vem a seguir` apontando para FORA do galho** — Testes JS, Python/Testes, Go/15, Java/Testes, Operação e Arqueologia, mantendo os links mono-arquivo antigos · L2 `## 8. Recursos` virou `## Fontes` com URLs clicáveis · **`index.md` teve a seção Fronteiras reescrita como tabela por stack** (antes listava só Java e JS). Conteúdo novo: roteiro ao vivo com 3 walkthroughs, matriz risco×custo com diagrama, tabela júnior×sênior com diálogo scriptado, trade-off de suíte lenta com dado de custo de flaky do Google, método de treino. **E4 = buraco declarado** (capstone de síntese, sem caso novo distinto das 01-15). **M1 = BURACO DECLARADO:** nenhum vídeo com o ângulo "estratégia de testes em entrevista"; o candidato achado era introdutório e sobreposto às notas 01-04, e foi recusado em vez de forçar encaixe.
 
