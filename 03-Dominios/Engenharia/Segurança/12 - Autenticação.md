@@ -21,7 +21,7 @@ tags:
 ---
 
 > [!info] Deep-dive de protocolo e implementação
-> Esta nota é o **conceito neutro**. Para o mergulho em protocolos e stacks — sessões e cookies, JWT, passkeys/WebAuthn, OAuth 2.1, OpenID Connect, MFA na prática e o IdP Keycloak — veja a trilha [[03-Dominios/Engenharia/Auth e Identidade/index|Auth e Identidade]] (fundamentos em [[1 - Fundamentos de identidade/index|Fundamentos de identidade]]).
+> Esta nota é o **conceito neutro**. Para o mergulho em protocolos e stacks — sessões e cookies, JWT, passkeys/WebAuthn, OAuth 2.1, OpenID Connect, MFA na prática e o IdP Keycloak — veja a trilha [[03-Dominios/Engenharia/Auth e Identidade/index|Auth e Identidade]] (fundamentos em [[03-Dominios/Engenharia/Auth e Identidade/1 - Fundamentos de identidade/index|Fundamentos de identidade]]).
 
 ## Identificação × autenticação × autorização
 
