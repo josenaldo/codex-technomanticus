@@ -24,10 +24,10 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Docker`. Primeiro galho do dom
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 18 |
-| 📋 desenhadas | 11 |
-| 🔶 escritas | 7 |
+| 📋 desenhadas | 7 |
+| 🔶 escritas | 11 |
 | ✅ completas | 0 |
-| % escrito | 39% (7/18) — fase Iniciado completa |
+| % escrito | 61% (11/18) |
 | M1 (mídia) | passada posterior, após a escrita |
 
 ## Notas
@@ -41,10 +41,10 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Docker`. Primeiro galho do dom
 | 05 | Build e cache — por que seu build está lento | Iniciado | 🔶 | 2 |
 | 06 | Dados que sobrevivem ao container | Iniciado | 🔶 | 2 |
 | 07 | Rede no Docker | Iniciado | 🔶 | 2 |
-| 08 | ENTRYPOINT, CMD e o container que não morre direito | Adepto | 📋 | 3 |
-| 09 | Multi-stage e imagens mínimas | Adepto | 📋 | 3 |
-| 10 | BuildKit por dentro | Adepto | 📋 | 3 |
-| 11 | Compose como ambiente de desenvolvimento | Adepto | 📋 | 3 |
+| 08 | ENTRYPOINT, CMD e o container que não morre direito | Adepto | 🔶 | 3 |
+| 09 | Multi-stage e imagens mínimas | Adepto | 🔶 | 3 |
+| 10 | BuildKit por dentro | Adepto | 🔶 | 3 |
+| 11 | Compose como ambiente de desenvolvimento | Adepto | 🔶 | 3 |
 | 12 | Registry | Adepto | 📋 | 4 |
 | 13 | Segurança da imagem e do runtime | Adepto | 📋 | 4 |
 | 14 | Debugar um container | Adepto | 📋 | 4 |
@@ -77,7 +77,7 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Docker`. Primeiro galho do dom
 
 ## Pendências
 
-- **Escrita:** 11/18 pendentes. Blocos 1 e 2 (notas 01-07) fechados em 2026-08-02 — **fase Iniciado completa**.
+- **Escrita:** 7/18 pendentes. Blocos 1-3 (notas 01-11) fechados em 2026-08-02 — fase Iniciado completa, Adepto em 4/7.
 - **M1 (mídia):** passada posterior. Busca e verificação de ID **centrais via `yt-dlp`** — nunca delegadas a subagente.
 - **Poda do monólito e callouts de volta:** bloco 7 do plano.
 
