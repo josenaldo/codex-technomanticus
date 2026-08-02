@@ -24,10 +24,10 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Docker`. Primeiro galho do dom
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 18 |
-| 📋 desenhadas | 7 |
-| 🔶 escritas | 11 |
+| 📋 desenhadas | 4 |
+| 🔶 escritas | 14 |
 | ✅ completas | 0 |
-| % escrito | 61% (11/18) |
+| % escrito | 78% (14/18) — fases Iniciado e Adepto completas |
 | M1 (mídia) | passada posterior, após a escrita |
 
 ## Notas
@@ -45,9 +45,9 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Docker`. Primeiro galho do dom
 | 09 | Multi-stage e imagens mínimas | Adepto | 🔶 | 3 |
 | 10 | BuildKit por dentro | Adepto | 🔶 | 3 |
 | 11 | Compose como ambiente de desenvolvimento | Adepto | 🔶 | 3 |
-| 12 | Registry | Adepto | 📋 | 4 |
-| 13 | Segurança da imagem e do runtime | Adepto | 📋 | 4 |
-| 14 | Debugar um container | Adepto | 📋 | 4 |
+| 12 | Registry | Adepto | 🔶 | 4 |
+| 13 | Segurança da imagem e do runtime | Adepto | 🔶 | 4 |
+| 14 | Debugar um container | Adepto | 🔶 | 4 |
 | 15 | Docker por dentro | Magus | 📋 | 5 |
 | 16 | O ecossistema além do Docker | Magus | 📋 | 5 |
 | 17 | Docker em CI e na máquina de dev | Magus | 📋 | 5 |
@@ -77,7 +77,7 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Docker`. Primeiro galho do dom
 
 ## Pendências
 
-- **Escrita:** 7/18 pendentes. Blocos 1-3 (notas 01-11) fechados em 2026-08-02 — fase Iniciado completa, Adepto em 4/7.
+- **Escrita:** 4/18 pendentes. Blocos 1-4 (notas 01-14) fechados em 2026-08-02 — fases Iniciado e Adepto completas.
 - **M1 (mídia):** passada posterior. Busca e verificação de ID **centrais via `yt-dlp`** — nunca delegadas a subagente.
 - **Poda do monólito e callouts de volta:** bloco 7 do plano.
 
