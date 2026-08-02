@@ -24,20 +24,20 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Docker`. Primeiro galho do dom
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 18 |
-| 📋 desenhadas | 18 |
-| 🔶 escritas | 0 |
+| 📋 desenhadas | 14 |
+| 🔶 escritas | 4 |
 | ✅ completas | 0 |
-| % escrito | 0% |
+| % escrito | 22% (4/18) |
 | M1 (mídia) | passada posterior, após a escrita |
 
 ## Notas
 
 | # | Nota | Fase | Estado | Bloco do plano |
 |---|------|------|--------|----------------|
-| 01 | O problema que o container resolve | Iniciado | 📋 | 1 |
-| 02 | A anatomia de uma imagem | Iniciado | 📋 | 1 |
-| 03 | O ciclo de vida de um container | Iniciado | 📋 | 1 |
-| 04 | O Dockerfile como receita de camadas | Iniciado | 📋 | 1 |
+| 01 | O problema que o container resolve | Iniciado | 🔶 | 1 |
+| 02 | A anatomia de uma imagem | Iniciado | 🔶 | 1 |
+| 03 | O ciclo de vida de um container | Iniciado | 🔶 | 1 |
+| 04 | O Dockerfile como receita de camadas | Iniciado | 🔶 | 1 |
 | 05 | Build e cache — por que seu build está lento | Iniciado | 📋 | 2 |
 | 06 | Dados que sobrevivem ao container | Iniciado | 📋 | 2 |
 | 07 | Rede no Docker | Iniciado | 📋 | 2 |
@@ -77,7 +77,7 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Docker`. Primeiro galho do dom
 
 ## Pendências
 
-- **Escrita:** 18/18 pendentes.
+- **Escrita:** 14/18 pendentes. Bloco 1 (notas 01-04) fechado em 2026-08-02.
 - **M1 (mídia):** passada posterior. Busca e verificação de ID **centrais via `yt-dlp`** — nunca delegadas a subagente.
 - **Poda do monólito e callouts de volta:** bloco 7 do plano.
 
