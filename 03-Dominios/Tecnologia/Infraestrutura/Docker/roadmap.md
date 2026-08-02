@@ -24,10 +24,10 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Docker`. Primeiro galho do dom
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 18 |
-| 📋 desenhadas | 14 |
-| 🔶 escritas | 4 |
+| 📋 desenhadas | 11 |
+| 🔶 escritas | 7 |
 | ✅ completas | 0 |
-| % escrito | 22% (4/18) |
+| % escrito | 39% (7/18) — fase Iniciado completa |
 | M1 (mídia) | passada posterior, após a escrita |
 
 ## Notas
@@ -38,9 +38,9 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Docker`. Primeiro galho do dom
 | 02 | A anatomia de uma imagem | Iniciado | 🔶 | 1 |
 | 03 | O ciclo de vida de um container | Iniciado | 🔶 | 1 |
 | 04 | O Dockerfile como receita de camadas | Iniciado | 🔶 | 1 |
-| 05 | Build e cache — por que seu build está lento | Iniciado | 📋 | 2 |
-| 06 | Dados que sobrevivem ao container | Iniciado | 📋 | 2 |
-| 07 | Rede no Docker | Iniciado | 📋 | 2 |
+| 05 | Build e cache — por que seu build está lento | Iniciado | 🔶 | 2 |
+| 06 | Dados que sobrevivem ao container | Iniciado | 🔶 | 2 |
+| 07 | Rede no Docker | Iniciado | 🔶 | 2 |
 | 08 | ENTRYPOINT, CMD e o container que não morre direito | Adepto | 📋 | 3 |
 | 09 | Multi-stage e imagens mínimas | Adepto | 📋 | 3 |
 | 10 | BuildKit por dentro | Adepto | 📋 | 3 |
@@ -77,7 +77,7 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Docker`. Primeiro galho do dom
 
 ## Pendências
 
-- **Escrita:** 14/18 pendentes. Bloco 1 (notas 01-04) fechado em 2026-08-02.
+- **Escrita:** 11/18 pendentes. Blocos 1 e 2 (notas 01-07) fechados em 2026-08-02 — **fase Iniciado completa**.
 - **M1 (mídia):** passada posterior. Busca e verificação de ID **centrais via `yt-dlp`** — nunca delegadas a subagente.
 - **Poda do monólito e callouts de volta:** bloco 7 do plano.
 
