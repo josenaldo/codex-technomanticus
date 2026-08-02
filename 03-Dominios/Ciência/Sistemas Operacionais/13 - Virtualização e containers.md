@@ -21,7 +21,10 @@ tags:
 
 Toda virtualização responde à mesma pergunta: como faço uma coisa parecer várias? Como um servidor físico vira dez "servidores" que não se atrapalham? A resposta varia, e cada resposta é um ponto diferente num espectro que vai do mais pesado e mais isolado ao mais leve e mais frouxo.
 
-Esta nota é a **teoria** — o que o SO e o hardware precisam fornecer para que VMs e containers sequer possam existir. O uso prático (Docker, Kubernetes, escrever um Dockerfile) mora em [[Infraestrutura]]. Aqui não tem tutorial. Tem o mecanismo embaixo do tutorial.
+Esta nota é a **teoria** — o que o SO e o hardware precisam fornecer para que VMs e containers sequer possam existir. O uso prático (Docker, Kubernetes, escrever um Dockerfile) mora em [[03-Dominios/Tecnologia/Infraestrutura/index|Infraestrutura]]. Aqui não tem tutorial. Tem o mecanismo embaixo do tutorial.
+
+> [!info] A contraparte instrumental (2026-08-02)
+> O "uso prático" citado acima ganhou endereço preciso: o galho [[03-Dominios/Tecnologia/Infraestrutura/Docker/index|Tecnologia/Infraestrutura/Docker]]. A fronteira entre as duas notas é dura e vale conhecer: **aqui** ficam namespaces, cgroups, o modelo OCI e o risco de escape; **lá**, em [[03-Dominios/Tecnologia/Infraestrutura/Docker/15 - Docker por dentro|15 — Docker por dentro]], fica a cadeia de componentes do Docker que *chama* esse mecanismo — cliente, daemon, containerd, shim, runc — dizendo quem invoca o kernel e em que momento, sem reexplicar como o kernel implementa.
 
 ## O espectro do isolamento
 
