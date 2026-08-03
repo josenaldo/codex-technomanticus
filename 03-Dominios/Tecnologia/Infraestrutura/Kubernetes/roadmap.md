@@ -1,0 +1,97 @@
+---
+title: "Roadmap — Kubernetes"
+created: 2026-08-03
+updated: 2026-08-03
+type: meta
+publish: false
+tags:
+  - meta
+  - roadmap
+  - infraestrutura
+  - kubernetes
+---
+
+# Roadmap — Kubernetes (galho 2 de Infraestrutura)
+
+Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do domínio, aberto em 2026-08-03. Design: [[00-Meta/specs/2026-08-02-dominio-infraestrutura-design|design do domínio]] · Plano: [[00-Meta/specs/2026-08-03-galho-kubernetes-plano|plano de execução]].
+
+**Lente:** o loop de reconciliação — Kubernetes não executa comandos, converge estado.
+
+**Legenda:** ✅ escrita + M1 · 🔶 escrita, falta M1 · 📋 desenhada, não escrita.
+
+## Tabela-resumo
+
+| Métrica | Valor |
+|---------|-------|
+| Total de notas | 22 |
+| 📋 desenhadas | 22 |
+| 🔶 escritas | 0 |
+| ✅ completas | 0 |
+| % escrito | 0% |
+| M1 (mídia) | passada posterior |
+
+## Notas
+
+| # | Nota | Fase | Estado | Bloco |
+|---|------|------|--------|-------|
+| 01 | O problema que orquestração resolve | Iniciado | 📋 | 1 |
+| 02 | O loop de reconciliação | Iniciado | 📋 | 1 |
+| 03 | O Pod, a unidade que não é o container | Iniciado | 📋 | 1 |
+| 04 | Deployment e ReplicaSet | Iniciado | 📋 | 1 |
+| 05 | Service | Iniciado | 📋 | 2 |
+| 06 | Namespaces, labels e selectors | Iniciado | 📋 | 2 |
+| 07 | kubectl é um cliente de API | Iniciado | 📋 | 2 |
+| 08 | ConfigMap e Secret | Adepto | 📋 | 3 |
+| 09 | Armazenamento — PV, PVC e StorageClass | Adepto | 📋 | 3 |
+| 10 | StatefulSet | Adepto | 📋 | 3 |
+| 11 | Job, CronJob e DaemonSet | Adepto | 📋 | 3 |
+| 12 | Scheduling | Adepto | 📋 | 4 |
+| 13 | RBAC e ServiceAccount | Adepto | 📋 | 4 |
+| 14 | Helm e Kustomize | Adepto | 📋 | 4 |
+| 15 | Ingress e a borda do cluster | Adepto | 📋 | 4 |
+| 16 | O control plane por dentro | Magus | 📋 | 5 |
+| 17 | O kubelet e o nó | Magus | 📋 | 5 |
+| 18 | A API como sistema extensível — CRDs | Magus | 📋 | 5 |
+| 19 | Operators | Magus | 📋 | 6 |
+| 20 | Rede do cluster por dentro | Magus | 📋 | 6 |
+| 21 | Depurar um cluster | Magus | 📋 | 6 |
+| 22 | Capstone — do zero ao cluster | Magus | 📋 | 7 |
+
+## Corte deliberado
+
+> [!warning] Autoscaling NÃO entra neste galho
+> HPA, VPA, KEDA e Cluster Autoscaler estão cobertos com profundidade em [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/04 - Escala e capacidade|Operação 3-04]] — as três camadas, capacity planning, reactive × predictive, thundering herd. Escrever aqui produziria versão pior. O `index.md` do galho declara o corte com ponteiro, para que quem procure encontre o caminho e não o silêncio. **Isto é decisão registrada, não esquecimento.**
+
+## Fronteiras a respeitar
+
+| Vizinho | Fica lá | Fica aqui |
+|---|---|---|
+| `Operação 3-02` | contrato de runtime (probes, requests/limits, shutdown) | os objetos e o loop que os reconcilia |
+| `Operação 3-03` | zero-downtime, readiness gating, connection draining | Deployment/ReplicaSet como mecanismo de atualização |
+| `Operação 3-04` | **autoscaling inteiro** | — (nada) |
+| `Operação 3-05` | Gateway API, mesh, NetworkPolicy, operar a borda | Ingress como objeto + controlador; CNI/kube-proxy/DNS |
+| `Operação 2-05` | GitOps e IaC | Helm e Kustomize como empacotamento |
+| `Cloud 12-05` | o que o provedor gerencia do control plane | o control plane por dentro |
+| `Ciência/SO 13` | namespaces e cgroups no kernel | kubelet → CRI → runtime |
+| `Auth e Identidade` | RBAC/ABAC/ReBAC conceitual | RBAC do Kubernetes como objeto |
+
+## Material a consumir
+
+| Fonte | Onde | Aproveitamento |
+|---|---|---|
+| `Infraestrutura/Kubernetes.md` | 1612 linhas | semente principal, o maior monólito da estante; vira tronco podado no bloco 8 |
+| `Infraestrutura/WSL, Docker e Kubernetes.md` | 144 linhas | referência de ambiente local, permanece |
+
+> [!warning] Regra de conteúdo
+> `Na prática (da minha experiência)` e `How to explain in English` do monólito são relato pessoal do autor e material de entrevista. Ficam no tronco podado e **não migram** para as notas.
+
+## Pendências
+
+- **Escrita:** 22/22 pendentes.
+- **M1 (mídia):** passada posterior, verificação central via `yt-dlp`.
+- **Poda e callouts de volta:** bloco 8 do plano.
+- **Possível broto futuro:** `19a — escrever um operator na prática`, se o assunto pedir. Entra sem renumerar.
+
+## Notas de execução
+
+- Galho aberto em 2026-08-03, na sequência direta do fechamento do galho Docker. A ponte narrativa já existia: a nota 11 do Docker desenvolve, no corpo, por que Compose não reconcilia estado — e é daí que a nota 01 deste galho parte.
