@@ -1,0 +1,85 @@
+---
+title: "Kubernetes"
+created: 2026-08-03
+updated: 2026-08-03
+type: moc
+status: growing
+publish: true
+tags:
+  - moc
+  - infraestrutura
+  - kubernetes
+  - orquestracao
+aliases:
+  - "Kubernetes (galho)"
+  - "Galho Kubernetes"
+  - "K8s"
+---
+
+# Kubernetes
+
+> [!abstract] TL;DR
+> Segundo galho do domínio [[03-Dominios/Tecnologia/Infraestrutura/index|Infraestrutura]], sob a lente **o loop de reconciliação**: o Kubernetes não executa comandos, ele **converge estado**. `kubectl apply` não cria nada — escreve um objeto no armazenamento do cluster e vai embora; controllers observam a diferença entre o que você declarou e o que existe, e agem para fechar essa distância. Entendido isso, o modelo de objetos inteiro deixa de ser decoreba e o comportamento estranho ("por que meu Pod voltou sozinho?", "por que ele está `Pending`?") vira consequência previsível. O galho sobe do modelo declarativo aos objetos do dia a dia e fecha no mecanismo — control plane, kubelet, CRDs e operators. 22 notas, 3 fases.
+
+## Sobre este galho
+
+O galho anterior fechou apontando para cá. A nota [[03-Dominios/Tecnologia/Infraestrutura/Docker/11 - Compose como ambiente de desenvolvimento|Compose como ambiente de desenvolvimento]] desenvolve, no corpo, o argumento que motiva orquestração: o Compose aplica o que você mandou e vai embora, roda numa máquina só, e não tem atualização progressiva nem descoberta entre máquinas. Este galho é a resposta a essas quatro lacunas.
+
+O recorte não é tutorial de `kubectl`. É o modelo que permite prever o comportamento — o mesmo critério do galho de Docker, aplicado a um sistema bem maior.
+
+**Audiência primária:** quem já tem manifestos rodando e os trata como configuração mágica. **Audiência secundária:** quem vai responder, num loop sênior, o que acontece entre `kubectl apply` e o container existir.
+
+> [!info] Fronteira — o sanduíche de quatro camadas
+> | Camada | Casa | Pergunta que responde |
+> |---|---|---|
+> | Mecanismo | [[03-Dominios/Ciência/Sistemas Operacionais/13 - Virtualização e containers\|Ciência/Sistemas Operacionais]] | como o isolamento funciona no kernel |
+> | **A ferramenta** | **este galho** | **como o Kubernetes funciona por dentro** |
+> | O ofício | [[03-Dominios/Engenharia/Operação/index\|Engenharia/Operação]] | o que muda quando é produção |
+> | A plataforma | [[03-Dominios/Tecnologia/Cloud/12 - Containers gerenciados/05 - Kubernetes gerenciado de raspão\|Cloud, galho 12]] | quando o provedor opera o control plane |
+
+> [!warning] Autoscaling não está neste galho — e isso é deliberado
+> HPA, VPA, KEDA e Cluster Autoscaler estão cobertos em [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/04 - Escala e capacidade|Operação — Escala e capacidade]], com as três camadas, capacity planning e os efeitos colaterais de escalar rápido. Escrever o assunto aqui produziria uma versão pior do que já existe. O mesmo vale para **Gateway API, service mesh e NetworkPolicy**, que vivem em [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/05 - Rede e borda em produção|Rede e borda em produção]]: aqui fica o Ingress como objeto e a rede como mecanismo, lá fica a operação da borda.
+
+## Iniciado — o modelo declarativo
+
+1. O problema que orquestração resolve
+2. O loop de reconciliação
+3. O Pod, a unidade que não é o container
+4. Deployment e ReplicaSet
+5. Service
+6. Namespaces, labels e selectors
+7. `kubectl` é um cliente de API
+
+## Adepto — os objetos do dia a dia
+
+8. ConfigMap e Secret
+9. Armazenamento — PV, PVC e StorageClass
+10. StatefulSet
+11. Job, CronJob e DaemonSet
+12. Scheduling
+13. RBAC e ServiceAccount
+14. Helm e Kustomize
+15. Ingress e a borda do cluster
+
+## Magus — o mecanismo
+
+16. O control plane por dentro
+17. O kubelet e o nó
+18. A API como sistema extensível — CRDs
+19. Operators
+20. Rede do cluster por dentro
+21. Depurar um cluster
+22. Capstone — do zero ao cluster
+
+## Todas as notas
+
+```dataview
+TABLE fase, status FROM "03-Dominios/Tecnologia/Infraestrutura/Kubernetes" WHERE type = "concept" SORT file.name ASC
+```
+
+## Veja também
+
+- [[03-Dominios/Tecnologia/Infraestrutura/index|Infraestrutura]] — MOC do domínio
+- [[03-Dominios/Tecnologia/Infraestrutura/Docker/index|Docker]] — o galho anterior; a imagem que este galho agenda
+- [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/02 - O contrato de produção do Kubernetes|O contrato de produção do Kubernetes]] — a política que este galho pressupõe conhecida
+- [[Kubernetes]] — o monólito de referência que originou este galho
