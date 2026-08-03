@@ -24,20 +24,20 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 22 |
-| 📋 desenhadas | 22 |
-| 🔶 escritas | 0 |
+| 📋 desenhadas | 18 |
+| 🔶 escritas | 4 |
 | ✅ completas | 0 |
-| % escrito | 0% |
+| % escrito | 18% |
 | M1 (mídia) | passada posterior |
 
 ## Notas
 
 | # | Nota | Fase | Estado | Bloco |
 |---|------|------|--------|-------|
-| 01 | O problema que orquestração resolve | Iniciado | 📋 | 1 |
-| 02 | O loop de reconciliação | Iniciado | 📋 | 1 |
-| 03 | O Pod, a unidade que não é o container | Iniciado | 📋 | 1 |
-| 04 | Deployment e ReplicaSet | Iniciado | 📋 | 1 |
+| 01 | O problema que orquestração resolve | Iniciado | 🔶 | 1 |
+| 02 | O loop de reconciliação | Iniciado | 🔶 | 1 |
+| 03 | O Pod, a unidade que não é o container | Iniciado | 🔶 | 1 |
+| 04 | Deployment e ReplicaSet | Iniciado | 🔶 | 1 |
 | 05 | Service | Iniciado | 📋 | 2 |
 | 06 | Namespaces, labels e selectors | Iniciado | 📋 | 2 |
 | 07 | kubectl é um cliente de API | Iniciado | 📋 | 2 |
@@ -87,7 +87,7 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 
 ## Pendências
 
-- **Escrita:** 22/22 pendentes.
+- **Escrita:** 18/22 pendentes. Bloco 1 (notas 01-04) escrito em 2026-08-03.
 - **M1 (mídia):** passada posterior, verificação central via `yt-dlp`.
 - **Poda e callouts de volta:** bloco 8 do plano.
 - **Possível broto futuro:** `19a — escrever um operator na prática`, se o assunto pedir. Entra sem renumerar.

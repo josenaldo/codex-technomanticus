@@ -42,10 +42,10 @@ O recorte não é tutorial de `kubectl`. É o modelo que permite prever o compor
 
 ## Iniciado — o modelo declarativo
 
-1. O problema que orquestração resolve
-2. O loop de reconciliação
-3. O Pod, a unidade que não é o container
-4. Deployment e ReplicaSet
+1. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/01 - O problema que orquestração resolve|01 — O problema que orquestração resolve]] — o que muda quando são muitas máquinas e muitas réplicas, e as três coisas que o Kubernetes não é.
+2. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/02 - O loop de reconciliação|02 — O loop de reconciliação]] — **a nota que carrega a lente**: `spec` contra `status`, o controller como laço infinito, e por que nível-gatilho explica a resiliência inteira.
+3. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/03 - O Pod, a unidade que não é o container|03 — O Pod, a unidade que não é o container]] — o que os containers de um Pod compartilham, sidecar e init container, e por que o Pod é descartável por design.
+4. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/04 - Deployment e ReplicaSet|04 — Deployment e ReplicaSet]] — a cadeia de controllers, a atualização como criação de um ReplicaSet novo, e o que `rollout undo` de fato faz.
 5. Service
 6. Namespaces, labels e selectors
 7. `kubectl` é um cliente de API
