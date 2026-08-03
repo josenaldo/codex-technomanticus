@@ -46,9 +46,9 @@ O recorte não é tutorial de `kubectl`. É o modelo que permite prever o compor
 2. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/02 - O loop de reconciliação|02 — O loop de reconciliação]] — **a nota que carrega a lente**: `spec` contra `status`, o controller como laço infinito, e por que nível-gatilho explica a resiliência inteira.
 3. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/03 - O Pod, a unidade que não é o container|03 — O Pod, a unidade que não é o container]] — o que os containers de um Pod compartilham, sidecar e init container, e por que o Pod é descartável por design.
 4. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/04 - Deployment e ReplicaSet|04 — Deployment e ReplicaSet]] — a cadeia de controllers, a atualização como criação de um ReplicaSet novo, e o que `rollout undo` de fato faz.
-5. Service
-6. Namespaces, labels e selectors
-7. `kubectl` é um cliente de API
+5. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/05 - Service|05 — Service]] — o endereço estável para alvo instável; o selector que vira EndpointSlice, os quatro tipos e o DNS do cluster.
+6. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/06 - Namespaces, labels e selectors|06 — Namespaces, labels e selectors]] — labels como o mecanismo de ligação do modelo: a relação controller↔Pod é derivada por consulta, não por posse.
+7. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/07 - kubectl é um cliente de API|07 — `kubectl` é um cliente de API]] — ver o HTTP com `-v=8`, os tipos de patch, server-side apply e posse de campo, `explain` e dry-run.
 
 ## Adepto — os objetos do dia a dia
 

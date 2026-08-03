@@ -24,10 +24,10 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 22 |
-| 📋 desenhadas | 18 |
-| 🔶 escritas | 4 |
+| 📋 desenhadas | 15 |
+| 🔶 escritas | 7 |
 | ✅ completas | 0 |
-| % escrito | 18% |
+| % escrito | 32% |
 | M1 (mídia) | passada posterior |
 
 ## Notas
@@ -38,9 +38,9 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 | 02 | O loop de reconciliação | Iniciado | 🔶 | 1 |
 | 03 | O Pod, a unidade que não é o container | Iniciado | 🔶 | 1 |
 | 04 | Deployment e ReplicaSet | Iniciado | 🔶 | 1 |
-| 05 | Service | Iniciado | 📋 | 2 |
-| 06 | Namespaces, labels e selectors | Iniciado | 📋 | 2 |
-| 07 | kubectl é um cliente de API | Iniciado | 📋 | 2 |
+| 05 | Service | Iniciado | 🔶 | 2 |
+| 06 | Namespaces, labels e selectors | Iniciado | 🔶 | 2 |
+| 07 | kubectl é um cliente de API | Iniciado | 🔶 | 2 |
 | 08 | ConfigMap e Secret | Adepto | 📋 | 3 |
 | 09 | Armazenamento — PV, PVC e StorageClass | Adepto | 📋 | 3 |
 | 10 | StatefulSet | Adepto | 📋 | 3 |
@@ -87,7 +87,7 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 
 ## Pendências
 
-- **Escrita:** 18/22 pendentes. Bloco 1 (notas 01-04) escrito em 2026-08-03.
+- **Escrita:** 15/22 pendentes. Blocos 1 e 2 (notas 01-07) escritos em 2026-08-03 — **fase Iniciado completa**.
 - **M1 (mídia):** passada posterior, verificação central via `yt-dlp`.
 - **Poda e callouts de volta:** bloco 8 do plano.
 - **Possível broto futuro:** `19a — escrever um operator na prática`, se o assunto pedir. Entra sem renumerar.
