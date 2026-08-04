@@ -56,10 +56,10 @@ O recorte não é tutorial de `kubectl`. É o modelo que permite prever o compor
 9. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/09 - Armazenamento|09 — Armazenamento: PV, PVC e StorageClass]] — o pedido, o recurso e a receita; provisionamento dinâmico como mais um laço, modos de acesso e política de recuperação.
 10. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/10 - StatefulSet|10 — StatefulSet]] — quando identidade importa: nome ordinal, disco próprio por réplica e ordem; por que banco em Kubernetes é decisão, não default.
 11. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/11 - Job, CronJob e DaemonSet|11 — Job, CronJob e DaemonSet]] — o mesmo laço com outra definição de estado desejado: trabalho que termina, trabalho agendado e um Pod por nó.
-12. Scheduling
-13. RBAC e ServiceAccount
-14. Helm e Kustomize
-15. Ingress e a borda do cluster
+12. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/12 - Scheduling|12 — Scheduling]] — filtragem e pontuação, afinidade, taints e espalhamento topológico; o catálogo de por que um Pod fica `Pending`.
+13. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/13 - RBAC e ServiceAccount|13 — RBAC e ServiceAccount]] — quem você é contra o que você pode; a matriz Role/ClusterRole, e por que RBAC é puramente aditivo.
+14. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/14 - Helm e Kustomize|14 — Helm e Kustomize]] — template contra sobreposição, as duas filosofias de manter N variantes do mesmo manifesto; nenhuma das duas reconcilia nada.
+15. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/15 - Ingress e a borda do cluster|15 — Ingress e a borda do cluster]] — o objeto que não faz nada sem controlador; annotations como válvula de escape, e a Gateway API como sucessora.
 
 ## Magus — o mecanismo
 

@@ -24,10 +24,10 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 22 |
-| 📋 desenhadas | 11 |
-| 🔶 escritas | 11 |
+| 📋 desenhadas | 7 |
+| 🔶 escritas | 15 |
 | ✅ completas | 0 |
-| % escrito | 50% |
+| % escrito | 68% |
 | M1 (mídia) | passada posterior |
 
 ## Notas
@@ -45,10 +45,10 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 | 09 | Armazenamento — PV, PVC e StorageClass | Adepto | 🔶 | 3 |
 | 10 | StatefulSet | Adepto | 🔶 | 3 |
 | 11 | Job, CronJob e DaemonSet | Adepto | 🔶 | 3 |
-| 12 | Scheduling | Adepto | 📋 | 4 |
-| 13 | RBAC e ServiceAccount | Adepto | 📋 | 4 |
-| 14 | Helm e Kustomize | Adepto | 📋 | 4 |
-| 15 | Ingress e a borda do cluster | Adepto | 📋 | 4 |
+| 12 | Scheduling | Adepto | 🔶 | 4 |
+| 13 | RBAC e ServiceAccount | Adepto | 🔶 | 4 |
+| 14 | Helm e Kustomize | Adepto | 🔶 | 4 |
+| 15 | Ingress e a borda do cluster | Adepto | 🔶 | 4 |
 | 16 | O control plane por dentro | Magus | 📋 | 5 |
 | 17 | O kubelet e o nó | Magus | 📋 | 5 |
 | 18 | A API como sistema extensível — CRDs | Magus | 📋 | 5 |
@@ -87,7 +87,7 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 
 ## Pendências
 
-- **Escrita:** 11/22 pendentes. Blocos 1-3 (notas 01-11) escritos em 2026-08-03 — fase Iniciado completa, fase Adepto na metade.
+- **Escrita:** 7/22 pendentes. Blocos 1-4 (notas 01-15) escritos em 2026-08-03 — **fases Iniciado e Adepto completas**. Resta a fase Magus (16-22).
 - **M1 (mídia):** passada posterior, verificação central via `yt-dlp`.
 - **Poda e callouts de volta:** bloco 8 do plano.
 - **Possível broto futuro:** `19a — escrever um operator na prática`, se o assunto pedir. Entra sem renumerar.
