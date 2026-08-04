@@ -1,7 +1,7 @@
 ---
 title: "Kubernetes"
 created: 2026-08-03
-updated: 2026-08-03
+updated: 2026-08-04
 type: moc
 status: growing
 publish: true
@@ -69,7 +69,7 @@ O recorte não é tutorial de `kubectl`. É o modelo que permite prever o compor
 19. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/19 - Operators|19 — Operators]] — CRD (o vocabulário) + controller (o laço) = conhecimento operacional codificado; e quando escrever um é exagero.
 20. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/20 - Rede do cluster por dentro|20 — Rede do cluster por dentro]] — o modelo plano que o Kubernetes exige mas não implementa; CNI, os modos do kube-proxy, CoreDNS e a armadilha do `ndots`.
 21. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/21 - Depurar um cluster|21 — Depurar um cluster]] — o método: em que ponto a convergência parou; o catálogo de sintomas e uma investigação completa de um 503.
-22. Capstone — do zero ao cluster
+22. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/22 - Capstone - do zero ao cluster|22 — Capstone: do zero ao cluster]] — caso trabalhado em doze decisões: a imagem do capstone do Docker levada ao cluster, cada escolha citando a nota que a fundamenta.
 
 ## Todas as notas
 

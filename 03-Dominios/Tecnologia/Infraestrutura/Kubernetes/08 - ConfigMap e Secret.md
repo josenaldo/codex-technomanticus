@@ -301,7 +301,7 @@ kubectl patch serviceaccount default \
   -p '{"imagePullSecrets": [{"name": "regcred"}]}'
 ```
 
-A partir desse ponto, todo Pod criado naquele namespace sem `imagePullSecrets` próprio herda automaticamente a credencial associada à sua `ServiceAccount` — o mesmo princípio de "a identidade carrega a credencial, não cada manifesto individual" que a nota sobre RBAC e ServiceAccount, mais adiante no galho, desenvolve em profundidade para autorização em geral, não só para pull de imagem.
+A partir desse ponto, todo Pod criado naquele namespace sem `imagePullSecrets` próprio herda automaticamente a credencial associada à sua `ServiceAccount` — o mesmo princípio de "a identidade carrega a credencial, não cada manifesto individual" que a nota [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/13 - RBAC e ServiceAccount|RBAC e ServiceAccount]] desenvolve em profundidade para autorização em geral, não só para pull de imagem.
 
 ## Secrets imutáveis: proteção e desempenho ao mesmo tempo
 

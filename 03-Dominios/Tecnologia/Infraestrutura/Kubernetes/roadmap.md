@@ -24,10 +24,10 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 22 |
-| 📋 desenhadas | 1 |
-| 🔶 escritas | 21 |
+| 📋 desenhadas | 0 |
+| 🔶 escritas | 22 |
 | ✅ completas | 0 |
-| % escrito | 95% |
+| % escrito | 100% |
 | M1 (mídia) | passada posterior |
 
 ## Notas
@@ -55,7 +55,7 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 | 19 | Operators | Magus | 🔶 | 6 |
 | 20 | Rede do cluster por dentro | Magus | 🔶 | 6 |
 | 21 | Depurar um cluster | Magus | 🔶 | 6 |
-| 22 | Capstone — do zero ao cluster | Magus | 📋 | 7 |
+| 22 | Capstone — do zero ao cluster | Magus | 🔶 | 7 |
 
 ## Corte deliberado
 
@@ -90,10 +90,10 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 
 ## Pendências
 
-- **Escrita:** 1/22 pendente — só o capstone (22). Blocos 1-6 (notas 01-21) escritos em 2026-08-03/04.
+- **Escrita:** ✅ **22/22 COMPLETA** (2026-08-04). Blocos 1-7 do plano executados.
 - **M1 (mídia):** passada posterior, verificação central via `yt-dlp`.
 - **Poda e callouts de volta:** bloco 8 do plano.
-- **Referências textuais a resolver (bloco 8):** 19 trechos nas notas 02-15 citam notas da fase Magus em texto puro ("mais adiante no galho", "na fase Magus") porque o alvo ainda não existia quando foram escritas. Converter em wikilink no passe de fechamento, quando as 22 estiverem no lugar.
+- **Referências textuais:** ✅ resolvidas em 2026-08-04 — as 19 citações em texto puro à fase Magus viraram wikilink.
 - **Broto `19a` — DESCARTADO (decisão de 2026-08-04).** Ver "Corte deliberado" abaixo.
 
 ## Notas de execução
