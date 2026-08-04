@@ -24,10 +24,10 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 22 |
-| 📋 desenhadas | 15 |
-| 🔶 escritas | 7 |
+| 📋 desenhadas | 11 |
+| 🔶 escritas | 11 |
 | ✅ completas | 0 |
-| % escrito | 32% |
+| % escrito | 50% |
 | M1 (mídia) | passada posterior |
 
 ## Notas
@@ -41,10 +41,10 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 | 05 | Service | Iniciado | 🔶 | 2 |
 | 06 | Namespaces, labels e selectors | Iniciado | 🔶 | 2 |
 | 07 | kubectl é um cliente de API | Iniciado | 🔶 | 2 |
-| 08 | ConfigMap e Secret | Adepto | 📋 | 3 |
-| 09 | Armazenamento — PV, PVC e StorageClass | Adepto | 📋 | 3 |
-| 10 | StatefulSet | Adepto | 📋 | 3 |
-| 11 | Job, CronJob e DaemonSet | Adepto | 📋 | 3 |
+| 08 | ConfigMap e Secret | Adepto | 🔶 | 3 |
+| 09 | Armazenamento — PV, PVC e StorageClass | Adepto | 🔶 | 3 |
+| 10 | StatefulSet | Adepto | 🔶 | 3 |
+| 11 | Job, CronJob e DaemonSet | Adepto | 🔶 | 3 |
 | 12 | Scheduling | Adepto | 📋 | 4 |
 | 13 | RBAC e ServiceAccount | Adepto | 📋 | 4 |
 | 14 | Helm e Kustomize | Adepto | 📋 | 4 |
@@ -87,7 +87,7 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 
 ## Pendências
 
-- **Escrita:** 15/22 pendentes. Blocos 1 e 2 (notas 01-07) escritos em 2026-08-03 — **fase Iniciado completa**.
+- **Escrita:** 11/22 pendentes. Blocos 1-3 (notas 01-11) escritos em 2026-08-03 — fase Iniciado completa, fase Adepto na metade.
 - **M1 (mídia):** passada posterior, verificação central via `yt-dlp`.
 - **Poda e callouts de volta:** bloco 8 do plano.
 - **Possível broto futuro:** `19a — escrever um operator na prática`, se o assunto pedir. Entra sem renumerar.

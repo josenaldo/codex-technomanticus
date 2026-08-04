@@ -52,10 +52,10 @@ O recorte não é tutorial de `kubectl`. É o modelo que permite prever o compor
 
 ## Adepto — os objetos do dia a dia
 
-8. ConfigMap e Secret
-9. Armazenamento — PV, PVC e StorageClass
-10. StatefulSet
-11. Job, CronJob e DaemonSet
+8. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/08 - ConfigMap e Secret|08 — ConfigMap e Secret]] — configuração fora da imagem; por que volume recarrega e variável de ambiente não, e por que Secret é codificação, não criptografia.
+9. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/09 - Armazenamento|09 — Armazenamento: PV, PVC e StorageClass]] — o pedido, o recurso e a receita; provisionamento dinâmico como mais um laço, modos de acesso e política de recuperação.
+10. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/10 - StatefulSet|10 — StatefulSet]] — quando identidade importa: nome ordinal, disco próprio por réplica e ordem; por que banco em Kubernetes é decisão, não default.
+11. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/11 - Job, CronJob e DaemonSet|11 — Job, CronJob e DaemonSet]] — o mesmo laço com outra definição de estado desejado: trabalho que termina, trabalho agendado e um Pod por nó.
 12. Scheduling
 13. RBAC e ServiceAccount
 14. Helm e Kustomize
