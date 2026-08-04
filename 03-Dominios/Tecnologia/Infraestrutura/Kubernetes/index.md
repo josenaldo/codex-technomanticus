@@ -66,9 +66,9 @@ O recorte não é tutorial de `kubectl`. É o modelo que permite prever o compor
 16. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/16 - O control plane por dentro|16 — O control plane por dentro]] — etcd e quórum, o api-server como única porta, a cadeia de admission e o webhook que trava o cluster; eleição de líder.
 17. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/17 - O kubelet e o nó|17 — O kubelet e o nó]] — o laço mais concreto de todos: CRI, a cadeia até o `runc`, classes de QoS e despejo por pressão de recurso.
 18. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/18 - A API como sistema extensível|18 — A API como sistema extensível: CRDs]] — o api-server não sabe o que é um Deployment; por isso qualquer um pode acrescentar tipos de primeira classe.
-19. Operators
-20. Rede do cluster por dentro
-21. Depurar um cluster
+19. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/19 - Operators|19 — Operators]] — CRD (o vocabulário) + controller (o laço) = conhecimento operacional codificado; e quando escrever um é exagero.
+20. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/20 - Rede do cluster por dentro|20 — Rede do cluster por dentro]] — o modelo plano que o Kubernetes exige mas não implementa; CNI, os modos do kube-proxy, CoreDNS e a armadilha do `ndots`.
+21. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/21 - Depurar um cluster|21 — Depurar um cluster]] — o método: em que ponto a convergência parou; o catálogo de sintomas e uma investigação completa de um 503.
 22. Capstone — do zero ao cluster
 
 ## Todas as notas

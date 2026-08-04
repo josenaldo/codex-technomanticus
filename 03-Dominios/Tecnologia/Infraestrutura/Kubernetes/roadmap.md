@@ -24,10 +24,10 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 22 |
-| 📋 desenhadas | 4 |
-| 🔶 escritas | 18 |
+| 📋 desenhadas | 1 |
+| 🔶 escritas | 21 |
 | ✅ completas | 0 |
-| % escrito | 82% |
+| % escrito | 95% |
 | M1 (mídia) | passada posterior |
 
 ## Notas
@@ -52,15 +52,18 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 | 16 | O control plane por dentro | Magus | 🔶 | 5 |
 | 17 | O kubelet e o nó | Magus | 🔶 | 5 |
 | 18 | A API como sistema extensível — CRDs | Magus | 🔶 | 5 |
-| 19 | Operators | Magus | 📋 | 6 |
-| 20 | Rede do cluster por dentro | Magus | 📋 | 6 |
-| 21 | Depurar um cluster | Magus | 📋 | 6 |
+| 19 | Operators | Magus | 🔶 | 6 |
+| 20 | Rede do cluster por dentro | Magus | 🔶 | 6 |
+| 21 | Depurar um cluster | Magus | 🔶 | 6 |
 | 22 | Capstone — do zero ao cluster | Magus | 📋 | 7 |
 
 ## Corte deliberado
 
 > [!warning] Autoscaling NÃO entra neste galho
 > HPA, VPA, KEDA e Cluster Autoscaler estão cobertos com profundidade em [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/04 - Escala e capacidade|Operação 3-04]] — as três camadas, capacity planning, reactive × predictive, thundering herd. Escrever aqui produziria versão pior. O `index.md` do galho declara o corte com ponteiro, para que quem procure encontre o caminho e não o silêncio. **Isto é decisão registrada, não esquecimento.**
+
+> [!warning] O broto `19a` (escrever um operator na prática) NÃO será escrito
+> O plano previa um broto opcional com o passo a passo de construir um operator (`kubebuilder init`, layout de projeto, geração de CRD a partir de struct tags, `envtest`). Decidido em 2026-08-04 que ele **não entra**: a lente deste galho é *a ferramenta por dentro, para quem vai operá-la*, e um tutorial de autoria de controller em Go é outro ofício — duplicaria o livro oficial do Kubebuilder sem acrescentar leitura própria, e caberia melhor na trilha de Go. A nota 19 entrega o que este galho precisa: a forma do laço, a função de cada peça (finalizers, ownerReferences, status.conditions, requeue) com esboço comentado de `Reconcile`, o modelo de maturidade, e a seção honesta de quando escrever um operator é exagero. **Isto é decisão registrada, não esquecimento.**
 
 ## Fronteiras a respeitar
 
@@ -87,11 +90,11 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 
 ## Pendências
 
-- **Escrita:** 4/22 pendentes. Blocos 1-5 (notas 01-18) escritos em 2026-08-03/04. Fases Iniciado e Adepto completas; falta fechar a Magus (19-22).
+- **Escrita:** 1/22 pendente — só o capstone (22). Blocos 1-6 (notas 01-21) escritos em 2026-08-03/04.
 - **M1 (mídia):** passada posterior, verificação central via `yt-dlp`.
 - **Poda e callouts de volta:** bloco 8 do plano.
 - **Referências textuais a resolver (bloco 8):** 19 trechos nas notas 02-15 citam notas da fase Magus em texto puro ("mais adiante no galho", "na fase Magus") porque o alvo ainda não existia quando foram escritas. Converter em wikilink no passe de fechamento, quando as 22 estiverem no lugar.
-- **Possível broto futuro:** `19a — escrever um operator na prática`, se o assunto pedir. Entra sem renumerar.
+- **Broto `19a` — DESCARTADO (decisão de 2026-08-04).** Ver "Corte deliberado" abaixo.
 
 ## Notas de execução
 
