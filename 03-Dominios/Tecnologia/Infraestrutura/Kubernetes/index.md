@@ -63,9 +63,9 @@ O recorte não é tutorial de `kubectl`. É o modelo que permite prever o compor
 
 ## Magus — o mecanismo
 
-16. O control plane por dentro
-17. O kubelet e o nó
-18. A API como sistema extensível — CRDs
+16. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/16 - O control plane por dentro|16 — O control plane por dentro]] — etcd e quórum, o api-server como única porta, a cadeia de admission e o webhook que trava o cluster; eleição de líder.
+17. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/17 - O kubelet e o nó|17 — O kubelet e o nó]] — o laço mais concreto de todos: CRI, a cadeia até o `runc`, classes de QoS e despejo por pressão de recurso.
+18. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/18 - A API como sistema extensível|18 — A API como sistema extensível: CRDs]] — o api-server não sabe o que é um Deployment; por isso qualquer um pode acrescentar tipos de primeira classe.
 19. Operators
 20. Rede do cluster por dentro
 21. Depurar um cluster
