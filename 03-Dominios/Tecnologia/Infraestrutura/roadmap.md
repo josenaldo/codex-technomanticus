@@ -1,7 +1,7 @@
 ---
 title: "Roadmap — Infraestrutura"
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-04
 type: meta
 publish: false
 tags:
@@ -25,7 +25,7 @@ Roadmap do domínio `03-Dominios/Tecnologia/Infraestrutura` (raiz de domínio / 
 | # | Galho | Lente | Notas | Escritas | Estado | roadmap |
 |---|-------|-------|------:|---------:|--------|---------|
 | 1 | Docker | a imagem como artefato | 18 | 18 | 🔶 **escrita completa 2026-08-02** (falta M1) | `Docker/roadmap.md` |
-| 2 | Kubernetes | o loop de reconciliação | ~22-25 | 0 | 📋 desenhado, não iniciado | — |
+| 2 | Kubernetes | o loop de reconciliação | 22 | 22 | 🔶 **escrita completa 2026-08-04** (falta M1) | `Kubernetes/roadmap.md` |
 | 3 | Nginx | o ciclo de vida de uma request | ~10-12 | 0 | 📋 desenhado, não iniciado | — |
 | 4 | Linux | o sistema como o processo o vê | ~15-18 | 1 | ⬜ stub (1 nota) — reforma prevista | `Linux/` (sem roadmap ainda) |
 
@@ -37,10 +37,10 @@ A ordem coloca o pré-requisito conceitual antes (Docker antes de Kubernetes) e 
 |---------|-------|
 | Galhos | 4 |
 | ✅ completos (escrito + M1) | 0 |
-| 🔶 escritos, falta M1 | 1 (Docker) |
-| 📋 desenhados, não iniciados | 2 (Kubernetes, Nginx) |
+| 🔶 escritos, falta M1 | 2 (Docker, Kubernetes) |
+| 📋 desenhados, não iniciados | 1 (Nginx) |
 | ⬜ stub | 1 (Linux) |
-| Notas escritas | 18 de ~65-73 previstas |
+| Notas escritas | 40 de ~65-70 previstas |
 
 ## Contrato de fronteira
 

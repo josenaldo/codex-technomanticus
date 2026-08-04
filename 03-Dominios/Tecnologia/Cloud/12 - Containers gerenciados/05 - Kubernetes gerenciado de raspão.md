@@ -12,6 +12,9 @@ tags: ["cloud","containers","kubernetes","eks","doks"]
 > [!abstract] TL;DR
 > Kubernetes gerenciado tira do seu colo a parte mais chata de operar K8s — o control plane (API server, etcd, scheduler) — e deixa com você os workloads e, em boa parte, os nós. Amazon EKS é o Kubernetes "canônico" da AWS, rico em integrações mas com curva de operação real. DigitalOcean Kubernetes (DOKS) é a versão enxuta: control plane grátis, node pools simples, menos discagem fina. Esta nota mostra só a fronteira do que o provedor gerencia — Kubernetes a fundo (pods, Services, Helm, operators, GitOps) é assunto do domínio Operação, não deste galho.
 
+> [!info] A contraparte instrumental (2026-08-04)
+> Esta nota trata de **onde termina o control plane do provedor** e o que você deixa de operar ao escolher um Kubernetes gerenciado. O que exatamente está sendo gerenciado por você está descrito em [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/16 - O control plane por dentro|O control plane por dentro]], no galho [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/index|Tecnologia/Infraestrutura/Kubernetes]] — etcd e quórum, o api-server como única porta, a cadeia de admission, eleição de líder. Ler as duas juntas é o jeito mais rápido de saber o que some da sua responsabilidade e o que continua sendo seu.
+
 ## O problema: você quer os poderes do Kubernetes sem virar administrador de etcd
 
 Imagina que você já passou pela nota anterior deste galho e decidiu que o App Platform da DigitalOcean, ou o Elastic Beanstalk, são simples demais pro que você precisa. Você tem múltiplos times, dezenas de microsserviços, precisa de orquestração fina — afinidade de pods, rollouts canário, autoscaling por métrica customizada, service mesh. Você quer Kubernetes.
