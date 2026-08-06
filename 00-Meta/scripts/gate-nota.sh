@@ -149,8 +149,11 @@ for f in "$@"; do
   fi
 
   # ---------- wikilinks resolvidos ----------
-  quebrados=""
-  # extrai alvos: [[alvo]] ou [[alvo|alias]], tolerando o escape \| dentro de callout
+  # Alvos podem conter espaço, então NUNCA acumular em string separada por espaço.
+  # Distingue dois casos: link para nota irmã ainda não escrita (pendente, esperado
+  # durante a construção do galho) × link que não resolve em lugar nenhum (erro).
+  pasta_nota="$(cd "$(dirname "$f")" && pwd)"
+  quebrados=(); pendentes=()
   while IFS= read -r alvo; do
     [ -z "$alvo" ] && continue
     case "$alvo" in \#*) continue ;; esac   # link só de âncora
@@ -165,12 +168,20 @@ for f in "$@"; do
          -print -quit 2>/dev/null | grep -q .; then
       continue
     fi
-    quebrados="$quebrados $alvo"
+    # aponta para a própria pasta do galho? então é nota irmã ainda não escrita
+    if [ "$VAULT_ROOT/$(dirname "$alvo")" = "$pasta_nota" ]; then
+      pendentes+=("$(basename "$alvo")")
+    else
+      quebrados+=("$alvo")
+    fi
   done < <(grep -oE '\[\[[^]]+\]\]' "$f" \
              | sed -E 's/^\[\[//; s/\]\]$//; s/\\\|/|/g; s/\|.*$//')
 
-  if [ -n "$quebrados" ]; then
-    erro "wikilink(s) não resolvido(s):$(echo "$quebrados" | tr ' ' '\n' | sort -u | tr '\n' ' ')"
+  if [ "${#quebrados[@]}" -gt 0 ]; then
+    erro "wikilink(s) não resolvido(s):"
+    printf '%s\n' "${quebrados[@]}" | sort -u | sed 's/^/            · /'
+  elif [ "${#pendentes[@]}" -gt 0 ]; then
+    aviso "$(printf '%s\n' "${pendentes[@]}" | sort -u | wc -l) link(s) para nota irmã ainda não escrita (esperado durante o galho): $(printf '%s\n' "${pendentes[@]}" | sort -u | tr '\n' ' ')"
   else
     ok "wikilinks resolvidos"
   fi

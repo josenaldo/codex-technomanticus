@@ -26,19 +26,19 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Nginx`. Terceiro galho do dom�
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 16 |
-| 📋 desenhadas | 16 |
-| 🔶 escritas | 0 |
+| 📋 desenhadas | 13 |
+| 🔶 escritas | 3 |
 | ✅ completas | 0 |
-| % escrito | 0% |
+| % escrito | 19% |
 | M1 (mídia) | passada posterior |
 
 ## Notas
 
 | # | Nota | Fase | Estado | Bloco |
 |---|------|------|--------|-------|
-| 01 | O problema que o Nginx resolve e o modelo de processos | Iniciado | 📋 | 1 |
-| 02 | A estrutura da configuração — contextos e herança | Iniciado | 📋 | 1 |
-| 03 | Como o Nginx escolhe o server block | Iniciado | 📋 | 1 |
+| 01 | O problema que o Nginx resolve e o modelo de processos | Iniciado | 🔶 | 1 |
+| 02 | A estrutura da configuração — contextos e herança | Iniciado | 🔶 | 1 |
+| 03 | Como o Nginx escolhe o server block | Iniciado | 🔶 | 1 |
 | 04 | `location` e a tabela de precedência | Iniciado | 📋 | 2 |
 | 05 | O ciclo de vida de uma request | Iniciado | 📋 | 2 |
 | 06 | Servir arquivos estáticos | Adepto | 📋 | 3 |
@@ -86,7 +86,7 @@ O levantamento de fronteira de 2026-08-06 encontrou a teoria inteira já escrita
 
 ## Pendências
 
-- **Escrita:** 0/16. Blocos 1-6 do plano.
+- **Escrita:** 3/16. Bloco 1 concluído em 2026-08-06 (notas 01-03). Blocos 2-6 pendentes.
 - **Poda e callouts de volta** (`Operação 3-05`, `Kubernetes 15`): bloco 7 do plano.
 - **M1 (mídia):** passada posterior.
 
