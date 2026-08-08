@@ -3,7 +3,7 @@ title: "Infraestrutura"
 type: moc
 publish: true
 created: 2026-05-21
-updated: 2026-08-04
+updated: 2026-08-08
 status: growing
 tags:
   - moc
@@ -16,7 +16,7 @@ aliases:
 # Infraestrutura
 
 > [!abstract] TL;DR
-> Domínio das **ferramentas que sustentam a aplicação depois que ela sai da máquina do dev**: Docker, Kubernetes, Nginx e Linux. A lente é *a ferramenta por dentro, para quem já vai operá-la* — não tutorial de comando, mas o mecanismo que permite prever o comportamento. Quatro galhos em construção sequencial; os dois primeiros já estão escritos — [[03-Dominios/Tecnologia/Infraestrutura/Docker/index|Docker]] (18 notas, 2026-08-02) e [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/index|Kubernetes]] (22 notas, 2026-08-04) — somando 40 notas e mais de 18 mil linhas.
+> Domínio das **ferramentas que sustentam a aplicação depois que ela sai da máquina do dev**: Docker, Kubernetes, Nginx e Linux. A lente é *a ferramenta por dentro, para quem já vai operá-la* — não tutorial de comando, mas o mecanismo que permite prever o comportamento. Quatro galhos em construção sequencial; os três primeiros já estão escritos — [[03-Dominios/Tecnologia/Infraestrutura/Docker/index|Docker]] (18 notas, 2026-08-02), [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/index|Kubernetes]] (22 notas, 2026-08-04) e [[03-Dominios/Tecnologia/Infraestrutura/Nginx/index|Nginx]] (16 notas, 2026-08-08) — somando 56 notas.
 
 ## Por que este domínio existe
 
@@ -38,7 +38,7 @@ O vault já operava essas ferramentas sem nunca as ensinar, e dizia isso com tod
 |---|---|---|
 | [[03-Dominios/Tecnologia/Infraestrutura/Docker/index\|Docker]] | a imagem como artefato | ✅ **escrita completa 2026-08-02** — 18 notas, 3 fases; falta M1 (mídia) |
 | [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/index\|Kubernetes]] | o loop de reconciliação | ✅ **escrita completa 2026-08-04** — 22 notas, 3 fases; falta M1 (mídia) |
-| Nginx | o ciclo de vida de uma request | 📋 desenhado, não iniciado — ~10-12 notas |
+| [[03-Dominios/Tecnologia/Infraestrutura/Nginx/index\|Nginx]] | o ciclo de vida de uma request | ✅ **escrita completa 2026-08-08** — 16 notas, 3 fases; falta M1 (mídia) |
 | [[03-Dominios/Tecnologia/Infraestrutura/Linux/index\|Linux]] | o sistema como o processo o vê | 🔶 stub (1 nota) — reforma prevista, ~15-18 notas |
 
 A ordem de construção é **Docker → Kubernetes → Nginx → Linux**: o pré-requisito conceitual vem antes, e a base absoluta fica por último, porque é a que mais se sobrepõe a [[03-Dominios/Tecnologia/Terminal/index|Terminal]] e a Ciência, e se beneficia de ter as outras fronteiras já cravadas. Ver o [[00-Meta/specs/2026-08-02-dominio-infraestrutura-design|design do domínio]] e o [[03-Dominios/Tecnologia/Infraestrutura/roadmap|roadmap]].
@@ -49,7 +49,8 @@ Notas de referência que já foram monólitos e hoje redirecionam para os galhos
 
 - [[03-Dominios/Tecnologia/Infraestrutura/Docker.md|Docker (tronco)]] — podado em 2026-08-02; preserva o relato de experiência do autor e o material de articulação em inglês
 - [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes.md|Kubernetes (tronco)]] — podado em 2026-08-04, de 1612 para 222 linhas; mesma regra, preserva o relato do autor e o material em inglês
-- [[Nginx]] · [[Linux]] — ainda monólitos, sementes dos galhos 3 e 4
+- [[03-Dominios/Tecnologia/Infraestrutura/Nginx.md|Nginx (tronco)]] — podado em 2026-08-08, de 1285 para 198 linhas; mesma regra, preserva o relato do autor e o material em inglês
+- [[Linux]] — ainda monólito, semente do galho 4
 - [[CI-CD]] e [[Observabilidade]] — apontam para [[03-Dominios/Engenharia/Operação/index|Engenharia/Operação]], casa canônica da *prática* (decisão de 2026-07-08)
 - [[Digital Ocean]] — aponta para [[03-Dominios/Tecnologia/Cloud/index|Cloud]], galho 22
 - [[Terminal]] — aponta para [[03-Dominios/Tecnologia/Terminal/index|Tecnologia/Terminal]]

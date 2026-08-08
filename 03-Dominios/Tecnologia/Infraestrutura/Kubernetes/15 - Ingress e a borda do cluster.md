@@ -182,6 +182,10 @@ O controlador decide qual regra aplicar olhando primeiro para o cabeçalho `Host
 
 ## `IngressClass`: como o cluster sabe qual controlador atende qual Ingress
 
+> [!warning] O `ingress-nginx` foi aposentado — leia antes de copiar os exemplos abaixo
+> Os exemplos desta nota usam `k8s.io/ingress-nginx` como controlador porque ele foi, por muitos anos, o padrão de fato do ecossistema — e continua sendo o que você mais vai encontrar em cluster existente. Mas **ele não é mais uma escolha válida para instalação nova.** Em 11 de novembro de 2025, o SIG Network e o Security Response Committee do Kubernetes anunciaram sua aposentadoria: manutenção de melhor esforço até **março de 2026** e, depois disso, *"no further releases, no bugfixes, and no updates to resolve any security vulnerabilities that may be discovered"*. O repositório está arquivado. O README do projeto usa o pretérito e recomenda, para quem ainda não o usa, adotar uma implementação de **Gateway API**. Implantações existentes seguem funcionando e os artefatos continuam disponíveis — o que não existe mais é correção de vulnerabilidade num componente exposto diretamente à internet. **Atenção à distinção:** o que foi aposentado é o **controlador**, não a **API de Ingress** — esta segue congelada, porém suportada, como a seção sobre Gateway API mais adiante detalha.
+
+
 Um cluster raramente tem só um Ingress Controller instalado — é comum coexistir, por exemplo, um controlador interno para tráfego de aplicações comuns e outro dedicado a uma API que exige um recurso específico (autenticação mútua TLS, um limite de corpo de requisição maior, um protocolo diferente). O objeto **IngressClass** é a peça que resolve a pergunta "qual dos controladores instalados deveria processar este Ingress específico?", referenciada pelo campo `ingressClassName` de cada Ingress:
 
 ```yaml
@@ -430,6 +434,9 @@ Requisições que chegam ao proxy mas não encontram backend saudável costumam 
 | O modelo da Gateway API separa papéis entre infraestrutura, cluster e aplicação | The Gateway API model separates roles across infrastructure, cluster, and application |
 
 ## O que vem a seguir
+
+> [!info] E o Nginx que roda dentro do controlador?
+> Esta nota descreve o Ingress como **objeto** e o controlador como o processo que o implementa — mas para deliberadamente antes de abrir o processo. O que aquele Nginx faz por dentro, como o controlador traduz um objeto Ingress em diretivas de `nginx.conf`, e por que cada mudança de Ingress custa um reload são o assunto de [[03-Dominios/Tecnologia/Infraestrutura/Nginx/14 - Nginx em container e como Ingress Controller|Nginx 14 — Nginx em container e como Ingress Controller]], no galho [[03-Dominios/Tecnologia/Infraestrutura/Nginx/index|Nginx]]. É lá também que estão a precedência do `location`, o comportamento do `proxy_pass` e as fases de processamento de uma request — o mecanismo que as annotations desta nota configuram por baixo.
 
 Esta nota fecha a fase Adepto do galho. O leitor que chegou até aqui sabe usar o Kubernetes de ponta a ponta — declarar, observar, diagnosticar e expor uma aplicação real, do objeto mais simples ao mais visível de fora do cluster. Falta uma pergunta, e é a que abre a fase Magus: tudo isso — api-server, etcd, os controllers que reconciliam, o scheduler que atribui nodes — funciona *como*, por dentro? A próxima nota deste galho, [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/16 - O control plane por dentro|O control plane por dentro]], abre exatamente essa caixa, mostrando os componentes que até aqui foram tratados como caixas-pretas confiáveis, e como eles conversam entre si para fazer tudo que as quatorze notas anteriores já deram como certo.
 

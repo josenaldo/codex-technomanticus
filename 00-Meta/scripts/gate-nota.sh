@@ -165,7 +165,9 @@ for f in "$@"; do
     alvo="${alvo%%#*}"                       # descarta âncora
     alvo="${alvo%"${alvo##*[![:space:]]}"}"  # trim à direita
     [ -z "$alvo" ] && continue
-    if [ -f "$VAULT_ROOT/$alvo.md" ] || [ -f "$VAULT_ROOT/$alvo" ]; then
+    # o alvo pode vir com a extensão .md explícita — o Obsidian resolve os dois
+    alvo_sem_ext="${alvo%.md}"
+    if [ -f "$VAULT_ROOT/$alvo_sem_ext.md" ] || [ -f "$VAULT_ROOT/$alvo" ]; then
       continue
     fi
     # fallback: resolução por basename, como o Obsidian faz

@@ -1,7 +1,7 @@
 ---
 title: "Roadmap — Infraestrutura"
 created: 2026-08-02
-updated: 2026-08-04
+updated: 2026-08-08
 type: meta
 publish: false
 tags:
@@ -26,7 +26,7 @@ Roadmap do domínio `03-Dominios/Tecnologia/Infraestrutura` (raiz de domínio / 
 |---|-------|-------|------:|---------:|--------|---------|
 | 1 | Docker | a imagem como artefato | 18 | 18 | 🔶 **escrita completa 2026-08-02** (falta M1) | `Docker/roadmap.md` |
 | 2 | Kubernetes | o loop de reconciliação | 22 | 22 | 🔶 **escrita completa 2026-08-04** (falta M1) | `Kubernetes/roadmap.md` |
-| 3 | Nginx | o ciclo de vida de uma request | ~10-12 | 0 | 📋 desenhado, não iniciado | — |
+| 3 | Nginx | o ciclo de vida de uma request | 16 | 16 | 🔶 **escrita completa 2026-08-08** (falta M1) | `Nginx/roadmap.md` |
 | 4 | Linux | o sistema como o processo o vê | ~15-18 | 1 | ⬜ stub (1 nota) — reforma prevista | `Linux/` (sem roadmap ainda) |
 
 A ordem coloca o pré-requisito conceitual antes (Docker antes de Kubernetes) e a base absoluta por último: Linux é o galho que mais se sobrepõe a Terminal e a Ciência/SO, e se beneficia de ser escrito depois que os outros três cravaram suas fronteiras.
@@ -37,10 +37,10 @@ A ordem coloca o pré-requisito conceitual antes (Docker antes de Kubernetes) e 
 |---------|-------|
 | Galhos | 4 |
 | ✅ completos (escrito + M1) | 0 |
-| 🔶 escritos, falta M1 | 2 (Docker, Kubernetes) |
-| 📋 desenhados, não iniciados | 1 (Nginx) |
+| 🔶 escritos, falta M1 | 3 (Docker, Kubernetes, Nginx) |
+| 📋 desenhados, não iniciados | 0 |
 | ⬜ stub | 1 (Linux) |
-| Notas escritas | 40 de ~65-70 previstas |
+| Notas escritas | 56 de ~71-74 previstas |
 
 ## Contrato de fronteira
 
@@ -60,8 +60,8 @@ A fronteira é renegociada **nota a nota, não em bloco**: onde a vizinha já di
 | Arquivo | Linhas originais | Estado |
 |---|---:|---|
 | `Docker.md` | 1298 | ✅ **podado 2026-08-02** → 174 linhas; preserva `Na prática (da minha experiência)` e `How to explain in English` |
-| `Kubernetes.md` | 1612 | semente do galho 2, intacto |
-| `Nginx.md` | 1285 | semente do galho 3, intacto |
+| `Kubernetes.md` | 1612 | ✅ **podado 2026-08-04** → 222 linhas |
+| `Nginx.md` | 1285 | ✅ **podado 2026-08-08** → 198 linhas; preserva `Na prática (da minha experiência)` e `How to explain in English` |
 | `Linux.md` | 1118 | semente do galho 4, intacto |
 | `CI-CD.md` | 1309 | fica podado apontando para Operação (decisão de 2026-07-08) |
 | `Observabilidade.md` | 1407 | idem |
@@ -69,8 +69,8 @@ A fronteira é renegociada **nota a nota, não em bloco**: onde a vizinha já di
 
 ## Pendências
 
-- **Galho 1 (Docker):** M1 (mídia) — passada posterior, com busca e verificação de ID **centrais via `yt-dlp`**, nunca delegadas a subagente.
-- **Galhos 2-4:** cada um ganha spec de roster detalhado no momento da abertura, seguindo o esboço da spec de design.
+- **Galhos 1-3 (Docker, Kubernetes, Nginx):** M1 (mídia) — passada posterior, com busca e verificação de ID **centrais via `yt-dlp`**, nunca delegadas a subagente. São 56 notas.
+- **Galho 4 (Linux):** ganha spec de roster detalhado no momento da abertura, seguindo o esboço da spec de design.
 - **Artefatos de domínio:** `Dicionário de Infraestrutura` e `Biblioteca de Infraestrutura` — criar quando os quatro galhos estiverem escritos e o vocabulário estabilizado.
 
 ## Notas de execução

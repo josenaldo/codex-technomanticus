@@ -75,6 +75,9 @@ A migração deixou de ser opcional em 2026: em novembro de 2025 o Kubernetes an
 
 ### Reverse proxy e roteamento por host/path
 
+> [!info] A ferramenta por dentro
+> Esta nota trata a borda como **ofício**: o que muda quando é produção. O proxy reverso **por dentro** — a ordem em que o Nginx avalia a configuração, a tabela de precedência do `location`, o que a barra final do `proxy_pass` faz com o path, e as fases de processamento de uma request — é o galho [[03-Dominios/Tecnologia/Infraestrutura/Nginx/index|Nginx]], em `Tecnologia/Infraestrutura`. Quando esta nota diz "o mecanismo por trás é o mesmo que você já conhece do Nginx", é para lá que se vai buscar esse mecanismo.
+
 Seja via Ingress clássico ou via Gateway API, o mecanismo por trás é o mesmo que você já conhece do Nginx como monólito: um **reverse proxy** que recebe a conexão do cliente, decide para onde encaminhar com base no host (`Host: api.suaempresa.com`) e no path (`/pagamentos/*`), e faz o encaminhamento — geralmente reescrevendo a requisição para HTTP simples internamente. A diferença em produção não é o mecanismo, é a **escala e a declaratividade**: em vez de editar um `nginx.conf` à mão, você declara regras como objetos do Kubernetes, e um controller as traduz em configuração de proxy automaticamente, reagindo a cada novo Service ou Ingress criado no cluster.
 
 Os proxies usados nessa camada variam: **Nginx** continua comum (é literalmente a base do ingress-nginx), mas **Envoy** ganhou terreno como proxy de borda moderno — é o mesmo proxy que, como você vai ver adiante, também roda como sidecar dentro do service mesh, o que cria uma coerência arquitetural interessante: o mesmo motor de proxy pode operar tanto na borda quanto no interior do cluster.
