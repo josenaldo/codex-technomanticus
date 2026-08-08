@@ -26,10 +26,10 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Nginx`. Terceiro galho do dom�
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 16 |
-| 📋 desenhadas | 11 |
-| 🔶 escritas | 5 |
+| 📋 desenhadas | 8 |
+| 🔶 escritas | 8 |
 | ✅ completas | 0 |
-| % escrito | 31% |
+| % escrito | 50% |
 | M1 (mídia) | passada posterior |
 
 ## Notas
@@ -41,9 +41,9 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Nginx`. Terceiro galho do dom�
 | 03 | Como o Nginx escolhe o server block | Iniciado | 🔶 | 1 |
 | 04 | `location` e a tabela de precedência | Iniciado | 🔶 | 2 |
 | 05 | O ciclo de vida de uma request | Iniciado | 🔶 | 2 |
-| 06 | Servir arquivos estáticos | Adepto | 📋 | 3 |
-| 07 | Proxy reverso | Adepto | 📋 | 3 |
-| 08 | `upstream` e balanceamento | Adepto | 📋 | 3 |
+| 06 | Servir arquivos estáticos | Adepto | 🔶 | 3 |
+| 07 | Proxy reverso | Adepto | 🔶 | 3 |
+| 08 | `upstream` e balanceamento | Adepto | 🔶 | 3 |
 | 09 | TLS no Nginx | Adepto | 📋 | 4 |
 | 10 | Cache no Nginx | Adepto | 📋 | 4 |
 | 11 | Limitar e comprimir | Adepto | 📋 | 4 |
@@ -86,7 +86,7 @@ O levantamento de fronteira de 2026-08-06 encontrou a teoria inteira já escrita
 
 ## Pendências
 
-- **Escrita:** 5/16. Bloco 1 (notas 01-03) em 2026-08-06 e Bloco 2 (notas 04-05) em 2026-08-08 concluídos — **fase Iniciado completa**. Blocos 3-6 pendentes.
+- **Escrita:** 5/16. Bloco 1 (notas 01-03) em 2026-08-06 e Bloco 2 (notas 04-05) em 2026-08-08 concluídos — **fase Iniciado completa**. Bloco 3 (notas 06-08) em 2026-08-08. Blocos 4-6 pendentes.
 - **Poda e callouts de volta** (`Operação 3-05`, `Kubernetes 15`): bloco 7 do plano.
 - **M1 (mídia):** passada posterior.
 

@@ -84,10 +84,15 @@ for f in "$@"; do
   fi
 
   # ---------- tabela PT<->EN com >=5 linhas ----------
+  # Conta linhas de tabela tanto soltas (`|`) quanto dentro de callout/quote (`> |`).
   n_en=$(awk '
     /^## Como explicar em inglês/ {dentro=1; next}
     dentro && /^## / {dentro=0}
-    dentro && /^\|/ && !/^\|[ :|-]*\|[ :|-]*\|?[ :|-]*$/ {n++}
+    dentro {
+      linha=$0
+      sub(/^[[:space:]]*>[[:space:]]?/, "", linha)          # tira o prefixo de quote
+      if (linha ~ /^\|/ && linha !~ /^\|[ :|-]*\|[ :|-]*\|?[ :|-]*$/) n++
+    }
     END {print n+0}
   ' "$f")
   # desconta a linha de cabeçalho da tabela
