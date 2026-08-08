@@ -26,10 +26,10 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Nginx`. Terceiro galho do dom�
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 16 |
-| 📋 desenhadas | 2 |
-| 🔶 escritas | 14 |
+| 📋 desenhadas | 0 |
+| 🔶 escritas | 16 |
 | ✅ completas | 0 |
-| % escrito | 88% |
+| % escrito | 100% |
 | M1 (mídia) | passada posterior |
 
 ## Notas
@@ -50,8 +50,8 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Nginx`. Terceiro galho do dom�
 | 12 | Variáveis, `map`, rewrite e logging | Magus | 🔶 | 5 |
 | 13 | Tuning e diagnóstico | Magus | 🔶 | 5 |
 | 14 | Nginx em container e como Ingress Controller | Magus | 🔶 | 5 |
-| 15 | O ecossistema além do Nginx | Magus | 📋 | 6 |
-| 16 | Capstone — a borda de uma aplicação | Magus | 📋 | 6 |
+| 15 | O ecossistema além do Nginx | Magus | 🔶 | 6 |
+| 16 | Capstone — a borda de uma aplicação | Magus | 🔶 | 6 |
 
 ## Fronteiras a respeitar
 
@@ -86,7 +86,7 @@ O levantamento de fronteira de 2026-08-06 encontrou a teoria inteira já escrita
 
 ## Pendências
 
-- **Escrita:** 5/16. Bloco 1 (notas 01-03) em 2026-08-06 e Bloco 2 (notas 04-05) em 2026-08-08 concluídos — **fase Iniciado completa**. Blocos 3 (06-08) e 4 (09-11) em 2026-08-08 — **fase Adepto completa**. Bloco 5 (12-14) em 2026-08-08. Bloco 6 (15-16) pendente.
+- **Escrita:** 5/16. Bloco 1 (notas 01-03) em 2026-08-06 e Bloco 2 (notas 04-05) em 2026-08-08 concluídos — **fase Iniciado completa**. Blocos 3 (06-08) e 4 (09-11) em 2026-08-08 — **fase Adepto completa**. Blocos 5 (12-14) e 6 (15-16) em 2026-08-08 — **escrita 16/16 COMPLETA**. Falta o bloco 7 (poda, callouts de volta, estante).
 - **Poda e callouts de volta** (`Operação 3-05`, `Kubernetes 15`): bloco 7 do plano.
 - **M1 (mídia):** passada posterior.
 
