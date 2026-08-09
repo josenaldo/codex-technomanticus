@@ -1,7 +1,7 @@
 ---
 title: "O ecossistema além do Nginx"
 created: 2026-08-08
-updated: 2026-08-08
+updated: 2026-08-09
 type: concept
 fase: Magus
 status: evergreen
@@ -339,6 +339,11 @@ Nada do que esta nota descreveu até aqui é argumento para trocar o Nginx por p
 **Simplicidade operacional quando o problema é, de fato, simples.** Um `nginx.conf` de trinta linhas servindo um site institucional com certificado renovado uma vez por ano via `cron` não ganha nada em confiabilidade trocando para uma ferramenta desenhada para descoberta dinâmica de centenas de backends — ganha, na verdade, uma superfície de configuração nova para aprender, sem nenhum dos três eixos da abertura desta nota realmente pesando naquele cenário. A pergunta certa nunca é "essa alternativa é tecnicamente superior" — é "o problema que motivou essa alternativa a existir está presente aqui, ou é hipotético".
 
 Juntando os três eixos com os da abertura desta nota: a régua de decisão não é sobre qual ferramenta vence numa comparação abstrata de recursos — é sobre qual delas resolve, sem fricção adicional, o problema concreto que está na mesa. Para a maioria dos times, na maioria dos dias, esse problema continua sendo exatamente o que o Nginx já resolve bem.
+
+> [!tip] Vídeo — um time que de fato pagou o custo da troca, lido com ceticismo
+> [**Dropbox migrates to Envoy from NginX — Let us discuss**](https://www.youtube.com/watch?v=ckraiZ_qa2o) (Hussein Nasser, ~36 min, EN) é o contrapeso empírico do que esta nota argumenta em princípio: uma leitura comentada, parágrafo a parágrafo, do relato de engenharia em que o Dropbox migrou sua borda de Nginx para Envoy. Os motivos que eles mediram são concretos e nomeáveis — HTTP/2 fim a fim com gRPC atravessando o proxy, cauda de latência crescendo sob carga, e I/O de disco ainda bloqueando mesmo depois de ligar `reuseport` (o mesmo mecanismo da nota 01, aqui aparecendo com seu limite prático). O valor de assistir com o autor, e não só ler o artigo original, é que ele marca onde o relato passa de engenharia a propaganda — e nota que, no eixo de **segurança**, o próprio artigo pende para o Nginx, por superfície de código menor e menos dependências de terceiros. **O que ele não cobre:** Caddy, Traefik, o xDS em detalhe e a questão da governança sob a F5 — nada do que as outras seções desta nota tratam; é um estudo de caso de um par específico, não um panorama. Trecho de destaque [11:15]: *"let's discuss security — so this is a prop for nginx, surprisingly: the balance goes towards nginx. This article says nginx actually has a smaller code surface, and that means they don't have as much dependence."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=ckraiZ_qa2o)
 
 ## Uma tabela de decisão honesta
 

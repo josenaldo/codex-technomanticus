@@ -1,7 +1,7 @@
 ---
 title: "Roadmap — Nginx"
 created: 2026-08-06
-updated: 2026-08-06
+updated: 2026-08-09
 type: meta
 publish: false
 tags:
@@ -27,22 +27,22 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Nginx`. Terceiro galho do dom�
 |---------|-------|
 | Total de notas | 16 |
 | 📋 desenhadas | 0 |
-| 🔶 escritas | 16 |
-| ✅ completas | 0 |
+| 🔶 escritas (falta M1) | 12 |
+| ✅ completas | 4 |
 | % escrito | 100% |
-| M1 (mídia) | passada posterior |
+| M1 (mídia) | 4/16 — em andamento |
 
 ## Notas
 
 | # | Nota | Fase | Estado | Bloco |
 |---|------|------|--------|-------|
-| 01 | O problema que o Nginx resolve e o modelo de processos | Iniciado | 🔶 | 1 |
+| 01 | O problema que o Nginx resolve e o modelo de processos | Iniciado | ✅ | 1 |
 | 02 | A estrutura da configuração — contextos e herança | Iniciado | 🔶 | 1 |
 | 03 | Como o Nginx escolhe o server block | Iniciado | 🔶 | 1 |
 | 04 | `location` e a tabela de precedência | Iniciado | 🔶 | 2 |
 | 05 | O ciclo de vida de uma request | Iniciado | 🔶 | 2 |
-| 06 | Servir arquivos estáticos | Adepto | 🔶 | 3 |
-| 07 | Proxy reverso | Adepto | 🔶 | 3 |
+| 06 | Servir arquivos estáticos | Adepto | ✅ | 3 |
+| 07 | Proxy reverso | Adepto | ✅ | 3 |
 | 08 | `upstream` e balanceamento | Adepto | 🔶 | 3 |
 | 09 | TLS no Nginx | Adepto | 🔶 | 4 |
 | 10 | Cache no Nginx | Adepto | 🔶 | 4 |
@@ -50,7 +50,7 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Nginx`. Terceiro galho do dom�
 | 12 | Variáveis, `map`, rewrite e logging | Magus | 🔶 | 5 |
 | 13 | Tuning e diagnóstico | Magus | 🔶 | 5 |
 | 14 | Nginx em container e como Ingress Controller | Magus | 🔶 | 5 |
-| 15 | O ecossistema além do Nginx | Magus | 🔶 | 6 |
+| 15 | O ecossistema além do Nginx | Magus | ✅ | 6 |
 | 16 | Capstone — a borda de uma aplicação | Magus | 🔶 | 6 |
 
 ## Fronteiras a respeitar
@@ -88,7 +88,33 @@ O levantamento de fronteira de 2026-08-06 encontrou a teoria inteira já escrita
 
 - **Escrita:** 5/16. Bloco 1 (notas 01-03) em 2026-08-06 e Bloco 2 (notas 04-05) em 2026-08-08 concluídos — **fase Iniciado completa**. Blocos 3 (06-08) e 4 (09-11) em 2026-08-08 — **fase Adepto completa**. Blocos 5 (12-14) e 6 (15-16) em 2026-08-08 — **escrita 16/16 COMPLETA**. Falta o bloco 7 (poda, callouts de volta, estante).
 - **Poda e callouts de volta** (`Operação 3-05`, `Kubernetes 15`): bloco 7 do plano.
-- **M1 (mídia):** passada posterior.
+- **M1 (mídia):** 4/16. Ver a seção abaixo.
+
+## M1 — mídia embutida e descartes
+
+Vídeos embutidos (todos verificados via `yt-dlp`; timestamp da âncora extraído do VTT, nunca estimado):
+
+| Nota | Vídeo | ID | Canal | Âncora |
+|---|---|---|---|---|
+| 01 | NGINX Internal Architecture — Workers | `vVYM2QBk-iQ` | Hussein Nasser, 15 min | 5:42 |
+| 06 | Path traversal via misconfigured NGINX alias | `IULL46LILrI` | The SecOps Group, 7 min | 3:50 |
+| 06 | The surprising ways Nginx try_files actually works | `VPrBA2iZe1c` | Chris Fidao, 6 min | 3:15 |
+| 07 | How Nginx and PHP-FPM turn a web request into code | `lh4RnczaATI` | Chris Fidao, 7 min | 1:04 |
+| 15 | Dropbox migrates to Envoy from NginX | `ckraiZ_qa2o` | Hussein Nasser, 36 min | 11:15 |
+
+> [!warning] Descartes registrados — não repetir a busca sem ângulo novo
+> **IDs que não resolvem** (vieram da busca com título plausível e são links mortos): `WC2-hNNBWII` · `3q2xxMc7XEo` · `9RAvTDTbuso` · `QbmOyr0HwnM` · `BQY1l0rgDSQ`. O padrão já se repetiu cinco vezes: **todo ID vindo de busca precisa passar por `yt-dlp` antes de qualquer coisa.**
+>
+> **Reprovados por conteúdo:** `LM-3SWQiCNg` (Durgadas Kamath, 24 min) — tutorial iniciante de rewrite/`try_files`/log, e ele mesmo declara que não entra em logging avançado; a nota 12 é Magus e já cobre tudo, com mais profundidade. `siZ1t1w-iNY` (Very Academy) — é sobre master/worker e `worker_connections`, território da nota 01, e não toca nas 11 fases. `viAeG0Miwho` (Chris Fidao) — tour de `sites-available`/`sites-enabled` e `nginx -t`/`-T`, todo já coberto pela nota 02. `OM_N0jjghqI` (F5 DevCentral, 33 mil views) — autoridade alta, mas é de **2019**, anterior ao `networking.k8s.io/v1`; ensinaria API obsoleta na nota 14.
+>
+> **Reprovados por régua:** `0Q9I-x--np4` (285 s) · `_DdBJs6NfzI` (226 s) · `aYN9Y4_09o0` (94 s) · `LpkiX2ZJ3YI` (220 s) — todos abaixo do piso de 5 min. `psEHRwH5jYk` (440 views) · `_BCfoJoj-9g` (1.352) · `ODxw1QWpdEM` (133) · `dkElINJl_ZA` (93 s, 13 views) · `KZOaO_s5LXI` · `wYjhS42mbWM` — autoridade baixa demais.
+>
+> **Nota 07:** a primeira rodada de busca (proxy reverso genérico) não rendeu nada; o vídeo que entrou veio de um ângulo lateral (FastCGI como protocolo de gateway). **Notas 13 e 14 seguem sem candidato aprovado** após duas rodadas.
+>
+> **Em aberto:** `hcw-NjOh8r0` (Hussein Nasser, crash course de 2 h) viola o teto de 60 min, mas é a fonte mais autoritativa disponível — decidir se entra com âncora muito precisa em alguma nota.
+
+> [!question] Qual o piso aceitável de cobertura?
+> O yield realista deste domínio parece ficar em torno de 50%, concentrado nas notas **conceituais** — minúcia de configuração (`location`, `proxy_pass`, `upstream`) simplesmente não tem vídeo bom em circulação. Falta decidir com o usuário se isso encerra o M1 ou se vale uma segunda passada buscando em **PT-BR** e em **conferências** (GOTO/InfoQ/NDC), ângulos ainda não tentados.
 
 ## Notas de execução
 

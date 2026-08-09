@@ -1,7 +1,7 @@
 ---
 title: "Proxy reverso"
 created: 2026-08-08
-updated: 2026-08-08
+updated: 2026-08-09
 type: concept
 fase: Adepto
 status: evergreen
@@ -326,6 +326,11 @@ location /pacote.Servico/ {
 ```
 
 Aprofundar `grpc_pass` foge do escopo desta nota — o registro que vale reter aqui é só que ele existe, como um handler de conteúdo irmão de `proxy_pass`, competindo pela mesma fase `CONTENT` do ciclo de vida da request, para quem encontrar `grpc_pass` numa configuração e reconhecer que não é erro de digitação de `proxy_pass`.
+
+> [!tip] Vídeo — o irmão que esta nota não abriu: `fastcgi_pass` e o porquê de existir um gateway
+> [**How Nginx and PHP-FPM turn a web request into code**](https://www.youtube.com/watch?v=lh4RnczaATI) (Chris Fidao, ~7 min, EN) responde a pergunta que fica no ar quando se lê `fastcgi_pass` nos exemplos da nota 04 depois de aprender `proxy_pass` aqui: por que duas diretivas para a mesma ideia de "mandar a request para outro processo"? A resposta é que `proxy_pass` só funciona quando o backend **fala HTTP** — e PHP, Ruby e Python, sozinhos, não falam. Entre o Nginx e o código precisa existir um *gateway* que traduza a request HTTP para outro protocolo (FastCGI) e monte, do outro lado, as estruturas que a linguagem entende como "uma request" — o `$_SERVER` do PHP sendo preenchido, um a um, pelos `fastcgi_param` que o próprio Nginx enviou. Linguagens com servidor HTTP embutido, como Go e Node, dispensam o intermediário: para elas, `proxy_pass` basta. **O que ele não cobre:** nada do que é o assunto desta nota — a regra da barra final, herança de headers, buffers, timeouts, WebSocket; ele também não entra na gestão de processos do próprio PHP-FPM. Trecho de destaque [1:04]: *"most languages have a gateway that sits between a web server and their code base, especially older programming languages like Ruby or Python, PHP included — newer languages typically have HTTP built into them, so they actually don't need this gateway intermediary thing."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=lh4RnczaATI)
 
 ## `proxy_redirect`: por que um `Location` absoluto do backend quebra atrás de proxy
 
