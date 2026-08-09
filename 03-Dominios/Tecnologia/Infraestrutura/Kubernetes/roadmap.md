@@ -1,7 +1,7 @@
 ---
 title: "Roadmap — Kubernetes"
 created: 2026-08-03
-updated: 2026-08-03
+updated: 2026-08-09
 type: meta
 publish: false
 tags:
@@ -25,17 +25,17 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 |---------|-------|
 | Total de notas | 22 |
 | 📋 desenhadas | 0 |
-| 🔶 escritas | 22 |
-| ✅ completas | 0 |
+| 🔶 escritas (falta M1) | 19 |
+| ✅ completas | 3 |
 | % escrito | 100% |
-| M1 (mídia) | passada posterior |
+| M1 (mídia) | 3/22 — em andamento |
 
 ## Notas
 
 | # | Nota | Fase | Estado | Bloco |
 |---|------|------|--------|-------|
 | 01 | O problema que orquestração resolve | Iniciado | 🔶 | 1 |
-| 02 | O loop de reconciliação | Iniciado | 🔶 | 1 |
+| 02 | O loop de reconciliação | Iniciado | ✅ | 1 |
 | 03 | O Pod, a unidade que não é o container | Iniciado | 🔶 | 1 |
 | 04 | Deployment e ReplicaSet | Iniciado | 🔶 | 1 |
 | 05 | Service | Iniciado | 🔶 | 2 |
@@ -49,11 +49,11 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 | 13 | RBAC e ServiceAccount | Adepto | 🔶 | 4 |
 | 14 | Helm e Kustomize | Adepto | 🔶 | 4 |
 | 15 | Ingress e a borda do cluster | Adepto | 🔶 | 4 |
-| 16 | O control plane por dentro | Magus | 🔶 | 5 |
+| 16 | O control plane por dentro | Magus | ✅ | 5 |
 | 17 | O kubelet e o nó | Magus | 🔶 | 5 |
 | 18 | A API como sistema extensível — CRDs | Magus | 🔶 | 5 |
 | 19 | Operators | Magus | 🔶 | 6 |
-| 20 | Rede do cluster por dentro | Magus | 🔶 | 6 |
+| 20 | Rede do cluster por dentro | Magus | ✅ | 6 |
 | 21 | Depurar um cluster | Magus | 🔶 | 6 |
 | 22 | Capstone — do zero ao cluster | Magus | 🔶 | 7 |
 
@@ -99,3 +99,24 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 ## Notas de execução
 
 - Galho aberto em 2026-08-03, na sequência direta do fechamento do galho Docker. A ponte narrativa já existia: a nota 11 do Docker desenvolve, no corpo, por que Compose não reconcilia estado — e é daí que a nota 01 deste galho parte.
+
+## M1 — mídia embutida e descartes
+
+| Nota | Vídeo | ID | Canal | Âncora |
+|---|---|---|---|---|
+| 02 | Level Triggering and Reconciliation in Kubernetes | `tCht7FvIDdY` | James Bowes, 25 min | 12:59 |
+| 16 | Protecting Your Control Plane: kube-apiserver Memory Exhaustion | `1Jno9-3DdA4` | Cloud Native Days Austria, 32 min | 20:28 |
+| 20 | Liberating Kubernetes From Kube-proxy and Iptables | `bIRwSIwNHC0` | CNCF / KubeCon, 35 min | 28:54 |
+
+> [!warning] Critério aplicado neste galho
+> **Views baixas não reprovam sozinhas.** Palestra técnica de nicho legitimamente tem pouca audiência — `tCht7FvIDdY` tem 555 views e é uma palestra real e substancial. O que reprova é fazenda de conteúdo: vídeo curto, sem autoria identificável, com alinhamento raso. Reprovados aqui por esse critério: `ARH6jjMQNeM` (41 views) · `JNe1gzVCMIo` (205 views, 5,6 min).
+>
+> **Legenda automática degradada** nos três embutidos (garbla `kubectl` como "cube control", `pods` como "ports", `1.33` como "133"). A citação de destaque foi escolhida entre os trechos limpos, e as notas 02 e 20 trazem aviso explícito ao leitor.
+>
+> **Fato duro verificado na fonte antes de escrever** (lição do galho Nginx): a correção citada na nota 16 é o KEP-5116 da SIG API Machinery — codificação em streaming de respostas `LIST`, beta habilitado por padrão na 1.33, estável previsto para 1.34, pico de memória de ~70 GB para ~3 GB. Confirmado no blog oficial do projeto, não só na palestra.
+>
+> **Ressalva de idade registrada dentro do callout** quando o vídeo é anterior à baseline da nota: `bIRwSIwNHC0` é de 2019 e não conhece o modo `nftables` (GA na 1.33).
+
+## Próximos alvos de M1
+
+Prioridade nas conceituais profundas, onde o rendimento se concentra: **03** (o Pod e o container `pause`), **17** (kubelet e CRI), **18** (API extensível, CRD e admission), **19** (Operators), **12** (scheduling). As notas de uso cotidiano (**05**-**11**, **14**) tendem a só ter tutorial genérico — esperar rendimento baixo e não forçar.

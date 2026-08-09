@@ -1,7 +1,7 @@
 ---
 title: "O control plane por dentro"
 created: 2026-08-04
-updated: 2026-08-04
+updated: 2026-08-09
 type: concept
 fase: Magus
 status: seedling
@@ -85,6 +85,13 @@ kubectl get prioritylevelconfigurations
 ```
 
 Vale registrar uma ressalva de escopo, porque é o tipo de detalhe que só aparece depois de um incidente real: requisições de longa duração — `kubectl exec`, tail de logs, um watch aberto por horas — não são contabilizadas da mesma forma pelo mecanismo de concorrência do APF quanto uma requisição comum de curta duração, o que significa que um número grande de watches abertos e esquecidos (um script de depuração antigo, um Informer de um controller mal escrito que nunca fecha conexões) ainda consegue degradar o api-server de um jeito que a classificação por `FlowSchema` sozinha não resolve — é aqui, de novo, que a métrica `apiserver_current_inflight_requests` e a contagem bruta de watches ativos (`apiserver_registered_watchers`) completam o diagnóstico que a classificação por prioridade, sozinha, não cobre.
+
+> [!tip] Vídeo — o incidente real onde essa ressalva vira um control plane no chão
+> [**Protecting Your Control Plane: A Deep Dive into kube-apiserver Memory Exhaustion**](https://www.youtube.com/watch?v=1Jno9-3DdA4) (Kevin Neila, Red Hat — Cloud Native Days Austria, ~32 min, EN) é a continuação natural do parágrafo acima, contada como história de incidente: um coletor de logs reiniciou, disparou `LIST` e `WATCH` sobre Pods, nodes e namespaces, e o consumo de memória do node de control plane saltou para a casa das centenas de gigabytes até o api-server entrar em ciclo de crash. O mecanismo que a palestra expõe é o que falta a esta seção: o problema não era **concorrência** — que é o que o APF classifica —, e sim **memória**, porque o api-server materializava o resultado inteiro de um `LIST` em um único bloco e o segurava até o cliente terminar de ler, sem nada limitando essa alocação (o `kube-apiserver` roda sem *resource limits* justamente por ser crítico, então `kube-reserved` e `system-reserved` não protegem; e o `kswapd`, varrendo páginas atrás de memória livre, ainda consome a CPU que sobrava). Ele também traz o número que dá escala ao risco: nos testes sintéticos citados, um único informer custava cerca de 4 GB, e com dezesseis o node ia ao chão. **O que ele não cobre:** `FlowSchema` e `PriorityLevelConfiguration` em detalhe, o Raft do etcd e a cadeia de admission — tudo isto é assunto desta nota e da seguinte. Trecho de destaque [20:28]: *"it gets worse and worse, and that means just one watcher is able to bring down your entire node — and at 16 informers the node was gone."*
+>
+> Vale a atualização de baseline, verificada no registro oficial do projeto: a correção é a **codificação em streaming das respostas de `LIST`** (KEP-5116 da SIG API Machinery), que passa a enviar os itens um a um em vez de serializar a coleção inteira em memória. Entrou como **beta habilitado por padrão no Kubernetes 1.33**, com estabilidade prevista para a 1.34, e o benchmark oficial registra um pico de memória caindo de cerca de 70 GB para cerca de 3 GB em dez `LIST` concorrentes de 1 GB cada.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=1Jno9-3DdA4)
 
 ## A cadeia de processamento de uma requisição
 

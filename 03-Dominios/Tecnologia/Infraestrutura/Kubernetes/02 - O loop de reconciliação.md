@@ -1,7 +1,7 @@
 ---
 title: "O loop de reconciliação"
 created: 2026-08-03
-updated: 2026-08-03
+updated: 2026-08-09
 type: concept
 fase: Iniciado
 status: seedling
@@ -248,6 +248,13 @@ graph TB
 Vale uma ressalva honesta aqui, porque exagerar a garantia seria impreciso: level-triggered resolve o problema de **perder a reação a uma mudança**, mas não elimina, sozinho, a necessidade de um mecanismo de detecção de falha em primeiro lugar — algo continua precisando perceber que um node ficou inalcançável (via `NodeStatus`, sinalizado pelo `kubelet` que rodaria naquele node — mecanismo que a nota [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/17 - O kubelet e o nó|O kubelet e o nó]] detalha) antes que o controller tenha um fato novo para reavaliar. O que level-triggered garante é que, uma vez que o fato existe — "este Pod não está mais correspondendo ao que a spec pede" —, ele vai continuar existindo e continuar disponível para qualquer rodada futura do laço encontrar, não importa quantas rodadas anteriores tenham falhado em processá-lo.
 
 Vale um exemplo concreto de como essa detecção de falha de nó de fato acontece, porque nomear o mecanismo evita que ele pareça mágico. O `kubelet` de cada node atualiza periodicamente um objeto `Lease` associado àquele node — um "batimento cardíaco" simples, renovado em intervalos curtos. Quando esses batimentos param de chegar por tempo suficiente (um intervalo configurável, contado em dezenas de segundos), o `kube-controller-manager` marca a condição `Ready` do `NodeStatus` daquele node como desconhecida ou falsa. Só a partir desse momento — quando o fato "este node não está mais reportando saúde" passa a existir no estado observado do cluster — é que os controllers responsáveis por Pods rodando ali passam a tratá-los como candidatos a recriação em outro node, depois de um período de tolerância adicional configurável. Não existe, em nenhum ponto dessa cadeia, um "evento de partição de rede" sendo escutado — existe só a ausência continuada de um fato esperado (o batimento), virando ela mesma um novo fato observável (`NodeStatus` não pronto), que por sua vez alimenta a mesma comparação spec-contra-status de sempre.
+
+> [!tip] Vídeo — de onde vem o vocabulário, e o modo de falha pior que o evento perdido
+> [**Level Triggering and Reconciliation in Kubernetes**](https://www.youtube.com/watch?v=tCht7FvIDdY) (James Bowes, ~25 min, EN) acrescenta duas coisas a esta seção. A primeira é a **origem literal** dos termos: nível-gatilho e borda-gatilho vêm da engenharia elétrica, onde a "borda" é o instante da subida ou descida de um sinal e o "nível" é o valor em que ele repousa — o que faz o vocabulário deixar de ser metáfora e virar empréstimo direto. A segunda é um modo de falha que esta nota não nomeia: um sistema edge-triggered que transmite **deltas** ("adicione duas réplicas") não apenas deixa de reagir quando perde uma transição — ele passa a acreditar num número errado, para sempre, porque cada delta perdido desloca permanentemente sua contagem. É pior do que a ação que não aconteceu: é o observador com uma imagem corrompida da realidade. O vídeo também é honesto sobre o preço que a seção seguinte desta nota cobra por outro ângulo — nível-gatilho manda o estado inteiro o tempo todo, e isso custa banda proporcional à taxa de amostragem. **O que ele não cobre:** a herança do Borg, a relist periódica de segurança e a mecânica de `Lease`/`NodeStatus`. Trecho de destaque [12:59]: *"our perception of the actual system has gotten out of sync — and this isn't an issue with a level triggered system, because we're always just saying: this is what the state of the system should be."*
+>
+> ⚠️ Legenda automática de qualidade irregular — o áudio vale mais que o texto transcrito.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=tCht7FvIDdY)
 
 ## As consequências que você já sentiu
 
