@@ -103,7 +103,17 @@ Vídeos embutidos (todos verificados via `yt-dlp`; timestamp da âncora extraíd
 | 15 | Dropbox migrates to Envoy from NginX | `ckraiZ_qa2o` | Hussein Nasser, 36 min | 11:15 |
 
 > [!warning] Descartes registrados — não repetir a busca sem ângulo novo
-> **IDs que não resolvem** (vieram da busca com título plausível e são links mortos): `WC2-hNNBWII` · `3q2xxMc7XEo` · `9RAvTDTbuso` · `QbmOyr0HwnM` · `BQY1l0rgDSQ`. O padrão já se repetiu cinco vezes: **todo ID vindo de busca precisa passar por `yt-dlp` antes de qualquer coisa.**
+> **IDs inacessíveis** — a caracterização anterior ("links mortos vindos de busca alucinada") estava **errada**, e foi corrigida em 2026-08-09 depois de revalidar um a um. Os vídeos existem; o que varia é o motivo de não abrirem, e cada motivo pede uma conduta diferente:
+>
+> | ID | Motivo real | Conduta |
+> |---|---|---|
+> | `WC2-hNNBWII` · `QbmOyr0HwnM` · `BQY1l0rgDSQ` | **Exclusivo para membros** do canal (Hussein Nasser mantém parte do acervo atrás de assinatura) | Inacessível de fato — não insistir |
+> | `9RAvTDTbuso` | Exige login | Inacessível sem conta |
+> | `3q2xxMc7XEo` | Indisponível de verdade | Único caso de link morto |
+>
+> **A lição correta não é "a busca alucina IDs".** É que `yt-dlp` falha por motivos diferentes e a mensagem precisa ser lida: `Sign in to confirm you're not a bot` é **rate limit** (o vídeo existe e volta a funcionar depois), `Join this channel` é paywall, e só `This video is not available` é ausência real. Tratar rate limit como link morto descarta material bom por engano — **aconteceu**, com a palestra do Tim Hockin (`nWGkvrIPqJ4`), rejeitada por engano antes de ser revalidada.
+>
+> **Método melhor para achar ID:** `uvx yt-dlp "ytsearch5:<título>" --print "%(id)s|%(title)s|%(channel)s|%(duration)s|%(view_count)s"` devolve IDs reais direto do YouTube, em vez de IDs plausíveis vindos de busca web.
 >
 > **Reprovados por conteúdo:** `LM-3SWQiCNg` (Durgadas Kamath, 24 min) — tutorial iniciante de rewrite/`try_files`/log, e ele mesmo declara que não entra em logging avançado; a nota 12 é Magus e já cobre tudo, com mais profundidade. `siZ1t1w-iNY` (Very Academy) — é sobre master/worker e `worker_connections`, território da nota 01, e não toca nas 11 fases. `viAeG0Miwho` (Chris Fidao) — tour de `sites-available`/`sites-enabled` e `nginx -t`/`-T`, todo já coberto pela nota 02. `OM_N0jjghqI` (F5 DevCentral, 33 mil views) — autoridade alta, mas é de **2019**, anterior ao `networking.k8s.io/v1`; ensinaria API obsoleta na nota 14.
 >

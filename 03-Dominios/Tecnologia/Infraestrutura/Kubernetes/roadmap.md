@@ -117,6 +117,17 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 >
 > **Ressalva de idade registrada dentro do callout** quando o vídeo é anterior à baseline da nota: `bIRwSIwNHC0` é de 2019 e não conhece o modo `nftables` (GA na 1.33).
 
+## Candidato verificado, aguardando transcrição
+
+| Nota | Vídeo | ID | Canal | Estado |
+|---|---|---|---|---|
+| 12 | Everything You Ever Wanted to Know About Resource Scheduling, But Were Afraid to Ask | `nWGkvrIPqJ4` | CNCF / KubeCon, 43 min, 2016, Tim Hockin | Metadados verificados; **transcrição não lida** |
+
+Tim Hockin é engenheiro fundador do Kubernetes, e esta é a palestra canônica sobre requests, limits e classes de QoS — autoridade máxima disponível para a nota 12. **Não foi embutida** porque a sessão de 2026-08-09 esbarrou no rate limit do YouTube antes de baixar a legenda, e a regra de ouro proíbe embutir sem ter lido a transcrição. Retomar por aqui: baixar a legenda, avaliar contra o que a nota já cobre (as seções de filtrar/pontuar e de preempção) e decidir. Ressalva a considerar no callout, se entrar: é de 2016.
+
+> [!warning] Rate limit do YouTube
+> Sessões longas de M1 esbarram em `Sign in to confirm you're not a bot`, que bloqueia extração e download de legenda por um período. Não é link morto e não é motivo para descartar candidato — é motivo para **parar a passada** e retomar depois. Alternativa, se o usuário autorizar: `yt-dlp --cookies-from-browser`, que usa a sessão do navegador dele.
+
 ## Próximos alvos de M1
 
 Prioridade nas conceituais profundas, onde o rendimento se concentra: **03** (o Pod e o container `pause`), **17** (kubelet e CRI), **18** (API extensível, CRD e admission), **19** (Operators), **12** (scheduling). As notas de uso cotidiano (**05**-**11**, **14**) tendem a só ter tutorial genérico — esperar rendimento baixo e não forçar.
