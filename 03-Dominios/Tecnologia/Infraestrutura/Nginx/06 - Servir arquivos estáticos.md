@@ -1,7 +1,7 @@
 ---
 title: "Servir arquivos estáticos"
 created: 2026-08-08
-updated: 2026-08-08
+updated: 2026-08-09
 type: concept
 fase: Adepto
 status: evergreen
@@ -92,6 +92,11 @@ A regra prática, sem exceção: qualquer `alias` cujo `location` termine com `/
 > [!info] Segurança do `alias` — CVE-2026-27654
 > A versão **1.29.7** (24 mar 2026) corrigiu um buffer overflow no `ngx_http_dav_module` no tratamento de requests **`COPY`** ou **`MOVE`** — os métodos WebDAV de cópia e movimentação de arquivo — dentro de um `location` configurado com `alias`, que permitia a um atacante modificar o caminho de origem ou destino da operação para fora do document root. O detalhe não é anedota: é um lembrete concreto de que `alias`, por reescrever caminho em vez de só concatenar, tem uma superfície de manipulação própria, diferente da de `root` — módulos que processam o valor resultante do `alias` (aqui, o `ngx_http_dav_module`) herdam essa complexidade adicional, e vale rodar em versão corrigida antes de expor qualquer `location` com `alias` combinado a métodos de escrita. O aviso de segurança oficial delimita o alcance: versões **0.5.13 até 1.29.6** são vulneráveis, e a correção entrou na **1.29.7** e na **1.28.3** — ou seja, a falha atravessou quase vinte anos de versões antes de ser encontrada, o que diz algo sobre quão pouco exercitada é a combinação `alias` mais WebDAV.
 
+> [!tip] Vídeo — a barra do `alias` vista pelo lado de quem ataca
+> [**It's not my mistake — Path traversal via misconfigured NGINX alias**](https://www.youtube.com/watch?v=IULL46LILrI) (The SecOps Group, ~7 min, EN) pega exatamente a armadilha da seção acima e mostra a consequência que esta nota descreve mas não demonstra: com `location /img` sem barra e `alias /static/images/`, uma requisição para `/img../` sai do diretório servido e passa a ler o que está acima dele. O vídeo monta a configuração vulnerável e percorre a exploração passo a passo, o que torna concreto por que a barra final não é preciosismo de estilo. **O que ele não cobre:** a mecânica de `root` × `alias` em si, nem `try_files` — ele assume tudo isso conhecido e vai direto ao abuso. Trecho de destaque [3:50]: *"the location doesn't end with the directory separator — then this is the misconfiguration."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=IULL46LILrI)
+
 ## `alias` dentro de um `location` de expressão regular
 
 Existe uma variação de `alias` que merece nota própria porque o mecanismo de substituição muda de figura quando o `location` que o envolve não é um prefixo simples, mas uma expressão regular. Quando `alias` é usado dentro de um `location` declarado com `~` ou `~*`, a regra de "descontar o prefixo casado" deixa de fazer sentido literal — não existe um prefixo fixo para descontar, existe um padrão que pode casar partes variáveis da URI em posições diferentes a cada request. Para esse caso, `alias` precisa referenciar explicitamente as **capturas** da regex, o mesmo mecanismo de grupos nomeados ou posicionais que a nota 04 já introduziu para regex de `location`:
@@ -173,6 +178,11 @@ server {
 ```
 
 A correção, nos dois casos, é a mesma: o fallback de SPA — seja via `try_files`, seja via `error_page` — precisa viver **dentro** do `location` que serve os arquivos da SPA, nunca no nível de `server`, onde ele passa a valer também para blocos que não deveriam herdar esse comportamento. `try_files` já resolve isso corretamente por construção, porque roda só dentro do `location` que o declara; `error_page` global é o jeito mais fácil de reintroduzir o mesmo problema por uma porta diferente.
+
+> [!tip] Vídeo — o que o `try_files` faz depois de casar
+> [**The surprising ways Nginx try_files actually works**](https://www.youtube.com/watch?v=VPrBA2iZe1c) (Chris Fidao, ~6 min, EN) acrescenta a esta nota o passo que quase todo material omite: quando o `try_files` encontra o arquivo, o Nginx **não serve dali direto** — ele refaz a busca de `location`, e o arquivo pode acabar atendido por um bloco completamente diferente do que continha o `try_files`. É o redirecionamento interno da nota 05 aparecendo no lugar mais cotidiano possível, e explica por que um `.php` encontrado por `try_files` termina no PHP-FPM, e um `.css` termina no bloco de estáticos com `expires`. **O que ele não cobre:** `root` × `alias`, que ele assume resolvido. Trecho de destaque [3:15]: *"it's going to try to find other location blocks that might also handle that file."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=VPrBA2iZe1c)
 
 ## `index` e a interação com `try_files`
 

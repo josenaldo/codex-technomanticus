@@ -1,7 +1,7 @@
 ---
 title: "O problema que o Nginx resolve"
 created: 2026-08-06
-updated: 2026-08-06
+updated: 2026-08-09
 type: concept
 fase: Iniciado
 status: evergreen
@@ -274,6 +274,11 @@ graph TB
 Vale reter a diferença estrutural entre as duas abordagens antes de escolher uma: `accept_mutex` (ou seu equivalente automático via `EPOLLEXCLUSIVE`) resolve o problema de "todo mundo acorda para uma única conexão" coordenando os workers entre si sobre um único socket compartilhado; `reuseport` elimina o compartilhamento em si, dando a cada worker seu próprio socket e deixando a distribuição inteiramente a cargo do kernel. Para a maioria das configurações modernas de alto tráfego, `reuseport` é a escolha recomendada por evitar de vez a contenção entre workers pelo mesmo socket — mas ela só está disponível a partir da versão 1.9.1 e depende de suporte de `SO_REUSEPORT` no sistema operacional, o que a torna a opção condicionada ao ambiente, não um padrão universal aplicável sem checar a plataforma-alvo primeiro.
 
 Existe ainda uma terceira diretiva, `multi_accept`, que resolve um problema adjacente mas distinto: quantas conexões um worker tenta aceitar de uma vez quando é notificado de que há trabalho novo no socket. Por padrão, `multi_accept off`, um worker aceita **uma** conexão nova por vez, mesmo que várias tenham chegado juntas — voltando ao laço de eventos para tratar cada uma isoladamente antes de aceitar a próxima. Ligar `multi_accept on` faz o worker tentar aceitar todas as conexões pendentes no socket de uma vez, numa única passagem, o que reduz o número de vezes que o worker precisa voltar ao kernel perguntar "tem mais alguma?" sob rajadas de conexões simultâneas — à custa de, num pico muito grande, um único worker gastar mais tempo consecutivo só aceitando conexões antes de processar qualquer uma delas.
+
+> [!tip] Vídeo — a arquitetura interna do Nginx, do lado do kernel
+> [**NGINX Internal Architecture — Workers**](https://www.youtube.com/watch?v=vVYM2QBk-iQ) (Hussein Nasser, ~15 min, EN) desce um degrau abaixo do que esta nota cobre: em vez de parar em `accept_mutex` e `reuseport`, ele mostra o que o **kernel** faz antes de qualquer worker entrar em cena — o handshake de três vias completando, a conexão saindo da fila de SYN e entrando na **fila de accept**, e só então um worker a retirando de lá. Também detalha a contagem de `worker_processes auto` em máquina com hyperthreading, onde "número de cores" não é o número que se imagina. **O que ele não cobre:** o laço de eventos em si e o problema do bloqueio, que são o assunto da seção seguinte desta nota. Trecho de destaque [5:42]: *"how does the process picks up a connection from this connection queue is an art by itself — there are so many methods, so many discussions and so many papers written about this particular problem."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=vVYM2QBk-iQ)
 
 ## O calcanhar de Aquiles: qualquer bloqueio trava o worker inteiro
 
