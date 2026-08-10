@@ -85,17 +85,38 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Docker`. Primeiro galho do dom
 
 - Galho aberto em 2026-08-02 como primeiro do domínio Infraestrutura, na sequência direta do fechamento de Controle de Versão.
 
-## M1 — candidato verificado, aguardando transcrição
+## M1 — mídia embutida e descartes
 
-| Nota | Vídeo | ID | Canal | Estado |
+**Rodada de 2026-08-09: 9 de 18 notas (50%).** Todas as transcrições foram baixadas e lidas antes de embutir — a regra deste galho proíbe inserir com metadados apenas, e o candidato da nota 15 esperava exatamente isso desde a passada anterior.
+
+| Nota | Vídeo | ID | Canal | Âncora |
 |---|---|---|---|---|
-| 15 | Containers From Scratch | `8fi7uSYlOdc` | GOTO 2018, Liz Rice, 43 min, 312 mil views | Metadados verificados; **transcrição não lida** |
+| 02 | Building a Container Image — OCI, UnionFS, Overlay | `hhQ6uc2bp2s` | Ryan Hay, 17 min | 15:05 |
+| 05 | How Dockerfile Layers/Caching Work | `RP-z4dqRTZA` | Benjamin Porter, 8 min | — |
+| 06 | Docker Volumes explained in 6 minutes | `p2PH_YPCsis` | TechWorld with Nana, 6 min | — |
+| 07 | Docker Networking Tutorial (todos os drivers) | `fBRgw5dyBd4` | Anton Putra, 20 min | — |
+| 09 | Docker Image BEST Practices — From 1.2GB to 10MB | `t779DVjCKCs` | Better Stack, 7 min | — |
+| 10 | BuildKit: A Modern Builder Toolkit on containerd | `yd0lvUXitxY` | CNCF, Tõnis Tiigi & Akihiro Suda, 35 min | — |
+| 11 | How To Use Docker To Make Local Development A Breeze | `zkMRWDQV4Tg` | ArjanCodes, 22 min | — |
+| 13 | The Route To Rootless Containers | `qXG_cChQgUg` | Container Camp, Claudia Beresford, 30 min | — |
+| 15 | Containers From Scratch | `8fi7uSYlOdc` | GOTO 2018, Liz Rice, 43 min | 32:54 |
 
-Liz Rice constrói um container ao vivo, em Go, chamando namespaces e cgroups à mão. O ponto de inserção já está escolhido: a seção **"Onde os namespaces e cgroups entram — e onde esta nota para"** da nota 15 declara uma fronteira dura (o *como* do kernel pertence a `Ciência/Sistemas Operacionais/13`) — e a palestra é exatamente o que fica logo depois desse ponto de parada, o que a torna leitura complementar ideal sem mover a fronteira. **Não foi embutida** porque a sessão de 2026-08-09 esbarrou de novo no rate limit do YouTube, e a regra de ouro proíbe embutir sem ter lido a transcrição.
+> [!info] Duas escolhas que valem registro
+> **Nota 10 é fonte primária:** Tõnis Tiigi é o autor do BuildKit. A palestra nomeia o grafo pelo nome do projeto (**LLB**), mostra que o Dockerfile é apenas *um frontend* entre possíveis, e quantifica o argumento da nota com números medidos — 139 s no construtor antigo, 31 s no BuildKit, 3,29 s com cache mount.
+>
+> **Nota 15 fechou o candidato que estava parado desde a passada anterior.** A palestra da Liz Rice começa exatamente onde a nota para: onde o texto diz *"`runc` chama `clone()`, escreve no cgroup e faz `pivot_root()`"*, ela escreve esse código ao vivo. O ponto de inserção escolhido na passada anterior se confirmou correto.
+>
+> **Ressalvas de idade registradas dentro dos callouts:** `8fi7uSYlOdc` usa **cgroups v1** e escreve direto em `/sys/fs/cgroup/pids/…` — a hierarquia unificada do v2 é o padrão atual, então os caminhos envelheceram e o conceito não; `yd0lvUXitxY` é anterior ao BuildKit virar o construtor **padrão** do Docker Engine (23.0), então a moldura de "como habilitar" caducou.
 
-> [!warning] Método de descoberta de ID
-> Usar `uvx yt-dlp "ytsearch5:<título>" --print "%(id)s|%(title)s|%(channel)s|%(duration)s|%(view_count)s"`, que devolve IDs reais direto do YouTube. Busca web devolve IDs *plausíveis* e já custou retrabalho nos galhos Nginx e Kubernetes.
+## Notas sem vídeo, e por quê
 
-## Próximos alvos de M1
+| Nota | Situação |
+|---|---|
+| 01 — O problema que o container resolve | Melhores resultados: `9FtERdqKa2s` (NetworkChuck, 1:39 — abaixo do piso de 5 min) e `XYqp4e9uLDg` (852 views). **Um candidato PT-BR não testado:** `wxLvvMxzc1Q` (Alura/HipstersPontoTube com Giovanni Bassi, 12 min, 82 mil views) — o download da legenda falhou; reabrir |
+| 03 — O ciclo de vida de um container | Melhores resultados com 17, 15, 380 e 1.125 visualizações. Sem candidato |
+| 04 — O Dockerfile como receita de camadas | Não teve rodada de busca |
+| 08 — ENTRYPOINT, CMD e o container que não morre direito | Resultados com 66, 17 e 7 visualizações; dois em italiano e russo. Assunto excelente, material inexistente. Sem candidato |
+| 12 — Registry | `RgZyX-e6W9E` (67 mil views) é sobre publicar no GHCR especificamente, não sobre o mecanismo de registry. Encaixe parcial demais |
+| 14, 16, 17, 18 | Não tiveram rodada de busca |
 
-Prioridade nas conceituais: **15** (candidato já escolhido acima), **01** (o problema que o container resolve), **10** (BuildKit por dentro), **13** (segurança de imagem e runtime). A nota **08** (ENTRYPOINT/CMD, PID 1 e zumbis) foi buscada e **não rendeu**: os candidatos eram um vídeo de 66 views e dois fora do inglês/português. Não repetir a busca sem ângulo novo.
+**Próxima passada:** buscar 04, 14, 16, 17 e 18, e refazer o download da legenda do candidato PT-BR da nota 01. O ângulo **PT-BR** segue sendo o menos explorado nos três galhos deste domínio.

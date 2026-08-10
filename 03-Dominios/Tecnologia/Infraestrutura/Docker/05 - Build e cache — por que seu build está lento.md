@@ -62,6 +62,9 @@ Um jeito útil de internalizar essa regra é pensar em cada Dockerfile como uma 
 > [!info] Versão e comportamento volátil
 > A partir do Docker 23 (BuildKit como motor padrão), o algoritmo de cache descrito aqui é o do BuildKit, não o do builder legado (`legacy builder`, hoje praticamente extinto). Os princípios — chave por instrução, invalidação em cascata — são os mesmos nos dois motores; o BuildKit muda principalmente a granularidade e os recursos extras (paralelismo, cache externo, cache mounts), que são o assunto da nota 10.
 
+> [!tip] Vídeo — a cascata de invalidação, com dois Dockerfiles lado a lado
+> [**How Dockerfile Layers/Caching Work**](https://www.youtube.com/watch?v=RP-z4dqRTZA) (Benjamin Porter, ~8 min, EN) demonstra em oito minutos a regra que abre esta nota, do jeito mais direto possível: dois Dockerfiles para a mesma aplicação, um escrito ingenuamente e outro reordenado, e o efeito de mudar uma linha de código em cada um. No primeiro, o `COPY` do código-fonte aparece cedo, e ele mostra o que acontece a seguir — *"cada camada abaixo precisa ser reconstruída mesmo sem ter mudado, porque o pai dela mudou"*. É a cascata: o cache não é por instrução isolada, é por corrente, e quebrar um elo invalida tudo o que vem depois. No segundo, a instalação de pacotes — a parte cara — fica acima do `COPY`, e a mesma alteração de código reaproveita o cache até o último instante possível. **O que ele não cobre:** a chave de cache por tipo de instrução (a diferença entre como o Docker decide invalidar um `RUN`, um `COPY` e um `ADD`), o `.dockerignore` e o contexto de build, e por que o mesmo Dockerfile se comporta diferente em CI.
+
 ## A chave de cache por tipo de instrução
 
 Nem toda instrução calcula sua chave da mesma forma, e essa diferença é o segundo ponto que separa quem apenas usa Docker de quem prevê o que ele vai fazer.

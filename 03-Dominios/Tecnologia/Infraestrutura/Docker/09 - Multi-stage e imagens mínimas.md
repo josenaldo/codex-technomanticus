@@ -134,6 +134,9 @@ Vale nomear com precisão o que costuma ficar preso num estágio único, porque 
 
 Nenhum desses itens contribui em nada para a aplicação rodar em produção. Todos eles contribuem para a superfície de ataque: cada pacote instalado é um pacote que pode ter uma CVE, e um scanner de vulnerabilidade (a nota 13 aprofunda isso) reporta CVEs em pacotes que a aplicação nunca sequer invoca em runtime, só porque eles estão fisicamente presentes na imagem.
 
+> [!tip] Vídeo — a redução levada ao extremo, passo a passo
+> [**Docker Image BEST Practices — From 1.2GB to 10MB**](https://www.youtube.com/watch?v=t779DVjCKCs) (Better Stack, ~7 min, EN) percorre uma redução real e nomeia cada técnica no momento em que ela é aplicada, o que torna visível quanto cada uma contribui. Duas delas conversam diretamente com este galho. A primeira é ordenar o Dockerfile pela **frequência de mudança** — copiar o manifesto de dependências antes do código, porque dependências mudam menos que código —, que é a regra da nota 05 vista pelo efeito no tamanho, não só no tempo. A segunda é consolidar operações num único `RUN`: como a camada só é gravada ao fim da instrução, limpar arquivos temporários **dentro** da mesma instrução faz a camada nascer já limpa — enquanto limpar numa instrução seguinte apenas esconde os arquivos, que continuam gravados na camada anterior, pelo mecanismo que a nota 02 explica. **O que ele não cobre:** `--target` e estágios nomeados, estágio de teste que não chega à imagem final, a diferença entre musl e glibc no Alpine, e o preço de depurar uma imagem sem shell.
+
 ## A escala de bases: da completa ao `scratch`
 
 Depois que o multi-stage já separou "construir" de "rodar", a pergunta seguinte é: qual imagem base usar para o estágio final? A resposta não é uma escolha binária, é uma escala, e cada degrau troca conveniência por tamanho e superfície de ataque menores.

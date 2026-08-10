@@ -102,6 +102,9 @@ docker run -d --name app --tmpfs /run/secrets:rw,size=64m minha-imagem
 
 O modelo mental aqui é "esse dado não deve, em hipótese alguma, tocar um disco". Isso serve a dois propósitos que parecem opostos mas são o mesmo princípio: desempenho (um cache de sessão que precisa de latência de memória, não de disco) e segurança (segredos decodificados em tempo de execução — chaves privadas, tokens desempacotados — que você não quer encontrar meses depois esquecidos num snapshot de disco ou numa camada de imagem por engano). A [[03-Dominios/Tecnologia/Infraestrutura/Docker/13 - Segurança da imagem e do runtime|nota 13]] retoma esse ângulo de segurança com mais profundidade.
 
+> [!tip] Vídeo — persistência em seis minutos
+> [**Docker Volumes explained in 6 minutes**](https://www.youtube.com/watch?v=p2PH_YPCsis) (TechWorld with Nana, ~6 min, EN) é curto e cobre exatamente o problema que abre esta nota: por que dados de aplicação com estado — banco de dados, principalmente — não podem viver na camada de escrita do container, que desaparece a cada recriação. Ela percorre as formas de criar volume e o ponto que mais confunde quem está começando: quem administra o diretório no host é o **Docker**, não você, e é por isso que o volume nomeado tem caminho próprio em vez de um diretório qualquer do seu projeto. Fecha mostrando que a declaração em Compose é o mesmo mecanismo, com outra sintaxe. **O que ele não cobre:** o copy-on-write e a operação de *copy-up* que explicam o mecanismo por baixo, a armadilha de permissão em bind mount no Linux — a parte mais cara desta nota —, e o procedimento de backup e restore de volume nomeado.
+
 ## Tabela comparativa
 
 | Critério | Volume nomeado | Bind mount | tmpfs |

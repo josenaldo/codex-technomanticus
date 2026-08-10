@@ -87,6 +87,11 @@ Um resumo rápido do que muda entre os dois motores, para fechar esta seção co
 | Cache exportável para registry/CI | Não suportado nativamente | Suportado (`--cache-to`/`--cache-from`) |
 | Builds multi-plataforma num só comando | Exigia scripts externos por arquitetura | Nativo via `buildx --platform` |
 
+> [!tip] Vídeo — o BuildKit apresentado por quem o escreveu
+> [**BuildKit: A Modern Builder Toolkit on Top of containerd**](https://www.youtube.com/watch?v=yd0lvUXitxY) (Tõnis Tiigi, Docker & Akihiro Suda, NTT — canal da CNCF, ~35 min, EN) é a fonte primária: Tiigi é o autor do BuildKit. A palestra explica a peça que esta nota chama de grafo de dependências pelo nome que ela tem no projeto — **LLB**, a definição de build de baixo nível, composta de operações de origem e de execução — e o ponto que mais surpreende quem só conhece `docker build`: o Dockerfile é apenas **um frontend** entre outros possíveis; o BuildKit não é preso a ele. Os números que eles mostram valem a visita porque quantificam o argumento desta nota: o mesmo build leva **139 segundos** no construtor antigo, **31 segundos** no BuildKit, e **3,29 segundos** com cache mount — que é exatamente o recurso da seção seguinte. Eles também percorrem multi-arquitetura com `buildx` (mostrando o mesmo Dockerfile sendo executado uma vez por plataforma), builders distribuídos em vários nós construindo em paralelo, e build sem privilégio via user namespace. **O que ele não cobre:** secret mount e SSH mount com a profundidade desta nota, e a diretiva `# syntax` como mecanismo de atualização do frontend.
+>
+> ⚠️ Palestra de 2018-2019. O BuildKit deixou de ser opcional — é o construtor padrão do Docker Engine desde a versão 23.0 —, então a moldura de "como habilitar" envelheceu; os conceitos de LLB, frontend e cache mount seguem exatos.
+
 ## `# syntax=docker/dockerfile:1`
 
 Boa parte dos recursos avançados de BuildKit — os *mounts* que o resto desta nota cobre — não fazem parte da sintaxe padrão do Dockerfile herdada do construtor legado; são extensões que BuildKit interpreta através de um frontend de sintaxe dedicado. Para que o daemon saiba que deve interpretar essas extensões, o Dockerfile precisa declarar, na primeira linha, qual versão desse frontend usar:
