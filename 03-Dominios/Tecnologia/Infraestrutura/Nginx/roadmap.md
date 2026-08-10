@@ -101,6 +101,10 @@ Vídeos embutidos (todos verificados via `yt-dlp`; timestamp da âncora extraíd
 | 06 | The surprising ways Nginx try_files actually works | `VPrBA2iZe1c` | Chris Fidao, 6 min | 3:15 |
 | 07 | How Nginx and PHP-FPM turn a web request into code | `lh4RnczaATI` | Chris Fidao, 7 min | 1:04 |
 | 15 | Dropbox migrates to Envoy from NginX | `ckraiZ_qa2o` | Hussein Nasser, 36 min | 11:15 |
+| 02 | Learn Proper NGINX Configuration Context Logic | `C5kMgshNc6g` | NGINX (Jay Desai), 13 min | 9:34 |
+| 08 | Load Balancing with NGINX | `a41jxGP9Ic8` | NGINX (Jay Desai), 30 min | 7:38 |
+| 13 | The Powerful & Efficient NGINX Architecture (Lightboard) | `i-8AISuZtN8` | NGINX (Kevin Jones), 7 min | 4:44 |
+| 14 | Using NGINX as a Kubernetes Ingress Controller | `AXZr2OC8Unc` | NGINX, 32 min | 30:12 |
 
 > [!warning] Descartes registrados — não repetir a busca sem ângulo novo
 > **IDs inacessíveis** — a caracterização anterior ("links mortos vindos de busca alucinada") estava **errada**, e foi corrigida em 2026-08-09 depois de revalidar um a um. Os vídeos existem; o que varia é o motivo de não abrirem, e cada motivo pede uma conduta diferente:
@@ -119,12 +123,18 @@ Vídeos embutidos (todos verificados via `yt-dlp`; timestamp da âncora extraíd
 >
 > **Reprovados por régua:** `0Q9I-x--np4` (285 s) · `_DdBJs6NfzI` (226 s) · `aYN9Y4_09o0` (94 s) · `LpkiX2ZJ3YI` (220 s) — todos abaixo do piso de 5 min. `psEHRwH5jYk` (440 views) · `_BCfoJoj-9g` (1.352) · `ODxw1QWpdEM` (133) · `dkElINJl_ZA` (93 s, 13 views) · `KZOaO_s5LXI` · `wYjhS42mbWM` — autoridade baixa demais.
 >
-> **Nota 07:** a primeira rodada de busca (proxy reverso genérico) não rendeu nada; o vídeo que entrou veio de um ângulo lateral (FastCGI como protocolo de gateway). **Notas 13 e 14 seguem sem candidato aprovado** após duas rodadas.
+> **Nota 07:** a primeira rodada de busca (proxy reverso genérico) não rendeu nada; o vídeo que entrou veio de um ângulo lateral (FastCGI como protocolo de gateway).
+>
+> **Notas 13 e 14: fechadas em 2026-08-09 (3ª rodada).** O que destravou foi mudar o ângulo de busca do *assunto da nota* para o *canal oficial da NGINX*, que tem material de conferência e de lightboard não indexado pelas consultas anteriores. Ambos os vídeos trazem **caducidade registrada no próprio callout**, o que aumenta o valor em vez de diminuir: o da 13 descreve `accept_mutex on` como padrão (mudou na 1.11.3), e o da 08 declara `least_time` e `sticky` como exclusivos do Plus (migraram na 1.31.0 e 1.29.6). São os mesmos achados que este galho levantou na doc oficial — o vídeo vira prova de que a literatura em circulação está atrasada.
+>
+> **3ª rodada — reprovados por conteúdo ou autoridade:** notas 03, 04, 05, 09, 10, 11, 12 e 16 seguem sem candidato. As consultas tentadas foram registradas para não repetir: `nginx location directive matching priority` (zero resultados), `nginx server_name virtual host matching`, `nginx request processing phases internals`, `nginx caching proxy_cache deep dive`, `nginx rate limiting limit_req leaky bucket`, `nginx rewrite map variables regex`, `nginx TLS SSL best practices`, `nginx production edge architecture`. O que aparece é (a) canal `Roel Van de Paar`, que publica leituras automatizadas de perguntas do StackOverflow — nunca usar; (b) `Dargslan`, série "Nginx Mastery", com 18-25 views por vídeo; (c) tutoriais de Let's Encrypt, que resolvem emissão de certificado e não configuração de TLS. **A hipótese do galho se confirma:** minúcia de configuração não tem vídeo bom em circulação, e o que existe é abaixo da régua.
 >
 > **Em aberto:** `hcw-NjOh8r0` (Hussein Nasser, crash course de 2 h) viola o teto de 60 min, mas é a fonte mais autoritativa disponível — decidir se entra com âncora muito precisa em alguma nota.
 
 > [!question] Qual o piso aceitável de cobertura?
-> O yield realista deste domínio parece ficar em torno de 50%, concentrado nas notas **conceituais** — minúcia de configuração (`location`, `proxy_pass`, `upstream`) simplesmente não tem vídeo bom em circulação. Falta decidir com o usuário se isso encerra o M1 ou se vale uma segunda passada buscando em **PT-BR** e em **conferências** (GOTO/InfoQ/NDC), ângulos ainda não tentados.
+> O yield realista deste domínio parece ficar em torno de 50%, concentrado nas notas **conceituais** — minúcia de configuração (`location`, `proxy_pass`, `upstream`) simplesmente não tem vídeo bom em circulação.
+>
+> **Em 2026-08-09 a previsão se confirmou na mosca: o galho fechou em 8/16 = exatamente 50%.** As 8 notas cobertas são as conceituais (01, 02, 06, 07, 08, 13, 14, 15); as 8 sem vídeo são as de configuração fina e as duas de fronteira (03, 04, 05, 09, 10, 11, 12, 16). O ângulo que ainda não foi tentado é **PT-BR** e **conferências** (GOTO/InfoQ/NDC) — decisão do usuário se vale uma 4ª rodada ou se 50% encerra o M1 deste galho.
 
 ## Notas de execução
 
