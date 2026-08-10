@@ -108,6 +108,15 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 | 16 | Protecting Your Control Plane: kube-apiserver Memory Exhaustion | `1Jno9-3DdA4` | Cloud Native Days Austria, 32 min | 20:28 |
 | 20 | Liberating Kubernetes From Kube-proxy and Iptables | `bIRwSIwNHC0` | CNCF / KubeCon, 35 min | 28:54 |
 | 17 | Everything You Ever Wanted to Know About Resource Scheduling | `nWGkvrIPqJ4` | CNCF / KubeCon, Tim Hockin, 43 min | 18:49 |
+| 03 | Pods and Containers — Kubernetes Networking | `5cNrTU6o3Fw` | TechWorld with Nana, 14 min | 11:46 |
+| 05 | Kubernetes — Kube Proxy — iptables mode | `6azrY0F1x3s` | JOMO Developer, 13 min | 10:53 |
+| 07 | Using mitmproxy to understand what kubectl does | `30a0WrfaS2A` | Maël Valais, 11 min | — |
+| 09 | Kubernetes Volumes explained (PV, PVC, StorageClass) | `0swOh5C3OVM` | TechWorld with Nana, 21 min | — |
+| 10 | Kubernetes StatefulSet simply explained | `pPQKAR1pA9U` | TechWorld with Nana, 16 min | — |
+| 12 | How Scheduling in Kubernetes Works | `0FvQR-0tK54` | CNCF / KubeCon, GoJek, 20 min | 18:30 |
+| 13 | Understanding Kubernetes RBAC | `jvhKOAyD8S8` | That DevOps Guy, 33 min | — |
+| 18 | What are Custom Resource Definitions (CRDs) | `TScDYMym7LA` | CookNCode, 9 min | — |
+| 19 | Kubernetes Operator simply explained | `ha3LjlD6g7g` | TechWorld with Nana, 10 min | — |
 
 > [!warning] Critério aplicado neste galho
 > **Views baixas não reprovam sozinhas.** Palestra técnica de nicho legitimamente tem pouca audiência — `tCht7FvIDdY` tem 555 views e é uma palestra real e substancial. O que reprova é fazenda de conteúdo: vídeo curto, sem autoria identificável, com alinhamento raso. Reprovados aqui por esse critério: `ARH6jjMQNeM` (41 views) · `JNe1gzVCMIo` (205 views, 5,6 min).
@@ -122,4 +131,10 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 
 ## Próximos alvos de M1
 
-Prioridade nas conceituais profundas, onde o rendimento se concentra: **03** (o Pod e o container `pause`), **18** (API extensível, CRD e admission), **19** (Operators), **12** (scheduling). As notas de uso cotidiano (**05**-**11**, **14**) tendem a só ter tutorial genérico — esperar rendimento baixo e não forçar.
+**Rodada de 2026-08-09: +9 notas, galho vai de 4/22 para 13/22.** Os quatro alvos prioritários previstos aqui (**03**, **18**, **19**, **12**) foram todos fechados.
+
+**A previsão de rendimento baixo para as notas de uso cotidiano estava errada, e vale corrigir o registro.** As notas **05**, **09** e **10** renderam material forte — três deles do canal TechWorld with Nana, com centenas de milhares de visualizações e conteúdo que não é tutorial genérico: o vídeo da 05 lista as regras de `iptables` num nó e lê as **probabilidades encadeadas** que produzem a distribuição; o da 09 traz a divisão de trabalho administrador/desenvolvedor que explica por que o modelo tem três peças; o da 10 chega às três garantias partindo do que quebraria num banco replicado sob Deployment. A lição é a mesma que o galho Nginx aprendeu por outro caminho: **o que decide não é o assunto ser "cotidiano" ou "profundo", é existir um canal com autoridade cobrindo aquele ângulo** — no Kubernetes existe, no Nginx de configuração não existia.
+
+**Exceção declarada à régua de autoridade, na nota 07:** `30a0WrfaS2A` tem poucas centenas de visualizações. Entrou por três motivos escritos dentro do próprio callout — autor contribuidor do ecossistema (cert-manager), ângulo inédito (observar o `kubectl` de fora, como tráfego interceptado por mitmproxy), e técnica reprodutível por quem assiste, o que troca autoridade de canal por verificabilidade.
+
+**Restam 9 notas:** 01, 04, 06, 08, 11, 14, 15, 21, 22. Candidatos já levantados e com transcrição baixada, aguardando leitura e inserção: **14** `ZMFYSm0ldQ0` (Helm vs Kustomize — templating contra patching, 34 min, 33 mil views) · **15** `xaZ87iSvMAI` (Gateway API Explained, KodeKloud, 45 min, 51 mil) · **21** `QtXHkzLtqZE` (A Basic Kubernetes Debugging Kit — curl, jq, openssl, CNCF, 33 min). As notas 01, 04, 06, 08, 11 e 22 ainda não tiveram rodada de busca.
