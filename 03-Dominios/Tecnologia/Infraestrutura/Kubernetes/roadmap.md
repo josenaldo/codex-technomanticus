@@ -117,6 +117,11 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 | 13 | Understanding Kubernetes RBAC | `jvhKOAyD8S8` | That DevOps Guy, 33 min | — |
 | 18 | What are Custom Resource Definitions (CRDs) | `TScDYMym7LA` | CookNCode, 9 min | — |
 | 19 | Kubernetes Operator simply explained | `ha3LjlD6g7g` | TechWorld with Nana, 10 min | — |
+| 08 | Kubernetes Secrets in 5 Minutes! | `cQAEK9PBY8U` | DevOps Directive, 6 min | — |
+| 11 | Daemonsets, Job and Cronjob | `kvITrySpy_k` | Tech Tutorials with Piyush, 20 min | — |
+| 14 | Helm vs Kustomize — Templating vs Patching | `ZMFYSm0ldQ0` | Viktor Farcic, 34 min | 32:40 |
+| 15 | Gateway API Explained | `xaZ87iSvMAI` | KodeKloud, 45 min | — |
+| 21 | A Basic Kubernetes Debugging Kit | `QtXHkzLtqZE` | CNCF / KubeCon, Joe Thompson, 33 min | — |
 
 > [!warning] Critério aplicado neste galho
 > **Views baixas não reprovam sozinhas.** Palestra técnica de nicho legitimamente tem pouca audiência — `tCht7FvIDdY` tem 555 views e é uma palestra real e substancial. O que reprova é fazenda de conteúdo: vídeo curto, sem autoria identificável, com alinhamento raso. Reprovados aqui por esse critério: `ARH6jjMQNeM` (41 views) · `JNe1gzVCMIo` (205 views, 5,6 min).
@@ -137,4 +142,15 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 
 **Exceção declarada à régua de autoridade, na nota 07:** `30a0WrfaS2A` tem poucas centenas de visualizações. Entrou por três motivos escritos dentro do próprio callout — autor contribuidor do ecossistema (cert-manager), ângulo inédito (observar o `kubectl` de fora, como tráfego interceptado por mitmproxy), e técnica reprodutível por quem assiste, o que troca autoridade de canal por verificabilidade.
 
-**Restam 9 notas:** 01, 04, 06, 08, 11, 14, 15, 21, 22. Candidatos já levantados e com transcrição baixada, aguardando leitura e inserção: **14** `ZMFYSm0ldQ0` (Helm vs Kustomize — templating contra patching, 34 min, 33 mil views) · **15** `xaZ87iSvMAI` (Gateway API Explained, KodeKloud, 45 min, 51 mil) · **21** `QtXHkzLtqZE` (A Basic Kubernetes Debugging Kit — curl, jq, openssl, CNCF, 33 min). As notas 01, 04, 06, 08, 11 e 22 ainda não tiveram rodada de busca.
+**Estado ao fim da rodada de 2026-08-09: 18/22 (82%).** As 5 últimas inserções foram 08, 11, 14, 15 e 21.
+
+**Restam 4 notas sem vídeo — 01, 04, 06 e 22 —, e as três primeiras por ausência de material, não por falta de busca.**
+
+| Nota | O que a busca devolveu | Conduta |
+|---|---|---|
+| 01 — O problema que orquestração resolve | `TlHvYWVUZyc` (ByteByteGo, 1,8 mi de views) é o único candidato à altura, **mas o download da legenda falhou** e a regra do galho proíbe embutir sem ler a transcrição. Os demais resultados têm 400-600 views. | **Reabrir numa próxima passada** — só refazer o download da legenda; o candidato já está escolhido |
+| 04 — Deployment e ReplicaSet | Melhores resultados com 377, 370, 94, 31 e **3** visualizações. Assunto saturado de tutorial de curso, nenhum com autoria de peso. | Sem candidato |
+| 06 — Namespaces, labels e selectors | `hJ9dT4gJa38` (Jérôme Petazzoni, autoridade alta) tem só 3:25 — abaixo do piso de 5 min. `zsovXtOFhDE` (Nick True, 8,5 mil) é aceitável mas raso demais para uma nota que trata selector como contrato entre objetos. | Sem candidato |
+| 22 — Capstone | `oBf5lrmquYI` (Nana, *Security Best Practices*, 248 mil views) é excelente **e não é sobre isto** — cobre uma fatia, não o percurso do zero ao cluster. Encaixe forçado reprovado deliberadamente. | Sem candidato |
+
+**Nota 08 entrou com ressalva declarada no callout:** o vídeo tem 6 min e cobre só criação e montagem de Secret como volume, deixando de fora ConfigMap e todo o resto da nota. Foi aceito porque a peça que ele cobre — cada chave virando um arquivo no `mountPath`, e o par de nomes entre `volumes` e `volumeMounts` — é justamente a que mais se erra na primeira vez, e ver isso na tela vale mais que ler. O callout declara explicitamente que é porta de entrada, não tratamento.
