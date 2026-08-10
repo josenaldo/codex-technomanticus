@@ -25,10 +25,10 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 |---------|-------|
 | Total de notas | 22 |
 | 📋 desenhadas | 0 |
-| 🔶 escritas (falta M1) | 19 |
-| ✅ completas | 3 |
+| 🔶 escritas (falta M1) | 18 |
+| ✅ completas | 4 |
 | % escrito | 100% |
-| M1 (mídia) | 3/22 — em andamento |
+| M1 (mídia) | 4/22 — em andamento |
 
 ## Notas
 
@@ -50,7 +50,7 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 | 14 | Helm e Kustomize | Adepto | 🔶 | 4 |
 | 15 | Ingress e a borda do cluster | Adepto | 🔶 | 4 |
 | 16 | O control plane por dentro | Magus | ✅ | 5 |
-| 17 | O kubelet e o nó | Magus | 🔶 | 5 |
+| 17 | O kubelet e o nó | Magus | ✅ | 5 |
 | 18 | A API como sistema extensível — CRDs | Magus | 🔶 | 5 |
 | 19 | Operators | Magus | 🔶 | 6 |
 | 20 | Rede do cluster por dentro | Magus | ✅ | 6 |
@@ -107,27 +107,19 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Kubernetes`. Segundo galho do 
 | 02 | Level Triggering and Reconciliation in Kubernetes | `tCht7FvIDdY` | James Bowes, 25 min | 12:59 |
 | 16 | Protecting Your Control Plane: kube-apiserver Memory Exhaustion | `1Jno9-3DdA4` | Cloud Native Days Austria, 32 min | 20:28 |
 | 20 | Liberating Kubernetes From Kube-proxy and Iptables | `bIRwSIwNHC0` | CNCF / KubeCon, 35 min | 28:54 |
+| 17 | Everything You Ever Wanted to Know About Resource Scheduling | `nWGkvrIPqJ4` | CNCF / KubeCon, Tim Hockin, 43 min | 18:49 |
 
 > [!warning] Critério aplicado neste galho
 > **Views baixas não reprovam sozinhas.** Palestra técnica de nicho legitimamente tem pouca audiência — `tCht7FvIDdY` tem 555 views e é uma palestra real e substancial. O que reprova é fazenda de conteúdo: vídeo curto, sem autoria identificável, com alinhamento raso. Reprovados aqui por esse critério: `ARH6jjMQNeM` (41 views) · `JNe1gzVCMIo` (205 views, 5,6 min).
 >
-> **Legenda automática degradada** nos três embutidos (garbla `kubectl` como "cube control", `pods` como "ports", `1.33` como "133"). A citação de destaque foi escolhida entre os trechos limpos, e as notas 02 e 20 trazem aviso explícito ao leitor.
+> **Legenda automática degradada** nos embutidos (garbla `kubectl` como "cube control", `pods` como "ports", `1.33` como "133"). A citação de destaque foi escolhida entre os trechos limpos, e as notas 02 e 20 trazem aviso explícito ao leitor.
 >
-> **Fato duro verificado na fonte antes de escrever** (lição do galho Nginx): a correção citada na nota 16 é o KEP-5116 da SIG API Machinery — codificação em streaming de respostas `LIST`, beta habilitado por padrão na 1.33, estável previsto para 1.34, pico de memória de ~70 GB para ~3 GB. Confirmado no blog oficial do projeto, não só na palestra.
+> **Fato duro verificado na fonte antes de escrever** (lição do galho Nginx): a correção citada na nota 16 é o KEP-5116 da SIG API Machinery — codificação em streaming de respostas `LIST`, beta habilitado por padrão na 1.33, estável previsto para 1.34, pico de memória de ~70 GB para ~3 GB. Confirmado no blog oficial do projeto, não só na palestra. Mesmo procedimento na nota 17: os valores de `oom_score_adj` por classe de QoS (`Guaranteed` -997, `BestEffort` 1000, `Burstable` por fórmula) foram confirmados fora da palestra antes de entrar na nota, junto com a ressalva de que o *OOM killer* do kernel ignora `PriorityClass`.
 >
-> **Ressalva de idade registrada dentro do callout** quando o vídeo é anterior à baseline da nota: `bIRwSIwNHC0` é de 2019 e não conhece o modo `nftables` (GA na 1.33).
-
-## Candidato verificado, aguardando transcrição
-
-| Nota | Vídeo | ID | Canal | Estado |
-|---|---|---|---|---|
-| 12 | Everything You Ever Wanted to Know About Resource Scheduling, But Were Afraid to Ask | `nWGkvrIPqJ4` | CNCF / KubeCon, 43 min, 2016, Tim Hockin | Metadados verificados; **transcrição não lida** |
-
-Tim Hockin é engenheiro fundador do Kubernetes, e esta é a palestra canônica sobre requests, limits e classes de QoS — autoridade máxima disponível para a nota 12. **Não foi embutida** porque a sessão de 2026-08-09 esbarrou no rate limit do YouTube antes de baixar a legenda, e a regra de ouro proíbe embutir sem ter lido a transcrição. Retomar por aqui: baixar a legenda, avaliar contra o que a nota já cobre (as seções de filtrar/pontuar e de preempção) e decidir. Ressalva a considerar no callout, se entrar: é de 2016.
-
-> [!warning] Rate limit do YouTube
-> Sessões longas de M1 esbarram em `Sign in to confirm you're not a bot`, que bloqueia extração e download de legenda por um período. Não é link morto e não é motivo para descartar candidato — é motivo para **parar a passada** e retomar depois. Alternativa, se o usuário autorizar: `yt-dlp --cookies-from-browser`, que usa a sessão do navegador dele.
+> **Ressalva de idade registrada dentro do callout** quando o vídeo é anterior à baseline da nota: `bIRwSIwNHC0` é de 2019 e não conhece o modo `nftables` (GA na 1.33); `nWGkvrIPqJ4` é de 2016, e embora o modelo de `requests`/`limits` siga inalterado, números e flags citados de passagem envelheceram.
+>
+> **Rate limit do YouTube** (`Sign in to confirm you're not a bot`) interrompeu a passada de 2026-08-09 por um intervalo. Não é link morto e não descarta candidato — é motivo para pausar e retomar. Foi o que aconteceu com a palestra do Hockin, rejeitada por engano antes de ser revalidada e, depois, embutida.
 
 ## Próximos alvos de M1
 
-Prioridade nas conceituais profundas, onde o rendimento se concentra: **03** (o Pod e o container `pause`), **17** (kubelet e CRI), **18** (API extensível, CRD e admission), **19** (Operators), **12** (scheduling). As notas de uso cotidiano (**05**-**11**, **14**) tendem a só ter tutorial genérico — esperar rendimento baixo e não forçar.
+Prioridade nas conceituais profundas, onde o rendimento se concentra: **03** (o Pod e o container `pause`), **18** (API extensível, CRD e admission), **19** (Operators), **12** (scheduling). As notas de uso cotidiano (**05**-**11**, **14**) tendem a só ter tutorial genérico — esperar rendimento baixo e não forçar.
