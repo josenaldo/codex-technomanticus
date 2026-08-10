@@ -1,7 +1,7 @@
 ---
 title: "Roadmap — Docker"
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-09
 type: meta
 publish: false
 tags:
@@ -84,3 +84,18 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Docker`. Primeiro galho do dom
 ## Notas de execução
 
 - Galho aberto em 2026-08-02 como primeiro do domínio Infraestrutura, na sequência direta do fechamento de Controle de Versão.
+
+## M1 — candidato verificado, aguardando transcrição
+
+| Nota | Vídeo | ID | Canal | Estado |
+|---|---|---|---|---|
+| 15 | Containers From Scratch | `8fi7uSYlOdc` | GOTO 2018, Liz Rice, 43 min, 312 mil views | Metadados verificados; **transcrição não lida** |
+
+Liz Rice constrói um container ao vivo, em Go, chamando namespaces e cgroups à mão. O ponto de inserção já está escolhido: a seção **"Onde os namespaces e cgroups entram — e onde esta nota para"** da nota 15 declara uma fronteira dura (o *como* do kernel pertence a `Ciência/Sistemas Operacionais/13`) — e a palestra é exatamente o que fica logo depois desse ponto de parada, o que a torna leitura complementar ideal sem mover a fronteira. **Não foi embutida** porque a sessão de 2026-08-09 esbarrou de novo no rate limit do YouTube, e a regra de ouro proíbe embutir sem ter lido a transcrição.
+
+> [!warning] Método de descoberta de ID
+> Usar `uvx yt-dlp "ytsearch5:<título>" --print "%(id)s|%(title)s|%(channel)s|%(duration)s|%(view_count)s"`, que devolve IDs reais direto do YouTube. Busca web devolve IDs *plausíveis* e já custou retrabalho nos galhos Nginx e Kubernetes.
+
+## Próximos alvos de M1
+
+Prioridade nas conceituais: **15** (candidato já escolhido acima), **01** (o problema que o container resolve), **10** (BuildKit por dentro), **13** (segurança de imagem e runtime). A nota **08** (ENTRYPOINT/CMD, PID 1 e zumbis) foi buscada e **não rendeu**: os candidatos eram um vídeo de 66 views e dois fora do inglês/português. Não repetir a busca sem ângulo novo.
