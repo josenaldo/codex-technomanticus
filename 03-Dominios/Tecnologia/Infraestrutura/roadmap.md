@@ -27,7 +27,7 @@ Roadmap do domínio `03-Dominios/Tecnologia/Infraestrutura` (raiz de domínio / 
 | 1 | Docker | a imagem como artefato | 18 | 18 | 🔶 **escrita completa 2026-08-02** (falta M1) | `Docker/roadmap.md` |
 | 2 | Kubernetes | o loop de reconciliação | 22 | 22 | 🔶 **escrita completa 2026-08-04** (falta M1) | `Kubernetes/roadmap.md` |
 | 3 | Nginx | o ciclo de vida de uma request | 16 | 16 | 🔶 **escrita completa 2026-08-08** (falta M1) | `Nginx/roadmap.md` |
-| 4 | Linux | o sistema como o processo o vê | ~15-18 | 1 | ⬜ stub (1 nota) — reforma prevista | `Linux/` (sem roadmap ainda) |
+| 4 | Linux | o sistema como o processo o vê | 16 | 3 | 🔶 **aberto 2026-08-12** — bloco 1 escrito (01-03) | `Linux/roadmap.md` |
 
 A ordem coloca o pré-requisito conceitual antes (Docker antes de Kubernetes) e a base absoluta por último: Linux é o galho que mais se sobrepõe a Terminal e a Ciência/SO, e se beneficia de ser escrito depois que os outros três cravaram suas fronteiras.
 
@@ -39,7 +39,7 @@ A ordem coloca o pré-requisito conceitual antes (Docker antes de Kubernetes) e 
 | ✅ completos (escrito + M1) | 0 |
 | 🔶 escritos, falta M1 | 3 (Docker, Kubernetes, Nginx) |
 | 📋 desenhados, não iniciados | 0 |
-| ⬜ stub | 1 (Linux) |
+| 🔶 em construção | 1 (Linux, 3/16) |
 | Notas escritas | 56 de ~71-74 previstas |
 
 ## Contrato de fronteira
@@ -70,7 +70,7 @@ A fronteira é renegociada **nota a nota, não em bloco**: onde a vizinha já di
 ## Pendências
 
 - **Galhos 1-3 (Docker, Kubernetes, Nginx):** M1 (mídia) — passada posterior, com busca e verificação de ID **centrais via `yt-dlp`**, nunca delegadas a subagente. São 56 notas.
-- **Galho 4 (Linux):** ganha spec de roster detalhado no momento da abertura, seguindo o esboço da spec de design.
+- **Galho 4 (Linux):** ✅ **aberto em 2026-08-12** com [[00-Meta/specs/2026-08-12-galho-linux-design|spec de design própria]] — levantamento de fronteira contra **quatro** vizinhos (Ciência/SO, Terminal, Operação e os galhos 1-3 deste domínio), roster de 16 notas em 3 fases, construção em 7 blocos. **Bloco 1 escrito** (01-03). A regra dura do galho: nenhuma nota reabre mecanismo de kernel — linka e segue.
 - **Artefatos de domínio:** `Dicionário de Infraestrutura` e `Biblioteca de Infraestrutura` — criar quando os quatro galhos estiverem escritos e o vocabulário estabilizado.
 
 ## Notas de execução
