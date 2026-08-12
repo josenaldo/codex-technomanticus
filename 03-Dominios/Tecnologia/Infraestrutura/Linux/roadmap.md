@@ -24,8 +24,8 @@ Roadmap do galho `Tecnologia/Infraestrutura/Linux` (galho-folha), o **último do
 | 01 | O que o Linux entrega a um processo | Iniciado | 🔶 escrita 2026-08-12 | 1 |
 | 02 | A hierarquia do sistema de arquivos | Iniciado | 🔶 escrita 2026-08-12 | 1 |
 | 03 | Tudo é arquivo — descritores e redirecionamento | Iniciado | 🔶 escrita 2026-08-12 | 1 |
-| 04 | Identidade: usuários, grupos e permissão | Iniciado | 📋 desenhada | 2 |
-| 05 | O processo como objeto administrável | Iniciado | 📋 desenhada | 2 |
+| 04 | Identidade: usuários, grupos e permissão | Iniciado | 🔶 escrita 2026-08-12 | 2 |
+| 05 | O processo como objeto administrável | Iniciado | 🔶 escrita 2026-08-12 | 2 |
 | 06 | systemd: o modelo de unidades | Adepto | 📋 desenhada | 3 |
 | 07 | Escrever um serviço que se comporta | Adepto | 📋 desenhada | 3 |
 | 08 | Logs: journald e o que veio antes | Adepto | 📋 desenhada | 4 |
@@ -53,6 +53,15 @@ Roadmap do galho `Tecnologia/Infraestrutura/Linux` (galho-folha), o **último do
 - **Encadeamento por enigma, não por sumário.** A nota 02 termina no arquivo apagado que não libera espaço, e a 03 resolve com descritor. Vale repetir o padrão nos blocos seguintes.
 - **Fronteira respeitada sem exceção:** as três notas linkam `Ciência/SO` (03 Processos, 10 I/O, 11 Sistemas de arquivos) e não reabrem mecanismo. Zero wikilinks quebrados.
 - **Ponte para os galhos 1-3 já construída:** a nota 03 amarra o teto de descritores ao `worker_rlimit_nofile` do Nginx 13 e ao contrato de log de container do Docker.
+
+## Bloco 2 — o que ficou decidido ao escrever
+
+- **A nota 04 apoia-se num achado que quase nenhum material trata como central:** apagar um arquivo depende do `w` **do diretório**, não do arquivo. Ele explica os dois enigmas da abertura e justifica o sticky bit em `/tmp` — e é o tipo de fato que muda o que a pessoa faz diante de um "permissão negada".
+- **`namei -l` entrou como ferramenta de diagnóstico de permissão**, no lugar do reflexo `chmod 777`. A armadilha correspondente diz isso explicitamente.
+- **A nota 05 organiza-se por dois enigmas opostos com a mesma aparência** — zumbi e estado `D`, os dois "não morrem" —, e a distinção decide a conduta: no zumbi o alvo é o pai; no `D` o alvo é a camada de baixo, e sinal nenhum resolve.
+- **`D` conta no load average** ficou registrado aqui como gancho explícito para a nota 12, que é onde o número é explicado.
+- **A cadeia terminal → sessão → grupo** foi apresentada só até onde explica `SIGHUP`, `nohup` e `disown`, cedendo multiplexador a `Tecnologia/Terminal`. A conclusão da nota — *o que precisa sobreviver a você não pertence à sua sessão* — é a ponte narrativa para o systemd.
+- **Pontes com os galhos 1-3:** a 05 amarra o problema de zumbi em container ao Docker 08 (PID 1) e ao `--init`; a 04 amarra o `USER` do Dockerfile ao fato de UID 0 no container ser UID 0 no kernel do host.
 
 ## Pendências
 
