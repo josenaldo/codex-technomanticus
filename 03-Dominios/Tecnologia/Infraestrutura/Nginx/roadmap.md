@@ -105,6 +105,7 @@ Vídeos embutidos (todos verificados via `yt-dlp`; timestamp da âncora extraíd
 | 08 | Load Balancing with NGINX | `a41jxGP9Ic8` | NGINX (Jay Desai), 30 min | 7:38 |
 | 13 | The Powerful & Efficient NGINX Architecture (Lightboard) | `i-8AISuZtN8` | NGINX (Kevin Jones), 7 min | 4:44 |
 | 14 | Using NGINX as a Kubernetes Ingress Controller | `AXZr2OC8Unc` | NGINX, 32 min | 30:12 |
+| 16 | Load Balancer, Reverse Proxy e API Gateway (**PT-BR**) | `0frGo7vJV30` | Giuliana Bezerra, 17 min | — |
 
 > [!warning] Descartes registrados — não repetir a busca sem ângulo novo
 > **IDs inacessíveis** — a caracterização anterior ("links mortos vindos de busca alucinada") estava **errada**, e foi corrigida em 2026-08-09 depois de revalidar um a um. Os vídeos existem; o que varia é o motivo de não abrirem, e cada motivo pede uma conduta diferente:
@@ -134,7 +135,9 @@ Vídeos embutidos (todos verificados via `yt-dlp`; timestamp da âncora extraíd
 > [!question] Qual o piso aceitável de cobertura?
 > O yield realista deste domínio parece ficar em torno de 50%, concentrado nas notas **conceituais** — minúcia de configuração (`location`, `proxy_pass`, `upstream`) simplesmente não tem vídeo bom em circulação.
 >
-> **Em 2026-08-09 a previsão se confirmou na mosca: o galho fechou em 8/16 = exatamente 50%.** As 8 notas cobertas são as conceituais (01, 02, 06, 07, 08, 13, 14, 15); as 8 sem vídeo são as de configuração fina e as duas de fronteira (03, 04, 05, 09, 10, 11, 12, 16). O ângulo que ainda não foi tentado é **PT-BR** e **conferências** (GOTO/InfoQ/NDC) — decisão do usuário se vale uma 4ª rodada ou se 50% encerra o M1 deste galho.
+> **Rodada PT-BR de 2026-08-12: +1 nota (16), galho vai a 9/16.** O ângulo em português foi finalmente testado nas 8 notas vazias e **confirmou a escassez** — as consultas para `server_name`, `location`, fases, cache, rate limit e rewrite em português devolveram zero resultado relevante ou vídeos de outro assunto. A única exceção foi o capstone, que não é sobre configuração e sim sobre **escolher o componente certo na borda** — e aí existe material bom em PT-BR. **A conclusão do galho fica mais forte, não mais fraca: a ausência é de material sobre minúcia de configuração do Nginx, em qualquer idioma.**
+
+**Em 2026-08-09 a previsão se confirmou na mosca: o galho fechou em 8/16 = exatamente 50%.** As 8 notas cobertas são as conceituais (01, 02, 06, 07, 08, 13, 14, 15); as 8 sem vídeo são as de configuração fina e as duas de fronteira (03, 04, 05, 09, 10, 11, 12, 16). O ângulo que ainda não foi tentado é **PT-BR** e **conferências** (GOTO/InfoQ/NDC) — decisão do usuário se vale uma 4ª rodada ou se 50% encerra o M1 deste galho.
 
 ## Notas de execução
 

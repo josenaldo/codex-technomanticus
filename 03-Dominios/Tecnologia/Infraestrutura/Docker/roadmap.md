@@ -87,7 +87,7 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Docker`. Primeiro galho do dom
 
 ## M1 — mídia embutida e descartes
 
-**Rodadas de 2026-08-09 e 2026-08-12: 14 de 18 notas (78%).** Todas as transcrições foram baixadas e lidas antes de embutir — a regra deste galho proíbe inserir com metadados apenas, e o candidato da nota 15 esperava exatamente isso desde a passada anterior.
+**Rodadas de 2026-08-09 e 2026-08-12: 15 de 18 notas (83%).** Todas as transcrições foram baixadas e lidas antes de embutir — a regra deste galho proíbe inserir com metadados apenas, e o candidato da nota 15 esperava exatamente isso desde a passada anterior.
 
 | Nota | Vídeo | ID | Canal | Âncora |
 |---|---|---|---|---|
@@ -105,6 +105,7 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Docker`. Primeiro galho do dom
 | 14 | Debugging Docker Containers with exec e logs | `tLK9nNFHWH8` | TechWorld with Nana, 10 min | — |
 | 16 | Podman vs Docker in 2026 | `SIvoAOpXZPg` | Better Stack, 6 min | — |
 | 17 | docker: fast CI rebuilds with --cache-from | `77j6JFBTmTc` | anthonywritescode, 6 min | — |
+| 18 | Aprenda Docker do zero — completo com deploy (**PT-BR**) | `DdoncfOdru8` | Fernanda Kipper, 44 min | — |
 
 > [!info] Duas escolhas que valem registro
 > **Nota 10 é fonte primária:** Tõnis Tiigi é o autor do BuildKit. A palestra nomeia o grafo pelo nome do projeto (**LLB**), mostra que o Dockerfile é apenas *um frontend* entre possíveis, e quantifica o argumento da nota com números medidos — 139 s no construtor antigo, 31 s no BuildKit, 3,29 s com cache mount.
@@ -120,7 +121,7 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Docker`. Primeiro galho do dom
 | 03 — O ciclo de vida de um container | Melhores resultados com 17, 15, 380 e 1.125 visualizações. Sem candidato |
 | 08 — ENTRYPOINT, CMD e o container que não morre direito | Resultados com 66, 17 e 7 visualizações; dois em italiano e russo. Assunto excelente, material inexistente. Sem candidato |
 | 12 — Registry | `RgZyX-e6W9E` (67 mil views) é sobre publicar no GHCR especificamente, não sobre o mecanismo de registry. Encaixe parcial demais |
-| 18 — Capstone | Os candidatos são tutoriais de empacotamento **amarrados a um framework** (.NET, Node, React). Escolher um deles enviesaria um capstone que é deliberadamente agnóstico. `rIrNIzy6U_g` (Fireship, *100+ Docker Concepts*, 1,5 mi de views) foi considerado como revisão geral e reprovado: é enumeração rápida, não percurso |
+| ~~18~~ | ✅ **Fechada em 2026-08-12** pela rodada PT-BR. O impasse era escolher entre tutoriais amarrados a framework; o vídeo da Fernanda Kipper também é (Java/Spring), mas **vai além do capstone** — publica no registry, constrói multi-arquitetura e roda numa VPS remota —, o que o torna complemento em vez de substituto. Ressalvas de framework e de patrocínio declaradas no callout |
 
 > [!success] O ângulo PT-BR funcionou na primeira tentativa
 > A hipótese estava parada desde o galho Nginx, levantada e nunca testada. A nota 01 tinha só candidatos fracos em inglês — o melhor com 1:39 de duração — e o vídeo do **HipstersPontoTube com Giovanni Bassi** (13 min, 82 mil views) resolveu, com dois exemplos que material em inglês não costuma trazer: a dor de *toolchain* na compilação cruzada para ARM, e rodar uma aplicação .NET de 2002 num container Windows sem instalar nada — este último conversando direto com a seção "Por que aplicações legadas resistem".

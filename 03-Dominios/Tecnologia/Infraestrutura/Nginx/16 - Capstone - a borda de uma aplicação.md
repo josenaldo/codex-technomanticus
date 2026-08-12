@@ -43,6 +43,9 @@ graph LR
     style Log fill:#8e6fc9,stroke:#5a3f8f,color:#fff
 ```
 
+> [!tip] Vídeo — que peça faz o quê na borda, antes de configurar qualquer uma
+> [**Load Balancer, Reverse Proxy e API Gateway: qual a diferença?**](https://www.youtube.com/watch?v=0frGo7vJV30) (Giuliana Bezerra, ~17 min, **PT-BR**) responde à pergunta que antecede este capstone inteiro: quando o problema pede cada um dos três componentes. Ela separa por **motivação**, não por ferramenta, que é o corte certo. O balanceador aparece quando o gargalo é carga — distribuir entre réplicas — e ela acrescenta o efeito lateral que costuma ser esquecido: ele também é a camada onde proteção contra negação de serviço faz sentido. O proxy reverso aparece quando o problema é **atravessar fronteira de rede** — a requisição vem da internet e o serviço vive na rede interna —, e é dali que decorrem os ganhos de cache e de manutenibilidade. O gateway de API aparece quando o tratamento passa a ser **por cliente**: cota por plano contratado, latência acordada, registro do catálogo de APIs. E ela deixa explícito que os papéis se acumulam — o gateway costuma fazer balanceamento também. **O que ele não cobre:** qualquer configuração de Nginx. É o mapa conceitual que justifica as nove decisões deste capstone, não a implementação delas.
+
 ## Decisão 1 — como o domínio chega até aqui
 
 **Situação.** Antes de qualquer `location`, o Nginx precisa saber a que conexão TCP este arquivo responde, e o que fazer com uma request que chegue com um `Host` que ninguém esperava — um scanner automatizado, um IP direto sem domínio nenhum, um certificado testado contra o endereço puro.

@@ -69,6 +69,11 @@ O `package.json` declara os dois mundos que qualquer Dockerfile de aplicação c
 
 Nada nesse manifesto é incomum. É exatamente essa normalidade que faz o caso valer como exercício: qualquer API Node/TypeScript de porte médio, com um Postgres atrás, tem esse mesmo formato de `package.json`, e o Dockerfile que esta nota constrói serve de modelo para qualquer uma delas — trocando `express`/`pg` pelas dependências reais do projeto em questão.
 
+> [!tip] Vídeo — o mesmo percurso, levado até a máquina remota
+> [**Aprenda Docker do zero — tutorial completo com deploy**](https://www.youtube.com/watch?v=DdoncfOdru8) (Fernanda Kipper, ~44 min, **PT-BR**) faz o trajeto deste capstone e continua além dele: escreve o Dockerfile de uma aplicação, constrói a imagem, publica no registry e **roda numa máquina remota**. As duas passagens que mais somam a esta nota estão no fim. A primeira é a construção **multi-arquitetura** — gerar imagem para arquitetura diferente da máquina de desenvolvimento —, que é o problema que aparece assim que a máquina de quem desenvolve e o servidor de destino não têm o mesmo processador. A segunda é uma precisão sobre tag que conversa direto com a Decisão 8: publicar de novo com **a mesma tag sobrescreve a anterior** no registry, e quem já tinha baixado continua com a imagem antiga sob o mesmo nome — o argumento que a nota 02 desenvolve na distinção entre tag e digest. Ela abre com uma analogia boa para quem está começando: a receita que funciona numa cozinha e falha em outra porque o forno e os ingredientes são diferentes.
+>
+> ⚠️ Duas ressalvas de uso. O exemplo é **Java com Spring Boot** e usa imagem de JDK específica — a estrutura do percurso é agnóstica, os comandos não. E o vídeo tem **segmento patrocinado** no meio (comunidade paga e hospedagem), além de usar um provedor de VPS parceiro na parte de deploy; o conteúdo técnico não depende disso, mas vale saber antes de recomendar a alguém.
+
 ## Decisão 1 — a primeira versão que funciona
 
 **Situação.** Ninguém nunca escreveu um Dockerfile para este repositório. A pressão é sair de "zero artefatos de empacotamento" para "existe uma imagem que sobe e responde na porta 3000" o mais rápido possível — e é legítimo que a primeira versão priorize isso acima de qualquer otimização.
