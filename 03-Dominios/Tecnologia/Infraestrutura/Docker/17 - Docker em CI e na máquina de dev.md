@@ -131,6 +131,9 @@ Nem toda linguagem sofre igualmente com a ausência de cache em CI. Ecossistemas
 
 Essa diferença explica por que a mesma política de cache exportável rende ganhos bem diferentes conforme o serviço: um monorepo poliglota que aplica cache remoto uniformemente costuma ver o maior ganho absoluto nos serviços Node, e o menor nos serviços Go — não porque a configuração esteja errada em algum deles, mas porque o problema que o cache resolve tinha pesos diferentes para começar.
 
+> [!tip] Vídeo — `--cache-from`, que é a resposta direta ao problema desta seção
+> [**docker: fast CI rebuilds with `--cache-from`**](https://www.youtube.com/watch?v=77j6JFBTmTc) (anthonywritescode, ~6 min, EN) demonstra a técnica que resolve o problema estrutural descrito acima: como o runner de CI nasce sem cache local, a saída é **buscar uma imagem já construída e apresentá-la como origem de cache**. Ele mostra o comportamento acontecendo — inclusive o caso que mais importa e que quase nenhum material menciona, o **acerto parcial**: o cache é aproveitado até a instrução em que algo mudou, e só dali para baixo o build recomeça. É a mesma cascata da nota 05, agora atravessando máquinas diferentes em vez de execuções na mesma máquina. **O que ele não cobre:** Docker-in-Docker contra socket montado, estratégia de tags em CI, o cache exportável do BuildKit (`--cache-to`, tratado na nota 10), e o custo de armazenar cache, que esta nota discute no fim.
+
 ## Docker-in-Docker contra socket montado
 
 Para construir uma imagem, o job de CI precisa falar com algum daemon Docker. Existem, essencialmente, duas formas de dar isso a um job que roda ele mesmo dentro de um container (o caso comum quando o executor de CI já usa containers para isolar jobs):

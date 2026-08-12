@@ -87,7 +87,7 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Docker`. Primeiro galho do dom
 
 ## M1 — mídia embutida e descartes
 
-**Rodada de 2026-08-09: 9 de 18 notas (50%).** Todas as transcrições foram baixadas e lidas antes de embutir — a regra deste galho proíbe inserir com metadados apenas, e o candidato da nota 15 esperava exatamente isso desde a passada anterior.
+**Rodadas de 2026-08-09 e 2026-08-12: 14 de 18 notas (78%).** Todas as transcrições foram baixadas e lidas antes de embutir — a regra deste galho proíbe inserir com metadados apenas, e o candidato da nota 15 esperava exatamente isso desde a passada anterior.
 
 | Nota | Vídeo | ID | Canal | Âncora |
 |---|---|---|---|---|
@@ -100,6 +100,11 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Docker`. Primeiro galho do dom
 | 11 | How To Use Docker To Make Local Development A Breeze | `zkMRWDQV4Tg` | ArjanCodes, 22 min | — |
 | 13 | The Route To Rootless Containers | `qXG_cChQgUg` | Container Camp, Claudia Beresford, 30 min | — |
 | 15 | Containers From Scratch | `8fi7uSYlOdc` | GOTO 2018, Liz Rice, 43 min | 32:54 |
+| 01 | Contêineres, Docker e Kubernetes (**PT-BR**) | `wxLvvMxzc1Q` | HipstersPontoTube/Alura, Giovanni Bassi, 13 min | — |
+| 04 | Dockerfile Tutorial — Docker in Practice | `WmcdMiyqfZs` | TechWorld with Nana, 24 min | — |
+| 14 | Debugging Docker Containers with exec e logs | `tLK9nNFHWH8` | TechWorld with Nana, 10 min | — |
+| 16 | Podman vs Docker in 2026 | `SIvoAOpXZPg` | Better Stack, 6 min | — |
+| 17 | docker: fast CI rebuilds with --cache-from | `77j6JFBTmTc` | anthonywritescode, 6 min | — |
 
 > [!info] Duas escolhas que valem registro
 > **Nota 10 é fonte primária:** Tõnis Tiigi é o autor do BuildKit. A palestra nomeia o grafo pelo nome do projeto (**LLB**), mostra que o Dockerfile é apenas *um frontend* entre possíveis, e quantifica o argumento da nota com números medidos — 139 s no construtor antigo, 31 s no BuildKit, 3,29 s com cache mount.
@@ -112,11 +117,12 @@ Roadmap-folha do galho `Tecnologia/Infraestrutura/Docker`. Primeiro galho do dom
 
 | Nota | Situação |
 |---|---|
-| 01 — O problema que o container resolve | Melhores resultados: `9FtERdqKa2s` (NetworkChuck, 1:39 — abaixo do piso de 5 min) e `XYqp4e9uLDg` (852 views). **Um candidato PT-BR não testado:** `wxLvvMxzc1Q` (Alura/HipstersPontoTube com Giovanni Bassi, 12 min, 82 mil views) — o download da legenda falhou; reabrir |
 | 03 — O ciclo de vida de um container | Melhores resultados com 17, 15, 380 e 1.125 visualizações. Sem candidato |
-| 04 — O Dockerfile como receita de camadas | Não teve rodada de busca |
 | 08 — ENTRYPOINT, CMD e o container que não morre direito | Resultados com 66, 17 e 7 visualizações; dois em italiano e russo. Assunto excelente, material inexistente. Sem candidato |
 | 12 — Registry | `RgZyX-e6W9E` (67 mil views) é sobre publicar no GHCR especificamente, não sobre o mecanismo de registry. Encaixe parcial demais |
-| 14, 16, 17, 18 | Não tiveram rodada de busca |
+| 18 — Capstone | Os candidatos são tutoriais de empacotamento **amarrados a um framework** (.NET, Node, React). Escolher um deles enviesaria um capstone que é deliberadamente agnóstico. `rIrNIzy6U_g` (Fireship, *100+ Docker Concepts*, 1,5 mi de views) foi considerado como revisão geral e reprovado: é enumeração rápida, não percurso |
 
-**Próxima passada:** buscar 04, 14, 16, 17 e 18, e refazer o download da legenda do candidato PT-BR da nota 01. O ângulo **PT-BR** segue sendo o menos explorado nos três galhos deste domínio.
+> [!success] O ângulo PT-BR funcionou na primeira tentativa
+> A hipótese estava parada desde o galho Nginx, levantada e nunca testada. A nota 01 tinha só candidatos fracos em inglês — o melhor com 1:39 de duração — e o vídeo do **HipstersPontoTube com Giovanni Bassi** (13 min, 82 mil views) resolveu, com dois exemplos que material em inglês não costuma trazer: a dor de *toolchain* na compilação cruzada para ARM, e rodar uma aplicação .NET de 2002 num container Windows sem instalar nada — este último conversando direto com a seção "Por que aplicações legadas resistem".
+>
+> **Recomendação para os outros dois galhos:** as notas sem vídeo do Nginx (03, 04, 05, 09, 10, 11, 12, 16) e do Kubernetes (04, 06, 22) nunca foram buscadas em PT-BR. Vale uma rodada antes de declarar ausência de material.

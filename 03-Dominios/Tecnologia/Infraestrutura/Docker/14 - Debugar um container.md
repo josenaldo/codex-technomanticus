@@ -87,6 +87,9 @@ Quando o log está vazio, isso também é informação, não um beco sem saída.
 > [!info] Caducidade
 > Os exemplos de `docker logs` aqui assumem CLI do Docker Engine na faixa 25.x-27.x (2025-2026). Flags como `--since`/`--until`/`--timestamps` são estáveis há muitas versões, mas vale checar `docker logs --help` na versão instalada antes de depender de um flag mais novo.
 
+> [!tip] Vídeo — os dois primeiros degraus da árvore de decisão
+> [**Debugging Docker Containers with `docker exec` and `docker logs`**](https://www.youtube.com/watch?v=tLK9nNFHWH8) (TechWorld with Nana, ~10 min, EN) cobre bem os dois comandos que abrem o método desta nota, na ordem certa: primeiro `docker logs`, quando o container está de pé mas a aplicação não se comporta; depois `docker exec -it`, para obter um terminal **dentro** do container e olhar o sistema de arquivos com os próprios olhos — conferir se o arquivo de configuração chegou, em qual diretório o processo está, o que existe de fato ali. Uma precisão de vocabulário que ela faz e que evita confusão real: `docker start` opera sobre **container**, não sobre imagem, e por isso não aceita as opções de `docker run` como `-p` ou `-d`, que pertencem ao momento da criação. **O que ele não cobre:** `docker inspect` como fonte da verdade sobre o que o container recebeu, `docker events` para reconstruir a linha do tempo do daemon, `docker stats`, e o caso mais difícil — depurar um container que **não fica de pé** o suficiente para receber um `exec`.
+
 ## docker inspect: a fonte da verdade sobre o que o container recebeu
 
 `docker logs` mostra o que o processo disse. `docker inspect` mostra o que o container **é** — a configuração completa que o daemon efetivamente aplicou, não a que foi pedida. É comum descobrir, ao inspecionar, que uma variável de ambiente esperada não chegou, que um volume foi montado no caminho errado, ou que a política de restart não é a que alguém assumia.
