@@ -26,8 +26,8 @@ Roadmap do galho `Tecnologia/Infraestrutura/Linux` (galho-folha), o **último do
 | 03 | Tudo é arquivo — descritores e redirecionamento | Iniciado | 🔶 escrita 2026-08-12 | 1 |
 | 04 | Identidade: usuários, grupos e permissão | Iniciado | 🔶 escrita 2026-08-12 | 2 |
 | 05 | O processo como objeto administrável | Iniciado | 🔶 escrita 2026-08-12 | 2 |
-| 06 | systemd: o modelo de unidades | Adepto | 📋 desenhada | 3 |
-| 07 | Escrever um serviço que se comporta | Adepto | 📋 desenhada | 3 |
+| 06 | systemd: o modelo de unidades | Adepto | 🔶 escrita 2026-08-14 | 3 |
+| 07 | Escrever um serviço que se comporta | Adepto | 🔶 escrita 2026-08-14 | 3 |
 | 08 | Logs: journald e o que veio antes | Adepto | 📋 desenhada | 4 |
 | 09 | Agendamento: cron e timers | Adepto | 📋 desenhada | 4 |
 | 10 | A máquina na rede | Adepto | 📋 desenhada | 5 |
@@ -63,9 +63,18 @@ Roadmap do galho `Tecnologia/Infraestrutura/Linux` (galho-folha), o **último do
 - **A cadeia terminal → sessão → grupo** foi apresentada só até onde explica `SIGHUP`, `nohup` e `disown`, cedendo multiplexador a `Tecnologia/Terminal`. A conclusão da nota — *o que precisa sobreviver a você não pertence à sua sessão* — é a ponte narrativa para o systemd.
 - **Pontes com os galhos 1-3:** a 05 amarra o problema de zumbi em container ao Docker 08 (PID 1) e ao `--init`; a 04 amarra o `USER` do Dockerfile ao fato de UID 0 no container ser UID 0 no kernel do host.
 
+## Bloco 3 — o que ficou decidido ao escrever
+
+- **A fronteira com `Engenharia/Operação` foi mantida sem esforço**, porque o corte se mostrou natural: aqui é o **modelo de unidades e o contrato do serviço com a máquina**; lá continua sendo a disciplina de operar. Nenhuma das duas notas fala de SLO, alerta ou incidente.
+- **A nota 07 é a nota 01 preenchida.** Cada campo de `[Service]` — `User=`, `WorkingDirectory=`, `Environment=`, `LimitNOFILE=` — é um item do contrato de execução, agora declarado em vez de herdado por acidente. Isso amarra o bloco 3 ao bloco 1 e reforça a lente do galho.
+- **Duas distinções carregam a nota 06:** `start` × `enable` (agir agora × agir no próximo boot) e `Requires=` × `After=` (dependência × ordem, independentes entre si). A segunda é a origem das corridas de inicialização que só aparecem no boot.
+- **"Iniciado" não é "pronto"** ficou registrado como callout de aviso, com a observação de que é o **mesmo problema do `depends_on` do Compose** e tem a mesma solução — `Type=notify` ou aplicação que tolera indisponibilidade e tenta de novo.
+- **O contrato de parada é o mesmo do container**, e isso foi dito explicitamente: `SIGTERM` → janela → `SIGKILL`. A nota 07 conclui, como o Docker 08, que aplicação que ignora `SIGTERM` é defeito da aplicação — aumentar o timeout é conviver com perda de dados.
+- **`systemd-analyze security` entrou como ferramenta**, junto com as diretivas de endurecimento (`NoNewPrivileges`, `PrivateTmp`, `ProtectSystem`). É o comando mais subestimado do assunto e cabia aqui, não em Operação.
+
 ## Pendências
 
-- **Blocos 2-7** (notas 04-16), com pergunta ao usuário a cada bloco.
+- **Blocos 4-7** (notas 08-16), com pergunta ao usuário a cada bloco.
 - **Fechamento:** podar `Linux.md`, reformar `index.md`, callout de ponte na referência de comandos, callouts de volta em `Ciência/SO` e `Operação`.
 - **M1 (mídia):** passada posterior, `yt-dlp` central. **Expectativa de yield alto** — Linux tem material de conferência e canais de autoridade em abundância, ao contrário do que ocorreu com configuração de Nginx.
 
