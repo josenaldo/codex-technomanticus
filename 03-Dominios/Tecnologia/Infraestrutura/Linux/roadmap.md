@@ -28,8 +28,8 @@ Roadmap do galho `Tecnologia/Infraestrutura/Linux` (galho-folha), o **último do
 | 05 | O processo como objeto administrável | Iniciado | 🔶 escrita 2026-08-12 | 2 |
 | 06 | systemd: o modelo de unidades | Adepto | 🔶 escrita 2026-08-14 | 3 |
 | 07 | Escrever um serviço que se comporta | Adepto | 🔶 escrita 2026-08-14 | 3 |
-| 08 | Logs: journald e o que veio antes | Adepto | 📋 desenhada | 4 |
-| 09 | Agendamento: cron e timers | Adepto | 📋 desenhada | 4 |
+| 08 | Logs: journald e o que veio antes | Adepto | 🔶 escrita 2026-08-16 | 4 |
+| 09 | Agendamento: cron e timers | Adepto | 🔶 escrita 2026-08-16 | 4 |
 | 10 | A máquina na rede | Adepto | 📋 desenhada | 5 |
 | 11 | Software instalado | Adepto | 📋 desenhada | 5 |
 | 12 | Diagnóstico: os primeiros sessenta segundos | Magus | 📋 desenhada | 6 |
@@ -72,9 +72,18 @@ Roadmap do galho `Tecnologia/Infraestrutura/Linux` (galho-folha), o **último do
 - **O contrato de parada é o mesmo do container**, e isso foi dito explicitamente: `SIGTERM` → janela → `SIGKILL`. A nota 07 conclui, como o Docker 08, que aplicação que ignora `SIGTERM` é defeito da aplicação — aumentar o timeout é conviver com perda de dados.
 - **`systemd-analyze security` entrou como ferramenta**, junto com as diretivas de endurecimento (`NoNewPrivileges`, `PrivateTmp`, `ProtectSystem`). É o comando mais subestimado do assunto e cabia aqui, não em Operação.
 
+## Bloco 4 — o que ficou decidido ao escrever
+
+- **A nota 08 abre pelo pior caso real e não pelo comando:** o journal volátil, que apaga o log do boot anterior justamente quando a máquina reinicia sozinha. A verificação (`journalctl --list-boots`) entrou como coisa a fazer em toda máquina herdada, antes de precisar.
+- **A justificativa do formato binário ficou honesta nos dois sentidos:** o ganho real é guardar registro com **campos confiáveis** preenchidos pelo `journald` (que a aplicação não forja), e o preço real é precisar da ferramenta para ler — daí a convivência legítima com `rsyslog` em máquina crítica.
+- **O gancho da nota 03 fechou nas duas direções:** aplicação que não aparece no journal ou escreve em arquivo próprio, ou está bufferizando porque do outro lado não há terminal.
+- **A nota 09 organiza-se pelos três defeitos históricos do cron** (ambiente mínimo · saída que vira e-mail descartado · não sabe que a máquina esteve desligada) e mostra o timer resolvendo os três. O argumento mais forte não é sintaxe: é que **a execução vira um objeto do sistema**, com estado conhecido — daí não haver execução sobreposta e ser possível disparar o trabalho à mão com o contrato real.
+- **Registrado com honestidade quando o cron ainda é a escolha certa:** máquina sem `systemd`, container enxuto, tarefa pessoal simples. E que, em container, a resposta melhor costuma ser nenhum dos dois, e sim o agendador da plataforma — ponte para o Kubernetes 11.
+- **`systemd-analyze calendar` entrou como o recurso que o cron não tem:** testar a expressão sem esperar o horário.
+
 ## Pendências
 
-- **Blocos 4-7** (notas 08-16), com pergunta ao usuário a cada bloco.
+- **Blocos 5-7** (notas 10-16), com pergunta ao usuário a cada bloco.
 - **Fechamento:** podar `Linux.md`, reformar `index.md`, callout de ponte na referência de comandos, callouts de volta em `Ciência/SO` e `Operação`.
 - **M1 (mídia):** passada posterior, `yt-dlp` central. **Expectativa de yield alto** — Linux tem material de conferência e canais de autoridade em abundância, ao contrário do que ocorreu com configuração de Nginx.
 
