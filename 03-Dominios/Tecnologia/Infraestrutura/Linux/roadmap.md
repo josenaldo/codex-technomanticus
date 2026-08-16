@@ -30,8 +30,8 @@ Roadmap do galho `Tecnologia/Infraestrutura/Linux` (galho-folha), o **último do
 | 07 | Escrever um serviço que se comporta | Adepto | 🔶 escrita 2026-08-14 | 3 |
 | 08 | Logs: journald e o que veio antes | Adepto | 🔶 escrita 2026-08-16 | 4 |
 | 09 | Agendamento: cron e timers | Adepto | 🔶 escrita 2026-08-16 | 4 |
-| 10 | A máquina na rede | Adepto | 📋 desenhada | 5 |
-| 11 | Software instalado | Adepto | 📋 desenhada | 5 |
+| 10 | A máquina na rede | Adepto | 🔶 escrita 2026-08-16 | 5 |
+| 11 | Software instalado | Adepto | 🔶 escrita 2026-08-16 | 5 |
 | 12 | Diagnóstico: os primeiros sessenta segundos | Magus | 📋 desenhada | 6 |
 | 13 | CPU, memória, disco e I/O, um de cada vez | Magus | 📋 desenhada | 6 |
 | 14 | Quando o processo some: OOM killer e limites | Magus | 📋 desenhada | 7 |
@@ -81,9 +81,19 @@ Roadmap do galho `Tecnologia/Infraestrutura/Linux` (galho-folha), o **último do
 - **Registrado com honestidade quando o cron ainda é a escolha certa:** máquina sem `systemd`, container enxuto, tarefa pessoal simples. E que, em container, a resposta melhor costuma ser nenhum dos dois, e sim o agendador da plataforma — ponte para o Kubernetes 11.
 - **`systemd-analyze calendar` entrou como o recurso que o cron não tem:** testar a expressão sem esperar o horário.
 
+## Bloco 5 — o que ficou decidido ao escrever
+
+- **Fase Adepto fechada (06-11).** A máquina está configurada, supervisionada, com log consultável, tarefas agendadas, rede compreendida e software com procedência.
+- **A nota 10 abre pelo achado que mais economiza tempo real:** "funciona local e ninguém alcança" quase nunca é firewall — é a aplicação escutando em `127.0.0.1`. `ss -tlnp` responde numa coluna, antes de qualquer regra. A escada de diagnóstico (loopback → interface → de fora) elimina uma camada por vez e evita a conversa errada com quem administra a rede.
+- **A armadilha do `dig` foi tratada como estrutural, não como dica:** `dig` e `nslookup` ignoram `/etc/hosts` e `nsswitch.conf`; a aplicação não. `getent hosts` é o que reproduz o caminho dela, e a divergência entre os dois **é** o achado. É a origem da maior parte da falha intermitente de nome.
+- **Fronteira com `Ciência/Redes` mantida sem esforço:** protocolo (TCP, DNS, TLS) é lá; aqui é sempre *esta máquina* — que endereços tem, por onde sai, o que escuta, como resolve. SSH entrou só como ferramenta de acesso, conforme o design previa.
+- **A nota 11 troca a pergunta "como instalo" por "daqui a dois anos, alguém vai saber de onde isto veio?"** — e abre com o binário órfão em `/usr/local/bin` que nenhum `dpkg -S` reconhece. O gerenciador de pacotes é apresentado como **banco de dados**, com as consultas (`-S`, `-L`, `policy`) em primeiro plano, não os verbos de instalação.
+- **Dois mal-entendidos corrigidos explicitamente:** `apt update` não atualiza software, e versão antiga em distribuição estável **não** significa sem correção, por causa do retroporte.
+- **Ponte com Docker construída pelo argumento, não por link solto:** a imagem é a resposta de outra natureza ao mesmo problema de procedência, e é por isso que fixar versão da base em vez de `latest` é a mesma pergunta noutro lugar.
+
 ## Pendências
 
-- **Blocos 5-7** (notas 10-16), com pergunta ao usuário a cada bloco.
+- **Blocos 6-7** (notas 12-16) — a fase Magus, com pergunta a cada bloco.
 - **Fechamento:** podar `Linux.md`, reformar `index.md`, callout de ponte na referência de comandos, callouts de volta em `Ciência/SO` e `Operação`.
 - **M1 (mídia):** passada posterior, `yt-dlp` central. **Expectativa de yield alto** — Linux tem material de conferência e canais de autoridade em abundância, ao contrário do que ocorreu com configuração de Nginx.
 
