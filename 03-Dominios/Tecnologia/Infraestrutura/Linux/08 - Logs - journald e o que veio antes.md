@@ -120,6 +120,9 @@ O campo `PRIORITY` segue a escala do syslog, de 0 a 7:
 
 ---
 
+> [!tip] Vídeo — consultar o journal com um serviço de verdade na tela
+> [**journalctl Basics: How to Easily Check Your Linux Logs**](https://www.youtube.com/watch?v=0dG3vUYt7Uk) (Learn Linux TV, ~20 min, EN) instala um serviço e usa o journal para acompanhá-lo, o que torna os recortes concretos em vez de abstratos. O momento mais instrutivo é quando ele erra a senha de propósito, várias vezes, com `journalctl -f` aberto: **cada tentativa aparece na hora**, o que mostra na prática o que "acompanhar ao vivo" significa e por que o journal é o primeiro lugar a olhar num incidente em andamento. Ele passa também por `-u`, pelos recortes de tempo com `--since`, e pela redução de tamanho — com o cuidado explícito de avisar que **comandos que apagam journal merecem atenção antes de executar**, e sugerindo que quem está aprendendo apenas anote em vez de acompanhar. **O que ele não cobre:** por que o formato é binário e o que são os campos confiáveis, a armadilha do armazenamento volátil, e o que continua em `/var/log` fora do journal.
+
 ## O que continua em `/var/log`
 
 O journal não substituiu tudo, e supor o contrário faz perder rastro:

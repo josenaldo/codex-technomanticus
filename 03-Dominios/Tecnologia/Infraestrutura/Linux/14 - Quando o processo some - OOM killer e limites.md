@@ -105,6 +105,9 @@ MemoryHigh=1500M      # pressão: acima disso, o kernel força recuperação ant
 
 ---
 
+> [!tip] Vídeo — cgroups v2 por Michael Kerrisk
+> [**An introduction to control groups (cgroups) version 2**](https://www.youtube.com/watch?v=kcnFQgg9ToY) (Michael Kerrisk — NDC TechTown, ~57 min, EN) é a fonte mais autoritativa possível para a seção acima: Kerrisk é o mantenedor das man-pages do Linux e autor de *The Linux Programming Interface*, citado nas fontes deste galho inteiro. Ele explica por que a versão 2 existiu — na v1 cada controlador foi adicionado por conta própria, sem coordenação — e depois **constrói um cgroup ao vivo**: cria o diretório, move um shell para dentro escrevendo em `cgroup.procs`, e mostra que **processos filhos nascem no cgroup do pai**, que é o que faz o limite valer para a árvore inteira sem ninguém declarar nada. Três peças que a nota usa e ele detalha: o limite de memória com teto duro e limite suave; o controle de CPU por cota e período (`20000/100000` = 20% no máximo); e a regra de que um controlador só pode ser usado num nível se tiver sido **habilitado no nível acima**, via `cgroup.subtree_control` — a origem de "declarei o limite e ele não fez efeito". **O que ele não cobre:** o OOM killer em si e sua pontuação, os rlimits, e o código de saída 137.
+
 ## O código de saída que entrega o caso
 
 Quando um processo morre por sinal, o código de saída é `128 + número do sinal`:

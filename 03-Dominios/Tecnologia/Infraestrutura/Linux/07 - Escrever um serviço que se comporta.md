@@ -85,6 +85,9 @@ O default `simple` tem uma consequência que explica boa parte das corridas de i
 
 ---
 
+> [!tip] Vídeo — a unidade escrita do zero, em sete minutos
+> [**Creating systemd Service Files**](https://www.youtube.com/watch?v=fYQBvjYQ63U) (DevDungeon, ~7 min, EN) faz exatamente o percurso desta nota, sem rodeios: escreve o arquivo, ativa, confere com `systemctl status` — e mostra o que "ativo" parece na tela, com o círculo verde e o PID. Dois detalhes úteis aparecem: `RuntimeMaxSec=`, que encerra o serviço ao passar de um tempo máximo (a contraparte do `TimeoutStopSec` para trabalho que **não deveria** durar), e a explicação de por que a seção `[Install]` com `WantedBy=multi-user.target` é o que faz o `enable` ter efeito — a armadilha listada mais abaixo nesta nota. É a melhor porta de entrada para quem nunca escreveu uma unidade. **O que ele não cobre:** `Type=` e a diferença entre iniciado e pronto, a política de reinício com limite de tentativas, o contrato de parada, e as diretivas de endurecimento.
+
 ## `Restart=`: o supervisor, e a janela que faz ele desistir
 
 ```ini

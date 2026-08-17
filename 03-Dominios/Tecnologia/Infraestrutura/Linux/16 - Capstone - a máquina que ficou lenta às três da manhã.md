@@ -163,6 +163,9 @@ A causa raiz não é o pool grande em si: é que a aplicação tem um caminho qu
 
 ---
 
+> [!tip] Vídeo — investigações curtas, do mesmo formato deste capstone
+> [**Linux Performance Troubleshooting Demos**](https://www.youtube.com/watch?v=rwVLa9me7e4) (grobelDev, ~11 min, EN) encadeia várias investigações curtas no mesmo formato usado aqui — sintoma relatado, comandos em ordem, conclusão —, o que o torna um bom exercício adicional depois deste capstone. Duas passagens acrescentam: uma investigação que termina numa aplicação presa em **laço infinito lendo um arquivo zero bytes por vez**, que é o tipo de achado que só aparece descendo até a chamada de sistema (nota 15); e a leitura de `si`/`so` diferentes de zero como sinal de que a memória de fato acabou, exatamente como a nota 13 trata. Ele também dá um detalhe de quem já fez isso a sério: ao amostrar com `perf`, usar **99 Hz em vez de 100** para não amostrar em sincronia com atividades periódicas do sistema e perder justamente o que se quer medir. **O que ele não cobre:** o encadeamento longo deste capstone, com hipóteses descartadas uma a uma e causa fora da máquina onde o sintoma apareceu.
+
 ## A decisão: contenção e correção não são a mesma coisa
 
 **Contenção — agora, para devolver o serviço:**

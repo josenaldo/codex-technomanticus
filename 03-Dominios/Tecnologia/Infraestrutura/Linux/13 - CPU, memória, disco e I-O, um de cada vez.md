@@ -141,6 +141,11 @@ sudo iotop -oPa            # interativo, só quem está fazendo I/O
 
 ---
 
+> [!tip] Vídeo — o eixo disco, do sintoma ao processo
+> [**Troubleshooting IO performance issues on Linux**](https://www.youtube.com/watch?v=sjyLRS52zOg) (TECSTER, ~7 min, EN) percorre o eixo de disco na mesma ordem desta seção: parte do `%iowait`, vai ao `iostat` com intervalo para identificar **qual dispositivo** está sofrendo, e termina em `iotop -o` — a opção que filtra apenas os processos que estão de fato fazendo I/O, em vez de listar tudo. É curto e direto, e serve bem como demonstração do caminho métrica → dispositivo → processo.
+>
+> ⚠️ Uma precisão: ele usa a regra de bolso de que `%iowait` acima de 10-20% "indica problema de disco". Como esta nota argumenta, `%iowait` é **CPU ociosa com I/O pendente** — numa máquina sem outro trabalho, um único processo lendo disco produz `%iowait` alto sem que nada esteja errado, e numa máquina ocupada ele cai sem o disco ter melhorado. Trate como ponteiro para mudar de eixo; quem responde sobre o disco é `await` e `aqu-sz`.
+
 ## Eixo 4 — rede
 
 O grosso está na nota 10; para desempenho, três comandos:

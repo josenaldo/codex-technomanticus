@@ -15,7 +15,7 @@ Roadmap do galho `Tecnologia/Infraestrutura/Linux` (galho-folha), o **último do
 
 **Lente:** *o sistema como o processo o vê.*
 
-**Estado: escrita completa — 16/16 notas em 2026-08-16.** Falta só M1.
+**Estado: escrita completa — 16/16 notas em 2026-08-16.** M1 em 15/16 (2026-08-17).
 
 **Legenda:** ✅ escrita + M1 · 🔶 escrita, falta M1 · 📋 desenhada · ⬜ não iniciada.
 
@@ -110,7 +110,7 @@ Roadmap do galho `Tecnologia/Infraestrutura/Linux` (galho-folha), o **último do
 - **O capstone é uma investigação com hipóteses descartadas**, não um resumo: três eliminações (OOM/hardware, disco/memória, enxurrada de requisições) antes do achado, e a causa num lugar diferente do sintoma — lentidão na aplicação, causa numa recarga de configuração dela, dano no banco. Fecha separando **contenção** de **correção**, com o aviso de que parar na primeira é o que faz o incidente voltar.
 - **Fechamento completo em 2026-08-16:** `Linux.md` podado de 1118 para 198 linhas com mapa de redirecionamento (seções de entrevista preservadas, como nos três galhos anteriores) · `index.md` reformado como MOC por fase, com referência e fronteiras · callout de ponte na referência de comandos · **callouts de volta inseridos em `Ciência/SO` 02, 03, 07 e 11**, que passaram a ter contraparte operacional.
 
-## M1 — mídia (rodada de 2026-08-16)
+## M1 — mídia (rodadas de 2026-08-16 e 2026-08-17)
 
 **9 de 16 notas com vídeo embutido e verificado.** Transcrições lidas antes de embutir, conforme a regra do domínio.
 
@@ -135,17 +135,11 @@ Roadmap do galho `Tecnologia/Infraestrutura/Linux` (galho-folha), o **último do
 
 | Nota | Situação |
 |---|---|
-| 01 — O contrato de execução | Ainda sem rodada de busca própria; o recorte é conceitual e pode não ter equivalente direto |
-| 07 — Escrever um serviço | Ainda sem rodada |
-| 08 — journald | Ainda sem rodada |
-| 10 — A máquina na rede | `vDWY3PuHMX8` (Akamai, 94 mil views) foi lido e **reprovado**: começa em `ip addr` e deriva para uso de `curl`, sem tratar rotas, endereço de escuta ou resolução de nomes — o núcleo da nota |
-| 13 — Os quatro eixos | Melhores resultados com 121, 73, 449 e 35 visualizações. Sem candidato à altura |
-| 14 — OOM killer | O material bom é longo demais (`ql1axx--8sI`, Linux Foundation, 96 min, acima do teto) ou tem audiência baixa demais |
-| 16 — Capstone | Ainda sem rodada |
+| 10 — A máquina na rede | Dois candidatos lidos e **reprovados**. `vDWY3PuHMX8` (Akamai, 94 mil views) começa em `ip addr` e deriva para uso de `curl`, sem tratar rotas, endereço de escuta ou resolução de nomes — o núcleo da nota. `zzFbFEOgtY0` (resolv.conf apontando para `127.0.0.53`) resolve o assunto certo pelo lado errado: é receita de como sobrescrever o arquivo, não explicação do resolvedor local nem da diferença entre `getent` e `dig`. **Ausência real de material no recorte da nota** |
 
 ## Pendências
 
-- **M1:** completar as 7 notas restantes. Passada posterior, `yt-dlp` central. **Expectativa de yield alto** — Linux tem material de conferência e canais de autoridade em abundância, ao contrário do que ocorreu com configuração de Nginx. E o ângulo **PT-BR** já se provou no domínio (nota 01 do Docker), então entra desde a primeira rodada.
+- **M1:** 15/16 — falta apenas a nota 10, com ausência de material verificada em duas rodadas. Passada posterior, `yt-dlp` central. **Expectativa de yield alto** — Linux tem material de conferência e canais de autoridade em abundância, ao contrário do que ocorreu com configuração de Nginx. E o ângulo **PT-BR** já se provou no domínio (nota 01 do Docker), então entra desde a primeira rodada.
 
 ## Lacunas conscientes (do design)
 

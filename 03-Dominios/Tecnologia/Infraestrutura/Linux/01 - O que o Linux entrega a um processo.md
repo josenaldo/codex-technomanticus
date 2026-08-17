@@ -87,6 +87,9 @@ O `environ` merece destaque porque resolve discussão: ele mostra o ambiente **c
 
 ---
 
+> [!tip] Vídeo — `/proc`, o lugar onde o contrato fica legível
+> [**Linux Sysadmin Basics — 6.3 The /proc Filesystem**](https://www.youtube.com/watch?v=0XdjODvsRN8) (tutoriaLinux, ~10 min, EN) explora exatamente a seção acima: entra no diretório de um processo, abre os arquivos um a um e mostra que ali está o retrato do que aquele processo recebeu. O ponto que ele faz e que vale carregar adiante: **`ps`, `top` e `htop` não têm fonte de informação privilegiada** — eles leem e formatam esses mesmos arquivos. Isso reposiciona `/proc` de curiosidade para fonte primária: quando a saída de uma ferramenta parece estranha, dá para ir ao arquivo que ela leu. Ele termina apontando o `strace` como o passo seguinte, que é o percurso deste galho até a [[03-Dominios/Tecnologia/Infraestrutura/Linux/15 - Ver o que o processo pede ao kernel|nota 15]]. **O que ele não cobre:** o contrato como conceito organizador — identidade, credenciais, lugar, ambiente e limites como itens de uma mesma lista — e a herança na criação do processo filho.
+
 ## O que o filho herda
 
 Quase todo processo nasce de outro, em duas etapas: o pai se duplica, e a cópia substitui a si mesma pelo programa novo. É por isso que herança é a regra e não a exceção.
