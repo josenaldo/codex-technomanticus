@@ -92,6 +92,9 @@ O `systemctl edit` é a forma correta de ajustar uma unidade que veio de pacote:
 
 ---
 
+> [!tip] Vídeo — o modelo e um arquivo de unidade real, lado a lado
+> [**systemd on Linux 1: Intro and Unit Files**](https://www.youtube.com/watch?v=N1vgvhiyq0E) (tutoriaLinux, ~14 min, EN) cobre a mesma virada desta seção — o init que virou gerenciador de objetos declarados — e depois faz o que texto nenhum substitui: abre a unidade do **nginx numa máquina real** e a lê linha a linha. O trecho mais instrutivo está em [10:54], e explica um comportamento que confunde quem só leu a teoria: o nginx precisa de porta privilegiada (abaixo de 1024), o que exige root, então ele **inicia com privilégio, toma a porta, e cria processos filhos sem privilégio** — o que amarra esta nota tanto à nota 04 (identidade e privilégio) quanto ao galho de Nginx, cuja arquitetura mestre/trabalhador é exatamente isso. Ele também mostra que `Requires=` pode apontar para um **caminho de sistema de arquivos**, não só para outro serviço. **O que ele não cobre:** a distinção `Requires=` × `After=` com a profundidade desta nota, ativação por socket, e o `systemctl edit` como forma correta de sobrepor unidade de pacote.
+
 ## Dependência e ordem são coisas separadas
 
 Esta é a segunda distinção que resolve confusão, e é sutil o bastante para escapar por anos.

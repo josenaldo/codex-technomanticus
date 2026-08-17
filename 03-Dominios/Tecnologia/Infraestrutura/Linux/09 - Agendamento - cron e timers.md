@@ -156,6 +156,11 @@ Isso mostra as próximas ocorrências. Não existe equivalente no cron, onde a �
 
 ---
 
+> [!tip] Vídeo — os dois arquivos, montados do zero
+> [**Automate Your Tasks with systemd Timers**](https://www.youtube.com/watch?v=n6BuUgkZ5T0) (Learn Linux TV, ~33 min, EN) constrói o par `.service` + `.timer` do começo, com um exemplo pequeno e verificável. O ponto que ele demonstra e que mais confunde quem vem do cron aparece por volta de [19:39]: **o serviço fica desabilitado e parado de propósito** — quem se habilita é o **timer**, e é ele quem dispara o serviço na hora marcada. Ver `systemctl status` mostrando o serviço inativo enquanto o agendamento funciona é o que faz a separação entre "o que faz" e "o que agenda" parar de parecer burocracia. Ele também percorre a sintaxe do `OnCalendar` variando o mesmo exemplo — data absoluta, todo dia, de hora em hora — e menciona recursos que o cron não tem, como reexecutar trabalho perdido e ajustar prioridade. **O que ele não cobre:** `Persistent=true` com a ênfase que esta nota dá, `RandomizedDelaySec=`, `AccuracySec=`, e a comparação direta com o cron nos três defeitos.
+>
+> ⚠️ O vídeo tem **segmento patrocinado** no início (provedor de nuvem). O conteúdo técnico não depende disso, mas vale saber antes de recomendar a alguém.
+
 ## Por que o timer venceu
 
 ```mermaid

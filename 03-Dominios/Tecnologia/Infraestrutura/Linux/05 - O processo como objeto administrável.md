@@ -88,6 +88,11 @@ O que importa saber:
 
 ---
 
+> [!tip] Vídeo — o repertório de processo, na mão
+> [**KILL Linux processes (also manage them)**](https://www.youtube.com/watch?v=LfC6pv8VISk) (NetworkChuck, ~22 min, EN) cobre o ferramental desta nota com ritmo e demonstração: `ps` e o atalho que quase ninguém aprende primeiro — **`pgrep` para achar por nome** em vez de filtrar a saída do `ps` —, depois `top` e `htop`, o controle de jobs (`&`, `jobs`, `fg`), e o encerramento com `kill` e `pkill` por nome. É a melhor porta de entrada em vídeo para quem ainda não tem esse repertório na ponta dos dedos. **O que ele não cobre — e é o núcleo desta nota:** os estados, a distinção entre zumbi e `D`, por que `kill -9` não resolve nenhum dos dois, e a cadeia terminal → sessão → grupo que explica o `SIGHUP`.
+>
+> ⚠️ Ele usa `pkill -9` com naturalidade nas demonstrações. Para aprender o comando, tudo bem; como hábito, é exatamente o que a advertência acima desaconselha — `TERM` primeiro, `KILL` como último recurso.
+
 ## Sinais: a interface de administração
 
 Sinal é a forma padrão de dizer algo a um processo em execução. Os que se usam:

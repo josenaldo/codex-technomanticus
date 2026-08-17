@@ -128,6 +128,9 @@ Isso explica por que arquivo criado por um serviço às vezes não é legível p
 
 ---
 
+> [!tip] Vídeo — permissões com o tempo que o assunto merece
+> [**Linux Crash Course — Understanding File & Directory Permissions**](https://www.youtube.com/watch?v=4e669hSjaX8) (Learn Linux TV, ~36 min, EN) trata o tema com calma, e acerta justamente no ponto que esta nota considera central: ele separa **o que cada bit significa em arquivo e o que significa em diretório**, em vez de apresentar `rwx` como uma coisa só. A leitura da string de permissão é feita grupo a grupo, incluindo o primeiro caractere (o `d` que indica diretório), e ele passa pelas duas formas de `chmod` — simbólica e octal — construindo a segunda a partir dos valores 4, 2 e 1. Há também o momento em que ele repara no caso contraintuitivo de o **dono** não ter uma permissão que o grupo tem, que é a regra de avaliação por trio desta nota. **O que ele não cobre:** os três UIDs e o mecanismo de `setuid`, ACL, `sudo` como política, e a consequência mais importante — que apagar um arquivo depende do `w` do **diretório**.
+
 ## Os três bits extras
 
 ```mermaid

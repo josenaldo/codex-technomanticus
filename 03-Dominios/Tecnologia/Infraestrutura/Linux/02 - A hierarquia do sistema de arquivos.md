@@ -62,6 +62,9 @@ Vale insistir num ponto: a FHS é **convenção**, não regra imposta pelo kerne
 
 ---
 
+> [!tip] Vídeo — o passeio pela árvore, diretório a diretório
+> [**Linux File System/Structure Explained!**](https://www.youtube.com/watch?v=HbgzrKJvDRw) (DorianDotSlash, ~16 min, EN) percorre a árvore inteira explicando para que serve cada diretório, e é o complemento certo para a tabela desta seção — onde a tabela resume, ele contextualiza. Dois pontos dele valem: a distinção histórica entre `/mnt` e `/media` (o primeiro para você montar à mão, o segundo para o que a área de trabalho monta sozinha, convenção que só apareceu depois), e a observação de que diretórios em `tmpfs` **rodam em RAM e perdem tudo no reinício** — o que é exatamente a armadilha de `/tmp` desta nota. Ele também é honesto sobre o limite da convenção: a FHS diz onde as coisas *deveriam* ficar, e mesmo assim você vai precisar procurar em outros lugares de vez em quando. **O que ele não cobre — e é a metade que dá nome a esta nota:** `/proc` e `/sys` como sistemas de arquivos sintéticos, e o enigma do arquivo apagado que não libera espaço.
+
 ## Os dois diretórios que não são arquivos
 
 Aqui está a parte que muda o resto do galho.

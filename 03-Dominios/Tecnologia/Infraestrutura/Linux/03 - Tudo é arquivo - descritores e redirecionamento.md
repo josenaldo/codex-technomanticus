@@ -123,6 +123,9 @@ O segundo é o motivo de tanto `grep` "não achar" mensagem de erro: por padrão
 
 ---
 
+> [!tip] Vídeo — o que `2>&1` faz por baixo, com o nome próprio
+> [**What's behind a file descriptor in Linux? Also, I/O redirection with `dup2`**](https://www.youtube.com/watch?v=rW_NV6rf0rM) (Chris Kanich, ~20 min, EN) é uma aula de graduação, e vai um degrau abaixo desta nota — o que a torna a leitura certa para quem quer o mecanismo completo. Ele mostra que não há **uma** tabela, e sim três encadeadas: a tabela de descritores **do processo**, uma tabela global de arquivos abertos, e a de *v-nodes*, que representa o arquivo em si. Daí decorre o que esta nota afirma sem demonstrar: dois descritores podem apontar para o mesmo arquivo com **modos e posições diferentes**, e é isso que permite herança e compartilhamento sem interferência. Em [17:26] aparece a peça que fecha o assunto: a chamada **`dup2`**, que copia uma entrada da tabela de descritores para outro índice — é literalmente o que `2>&1` executa, e é também como o shell conecta as duas pontas de um pipe antes de trocar o programa. **O que ele não cobre:** o efeito prático no log de serviço e de container, a bufferização por tipo de destino, e o teto de descritores.
+
 ## Por que isso decide o log do seu serviço e do seu container
 
 Aqui a nota deixa de ser sobre shell.

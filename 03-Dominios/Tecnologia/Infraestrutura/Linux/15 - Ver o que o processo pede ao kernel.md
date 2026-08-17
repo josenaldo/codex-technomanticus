@@ -95,6 +95,11 @@ Duas linhas encerram a discussão: ele tenta um caminho, falha, tenta outro, ach
 
 ---
 
+> [!tip] Vídeo — `strace` em português, com o mecanismo nomeado
+> [**Entendendo e utilizando o strace no Linux**](https://www.youtube.com/watch?v=G-HpLitxpXc) (LINUXtips, ~10 min, **PT-BR**) cobre o essencial desta seção em dez minutos e acerta o enquadramento: ele nomeia o **`ptrace`** como o mecanismo do kernel que torna tudo isso possível — o mesmo que, restrito por padrão em várias distribuições, produz o `Operation not permitted` do callout acima. Ele demonstra `-o` para desviar a saída a arquivo (útil porque o `strace` escreve no erro padrão, e misturar com a saída do programa confunde), `-e trace=` acumulando mais de uma chamada, e `-p` para anexar a um processo já em execução. E dá o mesmo uso que esta nota apresenta como o mais valioso: descobrir **qual biblioteca ou arquivo o programa procura e não encontra**. Ele também menciona, com honestidade, que o `strace` não funciona bem com todo programa. **O que ele não cobre:** o custo de interceptação e as regras para não usá-lo em produção quente, o resumo com `-c`, e as alternativas de baixo custo.
+>
+> ⚠️ Uma precisão: no vídeo, a opção `-r` é apresentada como "quanto tempo cada chamada levou". `-r` imprime **carimbos relativos entre chamadas**; quem mede o tempo gasto *dentro* de cada chamada é **`-T`**, que é a opção listada acima nesta nota. As duas são úteis e respondem coisas diferentes.
+
 ## `lsof`: a mesma família de perguntas, sem custo
 
 Onde o `strace` mostra o que está acontecendo **agora**, o `lsof` mostra o que está **aberto** — e responde muita coisa sem parar o processo:

@@ -99,6 +99,13 @@ E os **três números** são uma tendência, que é a informação mais útil do
 
 ---
 
+> [!tip] Vídeo — o autor do checklist, com o método por trás dele
+> [**Linux Performance Tools**](https://www.youtube.com/watch?v=FJW8nGV4jxY) (Brendan Gregg — Velocity, ~54 min, EN) é a fonte primária desta nota: quem apresenta é o autor do checklist e do método USE. E o mais valioso não são as ferramentas — é a parte que abre a palestra, que corresponde exatamente à abertura desta nota. Ele defende que a primeira etapa é o **método do enunciado do problema**: antes de qualquer comando, perguntar a quem abriu o chamado *o que "lento" significa e como isso é quantificado*, desde quando, e o que mudou. E nomeia o anti-padrão oposto — mexer em coisas ao acaso até o sintoma sumir —, que é o que a sequência ordenada existe para impedir. Depois disso ele percorre o USE aplicado a um ambiente inteiro (não só a uma máquina), mostra a divisão entre tempo de usuário e de sistema por thread como forma de decidir **que tipo de análise fazer a seguir**, e fecha com demonstrações ao vivo — uma delas terminando não em defeito de infraestrutura, mas em caracterização de carga: *o trabalho que estão pedindo à máquina é que é ineficiente*.
+>
+> Vale saber que existe também o [**Linux Performance Analysis in 60 seconds**](https://www.youtube.com/watch?v=ZdVpKx6Wmc8) do mesmo autor: 72 segundos, exatamente o checklist desta seção, comando a comando. Ficou **fora da inserção principal por estar abaixo do piso de duração** do galho, mas é a referência mais curta possível para quem quer só a sequência.
+>
+> ⚠️ Palestra de meados da década de 2010. As metodologias — USE, enunciado do problema, caracterização de carga — não envelheceram; a parte de ferramentas é anterior à popularização de eBPF, hoje o caminho padrão para rastreamento de baixo custo, tratado na nota 15.
+
 ## Um método antes das ferramentas
 
 O checklist é a abertura; o que o sustenta é uma forma de pensar, e a mais prática é o **método USE**, também de Gregg. Para cada recurso — CPU, memória, disco, rede —, três perguntas:

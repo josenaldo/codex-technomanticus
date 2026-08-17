@@ -110,9 +110,42 @@ Roadmap do galho `Tecnologia/Infraestrutura/Linux` (galho-folha), o **último do
 - **O capstone é uma investigação com hipóteses descartadas**, não um resumo: três eliminações (OOM/hardware, disco/memória, enxurrada de requisições) antes do achado, e a causa num lugar diferente do sintoma — lentidão na aplicação, causa numa recarga de configuração dela, dano no banco. Fecha separando **contenção** de **correção**, com o aviso de que parar na primeira é o que faz o incidente voltar.
 - **Fechamento completo em 2026-08-16:** `Linux.md` podado de 1118 para 198 linhas com mapa de redirecionamento (seções de entrevista preservadas, como nos três galhos anteriores) · `index.md` reformado como MOC por fase, com referência e fronteiras · callout de ponte na referência de comandos · **callouts de volta inseridos em `Ciência/SO` 02, 03, 07 e 11**, que passaram a ter contraparte operacional.
 
+## M1 — mídia (rodada de 2026-08-16)
+
+**9 de 16 notas com vídeo embutido e verificado.** Transcrições lidas antes de embutir, conforme a regra do domínio.
+
+| Nota | Vídeo | ID | Canal | Idioma |
+|---|---|---|---|---|
+| 02 | Linux File System/Structure Explained | `HbgzrKJvDRw` | DorianDotSlash, 16 min | EN |
+| 03 | What's behind a file descriptor? I/O redirection with `dup2` | `rW_NV6rf0rM` | Chris Kanich, 20 min | EN |
+| 04 | Understanding File & Directory Permissions | `4e669hSjaX8` | Learn Linux TV, 36 min | EN |
+| 05 | KILL Linux processes (also manage them) | `LfC6pv8VISk` | NetworkChuck, 22 min | EN |
+| 06 | systemd on Linux 1: Intro and Unit Files | `N1vgvhiyq0E` | tutoriaLinux, 14 min | EN |
+| 09 | Automate Your Tasks with systemd Timers | `n6BuUgkZ5T0` | Learn Linux TV, 33 min | EN |
+| 11 | Linux Packaging Formats explained | `1lLZ-59xH3Y` | The Linux Experiment, 20 min | EN |
+| 12 | Linux Performance Tools | `FJW8nGV4jxY` | **Brendan Gregg**, 54 min | EN |
+| 15 | Entendendo e utilizando o strace no Linux | `G-HpLitxpXc` | **LINUXtips**, 10 min | **PT-BR** |
+
+> [!success] Duas inserções que valem registro
+> **Nota 12 é fonte primária:** quem apresenta é o autor do checklist e do método USE. O trecho mais valioso não são as ferramentas, e sim o **método do enunciado do problema** — perguntar o que "lento" significa e como se quantifica, antes de qualquer comando —, que corresponde exatamente à abertura da nota. O vídeo de 72 segundos do mesmo autor, que é literalmente o checklist, ficou **citado dentro do callout** em vez de embutido, por estar abaixo do piso de duração.
+>
+> **Nota 15 é PT-BR e corrige o vídeo:** o LINUXtips nomeia o `ptrace` como mecanismo, o que amarra ao callout de `ptrace_scope` da nota. Mas apresenta `-r` como "quanto tempo cada chamada levou" — `-r` são carimbos **relativos entre** chamadas; quem mede o tempo **dentro** de cada uma é `-T`. A precisão ficou registrada no próprio callout.
+
+### Notas sem vídeo, e por quê
+
+| Nota | Situação |
+|---|---|
+| 01 — O contrato de execução | Ainda sem rodada de busca própria; o recorte é conceitual e pode não ter equivalente direto |
+| 07 — Escrever um serviço | Ainda sem rodada |
+| 08 — journald | Ainda sem rodada |
+| 10 — A máquina na rede | `vDWY3PuHMX8` (Akamai, 94 mil views) foi lido e **reprovado**: começa em `ip addr` e deriva para uso de `curl`, sem tratar rotas, endereço de escuta ou resolução de nomes — o núcleo da nota |
+| 13 — Os quatro eixos | Melhores resultados com 121, 73, 449 e 35 visualizações. Sem candidato à altura |
+| 14 — OOM killer | O material bom é longo demais (`ql1axx--8sI`, Linux Foundation, 96 min, acima do teto) ou tem audiência baixa demais |
+| 16 — Capstone | Ainda sem rodada |
+
 ## Pendências
 
-- **M1 (mídia):** única pendência do galho. Passada posterior, `yt-dlp` central. **Expectativa de yield alto** — Linux tem material de conferência e canais de autoridade em abundância, ao contrário do que ocorreu com configuração de Nginx. E o ângulo **PT-BR** já se provou no domínio (nota 01 do Docker), então entra desde a primeira rodada.
+- **M1:** completar as 7 notas restantes. Passada posterior, `yt-dlp` central. **Expectativa de yield alto** — Linux tem material de conferência e canais de autoridade em abundância, ao contrário do que ocorreu com configuração de Nginx. E o ângulo **PT-BR** já se provou no domínio (nota 01 do Docker), então entra desde a primeira rodada.
 
 ## Lacunas conscientes (do design)
 

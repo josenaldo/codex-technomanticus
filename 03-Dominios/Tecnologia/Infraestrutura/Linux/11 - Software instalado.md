@@ -117,6 +117,11 @@ graph TB
 
 ---
 
+> [!tip] Vídeo — os formatos universais comparados de verdade
+> [**Linux Packaging Formats explained: Flatpak vs Snaps vs DEB & RPM vs AppImage vs AUR**](https://www.youtube.com/watch?v=1lLZ-59xH3Y) (The Linux Experiment, ~20 min, EN) desenvolve a seção das três camadas com o detalhe que ela resume. Três precisões que valem: **Flatpak compartilha *runtimes*** — o custo de espaço é bem menor se as aplicações forem do mesmo ambiente de trabalho, porque a base é comum, e explode quando são de ambientes diferentes; **Snap tem canais** (estável, beta, edge), o que permite testar versão nova sem trocar de fonte; e **AppImage costuma não ser isolado** na prática, embora possa ser — o que o torna o menos seguro dos três, ao contrário do que a promessa de "empacotar uma vez, rodar em qualquer lugar" sugere. Ele também explica que o **AUR não hospeda pacotes**, e sim *scripts de construção* — distinção que muda o que significa "instalar do AUR". **O que ele não cobre:** o gerenciador como banco de dados e suas consultas, procedência e assinatura de repositório, e o conflito entre gerenciador de linguagem e gerenciador do sistema.
+>
+> ⚠️ O vídeo tem **segmento patrocinado** no fim.
+
 ## Manter atualizado sem quebrar
 
 ```bash
