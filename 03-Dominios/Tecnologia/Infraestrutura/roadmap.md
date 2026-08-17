@@ -27,7 +27,7 @@ Roadmap do domínio `03-Dominios/Tecnologia/Infraestrutura` (raiz de domínio / 
 | 1 | Docker | a imagem como artefato | 18 | 18 | 🔶 **escrita completa 2026-08-02** (falta M1) | `Docker/roadmap.md` |
 | 2 | Kubernetes | o loop de reconciliação | 22 | 22 | 🔶 **escrita completa 2026-08-04** (falta M1) | `Kubernetes/roadmap.md` |
 | 3 | Nginx | o ciclo de vida de uma request | 16 | 16 | 🔶 **escrita completa 2026-08-08** (falta M1) | `Nginx/roadmap.md` |
-| 4 | Linux | o sistema como o processo o vê | 16 | 11 | 🔶 **aberto 2026-08-12** — blocos 1-5 escritos (01-11); fase Adepto fechada | `Linux/roadmap.md` |
+| 4 | Linux | o sistema como o processo o vê | 16 | 13 | 🔶 **aberto 2026-08-12** — blocos 1-6 escritos (01-13) | `Linux/roadmap.md` |
 
 A ordem coloca o pré-requisito conceitual antes (Docker antes de Kubernetes) e a base absoluta por último: Linux é o galho que mais se sobrepõe a Terminal e a Ciência/SO, e se beneficia de ser escrito depois que os outros três cravaram suas fronteiras.
 
@@ -39,7 +39,7 @@ A ordem coloca o pré-requisito conceitual antes (Docker antes de Kubernetes) e 
 | ✅ completos (escrito + M1) | 0 |
 | 🔶 escritos, falta M1 | 3 (Docker, Kubernetes, Nginx) |
 | 📋 desenhados, não iniciados | 0 |
-| 🔶 em construção | 1 (Linux, 11/16) |
+| 🔶 em construção | 1 (Linux, 13/16) |
 | Notas escritas | 56 de ~71-74 previstas |
 
 ## Contrato de fronteira

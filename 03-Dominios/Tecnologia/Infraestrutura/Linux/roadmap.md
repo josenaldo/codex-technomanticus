@@ -32,8 +32,8 @@ Roadmap do galho `Tecnologia/Infraestrutura/Linux` (galho-folha), o **último do
 | 09 | Agendamento: cron e timers | Adepto | 🔶 escrita 2026-08-16 | 4 |
 | 10 | A máquina na rede | Adepto | 🔶 escrita 2026-08-16 | 5 |
 | 11 | Software instalado | Adepto | 🔶 escrita 2026-08-16 | 5 |
-| 12 | Diagnóstico: os primeiros sessenta segundos | Magus | 📋 desenhada | 6 |
-| 13 | CPU, memória, disco e I/O, um de cada vez | Magus | 📋 desenhada | 6 |
+| 12 | Diagnóstico: os primeiros sessenta segundos | Magus | 🔶 escrita 2026-08-16 | 6 |
+| 13 | CPU, memória, disco e I/O, um de cada vez | Magus | 🔶 escrita 2026-08-16 | 6 |
 | 14 | Quando o processo some: OOM killer e limites | Magus | 📋 desenhada | 7 |
 | 15 | Ver o que o processo pede ao kernel | Magus | 📋 desenhada | 7 |
 | 16 | Capstone — a máquina que ficou lenta às três da manhã | Magus | 📋 desenhada | 7 |
@@ -91,9 +91,18 @@ Roadmap do galho `Tecnologia/Infraestrutura/Linux` (galho-folha), o **último do
 - **Dois mal-entendidos corrigidos explicitamente:** `apt update` não atualiza software, e versão antiga em distribuição estável **não** significa sem correção, por causa do retroporte.
 - **Ponte com Docker construída pelo argumento, não por link solto:** a imagem é a resposta de outra natureza ao mesmo problema de procedência, e é por isso que fixar versão da base em vez de `latest` é a mesma pergunta noutro lugar.
 
+## Bloco 6 — o que ficou decidido ao escrever
+
+- **A dívida da nota 05 foi paga com destaque:** em Linux o load average inclui estado `D`, e por isso não mede CPU. A nota 12 transforma isso num diagrama de decisão (load alto → o que `vmstat`/`mpstat` dizem → CPU, espera por I/O, ou I/O travado) em vez de deixar como curiosidade.
+- **O checklist de Gregg entrou como espinha, e o método USE como o que o sustenta.** A pergunta que mais diferencia é a de **saturação**: utilização em 100% pode ser aproveitamento bom; o que dói é fila. Isso prepara a crítica ao `%util` na nota 13.
+- **Registrado que tudo é `/proc` formatado**, com os arquivos equivalentes — porque `sysstat` frequentemente não está instalado em container ou máquina enxuta, e instalar durante incidente nem sempre é opção.
+- **A nota 13 organiza-se por "o número que engana × o número que decide"**, um par por eixo. Os quatro: `%iowait` (é CPU ociosa, não disco lento) · `free` (o certo é `available`) · `%util` (perdeu sentido em NVMe; o par é `await` + `aqu-sz`) · banda (raramente é o limite; erro e retransmissão sim).
+- **`%steal` ganhou tratamento próprio** e um caso trabalhado inteiro, porque é a coluna que quase ninguém olha e a única que aponta para **fora da máquina** — nenhuma otimização local resolve, e a conclusão é trocar de instância ou acionar o provedor.
+- **Armadilha registrada contra `drop_caches`** como "liberar memória" em produção.
+
 ## Pendências
 
-- **Blocos 6-7** (notas 12-16) — a fase Magus, com pergunta a cada bloco.
+- **Bloco 7** (notas 14-16) — OOM e limites, `strace`, e o capstone.
 - **Fechamento:** podar `Linux.md`, reformar `index.md`, callout de ponte na referência de comandos, callouts de volta em `Ciência/SO` e `Operação`.
 - **M1 (mídia):** passada posterior, `yt-dlp` central. **Expectativa de yield alto** — Linux tem material de conferência e canais de autoridade em abundância, ao contrário do que ocorreu com configuração de Nginx.
 
