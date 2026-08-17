@@ -15,6 +15,8 @@ Roadmap do galho `Tecnologia/Infraestrutura/Linux` (galho-folha), o **último do
 
 **Lente:** *o sistema como o processo o vê.*
 
+**Estado: escrita completa — 16/16 notas em 2026-08-16.** Falta só M1.
+
 **Legenda:** ✅ escrita + M1 · 🔶 escrita, falta M1 · 📋 desenhada · ⬜ não iniciada.
 
 ## Notas
@@ -34,17 +36,17 @@ Roadmap do galho `Tecnologia/Infraestrutura/Linux` (galho-folha), o **último do
 | 11 | Software instalado | Adepto | 🔶 escrita 2026-08-16 | 5 |
 | 12 | Diagnóstico: os primeiros sessenta segundos | Magus | 🔶 escrita 2026-08-16 | 6 |
 | 13 | CPU, memória, disco e I/O, um de cada vez | Magus | 🔶 escrita 2026-08-16 | 6 |
-| 14 | Quando o processo some: OOM killer e limites | Magus | 📋 desenhada | 7 |
-| 15 | Ver o que o processo pede ao kernel | Magus | 📋 desenhada | 7 |
-| 16 | Capstone — a máquina que ficou lenta às três da manhã | Magus | 📋 desenhada | 7 |
+| 14 | Quando o processo some: OOM killer e limites | Magus | 🔶 escrita 2026-08-16 | 7 |
+| 15 | Ver o que o processo pede ao kernel | Magus | 🔶 escrita 2026-08-16 | 7 |
+| 16 | Capstone — a máquina que ficou lenta às três da manhã | Magus | 🔶 escrita 2026-08-16 | 7 |
 
 ## Outros arquivos do galho
 
 | Arquivo | Tipo | Estado |
 |---|---|---|
-| `index.md` | MOC | ⬜ reformar no fechamento (hoje descreve o galho antigo, de 1 nota) |
-| `Comandos para entender agentes.md` | reference | ➖ **mantido como referência do galho**, com recorte próprio. Decisão de 2026-08-12: não dissolver nas notas novas — mesmo tratamento do `GitHub CLI.md` em Controle de Versão. Falta o callout de ponte |
-| `Infraestrutura/Linux.md` (1118 linhas) | monólito-semente | ⬜ podar no fechamento, como Docker.md, Kubernetes.md e Nginx.md |
+| `index.md` | MOC | ✅ reformado 2026-08-16 — MOC por fase, referência do galho e tabela de fronteiras |
+| `Comandos para entender agentes.md` | reference | ✅ mantido como referência do galho, **com callout de ponte inserido 2026-08-16** |
+| `Infraestrutura/Linux.md` | monólito-semente | ✅ **podado 2026-08-16: 1118 → 198 linhas**, com mapa de redirecionamento; seções de relato pessoal e de inglês preservadas |
 
 ## Bloco 1 — o que ficou decidido ao escrever
 
@@ -100,11 +102,17 @@ Roadmap do galho `Tecnologia/Infraestrutura/Linux` (galho-folha), o **último do
 - **`%steal` ganhou tratamento próprio** e um caso trabalhado inteiro, porque é a coluna que quase ninguém olha e a única que aponta para **fora da máquina** — nenhuma otimização local resolve, e a conclusão é trocar de instância ou acionar o provedor.
 - **Armadilha registrada contra `drop_caches`** como "liberar memória" em produção.
 
+## Bloco 7 e fechamento — o que ficou decidido
+
+- **A nota 14 dá o atalho de diagnóstico que fecha o caso mais rápido:** término sem erro no log da aplicação **é** informação, porque `SIGKILL` não é entregue ao processo — e **código de saída 137** (`128 + 9`) identifica morte forçada de imediato. Separa OOM **do sistema** de OOM **de cgroup**, que é a confusão que faz alguém olhar `free` no host e concluir que memória não era o problema.
+- **A ponte com Kubernetes 17 é pelo mecanismo:** `oom_score_adj` é o mesmo dos dois lados — aqui a máquina, lá quem o configura por classe de QoS.
+- **A nota 15 trata o custo do `strace` como parte do conteúdo**, não como nota de rodapé: `-c` antes de saída completa, recorte com `-e trace=`, `timeout`, e eBPF nomeado como o caminho para observação contínua. Também registra que **silêncio sob `strace` é informação** — o problema é interno ao processo, e a ferramenta certa passa a ser do ecossistema da linguagem.
+- **O capstone é uma investigação com hipóteses descartadas**, não um resumo: três eliminações (OOM/hardware, disco/memória, enxurrada de requisições) antes do achado, e a causa num lugar diferente do sintoma — lentidão na aplicação, causa numa recarga de configuração dela, dano no banco. Fecha separando **contenção** de **correção**, com o aviso de que parar na primeira é o que faz o incidente voltar.
+- **Fechamento completo em 2026-08-16:** `Linux.md` podado de 1118 para 198 linhas com mapa de redirecionamento (seções de entrevista preservadas, como nos três galhos anteriores) · `index.md` reformado como MOC por fase, com referência e fronteiras · callout de ponte na referência de comandos · **callouts de volta inseridos em `Ciência/SO` 02, 03, 07 e 11**, que passaram a ter contraparte operacional.
+
 ## Pendências
 
-- **Bloco 7** (notas 14-16) — OOM e limites, `strace`, e o capstone.
-- **Fechamento:** podar `Linux.md`, reformar `index.md`, callout de ponte na referência de comandos, callouts de volta em `Ciência/SO` e `Operação`.
-- **M1 (mídia):** passada posterior, `yt-dlp` central. **Expectativa de yield alto** — Linux tem material de conferência e canais de autoridade em abundância, ao contrário do que ocorreu com configuração de Nginx.
+- **M1 (mídia):** única pendência do galho. Passada posterior, `yt-dlp` central. **Expectativa de yield alto** — Linux tem material de conferência e canais de autoridade em abundância, ao contrário do que ocorreu com configuração de Nginx. E o ângulo **PT-BR** já se provou no domínio (nota 01 do Docker), então entra desde a primeira rodada.
 
 ## Lacunas conscientes (do design)
 

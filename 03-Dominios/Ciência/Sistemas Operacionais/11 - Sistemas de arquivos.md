@@ -18,6 +18,9 @@ tags:
 > [!abstract] Resumo em uma linha
 > Um sistema de arquivos é a abstração que transforma um disco — um array bruto de blocos numerados — em arquivos e diretórios com nomes, hierarquia e metadados, e o inode é a peça central que liga o nome ao dado.
 
+> [!info] A contraparte operacional
+> Inode, alocação e estrutura interna são o mecanismo. A **hierarquia de uma máquina real** — FHS, pontos de montagem, `/proc` e `/sys` como sistemas de arquivos sintéticos, e o arquivo apagado que não libera espaço — está em [[03-Dominios/Tecnologia/Infraestrutura/Linux/02 - A hierarquia do sistema de arquivos|Infraestrutura/Linux 02]].
+
 Um disco, por baixo, é uma coisa estúpida. É um vetor gigante de blocos, cada um com um número: bloco 0, bloco 1, bloco 2, até alguns bilhões. Ele não sabe o que é um "arquivo". Não sabe o que é uma "pasta". Não sabe que o bloco 8.412.991 contém o terço final do seu currículo em PDF. Ele só guarda bytes e devolve bytes quando você pede por número.
 
 O que você quer, como humano e como programa, é outra coisa. Você quer dizer `open("/home/josenaldo/cv.pdf")` e receber de volta o conteúdo. Você quer nomes. Quer pastas dentro de pastas. Quer saber quem é o dono, quando foi modificado, quem pode ler. Quer que isso tudo sobreviva ao desligamento da máquina.

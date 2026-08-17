@@ -18,6 +18,9 @@ tags:
 > [!abstract] Resumo em uma linha
 > Memória virtual dá a cada processo a ilusão de um espaço de endereços próprio, grande e contíguo — e a paginação é o mecanismo que cumpre essa promessa cortando o espaço em páginas de tamanho fixo que vão para qualquer frame da RAM, ou para o disco quando ela acaba.
 
+> [!info] A contraparte operacional
+> Paginação, overcommit e substituição de páginas são o mecanismo. Os **sintomas** na máquina — por que `free` engana e `available` é o número certo, o que `si`/`so` revelam, e o OOM killer escolhendo vítima — estão em [[03-Dominios/Tecnologia/Infraestrutura/Linux/13 - CPU, memória, disco e I-O, um de cada vez|Infraestrutura/Linux 13]] e [[03-Dominios/Tecnologia/Infraestrutura/Linux/14 - Quando o processo some - OOM killer e limites|14]].
+
 Em [[06 - Memória - do endereço lógico ao físico]] vimos o problema: a alocação contígua sofre de fragmentação externa — a RAM vira um queijo suíço de buracos pequenos demais para servir. A paginação resolve isso com uma ideia quase boba de tão simples.
 
 Pare de exigir que um processo ocupe um bloco contíguo de RAM. Em vez disso, corte o espaço virtual do processo em pedaços de tamanho fixo (as **páginas**) e corte a RAM física em pedaços do mesmo tamanho (os **frames**, ou quadros). Agora qualquer página cabe em qualquer frame. Os buracos somem porque todo buraco tem exatamente o tamanho de uma página.

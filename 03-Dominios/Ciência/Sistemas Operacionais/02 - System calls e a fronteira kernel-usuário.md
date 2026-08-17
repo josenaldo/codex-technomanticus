@@ -18,6 +18,9 @@ tags:
 > [!abstract] Resumo em uma linha
 > Uma *system call* é a única porta autorizada pela qual seu programa em user space pede ao kernel algo privilegiado — ler arquivo, alocar memória, abrir socket —, atravessando a fronteira por uma instrução de *trap* que custa caro o suficiente pra valer a pena ser evitada.
 
+> [!info] A contraparte operacional
+> A fronteira descrita aqui pode ser **observada em execução**: `strace` imprime cada chamada de sistema que um processo faz, com argumentos e retorno — o que responde de uma vez qual arquivo ele procura e onde exatamente travou. Ver [[03-Dominios/Tecnologia/Infraestrutura/Linux/15 - Ver o que o processo pede ao kernel|Infraestrutura/Linux 15]], incluindo o custo de interceptação e por que não se usa isso em produção quente.
+
 Em `[[01 - O que é um sistema operacional]]` vimos que a CPU roda em dois modos: **modo kernel** (anel 0, acesso total ao hardware) e **modo usuário** (anel 3, jaula). Seu programa vive na jaula. Então como ele lê um arquivo, se ler do disco exige tocar no controlador de disco — coisa que só o kernel pode fazer?
 
 A resposta é a *system call*. E entendê-la a fundo é entender onde, exatamente, mora a fronteira entre o seu código e o sistema.

@@ -18,6 +18,9 @@ tags:
 > [!abstract] Resumo em uma linha
 > Um processo é um programa em execução — a unidade que o sistema operacional usa pra isolar e alocar recursos, descrita por um prontuário no kernel (o PCB) e movida por uma máquina de estados.
 
+> [!info] A contraparte operacional
+> O **mecanismo** de criação, estados e escalonamento é esta nota. Como isso se manifesta numa máquina que você administra — ler a árvore, distinguir zumbi de estado `D`, usar sinais como interface — está em [[03-Dominios/Tecnologia/Infraestrutura/Linux/05 - O processo como objeto administrável|Infraestrutura/Linux 05]].
+
 Você tem um livro de receitas na estante. A receita do bolo está lá, impressa, parada. Ninguém vai comer papel. A receita é **passiva**: instruções esperando alguém que as siga.
 
 Agora você entra na cozinha, abre o livro na página do bolo, separa os ingredientes na bancada, liga o forno e começa. Esse *ato de cozinhar* — com a bancada ocupada, os ovos quebrados pela metade, o forno aquecendo, e você no meio de um passo específico — é uma coisa viva, com estado.

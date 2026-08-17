@@ -13,6 +13,10 @@ publish: true
 
 # Comandos para entender agentes
 
+> [!info] Referência de consulta, não capítulo do galho
+> Esta nota tem recorte próprio — comandos para inspecionar agentes e processos — e é mantida como **referência**, não dissolvida nas notas numeradas. O percurso didático sobre processos, sinais e diagnóstico está no galho: [[03-Dominios/Tecnologia/Infraestrutura/Linux/05 - O processo como objeto administrável|05 — O processo como objeto administrável]], [[03-Dominios/Tecnologia/Infraestrutura/Linux/12 - Diagnóstico - os primeiros sessenta segundos|12 — Os primeiros sessenta segundos]] e [[03-Dominios/Tecnologia/Infraestrutura/Linux/15 - Ver o que o processo pede ao kernel|15 — Ver o que o processo pede ao kernel]]. Ver o [[03-Dominios/Tecnologia/Infraestrutura/Linux/index|índice do galho]].
+
+
 Galho do tronco [[Linux]]. Referência por comando + receitas reais — pensado pra quando você vê um agente rodar `sed -n '50,80p' file.md | grep -E ...` e quer entender o que ele acabou de fazer.
 
 Foco em *ler* o que aparece no terminal, não em virar manual exaustivo. Os comandos aqui foram escolhidos a partir do que de fato apareceu nos meus históricos de sessão — não é teoria, é o vocabulário real do dia a dia.
