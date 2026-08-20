@@ -1,7 +1,7 @@
 ---
 title: "PKI e certificados"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-08-20
 type: concept
 fase: adepto
 status: evergreen
@@ -125,6 +125,10 @@ flowchart TD
 > [!tip] Root Store Program
 > Para entrar no trust store do Chrome, Firefox ou Windows, a CA precisa passar por auditorias anuais independentes (WebTrust for CAs ou ETSI EN 319 401), cumprir o **CA/Browser Forum Baseline Requirements**, publicar uma CPS (Certification Practice Statement), e ser aprovada pelo programa de cada vendor. O processo leva meses/anos. É por isso que o ecossistema tem poucas dezenas de root CAs, não milhares.
 
+> [!tip] Vídeo — por que confiar numa CA basta pra confiar na cadeia inteira
+> [**Tech Talk: What is Public Key Infrastructure (PKI)?**](https://www.youtube.com/watch?v=0ctat6RBrFo) (IBM Technology, ~9 min, EN) é uma conversa entre dois engenheiros que reconstrói o raciocínio desta nota do zero: por que uma chave pública sozinha não prova identidade, por que existe um "trusted third party", e como isso vira uma cadeia. Aos [6:51] um dos dois nomeia o conceito antes mesmo de o outro terminar de explicá-lo — *"A chain of trust."* — e a resposta seguinte é a intuição central da seção acima: *"you may have multiple certificate authorities, this certificate authority is trusted by another, is trusted by another, and so forth."*
+> **O que ele não cobre:** X.509 como formato, SAN/wildcard, revogação, CT ou ACME — o vídeo fica só na camada conceitual (por que confiar numa CA resolve o problema), não no mecanismo de campo-a-campo que o resto desta nota detalha.
+
 ---
 
 ## Emissão: CSR e processo de certificação
@@ -190,9 +194,6 @@ flowchart TD
 
 **Path building vs. path validation**: tecnicamente, o cliente faz *duas* operações distintas. *Path building* é encontrar uma cadeia válida do certificado folha até uma root conhecida — pode haver múltiplos caminhos possíveis se intermediárias forem cross-certificadas por mais de uma root. *Path validation* é verificar cada certificado nessa cadeia (assinatura, validade, constraints). Na prática, a maioria dos clientes recebe a cadeia pronta do servidor via TLS handshake, mas um servidor mal configurado que não envie as intermediárias força o cliente a tentar recuperá-las via AIA (Authority Information Access), o que adiciona latência e pode falhar.
 
-> [!tip] Diagnóstico comum: certificado funciona no Chrome mas não em curl/Java
-> Frequentemente é cadeia incompleta. Chrome busca intermediárias via AIA automaticamente; Java e curl (dependendo da versão) não. A correção é configurar o servidor para enviar a cadeia completa (certificado folha + todas as intermediárias, mas NÃO a root — o cliente já tem a root).
-
 ---
 
 ## Revogação: o problema mal resolvido da PKI
@@ -237,9 +238,6 @@ flowchart TD
 
 > [!info] Leitura do diagrama
 > Os três mecanismos de revogação têm trade-offs complementares. CRL é simples mas pesado. OCSP é leve mas tem privacidade e soft-fail. OCSP Stapling é o melhor dos mundos mas depende do servidor configurar corretamente. O soft-fail é o problema central: browsers preferem aceitar conexão a quebrar sites por falha de revogação.
-
-> [!warning] Revogação é um problema estruturalmente difícil
-> Não existe mecanismo de revogação que seja ao mesmo tempo eficiente, privado, resistente a falhas e universal. A aposta crescente da indústria é substituir revogação complexa por ciclos de vida curtos com renovação automatizada via ACME.
 
 ---
 
@@ -364,9 +362,6 @@ mTLS é o mecanismo central de **zero-trust** em microsserviços: cada workload 
 
 Malhas de serviço como Istio e Linkerd injetam proxies sidecar que estabelecem mTLS transparentemente entre pods, sem mudança no código da aplicação. Cada pod recebe um certificado com identidade SPIFFE, rotacionado automaticamente (tipicamente a cada hora).
 
-> [!example] PKI interna vs. pública
-> Organizações frequentemente operam uma **PKI interna** — uma root CA privada que distribui certificados para serviços internos, mTLS entre microsserviços, VPNs e autenticação de dispositivos corporativos (802.1X). Essa CA não precisa ser aceita por browsers externos. Ferramentas como HashiCorp Vault PKI Secrets Engine, AWS ACM Private CA, Smallstep e CFSSL gerenciam esse ciclo com renovação automática. O desafio é distribuir a root interna para todos os clientes que precisam confiar nela — em ambientes corporativos, isso é feito via Group Policy (Windows) ou MDM (macOS/iOS/Android).
-
 ### CAA DNS: controlando quem pode emitir para seu domínio
 
 **CAA (Certification Authority Authorization, RFC 8659)** é um registro DNS que especifica quais CAs estão autorizadas a emitir certificados para um domínio. Exemplo:
@@ -393,14 +388,44 @@ CAA é um controle complementar a CT: CT detecta emissão indevida *após o fato
 
 ---
 
-## Conexões
+## Casos práticos
+
+### Caso 1 — Provisionando PKI interna para mTLS entre microsserviços
+
+Uma equipe de plataforma precisa que centenas de pods conversem entre si só com mTLS, sem depender de uma CA pública (custaria dinheiro e exporia topologia interna a terceiros). A solução comum é operar uma **PKI interna**: uma root CA privada que distribui certificados para serviços internos, mTLS entre microsserviços, VPNs e autenticação de dispositivos corporativos (802.1X). Essa CA não precisa ser aceita por browsers externos — só pelos próprios workloads. Ferramentas como HashiCorp Vault PKI Secrets Engine, AWS ACM Private CA, Smallstep e CFSSL automatizam a emissão e a renovação. O ponto de atrito real não é técnico, é de distribuição: cada cliente que precisa confiar na root interna tem que recebê-la fora de banda, o que em ambientes corporativos é feito via Group Policy (Windows) ou MDM (macOS/iOS/Android) — e em Kubernetes, via o proxy sidecar da malha de serviço (Istio/Linkerd), que já embute a raiz de confiança do cluster.
+
+### Caso 2 — "Funciona no Chrome, quebra no curl": diagnosticando cadeia incompleta
+
+Um serviço em produção retorna `unknown CA` quando chamado por um job em Java ou por `curl`, mas abre normalmente no Chrome. O sintoma engana porque parece que o certificado está errado — não está. Na maioria dos casos é **cadeia incompleta**: o servidor enviou apenas o certificado folha, sem as intermediárias. O Chrome disfarça o problema porque busca as intermediárias faltantes via AIA (Authority Information Access) automaticamente; Java e versões mais antigas de `curl` não fazem esse fallback e simplesmente falham a validação. O diagnóstico é rápido (`openssl s_client -connect host:443 -showcerts` mostra quantos certificados o servidor está de fato enviando) e a correção é configurar o servidor para enviar a cadeia completa — certificado folha + todas as intermediárias, mas **nunca** a root, que o cliente já tem no trust store.
+
+### Caso 3 — Heartbleed: quando a revogação não escala
+
+Em 2014, o CVE-2014-0160 (Heartbleed) tornou qualquer certificado em servidor com OpenSSL vulnerável potencialmente comprometido — a chave privada podia ter vazado da memória do processo, sem deixar rastro. Isso forçou dezenas de milhões de reemissões simultâneas em poucas horas, num ecossistema (pré-Let's Encrypt) onde emissão ainda era majoritariamente manual. O caso é o exemplo mais didático de por que "revogar em massa" é uma falsa saída de emergência: CRLs levam horas para propagar, muitos clientes operam em soft-fail, e as CAs simplesmente não tinham capacidade operacional para tantas reemissões ao mesmo tempo (detalhes completos em [Falhas históricas canônicas](#falhas-históricas-canônicas)). A resposta real veio da correção do OpenSSL, não da revogação — e o episódio acelerou diretamente a tese por trás do Let's Encrypt e dos certificados de vida curta: se o mecanismo de revogação não é confiável em escala, a defesa é reduzir a janela de exposição desde o início.
+
+---
+
+## O que vem a seguir
+
+PKI resolve *quem é dono desta chave pública* — mas TLS/mTLS só cobre a identidade de **máquinas e serviços**. Autenticação de certificado prova que você está falando com `banco.com`; não prova que o humano do outro lado do teclado é quem alega ser dentro daquele canal já autenticado. Esse é o próximo salto: como um sistema autentica *pessoas* — senhas, MFA, tokens, sessões — depois que o canal de transporte já está seguro. É o assunto de [[12 - Autenticação]].
 
 - Anterior: [[10 - MAC, HMAC e assinaturas digitais]]
-- Próxima: [[12 - Autenticação]]
 - Cross-links: [[08 - Criptografia assimétrica]] | [[14 - Criptografia em trânsito e em repouso]] | [[03-Dominios/Ciência/Redes e Protocolos/05 - TLS e HTTPS]]
 
 > [!summary] Resumo em uma linha
 > PKI resolve o problema da identidade da chave pública via certificados X.509 assinados por CAs; a cadeia de confiança root → intermediária → folha é o mecanismo de verificação; revogação é o ponto fraco (soft-fail); Certificate Transparency e Let's Encrypt são os pilares do ecossistema moderno.
+
+---
+
+## Armadilhas comuns
+
+> [!warning] Revogação é um problema estruturalmente difícil
+> Não existe mecanismo de revogação que seja ao mesmo tempo eficiente, privado, resistente a falhas e universal. A aposta crescente da indústria é substituir revogação complexa por ciclos de vida curtos com renovação automatizada via ACME.
+
+> [!warning] Confiar no CN em vez do SAN, ou não entender o alcance do wildcard
+> Browsers modernos validam o hostname contra o campo **SAN**, não contra o `CN` — código ou ferramentas legadas que ainda comparam contra `CN` podem aceitar ou rejeitar certificados incorretamente. E um wildcard `*.banco.com` cobre exatamente **um nível**: cobre `login.banco.com`, mas não cobre `sub.login.banco.com` nem o próprio `banco.com`. Assumir que o wildcard "cobre tudo abaixo do domínio" é um erro recorrente que só aparece quando o subdomínio errado entra em produção.
+
+> [!warning] Pinning mal configurado pode derrubar o próprio site
+> Certificate/public key pinning recusa qualquer certificado fora da lista fixada, mesmo que válido e assinado por CA confiável. O risco é operacional: se a chave pinada for perdida, expirar sem renovação coordenada, ou for simplesmente a errada, o site fica inacessível para todo cliente com o pin — sem forma fácil de reverter. Foi exatamente esse risco (curva de aprendizado alta, recuperação difícil) que matou o HPKP como header HTTP, removido do Chrome em 2018 e do Firefox em 2020. Pinning hoje só faz sentido onde o operador controla totalmente o cliente (apps mobile in-house), não em contextos onde terceiros podem configurar errado.
 
 ---
 
@@ -452,10 +477,11 @@ Frases que funcionam em inglês:
 
 ---
 
-> [!info] Lastro
-> - **RFC 5280** — *Internet X.509 Public Key Infrastructure Certificate and CRL Profile* (IETF, 2008): especificação canônica do formato X.509 v3, campos, extensões e cadeias de certificado. <https://datatracker.ietf.org/doc/html/rfc5280>
-> - **RFC 6960** — *Online Certificate Status Protocol (OCSP)* (IETF, 2013): especificação do protocolo OCSP, incluindo semântica de resposta e OCSP stapling (RFC 6066 TLS extension). <https://datatracker.ietf.org/doc/html/rfc6960>
-> - **RFC 8555** — *Automatic Certificate Management Environment (ACME)* (IETF, 2019): protocolo que automatiza emissão e renovação de certificados. Base técnica do Let's Encrypt. Descreve challenges HTTP-01, DNS-01 e TLS-ALPN-01. <https://datatracker.ietf.org/doc/html/rfc8555>
-> - **RFC 9162** — *Certificate Transparency Version 2.0* (IETF, 2021): especificação do CT log, estrutura de árvore Merkle, SCTs e protocolo de submissão/auditoria. <https://datatracker.ietf.org/doc/html/rfc9162>
-> - **Fox-IT — Black Tulip Report (2012)**: análise forense do comprometimento da CA DigiNotar, cobrindo vetores de ataque, cronologia e impacto. Relatório comissionado pelo governo holandês. <https://www.rijksoverheid.nl/documenten/rapporten/2012/08/13/black-tulip-update>
-> - **CA/Browser Forum Baseline Requirements**: requisitos mínimos que CAs devem cumprir para emitir certificados TLS confiáveis. Evolui continuamente; referência normativa para o ecossistema. <https://cabforum.org/baseline-requirements/>
+## Fontes
+
+- [RFC 5280 — Internet X.509 Public Key Infrastructure Certificate and CRL Profile](https://datatracker.ietf.org/doc/html/rfc5280) (IETF, 2008): especificação canônica do formato X.509 v3, campos, extensões e cadeias de certificado.
+- [RFC 6960 — Online Certificate Status Protocol (OCSP)](https://datatracker.ietf.org/doc/html/rfc6960) (IETF, 2013): especificação do protocolo OCSP, incluindo semântica de resposta e OCSP stapling (RFC 6066 TLS extension).
+- [RFC 8555 — Automatic Certificate Management Environment (ACME)](https://datatracker.ietf.org/doc/html/rfc8555) (IETF, 2019): protocolo que automatiza emissão e renovação de certificados. Base técnica do Let's Encrypt. Descreve challenges HTTP-01, DNS-01 e TLS-ALPN-01.
+- [RFC 9162 — Certificate Transparency Version 2.0](https://datatracker.ietf.org/doc/html/rfc9162) (IETF, 2021): especificação do CT log, estrutura de árvore Merkle, SCTs e protocolo de submissão/auditoria.
+- [Fox-IT — Black Tulip Report (2012)](https://www.rijksoverheid.nl/documenten/rapporten/2012/08/13/black-tulip-update): análise forense do comprometimento da CA DigiNotar, cobrindo vetores de ataque, cronologia e impacto. Relatório comissionado pelo governo holandês.
+- [CA/Browser Forum Baseline Requirements](https://cabforum.org/baseline-requirements/): requisitos mínimos que CAs devem cumprir para emitir certificados TLS confiáveis. Evolui continuamente; referência normativa para o ecossistema.

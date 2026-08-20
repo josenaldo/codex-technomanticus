@@ -40,10 +40,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 22 |
-| ⬜ pendente | 13 |
+| ⬜ pendente | 10 |
 | ➖ não precisa | 0 |
-| ✅ feita | 9 |
-| % concluído | 41% |
+| ✅ feita | 12 |
+| % concluído | 55% |
 
 > Tabela preenchida ao final do diagnóstico (Fase 3).
 
@@ -202,7 +202,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   **Correção do coordenador:** o executor citou o trecho com carimbo `[4:03]`. A citação é verbatim, mas as duas variantes de legenda do vídeo são degeneradas — trazem a transcrição inteira num único cue em `00:00:00`, então **não havia carimbo a extrair** e ele foi estimado, contra a regra. Carimbo removido, citação mantida.
 
 #### 10 - MAC, HMAC e assinaturas digitais   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-20)
 - **Estado:** 454 linhas · fase: adepto · status: evergreen · 5 Mermaid · 2 `[!warning]` · 0 wikilink cross-galho
 - **Núcleo/gaps:** E4, E5, E8, L1, L2, M1
 - **Score:** 5/11 (P1 N/A — nota conceitual)
@@ -213,10 +213,11 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Acrescentar ≥1 wikilink cross-galho (Auth e Identidade, Redes/TLS, Matemática ou SO, conforme o assunto da nota) → ativa L1
   - Converter o callout `[!info] Lastro` em `## Fontes` com URLs clicáveis → ativa L2
   - Buscar e embutir vídeo/podcast verificado por transcrição → ativa M1
-- **Resultado:** —
+- **Resultado:** `## Casos práticos` com a chave-raiz do PS3 (2010), que **consolidou** a álgebra ECDSA duplicada em duas seções, e TLS ≤1.2 com MAC-then-Encrypt (BEAST/Lucky13/POODLE) · `## Conexões` virou `## O que vem a seguir`, fechando na pergunta que a 11 responde ("como confiar numa chave pública que você nunca viu") · `## Armadilhas comuns` com 4 `[!warning]` + o `[!danger]` original **mantido sem rebaixar o tipo** · L1 para Auth e Identidade / Tokens em produção · `[!info] Lastro` virou `## Fontes` · M1 *Securing Stream Ciphers (HMAC)* (Computerphile, 9 min, 339 mil views). 479 linhas.
+  **Correção do coordenador:** a citação vinha como *"there's two hashes involved"*, mas a legenda diz *"with two hashes involved"* — entre aspas, precisa ser literal. Corrigida, e o carimbo ajustado de `[7:06]` para `[7:03]`, que é o início real do cue.
 
 #### 11 - PKI e certificados   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-20)
 - **Estado:** 461 linhas · fase: adepto · status: evergreen · 6 Mermaid · 1 `[!warning]` · 1 wikilink cross-galho
 - **Núcleo/gaps:** E4, E5, E8, L2, M1
 - **Score:** 6/11 (P1 N/A — nota conceitual)
@@ -226,10 +227,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Criar `## Armadilhas comuns` com ≥3 `[!warning]`, **movendo** os 1 já existentes em vez de duplicar → ativa E8
   - Converter o callout `[!info] Lastro` em `## Fontes` com URLs clicáveis → ativa L2
   - Buscar e embutir vídeo/podcast verificado por transcrição → ativa M1
-- **Resultado:** —
+- **Resultado:** `## Casos práticos` com 3 cenários (PKI interna · o diagnóstico "Chrome funciona, `curl` quebra" · Heartbleed e a reemissão em massa), os dois primeiros **movidos** e o terceiro condensado da seção de falhas históricas, que segue intacta e linkada por âncora · `## Conexões` virou `## O que vem a seguir` com a ponte identidade **de máquina** → identidade **de pessoa** · `## Armadilhas comuns` com 3 `[!warning]` (o de revogação movido com tipo preservado; CN vs. SAN e pinning mal configurado construídos de material já presente) · `[!info] Lastro` virou `## Fontes` · M1 *What is Public Key Infrastructure (PKI)?* (IBM Technology, 9 min, 240 mil views), carimbo `[6:51]` **conferido no cue real** — o vídeo nomeia *"a chain of trust"* antes de terminar de explicá-la. 487 linhas.
 
 #### 12 - Autenticação   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-20)
 - **Estado:** 463 linhas · fase: adepto · status: evergreen · 5 Mermaid · 2 `[!warning]` · 2 wikilink cross-galho
 - **Núcleo/gaps:** E4, E5, E8, L2, M1
 - **Score:** 6/11 (P1 N/A — nota conceitual)
@@ -239,7 +240,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Criar `## Armadilhas comuns` com ≥3 `[!warning]`, **movendo** os 2 já existentes em vez de duplicar → ativa E8
   - Converter o callout `[!info] Lastro` em `## Fontes` com URLs clicáveis → ativa L2
   - Buscar e embutir vídeo/podcast verificado por transcrição → ativa M1
-- **Resultado:** —
+- **Resultado:** `## Casos práticos` com phishing de senha+TOTP contra passkey, e defesa em camadas (o `[!example]` de proteção de conta **movido**) · `## Conexões` virou `## O que vem a seguir` com a ponte "quem é você" → "o que você pode fazer" · `## Armadilhas comuns` com 3 `[!warning]`, tipos originais preservados e ponteiros deixados na origem em vez de duplicata · `[!info] Lastro` virou `## Fontes` · M1 *Passwords vs. Passkeys — FIDO Bites Back!* (IBM Technology, 11 min, 126 mil views); a citação de abertura foi conferida verbatim no cue de `[0:00]`. 491 linhas.
 
 #### 13 - Autorização e controle de acesso   [mecânico]
 - **Enriquecimento:** ⬜ pendente

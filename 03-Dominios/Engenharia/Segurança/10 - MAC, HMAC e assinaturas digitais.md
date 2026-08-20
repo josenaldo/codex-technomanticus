@@ -1,7 +1,7 @@
 ---
 title: "MAC, HMAC e assinaturas digitais"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-08-20
 type: concept
 fase: adepto
 status: evergreen
@@ -134,8 +134,12 @@ flowchart TD
 | HMAC-SHA-512 | SHA-512 | 512 bits |
 | HMAC-SHA3-256 | SHA3-256 | 256 bits |
 
-> [!warning] MD5 e SHA-1 são legados
-> HMAC-MD5 e HMAC-SHA-1 ainda aparecem em sistemas legados (TLS antigo, S/MIME antigo). Para novos sistemas, use HMAC-SHA-256 ou superior. SHA-3 não é vulnerável a length-extension por design (construção Keccak/sponge), mas o prefixo `hash(K ‖ M)` ainda viola outras propriedades de MAC.
+HMAC-MD5 e HMAC-SHA-1 ainda aparecem em sistemas legados (TLS antigo, S/MIME antigo); para novos sistemas, prefira HMAC-SHA-256 ou superior — mais em **Armadilhas comuns**, adiante.
+
+> [!tip] Vídeo — Securing Stream Ciphers (HMAC), Computerphile
+> Explicação visual da construção de dois hashes (ipad/opad) e de por que ela neutraliza o length-extension attack — o mesmo raciocínio do diagrama acima, com o quadro-negro do Dr. Mike Pound. Aos [7:03] ele resume o ponto central: *"with two hashes involved, and it's completely immune to length extension attacks"*.
+>
+> https://www.youtube.com/watch?v=wlSG3pEiQdc
 
 ---
 
@@ -202,8 +206,7 @@ sequenceDiagram
 | EdDSA/Ed25519 | Curva Edwards 25519 | FIPS 186-5 + RFC 8032 | Sim (k derivado deterministicamente) | Recomendado para novos sistemas; resistente a k-repetição |
 | DSA clássico | Logaritmo discreto | Descontinuado em FIPS 186-5 | Não | Evitar |
 
-> [!warning] k aleatório em ECDSA
-> O nonce k em ECDSA deve ser único e imprevisível por assinatura. A Sony reutilizou k estático no PlayStation 3, expondo a chave privada inteira. EdDSA elimina esse risco derivando k deterministicamente da chave privada + mensagem.
+O nonce k em ECDSA deve ser único e imprevisível por assinatura — reutilizá-lo expõe a chave privada inteira, como aconteceu com a Sony no PlayStation 3 (caso detalhado em **Casos práticos**, adiante). EdDSA elimina esse risco derivando k deterministicamente da chave privada + mensagem.
 
 ---
 
@@ -334,50 +337,36 @@ RSA-PKCS1v1.5 tem problemas conhecidos nesse modelo (ataques de Bleichenbacher p
 
 ---
 
-## Armadilhas comuns de implementação
+## Armadilhas comuns
 
 Mesmo entendendo a teoria, implementações erradas são a causa mais comum de vulnerabilidades reais em produção.
 
-### 1. Comparação de tag não-constante
+> [!warning] Comparação de tag não-constante
+> ```python
+> # ERRADO — permite timing attack
+> if computed_tag == received_tag:
+>     ...
+>
+> # CORRETO — tempo constante
+> import hmac
+> if hmac.compare_digest(computed_tag, received_tag):
+>     ...
+> ```
+> Um adversário pode forjar MACs byte-a-byte medindo o tempo de resposta: se o primeiro byte está errado, a comparação retorna rápido; se está certo, continua. Após 256 tentativas × tamanho da tag, o attacker constrói uma tag válida. `compare_digest` compara todos os bytes mesmo após a primeira diferença.
 
-```python
-# ERRADO — permite timing attack
-if computed_tag == received_tag:
-    ...
+> [!warning] Reutilização de nonce em ECDSA
+> O nonce k precisa ser único e imprevisível por assinatura; reusá-lo permite calcular a chave privada algebricamente a partir de duas assinaturas — foi assim que a chave raiz do PlayStation 3 vazou em 2010 (caso completo em **Casos práticos**, adiante). Todo código de produção com ECDSA deve usar CSPRNG para k, ou migrar para EdDSA, que é determinístico por design e imune a essa classe de erro.
 
-# CORRETO — tempo constante
-import hmac
-if hmac.compare_digest(computed_tag, received_tag):
-    ...
-```
+> [!warning] Hash truncado inadequado
+> Truncar um HMAC-SHA-256 de 256 bits para 32 bits (4 bytes) para "economizar espaço" reduz a segurança para 2³² operações — trivialmente quebrado com força bruta hoje. O NIST recomenda tags de pelo menos 64 bits para MACs e tipicamente 96-128 bits em protocolos sérios. TLS 1.3 trunca HMAC para 96 bits em alguns contextos, mas com base em análise formal, não por conveniência.
 
-Um adversário pode forjar MACs byte-a-byte medindo o tempo de resposta: se o primeiro byte está errado, a comparação retorna rápido; se está certo, continua. Após 256 tentativas × tamanho da tag, o attacker constrói uma tag válida. `compare_digest` compara todos os bytes mesmo após a primeira diferença.
+> [!warning] MD5 e SHA-1 como base de HMAC
+> HMAC-MD5 e HMAC-SHA-1 ainda aparecem em sistemas legados (TLS antigo, S/MIME antigo). Para novos sistemas, use HMAC-SHA-256 ou superior. SHA-3 não é vulnerável a length-extension por design (construção Keccak/sponge), mas o prefixo `hash(K ‖ M)` ainda viola outras propriedades de MAC.
 
-### 2. Reutilização de nonce em ECDSA
+Duas armadilhas adicionais, menos frequentes mas igualmente reais:
 
-```
-# Dois documentos distintos, mesmo k → privKey exposta
-sig1 = (r1, s1) onde r1 = (k × G).x mod n
-sig2 = (r2, s2) onde r2 = (k × G).x mod n
-
-# Se k é o mesmo, então r1 == r2
-# s = (hash + privKey × r) / k mod n
-# Com duas equações e k comum, privKey é calculável algebricamente
-```
-
-A extração da PS3 master key em 2010 usou exatamente isso. Todo código de produção com ECDSA deve usar CSPRNG para k, ou migrar para EdDSA que é deterministico por design.
-
-### 3. Hash truncado inadequado
-
-Truncar um HMAC-SHA-256 de 256 bits para 32 bits (4 bytes) para "economizar espaço" reduz a segurança para 2³² operações — trivialmente quebrado com force brute hoje. O NIST recomenda tags de pelo menos 64 bits para MACs e tipicamente 96-128 bits em protocolos sérios. TLS 1.3 trunca HMAC para 96 bits em alguns contextos (mas com base em análise formal, não por conveniência).
-
-### 4. Verificar assinatura com a chave errada
-
-Em sistemas multi-tenant que gerenciam várias pubKeys, é possível verificar a assinatura de uma mensagem com a pubKey errada e aceitar indevidamente. A assinatura e a chave devem estar vinculadas — é exatamente o que PKI/certificados resolvem (→ [[11 - PKI e certificados]]).
-
-### 5. Esquema "RSA raw" sem hash
-
-Assinar diretamente com RSA sem aplicar hash primeiro (RSA "textbook") é inseguro: o adversário pode combinar assinaturas de mensagens conhecidas para forjar assinaturas de mensagens novas, explorando a estrutura multiplicativa do RSA. Sempre assine `Sign(privKey, H(M))`, nunca `Sign(privKey, M)` diretamente.
+- **Verificar assinatura com a chave errada** — em sistemas multi-tenant que gerenciam várias pubKeys, é possível verificar a assinatura de uma mensagem com a pubKey errada e aceitar indevidamente. A assinatura e a chave devem estar vinculadas — é exatamente o que PKI/certificados resolvem (→ [[11 - PKI e certificados]]).
+- **Esquema "RSA raw" sem hash** — assinar diretamente com RSA sem aplicar hash primeiro (RSA "textbook") é inseguro: o adversário pode combinar assinaturas de mensagens conhecidas para forjar assinaturas de mensagens novas, explorando a estrutura multiplicativa do RSA. Sempre assine `Sign(privKey, H(M))`, nunca `Sign(privKey, M)` diretamente.
 
 > [!danger] Regra de ouro de implementação
 > Não implemente primitivas criptográficas do zero. Use bibliotecas auditadas: `cryptography` (Python), `libsodium` (C/C++, com bindings em todas as linguagens), `BouncyCastle` (Java/Kotlin), `WebCrypto API` (browser). Essas bibliotecas resolvem timing attacks, gerenciamento de nonce, padding e outros detalhes sutis que uma implementação manual quase certamente erra.
@@ -390,7 +379,7 @@ Assinar diretamente com RSA sem aplicar hash primeiro (RSA "textbook") é insegu
 |---|---|---|
 | Verificar integridade de download | Hash sem chave (SHA-256) | Sem segredo; integridade pura contra corrupção acidental |
 | Autenticar cookie de sessão | HMAC-SHA-256 | Servidor detém K; precisa de autenticidade, não de não-repúdio |
-| JWT (HS256 vs RS256) | HMAC-SHA-256 ou RSA/ECDSA | HS256 = simétrico; RS256/ES256 = assimétrico com não-repúdio |
+| JWT (HS256 vs RS256) | HMAC-SHA-256 ou RSA/ECDSA | HS256 = simétrico; RS256/ES256 = assimétrico com não-repúdio (detalhes operacionais em [[03-Dominios/Engenharia/Auth e Identidade/2 - OAuth 2.1 e OpenID Connect/05 - Tokens em produção\|Tokens em produção]]) |
 | Assinatura de software | ECDSA/Ed25519 | Distribuidor publica pubKey; qualquer um verifica; não-repúdio |
 | TLS 1.3 handshake | HMAC (no Finished) | Autenticar o handshake com chave derivada |
 | Contrato digital | RSA-PSS / ECDSA | Não-repúdio legalmente reconhecível |
@@ -398,9 +387,45 @@ Assinar diretamente com RSA sem aplicar hash primeiro (RSA "textbook") é insegu
 
 ---
 
-## Conexões
+## Casos práticos
 
-**Anterior**: [[09 - Troca de chaves]] — sem troca segura de chave, não há K para MAC nem par de chaves para assinatura. **Próxima**: [[11 - PKI e certificados]] — PKI distribui e certifica as chaves públicas que tornam assinaturas verificáveis por estranhos. **Cross-links**:
+A teoria explica por que cada regra existe; os dois casos abaixo mostram o custo real de ignorá-la.
+
+### Caso 1: a chave-raiz do PlayStation 3 (2010)
+
+A Sony assinava o firmware do PS3 com ECDSA, mas cometeu o erro que a nota já apontou como armadilha: usou o **mesmo nonce k** para assinar mensagens diferentes, em vez de sortear um k novo, imprevisível, a cada assinatura. A matemática do ECDSA torna isso fatal:
+
+```
+# Dois documentos distintos, mesmo k → privKey exposta
+sig1 = (r1, s1) onde r1 = (k × G).x mod n
+sig2 = (r2, s2) onde r2 = (k × G).x mod n
+
+# Se k é o mesmo, então r1 == r2
+# s = (hash + privKey × r) / k mod n
+# Com duas equações e k comum, privKey é calculável algebricamente
+```
+
+O grupo fail0verflow percebeu o padrão analisando firmwares assinados publicamente e, em dezembro de 2010, apresentou no 27th Chaos Communication Congress (27C3) a extração completa da chave privada raiz de assinatura da Sony. A partir daquele ponto, qualquer pessoa podia assinar código homebrew — ou pirata — como se fosse firmware oficial: a cadeia de confiança inteira do console dependia de um único k nunca se repetir, e ele se repetiu. É o exemplo canônico de por que "quase determinístico" não é o mesmo que determinístico: EdDSA (→ [[08 - Criptografia assimétrica]]) resolve isso derivando k de forma reprodutível a partir da chave privada e da mensagem, em vez de depender de um gerador aleatório que pode falhar silenciosamente.
+
+### Caso 2: TLS ≤ 1.2 e a década de CVEs do MAC-then-Encrypt
+
+TLS até a versão 1.2 combinava cifra CBC com HMAC na ordem **MAC-then-Encrypt** — exatamente a composição que esta nota classificou como problemática. Como o receptor precisa decifrar antes de verificar o MAC, qualquer diferença observável durante a decifração (um erro de padding, o tempo que a validação leva) vaza informação para quem está atacando, mesmo sem quebrar a cifra:
+
+- **BEAST** (2011) explorou o encadeamento de IVs previsível em CBC no TLS 1.0 para recuperar cookies de sessão.
+- **Lucky 13** (2013) mediu diferenças de tempo entre "padding inválido" e "MAC inválido" — informação que só existe porque a verificação do MAC acontece depois da decifração.
+- **POODLE** (2014) forçou downgrade para SSLv3 e explorou o mesmo tipo de padding oracle em CBC para decifrar bytes de uma sessão HTTPS.
+
+Três ataques, quase uma década de intervalo, mesma causa-raiz: autenticar o plaintext em vez do ciphertext deixa o oráculo de padding exposto durante a decifração. Foi esse histórico — não uma preferência acadêmica — que levou o TLS 1.3 a exigir AEAD (Encrypt-then-MAC embutido numa única operação atômica) e a remover CBC do conjunto de cifras permitido.
+
+---
+
+## O que vem a seguir
+
+**Anterior**: [[09 - Troca de chaves]] — sem troca segura de chave, não há K para MAC nem par de chaves para assinatura.
+
+MAC e assinatura resolvem integridade e autenticidade — mas ambos assumem que você já tem a chave certa em mãos. Um HMAC pressupõe que Alice e Bob combinaram K por um canal seguro; uma assinatura pressupõe que Bob conhece a chave pública *de Alice*, e não a de um impostor. Essa segunda suposição é frágil: nada, até aqui, impede alguém de publicar uma chave pública e afirmar "essa é a chave da Alice". A pergunta que sobra — **como confiar numa chave pública que você nunca viu antes, gerada por alguém que você nunca conheceu pessoalmente?** — é o problema que [[11 - PKI e certificados]] resolve, amarrando identidade a chave pública através de uma cadeia de confiança verificável.
+
+**Cross-links:**
 - [[06 - Hashing criptográfico]] — fundamento de HMAC; length-extension é propriedade do hash Merkle-Damgård.
 - [[08 - Criptografia assimétrica]] — matemática de RSA, ECDSA, EdDSA; par de chaves é a base do não-repúdio.
 - [[15 - Ataques a sistemas cripto]] — padding oracle, POODLE, length-extension, k-repetition em ECDSA.
@@ -443,10 +468,12 @@ Frases em inglês para usar com precisão:
 
 ---
 
-> [!info] Lastro
-> - **RFC 2104** — Krawczyk, H., Bellare, M., Canetti, R. "HMAC: Keyed-Hashing for Message Authentication" (1997). URL: https://www.rfc-editor.org/rfc/rfc2104
-> - **NIST FIPS 198-1** — "The Keyed-Hash Message Authentication Code (HMAC)" (2008). URL: https://csrc.nist.gov/publications/detail/fips/198/1/final
-> - **NIST FIPS 186-5** — "Digital Signature Standard (DSS)" (2023) — especifica RSA-PSS, ECDSA e EdDSA (Ed25519/Ed448). URL: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
-> - **RFC 8032** — Josefsson, S., Liusvaara, I. "Edwards-Curve Digital Signature Algorithm (EdDSA)" (2017). URL: https://www.rfc-editor.org/rfc/rfc8032
-> - **Bellare, M., Namprempre, C.** "Authenticated Encryption: Relations among Notions and Analysis of the Generic Composition Paradigm". ASIACRYPT 2000. URL: https://eprint.iacr.org/2000/025
-> - **Krawczyk, H.** "The Order of Encryption and Authentication for Protecting Communications (or: How Secure Is SSL?)" CRYPTO 2001. URL: https://www.iacr.org/archive/crypto2001/21390309.pdf
+## Fontes
+
+- [RFC 2104 — Krawczyk, H., Bellare, M., Canetti, R. "HMAC: Keyed-Hashing for Message Authentication" (1997)](https://www.rfc-editor.org/rfc/rfc2104)
+- [NIST FIPS 198-1 — "The Keyed-Hash Message Authentication Code (HMAC)" (2008)](https://csrc.nist.gov/publications/detail/fips/198/1/final)
+- [NIST FIPS 186-5 — "Digital Signature Standard (DSS)" (2023) — especifica RSA-PSS, ECDSA e EdDSA (Ed25519/Ed448)](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf)
+- [RFC 8032 — Josefsson, S., Liusvaara, I. "Edwards-Curve Digital Signature Algorithm (EdDSA)" (2017)](https://www.rfc-editor.org/rfc/rfc8032)
+- [Bellare, M., Namprempre, C. "Authenticated Encryption: Relations among Notions and Analysis of the Generic Composition Paradigm". ASIACRYPT 2000](https://eprint.iacr.org/2000/025)
+- [Krawczyk, H. "The Order of Encryption and Authentication for Protecting Communications (or: How Secure Is SSL?)" CRYPTO 2001](https://www.iacr.org/archive/crypto2001/21390309.pdf)
+- [fail0verflow — "Console Hacking 2010: PS3 Epic Fail" (27C3, dezembro de 2010)](https://media.ccc.de/v/27c3-4087-en-console_hacking_2010)

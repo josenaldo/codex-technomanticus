@@ -1,7 +1,7 @@
 ---
 title: "Autenticação"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-08-20
 type: concept
 fase: adepto
 status: evergreen
@@ -88,10 +88,7 @@ graph LR
 > [!info] Leitura do diagrama
 > MFA real exige fatores de **categorias diferentes**. Dois fatores do tipo "algo que você sabe" — ex.: senha + PIN — não constituem MFA porque um adversário que comprometeu o canal de um provavelmente comprometeu o outro. O SMS está no quadrante "algo que você tem", mas é a opção mais fraca daquela categoria.
 
-**Por que a categoria importa:** imagine um adversário que comprometeu o servidor de e-mail da organização. Ele obtém tanto a senha (armazenada no mesmo domínio) quanto o magic link enviado ao e-mail corporativo. Dois fatores, mesma superfície de ataque — não é MFA real.
-
-> [!warning] SMS como 2º fator é categoricamente fraco
-> SMS é "algo que você tem" (o SIM), mas vulnerável a SIM swap (engenharia social na operadora trocando o número para um SIM controlado pelo adversário) e ao protocolo SS7 (ataques de interceptação em redes de telecomunicação legadas, viáveis para atores com acesso a infraestrutura de telecomunicação). O NIST SP 800-63B deprecou o SMS OOB como autenticador recomendado desde 2017. Use TOTP ou passkeys.
+**Por que a categoria importa:** imagine um adversário que comprometeu o servidor de e-mail da organização. Ele obtém tanto a senha (armazenada no mesmo domínio) quanto o magic link enviado ao e-mail corporativo. Dois fatores, mesma superfície de ataque — não é MFA real. SMS como segundo fator é um caso à parte, tratado em [[#Armadilhas comuns]].
 
 ### Autenticação adaptativa (risk-based)
 
@@ -271,19 +268,7 @@ sequenceDiagram
 
 ### Por que passkeys são resistentes a phishing
 
-A propriedade central e mais importante: a credencial é **vinculada à origem** (`rpId` = o domínio exato do servidor registrado, verificado pelo autenticador).
-
-Cenário de phishing com senha + TOTP:
-1. Adversário cria `banco-falso.com` idêntico visualmente ao `banco.com`
-2. Usuário digita usuário, senha e TOTP no site falso
-3. O proxy adversário usa tudo imediatamente no site real
-4. Conta comprometida em segundos
-
-Cenário de phishing com passkey:
-1. Adversário cria `banco-falso.com`
-2. Navegador solicita ao autenticador uma assinatura para `rpId = banco-falso.com`
-3. O autenticador não encontra credencial para esse `rpId`
-4. Autenticação falha — não há como o usuário "errar" e fornecer a credencial
+A propriedade central e mais importante: a credencial é **vinculada à origem** (`rpId` = o domínio exato do servidor registrado, verificado pelo autenticador). O caso completo — o mesmo ataque de phishing falhando contra passkey e funcionando contra senha+TOTP — está em [[#Casos práticos|Casos práticos]], Caso 1.
 
 > [!success] O que passkeys eliminam simultaneamente
 > - **Phishing**: credencial não funciona em origem diferente da registrada
@@ -295,6 +280,10 @@ Cenário de phishing com passkey:
 ### Attestation — verificar o autenticador
 
 Durante o registro, o autenticador pode fornecer um **attestation statement** — uma assinatura do fabricante que prova a classe de autenticador usado (modelo de YubiKey, versão do iOS, etc.). Útil em cenários corporativos onde a política exige hardware certificado FIDO. Em passkeys consumer, attestation frequentemente é "none" por privacidade.
+
+> [!tip] Vídeo — passwords vs. passkeys, direto de quem constrói o padrão
+> [**Passwords vs. Passkeys - FIDO Bites Back!**](https://www.youtube.com/watch?v=9nrE4t4-IXA) (IBM Technology, ~11 min, EN) abre exatamente com a tese desta seção — "there's a way that you can get better security and better usability and get rid of your passwords" [0:00] — e daí percorre por que senha é um modelo estruturalmente ruim (o argumento da seção "Senhas — por que são estruturalmente ruins" acima) até chegar em como FIDO2/passkeys removem o segredo compartilhado do meio da equação.
+> **O que ele não cobre:** o vídeo fica na camada conceitual de por que trocar senha por passkey vale a pena — não entra no protocolo CTAP2, no formato da attestation nem no fluxo de challenge-response byte a byte que os diagramas Mermaid desta nota detalham.
 
 ---
 
@@ -345,10 +334,7 @@ No modelo FIDO2 / Apple Face ID / Android BiometricPrompt, biometria é usada co
 2. Enclave libera a chave privada
 3. Chave privada assina o desafio do servidor
 
-Biometria aqui é um fator local de desbloqueio — não um fator transmitido. Isso preserva a privacidade e elimina o risco de vazar o biométrico para o servidor.
-
-> [!warning] Biometria no servidor é anti-padrão
-> Sistemas que transmitem hash ou template biométrico ao servidor para comparação são perigosos: vazamento do banco expõe dados que o usuário nunca pode revogar. Arquiteturas corretas processam biometria inteiramente no dispositivo e usam o resultado (boolean "verificado") apenas para liberar uma chave criptográfica local.
+Biometria aqui é um fator local de desbloqueio — não um fator transmitido. Isso preserva a privacidade e elimina o risco de vazar o biométrico para o servidor. O anti-padrão de transmitir biometria ao servidor está em [[#Armadilhas comuns]].
 
 **Liveness detection**: ataques de apresentação (spoofing) com foto, vídeo ou máscara 3D tentam enganar leitores biométricos. Sistemas sérios implementam liveness detection — verificam que o biométrico apresentado pertence a um ser vivo (piscar de olhos, movimento 3D, textura de pele). A qualidade da liveness detection varia enormemente entre implementações.
 
@@ -371,12 +357,7 @@ Mecanismos de autenticação devem ser protegidos contra tentativas em volume. S
 
 **Alertas e notificações**: notificar o usuário por e-mail ou push quando login ocorre de dispositivo/IP/país novo. Dá visibilidade sobre comprometimento mesmo quando a defesa ativa falha.
 
-**Account enumeration**: não revelar se o username existe ou não em mensagens de erro. Resposta canônica: "Usuário ou senha incorretos" — nunca "Usuário não encontrado" separado de "Senha incorreta". Enumerar usuários válidos é o primeiro passo do password spraying. O mesmo princípio se aplica a fluxos de recuperação de senha: "Se esse e-mail existir, você receberá as instruções" — não "E-mail não cadastrado".
-
-> [!example] Fluxo de proteção em camadas
-> Um sistema bem projetado aplica: TLS (canal) → rate limiting por IP (volume) → CAPTCHA após 3 falhas (automação) → lockout progressivo por conta (brute force) → MFA (fator adicional) → alertas de login suspeito (visibilidade). Cada camada compensa a falha da anterior. Nenhuma camada isolada é suficiente — a profundidade de defesa (defense-in-depth) é o princípio que une todas elas, explorado em [[04 - Princípios de design seguro]].
-
-**Credential recovery**: o fluxo de recuperação de senha é frequentemente o ponto mais fraco do sistema de autenticação. Se a recuperação acontece só via e-mail sem MFA, ela representa um downgrade do nível de segurança para o nível de segurança da caixa de e-mail. Recovery codes (códigos de backup pré-gerados no momento do registro MFA) e fluxos de verificação de identidade fora de banda são a abordagem correta para contas com MFA.
+**Account enumeration**: não revelar se o username existe ou não em mensagens de erro. Resposta canônica: "Usuário ou senha incorretos" — nunca "Usuário não encontrado" separado de "Senha incorreta". Enumerar usuários válidos é o primeiro passo do password spraying. O mesmo princípio se aplica a fluxos de recuperação de senha: "Se esse e-mail existir, você receberá as instruções" — não "E-mail não cadastrado". A defesa em camadas completa e o risco de recuperação de conta como downgrade silencioso estão em [[#Casos práticos]] e [[#Armadilhas comuns]].
 
 ---
 
@@ -397,7 +378,53 @@ A sessão é o ponto de entrada para [[13 - Autorização e controle de acesso]]
 
 ---
 
-## Conexões
+## Casos práticos
+
+### Caso 1 — phishing contra senha+TOTP vs. passkey
+
+O mesmo ataque, dois desfechos opostos, ilustra por que a vinculação à origem (`rpId`) é a propriedade que realmente elimina phishing — não apenas mais um fator empilhado.
+
+**Com senha + TOTP:**
+1. Adversário cria `banco-falso.com`, visualmente idêntico a `banco.com`.
+2. A vítima digita usuário, senha e código TOTP no site falso.
+3. Um proxy transparente controlado pelo adversário repassa tudo ao site real, em tempo real.
+4. Conta comprometida em segundos — nenhum dos dois fatores impediu o ataque, porque nenhum dos dois verifica a origem da requisição.
+
+**Com passkey:**
+1. Adversário cria `banco-falso.com`.
+2. O navegador solicita ao autenticador uma assinatura para `rpId = banco-falso.com`.
+3. O autenticador não encontra nenhuma credencial registrada para esse `rpId` — a chave privada da vítima foi criada e vinculada a `banco.com`, não a `banco-falso.com`.
+4. A autenticação falha antes mesmo de pedir consentimento ao usuário. Não existe "digitar errado" — o protocolo recusa a operação.
+
+O detalhe que costuma escapar em entrevista: o TOTP falha aqui não porque é um mecanismo fraco, mas porque **prova posse de um segredo, não a legitimidade da origem que o solicitou**. Passkeys resolvem a causa raiz, não o sintoma.
+
+### Caso 2 — defesa em camadas contra brute force e password spraying
+
+> [!example] Fluxo de proteção em camadas
+> Um sistema bem projetado aplica: TLS (canal) → rate limiting por IP (volume) → CAPTCHA após 3 falhas (automação) → lockout progressivo por conta (brute force) → MFA (fator adicional) → alertas de login suspeito (visibilidade). Cada camada compensa a falha da anterior. Nenhuma camada isolada é suficiente — a profundidade de defesa (defense-in-depth) é o princípio que une todas elas, explorado em [[04 - Princípios de design seguro]].
+
+Nenhuma camada sozinha resolve o problema: rate limiting por IP não pega password spraying distribuído por muitos IPs; lockout por conta não pega brute force de baixo volume; CAPTCHA sozinho não impede um adversário paciente disposto a resolver desafios manualmente em pequena escala. A combinação é o que torna o custo do ataque proibitivo — cada camada fecha a lacuna que a anterior deixa aberta.
+
+---
+
+## Armadilhas comuns
+
+> [!warning] SMS como 2º fator é categoricamente fraco
+> SMS é "algo que você tem" (o SIM), mas vulnerável a SIM swap (engenharia social na operadora trocando o número para um SIM controlado pelo adversário) e ao protocolo SS7 (ataques de interceptação em redes de telecomunicação legadas, viáveis para atores com acesso a infraestrutura de telecomunicação). O NIST SP 800-63B deprecou o SMS OOB como autenticador recomendado desde 2017. Use TOTP ou passkeys.
+
+> [!warning] Biometria no servidor é anti-padrão
+> Sistemas que transmitem hash ou template biométrico ao servidor para comparação são perigosos: vazamento do banco expõe dados que o usuário nunca pode revogar. Arquiteturas corretas processam biometria inteiramente no dispositivo e usam o resultado (boolean "verificado") apenas para liberar uma chave criptográfica local.
+
+> [!warning] Recuperação de conta como downgrade silencioso de segurança
+> O fluxo de recuperação de senha é frequentemente o ponto mais fraco do sistema de autenticação. Se a recuperação acontece só via e-mail sem MFA, ela representa um downgrade do nível de segurança para o nível de segurança da caixa de e-mail — todo o investimento em MFA forte vira irrelevante se um adversário só precisa comprometer o e-mail para redefinir a senha. Recovery codes (códigos de backup pré-gerados no momento do registro MFA) e fluxos de verificação de identidade fora de banda são a abordagem correta para contas com MFA.
+
+---
+
+## O que vem a seguir
+
+Esta nota respondeu "quem é você" — os mecanismos que provam identidade, do mais frágil (senha isolada) ao mais robusto (passkeys origin-bound). Mas provar identidade é só a primeira metade do controle de acesso: um sistema que autentica perfeitamente e não verifica o que a identidade autenticada pode fazer continua vulnerável — é exatamente o erro `if session.valid: do_anything()` citado na seção sobre sessão.
+
+A [[13 - Autorização e controle de acesso]] responde a segunda pergunta: "o que você pode fazer?" — RBAC, ABAC, tokens de escopo, e como o resultado da autenticação (a sessão, o token) se transforma em decisões de permissão em cada endpoint.
 
 - Anterior: [[11 - PKI e certificados]]
 - Próxima: [[13 - Autorização e controle de acesso]]
@@ -454,10 +481,11 @@ Frases úteis em inglês:
 
 ---
 
-> [!info] Lastro
-> - **NIST SP 800-63B** — Digital Identity Guidelines: Authentication and Lifecycle Management. NIST, 2017 (rev. 2024). [https://pages.nist.gov/800-63-3/sp800-63b.html](https://pages.nist.gov/800-63-3/sp800-63b.html)
-> - **RFC 6238** — TOTP: Time-Based One-Time Password Algorithm. IETF, 2011. [https://datatracker.ietf.org/doc/html/rfc6238](https://datatracker.ietf.org/doc/html/rfc6238)
-> - **RFC 4226** — HOTP: An HMAC-Based One-Time Password Algorithm. IETF, 2005. [https://datatracker.ietf.org/doc/html/rfc4226](https://datatracker.ietf.org/doc/html/rfc4226)
-> - **W3C Web Authentication (WebAuthn) Level 3** — W3C Recommendation. [https://www.w3.org/TR/webauthn-3/](https://www.w3.org/TR/webauthn-3/)
-> - **OWASP Authentication Cheat Sheet** — OWASP Foundation. [https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
-> - **FIDO Alliance — Passkeys Overview** — FIDO Alliance. [https://fidoalliance.org/passkeys/](https://fidoalliance.org/passkeys/)
+## Fontes
+
+- **NIST SP 800-63B** — Digital Identity Guidelines: Authentication and Lifecycle Management. NIST, 2017 (rev. 2024). [https://pages.nist.gov/800-63-3/sp800-63b.html](https://pages.nist.gov/800-63-3/sp800-63b.html)
+- **RFC 6238** — TOTP: Time-Based One-Time Password Algorithm. IETF, 2011. [https://datatracker.ietf.org/doc/html/rfc6238](https://datatracker.ietf.org/doc/html/rfc6238)
+- **RFC 4226** — HOTP: An HMAC-Based One-Time Password Algorithm. IETF, 2005. [https://datatracker.ietf.org/doc/html/rfc4226](https://datatracker.ietf.org/doc/html/rfc4226)
+- **W3C Web Authentication (WebAuthn) Level 3** — W3C Recommendation. [https://www.w3.org/TR/webauthn-3/](https://www.w3.org/TR/webauthn-3/)
+- **OWASP Authentication Cheat Sheet** — OWASP Foundation. [https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
+- **FIDO Alliance — Passkeys Overview** — FIDO Alliance. [https://fidoalliance.org/passkeys/](https://fidoalliance.org/passkeys/)
