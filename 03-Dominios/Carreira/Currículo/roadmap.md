@@ -167,7 +167,7 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 - **Pendências:** —
 
 #### 18a - A carta de apresentação   [substantivo, broto]
-- **Estado:** ⬜ pendente · fase: adepto (broto, isento do piso de linhas)
+- **Estado:** ⬜ pendente · fase: magus (broto, isento do piso de linhas)
 - **Tarefa do plano:** Bloco C
 - **Escopo:** a evidência sobre ela é genuinamente contraditória; a nota existe para dizer isso com as fontes na mão em vez de escolher um lado.
 - **Pendências:** —
@@ -235,5 +235,5 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 - Escrita sequencial, bloco por bloco, conforme o plano de 30 tarefas.
 - Todo exemplo etiquetado — `[!example] Caso real` (com link verificável) ou `[!example] Caso fictício` (persona declarada) — sem exceção.
 - Nada do vault privado (`codex-technomanticus-apocrypha`) é referenciado.
-- Frontmatter: `fase:` lowercase, `type: concept`, `publish: true`.
+- Frontmatter: `fase:` minúsculo (iniciado · adepto · magus), `type: concept`, `publish: true`.
 - **Git:** stage de paths explícitos e estreitos. Sem `Co-Authored-By`.
