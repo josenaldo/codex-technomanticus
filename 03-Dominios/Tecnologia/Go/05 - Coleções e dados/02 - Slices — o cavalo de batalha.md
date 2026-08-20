@@ -1,7 +1,7 @@
 ---
 title: "Slices — o cavalo de batalha"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - slices

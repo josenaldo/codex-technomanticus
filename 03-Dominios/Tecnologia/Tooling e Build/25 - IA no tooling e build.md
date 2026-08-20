@@ -3,7 +3,7 @@ title: "IA no tooling e build"
 created: 2026-06-24
 updated: 2026-06-25
 type: concept
-fase: Magus
+fase: magus
 status: seedling
 publish: true
 tags:

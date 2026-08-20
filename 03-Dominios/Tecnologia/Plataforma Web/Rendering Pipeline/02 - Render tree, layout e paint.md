@@ -3,7 +3,7 @@ title: "Render tree, layout e paint"
 created: 2026-06-28
 updated: 2026-06-28
 type: note
-fase: Iniciado
+fase: iniciado
 tags:
   - plataforma-web
   - rendering

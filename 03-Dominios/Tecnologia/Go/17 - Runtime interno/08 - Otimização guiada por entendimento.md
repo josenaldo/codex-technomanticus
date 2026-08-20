@@ -1,7 +1,7 @@
 ---
 title: "Otimização guiada por entendimento"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - runtime

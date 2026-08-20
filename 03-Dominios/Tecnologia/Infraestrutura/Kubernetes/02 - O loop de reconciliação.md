@@ -3,7 +3,7 @@ title: "O loop de reconciliação"
 created: 2026-08-03
 updated: 2026-08-09
 type: concept
-fase: Iniciado
+fase: iniciado
 status: seedling
 publish: true
 tags:

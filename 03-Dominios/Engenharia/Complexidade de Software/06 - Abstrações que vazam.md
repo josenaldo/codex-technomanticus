@@ -5,7 +5,7 @@ updated: 2026-07-31
 type: concept
 status: growing
 progress: backlog
-fase: Adepto
+fase: adepto
 tags:
   - engenharia
   - engenharia-de-software

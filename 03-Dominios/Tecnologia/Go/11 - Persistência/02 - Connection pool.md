@@ -1,7 +1,7 @@
 ---
 title: "Connection pool"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - database-sql

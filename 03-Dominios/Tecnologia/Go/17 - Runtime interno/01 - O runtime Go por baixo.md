@@ -1,7 +1,7 @@
 ---
 title: "O runtime Go por baixo"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - runtime

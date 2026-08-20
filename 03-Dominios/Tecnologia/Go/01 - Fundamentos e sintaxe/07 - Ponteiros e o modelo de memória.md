@@ -1,7 +1,7 @@
 ---
 title: "Ponteiros e o modelo de memória"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - fundamentos

@@ -1,7 +1,7 @@
 ---
 title: "O memory model"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - memory-model

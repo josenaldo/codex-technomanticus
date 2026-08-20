@@ -1,7 +1,7 @@
 ---
 title: "Contrato com Kubernetes"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - cloud-native

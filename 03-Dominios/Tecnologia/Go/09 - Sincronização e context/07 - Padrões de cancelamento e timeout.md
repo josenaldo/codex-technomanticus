@@ -1,7 +1,7 @@
 ---
 title: "Padrões de cancelamento e timeout"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - context

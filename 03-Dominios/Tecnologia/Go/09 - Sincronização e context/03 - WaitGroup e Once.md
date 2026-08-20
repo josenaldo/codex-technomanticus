@@ -1,7 +1,7 @@
 ---
 title: "WaitGroup e Once"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - concorrencia

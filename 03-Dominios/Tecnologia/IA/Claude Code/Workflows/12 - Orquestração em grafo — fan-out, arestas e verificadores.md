@@ -1,7 +1,7 @@
 ---
 title: "Orquestração em grafo — fan-out, arestas e verificadores"
 type: concept
-fase: Magus
+fase: magus
 progress: in_progress
 publish: true
 created: 2026-07-21

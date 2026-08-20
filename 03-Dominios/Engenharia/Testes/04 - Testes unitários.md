@@ -3,7 +3,7 @@ title: "Testes unitários"
 created: 2026-06-18
 updated: 2026-08-01
 type: concept
-fase: Iniciado
+fase: iniciado
 status: evergreen
 publish: true
 tags:

@@ -1,7 +1,7 @@
 ---
 title: "Modelos de preço: on-demand, reserved e spot"
 type: concept
-fase: Adepto
+fase: adepto
 created: 2026-07-23
 updated: 2026-07-23
 status: seedling

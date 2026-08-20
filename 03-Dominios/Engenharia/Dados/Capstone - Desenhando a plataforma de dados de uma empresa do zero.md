@@ -4,7 +4,7 @@ created: 2026-07-13
 updated: 2026-07-13
 type: concept
 status: seedling
-fase: Magus
+fase: magus
 tags:
   - dados
   - engenharia-de-dados

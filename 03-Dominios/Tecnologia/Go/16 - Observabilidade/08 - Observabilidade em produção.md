@@ -1,7 +1,7 @@
 ---
 title: "Observabilidade em produção"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - observabilidade

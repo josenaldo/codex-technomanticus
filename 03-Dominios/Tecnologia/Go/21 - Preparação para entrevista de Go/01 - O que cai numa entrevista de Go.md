@@ -1,7 +1,7 @@
 ---
 title: "O que cai numa entrevista de Go"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - entrevista

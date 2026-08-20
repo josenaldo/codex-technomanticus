@@ -1,7 +1,7 @@
 ---
 title: "pprof — CPU e memória"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - observabilidade

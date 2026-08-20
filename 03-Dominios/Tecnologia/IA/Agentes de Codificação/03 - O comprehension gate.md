@@ -14,7 +14,7 @@ aliases:
   - Portão de compreensão
   - Code review AI
 progress: done
-fase: Adepto
+fase: adepto
 ---
 
 # O comprehension gate

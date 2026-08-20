@@ -3,7 +3,7 @@ title: "Gemini"
 created: 2026-04-01
 updated: 2026-06-28
 type: concept
-fase: Iniciado
+fase: iniciado
 progress: backlog
 status: evergreen
 tags:

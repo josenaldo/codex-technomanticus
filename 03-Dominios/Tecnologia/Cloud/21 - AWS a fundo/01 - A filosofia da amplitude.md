@@ -3,7 +3,7 @@ title: A filosofia da amplitude — por que a AWS tem 240 serviços
 created: 2026-07-24
 updated: 2026-07-25
 type: concept
-fase: Magus
+fase: magus
 status: seedling
 publish: true
 tags:

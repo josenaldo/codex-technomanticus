@@ -1,7 +1,7 @@
 ---
 title: "Streaming"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - grpc

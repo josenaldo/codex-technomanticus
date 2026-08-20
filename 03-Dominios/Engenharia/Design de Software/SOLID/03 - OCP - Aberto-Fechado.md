@@ -3,7 +3,7 @@ title: "OCP - Aberto-Fechado"
 created: 2026-06-17
 updated: 2026-06-17
 type: concept
-fase: Iniciado
+fase: iniciado
 status: evergreen
 publish: false
 tags:

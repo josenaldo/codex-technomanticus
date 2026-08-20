@@ -4,7 +4,7 @@ created: 2026-07-30
 updated: 2026-07-30
 type: concept
 status: seedling
-fase: Magus
+fase: magus
 tags:
   - design-de-software
   - design-patterns

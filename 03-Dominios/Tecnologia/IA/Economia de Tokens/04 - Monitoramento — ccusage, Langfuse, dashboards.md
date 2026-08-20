@@ -5,7 +5,7 @@ updated: 2026-07-03
 type: concept
 status: growing
 progress: in_progress
-fase: Iniciado
+fase: iniciado
 publish: true
 tags:
   - economia-tokens

@@ -1,7 +1,7 @@
 ---
 title: "O nil interface e o typed-nil"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - interfaces

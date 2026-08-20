@@ -3,7 +3,7 @@ title: "Docker em CI e na máquina de dev"
 created: 2026-08-02
 updated: 2026-08-02
 type: concept
-fase: Magus
+fase: magus
 status: seedling
 publish: true
 tags:

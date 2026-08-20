@@ -1,7 +1,7 @@
 ---
 title: "O empty interface e any"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - interfaces

@@ -3,7 +3,7 @@ title: "Error handling estruturado"
 created: 2026-05-08
 updated: 2026-06-28
 type: concept
-fase: Adepto
+fase: adepto
 status: growing
 publish: true
 tags:

@@ -1,7 +1,7 @@
 ---
 title: "Live coding em Go"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - entrevista

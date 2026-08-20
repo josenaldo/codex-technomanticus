@@ -1,6 +1,6 @@
 ---
 title: "Transações e exactly-once no Spring Kafka"
-fase: Adepto
+fase: adepto
 tags:
   - java
   - mensageria

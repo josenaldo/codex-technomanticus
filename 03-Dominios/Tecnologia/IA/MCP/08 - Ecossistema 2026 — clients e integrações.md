@@ -3,7 +3,7 @@ title: "Ecossistema 2026 — clients e integrações"
 created: 2026-04-11
 updated: 2026-07-06
 type: concept
-fase: Iniciado
+fase: iniciado
 progress: backlog
 status: growing
 publish: true

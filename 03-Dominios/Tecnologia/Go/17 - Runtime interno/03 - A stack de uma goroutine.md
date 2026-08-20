@@ -1,7 +1,7 @@
 ---
 title: "A stack de uma goroutine"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - runtime

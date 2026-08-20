@@ -3,7 +3,7 @@ title: O paradigma event-driven completo
 created: 2026-07-24
 updated: 2026-07-25
 type: concept
-fase: Iniciado
+fase: iniciado
 status: seedling
 publish: true
 tags: ["cloud","serverless","event-driven","arquitetura"]

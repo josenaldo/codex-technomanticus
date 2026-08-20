@@ -3,7 +3,7 @@ title: "O exame e seu valor — o que é o SAA-C03 e por que fazer"
 created: 2026-07-24
 updated: 2026-07-25
 type: concept
-fase: Iniciado
+fase: iniciado
 status: seedling
 publish: true
 tags: ["cloud","aws","certificacao","carreira"]

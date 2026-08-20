@@ -1,7 +1,7 @@
 ---
 title: "O binário estático"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - build

@@ -1,7 +1,7 @@
 ---
 title: "Alta disponibilidade"
 type: concept
-fase: Adepto
+fase: adepto
 created: 2026-07-24
 updated: 2026-07-25
 status: seedling

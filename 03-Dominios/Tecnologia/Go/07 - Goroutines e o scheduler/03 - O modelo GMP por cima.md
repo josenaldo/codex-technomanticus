@@ -1,7 +1,7 @@
 ---
 title: "O modelo GMP por cima"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - concorrencia

@@ -1,6 +1,6 @@
 ---
 title: Observabilidade em mensageria
-fase: Magus
+fase: magus
 tags:
   - java
   - mensageria

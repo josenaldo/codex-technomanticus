@@ -1,7 +1,7 @@
 ---
 title: "Cross-compilation"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - cross-compilation

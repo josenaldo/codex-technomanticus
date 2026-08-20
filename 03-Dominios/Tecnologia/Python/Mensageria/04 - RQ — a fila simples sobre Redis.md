@@ -3,7 +3,7 @@ title: "RQ — a fila simples sobre Redis"
 created: 2026-07-12
 type: concept
 status: seedling
-fase: Adepto
+fase: adepto
 publish: true
 tags:
   - python

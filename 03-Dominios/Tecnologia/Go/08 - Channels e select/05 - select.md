@@ -1,7 +1,7 @@
 ---
 title: "select"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - channels

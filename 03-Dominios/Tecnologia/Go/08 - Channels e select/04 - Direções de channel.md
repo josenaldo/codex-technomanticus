@@ -1,7 +1,7 @@
 ---
 title: "Direções de channel"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - concorrencia

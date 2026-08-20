@@ -3,7 +3,7 @@ title: "Taxonomia da memória (episódica, semântica, procedural)"
 created: 2026-04-25
 updated: 2026-07-06
 type: concept
-fase: Iniciado
+fase: iniciado
 progress: backlog
 status: seedling
 publish: true

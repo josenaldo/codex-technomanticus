@@ -1,7 +1,7 @@
 ---
 title: "O modelo de memória de slices — len, cap e aliasing"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - slices

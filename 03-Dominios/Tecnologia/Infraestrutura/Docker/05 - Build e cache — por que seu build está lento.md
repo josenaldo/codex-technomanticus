@@ -3,7 +3,7 @@ title: "Build e cache — por que seu build está lento"
 created: 2026-08-02
 updated: 2026-08-02
 type: concept
-fase: Iniciado
+fase: iniciado
 status: seedling
 publish: true
 tags:

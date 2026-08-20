@@ -1,7 +1,7 @@
 ---
 title: "Variáveis, tipos básicos e zero values"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - fundamentos

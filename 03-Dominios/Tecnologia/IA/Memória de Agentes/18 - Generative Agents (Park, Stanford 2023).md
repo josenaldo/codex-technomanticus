@@ -3,7 +3,7 @@ title: "Generative Agents (Park, Stanford 2023)"
 created: 2026-04-25
 updated: 2026-06-28
 type: review
-fase: Iniciado
+fase: iniciado
 status: seedling
 publish: true
 tags:

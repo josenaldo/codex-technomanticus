@@ -6,7 +6,7 @@ type: concept
 progress: backlog
 status: growing
 publish: true
-fase: Magus
+fase: magus
 aliases:
   - Teoria do sistema
   - Teoria dos sistemas

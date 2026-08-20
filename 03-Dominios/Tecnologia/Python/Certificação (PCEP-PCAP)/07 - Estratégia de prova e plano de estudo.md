@@ -2,7 +2,7 @@
 title: "Estratégia de prova e plano de estudo"
 created: 2026-07-12
 type: concept
-fase: Magus
+fase: magus
 status: seedling
 publish: true
 tags:

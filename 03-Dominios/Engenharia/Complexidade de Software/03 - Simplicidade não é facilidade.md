@@ -6,7 +6,7 @@ type: concept
 progress: growing
 status: growing
 publish: true
-fase: Iniciado
+fase: iniciado
 tags:
   - engenharia
   - complexidade-de-software

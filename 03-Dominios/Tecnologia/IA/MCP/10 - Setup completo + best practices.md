@@ -3,7 +3,7 @@ title: "Setup completo + best practices"
 created: 2026-04-11
 updated: 2026-06-28
 type: concept
-fase: Iniciado
+fase: iniciado
 progress: backlog
 status: seedling
 publish: true

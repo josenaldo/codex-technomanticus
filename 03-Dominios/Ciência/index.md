@@ -8,7 +8,7 @@ status: seedling
 tags:
   - moc
   - ciencia-da-computacao
-camada: Ciência
+camada: ciência
 aliases:
   - Ciência da Computação
   - Fundamentos

@@ -4,7 +4,7 @@ created: 2026-08-16
 updated: 2026-08-16
 type: concept
 status: seedling
-fase: Adepto
+fase: adepto
 tags:
   - linux
   - infraestrutura

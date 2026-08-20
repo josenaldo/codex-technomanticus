@@ -1,7 +1,7 @@
 ---
 title: "context.Context — deadline, cancel, values"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - context

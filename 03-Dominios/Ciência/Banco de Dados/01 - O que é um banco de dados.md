@@ -3,7 +3,7 @@ title: "O que é um banco de dados"
 created: 2026-06-17
 updated: 2026-06-17
 type: concept
-fase: Iniciado
+fase: iniciado
 status: evergreen
 publish: false
 tags:

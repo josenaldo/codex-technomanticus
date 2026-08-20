@@ -1,7 +1,7 @@
 ---
 title: "panic e recover"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - erros

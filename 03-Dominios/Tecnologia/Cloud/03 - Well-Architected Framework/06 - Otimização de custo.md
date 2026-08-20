@@ -1,7 +1,7 @@
 ---
 title: "Otimização de custo"
 type: concept
-fase: Adepto
+fase: adepto
 created: 2026-07-20
 updated: 2026-07-25
 status: seedling

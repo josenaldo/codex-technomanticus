@@ -2,7 +2,7 @@
 title: "Autenticação e autorização na prática — a ponte com Auth e Identidade"
 created: 2026-07-11
 type: concept
-fase: Adepto
+fase: adepto
 status: seedling
 publish: true
 tags:

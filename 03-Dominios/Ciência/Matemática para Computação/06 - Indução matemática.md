@@ -3,7 +3,7 @@ title: "Indução matemática"
 created: 2026-06-20
 updated: 2026-06-20
 type: concept
-fase: Adepto
+fase: adepto
 status: evergreen
 publish: false
 tags:

@@ -1,7 +1,7 @@
 ---
 title: "Type assertions e type switch"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - interfaces

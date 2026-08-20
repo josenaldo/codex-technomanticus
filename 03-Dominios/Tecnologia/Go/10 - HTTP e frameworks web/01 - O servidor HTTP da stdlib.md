@@ -1,7 +1,7 @@
 ---
 title: "O servidor HTTP da stdlib"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - http

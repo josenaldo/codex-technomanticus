@@ -99,7 +99,7 @@ created: <YYYY-MM-DD>
 updated: <YYYY-MM-DD>
 type: concept
 status: seedling
-fase: <Iniciado|Adepto|Magus>
+fase: <iniciado|adepto|magus>
 tags:
   - <galho-kebab-case>
   - <dominio-kebab-case>
@@ -219,7 +219,7 @@ Ponte narrativa pro próximo conceito — não só lista de links:
 - **Mermaid com semântica cromática**: azul `#4A90D9` = ok, âmbar `#F5A623` = atenção, vermelho `#D0021B` = erro.
 - **Não duplica conteúdo de notas-irmãs** — wikilink em vez de copiar.
 - **Fontes na seção `## Fontes`**, nunca no corpo da nota.
-- **Brotos** (filename `Xa`, `Xb`): estrutura mais livre, fase: Magus, isentos do piso de linhas.
+- **Brotos** (filename `Xa`, `Xb`): estrutura mais livre, fase: magus, isentos do piso de linhas.
 
 ## Edge cases
 

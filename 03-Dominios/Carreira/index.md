@@ -1,7 +1,7 @@
 ---
 title: "Carreira"
 type: moc
-camada: Carreira
+camada: carreira
 publish: true
 created: 2026-06-23
 updated: 2026-06-23

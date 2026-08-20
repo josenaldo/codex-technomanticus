@@ -4,7 +4,7 @@ created: 2026-07-20
 updated: 2026-07-23
 type: concept
 status: seedling
-fase: Adepto
+fase: adepto
 publish: true
 tags:
   - evolucao-engenharia-ia

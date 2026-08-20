@@ -3,7 +3,7 @@ title: "graphify — knowledge graph de raw"
 created: 2026-04-26
 updated: 2026-07-07
 type: concept
-fase: Iniciado
+fase: iniciado
 progress: backlog
 status: seedling
 publish: true

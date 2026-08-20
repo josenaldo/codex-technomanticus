@@ -3,7 +3,7 @@ title: Os big rocks que faltaram — Cognito, Athena, Step Functions e cia
 created: 2026-07-24
 updated: 2026-07-25
 type: concept
-fase: Adepto
+fase: adepto
 status: seedling
 publish: true
 tags: ["cloud","aws","servicos"]

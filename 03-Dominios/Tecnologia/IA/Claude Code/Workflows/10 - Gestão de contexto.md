@@ -1,7 +1,7 @@
 ---
 title: "Gestão de contexto — qualidade em sessões longas"
 type: concept
-fase: Adepto
+fase: adepto
 progress: in_progress
 publish: true
 created: 2026-05-13

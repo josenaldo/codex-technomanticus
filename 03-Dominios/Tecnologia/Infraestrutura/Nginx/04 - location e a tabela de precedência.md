@@ -3,7 +3,7 @@ title: "location e a tabela de precedência"
 created: 2026-08-08
 updated: 2026-08-08
 type: concept
-fase: Iniciado
+fase: iniciado
 status: evergreen
 publish: true
 tags:

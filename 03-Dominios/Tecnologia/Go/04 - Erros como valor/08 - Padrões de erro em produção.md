@@ -1,7 +1,7 @@
 ---
 title: "Padrões de erro em produção"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - erros

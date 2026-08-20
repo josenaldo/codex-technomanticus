@@ -3,7 +3,7 @@ title: "Aider — o pair programmer de terminal"
 created: 2026-05-02
 updated: 2026-07-05
 type: concept
-fase: Adepto
+fase: adepto
 progress: done
 status: growing
 publish: true

@@ -1,7 +1,7 @@
 ---
 title: "Struct tags e reflection básica"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - struct-tags

@@ -1,7 +1,7 @@
 ---
 title: "A goroutine — o go statement"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - goroutines

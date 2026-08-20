@@ -1,7 +1,7 @@
 ---
 title: "Servidor e cliente gRPC"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - grpc

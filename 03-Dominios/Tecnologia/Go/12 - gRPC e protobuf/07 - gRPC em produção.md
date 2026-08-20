@@ -1,7 +1,7 @@
 ---
 title: "gRPC em produção"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - grpc

@@ -3,7 +3,7 @@ title: "Formulários I: estrutura e elementos"
 created: 2026-06-27
 updated: 2026-06-27
 type: note
-fase: Adepto
+fase: adepto
 tags:
   - html
   - frontend

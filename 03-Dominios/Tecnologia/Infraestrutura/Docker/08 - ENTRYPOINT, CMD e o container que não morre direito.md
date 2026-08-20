@@ -3,7 +3,7 @@ title: "ENTRYPOINT, CMD e o container que não morre direito"
 created: 2026-08-02
 updated: 2026-08-02
 type: concept
-fase: Adepto
+fase: adepto
 status: seedling
 publish: true
 tags:

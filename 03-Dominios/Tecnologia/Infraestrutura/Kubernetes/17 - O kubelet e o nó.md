@@ -3,7 +3,7 @@ title: "O kubelet e o nó"
 created: 2026-08-04
 updated: 2026-08-09
 type: concept
-fase: Magus
+fase: magus
 status: seedling
 publish: true
 tags:

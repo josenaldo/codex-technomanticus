@@ -3,7 +3,7 @@ title: "Code review de código AI — o que muda"
 created: 2026-05-02
 updated: 2026-07-06
 type: concept
-fase: Iniciado
+fase: iniciado
 progress: backlog
 status: seedling
 publish: true

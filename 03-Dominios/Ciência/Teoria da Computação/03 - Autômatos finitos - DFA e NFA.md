@@ -3,7 +3,7 @@ title: "Autômatos finitos - DFA e NFA"
 created: 2026-06-19
 updated: 2026-06-19
 type: concept
-fase: Iniciado
+fase: iniciado
 status: evergreen
 publish: false
 tags:

@@ -3,7 +3,7 @@ title: "Os três pilares: logs, métricas e traces"
 created: 2026-05-08
 updated: 2026-06-28
 type: concept
-fase: Iniciado
+fase: iniciado
 status: growing
 publish: true
 tags:

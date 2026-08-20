@@ -1,7 +1,7 @@
 ---
 title: "Comunicação entre serviços"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - microservices

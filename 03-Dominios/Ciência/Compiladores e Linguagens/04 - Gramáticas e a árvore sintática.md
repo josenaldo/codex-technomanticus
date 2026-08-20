@@ -3,7 +3,7 @@ title: "Gramáticas e a árvore sintática"
 created: 2026-06-21
 updated: 2026-06-21
 type: concept
-fase: Iniciado
+fase: iniciado
 status: evergreen
 publish: false
 tags:

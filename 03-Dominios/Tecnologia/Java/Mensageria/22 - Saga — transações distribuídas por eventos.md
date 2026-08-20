@@ -1,6 +1,6 @@
 ---
 title: "Saga — transações distribuídas por eventos"
-fase: Magus
+fase: magus
 tags:
   - java
   - mensageria

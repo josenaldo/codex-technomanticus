@@ -1,7 +1,7 @@
 ---
 title: "Component libraries e design systems"
 type: concept
-fase: Iniciado
+fase: iniciado
 created: 2026-06-27
 updated: 2026-06-27
 status: seedling

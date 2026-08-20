@@ -1,7 +1,7 @@
 ---
 title: "Cobertura e testes idiomáticos"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - testes

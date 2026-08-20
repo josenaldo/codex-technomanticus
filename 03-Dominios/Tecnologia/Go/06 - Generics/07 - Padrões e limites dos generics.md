@@ -1,7 +1,7 @@
 ---
 title: "Padrões e limites dos generics"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - generics

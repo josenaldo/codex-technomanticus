@@ -3,7 +3,7 @@ title: "GCP em uma nota — a nuvem de dados, rede e Kubernetes"
 created: 2026-07-24
 updated: 2026-07-25
 type: concept
-fase: Adepto
+fase: adepto
 status: seedling
 publish: true
 tags: ["cloud","gcp","servicos"]

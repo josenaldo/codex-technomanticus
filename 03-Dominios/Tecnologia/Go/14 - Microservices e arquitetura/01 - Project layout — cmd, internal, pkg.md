@@ -1,7 +1,7 @@
 ---
 title: "Project layout — cmd, internal, pkg"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - microservices

@@ -1,7 +1,7 @@
 ---
 title: "Escrevendo Go que não parece Java"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - idiomatico

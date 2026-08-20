@@ -3,7 +3,7 @@ title: Estratégia de prova — como sentar e passar
 created: 2026-07-24
 updated: 2026-07-24
 type: concept
-fase: Adepto
+fase: adepto
 status: seedling
 publish: true
 tags: ["cloud","aws","certificacao","estrategia"]

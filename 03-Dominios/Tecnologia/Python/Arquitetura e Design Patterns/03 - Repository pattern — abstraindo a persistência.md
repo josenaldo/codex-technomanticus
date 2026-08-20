@@ -2,7 +2,7 @@
 title: "Repository pattern — abstraindo a persistência"
 created: 2026-07-12
 type: concept
-fase: Magus
+fase: magus
 status: complete
 publish: true
 tags:

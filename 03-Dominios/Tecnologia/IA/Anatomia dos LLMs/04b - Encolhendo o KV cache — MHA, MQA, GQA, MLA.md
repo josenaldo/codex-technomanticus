@@ -4,7 +4,7 @@ created: 2026-06-20
 updated: 2026-07-03
 type: concept
 status: growing
-fase: Magus
+fase: magus
 progress: done
 publish: true
 tags:

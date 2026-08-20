@@ -1,7 +1,7 @@
 ---
 title: "System design com Go"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - system-design

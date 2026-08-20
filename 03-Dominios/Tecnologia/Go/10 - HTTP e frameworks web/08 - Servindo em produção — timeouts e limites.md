@@ -1,7 +1,7 @@
 ---
 title: "Servindo em produção — timeouts e limites"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - http

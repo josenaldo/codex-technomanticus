@@ -2,7 +2,7 @@
 title: "pytest fundamentos — anatomia, discovery e assert introspection"
 created: 2026-07-11
 type: concept
-fase: Adepto
+fase: adepto
 status: seedling
 publish: true
 tags:

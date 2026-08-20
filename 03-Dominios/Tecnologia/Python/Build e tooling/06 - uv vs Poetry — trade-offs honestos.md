@@ -2,7 +2,7 @@
 title: "uv vs Poetry — trade-offs honestos"
 created: 2026-07-12
 type: concept
-fase: Adepto
+fase: adepto
 status: seedling
 publish: true
 tags:

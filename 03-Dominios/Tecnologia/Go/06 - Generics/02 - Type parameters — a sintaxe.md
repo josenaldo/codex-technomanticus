@@ -1,7 +1,7 @@
 ---
 title: "Type parameters — a sintaxe"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - generics

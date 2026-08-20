@@ -3,7 +3,7 @@ title: "kubectl é um cliente de API"
 created: 2026-08-03
 updated: 2026-08-03
 type: concept
-fase: Iniciado
+fase: iniciado
 status: seedling
 publish: true
 tags:

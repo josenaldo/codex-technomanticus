@@ -1,7 +1,7 @@
 ---
 title: "Estratégias de tratamento de erro"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - erros

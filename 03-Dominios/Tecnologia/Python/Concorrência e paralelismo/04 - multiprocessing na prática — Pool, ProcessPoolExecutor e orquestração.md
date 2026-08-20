@@ -3,7 +3,7 @@ title: "multiprocessing na prática — Pool, ProcessPoolExecutor e orquestraç�
 created: 2026-07-10
 type: concept
 status: complete
-fase: Adepto→Magus
+fase: adepto→magus
 publish: true
 tags:
   - python

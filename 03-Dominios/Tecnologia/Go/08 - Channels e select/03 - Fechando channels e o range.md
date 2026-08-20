@@ -1,7 +1,7 @@
 ---
 title: "Fechando channels e o range"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - concorrencia

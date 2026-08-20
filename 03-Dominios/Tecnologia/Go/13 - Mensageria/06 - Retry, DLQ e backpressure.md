@@ -1,7 +1,7 @@
 ---
 title: "Retry, DLQ e backpressure"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - mensageria

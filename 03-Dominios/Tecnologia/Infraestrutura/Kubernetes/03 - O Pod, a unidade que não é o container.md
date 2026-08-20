@@ -3,7 +3,7 @@ title: "O Pod, a unidade que não é o container"
 created: 2026-08-03
 updated: 2026-08-03
 type: concept
-fase: Iniciado
+fase: iniciado
 status: seedling
 publish: true
 tags:

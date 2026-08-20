@@ -1,7 +1,7 @@
 ---
 title: "Fuzzing"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - testes

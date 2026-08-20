@@ -5,7 +5,7 @@ type: concept
 progress: backlog
 status: seedling
 publish: true
-fase: Iniciado
+fase: iniciado
 tags:
   - python
   - collections

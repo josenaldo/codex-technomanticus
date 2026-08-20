@@ -1,6 +1,6 @@
 ---
 title: "Eventos in-process do Spring"
-fase: Adepto
+fase: adepto
 tags:
   - java
   - mensageria

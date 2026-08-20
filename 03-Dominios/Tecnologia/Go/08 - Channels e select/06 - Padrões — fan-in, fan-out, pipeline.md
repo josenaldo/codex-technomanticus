@@ -1,7 +1,7 @@
 ---
 title: "Padrões — fan-in, fan-out, pipeline"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - channels

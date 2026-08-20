@@ -4,7 +4,7 @@ created: 2026-07-07
 updated: 2026-07-07
 type: concept
 status: seedling
-fase: Adepto
+fase: adepto
 tags:
   - system-design
   - arquitetura

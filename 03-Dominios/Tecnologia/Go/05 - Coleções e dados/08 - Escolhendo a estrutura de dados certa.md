@@ -1,7 +1,7 @@
 ---
 title: "Escolhendo a estrutura de dados certa"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - slices

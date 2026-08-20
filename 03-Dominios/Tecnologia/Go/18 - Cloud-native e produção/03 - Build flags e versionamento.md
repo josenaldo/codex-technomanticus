@@ -1,7 +1,7 @@
 ---
 title: "Build flags e versionamento"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - build

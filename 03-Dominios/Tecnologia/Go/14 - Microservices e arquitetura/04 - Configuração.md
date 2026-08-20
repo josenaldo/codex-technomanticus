@@ -1,7 +1,7 @@
 ---
 title: "Configuração"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - microservices

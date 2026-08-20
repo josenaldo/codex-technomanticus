@@ -3,7 +3,7 @@ title: "Comunicação entre workers: postMessage e MessageChannel"
 created: 2026-05-07
 updated: 2026-06-28
 type: concept
-fase: Adepto
+fase: adepto
 status: growing
 publish: true
 tags:

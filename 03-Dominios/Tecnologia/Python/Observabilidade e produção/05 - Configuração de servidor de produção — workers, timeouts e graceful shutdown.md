@@ -2,7 +2,7 @@
 title: "Configuração de servidor de produção — workers, timeouts e graceful shutdown"
 created: 2026-07-12
 type: concept
-fase: Magus
+fase: magus
 status: seedling
 publish: true
 tags:

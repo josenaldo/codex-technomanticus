@@ -3,7 +3,7 @@ title: "GitHub Copilot e Copilot Agents"
 created: 2026-05-02
 updated: 2026-06-27
 type: concept
-fase: Adepto
+fase: adepto
 progress: done
 status: growing
 publish: true

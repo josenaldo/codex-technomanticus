@@ -3,7 +3,7 @@ title: "O que é memória em IA"
 created: 2026-04-25
 updated: 2026-07-06
 type: concept
-fase: Iniciado
+fase: iniciado
 progress: backlog
 status: growing
 publish: true

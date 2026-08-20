@@ -1,7 +1,7 @@
 ---
 title: "expvar e runtime metrics"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - observabilidade

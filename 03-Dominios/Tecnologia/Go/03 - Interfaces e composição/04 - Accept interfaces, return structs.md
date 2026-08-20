@@ -1,7 +1,7 @@
 ---
 title: "Accept interfaces, return structs"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - interfaces

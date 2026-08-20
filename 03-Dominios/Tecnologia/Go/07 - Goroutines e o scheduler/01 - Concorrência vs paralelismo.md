@@ -1,7 +1,7 @@
 ---
 title: "Concorrência vs paralelismo"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - concorrencia

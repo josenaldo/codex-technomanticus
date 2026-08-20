@@ -1,7 +1,7 @@
 ---
 title: "Consumers e workers"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - mensageria

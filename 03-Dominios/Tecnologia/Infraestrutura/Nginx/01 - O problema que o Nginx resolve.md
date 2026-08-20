@@ -3,7 +3,7 @@ title: "O problema que o Nginx resolve"
 created: 2026-08-06
 updated: 2026-08-09
 type: concept
-fase: Iniciado
+fase: iniciado
 status: evergreen
 publish: true
 tags:

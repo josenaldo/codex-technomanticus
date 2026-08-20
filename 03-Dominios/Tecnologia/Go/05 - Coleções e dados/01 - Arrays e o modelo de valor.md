@@ -1,7 +1,7 @@
 ---
 title: "Arrays e o modelo de valor"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - arrays

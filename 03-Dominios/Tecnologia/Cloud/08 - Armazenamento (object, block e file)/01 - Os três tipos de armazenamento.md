@@ -1,7 +1,7 @@
 ---
 title: "Os três tipos de armazenamento"
 type: concept
-fase: Iniciado
+fase: iniciado
 created: 2026-07-23
 updated: 2026-07-25
 status: seedling

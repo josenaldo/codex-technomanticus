@@ -6,7 +6,7 @@ type: concept
 progress: backlog
 status: seedling
 publish: true
-fase: Adepto→Magus
+fase: adepto→magus
 tags:
   - python
   - tipagem-moderna

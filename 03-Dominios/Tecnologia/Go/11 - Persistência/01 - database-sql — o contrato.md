@@ -1,7 +1,7 @@
 ---
 title: "database/sql — o contrato"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - persistencia

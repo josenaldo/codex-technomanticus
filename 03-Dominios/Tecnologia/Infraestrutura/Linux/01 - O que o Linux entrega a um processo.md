@@ -4,7 +4,7 @@ created: 2026-08-12
 updated: 2026-08-12
 type: concept
 status: seedling
-fase: Iniciado
+fase: iniciado
 tags:
   - linux
   - infraestrutura

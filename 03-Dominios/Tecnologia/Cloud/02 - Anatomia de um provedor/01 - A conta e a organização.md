@@ -1,7 +1,7 @@
 ---
 title: "A conta e a organização"
 type: concept
-fase: Iniciado
+fase: iniciado
 created: 2026-07-20
 updated: 2026-07-25
 status: seedling

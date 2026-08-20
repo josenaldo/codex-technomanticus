@@ -1,7 +1,7 @@
 ---
 title: "Ciclo de vida de uma instância"
 type: concept
-fase: Adepto
+fase: adepto
 created: 2026-07-23
 updated: 2026-07-25
 status: seedling

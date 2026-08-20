@@ -1,7 +1,7 @@
 ---
 title: "Erros são valores — o tipo error"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - erros

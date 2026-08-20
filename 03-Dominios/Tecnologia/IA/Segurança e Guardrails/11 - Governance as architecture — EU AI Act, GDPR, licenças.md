@@ -3,7 +3,7 @@ title: "Governance as architecture — EU AI Act, GDPR, licenças"
 created: 2026-05-02
 updated: 2026-07-06
 type: concept
-fase: Iniciado
+fase: iniciado
 progress: in_progress
 status: growing
 publish: true

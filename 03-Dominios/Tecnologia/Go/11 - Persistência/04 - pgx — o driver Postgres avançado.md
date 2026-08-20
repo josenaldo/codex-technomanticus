@@ -1,7 +1,7 @@
 ---
 title: "pgx — o driver Postgres avançado"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - persistencia

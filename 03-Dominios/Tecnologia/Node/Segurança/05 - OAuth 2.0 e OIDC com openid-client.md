@@ -3,7 +3,7 @@ title: "OAuth 2.0 e OIDC com openid-client"
 created: 2026-05-13
 updated: 2026-06-29
 type: concept
-fase: Adepto
+fase: adepto
 status: growing
 publish: true
 tags:

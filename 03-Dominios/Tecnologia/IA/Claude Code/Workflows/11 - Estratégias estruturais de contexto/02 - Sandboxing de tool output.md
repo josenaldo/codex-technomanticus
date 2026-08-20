@@ -6,7 +6,7 @@ publish: true
 created: 2026-05-22
 updated: 2026-07-08
 status: growing
-fase: Adepto
+fase: adepto
 tags:
   - claude-code
   - workflows

@@ -1,7 +1,7 @@
 ---
 title: "File storage e a escolha do armazenamento"
 type: concept
-fase: Magus
+fase: magus
 created: 2026-07-23
 updated: 2026-07-25
 status: seedling

@@ -3,7 +3,7 @@ title: "Free-threading — o GIL opcional (PEP 703)"
 created: 2026-07-10
 type: concept
 status: seedling
-fase: Magus
+fase: magus
 tags:
   - python
   - cpython-internals

@@ -1,7 +1,7 @@
 ---
 title: "Armadilhas — leaks e loop var"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - goroutines

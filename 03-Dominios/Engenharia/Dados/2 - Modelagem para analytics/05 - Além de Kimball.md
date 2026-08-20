@@ -1,6 +1,6 @@
 ---
 title: "Além de Kimball"
-fase: Adepto
+fase: adepto
 publish: true
 created: 2026-07-12
 updated: 2026-07-12

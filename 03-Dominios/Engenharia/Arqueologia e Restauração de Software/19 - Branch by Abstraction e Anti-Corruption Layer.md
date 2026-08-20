@@ -4,7 +4,7 @@ created: 2026-07-03
 updated: 2026-07-03
 type: concept
 status: seedling
-fase: Magus
+fase: magus
 tags:
   - arqueologia-e-restauracao-de-software
   - engenharia

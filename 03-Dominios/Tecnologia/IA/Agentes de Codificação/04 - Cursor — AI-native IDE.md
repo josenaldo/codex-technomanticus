@@ -6,7 +6,7 @@ type: concept
 progress: done
 status: growing
 publish: true
-fase: Adepto
+fase: adepto
 tags:
   - agentes-codificacao
   - ia

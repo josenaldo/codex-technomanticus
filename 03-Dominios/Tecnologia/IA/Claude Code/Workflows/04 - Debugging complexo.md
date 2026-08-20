@@ -1,7 +1,7 @@
 ---
 title: "Debugging complexo — diagnosticar, não só corrigir"
 type: concept
-fase: Adepto
+fase: adepto
 progress: in_progress
 publish: true
 created: 2026-05-13

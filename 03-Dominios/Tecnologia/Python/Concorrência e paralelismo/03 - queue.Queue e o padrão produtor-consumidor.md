@@ -3,7 +3,7 @@ title: "queue.Queue e o padrão produtor-consumidor"
 created: 2026-07-10
 type: concept
 status: complete
-fase: Adepto
+fase: adepto
 publish: true
 tags:
   - python

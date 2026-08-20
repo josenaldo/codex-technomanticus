@@ -3,7 +3,7 @@ title: "Bun como runtime e toolkit all-in-one"
 created: 2026-06-24
 updated: 2026-06-25
 type: concept
-fase: Adepto
+fase: adepto
 status: seedling
 publish: true
 tags:

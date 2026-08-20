@@ -1,7 +1,7 @@
 ---
 title: "Worker pools"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - channels

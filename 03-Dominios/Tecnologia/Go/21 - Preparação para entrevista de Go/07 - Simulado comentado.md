@@ -1,7 +1,7 @@
 ---
 title: "Simulado comentado"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - entrevista

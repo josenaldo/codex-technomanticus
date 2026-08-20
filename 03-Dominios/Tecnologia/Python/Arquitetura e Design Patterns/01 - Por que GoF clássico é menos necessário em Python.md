@@ -2,7 +2,7 @@
 title: "Por que GoF clássico é menos necessário em Python"
 created: 2026-07-12
 type: concept
-fase: Magus
+fase: magus
 status: seedling
 publish: true
 tags:

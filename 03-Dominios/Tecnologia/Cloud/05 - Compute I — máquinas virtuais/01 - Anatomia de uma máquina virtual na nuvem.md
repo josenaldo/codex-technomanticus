@@ -1,7 +1,7 @@
 ---
 title: "Anatomia de uma máquina virtual na nuvem"
 type: concept
-fase: Iniciado
+fase: iniciado
 created: 2026-07-23
 updated: 2026-07-25
 status: seedling

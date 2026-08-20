@@ -3,7 +3,7 @@ title: "O problema da parada"
 created: 2026-06-19
 updated: 2026-06-19
 type: concept
-fase: Magus
+fase: magus
 status: evergreen
 publish: false
 tags:

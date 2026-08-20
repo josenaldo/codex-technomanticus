@@ -6,7 +6,7 @@ type: concept
 progress: backlog
 status: seedling
 publish: false
-fase: Magus
+fase: magus
 tags:
   - ciencia-da-computacao
   - algoritmos

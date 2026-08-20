@@ -1,7 +1,7 @@
 ---
 title: "Concorrência em entrevista"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - concorrência

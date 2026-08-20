@@ -1,7 +1,7 @@
 ---
 title: "Request e Response"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - http

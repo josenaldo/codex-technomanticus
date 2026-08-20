@@ -1,7 +1,7 @@
 ---
 title: "RDS e Managed Databases a fundo"
 type: concept
-fase: Adepto
+fase: adepto
 created: 2026-07-23
 updated: 2026-07-25
 status: seedling

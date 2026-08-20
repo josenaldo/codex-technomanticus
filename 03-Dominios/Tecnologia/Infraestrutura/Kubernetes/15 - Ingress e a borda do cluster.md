@@ -3,7 +3,7 @@ title: "Ingress e a borda do cluster"
 created: 2026-08-03
 updated: 2026-08-03
 type: concept
-fase: Adepto
+fase: adepto
 status: seedling
 publish: true
 tags:

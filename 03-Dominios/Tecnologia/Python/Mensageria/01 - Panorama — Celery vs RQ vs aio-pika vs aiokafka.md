@@ -2,7 +2,7 @@
 title: "Panorama — Celery vs RQ vs aio-pika vs aiokafka"
 created: 2026-07-12
 type: concept
-fase: Adepto
+fase: adepto
 status: seedling
 publish: true
 tags:

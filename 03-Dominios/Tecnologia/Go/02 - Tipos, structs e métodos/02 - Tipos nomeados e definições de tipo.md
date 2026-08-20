@@ -1,7 +1,7 @@
 ---
 title: "Tipos nomeados e definições de tipo"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - tipos

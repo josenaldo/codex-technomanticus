@@ -1,7 +1,7 @@
 ---
 title: "Um serviço bem estruturado"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - microservices

@@ -3,7 +3,7 @@ title: "Abstenção — projetar e medir o \"não sei\""
 created: 2026-08-16
 updated: 2026-08-19
 type: concept
-fase: Adepto
+fase: adepto
 progress: backlog
 status: seedling
 publish: true

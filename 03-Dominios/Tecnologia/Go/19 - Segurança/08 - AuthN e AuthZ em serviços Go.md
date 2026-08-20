@@ -1,7 +1,7 @@
 ---
 title: "AuthN e AuthZ em serviços Go"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - seguranca

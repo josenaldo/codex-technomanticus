@@ -1,7 +1,7 @@
 ---
 title: "go vet, golangci-lint e ferramentas"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - go-vet

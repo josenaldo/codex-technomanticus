@@ -2,7 +2,7 @@
 title: "Capstone — processamento assíncrono na API de Tarefas"
 created: 2026-07-12
 type: concept
-fase: Magus
+fase: magus
 status: complete
 publish: true
 tags:

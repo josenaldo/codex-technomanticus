@@ -1,7 +1,7 @@
 ---
 title: "A virada mental — pensar em serviços, não em servidores"
 type: concept
-fase: Magus
+fase: magus
 created: 2026-07-20
 updated: 2026-07-25
 status: seedling

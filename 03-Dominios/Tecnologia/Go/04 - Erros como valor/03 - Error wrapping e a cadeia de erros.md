@@ -1,7 +1,7 @@
 ---
 title: "Error wrapping e a cadeia de erros"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - erros

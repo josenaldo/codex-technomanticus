@@ -1,7 +1,7 @@
 ---
 title: "Interfaces implícitas e satisfação estrutural"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - interfaces

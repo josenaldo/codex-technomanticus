@@ -4,7 +4,7 @@ created: 2026-05-28
 updated: 2026-07-03
 type: concept
 status: growing
-fase: Iniciado
+fase: iniciado
 progress: in_progress
 tags:
   - improvement-loop

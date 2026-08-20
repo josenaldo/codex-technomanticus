@@ -3,7 +3,7 @@ title: "Capstone — projetando a camada de persistência de um serviço real"
 created: 2026-07-11
 type: concept
 status: complete
-fase: Magus
+fase: magus
 tags:
   - python
   - sqlalchemy

@@ -1,7 +1,7 @@
 ---
 title: "Goroutines vs threads, event loop e GIL"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - concorrencia

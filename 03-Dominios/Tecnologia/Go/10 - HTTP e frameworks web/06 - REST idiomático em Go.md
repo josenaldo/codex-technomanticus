@@ -1,7 +1,7 @@
 ---
 title: "REST idiomático em Go"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - http

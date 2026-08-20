@@ -14,7 +14,7 @@ aliases:
   - AI engineering gap
   - Disciplina de engenharia AI
 progress: done
-fase: Adepto
+fase: adepto
 ---
 
 # Vibe coding vs engenharia disciplinada

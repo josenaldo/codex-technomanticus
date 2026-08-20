@@ -2,7 +2,7 @@
 title: "Rate limiting e proteção contra abuso"
 created: 2026-07-11
 type: concept
-fase: Magus
+fase: magus
 status: seedling
 publish: true
 tags:

@@ -2,7 +2,7 @@
 title: "Comunicação síncrona entre serviços — httpx"
 created: 2026-07-12
 type: concept
-fase: Magus
+fase: magus
 status: complete
 publish: true
 tags:

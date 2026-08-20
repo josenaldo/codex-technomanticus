@@ -2,7 +2,7 @@
 title: "Panorama — de monólito modular a microservices em Python"
 created: 2026-07-12
 type: concept
-fase: Magus
+fase: magus
 status: seedling
 publish: true
 tags:

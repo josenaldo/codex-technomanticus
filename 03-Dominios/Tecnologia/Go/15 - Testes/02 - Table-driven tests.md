@@ -1,7 +1,7 @@
 ---
 title: "Table-driven tests"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - testes

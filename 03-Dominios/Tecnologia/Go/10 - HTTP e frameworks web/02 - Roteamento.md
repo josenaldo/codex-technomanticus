@@ -1,7 +1,7 @@
 ---
 title: "Roteamento"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - http

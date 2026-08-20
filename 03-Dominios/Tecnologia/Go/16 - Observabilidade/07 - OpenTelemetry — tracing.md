@@ -1,7 +1,7 @@
 ---
 title: "OpenTelemetry — tracing"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - observabilidade

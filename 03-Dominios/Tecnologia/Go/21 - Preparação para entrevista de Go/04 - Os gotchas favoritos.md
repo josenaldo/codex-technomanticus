@@ -1,7 +1,7 @@
 ---
 title: "Os gotchas favoritos"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - entrevistas

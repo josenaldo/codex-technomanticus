@@ -3,7 +3,7 @@ title: "Zero trust e defesa em profundidade"
 created: 2026-06-20
 updated: 2026-06-20
 type: concept
-fase: Magus
+fase: magus
 status: evergreen
 publish: false
 tags:

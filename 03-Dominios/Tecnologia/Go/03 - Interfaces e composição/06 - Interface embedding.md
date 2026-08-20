@@ -1,7 +1,7 @@
 ---
 title: "Interface embedding"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - interfaces

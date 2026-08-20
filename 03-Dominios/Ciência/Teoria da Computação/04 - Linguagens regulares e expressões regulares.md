@@ -3,7 +3,7 @@ title: "Linguagens regulares e expressões regulares"
 created: 2026-06-19
 updated: 2026-06-19
 type: concept
-fase: Iniciado
+fase: iniciado
 status: evergreen
 publish: false
 tags:

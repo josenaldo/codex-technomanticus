@@ -2,7 +2,7 @@
 title: "Containers vs serverless — trade-offs honestos"
 created: 2026-07-12
 type: concept
-fase: Magus
+fase: magus
 status: seedling
 publish: true
 tags:

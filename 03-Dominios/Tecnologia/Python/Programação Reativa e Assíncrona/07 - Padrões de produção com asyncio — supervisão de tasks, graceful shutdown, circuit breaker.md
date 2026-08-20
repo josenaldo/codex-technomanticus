@@ -3,7 +3,7 @@ title: "Padrões de produção com asyncio — supervisão de tasks, graceful sh
 created: 2026-07-11
 type: concept
 status: complete
-fase: Magus
+fase: magus
 publish: true
 tags:
   - python

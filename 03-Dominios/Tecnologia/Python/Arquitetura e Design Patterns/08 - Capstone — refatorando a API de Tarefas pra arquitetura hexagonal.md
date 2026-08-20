@@ -2,7 +2,7 @@
 title: "Capstone — refatorando a API de Tarefas pra arquitetura hexagonal"
 created: 2026-07-12
 type: concept
-fase: Magus
+fase: magus
 status: complete
 publish: true
 tags:

@@ -7,7 +7,7 @@ candidatos — é o que mata o "parágrafo óbvio".
 ## Entrada (a SKILL preenche)
 
 ```yaml
-fase: Magus                  # Iniciado | Adepto | Magus (default Magus se a nota não tem fase)
+fase: magus                  # Iniciado | Adepto | Magus (default Magus se a nota não tem fase)
 nota:
   titulo: "<título>"
   corpo: |

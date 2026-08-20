@@ -4,7 +4,7 @@ created: 2026-05-02
 updated: 2026-06-21
 type: concept
 status: evergreen
-fase: Adepto
+fase: adepto
 progress: done
 publish: true
 tags:

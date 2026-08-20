@@ -3,7 +3,7 @@ title: "MCP servers oficiais e populares"
 created: 2026-04-11
 updated: 2026-07-06
 type: concept
-fase: Iniciado
+fase: iniciado
 progress: backlog
 status: seedling
 publish: true

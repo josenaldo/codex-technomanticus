@@ -3,7 +3,7 @@ title: "Arquitetura de estilos: CSS Modules, CSS-in-JS e zero-runtime"
 created: 2026-06-27
 updated: 2026-06-27
 type: note
-fase: Magus
+fase: magus
 tags:
   - css
   - frontend

@@ -1,7 +1,7 @@
 ---
 title: "GORM — o ORM"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - persistencia

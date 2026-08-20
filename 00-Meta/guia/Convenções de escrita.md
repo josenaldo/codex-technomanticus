@@ -156,7 +156,7 @@ O modo de falha mais comum: conceitos enfileirados sem que as peças se encaixem
 
 ### Reconciliação com o uso-referência
 
-Atomicidade (uma ideia por nota) e leitura-de-livro parecem brigar, mas a convenção **broto → galho** resolve: o núcleo numerado é o capítulo linear que ensina; sub-tópicos avançados viram **brotos** (notas `Xa`/`Xb`, `fase: Magus`) que servem de profundidade consultável. Núcleo que guia + brotos que aprofundam. Ver [[Decisões do vault]].
+Atomicidade (uma ideia por nota) e leitura-de-livro parecem brigar, mas a convenção **broto → galho** resolve: o núcleo numerado é o capítulo linear que ensina; sub-tópicos avançados viram **brotos** (notas `Xa`/`Xb`, `fase: magus`) que servem de profundidade consultável. Núcleo que guia + brotos que aprofundam. Ver [[Decisões do vault]].
 
 ### 15 práticas estruturais
 

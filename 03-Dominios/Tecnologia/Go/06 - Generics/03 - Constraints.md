@@ -1,7 +1,7 @@
 ---
 title: "Constraints"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - generics

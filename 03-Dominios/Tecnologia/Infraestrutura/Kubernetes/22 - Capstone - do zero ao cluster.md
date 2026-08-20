@@ -3,7 +3,7 @@ title: "Capstone — do zero ao cluster"
 created: 2026-08-04
 updated: 2026-08-04
 type: concept
-fase: Magus
+fase: magus
 status: seedling
 publish: true
 tags:

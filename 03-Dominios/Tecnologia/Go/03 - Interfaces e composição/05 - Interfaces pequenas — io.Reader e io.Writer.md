@@ -1,7 +1,7 @@
 ---
 title: "Interfaces pequenas — io.Reader e io.Writer"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - interfaces

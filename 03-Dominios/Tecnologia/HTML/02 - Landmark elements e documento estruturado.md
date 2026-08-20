@@ -3,7 +3,7 @@ title: "Landmark elements e documento estruturado"
 created: 2026-06-27
 updated: 2026-06-27
 type: note
-fase: Iniciado
+fase: iniciado
 tags:
   - html
   - frontend

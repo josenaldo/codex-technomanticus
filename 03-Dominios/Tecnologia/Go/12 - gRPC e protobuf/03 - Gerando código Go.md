@@ -1,7 +1,7 @@
 ---
 title: "Gerando código Go"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - grpc

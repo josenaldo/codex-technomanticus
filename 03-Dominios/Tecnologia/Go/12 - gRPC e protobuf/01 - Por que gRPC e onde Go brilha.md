@@ -1,7 +1,7 @@
 ---
 title: "Por que gRPC e onde Go brilha"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - grpc

@@ -4,7 +4,7 @@ created: 2026-07-02
 updated: 2026-07-02
 type: concept
 status: seedling
-fase: Adepto
+fase: adepto
 tags:
   - arqueologia-e-restauracao-de-software
   - engenharia

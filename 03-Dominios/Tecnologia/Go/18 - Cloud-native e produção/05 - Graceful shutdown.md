@@ -1,7 +1,7 @@
 ---
 title: "Graceful shutdown"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - cloud-native

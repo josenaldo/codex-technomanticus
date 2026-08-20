@@ -2,7 +2,7 @@
 title: "Mocking com unittest.mock e pytest-mock"
 created: 2026-07-11
 type: concept
-fase: Adepto
+fase: adepto
 status: complete
 publish: true
 tags:

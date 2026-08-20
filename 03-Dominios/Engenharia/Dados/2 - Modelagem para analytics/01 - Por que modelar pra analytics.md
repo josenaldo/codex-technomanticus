@@ -4,7 +4,7 @@ created: 2026-07-12
 updated: 2026-07-12
 type: concept
 status: seedling
-fase: Adepto
+fase: adepto
 tags:
   - dados
   - engenharia-de-dados

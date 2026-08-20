@@ -1,7 +1,7 @@
 ---
 title: "Resiliência — circuit breaker, retry, timeout"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - microservices

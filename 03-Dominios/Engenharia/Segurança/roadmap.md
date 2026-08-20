@@ -30,10 +30,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 **Esquema de `fase:` detectado:** COM fase (Iniciado 01-06 · Adepto 07-13 · Magus 14-22)
 **Piso de linhas:** aplicável nominalmente (Iniciado ≥300 / Adepto ≥400 / Magus ≥500), **mas** vigora o padrão capítulo de livro, que o substitui — as 22 notas estão entre 450 e 496 linhas, dentro da faixa de nota profunda. Piso só é gap real se a nota for rasa de conteúdo, não por contagem.
 
-> [!done] Achado de inventário — `fase:` em minúscula: RESOLVIDO em 2026-08-20 (vault inteiro)
-> As 22 notas usam `fase: iniciado|adepto|magus` em minúscula, contra a convenção (`Iniciado|Adepto|Magus`). A conferência vault-wide mostrou que **não é defeito local**: são **864 notas em minúscula contra 1.237 em maiúscula** (~41%), espalhadas por dezenas de galhos — inclusive alguns já declarados 100% completos, como Complexidade de Software (17) e Padrões de Projeto/GoF (23). Também aparecem 12 notas com `fase: Adepto→Magus`.
+> [!done] Achado de inventário — `fase:` padronizado em **minúscula** em 2026-08-20 (vault inteiro)
+> As 22 notas usavam `fase: iniciado|adepto|magus` em minúscula, e o vault estava dividido entre as duas grafias. A conferência vault-wide mostrou que **não é defeito local**: são **864 notas em minúscula contra 1.237 em maiúscula** (~41%), espalhadas por dezenas de galhos — inclusive alguns já declarados 100% completos, como Complexidade de Software (17) e Padrões de Projeto/GoF (23). Também aparecem 12 notas com `fase: Adepto→Magus`.
 > Consequência: qualquer `GROUP BY fase` do Dataview parte cada fase em duas fatias, e MOCs que filtram por fase perdem metade das notas.
-> **Resolvido:** normalização aplicada às 864 notas em 2026-08-20 (commit `fac5f2b2`), só a linha do frontmatter. As 22 notas deste galho agora usam `Iniciado|Adepto|Magus`. As entradas abaixo ainda registram `fase: iniciado` porque foram escritas antes da correção — é registro histórico, não pendência.
+> **Resolvido:** o vault inteiro foi padronizado em **minúscula** — 2.113 valores de `fase` e 4 de `camada`. A decisão é do autor e tem razão explícita: sendo dado de frontmatter (vocabulário controlado, não prosa), a maiúscula inicial atrapalha mais do que ajuda. As skills `escrever-nota`, `verificar-nota`, `diagnosticar-galho` e `enriquecer-nota` e os templates foram atualizados junto, senão a maiúscula voltaria na próxima nota criada. As entradas abaixo, que registram `fase: iniciado`, estão corretas.
 
 ## Tabela-resumo
 

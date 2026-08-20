@@ -1,7 +1,7 @@
 ---
 title: "Padrões de uso e o caminho para a elasticidade"
 type: concept
-fase: Magus
+fase: magus
 created: 2026-07-23
 updated: 2026-07-25
 status: seedling

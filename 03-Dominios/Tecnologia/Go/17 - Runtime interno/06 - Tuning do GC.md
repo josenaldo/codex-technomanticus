@@ -1,7 +1,7 @@
 ---
 title: "Tuning do GC"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - runtime

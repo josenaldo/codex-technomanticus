@@ -1,6 +1,6 @@
 ---
 title: "Star vs snowflake e tipos de fato"
-fase: Adepto
+fase: adepto
 publish: true
 created: 2026-07-12
 updated: 2026-07-12

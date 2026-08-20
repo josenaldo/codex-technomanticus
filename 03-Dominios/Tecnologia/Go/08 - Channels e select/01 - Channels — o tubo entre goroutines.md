@@ -1,7 +1,7 @@
 ---
 title: "Channels — o tubo entre goroutines"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - concorrencia

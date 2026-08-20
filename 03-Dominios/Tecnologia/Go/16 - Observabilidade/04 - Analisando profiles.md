@@ -1,7 +1,7 @@
 ---
 title: "Analisando profiles"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - observabilidade

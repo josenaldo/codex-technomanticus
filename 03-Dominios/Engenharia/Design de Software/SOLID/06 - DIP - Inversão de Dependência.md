@@ -3,7 +3,7 @@ title: "DIP - Inversão de Dependência"
 created: 2026-06-17
 updated: 2026-06-17
 type: concept
-fase: Adepto
+fase: adepto
 status: evergreen
 publish: false
 tags:

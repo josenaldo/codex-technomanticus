@@ -1,7 +1,7 @@
 ---
 title: "Padrões de processamento"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - mensageria

@@ -4,7 +4,7 @@ created: 2026-07-29
 updated: 2026-07-29
 type: concept
 status: seedling
-fase: Magus
+fase: magus
 tags:
   - ux
   - metricas

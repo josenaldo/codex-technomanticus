@@ -1,7 +1,7 @@
 ---
 title: "Segurança em Go — o panorama"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - seguranca

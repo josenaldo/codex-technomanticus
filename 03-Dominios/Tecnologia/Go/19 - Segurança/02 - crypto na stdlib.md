@@ -1,7 +1,7 @@
 ---
 title: "crypto na stdlib"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - seguranca

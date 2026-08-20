@@ -3,7 +3,7 @@ title: "Como o modelo OO difere entre linguagens"
 created: 2026-06-17
 updated: 2026-06-17
 type: concept
-fase: Magus
+fase: magus
 status: evergreen
 publish: false
 tags:

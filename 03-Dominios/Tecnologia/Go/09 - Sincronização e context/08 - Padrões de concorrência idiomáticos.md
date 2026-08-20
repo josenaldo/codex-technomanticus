@@ -1,7 +1,7 @@
 ---
 title: "Padrões de concorrência idiomáticos"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - concorrencia

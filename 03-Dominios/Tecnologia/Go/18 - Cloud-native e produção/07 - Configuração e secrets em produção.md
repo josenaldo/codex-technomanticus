@@ -1,7 +1,7 @@
 ---
 title: "Configuração e secrets em produção"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - configuracao

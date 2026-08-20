@@ -3,7 +3,7 @@ title: "Cliente de API Gateway — autenticação serviço-a-serviço"
 created: 2026-07-12
 updated: 2026-07-12
 type: concept
-fase: Magus
+fase: magus
 status: seedling
 publish: true
 tags:

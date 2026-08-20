@@ -1,7 +1,7 @@
 ---
 title: "Structs — definição e inicialização"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - structs

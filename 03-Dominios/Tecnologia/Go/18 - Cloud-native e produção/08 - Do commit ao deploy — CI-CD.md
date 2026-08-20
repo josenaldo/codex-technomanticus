@@ -1,7 +1,7 @@
 ---
 title: "Do commit ao deploy — CI/CD"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - cicd

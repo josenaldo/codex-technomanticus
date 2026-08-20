@@ -3,7 +3,7 @@ title: "asyncio na prática — gather, TaskGroup, timeouts e cancelamento"
 created: 2026-07-10
 type: concept
 status: complete
-fase: Magus
+fase: magus
 publish: true
 tags:
   - python

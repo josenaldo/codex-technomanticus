@@ -3,7 +3,7 @@ title: "Tipos primitivos, literais e inferência"
 created: 2026-06-23
 updated: 2026-06-23
 type: concept
-fase: Iniciado
+fase: iniciado
 status: seedling
 publish: true
 tags:

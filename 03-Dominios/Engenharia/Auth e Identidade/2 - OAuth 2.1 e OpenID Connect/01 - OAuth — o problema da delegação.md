@@ -4,7 +4,7 @@ created: 2026-07-10
 updated: 2026-07-10
 type: concept
 status: seedling
-fase: Adepto
+fase: adepto
 tags:
   - auth
   - identidade

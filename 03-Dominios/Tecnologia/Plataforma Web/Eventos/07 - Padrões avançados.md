@@ -3,7 +3,7 @@ title: "Padrões avançados de eventos"
 created: 2026-06-28
 updated: 2026-06-28
 type: note
-fase: Magus
+fase: magus
 tags:
   - plataforma-web
   - eventos

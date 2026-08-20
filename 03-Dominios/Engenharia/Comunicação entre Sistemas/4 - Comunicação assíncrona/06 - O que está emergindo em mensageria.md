@@ -4,7 +4,7 @@ created: 2026-07-09
 updated: 2026-07-09
 type: concept
 status: seedling
-fase: Magus
+fase: magus
 tags:
   - comunicacao-entre-sistemas
   - mensageria

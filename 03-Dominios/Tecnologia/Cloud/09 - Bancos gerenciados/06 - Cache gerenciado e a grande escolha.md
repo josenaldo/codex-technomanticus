@@ -1,7 +1,7 @@
 ---
 title: "Cache gerenciado e a grande escolha"
 type: concept
-fase: Magus
+fase: magus
 created: 2026-07-23
 updated: 2026-07-25
 status: seedling

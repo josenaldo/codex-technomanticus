@@ -3,7 +3,7 @@ title: "Avaliação preguiçosa, currying e aplicação parcial"
 created: 2026-06-18
 updated: 2026-06-18
 type: concept
-fase: Adepto
+fase: adepto
 status: evergreen
 publish: false
 tags:

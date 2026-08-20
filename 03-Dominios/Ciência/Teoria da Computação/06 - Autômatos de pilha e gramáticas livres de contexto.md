@@ -3,7 +3,7 @@ title: "Autômatos de pilha e gramáticas livres de contexto"
 created: 2026-06-19
 updated: 2026-06-19
 type: concept
-fase: Adepto
+fase: adepto
 status: evergreen
 publish: false
 tags:

@@ -7,7 +7,7 @@ tags:
   - graceful-shutdown
   - production
 type: note
-fase: Adepto
+fase: adepto
 status: growing
 created: 2026-05-09
 updated: 2026-06-28

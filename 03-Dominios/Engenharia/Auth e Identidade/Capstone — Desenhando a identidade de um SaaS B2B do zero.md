@@ -4,7 +4,7 @@ created: 2026-07-11
 updated: 2026-07-11
 type: concept
 status: seedling
-fase: Magus
+fase: magus
 tags:
   - auth
   - identidade

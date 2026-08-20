@@ -3,7 +3,7 @@ title: "Concorrência e paralelismo: o que é e por que é difícil"
 created: 2026-06-18
 updated: 2026-06-18
 type: concept
-fase: Iniciado
+fase: iniciado
 status: evergreen
 publish: false
 tags:

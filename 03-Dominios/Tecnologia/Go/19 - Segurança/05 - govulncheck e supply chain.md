@@ -1,7 +1,7 @@
 ---
 title: "govulncheck e supply chain"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - seguranca

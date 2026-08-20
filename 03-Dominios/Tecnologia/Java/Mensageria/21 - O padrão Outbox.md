@@ -1,6 +1,6 @@
 ---
 title: "O padrão Outbox"
-fase: Magus
+fase: magus
 tags:
   - java
   - mensageria

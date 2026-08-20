@@ -1,7 +1,7 @@
 ---
 title: "Erros customizados"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - erros

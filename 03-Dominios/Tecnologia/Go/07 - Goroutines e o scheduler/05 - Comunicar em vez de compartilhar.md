@@ -1,7 +1,7 @@
 ---
 title: "Comunicar em vez de compartilhar"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - concorrencia

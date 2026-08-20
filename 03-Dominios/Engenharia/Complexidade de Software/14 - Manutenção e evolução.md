@@ -6,7 +6,7 @@ type: concept
 progress: backlog
 status: growing
 publish: true
-fase: Magus
+fase: magus
 tags:
   - engenharia
   - complexidade-de-software

@@ -2,7 +2,7 @@
 title: "Documentação automática com OpenAPI"
 created: 2026-07-11
 type: concept
-fase: Adepto
+fase: adepto
 status: complete
 publish: true
 tags:

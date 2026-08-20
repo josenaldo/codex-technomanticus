@@ -3,7 +3,7 @@ title: "O ecossistema além do Nginx"
 created: 2026-08-08
 updated: 2026-08-09
 type: concept
-fase: Magus
+fase: magus
 status: evergreen
 publish: true
 tags:

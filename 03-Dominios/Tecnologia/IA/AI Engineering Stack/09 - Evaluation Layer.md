@@ -4,7 +4,7 @@ created: 2026-05-28
 updated: 2026-07-06
 type: concept
 status: seedling
-fase: Iniciado
+fase: iniciado
 tags:
   - ai-engineering-stack
   - ia

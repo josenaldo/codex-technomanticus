@@ -1,7 +1,7 @@
 ---
 title: "Organizando um serviço"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - microservices

@@ -1,7 +1,7 @@
 ---
 title: "Transações e o padrão repository"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - persistencia

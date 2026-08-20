@@ -3,7 +3,7 @@ title: "O grafo de módulos e o que é bundling"
 created: 2026-06-24
 updated: 2026-06-25
 type: concept
-fase: Iniciado
+fase: iniciado
 status: seedling
 publish: true
 tags:

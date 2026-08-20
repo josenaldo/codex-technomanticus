@@ -1,7 +1,7 @@
 ---
 title: "Desenhando uma rede segura de ponta a ponta"
 type: concept
-fase: Magus
+fase: magus
 created: 2026-07-23
 updated: 2026-07-25
 status: seedling

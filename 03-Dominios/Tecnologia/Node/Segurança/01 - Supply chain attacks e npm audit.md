@@ -3,7 +3,7 @@ title: "Supply chain attacks e npm audit"
 created: 2026-05-12
 updated: 2026-06-28
 type: concept
-fase: Iniciado
+fase: iniciado
 status: growing
 publish: true
 tags:

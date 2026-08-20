@@ -4,7 +4,7 @@ created: 2026-07-08
 updated: 2026-07-08
 type: concept
 status: seedling
-fase: Adepto
+fase: adepto
 tags:
   - operacao
   - devops

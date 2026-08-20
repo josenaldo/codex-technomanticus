@@ -1,7 +1,7 @@
 ---
 title: "NATS em Go"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - mensageria

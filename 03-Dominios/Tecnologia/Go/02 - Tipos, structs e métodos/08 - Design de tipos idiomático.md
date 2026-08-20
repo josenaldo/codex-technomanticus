@@ -1,7 +1,7 @@
 ---
 title: "Design de tipos idiomático"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - tipos

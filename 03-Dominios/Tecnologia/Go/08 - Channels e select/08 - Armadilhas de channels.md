@@ -1,7 +1,7 @@
 ---
 title: "Armadilhas de channels"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - channels

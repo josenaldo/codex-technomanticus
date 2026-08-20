@@ -1,7 +1,7 @@
 ---
 title: "Refactoring pesado — mudanças grandes sem perder controle"
 type: concept
-fase: Adepto
+fase: adepto
 progress: in_progress
 publish: true
 created: 2026-05-13

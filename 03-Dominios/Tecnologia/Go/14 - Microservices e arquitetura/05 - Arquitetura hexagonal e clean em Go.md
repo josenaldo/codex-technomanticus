@@ -1,7 +1,7 @@
 ---
 title: "Arquitetura hexagonal e clean em Go"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - arquitetura

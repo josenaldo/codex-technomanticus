@@ -4,7 +4,7 @@ created: 2026-07-12
 updated: 2026-07-12
 type: concept
 status: seedling
-fase: Magus
+fase: magus
 tags:
   - python
   - mensageria

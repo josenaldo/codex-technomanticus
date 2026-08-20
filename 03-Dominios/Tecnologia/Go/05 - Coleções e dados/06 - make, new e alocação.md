@@ -1,7 +1,7 @@
 ---
 title: "make, new e alocação"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - slices

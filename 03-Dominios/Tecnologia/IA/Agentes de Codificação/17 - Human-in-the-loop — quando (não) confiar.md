@@ -5,7 +5,7 @@ updated: 2026-06-27
 type: concept
 progress: done
 status: growing
-fase: Adepto
+fase: adepto
 publish: true
 tags:
   - agentes-codificacao

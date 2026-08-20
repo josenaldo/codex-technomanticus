@@ -54,16 +54,16 @@ N/A (a ausência já é cobrada por E3).
 |---|------|-----------------------|
 | P1 | Código com falha | Exemplo de código mostra pelo menos 1 caso-problema, não só o caminho feliz |
 | P2 | Mecanismo explicado | Nota explica *por que* funciona assim, não apenas *o quê* (anti-padrão: "X faz Y" sem explicar como) |
-| P3 | Teoria subjacente | `fase: Magus` → conecta a teoria formal ou fundamento conceitual (não cobrado em Iniciado/Adepto) |
+| P3 | Teoria subjacente | `fase: magus` → conecta a teoria formal ou fundamento conceitual (não cobrado em Iniciado/Adepto) |
 | P4 | Exemplo com número | Nota tem ≥1 caso concreto com grandeza (antes → depois, custo, taxa, latência, tamanho) — **ou** declara explicitamente que o tema não é quantificável |
 
 ### TAMANHO
 
 | # | Item | Critério de aprovação |
 |---|------|-----------------------|
-| T1 | Iniciado | `fase: Iniciado` → ≥300 linhas |
-| T2 | Adepto | `fase: Adepto` → ≥400 linhas |
-| T3 | Magus | `fase: Magus` → ≥500 linhas |
+| T1 | Iniciado | `fase: iniciado` → ≥300 linhas |
+| T2 | Adepto | `fase: adepto` → ≥400 linhas |
+| T3 | Magus | `fase: magus` → ≥500 linhas |
 
 ### LINKS
 
@@ -123,7 +123,7 @@ LINKS
 MÍDIA
 ✗ M1 Vídeo/podcast embutido — callout [!tip] com mídia ausente
 
-RESULTADO: 6/13 itens ✓   (fase: Adepto)
+RESULTADO: 6/13 itens ✓   (fase: adepto)
 Aprovado: NÃO — S1 reprovado (bloqueante) + itens faltando: E3, E6, E7, P2, P4, L2, M1
 ```
 
@@ -148,8 +148,8 @@ Aprovado: NÃO — S1 reprovado (bloqueante) + itens faltando: E3, E6, E7, P2, P
 |------|-----------------|
 | Notas `type: meta` ou `type: glossary` | Isentas de E6 e E7 (sem seção de inglês) |
 | Brotos (filename `Xa`, `Xb` — ex: `04a.md`) | Isentos de T1/T2/T3 (sem piso de linhas) |
-| `fase: Iniciado` ou `fase: Adepto` | Isentos de P3 (teoria subjacente) |
-| `fase: Iniciado` | M1 recomendado, não obrigatório (isenção parcial) |
+| `fase: iniciado` ou `fase: adepto` | Isentos de P3 (teoria subjacente) |
+| `fase: iniciado` | M1 recomendado, não obrigatório (isenção parcial) |
 
 ---
 

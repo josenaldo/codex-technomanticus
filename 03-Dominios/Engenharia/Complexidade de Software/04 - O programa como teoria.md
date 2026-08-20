@@ -5,7 +5,7 @@ updated: 2026-07-31
 type: concept
 progress: backlog
 status: growing
-fase: Iniciado
+fase: iniciado
 tags:
   - engenharia
   - engenharia-de-software

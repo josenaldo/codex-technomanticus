@@ -2,7 +2,7 @@
 title: "kafka-python e aiokafka — producer e consumer"
 created: 2026-07-12
 type: concept
-fase: Adepto→Magus
+fase: adepto→magus
 status: seedling
 publish: true
 tags:

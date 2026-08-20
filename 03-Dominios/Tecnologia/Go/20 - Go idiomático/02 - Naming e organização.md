@@ -1,7 +1,7 @@
 ---
 title: "Naming e organização"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - naming

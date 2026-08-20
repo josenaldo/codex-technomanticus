@@ -1,7 +1,7 @@
 ---
 title: "Métricas com Prometheus"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - observabilidade

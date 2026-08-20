@@ -1,7 +1,7 @@
 ---
 title: "Secure coding patterns"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - seguranca

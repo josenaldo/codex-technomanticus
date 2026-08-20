@@ -3,7 +3,7 @@ title: "asyncio fundamentals — event loop, coroutines e Task"
 created: 2026-07-10
 type: concept
 status: complete
-fase: Magus
+fase: magus
 publish: true
 tags:
   - python

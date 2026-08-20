@@ -1,7 +1,7 @@
 ---
 title: "Clientes HTTP"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - http

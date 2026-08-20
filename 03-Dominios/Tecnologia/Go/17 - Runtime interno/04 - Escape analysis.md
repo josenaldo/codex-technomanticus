@@ -1,7 +1,7 @@
 ---
 title: "Escape analysis"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - runtime

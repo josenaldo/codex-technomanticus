@@ -1,7 +1,7 @@
 ---
 title: "O ciclo de vida de uma goroutine"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - goroutines

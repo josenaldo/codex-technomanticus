@@ -3,7 +3,7 @@ title: "Surveys e estado da arte 2026"
 created: 2026-04-25
 updated: 2026-07-07
 type: review
-fase: Iniciado
+fase: iniciado
 status: seedling
 publish: true
 tags:

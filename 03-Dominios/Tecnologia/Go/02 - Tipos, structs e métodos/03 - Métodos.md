@@ -1,7 +1,7 @@
 ---
 title: "Métodos"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - tipos

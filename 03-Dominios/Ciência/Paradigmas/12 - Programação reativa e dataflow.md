@@ -3,7 +3,7 @@ title: "Programação reativa e dataflow"
 created: 2026-06-18
 updated: 2026-06-18
 type: concept
-fase: Magus
+fase: magus
 status: evergreen
 publish: false
 tags:

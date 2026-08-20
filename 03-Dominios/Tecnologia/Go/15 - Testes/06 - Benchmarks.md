@@ -1,7 +1,7 @@
 ---
 title: "Benchmarks"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - testes

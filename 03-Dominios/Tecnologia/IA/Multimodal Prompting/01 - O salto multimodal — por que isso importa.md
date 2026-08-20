@@ -4,7 +4,7 @@ created: 2026-05-28
 updated: 2026-06-28
 type: concept
 status: seedling
-fase: Iniciado
+fase: iniciado
 progress: in_progress
 tags:
   - multimodal

@@ -3,7 +3,7 @@ title: Sinal e ruído — os serviços que importam vs o resto
 created: 2026-07-24
 updated: 2026-07-25
 type: concept
-fase: Magus
+fase: magus
 status: seedling
 publish: true
 tags: [cloud, aws, arquitetura, servicos]

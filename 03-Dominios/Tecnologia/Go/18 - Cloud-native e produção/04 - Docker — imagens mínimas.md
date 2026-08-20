@@ -1,7 +1,7 @@
 ---
 title: "Docker — imagens mínimas"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - docker

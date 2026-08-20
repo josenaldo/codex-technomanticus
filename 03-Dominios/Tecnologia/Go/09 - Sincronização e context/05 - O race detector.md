@@ -1,7 +1,7 @@
 ---
 title: "O race detector"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - concorrencia

@@ -1,7 +1,7 @@
 ---
 title: "Value vs pointer receiver"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - tipos

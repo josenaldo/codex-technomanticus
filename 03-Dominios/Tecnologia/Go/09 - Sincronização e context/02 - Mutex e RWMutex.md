@@ -1,7 +1,7 @@
 ---
 title: "Mutex e RWMutex"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - sincronizacao

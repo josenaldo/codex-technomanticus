@@ -3,7 +3,7 @@ title: "concurrent.futures — a abstração unificadora"
 created: 2026-07-10
 type: concept
 status: complete
-fase: Adepto→Magus
+fase: adepto→magus
 publish: true
 tags:
   - python

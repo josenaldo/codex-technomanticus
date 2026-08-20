@@ -1,7 +1,7 @@
 ---
 title: "O garbage collector"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - runtime

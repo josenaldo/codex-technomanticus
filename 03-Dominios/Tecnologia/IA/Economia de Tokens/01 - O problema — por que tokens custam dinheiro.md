@@ -5,7 +5,7 @@ updated: 2026-07-03
 type: concept
 status: evergreen
 publish: true
-fase: Iniciado
+fase: iniciado
 tags:
   - economia-tokens
   - ia

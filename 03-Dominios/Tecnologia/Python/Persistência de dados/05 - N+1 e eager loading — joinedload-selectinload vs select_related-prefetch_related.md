@@ -3,7 +3,7 @@ title: "N+1 e eager loading — joinedload/selectinload vs select_related/prefet
 created: 2026-07-11
 type: concept
 status: complete
-fase: Magus
+fase: magus
 publish: true
 tags:
   - python

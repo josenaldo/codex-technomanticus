@@ -3,7 +3,7 @@ title: "aiohttp cliente — ClientSession, connection pooling e requisições co
 created: 2026-07-11
 type: concept
 status: complete
-fase: Magus
+fase: magus
 publish: true
 tags:
   - python

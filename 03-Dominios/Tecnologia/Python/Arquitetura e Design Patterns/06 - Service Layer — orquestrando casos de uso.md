@@ -2,7 +2,7 @@
 title: "Service Layer — orquestrando casos de uso"
 created: 2026-07-12
 type: concept
-fase: Magus
+fase: magus
 status: complete
 publish: true
 tags:

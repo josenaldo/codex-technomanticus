@@ -1,7 +1,7 @@
 ---
 title: "Generics vs interfaces — quando usar cada um"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - generics

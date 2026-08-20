@@ -1,7 +1,7 @@
 ---
 title: "Interceptors, metadata e erros"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - grpc

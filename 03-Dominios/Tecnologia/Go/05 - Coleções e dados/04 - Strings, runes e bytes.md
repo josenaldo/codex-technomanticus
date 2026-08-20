@@ -1,7 +1,7 @@
 ---
 title: "Strings, runes e bytes"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - strings

@@ -3,7 +3,7 @@ title: "O que é TypeScript - gradual, estrutural, apagado"
 created: 2026-06-23
 updated: 2026-06-23
 type: concept
-fase: Iniciado
+fase: iniciado
 status: seedling
 publish: true
 tags:

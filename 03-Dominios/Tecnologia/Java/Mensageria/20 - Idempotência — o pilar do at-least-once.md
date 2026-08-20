@@ -1,6 +1,6 @@
 ---
 title: "Idempotência — o pilar do at-least-once"
-fase: Magus
+fase: magus
 tags:
   - java
   - mensageria

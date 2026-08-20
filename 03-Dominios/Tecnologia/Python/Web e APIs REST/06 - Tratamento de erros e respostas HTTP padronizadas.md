@@ -2,7 +2,7 @@
 title: "Tratamento de erros e respostas HTTP padronizadas"
 created: 2026-07-11
 type: concept
-fase: Adepto
+fase: adepto
 status: complete
 publish: true
 tags:

@@ -1,7 +1,7 @@
 ---
 title: "Por que mensageria — desacoplamento"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - mensageria

@@ -6,7 +6,7 @@ type: concept
 progress: backlog
 status: growing
 publish: false
-fase: Magus
+fase: magus
 tags:
   - ciencia-da-computacao
   - estruturas-de-dados

@@ -1,7 +1,7 @@
 ---
 title: "O idioma do construtor"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - construtor

@@ -6,7 +6,7 @@ type: concept
 status: evergreen
 progress: done
 publish: true
-fase: Iniciado
+fase: iniciado
 tags:
   - economia-tokens
   - ia

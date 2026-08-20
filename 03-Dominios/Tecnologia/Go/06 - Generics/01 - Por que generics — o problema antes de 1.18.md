@@ -1,7 +1,7 @@
 ---
 title: "Por que generics — o problema antes de 1.18"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - generics

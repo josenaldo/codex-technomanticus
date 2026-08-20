@@ -3,7 +3,7 @@ title: "Threading na prática — Thread, Lock e condições de corrida"
 created: 2026-07-10
 type: concept
 status: complete
-fase: Adepto
+fase: adepto
 publish: true
 tags:
   - python

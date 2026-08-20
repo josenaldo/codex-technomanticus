@@ -1,7 +1,7 @@
 ---
 title: "Modelos de serviço — IaaS, PaaS, CaaS, FaaS e SaaS"
 type: concept
-fase: Iniciado
+fase: iniciado
 created: 2026-07-20
 updated: 2026-07-25
 status: seedling

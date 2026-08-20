@@ -3,7 +3,7 @@ title: "Connection pool tuning"
 created: 2026-05-09
 updated: 2026-06-28
 type: concept
-fase: Magus
+fase: magus
 status: growing
 tags:
   - node

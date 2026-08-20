@@ -3,7 +3,7 @@ title: "ARIA: roles, states, properties e live regions"
 created: 2026-06-27
 updated: 2026-06-27
 type: note
-fase: Adepto
+fase: adepto
 tags:
   - html
   - frontend

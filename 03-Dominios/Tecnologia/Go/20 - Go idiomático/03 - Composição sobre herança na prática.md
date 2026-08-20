@@ -1,7 +1,7 @@
 ---
 title: "Composição sobre herança na prática"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - idiomatico

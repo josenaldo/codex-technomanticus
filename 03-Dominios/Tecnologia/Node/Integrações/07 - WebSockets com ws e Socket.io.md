@@ -3,7 +3,7 @@ title: "WebSockets com ws e Socket.io"
 created: 2026-05-12
 updated: 2026-06-29
 type: concept
-fase: Adepto
+fase: adepto
 status: growing
 publish: true
 tags:

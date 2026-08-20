@@ -3,7 +3,7 @@ title: "Celery fundamentos — broker, worker e tasks"
 created: 2026-07-12
 type: concept
 status: complete
-fase: Adepto
+fase: adepto
 publish: true
 tags:
   - python

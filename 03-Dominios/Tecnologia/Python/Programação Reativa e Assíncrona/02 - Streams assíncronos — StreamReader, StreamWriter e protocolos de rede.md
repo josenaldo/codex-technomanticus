@@ -3,7 +3,7 @@ title: "Streams assíncronos — StreamReader, StreamWriter e protocolos de rede
 created: 2026-07-11
 type: concept
 status: complete
-fase: Magus
+fase: magus
 publish: true
 tags:
   - python

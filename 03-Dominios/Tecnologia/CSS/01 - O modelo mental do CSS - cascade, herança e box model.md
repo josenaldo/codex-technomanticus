@@ -3,7 +3,7 @@ title: "O modelo mental do CSS: cascade, herança e box model"
 created: 2026-06-27
 updated: 2026-06-27
 type: note
-fase: Iniciado
+fase: iniciado
 tags:
   - css
   - frontend

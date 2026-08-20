@@ -6,7 +6,7 @@ type: concept
 status: growing
 progress: backlog
 publish: true
-fase: Adepto
+fase: adepto
 tags:
   - economia-tokens
   - ia

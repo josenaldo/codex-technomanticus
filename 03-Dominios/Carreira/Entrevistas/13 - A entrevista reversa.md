@@ -4,7 +4,7 @@ created: 2026-07-31
 updated: 2026-07-31
 type: concept
 status: seedling
-fase: Magus
+fase: magus
 tags:
   - carreira
   - entrevistas

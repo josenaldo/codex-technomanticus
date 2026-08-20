@@ -2,7 +2,7 @@
 title: "Testando a camada de persistência — banco de teste e rollback"
 created: 2026-07-11
 type: concept
-fase: Adepto
+fase: adepto
 status: complete
 publish: true
 tags:

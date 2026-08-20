@@ -2,7 +2,7 @@
 title: "Capstone — os dois serviços prontos pra produção"
 created: 2026-07-12
 type: concept
-fase: Magus
+fase: magus
 status: complete
 publish: true
 tags:

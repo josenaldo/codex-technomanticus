@@ -2,7 +2,7 @@
 title: "Deploy básico — Dockerfile e CI/CD"
 created: 2026-07-12
 type: concept
-fase: Magus
+fase: magus
 status: seedling
 publish: true
 tags:

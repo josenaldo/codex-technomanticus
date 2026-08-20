@@ -5,7 +5,7 @@ updated: 2026-07-02
 type: concept
 status: seedling
 progress: in_progress
-fase: Iniciado
+fase: iniciado
 tags:
   - structured-outputs
   - ia

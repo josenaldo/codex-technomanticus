@@ -1,7 +1,7 @@
 ---
 title: "Query, Scan e o mapeamento manual"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - persistencia

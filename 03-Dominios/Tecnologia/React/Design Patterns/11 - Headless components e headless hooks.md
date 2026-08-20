@@ -4,7 +4,7 @@ created: 2026-06-26
 updated: 2026-06-26
 type: concept
 status: seedling
-fase: Magus
+fase: magus
 tags:
   - react
   - design-patterns

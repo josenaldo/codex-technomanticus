@@ -1,7 +1,7 @@
 ---
 title: "Effective Go e a cultura"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - effective-go

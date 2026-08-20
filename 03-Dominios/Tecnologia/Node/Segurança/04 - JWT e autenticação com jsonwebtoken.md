@@ -3,7 +3,7 @@ title: "JWT e autenticação com jsonwebtoken"
 created: 2026-05-13
 updated: 2026-06-29
 type: concept
-fase: Adepto
+fase: adepto
 status: growing
 publish: true
 tags:

@@ -1,7 +1,7 @@
 ---
 title: "Capstone — Construir um serviço Go de produção"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - capstone

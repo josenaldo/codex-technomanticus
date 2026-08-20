@@ -1,7 +1,7 @@
 ---
 title: "Erros vs exceções"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - erros

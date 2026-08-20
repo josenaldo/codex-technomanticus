@@ -4,7 +4,7 @@ created: 2026-07-06
 updated: 2026-07-06
 type: concept
 status: seedling
-fase: Adepto
+fase: adepto
 tags:
   - web-performance
   - carregamento

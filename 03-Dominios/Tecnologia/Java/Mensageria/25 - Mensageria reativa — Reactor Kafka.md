@@ -1,7 +1,7 @@
 ---
 title: "Mensageria reativa — Reactor Kafka"
 alias: "Reactor Kafka"
-fase: Magus
+fase: magus
 tags:
   - java
   - mensageria

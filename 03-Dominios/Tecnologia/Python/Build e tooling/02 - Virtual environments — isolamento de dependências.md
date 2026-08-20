@@ -2,7 +2,7 @@
 title: "Virtual environments — isolamento de dependências"
 created: 2026-07-12
 type: concept
-fase: Iniciado
+fase: iniciado
 status: seedling
 publish: true
 tags:

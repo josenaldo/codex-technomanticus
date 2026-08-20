@@ -1,7 +1,7 @@
 ---
 title: "Ordenação e busca com slices e sort"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - slices

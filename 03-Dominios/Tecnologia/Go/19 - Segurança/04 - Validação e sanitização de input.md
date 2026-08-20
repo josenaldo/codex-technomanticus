@@ -1,7 +1,7 @@
 ---
 title: "Validação e sanitização de input"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - seguranca

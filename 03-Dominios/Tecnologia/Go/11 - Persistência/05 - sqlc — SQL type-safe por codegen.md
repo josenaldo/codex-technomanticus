@@ -1,7 +1,7 @@
 ---
 title: "sqlc — SQL type-safe por codegen"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - persistencia

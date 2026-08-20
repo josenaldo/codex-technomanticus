@@ -3,7 +3,7 @@ title: "Críticas, limitações e armadilhas"
 created: 2026-04-26
 updated: 2026-06-28
 type: concept
-fase: Iniciado
+fase: iniciado
 progress: backlog
 status: seedling
 publish: true

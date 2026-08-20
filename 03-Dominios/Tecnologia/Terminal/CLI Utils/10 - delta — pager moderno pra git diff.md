@@ -6,7 +6,7 @@ type: concept
 progress: backlog
 status: seedling
 publish: true
-fase: Magus
+fase: magus
 tags:
   - terminal
   - cli-utils

@@ -3,7 +3,7 @@ title: "Letta (ex-MemGPT)"
 created: 2026-04-26
 updated: 2026-07-07
 type: concept
-fase: Iniciado
+fase: iniciado
 progress: in_progress
 status: growing
 publish: true

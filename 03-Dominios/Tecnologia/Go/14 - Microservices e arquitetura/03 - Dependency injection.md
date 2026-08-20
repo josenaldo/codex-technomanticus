@@ -1,7 +1,7 @@
 ---
 title: "Dependency injection"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - dependency-injection

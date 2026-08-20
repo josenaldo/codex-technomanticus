@@ -1,7 +1,7 @@
 ---
 title: "Entrega e idempotência"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - mensageria

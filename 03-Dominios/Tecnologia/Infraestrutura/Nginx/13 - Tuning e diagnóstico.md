@@ -3,7 +3,7 @@ title: "Tuning e diagnóstico"
 created: 2026-08-08
 updated: 2026-08-08
 type: concept
-fase: Magus
+fase: magus
 status: evergreen
 publish: true
 tags:

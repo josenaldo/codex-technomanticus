@@ -1,7 +1,7 @@
 ---
 title: "Code review em Go"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - code-review

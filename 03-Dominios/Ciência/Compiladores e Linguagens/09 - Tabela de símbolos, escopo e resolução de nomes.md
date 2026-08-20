@@ -3,7 +3,7 @@ title: "Tabela de símbolos, escopo e resolução de nomes"
 created: 2026-06-21
 updated: 2026-06-21
 type: concept
-fase: Adepto
+fase: adepto
 status: evergreen
 publish: false
 tags:

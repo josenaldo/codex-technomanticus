@@ -2,7 +2,7 @@
 title: "Injeção de dependência como princípio — sem framework pesado"
 created: 2026-07-12
 type: concept
-fase: Magus
+fase: magus
 status: complete
 publish: true
 tags:

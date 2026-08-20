@@ -2,7 +2,7 @@
 title: "Panorama — PCEP e PCAP, o que são e pra quem"
 created: 2026-07-12
 type: concept
-fase: Magus
+fase: magus
 status: seedling
 publish: true
 tags:

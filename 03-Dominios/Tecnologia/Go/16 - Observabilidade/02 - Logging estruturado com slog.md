@@ -1,7 +1,7 @@
 ---
 title: "Logging estruturado com slog"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - observabilidade

@@ -1,7 +1,7 @@
 ---
 title: "Identidade entre contas e federação"
 type: concept
-fase: Magus
+fase: magus
 created: 2026-07-20
 updated: 2026-07-25
 status: seedling

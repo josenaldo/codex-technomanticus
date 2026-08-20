@@ -1,7 +1,7 @@
 ---
 title: "Design idiomático de interfaces"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - interfaces

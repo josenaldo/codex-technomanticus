@@ -1,7 +1,7 @@
 ---
 title: "Sustentabilidade e os trade-offs entre pilares"
 type: concept
-fase: Magus
+fase: magus
 created: 2026-07-20
 updated: 2026-07-25
 status: seedling

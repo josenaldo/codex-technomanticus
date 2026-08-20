@@ -1,7 +1,7 @@
 ---
 title: "Protocol Buffers"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - grpc

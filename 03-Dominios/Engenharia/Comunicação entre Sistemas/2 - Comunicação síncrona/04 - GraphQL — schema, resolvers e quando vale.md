@@ -4,7 +4,7 @@ created: 2026-07-09
 updated: 2026-07-09
 type: concept
 status: seedling
-fase: Adepto
+fase: adepto
 tags:
   - comunicacao-entre-sistemas
   - graphql

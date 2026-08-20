@@ -2,7 +2,7 @@
 title: "OWASP Top 10 aplicado a Python web — o mapa"
 created: 2026-07-11
 type: concept
-fase: Adepto
+fase: adepto
 status: seedling
 publish: true
 tags:

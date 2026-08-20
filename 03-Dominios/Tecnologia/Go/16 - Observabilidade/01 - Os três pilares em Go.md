@@ -1,7 +1,7 @@
 ---
 title: "Os três pilares em Go"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - observabilidade

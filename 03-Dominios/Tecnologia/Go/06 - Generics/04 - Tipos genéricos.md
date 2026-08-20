@@ -1,7 +1,7 @@
 ---
 title: "Tipos genéricos"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - generics

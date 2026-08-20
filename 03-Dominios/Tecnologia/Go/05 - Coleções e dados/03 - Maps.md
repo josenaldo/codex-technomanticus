@@ -1,7 +1,7 @@
 ---
 title: "Maps"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - maps

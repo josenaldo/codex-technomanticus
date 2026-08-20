@@ -3,7 +3,7 @@ title: "O acaso na computação: estruturas e algoritmos aleatorizados"
 created: 2026-06-20
 updated: 2026-06-20
 type: concept
-fase: Magus
+fase: magus
 status: evergreen
 publish: false
 tags:

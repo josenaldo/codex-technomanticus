@@ -2,7 +2,7 @@
 title: "Capstone — extraindo o serviço de Notificações"
 created: 2026-07-12
 type: concept
-fase: Magus
+fase: magus
 status: complete
 publish: true
 tags:

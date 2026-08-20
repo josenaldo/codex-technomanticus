@@ -5,7 +5,7 @@ type: concept
 progress: backlog
 status: seedling
 publish: true
-fase: Magus
+fase: magus
 tags:
   - python
   - oo-e-data-model

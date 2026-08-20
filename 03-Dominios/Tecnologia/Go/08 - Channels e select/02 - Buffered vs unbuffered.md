@@ -1,7 +1,7 @@
 ---
 title: "Buffered vs unbuffered"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - channels

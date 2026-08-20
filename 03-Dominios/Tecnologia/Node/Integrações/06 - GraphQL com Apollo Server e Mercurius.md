@@ -3,7 +3,7 @@ title: "GraphQL com Apollo Server e Mercurius"
 created: 2026-05-12
 updated: 2026-06-29
 type: concept
-fase: Adepto
+fase: adepto
 status: growing
 publish: true
 tags:

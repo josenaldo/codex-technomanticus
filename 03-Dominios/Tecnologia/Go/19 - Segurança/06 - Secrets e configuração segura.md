@@ -1,7 +1,7 @@
 ---
 title: "Secrets e configuração segura"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - seguranca

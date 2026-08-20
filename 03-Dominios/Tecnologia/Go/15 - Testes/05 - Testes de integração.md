@@ -1,7 +1,7 @@
 ---
 title: "Testes de integração"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - testes

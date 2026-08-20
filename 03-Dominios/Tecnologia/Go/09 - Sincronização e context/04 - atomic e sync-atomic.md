@@ -1,7 +1,7 @@
 ---
 title: "atomic e sync/atomic"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - concorrencia

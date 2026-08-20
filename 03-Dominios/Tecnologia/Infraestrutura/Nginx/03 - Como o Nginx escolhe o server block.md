@@ -3,7 +3,7 @@ title: "Como o Nginx escolhe o server block"
 created: 2026-08-06
 updated: 2026-08-06
 type: concept
-fase: Iniciado
+fase: iniciado
 status: evergreen
 publish: true
 tags:

@@ -3,7 +3,7 @@ title: "Clientes HTTP - fetch, axios, got e undici"
 created: 2026-05-12
 updated: 2026-06-29
 type: concept
-fase: Magus
+fase: magus
 status: growing
 publish: true
 tags:

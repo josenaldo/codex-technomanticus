@@ -3,7 +3,7 @@ title: "Capstone — um plano de estudo para o SAA-C03"
 created: 2026-07-24
 updated: 2026-07-25
 type: concept
-fase: Magus
+fase: magus
 status: seedling
 publish: true
 tags: ["cloud","aws","certificacao","capstone","plano"]

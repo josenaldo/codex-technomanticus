@@ -4,7 +4,7 @@ created: 2026-07-27
 updated: 2026-07-27
 type: concept
 status: seedling
-fase: Iniciado
+fase: iniciado
 tags:
   - acessibilidade
   - a11y

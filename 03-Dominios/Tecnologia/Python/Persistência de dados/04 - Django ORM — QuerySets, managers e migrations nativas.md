@@ -3,7 +3,7 @@ title: "Django ORM — QuerySets, managers e migrations nativas"
 created: 2026-07-11
 type: concept
 status: complete
-fase: Adepto→Magus
+fase: adepto→magus
 publish: true
 tags:
   - python

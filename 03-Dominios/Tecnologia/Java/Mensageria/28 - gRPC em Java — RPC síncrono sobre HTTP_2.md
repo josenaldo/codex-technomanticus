@@ -1,6 +1,6 @@
 ---
 title: "gRPC em Java — RPC síncrono sobre HTTP/2"
-fase: Magus
+fase: magus
 tags:
   - java
   - mensageria

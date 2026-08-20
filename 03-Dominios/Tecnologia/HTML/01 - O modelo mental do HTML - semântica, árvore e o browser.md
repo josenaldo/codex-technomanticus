@@ -3,7 +3,7 @@ title: "O modelo mental do HTML: semântica, árvore e o browser"
 created: 2026-06-27
 updated: 2026-06-27
 type: note
-fase: Iniciado
+fase: iniciado
 tags:
   - html
   - frontend

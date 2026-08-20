@@ -3,7 +3,7 @@ title: "O pumping lemma para livres de contexto"
 created: 2026-06-19
 updated: 2026-06-19
 type: concept
-fase: Adepto
+fase: adepto
 status: evergreen
 publish: false
 tags:

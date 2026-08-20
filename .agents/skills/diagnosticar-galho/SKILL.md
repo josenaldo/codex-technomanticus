@@ -229,7 +229,7 @@ e gravar a entrada dela no roadmap do galho.
 ### Isenções aplicáveis
 - Brotos (filename `Xa`/`Xb`): isentos de T1/T2/T3 (piso de linhas)
 - Esquema SEM fase: ausência de `fase:` NÃO é gap; não cobrar T1/T2/T3 como item automático
-- `fase: Iniciado` ou `fase: Adepto`: P3 (teoria subjacente) não se aplica
+- `fase: iniciado` ou `fase: adepto`: P3 (teoria subjacente) não se aplica
 - Notas `type: meta` ou `type: glossary`: isentas de E6 e E7
 - Notas sem seção de código: P1 marcado como N/A
 

@@ -2,7 +2,7 @@
 title: "Unit of Work — formalizando o padrão que já existia"
 created: 2026-07-12
 type: concept
-fase: Magus
+fase: magus
 status: complete
 publish: true
 tags:

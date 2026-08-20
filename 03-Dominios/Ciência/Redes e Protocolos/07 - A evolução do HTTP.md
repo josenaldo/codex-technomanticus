@@ -3,7 +3,7 @@ title: "A evolução do HTTP: 1.1 → 2 → 3"
 created: 2026-06-18
 updated: 2026-06-18
 type: concept
-fase: Adepto
+fase: adepto
 status: evergreen
 publish: false
 tags:

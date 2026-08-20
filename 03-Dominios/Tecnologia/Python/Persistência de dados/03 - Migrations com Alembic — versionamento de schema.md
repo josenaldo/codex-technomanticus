@@ -3,7 +3,7 @@ title: "Migrations com Alembic — versionamento de schema"
 created: 2026-07-11
 type: concept
 status: complete
-fase: Adepto
+fase: adepto
 publish: true
 tags:
   - python

@@ -2,7 +2,7 @@
 title: "Segurança de dependências e supply chain"
 created: 2026-07-11
 type: concept
-fase: Adepto→Magus
+fase: adepto→magus
 status: seedling
 publish: true
 tags:

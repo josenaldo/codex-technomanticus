@@ -3,7 +3,7 @@ title: "Service discovery na prática"
 created: 2026-07-12
 type: concept
 status: seedling
-fase: Magus
+fase: magus
 publish: true
 tags:
   - python

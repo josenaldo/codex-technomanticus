@@ -5,7 +5,7 @@ updated: 2026-08-16
 type: concept
 progress: backlog
 status: growing
-fase: Adepto
+fase: adepto
 publish: true
 tags:
   - economia-tokens

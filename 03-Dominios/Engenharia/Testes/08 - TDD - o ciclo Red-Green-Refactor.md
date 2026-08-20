@@ -3,7 +3,7 @@ title: "TDD: o ciclo Red-Green-Refactor"
 created: 2026-06-18
 updated: 2026-08-01
 type: concept
-fase: Adepto
+fase: adepto
 status: evergreen
 publish: true
 tags:

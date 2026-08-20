@@ -1,7 +1,7 @@
 ---
 title: "Quando (não) usar goroutines"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - goroutines

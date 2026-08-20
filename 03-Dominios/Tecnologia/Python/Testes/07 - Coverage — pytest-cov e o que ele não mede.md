@@ -2,7 +2,7 @@
 title: "Coverage — pytest-cov e o que ele não mede"
 created: 2026-07-11
 type: concept
-fase: Adepto
+fase: adepto
 status: complete
 publish: true
 tags:

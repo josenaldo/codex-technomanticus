@@ -2,7 +2,7 @@
 title: "Capstone — tooling consistente nos dois serviços"
 created: 2026-07-12
 type: concept
-fase: Adepto
+fase: adepto
 status: complete
 publish: true
 tags:

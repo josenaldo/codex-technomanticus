@@ -3,7 +3,7 @@ title: "Slopsquatting — o ataque via alucinação"
 created: 2026-05-02
 updated: 2026-07-06
 type: concept
-fase: Iniciado
+fase: iniciado
 progress: backlog
 status: growing
 publish: true

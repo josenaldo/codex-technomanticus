@@ -1,7 +1,7 @@
 ---
 title: "Erros comuns de quem vem de OO"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - idiomatico

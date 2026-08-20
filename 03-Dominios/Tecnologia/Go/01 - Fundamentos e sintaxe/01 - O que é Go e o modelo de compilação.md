@@ -3,7 +3,7 @@ title: "O que é Go e o modelo de compilação"
 created: 2026-07-16
 updated: 2026-07-16
 type: concept
-fase: Iniciado
+fase: iniciado
 publish: true
 tags:
   - go

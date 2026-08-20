@@ -1,7 +1,7 @@
 ---
 title: "Perguntas conceituais clássicas"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - entrevista

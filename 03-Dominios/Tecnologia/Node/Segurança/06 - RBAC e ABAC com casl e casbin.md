@@ -3,7 +3,7 @@ title: "RBAC e ABAC com casl e casbin"
 created: 2026-05-13
 updated: 2026-06-29
 type: concept
-fase: Adepto
+fase: adepto
 status: growing
 publish: true
 tags:

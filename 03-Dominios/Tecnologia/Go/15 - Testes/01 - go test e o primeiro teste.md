@@ -1,7 +1,7 @@
 ---
 title: "go test e o primeiro teste"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - testes

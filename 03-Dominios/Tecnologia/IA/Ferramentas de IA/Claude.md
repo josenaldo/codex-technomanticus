@@ -3,7 +3,7 @@ title: "Claude"
 created: 2026-04-01
 updated: 2026-07-01
 type: concept
-fase: Iniciado
+fase: iniciado
 progress: backlog
 status: evergreen
 tags:

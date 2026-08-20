@@ -5,7 +5,7 @@ updated: 2026-06-12
 type: concept
 status: seedling
 publish: true
-fase: Adepto
+fase: adepto
 tags:
   - java
   - cloud-native

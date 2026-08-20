@@ -1,7 +1,7 @@
 ---
 title: "Migrations"
 type: concept
-fase: Magus
+fase: magus
 tags:
   - go
   - persistencia

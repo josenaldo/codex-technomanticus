@@ -1,7 +1,7 @@
 ---
 title: "Test doubles — interfaces e mocks"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - testes

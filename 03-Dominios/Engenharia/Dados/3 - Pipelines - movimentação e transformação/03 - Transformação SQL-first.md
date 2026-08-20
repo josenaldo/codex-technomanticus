@@ -1,6 +1,6 @@
 ---
 title: "Transformação SQL-first"
-fase: Magus
+fase: magus
 publish: true
 created: 2026-07-12
 updated: 2026-07-12

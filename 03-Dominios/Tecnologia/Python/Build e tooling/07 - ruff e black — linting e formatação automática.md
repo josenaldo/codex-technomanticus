@@ -2,7 +2,7 @@
 title: "ruff e black — linting e formatação automática"
 created: 2026-07-12
 type: concept
-fase: Adepto
+fase: adepto
 status: seedling
 publish: true
 tags:

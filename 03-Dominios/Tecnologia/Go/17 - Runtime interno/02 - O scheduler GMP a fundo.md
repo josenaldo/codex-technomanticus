@@ -1,7 +1,7 @@
 ---
 title: "O scheduler GMP a fundo"
 type: concept
-fase: Adepto
+fase: adepto
 tags:
   - go
   - runtime

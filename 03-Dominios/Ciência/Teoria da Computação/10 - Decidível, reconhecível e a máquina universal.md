@@ -3,7 +3,7 @@ title: "Decidível, reconhecível e a máquina universal"
 created: 2026-06-19
 updated: 2026-06-19
 type: concept
-fase: Adepto
+fase: adepto
 status: evergreen
 publish: false
 tags:

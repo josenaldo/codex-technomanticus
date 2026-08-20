@@ -3,7 +3,7 @@ title: "Capstone — uma API REST completa de ponta a ponta"
 created: 2026-07-11
 type: concept
 status: complete
-fase: Adepto
+fase: adepto
 publish: true
 tags:
   - python

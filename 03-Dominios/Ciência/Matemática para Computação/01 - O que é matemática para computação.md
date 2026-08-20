@@ -3,7 +3,7 @@ title: "O que é matemática para computação"
 created: 2026-06-20
 updated: 2026-06-20
 type: concept
-fase: Iniciado
+fase: iniciado
 status: evergreen
 publish: false
 tags:

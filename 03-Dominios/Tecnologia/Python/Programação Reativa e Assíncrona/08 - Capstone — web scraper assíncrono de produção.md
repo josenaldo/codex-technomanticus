@@ -3,7 +3,7 @@ title: "Capstone — web scraper assíncrono de produção"
 created: 2026-07-11
 type: concept
 status: complete
-fase: Magus
+fase: magus
 tags:
   - python
   - asyncio

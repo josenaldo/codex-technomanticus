@@ -1,7 +1,7 @@
 ---
 title: "Criando e comparando erros"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - erros

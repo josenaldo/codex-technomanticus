@@ -1,7 +1,7 @@
 ---
 title: "Quando channels não bastam — o pacote sync"
 type: concept
-fase: Iniciado
+fase: iniciado
 tags:
   - go
   - concorrencia

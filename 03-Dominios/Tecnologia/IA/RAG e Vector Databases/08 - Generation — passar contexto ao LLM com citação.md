@@ -6,7 +6,7 @@ type: concept
 progress: backlog
 status: growing
 publish: true
-fase: Iniciado
+fase: iniciado
 tags:
   - rag
   - ia
