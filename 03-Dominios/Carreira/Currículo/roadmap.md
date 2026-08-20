@@ -14,8 +14,8 @@ tags:
 
 Roadmap do galho `03-Dominios/Carreira/Currículo`. Construção nova (2026-08-20), a partir do plano em `00-Meta/specs/2026-08-20-galho-curriculo-plano.md` (30 tarefas) e da spec de design em `00-Meta/specs/2026-08-20-galho-curriculo-design.md`. Esta é a memória de retomada: cada linha aponta a tarefa do plano que a escreve, para que o galho possa ser continuado em outra sessão sem reler o plano inteiro.
 
-> [!warning] Diagnóstico de 2026-08-20 — Tarefa 11 concluída, bloco Adepto aberto
-> As Tarefas 1-11 do plano rodaram: pasta, MOC e roadmap (Tarefa 1), as nove notas do bloco Iniciado (01-09, Tarefas 2-10) e a nota 10 (Tarefa 11), que abre o bloco Adepto e é a ponte entre as duas lentes do galho. **O bloco Iniciado está 9/9 escrito, e o bloco Adepto está 1/11 escrito**, com gate G1-G5 rodado nota a nota. As Tarefas 12-30 (resto do bloco Adepto e todo o bloco Magus, 17 notas + 1 broto) ainda não rodaram.
+> [!warning] Diagnóstico de 2026-08-20 — Tarefa 13 concluída, bloco Adepto em andamento
+> As Tarefas 1-13 do plano rodaram: pasta, MOC e roadmap (Tarefa 1), as nove notas do bloco Iniciado (01-09, Tarefas 2-10) e as notas 10-12 (Tarefas 11-13) do bloco Adepto. **O bloco Iniciado está 9/9 escrito, e o bloco Adepto está 3/11 escrito**, com gate G1-G5 rodado nota a nota. As Tarefas 14-30 (resto do bloco Adepto e todo o bloco Magus, 15 notas + 1 broto) ainda não rodaram.
 
 ## A tese e as duas lentes
 
@@ -46,9 +46,9 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 | Iniciado (01-09) | 9 |
 | Adepto (10-19 + 18a) | 11 |
 | Magus (20-26) | 7 |
-| ✅ escritas | 10 (bloco Iniciado completo + abertura do bloco Adepto) |
-| ⬜ pendentes | 17 |
-| % concluído | 37% |
+| ✅ escritas | 12 (bloco Iniciado completo + notas 10-12 do bloco Adepto) |
+| ⬜ pendentes | 15 |
+| % concluído | 44% |
 | Scaffolding | ✅ roadmap.md + index.md criados (Tarefa 1) |
 | Wikilinks quebrados na Tarefa 1 (linha de base) | 27 (`/verificar-wikilinks`, 2026-08-20) — as 26 notas + o broto 18a do `index.md`, nenhum ainda existe; esperado até a Tarefa 30 |
 
@@ -178,10 +178,15 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 - **Pendências:** M1 (vídeo/podcast) fora de escopo deste plano por decisão registrada — não é lacuna, é escopo fechado.
 
 #### 12 - XYZ, CAR e PAR — e as críticas   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
-- **Tarefa do plano:** Bloco C
-- **Escopo:** origem da fórmula XYZ em Laszlo Bock, *Work Rules!* (2015); quando engessa, quando força métrica inexistente, quando a repetição mecânica denuncia.
-- **Pendências:** —
+- **Estado:** ✅ escrita · fase: adepto · 2026-08-20
+- **Tarefa do plano:** Tarefa 13 (Bloco C)
+- **Escopo:** os acrônimos de mercado que formalizam a fórmula geral da nota 11 (verbo + o que foi feito + resultado) sem repeti-la — **XYZ** (*accomplished [X] as measured by [Y], by doing [Z]*), atribuída a Laszlo Bock, ex-SVP de People Operations do Google, com origem dupla verificada (artigo assinado no LinkedIn em 29/09/2014, um ano antes de *Work Rules!*, 2015) e o rótulo "fórmula do Google" declarado como popularização posterior de terceiros, sem documento institucional localizado; **CAR** e **PAR** como irmãs estruturais, com lacuna de autoria declarada explicitamente (nenhum autor/obra localizado com a mesma solidez de Bock); a fronteira STAR-é-falado-XYZ/CAR/PAR-é-escrito, com diagrama Mermaid mapeando os quatro e remetendo a `Entrevistas/06` sem repetir o time-box; **as quatro críticas** como coração da nota — força métrica onde não existe (gancho para a nota 15), repetição mecânica denuncia o gabarito, convite ao arredondamento agressivo (gancho para a nota 14), e origem numa cultura de contratação específica que não transfere sem atrito (gancho para a nota 24); fecho andaime-não-gabarito (quando usar no rascunho, quando abandonar na versão final); exemplo único (Camila, persona fictícia) mostrando a mesma realização em XYZ/CAR/PAR/forma livre, e dois casos práticos adicionais (Tiago — evita inventar métrica; recrutadora — nota a repetição mecânica) ilustrando as críticas em produção.
+- **Interfaces produzidas:** o vocabulário "andaime, não gabarito" e as quatro críticas nomeadas, disponíveis para as notas 14, 15, 24; wikilinks de ancoragem para as notas 03, 11, 14, 15, 24, e cross-galho para `Carreira/Entrevistas/06`.
+- **Régua de profundidade — palavras, não linhas:** faixa-alvo 4.500-6.500 (`wc -w`). **Contagem final: 6.633 palavras**, ~2% acima do teto — mesma decisão já registrada nas notas 02 (6.608) e 10 (6.737): não vale cortar conteúdo essencial (as quatro críticas, a origem dupla verificada, os dois casos práticos) só para eliminar um excesso residual pequeno. Arquivo tem 218 linhas — T2 (piso de 400 linhas) tratado como N/A, régua de palavras é a que vale (mesmo ajuste das notas 01, 02, 10, 11).
+- **Verificação:** gate G1-G5 rodado manualmente (checklist de `/verificar-nota` aplicado item a item pelo agente da Tarefa 13). E1 ✓ (TL;DR denso, 5 linhas); E2 ✓ (abre retomando o gancho da nota 11, não por definição); E3 ✓ (2 diagramas Mermaid — mapeamento XYZ↔nota 11 e mapeamento XYZ/CAR/PAR↔STAR —, validados por `validar-mermaid.mjs`, 0 quebrados); E4 ✓ (seção `## Casos práticos` com 2 cenários fictícios — Tiago evitando número inventado, recrutadora notando repetição mecânica); E5 ✓; E6 ✓; E7 ✓; E8 ✓ (3 `[!warning]`). S1 ✓. P1 N/A (nota conceitual, sem código). P2 ✓ (mecanismo do slot Y convidando invenção explicado, não só afirmado; mecanismo de reconhecimento de padrão pelo leitor explicado). P3 N/A (adepto isento). P4 ✓ (grandezas no exemplo de Camila — 4,2s→900ms, 78% — e nos casos práticos). T2 — ver ajuste de régua acima. L1 ✓ (wikilinks cross-galho para `Entrevistas/06`, e internos para 03, 11, 14, 15, 24). L2 ✓ (Fontes com 2 links externos verificáveis — o livro e o artigo de LinkedIn de 2014, este último verificado ao vivo via WebFetch em 2026-08-20). M1 — fora de escopo deste plano por decisão explícita do brief da Tarefa 13; não registrado como lacuna.
+- **G3 (conferência manual):** nenhuma linha quebrada manualmente (checado por comprimento de linha — só frontmatter fica curto); 4 `[!example] Caso fictício`, todas com persona declarada, nenhuma reusando o dispositivo de persona única em seis níveis das notas 03/07; nenhum vazamento de `codex-technomanticus-apocrypha` (grep vazio); 1 resíduo de inglês solto fora de bloco declarado encontrado e corrigido durante a varredura ("framework" → "molde" na armadilha "Copiar o rótulo da fórmula para dentro da linha").
+- **Verificação de fonte (WebFetch ao vivo, 2026-08-20):** confirmado que o artigo "My Personal Formula for a Better Resume" no LinkedIn (29/09/2014) é assinado pelo próprio Laszlo Bock e contém a formulação exata "Accomplished [X] as measured by [Y] by doing [Z]", apresentada como método pessoal dele, sem atribuição a fonte externa nem a documento institucional do Google — usado para reforçar, com dado verificável, a distinção que a nota faz entre "conselho pessoal de um ex-executivo" e "política do Google".
+- **Pendências:** M1 (vídeo/podcast) fora de escopo deste plano por decisão registrada — não é lacuna, é escopo fechado. Wikilinks para as notas 14, 15, 13 e 24 ficam quebrados até essas notas serem escritas — esperado, dentro da linha de base de 27 wikilinks quebrados já registrada na Tarefa 1.
 
 #### 13 - Responsabilidade, realização e alavancagem   [substantivo]
 - **Estado:** ⬜ pendente · fase: adepto
