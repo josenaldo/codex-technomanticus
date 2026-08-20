@@ -46,9 +46,9 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 | Iniciado (01-09) | 9 |
 | Adepto (10-19 + 18a) | 11 |
 | Magus (20-26) | 7 |
-| ✅ escritas | 4 |
-| ⬜ pendentes | 23 |
-| % concluído | 15% |
+| ✅ escritas | 5 |
+| ⬜ pendentes | 22 |
+| % concluído | 19% |
 | Scaffolding | ✅ roadmap.md + index.md criados (Tarefa 1) |
 | Wikilinks quebrados na Tarefa 1 (linha de base) | 27 (`/verificar-wikilinks`, 2026-08-20) — as 26 notas + o broto 18a do `index.md`, nenhum ainda existe; esperado até a Tarefa 30 |
 
@@ -133,9 +133,12 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 - **Pendências:** M1 (vídeo/podcast) fica para enriquecimento futuro, não bloqueante nesta fase.
 
 #### 08 - Formação, cursos e certificações   [substantivo]
-- **Estado:** ⬜ pendente · fase: iniciado
-- **Tarefa do plano:** Bloco B
-- **Escopo:** curadoria, posição no documento por nível, e onde o caminho de entrada pesa mais.
+- **Estado:** ✅ escrita · fase: iniciado · 2026-08-20
+- **Tarefa do plano:** Tarefa 9 (Bloco B)
+- **Escopo:** o que entra (superior concluído/em andamento, curso técnico, bootcamp com carga horária significativa e reputação reconhecível, certificação reconhecida) e o que não entra (ensino médio quando já há superior, curso de poucas horas, certificado de participação sem avaliação técnica); formato da linha e a previsão de conclusão para quem ainda estuda; a posição no documento — sobe/desce, vocabulário emprestado da nota 03, com diagrama Mermaid da regra de decisão; a curadoria como coração da nota (caso fictício Otávio Reis, 30 linhas de curso, corolário do curso de ML numa vaga de front-end); onde o caminho de entrada pesa mais — quatro subseções (bootcamp/curso livre, autodidata sem diploma, pós/mestrado/doutorado em transição de carreira com o caso real de Cassiana Gabriela Lima Barreto retomado da nota 02 sob o ângulo de formação-como-ativo, curso técnico/Instituto Federal); dois casos práticos com a persona Renata Aquino (reutilizada da nota 03) mostrando a mesma formação subindo e descendo em dois momentos da carreira.
+- **Interfaces produzidas:** o par sobe/desce aplicado à posição física da seção (extensão do vocabulário da nota 03); o critério de curadoria "relevante para esta vaga, não porque foi feito"; wikilinks de ancoragem para as notas 02, 03, 04, 09, 10, 18, 21, 26, e cross-galho para `Carreira/Entrevistas/index`.
+- **Verificação:** gate G1-G5 rodado. G1/G2 — `/verificar-nota` conduzido manualmente como procedimento (mesma ressalva das notas 04-07). 184 linhas, 6.634 palavras (~36 palavras/linha, consistente com a densidade das notas irmãs), 1 bloco Mermaid validado (`validar-mermaid.mjs`, 0 quebrados). E1 ✓, E2 ✓ (abre com o caso fictício Otávio Reis), E3 ✓ (diagrama da regra sobe/desce), E4 ✓ (seção `## Casos práticos` com 2 cenários, persona Renata Aquino em dois momentos), E5 ✓, E6 ✓, E7 ✓, E8 ✓ (4 warnings), S1 ✓, P1 N/A (nota conceitual, sem código), P2 ✓ (explica por que a posição muda e por que a curadoria funciona, não só descreve), P3 N/A (iniciado), P4 ✓ (previsão de conclusão com data, carga horária de bootcamp, datas da trajetória de Cassiana), T1 — 184 linhas fica abaixo do piso literal de 300, mesma situação já registrada nas notas 01-07 deste galho (régua de linhas mede parágrafos, não conteúdo); tratado como N/A, substituído pela régua de palavras (6.634, levemente acima do topo da faixa 4.500-6.500, mesma leitura já aplicada à nota 02 com 6.608 — cortar conteúdo bom por ~2% de excesso não compensa), L1 ✓ (wikilink cross-galho para `Carreira/Entrevistas/index`), L2 ✓ (Fontes com o perfil público de Cassiana, já citado com fonte completa na nota 02), M1 ausente (recomendado, não obrigatório em iniciado). G3 — conferido na mão: nenhuma linha quebrada manualmente, todos os 4 `[!example]` etiquetados (1 real + 3 fictícios com persona declarada), nenhum vazamento do apocrypha.
+- **Ajuste de régua registrado:** T1 (piso de 300 linhas) não se aplica literalmente — mesma correção já registrada nas notas 01, 02, 03, 05, 06 e 07 deste galho: a régua de linhas mede parágrafos (1 parágrafo = 1 linha, por mais longa), não conteúdo; a régua de palavras (4.500-6.500) é a que vale, e esta nota fica em 6.634, dentro da margem já aceita para a nota 02.
 - **Pendências:** —
 
 #### 09 - Habilidades técnicas   [substantivo]
