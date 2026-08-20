@@ -30,10 +30,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 **Esquema de `fase:` detectado:** COM fase (Iniciado 01-06 · Adepto 07-13 · Magus 14-22)
 **Piso de linhas:** aplicável nominalmente (Iniciado ≥300 / Adepto ≥400 / Magus ≥500), **mas** vigora o padrão capítulo de livro, que o substitui — as 22 notas estão entre 450 e 496 linhas, dentro da faixa de nota profunda. Piso só é gap real se a nota for rasa de conteúdo, não por contagem.
 
-> [!warning] Achado de inventário — `fase:` em minúscula é problema **do vault**, não deste galho
+> [!done] Achado de inventário — `fase:` em minúscula: RESOLVIDO em 2026-08-20 (vault inteiro)
 > As 22 notas usam `fase: iniciado|adepto|magus` em minúscula, contra a convenção (`Iniciado|Adepto|Magus`). A conferência vault-wide mostrou que **não é defeito local**: são **864 notas em minúscula contra 1.237 em maiúscula** (~41%), espalhadas por dezenas de galhos — inclusive alguns já declarados 100% completos, como Complexidade de Software (17) e Padrões de Projeto/GoF (23). Também aparecem 12 notas com `fase: Adepto→Magus`.
 > Consequência: qualquer `GROUP BY fase` do Dataview parte cada fase em duas fatias, e MOCs que filtram por fase perdem metade das notas.
-> **Fora do escopo deste passe** — é normalização mecânica de vault inteiro (`sed`), com decisão do usuário sobre quando rodar e como isolar do trabalho paralelo na working tree.
+> **Resolvido:** normalização aplicada às 864 notas em 2026-08-20 (commit `fac5f2b2`), só a linha do frontmatter. As 22 notas deste galho agora usam `Iniciado|Adepto|Magus`. As entradas abaixo ainda registram `fase: iniciado` porque foram escritas antes da correção — é registro histórico, não pendência.
 
 ## Tabela-resumo
 
@@ -64,8 +64,8 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 > - Casos reais existem (Equifax, Logjam, Mirai, Target) espalhados em `[!example]` e seções `## Caso histórico:` → E4 é promoção, não redação.
 > Sobram como trabalho de fato novo: **M1 (mídia, 22/22)** e **L1** nas 14 notas sem wikilink cross-galho.
 
-> [!warning] Quebra manual de linha — não corrigir em massa
-> As 22 notas têm quebra manual em ~110 colunas, contra a regra do vault. **O usuário corrige manualmente à medida em que lê.** O passe de enriquecimento não deve reformatar o texto existente; apenas **o texto novo** que ele escrever precisa sair em linha única por parágrafo.
+> [!done] Quebra manual de linha — resolvida em 2026-08-20
+> As 22 notas foram desdobradas junto com o resto do vault (1.250 arquivos): um parágrafo é uma linha só. O texto novo do enriquecimento deve seguir a mesma regra — nunca quebrar em ~100 colunas, inclusive dentro de callout, item de lista e célula de tabela.
 
 ---
 
