@@ -14,8 +14,8 @@ tags:
 
 Roadmap do galho `03-Dominios/Carreira/Currículo`. Construção nova (2026-08-20), a partir do plano em `00-Meta/specs/2026-08-20-galho-curriculo-plano.md` (30 tarefas) e da spec de design em `00-Meta/specs/2026-08-20-galho-curriculo-design.md`. Esta é a memória de retomada: cada linha aponta a tarefa do plano que a escreve, para que o galho possa ser continuado em outra sessão sem reler o plano inteiro.
 
-> [!warning] Diagnóstico de 2026-08-20 — Tarefa 10 concluída, bloco Iniciado fechado
-> As Tarefas 1-10 do plano rodaram: pasta, MOC e roadmap (Tarefa 1) e as nove notas do bloco Iniciado (01-09, Tarefas 2-10). **O bloco Iniciado está 9/9 escrito**, com gate G1-G5 rodado nota a nota. As Tarefas 11-30 (blocos Adepto e Magus, 18 notas + 1 broto) ainda não rodaram.
+> [!warning] Diagnóstico de 2026-08-20 — Tarefa 11 concluída, bloco Adepto aberto
+> As Tarefas 1-11 do plano rodaram: pasta, MOC e roadmap (Tarefa 1), as nove notas do bloco Iniciado (01-09, Tarefas 2-10) e a nota 10 (Tarefa 11), que abre o bloco Adepto e é a ponte entre as duas lentes do galho. **O bloco Iniciado está 9/9 escrito, e o bloco Adepto está 1/11 escrito**, com gate G1-G5 rodado nota a nota. As Tarefas 12-30 (resto do bloco Adepto e todo o bloco Magus, 17 notas + 1 broto) ainda não rodaram.
 
 ## A tese e as duas lentes
 
@@ -46,9 +46,9 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 | Iniciado (01-09) | 9 |
 | Adepto (10-19 + 18a) | 11 |
 | Magus (20-26) | 7 |
-| ✅ escritas | 9 (bloco Iniciado completo) |
-| ⬜ pendentes | 18 |
-| % concluído | 33% |
+| ✅ escritas | 10 (bloco Iniciado completo + abertura do bloco Adepto) |
+| ⬜ pendentes | 17 |
+| % concluído | 37% |
 | Scaffolding | ✅ roadmap.md + index.md criados (Tarefa 1) |
 | Wikilinks quebrados na Tarefa 1 (linha de base) | 27 (`/verificar-wikilinks`, 2026-08-20) — as 26 notas + o broto 18a do `index.md`, nenhum ainda existe; esperado até a Tarefa 30 |
 
@@ -157,10 +157,15 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 ## Notas — Adepto (a matéria-prima)
 
 #### 10 - Inventário de evidência   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
-- **Tarefa do plano:** Bloco C
-- **Escopo:** a ponte entre as duas lentes — converte cada porta de entrada em material aproveitável, e nomeia a dúvida que cada porta desperta no leitor.
-- **Pendências:** —
+- **Estado:** ✅ escrita · fase: adepto · 2026-08-20
+- **Tarefa do plano:** Tarefa 11 (abre o bloco Adepto)
+- **Escopo:** a ponte entre as duas lentes do galho — converte cada uma das dez portas da nota 02 em material aproveitável, reusando por número e nome a taxonomia fixada lá, sem reordenar nem reclassificar. Percorre as dez portas sob o ângulo de onde a evidência costuma estar esquecida (avaliação de supervisor, devolutiva de trainee, relatório de IC, projeto de bancada, repositório de bootcamp, histórico de commits do autodidata, relatório da área anterior, e-mail de reconhecimento da virada interna, analytics de projeto próprio, discussão de PR/issue do open source) e qual dúvida específica cada porta desperta — nomeando explicitamente, além do vocabulário já fixado pela nota 02, duas dúvidas novas: consistência sem supervisão (porta 6) e compromisso com a mudança (porta 7). Trata com seriedade oito categorias que os guias de mercado descartam (bolsa de IC, monitoria, extensão, TCC com implementação real, trabalho voluntário técnico, freelance informal, contribuição pequena a open source, automação no emprego anterior de outra área), declarando Jobscan/Enhancv/Teal como fonte comercial. Crava a inversão central — experiência da área anterior como ativo, não passivo — com o caso real estendido de Cassiana Gabriela Lima Barreto (sete anos no laboratório NIATS/UFU: sensores inerciais, limpeza/integração de dados de várias fontes, ML, análise estatística de dados hospitalares, MATLAB, liderança de equipe), citado com autorização, fontes LinkedIn e página de carreiras da Dadosfera. Diagrama Mermaid porta→evidência-esquecida→dúvida (10 portas, 3 subgraphs). Fecha com procedimento executável de quatro passos (listar portas, ir ao registro físico, nomear a dúvida, triar currículo vs. entrevista) e gancho explícito para a nota 21 (brag document como versão contínua deste inventário retroativo).
+- **Interfaces produzidas:** o vocabulário "onde a evidência está esquecida" + as duas dúvidas novas (consistência sem supervisão, compromisso com a mudança), disponíveis para as notas 11, 16, 19, 21; wikilinks de ancoragem para as notas 01, 02, 08, 11, 13, 14, 16, 19, 21, e cross-galho para `Carreira/Entrevistas/index`.
+- **Régua de profundidade — palavras, não linhas:** faixa-alvo 4.500-6.500 (`wc -w`). **Contagem final: 6.737 palavras**, ~3,6% acima do teto — depois de duas rodadas de corte (doors 1, 2, 3, 8, 9), o conteúdo restante (a inversão de transição de carreira, o caso estendido de Cassiana, o procedimento de quatro passos) foi julgado essencial demais para cortar só por causa do excesso residual, mesma decisão já tomada pelo coordenador na nota 02 (6.608 palavras, ~1,7% acima). Arquivo tem 256 linhas — T2 (piso de 400 linhas) tratado como N/A, régua de palavras é a que vale (mesmo ajuste já registrado nas notas 01/02).
+- **Verificação:** gate G1-G5 rodado. E1-E8 ✓ (TL;DR denso 6 linhas, abertura com a pergunta errada — não definição —, 1 diagrama Mermaid validado por `validar-mermaid.mjs` — 0 quebrados —, seção `## Casos práticos` com 2 cenários fictícios — Diego Falcão/autodidata e Patrícia Nunes Ferreira/transição de carreira — aplicando o procedimento de 4 passos na prática, `O que vem a seguir`, seção de inglês, tabela PT↔EN, 4 `[!warning]` em Armadilhas comuns); S1 ✓; P1 N/A (nota conceitual); P2 ✓ (mecanismo "dúvida como metade da resposta" explicado, não só afirmado); P3 N/A (adepto isento); P4 ✓ (grandezas nos dois casos fictícios e nos 7 anos/laboratório do caso real de Cassiana); T2 — ver ajuste de régua acima; L1 ✓ (wikilink cross-galho `Carreira/Entrevistas/index`); L2 ✓ (Fontes com 3 entradas, todas verificáveis ou declaradas como análise estrutural própria). M1 ausente — nenhuma tarefa deste plano previu pesquisa de mídia para o bloco Adepto ainda; tratado como pendência não bloqueante, mesmo critério aplicado às notas 01-09, embora o checklist padrão só isente M1 formalmente em `fase: iniciado` — ajuste de régua registrado aqui por falta de escopo de mídia no plano das 30 tarefas.
+- **G3 (conferência manual):** nenhuma linha quebrada manualmente (checado por comprimento de linha, só frontmatter e a linha de abertura de lista ficam curtas); 1 etiqueta `[!example] Caso real` (Cassiana, com 2 fontes verificáveis) + 2 `[!example] Caso fictício` (Diego Falcão, Patrícia Nunes Ferreira, personas declaradas); nenhum vazamento de `codex-technomanticus-apocrypha` (grep vazio); nenhum dado de RocketReach/ZoomInfo (grep vazio).
+- **Dado sensível — verificação de escopo:** os detalhes técnicos do caso de Cassiana (NIATS/UFU, sensores, MATLAB, liderança de equipe) vieram integralmente do brief da Tarefa 11, que já declarou autorização de citação e restringiu as fontes citáveis a LinkedIn e à página de carreiras da Dadosfera — nenhum dado de contato pessoal (telefone, e-mail) foi usado ou inventado.
+- **Pendências:** M1 (vídeo/podcast) fica para enriquecimento futuro, não bloqueante nesta fase — mesmo critério das notas 01-09.
 
 #### 11 - A linha de bullet   [substantivo]
 - **Estado:** ⬜ pendente · fase: adepto
