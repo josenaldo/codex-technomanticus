@@ -101,7 +101,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 
 #### 06 - Multi-agent — orchestrator e sub-agents   [mecânico]
 - **Enriquecimento:** ✅ feita (2026-07-03)
-- **Estado:** 267 linhas · fase: ausente · status: growing
+- **Estado:** 301 linhas · fase: ausente · status: growing
 - **Núcleo/gaps:** E5, L2
 - **Score:** 10/12
 - **Plano de execução:**
@@ -109,6 +109,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar URLs reais às referências em "## Ver mais" e "## Referências" (Anthropic Building Effective Agents, Claude Agent SDK docs, Augment Code CIV, VeriMAP EACL 2026, OpenAI Swarm)
   - Opcional: converter a seção "## Anti-patterns" (6 itens em lista bullet) para callouts `[!warning]` individuais
 - **Resultado:** ✅ "O que vem a seguir" → nota 07; 6 anti-patterns → callouts [!warning]; 5 URLs. **Verify (coordenador — galho de alto risco de fabricação):** TODAS as 5 URLs conferidas via WebFetch/WebSearch: Anthropic BEA ✓, OpenAI Swarm ✓, Claude Agent SDK subagents ✓ (302→platform.claude.com), Augment Code CIV ✓ (Paula Hingel), VeriMAP EACL 2026 ✓ (aclanthology 2026.eacl-long.353 = "Verification-Aware Planning for Multi-Agent Systems", Megagon/Hruschka). Zero fabricação. Nota: subagente ajustou título do doc SDK p/ o real ("Subagents in the SDK").
+- **Passe 2026-08-20 — material externo:** Seção **A escada — suba um degrau por vez**: os 5 degraus (agente único → cadeia fixa → roteador → paralelo fan-out/fan-in → orquestrador+subagentes), com o custo de cada subida e a observação de que os degraus 2-3 são código chamando o modelo, não multi-agent forte — a faixa que times pulam indo direto do 1 para o 5. Callout com a regra *"se um agente com ferramentas boas não resolve, dois com ferramentas ruins também não"* e os 3 consertos a esgotar antes (tool design, context pipeline, eval). Fecho com pesquisa-de-mercado vs implementar-feature: mesmo padrão, resultado oposto, porque a segunda é escrita coordenada sobre estado compartilhado. Fonte da lacuna: [[2026-ia-do-zero-ao-senior-trilha-visual]].
 
 #### 07 - Frameworks 2026   [substantivo]
 - **Enriquecimento:** ✅ feita (2026-07-03)

@@ -23,23 +23,26 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Grupo | Itens |
 |-------|-------|
 | ESTRUTURA | E1 TL;DR · E2 Abertura-problema · E3 Mermaid · E4 Casos práticos · E5 O que vem a seguir · E6 Inglês · E7 Tabela PT↔EN · E8 Armadilhas [!warning] |
-| PROFUNDIDADE | P1 Código-com-falha · P2 Mecanismo explicado |
+| PROFUNDIDADE | P1 Código-com-falha · P2 Mecanismo explicado · P4 Exemplo com número |
 | LINKS | L1 Wikilink cross-galho · L2 Referência externa (URL) |
 | MÍDIA | M1 Vídeo/podcast embutido |
 
 **Esquema de `fase:` detectado:** COM fase (Iniciado)
-**Piso de linhas:** aplicável — Iniciado ≥300
+**Piso de linhas:** aplicável — Iniciado ≥300 · Adepto ≥400 · Magus ≥500 (decisão do usuário, 2026-08-01)
 
 ## Tabela-resumo
 
 | Métrica | Valor |
 |---------|-------|
-| Total de notas | 8 |
+| Total de notas | 9 |
 | ⬜ pendente | 0 |
 | ➖ não precisa | 4 |
-| ✅ feita | 4 |
+| ✅ feita | 5 |
 | 🔄 em andamento | 0 |
 | % concluído | 100% |
+
+> [!note] Nota 09 acrescentada em 2026-08-16
+> Galho estava 8/8 fechado desde 01/07. A nota **09 - Abstenção** entrou depois, a partir da comparação com o board *IA do Zero ao Sênior* ([[2026-ia-do-zero-ao-senior-trilha-visual]]), que expôs a lacuna: as notas 01 e 02 mandam incluir anti-tests no golden set, mas nada no vault explicava por que o modelo não se abstém sozinho nem como implementar o comportamento. Nasce escrita, ainda não enriquecida.
 
 ---
 
@@ -92,7 +95,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Score:** 11/12
 - **Plano de execução:**
   - — nenhuma
-- **Resultado:** —
+- **Resultado:** 203→400 linhas, fecha o piso Adepto sem padding. Acrescentado: TL;DR em 3 blocos (E1); 2 vídeos verificados via oEmbed — Hamel Husain crash course + Lenny's Podcast (M1); bloco Pydantic com o campo obrigatório que força o modelo a inventar `data_calibracao`, mais a versão com `CampoExtraido` (P1); seção "De onde tirar o sinal de confiança" (autoavaliação / logprobs / autoconsistência + score de recuperação, com o ponto cego do erro estável); seção "A granularidade da abstenção" (por campo vs por documento, e a dependência de interface de revisão); Cenário 3 (agente que se abstém de **agir** — o ponto de decisão é a tool call, métrica = ações sob ambiguidade não resolvida); seção "Quando o próprio juiz precisa se abster" (`indeterminado` fora da média); exemplo de CSV com uma linha por família de anti-test; checklist de implementação; seção "O que abstenção não conserta" (recuperação ruim, modelo incapaz, grounding); 2 callouts `[!question]-` (fine-tuning não resolve; a objeção de produto); armadilhas movidas para seção `## Armadilhas comuns` própria (E8); fonte nova Kadavath et al. 2022.
 
 #### 06 - Frameworks 2026 — Promptfoo, Braintrust, Langfuse, Patronus, Phoenix   [mecânico]
 - **Enriquecimento:** ➖ não precisa
@@ -119,4 +122,15 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Score:** 10/12
 - **Plano de execução:**
   - — nenhuma
+- **Resultado:** —
+
+#### 09 - Abstenção — projetar e medir o "não sei"   [substantivo]
+- **Enriquecimento:** ✅ feita (2026-08-19)
+- **Estado:** 400 linhas · fase: Adepto · status: growing
+- **Núcleo/gaps:** — (T2, M1 e P1 fechados na expansão)
+- **Score:** ~10/13 (checklist já com o novo item P4)
+- **Plano de execução:**
+  - `/adicionar-midia` — buscar vídeo/talk sobre calibração e abstenção em LLM → resolve M1
+  - Acrescentar um bloco de código com o caso-problema: pipeline que grava `data_de_emissao` no campo `data_de_calibracao` por ausência de abstenção, e a versão com `null` + fila de revisão → resolve P1
+  - **Expansão real de conteúdo até o piso de 400** (déficit +197): terceiro cenário prático (agente que abstém de chamar ferramenta quando o argumento é incerto), seção sobre abstenção parcial por campo vs por documento, e tratamento do caso em que o próprio juiz precisa abster. Expansão substantiva, nunca padding.
 - **Resultado:** —

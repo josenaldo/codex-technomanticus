@@ -65,12 +65,13 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 
 #### 03 - Context rot e atenção diluída   [mecânico]
 - **Enriquecimento:** ➖ não precisa
-- **Estado:** 401 linhas · fase: Adepto · status: growing
+- **Estado:** 407 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** P1
 - **Score:** 11/12
 - **Plano de execução:**
   - — nenhuma
 - **Resultado:** —
+- **Passe 2026-08-20 — material externo:** Callout **corolário operacional da curva em U**, dentro do princípio 1: em documento longo (acima de ~10 mil tokens) a ordem se inverte — documento primeiro, pergunta no fim, porque a instrução de abertura fica soterrada e a borda final é onde a atenção volta a pesar. Custo zero de implementação. Inclui o conserto de 10 segundos para a conversa longa que "esqueceu" a regra: repetir a instrução crítica na última mensagem. Fonte da lacuna: [[2026-ia-do-zero-ao-senior-trilha-visual]].
 
 #### 04 - Context pipelines — montagem dinâmica   [mecânico]
 - **Enriquecimento:** ➖ não precisa

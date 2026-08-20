@@ -1,7 +1,7 @@
 ---
 title: "03 - Roles e personas — escolhendo o juízo do modelo"
 created: 2026-05-28
-updated: 2026-06-28
+updated: 2026-08-16
 type: concept
 status: seedling
 progress: in_progress
@@ -244,6 +244,25 @@ Existe uma distinção importante entre role no system prompt e role pedido pelo
 **Implicação prática:** se o role é crítico para o comportamento do sistema, ele vai no system prompt. Se é apenas para uma tarefa específica dentro de uma conversa, pode ir como instrução de user turn — mas com consciência de que o result é menos previsível.
 
 Para produtos em produção, roles críticos sempre no system prompt, versionados e testados como qualquer outro componente do sistema.
+
+### O terceiro canal: prefill do turno `assistant`
+
+`system` e `user` são os dois canais óbvios, e a discussão de role costuma parar neles. Existe um terceiro, muito menos usado e que às vezes vale mais que qualquer reescrita de persona: **você pode escrever as primeiras palavras da resposta do modelo**, colocando um turno `assistant` incompleto no fim da lista de mensagens. É o **prefill**.
+
+```jsonc
+messages: [
+  { role: "user",      content: "Extraia os campos deste laudo: ..." },
+  { role: "assistant", content: "{" }   // <- prefill: o modelo continua daqui
+]
+```
+
+O mecanismo é o mesmo de sempre, e é por isso que funciona tão bem: o modelo só sabe continuar sequências. Ao entregar o começo da continuação, você elimina a parte da distribuição em que ele decidiria fazer outra coisa — abrir com "Claro! Aqui está...", explicar o que vai fazer, embrulhar o JSON numa cerca de markdown. Um `{` empurra para objeto JSON; um `1.` empurra para lista numerada; um `## ` empurra para seção. É controle de formato **sem gastar um token de instrução**, e mais confiável que pedir "responda apenas com JSON, sem preâmbulo", porque não depende de o modelo obedecer — depende de ele continuar.
+
+Onde isso encosta em role: prefill também estabiliza *tom*. Prefixar a resposta com uma frase no registro desejado costuma segurar o registro melhor do que adicionar mais três linhas de descrição de persona no system, pelo mesmo motivo de [[05 - Few-shot examples — exemplos como contrato|few-shot]] bater descrição — demonstrar vence explicar.
+
+> [!warning] Prefill tem duas pegadinhas
+> **Nem toda API aceita.** É nativo na API da Anthropic (turno `assistant` final incompleto); em outros provedores o equivalente pode não existir ou ter semântica diferente — confira antes de depender disso.
+> **O prefill volta a você, ou não.** O texto que você injetou geralmente **não** vem repetido na resposta: se você prefillou `{`, precisa concatenar esse `{` de volta antes de dar `JSON.parse`. É a causa mais comum de "o JSON veio quebrado" quando se usa prefill pela primeira vez.
 
 Uma armadilha de produto: sistemas que permitem ao usuário redefinir o role do assistente via user turn. *"Esqueça tudo que foi dito antes e aja como..."* é um vetor de prompt injection. Se o role define comportamentos críticos de segurança ou compliance, ele precisa estar no system prompt com instrução explícita de que não pode ser sobrescrito por input do usuário — e o modelo precisa ser testado contra tentativas de sobrescrita.
 

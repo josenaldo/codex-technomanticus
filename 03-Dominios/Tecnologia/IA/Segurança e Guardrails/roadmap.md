@@ -23,23 +23,26 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Grupo | Itens |
 |-------|-------|
 | ESTRUTURA | E1 TL;DR · E2 Abertura-problema · E3 Mermaid · E4 Casos práticos · E5 O que vem a seguir · E6 Inglês · E7 Tabela PT↔EN · E8 Armadilhas [!warning] |
-| PROFUNDIDADE | P1 Código-com-falha · P2 Mecanismo explicado |
+| PROFUNDIDADE | P1 Código-com-falha · P2 Mecanismo explicado · P4 Exemplo com número |
 | LINKS | L1 Wikilink cross-galho · L2 Referência externa (URL) |
 | MÍDIA | M1 Vídeo/podcast embutido |
 
 **Esquema de `fase:` detectado:** COM fase (Iniciado)
-**Piso de linhas:** aplicável — Iniciado ≥300
+**Piso de linhas:** aplicável — Iniciado ≥300 · Adepto ≥400 · Magus ≥500 (decisão do usuário, 2026-08-01)
 
 ## Tabela-resumo
 
 | Métrica | Valor |
 |---------|-------|
-| Total de notas | 12 |
+| Total de notas | 13 |
 | ⬜ pendente | 0 |
 | ➖ não precisa | 0 |
-| ✅ feita | 12 |
+| ✅ feita | 13 |
 | 🔄 em andamento | 0 |
 | % concluído | 100% |
+
+> [!note] Nota 13 acrescentada em 2026-08-16 — o galho passou a ter dois escopos
+> As notas 01-12 cobrem a segurança do **código gerado por IA**. A nota 13 abre o **Bloco 5**: segurança de **runtime** da feature de IA (prompt injection), que não tinha dono no vault — o tema aparecia disperso em 01, 07 e em `Context Engineering/12`, apesar de o index do domínio listá-lo entre os 8 erros recorrentes. Lacuna identificada na comparação com o board *IA do Zero ao Sênior* ([[2026-ia-do-zero-ao-senior-trilha-visual]]). Se o Bloco 5 crescer para ~5 notas, considerar graduá-lo a galho próprio conforme a convenção broto → galho.
 
 > [!success] Galho enriquecido 2026-07-06 — 12/12 notas via fan-out ≤3 verificado (4 ondas). **Caducidade regulatória resolvida:** a pesquisa da nota 11 revelou que o Digital Omnibus on AI (mai/2026) já ADIOU as obrigações high-risk do EU AI Act (Anexo III→02/12/2027, Anexo I→02/08/2028); GPAI + Art. 50 permanecem em 02/08/2026. Nota 11 reflete o estado real. Reavaliar após 02/08/2026 (primeiras multas GPAI, texto final do Omnibus). Desvio menor: nota 10 ficou em 296 linhas (4 abaixo do piso 300) — sem padding por design.
 
@@ -168,3 +171,15 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Plano de execução:**
   - Adicionar URLs reais às 5 referências (Veracode 2025 GenAI Report, DryRun Security SAST Tools 2026, Anthropic Best Practices for Claude Code, NVIDIA Sandboxing Guidance, EUR-Lex EU AI Act)
 - **Resultado:** 5/5 refs com URL real (Veracode 2025, DryRun 2026, Anthropic, NVIDIA, EUR-Lex Reg. UE 2024/1689). Plano integral, sem desvios.
+
+#### 13 - Prompt injection — quando o dado vira instrução   [substantivo]
+- **Enriquecimento:** ✅ feita (2026-08-19)
+- **Estado:** 403 linhas · fase: Adepto · status: growing
+- **Núcleo/gaps:** — (T2, M1 e P1 fechados na expansão)
+- **Score:** ~10/13 (checklist já com o novo item P4)
+- **Plano de execução:**
+  - `/adicionar-midia` — talk sobre prompt injection (Simon Willison tem palestras gravadas sobre o tema) → resolve M1
+  - Bloco de código com falha: montagem de prompt concatenando retorno de ferramenta sem tag nem sanitização, e a versão com tag + allowlist de domínio na renderização → resolve P1
+  - **Expansão real de conteúdo até o piso de 400** (déficit +185): terceiro e quarto cenário prático (agente de código lendo issue hostil; MCP server de terceiro devolvendo payload), seção sobre detecção (classificadores XPIA e por que falham isolados), e aterrissagem dos 6 padrões num exemplo trabalhado ponta a ponta. Expansão substantiva, nunca padding.
+  - Verificar após 02/08/2026 se o EU AI Act cria obrigação específica sobre injection que valha citar na nota 11
+- **Resultado:** 215→403 linhas, fecha o piso Adepto sem padding. Acrescentado: TL;DR em 3 blocos (E1); 2 vídeos verificados via oEmbed — RedMonk e Heavybit/Generationship, ambos com Simon Willison (M1); seção "O bug que a camada 1 sozinha não pega" com montagem de prompt concatenando retorno de tool cru + versão taggeada e resumida (P1); seção "Detectar não é defender" (classificador XPIA, por que o EchoLeak passou por ele, assimetria do falso negativo); "A terceira forma: quando o ataque fica" (injeção persistente — memória, índice do RAG, arquivos de instrução); Cenário 3 (agente de código lendo issue hostil, CVE-2025-53773 desarmando a camada 4) e Cenário 4 (MCP server de terceiro, com a distinção server-malicioso vs server-honesto-repassando-terceiros e a descrição de tool como vetor); "Um exemplo trabalhado" aplicando Plan-Then-Execute + Context-Minimization + Map-Reduce a um agente de suporte, com o custo subindo a cada degrau; seção "Como testar o seu sistema" (eval adversarial, 4 famílias incluindo falso positivo, critério = ação não ocorre); checklist de revisão pré-deploy; 5ª armadilha (modelo novo não resolveu); callout `[!question]-` sobre por que a indústria segue lançando agentes.

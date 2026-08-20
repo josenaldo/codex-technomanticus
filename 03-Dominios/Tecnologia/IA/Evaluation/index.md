@@ -61,6 +61,12 @@ Como eval muda quando o sistema avaliado é mais que um prompt isolado.
 
 - [[08 - Eval por contexto — LLM, RAG, agent, prompt]] — eval de prompt, de RAG, de agent e de LLM base; ponte com as três notas contextuais existentes
 
+### Bloco 5 — Abstenção (1 nota)
+
+O comportamento que você precisa **projetar** para poder medir. As notas 01 e 02 dizem para incluir anti-tests no golden set; esta cobre o outro lado — por que o modelo não se abstém sozinho, como se implementa abstenção num sistema real, e como se sabe se ela está calibrada.
+
+- [[09 - Abstenção — projetar e medir o não sei]] — o incentivo que o RLHF não deu, os 4 passos (autorizar, formatar, rotear, recompensar), a matriz alucinação confiante × abstenção covarde
+
 ## Rotas alternativas
 
 ### Rota mínima (preciso resolver hoje)

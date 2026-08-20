@@ -1,7 +1,7 @@
 ---
 title: "Model routing — modelo certo para a tarefa"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-08-16
 type: concept
 progress: backlog
 status: growing
@@ -99,6 +99,22 @@ Custo: ~$15/MTok input. Velocidade: menor. Reserve para:
 
 > [!warning] Opus não é sempre melhor — apenas mais caro
 > Em tarefas bem definidas e estruturadas, Sonnet frequentemente produz output idêntico ao Opus. A diferença se manifesta em: raciocínio multi-etapa com muitas variáveis interdependentes, tarefas que exigem conhecimento de domínio obscuro, e situações onde o modelo precisa de "bom senso" sofisticado. Para coding rotineiro, Opus é Sonnet com fatura maior.
+
+## Como escolher: o menor que passa no seu teste
+
+A pirâmide acima diz onde cada tier costuma servir. Ela não decide por você, porque **benchmark não é a sua tarefa**. Um leaderboard mede a capacidade média num conjunto de problemas que alguém escolheu; o que você precisa saber é se o modelo acerta *a sua* extração de laudo, *o seu* roteamento de ticket, *o seu* diff. São perguntas diferentes, e a segunda só tem uma resposta empírica.
+
+A heurística que substitui a discussão de opinião cabe numa frase: **o modelo certo é o menor que passa no seu teste.** O processo tem quatro passos e leva cerca de um dia:
+
+1. **Escreva 20 casos reais** da sua tarefa, com a resposta certa ao lado. Não são casos inventados nem gerados por IA — são inputs que já passaram pelo seu sistema. É o mesmo artefato de [[03-Dominios/Tecnologia/IA/Evaluation/02 - Golden datasets — como construir|golden dataset]]; se ele já existe, pule este passo.
+2. **Rode nos três candidatos** — o pequeno, o médio e o topo de linha — sem mudar mais nada.
+3. **Compare na mesma tabela**: acerto, custo por caso e latência p95. Uma linha por modelo. As três colunas juntas, porque decidir só por acerto é como escolher banco de dados só por benchmark de escrita.
+4. **Fique com o menor que passa** no seu limiar de qualidade. E refaça quando sair modelo novo — leva uma hora, e o resultado muda com mais frequência do que se imagina.
+
+> [!warning] As quatro armadilhas dessa decisão
+> **Leaderboard como veredito** — serve para montar a lista de candidatos, nunca para decidir. **Nome do modelo no meio do código** — o melhor modelo para uma tarefa muda a cada poucos meses; o identificador vive em configuração, sempre. **Testar três exemplos no chat** — isso é impressão, não avaliação; três casos não distinguem 94% de 88%. **Trocar de modelo sem rodar eval** — é trocar um bug conhecido por um bug desconhecido, e o novo você só descobre em produção.
+
+O passo 4 é onde mora a decisão de produto, e ela não é técnica. Suponha um classificador de intenção em que o topo de linha acerta ~96% e o modelo pequeno com cinco exemplos no prompt acerta ~94%, a uma ordem de grandeza menos de custo. Dois pontos percentuais valem a diferença? Numa triagem que tem revisão humana depois, não valem — o humano pega os erros. Num laudo que vai direto ao cliente, valem, e talvez nem 96% baste. **A resposta vem do produto, nunca do benchmark** — e é por isso que o passo 1 (casos reais, com gabarito) é o que sustenta todos os outros.
 
 ## Implementação de routing
 

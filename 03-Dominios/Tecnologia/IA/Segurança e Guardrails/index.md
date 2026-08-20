@@ -12,7 +12,7 @@ updated: 2026-05-02
 
 # Segurança e Guardrails
 
-Código gerado por IA tem **45% de risco em testes de segurança** (Veracode 2025). Não é "vai melhorar com modelo maior" — Veracode mostrou: tamanho do modelo **não correlaciona** com segurança. Slopsquat virou vetor real de supply chain. Cursor/Claude wipou banco de produção em 9 segundos quando descuidado. EU AI Act torna-se obrigatório em agosto de 2026. Esta trilha mapeia: **(1) o problema** (vulnerabilidades sistemáticas, slopsquat, [[Dicionário de IA#Hallucination|alucinações]]), **(2) defesa em profundidade** (pirâmide de validação, SAST/SCA, sandboxing, prompting), **(3) processo** (review humano, testes imutáveis, métricas), **(4) compliance** (AI Act, GDPR, roadmap de adoção).
+Código gerado por IA tem **45% de risco em testes de segurança** (Veracode 2025). Não é "vai melhorar com modelo maior" — Veracode mostrou: tamanho do modelo **não correlaciona** com segurança. Slopsquat virou vetor real de supply chain. Cursor/Claude wipou banco de produção em 9 segundos quando descuidado. EU AI Act torna-se obrigatório em agosto de 2026. Esta trilha mapeia: **(1) o problema** (vulnerabilidades sistemáticas, slopsquat, [[Dicionário de IA#Hallucination|alucinações]]), **(2) defesa em profundidade** (pirâmide de validação, SAST/SCA, sandboxing, prompting), **(3) processo** (review humano, testes imutáveis, métricas), **(4) compliance** (AI Act, GDPR, roadmap de adoção), e **(5) a segurança de runtime** da feature de IA em produção — prompt injection e o que o agente pode fazer depois de ler algo não confiável.
 
 > [!info] Pré-requisitos
 > Recomendado ter passado por [[Agentes de Codificação]] (Trilha 2 — para entender ferramentas), [[Context Engineering]] (Trilha 4 — para [[Dicionário de IA#Guardrail|guardrails]] determinísticos), e [[Spec-Driven Development]] (Trilha 5 — para validação contínua). Esta trilha é a **camada final** que protege o que as outras trilhas constroem.
@@ -56,6 +56,13 @@ EU AI Act + GDPR como arquitetura. O roadmap de 12 semanas para adoção progres
 - [[11 - Governance as architecture — EU AI Act, GDPR, licenças]] — datas-chave, obrigações, retenção, licenças (AGPL via slopsquat)
 - [[12 - O roadmap de segurança para times]] — plano de adoção em 3 fases × 4 semanas
 
+### Bloco 5 — A outra segurança: a feature de IA em runtime (1 nota)
+
+> [!important] Duas seguranças, um galho
+> Os blocos 1 a 4 tratam da segurança do **código que a IA escreve** — o risco entra pelo commit, e a defesa é SAST, review, sandbox de execução, compliance. Este bloco trata da segurança da **feature de IA rodando em produção** — o risco entra por um dado que o modelo lê, e a defesa é permissão de ferramenta, allowlist e arquitetura de agente. São ameaças diferentes, com atacantes e mitigações diferentes, e é útil não confundi-las. Ambas moram aqui porque quem responde por elas no time é a mesma pessoa.
+
+- [[13 - Prompt injection — quando o dado vira instrução]] — direta vs indireta, a trifecta letal, as 6 camadas de defesa, os 6 padrões arquiteturais, EchoLeak (CVE-2025-32711)
+
 ## Rotas alternativas
 
 ### Rota emergencial (já estou em fogo)
@@ -67,6 +74,11 @@ EU AI Act + GDPR como arquitetura. O roadmap de 12 semanas para adoção progres
 *"Vou implementar agentes — preciso desenhar a defesa"*
 
 [[01 - Código gerado por IA é untrusted]] → [[04 - A pirâmide de validação AI]] → [[06 - Permissões e sandboxing]] → [[07 - Security-focused prompting]] → [[09 - Testes imutáveis — a barreira que o agente não pode reescrever]]
+
+### Rota runtime (vou colocar um agente em produção)
+*"Meu agente lê e-mail, ticket ou web — o que pode dar errado?"*
+
+[[13 - Prompt injection — quando o dado vira instrução]] → [[06 - Permissões e sandboxing]] → [[04 - A pirâmide de validação AI]] → [[03-Dominios/Tecnologia/IA/Context Engineering/12 - Guardrails determinísticos|Guardrails determinísticos]] → [[03-Dominios/Tecnologia/IA/Observability/02 - Anatomia de um trace LLM|Anatomia de um trace LLM]]
 
 ### Rota compliance (precisamos passar em auditoria)
 *"EU AI Act está chegando — o que muda?"*

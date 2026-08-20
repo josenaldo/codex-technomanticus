@@ -1,7 +1,7 @@
 ---
 title: "Convenções de escrita"
 created: 2026-04-28
-updated: 2026-06-24
+updated: 2026-08-19
 type: how-to
 status: seedling
 tags:
@@ -133,7 +133,12 @@ As notas das trilhas de aprendizado (galhos em fases Iniciado/Adepto/Magus) segu
 
 O segundo uso é o que exige padrão de livro. A pergunta de aceite: *"este capítulo ensina o conceito do zero, sem buracos, numa ordem de dependência que facilita o aprendizado, e consolida no fim?"*
 
-**Comprimento não é meta — é consequência.** Não existe piso de linhas. Um capítulo é tão longo quanto o conceito precisa; alguns serão curtos e perfeitos.
+**Comprimento não é meta — é consequência.** Um capítulo é tão longo quanto o conceito precisa. Mas isso não dispensa o piso: escreva pela necessidade do conceito e **depois** confira o piso — se a nota ficou curta, o diagnóstico correto é quase sempre que o capítulo tem buraco (falta o exemplo trabalhado, falta a divulgação progressiva, falta a armadilha), não que ele estava pronto e curto.
+
+> [!important] Piso de linhas — vigente desde 2026-08-01
+> Uma suspensão provisória do piso circulou entre junho e agosto de 2026 e **foi revogada**. O piso vale, por fase: **Iniciado ≥300 · Adepto ≥400 · Magus ≥500** linhas. É o critério T da [[verificar-nota]].
+>
+> Cruzar o piso com padding é falha pior que ficar abaixo dele. Ficar abaixo é gap registrado no `roadmap.md` do galho, com plano de expansão substantiva nomeado; inflar com prosa vazia corrompe a nota e engana a auditoria. Quando um galho justificar desvio, registre o desvio — não mude a régua em silêncio.
 
 ### O smell "lista de ingredientes"
 

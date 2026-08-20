@@ -1,7 +1,7 @@
 ---
 title: "Context rot e atenção diluída"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-08-16
 type: concept
 progress: backlog
 status: growing
@@ -187,6 +187,13 @@ Quatro princípios que, se internalizados, evitam 80% dos incidentes de context 
 
 **1. Informação crítica vive nas bordas**
 A curva em U é uma restrição física da atenção. Trabalhe com ela, não contra ela. Qualquer informação que precisa ser seguida com alta fidelidade (instruções, constraints, objetivos) deve estar no início do system prompt ou re-injetada imediatamente antes da query. Documentos de referência? Chunk deles de forma que só o trecho relevante vá para o contexto, não o documento inteiro.
+
+> [!tip] O corolário operacional: a ordem se inverte em documento longo
+> A curva em U tem uma consequência prática que quase ninguém aplica, porque contraria o hábito. **Prompt normal** — instrução primeiro, dado por último. **Documento longo** (acima de ~10 mil tokens) — **documento primeiro, pergunta no fim**.
+>
+> O motivo é o mesmo mecanismo: com um documento grande no meio, a instrução que abriu o prompt fica soterrada e compete com dezenas de milhares de tokens; posta depois do documento, ela ocupa a borda final, que é onde a atenção volta a pesar. Custa zero implementar — é trocar a ordem de duas strings na montagem do prompt.
+>
+> O mesmo raciocínio explica o conserto de dez segundos para a conversa longa que "começou a ignorar" a regra do início: em vez de reescrever o system prompt, **repita a regra crítica na última mensagem**. Não é gambiarra; é como agentes de produção são construídos.
 
 **2. Context budget é recurso escasso, não espaço livre**
 Tratar a janela de contexto como "espaço disponível" é o mesmo erro de tratar RAM como "espaço livre" — ambos degradam conforme enchem. Context budget é recurso a ser alocado com intenção: cada tool definition, cada chunk de RAG, cada turno de histórico compete pela atenção do modelo. Cada adição deve justificar seu custo de atenção.

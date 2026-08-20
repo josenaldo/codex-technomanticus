@@ -1,7 +1,7 @@
 ---
 title: "Setup completo — checklist de produção"
 created: 2026-04-11
-updated: 2026-05-06
+updated: 2026-08-16
 type: concept
 progress: backlog
 status: seedling
@@ -263,6 +263,22 @@ async def rag_query(question: str, user_id: str, filters: dict = None):
 | **Citation accuracy** | >0.95 |
 | **% "não sei" apropriado** | >70% das out-of-scope |
 | **User feedback (thumbs up rate)** | >75% |
+
+## A ordem de ataque — quando o RAG está ruim
+
+Todo mundo monta o pipeline em um dia; fazer ele acertar é o trabalho de verdade. E quando o time diz *"a IA não sabe nada"*, o instinto é mexer no prompt — que é quase sempre o lugar errado. **Quando o RAG erra, o culpado raramente é o modelo; é a recuperação.** Se o trecho certo não chegou ao contexto, não existe prompt que salve a resposta.
+
+Daí a regra de ordem. Conserte nesta sequência, medindo `recall@k` entre cada passo:
+
+1. **Chunking** — cortar por seção ou parágrafo, com 10-15% de sobreposição. Corte cego a cada N caracteres parte a frase no meio e separa a pergunta da resposta. É o defeito mais barato de consertar e o que mais move o ponteiro.
+2. **Busca híbrida** — BM25 + vetor. Embedding sozinho erra feio em código, sigla, SKU, número de norma e nome próprio; palavra exata e sentido precisam ser somados, não escolhidos.
+3. **Rerank** — recupere 20, passe por um cross-encoder, mande os 5 melhores. Os primeiros da busca vetorial não vêm na melhor ordem, e o modelo lê poucos.
+4. **Contexto do chunk** — *contextual retrieval*: prefixe cada pedaço com uma linha que o situa no documento antes de gerar o embedding. Resolve o chunk que não se explica sozinho (*"O valor é R$ 49"* — de qual plano? de que ano?).
+
+> [!important] Por que esta ordem, e não outra
+> Os quatro consertos não são independentes: cada um muda o que o próximo tem para trabalhar. Rerankear chunks mal cortados é reordenar lixo; adicionar contexto a um pedaço que já está partido no meio da frase não o conserta. Chunking primeiro porque tudo depois dele herda o corte. E medir entre os passos importa mais que a ordem em si — sem `recall@k`, você não sabe se o erro é da busca ou da geração, e vai mexer no prompt à toa. Ver [[09 - Evaluation de RAG|Evaluation de RAG]].
+
+O ganho típico dessa sequência é grande o bastante para mudar a percepção do produto sem tocar numa vírgula do prompt: um pipeline com corte cego e só busca vetorial pode ter `recall@5` na casa dos 40%, o que significa que em mais da metade das perguntas o trecho certo nunca chegou ao modelo. Chunk por seção + híbrida + rerank costuma levar isso à casa dos 80% ([Anthropic, *Contextual Retrieval*](https://www.anthropic.com/news/contextual-retrieval) reporta reduções de falha de recuperação da mesma ordem de grandeza ao somar contexto ao chunk e rerank).
 
 ## Quando subir para padrões avançados
 

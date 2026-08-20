@@ -18,6 +18,8 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 
 > [!note] Auditoria de reconciliação — 2026-07-03. Cruzamento de contagem de notas, mapeamento entrada-do-roadmap↔arquivo e git (último commit de nota por galho) confirmou que **os 21 roadmaps de galho estão estruturalmente atuais**. O medo anterior ("vários ⬜ já foram enriquecidos por commits posteriores") **não se materializou**: nenhuma nota de galho pendente foi alterada após o diagnóstico de 30/06 — só os 3 galhos já ✅ (Ferramentas 01/07, Evaluation e Structured Outputs 02/07) tiveram commits posteriores. Os estados ⬜/✅ abaixo são fiéis. Banner falso de Anatomia dos LLMs corrigido nesta data. Nenhum galho exige re-diagnóstico.
 
+> [!note] Passe de material externo — 2026-08-20. Comparação do domínio com o board Excalidraw *IA do Zero ao Sênior* (Gabriel Dias), fichado em [[2026-ia-do-zero-ao-senior-trilha-visual]]. O board não acrescentou cobertura — o domínio é bem maior que ele —, mas expôs **duas lacunas reais e seis heurísticas ausentes**. Resultado: 2 notas novas (Segurança 13 · Prompt injection, e Evaluation 09 · Abstenção), 6 enriquecimentos cirúrgicos em notas já ✅ (Anatomia de Agents 06, Prompt Engineering 03, RAG 12, Economia de Tokens 09, Anatomia dos LLMs 02, Context Engineering 03), 1 bloco novo + 1 rota no galho de Segurança, e 1 senda + 1 programa de 90 dias no `index.md` do domínio. Todos registrados nos roadmaps de galho. **Lição de método:** duas das seis "lacunas" que eu tinha listado por grep estavam erradas — o tema existia com outro fraseado. Confirme no arquivo antes de escrever, não no resultado do grep.
+
 ## Como o rastreio funciona
 
 - **Galho-folha** (só notas): `roadmap.md` mapeia suas notas, uma entrada por nota.
@@ -40,11 +42,11 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 | 7 | [[AI Engineering Stack]] | 13 | 0 | 1 | 12 | 100% | ✅ completo (2026-07-06, 12/12 acionáveis via fan-out ≤3 verificado) | ✅ |
 | 8 | [[RAG e Vector Databases]] | 13 | 0 | 1 | 12 | 100% | ✅ completo (2026-07-06, 12/12 acionáveis via fan-out ≤3 verificado; nota 13 com desvio de piso registrado) | ✅ |
 | 9 | [[MCP]] | 10 | 0 | 0 | 10 | 100% | ✅ completo (2026-07-06, 10/10 via fan-out ≤3 verificado) | ✅ |
-| 10 | [[Segurança e Guardrails]] | 12 | 0 | 0 | 12 | 100% | ✅ completo (2026-07-06, 12/12 via fan-out ≤3 verificado; caducidade EU AI Act resolvida — Digital Omnibus adiou high-risk) | ✅ |
+| 10 | [[Segurança e Guardrails]] | 13 | 0 | 0 | 13 | 100% | ✅ completo (2026-07-06 + **nota 13 em 2026-08-20**, que abre o Bloco 5 — segurança de runtime; caducidade EU AI Act resolvida — Digital Omnibus adiou high-risk) | ✅ |
 | 11 | [[Memória de Agentes]] | 24 | 0 | 7 | 17 | 100% | ✅ completo (2026-07-07, 14/14 acionáveis via fan-out ≤3 verificado; caducidade das notas de implementação atualizada via web) | ✅ |
 | 12 | [[Prompt Engineering]] | 9 | 0 | 2 | 7 | 100% | ✅ completo (2026-07-03) | ✅ |
 | 13 | [[Structured Outputs]] | 8 | 0 | 1 | 7 | 100% | ✅ completo (2026-07-02) | ✅ |
-| 14 | [[Evaluation]] | 8 | 0 | 4 | 4 | 100% | ✅ completo (2026-07-01) | ✅ |
+| 14 | [[Evaluation]] | 9 | 0 | 4 | 5 | 100% | ✅ completo (2026-07-01 + **nota 09 Abstenção em 2026-08-20**) | ✅ |
 | 15 | [[Observability]] | 8 | 0 | 5 | 3 | 100% | ✅ completo (2026-07-03) | ✅ |
 | 16 | [[Multimodal Prompting]] | 7 | 0 | 2 | 5 | 100% | ✅ completo (2026-07-03 — notas 04/05 refeitas com pesquisa real após reprovação) | ✅ |
 | 17 | [[Image Prompting]] | 7 | 0 | 3 | 4 | 100% | ✅ completo (2026-07-03) | ✅ |
@@ -73,7 +75,7 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 | ⬜ não diagnosticados | 0 |
 | ⚪ especiais | 0 |
 | Notas soltas diretas | 4 |
-| Notas totais (galhos-folha diagnosticados) | ~287 (232 + 55 de Claude Code) |
+| Notas totais (galhos-folha diagnosticados) | ~289 (234 + 55 de Claude Code) |
 
 > **IA 100% diagnosticado em 2026-07-02** — todos os 21 galhos têm `roadmap.md`. Último buraco (Claude Code, galho-pai de 6 sub-galhos = 55 notas) fechado via workflow de fan-out (48 notas em ~2,4 min).
 
@@ -85,3 +87,4 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 2. ~~**Re-diagnosticar Anatomia dos LLMs**~~ ✅ **desnecessário (auditoria 03/07)** — o roadmap já está pós-reformulação e mapeia 1:1 para os arquivos; banner defasado corrigido.
 3. ~~**Reconciliar os 📋**~~ ✅ **feito (auditoria 03/07)** — git confirmou que nenhuma nota de galho pendente mudou após o diagnóstico de 30/06; estados ⬜/✅ fiéis. Próximo movimento em cada galho é **enriquecimento** (`/enriquecer-galho`), não re-diagnóstico.
 4. ~~**O Lado Sombrio da IA**~~ ✅ nota Débito cognitivo diagnosticada; cluster mantém glosas na raiz (não promover), mas agora tem `roadmap.md`.
+5. **Passe de material externo (2026-08-20)** ✅ feito — ver banner no topo. Pendência consciente: o **Bloco 5 de Segurança e Guardrails tem 1 nota só**; se crescer para ~5, graduar a galho próprio pela convenção broto → galho.

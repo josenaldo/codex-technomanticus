@@ -55,6 +55,7 @@ N/A (a ausência já é cobrada por E3).
 | P1 | Código com falha | Exemplo de código mostra pelo menos 1 caso-problema, não só o caminho feliz |
 | P2 | Mecanismo explicado | Nota explica *por que* funciona assim, não apenas *o quê* (anti-padrão: "X faz Y" sem explicar como) |
 | P3 | Teoria subjacente | `fase: Magus` → conecta a teoria formal ou fundamento conceitual (não cobrado em Iniciado/Adepto) |
+| P4 | Exemplo com número | Nota tem ≥1 caso concreto com grandeza (antes → depois, custo, taxa, latência, tamanho) — **ou** declara explicitamente que o tema não é quantificável |
 
 ### TAMANHO
 
@@ -110,6 +111,7 @@ SINTAXE (bloqueante)
 PROFUNDIDADE
 ✓ P1 Código com falha
 ✗ P2 Mecanismo explicado — nota descreve comportamento, não mecanismo causal
+✗ P4 Exemplo com número — 3 casos práticos, nenhum com grandeza
 
 TAMANHO
 ✓ T2 Adepto — 427 linhas (mínimo: 400)
@@ -121,8 +123,8 @@ LINKS
 MÍDIA
 ✗ M1 Vídeo/podcast embutido — callout [!tip] com mídia ausente
 
-RESULTADO: 6/12 itens ✓   (fase: Adepto)
-Aprovado: NÃO — S1 reprovado (bloqueante) + itens faltando: E3, E6, E7, P2, L2, M1
+RESULTADO: 6/13 itens ✓   (fase: Adepto)
+Aprovado: NÃO — S1 reprovado (bloqueante) + itens faltando: E3, E6, E7, P2, P4, L2, M1
 ```
 
 6. Sugere ação para cada `✗`:
@@ -131,6 +133,7 @@ Aprovado: NÃO — S1 reprovado (bloqueante) + itens faltando: E3, E6, E7, P2, L
 |------|----------|
 | S1 | Reportar bloco + linha + regra violada (R1–R13) e mostrar o trecho já corrigido, pronto pra colar. É bug, não falta de conteúdo: não delega pra `/enriquecer-nota`. |
 | E3, E4, P1, P2 | `/enriquecer-nota` com lente Profundidade |
+| P4 | `/enriquecer-nota` com instrução "acrescentar grandeza a um caso prático existente". **Nunca invente o número**: use dado de fonte citável (benchmark, relatório, doc do fornecedor), ou marque como ilustrativo em prosa ("a US$ 3 por milhão de tokens, valor ilustrativo..."). Fabricar métrica — sobretudo atribuindo-a a projeto ou cliente do usuário — reprova a nota em vez de aprovar. |
 | E6, E7 | `/enriquecer-nota` com instrução "adicionar seção de inglês e tabela PT↔EN" |
 | E8 | `/enriquecer-nota` com instrução "adicionar armadilhas comuns" |
 | L2 | `/enriquecer-nota` com lente Novidade c/ fonte |
@@ -153,9 +156,10 @@ Aprovado: NÃO — S1 reprovado (bloqueante) + itens faltando: E3, E6, E7, P2, L
 ## Convenções rígidas
 
 - **Não edita** — esta skill é read-only. Reporta; não conserta.
-- **Score de aprovação**: nota "aprovada" quando ≥9/12 itens ✓ (considerando isenções) **e** S1 ✓.
-- **S1 é veto**: sintaxe Mermaid quebrada reprova a nota mesmo com 12/12 no score.
-- **Score crítico**: <6/12 itens ✓ → informa que a nota precisa de Modo B (elevação estrutural) antes de enriquecimento de conteúdo.
+- **Score de aprovação**: nota "aprovada" quando ≥10/13 itens ✓ (considerando isenções) **e** S1 ✓.
+- **P4 nunca justifica invenção**: se a nota não tem número e nenhuma fonte oferece um, marque `N/A` com a justificativa. Um número fabricado é falha pior que a ausência dele.
+- **S1 é veto**: sintaxe Mermaid quebrada reprova a nota mesmo com 13/13 no score.
+- **Score crítico**: <7/13 itens ✓ → informa que a nota precisa de Modo B (elevação estrutural) antes de enriquecimento de conteúdo.
 - **⚠ (aviso)**: item presente mas abaixo do mínimo quantitativo (ex: 2 armadilhas quando precisa 3).
 - **✗ (falha)**: item completamente ausente.
 
@@ -167,3 +171,4 @@ Aprovado: NÃO — S1 reprovado (bloqueante) + itens faltando: E3, E6, E7, P2, L
 | Nota sem `fase:` | Aplica critério de Adepto; avisa |
 | Nota fora de `03-Dominios/` | Isenção total de L1 (sem domínio definido) |
 | Nota sem seção de código | P1 marcado como N/A (não se aplica a notas conceptuais puras) |
+| Tema sem grandeza mensurável (taxonomia, história, filosofia) | P4 marcado como N/A com a justificativa explícita; não sai do denominador por conveniência |

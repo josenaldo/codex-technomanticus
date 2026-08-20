@@ -164,13 +164,14 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 
 #### 12 - Setup completo — checklist de produção   [substantivo]
 - **Enriquecimento:** ✅ feita (2026-07-06) — Abertura-problema (RAG que roda em dev e colapsa em produção por falta de fallback + evaluation); 4 URLs reais verificadas (Anthropic contextual-retrieval, Eugene Yan llm-patterns, Pinecone RAG, Chip Huyen books). Verificado: URLs conferem.
-- **Estado:** 339 linhas reais · fase: Iniciado · status: seedling
+- **Estado:** 356 linhas · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E2, L2
 - **Score:** 10/12
 - **Plano de execução:**
   - Adicionar parágrafo de abertura com cenário/problema antes de "## Stack recomendada" (ex: RAG "funcionando em dev" que colapsa em produção por falta de fallback e evaluation)
   - Adicionar URLs reais às referências (Anthropic Contextual Retrieval blog, Eugene Yan blog, Pinecone production guide, Chip Huyen AI Engineering)
 - **Resultado:** —
+- **Passe 2026-08-20 — material externo:** Seção **A ordem de ataque — quando o RAG está ruim**: chunking → híbrida → rerank → contexto, com o *porquê* da ordem (os consertos não são independentes; rerankear chunk mal cortado é reordenar lixo) e a regra de medir `recall@k` entre os passos, porque sem isso não se sabe se o erro é da busca ou da geração. Abre com a tese *"quando o RAG erra, o culpado raramente é o modelo; é a recuperação"*. Fonte da lacuna: [[2026-ia-do-zero-ao-senior-trilha-visual]].
 
 #### 13 - PageIndex — RAG vectorless por árvore de documentos   [substantivo]
 - **Enriquecimento:** ✅ feita (2026-07-06) — ⚠️ **desvio de piso:** plano aplicado (exemplo de nó JSON real title/node_id/start_index/end_index/summary/nodes; "Relação com padrões avançados" detalhada com diferencial concreto de Agentic RAG / Hierarchical / Long-context; frontmatter status→growing, progress→in_progress), MAS ficou em 199 linhas (151 não-branco), abaixo do piso T1 de 300. Tópico nichado (PageIndex é recente/de escopo estreito); passada extra futura opcional para bater o piso.

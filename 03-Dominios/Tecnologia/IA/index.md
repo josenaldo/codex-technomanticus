@@ -419,6 +419,27 @@ Trilha 16: 03, 04 (Langfuse self-host, Phoenix, OpenLLMetry)
 
 **Saída:** stack 100% open source, DeepSeek/Qwen/GLM, MCP integrations, memória local, evals e observability self-hosted.
 
+### 🔬 Senda da Confiança (20-25h)
+
+> *"Já construí. Agora preciso provar que funciona — e descobrir por que falhou quando falhar."*
+
+As outras quatro sendas cortam por **papel**. Esta corta por **maturidade**: é o degrau entre *construir* e *operar*, e reúne o que está espalhado por cinco trilhas porque, no dia a dia, esses assuntos aparecem juntos — sempre depois do primeiro sistema no ar e sempre antes do primeiro incidente.
+
+```
+Trilha 13: 01-04 (EDD, golden datasets, rubrics, LLM-as-judge)
+Trilha 13: 09 (abstenção — projetar e medir o "não sei")
+Trilha 16: 02-03, 07 (trace LLM, Langfuse, métricas que importam)
+Trilha 12: 02, 07 (JSON Schema como contrato, validação e retry)
+Trilha 7: 13 (prompt injection — a segurança de runtime da feature)
+Trilha 13: 05, 07 (regression testing, eval gates em CI)
+Trilha 17: 01, 04 (ciclo eval → diff → ship, champion-challenger)
+```
+
+**Saída:** golden set de 30+ casos com anti-tests, juiz calibrado contra rótulo humano, tracing ligado com o prompt final montado, output sob contrato de schema, abstenção roteada com limiar definido, superfície de injection reduzida por permissão de ferramenta, e eval gate bloqueando merge que regride.
+
+> [!tip] Por que esta senda existe
+> Num programa organizado por tópico, evaluation é a trilha 13 de 17 e improvement loop é a 17 — o que na prática é o gargalo real acaba no fim da fila de leitura. Esta senda inverte isso: é a primeira coisa a fazer depois que algo seu está rodando, não a última.
+
 ## Como começar — heurística rápida
 
 ```mermaid
@@ -436,6 +457,42 @@ graph TD
     W["Vou desenhar sistema<br/>novo do zero"] --> X["AI Engineering Stack"]
     O["Quero programa estruturado"] --> P["Senda do Praticante<br/>(acima)"]
 ```
+
+## Programa de 90 dias — com entrega, não com leitura
+
+As sendas acima dizem **o que ler**. Esta seção diz **o que precisa estar rodando** ao fim de cada mês. A diferença não é cosmética: leitura acumulada não sobrevive a uma pergunta de entrevista nem a uma reunião de arquitetura, e conhecimento sem artefato evapora em semanas. Cada bloco fecha com uma entrega verificável e uma meta comportamental — a entrega é o que existe, a meta é o que mudou em você.
+
+### Dias 1-30 · Construir algo que roda
+
+- percorrer [[03-Dominios/Tecnologia/IA/AI Engineering Stack/index|AI Engineering Stack]] 01 e 13, para ter o mapa das camadas antes de escolher onde mexer
+- escolher **uma tarefa repetitiva real** e medir o baseline **antes**: quanto tempo leva hoje, quantos erros dá hoje, quanto custa hoje
+- implementar a versão mais simples que resolve — prompt sob contrato de schema, sem agente, sem RAG, sem framework
+
+> [!success] Entrega do bloco 1
+> Um sistema pequeno rodando de verdade, com output validado por schema e o baseline anotado. **Meta:** ter um número de partida, não uma impressão.
+
+### Dias 31-60 · Provar que funciona
+
+- Senda da Confiança inteira (acima)
+- golden set de 30 casos: 20 reais, 5 de borda, 5 sem resposta — com a coluna *por que este caso existe*
+- tracing ligado, com o prompt final montado sendo logado (não o template)
+- calibrar o juiz contra 30 rótulos seus e medir a concordância
+
+> [!success] Entrega do bloco 2
+> Uma tabela com uma linha por versão do prompt: acerto, formato inválido, custo por caso, p95. **Meta:** trocar "acho que melhorou" por "passou de 24/30 para 28/30 e quebrou o caso 7".
+
+### Dias 61-90 · Defender a decisão
+
+- percorrer as notas de trade-off: [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/16 - Fine-tuning vs prompting vs RAG|Fine-tuning vs prompting vs RAG]], [[03-Dominios/Tecnologia/IA/Anatomia de Agents/10 - Workflow vs Agent — quando usar cada um|Workflow vs Agent]], [[03-Dominios/Tecnologia/IA/Economia de Tokens/09 - Model routing — modelo certo para a tarefa|Model routing]]
+- cortar o custo por tarefa pela metade sem perder acerto no golden set — e registrar de onde veio o corte
+- ler 20 traces reais, um por um, e transformar em caso de eval cada falha encontrada
+- escrever o relato: o problema, o baseline, a decisão, os números, o que não funcionou
+
+> [!success] Entrega do bloco 3
+> Um texto com números que sustenta uma decisão técnica sob contestação. **Meta:** defender arquitetura com dado em vez de opinião — que é exatamente o formato de resposta que uma entrevista sênior cobra.
+
+> [!tip] A regra que separa carreira de hobby
+> Automatize 80% da tarefa e deixe os 20% difíceis para o humano — com [[03-Dominios/Tecnologia/IA/Evaluation/09 - Abstenção — projetar e medir o não sei|abstenção]] roteando o resto. Um sistema que resolve 80% com taxa de erro conhecida vale mais que um que "resolve" 95% e erra em silêncio. Demo mostra o caminho feliz; número mostra o sistema.
 
 ## Como medir progresso
 

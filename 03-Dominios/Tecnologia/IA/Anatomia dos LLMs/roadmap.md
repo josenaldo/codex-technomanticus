@@ -57,13 +57,14 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 
 #### 02 - Tokens e tokenização   [substantivo]
 - **Enriquecimento:** ✅ feita (2026-07-03)
-- **Estado:** 254 linhas · fase: ausente (Blocos) · status: evergreen
+- **Estado:** 269 linhas · fase: ausente (Blocos) · status: evergreen
 - **Núcleo/gaps:** E2, E8, P1
 - **Score:** 9/12
 - **Plano de execução:**
   - Converter a seção "Armadilhas" (5 itens em lista bullet) para callouts `[!warning]` individuais
   - Adicionar parágrafo de abertura com cenário/problema concreto antes de "## O que é" (ex: "500 palavras enviadas, resposta veio com 600 tokens")
 - **Resultado:** Armadilhas (5 itens) → 5 callouts `[!warning]` individuais; abertura-problema adicionada (prompt de 500 palavras vs. 640 tokens) antes de "## O que é". `updated` bumped p/ 2026-07-03. Sem desvio.
+- **Passe 2026-08-20 — material externo:** **Régua de bolso** consolidada em "Por que importa": 1 token ≈ 4 caracteres ≈ 0,75 palavra em inglês; **1,5 a 2 tokens por palavra em português** — a razão tokens-por-palavra que faltava (a nota já tinha a razão caracteres-por-token). Com estimativa trabalhada (800 palavras PT ≈ 1.400 tokens) e a ressalva de medir de verdade para orçamento. Nota de processo: uma primeira versão entrou como callout separado e **duplicava** a "regra prática" que já existia na mesma nota; foi consolidada num bloco só em vez de deixar as duas. Fonte da lacuna: [[2026-ia-do-zero-ao-senior-trilha-visual]].
 
 #### 03 - Embeddings — do token ao vetor   [mecânico]
 - **Enriquecimento:** ✅ feita (2026-07-03)

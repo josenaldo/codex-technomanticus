@@ -65,12 +65,13 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 
 #### 03 - Roles e personas — escolhendo o juízo do modelo   [mecânico]
 - **Enriquecimento:** ✅ feita (2026-07-03)
-- **Estado:** 301 linhas reais · fase: Iniciado · status: seedling
+- **Estado:** 322 linhas · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E1
 - **Score:** 10/12
 - **Plano de execução:**
   - Expandir TL;DR de 1 parágrafo/linha para ≥3 linhas `>` distintas dentro do callout [!abstract]
 - **Resultado:** ✅ verificado PASS (2026-07-03): plano aplicado + auditoria cética passou.
+- **Passe 2026-08-20 — material externo:** Subseção **O terceiro canal: prefill do turno `assistant`** — o canal de controle que a nota não cobria (os 12 hits de "prefill" no domínio eram todos o prefill/decode da inferência, sentido diferente). Mecanismo (entregar o começo da continuação elimina a parte da distribuição onde o modelo faria outra coisa), exemplo em JSONC, ponte com few-shot (demonstrar vence explicar) e callout com as 2 pegadinhas: nem toda API aceita, e o prefill geralmente não volta na resposta — causa clássica do "JSON veio quebrado". Fonte da lacuna: [[2026-ia-do-zero-ao-senior-trilha-visual]].
 
 #### 04 - O mega-prompt do Karpathy — anatomia da anti-sycophancy   [substantivo]
 - **Enriquecimento:** ✅ feita (2026-07-03)

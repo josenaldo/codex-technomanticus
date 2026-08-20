@@ -1,7 +1,7 @@
 ---
 title: Tokens e tokenização
 created: 2026-05-02
-updated: 2026-07-03
+updated: 2026-08-16
 type: concept
 status: evergreen
 progress: done
@@ -59,7 +59,12 @@ Tokens são a unidade de **tudo** em [[Dicionário de IA#LLM (Large Language Mod
 3. **Velocidade** — cada token gerado exige uma passada completa pelo modelo
 4. **Qualidade** — tokenização ruim (quebras em pontos estranhos) degrada a capacidade do modelo de entender o texto
 
-**Regra prática para inglês:** 1 token ≈ 4 caracteres ≈ 0.75 palavras. Para português, a proporção é pior: ~1 token ≈ 3 caracteres, porque diacríticos e sufixos aumentam a fragmentação.
+**Régua de bolso** — para estimar sem abrir o tokenizador:
+
+- **1 token ≈ 4 caracteres** (inglês) · **≈ 0,75 palavra** — ou seja, ~1,3 token por palavra
+- **português: ~1 token ≈ 3 caracteres** · **1,5 a 2 tokens por palavra**, porque diacríticos e sufixos aumentam a fragmentação
+
+Na prática: um texto de 800 palavras em português dá cerca de 1.400 tokens; um documento de 10 páginas, uns 15 mil. Para conta de guardanapo isso basta. Para orçamento que vai ao financeiro, meça de verdade com o tokenizador do modelo que você vai usar (ver [[#Tokenizadores na prática]]) — a régua erra para mais ou para menos conforme o texto tenha mais código, número ou nome próprio.
 
 ## Como funciona
 

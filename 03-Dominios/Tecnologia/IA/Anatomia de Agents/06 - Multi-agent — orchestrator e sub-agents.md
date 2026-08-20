@@ -1,7 +1,7 @@
 ---
 title: "Multi-agent — orchestrator e sub-agents"
 created: 2026-04-11
-updated: 2026-07-03
+updated: 2026-08-16
 type: concept
 progress: done
 status: growing
@@ -70,6 +70,25 @@ Cada papel **isolado** com contexto próprio. Orchestrator coordena handoffs.
 - Sub-tarefas têm muito contexto compartilhado
 - Time não tem expertise para debugar coordenação
 - Sem métrica clara de quando coordenação está dando errado
+
+## A escada — suba um degrau por vez
+
+As listas acima dizem *se* você deve sair do agente único. Falta o *quanto*: multi-agent não é um interruptor, é uma escada de cinco degraus, e a maioria dos sistemas em produção para no primeiro ou no segundo. Subir um degrau custa token, latência e superfície de bug — então cada subida precisa ser paga por um ganho que você consiga nomear.
+
+| # | Degrau | Quando | O que ele custa |
+| --- | --- | --- | --- |
+| 1 | **Um agente com boas ferramentas** | resolve a maioria dos casos reais — comece aqui e fique aqui | nada além do óbvio |
+| 2 | **Cadeia fixa** (etapa A → etapa B) | o fluxo é conhecido e sequencial | perde adaptação; em compensação é trivial de testar |
+| 3 | **Roteador** | um classificador barato manda para o especialista certo | uma classificação a mais por request |
+| 4 | **Paralelo** (fan-out / fan-in) | N sub-tarefas independentes e um agregador | N contextos simultâneos; ganho é tempo de parede, não token |
+| 5 | **Orquestrador + sub-agentes** | o mais poderoso e o mais caro de operar | coordenação, handoff, debugging distribuído |
+
+Repare que os degraus 2 e 3 nem são multi-agent no sentido forte — são **código chamando o modelo em pontos definidos**. É a faixa que resolve mais problema por unidade de complexidade, e a que times pulam com mais frequência, indo direto do 1 para o 5 porque o 5 é o que aparece nas demos.
+
+> [!important] A regra que economiza meses
+> **Se um agente com ferramentas boas não resolve, dois agentes com ferramentas ruins também não vão resolver.** Coordenação é problema difícil em sistema distribuído e entre pessoas; com modelo não é diferente. Antes de acrescentar o segundo agente, esgote os três consertos que custam menos: ferramenta melhor descrita ([[03 - Tool design — princípios e categorias|tool design]]), contexto melhor montado ([[03-Dominios/Tecnologia/IA/Context Engineering/04 - Context pipelines — montagem dinâmica|context pipeline]]), eval melhor ([[03-Dominios/Tecnologia/IA/Evaluation/01 - Eval-driven development — a disciplina|EDD]]). Quase sempre um dos três era o problema.
+
+O critério de subida não é a moda nem a complexidade aparente da tarefa — é a **natureza dela**. Pesquisa de mercado com cinco concorrentes investigados em contextos separados e um agregador é o encaixe perfeito do degrau 4: paralelizável, read-heavy, partes independentes, e o tempo de parede despenca. A *mesma* arquitetura aplicada a implementar uma feature produz dois agentes editando os mesmos arquivos, com decisões incompatíveis e merge impossível. Mesmo padrão, resultado oposto, porque a segunda tarefa é de escrita coordenada sobre estado compartilhado.
 
 ## Padrões de orquestração
 

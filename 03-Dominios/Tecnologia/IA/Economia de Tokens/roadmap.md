@@ -141,12 +141,13 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 
 #### 09 - Model routing — modelo certo para a tarefa   [mecânico]
 - **Enriquecimento:** ➖ não precisa
-- **Estado:** 405 linhas · fase: Adepto · status: growing
+- **Estado:** 420 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** P1
 - **Score:** 11/12
 - **Plano de execução:**
   - — nenhuma
 - **Resultado:** —
+- **Passe 2026-08-20 — material externo:** Seção **Como escolher: o menor que passa no seu teste** — a pirâmide dizia onde cada tier serve, mas faltava o método de decisão. Processo de 4 passos (20 casos reais com gabarito → rodar nos 3 candidatos → comparar acerto/custo/p95 na mesma tabela → ficar com o menor que passa), callout com as 4 armadilhas (leaderboard como veredito, nome do modelo no código, testar 3 exemplos no chat, trocar sem eval) e o fecho aterrissando a decisão no produto: 96% vs 94% não vale nada em triagem com revisão humana e vale muito em laudo que vai ao cliente. Fonte da lacuna: [[2026-ia-do-zero-ao-senior-trilha-visual]].
 
 #### 10 - Sub-agentes especializados   [substantivo]
 - **Enriquecimento:** ✅ feita (2026-07-03)
