@@ -26,6 +26,7 @@ de dev — comunicação, entrevistas internacionais, idioma e negócio próprio
 
 ## Domínios
 
+- [[03-Dominios/Carreira/Currículo/index|Currículo]] — montar currículo de TI, do estagiário ao staff, como saída de um sistema de evidência
 - [[03-Dominios/Carreira/Entrevistas/index|Entrevistas]] — preparação para entrevistas técnicas internacionais
 - [[03-Dominios/Carreira/Inglês/index|Inglês]] — inglês técnico e para entrevistas
 - [[03-Dominios/Carreira/Empreendedorismo/index|Empreendedorismo]] — indie hacking, freelance internacional, tributação PJ
