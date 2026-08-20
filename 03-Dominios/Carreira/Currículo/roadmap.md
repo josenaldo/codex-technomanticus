@@ -46,9 +46,9 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 | Iniciado (01-09) | 9 |
 | Adepto (10-19 + 18a) | 11 |
 | Magus (20-26) | 7 |
-| ✅ escritas | 1 |
-| ⬜ pendentes | 26 |
-| % concluído | 4% |
+| ✅ escritas | 2 |
+| ⬜ pendentes | 25 |
+| % concluído | 7% |
 | Scaffolding | ✅ roadmap.md + index.md criados (Tarefa 1) |
 | Wikilinks quebrados na Tarefa 1 (linha de base) | 27 (`/verificar-wikilinks`, 2026-08-20) — as 26 notas + o broto 18a do `index.md`, nenhum ainda existe; esperado até a Tarefa 30 |
 
@@ -57,10 +57,14 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 ## Notas — Iniciado (o terreno, os níveis e as portas)
 
 #### 01 - Para que serve um currículo   [substantivo]
-- **Estado:** ⬜ pendente · fase: iniciado
-- **Tarefa do plano:** Bloco B
-- **Escopo:** um objetivo único — gerar uma conversa; os três filtros em sequência; o erro de enquadramento (autobiografia, histórico de vida, vitrine de ferramenta gráfica).
-- **Pendências:** —
+- **Estado:** ✅ escrita · fase: iniciado · 2026-08-20
+- **Tarefa do plano:** Tarefa 3 (nota de abertura do galho, escrita depois da 04 para poder ancorar nela)
+- **Escopo:** o objetivo único (gerar uma conversa, não relatar uma vida); os três enquadramentos errados (autobiografia, lista de tudo, vitrine gráfica), cada um com exemplo fictício e persona declarada; o currículo como peça de comunicação para um leitor apressado e cético (ancorado na nota 04, sem repetir números/fontes); a formulação que fecha — remove motivo de descarte e cria motivo de conversa — com diagrama Mermaid dos três leitores e das duas metades; o contrapeso honesto de fechamento (o currículo coloca na fila, quem tira dela costuma ser uma pessoa), com gancho explícito para as notas 20 e 26.
+- **Interfaces produzidas:** a formulação "remove motivo de descarte e cria motivo de conversa" e o vocabulário dos três enquadramentos errados, usados como critério recorrente pelo resto do galho; wikilinks de ancoragem para as notas 02, 03, 04, 05, 06, 07, 08, 09, 11, 13, 14, 16, 18, 18a, 19, 20, 21, 23, 25 e 26, e cross-galho para `Carreira/Entrevistas/01`.
+- **Verificação:** gate G1-G5 rodado — checklist de `/verificar-nota` conferido manualmente item a item (mesma ressalva de execução da nota 04: a skill carrega como procedimento para o próprio agente aplicar, não como subagente autônomo). E1-E8 ✓ (TL;DR denso, abertura com cenário — não definição —, 1 diagrama Mermaid validado, 3 casos práticos, O que vem a seguir, seção de inglês, tabela PT↔EN, 4 `[!warning]`); S1 ✓ (`validar-mermaid.mjs`, 1 bloco, 0 quebrados); P1 N/A (nota conceitual); P2 ✓ (mecanismo do "satisficing" de Herbert Simon, mecanismo de parsing referenciado à nota 04/05, exemplo de bullet antes/depois); P3 N/A (iniciado); P4 ✓ (números em todos os 3 casos práticos: 40→15 vagas, 18→9 bullets, 6+1 vagas); T1 ✓ com margem mínima — **305 linhas** (piso ≥300); L1 ✓ (wikilink cross-galho para `Carreira/Entrevistas/01`); L2 ✓ (Fontes com 3 entradas, 2 com URL verificável). M1 ausente — recomendado, não obrigatório em iniciado.
+- **Ajuste de régua registrado:** nenhum — a nota coube nas seções padrão do checklist.
+- **Desvio de faixa-alvo (440-540 linhas), com justificativa:** a nota fechou em **305 linhas**, abaixo da faixa-alvo declarada nas restrições globais. A densidade de conteúdo é comparável à nota 04 em contagem de palavras (9.489 nesta nota vs. 9.331 na nota 04, que fechou em 323 linhas) — a diferença de linhas físicas vem do estilo de parágrafo único por linha (regra "sem quebra manual"), que nesta nota concentrou mais conteúdo por parágrafo do que a 04. Content real esgotado para o escopo desta nota (objetivo único + 3 enquadramentos + formulação + contrapeso) sem inflar por cota; ao final de várias rodadas de expansão genuína (etimologia de "curriculum vitae", conceito de *satisficing* de Herbert Simon, 3 tabelas comparativas, 3 casos práticos com números, 4 armadilhas, 3 perguntas de aprofundamento, seção "quando a formulação pesa menos", seção "por que esta nota abre o galho"), o ganho marginal por parágrafo adicional caiu a ponto de risco de padding — decisão consciente de parar em 305 em vez de forçar conteúdo até 440. Fica registrado como pendência de enriquecimento futuro se o coordenador julgar necessário aprofundar mais (candidatos: mais um caso prático real do autor, se dado público novo aparecer; expansão da seção "quando pesa menos").
+- **Pendências:** M1 (vídeo/podcast) fica para enriquecimento futuro, não bloqueante nesta fase; ver desvio de faixa-alvo acima.
 
 #### 02 - As portas de entrada no mercado   [substantivo]
 - **Estado:** ⬜ pendente · fase: iniciado
