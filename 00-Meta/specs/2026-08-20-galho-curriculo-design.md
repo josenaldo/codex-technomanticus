@@ -218,7 +218,11 @@ Verificado em fonte pública em 2026-08-20:
 
 Relatado pelo usuário, **a confirmar com ela**: aprendeu Python durante o doutorado por necessidade da pesquisa, depois banco de dados e ciência de dados; entrou na Dadosfera como **trainee** em 2024; promovida a júnior pouco mais de um ano depois.
 
-Duas checagens pendentes: o cargo público é *engenheira de dados*, mas o relato fala em *ciência de dados* e o headline dela diz "Data Scientist | Researcher | Biomedical Engineer" — qual é a leitura correta; e a data e o título exatos da entrada como trainee, que só existem no relato.
+**Divergência resolvida em 2026-08-20.** A leitura correta é **engenharia de dados**. A trajetória explica a aparente contradição, e ela própria vira conteúdo: no início ela mirava **ciência** de dados, foi **contratada como trainee de ciência de dados**, e logo foi **alocada em engenharia de dados** — onde a carreira de fato evoluiu, até a promoção a júnior. O headline do LinkedIn ("Data Scientist | Researcher | Biomedical Engineer") é resíduo da mira original, não do cargo atual.
+
+**A lição que este caso ensina, e que nenhum guia de currículo cobre:** o título sob o qual você entra é uma aposta da empresa, não um contrato de destino. A porta de entrada abre para a organização, não para uma carreira específica — e quem trata o título de entrada como identidade fixa perde a chance de crescer onde de fato há demanda. Isso alimenta a nota 02 (portas de entrada) e a nota 23 (a inconsistência entre LinkedIn e currículo, aqui com causa legítima e explicável, não descuido).
+
+**Pendente:** o currículo dela, que o usuário enviará quando ela mandar — é a fonte da peça do capstone, e a Tarefa 28 não começa sem ele.
 
 > [!important] Pré-condições para publicar o caso
 > 1. ~~Cassiana lê e aprova a nota antes da publicação.~~ **Aprovado por ela em 2026-08-20**, conforme relato do usuário.
