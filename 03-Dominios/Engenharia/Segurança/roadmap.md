@@ -40,10 +40,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 22 |
-| ⬜ pendente | 22 |
+| ⬜ pendente | 16 |
 | ➖ não precisa | 0 |
-| ✅ feita | 0 |
-| % concluído | 0% |
+| ✅ feita | 6 |
+| % concluído | 27% |
 
 > Tabela preenchida ao final do diagnóstico (Fase 3).
 
@@ -116,7 +116,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** `## Casos práticos` (Equifax 2017 · BeyondCorp · BEC com a cifra do FBI) · `## Conexões` virou `## O que vem a seguir` com ponte para as notas 04 e 12 · `## Armadilhas comuns` com 3 `[!warning]` (o de teatro corporativo **movido**, mais compliance≠segurança e treinar-sem-redesenhar) · wikilink cross-galho para Complexidade de Software 08 (arquivo verificado) · `[!info] Lastro` virou `## Fontes` · M1: *Humanizing Security with Angela Sasse* (Usable Security Podcast, 35 min), ID conferido por `yt-dlp`. 482 linhas, 7/7 Mermaid válidos. Gap remanescente fora do plano: E6 (a seção de inglês existe como `## Em entrevista`).
 
 #### 04 - Princípios de design seguro   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-20)
 - **Estado:** 451 linhas · fase: iniciado · status: evergreen · 7 Mermaid · 2 `[!warning]` · 0 wikilink cross-galho
 - **Núcleo/gaps:** E4, E5, E8, L1, L2, M1
 - **Score:** 5/11 (P1 N/A — nota conceitual)
@@ -127,10 +127,11 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Acrescentar ≥1 wikilink cross-galho (Auth e Identidade, Redes/TLS, Matemática ou SO, conforme o assunto da nota) → ativa L1
   - Converter o callout `[!info] Lastro` em `## Fontes` com URLs clicáveis → ativa L2
   - Buscar e embutir vídeo/podcast verificado por transcrição → ativa M1
-- **Resultado:** —
+- **Resultado:** `## Casos práticos` (Heartbleed promovido do `[!example]` · o JWT de 24h extraído da narrativa de complete mediation) · `## Conexões` virou `## O que vem a seguir` com ponte para a 05 · `## Armadilhas comuns` com 3 `[!warning]`, os 2 antigos **movidos** + um novo sobre TOCTOU que estava em prosa solta · L1 para Redes e Protocolos 05 · `[!info] Lastro` virou `## Fontes` com 6 referências.
+  **M1 trocado pelo coordenador.** O executor embutiu um episódio do Bare Metal Cyber com **51 visualizações** — a mesma faixa de baixa audiência que foi motivo de rejeição no galho Linux (nota 13). Substituído por [*10 Principles for Secure by Design*](https://www.youtube.com/watch?v=3l8GwLv2f3E) (IBM Technology, 17 min, 63 mil views), que percorre a lista de Saltzer & Schroeder na mesma ordem da nota e traz o argumento de **aceitabilidade psicológica** (requisitos de senha tão duros que os usuários contornam, deixando o sistema menos seguro). Carimbos extraídos da legenda real.
 
 #### 05 - Aleatoriedade e segredos   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-20)
 - **Estado:** 457 linhas · fase: iniciado · status: evergreen · 5 Mermaid · 2 `[!warning]` · 0 wikilink cross-galho
 - **Núcleo/gaps:** E4, E5, E8, L1, M1
 - **Score:** 6/11 (P1 N/A — nota conceitual)
@@ -140,10 +141,11 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Criar `## Armadilhas comuns` com ≥3 `[!warning]`, **movendo** os 2 já existentes em vez de duplicar → ativa E8
   - Acrescentar ≥1 wikilink cross-galho (Auth e Identidade, Redes/TLS, Matemática ou SO, conforme o assunto da nota) → ativa L1
   - Buscar e embutir vídeo/podcast verificado por transcrição → ativa M1
-- **Resultado:** —
+- **Resultado:** `## Casos práticos` (auditoria retroativa das chaves Debian 2008 · decisão de projeto para tokens de sessão), linkando o caso histórico já existente em vez de duplicá-lo · `## Conexões` virou `## O que vem a seguir` com ponte para a 06 · `## Armadilhas comuns` com 3 `[!warning]` **movidos** (semeadura manual do `SecureRandom` · confiar só no RDRAND, que era `[!note]` e virou warning · `fork()` sem rerandomização) · L1 para Matemática para Computação 21 · M1 *Elliptic Curve Back Door* (Computerphile, 12min23), escolhido por tratar o Dual_EC_DRBG que a nota já cita — não encaixe genérico.
+  **Correção de rota:** meu prompt afirmou que a nota já tinha `## Fontes` e mandou preservar o `Lastro`. Era falso — meu scan casou com a subseção `## Fontes de entropia no SO`. O executor contestou a premissa em vez de obedecer, e estava certo. L2 aplicado pelo coordenador depois: `[!info] Lastro` convertido em `## Fontes` com os 6 links.
 
 #### 06 - Hashing criptográfico   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-20)
 - **Estado:** 461 linhas · fase: iniciado · status: evergreen · 6 Mermaid · 2 `[!warning]` · 0 wikilink cross-galho
 - **Núcleo/gaps:** E2, E4, E5, E8, L1, L2, M1
 - **Score:** 4/11 (P1 N/A — nota conceitual)
@@ -155,7 +157,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Acrescentar ≥1 wikilink cross-galho (Auth e Identidade, Redes/TLS, Matemática ou SO, conforme o assunto da nota) → ativa L1
   - Converter o callout `[!info] Lastro` em `## Fontes` com URLs clicáveis → ativa L2
   - Buscar e embutir vídeo/podcast verificado por transcrição → ativa M1
-- **Resultado:** —
+- **Resultado:** **abertura reescrita** — saiu a definição ("Uma função de hash criptográfica é uma função matemática…") e entrou o gancho Flame 2012 / SHAttered 2017, com a definição logo depois (E2, o único gap de abertura do galho) · `## Casos práticos` com 3 cenários (Flame/MD5 · SHAttered/SHA-1 · LinkedIn+RockYou+Adobe), promovidos das seções "MD5 morto" e "SHA-1 morto", que viraram pointer · `## Conexões` virou `## O que vem a seguir` com ponte para a 07 · `## Armadilhas comuns` com 3 `[!warning]` **movidos** (paradoxo do aniversário · length extension em `hash(chave||dados)` · SHA-256 puro para senha) · L1 para Auth e Identidade / Senhas e MFA (conferido por `ls`) · `[!info] Lastro` virou `## Fontes` · M1 *Hashing Algorithms and Security* (Computerphile, 8 min, 1,6 milhão de views), carimbo `[1:58]` extraído da legenda. 496 linhas.
 
 #### 07 - Criptografia simétrica   [substantivo]
 - **Enriquecimento:** ⬜ pendente

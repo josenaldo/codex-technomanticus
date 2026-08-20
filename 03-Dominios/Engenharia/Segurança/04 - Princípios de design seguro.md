@@ -1,7 +1,7 @@
 ---
 title: "Princípios de design seguro"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-08-20
 type: concept
 fase: Iniciado
 status: evergreen
@@ -64,10 +64,7 @@ graph TD
 
 Complexidade é inimiga da segurança. Cada linha de código, cada caso especial, cada feature raramente usada é superfície de ataque potencial. Um mecanismo de proteção simples pode ser analisado, auditado e testado exaustivamente. Um mecanismo complexo não pode — e as interações entre partes que individualmente parecem corretas são exatamente onde as vulnerabilidades se escondem.
 
-É o KISS ("Keep It Simple, Stupid") aplicado à segurança, com consequências existenciais. OpenSSL tem 500 mil linhas de código; LibreSSL, um fork criado depois do Heartbleed, cortou 90 mil linhas e a superfície de ataque encolheu proporcionalmente.
-
-> [!example] Heartbleed (CVE-2014-0160)
-> A vulnerabilidade Heartbleed explorou a extensão "heartbeat" do TLS — uma feature de "keep-alive" que poucos usavam e que introduziu um bug de leitura fora dos limites. A feature era desnecessária para a maioria dos casos de uso. Economy of mechanism diria: não adicione o que não precisa.
+É o KISS ("Keep It Simple, Stupid") aplicado à segurança, com consequências existenciais. OpenSSL tem 500 mil linhas de código; LibreSSL, um fork criado depois do Heartbleed (caso detalhado em [[#Casos práticos]]), cortou 90 mil linhas e a superfície de ataque encolheu proporcionalmente.
 
 **Aplicação prática:** APIs com menos endpoints são mais seguras. Configurações com menos opções são mais seguras. Infraestrutura com menos serviços ativos é mais segura. Antes de adicionar uma feature, pergunte: o custo de superfície de ataque vale o benefício?
 
@@ -109,8 +106,7 @@ flowchart TD
 
 O contexto determina o correto: a porta de emergência de um prédio em chamas **deve** ser fail-open (vidas humanas). O cofre de um banco **deve** ser fail-secure (dinheiro). Uma API de autenticação deve ser fail-secure — se o serviço de auth cair, a resposta correta é negar, não conceder.
 
-> [!warning] O erro clássico de denylist
-> WAFs e sistemas de detecção baseados em assinaturas são denylist por natureza: bloqueiam o que conhecem. Quando um ataque novo aparecer — e sempre aparece — o sistema não tem resposta. Isso não os torna inúteis, mas significa que não devem ser a única camada de defesa.
+O erro clássico de denylist em ferramentas de detecção — WAFs, antivírus por assinatura — está detalhado em [[#Armadilhas comuns]].
 
 ---
 
@@ -120,11 +116,9 @@ O contexto determina o correto: a porta de emergência de um prédio em chamas *
 
 Não existe acesso pré-aprovado que dure para sempre. Toda vez que um sujeito acessa um objeto — arquivo, registro de banco, endpoint de API — a autorização deve ser verificada naquele momento, contra o estado atual das permissões.
 
-O erro clássico: cache de decisão de autorização. Um sistema verifica se o usuário tem permissão quando ele faz login, armazena o resultado em sessão, e depois confia nesse resultado por horas. Se a permissão foi revogada durante a sessão, o sistema continua concedendo acesso.
+O erro clássico é o cache de decisão de autorização: um sistema verifica a permissão no login, guarda o resultado em sessão, e passa a confiar nele por horas — mesmo que a permissão real tenha mudado nesse meio tempo. O caso do token JWT de 24 horas, detalhado em [[#Casos práticos]], é a versão mais comum desse erro em produção.
 
-**Exemplo moderno:** um token JWT com validade de 24 horas. Se o usuário é demitido às 9h, o token dele permanece válido até o final do dia. Complete mediation exige ou tokens de curta duração (minutos) com refresh, ou revogação ativa verificada a cada requisição — o que é custoso, mas correto.
-
-Outro caso: um usuário acessa um arquivo na abertura — o sistema verifica e concede. O arquivo é movido para um diretório restrito. Se o handle (file descriptor) permanece aberto, acessos futuros podem contornar a verificação. Isso é uma classe de vulnerabilidade conhecida: TOCTOU (Time-of-Check to Time-of-Use).
+Complete mediation também é violado quando o objeto muda de estado entre a verificação e o uso — a classe TOCTOU (Time-of-Check to Time-of-Use), detalhada em [[#Armadilhas comuns]].
 
 > [!tip] Complete mediation e microserviços
 > Em arquiteturas de microserviços, complete mediation exige que cada serviço valide o token — não apenas o API gateway. Um gateway que verifica e distribui internamente sem re-verificação cria um ponto único de falha: se um serviço interno for comprometido, ele pode fazer chamadas sem autenticação ao ecossistema inteiro.
@@ -171,8 +165,7 @@ flowchart LR
 
 **Nuance importante:** obscuridade como camada adicional não-fundamental é aceitável. Renomear um endpoint de `/admin` para algo obscuro adiciona fricção para o atacante. Mas nunca como base da segurança — porque a questão não é "se" o atacante descobrirá, é "quando". A defesa deve funcionar quando o segredo já tiver vazado.
 
-> [!warning] "Security through obscurity" é um antipadrão reconhecido
-> NIST SP 800-123 e outros documentos normativos explicitamente alertam contra depender de obscuridade como controle de segurança primário. Em entrevista, reconhecer esse antipadrão — e saber articular por que — diferencia senior de júnior.
+"Security through obscurity" é um antipadrão formalmente reconhecido por normas como o NIST SP 800-123 — ver [[#Armadilhas comuns]].
 
 ---
 
@@ -394,11 +387,44 @@ A leitura sintética: projete sistemas simples (1) com defaults restritivos (2) 
 
 ---
 
-## Conexões
+## Casos práticos
+
+Os oito princípios não vivem só no papel de 1975 — eles explicam, com precisão cirúrgica, por que incidentes reais aconteceram. Dois casos mostram o padrão: uma feature simples demais para justificar sua superfície de ataque, e uma verificação de acesso que parou de acontecer no momento em que mais importava.
+
+### Caso 1 — Heartbleed (CVE-2014-0160): economy of mechanism violado
+
+A vulnerabilidade Heartbleed explorou a extensão "heartbeat" do TLS — uma feature de "keep-alive" que poucos usavam e que introduziu um bug de leitura fora dos limites, expondo memória do servidor (incluindo chaves privadas) a qualquer atacante que soubesse pedir. A feature era desnecessária para a maioria dos casos de uso: OpenSSL a mantinha porque "podia ser útil algum dia", não porque resolvia um problema concreto. Economy of mechanism diria: não adicione o que não precisa — cada linha de código extra é superfície de ataque que alguém, um dia, vai explorar. O TLS é o protocolo que a extensão comprometeu; ver [[03-Dominios/Ciência/Redes e Protocolos/05 - TLS e HTTPS|TLS e HTTPS]] para como o handshake funciona quando está correto.
+
+### Caso 2 — token JWT de 24 horas: complete mediation violado
+
+Um sistema emite um token JWT com validade de 24 horas no login. O usuário é demitido às 9h da manhã — mas o token continua criptograficamente válido até a meia-noite, porque a verificação de acesso aconteceu uma única vez, no momento da emissão, e o sistema simplesmente confia nela pelas 24 horas seguintes. Nenhuma etapa volta a perguntar "esse usuário ainda tem permissão?". É o erro clássico de cache de decisão de autorização, e é exatamente o que complete mediation proíbe: toda vez que um sujeito acessa um objeto, a autorização deve ser verificada naquele momento, contra o estado atual das permissões — não contra um estado congelado horas atrás. A correção é cara mas simples de enunciar: tokens de curta duração (minutos) com refresh, ou revogação ativa checada a cada requisição.
+
+> [!tip] Vídeo — os princípios desta nota, um a um, com desenho na tela
+> [**10 Principles for Secure by Design: Baking Security into Your Systems**](https://www.youtube.com/watch?v=3l8GwLv2f3E) (IBM Technology, ~17 min, EN) percorre praticamente a mesma lista de Saltzer & Schroeder que esta nota trata, e na mesma ordem de raciocínio: privilégio mínimo com segmentação, economia de mecanismo (que ele rebatiza de *keep it simple*), a recusa da segurança por obscuridade, separação de responsabilidades e padrões seguros de fábrica. A abertura enuncia a tese da nota inteira em uma frase — *"the best security is the kind that's baked in, not bolted on after the fact"* — e a definição de defesa em profundidade evita a armadilha de tratá-la como acúmulo de produtos: aos [4:53], *"there's no single mechanism that is providing security; it's a whole system of interrelated defenses that work together"*.
+> O trecho mais valioso para quem projeta é o de **aceitabilidade psicológica**, o princípio que quase todo material ignora: ele mostra requisitos de senha tão rígidos que empurraram os usuários a contorná-los, e conclui que o time de segurança, ao endurecer o controle, tornou o sistema **menos** seguro. É o argumento de que usável e seguro não são eixos opostos.
+> **O que ele não cobre:** Kerckhoffs pelo nome, complete mediation, e o vocabulário formal de Saltzer & Schroeder — ele ensina os princípios, não a genealogia deles.
+
+---
+
+## Armadilhas comuns
+
+> [!warning] O erro clássico de denylist
+> WAFs e sistemas de detecção baseados em assinaturas são denylist por natureza: bloqueiam o que conhecem. Quando um ataque novo aparecer — e sempre aparece — o sistema não tem resposta. Isso não os torna inúteis, mas significa que não devem ser a única camada de defesa.
+
+> [!warning] TOCTOU — a verificação e o uso não são o mesmo instante
+> Um usuário acessa um arquivo na abertura: o sistema verifica a permissão e concede. O arquivo é então movido para um diretório restrito. Se o handle (file descriptor) já aberto permanece válido, acessos futuros através dele contornam a verificação — porque ela já aconteceu, num estado do mundo que não existe mais. Essa classe de vulnerabilidade tem nome: TOCTOU (Time-of-Check to Time-of-Use). É a mesma falha estrutural do caso do JWT de 24h, só que no nível do sistema de arquivos em vez do nível de sessão.
+
+> [!warning] "Security through obscurity" é um antipadrão reconhecido
+> NIST SP 800-123 e outros documentos normativos explicitamente alertam contra depender de obscuridade como controle de segurança primário. Em entrevista, reconhecer esse antipadrão — e saber articular por que — diferencia senior de júnior.
+
+---
+
+## O que vem a seguir
 
 - Anterior: [[03 - Economia e fator humano da segurança]]
-- Próxima: [[05 - Aleatoriedade e segredos]]
 - Cross-links: [[13 - Autorização e controle de acesso]] — least privilege e separation of privilege em implementação concreta (RBAC, ABAC, DAC/MAC); [[19 - Zero trust e defesa em profundidade]] — defense in depth como arquitetura e zero trust como complete mediation levado ao limite.
+
+Os oito princípios definem o que é um sistema bem desenhado — mas nenhum deles funciona sem uma peça que esta nota tratou como dada: o segredo. Kerckhoffs disse que a segurança deve residir inteiramente na chave, não no algoritmo; mas de onde vem essa chave? Como um sistema gera um nonce, um token de sessão ou uma chave de 256 bits que um atacante não consiga adivinhar, mesmo conhecendo o algoritmo inteiro? É a pergunta que [[05 - Aleatoriedade e segredos]] resolve: entropia, geradores de números pseudoaleatórios criptográficos versus não-criptográficos, e por que "aleatório o bastante" costuma ser o elo mais fraco escondido atrás de um design impecável — a fundação sobre a qual todo o resto desta nota é construído.
 
 > [!summary] Resumo em uma linha
 > Os oito princípios de Saltzer & Schroeder (1975) — do qual least privilege e fail-safe defaults são os mais aplicados — e o princípio de Kerckhoffs ("o segredo está na chave, não no algoritmo") formam o cânone do design seguro: regras atemporais que transformam "tentar não ser hackeado" em engenharia com fundamento.
@@ -441,10 +467,11 @@ Frases prontas:
 
 ---
 
-> [!info] Lastro
-> 1. Saltzer, J. H., & Schroeder, M. D. (1975). "The Protection of Information in Computer Systems." *Proceedings of the IEEE*, 63(9), 1278–1308. O artigo original — disponível em MIT: [https://web.mit.edu/Saltzer/www/publications/protection/](https://web.mit.edu/Saltzer/www/publications/protection/)
-> 2. Kerckhoffs, A. (1883). "La cryptographie militaire." *Journal des sciences militaires*, 9, 5–38. Tradução parcial em inglês disponível em: [https://www.petitcolas.net/kerckhoffs/](https://www.petitcolas.net/kerckhoffs/)
-> 3. Shannon, C. E. (1949). "Communication Theory of Secrecy Systems." *Bell System Technical Journal*, 28(4), 656–715. [https://ieeexplore.ieee.org/document/6769090](https://ieeexplore.ieee.org/document/6769090)
-> 4. Anderson, R. (2020). *Security Engineering: A Guide to Building Dependable Distributed Systems* (3rd ed.). Wiley. Capítulo 4 cobre os princípios de Saltzer & Schroeder com exemplos modernos. Disponível parcialmente em: [https://www.cl.cam.ac.uk/~rja14/book.html](https://www.cl.cam.ac.uk/~rja14/book.html)
-> 5. OWASP. "Security by Design Principles." OWASP Developer Guide. [https://owasp.org/www-project-developer-guide/draft/design/principles/](https://owasp.org/www-project-developer-guide/draft/design/principles/)
-> 6. NIST SP 800-160 Vol. 1 Rev. 1 (2022). "Engineering Trustworthy Secure Systems." National Institute of Standards and Technology. [https://csrc.nist.gov/publications/detail/sp/800-160/vol-1-rev-1/final](https://csrc.nist.gov/publications/detail/sp/800-160/vol-1-rev-1/final)
+## Fontes
+
+1. Saltzer, J. H., & Schroeder, M. D. (1975). "The Protection of Information in Computer Systems." *Proceedings of the IEEE*, 63(9), 1278–1308. O artigo original — disponível em MIT: [https://web.mit.edu/Saltzer/www/publications/protection/](https://web.mit.edu/Saltzer/www/publications/protection/)
+2. Kerckhoffs, A. (1883). "La cryptographie militaire." *Journal des sciences militaires*, 9, 5–38. Tradução parcial em inglês disponível em: [https://www.petitcolas.net/kerckhoffs/](https://www.petitcolas.net/kerckhoffs/)
+3. Shannon, C. E. (1949). "Communication Theory of Secrecy Systems." *Bell System Technical Journal*, 28(4), 656–715. [https://ieeexplore.ieee.org/document/6769090](https://ieeexplore.ieee.org/document/6769090)
+4. Anderson, R. (2020). *Security Engineering: A Guide to Building Dependable Distributed Systems* (3rd ed.). Wiley. Capítulo 4 cobre os princípios de Saltzer & Schroeder com exemplos modernos. Disponível parcialmente em: [https://www.cl.cam.ac.uk/~rja14/book.html](https://www.cl.cam.ac.uk/~rja14/book.html)
+5. OWASP. "Security by Design Principles." OWASP Developer Guide. [https://owasp.org/www-project-developer-guide/draft/design/principles/](https://owasp.org/www-project-developer-guide/draft/design/principles/)
+6. NIST SP 800-160 Vol. 1 Rev. 1 (2022). "Engineering Trustworthy Secure Systems." National Institute of Standards and Technology. [https://csrc.nist.gov/publications/detail/sp/800-160/vol-1-rev-1/final](https://csrc.nist.gov/publications/detail/sp/800-160/vol-1-rev-1/final)

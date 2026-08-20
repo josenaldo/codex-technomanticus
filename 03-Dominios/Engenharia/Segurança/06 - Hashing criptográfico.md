@@ -1,7 +1,7 @@
 ---
 title: "Hashing criptográfico"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-08-20
 type: concept
 fase: Iniciado
 status: evergreen
@@ -21,6 +21,8 @@ tags:
 ---
 
 ## O que é uma função de hash criptográfica
+
+Em 2012, o malware Flame circulou disfarçado de atualização legítima do Windows Update dentro da própria rede da Microsoft. O truque: seus criadores tinham forjado um certificado de assinatura de código explorando uma colisão MD5 — dois blocos de dados diferentes que produziam o mesmo hash. Cinco anos depois, pesquisadores do Google publicaram dois arquivos PDF com conteúdo visivelmente distinto e o mesmo hash SHA-1, encerrando de vez o uso do algoritmo em certificados TLS. Nos dois casos, o que quebrou não foi a criptografia da mensagem — foi a promessa de que "hashes iguais só acontecem para entradas iguais". Entender essa promessa, e como ela é medida, evita repetir o erro clássico de projetar um sistema em cima de um hash que já não a cumpre mais.
 
 Uma função de hash criptográfica é uma função matemática que aceita uma entrada de tamanho arbitrário e produz uma saída de tamanho fixo, chamada de *digest* ou simplesmente hash.
 
@@ -50,6 +52,14 @@ flowchart LR
 > [!info] Leitura do diagrama
 > Duas entradas ligeiramente diferentes (diferindo em 1 bit) chegam à mesma função de hash e produzem digests completamente distintos — isso é o efeito avalanche. Não há seta de volta: o digest não revela a entrada.
 
+> [!tip] Assista: Hashing Algorithms and Security — Computerphile
+> **Canal:** Computerphile | **Duração:** ~8min | **Idioma:** EN
+>
+> Visão geral de por que hash resolve o problema de verificar que um arquivo chegou intacto sem precisar comparar o arquivo inteiro byte a byte, e o que muda quando essa garantia é quebrada por colisões — a mesma virada de perspectiva que esta nota segue, do "o que é" para "o que pode dar errado".
+> Trecho de destaque [1:58]: *"the requirement is that if you change one bit anywhere in the file — at the start, at the middle, at the end — then the whole hash should be completely different. This is something called the avalanche effect."*
+>
+> 🎬 [Assistir no YouTube](https://youtu.be/b4b8ktEV4Bg)
+
 ---
 
 ## As três propriedades de segurança
@@ -74,8 +84,7 @@ Essa propriedade protege integridade: dado um documento específico, um adversá
 
 Note a diferença: aqui o adversário tem liberdade total — escolhe os dois documentos. Isso é mais fácil de quebrar do que as duas propriedades anteriores.
 
-> [!warning] Por que colisão é mais fácil que preimagem?
-> O **paradoxo do aniversário**: para encontrar uma colisão em um espaço de `2ⁿ` saídas possíveis, basta gerar aproximadamente `2^(n/2)` entradas aleatórias — e esperar que duas coincidam. A intuição vem do problema do aniversário: numa sala com 23 pessoas, há mais de 50% de chance de dois aniversários coincidirem — não porque há muitas pessoas, mas porque o número de *pares possíveis* cresce quadraticamente (23 pessoas → 253 pares). Para SHA-256 (n = 256): preimagem custa `2²⁵⁶` tentativas; colisão custa `2¹²⁸`. Ainda seguro — mas a diferença de escala é enorme, e é por isso que MD5 (128 bits → segurança de colisão em `2⁶⁴`) caiu muito antes de SHA-256.
+Por que colisão é mais fácil de quebrar que preimagem — e por que isso engana até quem já decorou os três nomes — está detalhado em [[#Armadilhas comuns|Armadilhas comuns]] (paradoxo do aniversário).
 
 ```mermaid
 graph TD
@@ -129,19 +138,14 @@ graph TD
 
 ### MD5 — morto (colisões 2004)
 
-Em agosto de 2004, Xiaoyun Wang, Dengguo Feng, Xuejia Lai e Hongbo Yu publicaram colisões práticas para o MD5 completo — o ataque levou uma hora em um cluster IBM p690. Era um ataque de **criptanálise diferencial** (não força bruta). A partir daí, a morte foi rápida:
-
-- 2004: Wang et al. publicam colisões. Resistência de colisão efetiva cai de `2⁶⁴` para algo muito menor.
-- 2005: Lenstra, Wang e de Weger demonstraram dois certificados X.509 com chaves públicas diferentes e mesmo hash MD5.
-- 2006: Klima publicou algoritmo que encontra colisão em minutos num notebook — usando "tunneling".
-- **2012: malware Flame** — operação de espionagem estatal (atribuída a Israel/EUA) que usou colisão MD5 para forjar um certificado de assinatura de código da Microsoft. O malware se distribuiu como atualização legítima do Windows Update. O ataque explorou certificados de Terminal Services com serial numbers previsíveis e validades previsíveis — pré-condições para o ataque de colisão. É o exemplo mais dramático de dano real causado por colisão MD5 em produção. A Microsoft revogou os certificados afetados com o Security Advisory 2718704.
+Em agosto de 2004, Xiaoyun Wang, Dengguo Feng, Xuejia Lai e Hongbo Yu publicaram as primeiras colisões práticas para o MD5 completo, por criptanálise diferencial — não força bruta. A resistência de colisão efetiva caiu de `2⁶⁴` para algo muito menor, e a morte do algoritmo foi rápida a partir daí: em 2005 apareceram certificados X.509 forjados com o mesmo hash, em 2006 uma colisão levava minutos num notebook, e em 2012 o dano chegou à produção com o malware Flame (caso completo em [[#Casos práticos|Casos práticos]]).
 
 > [!danger] Uso atual de MD5
 > MD5 ainda aparece em checksums não adversariais (verificação de download casual, deduplicação interna) por ser rápido. Qualquer uso em contexto de segurança — assinatura, certificado, autenticação, hash de senha — é uma vulnerabilidade ativa. Projetos legados que ainda usam MD5 para autenticação devem ser migrados urgentemente.
 
 ### SHA-1 — morto (SHAttered, 2017)
 
-Em fevereiro de 2017, Marc Stevens (CWI Amsterdam), Elie Bursztein, Pierre Karpman e equipe do Google publicaram o ataque **SHAttered**: a primeira colisão prática e pública para o SHA-1 completo. O resultado foram dois arquivos PDF com conteúdo diferente e SHA-1 idêntico — verificável publicamente em https://shattered.io. O ataque custou ~6.500 CPU-anos e ~110 GPU-anos, mas foi 100.000× mais rápido que força bruta — e custaria ~$110.000 na AWS. Browsers, CAs e sistemas de controle de versão abandonaram SHA-1 rapidamente. O Git adicionou detecção de colisão (SHAttered detection) como resposta e iniciou migração para SHA-256.
+Em fevereiro de 2017, pesquisadores do CWI Amsterdam e do Google publicaram o ataque **SHAttered**: a primeira colisão prática e pública para o SHA-1 completo, verificável publicamente em https://shattered.io (caso completo em [[#Casos práticos|Casos práticos]]). Browsers, CAs e sistemas de controle de versão abandonaram SHA-1 rapidamente.
 
 > [!note] Aviso prático
 > Certificados TLS com SHA-1 foram bloqueados pelos browsers modernos desde 2017. SVN e outros sistemas legados que ainda usam SHA-1 para integridade de repositório têm risco limitado (pois colisão requer controle de ambos os documentos — difícil em repositórios com histórico imutável), mas qualquer uso novo de SHA-1 é tecnicamente insustentável.
@@ -196,10 +200,7 @@ flowchart LR
 > [!info] Leitura do diagrama
 > Em Merkle-Damgård, o digest final é exatamente o estado interno após processar o último bloco. Em construções esponja, há uma fase de absorção (processar a entrada) seguida de uma fase de extração (squeeze) — o estado interno tem mais bits que a saída, o que impede ataques de extensão.
 
-> [!warning] Length extension attack — o cenário concreto
-> Imagine uma API que autentica requisições com `token = SHA-256(chave_secreta || dados_da_requisição)`. Um atacante intercepta uma requisição legítima com `token` válido. Sem conhecer a chave, ele pode calcular um `token` válido para `dados_da_requisição || padding || dados_extras` — porque dado o `token` (= estado interno do SHA-256), ele pode continuar o processamento. Isso é length extension.
->
-> Em SHA-256 (Merkle-Damgård), dado `hash(m)` sem conhecer `m`, um atacante pode calcular `hash(m || padding || extensão)` para qualquer extensão de sua escolha. SHA-3 e BLAKE2 são imunes porque o estado interno é maior que o digest (SHA-3 com 1600 bits internos vs. 256 bits de saída — o atacante não tem acesso ao estado completo). A solução correta para SHA-2 é HMAC, que aplica a chave de forma estruturada e evita a vulnerabilidade (ver [[10 - MAC, HMAC e assinaturas digitais]]).
+O length extension attack — a consequência prática de o digest do Merkle-Damgård ser exatamente o estado interno — está detalhado em [[#Armadilhas comuns|Armadilhas comuns]], com o cenário concreto de uma API que autentica requisições com `hash(chave || dados)`.
 
 ### Construção esponja — por que ela é diferente
 
@@ -222,16 +223,35 @@ A esponja (Keccak/SHA-3) tem dois parâmetros: `r` (rate, bits absorvidos por ro
 
 ---
 
+## Casos práticos
+
+Três cenários reais mostram como cada peça deste capítulo — colisão, velocidade do algoritmo, ausência de salt — vira dano concreto quando ignorada em produção.
+
+### Flame: uma colisão MD5 vira certificado forjado da Microsoft (2012)
+
+O Flame foi uma operação de espionagem estatal (atribuída a Israel/EUA) que se distribuiu como se fosse uma atualização legítima do Windows Update — dentro da própria rede da Microsoft. O mecanismo: seus operadores exploraram uma fraqueza de colisão do MD5, já conhecida desde 2004, para forjar um certificado de assinatura de código válido da Microsoft. O ataque partiu de certificados de Terminal Services com serial numbers e validades previsíveis — a pré-condição que tornou a colisão viável. É o exemplo mais dramático de dano real causado por uma colisão MD5 em produção, oito anos depois da colisão ter sido publicada como curiosidade acadêmica. A Microsoft revogou os certificados afetados com o Security Advisory 2718704. A lição para quem projeta sistemas: uma fraqueza criptográfica "só teórica" tem prazo de validade — e ninguém avisa quando ele expira.
+
+### SHAttered: a primeira colisão SHA-1 pública e verificável (2017)
+
+Em fevereiro de 2017, pesquisadores do CWI Amsterdam e do Google (Marc Stevens, Elie Bursztein, Pierre Karpman e equipe) publicaram o ataque **SHAttered**: dois arquivos PDF com conteúdo visivelmente diferente e o mesmo hash SHA-1, verificáveis por qualquer pessoa em https://shattered.io. O ataque custou ~6.500 CPU-anos e ~110 GPU-anos — 100.000× mais rápido que força bruta, mas ainda assim caro: ~$110.000 rodando na AWS na época. Isso bastou. Browsers, autoridades certificadoras e sistemas de controle de versão abandonaram SHA-1 nos meses seguintes; o Git adicionou detecção de colisão e iniciou a migração para SHA-256. A lição: "caro para o atacante" não é o mesmo que "impossível" — é só uma questão de quem tem orçamento.
+
+### LinkedIn, RockYou e Adobe: três formas de errar o hash de senha (2009–2013)
+
+Três breaches, três variações do mesmo erro fundamental — não separar hash de integridade de hash de senha:
+
+- **RockYou (2009)**: 32 milhões de senhas vazaram em **texto puro** — não havia hash nenhum. O dump virou a lista de senhas comuns mais usada em ataques de dicionário até hoje, mais de 15 anos depois.
+- **LinkedIn (2012)**: 6,5 milhões de hashes **SHA-1 sem salt** vazaram. Sem salt, uma única rainbow table pré-computada crackeou a maioria em horas.
+- **Adobe (2013)**: 153 milhões de contas protegidas com **3DES** (uma cifra reversível, não um hash) mais um *hint* de senha em texto claro — o pior dos dois mundos. Como 3DES é determinístico, senhas idênticas produziam o mesmo texto cifrado, revelando em escala quais usuários compartilhavam senha.
+
+A progressão RockYou → LinkedIn → Adobe é também uma progressão de sofisticação do erro: de "esquecer o hash" para "hash rápido sem salt" para "confundir hash com cifra". Nenhuma das três teria sido suficiente mesmo com Argon2id perfeito se a política de senha do usuário fosse fraca — o hash de senha é só metade do problema; a outra metade vive do lado da autenticação, em [[03-Dominios/Engenharia/Auth e Identidade/1 - Fundamentos de identidade/04 - Senhas e MFA — o legado que não morre|Senhas e MFA]].
+
+---
+
 ## Hash de senha — o erro clássico de produção
 
-Este é o ponto onde a maioria dos devs comete o erro mais caro da área. Breaches históricos mostram o custo:
+Este é o ponto onde a maioria dos devs comete o erro mais caro da área. Os breaches do LinkedIn, RockYou e Adobe mostram o custo real de cada variação desse erro — do "nem hash" ao "hash sem salt" ao "cifra em vez de hash" — em [[#Casos práticos|Casos práticos]].
 
-- **LinkedIn (2012)**: 6,5 milhões de hashes SHA-1 sem salt vazaram. Crackeados em horas com listas de hashes pré-computados.
-- **RockYou (2009)**: 32 milhões de senhas em texto puro — não havia nem hash. Esse dump alimenta listas de senhas comuns usadas até hoje.
-- **Adobe (2013)**: 153 milhões de contas com 3DES (cifra, não hash) e hint de senha — o pior dos mundos. Hashes idênticos revelavam senhas iguais em escala.
-
-> [!danger] NUNCA armazene senha com SHA-256 puro
-> SHA-256 foi projetado para ser **rápido**: processar arquivos de gigabytes em segundos, verificar integridade em tempo real. Uma GPU RTX 4090 calcula ~22 bilhões de SHA-256 por segundo. Se o banco vazar com SHA-256 puro, um atacante percorre o dicionário RockYou (14 milhões de senhas) em menos de 1ms. Com Argon2id (`m=64MiB, t=3`), a mesma GPU faz ≈ 1.000 tentativas/segundo — o mesmo dicionário levaria 4 horas, e senhas de ≥ 12 caracteres aleatórios ficariam seguras por séculos.
+O erro de armazenar senha com SHA-256 puro — o mais caro e mais comum da área — está detalhado em [[#Armadilhas comuns|Armadilhas comuns]], com os números de quanto tempo um atacante leva para quebrar um dicionário inteiro em cada caso.
 
 A diferença fundamental:
 
@@ -361,6 +381,21 @@ Parâmetros: `m` (memória em KiB), `t` (iterações), `p` (grau de paralelismo)
 
 ---
 
+## Armadilhas comuns
+
+Três erros que aparecem sozinhos em código de produção e em respostas de entrevista — cada um nasce de confundir uma propriedade de hash com outra.
+
+> [!warning] Confundir resistência à colisão com resistência à preimagem
+> O **paradoxo do aniversário** é a armadilha: para encontrar uma colisão em um espaço de `2ⁿ` saídas possíveis, basta gerar aproximadamente `2^(n/2)` entradas aleatórias — e esperar que duas coincidam. A intuição vem do problema do aniversário: numa sala com 23 pessoas, há mais de 50% de chance de dois aniversários coincidirem — não porque há muitas pessoas, mas porque o número de *pares possíveis* cresce quadraticamente (23 pessoas → 253 pares). Para SHA-256 (n = 256): preimagem custa `2²⁵⁶` tentativas; colisão custa apenas `2¹²⁸`. Ainda seguro — mas a diferença de escala é enorme, e é exatamente por isso que MD5 (128 bits → segurança de colisão em `2⁶⁴`) caiu muito antes de SHA-256. Quem trata as três propriedades como equivalentes erra o dimensionamento de risco.
+
+> [!warning] Usar `hash(chave || dados)` como se fosse um MAC
+> Imagine uma API que autentica requisições com `token = SHA-256(chave_secreta || dados_da_requisição)`. Um atacante intercepta uma requisição legítima com `token` válido. Sem conhecer a chave, ele pode calcular um `token` válido para `dados_da_requisição || padding || dados_extras` — porque, dado o `token` (que é exatamente o estado interno do SHA-256 após o último bloco), ele pode continuar o processamento. Isso é o **length extension attack**: em SHA-256 (Merkle-Damgård), dado `hash(m)` sem conhecer `m`, o atacante calcula `hash(m || padding || extensão)` para qualquer extensão de sua escolha. SHA-3 e BLAKE2 são imunes porque o estado interno é maior que o digest (SHA-3 com 1600 bits internos vs. 256 bits de saída). A solução correta para SHA-2 é HMAC, que aplica a chave de forma estruturada e evita a vulnerabilidade (ver [[10 - MAC, HMAC e assinaturas digitais]]).
+
+> [!warning] Armazenar senha com SHA-256 puro
+> SHA-256 foi projetado para ser **rápido**: processar arquivos de gigabytes em segundos, verificar integridade em tempo real. É exatamente essa velocidade que torna o algoritmo errado para senhas. Uma GPU RTX 4090 calcula ~22 bilhões de SHA-256 por segundo — se o banco vazar com SHA-256 puro, um atacante percorre o dicionário RockYou (14 milhões de senhas) em menos de 1 milissegundo. Com Argon2id (`m=64MiB, t=3`), a mesma GPU faz ≈ 1.000 tentativas/segundo: o mesmo dicionário levaria 4 horas, e senhas de ≥ 12 caracteres aleatórios ficariam seguras por séculos. É o erro mais caro e mais recorrente da área — ver [[03-Dominios/Engenharia/Auth e Identidade/1 - Fundamentos de identidade/04 - Senhas e MFA — o legado que não morre|Senhas e MFA]] para o lado de autenticação (políticas de senha, MFA, ciclo de vida da credencial) que costuma acompanhar esse mesmo sistema.
+
+---
+
 ## Comparativo rápido: algoritmos de hash
 
 | Algoritmo | Digest (bits) | Construção | Status | Uso atual |
@@ -375,11 +410,9 @@ Parâmetros: `m` (memória em KiB), `t` (iterações), `p` (grau de paralelismo)
 
 ---
 
-## Conexões
+## O que vem a seguir
 
-- Anterior: [[05 - Aleatoriedade e segredos]]
-- Próxima: [[07 - Criptografia simétrica]]
-- Cross-links: [[10 - MAC, HMAC e assinaturas digitais]], [[12 - Autenticação]]
+Hash resolve integridade e comprometimento — mas é uma via de mão única por design, o que o torna inútil para o problema seguinte: como duas partes trocam uma mensagem que só elas conseguem ler, e depois recuperar. Isso é confidencialidade, não integridade, e exige uma primitiva reversível: uma cifra. A próxima nota, [[07 - Criptografia simétrica]], entra exatamente nesse território — a mesma chave cifra e decifra, e boa parte do vocabulário que você acabou de aprender aqui reaparece com um sentido levemente diferente (a "chave" de uma cifra simétrica não é o "salt" de um hash de senha, mas os dois compartilham a mesma preocupação de nunca ficarem previsíveis; ver [[05 - Aleatoriedade e segredos]]). Também vale notar onde hash já apareceu disfarçado de outra coisa: HMAC (ver [[10 - MAC, HMAC e assinaturas digitais]]) é um hash com chave, e é o mecanismo real de autenticação por trás de boa parte do que a nota [[12 - Autenticação]] descreve como "verificar que a mensagem não foi alterada".
 
 > [!summary] Resumo em uma linha
 > Hash criptográfico é uma via de mão única com três propriedades de segurança; MD5 e SHA-1 estão mortos; SHA-256 é correto para integridade mas errado para senhas — que exigem Argon2id com salt.
@@ -452,10 +485,12 @@ Perguntas de design que combinam hashing com outros conceitos:
 
 ---
 
-> [!info] Lastro
-> - NIST FIPS 180-4 — Secure Hash Standard (SHA-2): https://csrc.nist.gov/pubs/fips/180-4/upd1/final
-> - NIST FIPS 202 — SHA-3 Standard (Keccak/Sponge): https://csrc.nist.gov/pubs/fips/202/final
-> - Stevens et al., "The first collision for full SHA-1" (SHAttered, 2017): https://shattered.io/
-> - Microsoft MSRC Blog, "Flame malware collision attack explained" (2012): https://www.microsoft.com/en-us/msrc/blog/2012/06/flame-malware-collision-attack-explained
-> - RFC 9106 — Argon2 Memory-Hard Function for Password Hashing (2021): https://www.rfc-editor.org/rfc/rfc9106
-> - OWASP Password Storage Cheat Sheet: https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
+## Fontes
+
+- NIST FIPS 180-4 — Secure Hash Standard (SHA-2): [csrc.nist.gov/pubs/fips/180-4/upd1/final](https://csrc.nist.gov/pubs/fips/180-4/upd1/final)
+- NIST FIPS 202 — SHA-3 Standard (Keccak/Sponge): [csrc.nist.gov/pubs/fips/202/final](https://csrc.nist.gov/pubs/fips/202/final)
+- Stevens et al., "The first collision for full SHA-1" (SHAttered, 2017): [shattered.io](https://shattered.io/)
+- Microsoft MSRC Blog, "Flame malware collision attack explained" (2012): [microsoft.com/en-us/msrc/blog](https://www.microsoft.com/en-us/msrc/blog/2012/06/flame-malware-collision-attack-explained)
+- RFC 9106 — Argon2 Memory-Hard Function for Password Hashing (2021): [rfc-editor.org/rfc/rfc9106](https://www.rfc-editor.org/rfc/rfc9106)
+- OWASP Password Storage Cheat Sheet: [cheatsheetseries.owasp.org](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)
+- Computerphile, "Hashing Algorithms and Security" (2013): [youtube.com/watch?v=b4b8ktEV4Bg](https://www.youtube.com/watch?v=b4b8ktEV4Bg)

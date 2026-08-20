@@ -1,7 +1,7 @@
 ---
 title: "Aleatoriedade e segredos"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-08-20
 type: concept
 fase: Iniciado
 status: evergreen
@@ -106,16 +106,10 @@ Exemplos corretos por linguagem/SO:
 | Go | `crypto/rand.Read()` |
 | C/C++ | `getrandom()` ou `RAND_bytes()` (OpenSSL) |
 
-> [!warning] Armadilha de semeadura manual
-> `SecureRandom` em Java **não deve ser semeado manualmente** em produção. Chamar `new SecureRandom(seed)` com uma seed fraca desfaz todas as garantias do CSPRNG. Deixe o SO fornecer a entropia.
-
 ### TRNG — entropia física
 
 - Hardware Security Module (HSM), TPM, RDRAND (Intel), RDSEED: leem ruído físico (ruído térmico, jitter de oscilador, decaimento radioativo).
 - O SO coleta entropia de eventos de hardware (timings de interrupções, movimentação de mouse, I/O de disco) para alimentar o pool de entropia — que por sua vez semeia o CSPRNG.
-
-> [!note] RDRAND não é suficiente sozinho
-> A instrução `RDRAND` da Intel extrai bits diretamente do RNG de hardware embutido no processador — é conveniente e rápida. Porém, usá-la como única fonte de entropia exige confiar integralmente na Intel. O kernel Linux a usa como **uma das fontes** do pool, nunca como única. Para aplicações paranóicas (HSMs, carteiras de criptomoedas de alta segurança), misture fontes independentes: RDRAND ⊕ ruído de disco ⊕ dados de rede.
 
 ### Comparando as três classes
 
@@ -306,9 +300,6 @@ ssize_t n = getrandom(key, sizeof(key), 0);
 if (n != sizeof(key)) { /* erro */ }
 ```
 
-> [!warning] Cuidado com fork()
-> Em ambientes que fazem `fork()` após inicializar um CSPRNG, o processo filho pode herdar o mesmo estado do gerador. CSPRNGs modernos de SO (como o do Linux) detectam fork via `getentropy()`/`getrandom()` e rerandomizam automaticamente — mas bibliotecas de espaço de usuário podem não fazer isso. Verifique o comportamento da sua biblioteca antes de usar em servidores multi-processo.
-
 ---
 
 ## Entropia em ambientes problemáticos
@@ -405,11 +396,38 @@ Não substituem revisão humana, mas capturam os erros mais óbvios.
 
 ---
 
-## Conexões
+## Casos práticos
+
+Duas situações concretas amarram tudo que foi visto até aqui — uma de auditoria retroativa (o que fazer quando você descobre entropia fraca já em produção) e outra de projeto novo (como decidir a fonte de aleatoriedade antes de escrever a primeira linha).
+
+**Cenário 1 — herdando um parque de chaves geradas no Debian entre 2006 e 2008.** Você assume a manutenção de um sistema legado e descobre, em auditoria, servidores com chaves SSH e certificados TLS gerados nesse intervalo — exatamente a janela do CVE-2008-0166 descrito em [[#Casos canônicos — quando a aleatoriedade falhou|Casos canônicos]]. O diagnóstico correto não é "trocar a senha"; é reconhecer que o **espaço de chaves inteiro** (294.912 combinações possíveis por tipo/tamanho de chave) está publicamente catalogado — qualquer atacante pode gerar a lista completa e testar cada uma em segundos contra o host. A ação correta é regenerar **todas** as chaves e certificados emitidos no período usando um CSPRNG adequado, revogar os certificados antigos, e verificar se algum log de acesso coincide com uma das chaves da lista pública do Debian. Auditar "qual algoritmo foi usado" não basta — o algoritmo (RSA, DSA) estava correto; a falha estava inteiramente na camada de entropia, invisível a quem só olha o código de assinatura.
+
+**Cenário 2 — decidindo como gerar tokens de sessão para uma API nova.** A tentação comum é reaproveitar o gerador de números que já está importado no projeto (`Math.random()` em Node, `random` em Python) porque "já funciona" para IDs de UI. A decisão correta segue a tabela de requisitos: um token de sessão precisa ser único, secreto e imprevisível — as três colunas marcadas "Sim" na linha "Token de sessão" da tabela de referência acima. Isso descarta qualquer PRNG de propósito geral de saída. Na prática, isso significa `secrets.token_urlsafe(32)` em Python, `crypto.randomBytes(32)` em Node ou `SecureRandom` em Java — os mesmos exemplos de código já vistos em [[#Gerando segredos corretamente na prática|Gerando segredos corretamente na prática]] — com 256 bits de entropia, gerados uma única vez por sessão e nunca derivados de contadores ou timestamps.
+
+## Armadilhas comuns
+
+> [!warning] Semeadura manual do CSPRNG
+> `SecureRandom` em Java **não deve ser semeado manualmente** em produção. Chamar `new SecureRandom(seed)` com uma seed fraca desfaz todas as garantias do CSPRNG — o gerador volta a ser tão previsível quanto a seed escolhida. Deixe o SO fornecer a entropia.
+
+> [!warning] Confiar só no RDRAND da Intel
+> A instrução `RDRAND` extrai bits diretamente do RNG de hardware embutido no processador — é conveniente e rápida, mas usá-la como **única** fonte de entropia exige confiar integralmente na Intel. O kernel Linux a trata como uma das fontes do pool, nunca como a única. Para aplicações paranóicas (HSMs, carteiras de criptomoedas de alta segurança), misture fontes independentes: RDRAND ⊕ ruído de disco ⊕ dados de rede.
+
+> [!warning] `fork()` sem rerandomização
+> Em ambientes que fazem `fork()` após inicializar um CSPRNG, o processo filho pode herdar o mesmo estado do gerador — e, a partir daí, produzir a mesma sequência "aleatória" que o pai. CSPRNGs modernos de SO (como o do Linux) detectam fork via `getentropy()`/`getrandom()` e rerandomizam automaticamente, mas bibliotecas de espaço de usuário nem sempre fazem isso. Verifique o comportamento da sua biblioteca antes de usar em servidores multi-processo.
+
+---
+
+## O que vem a seguir
+
+Esta nota tratou aleatoriedade como o alicerce invisível: a garantia de que um segredo não pode ser adivinhado. A próxima camada da pilha criptográfica assume esse alicerce como dado e faz uma pergunta complementar — como transformar um segredo (ou qualquer dado) em uma impressão digital fixa, verificável e (idealmente) impossível de reverter. É aí que entra [[06 - Hashing criptográfico]]: o mesmo cuidado com min-entropy que vimos aqui reaparece lá na forma de salt (que só funciona se for único, o que exige justamente um bom CSPRNG) e na resistência a colisões, que depende da mesma imprevisibilidade estatística discutida na seção sobre entropia. Sem uma fonte confiável de aleatoriedade, nem hashing nem cifragem simétrica seguram a barra — por isso esta é a primeira nota do galho, não um apêndice.
 
 - Anterior: [[04 - Princípios de design seguro]]
 - Próxima: [[06 - Hashing criptográfico]]
 - Cross-links: [[07 - Criptografia simétrica]] (IVs e modos de operação em detalhes), [[15 - Ataques a sistemas cripto]] (two-time pad, nonce reuse attacks, state recovery)
+- Fora do domínio: [[03-Dominios/Ciência/Matemática para Computação/21 - O acaso na computação - estruturas e algoritmos aleatorizados|O acaso na computação]] — a mesma aleatoriedade que aqui protege chaves e nonces também sustenta algoritmos aleatorizados (quicksort randomizado, hashing universal, Monte Carlo); a diferença é que lá o objetivo é desempenho esperado, aqui é imprevisibilidade garantida mesmo no pior caso adversarial.
+
+> [!tip] Vídeo — o backdoor do Dual_EC_DRBG explicado
+> [Elliptic Curve Back Door - Computerphile](https://www.youtube.com/watch?v=nybVFJVXbww) (Computerphile, 12min23s) detalha, com quadro e caneta, exatamente o mecanismo por trás do caso Dual_EC_DRBG citado acima: como a relação matemática entre os pontos P e Q da curva elíptica permite prever a saída do gerador a quem conhece o logaritmo discreto que os liga — e por que isso é indistinguível de um CSPRNG legítimo para quem só vê a saída de fora.
 
 > [!summary] Resumo em uma linha
 > Aleatoriedade criptográfica é entropia empacotada em bits: use sempre um CSPRNG alimentado pelo SO (`getrandom`, `SecureRandom`, `crypto.randomBytes`), entenda os requisitos distintos de nonces, IVs e salts, e nunca confie em fontes de entropia fracas — a história mostra que quem errou aqui perdeu tudo.
@@ -448,10 +466,11 @@ Frases de alto impacto (use em inglês em entrevistas internacionais):
 
 ---
 
-> [!info] Lastro
-> - **RFC 4086** — "Randomness Requirements for Security" (IETF, junho 2005): [https://www.rfc-editor.org/rfc/rfc4086](https://www.rfc-editor.org/rfc/rfc4086) — documento normativo fundamental sobre fontes de entropia e requisitos de CSPRNGs.
-> - **Heninger, Durumeric, Wustrow, Halderman** — "Mining Your Ps and Qs: Detection of Widespread Weak Keys in Network Devices" (USENIX Security 2012): [https://www.usenix.org/conference/usenixsecurity12/technical-sessions/presentation/heninger](https://www.usenix.org/conference/usenixsecurity12/technical-sessions/presentation/heninger) — varredura da Internet revelou 0,5% dos servidores TLS com chaves RSA fracas por entropia insuficiente no boot.
-> - **Debian DSA-1571** — CVE-2008-0166 (Debian Security Advisory, maio 2008): [https://www.debian.org/security/2008/dsa-1571](https://www.debian.org/security/2008/dsa-1571) — dois anos de chaves OpenSSL previsíveis no Debian; apenas PID como seed.
-> - **fail0verflow** — "Console Hacking 2010: PS3 Epic Fail" (27C3, dezembro 2010): [https://www.youtube.com/watch?v=LP1t_pzxKyE](https://www.youtube.com/watch?v=LP1t_pzxKyE) — demonstração ao vivo da recuperação da chave privada da Sony via nonce ECDSA fixo.
-> - **Wikipedia — Dual_EC_DRBG**: [https://en.wikipedia.org/wiki/Dual_EC_DRBG](https://en.wikipedia.org/wiki/Dual_EC_DRBG) — histórico completo do CSPRNG com backdoor suspeito da NSA, padronizado pelo NIST e retirado em 2014.
-> - **Goldberg & Wagner** — "Randomness and the Netscape Browser" (Dr. Dobb's Journal, janeiro 1996): [https://people.eecs.berkeley.edu/~daw/papers/ddj-netscape.html](https://people.eecs.berkeley.edu/~daw/papers/ddj-netscape.html) — análise de como o Netscape usava PID + timestamp como seed SSL, quebrável em segundos.
+## Fontes
+
+- **RFC 4086** — "Randomness Requirements for Security" (IETF, junho 2005): [https://www.rfc-editor.org/rfc/rfc4086](https://www.rfc-editor.org/rfc/rfc4086) — documento normativo fundamental sobre fontes de entropia e requisitos de CSPRNGs.
+- **Heninger, Durumeric, Wustrow, Halderman** — "Mining Your Ps and Qs: Detection of Widespread Weak Keys in Network Devices" (USENIX Security 2012): [https://www.usenix.org/conference/usenixsecurity12/technical-sessions/presentation/heninger](https://www.usenix.org/conference/usenixsecurity12/technical-sessions/presentation/heninger) — varredura da Internet revelou 0,5% dos servidores TLS com chaves RSA fracas por entropia insuficiente no boot.
+- **Debian DSA-1571** — CVE-2008-0166 (Debian Security Advisory, maio 2008): [https://www.debian.org/security/2008/dsa-1571](https://www.debian.org/security/2008/dsa-1571) — dois anos de chaves OpenSSL previsíveis no Debian; apenas PID como seed.
+- **fail0verflow** — "Console Hacking 2010: PS3 Epic Fail" (27C3, dezembro 2010): [https://www.youtube.com/watch?v=LP1t_pzxKyE](https://www.youtube.com/watch?v=LP1t_pzxKyE) — demonstração ao vivo da recuperação da chave privada da Sony via nonce ECDSA fixo.
+- **Wikipedia — Dual_EC_DRBG**: [https://en.wikipedia.org/wiki/Dual_EC_DRBG](https://en.wikipedia.org/wiki/Dual_EC_DRBG) — histórico completo do CSPRNG com backdoor suspeito da NSA, padronizado pelo NIST e retirado em 2014.
+- **Goldberg & Wagner** — "Randomness and the Netscape Browser" (Dr. Dobb's Journal, janeiro 1996): [https://people.eecs.berkeley.edu/~daw/papers/ddj-netscape.html](https://people.eecs.berkeley.edu/~daw/papers/ddj-netscape.html) — análise de como o Netscape usava PID + timestamp como seed SSL, quebrável em segundos.
