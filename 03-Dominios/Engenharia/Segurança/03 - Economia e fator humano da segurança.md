@@ -1,7 +1,7 @@
 ---
 title: "Economia e fator humano da segurança"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-08-20
 type: concept
 fase: Iniciado
 status: evergreen
@@ -195,9 +195,6 @@ Teatro de segurança não é neutro — ele é ativamente prejudicial por três 
 
 A distinção entre teatro e controle real frequentemente se revela só sob estresse: *se um atacante comprometido tentasse burlar este controle, quanto tempo levaria?* Remover sapatos no aeroporto: um atacante determinado usa sola interna, carrega por outras vias, ou usa carga não inspecionada. O controle não sobrevive à pergunta. Em contraste, MFA com chave física (FIDO2/WebAuthn): um atacante com suas credenciais ainda não consegue autenticar sem a chave física. O controle sobrevive.
 
-> [!warning] Teatro no contexto corporativo
-> Não é só aeroporto. Em software: políticas de senha complexa sem MFA (usuário anota no post-it), reuniões de revisão de segurança sem autoridade para bloquear deploy, scanners de vulnerabilidade cujos relatórios nunca são lidos. O teste: *se um atacante comprometido tentasse burlar este controle, quanto tempo levaria?*
-
 **Compliance-driven security** é a forma institucionalizada de teatro: a organização implementa controles para passar na auditoria do PCI-DSS ou SOC 2, não porque os controles reduzem risco. O resultado são organizações que passam com louvor em todas as auditorias e ainda assim sofrem breaches — porque checkboxes de auditoria e redução de risco real não são a mesma coisa. Auditorias bem desenhadas tentam minimizar isso, mas a tensão é estrutural.
 
 ---
@@ -322,6 +319,9 @@ Aplicando ao design de APIs e autenticação: forçar HTTPS, rejeitar senhas com
 > [!tip] A regra dos 10 segundos
 > Se um controle adiciona mais de ~10 segundos ao fluxo habitual do usuário sem feedback visível de valor, espere workarounds em menos de 30 dias. Não é preguiça — é cognição humana funcionando como projetada.
 
+> [!tip] Ouça a fonte primária do compliance budget
+> "4. Humanizing Security with Angela Sasse" (Usable Security Podcast, Quantal Security, 35min, out/2023) traz a própria M. Angela Sasse — coautora de "The Compliance Budget" — explicando em conversa por que segurança usável não é um "nice to have" e por que campanhas de conscientização sozinhas não resolvem o problema de design. Boa ponte entre o paper acadêmico de 2008 e a prática atual. [youtube.com/watch?v=DAYwfXxcTBo](https://www.youtube.com/watch?v=DAYwfXxcTBo)
+
 Três princípios de design de segurança usável derivados de Sasse e colegas:
 
 **1. Minimize o número de decisões de segurança que o usuário precisa tomar.** Cada decisão consome orçamento cognitivo. Um gerenciador de senhas que preenche automaticamente ≠ um usuário que precisa lembrar 30 senhas — a diferença de compliance é abissal.
@@ -355,6 +355,21 @@ A relação entre cultura e compliance budget é direta: em culturas positivas, 
 
 ---
 
+## Armadilhas comuns
+
+Os fios deste tema puxam para os mesmos três erros repetidamente — em aeroportos, em startups, em bancos centenários. Vale nomeá-los individualmente porque cada um se disfarça de boa prática.
+
+> [!warning] Teatro no contexto corporativo
+> Não é só aeroporto. Em software: políticas de senha complexa sem MFA (usuário anota no post-it), reuniões de revisão de segurança sem autoridade para bloquear deploy, scanners de vulnerabilidade cujos relatórios nunca são lidos. O teste: *se um atacante comprometido tentasse burlar este controle, quanto tempo levaria?*
+
+> [!warning] Confundir compliance com segurança real
+> Passar em toda auditoria PCI-DSS ou SOC 2 não é o mesmo que estar seguro — é o mesmo que ter documentado que, na data da auditoria, os checkboxes exigidos estavam marcados. A Equifax tinha programas de compliance ativos quando foi comprometida em 2017; o gap não era de papel, era operacional (um patch de meses não aplicado). Tratar o certificado de auditoria como prova de segurança é security theater institucionalizado: sensação de controle sem o teste que importa, que é "um atacante real consegue passar por isso?".
+
+> [!warning] Treinar o usuário sem redesenhar o controle
+> Treinamento anual de "não clique em links suspeitos" trata como falha de conhecimento algo que é falha de design: pedir que 100% das pessoas acertem 100% das vezes sob pressão cognitiva é uma aposta perdida por construção, não por preguiça de quem foi treinado. A alternativa correta reduz o número de decisões de segurança que o usuário precisa tomar — a mesma lógica de reduzir carga cognitiva discutida em [[03-Dominios/Engenharia/Complexidade de Software/08 - Carga cognitiva e legibilidade|carga cognitiva e legibilidade]]: cada decisão delegada ao usuário é, ao mesmo tempo, um item a mais no seu orçamento de compliance e uma dependência frágil no modelo de ameaças.
+
+---
+
 ## Síntese — segurança é um problema sócio-técnico
 
 Juntando os fios:
@@ -383,11 +398,26 @@ Inverter essa ordem — começar pela tecnologia sem verificar os incentivos e a
 
 ---
 
-## Conexões
+## Casos práticos
+
+Teoria de incentivos e compliance budget explicam padrões; casos reais mostram como esses padrões se manifestam quando o relógio está correndo e o orçamento é finito.
+
+**Equifax (2017) — quando a camada econômica falha antes da técnica.** A vulnerabilidade explorada (CVE-2017-5638, Apache Struts) tinha patch disponível havia meses. O ataque expôs dados de 147 milhões de pessoas e custou à empresa mais de US$4 bilhões em multas, settlement e custos operacionais — contra algumas horas de trabalho de equipe para aplicar o patch. O caso não é sobre criptografia quebrada; é sobre um desalinhamento de incentivos clássico à la Anderson: o time responsável por aplicar patches não sentia, no dia a dia, o custo de não aplicar — até o breach tornar esse custo catastrófico e repentino. A lição para quem desenha processos: se a pessoa que decide priorização não é a mesma que paga o preço do atraso, o patch vai perder para a feature com prazo esta semana, sempre.
+
+**Google BeyondCorp (2014) — quando redesenhar o controle é a única saída.** O modelo Zero Trust do Google eliminou a confiança implícita baseada em "estar dentro da rede corporativa" — uma premissa que décadas de VPN e firewall perimetral vinham reforçando. A mudança só funcionou porque veio acoplada a redesign cultural: documentação aberta, treinamento contextual (não workshop anual genérico) e um time de segurança posicionado como parceiro de engenharia, não como gatekeeper. Trocar o controle técnico sem tocar na cultura teria produzido exatamente o padrão do compliance budget: workaround em semanas. BeyondCorp é o contraponto positivo à Equifax — mostra o design de controle que sobrevive ao teste de "o usuário vai contornar isso?" porque o atrito foi projetado para cair, não para aumentar.
+
+**Business Email Compromise — engenharia social pura, sem exploit.** O FBI reporta mais de US$50 bilhões em perdas acumuladas globalmente até 2023 com esse vetor: o atacante compromete ou imita o e-mail de um executivo e solicita uma transferência bancária urgente, explorando autoridade e urgência (os mesmos gatilhos de Cialdini mapeados na seção de engenharia social). Nenhuma linha de código malicioso, nenhuma CVE. O caso serve de lembrete de que os dois primeiros cases acima ainda são sobre camadas técnicas e organizacionais falhando — BEC mostra o caso-limite em que a camada técnica sequer entra em jogo: o elo mais barato de comprometer continua sendo o humano sob pressão de tempo.
+
+---
+
+## O que vem a seguir
+
+Este texto tratou segurança como cálculo — de custo, de incentivo, de orçamento cognitivo. Ele deliberadamente não respondeu "e então, tecnicamente, como você constrói o controle que sobrevive a tudo isso?". Essa é a pergunta da próxima nota: [[04 - Princípios de design seguro]] pega os princípios abstratos daqui (elevar custo do ataque, reduzir valor do alvo, minimizar decisões delegadas ao usuário) e os traduz em heurísticas de design concretas — least privilege, fail-safe defaults, defesa em profundidade. É o ponto onde a economia vira arquitetura.
+
+Autenticação é o lugar onde esse cálculo fica mais visível e mais urgente, porque é exatamente ali que o elo humano (senha, MFA, recuperação de conta) encontra o elo técnico (protocolo, token, chave criptográfica) na mesma interação. [[12 - Autenticação]] retoma o caso do MFA com chave física citado aqui — e mostra por que ele sobrevive ao teste do teatro enquanto SMS OTP não sobrevive tão bem.
 
 - Anterior: [[02 - Pensar como adversário]]
-- Próxima: [[04 - Princípios de design seguro]]
-- Cross-links: [[12 - Autenticação]], [[01 - O que é segurança conceitual]]
+- Cross-link: [[01 - O que é segurança conceitual]]
 
 ---
 
@@ -441,10 +471,12 @@ Frases de abertura que funcionam:
 
 ---
 
-> [!info] Lastro
-> - Bruce Schneier, *Secrets and Lies: Digital Security in a Networked World*, Wiley, 2000 — origem de "security is a process, not a product": [schneier.com](https://www.schneier.com/books/secrets-and-lies/)
-> - Bruce Schneier, *Beyond Fear: Thinking Sensibly About Security in an Uncertain World*, Copernicus Books, 2003 — cunhou "security theater": [goodreads.com/book/show/333794](https://www.goodreads.com/book/show/333794.Beyond_Fear)
-> - Ross Anderson, "Why Information Security is Hard — An Economic Perspective", ACSAC 2001 — desalinhamento de incentivos, mercado de limões, tragédia dos comuns: [acsac.org/2001/papers/110.pdf](https://www.acsac.org/2001/papers/110.pdf)
-> - Adam Beautement, M. Angela Sasse, Mike Wonham, "The Compliance Budget: Managing Security Behaviour in Organisations", NSPW 2008 — compliance budget: [dl.acm.org/doi/10.1145/1595676.1595684](https://dl.acm.org/doi/10.1145/1595676.1595684)
-> - Kevin Mitnick, William L. Simon, *The Art of Deception: Controlling the Human Element of Security*, Wiley, 2002 — engenharia social e vetores humanos: [amazon.com/dp/076454280X](https://www.amazon.com/Art-Deception-Controlling-Element-Security/dp/076454280X)
-> - Robert B. Cialdini, *Influence: The Psychology of Persuasion*, Harper Business, 1984 (ed. rev. 2006) — os seis gatilhos de persuasão usados em engenharia social
+## Fontes
+
+- Bruce Schneier, *Secrets and Lies: Digital Security in a Networked World*, Wiley, 2000 — origem de "security is a process, not a product": [schneier.com](https://www.schneier.com/books/secrets-and-lies/)
+- Bruce Schneier, *Beyond Fear: Thinking Sensibly About Security in an Uncertain World*, Copernicus Books, 2003 — cunhou "security theater": [goodreads.com/book/show/333794](https://www.goodreads.com/book/show/333794.Beyond_Fear)
+- Ross Anderson, "Why Information Security is Hard — An Economic Perspective", ACSAC 2001 — desalinhamento de incentivos, mercado de limões, tragédia dos comuns: [acsac.org/2001/papers/110.pdf](https://www.acsac.org/2001/papers/110.pdf)
+- Adam Beautement, M. Angela Sasse, Mike Wonham, "The Compliance Budget: Managing Security Behaviour in Organisations", NSPW 2008 — compliance budget: [dl.acm.org/doi/10.1145/1595676.1595684](https://dl.acm.org/doi/10.1145/1595676.1595684)
+- Kevin Mitnick, William L. Simon, *The Art of Deception: Controlling the Human Element of Security*, Wiley, 2002 — engenharia social e vetores humanos: [amazon.com/dp/076454280X](https://www.amazon.com/Art-Deception-Controlling-Element-Security/dp/076454280X)
+- Robert B. Cialdini, *Influence: The Psychology of Persuasion*, Harper Business, 1984 (ed. rev. 2006) — os seis gatilhos de persuasão usados em engenharia social
+- "4. Humanizing Security with Angela Sasse", Usable Security Podcast (Quantal Security), 2023 — entrevista com a coautora do compliance budget sobre usable security na prática: [youtube.com/watch?v=DAYwfXxcTBo](https://www.youtube.com/watch?v=DAYwfXxcTBo)

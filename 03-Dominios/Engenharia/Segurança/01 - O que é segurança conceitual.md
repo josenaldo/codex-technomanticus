@@ -1,7 +1,7 @@
 ---
 title: "O que é segurança conceitual"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-08-20
 type: concept
 fase: Iniciado
 status: evergreen
@@ -52,9 +52,6 @@ Em linguagem direta: apenas quem tem permissão vê o dado.
 **Violação canônica:** um servidor S3 mal configurado com permissão pública expõe 143 milhões de registros de clientes — o breach Equifax de 2017. Nenhum atacante "invadiu" no sentido hollywoodiano; o dado estava simplesmente disponível para quem soubesse a URL.
 
 **Mecanismos:** criptografia em repouso (AES-256), em trânsito (TLS 1.3), controle de acesso (RBAC, ABAC), classificação de dados.
-
-> [!warning] Confidencialidade ≠ privacidade
-> Privacidade é um direito social e legal. Confidencialidade é uma propriedade técnica. Um sistema pode garantir confidencialidade técnica (dado cifrado) mas violar privacidade (coleta dados sem consentimento). Confundir os dois é erro de entrevista.
 
 ---
 
@@ -205,6 +202,14 @@ Se você projeta segurança como se fosse confiabilidade, você testa o sistema 
 
 Um sistema pode ser seguro (safety: não falha aleatoriamente) mas não ser seguro (security: vulnerável a ataques). Um pacemaker que funciona perfeitamente por 10 anos mas tem firmware atualizável via Bluetooth sem autenticação é um exemplo real — safe, mas insecure.
 
+> [!tip] Assista: Bruce Schneier — The Security Mindset
+> **Canal:** IEEE Computer Society | **Duração:** ~7min | **Idioma:** EN
+>
+> Schneier — o autor citado no início desta seção — explica em vídeo curto o que muda quando você troca a pergunta "como faço isso funcionar?" pela pergunta "como faço isso falhar, exatamente do jeito que causa mais dano?". É a mesma virada conceitual descrita acima (confiabilidade vs. segurança), mas contada de dentro do raciocínio adversarial, com o exemplo do exercício de sala de aula que pede aos alunos para "decorarem" mil dígitos de pi — sabendo que é impossível, e que a única forma de passar é colar sem ser pego.
+> Trecho de destaque [1:47]: *"[Security is] not about how to build something, not how to make it work, but how to make it fail — and how to make it fail in precisely the right way to do precisely the right sort of damage. And that's a way of thinking."*
+>
+> 🎬 [Assistir no YouTube](https://youtu.be/eZNzMKS7zjo)
+
 ---
 
 ## Vocabulário de Risco — a linguagem da entrevista
@@ -261,7 +266,7 @@ Componentes da superfície de ataque:
 
 **Como medir:** OWASP Attack Surface Analysis, ferramentas de DAST (Dynamic Application Security Testing), enumeração de portas com nmap. Microsoft introduziu o conceito de "attack surface review" no SDL como etapa obrigatória antes de cada release — a ideia é mapear explicitamente o que foi adicionado ou modificado e avaliar o impacto na superfície.
 
-**Supply chain como superfície:** um vetor frequentemente subestimado. O ataque à SolarWinds (2020) comprometeu a cadeia de build do software antes que o binário chegasse aos clientes. Cada `npm install`, cada `pip install`, cada dependência Maven transitiva é superfície de ataque potencial. Ferramentas como Dependabot, Snyk e SBOM (Software Bill of Materials) existem para rastrear isso.
+**Supply chain como superfície:** um vetor frequentemente subestimado. O ataque à SolarWinds (2020) comprometeu a cadeia de build do software antes que o binário chegasse aos clientes. Cada `npm install`, cada `pip install`, cada dependência Maven transitiva é superfície de ataque potencial — ver [[03-Dominios/Tecnologia/Tooling e Build/24 - Supply chain e segurança de dependências|Supply chain e segurança de dependências]] para o detalhamento técnico do vetor sob a ótica de build. Ferramentas como Dependabot, Snyk e SBOM (Software Bill of Materials) existem para rastrear isso.
 
 **Como reduzir (minimização):**
 
@@ -311,8 +316,7 @@ Não porque humanos sejam estúpidos — mas porque são o alvo mais fácil. Eng
 - O ataque à Target (2013, 40 milhões de cartões) começou com credenciais roubadas de um fornecedor de ar-condicionado via phishing.
 - O Twitter hack (2020) comprometeu contas de Obama, Elon Musk e Biden via engenharia social de funcionários do suporte.
 
-> [!warning] Implicação de design
-> Controles de segurança devem assumir que o humano **vai** cometer erros. Isso motiva: MFA (a senha comprometida não é suficiente), princípio do menor privilégio (o funcionário comprometido não tem acesso a tudo), zero trust (nenhuma identidade é confiada implicitamente pela posição na rede).
+Controles de segurança devem assumir que o humano **vai** cometer erros. Isso motiva: MFA (a senha comprometida não é suficiente), princípio do menor privilégio (o funcionário comprometido não tem acesso a tudo), zero trust (nenhuma identidade é confiada implicitamente pela posição na rede).
 
 ---
 
@@ -409,12 +413,43 @@ graph TD
 
 ---
 
+## Casos práticos
+
+A teoria da tríade CIA só ganha peso quando você vê os três pilares quebrarem em produção, um de cada vez, em incidentes reais e documentados.
+
+**Equifax (2017) — confidencialidade quebrada por dívida de patch, não por um exploit exótico.** O vetor inicial não foi o servidor S3 mal configurado mencionado acima — foi uma vulnerabilidade conhecida no Apache Struts (CVE-2017-5638), com patch disponível dois meses antes do ataque, que a Equifax não aplicou num endpoint de disputa de crédito voltado para a internet. O atacante entrou por aí, permaneceu na rede por semanas sem ser detectado (o MTTD foi de meses), e exfiltrou 147,9 milhões de registros — nome, CPF, data de nascimento, endereço. O ponto para quem projeta sistemas: a violação de confidencialidade nasceu de um processo de gestão de vulnerabilidades falho, não de criptografia fraca. Ter TLS 1.3 e AES-256 no repouso não importa se o patch de uma CVE pública fica dois meses sem aplicar num sistema exposto à internet.
+
+**Mirai/Dyn (2016) — disponibilidade quebrada por superfície de ataque que ninguém pensou em fechar.** O botnet Mirai não explorou uma vulnerabilidade sofisticada — ele escaneou a internet por dispositivos IoT (câmeras de segurança, roteadores domésticos) que ainda usavam as **credenciais de fábrica** (admin/admin, root/12345), fez login e instalou o malware. Com centenas de milhares de dispositivos comprometidos, o atacante direcionou um DDoS massivo contra a Dyn, provedora de DNS de Twitter, Netflix, Reddit e Spotify — e derrubou o acesso a esses serviços por horas, sem tocar em um único byte de dado deles. O ponto: a superfície de ataque que quebrou a disponibilidade não pertencia às vítimas finais (Twitter, Netflix) — pertencia a milhões de dispositivos de terceiros com credenciais padrão nunca trocadas. Isso é o argumento para Principle of Least Privilege e desabilitar defaults inseguros ir além do seu próprio perímetro: a internet compartilhada é, de fato, uma superfície de ataque coletiva.
+
+> [!example] O padrão comum aos dois casos
+> Em nenhum dos dois incidentes o atacante precisou de um zero-day caro ou de criptoanálise. Equifax caiu por um patch não aplicado; Mirai/Dyn cresceu por senhas padrão nunca trocadas. A assimetria defensor × atacante (seção acima) não é abstrata: o atacante testa o óbvio primeiro, e o óbvio — patch atrasado, credencial padrão — é onde a maioria das violações reais acontece.
+
+---
+
+## Armadilhas comuns
+
+> [!warning] Confidencialidade ≠ privacidade
+> Privacidade é um direito social e legal. Confidencialidade é uma propriedade técnica. Um sistema pode garantir confidencialidade técnica (dado cifrado) mas violar privacidade (coleta dados sem consentimento). Confundir os dois é erro de entrevista.
+
+> [!warning] Tratar o fator humano como exceção, não como padrão
+> Controles de segurança devem assumir que o humano **vai** cometer erros — não que ele é a exceção que quebra um sistema por regra geral robusto. Isso motiva MFA (a senha comprometida não é suficiente), princípio do menor privilégio (o funcionário comprometido não tem acesso a tudo) e zero trust (nenhuma identidade é confiada implicitamente pela posição na rede). Projetar como se phishing fosse raro é o erro; projetar assumindo que alguém vai clicar é a postura correta.
+
+> [!warning] Confundir safety com security
+> Safety protege contra falha acidental (hardware que queima, bug raro, cosmic ray); security protege contra um adversário inteligente e intencional. Um sistema pode ser perfeitamente safe (nunca falha sozinho) e completamente insecure (qualquer atacante motivado o compromete) — o pacemaker com firmware atualizável via Bluetooth sem autenticação, citado acima, é o exemplo canônico. Em entrevista e em design de sistemas críticos (aviação, medicina, infraestrutura), tratar as duas disciplinas como sinônimas é um erro que some as métricas erradas (MTBF quando deveria ser MTTD/MTTR) e ignora que alguém pode estar tentando quebrar o sistema de propósito.
+
+---
+
 ## Conexões
 
 - Esta é a nota-âncora do galho Segurança Conceitual.
 - Próxima nota: [[02 - Pensar como adversário]]
 - [[04 - Princípios de design seguro]] — onde os princípios de Saltzer & Schroeder são detalhados (least privilege, fail-safe defaults, complete mediation, etc.)
 - [[06 - Hashing criptográfico]] — o mecanismo técnico central para integridade e autenticidade
+- [[03-Dominios/Tecnologia/Tooling e Build/24 - Supply chain e segurança de dependências|Supply chain e segurança de dependências]] — o vetor de supply chain (SolarWinds) sob a ótica de build e dependências
+
+## O que vem a seguir
+
+Esta nota deu o vocabulário — CIA, AAA, ameaça/vulnerabilidade/risco, superfície de ataque, TCB. Mas vocabulário sozinho não defende nada: ele descreve *o que* pode quebrar, não *como* alguém decide, na prática, onde atacar primeiro. A [[02 - Pensar como adversário|próxima nota]] muda de lente — sai da taxonomia estática (os pilares, as definições) e entra no raciocínio dinâmico de quem está do outro lado: como um atacante enumera superfície de ataque real, prioriza vetores por custo/benefício, e por que "pensar como adversário" (threat modeling levado a sério, não como checklist) é a habilidade que separa quem decora CIA de quem projeta sistemas resistentes a gente de verdade tentando quebrá-los — os mesmos Equifax e Mirai/Dyn de cima, vistos do ponto de vista de quem escolheu o vetor.
 
 > [!summary] Resumo em uma linha
 > Segurança é a disciplina de proteger ativos contra adversários inteligentes gerenciando o risco gerado pela tensão entre CIA, usabilidade e custo — não uma feature bolt-on, mas uma propriedade emergente de sistemas bem projetados.
@@ -465,10 +500,13 @@ Quando a entrevista pede "me explique segurança" ou "qual a diferença entre au
 
 ---
 
-> [!info] Lastro
-> - **NIST SP 800-12 Rev. 1** — *An Introduction to Information Security* (2017). Documento normativo do NIST que define CIA e AAA com precisão formal. URL: [nvlpubs.nist.gov](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-12r1.pdf)
-> - **Saltzer, J.H. & Schroeder, M.D.** — "The Protection of Information in Computer Systems", *Proceedings of the IEEE*, vol. 63, pp. 1278–1308, 1975. O paper fundacional de princípios de design seguro (least privilege, fail-safe defaults, etc.). URL: [cs.virginia.edu/~evans/cs551/saltzer/](https://www.cs.virginia.edu/~evans/cs551/saltzer/)
-> - **Schneier, Bruce** — *Beyond Fear: Thinking Sensibly About Security in an Uncertain World*. Copernicus Books, 2003. Fonte da definição adversarial de segurança e do framework de trade-offs custo/risco/usabilidade.
-> - **Anderson, Ross** — *Security Engineering: A Guide to Building Dependable Distributed Systems*, 3ª ed. Wiley, 2020. Capítulo 1 ("What is Security Engineering?") cobre o modelo adversarial, TCB e a distinção segurança/confiabilidade. Capítulos disponíveis em [cl.cam.ac.uk/~rja14/book.html](https://www.cl.cam.ac.uk/~rja14/book.html)
-> - **Bishop, Matthew** — *Computer Security: Art and Science*, 2ª ed. Addison-Wesley, 2018. Referência acadêmica clássica sobre TCB, políticas de segurança e modelos formais (Bell-LaPadula, Biba).
-> - **OWASP Attack Surface Analysis Cheat Sheet** — Guia prático sobre enumeração e redução de superfície de ataque. URL: [cheatsheetseries.owasp.org/cheatsheets/Attack_Surface_Analysis_Cheat_Sheet.html](https://cheatsheetseries.owasp.org/cheatsheets/Attack_Surface_Analysis_Cheat_Sheet.html)
+## Fontes
+
+- **NIST SP 800-12 Rev. 1** — *An Introduction to Information Security* (2017). Documento normativo do NIST que define CIA e AAA com precisão formal. URL: [nvlpubs.nist.gov](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-12r1.pdf)
+- **Saltzer, J.H. & Schroeder, M.D.** — "The Protection of Information in Computer Systems", *Proceedings of the IEEE*, vol. 63, pp. 1278–1308, 1975. O paper fundacional de princípios de design seguro (least privilege, fail-safe defaults, etc.). URL: [cs.virginia.edu/~evans/cs551/saltzer/](https://www.cs.virginia.edu/~evans/cs551/saltzer/)
+- **Schneier, Bruce** — *Beyond Fear: Thinking Sensibly About Security in an Uncertain World*. Copernicus Books, 2003. Fonte da definição adversarial de segurança e do framework de trade-offs custo/risco/usabilidade.
+- **Anderson, Ross** — *Security Engineering: A Guide to Building Dependable Distributed Systems*, 3ª ed. Wiley, 2020. Capítulo 1 ("What is Security Engineering?") cobre o modelo adversarial, TCB e a distinção segurança/confiabilidade. Capítulos disponíveis em [cl.cam.ac.uk/~rja14/book.html](https://www.cl.cam.ac.uk/~rja14/book.html)
+- **Bishop, Matthew** — *Computer Security: Art and Science*, 2ª ed. Addison-Wesley, 2018. Referência acadêmica clássica sobre TCB, políticas de segurança e modelos formais (Bell-LaPadula, Biba).
+- **OWASP Attack Surface Analysis Cheat Sheet** — Guia prático sobre enumeração e redução de superfície de ataque. URL: [cheatsheetseries.owasp.org/cheatsheets/Attack_Surface_Analysis_Cheat_Sheet.html](https://cheatsheetseries.owasp.org/cheatsheets/Attack_Surface_Analysis_Cheat_Sheet.html)
+- **U.S. Government Accountability Office (GAO-18-559)** — *Data Protection: Actions Taken by Equifax and Federal Agencies in Response to the 2017 Breach* (2018). Relatório oficial que documenta a causa raiz do breach Equifax (patch não aplicado no Apache Struts, CVE-2017-5638). URL: [gao.gov/products/gao-18-559](https://www.gao.gov/products/gao-18-559)
+- **Krebs, Brian** — "Hacked Cameras, DVRs Powered Today's Massive Internet Outage" — *Krebs on Security*, 2016. Cobertura de referência do ataque Mirai/Dyn, incluindo o vetor de credenciais de fábrica em dispositivos IoT. URL: [krebsonsecurity.com/2016/10/hacked-cameras-dvrs-powered-todays-massive-internet-outage/](https://krebsonsecurity.com/2016/10/hacked-cameras-dvrs-powered-todays-massive-internet-outage/)

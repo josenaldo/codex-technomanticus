@@ -1,7 +1,7 @@
 ---
 title: "Pensar como adversário"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-08-20
 type: concept
 fase: Iniciado
 status: evergreen
@@ -59,6 +59,9 @@ flowchart TD
 > [!info] Leitura do diagrama
 > O processo é cíclico: cada iteração (sprint, mudança de arquitetura, novo componente) reinicia o ciclo. A seta de Q4 → Q1 é intencional — threat modeling não é "feito uma vez e arquivado".
 
+> [!tip] Vídeo: as quatro perguntas explicadas pelo autor
+> ["The Four Question Framework for Threat Modeling"](https://www.youtube.com/watch?v=a1X6GTjLHlE) (Endor Labs, out. 2025, 29 min) — o próprio Adam Shostack apresenta o framework das quatro perguntas com exemplos práticos de como aplicá-lo sem burocratizar o processo. Bom complemento ao livro para quem prefere ouvir a explicação do autor antes de ler o texto formal.
+
 ---
 
 ## STRIDE: dar nome ao que pode dar errado
@@ -109,7 +112,7 @@ flowchart LR
 
 > [!example] Aplicando STRIDE a um formulário de login
 > - **S** (Spoofing): atacante usa credenciais roubadas ou força bruta para se passar por outro usuário.
-> - **T** (Tampering): interceptação da senha em trânsito (HTTP sem TLS) ou manipulação da sessão.
+> - **T** (Tampering): interceptação da senha em trânsito (HTTP sem [[03-Dominios/Ciência/Redes e Protocolos/05 - TLS e HTTPS|TLS]]) ou manipulação da sessão.
 > - **R** (Repudiation): sem log de auditoria, o usuário pode negar que fez login; administrador não consegue provar.
 > - **I** (Info Disclosure): erro de login excessivamente detalhado revela quais usuários existem (user enumeration).
 > - **D** (DoS): flood de requisições de login bloqueia contas legítimas ou derruba o endpoint.
@@ -125,10 +128,7 @@ Um Data Flow Diagram (DFD) é um mapa do sistema com quatro elementos:
 - **Entidades externas** (retângulos): usuários, sistemas terceiros, navegadores.
 - **Fluxos de dados** (setas): o que trafega entre os elementos acima.
 
-A adição chave para threat modeling é a **trust boundary** (fronteira de confiança): uma linha que separa regiões com diferentes níveis de privilégio ou controle. Dados que cruzam essa linha são suspeitos por definição.
-
-> [!warning] Regra de ouro das trust boundaries
-> Tudo que cruza uma fronteira de confiança é hostil até prova em contrário. Não importa se veio de outro serviço interno — se ele pode ser comprometido, seus dados também podem ser adulterados.
+A adição chave para threat modeling é a **trust boundary** (fronteira de confiança): uma linha que separa regiões com diferentes níveis de privilégio ou controle. Dados que cruzam essa linha são suspeitos por definição — a regra de ouro (com o caso Capital One como ilustração) está na seção Armadilhas comuns, mais adiante.
 
 ```mermaid
 flowchart TD
@@ -229,10 +229,9 @@ Não existe "seguro". Existe "seguro contra X com custo Y em contexto Z". O mode
 | Grupo organizado (crime) | Alta — equipes especializadas | Ganho financeiro, extorsão | Campanha de phishing direcionado, BEC |
 | APT / Estado-nação | Muito alta — zero-days, paciência | Espionagem, sabotagem, geopolítica | Stuxnet, SolarWinds supply-chain |
 
-> [!warning] O erro mais comum de threat modeling
-> Modelar ameaças como se o adversário fosse sempre um APT estatal, ou modelar como se fosse sempre um script kiddie. A pergunta correta é: *dada a atratividade dos meus ativos, quem provavelmente vai tentar atacar?* Um CRUD interno de RH tem perfil de ameaça diferente de uma exchange de criptomoedas.
+O erro mais comum ao calibrar o adversário está descrito na seção Armadilhas comuns, mais adiante.
 
-A resposta a essa pergunta determina onde você investe: MFA simples barra 99% dos scripts kiddies e dos criminosos oportunistas. Contra APT, você precisa de isolamento, detecção de anomalias, segmentação de rede e — inevitavelmente — assume breach.
+A resposta correta a essa pergunta determina onde você investe: MFA simples barra 99% dos scripts kiddies e dos criminosos oportunistas. Contra APT, você precisa de isolamento, detecção de anomalias, segmentação de rede e — inevitavelmente — assume breach.
 
 ---
 
@@ -247,9 +246,7 @@ A consequência prática: **o design não pode depender de nenhum perímetro ser
 - **Monitoração e detecção**: se a pergunta for "como detecto o intruso?", você está no assume breach. Se a pergunta for "como impedir que ele entre?", você ainda está no modelo de perímetro.
 - **Blast radius mínimo**: um comprometimento deve ter consequências limitadas, não cascata irrestrita.
 
-Assume breach é o alicerce filosófico do Zero Trust — que a nota [[19 - Zero trust e defesa em profundidade]] desenvolve em detalhe.
-
-Um exemplo canônico do que acontece quando assume breach *não* é adotado: o ataque à Target em 2013. O invasor entrou pela rede de um fornecedor de HVAC (sistema de climatização) que tinha acesso à rede de TI da varejista. Uma vez dentro, moveu-se lateralmente sem obstáculos — porque o design presumia que quem estava "dentro" era confiável. O resultado: 40 milhões de números de cartão comprometidos. O perímetro falhou na primeira barreira; não havia segunda.
+Assume breach é o alicerce filosófico do Zero Trust — que a nota [[19 - Zero trust e defesa em profundidade]] desenvolve em detalhe. O caso canônico do que acontece quando assume breach *não* é adotado — o ataque à Target em 2013 — está detalhado na seção Casos práticos, mais adiante.
 
 > [!example] Três perguntas de assume breach para seu sistema
 > 1. Se um microsserviço qualquer for comprometido, quais dados ele consegue ler ou modificar?
@@ -332,12 +329,35 @@ Combine tudo o que aprendemos. Sistema: endpoint `POST /login` com usuário/senh
 
 ---
 
-## Conexões
+## Casos práticos
+
+Threat modeling só prova seu valor quando confrontado com incidentes reais — os três casos abaixo mostram o custo de pular a etapa e o padrão que se repete quando ela é ignorada.
+
+**Caso 1 — Target (2013): confiança transitiva sem fronteira.** O invasor entrou pela rede de um fornecedor de HVAC (sistema de climatização) que tinha acesso à rede de TI da varejista. Uma vez dentro, moveu-se lateralmente sem obstáculos — porque o design presumia que quem estava "dentro" era confiável. O resultado: 40 milhões de números de cartão comprometidos. Lido pela lente deste capítulo: não havia trust boundary entre a rede do fornecedor e os sistemas de pagamento, e o modelo de ameaça nunca tratou um terceiro com acesso remoto como um vetor de "spoofing" ou "tampering" — exatamente o tipo de pergunta que um DFD com STRIDE aplicado teria forçado a fazer antes da conexão existir.
+
+**Caso 2 — o formulário de login sob STRIDE.** O worked example completo, com as nove ameaças e suas mitigações, está na seção anterior — vale reler aqui como *caso*, não só como exercício: um endpoint `POST /login` aparentemente simples concentra falhas de autenticação (força bruta), integridade (SQL injection), não-repúdio (ausência de log) e confidencialidade (senha em plaintext) ao mesmo tempo. Nenhuma dessas nove ameaças exige um adversário sofisticado — todas são exploráveis por ferramentas públicas. É o caso didático de que threat modeling não é sobre prever APTs exóticos; é sobre não deixar a porta da frente destrancada.
+
+**Caso 3 — Capital One (2019): SSRF cruzando a fronteira errada.** Uma ex-funcionária da AWS explorou um Web Application Firewall mal configurado, rodando dentro do ambiente AWS da Capital One, para montar um ataque de Server-Side Request Forgery (SSRF). O WAF comprometido fez uma requisição ao serviço de metadados da instância EC2 — que só deveria responder a chamadas locais e confiáveis — e devolveu credenciais temporárias de uma role IAM com permissões excessivas, capaz de listar e ler buckets S3 inteiros. O resultado: dados de 106 milhões de clientes expostos. O ponto de threat modeling aqui é duplo: (1) o serviço de metadados é uma trust boundary que o design tratou como se estivesse "dentro" da zona confiável do WAF, quando deveria ser tratado como um ativo tão sensível quanto o próprio banco de dados; (2) a role IAM violava least privilege — elevação de privilégio (o "E" de STRIDE) não exige bug de código quando a permissão já vem concedida demais por configuração.
+
+## Armadilhas comuns
+
+> [!warning] Regra de ouro das trust boundaries
+> Tudo que cruza uma fronteira de confiança é hostil até prova em contrário. Não importa se veio de outro serviço interno — se ele pode ser comprometido, seus dados também podem ser adulterados. O caso Capital One acima é o que acontece quando essa regra é esquecida para um serviço interno "óbvio" como o metadata endpoint.
+
+> [!warning] O erro mais comum de threat modeling
+> Modelar ameaças como se o adversário fosse sempre um APT estatal, ou modelar como se fosse sempre um script kiddie. A pergunta correta é: *dada a atratividade dos meus ativos, quem provavelmente vai tentar atacar?* Um CRUD interno de RH tem perfil de ameaça diferente de uma exchange de criptomoedas.
+
+> [!warning] Tratar o diagrama como documentação e não como ferramenta de raciocínio
+> É tentador desenhar o DFD uma vez, arquivar num wiki e nunca mais tocar. A quarta pergunta de Shostack ("fizemos um bom trabalho?") existe justamente para forçar a revisão: se a arquitetura mudou e o diagrama não, o modelo de ameaças que depende dele está obsoleto — e ninguém percebe até o incidente.
+
+## O que vem a seguir
+
+Threat modeling dá o vocabulário e o processo — mas cada peça que ele aponta é um buraco de conhecimento próprio que ainda precisa ser aberto. As próximas notas do galho preenchem esses buracos na ordem em que STRIDE os expõe: primeiro o porquê humano e econômico de tanta ameaça continuar sendo viável mesmo depois de nomeada, depois os princípios de design que respondem sistematicamente ao "o que faremos a respeito?", e lateralmente as classes de vulnerabilidade concretas que o "T" e o "I" de STRIDE só citam de passagem.
 
 - Anterior: [[01 - O que é segurança conceitual]] — CIA, modelo adversarial, superfície de ataque.
-- Próxima: [[03 - Economia e fator humano da segurança]] — custo, incentivos e o elo humano.
+- Próxima: [[03 - Economia e fator humano da segurança]] — por que ameaças "óbvias" continuam funcionando: custo, incentivos e o elo humano que STRIDE não modela.
 - Cross-links: [[16 - Classes de vulnerabilidade]] — SQL injection, XSS e as classes que o STRIDE aponta mas não detalha.
-- Cross-links: [[04 - Princípios de design seguro]] — least privilege, defense in depth e Kerckhoffs como respostas ao threat modeling.
+- Cross-links: [[04 - Princípios de design seguro]] — least privilege, defense in depth e Kerckhoffs como respostas sistemáticas ao "o que faremos a respeito?" de Shostack.
 
 > [!summary] Resumo em uma linha
 > Threat modeling é perguntar "o que pode dar errado?" de forma estruturada — com STRIDE para nomear ameaças, DFDs para visualizar o sistema, árvores de ataque para raciocinar como o adversário, e "assume breach" para projetar sem ilusões sobre o perímetro.
@@ -375,10 +395,13 @@ Threat modeling é um tema recorrente em entrevistas de engenharia de plataforma
 
 ---
 
-> [!info] Lastro
-> 1. **Adam Shostack** — *Threat Modeling: Designing for Security* (Wiley, 2014). Livro de referência da área; define as quatro perguntas e o framework moderno de DFD + STRIDE + árvores. Shostack mantém material adicional em [shostack.org/resources/threat-modeling.html](https://shostack.org/resources/threat-modeling.html).
-> 2. **Bruce Schneier** — "Attack Trees: Modeling Security Threats", *Dr. Dobb's Journal*, v. 24, n. 12, dez. 1999, pp. 21–29. Artigo original que formalizou nós AND/OR e síntese de atributos (custo, possibilidade) nas folhas. Referência canônica em [sciepub.com/reference/5472](https://www.sciepub.com/reference/5472).
-> 3. **Loren Kohnfelder & Praerit Garg (Microsoft, 1999)** — Criadores do STRIDE. Documentação técnica atual mantida pela Microsoft em [securitycompass.com/blog/stride-in-threat-modeling](https://www.securitycompass.com/blog/stride-in-threat-modeling/) e [aptori.com/blog/the-stride-threat-model-a-comprehensive-guide](https://www.aptori.com/blog/the-stride-threat-model-a-comprehensive-guide).
-> 4. **Lockheed Martin** — "Intelligence-Driven Computer Network Defense Informed by Analysis of Adversary Campaigns and Intrusion Kill Chains", 2011. Artigo original que introduziu o modelo de sete fases. Resumo em [lockheedmartin.com/en-us/capabilities/cyber/cyber-kill-chain.html](https://www.lockheedmartin.com/en-us/capabilities/cyber/cyber-kill-chain.html).
-> 5. **OWASP Threat Modeling** — Guia comunitário com cheat sheets, exemplos e comparativo de frameworks (STRIDE, PASTA, LINDDUN, VAST). Referência viva em [owasp.org/www-community/Threat_Modeling](https://owasp.org/www-community/Threat_Modeling).
-> 6. **Threat Modeling Manifesto** (2020) — Documento comunitário assinado por Shostack e outros 14 praticantes; consolida os valores e princípios do campo. Disponível em [threatmodelingmanifesto.org](https://www.threatmodelingmanifesto.org).
+## Fontes
+
+1. **Adam Shostack** — *Threat Modeling: Designing for Security* (Wiley, 2014). Livro de referência da área; define as quatro perguntas e o framework moderno de DFD + STRIDE + árvores. Shostack mantém material adicional em [shostack.org/resources/threat-modeling.html](https://shostack.org/resources/threat-modeling.html).
+2. **Bruce Schneier** — "Attack Trees: Modeling Security Threats", *Dr. Dobb's Journal*, v. 24, n. 12, dez. 1999, pp. 21–29. Artigo original que formalizou nós AND/OR e síntese de atributos (custo, possibilidade) nas folhas. Referência canônica em [sciepub.com/reference/5472](https://www.sciepub.com/reference/5472).
+3. **Loren Kohnfelder & Praerit Garg (Microsoft, 1999)** — Criadores do STRIDE. Documentação técnica atual mantida pela Microsoft em [securitycompass.com/blog/stride-in-threat-modeling](https://www.securitycompass.com/blog/stride-in-threat-modeling/) e [aptori.com/blog/the-stride-threat-model-a-comprehensive-guide](https://www.aptori.com/blog/the-stride-threat-model-a-comprehensive-guide).
+4. **Lockheed Martin** — "Intelligence-Driven Computer Network Defense Informed by Analysis of Adversary Campaigns and Intrusion Kill Chains", 2011. Artigo original que introduziu o modelo de sete fases. Resumo em [lockheedmartin.com/en-us/capabilities/cyber/cyber-kill-chain.html](https://www.lockheedmartin.com/en-us/capabilities/cyber/cyber-kill-chain.html).
+5. **OWASP Threat Modeling** — Guia comunitário com cheat sheets, exemplos e comparativo de frameworks (STRIDE, PASTA, LINDDUN, VAST). Referência viva em [owasp.org/www-community/Threat_Modeling](https://owasp.org/www-community/Threat_Modeling).
+6. **Threat Modeling Manifesto** (2020) — Documento comunitário assinado por Shostack e outros 14 praticantes; consolida os valores e princípios do campo. Disponível em [threatmodelingmanifesto.org](https://www.threatmodelingmanifesto.org).
+7. **Adam Shostack** — "The Four Question Framework for Threat Modeling" (Endor Labs, out. 2025). Vídeo em que o autor apresenta o framework das quatro perguntas com exemplos práticos. Disponível em [youtube.com/watch?v=a1X6GTjLHlE](https://www.youtube.com/watch?v=a1X6GTjLHlE).
+8. **Departamento de Justiça dos EUA / imprensa especializada** — Caso Capital One (2019): indiciamento e reportagens técnicas sobre o SSRF contra o serviço de metadados EC2. Cobertura técnica consolidada em [blog.appsecco.com/an-ssrf-privileged-aws-keys-and-the-capital-one-breach](https://blog.appsecco.com/an-ssrf-privileged-aws-keys-and-the-capital-one-breach-4c3c2cded3af).

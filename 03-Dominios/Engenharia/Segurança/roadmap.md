@@ -72,7 +72,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 ## Notas
 
 #### 01 - O que é segurança conceitual   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-20)
 - **Estado:** 480 linhas reais · fase: iniciado · status: evergreen
 - **Núcleo/gaps:** E4 (sem seção `## Casos práticos` dedicada, apenas exemplos espalhados) · E5 (seção `## Conexões` existe, mas não é a ponte narrativa `## O que vem a seguir`) · E8 (só 2 `[!warning]` soltos, sem seção `## Armadilhas comuns` com ≥3) · L1 (os 3 wikilinks em Conexões apontam para notas da própria pasta Segurança, nenhum cross-galho) · L2 (fontes existem, mas sob `> [!info] Lastro`, não `## Fontes`) · M1 (nenhum vídeo/podcast embutido)
 - **Score:** 6/11 (P1 N/A — nota conceitual sem exemplo de código)
@@ -83,12 +83,12 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar ≥1 wikilink para nota fora da pasta Segurança (ex.: nota de segurança conceitual em Fundamentos ou trilha Auth e Identidade) → ativa L1
   - Renomear/reestruturar `> [!info] Lastro` como seção `## Fontes`, mantendo os mesmos links já verificados → ativa L2
   - Pesquisar e embutir ≥1 vídeo/podcast relevante sobre tríade CIA/segurança conceitual como callout `[!tip]` → ativa M1
-- **Resultado:** —
+- **Resultado:** `## Casos práticos` (Equifax 2017 e Mirai/Dyn 2016, com causa raiz e números) · `## O que vem a seguir` com ponte para a nota 02, **complementando** `## Conexões` em vez de substituir (era o que o plano pedia nesta nota) · `## Armadilhas comuns` com 3 `[!warning]`, os 2 antigos movidos + "confundir safety com security" · L1 para Tooling e Build 24 (supply chain) · `[!info] Lastro` virou `## Fontes`, com 2 fontes novas (relatório do GAO sobre a Equifax e a cobertura do Krebs sobre o Mirai) · M1 *The Security Mindset*, do próprio **Bruce Schneier** (IEEE Computer Society, 7 min). 475 → 512 linhas, 6/6 Mermaid válidos.
 
 
 
 #### 02 - Pensar como adversário   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-20)
 - **Estado:** 451 linhas reais · fase: iniciado · status: evergreen
 - **Núcleo/gaps:** E4 (sem seção `## Casos práticos`), E5 (seção `## Conexões` é lista de links, não ponte narrativa `## O que vem a seguir`), E8 (sem seção `## Armadilhas comuns` com ≥3 `[!warning]`), L1 (todos os wikilinks apontam para notas dentro da própria pasta Segurança), L2 (fontes estão em callout `[!info] Lastro`, não em seção `## Fontes`), M1 (nenhum callout `[!tip]` com vídeo/podcast)
 - **Score:** 6/12
@@ -99,10 +99,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar ao menos um `[[wikilink]]` para nota fora da pasta Segurança, ligando a um conceito correlato em outro domínio de Engenharia (resolve L1)
   - Converter o callout `[!info] Lastro` em seção `## Fontes` com os links externos já existentes, mantendo-os clicáveis (resolve L2)
   - Pesquisar e embutir um callout `[!tip]` com vídeo ou podcast relevante sobre threat modeling/STRIDE (resolve M1)
-- **Resultado:** —
+- **Resultado:** `## Casos práticos` com 3 cenários (Target 2013 **movido** com pointer no lugar · o worked example do login reaproveitado sem duplicar a tabela · **Capital One 2019** novo, SSRF contra o metadata service da EC2) · `## Armadilhas comuns` com 3 `[!warning]`, os 2 antigos movidos + um novo sobre tratar o DFD como documentação estática · `## Conexões` virou `## O que vem a seguir` com os 4 wikilinks preservados · `[!info] Lastro` virou `## Fontes` (6 links + 2 novos) · L1 para Redes e Protocolos 05 (arquivo conferido) · M1 *The Four Question Framework for Threat Modeling* (Endor Labs, 29 min), confirmado por `yt-dlp`. 385 → 407 linhas, 5/5 Mermaid válidos.
 
 #### 03 - Economia e fator humano da segurança   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-20)
 - **Estado:** 451 linhas reais · fase: iniciado · status: evergreen
 - **Núcleo/gaps:** E4 (sem seção `## Casos práticos`; os exemplos Equifax e Google BeyondCorp estão soltos em callouts `[!example]`, não numa seção dedicada), E5 (seção `## Conexões` é lista de links, não ponte narrativa `## O que vem a seguir`), E8 (só 1 `[!warning]` isolado — "Teatro no contexto corporativo" —, sem seção `## Armadilhas comuns` com ≥3), L1 (todos os wikilinks — 01, 02, 04, 12 — apontam para notas dentro da própria pasta Segurança), L2 (fontes estão em callout `[!info] Lastro`, não em seção `## Fontes`), M1 (nenhum callout `[!tip]` com vídeo/podcast)
 - **Score:** 6/12
@@ -113,7 +113,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar ao menos um `[[wikilink]]` para nota fora da pasta Segurança, ligando a conceito correlato (ex.: incentivos/teoria de jogos em Complexidade de Software ou vieses cognitivos em outro domínio) (resolve L1)
   - Converter o callout `[!info] Lastro` em seção `## Fontes` com os links externos já existentes, mantendo-os clicáveis (resolve L2)
   - Pesquisar e embutir um callout `[!tip]` com vídeo ou podcast relevante sobre economia de segurança, engenharia social ou usable security (resolve M1)
-- **Resultado:** —
+- **Resultado:** `## Casos práticos` (Equifax 2017 · BeyondCorp · BEC com a cifra do FBI) · `## Conexões` virou `## O que vem a seguir` com ponte para as notas 04 e 12 · `## Armadilhas comuns` com 3 `[!warning]` (o de teatro corporativo **movido**, mais compliance≠segurança e treinar-sem-redesenhar) · wikilink cross-galho para Complexidade de Software 08 (arquivo verificado) · `[!info] Lastro` virou `## Fontes` · M1: *Humanizing Security with Angela Sasse* (Usable Security Podcast, 35 min), ID conferido por `yt-dlp`. 482 linhas, 7/7 Mermaid válidos. Gap remanescente fora do plano: E6 (a seção de inglês existe como `## Em entrevista`).
 
 #### 04 - Princípios de design seguro   [substantivo]
 - **Enriquecimento:** ⬜ pendente
