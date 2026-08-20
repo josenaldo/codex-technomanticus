@@ -5,7 +5,7 @@ updated: 2026-06-11
 type: concept
 status: seedling
 publish: true
-fase: adepto
+fase: Adepto
 tags:
   - java
   - build

@@ -3,7 +3,7 @@ title: "ISA: a interface hardware-software"
 created: 2026-06-20
 updated: 2026-06-20
 type: concept
-fase: adepto
+fase: Adepto
 status: evergreen
 publish: false
 tags:

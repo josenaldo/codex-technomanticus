@@ -6,7 +6,7 @@ type: concept
 progress: backlog
 status: seedling
 publish: false
-fase: iniciado
+fase: Iniciado
 tags:
   - ciencia-da-computacao
   - algoritmos

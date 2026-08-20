@@ -5,7 +5,7 @@ updated: 2026-06-12
 type: concept
 status: seedling
 publish: true
-fase: magus
+fase: Magus
 tags:
   - java
   - cloud-native

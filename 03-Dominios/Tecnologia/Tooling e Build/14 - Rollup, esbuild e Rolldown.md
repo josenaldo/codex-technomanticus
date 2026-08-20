@@ -3,7 +3,7 @@ title: "Rollup, esbuild e Rolldown"
 created: 2026-06-24
 updated: 2026-06-25
 type: concept
-fase: adepto
+fase: Adepto
 status: seedling
 publish: true
 tags:

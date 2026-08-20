@@ -4,7 +4,7 @@ created: 2026-06-27
 updated: 2026-06-27
 type: concept
 status: seedling
-fase: adepto
+fase: Adepto
 tags:
   - react
   - ecossistema

@@ -3,7 +3,7 @@ title: "Tipos algébricos, pattern matching e erros sem exceção"
 created: 2026-06-18
 updated: 2026-06-18
 type: concept
-fase: adepto
+fase: Adepto
 status: evergreen
 publish: false
 tags:

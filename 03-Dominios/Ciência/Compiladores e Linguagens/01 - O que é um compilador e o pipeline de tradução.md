@@ -3,7 +3,7 @@ title: "O que é um compilador e o pipeline de tradução"
 created: 2026-06-21
 updated: 2026-06-21
 type: concept
-fase: iniciado
+fase: Iniciado
 status: evergreen
 publish: false
 tags:

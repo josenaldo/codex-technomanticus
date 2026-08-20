@@ -3,7 +3,7 @@ title: "TDD na prática"
 created: 2026-06-18
 updated: 2026-08-01
 type: concept
-fase: adepto
+fase: Adepto
 status: evergreen
 publish: true
 tags:

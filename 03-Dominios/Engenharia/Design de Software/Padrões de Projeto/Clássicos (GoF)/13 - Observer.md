@@ -4,7 +4,7 @@ created: 2026-07-28
 updated: 2026-07-28
 type: concept
 status: seedling
-fase: adepto
+fase: Adepto
 tags:
   - design-de-software
   - design-patterns

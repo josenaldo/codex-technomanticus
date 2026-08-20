@@ -1,6 +1,6 @@
 ---
 title: "Event sourcing e CQRS"
-fase: magus
+fase: Magus
 tags:
   - java
   - mensageria

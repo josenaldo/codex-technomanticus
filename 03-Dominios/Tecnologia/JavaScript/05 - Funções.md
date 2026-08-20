@@ -4,7 +4,7 @@ created: 2026-06-25
 updated: 2026-06-25
 type: concept
 status: seedling
-fase: iniciado
+fase: Iniciado
 tags:
   - javascript
   - iniciado

@@ -3,7 +3,7 @@ title: "Complexidade computacional formal - classes de tempo, P e NP"
 created: 2026-06-19
 updated: 2026-06-19
 type: concept
-fase: magus
+fase: Magus
 status: evergreen
 publish: false
 tags:

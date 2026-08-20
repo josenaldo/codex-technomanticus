@@ -3,7 +3,7 @@ title: "System calls e a fronteira kernel/usuário"
 created: 2026-06-18
 updated: 2026-06-18
 type: concept
-fase: iniciado
+fase: Iniciado
 status: evergreen
 publish: false
 tags:

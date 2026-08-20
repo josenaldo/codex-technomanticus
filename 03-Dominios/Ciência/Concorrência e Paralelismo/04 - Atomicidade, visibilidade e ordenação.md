@@ -3,7 +3,7 @@ title: "Atomicidade, visibilidade e ordenação"
 created: 2026-06-18
 updated: 2026-06-18
 type: concept
-fase: iniciado
+fase: Iniciado
 status: evergreen
 publish: false
 tags:

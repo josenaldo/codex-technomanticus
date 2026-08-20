@@ -3,7 +3,7 @@ title: "O pumping lemma para linguagens regulares"
 created: 2026-06-19
 updated: 2026-06-19
 type: concept
-fase: iniciado
+fase: Iniciado
 status: evergreen
 publish: false
 tags:

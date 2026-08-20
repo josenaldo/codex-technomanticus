@@ -7,7 +7,7 @@ tags:
   - mensageria
   - adepto
   - spring-kafka
-fase: adepto
+fase: Adepto
 type: concept
 status: seedling
 publish: true

@@ -5,7 +5,7 @@ updated: 2026-06-11
 type: concept
 status: seedling
 publish: true
-fase: iniciado
+fase: Iniciado
 tags:
   - java
   - build

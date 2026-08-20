@@ -3,7 +3,7 @@ title: "Declaration files (.d.ts) e o ecossistema de tipos"
 created: 2026-06-24
 updated: 2026-06-24
 type: concept
-fase: magus
+fase: Magus
 status: seedling
 publish: true
 tags:

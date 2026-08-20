@@ -2,7 +2,7 @@
 title: "Dead Letter Topic — o padrão DLQ"
 aliases:
   - DLQ
-fase: adepto
+fase: Adepto
 tags:
   - java
   - mensageria

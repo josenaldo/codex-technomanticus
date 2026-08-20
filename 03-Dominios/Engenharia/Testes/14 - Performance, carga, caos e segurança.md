@@ -3,7 +3,7 @@ title: "Performance, carga, caos e segurança"
 created: 2026-06-18
 updated: 2026-08-01
 type: concept
-fase: magus
+fase: Magus
 status: evergreen
 publish: true
 tags:

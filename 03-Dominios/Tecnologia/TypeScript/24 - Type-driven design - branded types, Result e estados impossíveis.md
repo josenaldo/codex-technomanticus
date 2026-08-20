@@ -3,7 +3,7 @@ title: "Type-driven design - branded types, Result e estados impossíveis"
 created: 2026-06-24
 updated: 2026-06-24
 type: concept
-fase: magus
+fase: Magus
 status: seedling
 publish: true
 tags:

@@ -4,7 +4,7 @@ created: 2026-06-25
 updated: 2026-06-25
 type: concept
 status: seedling
-fase: adepto
+fase: Adepto
 tags:
   - react
   - adepto

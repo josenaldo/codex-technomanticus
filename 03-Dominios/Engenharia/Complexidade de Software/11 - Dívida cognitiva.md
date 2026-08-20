@@ -6,7 +6,7 @@ type: concept
 progress: growing
 status: growing
 publish: true
-fase: adepto
+fase: Adepto
 tags:
   - engenharia
   - complexidade-de-software

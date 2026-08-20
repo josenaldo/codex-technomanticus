@@ -3,7 +3,7 @@ title: "Union e intersection types"
 created: 2026-06-23
 updated: 2026-06-23
 type: concept
-fase: iniciado
+fase: Iniciado
 status: seedling
 publish: true
 tags:

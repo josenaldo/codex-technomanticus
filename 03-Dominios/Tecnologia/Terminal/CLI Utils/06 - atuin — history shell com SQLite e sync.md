@@ -6,7 +6,7 @@ type: concept
 progress: backlog
 status: seedling
 publish: true
-fase: adepto
+fase: Adepto
 tags:
   - terminal
   - cli-utils

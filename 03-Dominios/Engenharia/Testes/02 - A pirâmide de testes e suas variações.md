@@ -3,7 +3,7 @@ title: "A pirâmide de testes e suas variações"
 created: 2026-06-18
 updated: 2026-08-01
 type: concept
-fase: iniciado
+fase: Iniciado
 status: evergreen
 publish: true
 tags:

@@ -1,6 +1,6 @@
 ---
 title: Ack modes e commit de offset
-fase: adepto
+fase: Adepto
 tags:
   - java
   - mensageria

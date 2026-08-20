@@ -6,7 +6,7 @@ type: concept
 progress: backlog
 status: seedling
 publish: true
-fase: iniciado
+fase: Iniciado
 tags:
   - java
   - swing

@@ -3,7 +3,7 @@ title: "NP-completude - Cook-Levin e a cadeia de Karp"
 created: 2026-06-19
 updated: 2026-06-19
 type: concept
-fase: magus
+fase: Magus
 status: evergreen
 publish: false
 tags:

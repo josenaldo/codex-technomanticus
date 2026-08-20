@@ -1,6 +1,6 @@
 ---
 title: "KafkaTemplate — produzindo mensagens"
-fase: adepto
+fase: Adepto
 tags:
   - java
   - mensageria

@@ -1,6 +1,6 @@
 ---
 title: "Kafka Connect pela ótica da app"
-fase: magus
+fase: Magus
 tags:
   - java
   - mensageria

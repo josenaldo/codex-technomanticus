@@ -3,7 +3,7 @@ title: "Capstone - compiladores na vida do dev"
 created: 2026-06-21
 updated: 2026-06-21
 type: concept
-fase: magus
+fase: Magus
 status: evergreen
 publish: false
 tags:

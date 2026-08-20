@@ -1,6 +1,6 @@
 ---
 type: concept
-fase: magus
+fase: Magus
 created: 2026-06-27
 updated: 2026-06-27
 status: seedling

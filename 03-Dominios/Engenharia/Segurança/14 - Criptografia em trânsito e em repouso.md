@@ -3,7 +3,7 @@ title: "Criptografia em trânsito e em repouso"
 created: 2026-06-20
 updated: 2026-06-20
 type: concept
-fase: magus
+fase: Magus
 status: evergreen
 publish: false
 tags:

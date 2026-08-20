@@ -6,7 +6,7 @@ type: concept
 progress: backlog
 status: seedling
 publish: false
-fase: adepto
+fase: Adepto
 tags:
   - ciencia-da-computacao
   - algoritmos

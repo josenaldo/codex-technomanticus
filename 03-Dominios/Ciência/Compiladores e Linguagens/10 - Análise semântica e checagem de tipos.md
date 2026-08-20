@@ -3,7 +3,7 @@ title: "Análise semântica e checagem de tipos"
 created: 2026-06-21
 updated: 2026-06-21
 type: concept
-fase: adepto
+fase: Adepto
 status: evergreen
 publish: false
 tags:
