@@ -1,7 +1,7 @@
 ---
 title: "Criptografia assimétrica"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-08-20
 type: concept
 fase: adepto
 status: evergreen
@@ -93,6 +93,10 @@ graph LR
 > [!danger] Custódia da chave privada
 > Perder a chave privada significa perder a capacidade de decifrar tudo que foi cifrado com a pública correspondente. Expor a chave privada compromete retroativamente toda a comunicação passada (se a chave de sessão foi armazenada) e toda a autenticidade futura. Hardware Security Modules (HSM) e smart cards existem precisamente para nunca deixar a privada sair do hardware.
 
+> [!tip] Vídeo — chave pública e privada, explicado do zero
+> [**Public Key Cryptography - Computerphile**](https://www.youtube.com/watch?v=GSIDS_lvRv4) (Computerphile, ~6 min, EN) usa a analogia de duas fechaduras físicas — uma que só tranca, outra que só destranca — pra explicar por que ter uma chave pública que qualquer um pode usar não compromete a chave privada correspondente; é a mesma trapdoor one-way function que esta nota descreve, só que com desenho na lousa em vez de fórmula.
+> **O que ele não cobre:** RSA e ECC especificamente, assinatura digital, e criptografia híbrida — fica só no princípio geral do par de chaves.
+
 ---
 
 ## Os dois usos opostos — a pergunta que entrevista cobra
@@ -136,9 +140,6 @@ A tabela resume:
 | **Cifrar** | Pública do **destinatário** | Privada do destinatário | Confidencialidade |
 | **Assinar** | Privada do **remetente** | Pública do remetente | Autenticidade + integridade |
 
-> [!warning] Erro clássico de entrevista
-> "Cifro com minha privada para provar que sou eu." Isso NÃO é cifração com garantia de confidencialidade — seria decifrado por qualquer um com a pública. Na terminologia correta, isso é **assinatura**. Cifração e assinatura são operações matematicamente distintas, com direções de chave invertidas e propriedades de segurança diferentes. Confundir os termos em entrevista é sinal de conhecimento superficial.
-
 ---
 
 ## RSA: segurança via fatoração de primos
@@ -166,9 +167,6 @@ O "nível de segurança" em bits significa: um adversário precisaria de `2^N` o
 - A implementação correta é não-trivial: padding OAEP para cifração, PSS para assinatura — RSA puro (textbook RSA) sem padding é inseguro.
 - Chaves enormes comparadas ao ECC para segurança equivalente.
 - Vulnerável a computadores quânticos (algoritmo de Shor fatoraria `n` em tempo polinomial).
-
-> [!warning] Textbook RSA é inseguro
-> RSA sem padding probabilístico é deterministico: cifrar a mesma mensagem duas vezes produz o mesmo resultado. Um adversário com a chave pública pode cifrar candidatos e comparar. Sempre use OAEP (Optimal Asymmetric Encryption Padding) para cifração e PSS (Probabilistic Signature Scheme) para assinatura. Bibliotecas modernas (OpenSSL, Java JCA, libsodium) fazem isso por padrão — mas você precisa escolher o padding certo ao configurar.
 
 **Onde RSA ainda aparece:**
 - Certificados TLS/X.509: servidores web ainda emitem certificados com chave pública RSA-2048 (embora Ed25519 esteja crescendo).
@@ -307,24 +305,41 @@ DH (Diffie-Hellman) é a forma original de troca de chaves assimétrica — os d
 
 ---
 
-## Armadilhas de implementação que derrubam sistemas reais
+## Armadilhas comuns
 
 A teoria é elegante; a prática tem armadilhas que afetam código de produção. As mais importantes:
 
-**1. Nonce/IV reutilizado em ECDSA** ECDSA exige um número aleatório `k` único por assinatura. Se o mesmo `k` for usado duas vezes com chaves privadas diferentes mas mesma curva, a chave privada pode ser recuperada algebricamente. Foi assim que o PlayStation 3 teve sua chave privada exposta em 2010. Solução: usar EdDSA (Ed25519) que deriva o nonce deterministicamente do hash da mensagem, eliminando a dependência de aleatoriedade por assinatura.
+**1. Nonce/IV reutilizado em ECDSA** ECDSA exige um número aleatório `k` único por assinatura. Se o mesmo `k` for usado duas vezes com chaves privadas diferentes mas mesma curva, a chave privada pode ser recuperada algebricamente — foi assim que a Sony perdeu a chave de assinatura do firmware do PlayStation 3 em 2010 (caso completo na seção Casos práticos, abaixo). Solução: usar EdDSA (Ed25519) que deriva o nonce deterministicamente do hash da mensagem, eliminando a dependência de aleatoriedade por assinatura.
 
 **2. Ataques de canal lateral em RSA** A operação de decifração RSA tem tempo de execução que varia com o valor da chave privada. Um adversário que pode medir o tempo de centenas de operações pode inferir bits da chave. Solução: implementações com *constant-time blinding* — o OpenSSL faz isso por padrão; nunca implemente RSA do zero.
 
 **3. Padding oracle no RSA PKCS#1 v1.5** O ataque de Bleichenbacher (1998) permite decifrar mensagens RSA adaptivamente, consultando um servidor que revela se o padding PKCS#1 v1.5 é válido. Afetou SSL 3.0/TLS 1.0/1.1 historicamente (ROBOT attack, 2017). Solução: usar OAEP (PKCS#1 v2.x) para cifração e PSS para assinatura.
 
+> [!warning] Textbook RSA é inseguro
+> RSA sem padding probabilístico é deterministico: cifrar a mesma mensagem duas vezes produz o mesmo resultado. Um adversário com a chave pública pode cifrar candidatos e comparar. Sempre use OAEP (Optimal Asymmetric Encryption Padding) para cifração e PSS (Probabilistic Signature Scheme) para assinatura. Bibliotecas modernas (OpenSSL, Java JCA, libsodium) fazem isso por padrão — mas você precisa escolher o padding certo ao configurar.
+
 **4. Geração de chaves com entropia insuficiente** Se o CSRNG não tem entropia suficiente no momento da geração (ex.: máquina virtual que acabou de iniciar, dispositivo embarcado sem hardware RNG), duas entidades podem gerar chaves com o mesmo primo `p`, e o MDC das chaves pública revela ambas as privadas. Casos reais documentados por Heninger et al. (2012) afetaram roteadores e dispositivos embarcados.
 
-**5. Confundir verificação de assinatura com autenticação completa** Verificar que uma assinatura é válida para uma chave pública não prova que a chave pública pertence a quem você pensa. Você precisa de um mecanismo adicional para vincular a chave pública a uma identidade — um certificado assinado por uma CA, um TOFU (trust on first use) explicitamente aceito, ou um canal de verificação fora de banda (ex.: comparar fingerprints por voz, como o Signal faz com "safety numbers"). Omitir esse passo é o MITM que PKI existe para resolver.
+> [!warning] Erro clássico de entrevista
+> "Cifro com minha privada para provar que sou eu." Isso NÃO é cifração com garantia de confidencialidade — seria decifrado por qualquer um com a pública. Na terminologia correta, isso é **assinatura**. Cifração e assinatura são operações matematicamente distintas, com direções de chave invertidas e propriedades de segurança diferentes. Confundir os termos em entrevista é sinal de conhecimento superficial.
 
-**6. Reutilizar chaves para propósitos diferentes** Usar o mesmo par de chaves RSA para cifração e assinatura, ou para múltiplos contextos, aumenta a superfície de ataque. Comprometer a chave em um contexto compromete tudo. Prática recomendada: chaves separadas por propósito e por sistema. Chaves de assinatura de código ≠ chaves de TLS ≠ chaves de e-mail.
+> [!warning] Confundir verificação de assinatura com autenticação completa
+> Verificar que uma assinatura é válida para uma chave pública não prova que a chave pública pertence a quem você pensa. Você precisa de um mecanismo adicional para vincular a chave pública a uma identidade — um certificado assinado por uma CA, um TOFU (trust on first use) explicitamente aceito, ou um canal de verificação fora de banda (ex.: comparar fingerprints por voz, como o Signal faz com "safety numbers"). Omitir esse passo é o MITM que PKI existe para resolver — e é exatamente o que derrubou a DigiNotar (caso completo na seção Casos práticos, abaixo).
+
+**5. Reutilizar chaves para propósitos diferentes** Usar o mesmo par de chaves RSA para cifração e assinatura, ou para múltiplos contextos, aumenta a superfície de ataque. Comprometer a chave em um contexto compromete tudo. Prática recomendada: chaves separadas por propósito e por sistema. Chaves de assinatura de código ≠ chaves de TLS ≠ chaves de e-mail.
 
 > [!danger] Regra de ouro
 > Nunca implemente primitivas criptográficas do zero. Use bibliotecas auditadas (libsodium, Bouncy Castle, OpenSSL, BoringSSL). Se você está escolhendo algoritmos manualmente em vez de usar APIs de alto nível, há boa chance de estar construindo uma vulnerabilidade.
+
+---
+
+## Casos práticos
+
+A teoria explica por que os dois casos abaixo aconteceram; os dois casos explicam por que a teoria importa. São os dois incidentes mais citados quando o assunto é "o que dá errado na prática" em criptografia assimétrica — um sobre a chave privada, outro sobre a confiança que a PKI tenta garantir.
+
+**Caso 1 — PlayStation 3: uma chave privada recuperada por álgebra, não por força bruta.** A Sony assinava o firmware do PS3 com ECDSA para garantir que só código oficial rodasse no console — a mesma garantia de autenticidade que a tabela de "Os dois usos opostos" descreve. O problema não estava no algoritmo, estava na implementação: em vez de gerar um `k` aleatório novo a cada assinatura, como o esquema exige, a Sony reutilizou o mesmo `k` fixo em todas elas. Em 2010, o grupo fail0verflow percebeu isso comparando duas assinaturas quaisquer: com o mesmo `k` e duas mensagens diferentes, a chave privada cai de um sistema de duas equações e duas incógnitas — álgebra de ensino médio, não criptoanálise avançada. O resultado foi definitivo e irreversível: a chave mestra de assinatura do PS3 vazou para sempre, e qualquer um passou a poder assinar código como se fosse a própria Sony. Não havia como revogar ou trocar a chave depois — o hardware já confiava nela. A lição não é "ECDSA é fraco"; é que ECDSA depende inteiramente de uma premissa de implementação (nonce novo e aleatório a cada assinatura) que é fácil de esquecer e catastrófica de violar.
+
+**Caso 2 — DigiNotar: quando a raiz da confiança é a que quebra.** Em 2011, a autoridade certificadora holandesa DigiNotar — uma das ~150 CAs em que todo navegador confia por padrão — foi invadida. O atacante emitiu centenas de certificados fraudulentos para domínios de terceiros, incluindo um para `*.google.com`. Esses certificados foram usados para interceptar, via MITM, o tráfego HTTPS de usuários do Gmail no Irã: para essas vítimas, o certificado falso parecia perfeitamente válido, porque tinha sido assinado por uma CA que o navegador já confiava. Não havia bug criptográfico em RSA ou em TLS — a matemática funcionou exatamente como deveria. O que quebrou foi a suposição de que toda CA na lista de confiança do navegador é digna dela. Assim que a fraude veio a público, os principais navegadores removeram a DigiNotar da lista de raízes confiáveis em questão de dias, e a empresa faliu semanas depois. O caso é a origem prática de mecanismos como Certificate Transparency: um log público auditável existe precisamente porque "confiar em ~150 CAs silenciosamente" já se provou insuficiente uma vez.
 
 ---
 
@@ -360,19 +375,18 @@ Imagine que você quer se conectar ao seu banco. Você tem a chave pública do s
 
 A solução é a **Infraestrutura de Chave Pública (PKI — Public Key Infrastructure)**: uma cadeia de confiança onde autoridades certificadoras (CAs) assinam chaves públicas de entidades, atestando sua identidade. O certificado X.509 que seu browser recebe quando acessa HTTPS é a CA dizendo: "Esta chave pública pertence a este domínio — eu verifiquei."
 
-A PKI não elimina o problema de confiança — ela o desloca. Agora você precisa confiar nas CAs. O browser vem pré-instalado com uma lista de ~150 CAs raiz confiáveis (Mozilla Root Store, Apple Root Store, etc.). Se qualquer uma dessas CAs for comprometida ou agir de má-fé, ela pode emitir certificados falsos para qualquer domínio. Casos reais: DigiNotar (2011) foi comprometida e emitiu certificados falsos para google.com; Symantec emitiu certificados indevidamente e teve seu programa de CA encerrado pelo Google em 2017.
+A PKI não elimina o problema de confiança — ela o desloca. Agora você precisa confiar nas CAs. O browser vem pré-instalado com uma lista de ~150 CAs raiz confiáveis (Mozilla Root Store, Apple Root Store, etc.). Se qualquer uma dessas CAs for comprometida ou agir de má-fé, ela pode emitir certificados falsos para qualquer domínio — foi exatamente o que aconteceu com a DigiNotar em 2011 (caso completo na seção Casos práticos); a Symantec passou por algo parecido e teve seu programa de CA encerrado pelo Google em 2017.
 
 Mecanismos adicionais que mitigam os riscos da PKI:
 - **Certificate Transparency (CT)**: logs públicos e auditáveis de todos os certificados emitidos — qualquer certificado suspeito pode ser detectado.
 - **HPKP (HTTP Public Key Pinning)**: deprecado — permitia um site declarar quais CAs podiam emiti-lo, mas causou muitos outages acidentais.
 - **CAA (Certification Authority Authorization)**: registro DNS que declara quais CAs podem emitir certificado para o domínio. Simples, eficaz, subestimado.
 
-> [!tip] Próxima nota
-> O mecanismo de troca de chaves (Diffie-Hellman), PKI, certificados X.509, cadeias de confiança e o modelo de confiança da web (e seus problemas) são o tema de [[09 - Troca de chaves]]. TLS e criptografia em repouso aparecem em [[14 - Criptografia em trânsito e em repouso]].
-
 ---
 
-## Conexões
+## O que vem a seguir
+
+Esta nota resolveu o problema de distribuição de chave, mas terminou abrindo outro: como saber que a chave pública que você tem é mesmo da entidade que você pensa. O caso DigiNotar, logo acima, é a prova de que esse segundo problema não é hipotético — é o que derruba sistemas reais quando a cadeia de confiança falha num único elo. A próxima nota, [[09 - Troca de chaves]], é onde essa cadeia é desmontada peça por peça: o protocolo Diffie-Hellman que deriva um segredo compartilhado sem nunca trocar a chave privada, PKI, certificados X.509, e o modelo de confiança da web que sustenta — e às vezes falha — toda a internet cifrada.
 
 - Anterior: [[07 - Criptografia simétrica]] — a base que assimétrico sempre combina na prática; o que é cifração de bloco, AES, modos de operação
 - Próxima: [[09 - Troca de chaves]] — protocolo Diffie-Hellman, PKI, certificados X.509, cadeia de confiança
@@ -445,10 +459,11 @@ Um padrão comum em loops de entrevista senior: começam com "explain public key
 
 ---
 
-> [!info] Lastro
-> - Diffie, W. & Hellman, M. E. (1976). **New Directions in Cryptography**. *IEEE Transactions on Information Theory*, 22(6), 644–654. Artigo fundador que nomeou o problema de distribuição de chave e propôs criptografia de chave pública. https://ee.stanford.edu/~hellman/publications/24.pdf
-> - Rivest, R. L., Shamir, A., & Adleman, L. (1978). **A Method for Obtaining Digital Signatures and Public-Key Cryptosystems**. *Communications of the ACM*, 21(2), 120–126. Artigo original do RSA. https://dl.acm.org/doi/10.1145/359340.359342
-> - **RFC 8017** — PKCS #1: RSA Cryptography Specifications Version 2.2 (2016). Especificação normativa do RSA, incluindo padding OAEP e PSS. https://datatracker.ietf.org/doc/html/rfc8017
-> - Bernstein, D. J. (2006). **Curve25519: New Diffie-Hellman Speed Records**. Apresenta Curve25519 com foco em segurança de implementação e resistência a ataques de canal lateral. https://cr.yp.to/ecdh/curve25519-20060209.pdf
-> - **NIST SP 800-57 Part 1 Rev. 5** — Recommendation for Key Management (2020). Tabela de tamanhos de chave recomendados e períodos de uso para RSA, ECC e algoritmos simétricos. https://doi.org/10.6028/NIST.SP.800-57pt1r5
-> - Ferguson, N., Schneier, B., & Kohno, T. (2010). **Cryptography Engineering**. Wiley. Capítulos 11–12 cobrem RSA e criptografia de chave pública no nível didático senior.
+## Fontes
+
+- Diffie, W. & Hellman, M. E. (1976). **New Directions in Cryptography**. *IEEE Transactions on Information Theory*, 22(6), 644–654. Artigo fundador que nomeou o problema de distribuição de chave e propôs criptografia de chave pública. [ee.stanford.edu/~hellman/publications/24.pdf](https://ee.stanford.edu/~hellman/publications/24.pdf)
+- Rivest, R. L., Shamir, A., & Adleman, L. (1978). **A Method for Obtaining Digital Signatures and Public-Key Cryptosystems**. *Communications of the ACM*, 21(2), 120–126. Artigo original do RSA. [dl.acm.org/doi/10.1145/359340.359342](https://dl.acm.org/doi/10.1145/359340.359342)
+- **RFC 8017** — PKCS #1: RSA Cryptography Specifications Version 2.2 (2016). Especificação normativa do RSA, incluindo padding OAEP e PSS. [datatracker.ietf.org/doc/html/rfc8017](https://datatracker.ietf.org/doc/html/rfc8017)
+- Bernstein, D. J. (2006). **Curve25519: New Diffie-Hellman Speed Records**. Apresenta Curve25519 com foco em segurança de implementação e resistência a ataques de canal lateral. [cr.yp.to/ecdh/curve25519-20060209.pdf](https://cr.yp.to/ecdh/curve25519-20060209.pdf)
+- **NIST SP 800-57 Part 1 Rev. 5** — Recommendation for Key Management (2020). Tabela de tamanhos de chave recomendados e períodos de uso para RSA, ECC e algoritmos simétricos. [doi.org/10.6028/NIST.SP.800-57pt1r5](https://doi.org/10.6028/NIST.SP.800-57pt1r5)
+- Ferguson, N., Schneier, B., & Kohno, T. (2010). **Cryptography Engineering**. Wiley. Capítulos 11–12 cobrem RSA e criptografia de chave pública no nível didático senior.

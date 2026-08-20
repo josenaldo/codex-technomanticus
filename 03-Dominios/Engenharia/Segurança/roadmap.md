@@ -40,10 +40,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 22 |
-| ⬜ pendente | 16 |
+| ⬜ pendente | 13 |
 | ➖ não precisa | 0 |
-| ✅ feita | 6 |
-| % concluído | 27% |
+| ✅ feita | 9 |
+| % concluído | 41% |
 
 > Tabela preenchida ao final do diagnóstico (Fase 3).
 
@@ -160,7 +160,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** **abertura reescrita** — saiu a definição ("Uma função de hash criptográfica é uma função matemática…") e entrou o gancho Flame 2012 / SHAttered 2017, com a definição logo depois (E2, o único gap de abertura do galho) · `## Casos práticos` com 3 cenários (Flame/MD5 · SHAttered/SHA-1 · LinkedIn+RockYou+Adobe), promovidos das seções "MD5 morto" e "SHA-1 morto", que viraram pointer · `## Conexões` virou `## O que vem a seguir` com ponte para a 07 · `## Armadilhas comuns` com 3 `[!warning]` **movidos** (paradoxo do aniversário · length extension em `hash(chave||dados)` · SHA-256 puro para senha) · L1 para Auth e Identidade / Senhas e MFA (conferido por `ls`) · `[!info] Lastro` virou `## Fontes` · M1 *Hashing Algorithms and Security* (Computerphile, 8 min, 1,6 milhão de views), carimbo `[1:58]` extraído da legenda. 496 linhas.
 
 #### 07 - Criptografia simétrica   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-20)
 - **Estado:** 464 linhas · fase: adepto · status: evergreen · 8 Mermaid · 2 `[!warning]` · 0 wikilink cross-galho
 - **Núcleo/gaps:** E4, E5, E8, L1, L2, M1
 - **Score:** 5/11 (P1 N/A — nota conceitual)
@@ -171,10 +171,11 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Acrescentar ≥1 wikilink cross-galho (Auth e Identidade, Redes/TLS, Matemática ou SO, conforme o assunto da nota) → ativa L1
   - Converter o callout `[!info] Lastro` em `## Fontes` com URLs clicáveis → ativa L2
   - Buscar e embutir vídeo/podcast verificado por transcrição → ativa M1
-- **Resultado:** —
+- **Resultado:** `## Casos práticos` com 3 cenários (o pinguim do ECB · a queda de DES/3DES · envelope encryption de cartão), e a seção "Em entrevista" foi **enxugada** para apontar ao Caso 3 em vez de repetir · `## Conexões` virou `## O que vem a seguir` com ponte para a 08 · `## Armadilhas comuns` com os 3 callouts existentes **movidos**, deixando menção curta no lugar de origem · L1 para Organização de Computadores 14 (canal lateral de cache, o mecanismo que AES-NI compartilha — alvo conferido por grep) · `[!info] Lastro` virou `## Fontes` · M1 *AES GCM* (Computerphile, 18 min, 154 mil views). 486 linhas.
+  **Desvio consciente de E8:** a seção tem 3 callouts, mas um é `[!danger]` ("nunca use ECB"), não `[!warning]`. Rebaixá-lo para casar com a letra do checklist enfraqueceria o sinal da regra mais absoluta da nota. Fica como está.
 
 #### 08 - Criptografia assimétrica   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-20)
 - **Estado:** 460 linhas · fase: adepto · status: evergreen · 5 Mermaid · 2 `[!warning]` · 4 wikilink cross-galho
 - **Núcleo/gaps:** E4, E5, E8, L2, M1
 - **Score:** 6/11 (P1 N/A — nota conceitual)
@@ -184,10 +185,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Criar `## Armadilhas comuns` com ≥3 `[!warning]`, **movendo** os 2 já existentes em vez de duplicar → ativa E8
   - Converter o callout `[!info] Lastro` em `## Fontes` com URLs clicáveis → ativa L2
   - Buscar e embutir vídeo/podcast verificado por transcrição → ativa M1
-- **Resultado:** —
+- **Resultado:** `## Casos práticos` com Sony PS3 (nonce ECDSA reutilizado) e DigiNotar (CA comprometida), promovidos de menções que já existiam espalhadas · `## Conexões` virou `## O que vem a seguir` com ponte para a 09 · `## Armadilhas comuns` com 3 `[!warning]`, os 2 antigos **movidos** e um trecho de prosa convertido no terceiro · `[!info] Lastro` virou `## Fontes` · M1 *Public Key Cryptography* (Computerphile, 6 min, **986 mil views**). 469 linhas.
 
 #### 09 - Troca de chaves   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-20)
 - **Estado:** 473 linhas · fase: adepto · status: evergreen · 5 Mermaid · 2 `[!warning]` · 2 wikilink cross-galho
 - **Núcleo/gaps:** E4, E5, E8, L2, M1
 - **Score:** 6/11 (P1 N/A — nota conceitual)
@@ -197,7 +198,8 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Criar `## Armadilhas comuns` com ≥3 `[!warning]`, **movendo** os 2 já existentes em vez de duplicar → ativa E8
   - Converter o callout `[!info] Lastro` em `## Fontes` com URLs clicáveis → ativa L2
   - Buscar e embutir vídeo/podcast verificado por transcrição → ativa M1
-- **Resultado:** —
+- **Resultado:** `## Casos práticos` com o exemplo numérico e o Logjam, ambos **movidos** (a seção `## Caso histórico` foi absorvida) · `## Conexões` virou `## O que vem a seguir`, e a ponte usa o encadeamento por enigma do galho: a nota fecha em "DH puro não autentica" e a 10 é quem resolve · `## Armadilhas comuns` com 3 `[!warning]` · `[!info] Lastro` virou `## Fontes` · M1 *Secret Key Exchange (Diffie-Hellman)* (Computerphile, 8 min, **1,1 milhão de views**) — é a **fonte original da analogia das tintas** que a nota já usava. 403 linhas.
+  **Correção do coordenador:** o executor citou o trecho com carimbo `[4:03]`. A citação é verbatim, mas as duas variantes de legenda do vídeo são degeneradas — trazem a transcrição inteira num único cue em `00:00:00`, então **não havia carimbo a extrair** e ele foi estimado, contra a regra. Carimbo removido, citação mantida.
 
 #### 10 - MAC, HMAC e assinaturas digitais   [substantivo]
 - **Enriquecimento:** ⬜ pendente

@@ -1,7 +1,7 @@
 ---
 title: "Troca de chaves"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-08-20
 type: concept
 fase: adepto
 status: evergreen
@@ -60,6 +60,10 @@ flowchart TD
 > [!info] Leitura do diagrama
 > Ambas as setas "envia pela rede" chegam à Eve, mas ela só vê as misturas — não os segredos individuais. Misturar tintas é fácil; separar a mistura de volta nas cores originais é (praticamente) impossível. Esse é o coração da analogia: a operação de mistura é a **exponenciação modular**, e "separar" é o **logaritmo discreto** — computacionalmente inviável para parâmetros grandes.
 
+> [!tip] Vídeo — a mesma analogia das tintas, encenada com tinta de verdade
+> [**Secret Key Exchange (Diffie-Hellman) - Computerphile**](https://www.youtube.com/watch?v=NmM9HA2MQGI) (Computerphile, ~8 min, EN) é a fonte original da analogia usada nesta nota: o apresentador mistura tinta de verdade em copos para mostrar Alice e Bob combinando um segredo público com um segredo privado cada. O momento chave resume o argumento inteiro: *"once we've combined them, we can't unmix it, right — that's why people like to use this color analogy"*. A mistura de tintas é a operação de mão única; a impossibilidade prática de separar as cores de volta é a intuição física para o logaritmo discreto.
+> **O que ele não cobre:** o vídeo fica só na intuição da mistura — não entra na exponenciação modular nem no ataque MITM (esses ficam para o vídeo companheiro "the Mathematics bit", do mesmo canal).
+
 ---
 
 ## Diffie-Hellman passo a passo
@@ -106,16 +110,7 @@ sequenceDiagram
 > [!info] Leitura do diagrama
 > O ponto crítico: Alice computa `(gᵇ mod p)ᵃ mod p` e Bob computa `(gᵃ mod p)ᵇ mod p`. Pela propriedade da exponenciação, os dois resultados são iguais — ambos chegam a `g^(ab) mod p`. Eve tem `gᵃ mod p` e `gᵇ mod p`, mas computar `g^(ab) mod p` a partir disso é o **Problema do Logaritmo Discreto (DLP)** — para parâmetros bem escolhidos, não existe algoritmo eficiente conhecido.
 
-**Concretamente:**
-
-> [!example] Exemplo numérico (simplificado para leitura)
-> - `p = 23`, `g = 5`
-> - Alice escolhe `a = 6` → envia `5^6 mod 23 = 8`
-> - Bob escolhe `b = 15` → envia `5^15 mod 23 = 19`
-> - Alice computa `19^6 mod 23 = 2`
-> - Bob computa `8^15 mod 23 = 2`
-> - Segredo compartilhado: `K = 2`
-> - Eve vê `g=5, p=23, 8, 19` — mas encontrar `a` ou `b` a partir disso é o logaritmo discreto. (Em produção, `p` tem 2048+ bits e o espaço de busca torna força bruta inviável.)
+**Concretamente:** o Cenário 1 em [[#Casos práticos]] refaz esse cálculo passo a passo com números pequenos.
 
 A segurança do DH repousa inteiramente no DLP. Para a prova formal e a teoria dos grupos, veja [[03-Dominios/Ciência/Matemática para Computação/15 - Aritmética modular e Fermat-Euler]] — aqui importa a intuição: exponenciar é fácil, inverter (logaritmar) é difícil.
 
@@ -193,9 +188,6 @@ flowchart TD
 - `DHE` = Diffie-Hellman Efêmero (grupo finito)
 - `ECDHE` = Elliptic Curve Diffie-Hellman Efêmero — preferido
 - **TLS 1.3 (RFC 8446) exige PFS**: apenas ECDHE e DHE são permitidos como key exchange. Não há mais RSA key exchange estático. Isso não é opcional — é mandatório na spec.
-
-> [!warning] DH Estático ≠ PFS
-> DH com chaves fixas garante sigilo contra observador **passivo no momento**, mas não contra adversário que obtém a chave depois. PFS exige descartabilidade: a segurança de sessões passadas não pode depender de segredos que ainda existem no futuro.
 
 ---
 
@@ -287,14 +279,25 @@ Vale ver como os conceitos desta nota se encaixam no handshake real de TLS 1.3 (
 
 ---
 
-## Caso histórico: Logjam (2015)
+## Casos práticos
+
+### Cenário 1: computando o segredo à mão com números pequenos
+
+Em produção, `p` tem 2048 bits ou mais e o espaço de busca torna força bruta inviável. Mas o mecanismo fica mais claro com números pequenos o suficiente para calcular na mão:
+
+- `p = 23`, `g = 5`
+- Alice escolhe `a = 6` → envia `5^6 mod 23 = 8`
+- Bob escolhe `b = 15` → envia `5^15 mod 23 = 19`
+- Alice computa `19^6 mod 23 = 2`
+- Bob computa `8^15 mod 23 = 2`
+- Segredo compartilhado: `K = 2`
+- Eve vê `g=5, p=23, 8, 19` — mas encontrar `a` ou `b` a partir disso é o logaritmo discreto. Com `p=23` isso é trivial por força bruta (só 22 valores possíveis); é justamente escalar `p` para 2048+ bits que transforma esse mesmo cálculo em computacionalmente inviável.
+
+### Cenário 2: Logjam (2015) — quando parâmetros fracos e reciclados encontram um MITM ativo
 
 Em maio de 2015, pesquisadores publicaram o ataque **Logjam**: servidores configurados com parâmetros DH de 512 bits (os "export-grade" da era 1990s, obrigatórios por lei para exportação dos EUA) podiam ter seus handshakes rebaixados por um MITM ativo. Para parâmetros de 512 bits, o Number Field Sieve rodando em clusters conseguia quebrar o DLP em horas.
 
-O impacto foi grande: ~8% dos sites Alexa Top 1M eram vulneráveis. Além disso, os pesquisadores estimaram que o NSA tinha capacidade para pré-computar logaritmos discretos para os grupos de 1024 bits mais comuns — o que explicaria decifração em massa de VPNs.
-
-> [!warning] A lição do Logjam
-> Parâmetros DH precisam ser grandes **e** únicos por servidor. O ataque explora que muitos servidores usavam **exatamente os mesmos** parâmetros (reutilizados de RFCs antigas), permitindo pré-computação. TLS 1.3 resolve isso mandatoriamente: nenhum cipher suite de export, ECDHE preferido (X25519), grupos fracos removidos.
+O impacto foi grande: ~8% dos sites Alexa Top 1M eram vulneráveis. Além disso, os pesquisadores estimaram que o NSA tinha capacidade para pré-computar logaritmos discretos para os grupos de 1024 bits mais comuns — o que explicaria decifração em massa de VPNs. Esse cenário combina duas falhas independentes desta nota: parâmetros pequenos demais (o DLP deixa de ser inviável) e um MITM ativo capaz de forçar o downgrade — o mesmo tipo de atacante da seção [[#A falha central: DH puro não autentica]], só que explorando a implementação em vez da ausência de autenticação.
 
 ---
 
@@ -324,7 +327,22 @@ O impacto foi grande: ~8% dos sites Alexa Top 1M eram vulneráveis. Além disso,
 
 ---
 
-## Conexões
+## Armadilhas comuns
+
+> [!warning] DH Estático ≠ PFS
+> DH com chaves fixas garante sigilo contra observador **passivo no momento**, mas não contra adversário que obtém a chave depois. PFS exige descartabilidade: a segurança de sessões passadas não pode depender de segredos que ainda existem no futuro.
+
+> [!warning] Parâmetros pequenos e reciclados quebram o DLP na prática
+> A lição do Logjam: parâmetros DH precisam ser grandes **e** únicos por servidor. O ataque explorou que muitos servidores usavam **exatamente os mesmos** parâmetros de 512 bits (reutilizados de RFCs antigas da era export-grade), permitindo pré-computação em massa. TLS 1.3 resolve isso mandatoriamente: nenhum cipher suite de export, ECDHE preferido (X25519), grupos fracos removidos.
+
+> [!warning] "Compartilhar um segredo" não é o mesmo que "saber com quem"
+> É o erro mais comum em entrevista: tratar DH como se ele já resolvesse autenticação. DH (estático ou efêmero) prova que as duas partes chegaram a um segredo compartilhado — não prova *com quem*. Um MITM ativo negocia dois handshakes DH separados, um com cada lado, e nenhum dos dois percebe. Só combinar DH com assinatura digital e PKI (ver [[#A falha central: DH puro não autentica]]) fecha essa lacuna.
+
+---
+
+## O que vem a seguir
+
+Esta nota resolveu sigilo (via DH/ECDH) e persistência do sigilo no tempo (via PFS), mas terminou apontando para uma lacuna que ela mesma não fecha: DH puro não autentica ninguém, e um MITM ativo explora exatamente essa ausência. A [[10 - MAC, HMAC e assinaturas digitais]] é onde essa lacuna se fecha — é lá que entram os mecanismos que provam integridade e identidade sobre o valor DH trocado, o ingrediente que faltava para transformar "um segredo compartilhado com alguém" em "um segredo compartilhado com a pessoa certa".
 
 - Anterior: [[08 - Criptografia assimétrica]] — chave pública e privada; por que precisamos de cripto híbrida
 - Próxima: [[10 - MAC, HMAC e assinaturas digitais]] — integridade e autenticidade; como assinar o valor DH
@@ -374,10 +392,12 @@ Troca de chaves aparece em entrevistas de infra, backend com TLS, e qualquer pap
 
 ---
 
-> [!info] Lastro
-> 1. Diffie, W. & Hellman, M. E. (1976). "New Directions in Cryptography." *IEEE Transactions on Information Theory*, 22(6), 644–654. — O paper original. [https://ee.stanford.edu/~hellman/publications/24.pdf](https://ee.stanford.edu/~hellman/publications/24.pdf)
-> 2. Langley, A., Hamburg, M. & Turner, S. (2016). **RFC 7748 — Elliptic Curves for ECDH(E): Curve25519 and Curve448**. IETF. [https://www.rfc-editor.org/rfc/rfc7748](https://www.rfc-editor.org/rfc/rfc7748)
-> 3. Rescorla, E. (2018). **RFC 8446 — The Transport Layer Security (TLS) Protocol Version 1.3**. IETF. — Seção 4.2.7 (Supported Groups) e Apêndice E.1 (por que RSA key exchange foi removido). [https://www.rfc-editor.org/rfc/rfc8446](https://www.rfc-editor.org/rfc/rfc8446)
-> 4. Adrian, D. et al. (2015). "Imperfect Forward Secrecy: How Diffie-Hellman Fails in Practice" (*Logjam*). *ACM CCS 2015*. [https://weakdh.org/imperfect-forward-secrecy-ccs15.pdf](https://weakdh.org/imperfect-forward-secrecy-ccs15.pdf)
-> 5. Ferguson, N., Schneier, B. & Kohno, T. (2010). *Cryptography Engineering*. Wiley. — Capítulo 11 (Key Negotiation) explica PFS e autenticação do DH em linguagem acessível a engenheiros.
-> 6. Bernstein, D. J. (2006). "Curve25519: New Diffie-Hellman Speed Records." *PKC 2006*, LNCS 3958. [https://cr.yp.to/ecdh/curve25519-20060209.pdf](https://cr.yp.to/ecdh/curve25519-20060209.pdf)
+## Fontes
+
+1. Diffie, W. & Hellman, M. E. (1976). "New Directions in Cryptography." *IEEE Transactions on Information Theory*, 22(6), 644–654. — O paper original. [https://ee.stanford.edu/~hellman/publications/24.pdf](https://ee.stanford.edu/~hellman/publications/24.pdf)
+2. Langley, A., Hamburg, M. & Turner, S. (2016). **RFC 7748 — Elliptic Curves for ECDH(E): Curve25519 and Curve448**. IETF. [https://www.rfc-editor.org/rfc/rfc7748](https://www.rfc-editor.org/rfc/rfc7748)
+3. Rescorla, E. (2018). **RFC 8446 — The Transport Layer Security (TLS) Protocol Version 1.3**. IETF. — Seção 4.2.7 (Supported Groups) e Apêndice E.1 (por que RSA key exchange foi removido). [https://www.rfc-editor.org/rfc/rfc8446](https://www.rfc-editor.org/rfc/rfc8446)
+4. Adrian, D. et al. (2015). "Imperfect Forward Secrecy: How Diffie-Hellman Fails in Practice" (*Logjam*). *ACM CCS 2015*. [https://weakdh.org/imperfect-forward-secrecy-ccs15.pdf](https://weakdh.org/imperfect-forward-secrecy-ccs15.pdf)
+5. Ferguson, N., Schneier, B. & Kohno, T. (2010). *Cryptography Engineering*. Wiley. — Capítulo 11 (Key Negotiation) explica PFS e autenticação do DH em linguagem acessível a engenheiros.
+6. Bernstein, D. J. (2006). "Curve25519: New Diffie-Hellman Speed Records." *PKC 2006*, LNCS 3958. [https://cr.yp.to/ecdh/curve25519-20060209.pdf](https://cr.yp.to/ecdh/curve25519-20060209.pdf)
+7. "Secret Key Exchange (Diffie-Hellman) - Computerphile". YouTube, canal Computerphile. [https://www.youtube.com/watch?v=NmM9HA2MQGI](https://www.youtube.com/watch?v=NmM9HA2MQGI)

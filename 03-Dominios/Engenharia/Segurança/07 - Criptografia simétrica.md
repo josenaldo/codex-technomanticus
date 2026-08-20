@@ -1,7 +1,7 @@
 ---
 title: "Criptografia simétrica"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-08-20
 type: concept
 fase: adepto
 status: evergreen
@@ -63,10 +63,7 @@ Na cifra de bloco, o algoritmo aceita exatamente N bits de entrada (o bloco) e p
 
 Na cifra de fluxo, o algoritmo gera um fluxo pseudoaleatório de bytes (keystream) a partir da chave e de um nonce, e faz XOR com o plaintext byte a byte. Elegante e natural — sem padding, sem divisão em blocos, sem restrição de tamanho.
 
-A propriedade XOR que torna isso funcionar: P ⊕ K = C, e C ⊕ K = P. A mesma operação cifra e decifra. Mas essa mesma simetria cria a vulnerabilidade fundamental: se você usar o mesmo keystream duas vezes (mesma chave + mesmo nonce), os dois ciphertexts XOR entre si revelam o XOR dos dois plaintexts — e XOR de texto natural tem muita estrutura para análise.
-
-> [!warning] RC4 é morto
-> RC4, a cifra de fluxo que dominou SSL/TLS e WEP nos anos 1990-2000, tem fraquezas estatísticas nos primeiros bytes do keystream e foi proibida em TLS pelo RFC 7465 (2015). Não use RC4 em nenhum contexto novo. Substituta correta: ChaCha20.
+A propriedade XOR que torna isso funcionar: P ⊕ K = C, e C ⊕ K = P. A mesma operação cifra e decifra. Mas essa mesma simetria cria a vulnerabilidade fundamental: se você usar o mesmo keystream duas vezes (mesma chave + mesmo nonce), os dois ciphertexts XOR entre si revelam o XOR dos dois plaintexts — e XOR de texto natural tem muita estrutura para análise. RC4, a cifra de fluxo que dominou SSL/TLS e WEP nos anos 1990-2000, é o exemplo canônico de cifra morta por fraquezas estatísticas (ver `## Armadilhas comuns` adiante).
 
 ```mermaid
 graph LR
@@ -118,7 +115,7 @@ Desde 2010, CPUs Intel e AMD incluem instruções de hardware `AESENC`, `AESENCL
 
 O resultado prático: AES-128 em GCM roda a ~1,3 ciclos/byte num Core i7 — mais de 10 GB/s em um único core. Em benchmarks de disco com dm-crypt no Linux, AES-NI produz ~1.125 MB/s versus ~150 MB/s sem aceleração (7× a 10× mais rápido).
 
-Além de desempenho, AES-NI resolve um problema de segurança: implementações software do AES baseadas em lookup tables são vulneráveis a ataques de *cache-timing* (acesso a índices da S-box revela bits do plaintext via análise do tempo de cache). Hardware elimina essa superfície de ataque.
+Além de desempenho, AES-NI resolve um problema de segurança: implementações software do AES baseadas em lookup tables são vulneráveis a ataques de *cache-timing* (acesso a índices da S-box revela bits do plaintext via análise do tempo de cache). Hardware elimina essa superfície de ataque. O mecanismo de fundo — medir latência de hit/miss do cache para inferir dados que "não deveriam" ser observáveis — é o mesmo princípio que torna Spectre e Meltdown exploráveis; veja [[03-Dominios/Ciência/Organização de Computadores/14 - Branch prediction e execução especulativa#Spectre e Meltdown quando a especulação vaza|canal lateral de cache]] para o mecanismo em detalhe.
 
 ### O caminho até o AES: DES e a queda
 
@@ -175,8 +172,7 @@ flowchart TD
 > [!info] Leitura do diagrama
 > Cada bloco de plaintext entra no AES de forma isolada. Blocos idênticos (P1 = P2 = P4, todos fundos brancos do Tux) produzem ciphertext idêntico (C1 = C2 = C4). O padrão estrutural da imagem vaza intacto — o Tux ainda é reconhecível no ciphertext.
 
-> [!danger] Regra absoluta
-> **Nunca use ECB.** Não para imagens, não para dados "presumivelmente aleatórios", não "temporariamente". ECB não é criptografia no sentido semântico — é substituição glorificada que preserva a estrutura do plaintext. Qualquer cifra real deve fazer com que plaintexts idênticos produzam ciphertexts distintos e não correlacionados.
+ECB não é criptografia no sentido semântico — é substituição glorificada que preserva a estrutura do plaintext (regra absoluta em `## Armadilhas comuns` adiante).
 
 ### CBC — Cipher Block Chaining
 
@@ -226,10 +222,7 @@ C2 = P2 ⊕ keystream
 C1 ⊕ C2 = P1 ⊕ P2
 ```
 
-E P1 ⊕ P2 é altamente analisável — texto natural tem distribuição não-uniforme e redundância suficiente para recuperar ambos os plaintexts com análise estatística. O ataque se chama *two-time pad* (analogia com a cifra de Vernam reutilizada). A NSA expôs dezenas de sistemas soviéticos nos anos 1940-1950 explorando exatamente isso no projeto VENONA — mensagens cifradas com OTP reutilizado.
-
-> [!warning] Nonce = "number used once"
-> Nonce é **número de uso único**. Não é secreto — pode ser transmitido em claro. Não precisa ser aleatório — pode ser um contador sequencial. Mas **nunca pode repetir para a mesma chave**. Com nonces aleatórios de 96 bits (padrão GCM), o aniversário acontece com 50% de probabilidade de colisão após 2^48 mensagens (~281 trilhões). Para volumes altos (streaming, CDN com bilhões de requisições), use nonces baseados em contador.
+E P1 ⊕ P2 é altamente analisável — texto natural tem distribuição não-uniforme e redundância suficiente para recuperar ambos os plaintexts com análise estatística. O ataque se chama *two-time pad* (analogia com a cifra de Vernam reutilizada). A NSA expôs dezenas de sistemas soviéticos nos anos 1940-1950 explorando exatamente isso no projeto VENONA — mensagens cifradas com OTP reutilizado (a regra do nonce único está em `## Armadilhas comuns` adiante).
 
 ### AEAD — Authenticated Encryption with Associated Data
 
@@ -270,6 +263,10 @@ sequenceDiagram
 
 > [!info] Leitura do diagrama
 > Alice cifra e transmite nonce + AAD + ciphertext + tag. Bob **verifica a tag antes de processar qualquer byte do plaintext** — operação *constant-time* para evitar timing oracles. Se a tag falhar por qualquer motivo (chave errada, ciphertext adulterado, nonce errado, AAD diferente), nenhum dado parcial é exposto. Isso é autenticidade atômica.
+
+> [!tip] Vídeo — AES-GCM por dentro
+> [**AES GCM (Advanced Encryption Standard in Galois Counter Mode) - Computerphile**](https://www.youtube.com/watch?v=-fpVv_T4xwA) (Computerphile, ~18 min, EN) disseca o modo GCM que esta seção descreve: por que ele é CTR (confidencialidade) combinado com GHASH (autenticidade), como a tag de autenticação é calculada em GF(2^128), e por que reutilizar um nonce em GCM é catastrófico — não só revela o XOR dos plaintexts como CTR puro, mas também compromete a chave de autenticação H, permitindo forjar tags para mensagens futuras.
+> **O que ele não cobre:** ChaCha20-Poly1305 como alternativa, e os limites práticos de volume por chave (2^32 invocações) que esta nota discute logo adiante.
 
 ```mermaid
 flowchart TD
@@ -380,7 +377,34 @@ Na prática moderna, TLS 1.3 usa ECDHE (*Elliptic Curve Diffie-Hellman Ephemeral
 
 ---
 
-## Conexões
+## Armadilhas comuns
+
+Três erros concentram a maior parte dos incidentes reais com criptografia simétrica — todos evitáveis com a escolha certa de algoritmo e modo desde o início:
+
+> [!warning] RC4 é morto
+> RC4, a cifra de fluxo que dominou SSL/TLS e WEP nos anos 1990-2000, tem fraquezas estatísticas nos primeiros bytes do keystream e foi proibida em TLS pelo RFC 7465 (2015). Não use RC4 em nenhum contexto novo. Substituta correta: ChaCha20.
+
+> [!danger] Regra absoluta: nunca use ECB
+> Não para imagens, não para dados "presumivelmente aleatórios", não "temporariamente". ECB não é criptografia no sentido semântico — é substituição glorificada que preserva a estrutura do plaintext. Qualquer cifra real deve fazer com que plaintexts idênticos produzam ciphertexts distintos e não correlacionados. O pinguim ECB é a prova visual: a imagem do Tux cifrada com AES-ECB ainda é reconhecível como pinguim.
+
+> [!warning] Nonce = "number used once"
+> Nonce é **número de uso único**. Não é secreto — pode ser transmitido em claro. Não precisa ser aleatório — pode ser um contador sequencial. Mas **nunca pode repetir para a mesma chave**. Com nonces aleatórios de 96 bits (padrão GCM), o aniversário acontece com 50% de probabilidade de colisão após 2^48 mensagens (~281 trilhões). Para volumes altos (streaming, CDN com bilhões de requisições), use nonces baseados em contador.
+
+---
+
+## Casos práticos
+
+**Caso 1 — o pinguim ECB como demonstração de engenharia.** Filippo Valsorda cifrou a imagem do Tux (mascote do Linux) com AES em modo ECB e o resultado ainda é reconhecível como pinguim — as grandes regiões de cor sólida do desenho (preto e branco) viram blocos de plaintext idênticos, que o ECB cifra para blocos de ciphertext idênticos. O experimento (documentado em [words.filippo.io/the-ecb-penguin](https://words.filippo.io/the-ecb-penguin/)) não quebra a chave, não usa força bruta, não explora um bug de implementação — ele só mostra que ECB é, por construção, incapaz de esconder estrutura. É o exemplo que qualquer entrevistador sênior espera que o candidato conheça quando pergunta "por que não usar ECB?": a resposta certa não é "porque é fraco", é "porque preserva o padrão do plaintext, e o pinguim é a prova visual disso".
+
+**Caso 2 — a queda do DES e o nascimento do 3DES.** Em julho de 1998, a Electronic Frontier Foundation construiu o Deep Crack, uma máquina de 1.856 chips ASIC customizados por menos de US$ 250 mil, e quebrou uma chave DES de 56 bits por força bruta em 56 horas — vencendo o desafio DES Challenge II-2 da RSA Security. O experimento provou publicamente que 56 bits de espaço de chave é atacável com hardware especializado relativamente barato, e forçou a indústria a migrar para 3DES (aplicar DES três vezes, obtendo ~112 bits de segurança efetiva) como solução emergencial — até o NIST proibir 3DES para novos usos em dezembro de 2023 (NIST SP 800-131A rev.2) em favor do AES-256-GCM. É o caso canônico de como um ataque de força bruta demonstrado publicamente aposenta um padrão criptográfico inteiro, e de como uma "solução emergencial" (3DES) pode sobreviver décadas além do previsto antes de ser finalmente descontinuada.
+
+**Caso 3 — cifrar dados de cartão de crédito no banco de dados.** Cenário recorrente em entrevista de design de sistema: como proteger um campo sensível em repouso? A resposta esperada de um sênior é *envelope encryption* com KMS — gerar uma DEK (Data Encryption Key) aleatória por registro ou por lote, cifrar o campo com AES-256-GCM (nonce único por cifragem, armazenado junto com o ciphertext), cifrar a própria DEK com uma KEK gerenciada no KMS, e armazenar ciphertext + nonce + DEK cifrada. A DEK nunca é persistida em plaintext, e a KEK nunca sai do KMS. Rotacionar a KEK não exige re-cifrar os dados — só re-cifrar as DEKs armazenadas. O modo escolhido é GCM, não CBC, porque o sistema precisa detectar corrupção ou adulteração antes de processar os dados, não só escondê-los.
+
+---
+
+## O que vem a seguir
+
+Esta nota deixou uma pergunta em aberto de propósito: a criptografia simétrica resolve confidencialidade e integridade com velocidade de hardware, mas não resolve como Alice e Bob combinam a chave K em primeiro lugar. Você viu o tamanho do problema — n × (n − 1) / 2 chaves para n participantes, e o paradoxo de precisar de um canal seguro para estabelecer o próprio canal seguro. A `[[08 - Criptografia assimétrica]]` é a resposta a exatamente essa lacuna: em vez de um segredo único compartilhado, cada parte tem um par de chaves — uma pública, que pode circular livremente, e uma privada, que nunca sai de onde nasceu. É mais lenta, ordens de magnitude, mas resolve o bootstrap que a criptografia simétrica sozinha não consegue. As duas notas seguintes, `[[09 - Troca de chaves]]` e `[[10 - MAC, HMAC e assinaturas digitais]]`, mostram como os dois mundos se encaixam na prática — TLS 1.3 usa exatamente esse casamento: assimétrico para negociar, simétrico para trabalhar.
 
 - Anterior: `[[06 - Hashing criptográfico]]`
 - Próxima: `[[08 - Criptografia assimétrica]]`
@@ -395,9 +419,7 @@ Na prática moderna, TLS 1.3 usa ECDHE (*Elliptic Curve Diffie-Hellman Ephemeral
 
 O assunto aparece em perguntas de design de sistema ("como você armazenaria dados sensíveis em repouso?"), de segurança ("qual cifra e modo você usaria para criptografar mensagens?") e de debugging ("por que esse sistema de criptografia é vulnerável?"). A armadilha mais comum: o candidato escolhe AES mas não especifica o modo — e o entrevistador aguarda.
 
-**Cenário concreto frequente:** "Você precisa cifrar dados de cartão de crédito no banco de dados. Como faz?"
-
-Resposta esperada de um senior: usar *envelope encryption* com um KMS. Gerar uma DEK aleatória (AES-256) por registro ou por lote, cifrar o campo com AES-256-GCM (nonce único por cifragem, armazenado junto), cifrar a DEK com a KEK do KMS, armazenar ciphertext + nonce + DEK cifrada. Nunca armazenar a DEK em plaintext. Rotação da KEK não exige re-cifrar os dados — só re-cifrar as DEKs. E o modo é GCM, não CBC, porque você quer detectar corrupção ou adulteração antes de processar os dados.
+**Cenário concreto frequente:** "Você precisa cifrar dados de cartão de crédito no banco de dados. Como faz?" — o Caso 3 em `## Casos práticos` acima detalha a resposta esperada de um sênior (*envelope encryption* com KMS).
 
 Frases para usar em inglês:
 
@@ -454,10 +476,11 @@ Frases para usar em inglês:
 
 ---
 
-> [!info] Lastro
-> - **NIST FIPS 197** — *Advanced Encryption Standard (AES)*, novembro 2001. Especificação oficial do AES/Rijndael: bloco 128 bits, chaves 128/192/256 bits, rounds 10/12/14. https://csrc.nist.gov/pubs/fips/197/final
-> - **NIST SP 800-38A** — *Recommendation for Block Cipher Modes of Operation: Methods and Techniques*. Define ECB, CBC, CFB, OFB, CTR com análise de segurança. https://csrc.nist.gov/pubs/sp/800/38/a/final
-> - **NIST SP 800-38D** — *Recommendation for Block Cipher Modes of Operation: Galois/Counter Mode (GCM) and GMAC*, novembro 2007. Especificação completa de AES-GCM, GHASH, e GMAC. https://csrc.nist.gov/pubs/sp/800/38/d/final
-> - **RFC 8439** — *ChaCha20 and Poly1305 for IETF Protocols*, junho 2018. Especificação de ChaCha20-Poly1305 como AEAD padrão IETF; nonce 96 bits, tag 128 bits, chave 256 bits. https://www.rfc-editor.org/rfc/rfc8439.html
-> - **EFF DES Cracker press release, julho 1998** — Documentação primária da quebra de DES-56 em 56 horas com máquina de US$ 250 mil (1.536 ASICs, 88 bilhões de chaves/segundo). https://w2.eff.org/Privacy/Crypto/Crypto_misc/DESCracker/HTML/19980716_eff_descracker_pressrel.html
-> - **Filippo Valsorda — "The ECB Penguin"** — Demonstração reproduzível do ataque estrutural do modo ECB via imagem do Tux; explica por que regiões uniformes de cor se mapeiam em padrões repetidos no ciphertext. https://words.filippo.io/the-ecb-penguin/
+## Fontes
+
+- **NIST FIPS 197** — *Advanced Encryption Standard (AES)*, novembro 2001. Especificação oficial do AES/Rijndael: bloco 128 bits, chaves 128/192/256 bits, rounds 10/12/14. [csrc.nist.gov/pubs/fips/197/final](https://csrc.nist.gov/pubs/fips/197/final)
+- **NIST SP 800-38A** — *Recommendation for Block Cipher Modes of Operation: Methods and Techniques*. Define ECB, CBC, CFB, OFB, CTR com análise de segurança. [csrc.nist.gov/pubs/sp/800/38/a/final](https://csrc.nist.gov/pubs/sp/800/38/a/final)
+- **NIST SP 800-38D** — *Recommendation for Block Cipher Modes of Operation: Galois/Counter Mode (GCM) and GMAC*, novembro 2007. Especificação completa de AES-GCM, GHASH, e GMAC. [csrc.nist.gov/pubs/sp/800/38/d/final](https://csrc.nist.gov/pubs/sp/800/38/d/final)
+- **RFC 8439** — *ChaCha20 and Poly1305 for IETF Protocols*, junho 2018. Especificação de ChaCha20-Poly1305 como AEAD padrão IETF; nonce 96 bits, tag 128 bits, chave 256 bits. [rfc-editor.org/rfc/rfc8439.html](https://www.rfc-editor.org/rfc/rfc8439.html)
+- **EFF DES Cracker press release, julho 1998** — Documentação primária da quebra de DES-56 em 56 horas com máquina de US$ 250 mil (1.536 ASICs, 88 bilhões de chaves/segundo). [w2.eff.org/Privacy/Crypto/Crypto_misc/DESCracker](https://w2.eff.org/Privacy/Crypto/Crypto_misc/DESCracker/HTML/19980716_eff_descracker_pressrel.html)
+- **Filippo Valsorda — "The ECB Penguin"** — Demonstração reproduzível do ataque estrutural do modo ECB via imagem do Tux; explica por que regiões uniformes de cor se mapeiam em padrões repetidos no ciphertext. [words.filippo.io/the-ecb-penguin](https://words.filippo.io/the-ecb-penguin/)
