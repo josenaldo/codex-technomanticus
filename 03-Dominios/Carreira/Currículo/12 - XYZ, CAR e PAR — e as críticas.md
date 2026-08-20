@@ -154,7 +154,7 @@ Na **versão final**, o critério muda. Uma vez que a linha já passou pelo diag
 ## Exemplos: a mesma realização, quatro formas
 
 > [!example] Caso fictício
-> Renata Cordeiro, desenvolvedora pleno de uma empresa de logística, liderou a substituição de um sistema de rastreamento de entregas que gerava consultas lentas ao banco de dados, causando atraso visível na atualização de status para o cliente final. A mesma realização, escrita nas três fórmulas e depois numa forma livre que preserva o conteúdo sem seguir nenhum molde:
+> Vanessa Prado, desenvolvedora pleno de uma empresa de logística, liderou a substituição de um sistema de rastreamento de entregas que gerava consultas lentas ao banco de dados, causando atraso visível na atualização de status para o cliente final. A mesma realização, escrita nas três fórmulas e depois numa forma livre que preserva o conteúdo sem seguir nenhum molde:
 >
 > **XYZ:** "Reduzi o tempo de resposta do rastreamento de entregas em 78%, de 4,2 segundos para 900 milissegundos, reescrevendo as consultas de status para usar índice composto em vez de varredura completa da tabela."
 >
@@ -164,7 +164,7 @@ Na **versão final**, o critério muda. Uma vez que a linha já passou pelo diag
 >
 > **Forma livre, sem molde visível:** "O rastreamento de entregas vivia atrasado — clientes reclamavam de ver status de dois dias atrás. Encontrei o gargalo numa consulta sem índice, varrendo a tabela inteira a cada atualização; troquei por um índice composto e o tempo de resposta caiu de mais de quatro segundos para menos de um. As reclamações sobre status atrasado sumiram do time de suporte no trimestre seguinte."
 >
-> As quatro versões contam exatamente o mesmo fato, com os mesmos números, sem nenhuma inflação nem em nenhuma direção. O que muda entre elas não é a substância — é o quanto a forma da fórmula aparece na superfície da frase. A versão livre é a que Renata Cordeiro deveria manter na versão final do currículo, porque ela carrega todo o conteúdo das três anteriores sem que o leitor precise notar o molde por trás; as três primeiras foram o andaime que ajudou Renata Cordeiro a descobrir, no rascunho, que a linha original — "trabalhei na melhoria de performance do sistema de rastreamento" — estava escondendo um resultado bom demais para ficar tão genérico.
+> As quatro versões contam exatamente o mesmo fato, com os mesmos números, sem nenhuma inflação nem em nenhuma direção. O que muda entre elas não é a substância — é o quanto a forma da fórmula aparece na superfície da frase. A versão livre é a que Vanessa Prado deveria manter na versão final do currículo, porque ela carrega todo o conteúdo das três anteriores sem que o leitor precise notar o molde por trás; as três primeiras foram o andaime que ajudou Vanessa Prado a descobrir, no rascunho, que a linha original — "trabalhei na melhoria de performance do sistema de rastreamento" — estava escondendo um resultado bom demais para ficar tão genérico.
 
 ## Armadilhas comuns
 
