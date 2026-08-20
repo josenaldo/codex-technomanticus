@@ -222,7 +222,24 @@ Relatado pelo usuário, **a confirmar com ela**: aprendeu Python durante o douto
 
 **A lição que este caso ensina, e que nenhum guia de currículo cobre:** o título sob o qual você entra é uma aposta da empresa, não um contrato de destino. A porta de entrada abre para a organização, não para uma carreira específica — e quem trata o título de entrada como identidade fixa perde a chance de crescer onde de fato há demanda. Isso alimenta a nota 02 (portas de entrada) e a nota 23 (a inconsistência entre LinkedIn e currículo, aqui com causa legítima e explicável, não descuido).
 
-**Pendente:** o currículo dela, que o usuário enviará quando ela mandar — é a fonte da peça do capstone, e a Tarefa 28 não começa sem ele.
+**Currículo recebido em 2026-08-20** e arquivado em `.superpowers/sdd/2026-08-20-galho-curriculo-plano/cassiana-cv.md` (fora do vault, diretório ignorado pelo git). 1.002 palavras.
+
+**O achado que muda o valor da peça: é o currículo PRÉ-Dadosfera.** Não há entrada da empresa nele — este é o documento que *conseguiu* a vaga de trainee, não uma versão atualizada depois. Para o capstone isso é melhor que o previsto: é o artefato real no momento real da transição, e não uma reconstrução nem um retrato posterior.
+
+**Estrutura do documento:** Sumário Executivo (8 bullets) · Experiência Profissional (4 entradas: doutorado 03/2020-atual, consultora acadêmica autônoma 08/2019-12/2023, professora assistente na UNIPAC 03-07/2020, mestrado 03/2016-11/2018) · Projetos Relevantes (2) · Formação (doutorado 2020-, mestrado 2016-2018, graduação em Engenharia Biomédica 2008-2015) · Informações Adicionais (7 bullets) · Qualificações e habilidades.
+
+**Por que este caso ensina tanto — quatro lições, todas de um documento que FUNCIONOU:**
+
+1. **A evidência transferível estava lá, mas enterrada.** Sete anos no laboratório NIATS/UFU, integração de sensores inerciais ao Arduino, coleta com limpeza e integração de dados de várias fontes, modelos de machine learning, análise estatística de dados de hospital público, liderança de equipe interdisciplinar. Tudo isso é trabalho de dados feito antes de ela se chamar profissional de dados. É o exemplo canônico da nota 10 (inventário de evidência): a porta de entrada determina o material, e material de pesquisa conta.
+2. **A seção "Informações Adicionais" é o anti-padrão puro** — sete bullets de clichê sem evidência ("Entusiasmada em aplicar...", "Excelente habilidade em analisar...", "Capacidade de assimilar rapidamente..."). É exatamente o que as notas 07 e 09 ensinam a não fazer. E o valor didático é enorme justamente porque **o currículo funcionou mesmo assim**: mostra que o anti-padrão custa espaço e credibilidade sem necessariamente custar a vaga, o que é mais honesto do que o alarmismo habitual dos guias.
+3. **O stack autodidata vive no fim do documento**, na última seção: Python, POO, Pandas/Numpy, Matplotlib/Seaborn, pipeline ETL/ELT, PowerBI, scikit-learn, Git/GitHub. A competência que motivou a contratação é a última coisa que o leitor encontra. Material direto para a nota 09 (posição e peso da seção de habilidades) e para a nota 03 (o que sobe e o que desce por nível).
+4. **A cronologia tem sobreposições que assustam quem escreve currículo** e que aqui são legítimas: graduação de 2008 a 2015, mestrado 2016-2018, consultoria autônoma 2019-2023 rodando em paralelo com o doutorado desde 2020, e a docência de quatro meses em 2020. Material da nota 16 (lacunas, passagens curtas, paralelismos).
+
+> [!danger] Dados pessoais que NÃO entram no vault público
+> O documento traz telefone celular e e-mail pessoal dela. **Nenhum dos dois pode aparecer em nota alguma**, nem em exemplo, nem em captura de tela, nem em transcrição parcial. Ao reproduzir o cabeçalho no capstone, substituir por marcador genérico. Os únicos canais citáveis são os perfis públicos que ela mesma publica: LinkedIn e GitHub.
+
+> [!question] A decidir com o usuário antes de escrever a Tarefa 28
+> O currículo tem um bullet truncado — um item da seção do mestrado que ficou como uma letra solta, claramente um erro de edição que foi entregue. É um ótimo exemplo real do valor de revisar antes de enviar (nota 05), mas apontar publicamente o deslize de uma pessoa real, mesmo com autorização de citação, é escolha dela e não minha. **Perguntar antes:** ela topa que o erro seja mostrado como exemplo, ou o capstone corrige silenciosamente e a lição de revisão usa um caso fictício?
 
 > [!important] Pré-condições para publicar o caso
 > 1. ~~Cassiana lê e aprova a nota antes da publicação.~~ **Aprovado por ela em 2026-08-20**, conforme relato do usuário.
