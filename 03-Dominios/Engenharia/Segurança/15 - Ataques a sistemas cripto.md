@@ -84,6 +84,11 @@ Em dispositivos embarcados (smartcards, tokens HSM), o consumo de energia durant
 
 Mitigações: mascaramento (*masking* — operar sobre valores embaralhados com random), embaralhamento de ordem das operações, hardware com consumo constante.
 
+> [!tip] Vídeo — Power LED Attack, Computerphile
+> Dr. Mike Pound demonstra como o simples LED de energia de um dispositivo (ou o consumo da fonte) já entrega informação suficiente para começar a extrair bits secretos da chave — a mesma lógica da DPA, sem precisar de um osciloscópio de laboratório. Aos [1:28] ele resume o ponto central: *"they can be vulnerable to something called power analysis — the idea that you can look at how much power this is consuming on the CPU or from the power supply, and start to actually read off secret bits of key"*.
+>
+> 🎥 [**Power LED Attack**](https://www.youtube.com/watch?v=vXe8pe18MNk) — Computerphile, ~12 min, EN
+
 ### 1.4 Spectre e Meltdown — side channel microarquitetural
 
 Spectre e Meltdown (2018) são side channels de nível microarquitetural: a execução especulativa da CPU (→ [[03-Dominios/Ciência/Organização de Computadores/14 - Branch prediction e execução especulativa]]) deixa rastros no cache que um atacante pode ler, mesmo que o resultado da especulação seja descartado pelo hardware.
@@ -343,10 +348,7 @@ As regras práticas que emergem:
 - Use libsodium ou as APIs cripto do SO — nunca implemente primitivos do zero.
 - Prefira **Ed25519** a ECDSA quando tiver liberdade de escolha; prefira **ChaCha20-Poly1305** a AES-GCM em ambientes sem AES-NI.
 
-A evidência empírica apoia essa lista: a maioria dos CVEs de cripto nos últimos 20 anos violou exatamente um desses itens. Não é que os desenvolvedores não soubessem sobre timing attacks ou padding oracles — muitas vezes não sabiam que estavam construindo cripto. A função `SHA256(key + ":" + data)` num webhook não parece cripto. Um `if (token == stored_token)` num sistema de autenticação não parece cripto. Mas são — e o adversário sabe que são.
-
-> [!warning] A falácia do "só para fins internos"
-> "É uma API interna, não precisa ser perfeita." Todo padding oracle, todo timing leak, toda fraqueza de downgrade que apareceu em CVE começa com essa frase. A internet é um ambiente adversarial por definição.
+A evidência empírica apoia essa lista: a maioria dos CVEs de cripto nos últimos 20 anos violou exatamente um desses itens. Não é que os desenvolvedores não soubessem sobre timing attacks ou padding oracles — muitas vezes não sabiam que estavam construindo cripto. A função `SHA256(key + ":" + data)` num webhook não parece cripto. Um `if (token == stored_token)` num sistema de autenticação não parece cripto. Mas são — e o adversário sabe que são. (Ver [[#Armadilhas comuns]] para as três falhas de borda mais comuns na prática.)
 
 ### 8.1 O mapa de mitigações por classe
 
@@ -390,15 +392,70 @@ graph LR
 
 A implicação prática: um pentest que só testa a camada de protocolo (ex.: scanner de cipher suites do servidor) é necessário mas não suficiente. Uma auditoria de segurança cripto completa revisa também o código de comparação, o gerenciamento de nonces, a fonte de entropia e, para sistemas de alta segurança (HSMs, tokens), as contramedidas de side channel físico.
 
-> [!example] Cadeia de ataque real: Logjam
-> 1. **Protocolo**: MITM força negociação para DHE\_EXPORT (512 bits).
-> 2. **Matemática fraca**: primos de 512 bits são vulneráveis ao Number Field Sieve.
-> 3. **Pré-computação offline**: o NFS é executado previamente para os primos mais comuns (1024/512-bit Diffie-Hellman).
-> 4. **Resultado**: o atacante decifra a sessão em tempo real depois de minutos de pré-computação. O AES que cifrou os dados está intacto — o que quebrou foi a troca de chave forçada para fraqueza. Este exemplo mostra que ataques de protocolo (layer 4) abrem caminho para fraqueza matemática que não seria explorável em condições normais.
+> [!example] Logjam ilustra as quatro camadas trabalhando em conjunto
+> Protocolo força a fraqueza (downgrade), matemática cede à fraqueza forçada (NFS em primo de 512 bits), e o resultado atravessa de volta para o dado real. O caso completo está desenvolvido em [[#Caso 2 — Logjam downgrade que reabilita matemática obsoleta|Casos práticos, Caso 2]].
 
 ---
 
-## Conexões
+## Casos práticos
+
+Três episódios documentados mostram a tese central em ação: nenhum deles quebrou a matemática subjacente (Diffie-Hellman, ECDSA, RSA/AES continuam corretos); todos exploraram a borda — protocolo, gerador de números, ou composição de primitivos.
+
+### Caso 1 — PS3: `k` fixo revela a chave privada da Sony
+
+Em 2010, o grupo fail0verflow anunciou que havia extraído a chave privada ECDSA usada pela Sony para assinar código autorizado do PlayStation 3. A causa não foi uma falha na curva elíptica nem no algoritmo de assinatura — foi um RNG defeituoso no firmware que gerava o mesmo valor de `k` (o nonce por assinatura, exigido único a cada vez) em toda operação de assinatura.
+
+Como visto em §5.2, duas assinaturas com o mesmo `k` permitem resolver um sistema de duas equações lineares e isolar a chave privada `d` com álgebra de ensino médio — sem força bruta, sem quebrar ECDSA. Bastou capturar duas assinaturas de firmwares diferentes já publicados pela própria Sony.
+
+**Consequência**: qualquer pessoa com a chave privada extraída podia assinar código homebrew (ou malicioso) como se fosse oficial, contornando toda a cadeia de confiança de assinatura de firmware do console. A Sony processou os membros do grupo, mas a chave já estava pública — impossível de revogar retroativamente sem trocar hardware.
+
+**Lição**: a mitigação moderna (RFC 6979, `k` determinístico a partir de `(privKey, hash)`) elimina esta classe inteira sem exigir CSPRNG externo algum — o `k` nunca pode repetir porque nunca dependeu de aleatoriedade em primeiro lugar.
+
+### Caso 2 — Logjam downgrade que reabilita matemática obsoleta
+
+Logjam (Adrian et al., 2015) não explora um bug de implementação — explora uma decisão de compatibilidade retroativa dos anos 90 que ninguém removeu.
+
+1. **Protocolo**: um MITM intercepta o handshake TLS e força cliente e servidor a negociarem `DHE_EXPORT`, um modo de Diffie-Hellman de 512 bits mantido por servidores antigos para atender leis de exportação de criptografia já revogadas.
+2. **Matemática fraca, mas não quebrada**: primos de 512 bits são fatoráveis via Number Field Sieve (NFS) — não porque Diffie-Hellman tenha uma falha, mas porque 512 bits é pequeno demais para o poder computacional de 2015.
+3. **Pré-computação offline**: a parte cara do NFS (o *sieving* do primo) pode ser feita uma única vez, antes do ataque. Como poucos primos de 512 bits circulam em produção (muitos servidores reusam os mesmos parâmetros padrão), pré-computar para os primos mais comuns compensa o investimento — há evidência circunstancial de que agências de inteligência mantinham essas pré-computações prontas.
+4. **Resultado**: o MITM decifra a sessão em tempo real, gastando apenas minutos após a pré-computação. O AES que cifrou os dados nunca foi tocado — o que quebrou foi a troca de chave, forçada de propósito para um regime onde a matemática correta ainda assim é fraca.
+
+**Lição**: TLS 1.3 fecha essa classe por completo ao remover a negociação de versões/parâmetros antigos do protocolo — não há para onde fazer downgrade.
+
+### Caso 3 — Debian OpenSSL: duas linhas de código, dois anos de chaves fracas
+
+Em 2006, um desenvolvedor Debian tentou silenciar um alerta do Valgrind sobre uso de memória não inicializada dentro do gerador de entropia do OpenSSL. A correção removeu, por engano, as duas linhas responsáveis por misturar entropia real (PID, ponteiros, timing) no pool do CSPRNG.
+
+O bug ficou dois anos sem ser notado (2006–2008) porque o sistema **continuava funcionando normalmente**: chaves eram geradas, conexões TLS funcionavam, nada quebrava visivelmente — só o espaço de busca da chave havia colapsado para ~32.768 possibilidades (15 bits de entropia, essencialmente o PID do processo).
+
+**Consequência**: toda chave RSA e DSA gerada em sistemas Debian/Ubuntu durante o período ficou vulnerável a um ataque de força bruta trivial — bastava gerar as ~32.768 chaves possíveis e comparar com a chave pública publicada. Ferramentas de varredura automatizada (ex.: `dowkd`) identificavam chaves fracas em segundos.
+
+**Lição**: weak randomness não deixa rastro operacional — só análise estatística do output (as chaves geradas) revela o problema. É por isso que a defesa é estrutural (CSPRNG do sistema operacional, nunca reimplementado) e não reativa (monitoramento não detecta isso em produção).
+
+---
+
+## Armadilhas comuns
+
+### Comparação de MAC ou hash com `==`
+
+> [!warning] Toda comparação de segredo precisa ser constant-time
+> `if (mac == expected_mac)` ou `strcmp(hash, stored_hash)` retorna assim que encontra o primeiro byte diferente — e o tempo de resposta vaza essa informação. Um adversário mede o tempo de milhares de tentativas e recupera o MAC byte a byte, em tempo O(n) em vez de O(2ⁿ). A correção não é otimização, é requisito de segurança: usar `crypto_verify_32` (libsodium), `hmac.compare_digest` (Python) ou equivalente — funções que sempre iteram todos os bytes, independentemente de onde a diferença ocorre.
+
+### Reuso de nonce em modos CTR/GCM
+
+> [!warning] Nonce repetido em GCM quebra confidencialidade *e* integridade
+> Reutilizar o mesmo nonce com a mesma chave em AES-GCM não é um erro "menos grave" — é catastrófico. O keystream se repete (XOR de dois ciphertexts revela o XOR dos plaintexts) e, pior, a chave de autenticação `H` fica exposta em duas tags, permitindo ao atacante resolver um sistema linear e forjar tags arbitrárias (forbidden attack, Joux 2006). A defesa correta é nonce aleatório de 96 bits gerado pelo CSPRNG do sistema, ou um contador monotônico que nunca reinicia — nunca derivar o nonce de um timestamp ou de um contador que pode ser reiniciado por deploy.
+
+> [!warning] A falácia do "só para fins internos"
+> "É uma API interna, não precisa ser perfeita." Todo padding oracle, todo timing leak, toda fraqueza de downgrade que apareceu em CVE começa com essa frase. A internet é um ambiente adversarial por definição.
+
+---
+
+## O que vem a seguir
+
+Esta nota tratou de ataques que exploram a *implementação* da criptografia — canais laterais, oráculos, downgrade, reuso de nonce, entropia fraca. Todos pressupõem que o sistema *tentou* usar criptografia corretamente e falhou em algum detalhe da borda.
+
+A próxima nota, [[16 - Classes de vulnerabilidade]], muda de escala: sai do domínio estritamente criptográfico e cataloga as classes de falha de software em geral — injeção, controle de acesso quebrado, deserialização insegura, e as demais famílias que compõem o panorama de vulnerabilidades (ex.: OWASP Top 10). Cripto é uma fatia desse mapa maior; a próxima nota mostra o resto do território.
 
 - Anterior: [[14 - Criptografia em trânsito e em repouso]]
 - Próxima: [[16 - Classes de vulnerabilidade]]
@@ -458,12 +515,13 @@ Frases que funcionam em inglês:
 
 ---
 
-> [!info] Lastro
-> - Kocher, P. (1996). *Timing Attacks on Implementations of Diffie-Hellman, RSA, DSS, and Other Systems*. CRYPTO 1996. https://paulkocher.com/doc/TimingAttacks.pdf
-> - Kocher, P., Jaffe, J., Jun, B. (1999). *Differential Power Analysis*. CRYPTO 1999. https://paulkocher.com/doc/DifferentialPowerAnalysis.pdf
-> - Möller, B., Duong, T., Kotowicz, K. (2014). *This POODLE Bites: Exploiting the SSL 3.0 Fallback*. https://www.openssl.org/~bodo/ssl-poodle.pdf
-> - Adrian, D. et al. (2015). *Imperfect Forward Secrecy: How Diffie-Hellman Fails in Practice* (Logjam). https://weakdh.org/imperfect-forward-secrecy-ccs15.pdf
-> - Kocher, P. et al. (2019). *Spectre Attacks: Exploiting Speculative Execution*. IEEE S&P 2019. https://spectreattack.com/spectre.pdf
-> - Joux, A. (2006). *Authentication Failures in NIST version of GCM* (forbidden attack). https://csrc.nist.gov/csrc/media/projects/block-cipher-techniques/documents/bcm/joux_comments.pdf
-> - Pornin, T. (2013). *RFC 6979 — Deterministic Usage of the DSA and ECDSA*. IETF. https://www.rfc-editor.org/rfc/rfc6979
-> - Latacora (Trail of Bits). *Stop Using Encrypted Email / Use This Crypto*. https://latacora.micro.blog/2019/07/16/the-pgp-problem.html — referência canônica do "don't roll your own crypto" moderno
+## Fontes
+
+- Kocher, P. (1996). *Timing Attacks on Implementations of Diffie-Hellman, RSA, DSS, and Other Systems*. CRYPTO 1996. [paulkocher.com/doc/TimingAttacks.pdf](https://paulkocher.com/doc/TimingAttacks.pdf)
+- Kocher, P., Jaffe, J., Jun, B. (1999). *Differential Power Analysis*. CRYPTO 1999. [paulkocher.com/doc/DifferentialPowerAnalysis.pdf](https://paulkocher.com/doc/DifferentialPowerAnalysis.pdf)
+- Möller, B., Duong, T., Kotowicz, K. (2014). *This POODLE Bites: Exploiting the SSL 3.0 Fallback*. [openssl.org/~bodo/ssl-poodle.pdf](https://www.openssl.org/~bodo/ssl-poodle.pdf)
+- Adrian, D. et al. (2015). *Imperfect Forward Secrecy: How Diffie-Hellman Fails in Practice* (Logjam). [weakdh.org/imperfect-forward-secrecy-ccs15.pdf](https://weakdh.org/imperfect-forward-secrecy-ccs15.pdf)
+- Kocher, P. et al. (2019). *Spectre Attacks: Exploiting Speculative Execution*. IEEE S&P 2019. [spectreattack.com/spectre.pdf](https://spectreattack.com/spectre.pdf)
+- Joux, A. (2006). *Authentication Failures in NIST version of GCM* (forbidden attack). [csrc.nist.gov — joux_comments.pdf](https://csrc.nist.gov/csrc/media/projects/block-cipher-techniques/documents/bcm/joux_comments.pdf)
+- Pornin, T. (2013). *RFC 6979 — Deterministic Usage of the DSA and ECDSA*. IETF. [rfc-editor.org/rfc/rfc6979](https://www.rfc-editor.org/rfc/rfc6979)
+- Latacora (Trail of Bits). *Stop Using Encrypted Email / Use This Crypto*. [latacora.micro.blog/2019/07/16/the-pgp-problem.html](https://latacora.micro.blog/2019/07/16/the-pgp-problem.html) — referência canônica do "don't roll your own crypto" moderno

@@ -14,7 +14,7 @@ Diagnóstico nota a nota. Cada entrada tem estado de enriquecimento, score, clas
 
 **Galho:** `03-Dominios/Engenharia/Segurança`
 **Diagnóstico:** 2026-08-20
-**Última execução:** —
+**Última execução:** 2026-08-20 — 5 ondas, 15 notas; parada das 15 atingida.
 
 ## Régua de análise
 
@@ -40,10 +40,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 22 |
-| ⬜ pendente | 10 |
+| ⬜ pendente | 7 |
 | ➖ não precisa | 0 |
-| ✅ feita | 12 |
-| % concluído | 55% |
+| ✅ feita | 15 |
+| % concluído | 68% |
 
 > Tabela preenchida ao final do diagnóstico (Fase 3).
 
@@ -243,7 +243,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** `## Casos práticos` com phishing de senha+TOTP contra passkey, e defesa em camadas (o `[!example]` de proteção de conta **movido**) · `## Conexões` virou `## O que vem a seguir` com a ponte "quem é você" → "o que você pode fazer" · `## Armadilhas comuns` com 3 `[!warning]`, tipos originais preservados e ponteiros deixados na origem em vez de duplicata · `[!info] Lastro` virou `## Fontes` · M1 *Passwords vs. Passkeys — FIDO Bites Back!* (IBM Technology, 11 min, 126 mil views); a citação de abertura foi conferida verbatim no cue de `[0:00]`. 491 linhas.
 
 #### 13 - Autorização e controle de acesso   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-20)
 - **Estado:** 470 linhas · fase: adepto · status: evergreen · 6 Mermaid · 1 `[!warning]` · 2 wikilink cross-galho
 - **Núcleo/gaps:** E4, E5, E8, L2, M1
 - **Score:** 6/11 (P1 N/A — nota conceitual)
@@ -253,10 +253,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Criar `## Armadilhas comuns` com ≥3 `[!warning]`, **movendo** os 1 já existentes em vez de duplicar → ativa E8
   - Converter o callout `[!info] Lastro` em `## Fontes` com URLs clicáveis → ativa L2
   - Buscar e embutir vídeo/podcast verificado por transcrição → ativa M1
-- **Resultado:** —
+- **Resultado:** `## Casos práticos` com CSRF como confused deputy e IDOR em prontuário eletrônico (o `[!example]` **movido**, deixando pointer) · `## Conexões` virou `## O que vem a seguir` com ponte para a 14 · `## Armadilhas comuns` com 3 `[!warning]`: o único existente ("OAuth is not authentication") movido com tipo preservado, e os outros dois **derivados de material já presente** na nota, não inventados · `[!info] Lastro` virou `## Fontes` · M1 *RBAC vs. ABAC* (IBM Technology, 8 min, 167 mil views), carimbo `[1:58]` conferido no cue — a fala é sobre a explosão de papéis: *"what does this spaghetti look like — it gets to be a real mess"*. 495 linhas.
 
 #### 14 - Criptografia em trânsito e em repouso   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-20)
 - **Estado:** 461 linhas · fase: magus · status: evergreen · 6 Mermaid · 2 `[!warning]` · 2 wikilink cross-galho
 - **Núcleo/gaps:** E4, E5, E8, L2, M1
 - **Score:** 6/11 (P1 N/A — nota conceitual)
@@ -266,10 +266,11 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Criar `## Armadilhas comuns` com ≥3 `[!warning]`, **movendo** os 2 já existentes em vez de duplicar → ativa E8
   - Converter o callout `[!info] Lastro` em `## Fontes` com URLs clicáveis → ativa L2
   - Buscar e embutir vídeo/podcast verificado por transcrição → ativa M1
-- **Resultado:** —
+- **Resultado:** `## Casos práticos` com mTLS em Istio/Kubernetes (promovido do `[!example]`) e o downgrade histórico POODLE/BEAST (promovido da seção de downgrade) · `## Conexões` virou `## O que vem a seguir` com ponte para a 15 · `## Armadilhas comuns` com **5** `[!warning]`, três convertidos de subseções em prosa e dois movidos, todos com tipo preservado · `[!info] Lastro` virou `## Fontes` · M1 *TLS Handshake Explained* (Computerphile, 17 min, **648 mil views**), carimbo `[15:39]` verbatim.
+  **Nota de honestidade do executor:** ele introduziu uma duplicação da subseção de criptografia homomórfica durante a edição, percebeu e corrigiu antes de fechar — e **reportou isso por conta própria**. Conferido: a seção aparece uma vez só.
 
 #### 15 - Ataques a sistemas cripto   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-20)
 - **Estado:** 470 linhas · fase: magus · status: evergreen · 6 Mermaid · 1 `[!warning]` · 2 wikilink cross-galho
 - **Núcleo/gaps:** E4, E5, E8, L2, M1
 - **Score:** 6/11 (P1 N/A — nota conceitual)
@@ -279,7 +280,8 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Criar `## Armadilhas comuns` com ≥3 `[!warning]`, **movendo** os 1 já existentes em vez de duplicar → ativa E8
   - Converter o callout `[!info] Lastro` em `## Fontes` com URLs clicáveis → ativa L2
   - Buscar e embutir vídeo/podcast verificado por transcrição → ativa M1
-- **Resultado:** —
+- **Resultado:** `## Casos práticos` com 3 cenários (PS3/ECDSA · Logjam · Debian OpenSSL), reunindo material que estava disperso · `## Conexões` virou `## O que vem a seguir` com ponte para a 16, que sai da cripto e cataloga falhas de software em geral · `## Armadilhas comuns` com 3 `[!warning]`, o existente movido e dois derivados do conteúdo da nota · `[!info] Lastro` virou `## Fontes` · M1 **Power LED Attack** (Computerphile, 12 min, 267 mil views) — o melhor achado da onda: extrair bits de chave observando o LED de energia, DPA sem osciloscópio. 527 linhas.
+  **Ajuste do coordenador:** a citação era literal mas começava em "called…" e carregava o gaguejo "to to" da legenda automática. Aparada para começar no início da frase, sem perder a literalidade, e o link solto virou link markdown no padrão do galho.
 
 #### 16 - Classes de vulnerabilidade   [substantivo]
 - **Enriquecimento:** ⬜ pendente

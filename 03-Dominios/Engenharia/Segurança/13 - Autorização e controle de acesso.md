@@ -1,7 +1,7 @@
 ---
 title: "Autorização e controle de acesso"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-08-20
 type: concept
 fase: adepto
 status: evergreen
@@ -132,6 +132,9 @@ if resource.tag.project == principal.tag.project
 XACML (eXtensible Access Control Markup Language) é o padrão formal; OPA (Open Policy Agent) com Rego é a implementação moderna favorita em Cloud Native.
 
 A desvantagem: políticas ABAC são difíceis de auditar ("quem pode acessar X?") porque a resposta depende da combinação de atributos no momento da requisição.
+
+> [!tip] Vídeo — RBAC vs. ABAC, com o exemplo que motiva a tabela acima
+> [Role-based access control (RBAC) vs. Attribute-based access control (ABAC)](https://www.youtube.com/watch?v=rvZ35YW4t5k), IBM Technology (7:39, ~167 mil visualizações). Usa um hospital como exemplo: sem papéis, mapear cada combinação de usuário × permissão (médico, enfermeiro, técnico de laboratório × escrever/ler ordens/exames) explode conforme a organização cresce — "what does this spaghetti look like — it gets to be a real mess" [1:58], falando do cenário permissão-por-usuário que RBAC existe para evitar. A segunda metade detalha a mesma arquitetura PEP/PDP do diagrama logo abaixo, e fecha com o ponto que a tabela de modelos já sugere: RBAC e ABAC não são mutuamente exclusivos — dá para usar papel como atributo de alto nível dentro de uma política ABAC.
 
 **XACML vs OPA**: XACML (eXtensible Access Control Markup Language, OASIS) é o padrão formal para ABAC — define arquitetura com PDP, PEP, PIP (Policy Information Point) e PAP (Policy Administration Point), e usa XML verboso para políticas. É poderoso mas pesado; adotado em contextos enterprise/governamental. OPA com Rego é a alternativa Cloud Native: API REST simples, políticas em texto compacto, integração nativa com Kubernetes (admission controller), Envoy (external authz), Terraform (policy checks). Na prática, se você está num ambiente Cloud Native em 2026, OPA é o padrão de mercado; XACML aparece em sistemas legados ou compliance-heavy.
 
@@ -357,8 +360,8 @@ Defesas:
 2. **Indiretamente mapear IDs**: em vez de expor IDs internos, usar um mapeamento por contexto de sessão. O usuário vê índice 1, 2, 3 nos seus pedidos — o servidor mapeia para IDs reais. Mais complexo, mas elimina a superfície.
 3. **Testes de autorização no CI**: criar dois usuários de teste, fazer operações cruzadas entre eles, verificar que 403 é retornado. Ferramentas como OWASP ZAP têm scanners de IDOR.
 
-> [!example] IDOR em API de healthcare (exemplo canônico)
-> Um sistema de prontuário eletrônico expõe `GET /pacientes/4521/exames`. Se o médico autenticado como ID 88 pode acessar o paciente 4521, mas a API não verifica se existe um vínculo médico-paciente (appointment, care team), então o médico 88 pode acessar `GET /pacientes/1/exames` e ver prontuários de qualquer paciente. Violação da LGPD, HIPAA, e potencialmente crime.
+> [!info] Caso prático completo
+> O exemplo canônico de IDOR em healthcare — prontuário eletrônico, médico acessando pacientes de outros médicos — está desenvolvido como caso prático na seção [[#Casos práticos|Casos práticos]], adiante.
 
 ---
 
@@ -399,21 +402,28 @@ sequenceDiagram
 - Tokens de curto prazo + refresh tokens.
 - Armazenar no servidor (não em `localStorage` — vulnerável a XSS); preferir `httpOnly` cookies para SPAs.
 
-> [!warning] "OAuth is not authentication" é lei
-> Essa frase aparece literalmente em [oauth.net/articles/authentication/](https://oauth.net/articles/authentication/) e é a resposta esperada em qualquer entrevista senior. OAuth2 prove autorização delegada. OIDC prove autenticação federada. Usar um onde o outro é necessário é vulnerabilidade de design.
+---
+
+## Casos práticos
+
+> [!example] Caso prático 1 — Transferência fraudulenta via CSRF (confused deputy)
+> Um banco expõe `GET /transferir?valor=1000&para=<conta>` sem exigir token anti-CSRF nem verificar o cabeçalho `Origin`. Um atacante publica, em qualquer site, uma tag `<img src="banco.com/transferir?valor=1000&para=atacante">`. Qualquer vítima autenticada no banco que visite essa página tem o navegador — o "confused deputy" — disparando a requisição automaticamente, cookie de sessão incluso (diagrama completo em [[#Confused Deputy: quando autoridade é mal usada]]). O banco autentica a sessão corretamente, mas nunca verifica se a *intenção* veio do usuário; a autorização é concedida a uma requisição forjada por um terceiro. A correção — token CSRF por formulário, `SameSite=Strict` no cookie de sessão, verificação de `Origin`/`Referer` — não mexe em authN nem em authZ isoladamente: adiciona a pergunta que nenhuma das duas responde sozinha, "esta requisição realmente veio de onde diz que veio?".
+
+> [!example] Caso prático 2 — IDOR em prontuário eletrônico (healthcare)
+> Um sistema de prontuário eletrônico expõe `GET /pacientes/4521/exames`. O médico autenticado como ID 88 está corretamente logado (authN ok), mas a API não verifica se existe vínculo médico-paciente (appointment, care team) antes de devolver os dados — falta authZ no nível do objeto. Resultado: o médico 88 troca o número na URL e lê `GET /pacientes/1/exames`, acessando prontuários de qualquer paciente do sistema. É IDOR — API1 no OWASP API Security Top 10 2023 — e, dependendo da jurisdição, violação de LGPD ou HIPAA. A defesa não é autenticar melhor (o médico já está autenticado corretamente); é adicionar a checagem de ownership no nível do repositório/DAO — `if paciente not in medico.pacientes_vinculados: abort(403)` — antes de qualquer controller decidir o que fazer com o resultado, como no par vulnerável/correto de código na seção sobre privilege escalation.
 
 ---
 
-## Conexões
+## Armadilhas comuns
 
-- Nota anterior: [[12 - Autenticação]]
-- Próxima: [[14 - Criptografia em trânsito e em repouso]]
-- Princípios relacionados: [[04 - Princípios de design seguro]] (least privilege aplicado, princípio da separação de privilégios)
-- Arquitetura: [[19 - Zero trust e defesa em profundidade]] (zero trust = "nunca confiar, sempre verificar" em cada requisição = authZ contínua)
-- Dependência: [[12 - Autenticação]] (authN é pré-requisito de authZ; sem identidade estabelecida, não há como decidir permissão)
+> [!warning] Confiar em quem carrega a credencial, sem verificar quem pediu a ação
+> Qualquer sistema que aceita "quem apresenta credencial válida pode agir" sem perguntar "essa ação foi realmente solicitada pelo dono da credencial?" está vulnerável a confused deputy. Não é exclusivo de CSRF: clickjacking, symlink attacks e SQL injection via stored procedure com privilégio elevado são a mesma falha estrutural — um intermediário autorizado age sem checar a origem da ordem. A defesa não é "autenticar melhor"; é usar capabilities com contexto (token específico à operação, verificação de origem) em vez de identidade nua.
 
-> [!summary] Resumo em uma linha
-> AuthN prova quem você é; authZ decide o que você pode fazer — modelos DAC/MAC/RBAC/ABAC representam quem decide, ACL/capability representam onde a permissão vive, e CSRF/IDOR mostram o que acontece quando a separação é ignorada.
+> [!warning] IDOR: autorização decidida no cliente, não no servidor
+> Confiar em qualquer ID vindo do cliente — na URL, no body do request, ou pior, num campo escondido do formulário — sem revalidar ownership no servidor é a causa raiz do IDOR. Trocar IDs sequenciais por UUIDs reduz a *previsibilidade* do ataque, mas não o resolve: se o servidor não verifica ownership, o UUID vazado em outro endpoint é tão explorável quanto um ID incremental. A autorização de objeto precisa acontecer no servidor, no nível do repositório/DAO, sempre — nunca inferida de "o cliente não deveria conseguir montar essa URL".
+
+> [!warning] "OAuth is not authentication" é lei
+> Essa frase aparece literalmente em [oauth.net/articles/authentication/](https://oauth.net/articles/authentication/) e é a resposta esperada em qualquer entrevista senior. OAuth2 prova autorização delegada. OIDC prova autenticação federada. Usar um onde o outro é necessário é vulnerabilidade de design.
 
 ---
 
@@ -458,12 +468,28 @@ Frases prontas para usar em inglês:
 
 ---
 
-> [!info] Lastro
-> 1. Saltzer, J. H., & Schroeder, M. D. (1975). "The Protection of Information in Computer Systems." *Proceedings of the IEEE*, 63(9), 1278–1308. Fonte primária do princípio de least privilege e outros sete princípios de design seguro.
-> 2. Hardy, N. (1988). "The Confused Deputy (or why capabilities might have been invented)." *ACM SIGOPS Operating Systems Review*, 22(4), 36–38. [https://dl.acm.org/doi/10.1145/54289.871709](https://dl.acm.org/doi/10.1145/54289.871709)
-> 3. Hardt, D. (Ed.). (2012). RFC 6749: The OAuth 2.0 Authorization Framework. IETF. [https://www.rfc-editor.org/rfc/rfc6749](https://www.rfc-editor.org/rfc/rfc6749)
-> 4. Jones, M., & Hardt, D. (2012). RFC 6750: The OAuth 2.0 Authorization Framework: Bearer Token Usage. IETF. [https://www.rfc-editor.org/rfc/rfc6750](https://www.rfc-editor.org/rfc/rfc6750)
-> 5. Sakimura, N. et al. (2014). OpenID Connect Core 1.0. OpenID Foundation. [https://openid.net/specs/openid-connect-core-1_0.html](https://openid.net/specs/openid-connect-core-1_0.html)
-> 6. Ferraiolo, D., & Kuhn, R. (1992). "Role-Based Access Controls." *Proceedings of the 15th NIST-NCSC National Computer Security Conference*, 554–563. Artigo seminal do RBAC, formalizado no NIST RBAC Standard (ANSI/INCITS 359-2004). [https://csrc.nist.gov/projects/role-based-access-control](https://csrc.nist.gov/projects/role-based-access-control)
-> 7. OWASP. "Access Control Cheat Sheet." [https://cheatsheetseries.owasp.org/cheatsheets/Access_Control_Cheat_Sheet.html](https://cheatsheetseries.owasp.org/cheatsheets/Access_Control_Cheat_Sheet.html)
-> 8. oauth.net. "OAuth 2.0 is Not an Authentication Protocol." [https://oauth.net/articles/authentication/](https://oauth.net/articles/authentication/)
+## O que vem a seguir
+
+Autorização decide *o que* um principal pode fazer — mas não diz nada sobre *como* os dados trafegam nem *onde* ficam armazenados enquanto ninguém está decidindo nada. Um sistema pode ter RBAC/ABAC impecável, object-level authorization em toda rota, e ainda vazar tudo: se o token, a sessão ou o dado em si trafegar em texto claro entre serviços, ou repousar sem proteção num disco comprometido, a decisão de authZ correta não impede o vazamento — ela só nunca chega a ser consultada. A próxima nota, [[14 - Criptografia em trânsito e em repouso]], cobre exatamente essa lacuna: como proteger confidencialidade e integridade nos dois estados em que autorização não alcança — dados em trânsito (TLS, mTLS) e dados em repouso (criptografia de disco, de campo, de backup).
+
+Outras conexões relevantes:
+- Pré-requisito: [[12 - Autenticação]] — sem identidade estabelecida (authN), não há principal para avaliar authZ.
+- Princípios: [[04 - Princípios de design seguro]] — least privilege aplicado, princípio da separação de privilégios.
+- Arquitetura: [[19 - Zero trust e defesa em profundidade]] — zero trust é authZ contínua, avaliada a cada requisição, não apenas na borda do sistema.
+
+> [!summary] Resumo em uma linha
+> AuthN prova quem você é; authZ decide o que você pode fazer — modelos DAC/MAC/RBAC/ABAC representam quem decide, ACL/capability representam onde a permissão vive, e CSRF/IDOR mostram o que acontece quando a separação é ignorada.
+
+---
+
+## Fontes
+
+1. Saltzer, J. H., & Schroeder, M. D. (1975). "The Protection of Information in Computer Systems." *Proceedings of the IEEE*, 63(9), 1278–1308. Fonte primária do princípio de least privilege e outros sete princípios de design seguro.
+2. Hardy, N. (1988). "The Confused Deputy (or why capabilities might have been invented)." *ACM SIGOPS Operating Systems Review*, 22(4), 36–38. [https://dl.acm.org/doi/10.1145/54289.871709](https://dl.acm.org/doi/10.1145/54289.871709)
+3. Hardt, D. (Ed.). (2012). RFC 6749: The OAuth 2.0 Authorization Framework. IETF. [https://www.rfc-editor.org/rfc/rfc6749](https://www.rfc-editor.org/rfc/rfc6749)
+4. Jones, M., & Hardt, D. (2012). RFC 6750: The OAuth 2.0 Authorization Framework: Bearer Token Usage. IETF. [https://www.rfc-editor.org/rfc/rfc6750](https://www.rfc-editor.org/rfc/rfc6750)
+5. Sakimura, N. et al. (2014). OpenID Connect Core 1.0. OpenID Foundation. [https://openid.net/specs/openid-connect-core-1_0.html](https://openid.net/specs/openid-connect-core-1_0.html)
+6. Ferraiolo, D., & Kuhn, R. (1992). "Role-Based Access Controls." *Proceedings of the 15th NIST-NCSC National Computer Security Conference*, 554–563. Artigo seminal do RBAC, formalizado no NIST RBAC Standard (ANSI/INCITS 359-2004). [https://csrc.nist.gov/projects/role-based-access-control](https://csrc.nist.gov/projects/role-based-access-control)
+7. OWASP. "Access Control Cheat Sheet." [https://cheatsheetseries.owasp.org/cheatsheets/Access_Control_Cheat_Sheet.html](https://cheatsheetseries.owasp.org/cheatsheets/Access_Control_Cheat_Sheet.html)
+8. oauth.net. "OAuth 2.0 is Not an Authentication Protocol." [https://oauth.net/articles/authentication/](https://oauth.net/articles/authentication/)
+9. IBM Technology. "Role-based access control (RBAC) vs. Attribute-based access control (ABAC)." YouTube. [https://www.youtube.com/watch?v=rvZ35YW4t5k](https://www.youtube.com/watch?v=rvZ35YW4t5k)

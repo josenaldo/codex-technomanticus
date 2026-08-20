@@ -1,7 +1,7 @@
 ---
 title: "Criptografia em trânsito e em repouso"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-08-20
 type: concept
 fase: magus
 status: evergreen
@@ -123,6 +123,9 @@ O E de ECDHE é a diferença entre uma vulnerabilidade hoje que vaza dados hist�
 > [!tip] Por que isso importa para entrevistas
 > PFS/forward secrecy é frequentemente mencionado como diferencial do TLS 1.3. A resposta técnica: o TLS 1.3 tornou o key exchange efêmero **obrigatório** — removeu o RSA key exchange estático do protocolo. O TLS 1.2 *permitia* PFS mas não exigia, então muitos servidores configurados descuidadamente não usavam.
 
+> [!tip] Vídeo — o handshake do TLS explicado passo a passo
+> [TLS Handshake Explained](https://www.youtube.com/watch?v=86cQJ0MMses), Computerphile (17min, ~648 mil visualizações). Dr. Mike Pound reconstrói o handshake do zero — por que existe troca de chaves, por que ela é efêmera, e onde o certificado entra — e chega ao ponto que esta nota também faz: o key exchange baseado em ECDHE é o que garante "you've got that perfect forward secrecy" [15:39]. Bom complemento aos diagramas acima porque mostra o raciocínio sendo construído em voz alta, não só o resultado final.
+
 ### TLS 1.3 × TLS 1.2: o que mudou
 
 | Aspecto | TLS 1.2 | TLS 1.3 |
@@ -134,9 +137,6 @@ O E de ECDHE é a diferença entre uma vulnerabilidade hoje que vaza dados hist�
 | Cifras obrigatórias | Apenas MD5/SHA1 hashes | AEAD obrigatório |
 | Negociação de algoritmos | Na mensagem de handshake (em claro) | Cifrada após ServerHello |
 | Compressão | Suportada (CRIME attack) | Removida |
-
-> [!warning] 0-RTT tem custo real
-> O TLS 1.3 permite resumo de sessão com 0-RTT — dados enviados junto com o ClientHello, sem esperar pelo ServerHello. Isso elimina a latência do handshake para reconexões. Mas **0-RTT não protege contra replay attacks**: um adversário pode capturar o pacote e reenviá-lo, e o servidor não consegue distinguir o replay do original. Use 0-RTT apenas para requisições idempotentes (GET sem efeito colateral), nunca para ações com efeito (POST de transação, DELETE).
 
 ---
 
@@ -169,9 +169,6 @@ Com mTLS:
 - Cada serviço tem uma **identidade criptográfica** — um certificado emitido por uma CA interna (SPIFFE/SPIRE é o padrão em Kubernetes).
 - O serviço B **verifica que o cliente é realmente o serviço A** antes de processar a requisição.
 - Um serviço comprometido não consegue forjar a identidade de outro serviço sem a chave privada do certificado desse serviço.
-
-> [!example] mTLS na prática
-> Em um cluster Kubernetes com Istio, os sidecars Envoy interceptam todo o tráfego inter-pod e estabelecem mTLS automaticamente. Certificados são emitidos pela CA do Istio (Citadel), rotacionados automaticamente, e têm validade curta (horas). O desenvolvedor não escreve código de TLS — a malha fornece identidade criptográfica para cada pod via SPIFFE SVIDs. Isso é zero trust na infraestrutura, não na aplicação.
 
 ---
 
@@ -222,15 +219,6 @@ flowchart TD
 2. **Auditabilidade granular**: cada chamada ao KMS (para decifrar uma DEK) gera um log com timestamp, identidade do chamador, e qual DEK foi acessada. Você sabe exatamente quando e quem acessou o quê — rastreabilidade forense completa.
 
 3. **Isolamento de chaves**: diferentes tenants ou categorias de dados podem usar DEKs diferentes, todas cifradas pela mesma KEK. Revogar acesso a uma categoria = revogar acesso à KEK daquele conjunto de DEKs.
-
-> [!warning] A corrente é tão forte quanto o elo mais fraco
-> Implementações comuns de "cifra em repouso" que não protegem nada:
-> - Chave AES hardcoded no código-fonte (disponível em git, image Docker, logs)
-> - Chave em variável de ambiente lida pelo mesmo processo que acessa os dados
-> - Chave em arquivo `.env` no mesmo servidor que o banco
-> - Backup dos dados + backup da chave no mesmo bucket S3
->
-> Em todos esses casos, a cifra é teatro de segurança. A gestão de chave é coberta em profundidade na nota [[18 - Gestão de chaves e segredos]].
 
 ### Customer-Managed Keys (CMK) vs Provider-Managed Keys
 
@@ -342,48 +330,6 @@ A segunda propriedade fundamental é a **atestação remota**: um terceiro pode 
 > [!tip] Estado da arte
 > A Confidential Computing Consortium (CCC, Linux Foundation) coordena os padrões. Provedores de cloud já oferecem infraestrutura: AWS Nitro Enclaves, Azure Confidential VMs (AMD SEV-SNP), Google Cloud Confidential GKE (AMD SEV). Casos de uso reais incluem processamento de dados de saúde em cloud pública sem confiar no provedor, e cálculo de scores de crédito multi-banco sem revelar modelos ou dados entre bancos.
 
----
-
-## Erros clássicos de implementação
-
-Saber a teoria é necessário, mas não suficiente. Em entrevista sênior, o que diferencia candidatos é reconhecer onde implementações corretas na teoria falham na prática.
-
-### TLS configurado mas não validado
-
-O erro mais comum: TLS ativado no cliente, mas com **validação do certificado desabilitada** — `verify=False`, `InsecureSkipVerify: true`, `TrustAllCerts`, `SSLContext.setVerifyMode(SSL_VERIFY_NONE)`. O canal está cifrado, mas não autenticado. Um adversário pode fazer MITM sem obstáculo — a cifra protege o canal entre cliente e atacante, e entre atacante e servidor. Da perspectiva do cliente, a comunicação parece segura; da perspectiva da segurança, não há garantia alguma de identidade do servidor.
-
-Frequentemente encontrado em:
-- Código de desenvolvimento que "desabilitou por ser interno" e foi para produção sem revisão
-- Testes automatizados com certificados autoassinados sem adicionar a CA de teste ao trust store do ambiente de CI
-- SDKs mal configurados em IoT/embedded onde adicionar certificados ao bundle é trabalhoso
-- Comunicação entre microsserviços "internos" onde a equipe assumiu que a rede interna era segura
-
-### Certificate pinning: proteção e armadilha
-
-**Certificate pinning** (ou public key pinning) é a prática de o cliente checar não apenas que o certificado é válido e assinado por uma CA confiável, mas que é *especificamente aquele certificado* ou *aquela chave pública*. Protege contra CAs comprometidas ou CAs maliciosas que emitiriam certificados fraudulentos para o domínio.
-
-O problema: quando o certificado expira e você rotaciona, aplicações com pinning hardcoded param de funcionar até serem atualizadas. Apps mobile com pinning incorretamente implementado quebraram em renovações de certificado de grandes empresas. A recomendação atual é pinning via SPKI hash (chave pública, não o certificado inteiro) e sempre incluir um pin de backup.
-
-### Downgrade attacks: forçar protocolos antigos
-
-Se o servidor aceita TLS 1.0, 1.1, e 1.2 além de 1.3, um adversário MITM pode forçar o downgrade para a versão mais antiga — onde exploits como POODLE (SSLv3), BEAST (TLS 1.0), BEAST/CRIME/BREACH (compressão) ainda funcionam.
-
-A defesa: desabilitar versões antigas no servidor via configuração explícita (`ssl_protocols TLSv1.3;` no nginx, `SSLProtocol -all +TLSv1.3` no Apache). O NIST SP 800-52r2 recomenda TLS 1.2 como mínimo e TLS 1.3 como preferido; TLS 1.0 e 1.1 devem ser desabilitados ativamente. O header HTTP `Strict-Transport-Security` (HSTS) com `includeSubDomains` evita downgrade HTTP→HTTPS. O TLS_FALLBACK_SCSV é uma extensão que sinaliza que o cliente está fazendo fallback, permitindo ao servidor rejeitar downgrades indevidos — mas a proteção real é remover o suporte a versões antigas completamente.
-
-### Cifra em repouso com chave derivada de dado do usuário
-
-Um antipadrão recorrente: usar a senha do usuário (ou um hash dela) como chave de cifra dos dados do usuário. Parece elegante — se você não tem a senha, não tem a chave — mas cria problemas sérios:
-
-- **Impossibilidade de migração**: se o usuário esquece a senha, os dados são irrecuperáveis (a menos que haja recovery key separada, que você precisa gerenciar de qualquer forma).
-- **Impossibilidade de re-cifragem**: se você precisar mudar o algoritmo de cifra, precisa que o usuário se autentique para decifrar e re-cifrar seus dados.
-- **Força da chave**: senhas de usuários têm entropia baixa — precisam de KDF lento (bcrypt, Argon2) para dificultar brute-force, o que cria latência na decifra.
-
-O padrão correto: a senha do usuário protege *acesso ao sistema*, não os dados diretamente. Os dados usam DEKs aleatórias gerenciadas pelo KMS. O acesso ao KMS é controlado pela sessão autenticada do usuário.
-
-O fio condutor de todos esses antipadrões é o mesmo: **a criptografia fornece garantias matemáticas, mas a segurança real depende de como os controles são compostos**. Cada elo da cadeia — configuração de TLS, validação de certificado, gestão de chave, rotação, monitoramento — é um ponto de falha independente. A diferença entre uma implementação segura e uma que dá falsa sensação de segurança frequentemente é um único flag de configuração ou um segredo mal posicionado.
-
-Pensar em adversários (nota [[02 - Pensar como adversário]]) e usar o modelo de três estados do dado como checklist ajuda a não deixar elos descobertos. A pergunta certa não é "usamos AES-256?" mas "em cada estado que esse dado existe, quem pode acessá-lo e como?"
-
 ### Criptografia Homomórfica: o sonho de processar sem decifrar
 
 A criptografia homomórfica (FHE, Fully Homomorphic Encryption) permite **operar sobre dados cifrados** sem decifrá-los. O servidor recebe ciphertexts, realiza operações (soma, multiplicação) diretamente no ciphertext, e retorna um ciphertext que, quando decifrado pelo cliente, é o resultado correto — como se o servidor tivesse operado sobre os dados em texto claro.
@@ -394,13 +340,57 @@ A nota 20 deste galho explora FHE, computação multi-party segura (MPC) e priva
 
 ---
 
-## Conexões
+## Casos práticos
 
-- Anterior: [[13 - Autorização e controle de acesso]]
-- Próxima: [[15 - Ataques a sistemas cripto]]
-- Primitivas usadas nesta nota: [[08 - Criptografia assimétrica]] | [[09 - Troca de chaves]] | [[11 - PKI e certificados]] | [[07 - Criptografia simétrica]]
-- Gestão do elo mais fraco: [[18 - Gestão de chaves e segredos]]
-- Protocolo TLS em detalhe: [[03-Dominios/Ciência/Redes e Protocolos/05 - TLS e HTTPS]]
+Duas situações concretas mostram como as escolhas discutidas acima se pagam — ou cobram o preço — fora do quadro-negro.
+
+### Caso 1 — mTLS numa malha de serviço Kubernetes/Istio
+
+O problema de partida: como um serviço A sabe, com garantia criptográfica, que quem bateu na sua porta é mesmo o serviço B — e não um pod comprometido tentando se passar por ele?
+
+> [!example] mTLS na prática
+> Em um cluster Kubernetes com Istio, os sidecars Envoy interceptam todo o tráfego inter-pod e estabelecem mTLS automaticamente. Certificados são emitidos pela CA do Istio (Citadel), rotacionados automaticamente, e têm validade curta (horas). O desenvolvedor não escreve código de TLS — a malha fornece identidade criptográfica para cada pod via SPIFFE SVIDs. Isso é zero trust na infraestrutura, não na aplicação.
+
+O que esse caso ilustra: a decisão de "onde" implementar mTLS importa tanto quanto a decisão de implementá-lo. Colocar a lógica no sidecar (em vez de em cada serviço) significa que a rotação de certificados de horas em horas — impraticável se cada equipe tivesse que implementar isso à mão — vira um detalhe de infraestrutura, invisível para quem escreve a aplicação. A malha de serviço transforma um problema de segurança criptográfica em um problema de configuração de plataforma.
+
+### Caso 2 — Downgrade attack histórico: POODLE e BEAST
+
+O problema de partida: se um servidor aceita TLS 1.0, 1.1 e 1.2 além de 1.3 "por compatibilidade", ele abre uma porta que a criptografia moderna não fecha sozinha.
+
+Se o servidor aceita essas versões antigas, um adversário MITM pode forçar o downgrade da conexão para a versão mais fraca — onde exploits como **POODLE** (SSLv3, 2014) e **BEAST** (TLS 1.0, 2011) ainda funcionam. O atacante não precisa quebrar a criptografia matematicamente; basta convencer as duas pontas a negociar o protocolo mais fraco que ambas "toleram", e então explorar as falhas conhecidas desse protocolo. É o mesmo princípio de um cofre moderno cuja porta antiga, nunca removida, ainda abre com a chave velha.
+
+A defesa é desabilitar versões antigas no servidor via configuração explícita (`ssl_protocols TLSv1.3;` no nginx, `SSLProtocol -all +TLSv1.3` no Apache). O NIST SP 800-52r2 recomenda TLS 1.2 como mínimo e TLS 1.3 como preferido; TLS 1.0 e 1.1 devem ser desabilitados ativamente. O header HTTP `Strict-Transport-Security` (HSTS) com `includeSubDomains` evita downgrade HTTP→HTTPS. O `TLS_FALLBACK_SCSV` é uma extensão que sinaliza que o cliente está fazendo fallback, permitindo ao servidor rejeitar downgrades indevidos — mas a proteção real é remover o suporte a versões antigas completamente, não confiar em sinalizações que o próprio atacante pode manipular no meio do caminho.
+
+---
+
+## Armadilhas comuns
+
+Saber a teoria é necessário, mas não suficiente. Em entrevista sênior, o que diferencia candidatos é reconhecer onde implementações corretas na teoria falham na prática.
+
+> [!warning] TLS configurado mas não validado
+> O erro mais comum: TLS ativado no cliente, mas com **validação do certificado desabilitada** — `verify=False`, `InsecureSkipVerify: true`, `TrustAllCerts`, `SSLContext.setVerifyMode(SSL_VERIFY_NONE)`. O canal está cifrado, mas não autenticado. Um adversário pode fazer MITM sem obstáculo — a cifra protege o canal entre cliente e atacante, e entre atacante e servidor. Da perspectiva do cliente, a comunicação parece segura; da perspectiva da segurança, não há garantia alguma de identidade do servidor. Frequentemente encontrado em código de desenvolvimento que "desabilitou por ser interno" e foi para produção sem revisão, testes automatizados com certificados autoassinados sem adicionar a CA de teste ao trust store do ambiente de CI, SDKs mal configurados em IoT/embedded onde adicionar certificados ao bundle é trabalhoso, e comunicação entre microsserviços "internos" onde a equipe assumiu que a rede interna era segura.
+
+> [!warning] Certificate pinning: proteção e armadilha
+> **Certificate pinning** (ou public key pinning) é a prática de o cliente checar não apenas que o certificado é válido e assinado por uma CA confiável, mas que é *especificamente aquele certificado* ou *aquela chave pública* — protege contra CAs comprometidas ou maliciosas que emitiriam certificados fraudulentos para o domínio. O problema: quando o certificado expira e você rotaciona, aplicações com pinning hardcoded param de funcionar até serem atualizadas. Apps mobile com pinning incorretamente implementado quebraram em renovações de certificado de grandes empresas. A recomendação atual é pinning via SPKI hash (chave pública, não o certificado inteiro) e sempre incluir um pin de backup.
+
+> [!warning] Cifra em repouso com chave derivada de dado do usuário
+> Um antipadrão recorrente: usar a senha do usuário (ou um hash dela) como chave de cifra dos dados do usuário. Parece elegante — se você não tem a senha, não tem a chave — mas cria problemas sérios: impossibilidade de migração (se o usuário esquece a senha, os dados são irrecuperáveis, a menos que haja recovery key separada, que você precisa gerenciar de qualquer forma), impossibilidade de re-cifragem (se você precisar mudar o algoritmo de cifra, precisa que o usuário se autentique para decifrar e re-cifrar seus dados), e força da chave (senhas de usuários têm entropia baixa — precisam de KDF lento como bcrypt ou Argon2 para dificultar brute-force, o que cria latência na decifra). O padrão correto: a senha do usuário protege *acesso ao sistema*, não os dados diretamente. Os dados usam DEKs aleatórias gerenciadas pelo KMS, e o acesso ao KMS é controlado pela sessão autenticada do usuário.
+
+> [!warning] 0-RTT tem custo real
+> O TLS 1.3 permite resumo de sessão com 0-RTT — dados enviados junto com o ClientHello, sem esperar pelo ServerHello. Isso elimina a latência do handshake para reconexões. Mas **0-RTT não protege contra replay attacks**: um adversário pode capturar o pacote e reenviá-lo, e o servidor não consegue distinguir o replay do original. Use 0-RTT apenas para requisições idempotentes (GET sem efeito colateral), nunca para ações com efeito (POST de transação, DELETE).
+
+> [!warning] A corrente é tão forte quanto o elo mais fraco
+> Implementações comuns de "cifra em repouso" que não protegem nada: chave AES hardcoded no código-fonte (disponível em git, image Docker, logs); chave em variável de ambiente lida pelo mesmo processo que acessa os dados; chave em arquivo `.env` no mesmo servidor que o banco; backup dos dados + backup da chave no mesmo bucket S3. Em todos esses casos, a cifra é teatro de segurança. A gestão de chave é coberta em profundidade na nota [[18 - Gestão de chaves e segredos]].
+
+O fio condutor de todas essas armadilhas é o mesmo: **a criptografia fornece garantias matemáticas, mas a segurança real depende de como os controles são compostos**. Cada elo da cadeia — configuração de TLS, validação de certificado, gestão de chave, rotação, monitoramento — é um ponto de falha independente. A diferença entre uma implementação segura e uma que dá falsa sensação de segurança frequentemente é um único flag de configuração ou um segredo mal posicionado.
+
+Pensar em adversários (nota [[02 - Pensar como adversário]]) e usar o modelo de três estados do dado como checklist ajuda a não deixar elos descobertos. A pergunta certa não é "usamos AES-256?" mas "em cada estado que esse dado existe, quem pode acessá-lo e como?"
+
+---
+
+## O que vem a seguir
+
+Tudo o que esta nota descreveu — ECDHE, envelope encryption, mTLS, enclaves — são construções defensivas: cada uma resolve um problema de proteção específico, assumindo implicitamente que a matemática por trás dela é sólida e que a implementação segue a especificação à risca. A pergunta natural que vem depois é a inversa: onde essas garantias realmente quebram? A nota [[15 - Ataques a sistemas cripto]] muda de lente — de "como construir" para "como atacar" — e mostra que a maioria dos incidentes reais não nasce de uma falha matemática no AES ou no ECDHE, mas de exatamente os pontos frágeis que a seção de armadilhas comuns começou a mapear: certificado não validado, downgrade de protocolo, chave mal posicionada. Ela também revisita as primitivas das notas anteriores deste galho — [[08 - Criptografia assimétrica]], [[09 - Troca de chaves]], [[11 - PKI e certificados]] e [[07 - Criptografia simétrica]] — sob o ângulo do adversário. Para quem quer entender a gestão do elo mais fraco em detalhe antes de seguir, [[18 - Gestão de chaves e segredos]] aprofunda o tema; e para o protocolo TLS byte a byte, [[03-Dominios/Ciência/Redes e Protocolos/05 - TLS e HTTPS]] continua sendo a referência. Nota anterior deste galho: [[13 - Autorização e controle de acesso]].
 
 > [!summary] Resumo em uma linha
 > TLS protege dados em trânsito orquestrando ECDHE (segredo efêmero com PFS) + PKI (autenticação do servidor) + AEAD simétrico (dados); em repouso, o algoritmo de cifra é trivial — o problema real é a gestão da chave, resolvido pelo envelope encryption com KMS que separa domínios de confiança.
@@ -452,10 +442,12 @@ Frases que sinalizam domínio técnico senior:
 
 ---
 
-> [!info] Lastro
-> - **RFC 8446** — The Transport Layer Security (TLS) Protocol Version 1.3. IETF, 2018. <https://datatracker.ietf.org/doc/html/rfc8446>
-> - **NIST SP 800-52 Rev. 2** — Guidelines for the Selection, Configuration, and Use of TLS Implementations. NIST, 2019. <https://doi.org/10.6028/NIST.SP.800-52r2>
-> - **NIST SP 800-57 Part 1 Rev. 5** — Recommendation for Key Management: General. NIST, 2020. <https://doi.org/10.6028/NIST.SP.800-57pt1r5>
-> - **AWS Documentation** — Envelope Encryption and Key Hierarchy. Amazon Web Services. <https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#enveloping>
-> - **Confidential Computing Consortium** — A Technical Analysis of Confidential Computing, v1.3. Linux Foundation, 2022. <https://confidentialcomputing.io/white-papers-reports/>
-> - **Microsoft** — BitLocker Overview and Requirements FAQ. Windows Security Documentation. <https://learn.microsoft.com/en-us/windows/security/operating-system-security/data-protection/bitlocker/>
+## Fontes
+
+- **RFC 8446** — The Transport Layer Security (TLS) Protocol Version 1.3. IETF, 2018. [datatracker.ietf.org/doc/html/rfc8446](https://datatracker.ietf.org/doc/html/rfc8446)
+- **NIST SP 800-52 Rev. 2** — Guidelines for the Selection, Configuration, and Use of TLS Implementations. NIST, 2019. [doi.org/10.6028/NIST.SP.800-52r2](https://doi.org/10.6028/NIST.SP.800-52r2)
+- **NIST SP 800-57 Part 1 Rev. 5** — Recommendation for Key Management: General. NIST, 2020. [doi.org/10.6028/NIST.SP.800-57pt1r5](https://doi.org/10.6028/NIST.SP.800-57pt1r5)
+- **AWS Documentation** — Envelope Encryption and Key Hierarchy. Amazon Web Services. [docs.aws.amazon.com/kms/latest/developerguide/concepts.html#enveloping](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#enveloping)
+- **Confidential Computing Consortium** — A Technical Analysis of Confidential Computing, v1.3. Linux Foundation, 2022. [confidentialcomputing.io/white-papers-reports](https://confidentialcomputing.io/white-papers-reports/)
+- **Microsoft** — BitLocker Overview and Requirements FAQ. Windows Security Documentation. [learn.microsoft.com/en-us/windows/security/operating-system-security/data-protection/bitlocker](https://learn.microsoft.com/en-us/windows/security/operating-system-security/data-protection/bitlocker/)
+- **Computerphile** — TLS Handshake Explained. YouTube. [youtube.com/watch?v=86cQJ0MMses](https://www.youtube.com/watch?v=86cQJ0MMses)
