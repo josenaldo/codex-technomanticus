@@ -14,8 +14,8 @@ tags:
 
 Roadmap do galho `03-Dominios/Carreira/Currículo`. Construção nova (2026-08-20), a partir do plano em `00-Meta/specs/2026-08-20-galho-curriculo-plano.md` (30 tarefas) e da spec de design em `00-Meta/specs/2026-08-20-galho-curriculo-design.md`. Esta é a memória de retomada: cada linha aponta a tarefa do plano que a escreve, para que o galho possa ser continuado em outra sessão sem reler o plano inteiro.
 
-> [!warning] Diagnóstico de 2026-08-20 — Tarefa 1 (andaime)
-> Só a Tarefa 1 (pasta, MOC, roadmap) está feita. As outras 29 tarefas do plano ainda não rodaram. Todos os 26 alvos de nota abaixo são `pendente`.
+> [!warning] Diagnóstico de 2026-08-20 — Tarefa 10 concluída, bloco Iniciado fechado
+> As Tarefas 1-10 do plano rodaram: pasta, MOC e roadmap (Tarefa 1) e as nove notas do bloco Iniciado (01-09, Tarefas 2-10). **O bloco Iniciado está 9/9 escrito**, com gate G1-G5 rodado nota a nota. As Tarefas 11-30 (blocos Adepto e Magus, 18 notas + 1 broto) ainda não rodaram.
 
 ## A tese e as duas lentes
 
@@ -46,9 +46,9 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 | Iniciado (01-09) | 9 |
 | Adepto (10-19 + 18a) | 11 |
 | Magus (20-26) | 7 |
-| ✅ escritas | 5 |
-| ⬜ pendentes | 22 |
-| % concluído | 19% |
+| ✅ escritas | 9 (bloco Iniciado completo) |
+| ⬜ pendentes | 18 |
+| % concluído | 33% |
 | Scaffolding | ✅ roadmap.md + index.md criados (Tarefa 1) |
 | Wikilinks quebrados na Tarefa 1 (linha de base) | 27 (`/verificar-wikilinks`, 2026-08-20) — as 26 notas + o broto 18a do `index.md`, nenhum ainda existe; esperado até a Tarefa 30 |
 
@@ -142,10 +142,17 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 - **Pendências:** —
 
 #### 09 - Habilidades técnicas   [substantivo]
-- **Estado:** ⬜ pendente · fase: iniciado
-- **Tarefa do plano:** Bloco B
-- **Escopo:** a "Lista de Ingredientes" e a "Alphabet Soup", categorias, barras de proficiência, os termos da vaga, e a regra de lastro — não liste o que você não sustenta numa pergunta. Fecha o bloco Iniciado.
-- **Pendências:** —
+- **Estado:** ✅ escrita · fase: iniciado · 2026-08-20
+- **Tarefa do plano:** Tarefa 10 (Bloco B) — fecha o bloco Iniciado
+- **Escopo:** a seção como ponto de encontro de dois leitores com necessidades opostas (busca por termo × leitura humana rápida), ancorado na nota 04 sem repetir fontes; os dois anti-padrões nomeados — lista de ingredientes e sopa de letrinhas — com exemplo lado a lado (mesmo conjunto de termos, plano vs. categorizado) e diagrama Mermaid da categorização servindo os dois leitores ao mesmo tempo; a barra de proficiência com duas razões independentes de falha — mecanismo de extração remetido à nota 05, e a razão mais forte, semântica (o percentual não tem escala, aferição nem referência externa, é sensação vestida de gráfico), com caso fictício de entrevista expondo a lacuna; a regra dos termos exatos da vaga (não sinônimo), explicada como comunicação eficaz, não trapaça; a **regra de lastro** como coração da nota, com a distinção fina parceria-vs-operação e diagrama de bifurcação de decisão; o caso real do autor (Kubernetes removido de habilidades, mantido em experiência como parceria) com link verificável; variação por nível reaplicando o eixo sobe/desce da nota 03 especificamente à seção de habilidades, com tabela nível × função × tamanho relativo.
+- **Interfaces produzidas:** os nomes "lista de ingredientes" e "sopa de letrinhas" (já citados no `index.md` do galho); a regra de lastro e a distinção parceria-vs-operação, ganchos explícitos para a nota 11 (linha de bullet); wikilinks de ancoragem para as notas 03, 04, 05, 08, 10, 11, 14, e cross-galho para `Carreira/Entrevistas/index`.
+- **Régua de profundidade — palavras, não linhas:** medida em `wc -w`, faixa-alvo 4.500-6.500. **Contagem final: 6.541 palavras**, dentro da faixa-alvo (levemente acima do centro, mesma leitura já aceita nas notas 02 e 08). O arquivo tem 224 linhas — abaixo do piso T1 (≥300) do checklist de `/verificar-nota`, mesma situação já registrada em todas as notas anteriores deste galho: a régua de linhas mede parágrafos (1 parágrafo = 1 linha), não conteúdo; T1 tratado como N/A, substituído pela régua de palavras.
+- **Verificação:** gate G1-G5 rodado — checklist de `/verificar-nota` conferido manualmente item a item (mesma ressalva de execução já registrada nas notas 04-08: a skill carrega como procedimento para o próprio agente aplicar, não como subagente autônomo). E1 ✓ (TL;DR denso) · E2 ✓ (abre com a tensão dos dois leitores, não com definição) · E3 ✓ (2 diagramas Mermaid — categorização servindo os dois leitores, e a bifurcação parceria/operação — validados por `validar-mermaid.mjs`, 0 quebrados) · E4 ⚠ — sem seção `## Casos práticos` dedicada (ver ajuste de régua abaixo), mas 5 callouts `[!example]` (4 fictícios + 1 real) cobrem cenário concreto, seguindo o precedente das notas 01/03/05/06/07 · E5 ✓ · E6 ✓ (seção "Como soa em inglês") · E7 ✓ (tabela PT↔EN) · E8 ✓ (3 `[!warning]` em Armadilhas comuns); S1 ✓ (2 blocos, 0 quebrados); P1 N/A (nota conceitual, sem código); P2 ✓ (explica por que a busca booleana falha com sinônimo, por que a barra não significa nada, por que a lacuna na entrevista custa mais que a omissão — mecanismo, não só afirmação); P3 N/A (iniciado); P4 ✓ (grandezas nos exemplos — quatro anos de experiência de Larissa, ~20-30 tecnologias nas listas comparadas, percentuais da barra de proficiência); T1 — ver ajuste de régua de palavras acima; L1 ✓ (wikilink cross-galho para `Carreira/Entrevistas/index`); L2 ✓ (Fontes com link para josenaldo.com.br/experiences, verificado nesta sessão via `curl`, 200); M1 ausente — recomendado, não obrigatório em iniciado.
+- **Ajuste de régua registrado:** (1) E4 — sem seção `## Casos práticos` dedicada, seguindo o precedente das notas 01, 03, 05, 06 e 07 do mesmo galho: os 5 callouts `[!example]` distribuídos pelo corpo (dois leitores, lista de ingredientes lado a lado, barra de proficiência na entrevista, termos da vaga, e o caso real de lastro) já cumprem o papel de cenário concreto sem duplicar conteúdo numa nota já densa em exemplos. (2) T1 — mesma leitura já aplicada a todas as notas 01-08 deste galho: linhas não servem de régua sob a convenção de um parágrafo por linha; a nota tem 224 linhas e 6.541 palavras, dentro da faixa-alvo.
+- **G3 (conferência manual):** nenhuma linha quebrada manualmente (parágrafos em linha única, checado por comprimento de linha); as 5 etiquetas `[!example]` presentes (4 `Caso fictício` com persona declarada — Bianca Torres, o par lista-de-ingredientes/categorizada, Rafael Duarte na entrevista, Larissa Andrade — + 1 `Caso real` com link verificável); nenhum vazamento de `codex-technomanticus-apocrypha` (grep vazio).
+- **Caso real (Kubernetes removido de habilidades, mantido em experiência):** o link `https://josenaldo.com.br/experiences` foi verificado com `curl -s -o /dev/null -w "%{http_code}"` nesta sessão (200). O conteúdo específico do caso (remoção de Kubernetes da seção de skills, manutenção do bullet "partnered with DevOps to run a Kafka cluster on Kubernetes" na experiência) veio integralmente do brief da tarefa — nenhum detalhe adicional foi inventado além do que o brief forneceu.
+- **Marco do galho:** com esta nota, **as nove notas do bloco Iniciado estão escritas** (01-09) — ver Tabela-resumo abaixo, atualizada.
+- **Pendências:** M1 (vídeo/podcast) fica para enriquecimento futuro, não bloqueante nesta fase.
 
 ## Notas — Adepto (a matéria-prima)
 
