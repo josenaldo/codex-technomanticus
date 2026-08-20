@@ -196,8 +196,12 @@ Fatos confirmados pelo usuário em 2026-08-20, a usar como espinha da lente dos 
 
 - **1999** — primeiro software: sistema em Access para uma empresa de Itabuna. Entrou sem saber nada, aprendeu a ferramenta ali, implementou tabelas, consultas, relatórios e menus, e deu manutenção durante todo o ano. Porta 8 (virou dev por dentro).
 - **2000** — entra na graduação, motivado pela experiência anterior.
-- **2003-2005** — bolsista de iniciação científica no Labbi/UESC. **O usuário considera esta a sua primeira experiência profissional.** Porta 3.
+- **abr/2003 – ago/2004** — bolsista de iniciação científica no Labbi/UESC (registro público: *Scientific Initiation Scholarship*). **O usuário considera esta a sua primeira experiência profissional.** Porta 3. Confirmado por ele em 2026-08-20: **o projeto durou de 2003 a 2004**, e não até 2005 — a formulação inicial de "2003 a 2005" foi imprecisão do relato, corrigida na fonte.
 - **nov/2003** — CEPEDI, como **Java Júnior** (não estagiário — corrigido pelo usuário em 2026-08-20); chegou pelo orientador do Labbi, que era diretor. Entrada direta em júnior, aberta pela porta 3.
+
+- **ago/2004 – set/2006** — desenvolvedor Java e PHP na UESC (registro público), em trabalho ligado à pró-reitoria de pós-graduação e pesquisa, com o mesmo orientador como pró-reitor.
+- **set/2006 – abr/2008** — retorno ao CEPEDI, agora como **coordenador Java**, não mais programador júnior.
+- **Sobreposição verificada:** o CEPEDI (nov/2003 – fev/2004) aconteceu **dentro** do período da bolsa de IC. Ele acumulou os dois por quatro meses — fato público, verificável e útil como exemplo de sobreposição legítima de vínculos.
 - **2005 ou 2006** — PROPP (pró-reitoria de pós-graduação), com o mesmo orientador, então pró-reitor.
 - Retorno ao CEPEDI depois da PROPP.
 
