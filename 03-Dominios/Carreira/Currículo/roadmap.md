@@ -226,10 +226,14 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 - **Pendências:** M1 (mídia) fora de escopo, não registrado como lacuna.
 
 #### 17 - Projetos, portfólio e GitHub depois da IA   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
-- **Tarefa do plano:** Bloco C
-- **Escopo:** o que conta, a regra do README, e a desvalorização do projeto genérico como sinal.
-- **Pendências:** —
+- **Estado:** 🟢 escrita · fase: adepto · 2026-08-20 · 6333 palavras
+- **Tarefa do plano:** Bloco C — Tarefa 18
+- **Escopo:** estrutura da entrada de projeto (nome, link do repositório, link do que está no ar, problema em uma linha, tecnologias, desafio técnico, status honesto); a regra dura do README (o que é / para que serve / como rodar); o que conta e o que não conta; o eixo da nota — o que a IA mudou (saturação do projeto genérico como sinal, decisão de engenharia visível e uso real como o que resta valendo), classificado explicitamente como **plausível mas não medido**, ancorado na nota 04 sem repetir as fontes; a implicação prática de profundidade sobre quantidade, com diagrama de decisão sobre qual projeto aprofundar; variação por nível (estagiário/júnior = evidência principal; pleno+ = complemento, onde abandono visível pode subtrair mais do que ausência).
+- **Casos reais usados:** `injection-harness` (projeto sem URL de produção declarada, status honesto sem deploy) e `aprendendo-git-e-github` (README completo, uso real, curadoria como decisão visível), ambos verificados ao vivo no GitHub/site do autor em 2026-08-20.
+- **Persona reusada:** Gustavo Peixoto (estagiário/estudante de curso técnico, já usado na nota 15) e Rafael Duarte / Bianca Torres (pleno, já fixados no galho) — nenhuma persona nova criada; grep contra as 16 notas anteriores não encontrou colisão.
+- **Verificação:** gate G1-G5 rodado manualmente. E1-E8 ✓ (TL;DR denso; abre por cenário — recrutador que fecha a aba —, não por definição; 1 diagrama Mermaid de decisão validado por `validar-mermaid.mjs`, 0 blocos quebrados; 2 casos práticos; seção "O que vem a seguir" com ponte narrativa; seção de inglês + tabela PT↔EN; 3 `[!warning]`). S1 ✓. P1 N/A (nota conceitual). P2 ✓ (mecanismo do README explicado — por que o avaliador fecha a aba; mecanismo da saturação de sinal explicado). P3 N/A (adepto isento). P4 ✓ (Gustavo: 68% cobertura/31 versões; casos reais com status honesto declarado). T2 — arquivo tem 199 linhas, abaixo do piso de 400, mas a régua de palavras (6.333, dentro da faixa 4.500-6.500) é a que vale — mesmo ajuste já registrado nas notas 01, 02, 10-15 deste galho; regra de linha não mede conteúdo sob a convenção de parágrafo-por-linha. L1 ✓ (wikilinks cross-galho para `Entrevistas/index`, internos para 03, 04, 10, 15, 16, 18, 25). L2 ✓ (Fontes com 2 links externos verificáveis, verificados ao vivo em 2026-08-20). M1 — fora de escopo deste plano por decisão explícita do brief; não registrado como lacuna.
+- **G3 (conferência manual):** nenhuma linha quebrada manualmente; 5 `[!example]` (3 fictício, 2 real), todas com etiqueta e persona/fonte declarada; nenhum vazamento de `codex-technomanticus-apocrypha` (grep vazio); varredura de resíduo de inglês rodada (`grep -noE` por conectivos ingleses soltos) — únicas ocorrências dentro do bloco "Como soa em inglês" e da tabela PT↔EN, ambos intencionalmente em inglês; nenhum resíduo real.
+- **Pendências:** M1 (vídeo/podcast) fora de escopo deste plano por decisão registrada — não é lacuna, é escopo fechado.
 
 #### 18 - Adaptar por vaga sem reescrever   [substantivo]
 - **Estado:** ⬜ pendente · fase: adepto
