@@ -29,3 +29,6 @@ __pycache__/
 # Deps do validador de Mermaid (skill verificar-nota) — reinstaláveis via npm install
 .agents/skills/*/scripts/node_modules/
 .agents/skills/*/scripts/package-lock.json
+
+# Scratch de execução de planos (superpowers SDD)
+.superpowers/
