@@ -46,9 +46,9 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 | Iniciado (01-09) | 9 |
 | Adepto (10-19 + 18a) | 11 |
 | Magus (20-26) | 7 |
-| ✅ escritas | 0 |
-| ⬜ pendentes | 27 |
-| % concluído | 0% |
+| ✅ escritas | 1 |
+| ⬜ pendentes | 26 |
+| % concluído | 4% |
 | Scaffolding | ✅ roadmap.md + index.md criados (Tarefa 1) |
 | Wikilinks quebrados na Tarefa 1 (linha de base) | 27 (`/verificar-wikilinks`, 2026-08-20) — as 26 notas + o broto 18a do `index.md`, nenhum ainda existe; esperado até a Tarefa 30 |
 
@@ -75,10 +75,13 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 - **Pendências:** —
 
 #### 04 - Quem lê o seu currículo — e o que a evidência diz   [substantivo]
-- **Estado:** ⬜ pendente · fase: iniciado
-- **Tarefa do plano:** Bloco B
-- **Escopo:** a nota de crítica de fonte — o que tem evidência sólida, o que é plausível mas não medido, o que é caixa-preta.
-- **Pendências:** —
+- **Estado:** ✅ escrita · fase: iniciado · 2026-08-20
+- **Tarefa do plano:** Tarefa 2 (escrita antes do Bloco B, para estabelecer o vocabulário de ancoragem)
+- **Escopo:** a nota de crítica de fonte — três leitores em sequência (máquina/varredura/leitura técnica), de onde vem a contaminação comercial (Jobscan/Enhancv/Teal/ResumeGeni/Greenhouse, nomeadas), três mitos derrubados (score automático, PDF quebra ATS, 6 segundos), texto branco/prompt injection como ponte para a nota 25, o que sobrevive, e caixa-preta declarada (LinkedIn Recruiter Search, market share de ATS).
+- **Interfaces produzidas:** vocabulário de três categorias (evidência sólida / plausível mas não medido / caixa-preta declarada), usado pelo galho inteiro; wikilinks de ancoragem para as notas 05, 09, 17, 23 e 25.
+- **Verificação:** gate G1-G5 rodado manualmente (checklist de `/verificar-nota` conferido item a item, sem invocar a skill via runtime) — 300 linhas (piso T1 ≥300 cumprido no limite), 1 diagrama Mermaid validado sem erro de sintaxe (`validar-mermaid.mjs`, 1 bloco, 0 quebrados), E1-E8 presentes, P2/P4 presentes, P1/P3 N/A, L1/L2 presentes, M1 ausente (recomendado, não obrigatório em iniciado).
+- **Ajuste de régua registrado:** nenhum — a nota coube nas seções padrão do checklist (Casos práticos e Armadilhas comuns foram adaptados ao gênero de crítica de fonte, mas encaixaram sem forçar conteúdo).
+- **Pendências:** M1 (vídeo/podcast) fica para enriquecimento futuro, não bloqueante nesta fase.
 
 #### 05 - Formato e legibilidade de máquina   [substantivo]
 - **Estado:** ⬜ pendente · fase: iniciado
