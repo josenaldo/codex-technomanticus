@@ -14,7 +14,7 @@ tags:
 # Design — Galho: Currículo
 
 > [!abstract] TL;DR
-> Galho novo em `03-Dominios/Carreira/Currículo/`, par de Entrevistas. **26 notas + 1 broto**, três fases, duas lentes cruzadas — **peça do documento** (eixo principal) × **caminho de entrada no mercado** (eixo transversal, concentrado no início da carreira). Seis níveis: estagiário, trainee, júnior, pleno, sênior, staff. A tese que diferencia o galho de qualquer guia do mercado: **o currículo é a saída de um sistema de evidência, não um documento**. Todo dado é etiquetado como real ou fictício. O capstone é composto integralmente de casos reais.
+> Galho novo em `03-Dominios/Carreira/Currículo/`, par de Entrevistas. **26 notas + 1 broto**, três fases, duas lentes cruzadas — **peça do documento** (eixo principal) × **caminho de entrada no mercado** (eixo transversal, concentrado no início da carreira). Seis níveis: estagiário, trainee, júnior, pleno, sênior, staff. A tese que diferencia o galho de qualquer guia do mercado: **o currículo é a saída de um sistema de evidência, não um documento**. Todo dado é etiquetado como real ou fictício. O capstone tem seis peças: quatro de pessoas reais, uma persona fictícia (estagiário) e uma projeção (staff), cada uma declarada.
 
 ## 1. Problema
 
@@ -79,8 +79,12 @@ Dez portas de entrada, mapeadas explicitamente. Cada uma produz um **inventário
 
 **A observação que sustenta a nota 02:** estágio e trainee **não são níveis de senioridade — são portas com requisito formal**. Estágio exige matrícula em curso; programa de trainee tipicamente exige formação recente. O autodidata não tem acesso a nenhuma das duas, e por isso entra direto como júnior, competindo com quem já acumulou dois anos de estágio. Isso explica frustração que muita gente vive sem entender a causa.
 
-> [!warning] Verificação obrigatória antes de escrever
-> A base legal do estágio (Lei 11.788/2008) e a caracterização de programa de trainee precisam ser confirmadas na fonte primária antes de qualquer afirmação no texto. Nenhuma das duas foi verificada nesta pesquisa.
+> [!success] Verificado na fonte primária em 2026-08-20
+> **Lei 11.788/2008**, texto consolidado no Planalto. Estágio é ato educativo escolar supervisionado e exige **matrícula e frequência regular atestadas pela instituição de ensino** (Art. 1º e Art. 3º, I); **não cria vínculo empregatício** (Art. 3º); jornada máxima de **6h diárias e 30h semanais** para ensino superior (Art. 10, II); duração máxima de **2 anos na mesma parte concedente**, exceto estagiário com deficiência (Art. 11); **bolsa e auxílio-transporte são compulsórios** no estágio não obrigatório (Art. 12); recesso de 30 dias quando o estágio dura 1 ano ou mais (Art. 13).
+>
+> **Achado que sustenta a porta 3.** O **Art. 2º, § 3º** — na redação dada pela **Lei nº 14.913, de 2024** — estabelece que atividades de extensão, monitoria, **iniciação científica** e intercâmbio no exterior *poderão ser equiparadas ao estágio em caso de previsão no projeto pedagógico do curso*. A porta da IC não é analogia: tem status legal explícito e recente.
+>
+> **Trainee** não tem lei própria: é contratação **CLT com todos os direitos trabalhistas**, programas tipicamente de 12 a 24 meses, dirigidos a recém-formados ou com até ~2 anos de formação, com rodízio por áreas e mira em posição de liderança. Fontes secundárias (Exame, Serasa Experian, UBES) — declarar como prática de mercado, não como norma.
 
 O eixo é **transversal, não estrutural**: ele não gera um bloco de notas próprio. Concentra-se na nota 02 (o mapa das portas), na nota 10 (o inventário de evidência que cada porta produz) e nas notas de Iniciado em que pesa mais — formação e certificações, projetos, seção de experiência. Nas notas de Magus praticamente desaparece, porque a essa altura o caminho de entrada deixou de determinar o material.
 
@@ -170,20 +174,20 @@ Números reais do autor **entram**, por decisão explícita do usuário em 2026-
 
 ### 6.2 Composição do capstone
 
-Seis peças, todas ancoradas em pessoas reais. Não há persona fictícia no capstone.
+Seis peças. Quatro ancoradas em pessoas reais, uma persona fictícia declarada (estagiário) e uma projeção declarada (staff).
 
 | Nível | Origem | Base factual |
 | --- | --- | --- |
-| Estagiário | Real, reconstruído | CEPEDI, a partir de nov/2003 |
+| Estagiário | **Persona fictícia declarada** | o autor nunca foi estagiário (ver 6.3) |
 | Trainee | Real | Cassiana Gabriela Lima Barreto — Dadosfera, 2024 |
-| Júnior | Real, reconstruído | CEPEDI / Labbi-UESC, 2004-2005 |
+| Júnior | Real, reconstruído | CEPEDI, a partir de nov/2003 — júnior cuja única experiência era bolsa de IC |
 | Pleno | Real, reconstruído | o arco SWB → everis → TQI → Sankhya |
 | Sênior | Real e atual | o documento que existe hoje, público |
 | Staff | **Projeção declarada** | o degrau seguinte, não registro |
 
 O currículo de staff ser assumidamente uma projeção é o fecho do galho: escrever o currículo do nível que se quer é técnica real, e o capstone a executa em vez de descrevê-la.
 
-**Reconstrução é declarada como tal.** Os currículos de estagiário, júnior e pleno não são documentos que existiram — são reconstruções feitas hoje a partir de registro público datado. O galho diz isso na cara do leitor.
+**Reconstrução é declarada como tal.** Os currículos de júnior e pleno não são documentos que existiram — são reconstruções feitas hoje a partir de registro público datado. O galho diz isso na cara do leitor.
 
 ### 6.3 A trajetória do autor como exemplo trabalhado
 
@@ -192,14 +196,14 @@ Fatos confirmados pelo usuário em 2026-08-20, a usar como espinha da lente dos 
 - **1999** — primeiro software: sistema em Access para uma empresa de Itabuna. Entrou sem saber nada, aprendeu a ferramenta ali, implementou tabelas, consultas, relatórios e menus, e deu manutenção durante todo o ano. Porta 8 (virou dev por dentro).
 - **2000** — entra na graduação, motivado pela experiência anterior.
 - **2003-2005** — bolsista de iniciação científica no Labbi/UESC. **O usuário considera esta a sua primeira experiência profissional.** Porta 3.
-- **nov/2003** — CEPEDI, como **estagiário**; chegou pelo orientador do Labbi, que era diretor. Porta 1, aberta pela porta 3.
+- **nov/2003** — CEPEDI, como **Java Júnior** (não estagiário — corrigido pelo usuário em 2026-08-20); chegou pelo orientador do Labbi, que era diretor. Entrada direta em júnior, aberta pela porta 3.
 - **2005 ou 2006** — PROPP (pró-reitoria de pós-graduação), com o mesmo orientador, então pró-reitor.
 - Retorno ao CEPEDI depois da PROPP.
 
 **A tese que essa trajetória sustenta, e que dá honestidade ao galho inteiro:** as portas se compõem, e quem as abre costuma ser uma pessoa, não um documento. Cinco movimentos encadeados por uma relação. Isso fecha com a frase que o próprio autor já publicou — *o currículo te coloca na fila, mas é a sua reputação que te tira dela* — e é o contrapeso necessário num galho inteiramente dedicado a um documento.
 
-> [!warning] Divergência a resolver antes de citar
-> O site publica o CEPEDI de nov/2003 a fev/2004 com o título **"Junior Java Programmer"**, enquanto o usuário declara que ali era **estagiário**. Ou o título do site está inflado, ou "estagiário" é o vínculo e "Junior Java Programmer" era a função exercida. É precisamente a classe de inconsistência que a nota 23 ensina a caçar, e precisa estar resolvida antes de o galho apontar para lá como caso real. **Fora do escopo deste galho corrigir; dentro do escopo não citar até resolver.**
+> [!success] Divergência resolvida em 2026-08-20
+> O site está correto: no CEPEDI o vínculo era **Java Júnior**. O relato inicial de "estagiário" foi engano do usuário. **Consequência para o capstone:** o autor nunca foi estagiário, e a peça de estagiário passa a ser persona fictícia declarada. Em contrapartida, a peça de **júnior** fica mais forte e mais rara — um júnior real cuja única experiência anterior era bolsa de iniciação científica, situação comum e sem material publicado.
 
 ### 6.4 O caso Cassiana — trainee
 
@@ -217,7 +221,7 @@ Relatado pelo usuário, **a confirmar com ela**: aprendeu Python durante o douto
 Duas checagens pendentes: o cargo público é *engenheira de dados*, mas o relato fala em *ciência de dados* e o headline dela diz "Data Scientist | Researcher | Biomedical Engineer" — qual é a leitura correta; e a data e o título exatos da entrada como trainee, que só existem no relato.
 
 > [!important] Pré-condições para publicar o caso
-> 1. **Cassiana lê e aprova a nota antes da publicação.** O usuário autorizou a citação como cônjuge em 2026-08-20, e o galho segue com base nisso; ainda assim, o galho é público e permanente, e o caso é o mais pessoal do conjunto.
+> 1. ~~Cassiana lê e aprova a nota antes da publicação.~~ **Aprovado por ela em 2026-08-20**, conforme relato do usuário.
 > 2. **O currículo dela**, que o usuário enviará, é a fonte para a peça do capstone. Nada de reconstrução aqui.
 > 3. **Nenhum data broker como fonte.** RocketReach, ZoomInfo e similares raspam e revendem contato de pessoa física e estão excluídos, inclusive como citação. Fontes admitidas: LinkedIn, Dadosfera, UFU, DIO e as publicações.
 
@@ -295,8 +299,8 @@ Conduzida em 2026-08-20. **Ressalva metodológica que precisa aparecer no galho:
 ## 10. Fora de escopo
 
 - Corrigir a divergência de título do CEPEDI no site (registrada em 6.3, mas é trabalho no repositório do site).
-- Revisar o post `como-escrever-o-seu-curriculo.md` do blog, que repete parte do folclore de ATS derrubado na seção 8.2. Vale fazer depois; não é este trabalho.
-- Popular `cglima.github.io`, que ainda contém as 13 experiências do autor em vez das da titular.
+- Revisar o post `como-escrever-o-seu-curriculo.md` do blog, que repete parte do folclore de ATS derrubado na seção 8.2. O usuário fará isso em **sessão separada, depois de o galho estar pronto**.
+- Popular `cglima.github.io`, que ainda contém as 13 experiências do autor em vez das da titular. O usuário definiu em 2026-08-20 que o site dela vem **depois** de o site dele estar completo.
 - Currículo acadêmico, Lattes e Europass em profundidade — mencionados na nota 24, sem trilha própria.
 - Preparação para a entrevista em si — é `Carreira/Entrevistas/`.
 - Negociação salarial — é o capstone de Entrevistas.
@@ -306,9 +310,9 @@ Conduzida em 2026-08-20. **Ressalva metodológica que precisa aparecer no galho:
 | Risco | Mitigação |
 | --- | --- |
 | Vitrine degenerar em autopromoção e sufocar o ensino | Etiquetagem obrigatória; todo caso real precisa ensinar algo verificável, não só demonstrar competência |
-| Citar terceiro real (Cassiana) num artefato público e permanente | Aprovação dela antes de publicar; só fonte pública ou material que ela forneça; nenhum data broker |
+| Citar terceiro real (Cassiana) num artefato público e permanente | **Aprovação dela obtida em 2026-08-20**; só fonte pública ou material que ela forneça; nenhum data broker |
 | Reconstruir currículos antigos e a reconstrução ser lida como registro | Declaração explícita em cada peça reconstruída do capstone |
 | Repetir folclore de ATS por inércia | A nota 04 é escrita primeiro e serve de gate para as demais |
 | Vazar conteúdo do apocrypha para o repositório público | Só princípios genéricos entram; nenhum caminho, wikilink ou dado privado |
 | 26 notas serem grandes demais para uma sessão | Execução em blocos, com `roadmap.md` como memória em disco |
-| Afirmar base legal de estágio/trainee sem verificar | Verificação na fonte primária declarada como pré-condição da nota 02 |
+| ~~Afirmar base legal de estágio/trainee sem verificar~~ | **Resolvido** — Lei 11.788/2008 verificada no Planalto em 2026-08-20 (ver 3.4) |
