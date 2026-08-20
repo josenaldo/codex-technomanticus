@@ -46,9 +46,9 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 | Iniciado (01-09) | 9 |
 | Adepto (10-19 + 18a) | 11 |
 | Magus (20-26) | 7 |
-| ✅ escritas | 3 |
-| ⬜ pendentes | 24 |
-| % concluído | 11% |
+| ✅ escritas | 4 |
+| ⬜ pendentes | 23 |
+| % concluído | 15% |
 | Scaffolding | ✅ roadmap.md + index.md criados (Tarefa 1) |
 | Wikilinks quebrados na Tarefa 1 (linha de base) | 27 (`/verificar-wikilinks`, 2026-08-20) — as 26 notas + o broto 18a do `index.md`, nenhum ainda existe; esperado até a Tarefa 30 |
 
@@ -80,10 +80,15 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 - **Pendências:** M1 (vídeo/podcast) fica para enriquecimento futuro, não bloqueante nesta fase.
 
 #### 03 - Os seis níveis e o que muda entre eles   [substantivo]
-- **Estado:** ⬜ pendente · fase: iniciado
-- **Tarefa do plano:** Bloco B
-- **Escopo:** nota-mapa — ensina a ler o galho, estabelece o vocabulário de nível usado em todas as demais, e dá a regra de páginas por nível com a ressalva de que é consenso de mercado, não estudo.
-- **Pendências:** —
+- **Estado:** ✅ escrita · fase: iniciado · 2026-08-20
+- **Tarefa do plano:** Tarefa 5 (nota-mapa)
+- **Escopo:** os seis níveis descritos pelo que o documento precisa provar em cada um (não pelo que a pessoa sabe); remissão explícita à [[03-Dominios/Carreira/Currículo/02 - As portas de entrada no mercado|nota 02]] para não reabrir a discussão porta-vs-nível; o eixo central — o que sobe (impacto organizacional, liderança técnica sem cargo de gestão, decisão de arquitetura, mentoria) e o que desce (stack linha a linha, tarefa de dia a dia, certificação básica) — com exemplo trabalhado (persona fictícia Renata Aquino, o mesmo evento de migração de gateway de pagamento descrito em seis versões, uma por nível) e diagrama Mermaid da escada; a regra de páginas por nível declarada como convenção de mercado sem fonte primária localizada (mais perto de caixa-preta declarada do que de plausível-mas-não-medido, reusando o vocabulário da nota 04), com URLs verificáveis de Jobscan e Enhancv citadas como fontes comerciais; a tabela-mapa (nível × o que provar × onde no galho) como índice funcional do galho inteiro.
+- **Interfaces produzidas:** o vocabulário de nível (o que cada um precisa provar) e o eixo sobe/desce, que o restante do galho reusa; a tabela-mapa, ponto de retorno para as notas que tratarem variação por nível sem repetir a explicação; wikilinks de ancoragem para as notas 02, 04, 07, 08, 09, 11, 13, 14, 20, 21, 22, 26, e cross-galho para `Carreira/Entrevistas/index`.
+- **Régua de profundidade — palavras, não linhas:** medida em `wc -w`, faixa-alvo 4.500-6.500. **Contagem final: 5.600 palavras**, dentro da faixa-alvo. O arquivo tem 179 linhas — abaixo do piso T1 (≥300) do checklist de `/verificar-nota`, mesma situação já registrada nas notas 01 e 02: a régua de linhas mede parágrafos (1 parágrafo = 1 linha), não conteúdo; T1 tratado como N/A, substituído pela régua de palavras.
+- **Verificação:** gate G1-G5 rodado — checklist de `/verificar-nota` conferido manualmente item a item. E1 ✓ (TL;DR denso) · E2 ✓ (abre com o caso fictício de Diego, não com definição) · E3 ✓ (1 diagrama Mermaid da escada sobe/desce, validado por `validar-mermaid.mjs`, 0 quebrados) · E4 — **ajuste de régua registrado abaixo** · E5 ✓ · E6 ✓ (seção "Como soa em inglês") · E7 ✓ (tabela PT↔EN) · E8 ✓ (3 `[!warning]` em Armadilhas comuns); S1 ✓; P1 N/A (nota conceitual, sem código); P2 ✓ (explica por que o eixo sobe/desce acontece, não só que acontece — ligado ao que o leitor de cada nível precisa decidir); P3 N/A (iniciado); P4 ✓ (grandezas no exemplo de Renata: 2,3% → 0,4% de taxa de falha, doze/catorze anos de carreira, seis de doze endpoints, dois anos de vigência da decisão); T1 — ver ajuste de régua de palavras acima; L1 ✓ (wikilink cross-galho para `Carreira/Entrevistas/index`); L2 ✓ (Fontes com URLs verificáveis de Jobscan e Enhancv, declaradas como comerciais); M1 ausente — recomendado, não obrigatório em iniciado.
+- **Ajuste de régua registrado — E4 "Casos práticos":** nenhuma seção `## Casos práticos` dedicada foi criada, seguindo o mesmo precedente já registrado na nota 01 (achado 2 da rodada de correção): o caso de Diego (abertura) e o exemplo trabalhado de Renata Aquino (seis versões do mesmo evento, uma por nível) já cobrem, dentro do fluxo da nota, o papel que uma seção dedicada de "Casos práticos" cumpriria — duplicar esses dois cenários numa seção à parte inflaria a nota sem acrescentar conteúdo novo, contrariando a régua de palavras (faixa 4.500-6.500) que esta nota já preenche com folga confortável. Ambos os cenários carregam etiqueta `[!example] Caso fictício` com persona declarada, conforme exigido.
+- **G3 (conferência manual):** nenhuma linha quebrada manualmente (parágrafos em linha única); as duas etiquetas `[!example] Caso fictício` presentes, ambas com persona declarada (Diego, Renata Aquino); nenhum vazamento de `codex-technomanticus-apocrypha` (grep vazio).
+- **Pendências:** M1 (vídeo/podcast) fica para enriquecimento futuro, não bloqueante nesta fase.
 
 #### 04 - Quem lê o seu currículo — e o que a evidência diz   [substantivo]
 - **Estado:** ✅ escrita · fase: iniciado · 2026-08-20
