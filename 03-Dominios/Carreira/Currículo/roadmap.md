@@ -46,9 +46,9 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 | Iniciado (01-09) | 9 |
 | Adepto (10-19 + 18a) | 11 |
 | Magus (20-26) | 7 |
-| ✅ escritas | 2 |
-| ⬜ pendentes | 25 |
-| % concluído | 7% |
+| ✅ escritas | 3 |
+| ⬜ pendentes | 24 |
+| % concluído | 11% |
 | Scaffolding | ✅ roadmap.md + index.md criados (Tarefa 1) |
 | Wikilinks quebrados na Tarefa 1 (linha de base) | 27 (`/verificar-wikilinks`, 2026-08-20) — as 26 notas + o broto 18a do `index.md`, nenhum ainda existe; esperado até a Tarefa 30 |
 
@@ -69,10 +69,14 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 - **Pendências:** M1 (vídeo/podcast) fica para enriquecimento futuro, não bloqueante nesta fase.
 
 #### 02 - As portas de entrada no mercado   [substantivo]
-- **Estado:** ⬜ pendente · fase: iniciado
-- **Tarefa do plano:** Bloco B
-- **Escopo:** as dez portas, o requisito formal de cada uma, e a assimetria que isso cria; estágio e trainee são portas, não níveis (Lei 11.788/2008 verificada na fonte primária pela spec).
-- **Pendências:** —
+- **Estado:** ✅ escrita · fase: iniciado · 2026-08-20
+- **Tarefa do plano:** Tarefa 4 (Bloco B)
+- **Escopo:** as dez portas, o requisito formal de cada uma, o que cada uma entrega de evidência e a dúvida que desperta no leitor; a tese de que estágio e trainee são portas com requisito formal, não níveis de senioridade; base legal com artigo citado (Lei 11.788/2008 — Art. 1º, 2º, 3º, 10, 11, 12, 13, e o Art. 2º § 3º na redação da Lei 14.913/2024, que equipara IC a estágio); trainee declarado explicitamente como prática de mercado (Exame, Serasa Experian, UBES), sem lei própria; diagrama Mermaid das dez portas convergindo para estagiário/trainee/júnior, mostrando a assimetria de acesso; dois casos reais — a trajetória encadeada do autor (1999-2006, portas 8→3→CEPEDI→PROPP) e a trajetória de Cassiana Gabriela Lima Barreto (porta 2+7, trainee de ciência de dados alocada em engenharia de dados).
+- **Interfaces produzidas:** o vocabulário das dez portas (requisito de acesso / evidência / dúvida do leitor), reusado pela nota 10 (inventário de evidência) e citado pelas notas 08, 16, 19, 26; wikilinks de ancoragem para as notas 01, 03, 08, 10, 16, 19, 26, e cross-galho para `Carreira/Entrevistas/index`.
+- **Régua de profundidade — palavras, não linhas:** medida em `wc -w`, faixa-alvo 4.500-6.500. **Contagem final: 6.563 palavras**, no topo da banda (levemente acima por ~60 palavras, dentro da margem aceitável). O arquivo tem 228 linhas — abaixo do piso T1 (≥300 linhas) do checklist de `/verificar-nota`, mas essa régua de linhas mede parágrafos (1 parágrafo = 1 linha, por mais longa) e não conteúdo; a régua de palavras é a que vale, conforme a correção já registrada na nota 01. T1 tratado como N/A para este galho, substituído pela régua de palavras.
+- **Verificação:** gate G1-G5 rodado — checklist de `/verificar-nota` conferido manualmente item a item. E1-E8 ✓ (TL;DR denso, abertura com cenário de frustração real — não definição —, 1 diagrama Mermaid validado por `validar-mermaid.mjs` (0 quebrados), seção "Casos práticos" com os 2 casos reais, "O que vem a seguir", seção de inglês, tabela PT↔EN, 3 `[!warning]` em Armadilhas comuns); S1 ✓; P1 N/A (nota conceitual, sem código); P2 ✓ (mecanismo legal e de mercado explicado, não só afirmado); P3 N/A (iniciado); P4 ✓ (grandezas legais — 2 anos, 6h/30h, 12-24 meses — e os dois casos reais com datas precisas); T1 — ver ajuste de régua acima; L1 ✓ (wikilink cross-galho para `Carreira/Entrevistas/index`); L2 ✓ (Fontes com 4 entradas, todas com URL verificável ou declaradas como prática de mercado); M1 ausente — recomendado, não obrigatório em iniciado.
+- **G3 (conferência manual):** nenhuma linha quebrada manualmente (parágrafos em linha única, checado por comprimento de linha); as duas etiquetas `[!example] Caso real` presentes, ambas com link verificável (josenaldo.com.br/experiences; linkedin.com/in/cassianalima); nenhum vazamento de `codex-technomanticus-apocrypha` (grep vazio).
+- **Pendências:** M1 (vídeo/podcast) fica para enriquecimento futuro, não bloqueante nesta fase.
 
 #### 03 - Os seis níveis e o que muda entre eles   [substantivo]
 - **Estado:** ⬜ pendente · fase: iniciado
