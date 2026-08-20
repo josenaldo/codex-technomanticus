@@ -88,9 +88,7 @@ graph LR
 ```
 
 > [!warning] Tratar A/B como substituto de pensar
-> **O que acontece:** uma equipe roda um teste sem hipótese clara ("vamos testar cor de botão para ver o que acontece") ou terceiriza para o resultado do teste uma decisão que exigia julgamento — "não sei se essa mudança é boa, mas o A/B vai me dizer".
-> **Por quê:** rodar um teste dá a sensação de rigor e neutralidade ("os dados decidiram, não eu"), mesmo quando o teste em si foi mal desenhado, subdimensionado, ou está sendo usado para evitar uma decisão que já tinha evidência suficiente sem ele.
-> **Como evitar:** declare a hipótese e o critério de decisão **antes** de rodar qualquer teste (o mesmo princípio do GSM na [[03-Dominios/Engenharia/UX/Medir, Validar e Sustentar/38 - HEART e Goals-Signals-Metrics|nota 38]]) — e reconheça quando uma decisão já tem evidência qualitativa suficiente para ser tomada sem esperar um teste que o tráfego não sustenta de qualquer forma.
+> **O que acontece:** uma equipe roda um teste sem hipótese clara ("vamos testar cor de botão para ver o que acontece") ou terceiriza para o resultado do teste uma decisão que exigia julgamento — "não sei se essa mudança é boa, mas o A/B vai me dizer". **Por quê:** rodar um teste dá a sensação de rigor e neutralidade ("os dados decidiram, não eu"), mesmo quando o teste em si foi mal desenhado, subdimensionado, ou está sendo usado para evitar uma decisão que já tinha evidência suficiente sem ele. **Como evitar:** declare a hipótese e o critério de decisão **antes** de rodar qualquer teste (o mesmo princípio do GSM na [[03-Dominios/Engenharia/UX/Medir, Validar e Sustentar/38 - HEART e Goals-Signals-Metrics|nota 38]]) — e reconheça quando uma decisão já tem evidência qualitativa suficiente para ser tomada sem esperar um teste que o tráfego não sustenta de qualquer forma.
 
 ## O que dá pra fazer sozinho, e o que não dá
 
@@ -114,24 +112,16 @@ Um engenheiro fractional, ao constatar que o produto não tem tráfego para A/B,
 ## Armadilhas comuns
 
 > [!warning] Rodar A/B formal com tráfego insuficiente e tratar o resultado como conclusivo
-> **O que acontece:** um teste roda com poucas dezenas de conversões e "declara" uma variante vencedora, que vira decisão de produto permanente.
-> **Por quê:** o resultado do teste sai como um número e uma cor (verde = ganhou), dando aparência de rigor mesmo quando a amostra é pequena demais para sustentar aquela confiança.
-> **Como evitar:** calcule o N necessário (baseline + MDE) **antes** de rodar o teste, e se o tráfego disponível não alcança esse N num prazo razoável, mude para uma das alternativas desta nota em vez de rodar o teste mesmo assim.
+> **O que acontece:** um teste roda com poucas dezenas de conversões e "declara" uma variante vencedora, que vira decisão de produto permanente. **Por quê:** o resultado do teste sai como um número e uma cor (verde = ganhou), dando aparência de rigor mesmo quando a amostra é pequena demais para sustentar aquela confiança. **Como evitar:** calcule o N necessário (baseline + MDE) **antes** de rodar o teste, e se o tráfego disponível não alcança esse N num prazo razoável, mude para uma das alternativas desta nota em vez de rodar o teste mesmo assim.
 
 > [!warning] Tratar usuários de um mesmo cliente B2B como amostra i.i.d.
-> **O que acontece:** um teste divide aleatoriamente usuários individuais de uma mesma empresa cliente entre grupo A e B, tratando cada usuário como observação independente.
-> **Por quê:** a divisão aleatória por usuário *parece* metodologicamente correta, mas ignora que usuários da mesma empresa se influenciam mutuamente e compartilham contexto — violando a premissa estatística de independência sem que isso apareça no resultado.
-> **Como evitar:** quando o teste envolve poucos clientes B2B, considere randomizar por **empresa inteira**, não por usuário individual, ou trate o resultado como estudo de caso qualitativo em vez de teste estatístico formal.
+> **O que acontece:** um teste divide aleatoriamente usuários individuais de uma mesma empresa cliente entre grupo A e B, tratando cada usuário como observação independente. **Por quê:** a divisão aleatória por usuário *parece* metodologicamente correta, mas ignora que usuários da mesma empresa se influenciam mutuamente e compartilham contexto — violando a premissa estatística de independência sem que isso apareça no resultado. **Como evitar:** quando o teste envolve poucos clientes B2B, considere randomizar por **empresa inteira**, não por usuário individual, ou trate o resultado como estudo de caso qualitativo em vez de teste estatístico formal.
 
 > [!warning] Peeking disfarçado de "acompanhamento de progresso"
-> **O que acontece:** o time checa o painel do teste todo dia, e assim que uma variante "parece" à frente, encerra o teste e declara vencedor — sem ter calculado ou respeitado o N necessário.
-> **Por quê:** a pressão de negócio para responder rápido é real, e checar o painel parece inofensivo — mas cada checagem intermediária infla o risco de falso-positivo de forma cumulativa.
-> **Como evitar:** se checagem contínua é uma necessidade real do contexto (cliente pressiona por atualização semanal), use método sequencial/bayesiano desenhado para isso — não um teste de hipótese clássico checado fora do protocolo.
+> **O que acontece:** o time checa o painel do teste todo dia, e assim que uma variante "parece" à frente, encerra o teste e declara vencedor — sem ter calculado ou respeitado o N necessário. **Por quê:** a pressão de negócio para responder rápido é real, e checar o painel parece inofensivo — mas cada checagem intermediária infla o risco de falso-positivo de forma cumulativa. **Como evitar:** se checagem contínua é uma necessidade real do contexto (cliente pressiona por atualização semanal), use método sequencial/bayesiano desenhado para isso — não um teste de hipótese clássico checado fora do protocolo.
 
 > [!warning] Tratar qualitativo como "plano B" de quem não conseguiu rodar o teste de verdade
-> **O que acontece:** a pesquisa qualitativa é apresentada ao cliente com desculpa ("não tivemos tráfego suficiente para um A/B, então fizemos entrevistas") em vez de ser apresentada como o método certo escolhido deliberadamente para o contexto.
-> **Por quê:** a cultura de produto, fortemente influenciada por literatura de Big Tech com tráfego alto, trata quantitativo como "ciência de verdade" e qualitativo como substituto de segunda categoria — uma hierarquia que não reflete o rigor metodológico real de cada método aplicado ao contexto certo.
-> **Como evitar:** apresente o método qualitativo pelo que ele é — a ferramenta certa para uma população pequena e concentrada, com amostra que representa uma fração real e substancial do total de usuários — nunca como consolo por não ter conseguido "o teste de verdade".
+> **O que acontece:** a pesquisa qualitativa é apresentada ao cliente com desculpa ("não tivemos tráfego suficiente para um A/B, então fizemos entrevistas") em vez de ser apresentada como o método certo escolhido deliberadamente para o contexto. **Por quê:** a cultura de produto, fortemente influenciada por literatura de Big Tech com tráfego alto, trata quantitativo como "ciência de verdade" e qualitativo como substituto de segunda categoria — uma hierarquia que não reflete o rigor metodológico real de cada método aplicado ao contexto certo. **Como evitar:** apresente o método qualitativo pelo que ele é — a ferramenta certa para uma população pequena e concentrada, com amostra que representa uma fração real e substancial do total de usuários — nunca como consolo por não ter conseguido "o teste de verdade".
 
 ## Como explicar em inglês
 

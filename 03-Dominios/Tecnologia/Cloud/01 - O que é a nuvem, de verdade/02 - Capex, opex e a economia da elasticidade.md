@@ -83,8 +83,7 @@ Vale registrar, para não simplificar demais: opex não é gratuito nem elimina 
 > [!tip] Assista: AWS Cloud Economics Explained in 3 Minutes
 > **Canal:** NextWork | **Duração:** ~3min | **Idioma:** EN
 >
-> Um resumo direto do mesmo par capex/opex desta seção — e ele já aponta para a frente, para o **galho 19** (FinOps) desta trilha: consumption-based pricing só compensa se alguém pratica right-sizing (monitorar uso, analisar tendência, ajustar o tamanho contratado), não é economia automática.
-> Trecho de destaque [00:51]: *"Cloud computing very clearly falls under OpEx because it is an operational ongoing cost. We call this the consumption-based pricing model."*
+> Um resumo direto do mesmo par capex/opex desta seção — e ele já aponta para a frente, para o **galho 19** (FinOps) desta trilha: consumption-based pricing só compensa se alguém pratica right-sizing (monitorar uso, analisar tendência, ajustar o tamanho contratado), não é economia automática. Trecho de destaque [00:51]: *"Cloud computing very clearly falls under OpEx because it is an operational ongoing cost. We call this the consumption-based pricing model."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=LsiGN75t_rg)
 
@@ -182,8 +181,7 @@ O inverso também existe, embora seja mais raro: um sistema pode ter partes elá
 > [!tip] Assista: What is Scalability and Elasticity in Cloud Computing?
 > **Canal:** CBT Nuggets | **Duração:** ~6min | **Idioma:** EN
 >
-> O vídeo desenha exatamente essa mesma distinção com um exemplo de VMs atrás de um load balancer: escalar manualmente (subir/derrubar servidor 2, 3, 4...) é escalabilidade; o mesmo processo acontecendo sozinho, sem humano, é elasticidade.
-> Trecho de destaque [03:00]: *"scalability is the ability to meet the demand and elasticity is the concept of doing it in an automated fashion without a human getting involved"*
+> O vídeo desenha exatamente essa mesma distinção com um exemplo de VMs atrás de um load balancer: escalar manualmente (subir/derrubar servidor 2, 3, 4...) é escalabilidade; o mesmo processo acontecendo sozinho, sem humano, é elasticidade. Trecho de destaque [03:00]: *"scalability is the ability to meet the demand and elasticity is the concept of doing it in an automated fashion without a human getting involved"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=qk_L-a3mCnA)
 

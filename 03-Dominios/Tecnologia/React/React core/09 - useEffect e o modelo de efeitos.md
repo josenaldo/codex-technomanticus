@@ -452,29 +452,19 @@ function Page({ url, shoppingCart }: { url: string; shoppingCart: Item[] }) {
 ## Armadilhas comuns
 
 > [!warning] Armadilha 1: Effect para derivar estado
-> **O que acontece:** O componente pisca ou cria renders extras porque você faz `setX(compute(y))` dentro de um effect.
-> **Por quê:** Effect roda *depois* do render. Setar estado dentro dele dispara outro render — dois renders onde um resolveria.
-> **Como evitar:** Se `X` pode ser calculado a partir de `Y` durante o render, faça isso. `const x = compute(y)` no corpo do componente é suficiente.
+> **O que acontece:** O componente pisca ou cria renders extras porque você faz `setX(compute(y))` dentro de um effect. **Por quê:** Effect roda *depois* do render. Setar estado dentro dele dispara outro render — dois renders onde um resolveria. **Como evitar:** Se `X` pode ser calculado a partir de `Y` durante o render, faça isso. `const x = compute(y)` no corpo do componente é suficiente.
 
 > [!warning] Armadilha 2: dependências faltando (stale closure)
-> **O que acontece:** O effect usa um valor (prop, state, função) que muda, mas ele continua usando a versão antiga.
-> **Por quê:** Closures capturam valores no momento da criação. Se `roomId` não está no array, o effect fecha sobre o `roomId` do primeiro render e nunca atualiza.
-> **Como evitar:** Sempre inclua no array tudo que o effect lê. Deixe o linter `exhaustive-deps` guiar você. Nunca suprima o warning sem entender por quê.
+> **O que acontece:** O effect usa um valor (prop, state, função) que muda, mas ele continua usando a versão antiga. **Por quê:** Closures capturam valores no momento da criação. Se `roomId` não está no array, o effect fecha sobre o `roomId` do primeiro render e nunca atualiza. **Como evitar:** Sempre inclua no array tudo que o effect lê. Deixe o linter `exhaustive-deps` guiar você. Nunca suprima o warning sem entender por quê.
 
 > [!warning] Armadilha 3: fetch sem cleanup → race condition
-> **O que acontece:** Resultados antigos sobrescrevem resultados novos quando o usuário navega rapidamente.
-> **Por quê:** Múltiplos requests em voo resolvem em ordem imprevisível.
-> **Como evitar:** Use a flag `ignore` ou `AbortController` no cleanup. Sempre.
+> **O que acontece:** Resultados antigos sobrescrevem resultados novos quando o usuário navega rapidamente. **Por quê:** Múltiplos requests em voo resolvem em ordem imprevisível. **Como evitar:** Use a flag `ignore` ou `AbortController` no cleanup. Sempre.
 
 > [!warning] Armadilha 4: objeto/função inline como dependência
-> **O que acontece:** O effect roda em todo render mesmo que o conteúdo não tenha mudado.
-> **Por quê:** `{ color: "red" }` cria um novo objeto a cada render; `Object.is({ color: "red" }, { color: "red" })` retorna `false`.
-> **Como evitar:** Mova objetos e funções para dentro do effect, ou use `useMemo`/`useCallback` para estabilizar as referências.
+> **O que acontece:** O effect roda em todo render mesmo que o conteúdo não tenha mudado. **Por quê:** `{ color: "red" }` cria um novo objeto a cada render; `Object.is({ color: "red" }, { color: "red" })` retorna `false`. **Como evitar:** Mova objetos e funções para dentro do effect, ou use `useMemo`/`useCallback` para estabilizar as referências.
 
 > [!warning] Armadilha 5: usar useEffect para comunicação entre componentes
-> **O que acontece:** Um effect monitora estado e chama callbacks do pai, criando cascatas de renders.
-> **Por quê:** Effect → setState pai → re-render pai → re-render filho → effect dispara de novo.
-> **Como evitar:** Chame callbacks do pai diretamente nos event handlers, não em effects. O pai e o filho devem se comunicar via props/callbacks síncronos.
+> **O que acontece:** Um effect monitora estado e chama callbacks do pai, criando cascatas de renders. **Por quê:** Effect → setState pai → re-render pai → re-render filho → effect dispara de novo. **Como evitar:** Chame callbacks do pai diretamente nos event handlers, não em effects. O pai e o filho devem se comunicar via props/callbacks síncronos.
 
 ---
 

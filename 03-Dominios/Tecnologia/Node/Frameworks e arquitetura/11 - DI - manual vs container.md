@@ -459,63 +459,41 @@ Sem esses sinais, manual DI continua sendo escolha forte.
 ## Armadilhas comuns
 
 > [!warning] Container em app pequeno por antecipação
-> **O que acontece:** complexidade de setup, tokens, decorators e lifecycle antes de qualquer problema real de wiring.
-> **Por quê:** time adota container "para crescer" antes de ter grafo de dependências complexo o suficiente.
-> **Como evitar:** comece com manual DI; migre para container quando factories ficarem repetitivas ou scopes ficarem necessários.
+> **O que acontece:** complexidade de setup, tokens, decorators e lifecycle antes de qualquer problema real de wiring. **Por quê:** time adota container "para crescer" antes de ter grafo de dependências complexo o suficiente. **Como evitar:** comece com manual DI; migre para container quando factories ficarem repetitivas ou scopes ficarem necessários.
 
 > [!warning] Misturar DI manual e container sem fronteira clara
-> **O que acontece:** ninguém sabe se uma dependência é instanciada no composition root manual ou no container; debugging vira arqueologia.
-> **Por quê:** migração parcial para container sem refatorar o composition root original.
-> **Como evitar:** defina uma fronteira: ou todo o grafo vai para o container, ou use factories manuais — nunca os dois sem regra explícita.
+> **O que acontece:** ninguém sabe se uma dependência é instanciada no composition root manual ou no container; debugging vira arqueologia. **Por quê:** migração parcial para container sem refatorar o composition root original. **Como evitar:** defina uma fronteira: ou todo o grafo vai para o container, ou use factories manuais — nunca os dois sem regra explícita.
 
 > [!warning] `tsyringe` sem `reflect-metadata` importado no entrypoint
-> **O que acontece:** erro em runtime: "Reflect.metadata is not a function" ou decorators não funcionam como esperado.
-> **Por quê:** `tsyringe` depende de `reflect-metadata` mas não o importa automaticamente — exige `import "reflect-metadata"` antes de qualquer uso de decorator.
-> **Como evitar:** importe `reflect-metadata` como primeira linha do entrypoint (`main.ts`); verifique `emitDecoratorMetadata: true` no `tsconfig.json`.
+> **O que acontece:** erro em runtime: "Reflect.metadata is not a function" ou decorators não funcionam como esperado. **Por quê:** `tsyringe` depende de `reflect-metadata` mas não o importa automaticamente — exige `import "reflect-metadata"` antes de qualquer uso de decorator. **Como evitar:** importe `reflect-metadata` como primeira linha do entrypoint (`main.ts`); verifique `emitDecoratorMetadata: true` no `tsconfig.json`.
 
 > [!warning] Request scope viral em NestJS
-> **O que acontece:** um provider `Scope.REQUEST` torna todos os providers que dependem dele também request-scoped, criando instâncias desnecessárias.
-> **Por quê:** NestJS propaga request scope pela árvore de dependências; um provider de logging mal posicionado pode contaminar toda a cadeia.
-> **Como evitar:** use request scope só para dados específicos da request (tenantId, userId, requestId); logger e repositórios geralmente são singleton.
+> **O que acontece:** um provider `Scope.REQUEST` torna todos os providers que dependem dele também request-scoped, criando instâncias desnecessárias. **Por quê:** NestJS propaga request scope pela árvore de dependências; um provider de logging mal posicionado pode contaminar toda a cadeia. **Como evitar:** use request scope só para dados específicos da request (tenantId, userId, requestId); logger e repositórios geralmente são singleton.
 
 > [!warning] Composition root espalhado em múltiplos módulos sem coordenação
-> **O que acontece:** dependências duplicadas, versões inconsistentes de serviços, race condition de inicialização.
-> **Por quê:** cada módulo cria suas dependências no `constructor` ou no `OnModuleInit`, sem visibilidade do grafo completo.
-> **Como evitar:** mantenha um ponto de inicialização claro; em NestJS, use o módulo raiz para registrar provedores globais.
+> **O que acontece:** dependências duplicadas, versões inconsistentes de serviços, race condition de inicialização. **Por quê:** cada módulo cria suas dependências no `constructor` ou no `OnModuleInit`, sem visibilidade do grafo completo. **Como evitar:** mantenha um ponto de inicialização claro; em NestJS, use o módulo raiz para registrar provedores globais.
 
 > [!warning] Service locator escondendo dependências dentro de use case
-> **O que acontece:** use case parece ter poucas dependências mas busca global container internamente; mock em teste exige configurar container.
-> **Por quê:** desenvolvedor acha mais fácil buscar do container do que declarar no constructor.
-> **Como evitar:** proibir `container.resolve()` fora do composition root/factory; use linter ou code review para reforçar.
+> **O que acontece:** use case parece ter poucas dependências mas busca global container internamente; mock em teste exige configurar container. **Por quê:** desenvolvedor acha mais fácil buscar do container do que declarar no constructor. **Como evitar:** proibir `container.resolve()` fora do composition root/factory; use linter ou code review para reforçar.
 
 > [!warning] Token string duplicado com typo
-> **O que acontece:** `container.resolve("userRepositry")` silenciosamente retorna `undefined` ou lança erro críptico em runtime.
-> **Por quê:** tokens como strings literais são fáceis de errar e não têm verificação de tipo em compile-time.
-> **Como evitar:** use `Symbol` ou objeto de constantes tipadas para tokens: `TOKENS.userRepository` é verificado pelo compilador.
+> **O que acontece:** `container.resolve("userRepositry")` silenciosamente retorna `undefined` ou lança erro críptico em runtime. **Por quê:** tokens como strings literais são fáceis de errar e não têm verificação de tipo em compile-time. **Como evitar:** use `Symbol` ou objeto de constantes tipadas para tokens: `TOKENS.userRepository` é verificado pelo compilador.
 
 > [!warning] Container global compartilhado entre testes
-> **O que acontece:** estado de um teste vaza para o próximo; testes ficam dependentes de ordem de execução.
-> **Por quê:** container singleton global é registrado uma vez e reutilizado por todos os testes na mesma sessão Jest/Vitest.
-> **Como evitar:** em testes, crie um container novo por suite ou use factory functions; evite importar container global em testes de unit.
+> **O que acontece:** estado de um teste vaza para o próximo; testes ficam dependentes de ordem de execução. **Por quê:** container singleton global é registrado uma vez e reutilizado por todos os testes na mesma sessão Jest/Vitest. **Como evitar:** em testes, crie um container novo por suite ou use factory functions; evite importar container global em testes de unit.
 
 > [!warning] Singleton para objeto que carrega dados de request
-> **O que acontece:** `requestId` ou `userId` do usuário A vaza para request do usuário B sob carga concorrente.
-> **Por quê:** objeto com estado de request foi registrado como singleton — compartilhado por todas as requests simultâneas.
-> **Como evitar:** qualquer objeto que carrega dado de request (tenant, auth, correlation) deve ser `scoped()` ou transient, nunca singleton.
+> **O que acontece:** `requestId` ou `userId` do usuário A vaza para request do usuário B sob carga concorrente. **Por quê:** objeto com estado de request foi registrado como singleton — compartilhado por todas as requests simultâneas. **Como evitar:** qualquer objeto que carrega dado de request (tenant, auth, correlation) deve ser `scoped()` ou transient, nunca singleton.
 
 ## Perguntas de entrevista
 
-**DI precisa de container?**
-Não. DI é passar dependências explicitamente. Container é ferramenta para automatizar wiring.
+**DI precisa de container?** Não. DI é passar dependências explicitamente. Container é ferramenta para automatizar wiring.
 
-**O que é composition root?**
-O ponto de startup onde objetos concretos são instanciados e conectados.
+**O que é composition root?** O ponto de startup onde objetos concretos são instanciados e conectados.
 
-**Por que service locator é problemático?**
-Porque dependências ficam escondidas. A classe parece simples, mas busca coisas em estado global.
+**Por que service locator é problemático?** Porque dependências ficam escondidas. A classe parece simples, mas busca coisas em estado global.
 
-**Quando container vale a pena?**
-Quando o grafo é grande, há lifecycle scopes, módulos independentes ou muita substituição de adapters.
+**Quando container vale a pena?** Quando o grafo é grande, há lifecycle scopes, módulos independentes ou muita substituição de adapters.
 
 ## Em entrevista
 

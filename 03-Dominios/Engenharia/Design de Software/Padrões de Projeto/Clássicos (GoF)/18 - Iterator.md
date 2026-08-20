@@ -21,15 +21,7 @@ aliases:
 # Iterator
 
 > [!abstract] TL;DR
-> O **Iterator** fornece uma forma de **percorrer** os elementos de uma coleção **sem expor** sua
-> estrutura interna — o cliente itera igual seja um array, uma lista ligada ou uma árvore. É o padrão
-> que as linguagens modernas **mais absorveram**: você o consome o tempo todo (`for...of`,
-> `for range`, `for-each`), mas quase nunca escreve a interface do GoF à mão — em vez disso escreve um
-> **generator** (`yield`), que é a linguagem te entregando o Iterator de graça. Até Go, o resistente,
-> ganhou iteradores nativos no **1.23** (`range`-over-func). A face moderna é a **iteração
-> preguiçosa**: produzir valores sob demanda, o que permite sequências enormes ou infinitas sem
-> materializar tudo. A armadilha principal é reimplementar à mão o que a linguagem já dá — e modificar
-> a coleção enquanto se itera.
+> O **Iterator** fornece uma forma de **percorrer** os elementos de uma coleção **sem expor** sua estrutura interna — o cliente itera igual seja um array, uma lista ligada ou uma árvore. É o padrão que as linguagens modernas **mais absorveram**: você o consome o tempo todo (`for...of`, `for range`, `for-each`), mas quase nunca escreve a interface do GoF à mão — em vez disso escreve um **generator** (`yield`), que é a linguagem te entregando o Iterator de graça. Até Go, o resistente, ganhou iteradores nativos no **1.23** (`range`-over-func). A face moderna é a **iteração preguiçosa**: produzir valores sob demanda, o que permite sequências enormes ou infinitas sem materializar tudo. A armadilha principal é reimplementar à mão o que a linguagem já dá — e modificar a coleção enquanto se itera.
 
 ## Percorrer sem saber o que há por baixo
 
@@ -96,19 +88,13 @@ O maior ganho dos iteradores/generators modernos é a **preguiça**: os valores 
 ## Armadilhas comuns
 
 > [!warning] Reimplementar o Iterator à mão
-> **O que acontece:** escreve-se uma classe com `hasNext`/`next` (ou controla-se índices manualmente) onde um `for-each` sobre a coleção pronta, ou um generator, resolveria.
-> **Por quê:** a linguagem já fornece o Iterator para suas coleções e um mecanismo (generator) para criar novos. Reimplementá-lo é trabalho redundante e propenso a erros de fronteira (off-by-one, `next` sem checar `hasNext`).
-> **Como evitar:** consuma com o laço nativo; para criar sequências próprias, use **generators** (`yield`) em vez da classe do GoF. Só desça ao iterador manual em casos muito especiais.
+> **O que acontece:** escreve-se uma classe com `hasNext`/`next` (ou controla-se índices manualmente) onde um `for-each` sobre a coleção pronta, ou um generator, resolveria. **Por quê:** a linguagem já fornece o Iterator para suas coleções e um mecanismo (generator) para criar novos. Reimplementá-lo é trabalho redundante e propenso a erros de fronteira (off-by-one, `next` sem checar `hasNext`). **Como evitar:** consuma com o laço nativo; para criar sequências próprias, use **generators** (`yield`) em vez da classe do GoF. Só desça ao iterador manual em casos muito especiais.
 
 > [!warning] Modificar a coleção durante a iteração
-> **O que acontece:** você adiciona/remove elementos enquanto itera e recebe um erro (`ConcurrentModificationException` em Java) ou, pior, um comportamento indefinido silencioso (elementos pulados/repetidos).
-> **Por quê:** muitos iteradores assumem que a coleção **não muda** durante o percurso; mutá-la invalida o estado interno do iterador (índices, ponteiros).
-> **Como evitar:** colete as mudanças e aplique depois; use o `remove()` do próprio iterador quando disponível; ou itere sobre uma cópia. Em concorrência, use coleções apropriadas (copy-on-write, concorrentes).
+> **O que acontece:** você adiciona/remove elementos enquanto itera e recebe um erro (`ConcurrentModificationException` em Java) ou, pior, um comportamento indefinido silencioso (elementos pulados/repetidos). **Por quê:** muitos iteradores assumem que a coleção **não muda** durante o percurso; mutá-la invalida o estado interno do iterador (índices, ponteiros). **Como evitar:** colete as mudanças e aplique depois; use o `remove()` do próprio iterador quando disponível; ou itere sobre uma cópia. Em concorrência, use coleções apropriadas (copy-on-write, concorrentes).
 
 > [!warning] Consumir um iterador de uso único duas vezes
-> **O que acontece:** um generator/stream é iterado até o fim e, ao tentar percorrê-lo de novo, vem vazio — ou lança erro.
-> **Por quê:** iteradores preguiçosos costumam ser **de uso único** (exauríveis): uma vez consumidos, não "rebobinam". Confundi-los com uma coleção reutilizável causa bugs sutis (o segundo laço não roda).
-> **Como evitar:** se precisa percorrer duas vezes, materialize numa coleção (`list()`, `toList()`) ou recrie o generator. Saiba se o que você tem é uma **coleção** (reiterável) ou um **fluxo** (uso único).
+> **O que acontece:** um generator/stream é iterado até o fim e, ao tentar percorrê-lo de novo, vem vazio — ou lança erro. **Por quê:** iteradores preguiçosos costumam ser **de uso único** (exauríveis): uma vez consumidos, não "rebobinam". Confundi-los com uma coleção reutilizável causa bugs sutis (o segundo laço não roda). **Como evitar:** se precisa percorrer duas vezes, materialize numa coleção (`list()`, `toList()`) ou recrie o generator. Saiba se o que você tem é uma **coleção** (reiterável) ou um **fluxo** (uso único).
 
 ## Como explicar em inglês
 

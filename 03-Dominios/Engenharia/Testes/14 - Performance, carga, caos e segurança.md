@@ -338,8 +338,7 @@ Trocar de ferramenta sem trocar de método é só trocar o controle de injeção
 A progressão natural de um game day segue essa tabela de cima pra baixo em maturidade: primeiro se prova que o sistema aguenta um recurso saturado (o mais previsível), depois que aguenta a rede degradada (mais sutil — timeouts e retries em cascata), e só por último que aguenta perder um nó inteiro sem aviso (o cenário mais realista de falha de produção, e o que o Chaos Monkey original ataca). Cada camada bate diretamente num dos padrões de [[03-Dominios/Ciência/Redes e Protocolos/14 - Resiliência de rede|Resiliência de rede]]: bulkhead protege contra exaustão de recurso, circuit breaker e timeout protegem contra degradação de rede, e redundância/failover protege contra perda de estado.
 
 > [!tip] Vídeo — Principles of Chaos Engineering (SREcon2017)
-> Casey Rosenthal, um dos autores dos *Principles of Chaos Engineering*, apresenta a disciplina do jeito rigoroso descrito acima: estado estável, hipótese, blast radius controlado — não "quebrar coisas por diversão". Reforça com a voz de quem cunhou o vocabulário o que esta seção descreve em texto.
-> [Principles of Chaos Engineering — Netflix, SREcon2017 (YouTube)](https://www.youtube.com/watch?v=6ilMZqKdMMU)
+> Casey Rosenthal, um dos autores dos *Principles of Chaos Engineering*, apresenta a disciplina do jeito rigoroso descrito acima: estado estável, hipótese, blast radius controlado — não "quebrar coisas por diversão". Reforça com a voz de quem cunhou o vocabulário o que esta seção descreve em texto. [Principles of Chaos Engineering — Netflix, SREcon2017 (YouTube)](https://www.youtube.com/watch?v=6ilMZqKdMMU)
 
 ## Security testing — caçar vulnerabilidades, não bugs
 

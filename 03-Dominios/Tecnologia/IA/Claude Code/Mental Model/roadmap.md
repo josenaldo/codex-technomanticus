@@ -10,13 +10,9 @@ tags:
 
 # Roadmap — Mental Model
 
-Diagnóstico nota a nota. Cada entrada tem estado de enriquecimento, score, classificação
-de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
+Diagnóstico nota a nota. Cada entrada tem estado de enriquecimento, score, classificação de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
 
-**Galho:** `03-Dominios/Tecnologia/IA/Claude Code/Mental Model`
-**Nível:** galho-folha
-**Diagnóstico:** 2026-07-02
-**Última execução:** 2026-07-08 (ondas 1-3: notas 01-09 ✅ — galho completo)
+**Galho:** `03-Dominios/Tecnologia/IA/Claude Code/Mental Model` **Nível:** galho-folha **Diagnóstico:** 2026-07-02 **Última execução:** 2026-07-08 (ondas 1-3: notas 01-09 ✅ — galho completo)
 
 ## Régua de análise
 
@@ -29,8 +25,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | LINKS | L1 Wikilink cross-galho · L2 Referência externa (URL) |
 | MÍDIA | M1 Vídeo/podcast embutido |
 
-**Esquema de `fase:` detectado:** SEM fase (sequência 01→09)
-**Piso de linhas:** não aplicável
+**Esquema de `fase:` detectado:** SEM fase (sequência 01→09) **Piso de linhas:** não aplicável
 
 ## Tabela-resumo
 

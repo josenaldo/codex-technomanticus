@@ -665,17 +665,13 @@ Para aplicações que crescem para múltiplos hosts, o panorama muda: [[10 - Clu
 
 ### Perguntas frequentes em entrevista
 
-**"Por que não simplesmente usar `Promise.all` com `async/await`?"**
-`Promise.all` com `async/await` não cria paralelismo real para código CPU-bound — tudo ainda roda na mesma thread do event loop. Workers criam threads do sistema operacional reais, com isolates V8 separados. O pool gerencia essas threads de forma eficiente.
+**"Por que não simplesmente usar `Promise.all` com `async/await`?"** `Promise.all` com `async/await` não cria paralelismo real para código CPU-bound — tudo ainda roda na mesma thread do event loop. Workers criam threads do sistema operacional reais, com isolates V8 separados. O pool gerencia essas threads de forma eficiente.
 
-**"Como você faria o sizing do pool?"**
-Ponto de partida: `availableParallelism()` (equivalente a `os.cpus().length`). Para tasks com I/O interno, pode dobrar. Para containers, verificar o limite de CPU real e não o total da máquina. Medir `utilization` e `waitTime.p99` em produção para ajustar.
+**"Como você faria o sizing do pool?"** Ponto de partida: `availableParallelism()` (equivalente a `os.cpus().length`). Para tasks com I/O interno, pode dobrar. Para containers, verificar o limite de CPU real e não o total da máquina. Medir `utilization` e `waitTime.p99` em produção para ajustar.
 
-**"O que acontece se um worker crasha?"**
-`piscina` detecta a saída inesperada via evento `exit`, re-spawna um novo worker automaticamente, e rejeita a Promise da task que estava em andamento. O pool se recupera, mas a task perdida precisa de tratamento no caller (retry com backoff, circuit breaker, log de erro).
+**"O que acontece se um worker crasha?"** `piscina` detecta a saída inesperada via evento `exit`, re-spawna um novo worker automaticamente, e rejeita a Promise da task que estava em andamento. O pool se recupera, mas a task perdida precisa de tratamento no caller (retry com backoff, circuit breaker, log de erro).
 
-**"Como você previne memory leak com pools?"**
-Usar `idleTimeout` para matar workers ociosos, `maxQueue` para não acumular tasks na memória, e conectar `pool.close()` ao lifecycle do processo. Monitorar `pool.threads.length` e `pool.queueSize` via métricas.
+**"Como você previne memory leak com pools?"** Usar `idleTimeout` para matar workers ociosos, `maxQueue` para não acumular tasks na memória, e conectar `pool.close()` ao lifecycle do processo. Monitorar `pool.threads.length` e `pool.queueSize` via métricas.
 
 ---
 

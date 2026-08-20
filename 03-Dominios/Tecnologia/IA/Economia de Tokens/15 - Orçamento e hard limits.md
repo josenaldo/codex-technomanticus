@@ -326,17 +326,13 @@ def handle_user_request(user_id: str, prompt: str, plan: str) -> dict:
 
 ## Casos práticos
 
-**Caso 1 — Startup sem hard limit em agente de CI:**
-Uma startup de developer tools integrou um agente de code review no CI. Em uma semana normal, o agente processava 200 PRs/semana a $0.15/PR = $30/semana. Em um hackathon interno, o volume subiu para 800 PRs em 2 dias. O agente entrou em loop em 3 PRs com código gerado por IA (contexto gigante), gerando 50K tokens por revisão. Resultado: $900 em 48h vs. $30/semana esperados. Depois do incidente: `max_tokens=3000` + kill switch de sessão + alerta Slack a 50% do budget.
+**Caso 1 — Startup sem hard limit em agente de CI:** Uma startup de developer tools integrou um agente de code review no CI. Em uma semana normal, o agente processava 200 PRs/semana a $0.15/PR = $30/semana. Em um hackathon interno, o volume subiu para 800 PRs em 2 dias. O agente entrou em loop em 3 PRs com código gerado por IA (contexto gigante), gerando 50K tokens por revisão. Resultado: $900 em 48h vs. $30/semana esperados. Depois do incidente: `max_tokens=3000` + kill switch de sessão + alerta Slack a 50% do budget.
 
-**Caso 2 — Orçamento por time em empresa:**
-Uma empresa com 40 engenheiros implementou orçamento por time — cada squad de 5 pessoas tem $200/mês de budget de IA rastreado por uma API key específica. Times que otimizam o uso (routing para Haiku em tasks simples) ficam dentro do budget. Times que abusam excedem e recebem alerta com relatório de custo por tipo de chamada. Resultado: redução de 40% no gasto total sem redução de produtividade.
+**Caso 2 — Orçamento por time em empresa:** Uma empresa com 40 engenheiros implementou orçamento por time — cada squad de 5 pessoas tem $200/mês de budget de IA rastreado por uma API key específica. Times que otimizam o uso (routing para Haiku em tasks simples) ficam dentro do budget. Times que abusam excedem e recebem alerta com relatório de custo por tipo de chamada. Resultado: redução de 40% no gasto total sem redução de produtividade.
 
-**Caso 3 — Kill switch salvando fatura em agente de refactoring:**
-Um agente de refactoring de codebase legado foi configurado com `max_iterations=100` (sem cap de tokens). O agente entrou em loop tentando refatorar um arquivo com 15.000 linhas, processando o contexto inteiro em cada iteração. Após 47 iterações: 8.2M tokens consumidos, $246 em 90 minutos. O iteration cap parou o agente antes do esgotamento completo. Depois: `max_tokens=8000` por chamada + cap de tokens por sessão.
+**Caso 3 — Kill switch salvando fatura em agente de refactoring:** Um agente de refactoring de codebase legado foi configurado com `max_iterations=100` (sem cap de tokens). O agente entrou em loop tentando refatorar um arquivo com 15.000 linhas, processando o contexto inteiro em cada iteração. Após 47 iterações: 8.2M tokens consumidos, $246 em 90 minutos. O iteration cap parou o agente antes do esgotamento completo. Depois: `max_tokens=8000` por chamada + cap de tokens por sessão.
 
-**Caso 4 — Orçamento prospectivo impedindo surpresa:**
-Um time de produto usava Helicone para monitorar gasto. Na segunda semana de junho, a previsão apontou $3.200 para o mês vs. budget de $2.000. A causa: um novo feature de "análise de documento completo" processava PDFs de 200 páginas sem paginação. O time identificou o problema 15 dias antes da fatura chegar, implementou paginação + cache de resultados, e encerrou o mês em $1.850.
+**Caso 4 — Orçamento prospectivo impedindo surpresa:** Um time de produto usava Helicone para monitorar gasto. Na segunda semana de junho, a previsão apontou $3.200 para o mês vs. budget de $2.000. A causa: um novo feature de "análise de documento completo" processava PDFs de 200 páginas sem paginação. O time identificou o problema 15 dias antes da fatura chegar, implementou paginação + cache de resultados, e encerrou o mês em $1.850.
 
 ## Checklist
 

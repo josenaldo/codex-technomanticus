@@ -94,8 +94,7 @@ Ativar é literalmente anexar uma layer publicada pela AWS à função — não 
 > [!tip] Assista: Conhecendo o AWS Lambda Insights
 > **Canal:** Bruno Russi | **Duração:** ~10min | **Idioma:** PT-BR
 >
-> Uma demonstração ao vivo de ativar a layer do Lambda Insights e ler o painel resultante — mostra na prática o "ganho de visibilidade de sistema operacional" que esta seção descreve em teoria.
-> Trecho de destaque [00:46]: *"insights eu já consigo visualizar a [métrica de rede, memória, CPU...]"*
+> Uma demonstração ao vivo de ativar a layer do Lambda Insights e ler o painel resultante — mostra na prática o "ganho de visibilidade de sistema operacional" que esta seção descreve em teoria. Trecho de destaque [00:46]: *"insights eu já consigo visualizar a [métrica de rede, memória, CPU...]"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=yqmGdLNwlFc)
 
@@ -134,8 +133,7 @@ flowchart TD
 > [!tip] Assista: Using Open Source Observability with Lambda
 > **Canal:** GOTO Conferences (Mike Elsmore, GOTO 2020) | **Duração:** ~30min | **Idioma:** EN
 >
-> Uma talk de conferência que argumenta a favor do Caminho 2 (OTel + backend neutro) especificamente em Lambda, cobrindo as ferramentas open-source concorrentes ao X-Ray e os trade-offs reais de abandonar o caminho nativo — aprofunda exatamente a decisão que esta seção apresenta.
-> Trecho de destaque [13:27]: *"how do you avoid dangling traces, how do you get that end-to-end trace"*
+> Uma talk de conferência que argumenta a favor do Caminho 2 (OTel + backend neutro) especificamente em Lambda, cobrindo as ferramentas open-source concorrentes ao X-Ray e os trade-offs reais de abandonar o caminho nativo — aprofunda exatamente a decisão que esta seção apresenta. Trecho de destaque [13:27]: *"how do you avoid dangling traces, how do you get that end-to-end trace"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=rv_fZWLd0Pw)
 

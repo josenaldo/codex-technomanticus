@@ -59,9 +59,7 @@ O **OWASP Password Storage Cheat Sheet** — a referência de facto da indústri
 4. **PBKDF2** — reservado para contextos que exigem conformidade **FIPS-140** (setor público americano, alguns contratos regulados), porque é o único dos quatro formalmente validado por esse padrão. Não é memory-hard — depende só de iteração —, o que o torna mais vulnerável a hardware especializado (ASIC/FPGA) do que Argon2id ou scrypt. Recomendação atual: PBKDF2-HMAC-SHA256 com **600.000 iterações**[^owasppwd].
 
 > [!warning] Nunca MD5 ou SHA puro para senha
-> **O que acontece:** um sistema guarda `md5(senha)` ou `sha256(senha + salt)` diretamente, tratando o hash criptográfico genérico como se fosse hash de senha.
-> **Por quê:** MD5 e a família SHA foram desenhados para serem **rápidos** — são ótimos para checksums de arquivo e assinaturas digitais, exatamente o oposto do que senha precisa. Uma GPU consumer calcula bilhões desses hashes por segundo, tornando cracking offline em massa trivial assim que o banco vaza — foi exatamente o que aconteceu com o SHA-1 sem salt da LinkedIn em 2012.
-> **Como evitar:** use sempre uma KDF de senha desenhada para ser lenta e (idealmente) memory-hard — Argon2id, com bcrypt como fallback legado. MD5/SHA servem para outras finalidades criptográficas, nunca para senha.
+> **O que acontece:** um sistema guarda `md5(senha)` ou `sha256(senha + salt)` diretamente, tratando o hash criptográfico genérico como se fosse hash de senha. **Por quê:** MD5 e a família SHA foram desenhados para serem **rápidos** — são ótimos para checksums de arquivo e assinaturas digitais, exatamente o oposto do que senha precisa. Uma GPU consumer calcula bilhões desses hashes por segundo, tornando cracking offline em massa trivial assim que o banco vaza — foi exatamente o que aconteceu com o SHA-1 sem salt da LinkedIn em 2012. **Como evitar:** use sempre uma KDF de senha desenhada para ser lenta e (idealmente) memory-hard — Argon2id, com bcrypt como fallback legado. MD5/SHA servem para outras finalidades criptográficas, nunca para senha.
 
 Em uma frase: **hash de senha bom é hash deliberadamente caro de calcular em massa — a escolha certa em 2026 é Argon2id, com bcrypt tolerado só em sistemas antigos.**
 
@@ -232,9 +230,7 @@ O padrão mais comum de recuperação é "enviar um link para o email cadastrado
 No contexto corporativo, o vetor equivalente é o **helpdesk de TI**: um atacante liga se passando pelo funcionário, alega ter perdido o celular com o app autenticador, e pede para o suporte resetar o MFA. O agente de suporte, sob pressão de "resolver rápido", verifica identidade com as ferramentas disponíveis — código SMS, perguntas de segurança, confirmação verbal de nome/gerente/ID de funcionário — todas elas exatamente os mecanismos fracos que a organização tentou evitar ao adotar MFA forte em primeiro lugar. Julgamento humano sob pressão é, estruturalmente, sempre explorável[^recovery]. Foi um vetor desse tipo, aliás, que abriu a porta para o contratado da Uber aprovar a notificação fraudulenta — o atacante se passou por suporte técnico interno.
 
 > [!warning] Recuperação de conta mais fraca que o login normal
-> **O que acontece:** o fluxo de "esqueci minha senha" aceita verificação por perguntas de segurança, SMS, ou uma ligação de suporte — quando o login normal já exige MFA forte.
-> **Por quê:** recuperação é desenhada para "desbloquear" um usuário legítimo que perdeu acesso ao segundo fator; por isso, tende a usar mecanismos de verificação mais fracos do que o próprio MFA que substitui — criando um atalho que ignora exatamente os controles que o sistema investiu em construir.
-> **Como evitar:** trate recuperação como parte do modelo de ameaça do MFA, não como um recurso à parte. Exija verificação de posse (não conhecimento) sempre que possível, use tokens de uso único com expiração curta, e para contas de alto risco, considere exigir um segundo canal verificado (ex.: aprovação de um administrador humano) antes de resetar o MFA.
+> **O que acontece:** o fluxo de "esqueci minha senha" aceita verificação por perguntas de segurança, SMS, ou uma ligação de suporte — quando o login normal já exige MFA forte. **Por quê:** recuperação é desenhada para "desbloquear" um usuário legítimo que perdeu acesso ao segundo fator; por isso, tende a usar mecanismos de verificação mais fracos do que o próprio MFA que substitui — criando um atalho que ignora exatamente os controles que o sistema investiu em construir. **Como evitar:** trate recuperação como parte do modelo de ameaça do MFA, não como um recurso à parte. Exija verificação de posse (não conhecimento) sempre que possível, use tokens de uso único com expiração curta, e para contas de alto risco, considere exigir um segundo canal verificado (ex.: aprovação de um administrador humano) antes de resetar o MFA.
 
 ## Rate limiting e lockout: proteger o login sem virar arma
 
@@ -246,9 +242,7 @@ A última camada de defesa antes de qualquer senha ou MFA entrar em jogo é simp
 O detalhe de design que separa um lockout bem-feito de um mal-feito: **o contador de falhas deve estar associado à conta, não ao IP de origem**, para impedir que um atacante contorne o limite distribuindo tentativas por muitos IPs diferentes (via botnet ou proxy rotation) — mas, se o contador é só por conta, surge o risco simétrico de um atacante *deliberadamente* errar a senha de uma vítima repetidas vezes só para travá-la fora da própria conta, uma forma de negação de serviço direcionada. A defesa recomendada combina os dois eixos (conta *e* IP/dispositivo, com pesos diferentes) e usa lockout temporário e crescente em vez de bloqueio permanente que exigiria intervenção manual para desfazer[^owaspauth].
 
 > [!warning] Lockout que vira DoS contra o próprio usuário
-> **O que acontece:** um sistema bloqueia a conta por 24 horas após 3 tentativas falhas, contando só por username — e um atacante, sem nem tentar adivinhar a senha, simplesmente erra de propósito 3 vezes a senha de qualquer conta que queira travar.
-> **Por quê:** o mecanismo pensado para proteger contra brute-force vira, ele mesmo, uma ferramenta de ataque quando o custo de "errar de propósito" é baixo e a punição é alta e de longa duração.
-> **Como evitar:** prefira lockout **exponencial e curto** (segundos a minutos, não horas) combinado com MFA — que segundo análise da Microsoft teria evitado 99,9% das tomadas de conta por senha comprometida[^owaspauth] — em vez de depender só de lockout agressivo. Rate limiting por IP/dispositivo complementa, sem substituir, o controle por conta.
+> **O que acontece:** um sistema bloqueia a conta por 24 horas após 3 tentativas falhas, contando só por username — e um atacante, sem nem tentar adivinhar a senha, simplesmente erra de propósito 3 vezes a senha de qualquer conta que queira travar. **Por quê:** o mecanismo pensado para proteger contra brute-force vira, ele mesmo, uma ferramenta de ataque quando o custo de "errar de propósito" é baixo e a punição é alta e de longa duração. **Como evitar:** prefira lockout **exponencial e curto** (segundos a minutos, não horas) combinado com MFA — que segundo análise da Microsoft teria evitado 99,9% das tomadas de conta por senha comprometida[^owaspauth] — em vez de depender só de lockout agressivo. Rate limiting por IP/dispositivo complementa, sem substituir, o controle por conta.
 
 > [!info] Rate limiting como algoritmo
 > Esta nota cobre rate limiting só como proteção de endpoint de login. O desenho de algoritmos de rate limiting em si (token bucket, sliding window, e onde aplicá-los num gateway) é assunto de System Design — fora do escopo desta trilha de Auth e Identidade.
@@ -258,24 +252,16 @@ Em uma frase: **lockout e rate limiting protegem contra brute-force, mas mal cal
 ## Armadilhas comuns
 
 > [!warning] Confiar em MD5/SHA1 "porque sempre foi assim"
-> **O que acontece:** um sistema legado (ou um novo, escrito por alguém que copiou código antigo) usa `md5(senha)` ou `sha256(senha)` diretamente para armazenar credenciais.
-> **Por quê:** essas funções foram desenhadas para velocidade e integridade de dados, não para resistir a cracking offline — GPUs modernas calculam bilhões de hashes desses por segundo, tornando qualquer vazamento de banco uma sentença de morte para a maioria das senhas, como aconteceu com a LinkedIn em 2012.
-> **Como evitar:** Argon2id (ou bcrypt em sistema legado que não pode migrar imediatamente) — nunca hash de propósito geral para senha, mesmo com salt.
+> **O que acontece:** um sistema legado (ou um novo, escrito por alguém que copiou código antigo) usa `md5(senha)` ou `sha256(senha)` diretamente para armazenar credenciais. **Por quê:** essas funções foram desenhadas para velocidade e integridade de dados, não para resistir a cracking offline — GPUs modernas calculam bilhões de hashes desses por segundo, tornando qualquer vazamento de banco uma sentença de morte para a maioria das senhas, como aconteceu com a LinkedIn em 2012. **Como evitar:** Argon2id (ou bcrypt em sistema legado que não pode migrar imediatamente) — nunca hash de propósito geral para senha, mesmo com salt.
 
 > [!warning] Rotação forçada de senha a cada 90 dias
-> **O que acontece:** a política de segurança da empresa obriga trocar a senha a cada 90 dias, mesmo sem qualquer indício de vazamento.
-> **Por quê:** usuários sob rotação forçada tendem a fazer trocas mínimas e previsíveis (`Empresa2024!` → `Empresa2025!`), o que reduz a entropia real da senha em vez de aumentá-la — o NIST 800-63B rev.4 formalizou o abandono dessa prática justamente por causa dessa evidência.
-> **Como evitar:** troque senha só reativamente, mediante evidência de comprometimento (vazamento detectado, atividade suspeita) — e substitua o esforço de "forçar rotação" por checagem contra listas de senhas vazadas no momento do cadastro/troca.
+> **O que acontece:** a política de segurança da empresa obriga trocar a senha a cada 90 dias, mesmo sem qualquer indício de vazamento. **Por quê:** usuários sob rotação forçada tendem a fazer trocas mínimas e previsíveis (`Empresa2024!` → `Empresa2025!`), o que reduz a entropia real da senha em vez de aumentá-la — o NIST 800-63B rev.4 formalizou o abandono dessa prática justamente por causa dessa evidência. **Como evitar:** troque senha só reativamente, mediante evidência de comprometimento (vazamento detectado, atividade suspeita) — e substitua o esforço de "forçar rotação" por checagem contra listas de senhas vazadas no momento do cadastro/troca.
 
 > [!warning] SMS como único segundo fator numa conta de alto valor
-> **O que acontece:** uma conta com privilégios elevados (admin, financeiro, executivo) usa SMS como única opção de MFA, sem alternativa de app autenticador ou chave de hardware.
-> **Por quê:** SMS é vulnerável a SIM swapping (transferência fraudulenta do número na operadora) e a falhas do protocolo SS7 — ambos vetores documentados e usados ativamente contra alvos de alto valor, e SMS bloqueia proporcionalmente menos ataques (76%) do que push (99%) ou chave FIDO2 (100%).
-> **Como evitar:** ofereça e incentive TOTP ou, idealmente, FIDO2/WebAuthn como opção primária; mantenha SMS, se necessário, apenas como fallback de último recurso — nunca como única via de segundo fator para contas sensíveis.
+> **O que acontece:** uma conta com privilégios elevados (admin, financeiro, executivo) usa SMS como única opção de MFA, sem alternativa de app autenticador ou chave de hardware. **Por quê:** SMS é vulnerável a SIM swapping (transferência fraudulenta do número na operadora) e a falhas do protocolo SS7 — ambos vetores documentados e usados ativamente contra alvos de alto valor, e SMS bloqueia proporcionalmente menos ataques (76%) do que push (99%) ou chave FIDO2 (100%). **Como evitar:** ofereça e incentive TOTP ou, idealmente, FIDO2/WebAuthn como opção primária; mantenha SMS, se necessário, apenas como fallback de último recurso — nunca como única via de segundo fator para contas sensíveis.
 
 > [!warning] MFA sem limite de tentativas de push
-> **O que acontece:** o app de autenticação corporativa aceita um número ilimitado de solicitações de aprovação push sem throttling, alerta ou bloqueio temporário.
-> **Por quê:** isso viabiliza literalmente o ataque que comprometeu a Uber em 2022 — o atacante, já de posse da senha, simplesmente bombardeia o usuário com dezenas de notificações até o cansaço ou a confusão gerarem uma aprovação indevida.
-> **Como evitar:** implemente **number matching** (o usuário digita um número exibido na tela, não só toca "aprovar"), limite a taxa de solicitações push por período, e alerte o time de segurança sobre picos anômalos de tentativas de MFA para uma mesma conta.
+> **O que acontece:** o app de autenticação corporativa aceita um número ilimitado de solicitações de aprovação push sem throttling, alerta ou bloqueio temporário. **Por quê:** isso viabiliza literalmente o ataque que comprometeu a Uber em 2022 — o atacante, já de posse da senha, simplesmente bombardeia o usuário com dezenas de notificações até o cansaço ou a confusão gerarem uma aprovação indevida. **Como evitar:** implemente **number matching** (o usuário digita um número exibido na tela, não só toca "aprovar"), limite a taxa de solicitações push por período, e alerte o time de segurança sobre picos anômalos de tentativas de MFA para uma mesma conta.
 
 ## Em entrevista
 
@@ -337,19 +323,4 @@ Praticamente todo problema descrito nesta nota — senha reutilizada, SMS interc
 - **DeepStrike** — [*Credential Stuffing Statistics 2026*](https://deepstrike.io/blog/credential-stuffing-statistics) — 2 bilhões de credenciais vazadas em 2025, mediana de 19% das tentativas de login como credential stuffing; acessado em 2026-07-10.
 - **TechRadar** — [*Why account recovery is now the weakest link in security*](https://www.techradar.com/pro/why-account-recovery-is-now-the-weakest-link-in-security) — recuperação de conta como bypass estrutural dos controles fortes; acessado em 2026-07-10.
 
-[^linkedin]: TechCrunch, *117 million LinkedIn emails and passwords from a 2012 hack just got posted online*; arXiv, *The Cryptographic Implications of the LinkedIn Data Breach*.
-[^owasppwd]: OWASP, *Password Storage Cheat Sheet*.
-[^bcrypt72]: pyca/bcrypt, Issue #1082.
-[^phc]: GitHub P-H-C, *phc-winner-argon2*.
-[^nist]: NIST, *SP 800-63B, revisão 4*.
-[^credstuff]: DeepStrike, *Credential Stuffing Statistics 2026*.
-[^oat008]: OWASP, *OAT-008 Credential Stuffing*.
-[^hibp]: Have I Been Pwned, *Pwned Passwords* / API v3 documentation.
-[^rfc6238]: IETF, RFC 6238.
-[^cisa]: CISA, *Implementing Phishing-Resistant MFA*.
-[^simswap]: VikingCloud / SuperTokens, reportagens sobre SIM swapping; FBI IC3.
-[^ss7]: ACM Queue, *Security Analysis of SMS as a Second Factor of Authentication*.
-[^sms76]: Google Security Blog / Vectra AI, comparação de eficácia SMS vs on-device prompt vs chave de segurança.
-[^ubermfa]: centrexIT, *How Uber Was Breached Through MFA Fatigue*; InfoQ, *Multi-Factor Authentication Fatigue Key Factor in Uber Breach*.
-[^recovery]: TechRadar, *Why account recovery is now the weakest link in security*; OWASP, *Forgot Password Cheat Sheet*.
-[^owaspauth]: OWASP, *Authentication Cheat Sheet*.
+[^linkedin]: TechCrunch, *117 million LinkedIn emails and passwords from a 2012 hack just got posted online*; arXiv, *The Cryptographic Implications of the LinkedIn Data Breach*. [^owasppwd]: OWASP, *Password Storage Cheat Sheet*. [^bcrypt72]: pyca/bcrypt, Issue #1082. [^phc]: GitHub P-H-C, *phc-winner-argon2*. [^nist]: NIST, *SP 800-63B, revisão 4*. [^credstuff]: DeepStrike, *Credential Stuffing Statistics 2026*. [^oat008]: OWASP, *OAT-008 Credential Stuffing*. [^hibp]: Have I Been Pwned, *Pwned Passwords* / API v3 documentation. [^rfc6238]: IETF, RFC 6238. [^cisa]: CISA, *Implementing Phishing-Resistant MFA*. [^simswap]: VikingCloud / SuperTokens, reportagens sobre SIM swapping; FBI IC3. [^ss7]: ACM Queue, *Security Analysis of SMS as a Second Factor of Authentication*. [^sms76]: Google Security Blog / Vectra AI, comparação de eficácia SMS vs on-device prompt vs chave de segurança. [^ubermfa]: centrexIT, *How Uber Was Breached Through MFA Fatigue*; InfoQ, *Multi-Factor Authentication Fatigue Key Factor in Uber Breach*. [^recovery]: TechRadar, *Why account recovery is now the weakest link in security*; OWASP, *Forgot Password Cheat Sheet*. [^owaspauth]: OWASP, *Authentication Cheat Sheet*.

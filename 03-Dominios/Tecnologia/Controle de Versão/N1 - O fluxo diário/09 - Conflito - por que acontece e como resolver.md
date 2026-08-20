@@ -166,19 +166,13 @@ git add grafico.png
 ## Armadilhas comuns
 
 > [!warning] Commitar com os marcadores dentro
-> **O que acontece:** o `<<<<<<< HEAD` vai para o histórico e, no caso de LaTeX ou código, quebra a compilação — às vezes só semanas depois, quando alguém abre aquele arquivo.
-> **Por quê:** o Git não valida o que você escreveu; se você deu `add` e `commit`, ele registra.
-> **Como evitar:** antes de commitar uma resolução, procure por `<<<<` no projeto. `git diff --staged` também mostra: marcadores aparecem como conteúdo adicionado, e saltam aos olhos.
+> **O que acontece:** o `<<<<<<< HEAD` vai para o histórico e, no caso de LaTeX ou código, quebra a compilação — às vezes só semanas depois, quando alguém abre aquele arquivo. **Por quê:** o Git não valida o que você escreveu; se você deu `add` e `commit`, ele registra. **Como evitar:** antes de commitar uma resolução, procure por `<<<<` no projeto. `git diff --staged` também mostra: marcadores aparecem como conteúdo adicionado, e saltam aos olhos.
 
 > [!warning] Resolver escolhendo sempre "o meu"
-> **O que acontece:** por pressa ou insegurança, a pessoa aceita sempre o próprio lado. O trabalho do colega é descartado silenciosamente — e ele só descobre dias depois, ao notar que a alteração sumiu.
-> **Por quê:** o Git obedece; ele não avisa que o outro lado foi ignorado.
-> **Como evitar:** leia os dois lados antes de decidir. E, se o conflito for sobre conteúdo intelectual (a redação de um parágrafo), **fale com a pessoa** em vez de decidir sozinho. O Git resolve o conflito de texto; ele não resolve o desacordo.
+> **O que acontece:** por pressa ou insegurança, a pessoa aceita sempre o próprio lado. O trabalho do colega é descartado silenciosamente — e ele só descobre dias depois, ao notar que a alteração sumiu. **Por quê:** o Git obedece; ele não avisa que o outro lado foi ignorado. **Como evitar:** leia os dois lados antes de decidir. E, se o conflito for sobre conteúdo intelectual (a redação de um parágrafo), **fale com a pessoa** em vez de decidir sozinho. O Git resolve o conflito de texto; ele não resolve o desacordo.
 
 > [!warning] Deixar o merge pela metade e ir embora
-> **O que acontece:** você para no meio, fecha o terminal, e no dia seguinte o repositório está num estado estranho — `git status` fala de "unmerged paths" e comandos normais reclamam.
-> **Por quê:** o merge é uma operação em duas etapas, e o repositório fica num estado intermediário entre elas.
-> **Como evitar:** termine ou aborte. `git merge --abort` a qualquer momento devolve o estado limpo, e amanhã você recomeça com a cabeça fresca.
+> **O que acontece:** você para no meio, fecha o terminal, e no dia seguinte o repositório está num estado estranho — `git status` fala de "unmerged paths" e comandos normais reclamam. **Por quê:** o merge é uma operação em duas etapas, e o repositório fica num estado intermediário entre elas. **Como evitar:** termine ou aborte. `git merge --abort` a qualquer momento devolve o estado limpo, e amanhã você recomeça com a cabeça fresca.
 
 ---
 

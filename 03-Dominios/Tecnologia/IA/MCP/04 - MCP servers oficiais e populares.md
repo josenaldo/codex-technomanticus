@@ -194,16 +194,11 @@ flowchart TD
 
 ### Instalar quando
 
-✅ Server existe com manutenção ativa
-✅ Cobertura ≥80% das suas tools
-✅ Provider confiável
+✅ Server existe com manutenção ativa ✅ Cobertura ≥80% das suas tools ✅ Provider confiável
 
 ### Construir quando
 
-❌ Servers existentes não cobrem domain interno
-❌ Lógica acopla a APIs internas que não pode expor
-❌ Server existente tem qualidade ruim
-❌ Compliance exige zero third-party
+❌ Servers existentes não cobrem domain interno ❌ Lógica acopla a APIs internas que não pode expor ❌ Server existente tem qualidade ruim ❌ Compliance exige zero third-party
 
 Detalhes em [[05 - Construindo um MCP server local]].
 

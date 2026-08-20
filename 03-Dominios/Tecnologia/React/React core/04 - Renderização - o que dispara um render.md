@@ -278,24 +278,16 @@ Cada etapa tem um responsável: você dispara, o React renderiza e faz commit, o
 ## Armadilhas comuns
 
 > [!warning] Side effect no corpo do componente
-> **O que acontece:** Comportamentos estranhos, chamadas de API duplicadas, contadores que saltam valores, bugs que aparecem só em desenvolvimento.
-> **Por quê:** O corpo da função de componente é executado durante o render. Qualquer side effect ali vai rodar a cada re-render — e com StrictMode, duas vezes por render em dev.
-> **Como evitar:** Mova side effects para dentro de `useEffect`. O corpo do componente é só para calcular JSX.
+> **O que acontece:** Comportamentos estranhos, chamadas de API duplicadas, contadores que saltam valores, bugs que aparecem só em desenvolvimento. **Por quê:** O corpo da função de componente é executado durante o render. Qualquer side effect ali vai rodar a cada re-render — e com StrictMode, duas vezes por render em dev. **Como evitar:** Mova side effects para dentro de `useEffect`. O corpo do componente é só para calcular JSX.
 
 > [!warning] Esperar que o estado mude imediatamente após `setState`
-> **O que acontece:** Você chama `setCount(count + 1)` e logo depois lê `count` esperando o novo valor — mas ele ainda tem o valor antigo.
-> **Por quê:** `setState` enfileira um re-render futuro. O estado novo só fica disponível **no próximo render**, não na execução atual.
-> **Como evitar:** Nunca leia o estado logo após `setState` na mesma função. Se precisar do valor novo, calcule-o antes: `const novoValor = count + 1; setCount(novoValor); fazAlgoComNovoValor(novoValor);`
+> **O que acontece:** Você chama `setCount(count + 1)` e logo depois lê `count` esperando o novo valor — mas ele ainda tem o valor antigo. **Por quê:** `setState` enfileira um re-render futuro. O estado novo só fica disponível **no próximo render**, não na execução atual. **Como evitar:** Nunca leia o estado logo após `setState` na mesma função. Se precisar do valor novo, calcule-o antes: `const novoValor = count + 1; setCount(novoValor); fazAlgoComNovoValor(novoValor);`
 
 > [!warning] Mutar o estado diretamente
-> **O que acontece:** Você muta um objeto ou array no estado e a tela não atualiza — ou atualiza de forma imprevisível.
-> **Por quê:** O React usa `Object.is` para detectar mudanças. Se você muta o objeto mas mantém a mesma referência, o React acha que nada mudou e não re-renderiza.
-> **Como evitar:** Sempre crie um novo objeto/array ao atualizar estado: `setItens([...itens, novoItem])` em vez de `itens.push(novoItem); setItens(itens)`.
+> **O que acontece:** Você muta um objeto ou array no estado e a tela não atualiza — ou atualiza de forma imprevisível. **Por quê:** O React usa `Object.is` para detectar mudanças. Se você muta o objeto mas mantém a mesma referência, o React acha que nada mudou e não re-renderiza. **Como evitar:** Sempre crie um novo objeto/array ao atualizar estado: `setItens([...itens, novoItem])` em vez de `itens.push(novoItem); setItens(itens)`.
 
 > [!warning] Confundir "props mudaram" com "pai re-renderizou"
-> **O que acontece:** Você vê um componente re-renderizando e assume que alguma prop mudou, mas não encontra nada diferente nas props.
-> **Por quê:** O re-render foi disparado pelo pai, não pelas props. Qualquer re-render do componente pai arrasta os filhos, mesmo com props idênticas.
-> **Como evitar:** Para confirmar a causa real de um re-render, use o React DevTools (aba "Profiler") ou o componente `<Profiler>`. Se quiser evitar re-renders desnecessários, avalie `React.memo` — mas só depois de confirmar que é um problema real de performance.
+> **O que acontece:** Você vê um componente re-renderizando e assume que alguma prop mudou, mas não encontra nada diferente nas props. **Por quê:** O re-render foi disparado pelo pai, não pelas props. Qualquer re-render do componente pai arrasta os filhos, mesmo com props idênticas. **Como evitar:** Para confirmar a causa real de um re-render, use o React DevTools (aba "Profiler") ou o componente `<Profiler>`. Se quiser evitar re-renders desnecessários, avalie `React.memo` — mas só depois de confirmar que é um problema real de performance.
 
 ---
 

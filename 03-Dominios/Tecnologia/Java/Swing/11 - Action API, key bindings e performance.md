@@ -113,14 +113,11 @@ KeyStroke.getKeyStroke("released DELETE")  // Delete ao soltar
 
 Três eixos principais:
 
-**1. Manter a EDT livre**
-A EDT (ver [[03-Dominios/Tecnologia/Java/Swing/05 - A Event Dispatch Thread|A Event Dispatch Thread (EDT)]]) é a única thread que pinta e despacha eventos. Qualquer I/O, consulta a banco ou cálculo pesado dentro de um listener bloqueia a EDT e congela a UI. A solução é delegar o trabalho a uma thread de background (ver [[03-Dominios/Tecnologia/Java/Swing/06 - SwingWorker e tarefas em background|SwingWorker e tarefas em background]]) e re-entrar na EDT via `invokeLater` para atualizar componentes.
+**1. Manter a EDT livre** A EDT (ver [[03-Dominios/Tecnologia/Java/Swing/05 - A Event Dispatch Thread|A Event Dispatch Thread (EDT)]]) é a única thread que pinta e despacha eventos. Qualquer I/O, consulta a banco ou cálculo pesado dentro de um listener bloqueia a EDT e congela a UI. A solução é delegar o trabalho a uma thread de background (ver [[03-Dominios/Tecnologia/Java/Swing/06 - SwingWorker e tarefas em background|SwingWorker e tarefas em background]]) e re-entrar na EDT via `invokeLater` para atualizar componentes.
 
-**2. Models lazy/virtuais para grandes volumes de dados**
-`DefaultTableModel` e `DefaultListModel` carregam todos os dados em memória na inicialização. Com milhares de linhas, o tempo de construção trava a UI ao montar. A solução é um model customizado que carrega dados sob demanda (lazy) e, para `JTable`, combina com paginação ou virtualização. Ver [[03-Dominios/Tecnologia/Java/Swing/07 - MVC em Swing e os models|MVC em Swing e os models]].
+**2. Models lazy/virtuais para grandes volumes de dados** `DefaultTableModel` e `DefaultListModel` carregam todos os dados em memória na inicialização. Com milhares de linhas, o tempo de construção trava a UI ao montar. A solução é um model customizado que carrega dados sob demanda (lazy) e, para `JTable`, combina com paginação ou virtualização. Ver [[03-Dominios/Tecnologia/Java/Swing/07 - MVC em Swing e os models|MVC em Swing e os models]].
 
-**3. `repaint` de região em custom painting**
-Chamar `repaint()` sem argumentos solicita a repintura do componente inteiro. Em componentes grandes com custom painting (ver [[03-Dominios/Tecnologia/Java/Swing/10 - Custom painting e componentes customizados|Custom painting e componentes customizados]]), isso é desnecessariamente caro quando apenas uma área pequena mudou. A sobrecarga `repaint(int x, int y, int width, int height)` restringe o repaint à região mínima necessária, reduzindo o trabalho de pintura.
+**3. `repaint` de região em custom painting** Chamar `repaint()` sem argumentos solicita a repintura do componente inteiro. Em componentes grandes com custom painting (ver [[03-Dominios/Tecnologia/Java/Swing/10 - Custom painting e componentes customizados|Custom painting e componentes customizados]]), isso é desnecessariamente caro quando apenas uma área pequena mudou. A sobrecarga `repaint(int x, int y, int width, int height)` restringe o repaint à região mínima necessária, reduzindo o trabalho de pintura.
 
 ## Na prática
 

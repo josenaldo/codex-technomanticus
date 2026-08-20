@@ -22,14 +22,7 @@ aliases:
 # Domain Model
 
 > [!abstract] TL;DR
-> O **Domain Model** organiza a lógica de negócio como uma **rede de objetos** que carregam **dados e
-> comportamento juntos** — cada objeto conhece e aplica as próprias regras. É o oposto do
-> [[02 - Transaction Script]]: em vez de roteiros procedurais, `pedido.aprovar()` sabe o que significa
-> aprovar. Compensa quando o domínio é **complexo** — muitas regras que interagem, um sistema de vida
-> longa — e é o coração do **DDD** (Domain-Driven Design). Combina melhor com o [[08 - Data Mapper]],
-> que mantém o domínio **ignorante do banco**. A armadilha número um, e uma das mais comuns da
-> engenharia, é o **modelo anêmico**: objetos que são só sacos de getters/setters, com toda a lógica
-> num service — Transaction Script vestido de OO.
+> O **Domain Model** organiza a lógica de negócio como uma **rede de objetos** que carregam **dados e comportamento juntos** — cada objeto conhece e aplica as próprias regras. É o oposto do [[02 - Transaction Script]]: em vez de roteiros procedurais, `pedido.aprovar()` sabe o que significa aprovar. Compensa quando o domínio é **complexo** — muitas regras que interagem, um sistema de vida longa — e é o coração do **DDD** (Domain-Driven Design). Combina melhor com o [[08 - Data Mapper]], que mantém o domínio **ignorante do banco**. A armadilha número um, e uma das mais comuns da engenharia, é o **modelo anêmico**: objetos que são só sacos de getters/setters, com toda a lógica num service — Transaction Script vestido de OO.
 
 ## A regra mora onde os dados moram
 
@@ -68,19 +61,13 @@ Ele compensa quando: o domínio tem **muitas regras que interagem**; o sistema �
 ## Armadilhas comuns
 
 > [!warning] O modelo de domínio anêmico
-> **O que acontece:** você cria `Pedido`, `Item`, `Cliente`, mas eles só têm getters/setters; toda a regra vive em `PedidoService`, `ItemService`. Parece Domain Model; é Transaction Script com mais arquivos.
-> **Por quê:** separar dados de comportamento quebra o encapsulamento que é a razão de ser do modelo rico. A regra fica longe dos dados que ela protege, e as invariantes podem ser violadas por qualquer um que chame um setter.
-> **Como evitar:** ponha o comportamento **junto** dos dados que ele governa. Se um método de service só lê e escreve campos de uma entidade, provavelmente ele pertence à entidade. Setters públicos que furam invariantes são o cheiro do modelo anêmico.
+> **O que acontece:** você cria `Pedido`, `Item`, `Cliente`, mas eles só têm getters/setters; toda a regra vive em `PedidoService`, `ItemService`. Parece Domain Model; é Transaction Script com mais arquivos. **Por quê:** separar dados de comportamento quebra o encapsulamento que é a razão de ser do modelo rico. A regra fica longe dos dados que ela protege, e as invariantes podem ser violadas por qualquer um que chame um setter. **Como evitar:** ponha o comportamento **junto** dos dados que ele governa. Se um método de service só lê e escreve campos de uma entidade, provavelmente ele pertence à entidade. Setters públicos que furam invariantes são o cheiro do modelo anêmico.
 
 > [!warning] Domínio que conhece o banco
-> **O que acontece:** o objeto de domínio importa anotações de ORM pesadas, monta SQL, ou chama o repositório de dentro de si — a persistência vaza para dentro da regra de negócio.
-> **Por quê:** o Domain Model só entrega seu valor se for **ignorante da persistência**; quando o banco invade o domínio, você perde a testabilidade (não dá para testar a regra sem banco) e reacopla o que queria separar.
-> **Como evitar:** mantenha a persistência num Data Mapper/Repository externo. O domínio expressa **regras**; carregar e salvar é responsabilidade de outra camada. (Anotações leves de mapeamento são um mal tolerável; lógica de acesso a dados dentro da entidade, não.)
+> **O que acontece:** o objeto de domínio importa anotações de ORM pesadas, monta SQL, ou chama o repositório de dentro de si — a persistência vaza para dentro da regra de negócio. **Por quê:** o Domain Model só entrega seu valor se for **ignorante da persistência**; quando o banco invade o domínio, você perde a testabilidade (não dá para testar a regra sem banco) e reacopla o que queria separar. **Como evitar:** mantenha a persistência num Data Mapper/Repository externo. O domínio expressa **regras**; carregar e salvar é responsabilidade de outra camada. (Anotações leves de mapeamento são um mal tolerável; lógica de acesso a dados dentro da entidade, não.)
 
 > [!warning] Domain Model num CRUD que não pede
-> **O que acontece:** monta-se agregados, objetos de valor e toda a maquinaria de DDD para um cadastro simples que é, no fundo, um formulário sobre uma tabela.
-> **Por quê:** o modelo rico paga complexidade por encapsulamento de **regras densas**. Sem regras densas, você só ganhou cerimônia — a abstração prematura da família GoF, aplicada ao domínio.
-> **Como evitar:** deixe a **densidade das regras** decidir. Pouca lógica → Transaction Script. Regras ricas e interagentes → Domain Model. Comece simples; suba quando a complexidade real aparecer.
+> **O que acontece:** monta-se agregados, objetos de valor e toda a maquinaria de DDD para um cadastro simples que é, no fundo, um formulário sobre uma tabela. **Por quê:** o modelo rico paga complexidade por encapsulamento de **regras densas**. Sem regras densas, você só ganhou cerimônia — a abstração prematura da família GoF, aplicada ao domínio. **Como evitar:** deixe a **densidade das regras** decidir. Pouca lógica → Transaction Script. Regras ricas e interagentes → Domain Model. Comece simples; suba quando a complexidade real aparecer.
 
 ## Como explicar em inglês
 

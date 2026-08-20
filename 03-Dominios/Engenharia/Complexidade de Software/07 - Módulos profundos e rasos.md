@@ -34,8 +34,7 @@ A **interface** é o que um cliente precisa ter na cabeça pra usá-lo: assinatu
 Ousterhout propõe pensar nessa relação como uma **razão**:
 
 > [!quote] Profundidade de módulo
-> *"The best modules are deep: they have a lot of functionality hidden behind a simple interface."*
-> — John Ousterhout, *A Philosophy of Software Design*
+> *"The best modules are deep: they have a lot of functionality hidden behind a simple interface."* — John Ousterhout, *A Philosophy of Software Design*
 
 A profundidade é o **benefício líquido** da abstração. A funcionalidade escondida é o que você ganha; a interface é o que você paga (em carga cognitiva — a *cognitive load* que a nota 08 detalha).
 
@@ -117,8 +116,7 @@ Profundidade é information hiding ([[05 - Abstração - a ferramenta central]])
 Um **módulo raso** é o oposto: a interface é quase tão complexa quanto a implementação. Ele não esconde quase nada, então o custo de aprender a interface quase anula o benefício de não ler o código. Ousterhout é direto sobre o saldo:
 
 > [!quote] O custo de um módulo raso
-> *"A shallow module is one whose interface is complicated relative to the functionality it provides. Shallow modules don't help much in the battle against complexity, because the benefit they provide (not having to learn about how they work internally) is negated by the cost of learning and using their interfaces."*
-> — John Ousterhout (paráfrase fiel; ver Referências)
+> *"A shallow module is one whose interface is complicated relative to the functionality it provides. Shallow modules don't help much in the battle against complexity, because the benefit they provide (not having to learn about how they work internally) is negated by the cost of learning and using their interfaces."* — John Ousterhout (paráfrase fiel; ver Referências)
 
 O exemplo que ele usa pra cravar a crítica é o **I/O de streams do Java**. Pra ler um arquivo do jeito recomendado, você não cria *um* objeto — você empilha vários:
 
@@ -164,8 +162,7 @@ Leitura do diagrama: a seta vertical é o caminho que uma chamada percorre. Cada
 E aqui entra o diagnóstico mais provocador do livro — a **classitis**:
 
 > [!quote] Classitis
-> *"This belief that classes should be small, not deep, leads to a syndrome I call 'classitis'... Classitis may result in classes that are individually simple, but it increases the complexity of the overall system."*
-> — John Ousterhout (paráfrase fiel; ver Referências)
+> *"This belief that classes should be small, not deep, leads to a syndrome I call 'classitis'... Classitis may result in classes that are individually simple, but it increases the complexity of the overall system."* — John Ousterhout (paráfrase fiel; ver Referências)
 
 **Classitis** é a crença equivocada de que mais classes, e menores, é *sempre* melhor — que fragmentar é sempre limpar.
 
@@ -210,8 +207,7 @@ Isso **não** é licença pra escrever classes-monstro que misturam tudo. É um 
 Por que módulos rasos proliferam? Porque cada um, isolado, parece inofensivo. Aqui Ousterhout reencontra uma tese que já apareceu na nota de abertura ([[01 - A complexidade como problema central]]):
 
 > [!quote] Complexity is incremental
-> *"Complexity isn't caused by a single catastrophic error; it accumulates in lots of small chunks... you have to sweat the small stuff."*
-> — John Ousterhout (paráfrase fiel; ver Referências)
+> *"Complexity isn't caused by a single catastrophic error; it accumulates in lots of small chunks... you have to sweat the small stuff."* — John Ousterhout (paráfrase fiel; ver Referências)
 
 Nenhuma decisão sozinha torna um sistema complexo. A complexidade se acumula em centenas de pequenas escolhas — um método pass-through aqui, uma interface inflada ali, uma classe rasa acolá.
 
@@ -220,8 +216,7 @@ Cada uma é defensável; a soma é uma bola de lama. A consequência prática é
 A heurística construtiva que Ousterhout dá pra produzir profundidade é **empurrar a complexidade pra baixo** (*pull complexity downward*):
 
 > [!quote] Pull complexity downward
-> *"It is more important for a module to have a simple interface than a simple implementation."*
-> — John Ousterhout (paráfrase fiel; ver Referências)
+> *"It is more important for a module to have a simple interface than a simple implementation."* — John Ousterhout (paráfrase fiel; ver Referências)
 
 Quando você tem uma escolha entre simplificar a interface (à custa de uma implementação mais complicada) ou simplificar a implementação (à custa de uma interface mais complicada), prefira quase sempre a **interface simples**.
 
@@ -256,8 +251,7 @@ Uma das maiores fontes de complexidade de interface são os **modos de falha**: 
 A ideia: em vez de lançar uma exceção numa situação de borda, **redefina a semântica do método** pra que aquela situação simplesmente não seja mais um erro.
 
 > [!quote] Define errors out of existence
-> *"The best way to reduce the complexity damage caused by exception handling is to reduce the number of places where exceptions have to be handled... define your APIs so that there are no exceptions to handle: define errors out of existence."*
-> — John Ousterhout (paráfrase fiel; ver Referências)
+> *"The best way to reduce the complexity damage caused by exception handling is to reduce the number of places where exceptions have to be handled... define your APIs so that there are no exceptions to handle: define errors out of existence."* — John Ousterhout (paráfrase fiel; ver Referências)
 
 O exemplo canônico é `substring` — a mesma operação, duas filosofias de API.
 
@@ -294,8 +288,7 @@ Há uma sutileza que muita gente erra ao raciocinar sobre "tamanho de interface"
 - A parte **informal**: o que a linguagem *não* consegue checar — o que o método faz de fato, restrições de uso (ex.: "chame `open` antes de `read`"), invariantes, efeitos colaterais, o que acontece nos casos de borda.
 
 > [!quote] A interface tem duas partes
-> *"Every interface has two parts: a formal part and an informal part... The informal parts of an interface can only be described using comments, and the programming language cannot ensure that the description is complete and accurate."*
-> — John Ousterhout (paráfrase fiel; ver Referências)
+> *"Every interface has two parts: a formal part and an informal part... The informal parts of an interface can only be described using comments, and the programming language cannot ensure that the description is complete and accurate."* — John Ousterhout (paráfrase fiel; ver Referências)
 
 A parte informal só pode ser expressa em **comentários** — e, segundo Ousterhout, na maioria das interfaces ela é *maior e mais complexa* que a parte formal.
 
@@ -324,8 +317,7 @@ Essa tensão não é hipótese: entre **setembro de 2024 e fevereiro de 2025**, 
 Quando os métodos extraídos ficam *entrelaçados* (um só faz sentido lendo os outros), o código fica *mais* difícil de ler decomposto do que junto. A decomposição prometia clareza e entregou um vai-e-vem.
 
 > [!quote] Entanglement (Ousterhout)
-> *"When decomposed methods are entangled, they are harder to read than if they were not decomposed."*
-> — John Ousterhout (debate aposd-vs-clean-code; ver Referências)
+> *"When decomposed methods are entangled, they are harder to read than if they were not decomposed."* — John Ousterhout (debate aposd-vs-clean-code; ver Referências)
 
 O estudo de caso central foi o **`PrimeGenerator`** do *Clean Code*:
 
@@ -414,8 +406,7 @@ Veja [[08 - Carga cognitiva e legibilidade]].
 ## Referências
 
 > [!tip] Assista — Book Club: *A Philosophy of Software Design*, de John Ousterhout
-> **Internet of Bugs** · 19min · [Book Club: *A Philosophy of Software Design*, de John Ousterhout](https://www.youtube.com/watch?v=4xqkI953K6Y)
-> Discussão do livro em contraste explícito com o *Clean Code* — que é justamente o debate que esta nota trata na questão das funções pequenas. Bom complemento para ver os dois lados defendidos, não só resumidos.
+> **Internet of Bugs** · 19min · [Book Club: *A Philosophy of Software Design*, de John Ousterhout](https://www.youtube.com/watch?v=4xqkI953K6Y) Discussão do livro em contraste explícito com o *Clean Code* — que é justamente o debate que esta nota trata na questão das funções pequenas. Bom complemento para ver os dois lados defendidos, não só resumidos.
 
 - **John Ousterhout** — *A Philosophy of Software Design* (1ª ed. 2018; 2ª ed. 2021, Yaknyam Press). Origem dos termos **deep module / shallow module**, da definição de profundidade como razão funcionalidade ÷ complexidade de interface, do método e da variável *pass-through*, do princípio *"different layer, different abstraction"*, do diagnóstico **classitis**, da crítica ao **I/O de streams do Java** (`FileInputStream`/`BufferedInputStream` como módulos rasos, com a proposta de bufferizar por padrão), da técnica **"define errors out of existence"** (exemplo `substring` Java × JavaScript), da divisão da interface em parte **formal e informal** (comentários), da tese *"complexity is incremental"* ("sweat the small stuff") e da heurística *"pull complexity downward"*. A 2ª edição inclui um capítulo novo comparando explicitamente a abordagem do livro com a de *Clean Code*. [Página oficial do livro (Stanford, John Ousterhout)](https://web.stanford.edu/~ouster/cgi-bin/aposd.php).
 - **John Ousterhout & Robert C. Martin** — *A Philosophy of Software Design vs. Clean Code* (discussão pública, set/2024–fev/2025). Origem do debate **funções pequenas × módulos profundos**, do conceito de **entanglement** na decomposição, do estudo de caso do **`PrimeGenerator`** e da convergência em ~4 métodos. [Repositório do debate no GitHub](https://github.com/johnousterhout/aposd-vs-clean-code).

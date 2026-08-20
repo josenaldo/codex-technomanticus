@@ -14,8 +14,7 @@ publish: true
 
 Sub-galho 6 de [[03-Dominios/Engenharia/UX/index|UX]] — território 100% novo no vault. Voz, tom, microcopy, mensagens de erro que não culpam o usuário, estados vazios como conteúdo e o jeito como i18n quebra o layout que "funcionava" em inglês.
 
-**Estado:** ✅ completo — 5/5 notas escritas (fase Adepto), diagnosticadas e com mídia
-verificada (M1). Ver [[03-Dominios/Engenharia/UX/UX Writing e Content Design/roadmap|roadmap do sub-galho]].
+**Estado:** ✅ completo — 5/5 notas escritas (fase Adepto), diagnosticadas e com mídia verificada (M1). Ver [[03-Dominios/Engenharia/UX/UX Writing e Content Design/roadmap|roadmap do sub-galho]].
 
 ## Notas (fase Adepto)
 

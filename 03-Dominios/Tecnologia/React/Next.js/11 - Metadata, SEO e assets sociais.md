@@ -18,26 +18,13 @@ publish: true
 # Metadata, SEO e assets sociais
 
 > [!abstract] TL;DR
-> O App Router expõe dois caminhos para metadata: **declarativo** (`export const metadata`) para valores
-> estáticos conhecidos em build time, e **dinâmico** (`export async function generateMetadata`) para
-> valores que dependem de parâmetros de rota ou chamadas externas. A metadata se propaga pela árvore
-> de layouts via merge, com `title.template` permitindo padrões como `"Artigo | Blog"` sem repetir o
-> sufixo em cada página. Para OG images, o Next oferece `opengraph-image.(jpg|tsx)` file-based —
-> onde `.tsx` usa `ImageResponse` para gerar imagens com JSX no edge. `sitemap.ts` e `robots.ts`
-> completam o stack de SEO. Em Next 15, `params` e `searchParams` são Promises: `await` obrigatório.
+> O App Router expõe dois caminhos para metadata: **declarativo** (`export const metadata`) para valores estáticos conhecidos em build time, e **dinâmico** (`export async function generateMetadata`) para valores que dependem de parâmetros de rota ou chamadas externas. A metadata se propaga pela árvore de layouts via merge, com `title.template` permitindo padrões como `"Artigo | Blog"` sem repetir o sufixo em cada página. Para OG images, o Next oferece `opengraph-image.(jpg|tsx)` file-based — onde `.tsx` usa `ImageResponse` para gerar imagens com JSX no edge. `sitemap.ts` e `robots.ts` completam o stack de SEO. Em Next 15, `params` e `searchParams` são Promises: `await` obrigatório.
 
 ---
 
-Você compartilha um artigo no WhatsApp e o preview aparece em branco — sem título, sem imagem, sem
-descrição. Ou pior: aparece o título genérico do layout raiz em todas as páginas do seu e-commerce,
-sem nenhuma diferenciação por produto. Ambos os problemas têm a mesma causa: metadata mal
-configurada. E a boa notícia é que o App Router foi projetado exatamente para tornar isso tratável
-em escala — seja um blog com 3 páginas ou uma loja com 50 mil SKUs.
+Você compartilha um artigo no WhatsApp e o preview aparece em branco — sem título, sem imagem, sem descrição. Ou pior: aparece o título genérico do layout raiz em todas as páginas do seu e-commerce, sem nenhuma diferenciação por produto. Ambos os problemas têm a mesma causa: metadata mal configurada. E a boa notícia é que o App Router foi projetado exatamente para tornar isso tratável em escala — seja um blog com 3 páginas ou uma loja com 50 mil SKUs.
 
-O que o Next faz, afinal, é garantir que as tags `<meta>`, `<title>`, `<link rel="canonical">` e
-afins apareçam no HTML enviado pelo servidor — visíveis para crawlers (Googlebot, bots de redes
-sociais) sem precisar de JavaScript. Isso é o que diferencia o SEO em SSR de uma SPA tradicional,
-onde o crawler chegava em uma página quase vazia esperando o bundle carregar.
+O que o Next faz, afinal, é garantir que as tags `<meta>`, `<title>`, `<link rel="canonical">` e afins apareçam no HTML enviado pelo servidor — visíveis para crawlers (Googlebot, bots de redes sociais) sem precisar de JavaScript. Isso é o que diferencia o SEO em SSR de uma SPA tradicional, onde o crawler chegava em uma página quase vazia esperando o bundle carregar.
 
 ## A Metadata API em duas formas
 
@@ -72,8 +59,7 @@ export default function AboutPage() {
 
 **2. Dinâmica** — `export async function generateMetadata`
 
-Use quando o título ou a descrição precisam de dados externos — típico em páginas de produto ou de
-post de blog, onde o slug determina qual conteúdo buscar.
+Use quando o título ou a descrição precisam de dados externos — típico em páginas de produto ou de post de blog, onde o slug determina qual conteúdo buscar.
 
 ```tsx
 // app/blog/[slug]/page.tsx
@@ -108,28 +94,18 @@ export async function generateMetadata(
 ```
 
 > [!question]- Por que `params` é uma Promise no Next 15?
-> No Next 14 e anteriores, `params` era um objeto síncrono. No Next 15, o acesso a `params` e
-> `searchParams` foi tornado assíncrono para alinhar com o modelo de renderização dinâmica — a
-> leitura de parâmetros de rota agora é tratada como acesso a dados que podem chegar do servidor.
-> Isso exige `await params` em `generateMetadata`, `page.tsx` e qualquer Server Component que os leia.
+> No Next 14 e anteriores, `params` era um objeto síncrono. No Next 15, o acesso a `params` e `searchParams` foi tornado assíncrono para alinhar com o modelo de renderização dinâmica — a leitura de parâmetros de rota agora é tratada como acesso a dados que podem chegar do servidor. Isso exige `await params` em `generateMetadata`, `page.tsx` e qualquer Server Component que os leia.
 
 > [!warning] Next 14 vs Next 15: params síncrono vs assíncrono
-> **O que mudou:** em Next 14, `params: { slug: string }` era acessível diretamente.
-> **No Next 15:** `params: Promise<{ slug: string }>` — é necessário `await params` antes de usar.
-> Código que não faz o await em Next 15 pode compilar mas falha em runtime com comportamento
-> indefinido (o objeto Promise não tem a propriedade `slug`).
+> **O que mudou:** em Next 14, `params: { slug: string }` era acessível diretamente. **No Next 15:** `params: Promise<{ slug: string }>` — é necessário `await params` antes de usar. Código que não faz o await em Next 15 pode compilar mas falha em runtime com comportamento indefinido (o objeto Promise não tem a propriedade `slug`).
 
 ---
 
 ## Herança e merge entre layouts e pages
 
-A metadata não vive só em pages — ela pode (e deve) ser declarada nos layouts também. O Next faz
-um **merge profundo** das metadata declarations da raiz até a folha da árvore de rotas.
+A metadata não vive só em pages — ela pode (e deve) ser declarada nos layouts também. O Next faz um **merge profundo** das metadata declarations da raiz até a folha da árvore de rotas.
 
-A regra de merge é simples: **os valores da folha sobrescrevem os do pai**. Mas há uma nuance
-importante: o merge não é profundo para objetos aninhados como `openGraph` — se a page define
-`openGraph.title`, ela precisa redefinir o objeto `openGraph` inteiro; o Next não mescla
-propriedades individuais de `openGraph`.
+A regra de merge é simples: **os valores da folha sobrescrevem os do pai**. Mas há uma nuance importante: o merge não é profundo para objetos aninhados como `openGraph` — se a page define `openGraph.title`, ela precisa redefinir o objeto `openGraph` inteiro; o Next não mescla propriedades individuais de `openGraph`.
 
 ```tsx
 // app/layout.tsx (raiz — valores padrão globais)
@@ -167,11 +143,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 ```
 
 > [!warning] openGraph não herda campos do layout automaticamente
-> **Sintoma:** `siteName`, `locale` e `type` definidos no layout raiz desaparecem nas pages que
-> declaram seu próprio `openGraph`.
-> **Por quê:** o Next substitui o objeto `openGraph` inteiro, não mescla campo a campo.
-> **Como evitar:** use `parent: ResolvingMetadata` em `generateMetadata` para recuperar os campos
-> do parent e compor manualmente: `const { openGraph } = await parent`.
+> **Sintoma:** `siteName`, `locale` e `type` definidos no layout raiz desaparecem nas pages que declaram seu próprio `openGraph`. **Por quê:** o Next substitui o objeto `openGraph` inteiro, não mescla campo a campo. **Como evitar:** use `parent: ResolvingMetadata` em `generateMetadata` para recuperar os campos do parent e compor manualmente: `const { openGraph } = await parent`.
 
 ---
 
@@ -247,9 +219,7 @@ export const metadata: Metadata = {
 
 ## File-based metadata: imagens, ícones e muito mais
 
-Além da API declarativa, o Next reconhece arquivos especiais pela **convenção de nome** dentro de
-qualquer pasta de rota. São dois tipos: **estáticos** (imagem `.jpg`/`.png` simplesmente colocada
-na pasta) e **dinâmicos** (arquivo `.tsx`/`.ts` que gera o asset em runtime).
+Além da API declarativa, o Next reconhece arquivos especiais pela **convenção de nome** dentro de qualquer pasta de rota. São dois tipos: **estáticos** (imagem `.jpg`/`.png` simplesmente colocada na pasta) e **dinâmicos** (arquivo `.tsx`/`.ts` que gera o asset em runtime).
 
 ### Ícones e favicon
 
@@ -262,8 +232,7 @@ na pasta) e **dinâmicos** (arquivo `.tsx`/`.ts` que gera o asset em runtime).
 
 ### OG image e Twitter image
 
-Coloque `opengraph-image.jpg` (1200×630px, recomendado) em qualquer pasta de rota e o Next
-automaticamente adiciona a tag `<meta property="og:image">` para aquela rota e suas filhas:
+Coloque `opengraph-image.jpg` (1200×630px, recomendado) em qualquer pasta de rota e o Next automaticamente adiciona a tag `<meta property="og:image">` para aquela rota e suas filhas:
 
 ```
 app/
@@ -276,8 +245,7 @@ app/
 
 ### OG image dinâmica com `ImageResponse`
 
-`opengraph-image.tsx` usa `ImageResponse` (de `next/og`) para gerar imagens com JSX renderizado
-no Edge Runtime. É uma das features mais poderosas para branding consistente:
+`opengraph-image.tsx` usa `ImageResponse` (de `next/og`) para gerar imagens com JSX renderizado no Edge Runtime. É uma das features mais poderosas para branding consistente:
 
 ```tsx
 // app/blog/[slug]/opengraph-image.tsx
@@ -325,9 +293,7 @@ export default async function OgImage({ params }: Props) {
 ```
 
 > [!info] ImageResponse roda no Edge Runtime
-> O Edge Runtime não tem acesso à filesystem do Node.js. Para carregar fontes customizadas, use
-> `fetch()` para buscá-las de uma URL (CDN ou `/public`) ou as importe como `ArrayBuffer` via
-> `fs.readFile` apenas em rotas com runtime `"nodejs"`.
+> O Edge Runtime não tem acesso à filesystem do Node.js. Para carregar fontes customizadas, use `fetch()` para buscá-las de uma URL (CDN ou `/public`) ou as importe como `ArrayBuffer` via `fs.readFile` apenas em rotas com runtime `"nodejs"`.
 
 ---
 
@@ -418,28 +384,18 @@ export default function robots(): MetadataRoute.Robots {
 ```
 
 > [!question]- Quando usar `sitemap.ts` vs um `sitemap.xml` estático?
-> Use `.ts` dinâmico quando o conteúdo muda com frequência e o total de URLs não é conhecido em
-> build time — típico de blogs, e-commerces, portfólios com CMS. Para sites estáticos pequenos
-> com URLs fixas, um `sitemap.xml` na pasta `public/` resolve com menos overhead.
+> Use `.ts` dinâmico quando o conteúdo muda com frequência e o total de URLs não é conhecido em build time — típico de blogs, e-commerces, portfólios com CMS. Para sites estáticos pequenos com URLs fixas, um `sitemap.xml` na pasta `public/` resolve com menos overhead.
 
 ---
 
 ## Por que server rendering muda o SEO
 
 > [!info] Pré-requisito: Server Components
-> Esta seção pressupõe que você entende o modelo RSC — por que as pages são executadas no servidor
-> e o que isso significa para o HTML entregue ao cliente. Se ainda não viu:
-> [[03-Dominios/Tecnologia/React/React core/23 - Server Components (RSC)|React core 23 — Server Components (RSC)]]
+> Esta seção pressupõe que você entende o modelo RSC — por que as pages são executadas no servidor e o que isso significa para o HTML entregue ao cliente. Se ainda não viu: [[03-Dominios/Tecnologia/React/React core/23 - Server Components (RSC)|React core 23 — Server Components (RSC)]]
 
-Uma SPA com React puro entrega ao Googlebot um HTML quase vazio — as tags `<meta>` são injetadas
-pelo JavaScript depois da hidratação. O Googlebot renderiza JS, mas há latência e limitações de
-orçamento de renderização; redes sociais (WhatsApp, Slack, LinkedIn) **não executam JavaScript**
-ao gerar o preview — elas só leem o HTML puro.
+Uma SPA com React puro entrega ao Googlebot um HTML quase vazio — as tags `<meta>` são injetadas pelo JavaScript depois da hidratação. O Googlebot renderiza JS, mas há latência e limitações de orçamento de renderização; redes sociais (WhatsApp, Slack, LinkedIn) **não executam JavaScript** ao gerar o preview — elas só leem o HTML puro.
 
-O App Router resolve isso na raiz: como as pages são Server Components por padrão, o HTML
-entregue ao cliente (e ao crawler) já contém todas as tags `<meta>`, `<title>` e `<link>`
-corretas, sem depender de execução de JS. `generateMetadata` é aguardado no servidor antes de
-enviar o HTML — o cliente nunca recebe uma página sem metadata.
+O App Router resolve isso na raiz: como as pages são Server Components por padrão, o HTML entregue ao cliente (e ao crawler) já contém todas as tags `<meta>`, `<title>` e `<link>` corretas, sem depender de execução de JS. `generateMetadata` é aguardado no servidor antes de enviar o HTML — o cliente nunca recebe uma página sem metadata.
 
 ---
 
@@ -447,8 +403,7 @@ enviar o HTML — o cliente nunca recebe uma página sem metadata.
 
 ### Cenário 1: Blog com título e OG por post
 
-Um blog tem layout raiz com template de título e OG image global. Cada post precisa de título,
-descrição e OG image específicos, gerados a partir do slug:
+Um blog tem layout raiz com template de título e OG image global. Cada post precisa de título, descrição e OG image específicos, gerados a partir do slug:
 
 ```tsx
 // app/layout.tsx
@@ -483,9 +438,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 ### Cenário 2: E-commerce com metadata de produto
 
-Uma loja virtual precisa de metadata diferenciada por produto: título com nome e marca, descrição
-com preço, e OG image com foto do produto. Criticamente, produtos fora de estoque ou removidos
-devem retornar `noindex`:
+Uma loja virtual precisa de metadata diferenciada por produto: título com nome e marca, descrição com preço, e OG image com foto do produto. Criticamente, produtos fora de estoque ou removidos devem retornar `noindex`:
 
 ```tsx
 // app/produtos/[id]/page.tsx
@@ -534,38 +487,21 @@ export async function generateMetadata(
 ## Armadilhas comuns
 
 > [!warning] Esquecer `metadataBase` e gerar URLs relativas
-> **O que acontece:** o Next converte caminhos relativos em `openGraph.images` usando
-> `metadataBase`. Sem ele, a URL fica relativa (`/og/img.png`) em vez de absoluta
-> (`https://meu-site.com/og/img.png`). Redes sociais rejeitam URLs relativas — o card aparece sem
-> imagem.
-> **Como evitar:** defina `metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL!)` no layout
-> raiz. Em produção, use a URL canônica do deploy.
+> **O que acontece:** o Next converte caminhos relativos em `openGraph.images` usando `metadataBase`. Sem ele, a URL fica relativa (`/og/img.png`) em vez de absoluta (`https://meu-site.com/og/img.png`). Redes sociais rejeitam URLs relativas — o card aparece sem imagem. **Como evitar:** defina `metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL!)` no layout raiz. Em produção, use a URL canônica do deploy.
 
 > [!warning] Substituir `openGraph` inteiro e perder campos do layout
-> **O que acontece:** uma page define `openGraph: { title, images }` e perde `siteName`, `locale`
-> e `type` definidos no layout raiz — o Next não faz merge profundo de `openGraph`.
-> **Por quê:** o objeto `openGraph` é substituído, não mesclado.
-> **Como evitar:** use `parent: ResolvingMetadata` em `generateMetadata` e componha:
-> `const po = (await parent).openGraph ?? {}; return { openGraph: { ...po, title, images } }`.
+> **O que acontece:** uma page define `openGraph: { title, images }` e perde `siteName`, `locale` e `type` definidos no layout raiz — o Next não faz merge profundo de `openGraph`. **Por quê:** o objeto `openGraph` é substituído, não mesclado. **Como evitar:** use `parent: ResolvingMetadata` em `generateMetadata` e componha: `const po = (await parent).openGraph ?? {}; return { openGraph: { ...po, title, images } }`.
 
 > [!warning] Await de `params` faltando em Next 15
-> **O que acontece:** código que acessa `params.slug` sem `await` compila sem erro mas retorna
-> `undefined` em runtime — o título fica `undefined | Meu Site` ou a busca ao banco falha.
-> **Por quê:** em Next 15, `params` é uma `Promise<{ slug: string }>`, não mais um objeto síncrono.
-> **Como evitar:** sempre `const { slug } = await params;` antes de usar qualquer parâmetro de rota.
+> **O que acontece:** código que acessa `params.slug` sem `await` compila sem erro mas retorna `undefined` em runtime — o título fica `undefined | Meu Site` ou a busca ao banco falha. **Por quê:** em Next 15, `params` é uma `Promise<{ slug: string }>`, não mais um objeto síncrono. **Como evitar:** sempre `const { slug } = await params;` antes de usar qualquer parâmetro de rota.
 
 > [!warning] Confundir `title.default` com `title.template`
-> **O que acontece:** uma page não exporta `title` e o site exibe o template com `%s` literal —
-> algo como `"%s | Minha Empresa"` — porque `title.template` não sabe o que substituir.
-> **Por quê:** `title.template` aplica o padrão ao `title` das **filhas que exportam title**.
-> Quando a filha não exporta, o Next usa `title.default` (string simples, sem substituição).
-> **Como evitar:** sempre defina `title.default` junto com `title.template` no layout raiz.
+> **O que acontece:** uma page não exporta `title` e o site exibe o template com `%s` literal — algo como `"%s | Minha Empresa"` — porque `title.template` não sabe o que substituir. **Por quê:** `title.template` aplica o padrão ao `title` das **filhas que exportam title**. Quando a filha não exporta, o Next usa `title.default` (string simples, sem substituição). **Como evitar:** sempre defina `title.default` junto com `title.template` no layout raiz.
 
 > [!tip] Assista: Next.js 15 Tutorial - 17 - Routing Metadata
 > **Canal:** Codevolution | **Duração:** ~8min | **Idioma:** EN
 >
-> Cobre static metadata, generateMetadata e merge no App Router com código real em Next.js 15 — incluindo uma armadilha crítica que a nota não menciona: exportar `metadata` de uma page marcada com `"use client"` gera erro em build. A solução canônica é manter o Server Component como page e extrair a lógica client-side para um componente filho separado.
-> Trecho de destaque [5:48]: *"there is one crucial limitation you need to be aware of when working with metadata — it will not work in pages that are marked with the use client directive"*
+> Cobre static metadata, generateMetadata e merge no App Router com código real em Next.js 15 — incluindo uma armadilha crítica que a nota não menciona: exportar `metadata` de uma page marcada com `"use client"` gera erro em build. A solução canônica é manter o Server Component como page e extrair a lógica client-side para um componente filho separado. Trecho de destaque [5:48]: *"there is one crucial limitation you need to be aware of when working with metadata — it will not work in pages that are marked with the use client directive"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=OldUurB0Wx8)
 
@@ -573,11 +509,7 @@ export async function generateMetadata(
 
 ## Como explicar em inglês
 
-The Next.js App Router provides a Metadata API where you export either a static `metadata` object
-or an async `generateMetadata` function from any layout or page. Metadata propagates down the
-route tree through merge — with page values overriding layout values. For Open Graph images, you
-can place an `opengraph-image.tsx` file in any route folder and use `ImageResponse` to generate
-social card images dynamically on the edge, driven by route parameters like slugs.
+The Next.js App Router provides a Metadata API where you export either a static `metadata` object or an async `generateMetadata` function from any layout or page. Metadata propagates down the route tree through merge — with page values overriding layout values. For Open Graph images, you can place an `opengraph-image.tsx` file in any route folder and use `ImageResponse` to generate social card images dynamically on the edge, driven by route parameters like slugs.
 
 | PT | EN |
 |----|----|
@@ -597,17 +529,13 @@ social card images dynamically on the edge, driven by route parameters like slug
 
 ## Metadata em uma frase
 
-**Metadata no App Router** é um sistema de declaração tipada (`Metadata`, `ResolvingMetadata`) que
-propaga pela árvore de layouts via merge, com dois caminhos para imagens sociais: arquivo estático
-ou `ImageResponse` dinâmico no edge.
+**Metadata no App Router** é um sistema de declaração tipada (`Metadata`, `ResolvingMetadata`) que propaga pela árvore de layouts via merge, com dois caminhos para imagens sociais: arquivo estático ou `ImageResponse` dinâmico no edge.
 
 ---
 
 ## O que vem a seguir
 
-Com metadata e SEO no lugar, o próximo passo natural é entender como o usuário **navega** entre
-essas páginas: prefetch, atualização do Router Cache e as nuances entre navegação client-side e
-server-side completam o quadro do ciclo requisição-resposta no App Router.
+Com metadata e SEO no lugar, o próximo passo natural é entender como o usuário **navega** entre essas páginas: prefetch, atualização do Router Cache e as nuances entre navegação client-side e server-side completam o quadro do ciclo requisição-resposta no App Router.
 
 - [[03-Dominios/Tecnologia/React/Next.js/12 - Navegação e o Router|12 - Navegação e o Router]] — `<Link>`, prefetch, `useRouter`, `staleTimes` e o Router Cache
 - [[03-Dominios/Tecnologia/React/Next.js/08 - Rendering strategies - SSR, SSG, ISR, PPR|08 - Rendering strategies]] — como a estratégia de renderização afeta quando a metadata é gerada

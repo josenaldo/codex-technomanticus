@@ -213,24 +213,16 @@ Esse contraste é o melhor argumento único a favor do timer: **o estado da exec
 ## Armadilhas comuns
 
 > [!warning] Supor o `PATH` do seu terminal
-> **O que acontece:** "command not found" num script que funciona quando você o executa.
-> **Por quê:** cron entrega ambiente mínimo, sem carregar seus arquivos de perfil.
-> **Como evitar:** caminho absoluto para todo binário, ou `PATH=` declarado no topo do crontab — e, no timer, `Environment=PATH=...` na unidade.
+> **O que acontece:** "command not found" num script que funciona quando você o executa. **Por quê:** cron entrega ambiente mínimo, sem carregar seus arquivos de perfil. **Como evitar:** caminho absoluto para todo binário, ou `PATH=` declarado no topo do crontab — e, no timer, `Environment=PATH=...` na unidade.
 
 > [!warning] Deixar a saída ir para o vazio
-> **O que acontece:** o job falha por semanas e ninguém percebe.
-> **Por quê:** sem MTA, o e-mail do cron é descartado; e sucesso silencioso é indistinguível de nunca ter rodado.
-> **Como evitar:** no cron, redirecione para arquivo. No timer, já vai para o journal. Em qualquer um dos dois, o passo seguinte é **monitorar a ausência** — um job que deveria rodar e não rodou é um alerta, e isso é disciplina de [[03-Dominios/Engenharia/Operação/index|Operação]].
+> **O que acontece:** o job falha por semanas e ninguém percebe. **Por quê:** sem MTA, o e-mail do cron é descartado; e sucesso silencioso é indistinguível de nunca ter rodado. **Como evitar:** no cron, redirecione para arquivo. No timer, já vai para o journal. Em qualquer um dos dois, o passo seguinte é **monitorar a ausência** — um job que deveria rodar e não rodou é um alerta, e isso é disciplina de [[03-Dominios/Engenharia/Operação/index|Operação]].
 
 > [!warning] Testar só executando à mão
-> **O que acontece:** funciona no teste e falha agendado, pelo ambiente.
-> **Por quê:** você testou com o seu contrato, não com o do agendador.
-> **Como evitar:** com timer, `systemctl start <unidade>.service` roda com o contrato real. Com cron, aproxime-se com `env -i /bin/bash --noprofile --norc -c '/opt/scripts/backup.sh'`.
+> **O que acontece:** funciona no teste e falha agendado, pelo ambiente. **Por quê:** você testou com o seu contrato, não com o do agendador. **Como evitar:** com timer, `systemctl start <unidade>.service` roda com o contrato real. Com cron, aproxime-se com `env -i /bin/bash --noprofile --norc -c '/opt/scripts/backup.sh'`.
 
 > [!warning] Esquecer o `daemon-reload` ao criar timer
-> **O que acontece:** `enable --now` reclama que a unidade não existe, ou usa uma versão antiga.
-> **Por quê:** mesma regra da nota 06 — arquivo novo ou alterado exige `daemon-reload`.
-> **Como evitar:** `daemon-reload` e depois `list-timers` para confirmar que a próxima execução está onde você espera.
+> **O que acontece:** `enable --now` reclama que a unidade não existe, ou usa uma versão antiga. **Por quê:** mesma regra da nota 06 — arquivo novo ou alterado exige `daemon-reload`. **Como evitar:** `daemon-reload` e depois `list-timers` para confirmar que a próxima execução está onde você espera.
 
 ---
 

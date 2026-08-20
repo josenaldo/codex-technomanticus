@@ -16,9 +16,7 @@ publish: true
 # Container vs Presentational
 
 > [!abstract] TL;DR
-> O padrão Container/Presentational separa componentes que **buscam e gerenciam dados** (containers, "smart") dos que apenas **renderizam UI** (presentational, "dumb") — o que resolve o problema clássico de componentes que misturam fetch com render e ficam impossíveis de testar ou reutilizar.
-> Com a chegada dos Hooks em 2019, Dan Abramov *atualizou* seu próprio artigo: "não recomendo mais dividir componentes assim. Hooks fazem o mesmo sem divisão arbitrária." Hoje, a lógica que antes ia para o container vai para um custom hook.
-> O padrão ainda faz sentido em 2026 quando a separação é entre *componentes* com responsabilidades muito distintas (ex.: Server Component buscando dados + Client Component renderizando), ou em design systems onde os componentes visuais precisam ser completamente agnósticos de estado.
+> O padrão Container/Presentational separa componentes que **buscam e gerenciam dados** (containers, "smart") dos que apenas **renderizam UI** (presentational, "dumb") — o que resolve o problema clássico de componentes que misturam fetch com render e ficam impossíveis de testar ou reutilizar. Com a chegada dos Hooks em 2019, Dan Abramov *atualizou* seu próprio artigo: "não recomendo mais dividir componentes assim. Hooks fazem o mesmo sem divisão arbitrária." Hoje, a lógica que antes ia para o container vai para um custom hook. O padrão ainda faz sentido em 2026 quando a separação é entre *componentes* com responsabilidades muito distintas (ex.: Server Component buscando dados + Client Component renderizando), ou em design systems onde os componentes visuais precisam ser completamente agnósticos de estado.
 
 ---
 
@@ -391,24 +389,16 @@ Esse componente pode ser testado, documentado no Storybook e reutilizado em qual
 ## Armadilhas comuns
 
 > [!warning] Dividir cedo demais
-> **O que acontece:** você cria um container e um presentational para um componente que tem 20 linhas e nunca vai ser reutilizado. Agora tem dois arquivos, dois imports e zero benefício.
-> **Por quê:** o padrão existe para resolver o problema de componentes com responsabilidades conflitantes — não é uma regra para *todo* componente.
-> **Como evitar:** aplique quando sentir a dor concreta: "não consigo testar a UI sem fazer fetch" ou "quero reutilizar essa lista com dados diferentes". Antes disso, um componente simples está ótimo como está.
+> **O que acontece:** você cria um container e um presentational para um componente que tem 20 linhas e nunca vai ser reutilizado. Agora tem dois arquivos, dois imports e zero benefício. **Por quê:** o padrão existe para resolver o problema de componentes com responsabilidades conflitantes — não é uma regra para *todo* componente. **Como evitar:** aplique quando sentir a dor concreta: "não consigo testar a UI sem fazer fetch" ou "quero reutilizar essa lista com dados diferentes". Antes disso, um componente simples está ótimo como está.
 
 > [!warning] Container anêmico (que só repassa props)
-> **O que acontece:** seu container não faz nada além de chamar `useUsers()` e passar os dados. O resultado é um componente extra que existe só para "parecer container".
-> **Por quê:** se toda a lógica está no hook, o container virou um intermediário sem valor.
-> **Como evitar:** prefira usar o hook diretamente no componente que renderiza. O container só tem razão de existir se *ele mesmo* agrega lógica que não pertence ao hook nem à view — combinando múltiplos hooks, controlando condicionais de renderização complexas, etc.
+> **O que acontece:** seu container não faz nada além de chamar `useUsers()` e passar os dados. O resultado é um componente extra que existe só para "parecer container". **Por quê:** se toda a lógica está no hook, o container virou um intermediário sem valor. **Como evitar:** prefira usar o hook diretamente no componente que renderiza. O container só tem razão de existir se *ele mesmo* agrega lógica que não pertence ao hook nem à view — combinando múltiplos hooks, controlando condicionais de renderização complexas, etc.
 
 > [!warning] Achar que ainda precisa de wrapper component em vez de hook
-> **O que acontece:** em 2026, você cria um `UserListContainer.tsx` que basicamente encapsula um `useEffect` + `useState` — exatamente o que um custom hook faria, mas com a desvantagem de adicionar um nó na árvore do React.
-> **Por quê:** o hábito do padrão pré-hooks persiste mesmo após anos de hooks no ecossistema.
-> **Como evitar:** sempre que for criar um "container component" cuja única responsabilidade é lógica (fetch, estado, efeitos), extraia um `useNomeDoRecurso()` hook. Reserve o container component para quando você precisa de um *componente* na árvore — como um boundary de erro, um contexto, ou um Server Component.
+> **O que acontece:** em 2026, você cria um `UserListContainer.tsx` que basicamente encapsula um `useEffect` + `useState` — exatamente o que um custom hook faria, mas com a desvantagem de adicionar um nó na árvore do React. **Por quê:** o hábito do padrão pré-hooks persiste mesmo após anos de hooks no ecossistema. **Como evitar:** sempre que for criar um "container component" cuja única responsabilidade é lógica (fetch, estado, efeitos), extraia um `useNomeDoRecurso()` hook. Reserve o container component para quando você precisa de um *componente* na árvore — como um boundary de erro, um contexto, ou um Server Component.
 
 > [!warning] Presentational que vira stateful silenciosamente
-> **O que acontece:** você adiciona um `useState` de toggle ou animação no componente "puro" e ele deixa de ser testável de forma determinística.
-> **Por quê:** estado de UI local (abrir/fechar dropdown, animação, foco) *não* é o mesmo tipo de estado que o padrão tenta separar. Mas a fronteira fica turva.
-> **Como evitar:** distingua **estado de UI local** (pertence ao presentational: animações, hover, expand/collapse) de **estado de negócio** (pertence ao container/hook: dados da API, seleção do usuário que impacta outros componentes). O presentational pode ter o primeiro; nunca deve ter o segundo.
+> **O que acontece:** você adiciona um `useState` de toggle ou animação no componente "puro" e ele deixa de ser testável de forma determinística. **Por quê:** estado de UI local (abrir/fechar dropdown, animação, foco) *não* é o mesmo tipo de estado que o padrão tenta separar. Mas a fronteira fica turva. **Como evitar:** distingua **estado de UI local** (pertence ao presentational: animações, hover, expand/collapse) de **estado de negócio** (pertence ao container/hook: dados da API, seleção do usuário que impacta outros componentes). O presentational pode ter o primeiro; nunca deve ter o segundo.
 
 ---
 

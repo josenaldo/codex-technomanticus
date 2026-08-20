@@ -25,13 +25,7 @@ aliases:
 # Session State — Client × Server × Database
 
 > [!abstract] TL;DR
-> HTTP não lembra de você entre uma requisição e outra, mas a **conversa** dura várias — um carrinho,
-> um wizard, uma edição longa. Esse estado precisa morar em algum lugar, e há exatamente três: no
-> **cliente** (cookie, campo oculto, token), no **servidor** (memória do processo) ou no **banco**
-> (tabela ou store dedicado). Em 2002, Fowler trata o cliente como a opção cheia de ressalvas e o
-> servidor como a natural. **A nuvem inverteu isso.** Autoescala e serverless mataram a sessão pegajosa;
-> a assinatura criptográfica resolveu a objeção de segurança; e o resultado é que hoje o default é
-> **cliente (JWT) ou banco (Redis)** — as duas opções que o livro tratava como exceção.
+> HTTP não lembra de você entre uma requisição e outra, mas a **conversa** dura várias — um carrinho, um wizard, uma edição longa. Esse estado precisa morar em algum lugar, e há exatamente três: no **cliente** (cookie, campo oculto, token), no **servidor** (memória do processo) ou no **banco** (tabela ou store dedicado). Em 2002, Fowler trata o cliente como a opção cheia de ressalvas e o servidor como a natural. **A nuvem inverteu isso.** Autoescala e serverless mataram a sessão pegajosa; a assinatura criptográfica resolveu a objeção de segurança; e o resultado é que hoje o default é **cliente (JWT) ou banco (Redis)** — as duas opções que o livro tratava como exceção.
 
 ## O segundo servidor que quebrou o sistema
 
@@ -104,19 +98,13 @@ O que mudou foram as três objeções, uma a uma. **Adulteração** deixou de se
 ## Armadilhas comuns
 
 > [!warning] Sessão em memória atrás de balanceador
-> **O que acontece:** o segundo servidor entra em produção e usuários passam a perder estado de forma intermitente e irreproduzível.
-> **Por quê:** o estado vive no processo, e o balanceador não sabe disso. A correção rápida — sessão pegajosa — amarra o usuário à máquina e, com isso, impede *deploy* sem interrupção e autoescala.
-> **Como evitar:** trate sessão pegajosa como **dívida declarada**, não como solução. Antes de escalar horizontalmente, mova o estado para fora do processo — store compartilhado ou cliente.
+> **O que acontece:** o segundo servidor entra em produção e usuários passam a perder estado de forma intermitente e irreproduzível. **Por quê:** o estado vive no processo, e o balanceador não sabe disso. A correção rápida — sessão pegajosa — amarra o usuário à máquina e, com isso, impede *deploy* sem interrupção e autoescala. **Como evitar:** trate sessão pegajosa como **dívida declarada**, não como solução. Antes de escalar horizontalmente, mova o estado para fora do processo — store compartilhado ou cliente.
 
 > [!warning] JWT gordo
-> **O que acontece:** o token acumula perfil, permissões e preferências, chega a vários KB e passa a trafegar em **toda** requisição, inclusive nas de recursos estáticos. Alguns servidores rejeitam por tamanho de cabeçalho.
-> **Por quê:** como o token já vai junto, colocar mais um campo parece grátis. O custo é distribuído por todas as requisições e nunca aparece num ponto só.
-> **Como evitar:** no token, o mínimo para **identificar e autorizar**; o resto vem do banco quando for preciso. E lembre que dado no token fica **congelado** até a expiração — permissão revogada continua valendo.
+> **O que acontece:** o token acumula perfil, permissões e preferências, chega a vários KB e passa a trafegar em **toda** requisição, inclusive nas de recursos estáticos. Alguns servidores rejeitam por tamanho de cabeçalho. **Por quê:** como o token já vai junto, colocar mais um campo parece grátis. O custo é distribuído por todas as requisições e nunca aparece num ponto só. **Como evitar:** no token, o mínimo para **identificar e autorizar**; o resto vem do banco quando for preciso. E lembre que dado no token fica **congelado** até a expiração — permissão revogada continua valendo.
 
 > [!warning] Confundir sessão com cache
-> **O que acontece:** resultados de consulta pesada são guardados na sessão "para não recalcular". A sessão incha, a memória do servidor ou do store estoura, e usuários veem dados velhos porque nada invalida aquilo.
-> **Por quê:** os dois são "guardar para depois", e a sessão é o lugar mais fácil de escrever.
-> **Como evitar:** sessão é **estado da conversa daquele usuário**, com ciclo de vida ligado a ele. Cache é **cópia de algo derivável**, com invalidação própria e compartilhável entre usuários. Se o dado pode ser recalculado e serve a mais de um usuário, é cache.
+> **O que acontece:** resultados de consulta pesada são guardados na sessão "para não recalcular". A sessão incha, a memória do servidor ou do store estoura, e usuários veem dados velhos porque nada invalida aquilo. **Por quê:** os dois são "guardar para depois", e a sessão é o lugar mais fácil de escrever. **Como evitar:** sessão é **estado da conversa daquele usuário**, com ciclo de vida ligado a ele. Cache é **cópia de algo derivável**, com invalidação própria e compartilhável entre usuários. Se o dado pode ser recalculado e serve a mais de um usuário, é cache.
 
 ## Como explicar em inglês
 

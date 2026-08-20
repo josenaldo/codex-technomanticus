@@ -411,17 +411,13 @@ Após semantic caching (threshold 0.95, TTL 7 dias):
 
 ## Casos práticos
 
-**Caso 1 — Sistema de análise de logs:**
-Uma plataforma de observabilidade recebia 500k queries/mês sobre stack traces. 90% dos stack traces eram idênticos ou quase idênticos (mesmo bug, diferentes instâncias). Após implementar semantic cache com threshold 0.98 (bem alto, porque stack traces são determinísticos): hit rate de 92%, custo de LLM caiu de $8.500/mês para $680/mês.
+**Caso 1 — Sistema de análise de logs:** Uma plataforma de observabilidade recebia 500k queries/mês sobre stack traces. 90% dos stack traces eram idênticos ou quase idênticos (mesmo bug, diferentes instâncias). Após implementar semantic cache com threshold 0.98 (bem alto, porque stack traces são determinísticos): hit rate de 92%, custo de LLM caiu de $8.500/mês para $680/mês.
 
-**Caso 2 — Chatbot de e-commerce:**
-Um chatbot de suporte de e-commerce tinha 200k interações/mês. Análise mostrou que 80% das perguntas eram sobre: status de pedido, política de devolução, prazo de entrega, e formas de pagamento. Após semantic caching com TTL de 24h para informações de política e 15min para status: hit rate de 73%, custo mensal de $12k → $3.2k.
+**Caso 2 — Chatbot de e-commerce:** Um chatbot de suporte de e-commerce tinha 200k interações/mês. Análise mostrou que 80% das perguntas eram sobre: status de pedido, política de devolução, prazo de entrega, e formas de pagamento. Após semantic caching com TTL de 24h para informações de política e 15min para status: hit rate de 73%, custo mensal de $12k → $3.2k.
 
-**Caso 3 — Threshold calibrado errado:**
-Um time implementou semantic cache com threshold 0.90 "para ser conservador". Na prática, queries como "cancelar assinatura" e "suspender assinatura" tinham similaridade 0.91 — e recebiam a mesma resposta, que era incorreta para um dos casos. Após aumentar para 0.96 e separar essas intenções no corpus de cache: zero false positives no domínio de cancelamento, hit rate caiu de 78% para 65% (aceitável).
+**Caso 3 — Threshold calibrado errado:** Um time implementou semantic cache com threshold 0.90 "para ser conservador". Na prática, queries como "cancelar assinatura" e "suspender assinatura" tinham similaridade 0.91 — e recebiam a mesma resposta, que era incorreta para um dos casos. Após aumentar para 0.96 e separar essas intenções no corpus de cache: zero false positives no domínio de cancelamento, hit rate caiu de 78% para 65% (aceitável).
 
-**Caso 4 — Cache warming antes do lançamento:**
-Um time coletou as top-200 perguntas dos últimos 6 meses do sistema anterior e pre-populou o semantic cache antes do lançamento da nova plataforma. Hit rate no primeiro dia: 68% (em vez dos 5-10% típicos de um cache vazio). Custo da semana de lançamento foi equivalente ao de uma semana normal de operação madura.
+**Caso 4 — Cache warming antes do lançamento:** Um time coletou as top-200 perguntas dos últimos 6 meses do sistema anterior e pre-populou o semantic cache antes do lançamento da nova plataforma. Hit rate no primeiro dia: 68% (em vez dos 5-10% típicos de um cache vazio). Custo da semana de lançamento foi equivalente ao de uma semana normal de operação madura.
 
 ## Checklist
 

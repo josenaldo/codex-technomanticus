@@ -67,16 +67,14 @@ Vale destrinchar o peso de cada ramo:
 > [!tip] Assista: Cloud Providers Compared: A Comprehensive Guide to AWS, Azure, and GCP
 > **Canal:** Win The Cloud | **Duração:** ~13min | **Idioma:** EN
 >
-> Percorre os três grandes provedores e fecha exatamente na mesma síntese do framework acima: não existe "o melhor", existe o que se encaixa no seu contexto — empresa grande com catálogo amplo puxa pra AWS, orçamento apertado puxa pra GCP/DO, meio-termo puxa pra Azure.
-> Trecho de destaque [12:22]: *"if you're a large enterprise with deep pockets and a need for a wide range of services, AWS might be the way to go... if you're somewhere in the middle, Azure then might be the perfect compromise"*
+> Percorre os três grandes provedores e fecha exatamente na mesma síntese do framework acima: não existe "o melhor", existe o que se encaixa no seu contexto — empresa grande com catálogo amplo puxa pra AWS, orçamento apertado puxa pra GCP/DO, meio-termo puxa pra Azure. Trecho de destaque [12:22]: *"if you're a large enterprise with deep pockets and a need for a wide range of services, AWS might be the way to go... if you're somewhere in the middle, Azure then might be the perfect compromise"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=4AVQchL9tTo)
 
 > [!tip] Assista: AWS vs GCP vs Azure — Which one should you choose in 2025?
 > **Canal:** NextWork | **Duração:** ~8min | **Idioma:** EN
 >
-> Ângulo complementar ao framework desta nota: em vez de partir do contexto técnico da empresa, parte do contexto de carreira — mas chega numa heurística quase idêntica de posicionamento de cada provedor (AWS = amplitude e mais vagas, Azure = ambiente corporativo/Microsoft, GCP = dados e ML).
-> Trecho de destaque [06:38]: *"if you're targeting IT enterprise environment, then Azure is probably the best option... if you want to focus on cutting edge data or AI work, then Google Cloud offers the strongest platform"*
+> Ângulo complementar ao framework desta nota: em vez de partir do contexto técnico da empresa, parte do contexto de carreira — mas chega numa heurística quase idêntica de posicionamento de cada provedor (AWS = amplitude e mais vagas, Azure = ambiente corporativo/Microsoft, GCP = dados e ML). Trecho de destaque [06:38]: *"if you're targeting IT enterprise environment, then Azure is probably the best option... if you want to focus on cutting edge data or AI work, then Google Cloud offers the strongest platform"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=iEXRceCV1GM)
 

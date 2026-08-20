@@ -309,17 +309,13 @@ flowchart TD
 
 ## Casos práticos
 
-**Caso 1 — Review de PR com 30 arquivos modificados:**
-Um agente de code review estava recebendo o diff completo de um PR com 30 arquivos e 2000 linhas alteradas. Custo por review: $0.15. Após implementar retrieval seletivo (só os arquivos com bugs históricos + os arquivos do diff atual relevantes à feature) + truncamento de comentários de contexto: custo caiu para $0.04, e a qualidade melhorou porque o modelo parou de se distrair com arquivos de migração e de configuração que mudaram incidentalmente.
+**Caso 1 — Review de PR com 30 arquivos modificados:** Um agente de code review estava recebendo o diff completo de um PR com 30 arquivos e 2000 linhas alteradas. Custo por review: $0.15. Após implementar retrieval seletivo (só os arquivos com bugs históricos + os arquivos do diff atual relevantes à feature) + truncamento de comentários de contexto: custo caiu para $0.04, e a qualidade melhorou porque o modelo parou de se distrair com arquivos de migração e de configuração que mudaram incidentalmente.
 
-**Caso 2 — Agente de debugging com histórico de sessão longa:**
-Em uma sessão de debugging de 4 horas (60+ turns), o agente acumulou 180k tokens de histórico. Os primeiros 50 turns eram sobre um bug diferente, já resolvido. Após implementar compactação seletiva (resumir os turns 1-40 em 500 tokens preservando apenas decisões e artefatos), o custo por turn caiu 40% e o agente parou de "lembrar" soluções descartadas como candidatas.
+**Caso 2 — Agente de debugging com histórico de sessão longa:** Em uma sessão de debugging de 4 horas (60+ turns), o agente acumulou 180k tokens de histórico. Os primeiros 50 turns eram sobre um bug diferente, já resolvido. Após implementar compactação seletiva (resumir os turns 1-40 em 500 tokens preservando apenas decisões e artefatos), o custo por turn caiu 40% e o agente parou de "lembrar" soluções descartadas como candidatas.
 
-**Caso 3 — Indexação de monorepo:**
-Um time adicionou .cursorignore ao monorepo cobrindo node_modules, dist, arquivos de lock e coverage. O pool de retrieval da IDE caiu de 800MB para 120MB, e as sugestões de completion passaram a referenciar código de produção em vez de definições de tipos geradas automaticamente.
+**Caso 3 — Indexação de monorepo:** Um time adicionou .cursorignore ao monorepo cobrindo node_modules, dist, arquivos de lock e coverage. O pool de retrieval da IDE caiu de 800MB para 120MB, e as sugestões de completion passaram a referenciar código de produção em vez de definições de tipos geradas automaticamente.
 
-**Caso 4 — CLAUDE.md auditado:**
-Após 8 meses de desenvolvimento, um CLAUDE.md chegou a 420 linhas. Uma auditoria revelou que 60% era histórico de decisões já implementadas (e portanto documentadas no código) e 20% eram convenções que o time havia abandonado. Após a poda para 80 linhas de regras ativas, o custo por sessão caiu ~12% (o system prompt era enviado ~30 vezes por hora de trabalho).
+**Caso 4 — CLAUDE.md auditado:** Após 8 meses de desenvolvimento, um CLAUDE.md chegou a 420 linhas. Uma auditoria revelou que 60% era histórico de decisões já implementadas (e portanto documentadas no código) e 20% eram convenções que o time havia abandonado. Após a poda para 80 linhas de regras ativas, o custo por sessão caiu ~12% (o system prompt era enviado ~30 vezes por hora de trabalho).
 
 ## Checklist
 

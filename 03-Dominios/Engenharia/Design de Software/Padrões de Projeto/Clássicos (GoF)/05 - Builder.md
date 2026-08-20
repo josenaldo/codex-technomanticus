@@ -21,14 +21,7 @@ aliases:
 # Builder
 
 > [!abstract] TL;DR
-> O **Builder** constrói um objeto complexo **passo a passo**, separando a montagem da representação
-> final. Resolve dois problemas concretos: o **construtor de dez parâmetros** (ilegível, fácil de
-> errar a ordem) e o objeto **imutável com muitos campos opcionais**. É talvez o exemplo mais
-> didático da lente deste catálogo: o Builder existe porque Java e C++ **não têm argumentos
-> nomeados nem opcionais**. Em **Python** (`kwargs`/`dataclass`), **TypeScript** (objeto literal) e
-> **Go** (*functional options*), o mesmo problema se resolve com recursos da linguagem — o padrão
-> praticamente desaparece. A armadilha principal: usar Builder para um objeto de dois ou três
-> campos, trocando clareza por cerimônia.
+> O **Builder** constrói um objeto complexo **passo a passo**, separando a montagem da representação final. Resolve dois problemas concretos: o **construtor de dez parâmetros** (ilegível, fácil de errar a ordem) e o objeto **imutável com muitos campos opcionais**. É talvez o exemplo mais didático da lente deste catálogo: o Builder existe porque Java e C++ **não têm argumentos nomeados nem opcionais**. Em **Python** (`kwargs`/`dataclass`), **TypeScript** (objeto literal) e **Go** (*functional options*), o mesmo problema se resolve com recursos da linguagem — o padrão praticamente desaparece. A armadilha principal: usar Builder para um objeto de dois ou três campos, trocando clareza por cerimônia.
 
 ## O construtor que ninguém consegue ler
 
@@ -125,19 +118,13 @@ graph LR
 ## Armadilhas comuns
 
 > [!warning] Builder para um objeto simples
-> **O que acontece:** cria-se um Builder para uma classe de dois ou três campos obrigatórios.
-> **Por quê:** o Builder só se paga com **muitos** campos (a regra prática é ~4+) ou muitos opcionais. Para poucos campos, um construtor direto (ou um `record`/`dataclass`) é mais curto e mais claro; o Builder só adiciona uma indireção fluente sem benefício.
-> **Como evitar:** conte os campos e os opcionais. Poucos e obrigatórios → construtor/record. Muitos ou muitos opcionais → Builder (em Java) ou o recurso equivalente da sua linguagem.
+> **O que acontece:** cria-se um Builder para uma classe de dois ou três campos obrigatórios. **Por quê:** o Builder só se paga com **muitos** campos (a regra prática é ~4+) ou muitos opcionais. Para poucos campos, um construtor direto (ou um `record`/`dataclass`) é mais curto e mais claro; o Builder só adiciona uma indireção fluente sem benefício. **Como evitar:** conte os campos e os opcionais. Poucos e obrigatórios → construtor/record. Muitos ou muitos opcionais → Builder (em Java) ou o recurso equivalente da sua linguagem.
 
 > [!warning] `build()` que devolve um objeto inválido
-> **O que acontece:** o Builder deixa construir e chamar `build()` mesmo faltando um campo obrigatório; o objeto meio-montado só quebra lá adiante, longe da causa.
-> **Por quê:** um dos pontos do Builder é entregar um objeto **válido e completo**. Se ele não valida no `build()`, perde essa garantia e ainda espalha o erro no tempo (o `NullPointerException` acontece longe de onde o campo faltou).
-> **Como evitar:** valide invariantes **dentro** do `build()` (ex.: lançar se `email` é nulo). Melhor ainda: exija os obrigatórios como parâmetros da própria fábrica/construtor, deixando o Builder só para os opcionais.
+> **O que acontece:** o Builder deixa construir e chamar `build()` mesmo faltando um campo obrigatório; o objeto meio-montado só quebra lá adiante, longe da causa. **Por quê:** um dos pontos do Builder é entregar um objeto **válido e completo**. Se ele não valida no `build()`, perde essa garantia e ainda espalha o erro no tempo (o `NullPointerException` acontece longe de onde o campo faltou). **Como evitar:** valide invariantes **dentro** do `build()` (ex.: lançar se `email` é nulo). Melhor ainda: exija os obrigatórios como parâmetros da própria fábrica/construtor, deixando o Builder só para os opcionais.
 
 > [!warning] Reinventar o Builder onde a linguagem já dá argumentos nomeados
-> **O que acontece:** um dev vindo de Java escreve uma classe Builder completa em Python ou Kotlin — linguagens que têm argumentos nomeados nativos.
-> **Por quê:** é portar a *solução* sem checar se o *problema* ainda existe. Em Python/Kotlin/TS, os argumentos nomeados e defaults resolvem o mesmo caso com uma fração do código.
-> **Como evitar:** antes de escrever um Builder, pergunte: *minha linguagem tem argumentos nomeados e opcionais?* Se sim, use-os. O Builder fica reservado para quando você precisa de construção com **passos** ou **lógica** (não só nomear campos).
+> **O que acontece:** um dev vindo de Java escreve uma classe Builder completa em Python ou Kotlin — linguagens que têm argumentos nomeados nativos. **Por quê:** é portar a *solução* sem checar se o *problema* ainda existe. Em Python/Kotlin/TS, os argumentos nomeados e defaults resolvem o mesmo caso com uma fração do código. **Como evitar:** antes de escrever um Builder, pergunte: *minha linguagem tem argumentos nomeados e opcionais?* Se sim, use-os. O Builder fica reservado para quando você precisa de construção com **passos** ou **lógica** (não só nomear campos).
 
 ## Como explicar em inglês
 

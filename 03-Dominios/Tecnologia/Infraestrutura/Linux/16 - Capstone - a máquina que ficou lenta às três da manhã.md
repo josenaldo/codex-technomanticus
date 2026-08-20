@@ -185,8 +185,7 @@ psql -h 10.0.3.44 -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity
 4. Revisar por que uma mudança de pool de 10× entrou por recarga sem revisão.
 
 > [!warning] Parar na contenção é o erro que faz o incidente voltar
-> Reverter a configuração devolve o serviço, e é tentador encerrar aí — o gráfico normalizou, o chamado fechou. Mas o defeito de transação continua lá, esperando a próxima vez que alguém aumentar o pool, ou que o tráfego cresça o suficiente para expor o mesmo comportamento com pool menor.
-> **Contenção é obrigação imediata; correção é obrigação da semana.** Registrar as duas separadamente, com dono e prazo, é o que diferencia operação de apagar incêndio.
+> Reverter a configuração devolve o serviço, e é tentador encerrar aí — o gráfico normalizou, o chamado fechou. Mas o defeito de transação continua lá, esperando a próxima vez que alguém aumentar o pool, ou que o tráfego cresça o suficiente para expor o mesmo comportamento com pool menor. **Contenção é obrigação imediata; correção é obrigação da semana.** Registrar as duas separadamente, com dono e prazo, é o que diferencia operação de apagar incêndio.
 
 ---
 

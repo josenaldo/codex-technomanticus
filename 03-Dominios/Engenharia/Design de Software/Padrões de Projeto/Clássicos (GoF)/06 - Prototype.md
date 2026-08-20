@@ -21,13 +21,7 @@ aliases:
 # Prototype
 
 > [!abstract] TL;DR
-> O **Prototype** cria objetos novos **clonando** um existente, em vez de instanciá-los do zero.
-> Faz sentido quando a criação é cara (o objeto foi carregado do banco, montado com muita
-> configuração) e você quer uma cópia — igual ou levemente modificada. Como padrão formal, é
-> **raro** hoje: a imutabilidade com métodos `with...()`/`copy()` costuma ser a resposta melhor.
-> Mas o **tema por trás dele — cópia rasa (*shallow*) versus profunda (*deep*)** — é praticíssimo e
-> **onde as linguagens mais divergem**, sendo fonte clássica de bugs em código legado (mutar a
-> cópia e ver o original mudar junto). A armadilha número um é justamente a cópia rasa silenciosa.
+> O **Prototype** cria objetos novos **clonando** um existente, em vez de instanciá-los do zero. Faz sentido quando a criação é cara (o objeto foi carregado do banco, montado com muita configuração) e você quer uma cópia — igual ou levemente modificada. Como padrão formal, é **raro** hoje: a imutabilidade com métodos `with...()`/`copy()` costuma ser a resposta melhor. Mas o **tema por trás dele — cópia rasa (*shallow*) versus profunda (*deep*)** — é praticíssimo e **onde as linguagens mais divergem**, sendo fonte clássica de bugs em código legado (mutar a cópia e ver o original mudar junto). A armadilha número um é justamente a cópia rasa silenciosa.
 
 ## Quando recriar sai caro
 
@@ -115,19 +109,13 @@ record User(String name, Address address) {
 ## Armadilhas comuns
 
 > [!warning] Cópia rasa silenciosa (bug de aliasing)
-> **O que acontece:** você "clona" um objeto, altera um campo aninhado da cópia e o original muda junto — ou vice-versa. O bug aparece longe da cópia, difícil de rastrear.
-> **Por quê:** a cópia rasa compartilha as referências internas. Mutar através de uma das cópias afeta todas, porque é o **mesmo** objeto interno. É o default silencioso de `clone()` em Java, da atribuição de struct em Go e do *spread* em JS/TS.
-> **Como evitar:** saiba a semântica default da sua linguagem e **escolha deliberadamente**: cópia profunda quando os internos são mutáveis e devem ser independentes; ou, melhor, torne os internos imutáveis e o problema evapora.
+> **O que acontece:** você "clona" um objeto, altera um campo aninhado da cópia e o original muda junto — ou vice-versa. O bug aparece longe da cópia, difícil de rastrear. **Por quê:** a cópia rasa compartilha as referências internas. Mutar através de uma das cópias afeta todas, porque é o **mesmo** objeto interno. É o default silencioso de `clone()` em Java, da atribuição de struct em Go e do *spread* em JS/TS. **Como evitar:** saiba a semântica default da sua linguagem e **escolha deliberadamente**: cópia profunda quando os internos são mutáveis e devem ser independentes; ou, melhor, torne os internos imutáveis e o problema evapora.
 
 > [!warning] Usar `Cloneable`/`clone()` em Java
-> **O que acontece:** implementa-se `Cloneable` esperando uma cópia correta, e ganha-se um *shallow clone* com contrato confuso e sem chamar construtor.
-> **Por quê:** `Cloneable` é um design reconhecidamente falho (o próprio Bloch recomenda evitá-lo): não invoca construtores, exige *casting*, e a profundidade fica ambígua.
-> **Como evitar:** use um **construtor de cópia** (`new User(outro)`) ou uma fábrica estática de cópia — explícitos, controlam a profundidade, e rodam a validação do construtor.
+> **O que acontece:** implementa-se `Cloneable` esperando uma cópia correta, e ganha-se um *shallow clone* com contrato confuso e sem chamar construtor. **Por quê:** `Cloneable` é um design reconhecidamente falho (o próprio Bloch recomenda evitá-lo): não invoca construtores, exige *casting*, e a profundidade fica ambígua. **Como evitar:** use um **construtor de cópia** (`new User(outro)`) ou uma fábrica estática de cópia — explícitos, controlam a profundidade, e rodam a validação do construtor.
 
 > [!warning] Clonar quando imutabilidade resolveria melhor
-> **O que acontece:** monta-se maquinaria de clonagem para produzir variações de um objeto mutável, convivendo com o risco de aliasing.
-> **Por quê:** clonar objetos mutáveis é gerenciar o risco; torná-los imutáveis **elimina** o risco. Um `with...()` sobre um objeto imutável dá "novo objeto quase igual" sem cópia profunda nem aliasing.
-> **Como evitar:** prefira imutabilidade + métodos `with`/`copy`. Reserve a clonagem para quando você **realmente** precisa duplicar estado mutável caro de reconstruir.
+> **O que acontece:** monta-se maquinaria de clonagem para produzir variações de um objeto mutável, convivendo com o risco de aliasing. **Por quê:** clonar objetos mutáveis é gerenciar o risco; torná-los imutáveis **elimina** o risco. Um `with...()` sobre um objeto imutável dá "novo objeto quase igual" sem cópia profunda nem aliasing. **Como evitar:** prefira imutabilidade + métodos `with`/`copy`. Reserve a clonagem para quando você **realmente** precisa duplicar estado mutável caro de reconstruir.
 
 ## Como explicar em inglês
 

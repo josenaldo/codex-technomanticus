@@ -354,17 +354,13 @@ Três técnicas em uma skill: role (auditor de segurança) + few-shot (exemplos 
 
 ## Estado da arte — junho de 2026
 
-**Extended thinking como default**
-Em 2026, modelos como Claude 4 (claude-opus-4-8), o1, Gemini 2.5 Pro e Grok 3 têm extended thinking habilitado por padrão em tarefas complexas. O efeito prático: CoT explícito via prompt perdeu importância para tarefas de raciocínio — o modelo faz CoT internamente com qualidade superior. CoT explícito ainda vale quando você quer o raciocínio no output (auditoria, explicabilidade).
+**Extended thinking como default** Em 2026, modelos como Claude 4 (claude-opus-4-8), o1, Gemini 2.5 Pro e Grok 3 têm extended thinking habilitado por padrão em tarefas complexas. O efeito prático: CoT explícito via prompt perdeu importância para tarefas de raciocínio — o modelo faz CoT internamente com qualidade superior. CoT explícito ainda vale quando você quer o raciocínio no output (auditoria, explicabilidade).
 
-**Few-shot automático (in-context learning retrieval)**
-Uma tendência de 2025-2026: em vez de selecionar exemplos few-shot manualmente, sistemas automaticamente recuperam os exemplos mais similares à query atual de um banco de exemplos curados (retrieval-augmented few-shot). Os exemplos são sempre relevantes, e o banco pode ser atualizado sem reescrever prompts. Combina com → [[06 - Dynamic retrieval beyond RAG]].
+**Few-shot automático (in-context learning retrieval)** Uma tendência de 2025-2026: em vez de selecionar exemplos few-shot manualmente, sistemas automaticamente recuperam os exemplos mais similares à query atual de um banco de exemplos curados (retrieval-augmented few-shot). Os exemplos são sempre relevantes, e o banco pode ser atualizado sem reescrever prompts. Combina com → [[06 - Dynamic retrieval beyond RAG]].
 
-**Structured outputs como expectativa padrão**
-Structured outputs nativos (tools, response_format com JSON Schema) são agora a expectativa de mercado para qualquer LLM em produção — não um diferencial. Times que ainda fazem regex-parsing de JSON gerado no prompt estão em débito técnico. Anthropic, OpenAI, Mistral e Gemini todos suportam structured outputs com zero-failure-rate de formato.
+**Structured outputs como expectativa padrão** Structured outputs nativos (tools, response_format com JSON Schema) são agora a expectativa de mercado para qualquer LLM em produção — não um diferencial. Times que ainda fazem regex-parsing de JSON gerado no prompt estão em débito técnico. Anthropic, OpenAI, Mistral e Gemini todos suportam structured outputs com zero-failure-rate de formato.
 
-**Prompting virou skill engineering**
-A prática de "escrever bons prompts" está se profissionalizando: em 2026, times de AI produto têm "prompt engineers" que mantêm libraries de skills, escrevem testes de accuracy para cada prompt, e versionam mudanças com métricas. O prompting ad-hoc individual está sendo substituído por skills governadas como código.
+**Prompting virou skill engineering** A prática de "escrever bons prompts" está se profissionalizando: em 2026, times de AI produto têm "prompt engineers" que mantêm libraries de skills, escrevem testes de accuracy para cada prompt, e versionam mudanças com métricas. O prompting ad-hoc individual está sendo substituído por skills governadas como código.
 
 ---
 

@@ -84,8 +84,7 @@ sequenceDiagram
 > [!tip] Assista: Introduction to Amazon EC2 | Virtual Machines, Instance for Beginners
 > **Canal:** CBT Nuggets | **Duração:** ~14min | **Idioma:** EN
 >
-> O vídeo reforça exatamente essa virada conceitual — VM como fatia alugável, não posse — usando a analogia de mover a carga entre máquinas físicas diferentes sem que o cliente perceba, o que ajuda a fixar por que a instância nunca deve ser tratada como "sua máquina".
-> Trecho de destaque [01:29]: *"the cool thing about virtual machines is that because they're not physical we can actually move them to other physical systems pretty easily"*
+> O vídeo reforça exatamente essa virada conceitual — VM como fatia alugável, não posse — usando a analogia de mover a carga entre máquinas físicas diferentes sem que o cliente perceba, o que ajuda a fixar por que a instância nunca deve ser tratada como "sua máquina". Trecho de destaque [01:29]: *"the cool thing about virtual machines is that because they're not physical we can actually move them to other physical systems pretty easily"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=AdKfniGuWWc)
 

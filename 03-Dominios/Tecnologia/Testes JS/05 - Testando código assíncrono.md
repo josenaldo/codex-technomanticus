@@ -65,9 +65,7 @@ graph LR
 ```
 
 > [!warning] Esquecer o `await` no `expect().resolves/.rejects`
-> **O que acontece:** `expect(p).rejects.toThrow()` **sem** `await` passa mesmo quando a promise resolve (deveria falhar) — a asserção vira uma promise pendente que ninguém checa.
-> **Por quê:** `resolves`/`rejects` retornam uma promise; sem `await` (ou `return`), o Vitest não sabe que deve esperá-la, e o teste termina antes da verificação.
-> **Como evitar:** **sempre** `await` (ou `return`) o `expect(...).resolves/.rejects`. Um lint como `eslint-plugin-vitest` (regra `valid-expect`) pega isso automaticamente.
+> **O que acontece:** `expect(p).rejects.toThrow()` **sem** `await` passa mesmo quando a promise resolve (deveria falhar) — a asserção vira uma promise pendente que ninguém checa. **Por quê:** `resolves`/`rejects` retornam uma promise; sem `await` (ou `return`), o Vitest não sabe que deve esperá-la, e o teste termina antes da verificação. **Como evitar:** **sempre** `await` (ou `return`) o `expect(...).resolves/.rejects`. Um lint como `eslint-plugin-vitest` (regra `valid-expect`) pega isso automaticamente.
 
 ## Garantir que a asserção rodou: `expect.assertions`
 

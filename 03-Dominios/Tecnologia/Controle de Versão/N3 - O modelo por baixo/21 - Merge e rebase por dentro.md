@@ -147,8 +147,7 @@ E a versão útil da regra: **antes de publicar, a história é sua** — porque
 O critério prático que resolve a discussão na maioria das equipes: **rebase para arrumar o seu ramo local antes de propor; merge para integrar o que já foi revisado.** É a combinação que produz um histórico legível sem reescrever nada que já era de outra pessoa.
 
 > [!question]- Por que o conflito pode voltar várias vezes no rebase?
-> Porque cada commit é reaplicado separadamente. Se cinco commits seus tocam a mesma região que mudou na nova base, você pode resolver o mesmo conflito cinco vezes, uma a cada passo.
-> Existe remédio: `git config --global rerere.enabled true` liga o *reuse recorded resolution* — o Git grava como você resolveu um conflito e reaplica sozinho quando o mesmo aparecer de novo. Para quem rebaseia com frequência, é a configuração que mais economiza tempo.
+> Porque cada commit é reaplicado separadamente. Se cinco commits seus tocam a mesma região que mudou na nova base, você pode resolver o mesmo conflito cinco vezes, uma a cada passo. Existe remédio: `git config --global rerere.enabled true` liga o *reuse recorded resolution* — o Git grava como você resolveu um conflito e reaplica sozinho quando o mesmo aparecer de novo. Para quem rebaseia com frequência, é a configuração que mais economiza tempo.
 
 ---
 
@@ -167,19 +166,13 @@ Existem outras estratégias, usadas em casos específicos: `ours` (fica com o se
 ## Armadilhas comuns
 
 > [!warning] Rebase de um ramo com merges dentro
-> **O que acontece:** o ramo tinha commits de merge, e depois do rebase eles sumiram — a história ficou achatada numa linha.
-> **Por quê:** por padrão o rebase reaplica apenas commits comuns e descarta os de merge.
-> **Como evitar:** `git rebase --rebase-merges` preserva a estrutura. Ou, mais simples: não rebaseie ramos com topologia interna que você quer manter — use merge.
+> **O que acontece:** o ramo tinha commits de merge, e depois do rebase eles sumiram — a história ficou achatada numa linha. **Por quê:** por padrão o rebase reaplica apenas commits comuns e descarta os de merge. **Como evitar:** `git rebase --rebase-merges` preserva a estrutura. Ou, mais simples: não rebaseie ramos com topologia interna que você quer manter — use merge.
 
 > [!warning] `git pull --rebase` num ramo compartilhado
-> **O que acontece:** dois colegas trabalham no mesmo ramo remoto; o `pull --rebase` reescreve os commits locais de um deles que já haviam sido enviados.
-> **Por quê:** o rebase não distingue "meus commits não publicados" de "meus commits já publicados" — ele reaplica tudo o que não está na base.
-> **Como evitar:** `--rebase` é seguro no fluxo normal (ramo pessoal, commits ainda não enviados), que é o caso recomendado na nota 11. Em ramo compartilhado ativamente por duas pessoas, prefira merge.
+> **O que acontece:** dois colegas trabalham no mesmo ramo remoto; o `pull --rebase` reescreve os commits locais de um deles que já haviam sido enviados. **Por quê:** o rebase não distingue "meus commits não publicados" de "meus commits já publicados" — ele reaplica tudo o que não está na base. **Como evitar:** `--rebase` é seguro no fluxo normal (ramo pessoal, commits ainda não enviados), que é o caso recomendado na nota 11. Em ramo compartilhado ativamente por duas pessoas, prefira merge.
 
 > [!warning] Resolver o conflito escolhendo o lado errado no rebase
-> **O que acontece:** durante um rebase, `--ours` e `--theirs` aparecem **invertidos** em relação à intuição: *ours* é a nova base (o ramo sobre o qual você está reaplicando) e *theirs* são os **seus** commits sendo reaplicados.
-> **Por quê:** o rebase troca temporariamente de posição para reaplicar cada commit sobre a base.
-> **Como evitar:** durante rebase, não confie nos nomes — leia o conteúdo. E `git status` durante o rebase diz explicitamente qual commit está sendo aplicado.
+> **O que acontece:** durante um rebase, `--ours` e `--theirs` aparecem **invertidos** em relação à intuição: *ours* é a nova base (o ramo sobre o qual você está reaplicando) e *theirs* são os **seus** commits sendo reaplicados. **Por quê:** o rebase troca temporariamente de posição para reaplicar cada commit sobre a base. **Como evitar:** durante rebase, não confie nos nomes — leia o conteúdo. E `git status` durante o rebase diz explicitamente qual commit está sendo aplicado.
 
 ---
 

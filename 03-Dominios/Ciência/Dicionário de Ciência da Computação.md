@@ -19,15 +19,13 @@ publish: true
 
 > Termos de ciência da computação e engenharia de software que sobrevivem à troca de linguagem, framework ou paradigma — o vocabulário comum das outras estantes.
 
-<!--
-Como usar este glossário:
+<!-- Como usar este glossário:
 
 - Cada verbete é um `###` dentro de uma `##` temática.
 - Linkar de outra nota: [[Dicionário de Ciência da Computação#Nome do termo]]
 - Customizar texto exibido: [[Dicionário de Ciência da Computação#Nome do termo|texto]]
 - A skill /verbete adiciona termos automaticamente em ordem alfabética.
-- Ajuste `lang:` no frontmatter (`pt` ou `en`) — define o idioma das definições.
--->
+- Ajuste `lang:` no frontmatter (`pt` ou `en`) — define o idioma das definições. -->
 
 ## Abstração e design
 
@@ -70,8 +68,7 @@ Módulo cuja **interface é pequena em relação à funcionalidade que esconde**
 Técnica de modificar dinamicamente, em tempo de execução, o comportamento de um objeto, classe ou módulo sem alterar o código-fonte original — tipicamente para corrigir bugs de terceiros, estender bibliotecas ou injetar mocks em testes. Comum em linguagens com sistema de tipos dinâmico (Python, Ruby, JavaScript), cobra um preço alto em rastreabilidade: patches invisíveis ao leitor do código quebram o [[#Princípio da menor surpresa (POLA)|POLA]] e podem colidir silenciosamente quando a biblioteca original evolui.
 
 ### Princípio da menor surpresa (POLA)
-*Principle of Least Astonishment (PoLA)*
-Um componente deve se comportar do jeito que a maioria dos seus leitores e usuários **espera** — alinhado ao modelo mental deles —, porque a surpresa custa carga cognitiva: o leitor confiou no nome ou na convenção e errou. *Principle of least astonishment*, formulado em design de linguagens de programação (1972). Um `getUser` que silenciosamente grava no banco viola o princípio; seguir as convenções da plataforma é a forma mais barata de não surpreender.
+*Principle of Least Astonishment (PoLA)* Um componente deve se comportar do jeito que a maioria dos seus leitores e usuários **espera** — alinhado ao modelo mental deles —, porque a surpresa custa carga cognitiva: o leitor confiou no nome ou na convenção e errou. *Principle of least astonishment*, formulado em design de linguagens de programação (1972). Um `getUser` que silenciosamente grava no banco viola o princípio; seguir as convenções da plataforma é a forma mais barata de não surpreender.
 
 *Veja também: [[08 - Carga cognitiva e legibilidade]]*
 

@@ -296,8 +296,7 @@ export default async function ProductPage({
 > [!tip] Assista: Partial Prerender - The Next.js Feature I've Wanted For Years
 > **Canal:** Theo - t3.gg | **Duração:** ~25min | **Idioma:** EN
 >
-> Theo reage ao anúncio do PPR no Next.js Conf 2023 analisando ao vivo a demo de Lee Robinson e o blog post da equipe da Vercel. O vídeo explica o *porquê* do PPR existir — a tensão entre "a primeira resposta deve sempre vir de um CDN" e "conteúdo dinâmico precisa ser fresco" — e mostra como as `<Suspense>` boundaries são o único primitivo que decide o que é shell estático e o que é buraco dinâmico.
-> Trecho de destaque [5:08]: *"you have that Dynamic control Now by using suspense as the boundary where things become Dynamic"*
+> Theo reage ao anúncio do PPR no Next.js Conf 2023 analisando ao vivo a demo de Lee Robinson e o blog post da equipe da Vercel. O vídeo explica o *porquê* do PPR existir — a tensão entre "a primeira resposta deve sempre vir de um CDN" e "conteúdo dinâmico precisa ser fresco" — e mostra como as `<Suspense>` boundaries são o único primitivo que decide o que é shell estático e o que é buraco dinâmico. Trecho de destaque [5:08]: *"you have that Dynamic control Now by using suspense as the boundary where things become Dynamic"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Yp7Ldrnk8ic)
 
@@ -520,9 +519,7 @@ Isso é a [[03-Dominios/Tecnologia/React/Next.js/09 - Streaming, Suspense e load
 Depois, quando chegar em [[03-Dominios/Tecnologia/React/Next.js/16 - Capstone - arquitetura, decisões e entrevista|nota 16 — Capstone]], você vai encontrar um decision tree consolidado cobrindo rendering + caching + composição — tudo junto, com as perguntas de entrevista mais comuns.
 
 > [!tip] Leitura primária — PPR explicado pela equipe da Vercel
-> O post oficial da Vercel explica a motivação e o design do PPR com diagramas e exemplos diretamente dos criadores — é a fonte primária mais completa sobre o tema:
-> [Partial Prerendering with Next.js — creating a new default rendering model](https://vercel.com/blog/partial-prerendering-with-next-js-creating-a-new-default-rendering-model)
-> Para vídeos: procure "Next.js Conf 2023 Partial Prerendering" no YouTube (canal oficial da Vercel) para a palestra de lançamento com demo ao vivo.
+> O post oficial da Vercel explica a motivação e o design do PPR com diagramas e exemplos diretamente dos criadores — é a fonte primária mais completa sobre o tema: [Partial Prerendering with Next.js — creating a new default rendering model](https://vercel.com/blog/partial-prerendering-with-next-js-creating-a-new-default-rendering-model) Para vídeos: procure "Next.js Conf 2023 Partial Prerendering" no YouTube (canal oficial da Vercel) para a palestra de lançamento com demo ao vivo.
 
 ## Referências
 

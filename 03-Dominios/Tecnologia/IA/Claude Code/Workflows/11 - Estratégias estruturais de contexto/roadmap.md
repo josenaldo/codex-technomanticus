@@ -10,13 +10,9 @@ tags:
 
 # Roadmap — 11 - Estratégias estruturais de contexto
 
-Diagnóstico nota a nota. Cada entrada tem estado de enriquecimento, score, classificação
-de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
+Diagnóstico nota a nota. Cada entrada tem estado de enriquecimento, score, classificação de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
 
-**Galho:** `03-Dominios/Tecnologia/IA/Claude Code/Workflows/11 - Estratégias estruturais de contexto`
-**Nível:** galho-folha
-**Diagnóstico:** 2026-07-02
-**Última execução:** 2026-07-08 (onda única: 4/4 notas enriquecidas via fan-out ≤3 verificado)
+**Galho:** `03-Dominios/Tecnologia/IA/Claude Code/Workflows/11 - Estratégias estruturais de contexto` **Nível:** galho-folha **Diagnóstico:** 2026-07-02 **Última execução:** 2026-07-08 (onda única: 4/4 notas enriquecidas via fan-out ≤3 verificado)
 
 ## Régua de análise
 
@@ -29,8 +25,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | LINKS | L1 Wikilink cross-galho · L2 Referência externa (URL) |
 | MÍDIA | M1 Vídeo/podcast embutido |
 
-**Esquema de `fase:` detectado:** COM fase (Iniciado/Adepto/Magus)
-**Piso de linhas:** Iniciado ≥300 · Adepto ≥400 · Magus ≥500
+**Esquema de `fase:` detectado:** COM fase (Iniciado/Adepto/Magus) **Piso de linhas:** Iniciado ≥300 · Adepto ≥400 · Magus ≥500
 
 ## Tabela-resumo
 

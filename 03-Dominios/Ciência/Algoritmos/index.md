@@ -20,31 +20,17 @@ aliases:
 # Algoritmos
 
 > [!abstract] TL;DR
-> Galho de Ciência da Computação sobre as sequências de passos que resolvem problemas computacionais — e,
-> sobretudo, como **raciocinar** sobre elas: análise de complexidade, recorrências, e as grandes
-> famílias de técnicas (ordenação, busca, dois ponteiros, divisão e conquista, programação dinâmica,
-> greedy, backtracking). Interview-critical. O que separa um senior não é decorar quicksort, é
-> **reconhecer padrões**, **analisar trade-offs** e **comunicar raciocínio**.
+> Galho de Ciência da Computação sobre as sequências de passos que resolvem problemas computacionais — e, sobretudo, como **raciocinar** sobre elas: análise de complexidade, recorrências, e as grandes famílias de técnicas (ordenação, busca, dois ponteiros, divisão e conquista, programação dinâmica, greedy, backtracking). Interview-critical. O que separa um senior não é decorar quicksort, é **reconhecer padrões**, **analisar trade-offs** e **comunicar raciocínio**.
 
 ## Sobre este galho
 
-Este galho é o **dono canônico da teoria de complexidade** no vault: Big-O, notação Θ/Ω,
-análise de melhor/médio/pior caso, custo amortizado, recorrências e o Teorema Mestre. O galho
-[[03-Dominios/Ciência/Estruturas de Dados/index|Estruturas de Dados]] delega para cá toda a
-fundamentação de complexidade e apenas a aplica pontualmente por estrutura.
+Este galho é o **dono canônico da teoria de complexidade** no vault: Big-O, notação Θ/Ω, análise de melhor/médio/pior caso, custo amortizado, recorrências e o Teorema Mestre. O galho [[03-Dominios/Ciência/Estruturas de Dados/index|Estruturas de Dados]] delega para cá toda a fundamentação de complexidade e apenas a aplica pontualmente por estrutura.
 
-Sobre essa base assentam as grandes famílias de algoritmos clássicos — ordenação, busca, dois
-ponteiros e janela deslizante, divisão e conquista, programação dinâmica, greedy e backtracking —
-e fecha com a leitura de **intratabilidade** (quando não há algoritmo eficiente) e um capstone de
-reconhecimento de padrões para entrevista.
+Sobre essa base assentam as grandes famílias de algoritmos clássicos — ordenação, busca, dois ponteiros e janela deslizante, divisão e conquista, programação dinâmica, greedy e backtracking — e fecha com a leitura de **intratabilidade** (quando não há algoritmo eficiente) e um capstone de reconhecimento de padrões para entrevista.
 
-**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção
-"Em entrevista" com frases prontas em inglês e vocabulário técnico.
+**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista" com frases prontas em inglês e vocabulário técnico.
 
-**Fronteiras:** os algoritmos de **grafo** (BFS, DFS, Dijkstra, Bellman-Ford, topological sort,
-A*, Floyd-Warshall) vivem em [[11 - Grafos - travessia e algoritmos]], no galho de Estruturas de
-Dados — aqui apenas linkamos. A teoria formal de **classes P/NP** (redução, NP-completude) pertence
-ao galho *Teoria da Computação*; aqui fica só a face prática da intratabilidade (nota 13).
+**Fronteiras:** os algoritmos de **grafo** (BFS, DFS, Dijkstra, Bellman-Ford, topological sort, A*, Floyd-Warshall) vivem em [[11 - Grafos - travessia e algoritmos]], no galho de Estruturas de Dados — aqui apenas linkamos. A teoria formal de **classes P/NP** (redução, NP-completude) pertence ao galho *Teoria da Computação*; aqui fica só a face prática da intratabilidade (nota 13).
 
 ## Iniciado — análise e fundamentos
 

@@ -88,9 +88,7 @@ O ramo de release é o ponto: ele congela o escopo da versão 1.1 e permite esta
 **Bom quando:** existem versões numeradas mantidas em paralelo, o cliente instala o software, há janela de homologação formal, ou você precisa dar suporte à 2.x enquanto desenvolve a 3.0. Bibliotecas, software embarcado, produto vendido em licença.
 
 > [!info] Por que Git Flow saiu de moda — e por que ainda existe
-> O modelo foi proposto por Vincent Driessen em 2010, quando publicar software significava lançar versões. O próprio autor acrescentou depois uma nota ao artigo original recomendando GitHub Flow para quem entrega continuamente.
-> Ele não é "errado": é caro. Dois ramos permanentes significam merges constantes entre eles, e a chance de algo estar na `develop` mas não na `main` (ou o contrário) é permanente. Se você entrega toda semana, está pagando um preço por um problema que não tem.
-> **Mas você vai encontrá-lo no legado, muito.** Projetos iniciados entre 2011 e 2018 adotaram Git Flow em massa, com frequência por cargo cult. Ao assumir um projeto assim, a pergunta útil não é "por que usam isso?", e sim **"o que hoje ainda depende disso?"** — se a resposta for nada, migrar é possível; se houver contrato de suporte a versões antigas, o modelo está fazendo o seu trabalho.
+> O modelo foi proposto por Vincent Driessen em 2010, quando publicar software significava lançar versões. O próprio autor acrescentou depois uma nota ao artigo original recomendando GitHub Flow para quem entrega continuamente. Ele não é "errado": é caro. Dois ramos permanentes significam merges constantes entre eles, e a chance de algo estar na `develop` mas não na `main` (ou o contrário) é permanente. Se você entrega toda semana, está pagando um preço por um problema que não tem. **Mas você vai encontrá-lo no legado, muito.** Projetos iniciados entre 2011 e 2018 adotaram Git Flow em massa, com frequência por cargo cult. Ao assumir um projeto assim, a pergunta útil não é "por que usam isso?", e sim **"o que hoje ainda depende disso?"** — se a resposta for nada, migrar é possível; se houver contrato de suporte a versões antigas, o modelo está fazendo o seu trabalho.
 
 ---
 
@@ -127,14 +125,10 @@ Independente do modelo escolhido, existe uma lei que não perdoa: **o custo de i
 Um ramo de dois dias integra sozinho. Um de duas semanas gera conflitos. Um de três meses vira um projeto próprio — e frequentemente é abandonado, porque integrá-lo custa mais do que refazer.
 
 > [!warning] O ramo "refatoração" que ninguém mergeia
-> **O que acontece:** alguém abre um ramo para reescrever um módulo. Passam semanas. Enquanto isso a `main` recebe cinquenta commits. Quando chega a hora de integrar, o conflito é intratável e o ramo é silenciosamente abandonado — junto com o trabalho.
-> **Por quê:** as duas linhas divergiram além do ponto em que a ferramenta ajuda.
-> **Como evitar:** fatie. Refatoração entra em pedaços pequenos e seguros, integrados continuamente, não em um ramo paralelo gigante. Se for inevitável manter um ramo longo, **traga a `main` para dentro dele com frequência** (`git merge main`, semanalmente) — assim você paga o conflito em parcelas.
+> **O que acontece:** alguém abre um ramo para reescrever um módulo. Passam semanas. Enquanto isso a `main` recebe cinquenta commits. Quando chega a hora de integrar, o conflito é intratável e o ramo é silenciosamente abandonado — junto com o trabalho. **Por quê:** as duas linhas divergiram além do ponto em que a ferramenta ajuda. **Como evitar:** fatie. Refatoração entra em pedaços pequenos e seguros, integrados continuamente, não em um ramo paralelo gigante. Se for inevitável manter um ramo longo, **traga a `main` para dentro dele com frequência** (`git merge main`, semanalmente) — assim você paga o conflito em parcelas.
 
 > [!warning] Um ramo permanente por ambiente
-> **O que acontece:** o time cria `develop`, `homologacao`, `staging` e `producao` como ramos permanentes, e passa a promover código de um para o outro com merges.
-> **Por quê:** parece intuitivo espelhar os ambientes no repositório.
-> **Como evitar:** ambiente é **deploy**, não ramo. O que vai para homologação é um commit específico (identificado por tag), promovido pelo pipeline. Ramo-por-ambiente produz divergência entre eles — o clássico "está em homologação mas não em produção, e ninguém sabe o que exatamente falta". A alternativa correta é tratada em [[03-Dominios/Engenharia/Operação/index|Engenharia/Operação]], que é a casa da disciplina de entrega.
+> **O que acontece:** o time cria `develop`, `homologacao`, `staging` e `producao` como ramos permanentes, e passa a promover código de um para o outro com merges. **Por quê:** parece intuitivo espelhar os ambientes no repositório. **Como evitar:** ambiente é **deploy**, não ramo. O que vai para homologação é um commit específico (identificado por tag), promovido pelo pipeline. Ramo-por-ambiente produz divergência entre eles — o clássico "está em homologação mas não em produção, e ninguém sabe o que exatamente falta". A alternativa correta é tratada em [[03-Dominios/Engenharia/Operação/index|Engenharia/Operação]], que é a casa da disciplina de entrega.
 
 ---
 

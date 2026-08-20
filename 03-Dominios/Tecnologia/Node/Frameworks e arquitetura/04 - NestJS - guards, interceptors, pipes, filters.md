@@ -389,63 +389,41 @@ Com o lifecycle NestJS dominado, o próximo passo é olhar como validação func
 ## Armadilhas comuns
 
 > [!warning] Confundir Guard com Pipe
-> **O que acontece:** Guard tenta validar DTO; Pipe tenta checar permissão.
-> **Por quê:** Guard decide se a request pode continuar. Pipe transforma/valida dados de entrada. Misturar os dois torna o código imprevisível.
-> **Como evitar:** Guard: "pode fazer isso?" Pipe: "o dado está no formato certo?" Se a pergunta mistura as duas, divida em dois hooks.
+> **O que acontece:** Guard tenta validar DTO; Pipe tenta checar permissão. **Por quê:** Guard decide se a request pode continuar. Pipe transforma/valida dados de entrada. Misturar os dois torna o código imprevisível. **Como evitar:** Guard: "pode fazer isso?" Pipe: "o dado está no formato certo?" Se a pergunta mistura as duas, divida em dois hooks.
 
 > [!warning] Interceptor com CPU-heavy work dentro de `tap`
-> **O que acontece:** Operação pesada dentro de `tap` bloqueia event loop e aumenta latência de todas as requests.
-> **Por quê:** `tap` é síncrono por padrão; trabalho pesado dentro dele não é deferido.
-> **Como evitar:** Use `tapAsync` com cuidado, delegue trabalho pesado para fila/worker ou use `switchMap` com Observable assíncrono.
+> **O que acontece:** Operação pesada dentro de `tap` bloqueia event loop e aumenta latência de todas as requests. **Por quê:** `tap` é síncrono por padrão; trabalho pesado dentro dele não é deferido. **Como evitar:** Use `tapAsync` com cuidado, delegue trabalho pesado para fila/worker ou use `switchMap` com Observable assíncrono.
 
 > [!warning] Filter `@Catch()` genérico demais sem taxonomy
-> **O que acontece:** Todos os erros viram 500 genérico, perdendo contexto de erros de domínio e validação.
-> **Por quê:** `@Catch()` sem argumento captura tudo, incluindo erros já tratados que mereceriam status diferente.
-> **Como evitar:** Crie filters tipados: `@Catch(DomainError)`, `@Catch(ValidationError)`, `@Catch(HttpException)`. Filter genérico fica como fallback de último recurso.
+> **O que acontece:** Todos os erros viram 500 genérico, perdendo contexto de erros de domínio e validação. **Por quê:** `@Catch()` sem argumento captura tudo, incluindo erros já tratados que mereceriam status diferente. **Como evitar:** Crie filters tipados: `@Catch(DomainError)`, `@Catch(ValidationError)`, `@Catch(HttpException)`. Filter genérico fica como fallback de último recurso.
 
 > [!warning] DTO sem decorators de validação
-> **O que acontece:** `ValidationPipe` não detecta campos inválidos porque não há metadados de validação.
-> **Por quê:** `ValidationPipe` depende de `class-validator` decorators para saber o que validar.
-> **Como evitar:** Todo DTO deve ter decorators `@IsString()`, `@IsEmail()`, etc. Habilite `whitelist: true` para remover campos não declarados.
+> **O que acontece:** `ValidationPipe` não detecta campos inválidos porque não há metadados de validação. **Por quê:** `ValidationPipe` depende de `class-validator` decorators para saber o que validar. **Como evitar:** Todo DTO deve ter decorators `@IsString()`, `@IsEmail()`, etc. Habilite `whitelist: true` para remover campos não declarados.
 
 > [!warning] Hook global sem pensar em rotas públicas
-> **O que acontece:** `JwtAuthGuard` global bloqueia `/health`, `/metrics` e webhooks públicos com 401.
-> **Por quê:** `useGlobalGuards` aplica a todas as rotas sem exceção por default.
-> **Como evitar:** Use decorator `@Public()` com reflector, ou não aplique auth guard globalmente — aplique por controller.
+> **O que acontece:** `JwtAuthGuard` global bloqueia `/health`, `/metrics` e webhooks públicos com 401. **Por quê:** `useGlobalGuards` aplica a todas as rotas sem exceção por default. **Como evitar:** Use decorator `@Public()` com reflector, ou não aplique auth guard globalmente — aplique por controller.
 
 > [!warning] Regra de negócio no Guard
-> **O que acontece:** Guard consulta banco, aplica regras de domínio e vira um mini-service.
-> **Por quê:** Guard "já roda antes do handler" — mas isso não o torna o lugar certo para lógica de negócio.
-> **Como evitar:** Guard só decide autorização com base em dados já disponíveis (token, role, claim). Lógica de negócio fica no use case.
+> **O que acontece:** Guard consulta banco, aplica regras de domínio e vira um mini-service. **Por quê:** Guard "já roda antes do handler" — mas isso não o torna o lugar certo para lógica de negócio. **Como evitar:** Guard só decide autorização com base em dados já disponíveis (token, role, claim). Lógica de negócio fica no use case.
 
 > [!warning] Interceptor para alterar input
-> **O que acontece:** Interceptor transforma o corpo da request antes do handler, mas depois do Pipe.
-> **Por quê:** Interceptor não tem acesso ao parsed/validated body; sua função é envolver execução, não transformar input.
-> **Como evitar:** Transformação de input pertence ao Pipe. Use `@Transform()` em DTOs ou Pipe customizado.
+> **O que acontece:** Interceptor transforma o corpo da request antes do handler, mas depois do Pipe. **Por quê:** Interceptor não tem acesso ao parsed/validated body; sua função é envolver execução, não transformar input. **Como evitar:** Transformação de input pertence ao Pipe. Use `@Transform()` em DTOs ou Pipe customizado.
 
 > [!warning] Exception Filter capturando tudo e apagando status original
-> **O que acontece:** `HttpException` com status 422 vira 500 porque o filter não preserva o status.
-> **Por quê:** Filter que não verifica `instanceof HttpException` perde informação de status já definida pelo NestJS.
-> **Como evitar:** Sempre verifique `exception instanceof HttpException ? exception.getStatus() : 500` antes de definir o status da resposta.
+> **O que acontece:** `HttpException` com status 422 vira 500 porque o filter não preserva o status. **Por quê:** Filter que não verifica `instanceof HttpException` perde informação de status já definida pelo NestJS. **Como evitar:** Sempre verifique `exception instanceof HttpException ? exception.getStatus() : 500` antes de definir o status da resposta.
 
 > [!warning] Pipe batendo em banco para validação pesada em toda request
-> **O que acontece:** Cada request que passa por aquele Pipe faz uma query de banco, aumentando latência e criando vetor de DoS.
-> **Por quê:** Pipe roda antes do handler em toda request que usa aquele pipe.
-> **Como evitar:** Validações que dependem de banco (e-mail único, recurso existente) pertencem ao use case, não ao Pipe.
+> **O que acontece:** Cada request que passa por aquele Pipe faz uma query de banco, aumentando latência e criando vetor de DoS. **Por quê:** Pipe roda antes do handler em toda request que usa aquele pipe. **Como evitar:** Validações que dependem de banco (e-mail único, recurso existente) pertencem ao use case, não ao Pipe.
 
 ## Perguntas de entrevista
 
-**Qual a diferença entre Guard e Pipe?**
-Guard decide se a request continua. Pipe valida/transforma dados de entrada.
+**Qual a diferença entre Guard e Pipe?** Guard decide se a request continua. Pipe valida/transforma dados de entrada.
 
-**Por que Interceptor é útil para logging?**
-Porque envolve o handler: consegue medir antes/depois e observar sucesso/erro sem poluir controller.
+**Por que Interceptor é útil para logging?** Porque envolve o handler: consegue medir antes/depois e observar sucesso/erro sem poluir controller.
 
-**Onde você implementaria Problem Details em NestJS?**
-Em Exception Filter global, com mapping explícito de erros conhecidos para `application/problem+json`.
+**Onde você implementaria Problem Details em NestJS?** Em Exception Filter global, com mapping explícito de erros conhecidos para `application/problem+json`.
 
-**Quando aplicar hook globalmente?**
-Quando a política vale para quase toda aplicação: validation, logging, error formatting. Auth global exige cuidado com rotas públicas.
+**Quando aplicar hook globalmente?** Quando a política vale para quase toda aplicação: validation, logging, error formatting. Auth global exige cuidado com rotas públicas.
 
 ## Em entrevista
 

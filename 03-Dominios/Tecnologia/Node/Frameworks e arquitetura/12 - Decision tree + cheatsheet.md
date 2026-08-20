@@ -324,15 +324,7 @@ modernizar antes de migrar
 
 ## Flashcards mentais para entrevista
 
-**Express:** liberdade máxima, responsabilidade máxima.
-**NestJS:** convenção e DI para complexidade organizacional.
-**Fastify:** contrato e performance via schema.
-**Hono:** deploy edge/multi-runtime via Web Standards.
-**Middleware:** pipeline de cross-cutting concerns.
-**Problem Details:** erro como contrato.
-**Validation:** toda entrada externa é `unknown`.
-**Clean:** dependências apontam para dentro.
-**DI:** explícito primeiro; container quando wiring/lifecycle justificam.
+**Express:** liberdade máxima, responsabilidade máxima. **NestJS:** convenção e DI para complexidade organizacional. **Fastify:** contrato e performance via schema. **Hono:** deploy edge/multi-runtime via Web Standards. **Middleware:** pipeline de cross-cutting concerns. **Problem Details:** erro como contrato. **Validation:** toda entrada externa é `unknown`. **Clean:** dependências apontam para dentro. **DI:** explícito primeiro; container quando wiring/lifecycle justificam.
 
 ## Perguntas que diferenciam senior
 
@@ -350,79 +342,49 @@ modernizar antes de migrar
 ## Armadilhas comuns
 
 > [!warning] Escolher framework por popularidade sem considerar deploy target
-> **O que acontece:** API Node "Enterprise" é deployada em Cloudflare Workers e falha por usar APIs como `fs`, `net` e `Buffer` que não existem no runtime edge.
-> **Por quê:** framework escolhido por familiaridade, sem verificar compatibilidade com o runtime de produção.
-> **Como evitar:** confirme o runtime primeiro; Hono e Web Standards são as escolhas seguras para edge; valide com benchmark de cold start no runtime alvo.
+> **O que acontece:** API Node "Enterprise" é deployada em Cloudflare Workers e falha por usar APIs como `fs`, `net` e `Buffer` que não existem no runtime edge. **Por quê:** framework escolhido por familiaridade, sem verificar compatibilidade com o runtime de produção. **Como evitar:** confirme o runtime primeiro; Hono e Web Standards são as escolhas seguras para edge; valide com benchmark de cold start no runtime alvo.
 
 > [!warning] Express 4 sem `asyncHandler`: erros async silenciosos
-> **O que acontece:** `Promise` rejeitada não chega ao error middleware global; request fica pendurada ou processo emite `unhandledRejection`.
-> **Por quê:** Express 4 não captura automaticamente erros de handlers async.
-> **Como evitar:** use `express-async-handler` ou migre para Express 5 que captura async nativamente.
+> **O que acontece:** `Promise` rejeitada não chega ao error middleware global; request fica pendurada ou processo emite `unhandledRejection`. **Por quê:** Express 4 não captura automaticamente erros de handlers async. **Como evitar:** use `express-async-handler` ou migre para Express 5 que captura async nativamente.
 
 > [!warning] Express error middleware com 3 argumentos não captura erros
-> **O que acontece:** middleware de erro nunca é invocado; erros caem no handler padrão do Express com HTML.
-> **Por quê:** Express detecta error middleware pela aridade (`fn.length === 4`); com 3 args é middleware normal.
-> **Como evitar:** sempre declare `(err, req, res, next)` mesmo que `next` não seja usado.
+> **O que acontece:** middleware de erro nunca é invocado; erros caem no handler padrão do Express com HTML. **Por quê:** Express detecta error middleware pela aridade (`fn.length === 4`); com 3 args é middleware normal. **Como evitar:** sempre declare `(err, req, res, next)` mesmo que `next` não seja usado.
 
 > [!warning] Mutar `req` sem tipagem: bug invisível à distância
-> **O que acontece:** middleware A seta `req.user` com typo; middleware B lê `undefined` sem erro imediato; bug aparece no log de produção.
-> **Por quê:** `req` em Express é mutável e não tipado por padrão; sem declaration merging, qualquer campo é `any`.
-> **Como evitar:** declare extensões de `Request` com TypeScript; revise toda mutação de `req` em code review.
+> **O que acontece:** middleware A seta `req.user` com typo; middleware B lê `undefined` sem erro imediato; bug aparece no log de produção. **Por quê:** `req` em Express é mutável e não tipado por padrão; sem declaration merging, qualquer campo é `any`. **Como evitar:** declare extensões de `Request` com TypeScript; revise toda mutação de `req` em code review.
 
 > [!warning] NestJS `Scope.REQUEST` sem necessidade: custo propaga
-> **O que acontece:** providers que deveriam ser singletons ficam request-scoped, criando instâncias desnecessárias a cada request.
-> **Por quê:** um provider com request scope torna todos os providers que dependem dele também request-scoped (propagação automática).
-> **Como evitar:** use request scope apenas para dados de request (tenant, userId, requestId); logger, repositórios e use cases geralmente são singleton.
+> **O que acontece:** providers que deveriam ser singletons ficam request-scoped, criando instâncias desnecessárias a cada request. **Por quê:** um provider com request scope torna todos os providers que dependem dele também request-scoped (propagação automática). **Como evitar:** use request scope apenas para dados de request (tenant, userId, requestId); logger, repositórios e use cases geralmente são singleton.
 
 > [!warning] NestJS circular import resolvido com `forwardRef()` sem refatorar
-> **O que acontece:** acoplamento circular fica encapsulado, cresce com o projeto e vira dívida técnica estrutural.
-> **Por quê:** `forwardRef()` é aplicado como fix rápido sem investigar por que dois módulos se importam mutuamente.
-> **Como evitar:** circular import é sinal de design problem; extraia um terceiro módulo ou inverta a dependência antes de usar `forwardRef`.
+> **O que acontece:** acoplamento circular fica encapsulado, cresce com o projeto e vira dívida técnica estrutural. **Por quê:** `forwardRef()` é aplicado como fix rápido sem investigar por que dois módulos se importam mutuamente. **Como evitar:** circular import é sinal de design problem; extraia um terceiro módulo ou inverta a dependência antes de usar `forwardRef`.
 
 > [!warning] Fastify schema sem `additionalProperties: false`
-> **O que acontece:** campos extras do body chegam ao handler e podem atingir o banco — risco de mass assignment.
-> **Por quê:** Fastify não rejeita campos adicionais por padrão no JSON Schema; depende de `additionalProperties: false` explícito.
-> **Como evitar:** defina `additionalProperties: false` em todos os schemas de request body; use TypeBox que aplica isso por padrão.
+> **O que acontece:** campos extras do body chegam ao handler e podem atingir o banco — risco de mass assignment. **Por quê:** Fastify não rejeita campos adicionais por padrão no JSON Schema; depende de `additionalProperties: false` explícito. **Como evitar:** defina `additionalProperties: false` em todos os schemas de request body; use TypeBox que aplica isso por padrão.
 
 > [!warning] Fastify plugin encapsulado quando deveria expor decorator ao pai
-> **O que acontece:** decorator registrado dentro de plugin não está disponível fora do escopo encapsulado; `app.hasDecorator()` retorna `false` fora do plugin.
-> **Por quê:** Fastify usa encapsulamento de contexto por design; `fastify-plugin` remove essa encapsulação.
-> **Como evitar:** use `fastify-plugin` para plugins que precisam expor decorators, hooks ou providers para toda a aplicação.
+> **O que acontece:** decorator registrado dentro de plugin não está disponível fora do escopo encapsulado; `app.hasDecorator()` retorna `false` fora do plugin. **Por quê:** Fastify usa encapsulamento de contexto por design; `fastify-plugin` remove essa encapsulação. **Como evitar:** use `fastify-plugin` para plugins que precisam expor decorators, hooks ou providers para toda a aplicação.
 
 > [!warning] Hono assumindo APIs Node em edge runtime
-> **O que acontece:** `import { readFile } from "fs"` lança erro em Cloudflare Workers; `process.env` pode não existir em Deno Deploy.
-> **Por quê:** código escrito com mentalidade Node usa APIs que não fazem parte do WinterCG/Web Standards.
-> **Como evitar:** use apenas APIs Web Standards (Fetch, Web Crypto, URL, ReadableStream); acesse env via `c.env` nos bindings do Hono.
+> **O que acontece:** `import { readFile } from "fs"` lança erro em Cloudflare Workers; `process.env` pode não existir em Deno Deploy. **Por quê:** código escrito com mentalidade Node usa APIs que não fazem parte do WinterCG/Web Standards. **Como evitar:** use apenas APIs Web Standards (Fetch, Web Crypto, URL, ReadableStream); acesse env via `c.env` nos bindings do Hono.
 
 > [!warning] Hono middleware sem `await next()`
-> **O que acontece:** handler posterior nunca executa; response fica pendente ou vazia.
-> **Por quê:** Hono usa onion model — controle só passa para o próximo handler com `await next()`.
-> **Como evitar:** todo middleware Hono que não termina a request explicitamente deve ter `await next()`.
+> **O que acontece:** handler posterior nunca executa; response fica pendente ou vazia. **Por quê:** Hono usa onion model — controle só passa para o próximo handler com `await next()`. **Como evitar:** todo middleware Hono que não termina a request explicitamente deve ter `await next()`.
 
 > [!warning] Stack trace em produção em qualquer framework
-> **O que acontece:** cliente vê paths internos, nomes de dependências e dados sensíveis de contexto.
-> **Por quê:** error handler sem sanitização retorna `err.stack` na response.
-> **Como evitar:** sempre sanitize 5xx com mensagem genérica; stack vai para o log interno com correlation ID.
+> **O que acontece:** cliente vê paths internos, nomes de dependências e dados sensíveis de contexto. **Por quê:** error handler sem sanitização retorna `err.stack` na response. **Como evitar:** sempre sanitize 5xx com mensagem genérica; stack vai para o log interno com correlation ID.
 
 > [!warning] DI container em app pequeno sem necessidade
-> **O que acontece:** overhead de configuração, decorators, tokens e lifecycle antes de qualquer problema real de wiring.
-> **Por quê:** container adotado por antecipação, "para quando crescer".
-> **Como evitar:** comece com DI manual; migre para container quando factories começarem a doer ou quando scopes forem necessários.
+> **O que acontece:** overhead de configuração, decorators, tokens e lifecycle antes de qualquer problema real de wiring. **Por quê:** container adotado por antecipação, "para quando crescer". **Como evitar:** comece com DI manual; migre para container quando factories começarem a doer ou quando scopes forem necessários.
 
 > [!warning] Clean Architecture em CRUD simples
-> **O que acontece:** três vezes mais código, zero benefício arquitetural — sem regra de negócio, não há o que proteger.
-> **Por quê:** padrão aplicado por cargo de trabalho sem avaliação de custo-benefício.
-> **Como evitar:** use separação leve (service + repository + schema) em CRUD; Reserve Clean para domínio rico com múltiplos adapters.
+> **O que acontece:** três vezes mais código, zero benefício arquitetural — sem regra de negócio, não há o que proteger. **Por quê:** padrão aplicado por cargo de trabalho sem avaliação de custo-benefício. **Como evitar:** use separação leve (service + repository + schema) em CRUD; Reserve Clean para domínio rico com múltiplos adapters.
 
 > [!warning] Schema só para body, ignorando query/params/headers
-> **O que acontece:** `req.params.id` chega como string não validada; ID inválido causa erro de banco em vez de 400.
-> **Por quê:** validação focou no body porque é o campo mais visível; params e query são esquecidos.
-> **Como evitar:** valide params, query e headers críticos com o mesmo rigor do body; toda entrada externa é `unknown`.
+> **O que acontece:** `req.params.id` chega como string não validada; ID inválido causa erro de banco em vez de 400. **Por quê:** validação focou no body porque é o campo mais visível; params e query são esquecidos. **Como evitar:** valide params, query e headers críticos com o mesmo rigor do body; toda entrada externa é `unknown`.
 
 > [!warning] Misturar zod e `class-validator` sem convenção
-> **O que acontece:** metade dos endpoints retorna erros no formato zod, metade no formato class-validator; cliente não consegue parsear uniformemente.
-> **Por quê:** time cresceu e cada desenvolvedor usou a ferramenta que conhecia.
-> **Como evitar:** escolha uma biblioteca por repositório e documente; use `nestjs-zod` para unificar se NestJS for o framework.
+> **O que acontece:** metade dos endpoints retorna erros no formato zod, metade no formato class-validator; cliente não consegue parsear uniformemente. **Por quê:** time cresceu e cada desenvolvedor usou a ferramenta que conhecia. **Como evitar:** escolha uma biblioteca por repositório e documente; use `nestjs-zod` para unificar se NestJS for o framework.
 
 ## Como explicar em inglês
 

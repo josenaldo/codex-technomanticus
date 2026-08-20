@@ -84,9 +84,7 @@ Dois refinamentos importantes:
 - A versão **2.2** endureceu esse território: **2.4.11 (Foco Não Obscurecido)** exige que o elemento focado não fique escondido atrás de headers fixos (o bug do modal, de novo), e **2.4.13 (Aparência do Foco)** define espessura e contraste mínimos para o indicador. Um anel de foco fininho e de baixo contraste tecnicamente "existe" mas não cumpre a função.
 
 > [!warning] `outline: none` sem substituto
-> **O que acontece:** o time remove o outline de foco porque "fica feio", e o usuário de teclado perde toda referência de onde está na página — navega apertando Tab no escuro.
-> **Por quê:** o outline é o *único* sinal visual de foco para quem não usa mouse. Removê-lo sem repor é apagar a única bússola do usuário de teclado.
-> **Como evitar:** nunca `outline: none` sozinho. Se o padrão do browser não agrada, desenhe um `:focus-visible` melhor — mais grosso, mais contrastado, com `outline-offset`. Remover é proibido; melhorar é bem-vindo.
+> **O que acontece:** o time remove o outline de foco porque "fica feio", e o usuário de teclado perde toda referência de onde está na página — navega apertando Tab no escuro. **Por quê:** o outline é o *único* sinal visual de foco para quem não usa mouse. Removê-lo sem repor é apagar a única bússola do usuário de teclado. **Como evitar:** nunca `outline: none` sozinho. Se o padrão do browser não agrada, desenhe um `:focus-visible` melhor — mais grosso, mais contrastado, com `outline-offset`. Remover é proibido; melhorar é bem-vindo.
 
 ## Dark mode e o futuro (APCA)
 
@@ -139,19 +137,13 @@ graph TD
 ## Armadilhas comuns
 
 > [!warning] `outline: none` sem substituto
-> **O que acontece:** o time remove o outline de foco porque "fica feio", e o usuário de teclado perde toda referência de onde está na página — navega apertando Tab no escuro.
-> **Por quê:** o outline é o *único* sinal visual de foco para quem não usa mouse. Removê-lo sem repor é apagar a única bússola do usuário de teclado.
-> **Como evitar:** nunca `outline: none` sozinho. Se o padrão do browser não agrada, desenhe um `:focus-visible` melhor — mais grosso, mais contrastado, com `outline-offset`. Remover é proibido; melhorar é bem-vindo.
+> **O que acontece:** o time remove o outline de foco porque "fica feio", e o usuário de teclado perde toda referência de onde está na página — navega apertando Tab no escuro. **Por quê:** o outline é o *único* sinal visual de foco para quem não usa mouse. Removê-lo sem repor é apagar a única bússola do usuário de teclado. **Como evitar:** nunca `outline: none` sozinho. Se o padrão do browser não agrada, desenhe um `:focus-visible` melhor — mais grosso, mais contrastado, com `outline-offset`. Remover é proibido; melhorar é bem-vindo.
 
 > [!warning] Texto secundário/placeholder cinza-claro demais
-> **O que acontece:** "texto de apoio" — placeholder de input, legenda de campo, texto desabilitado — recebe um cinza-claro "discreto" que passa longe do 4.5:1, porque a hierarquia visual (destacar o principal, apagar o secundário) é perseguida a qualquer custo de contraste.
-> **Por quê:** placeholder e texto secundário ainda são texto que carrega instrução ou contexto — o WCAG não abre exceção de contraste para eles só porque a intenção de design é "discreto". E placeholder tem um problema a mais: ele some quando o usuário digita, então também não pode ser a única fonte da instrução (conecta com o 1.3.1 da nota 07).
-> **Como evitar:** hierarquia visual se faz com peso de fonte, tamanho e espaçamento — não com contraste abaixo do mínimo. Meça o cinza "discreto" no mesmo checker que mede o texto principal; se falhar o 4.5:1, escureça.
+> **O que acontece:** "texto de apoio" — placeholder de input, legenda de campo, texto desabilitado — recebe um cinza-claro "discreto" que passa longe do 4.5:1, porque a hierarquia visual (destacar o principal, apagar o secundário) é perseguida a qualquer custo de contraste. **Por quê:** placeholder e texto secundário ainda são texto que carrega instrução ou contexto — o WCAG não abre exceção de contraste para eles só porque a intenção de design é "discreto". E placeholder tem um problema a mais: ele some quando o usuário digita, então também não pode ser a única fonte da instrução (conecta com o 1.3.1 da nota 07). **Como evitar:** hierarquia visual se faz com peso de fonte, tamanho e espaçamento — não com contraste abaixo do mínimo. Meça o cinza "discreto" no mesmo checker que mede o texto principal; se falhar o 4.5:1, escureça.
 
 > [!warning] Branco puro sobre preto puro no dark mode
-> **O que acontece:** o tema escuro usa `#FFFFFF` de texto sobre `#000000` de fundo — no papel, 21:1, contraste máximo possível — mas para parte dos usuários (sobretudo com astigmatismo) o texto parece "vibrar" ou borrar, um efeito chamado *halation*.
-> **Por quê:** contraste máximo não é sinônimo de conforto de leitura; o WCAG mede legibilidade mínima, não confabilidade em pixels contíguos de luminância extrema — halation é um efeito óptico à parte, não capturado pela razão de contraste.
-> **Como evitar:** em dark mode, prefira quase-branco (algo como `#E8E8E8`–`#F0F0F0`) sobre quase-preto (`#121212`–`#1A1A1A`) em vez dos extremos puros. Ainda passa folgado no 4.5:1 e evita o efeito de vibração.
+> **O que acontece:** o tema escuro usa `#FFFFFF` de texto sobre `#000000` de fundo — no papel, 21:1, contraste máximo possível — mas para parte dos usuários (sobretudo com astigmatismo) o texto parece "vibrar" ou borrar, um efeito chamado *halation*. **Por quê:** contraste máximo não é sinônimo de conforto de leitura; o WCAG mede legibilidade mínima, não confabilidade em pixels contíguos de luminância extrema — halation é um efeito óptico à parte, não capturado pela razão de contraste. **Como evitar:** em dark mode, prefira quase-branco (algo como `#E8E8E8`–`#F0F0F0`) sobre quase-preto (`#121212`–`#1A1A1A`) em vez dos extremos puros. Ainda passa folgado no 4.5:1 e evita o efeito de vibração.
 
 ## Como explicar em inglês
 

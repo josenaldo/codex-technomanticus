@@ -33,14 +33,11 @@ O problema fundamental com `<img>` no browser é que o HTML é parseado de cima 
 
 `next/image` resolve isso de três formas simultâneas:
 
-**1. Dimensões obrigatórias ou `fill`**
-Você informa `width` e `height`, ou usa `fill` (que preenche o contêiner posicionado). O browser recebe o atributo `aspect-ratio` via CSS intrínseco e reserva espaço antes de baixar a imagem. CLS → zero.
+**1. Dimensões obrigatórias ou `fill`** Você informa `width` e `height`, ou usa `fill` (que preenche o contêiner posicionado). O browser recebe o atributo `aspect-ratio` via CSS intrínseco e reserva espaço antes de baixar a imagem. CLS → zero.
 
-**2. Lazy loading nativo com threshold inteligente**
-Por padrão, `next/image` usa `loading="lazy"` com `decoding="async"`. O browser só baixa a imagem quando ela está a ≈1 viewport de distância do viewport atual. Em páginas longas, isso elimina dezenas de MB de downloads desnecessários no first load.
+**2. Lazy loading nativo com threshold inteligente** Por padrão, `next/image` usa `loading="lazy"` com `decoding="async"`. O browser só baixa a imagem quando ela está a ≈1 viewport de distância do viewport atual. Em páginas longas, isso elimina dezenas de MB de downloads desnecessários no first load.
 
-**3. Conversão automática para formatos modernos**
-O servidor Next.js intercepta a requisição, converte para WebP (ou AVIF, se o browser suportar via `Accept`), redimensiona para o tamanho exato pedido e serve com `Cache-Control: public, max-age=31536000`. O original fica intocado; o servidor gera variantes on-demand e as cacheia em disco.
+**3. Conversão automática para formatos modernos** O servidor Next.js intercepta a requisição, converte para WebP (ou AVIF, se o browser suportar via `Accept`), redimensiona para o tamanho exato pedido e serve com `Cache-Control: public, max-age=31536000`. O original fica intocado; o servidor gera variantes on-demand e as cacheia em disco.
 
 ```tsx
 // Uso básico — width/height obrigatórios (ou fill)
@@ -436,24 +433,16 @@ O `size-adjust` gerado pelo `next/font` garante que o fallback (`Arial`) ocupe o
 ## Armadilhas comuns
 
 > [!warning] `priority` em todas as imagens above-the-fold
-> **O que acontece:** o desenvolvedor lê "priority melhora LCP" e coloca a prop em todas as imagens visíveis no topo da página — hero, avatar, ícones.
-> **Por quê:** `priority` injeta um `<link rel="preload">` para cada imagem. O browser limita o número de preloads paralelos; muitos preloads competem entre si e degradam o LCP em vez de melhorar.
-> **Como evitar:** use `priority` em **uma única imagem por rota** — a que você identificou via Lighthouse como o elemento de LCP.
+> **O que acontece:** o desenvolvedor lê "priority melhora LCP" e coloca a prop em todas as imagens visíveis no topo da página — hero, avatar, ícones. **Por quê:** `priority` injeta um `<link rel="preload">` para cada imagem. O browser limita o número de preloads paralelos; muitos preloads competem entre si e degradam o LCP em vez de melhorar. **Como evitar:** use `priority` em **uma única imagem por rota** — a que você identificou via Lighthouse como o elemento de LCP.
 
 > [!warning] `next/image` com imagens SVG — comportamento inesperado
-> **O que acontece:** `next/image` com `src` apontando para SVG pode não servir o SVG como esperado — o componente tenta otimizar e converter, mas SVG não é um formato de raster.
-> **Por quê:** o pipeline de otimização foi projetado para JPEG/PNG/GIF/WebP. SVGs são vetoriais e não ganham nada com conversão de formato.
-> **Como evitar:** use `<img>` nativo ou um componente SVG inline para SVGs. Para ícones, prefira `lucide-react` ou SVG inline; reserve `next/image` para imagens raster.
+> **O que acontece:** `next/image` com `src` apontando para SVG pode não servir o SVG como esperado — o componente tenta otimizar e converter, mas SVG não é um formato de raster. **Por quê:** o pipeline de otimização foi projetado para JPEG/PNG/GIF/WebP. SVGs são vetoriais e não ganham nada com conversão de formato. **Como evitar:** use `<img>` nativo ou um componente SVG inline para SVGs. Para ícones, prefira `lucide-react` ou SVG inline; reserve `next/image` para imagens raster.
 
 > [!warning] Fonte do Google Fonts importada fora do `next/font`
-> **O que acontece:** o desenvolvedor importa a fonte via `@import url(...)` no CSS ou via `<link>` no `<head>` do layout — a fonte é carregada do CDN do Google em vez de ser self-hosted.
-> **Por quê:** o `next/font` só intercepta importações via API (`import { Inter } from 'next/font/google'`). CSS imports diretos são ignorados.
-> **Como evitar:** remova todos os `@import url(https://fonts.googleapis.com/...)` do CSS e substitua por `next/font/google`. Buscar no projeto por `fonts.googleapis.com` antes de publicar.
+> **O que acontece:** o desenvolvedor importa a fonte via `@import url(...)` no CSS ou via `<link>` no `<head>` do layout — a fonte é carregada do CDN do Google em vez de ser self-hosted. **Por quê:** o `next/font` só intercepta importações via API (`import { Inter } from 'next/font/google'`). CSS imports diretos são ignorados. **Como evitar:** remova todos os `@import url(https://fonts.googleapis.com/...)` do CSS e substitua por `next/font/google`. Buscar no projeto por `fonts.googleapis.com` antes de publicar.
 
 > [!warning] `ssr: false` em Server Component
-> **O que acontece:** erro em build — `Error: 'ssr' is only allowed in Client Components`.
-> **Por quê:** Server Components não são hidratados no browser; o controle de SSR não tem sentido no contexto de server rendering.
-> **Como evitar:** `next/dynamic` com `ssr: false` é exclusivo de Client Components (`'use client'`). Se você precisa de lazy loading em um Server Component, use `import()` dinâmico nativo do JavaScript.
+> **O que acontece:** erro em build — `Error: 'ssr' is only allowed in Client Components`. **Por quê:** Server Components não são hidratados no browser; o controle de SSR não tem sentido no contexto de server rendering. **Como evitar:** `next/dynamic` com `ssr: false` é exclusivo de Client Components (`'use client'`). Se você precisa de lazy loading em um Server Component, use `import()` dinâmico nativo do JavaScript.
 
 ---
 

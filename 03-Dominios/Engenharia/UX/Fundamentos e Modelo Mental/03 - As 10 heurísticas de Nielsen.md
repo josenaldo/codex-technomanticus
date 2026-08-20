@@ -118,19 +118,13 @@ Um produto interno chama a mesma seção de "Relatórios" no menu lateral e de "
 ## Armadilhas comuns
 
 > [!warning] Tratar avaliação heurística solo como pesquisa completa
-> **O que acontece:** o engenheiro faz sozinho uma passada pelas dez heurísticas e apresenta o resultado como se fosse uma auditoria de usabilidade completa e confiável.
-> **Por quê:** o próprio Nielsen documentou que avaliadores individuais encontram cerca de 35% das violações que um grupo de 3-5 avaliadores encontraria juntos — um único ponto de vista tem pontos cegos estruturais.
-> **Como evitar:** apresente a avaliação solo como o que ela é — uma primeira passada barata, não uma auditoria completa — e complemente com teste de usabilidade real sempre que a decisão tiver peso (ver [[03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental/01 - UX não é tela - o ofício e seus limites|nota 01]], "praticável sozinho" vs. "exige estrutura").
+> **O que acontece:** o engenheiro faz sozinho uma passada pelas dez heurísticas e apresenta o resultado como se fosse uma auditoria de usabilidade completa e confiável. **Por quê:** o próprio Nielsen documentou que avaliadores individuais encontram cerca de 35% das violações que um grupo de 3-5 avaliadores encontraria juntos — um único ponto de vista tem pontos cegos estruturais. **Como evitar:** apresente a avaliação solo como o que ela é — uma primeira passada barata, não uma auditoria completa — e complemente com teste de usabilidade real sempre que a decisão tiver peso (ver [[03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental/01 - UX não é tela - o ofício e seus limites|nota 01]], "praticável sozinho" vs. "exige estrutura").
 
 > [!warning] Citar heurística sem explicar a violação concreta
-> **O que acontece:** o feedback diz apenas "isso viola heurística 6" sem descrever o que exatamente está acontecendo na tela nem por que isso prejudica o usuário.
-> **Por quê:** o nome da heurística é vocabulário compartilhado, não um substituto para a explicação — quem não decorou as dez heurísticas de cor (a maioria das pessoas) fica sem entender o problema real.
-> **Como evitar:** sempre acompanhe o nome da heurística com a violação concreta e a correção sugerida, no mesmo formato usado nos exemplos desta nota.
+> **O que acontece:** o feedback diz apenas "isso viola heurística 6" sem descrever o que exatamente está acontecendo na tela nem por que isso prejudica o usuário. **Por quê:** o nome da heurística é vocabulário compartilhado, não um substituto para a explicação — quem não decorou as dez heurísticas de cor (a maioria das pessoas) fica sem entender o problema real. **Como evitar:** sempre acompanhe o nome da heurística com a violação concreta e a correção sugerida, no mesmo formato usado nos exemplos desta nota.
 
 > [!warning] Confundir "estético e minimalista" com "sem informação nenhuma"
-> **O que acontece:** ao tentar aplicar a heurística 8, um time remove informação que o usuário realmente precisa para completar a tarefa, deixando a tela "limpa" mas incompleta.
-> **Por quê:** "minimalista" na formulação de Nielsen significa *sem informação irrelevante*, não *com o mínimo de informação possível*. Remover o essencial em nome da estética cria um problema novo — a heurística 6 (reconhecimento em vez de recordação) sendo violada para servir a heurística 8.
-> **Como evitar:** para cada elemento removido, pergunte "essa informação é raramente necessária, ou é só visualmente incômoda?". Só a primeira justifica remoção; a segunda pede reorganização, não exclusão.
+> **O que acontece:** ao tentar aplicar a heurística 8, um time remove informação que o usuário realmente precisa para completar a tarefa, deixando a tela "limpa" mas incompleta. **Por quê:** "minimalista" na formulação de Nielsen significa *sem informação irrelevante*, não *com o mínimo de informação possível*. Remover o essencial em nome da estética cria um problema novo — a heurística 6 (reconhecimento em vez de recordação) sendo violada para servir a heurística 8. **Como evitar:** para cada elemento removido, pergunte "essa informação é raramente necessária, ou é só visualmente incômoda?". Só a primeira justifica remoção; a segunda pede reorganização, não exclusão.
 
 ## Como explicar em inglês
 

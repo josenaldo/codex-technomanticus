@@ -108,8 +108,7 @@ import User  from './usuario.js';  // mesmo módulo, mesmo objeto
 
 > [!info] Named vs Default — quando usar cada um
 > - **Named**: módulos utilitários com múltiplas funções (math, validators, helpers)
-> - **Default**: módulos que exportam uma coisa principal (classe, componente React, configuração)
-> Misturar os dois no mesmo arquivo é válido, mas pode confundir. Muitos style guides modernos preferem só named exports para facilitar tree-shaking e autocompletion do editor.
+> - **Default**: módulos que exportam uma coisa principal (classe, componente React, configuração) Misturar os dois no mesmo arquivo é válido, mas pode confundir. Muitos style guides modernos preferem só named exports para facilitar tree-shaking e autocompletion do editor.
 
 ### Namespace import — importar tudo como objeto
 
@@ -424,24 +423,16 @@ import { Button } from './components/Button.js';
 ## Armadilhas comuns
 
 > [!warning] Circular imports silenciosos
-> **O que acontece:** módulo A importa de B, B importa de A. O código não lança erro, mas um dos módulos pode receber `undefined` onde esperava um valor.
-> **Por quê:** durante o linking, o motor cria os bindings antes da avaliação. Se A ainda não foi avaliado quando B tenta usar um export de A, o binding existe mas aponta para `undefined` (o valor inicial antes da avaliação).
-> **Como evitar:** extraia a dependência compartilhada para um terceiro módulo C que ambos importam. Círculos são um smell de design que indica responsabilidades misturadas.
+> **O que acontece:** módulo A importa de B, B importa de A. O código não lança erro, mas um dos módulos pode receber `undefined` onde esperava um valor. **Por quê:** durante o linking, o motor cria os bindings antes da avaliação. Se A ainda não foi avaliado quando B tenta usar um export de A, o binding existe mas aponta para `undefined` (o valor inicial antes da avaliação). **Como evitar:** extraia a dependência compartilhada para um terceiro módulo C que ambos importam. Círculos são um smell de design que indica responsabilidades misturadas.
 
 > [!warning] `import` não pode ficar dentro de if ou função (static only)
-> **O que acontece:** `SyntaxError: import declarations may only appear at top level of a module` se você tenta condicionar um import estático.
-> **Por quê:** a análise estática do ESM exige que todos os imports sejam declarações de topo — eles precisam ser resolúveis antes da execução.
-> **Como evitar:** use `dynamic import()` para carregamento condicional. Os imports estáticos ficam sempre no topo.
+> **O que acontece:** `SyntaxError: import declarations may only appear at top level of a module` se você tenta condicionar um import estático. **Por quê:** a análise estática do ESM exige que todos os imports sejam declarações de topo — eles precisam ser resolúveis antes da execução. **Como evitar:** use `dynamic import()` para carregamento condicional. Os imports estáticos ficam sempre no topo.
 
 > [!warning] Re-atribuir um named import causa TypeError
-> **O que acontece:** `TypeError: Assignment to constant variable` (ou similar) ao tentar `count = 5` quando `count` foi importado.
-> **Por quê:** do lado do importador, o binding é somente-leitura — a referência viva não pode ser redirecionada. Só o módulo de origem pode mudar o valor.
-> **Como evitar:** se precisar de estado mutável compartilhado, exporte uma função que muta internamente (como `increment()` no exemplo de live binding) ou use um objeto exportado (objetos são mutáveis mesmo com binding somente-leitura).
+> **O que acontece:** `TypeError: Assignment to constant variable` (ou similar) ao tentar `count = 5` quando `count` foi importado. **Por quê:** do lado do importador, o binding é somente-leitura — a referência viva não pode ser redirecionada. Só o módulo de origem pode mudar o valor. **Como evitar:** se precisar de estado mutável compartilhado, exporte uma função que muta internamente (como `increment()` no exemplo de live binding) ou use um objeto exportado (objetos são mutáveis mesmo com binding somente-leitura).
 
 > [!warning] Top-level await pode bloquear o carregamento da página inteira
-> **O que acontece:** o app demora para aparecer; DevTools mostra o bundle principal como "carregando" por segundos.
-> **Por quê:** um módulo com top-level await bloqueia todos os seus dependentes na fase de avaliação.
-> **Como evitar:** use top-level await apenas em módulos folha (sem dependentes), ou mova o fetch para `dynamic import()` que pode ser aguardado explicitamente sem bloquear o grafo principal.
+> **O que acontece:** o app demora para aparecer; DevTools mostra o bundle principal como "carregando" por segundos. **Por quê:** um módulo com top-level await bloqueia todos os seus dependentes na fase de avaliação. **Como evitar:** use top-level await apenas em módulos folha (sem dependentes), ou mova o fetch para `dynamic import()` que pode ser aguardado explicitamente sem bloquear o grafo principal.
 
 ---
 

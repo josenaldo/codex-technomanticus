@@ -108,8 +108,7 @@ Isso é conceitualmente idêntico ao `terraform plan` seguido de `terraform appl
 > [!tip] Assista: AWS CloudFormation: Updating Stacks using Change Sets
 > **Canal:** Code with Gauri | **Duração:** ~6min | **Idioma:** EN
 >
-> Uma demo curta no console: cria um change set adicionando uma instância EC2 a uma stack existente, revisa a ação `ADD` antes de executar, e mostra que os recursos já existentes ficam intocados. Bom complemento visual pro fluxo de linha de comando que a nota mostra.
-> Trecho de destaque [04:42]: *"so basically we make use of chain sets to update your stack without touching the already created resources"*
+> Uma demo curta no console: cria um change set adicionando uma instância EC2 a uma stack existente, revisa a ação `ADD` antes de executar, e mostra que os recursos já existentes ficam intocados. Bom complemento visual pro fluxo de linha de comando que a nota mostra. Trecho de destaque [04:42]: *"so basically we make use of chain sets to update your stack without touching the already created resources"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=lzRBioQ9DE4)
 
@@ -214,8 +213,7 @@ O **Pulumi** ocupa o mesmo nicho conceitual — infra em linguagem de programaç
 > [!tip] Assista: AWS Cloud Development Kit (CDK) Explained in 5 mins
 > **Canal:** Master AWS with Yan | **Duração:** ~6min | **Idioma:** EN
 >
-> Um resumo rápido do conceito central de constructs (L1/L2/L3) e de como eles se compilam pra baixo, até virar stack CloudFormation — a mesma hierarquia que a nota menciona ao explicar `ApplicationLoadBalancedFargateService`.
-> Trecho de destaque [00:16]: *"at the heart of cdk are constructs which are the basic building blocks of an [AWS] cdk app"*
+> Um resumo rápido do conceito central de constructs (L1/L2/L3) e de como eles se compilam pra baixo, até virar stack CloudFormation — a mesma hierarquia que a nota menciona ao explicar `ApplicationLoadBalancedFargateService`. Trecho de destaque [00:16]: *"at the heart of cdk are constructs which are the basic building blocks of an [AWS] cdk app"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=uo-sJN5xDB4)
 

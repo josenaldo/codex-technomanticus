@@ -302,24 +302,16 @@ function removeElement() {
 O nó foi removido do DOM tree, mas ainda é alcançável via `detached`. O GC não pode coletar o nó — nem seus filhos, que podem ser centenas de elementos.
 
 > [!warning] Global acidental
-> **O que acontece:** memória cresce indefinidamente; o objeto nunca é coletado.
-> **Por quê:** variáveis sem declaração (sem `let`/`const`/`var`) são atribuídas ao objeto global, que é um root permanente.
-> **Como evitar:** use `"use strict"` (lança ReferenceError) ou sempre declare variáveis. ESLint regra `no-undef`.
+> **O que acontece:** memória cresce indefinidamente; o objeto nunca é coletado. **Por quê:** variáveis sem declaração (sem `let`/`const`/`var`) são atribuídas ao objeto global, que é um root permanente. **Como evitar:** use `"use strict"` (lança ReferenceError) ou sempre declare variáveis. ESLint regra `no-undef`.
 
 > [!warning] Listener esquecido (SPA leak clássico)
-> **O que acontece:** a memória de componentes destruídos nunca é liberada; o processo vai crescendo em cada navegação.
-> **Por quê:** o listener mantém uma referência forte ao componente via `this` ou closure — o componente é alcançável a partir do root `window`.
-> **Como evitar:** frameworks modernos expõem lifecycle hooks (`onUnmounted`, `useEffect` cleanup, `ngOnDestroy`) — **sempre** remova listeners nesses hooks.
+> **O que acontece:** a memória de componentes destruídos nunca é liberada; o processo vai crescendo em cada navegação. **Por quê:** o listener mantém uma referência forte ao componente via `this` ou closure — o componente é alcançável a partir do root `window`. **Como evitar:** frameworks modernos expõem lifecycle hooks (`onUnmounted`, `useEffect` cleanup, `ngOnDestroy`) — **sempre** remova listeners nesses hooks.
 
 > [!warning] Cache Map crescendo sem bound
-> **O que acontece:** uso de memória cresce linearmente com o volume de dados distintos processados.
-> **Por quê:** Map usa referências fortes para chaves e valores; sem remoção explícita, nada é coletado.
-> **Como evitar:** use LRU cache com tamanho máximo, TTL explícito, ou WeakMap quando as chaves são objetos (não strings).
+> **O que acontece:** uso de memória cresce linearmente com o volume de dados distintos processados. **Por quê:** Map usa referências fortes para chaves e valores; sem remoção explícita, nada é coletado. **Como evitar:** use LRU cache com tamanho máximo, TTL explícito, ou WeakMap quando as chaves são objetos (não strings).
 
 > [!warning] Closure com escopo compartilhado
-> **O que acontece:** um objeto grande fica na memória mesmo que você só use uma função que não precisa dele.
-> **Por quê:** closures no mesmo escopo léxico compartilham o mesmo closure environment — se qualquer uma retém uma variável grande, toda o ambiente fica vivo.
-> **Como evitar:** isole closures que precisam de dados grandes em funções IIFE separadas; não misture closures "leves" e "pesadas" no mesmo escopo.
+> **O que acontece:** um objeto grande fica na memória mesmo que você só use uma função que não precisa dele. **Por quê:** closures no mesmo escopo léxico compartilham o mesmo closure environment — se qualquer uma retém uma variável grande, toda o ambiente fica vivo. **Como evitar:** isole closures que precisam de dados grandes em funções IIFE separadas; não misture closures "leves" e "pesadas" no mesmo escopo.
 
 ---
 
@@ -379,9 +371,7 @@ class Cache {
 ```
 
 > [!warning] WeakRef — semântica quase-não-garantida
-> **O que acontece:** `.deref()` pode retornar `undefined` a qualquer momento, mesmo que você "ache" que o objeto ainda existe.
-> **Por quê:** o GC pode coletar o objeto a qualquer momento após ele perder referências fortes. O tempo é não-determinístico e varia por motor, geração e pressão de memória.
-> **Como evitar:** **nunca use WeakRef para lógica crítica**. Sempre trate o caso `undefined`. Prefira WeakMap quando possível — e WeakRef apenas como otimização não-essencial.
+> **O que acontece:** `.deref()` pode retornar `undefined` a qualquer momento, mesmo que você "ache" que o objeto ainda existe. **Por quê:** o GC pode coletar o objeto a qualquer momento após ele perder referências fortes. O tempo é não-determinístico e varia por motor, geração e pressão de memória. **Como evitar:** **nunca use WeakRef para lógica crítica**. Sempre trate o caso `undefined`. Prefira WeakMap quando possível — e WeakRef apenas como otimização não-essencial.
 
 ### FinalizationRegistry
 
@@ -398,9 +388,7 @@ registry.register(value, "minha-chave");
 ```
 
 > [!warning] FinalizationRegistry — não para lógica crítica
-> **O que acontece:** o callback pode demorar segundos, minutos, horas para ser chamado — ou nunca ser chamado em engines que o permitem.
-> **Por quê:** a spec JavaScript garante apenas que o callback *pode* ser chamado; a semântica é intencionalmente vaga por questões de segurança (timing attacks via GC) e portabilidade entre engines.
-> **Como evitar:** use apenas para **cleanup não-crítico** (logs, debugging, métricas). Para recursos críticos (file handles, network connections), use padrões explícitos: `try/finally`, o protocolo `Symbol.dispose` (ES2026) ou métodos `dispose()`/`close()` explícitos.
+> **O que acontece:** o callback pode demorar segundos, minutos, horas para ser chamado — ou nunca ser chamado em engines que o permitem. **Por quê:** a spec JavaScript garante apenas que o callback *pode* ser chamado; a semântica é intencionalmente vaga por questões de segurança (timing attacks via GC) e portabilidade entre engines. **Como evitar:** use apenas para **cleanup não-crítico** (logs, debugging, métricas). Para recursos críticos (file handles, network connections), use padrões explícitos: `try/finally`, o protocolo `Symbol.dispose` (ES2026) ou métodos `dispose()`/`close()` explícitos.
 
 ---
 
@@ -527,8 +515,7 @@ O diagnóstico de memory leaks segue uma sequência simples no Chrome DevTools (
 No Node.js, você pode usar `--expose-gc` + `process.memoryUsage()` para inspecionar o heap programaticamente, ou usar o módulo `v8.writeHeapSnapshot()` para gerar um arquivo `.heapsnapshot` analisável no Chrome.
 
 > [!tip] Vídeo: Memory Leaks in JavaScript — jsday 2025
-> **[Memory Leaks in JavaScript | Daniel Danielecki | jsday 2025](https://www.youtube.com/watch?v=R16Ra3zAeBk)** (YouTube, ~40 min)
-> Palestra de conferência que percorre todo o fluxo prático: identificação com MemLab (ferramenta open-source do Meta para detecção automática de leaks), heap snapshots no Chrome DevTools, e padrões de vazamento em React/Node. Complemento direto ao fluxo de diagnóstico descrito acima — boa para ver o processo ao vivo antes de aplicar no seu próprio código.
+> **[Memory Leaks in JavaScript | Daniel Danielecki | jsday 2025](https://www.youtube.com/watch?v=R16Ra3zAeBk)** (YouTube, ~40 min) Palestra de conferência que percorre todo o fluxo prático: identificação com MemLab (ferramenta open-source do Meta para detecção automática de leaks), heap snapshots no Chrome DevTools, e padrões de vazamento em React/Node. Complemento direto ao fluxo de diagnóstico descrito acima — boa para ver o processo ao vivo antes de aplicar no seu próprio código.
 
 ---
 

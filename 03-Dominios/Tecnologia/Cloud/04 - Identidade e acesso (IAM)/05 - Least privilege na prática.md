@@ -67,8 +67,7 @@ Na AWS, esse ciclo tem ferramenta de primeira classe embutida: o **IAM Access An
 > [!tip] Assista: How to use IAM Access Analyzer policy generation
 > **Canal:** Amazon Web Services | **Duração:** ~6min | **Idioma:** EN
 >
-> Um Solutions Architect da AWS mostra, em quatro passos rápidos, o mesmo ciclo que esta seção acabou de descrever em texto — política ampla no dia 1, Access Analyzer lendo os logs do CloudTrail, política estreita gerada a partir do que de fato foi chamado.
-> Trecho de destaque [00:38]: *"a feature that will create fine-grained policies based on access activity, it works by analyzing CloudTrail logs in your account"*
+> Um Solutions Architect da AWS mostra, em quatro passos rápidos, o mesmo ciclo que esta seção acabou de descrever em texto — política ampla no dia 1, Access Analyzer lendo os logs do CloudTrail, política estreita gerada a partir do que de fato foi chamado. Trecho de destaque [00:38]: *"a feature that will create fine-grained policies based on access activity, it works by analyzing CloudTrail logs in your account"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=SJQSWeogUWs)
 
@@ -324,8 +323,7 @@ Um caso de uso comum para permission boundary é conter o que uma pipeline de au
 > [!tip] Assista: AWS IAM Permission Boundaries Explained | Restrict Maximum Permissions (Step-by-Step Demo)
 > **Canal:** Amitabh Soni | **Duração:** ~6min | **Idioma:** EN
 >
-> A demonstração no console fixa em voz alta a mesma regra que este parágrafo descreve em prosa: o que a identidade consegue fazer de fato é sempre a fatia comum entre a política de identidade e o boundary — nunca a soma das duas.
-> Trecho de destaque [01:18]: *"the common permission between permission boundary and the identity based policy that is attached to the user is the effective permission"*
+> A demonstração no console fixa em voz alta a mesma regra que este parágrafo descreve em prosa: o que a identidade consegue fazer de fato é sempre a fatia comum entre a política de identidade e o boundary — nunca a soma das duas. Trecho de destaque [01:18]: *"the common permission between permission boundary and the identity based policy that is attached to the user is the effective permission"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Dau-GJRcw6w)
 

@@ -140,8 +140,7 @@ Heurística:
 
 ## A anatomia de uma chamada tool use bem sucedida
 
-Entender o que acontece internamente ajuda a debugar e a escolher parâmetros certos. O diagrama
-abaixo mostra o fluxo completo — do prompt que você escreve até o dict pronto pra usar no seu código:
+Entender o que acontece internamente ajuda a debugar e a escolher parâmetros certos. O diagrama abaixo mostra o fluxo completo — do prompt que você escreve até o dict pronto pra usar no seu código:
 
 ```mermaid
 flowchart LR
@@ -170,9 +169,7 @@ O ponto crítico: a validação acontece no provider, não no seu código. Você
 
 ### Caso completo: extração de invoice
 
-Pra fixar os cinco passos, siga um exemplo end-to-end: você recebe o texto solto de uma nota fiscal
-(via OCR ou copiado de um e-mail) e precisa de um JSON confiável com fornecedor, itens e total —
-pronto pra gravar no banco. Nada de "geralmente funciona": ou o schema bate, ou você quer saber na hora.
+Pra fixar os cinco passos, siga um exemplo end-to-end: você recebe o texto solto de uma nota fiscal (via OCR ou copiado de um e-mail) e precisa de um JSON confiável com fornecedor, itens e total — pronto pra gravar no banco. Nada de "geralmente funciona": ou o schema bate, ou você quer saber na hora.
 
 Passo 1 — a tool descreve exatamente o que uma invoice estruturada precisa ter:
 
@@ -257,10 +254,7 @@ for block in response.content:
 # }
 ```
 
-Note o que você **não** fez: não escreveu regex pra achar "TOTAL:", não tratou markdown fences, não
-validou tipo campo a campo antes de confiar no JSON. O provider garantiu a forma; sobrou pra você só
-a validação semântica (será que `total_amount` bate com a soma dos `line_items`? — isso o schema não
-sabe, é regra de negócio, ver [[07 - Validação e retry — Pydantic, Zod]]).
+Note o que você **não** fez: não escreveu regex pra achar "TOTAL:", não tratou markdown fences, não validou tipo campo a campo antes de confiar no JSON. O provider garantiu a forma; sobrou pra você só a validação semântica (será que `total_amount` bate com a soma dos `line_items`? — isso o schema não sabe, é regra de negócio, ver [[07 - Validação e retry — Pydantic, Zod]]).
 
 ## Pattern: tool single-purpose vs tool real
 
@@ -337,8 +331,7 @@ Modelos pequenos (Haiku, Flash, Mini) são piores em tool use do que em texto. P
 > [!warning] Não forçar `tool_choice` — o modelo escolhe quando chamar
 > O erro mais comum ao usar tool use pra structured output é esquecer de forçar `tool_choice`. Sem ele, o modelo decide por conta própria se chama a tool ou responde em texto livre. Em prompts ambíguos ou inputs que "não parecem precisar de tool", o modelo vai direto pro texto — e você volta ao problema original. Sempre use `tool_choice: {"type": "tool", "name": "nome_da_tool"}` em chamadas de structured output.
 
-Veja o erro na prática. O código abaixo declara a tool mas **não** força `tool_choice` — deixa o
-default (`auto`), que dá ao modelo a opção de responder em texto livre:
+Veja o erro na prática. O código abaixo declara a tool mas **não** força `tool_choice` — deixa o default (`auto`), que dá ao modelo a opção de responder em texto livre:
 
 ```python
 response = client.messages.create(
@@ -361,12 +354,7 @@ print(invoice)
 # NameError: name 'invoice' is not defined
 ```
 
-O prompt "não parece" pedir extração de invoice — é uma pergunta conceitual, não um texto de nota
-fiscal pra extrair. Com `tool_choice: "auto"`, o modelo interpreta isso corretamente e responde em
-texto livre (`block.type == "text"`), exatamente como um humano razoável faria. O bug não está no
-modelo — está no seu código, que assumiu que `tool_use` sempre aconteceria e não tratou o caso em
-que `response.stop_reason` é `"end_turn"` em vez de `"tool_use"`. Consertar é forçar `tool_choice`
-**e** tratar o caso de falha explicitamente:
+O prompt "não parece" pedir extração de invoice — é uma pergunta conceitual, não um texto de nota fiscal pra extrair. Com `tool_choice: "auto"`, o modelo interpreta isso corretamente e responde em texto livre (`block.type == "text"`), exatamente como um humano razoável faria. O bug não está no modelo — está no seu código, que assumiu que `tool_use` sempre aconteceria e não tratou o caso em que `response.stop_reason` é `"end_turn"` em vez de `"tool_use"`. Consertar é forçar `tool_choice` **e** tratar o caso de falha explicitamente:
 
 ```python
 response = client.messages.create(

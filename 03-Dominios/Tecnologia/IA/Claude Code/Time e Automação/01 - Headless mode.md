@@ -17,9 +17,7 @@ tags:
 # Headless mode — Claude Code sem interação humana
 
 > [!abstract] TL;DR
-> **O quê:** Headless mode é o Claude Code rodando sem terminal interativo — recebe um prompt via argumento ou stdin, executa as ações necessárias, escreve o resultado em stdout, e sai.
-> **Como:** Ative com `claude --print` (ou `-p`); a flag diz ao agente para não abrir o REPL, e sim responder e encerrar o processo — como qualquer outro comando CLI.
-> **Quando usar:** scripts, CI/CD, cron jobs, ou como subprocesso de outra ferramenta — sempre que o trabalho precisa rodar sem ninguém acompanhando em tempo real.
+> **O quê:** Headless mode é o Claude Code rodando sem terminal interativo — recebe um prompt via argumento ou stdin, executa as ações necessárias, escreve o resultado em stdout, e sai. **Como:** Ative com `claude --print` (ou `-p`); a flag diz ao agente para não abrir o REPL, e sim responder e encerrar o processo — como qualquer outro comando CLI. **Quando usar:** scripts, CI/CD, cron jobs, ou como subprocesso de outra ferramenta — sempre que o trabalho precisa rodar sem ninguém acompanhando em tempo real.
 
 ## A analogia do assistente em modo silencioso
 
@@ -380,17 +378,13 @@ run_claude() {
 
 ## Anti-padrões
 
-**Usar headless para trabalho interativo**
-Headless troca a capacidade de direcionamento em tempo real por automação. Se você está mudando o prompt frequentemente baseado no output anterior, o REPL interativo é mais eficiente.
+**Usar headless para trabalho interativo** Headless troca a capacidade de direcionamento em tempo real por automação. Se você está mudando o prompt frequentemente baseado no output anterior, o REPL interativo é mais eficiente.
 
-**Prompt vago em headless**
-No REPL interativo, você pode corrigir o agente quando ele vai na direção errada. Em headless, o agente executa até o fim com o prompt inicial. Seja específico: "analise apenas os arquivos em `src/api/`", não "analise o código".
+**Prompt vago em headless** No REPL interativo, você pode corrigir o agente quando ele vai na direção errada. Em headless, o agente executa até o fim com o prompt inicial. Seja específico: "analise apenas os arquivos em `src/api/`", não "analise o código".
 
-**Sem `--allowedTools` em CI**
-Por padrão, o agente tem acesso a todas as tools, incluindo `Bash`. Em um ambiente de CI onde o agente não deveria modificar arquivos, restricione explicitamente. A regra de menor privilégio se aplica igual a usuários humanos.
+**Sem `--allowedTools` em CI** Por padrão, o agente tem acesso a todas as tools, incluindo `Bash`. Em um ambiente de CI onde o agente não deveria modificar arquivos, restricione explicitamente. A regra de menor privilégio se aplica igual a usuários humanos.
 
-**Assumir que JSON output é o JSON da resposta**
-O output JSON do headless tem esta estrutura:
+**Assumir que JSON output é o JSON da resposta** O output JSON do headless tem esta estrutura:
 
 ```json
 {
@@ -406,11 +400,9 @@ A resposta do agente está em `.result` — que pode ser uma string com JSON emb
 
 ## Casos práticos
 
-**Cenário 1 — Gate de segurança automático em todo PR**
-O `pipeline-de-revisao.sh` (seção acima) roda como step de CI: a cada PR aberto, o job dispara três invocações headless em cadeia — análise de segurança, cobertura de testes, sumário executivo — e falha o build (`exit 1`) se `has_issues` vier `true`. Nenhum humano revisa antes do merge; o headless *é* o gate. Isso substitui um linter de segurança customizado por um agente que lê o diff com contexto real do código-fonte, não só regex.
+**Cenário 1 — Gate de segurança automático em todo PR** O `pipeline-de-revisao.sh` (seção acima) roda como step de CI: a cada PR aberto, o job dispara três invocações headless em cadeia — análise de segurança, cobertura de testes, sumário executivo — e falha o build (`exit 1`) se `has_issues` vier `true`. Nenhum humano revisa antes do merge; o headless *é* o gate. Isso substitui um linter de segurança customizado por um agente que lê o diff com contexto real do código-fonte, não só regex.
 
-**Cenário 2 — Circuito de alerta de custo em produção**
-O wrapper `run_claude()` (seção "Monitorando custo e performance") roda em um serviço de automação noturna que dispara dezenas de invocações headless por hora. Cada chamada grava `cost_usd`, `duration_ms` e `num_turns` num CSV; um cron separado lê esse log e dispara alerta no Slack se o custo médio da última hora subir acima do limiar. Sem essa instrumentação, um prompt mal especificado (loop de tool calls) só seria percebido na fatura do mês seguinte.
+**Cenário 2 — Circuito de alerta de custo em produção** O wrapper `run_claude()` (seção "Monitorando custo e performance") roda em um serviço de automação noturna que dispara dezenas de invocações headless por hora. Cada chamada grava `cost_usd`, `duration_ms` e `num_turns` num CSV; um cron separado lê esse log e dispara alerta no Slack se o custo médio da última hora subir acima do limiar. Sem essa instrumentação, um prompt mal especificado (loop de tool calls) só seria percebido na fatura do mês seguinte.
 
 > [!tip] Vídeo oficial: Building headless automation with Claude Code
 > Sid Bidasaria (Anthropic) apresenta padrões parecidos com os dois cenários acima — pipeline de revisão e monitoramento de custo — na talk "Building headless automation with Claude Code" (Code w/ Claude, Anthropic, 2025). [Assista no YouTube](https://www.youtube.com/watch?v=dRsjO-88nBs).

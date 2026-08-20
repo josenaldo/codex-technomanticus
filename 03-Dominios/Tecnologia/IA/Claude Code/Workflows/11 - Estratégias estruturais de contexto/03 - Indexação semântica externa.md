@@ -264,11 +264,7 @@ search_code("checkout flow order total calculation")
  conectado ao pricing ainda — é aí que a feature entra."
 ```
 
-Esse é o caso onde indexação semântica paga dividendo além de tokens: reduz a dependência
-de conhecimento tribal. Um dev júnior (humano ou agente) chega à mesma resposta que um
-sênior chegaria perguntando no Slack — mas em segundos, sem interromper ninguém. O ganho
-não é só de custo, é de **autonomia de onboarding**: novos membros do time (ou uma nova
-sessão de agente sem memória do repo) reconstroem contexto sozinhos.
+Esse é o caso onde indexação semântica paga dividendo além de tokens: reduz a dependência de conhecimento tribal. Um dev júnior (humano ou agente) chega à mesma resposta que um sênior chegaria perguntando no Slack — mas em segundos, sem interromper ninguém. O ganho não é só de custo, é de **autonomia de onboarding**: novos membros do time (ou uma nova sessão de agente sem memória do repo) reconstroem contexto sozinhos.
 
 ## Quando usar
 

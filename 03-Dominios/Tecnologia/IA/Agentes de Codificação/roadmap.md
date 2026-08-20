@@ -27,8 +27,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | LINKS | L1 Wikilink cross-galho · L2 Referência externa (URL) |
 | MÍDIA | M1 Vídeo/podcast embutido |
 
-**Esquema de `fase:` detectado:** COM fase (Adepto); nota 01 é gap — SEM fase, deveria ser Iniciado
-**Piso de linhas:** aplicável — Adepto ≥400 (nota 01, se corrigida para Iniciado, cai sob piso Iniciado ≥300)
+**Esquema de `fase:` detectado:** COM fase (Adepto); nota 01 é gap — SEM fase, deveria ser Iniciado **Piso de linhas:** aplicável — Adepto ≥400 (nota 01, se corrigida para Iniciado, cai sob piso Iniciado ≥300)
 
 ## Tabela-resumo
 

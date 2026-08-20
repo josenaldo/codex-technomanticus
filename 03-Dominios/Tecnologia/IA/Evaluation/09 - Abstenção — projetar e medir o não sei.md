@@ -290,19 +290,13 @@ A correção é a mesma receita dos quatro passos, aplicada um nível acima:
 ## Armadilhas comuns
 
 > [!warning] O número que engana
-> **O que acontece:** o time reporta "taxa de abstenção de 12%" no dashboard e trata como métrica de saúde.
-> **Por quê:** a taxa não diz se as abstenções foram nos casos certos. Um sistema pode abster nos 12% mais fáceis e alucinar nos 5% mais perigosos, exibindo o mesmo número.
-> **Como evitar:** reporte sempre as duas células de erro separadas, medidas contra o golden set. Alucinação confiante e abstenção covarde são métricas distintas e mexer numa desloca a outra.
+> **O que acontece:** o time reporta "taxa de abstenção de 12%" no dashboard e trata como métrica de saúde. **Por quê:** a taxa não diz se as abstenções foram nos casos certos. Um sistema pode abster nos 12% mais fáceis e alucinar nos 5% mais perigosos, exibindo o mesmo número. **Como evitar:** reporte sempre as duas células de erro separadas, medidas contra o golden set. Alucinação confiante e abstenção covarde são métricas distintas e mexer numa desloca a outra.
 
 > [!warning] Taxa de encaminhamento em exatamente 0%
-> **O que acontece:** o dashboard mostra que o agente nunca encaminhou nada, e isso é lido como excelência.
-> **Por quê:** nenhum sistema acerta sempre. Zero encaminhamento quase sempre significa que o caminho de abstenção existe no prompt mas não está sendo exercido — limiar mal posto, campo `confianca` que o modelo sempre preenche com `alta`, ou roteamento que nunca dispara.
-> **Como evitar:** trate a taxa de encaminhamento como métrica de produto com piso, não com teto. Se ela zerar, investigue como investigaria um teste que nunca falha.
+> **O que acontece:** o dashboard mostra que o agente nunca encaminhou nada, e isso é lido como excelência. **Por quê:** nenhum sistema acerta sempre. Zero encaminhamento quase sempre significa que o caminho de abstenção existe no prompt mas não está sendo exercido — limiar mal posto, campo `confianca` que o modelo sempre preenche com `alta`, ou roteamento que nunca dispara. **Como evitar:** trate a taxa de encaminhamento como métrica de produto com piso, não com teto. Se ela zerar, investigue como investigaria um teste que nunca falha.
 
 > [!warning] Confundir abstenção com recusa de política
-> **O que acontece:** os casos em que o modelo se recusa a responder por política de conteúdo entram na mesma métrica dos casos em que ele não tem a informação.
-> **Por quê:** são fenômenos distintos — um é decisão do provedor sobre o que é aceitável, o outro é ausência de fundamento no seu contexto. Misturados, escondem um ao outro: um aumento em recusas de política parece melhora de calibração.
-> **Como evitar:** valores diferentes no enum `status`, contados separadamente.
+> **O que acontece:** os casos em que o modelo se recusa a responder por política de conteúdo entram na mesma métrica dos casos em que ele não tem a informação. **Por quê:** são fenômenos distintos — um é decisão do provedor sobre o que é aceitável, o outro é ausência de fundamento no seu contexto. Misturados, escondem um ao outro: um aumento em recusas de política parece melhora de calibração. **Como evitar:** valores diferentes no enum `status`, contados separadamente.
 
 ## O que abstenção não conserta
 

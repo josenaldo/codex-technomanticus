@@ -79,8 +79,7 @@ Agora o primeiro teorema bonito da teoria, e ele cabe numa frase.
 
 > [!important] Handshaking Lemma (lema do aperto de mão)
 > Em qualquer grafo não-dirigido finito:
-> $$\sum_{v \in V} \deg(v) = 2|E|$$
-> A soma dos graus de todos os vértices é igual ao **dobro** do número de arestas.
+> $$\sum_{v \in V} \deg(v) = 2|E|$$ A soma dos graus de todos os vértices é igual ao **dobro** do número de arestas.
 
 ### Por que "aperto de mão"?
 
@@ -214,8 +213,7 @@ graph LR
 **Leitura do diagrama**: toda aresta sai de um vértice azul e chega num vermelho — nunca azul-azul nem vermelho-vermelho. Tarefas atribuídas a pessoas, alunos matriculados em turmas, produtos comprados por clientes: relações "entre duas categorias" são bipartidas por natureza.
 
 > [!important] A caracterização: bipartido ⟺ sem ciclo ímpar
-> Um grafo é bipartido **se e somente se** não tem nenhum **ciclo de comprimento ímpar**.
-> Intuição: para fazer um ciclo num grafo bipartido, você tem que alternar Azul–Vermelho–Azul–Vermelho... e voltar ao ponto de partida na cor certa. Isso só fecha se você deu um número **par** de passos. Um ciclo ímpar quebraria a alternância — chegaria ao início na cor errada.
+> Um grafo é bipartido **se e somente se** não tem nenhum **ciclo de comprimento ímpar**. Intuição: para fazer um ciclo num grafo bipartido, você tem que alternar Azul–Vermelho–Azul–Vermelho... e voltar ao ponto de partida na cor certa. Isso só fecha se você deu um número **par** de passos. Um ciclo ímpar quebraria a alternância — chegaria ao início na cor errada.
 
 Isso é caracterização de verdade: um teste limpo, verificável, e — bônus — testável em tempo linear com uma travessia que vai pintando. Guarde o contraste: aqui *existe* um teste simples. Em Hamilton, daqui a pouco, não existe. Essa é a tensão central da nota.
 
@@ -370,15 +368,7 @@ graph LR
 
 Em entrevista, grafos aparecem em dois registros. O **algorítmico** (faça BFS, ache o caminho mais curto) é da outra nota. O **conceitual** — este aqui — aparece quando o entrevistador quer saber se você *entende* o que está manipulando: "esse problema é tratável?", "isso é bipartido?", "por que essa rota é impossível?". A jogada de mestre é reconhecer a **forma** do problema (Euler vs. Hamilton) antes de escrever código, e justificar a viabilidade com teoria. Quando você diz "isso é parente de Hamilton, então vou de heurística", você sinaliza maturidade de engenharia, não só de codificação.
 
-*A graph is just a pair G = (V, E): a set of vertices and a set of edges connecting them.*
-*The handshaking lemma says the sum of all degrees equals twice the number of edges, so the count of odd-degree vertices is always even.*
-*An Eulerian circuit — crossing every edge once — exists iff the graph is connected and every vertex has even degree.*
-*That's exactly why the Seven Bridges of Königsberg has no solution: all four landmasses have odd degree.*
-*A Hamiltonian cycle visits every vertex once, and unlike the Euler case it has no simple characterization — deciding it is NP-complete.*
-*The lesson is that two nearly identical questions — "every edge" versus "every vertex" — can sit on opposite sides of tractability.*
-*A graph is bipartite if and only if it has no odd cycle, which gives us a clean linear-time test.*
-*Graph isomorphism is a famous problem of uncertain status — believed not NP-complete, and Babai found a quasipolynomial algorithm.*
-*I'd model this as a graph first, then ask whether it's Euler-shaped or Hamilton-shaped before writing a single line.*
+*A graph is just a pair G = (V, E): a set of vertices and a set of edges connecting them.* *The handshaking lemma says the sum of all degrees equals twice the number of edges, so the count of odd-degree vertices is always even.* *An Eulerian circuit — crossing every edge once — exists iff the graph is connected and every vertex has even degree.* *That's exactly why the Seven Bridges of Königsberg has no solution: all four landmasses have odd degree.* *A Hamiltonian cycle visits every vertex once, and unlike the Euler case it has no simple characterization — deciding it is NP-complete.* *The lesson is that two nearly identical questions — "every edge" versus "every vertex" — can sit on opposite sides of tractability.* *A graph is bipartite if and only if it has no odd cycle, which gives us a clean linear-time test.* *Graph isomorphism is a famous problem of uncertain status — believed not NP-complete, and Babai found a quasipolynomial algorithm.* *I'd model this as a graph first, then ask whether it's Euler-shaped or Hamilton-shaped before writing a single line.*
 
 | Português | English |
 |---|---|

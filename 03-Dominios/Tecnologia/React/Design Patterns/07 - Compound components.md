@@ -381,24 +381,16 @@ Consulte também o [[03-Dominios/Tecnologia/React/Dicionário de React|Dicionár
 ## Armadilhas comuns
 
 > [!warning] Filho usado fora do pai sem guard
-> **O que acontece:** `<Tabs.Tab id="x">` renderizado fora de um `<Tabs>` acessa Context com valor `undefined`. O componente pode crashar com `TypeError: Cannot destructure property 'activeTab' of undefined` — ou pior, não crashar e exibir comportamento imprevisível.
-> **Por quê:** `createContext(undefined)` não lança erro automaticamente; o `useContext` simplesmente retorna `undefined`.
-> **Como evitar:** Sempre crie um hook `useFooContext()` com `if (!ctx) throw new Error(...)` antes de qualquer lógica. Isso transforma um runtime bug silencioso em uma mensagem de erro clara na raiz do problema.
+> **O que acontece:** `<Tabs.Tab id="x">` renderizado fora de um `<Tabs>` acessa Context com valor `undefined`. O componente pode crashar com `TypeError: Cannot destructure property 'activeTab' of undefined` — ou pior, não crashar e exibir comportamento imprevisível. **Por quê:** `createContext(undefined)` não lança erro automaticamente; o `useContext` simplesmente retorna `undefined`. **Como evitar:** Sempre crie um hook `useFooContext()` com `if (!ctx) throw new Error(...)` antes de qualquer lógica. Isso transforma um runtime bug silencioso em uma mensagem de erro clara na raiz do problema.
 
 > [!warning] Usar `React.Children` em vez de Context
-> **O que acontece:** A versão "legada" do padrão usa `React.Children.map` + `cloneElement` para injetar props nos filhos. Se o consumidor envolver um `<Tabs.Tab>` em um `<div>`, `<AnimatePresence>`, `<Tooltip>` ou qualquer wrapper, o filho não recebe as props injetadas — e o comportamento quebra silenciosamente.
-> **Por quê:** `React.Children` acessa apenas o **primeiro nível** da árvore de filhos. Context atravessa qualquer profundidade, incluindo portais e wrappers arbitrários.
-> **Como evitar:** Use Context para o estado compartilhado. `React.Children` em compound components é um antipadrão legado; a única exceção razoável é `React.Children.only` para validar que há exatamente um filho.
+> **O que acontece:** A versão "legada" do padrão usa `React.Children.map` + `cloneElement` para injetar props nos filhos. Se o consumidor envolver um `<Tabs.Tab>` em um `<div>`, `<AnimatePresence>`, `<Tooltip>` ou qualquer wrapper, o filho não recebe as props injetadas — e o comportamento quebra silenciosamente. **Por quê:** `React.Children` acessa apenas o **primeiro nível** da árvore de filhos. Context atravessa qualquer profundidade, incluindo portais e wrappers arbitrários. **Como evitar:** Use Context para o estado compartilhado. `React.Children` em compound components é um antipadrão legado; a única exceção razoável é `React.Children.only` para validar que há exatamente um filho.
 
 > [!warning] Vazar estado explícito demais nas props dos filhos
-> **O que acontece:** Você cria o Context, mas também passa `activeTab` como prop explícita em `<Tabs.Tab>` "por segurança". O consumidor passa a usar a prop em vez do Context. Agora existem dois mecanismos de controle conflitantes — qual tem precedência? O comportamento se torna imprevisível quando os dois divergem.
-> **Por quê:** É tentador "facilitar" o uso expondo o estado no filho também, mas isso cria ambiguidade e bugs de sync.
-> **Como evitar:** Estado que pertence ao Context não deve aparecer como prop nos filhos. Se o consumidor precisar controlar o estado externamente (controlled component), implemente o padrão controlled/uncontrolled **no pai** (`value` + `onChange` props), não nos filhos.
+> **O que acontece:** Você cria o Context, mas também passa `activeTab` como prop explícita em `<Tabs.Tab>` "por segurança". O consumidor passa a usar a prop em vez do Context. Agora existem dois mecanismos de controle conflitantes — qual tem precedência? O comportamento se torna imprevisível quando os dois divergem. **Por quê:** É tentador "facilitar" o uso expondo o estado no filho também, mas isso cria ambiguidade e bugs de sync. **Como evitar:** Estado que pertence ao Context não deve aparecer como prop nos filhos. Se o consumidor precisar controlar o estado externamente (controlled component), implemente o padrão controlled/uncontrolled **no pai** (`value` + `onChange` props), não nos filhos.
 
 > [!warning] Re-renders desnecessários por Context de granularidade grossa
-> **O que acontece:** Todos os sub-componentes re-renderizam sempre que qualquer parte do Context muda — mesmo os que não dependem do valor mudado. Em um Tabs com 20 painéis, mudar a aba ativa re-renderiza todos os `<Tabs.Panel>` (mesmo os ocultos).
-> **Por quê:** `useContext` assina o objeto Context inteiro; não há seleção de slice como em Redux ou Zustand.
-> **Como evitar:** Separe Contexts quando o estado tem partes independentes (`TabsStateContext` + `TabsDispatchContext`). Use `useMemo` para estabilizar o valor do Provider. Aplique `React.memo` nos filhos que consomem apenas partes estáveis do Context.
+> **O que acontece:** Todos os sub-componentes re-renderizam sempre que qualquer parte do Context muda — mesmo os que não dependem do valor mudado. Em um Tabs com 20 painéis, mudar a aba ativa re-renderiza todos os `<Tabs.Panel>` (mesmo os ocultos). **Por quê:** `useContext` assina o objeto Context inteiro; não há seleção de slice como em Redux ou Zustand. **Como evitar:** Separe Contexts quando o estado tem partes independentes (`TabsStateContext` + `TabsDispatchContext`). Use `useMemo` para estabilizar o valor do Provider. Aplique `React.memo` nos filhos que consomem apenas partes estáveis do Context.
 
 ## Como explicar em inglês
 

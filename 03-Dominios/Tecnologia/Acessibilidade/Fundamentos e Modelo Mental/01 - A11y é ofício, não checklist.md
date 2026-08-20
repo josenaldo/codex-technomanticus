@@ -125,19 +125,13 @@ Um time adiciona legendas aos vídeos do onboarding "para conformidade". Meses d
 ## Armadilhas comuns
 
 > [!warning] Tratar a11y como fase de QA no fim do sprint
-> **O que acontece:** a acessibilidade vira um ticket aberto na sexta, depois de a feature estar "pronta"; ele entra no backlog e envelhece enquanto a exclusão vai pra produção.
-> **Por quê:** a arquitetura inacessível já cristalizou (a `<div>` no lugar do `<button>`, o foco não gerenciado). Corrigir depois é caro e feito às cegas; corrigir durante o código custa minutos.
-> **Como evitar:** pergunte "quem não consegue usar isto?" *enquanto* escreve cada componente, não depois. A11y é decisão de implementação, não etapa de verificação.
+> **O que acontece:** a acessibilidade vira um ticket aberto na sexta, depois de a feature estar "pronta"; ele entra no backlog e envelhece enquanto a exclusão vai pra produção. **Por quê:** a arquitetura inacessível já cristalizou (a `<div>` no lugar do `<button>`, o foco não gerenciado). Corrigir depois é caro e feito às cegas; corrigir durante o código custa minutos. **Como evitar:** pergunte "quem não consegue usar isto?" *enquanto* escreve cada componente, não depois. A11y é decisão de implementação, não etapa de verificação.
 
 > [!warning] Reduzir acessibilidade ao "usuário cego"
-> **O que acontece:** o time projeta só pensando em leitor de tela e ignora deficiência motora, auditiva e cognitiva — e a maior parte da baixa visão, que nem usa leitor de tela.
-> **Por quê:** a imagem mental do "usuário cego" é incompleta; a deficiência tem quatro eixos e um espectro (permanente/temporário/situacional) que atinge, em algum momento, quase todo mundo.
-> **Como evitar:** pense no espectro. A pessoa que se beneficia da sua interface acessível é, muitas vezes, você mesmo mês que vem — de pulso torcido, filho no colo ou tela ao sol.
+> **O que acontece:** o time projeta só pensando em leitor de tela e ignora deficiência motora, auditiva e cognitiva — e a maior parte da baixa visão, que nem usa leitor de tela. **Por quê:** a imagem mental do "usuário cego" é incompleta; a deficiência tem quatro eixos e um espectro (permanente/temporário/situacional) que atinge, em algum momento, quase todo mundo. **Como evitar:** pense no espectro. A pessoa que se beneficia da sua interface acessível é, muitas vezes, você mesmo mês que vem — de pulso torcido, filho no colo ou tela ao sol.
 
 > [!warning] Enxergar a11y como caridade, não como robustez
-> **O que acontece:** acessibilidade é vendida internamente como "a coisa certa a fazer" e perde toda priorização frente a features.
-> **Por quê:** sem enquadramento de engenharia e negócio, a11y vira item moral opcional. Mas ela é robustez (sobrevive a contextos), mercado (16% da população), risco legal e SEO.
-> **Como evitar:** defenda a11y com os três eixos de negócio — mercado, risco jurídico, qualidade/SEO — e o *curb-cut effect*. É gestão de risco e qualidade, não filantropia.
+> **O que acontece:** acessibilidade é vendida internamente como "a coisa certa a fazer" e perde toda priorização frente a features. **Por quê:** sem enquadramento de engenharia e negócio, a11y vira item moral opcional. Mas ela é robustez (sobrevive a contextos), mercado (16% da população), risco legal e SEO. **Como evitar:** defenda a11y com os três eixos de negócio — mercado, risco jurídico, qualidade/SEO — e o *curb-cut effect*. É gestão de risco e qualidade, não filantropia.
 
 ## Como explicar em inglês
 

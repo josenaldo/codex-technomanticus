@@ -155,16 +155,14 @@ Depois de montar esse diagrama inteiro, a tentação natural é achar que toda a
 > [!tip] Assista: AWS re:Invent 2023 - Navigating the journey to serverless event-driven architecture (API303)
 > **Canal:** AWS Events | **Duração:** ~50min | **Idioma:** EN
 >
-> Amarra exatamente o que este capstone amarra — só que na voz da própria AWS: como orquestração (Step Functions) e eventos (EventBridge) convivem no mesmo sistema, ilustrado com um exemplo de negócio real (premiar clientes por compras) que vira workflow orquestrado disparado por evento. O ângulo que a nota não cobre: a discussão de padronização de schema de evento e governança entre times, um problema que só aparece quando o sistema já tem vários produtores e consumidores reais.
-> Trecho de destaque [37:53]: *"well we can orchestrate this workflow easily within Step Functions"*
+> Amarra exatamente o que este capstone amarra — só que na voz da própria AWS: como orquestração (Step Functions) e eventos (EventBridge) convivem no mesmo sistema, ilustrado com um exemplo de negócio real (premiar clientes por compras) que vira workflow orquestrado disparado por evento. O ângulo que a nota não cobre: a discussão de padronização de schema de evento e governança entre times, um problema que só aparece quando o sistema já tem vários produtores e consumidores reais. Trecho de destaque [37:53]: *"well we can orchestrate this workflow easily within Step Functions"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=hvGuqHp051c)
 
 > [!tip] Assista: AWS Serverless with AWS Lambda, API Gateway & EventBridge | Full Course for Beginners
 > **Canal:** freeCodeCamp.org | **Duração:** ~2h30min | **Idioma:** EN
 >
-> Curso completo que constrói, passo a passo, a mesma costura que este capstone desenha em diagrama: API Gateway na borda, Lambda como compute, SQS/SNS/EventBridge desacoplando os consumidores. Útil para quem quer ver o diagrama do capstone virar código real, com os mesmos serviços na mesma ordem de decisão.
-> Trecho de destaque [00:49]: *"Amazon EventBridge — these services enable you to build distributed, decoupled applications and bind them together"*
+> Curso completo que constrói, passo a passo, a mesma costura que este capstone desenha em diagrama: API Gateway na borda, Lambda como compute, SQS/SNS/EventBridge desacoplando os consumidores. Útil para quem quer ver o diagrama do capstone virar código real, com os mesmos serviços na mesma ordem de decisão. Trecho de destaque [00:49]: *"Amazon EventBridge — these services enable you to build distributed, decoupled applications and bind them together"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=5rG-YgTHMC8)
 

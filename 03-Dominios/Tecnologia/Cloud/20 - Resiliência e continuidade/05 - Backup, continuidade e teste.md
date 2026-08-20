@@ -198,8 +198,7 @@ Esse comando específico de failover forçado é, na prática, um teste automati
 > [!tip] Assista: Teste de Caos explicado em 10 minutos
 > **Canal:** Alan Void | **Duração:** ~10min | **Idioma:** PT-BR
 >
-> Explica o "porquê" por trás do comando FIS acima: teste de caos não é sobre quebrar produção por esporte, é sobre provar resiliência e confiabilidade de forma controlada, antes que uma falha real escolha o pior momento pra acontecer sozinha.
-> Trecho de destaque [0:57]: *"forma a resiliência e a confiabilidade"*
+> Explica o "porquê" por trás do comando FIS acima: teste de caos não é sobre quebrar produção por esporte, é sobre provar resiliência e confiabilidade de forma controlada, antes que uma falha real escolha o pior momento pra acontecer sozinha. Trecho de destaque [0:57]: *"forma a resiliência e a confiabilidade"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=LLhXiYWQqdU)
 

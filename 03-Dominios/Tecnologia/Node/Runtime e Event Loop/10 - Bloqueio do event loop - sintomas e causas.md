@@ -93,8 +93,7 @@ Reconhecer esse padrão antes de abrir o painel do banco de dados economiza temp
 
 O sintoma mais característico: `p99` e `p95` de **todos** os endpoints sobem ao mesmo tempo. Se o monitoramento mostra `/api/users`, `/api/products` e `/api/health` todos com latência elevada na mesma janela de tempo, o event loop é o suspeito principal.
 
-Latência isolada por endpoint → problema naquele handler (query lenta, lógica ruim, dependência externa).
-Latência conjunta → event loop bloqueado.
+Latência isolada por endpoint → problema naquele handler (query lenta, lógica ruim, dependência externa). Latência conjunta → event loop bloqueado.
 
 ### Healthcheck falhando
 
@@ -474,14 +473,11 @@ const hash = await new Promise((resolve, reject) =>
 
 ### Perguntas frequentes em entrevista
 
-**"Por que o healthcheck falha quando outro endpoint está lento?"**
-Porque Node.js tem uma única thread JavaScript. Quando essa thread está executando código síncrono em um handler, nenhum outro callback — incluindo o handler do healthcheck — pode executar. O healthcheck não tem prioridade especial; ele espera na fila como qualquer outro evento.
+**"Por que o healthcheck falha quando outro endpoint está lento?"** Porque Node.js tem uma única thread JavaScript. Quando essa thread está executando código síncrono em um handler, nenhum outro callback — incluindo o handler do healthcheck — pode executar. O healthcheck não tem prioridade especial; ele espera na fila como qualquer outro evento.
 
-**"Como você diagnosticaria um event loop bloqueado em produção?"**
-Primeiro, verificar se a latência é isolada ou conjunta. Se conjunta, medir o event loop lag com `perf_hooks` ou Clinic.js. Identificar qual endpoint ou middleware coincide temporalmente com os picos. Checar presença de sync APIs, regex com input de usuário, e tamanho de payloads.
+**"Como você diagnosticaria um event loop bloqueado em produção?"** Primeiro, verificar se a latência é isolada ou conjunta. Se conjunta, medir o event loop lag com `perf_hooks` ou Clinic.js. Identificar qual endpoint ou middleware coincide temporalmente com os picos. Checar presença de sync APIs, regex com input de usuário, e tamanho de payloads.
 
-**"Qual a diferença entre loop bloqueado e pool saturado?"**
-No loop bloqueado, a thread JS em si está ocupada — nenhum callback JavaScript pode executar. No pool saturado, a thread JS está livre (callbacks JS executam normalmente), mas operações que dependem do thread pool ficam em fila aguardando threads de I/O disponíveis. O sintoma externo parece similar (requests lentas), mas o diagnóstico e a solução são diferentes.
+**"Qual a diferença entre loop bloqueado e pool saturado?"** No loop bloqueado, a thread JS em si está ocupada — nenhum callback JavaScript pode executar. No pool saturado, a thread JS está livre (callbacks JS executam normalmente), mas operações que dependem do thread pool ficam em fila aguardando threads de I/O disponíveis. O sintoma externo parece similar (requests lentas), mas o diagnóstico e a solução são diferentes.
 
 ---
 

@@ -15,15 +15,7 @@ publish: true
 # i18n quebra layout
 
 > [!abstract] TL;DR
-> Internacionalização (**i18n**) é onde uma decisão de *conteúdo* vira bug de *layout* — e é por
-> isso que esta nota mora em UX writing, não em CSS: o texto é a variável, o layout é a vítima.
-> Quatro problemas recorrentes: **expansão de string** (alemão e finlandês podem ficar
-> substancialmente mais longos que o inglês — a ordem de grandeza citada por fontes de indústria
-> vai de ~30% a 200%, dependendo do tamanho do texto original; trate como estimativa, não número
-> exato), **direção de texto (RTL)** que inverte o layout inteiro, **pluralização não-binária** (a
-> concatenação `"${n} item(s)"` não sobrevive à tradução), e **truncamento de labels de botão**.
-> Esta nota não reexplica CSS nem layout responsivo — foca no que muda de *conteúdo* e como projetar
-> para essa mudança sem depender de um time de localização dedicado.
+> Internacionalização (**i18n**) é onde uma decisão de *conteúdo* vira bug de *layout* — e é por isso que esta nota mora em UX writing, não em CSS: o texto é a variável, o layout é a vítima. Quatro problemas recorrentes: **expansão de string** (alemão e finlandês podem ficar substancialmente mais longos que o inglês — a ordem de grandeza citada por fontes de indústria vai de ~30% a 200%, dependendo do tamanho do texto original; trate como estimativa, não número exato), **direção de texto (RTL)** que inverte o layout inteiro, **pluralização não-binária** (a concatenação `"${n} item(s)"` não sobrevive à tradução), e **truncamento de labels de botão**. Esta nota não reexplica CSS nem layout responsivo — foca no que muda de *conteúdo* e como projetar para essa mudança sem depender de um time de localização dedicado.
 
 Imagine um botão "Adicionar ao carrinho" que cabe perfeitamente na largura desenhada em inglês — o texto ocupa 80% da largura do botão, com uma margem confortável dos dois lados. O produto lança em alemão, onde a mesma ação se escreve "In den Warenkorb legen" — quase o dobro dos caracteres. O botão, que nunca foi testado com texto mais longo, ou trunca o texto ("In den Warenko...") ou quebra em duas linhas de forma desalinhada, dependendo do componente. Nenhuma linha de CSS estava "errada" para o caso que foi testado — o botão funciona perfeitamente em inglês, a linguagem que qualquer desenvolvedor do time usou em todos os testes manuais. O bug só existe porque ninguém tratou o comprimento do texto como uma variável que muda por idioma, e o layout foi desenhado como se "Adicionar ao carrinho" fosse o comprimento definitivo de qualquer texto que aquele botão algum dia precisaria mostrar.
 
@@ -91,19 +83,13 @@ Um app de checkout lança suporte a árabe aplicando `dir="rtl"` globalmente no 
 ## Armadilhas comuns
 
 > [!warning] Layout dimensionado só para o comprimento do texto em inglês
-> **O que acontece:** botões, labels e containers usam `width` fixo ou espaço calculado exatamente para caber o texto original em inglês, sem folga (Cenário 1).
-> **Por quê:** o desenvolvedor testa o produto inteiro no próprio idioma de trabalho, geralmente inglês ou português, e o layout "parece certo" porque o único texto testado é o único texto que existe até o momento do lançamento internacional.
-> **Como evitar:** use `min-width` em vez de `width` fixo, teste com uma string artificialmente longa (pseudolocalização) antes de considerar o componente pronto, mesmo que a tradução real ainda não exista.
+> **O que acontece:** botões, labels e containers usam `width` fixo ou espaço calculado exatamente para caber o texto original em inglês, sem folga (Cenário 1). **Por quê:** o desenvolvedor testa o produto inteiro no próprio idioma de trabalho, geralmente inglês ou português, e o layout "parece certo" porque o único texto testado é o único texto que existe até o momento do lançamento internacional. **Como evitar:** use `min-width` em vez de `width` fixo, teste com uma string artificialmente longa (pseudolocalização) antes de considerar o componente pronto, mesmo que a tradução real ainda não exista.
 
 > [!warning] Concatenação de frase para pluralização
-> **O que acontece:** o código monta a frase manualmente juntando número e texto (`"${n} item(s)"`), assumindo que só existem formas singular e plural (Cenário 2).
-> **Por quê:** a concatenação funciona sem erro nenhum para o idioma de desenvolvimento (inglês ou português têm só duas formas), então o problema fica invisível até a tradução para um idioma com mais formas gramaticais expor a limitação.
-> **Como evitar:** use a API nativa de pluralização da stack (`Intl.PluralRules`, ICU MessageFormat, ou equivalente) desde o primeiro dia, mesmo em produtos monolíngues — o custo extra é mínimo e evita reescrever tudo depois.
+> **O que acontece:** o código monta a frase manualmente juntando número e texto (`"${n} item(s)"`), assumindo que só existem formas singular e plural (Cenário 2). **Por quê:** a concatenação funciona sem erro nenhum para o idioma de desenvolvimento (inglês ou português têm só duas formas), então o problema fica invisível até a tradução para um idioma com mais formas gramaticais expor a limitação. **Como evitar:** use a API nativa de pluralização da stack (`Intl.PluralRules`, ICU MessageFormat, ou equivalente) desde o primeiro dia, mesmo em produtos monolíngues — o custo extra é mínimo e evita reescrever tudo depois.
 
 > [!warning] RTL tratado como só espelhar CSS
-> **O que acontece:** o time aplica `dir="rtl"` e considera o suporte a árabe/hebraico completo, sem revisar ícones direcionais, imagens estáticas e fluxos de leitura elemento a elemento (Cenário 3).
-> **Por quê:** a maior parte do layout realmente espelha de graça com `dir="rtl"` no CSS moderno, o que cria uma falsa sensação de "está tudo resolvido" — mas ícones embutidos como imagem estática, gráficos com direção implícita, e a ordem lógica de elementos em fluxos de múltiplas etapas não espelham automaticamente.
-> **Como evitar:** trate o lançamento RTL como uma revisão manual, tela por tela, procurando especificamente por elementos direcionais que não sejam texto — setas, ícones de navegação, gráficos, barras de progresso — e teste com alguém fluente no idioma-alvo antes do lançamento.
+> **O que acontece:** o time aplica `dir="rtl"` e considera o suporte a árabe/hebraico completo, sem revisar ícones direcionais, imagens estáticas e fluxos de leitura elemento a elemento (Cenário 3). **Por quê:** a maior parte do layout realmente espelha de graça com `dir="rtl"` no CSS moderno, o que cria uma falsa sensação de "está tudo resolvido" — mas ícones embutidos como imagem estática, gráficos com direção implícita, e a ordem lógica de elementos em fluxos de múltiplas etapas não espelham automaticamente. **Como evitar:** trate o lançamento RTL como uma revisão manual, tela por tela, procurando especificamente por elementos direcionais que não sejam texto — setas, ícones de navegação, gráficos, barras de progresso — e teste com alguém fluente no idioma-alvo antes do lançamento.
 
 ## Como explicar em inglês
 

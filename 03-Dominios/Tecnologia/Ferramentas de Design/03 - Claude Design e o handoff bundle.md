@@ -86,24 +86,16 @@ Um engenheiro roda `/design-sync` no Claude Code para puxar o design system que 
 ## Armadilhas comuns
 
 > [!warning] Citar feature ou comando sem checar a doc oficial no dia
-> **O que acontece:** alguém afirma que um comando ou recurso do Claude Design "não existe" (ou existe) baseado numa fonte de um mês atrás.
-> **Por quê:** esta própria nota encontrou uma mudança de status (`/design-sync` de "não confirmado" para "documentado oficialmente") num intervalo de um dia entre a pesquisa e a escrita — o produto está em beta ativo, e a doc muda mais rápido que o hábito de checar de novo.
-> **Como evitar:** antes de afirmar algo sobre Claude Design numa conversa técnica ou entrevista, checar `claude.com/product/claude-design` no momento, não confiar em memória de leitura anterior.
+> **O que acontece:** alguém afirma que um comando ou recurso do Claude Design "não existe" (ou existe) baseado numa fonte de um mês atrás. **Por quê:** esta própria nota encontrou uma mudança de status (`/design-sync` de "não confirmado" para "documentado oficialmente") num intervalo de um dia entre a pesquisa e a escrita — o produto está em beta ativo, e a doc muda mais rápido que o hábito de checar de novo. **Como evitar:** antes de afirmar algo sobre Claude Design numa conversa técnica ou entrevista, checar `claude.com/product/claude-design` no momento, não confiar em memória de leitura anterior.
 
 > [!warning] Tratar protótipo interativo como prova de lógica funcional
-> **O que acontece:** a navegação visual entre telas de um protótipo é confundida com validação, persistência ou regra de negócio real implementada, como no Cenário 2.
-> **Por quê:** a documentação oficial não garante nem desmente isso — a lacuna de informação é preenchida, por padrão, com otimismo, quando deveria ser preenchida com cautela.
-> **Como evitar:** nomear explicitamente, para qualquer stakeholder que veja o protótipo, que "isto mostra a aparência do fluxo, não a lógica por trás dele" até você mesmo confirmar o contrário testando.
+> **O que acontece:** a navegação visual entre telas de um protótipo é confundida com validação, persistência ou regra de negócio real implementada, como no Cenário 2. **Por quê:** a documentação oficial não garante nem desmente isso — a lacuna de informação é preenchida, por padrão, com otimismo, quando deveria ser preenchida com cautela. **Como evitar:** nomear explicitamente, para qualquer stakeholder que veja o protótipo, que "isto mostra a aparência do fluxo, não a lógica por trás dele" até você mesmo confirmar o contrário testando.
 
 > [!warning] Deixar o handoff bundle ser a única fonte de verdade permanente
-> **O que acontece:** o time trata o README de handoff gerado uma vez como documentação viva, sem atualizá-lo depois que o Claude Code começa a divergir da especificação original durante a implementação.
-> **Por quê:** o handoff bundle captura a intenção de design **no momento da geração** — não é um contrato vivo sincronizado automaticamente com o código depois que a implementação começa a evoluir por conta própria.
-> **Como evitar:** tratar o handoff como ponto de partida documentado, não como fonte de verdade contínua; se o código evolui de um jeito que diverge do design original, essa divergência precisa ser decidida conscientemente, não silenciosamente ignorada.
+> **O que acontece:** o time trata o README de handoff gerado uma vez como documentação viva, sem atualizá-lo depois que o Claude Code começa a divergir da especificação original durante a implementação. **Por quê:** o handoff bundle captura a intenção de design **no momento da geração** — não é um contrato vivo sincronizado automaticamente com o código depois que a implementação começa a evoluir por conta própria. **Como evitar:** tratar o handoff como ponto de partida documentado, não como fonte de verdade contínua; se o código evolui de um jeito que diverge do design original, essa divergência precisa ser decidida conscientemente, não silenciosamente ignorada.
 
 > [!tip] Assista: Anthropic ACABOU DE LANÇAR o Claude Design (testei TUDO)
-> **Canal:** Matheus Battisti — Hora de Codar | **Duração:** ~13min50s | **Idioma:** PT-BR (legenda automática)
-> Publicado no mesmo dia do lançamento oficial (17/abr/2026 — mesma data do vídeo oficial "Introducing Claude Design by Anthropic Labs" no canal Claude), o vídeo demonstra o fluxo real de handoff para o Claude Code, incluindo o comando copiável de handoff e a seleção do modelo (Opus 4.7) usado por baixo — corroborando, de fonte independente, os dois pontos que a pesquisa original desta nota já tratava como verificados.
-> Trecho de destaque [8:40]: *"aí agora se a gente quisesse continuar no Claude Code, dá um handoff — vou copiar o comando aqui"* — demonstração ao vivo do fluxo de handoff descrito nesta nota.
+> **Canal:** Matheus Battisti — Hora de Codar | **Duração:** ~13min50s | **Idioma:** PT-BR (legenda automática) Publicado no mesmo dia do lançamento oficial (17/abr/2026 — mesma data do vídeo oficial "Introducing Claude Design by Anthropic Labs" no canal Claude), o vídeo demonstra o fluxo real de handoff para o Claude Code, incluindo o comando copiável de handoff e a seleção do modelo (Opus 4.7) usado por baixo — corroborando, de fonte independente, os dois pontos que a pesquisa original desta nota já tratava como verificados. Trecho de destaque [8:40]: *"aí agora se a gente quisesse continuar no Claude Code, dá um handoff — vou copiar o comando aqui"* — demonstração ao vivo do fluxo de handoff descrito nesta nota.
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=ZGJ26VZKYBY)
 

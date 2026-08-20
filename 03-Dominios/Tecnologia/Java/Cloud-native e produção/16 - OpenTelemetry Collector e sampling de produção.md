@@ -21,9 +21,7 @@ aliases:
 # OpenTelemetry Collector e sampling de produção
 
 > [!abstract] TL;DR
-> O **OTel Collector** é um serviço **separado do seu app**: ele *recebe*, *processa* e *exporta* telemetria através de um pipeline de **receivers → processors → exporters** (OTLP entrando e saindo). Ele existe para que cada aplicação não precise saber falar com cada backend de observabilidade — o app manda tudo pro Collector e o Collector decide o destino.
-> Sobre **sampling**: **head-based** decide cedo, no SDK/app (por trace-id e porcentagem, antes de saber o que aconteceu); **tail-based** decide tarde, no Collector *stateful*, **depois do trace completo** — por isso consegue guardar os traces com erro ou lentidão, mas precisa bufferizar todos os spans até o trace fechar.
-> Esta nota **recebe o seam do Galho 16**: lá você *instrumenta e exporta* o trace no código; aqui você *opera o coletor* e escolhe a *estratégia de sampling de produção*.
+> O **OTel Collector** é um serviço **separado do seu app**: ele *recebe*, *processa* e *exporta* telemetria através de um pipeline de **receivers → processors → exporters** (OTLP entrando e saindo). Ele existe para que cada aplicação não precise saber falar com cada backend de observabilidade — o app manda tudo pro Collector e o Collector decide o destino. Sobre **sampling**: **head-based** decide cedo, no SDK/app (por trace-id e porcentagem, antes de saber o que aconteceu); **tail-based** decide tarde, no Collector *stateful*, **depois do trace completo** — por isso consegue guardar os traces com erro ou lentidão, mas precisa bufferizar todos os spans até o trace fechar. Esta nota **recebe o seam do Galho 16**: lá você *instrumenta e exporta* o trace no código; aqui você *opera o coletor* e escolhe a *estratégia de sampling de produção*.
 
 ## O que é
 

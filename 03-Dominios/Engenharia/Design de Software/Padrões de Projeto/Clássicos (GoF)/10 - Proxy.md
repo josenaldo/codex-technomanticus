@@ -21,14 +21,7 @@ aliases:
 # Proxy
 
 > [!abstract] TL;DR
-> O **Proxy** é um objeto que **controla o acesso** a outro, implementando a **mesma interface** e se
-> pondo no meio para adicionar *lazy loading*, cache, log, segurança ou chamadas remotas — de forma
-> transparente para o cliente. É o motor por trás de `@Transactional`, `@Cacheable` e do *lazy
-> loading* do JPA/Hibernate: o Spring cria um proxy dinâmico ao redor do seu bean. Aqui a lente
-> cross-linguagem é dramática: a JVM e as linguagens dinâmicas interceptam **em runtime** (Java via
-> JDK dynamic proxy / CGLIB; JS tem um `Proxy` **nativo** com *traps*), enquanto **Go, por decisão de
-> design, não tem proxy dinâmico** — você escreve o wrapper à mão ou gera código. A pegadinha mais
-> clássica do Spring mora aqui: `@Transactional` **não funciona** numa chamada interna.
+> O **Proxy** é um objeto que **controla o acesso** a outro, implementando a **mesma interface** e se pondo no meio para adicionar *lazy loading*, cache, log, segurança ou chamadas remotas — de forma transparente para o cliente. É o motor por trás de `@Transactional`, `@Cacheable` e do *lazy loading* do JPA/Hibernate: o Spring cria um proxy dinâmico ao redor do seu bean. Aqui a lente cross-linguagem é dramática: a JVM e as linguagens dinâmicas interceptam **em runtime** (Java via JDK dynamic proxy / CGLIB; JS tem um `Proxy` **nativo** com *traps*), enquanto **Go, por decisão de design, não tem proxy dinâmico** — você escreve o wrapper à mão ou gera código. A pegadinha mais clássica do Spring mora aqui: `@Transactional` **não funciona** numa chamada interna.
 
 ## Interceptar sem poluir o método
 
@@ -99,21 +92,15 @@ func (s txPedidoService) Criar(p Pedido) error {
 ## A pegadinha clássica: a chamada interna
 
 > [!warning] `@Transactional` (ou `@Cacheable`) que silenciosamente não funciona
-> **O que acontece:** você anota um método com `@Transactional`, mas ele é chamado **de dentro da mesma classe** (`this.outroMetodo()`) ou é **privado** — e a transação simplesmente não abre. Nenhum erro; só não funciona.
-> **Por quê:** o proxy fica **em volta** do bean e só intercepta chamadas que **entram de fora**. Uma chamada interna (`this.metodo()`) não passa pelo proxy — vai direto ao objeto real, pulando o controle. Método privado, idem: o proxy não o vê.
-> **Como evitar:** chame o método anotado a partir de **outro bean** (que passe pelo proxy), ou extraia o método para um serviço separado. Saber que é Proxy — não mágica — transforma esse bug de "assombração" em óbvio.
+> **O que acontece:** você anota um método com `@Transactional`, mas ele é chamado **de dentro da mesma classe** (`this.outroMetodo()`) ou é **privado** — e a transação simplesmente não abre. Nenhum erro; só não funciona. **Por quê:** o proxy fica **em volta** do bean e só intercepta chamadas que **entram de fora**. Uma chamada interna (`this.metodo()`) não passa pelo proxy — vai direto ao objeto real, pulando o controle. Método privado, idem: o proxy não o vê. **Como evitar:** chame o método anotado a partir de **outro bean** (que passe pelo proxy), ou extraia o método para um serviço separado. Saber que é Proxy — não mágica — transforma esse bug de "assombração" em óbvio.
 
 ## Outras armadilhas
 
 > [!warning] O proxy que esconde uma chamada cara
-> **O que acontece:** o *lazy loading* do JPA é um proxy: acessar uma coleção lazy dispara uma query. Num laço, isso vira o problema **N+1** — uma query por item, escondida atrás de um `getter` que parece local.
-> **Por quê:** o Proxy torna uma operação cara (I/O, rede, banco) **indistinguível** de um acesso local. A transparência que ajuda também esconde o custo.
-> **Como evitar:** saiba onde há proxies de acesso remoto/lazy; use *fetch joins* / *batch* quando iterar; meça. "Parece local" não é "é barato".
+> **O que acontece:** o *lazy loading* do JPA é um proxy: acessar uma coleção lazy dispara uma query. Num laço, isso vira o problema **N+1** — uma query por item, escondida atrás de um `getter` que parece local. **Por quê:** o Proxy torna uma operação cara (I/O, rede, banco) **indistinguível** de um acesso local. A transparência que ajuda também esconde o custo. **Como evitar:** saiba onde há proxies de acesso remoto/lazy; use *fetch joins* / *batch* quando iterar; meça. "Parece local" não é "é barato".
 
 > [!warning] Confundir Proxy com Decorator
-> **O que acontece:** trata-se como sinônimos porque ambos envolvem um objeto mantendo a interface.
-> **Por quê:** a **intenção** difere. Decorator **adiciona comportamento** (e você empilha vários por escolha). Proxy **controla o acesso** ao objeto (existência, permissão, custo) e normalmente é um só, transparente. Mesma estrutura, propósitos diferentes.
-> **Como evitar:** pergunte *"estou enriquecendo o objeto (Decorator) ou intermediando/controlando o acesso a ele (Proxy)?"*.
+> **O que acontece:** trata-se como sinônimos porque ambos envolvem um objeto mantendo a interface. **Por quê:** a **intenção** difere. Decorator **adiciona comportamento** (e você empilha vários por escolha). Proxy **controla o acesso** ao objeto (existência, permissão, custo) e normalmente é um só, transparente. Mesma estrutura, propósitos diferentes. **Como evitar:** pergunte *"estou enriquecendo o objeto (Decorator) ou intermediando/controlando o acesso a ele (Proxy)?"*.
 
 ## Como explicar em inglês
 

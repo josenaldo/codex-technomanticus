@@ -161,9 +161,7 @@ A genialidade é essa: nenhuma cláusula sozinha sabe "computar". Mas a **conjun
 Um ano depois de Cook, **Richard Karp** publicou *"Reducibility Among Combinatorial Problems"* e fez a coisa explodir. Ele percebeu: com SAT carimbado, provar que um problema novo X é NP-completo virou **mecânico**:
 
 > [!tip] A receita pós-Cook
-> Pra provar X NP-completo:
-> **(a)** mostre que **X ∈ NP**; e
-> **(b)** pegue um NP-completo **já conhecido** A e prove **A ≤ₚ X**.
+> Pra provar X NP-completo: **(a)** mostre que **X ∈ NP**; e **(b)** pegue um NP-completo **já conhecido** A e prove **A ≤ₚ X**.
 >
 > Pronto. X herda a NP-dificuldade de A (≤ₚ é transitiva: se todo NP ≤ₚ A e A ≤ₚ X, então todo NP ≤ₚ X).
 

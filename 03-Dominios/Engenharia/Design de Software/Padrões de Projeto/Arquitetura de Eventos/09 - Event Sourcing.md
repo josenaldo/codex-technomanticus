@@ -23,18 +23,10 @@ aliases:
 # Event Sourcing
 
 > [!abstract] TL;DR
-> Em vez de guardar o **estado atual** e sobrescrevê-lo a cada mudança, guarde a **sequência de fatos**
-> que produziram esse estado — e derive o estado dos fatos, sempre. O saldo deixa de ser uma coluna e
-> passa a ser a soma dos lançamentos. Você ganha auditoria completa de graça, a capacidade de responder
-> "como estava em março?" e, o que é mais valioso, a de **fazer perguntas novas sobre o passado**. Paga
-> em complexidade de leitura, em evolução de esquema de eventos que nunca podem ser reescritos, e numa
-> tensão real com o direito ao esquecimento. É o padrão mais mal-aplicado desta família: quase sempre
-> pertence a **um agregado**, nunca ao sistema inteiro.
+> Em vez de guardar o **estado atual** e sobrescrevê-lo a cada mudança, guarde a **sequência de fatos** que produziram esse estado — e derive o estado dos fatos, sempre. O saldo deixa de ser uma coluna e passa a ser a soma dos lançamentos. Você ganha auditoria completa de graça, a capacidade de responder "como estava em março?" e, o que é mais valioso, a de **fazer perguntas novas sobre o passado**. Paga em complexidade de leitura, em evolução de esquema de eventos que nunca podem ser reescritos, e numa tensão real com o direito ao esquecimento. É o padrão mais mal-aplicado desta família: quase sempre pertence a **um agregado**, nunca ao sistema inteiro.
 
 > [!info] O recorte desta nota
-> Aqui o Event Sourcing como **decisão de design**: o que ele acopla, quando vale e quando não.
-> Escala, *snapshots*, volume de armazenamento e replay em produção estão em
-> [[03-Dominios/Engenharia/Arquitetura/System Design/3 - Padrões recorrentes/03 - Event Sourcing sob a ótica de system design|System Design 3-03]].
+> Aqui o Event Sourcing como **decisão de design**: o que ele acopla, quando vale e quando não. Escala, *snapshots*, volume de armazenamento e replay em produção estão em [[03-Dominios/Engenharia/Arquitetura/System Design/3 - Padrões recorrentes/03 - Event Sourcing sob a ótica de system design|System Design 3-03]].
 
 ## A pergunta que o banco não consegue responder
 
@@ -101,19 +93,13 @@ A regra que evita a maioria dos desastres: **aplique a um agregado, não ao sist
 ## Armadilhas comuns
 
 > [!warning] Aplicar ao sistema inteiro
-> **O que acontece:** todo agregado vira *event-sourced*, inclusive cadastros triviais. A produtividade despenca, consultas simples exigem projeções, e o time passa a lutar com o padrão em todo lugar onde ele não era necessário.
-> **Por quê:** ele é apresentado como estilo arquitetural, e adotar pela metade parece incoerente. Não é: é adoção **onde há motivo**.
-> **Como evitar:** escolha por agregado, com a pergunta concreta — *o histórico deste conceito tem valor de negócio?* Para conta corrente, sim; para preferência de notificação, não.
+> **O que acontece:** todo agregado vira *event-sourced*, inclusive cadastros triviais. A produtividade despenca, consultas simples exigem projeções, e o time passa a lutar com o padrão em todo lugar onde ele não era necessário. **Por quê:** ele é apresentado como estilo arquitetural, e adotar pela metade parece incoerente. Não é: é adoção **onde há motivo**. **Como evitar:** escolha por agregado, com a pergunta concreta — *o histórico deste conceito tem valor de negócio?* Para conta corrente, sim; para preferência de notificação, não.
 
 > [!warning] Eventos sem estratégia de versão
-> **O que acontece:** um ano depois, o formato precisa mudar. Como os eventos antigos não podem ser reescritos, o código de leitura enche de condicionais por versão, e cada nova mudança piora — até que ninguém tem coragem de mexer.
-> **Por quê:** o esquema do evento parece um detalhe interno na primeira semana. Ele é, na verdade, um **contrato com o futuro** — mais rígido que uma API, porque a API você descontinua e o evento de 2021 estará lá em 2029.
-> **Como evitar:** versione desde o primeiro evento, e concentre a tradução numa camada explícita de *upcasting* em vez de espalhar `if` pelos aplicadores.
+> **O que acontece:** um ano depois, o formato precisa mudar. Como os eventos antigos não podem ser reescritos, o código de leitura enche de condicionais por versão, e cada nova mudança piora — até que ninguém tem coragem de mexer. **Por quê:** o esquema do evento parece um detalhe interno na primeira semana. Ele é, na verdade, um **contrato com o futuro** — mais rígido que uma API, porque a API você descontinua e o evento de 2021 estará lá em 2029. **Como evitar:** versione desde o primeiro evento, e concentre a tradução numa camada explícita de *upcasting* em vez de espalhar `if` pelos aplicadores.
 
 > [!warning] Confundir com log de auditoria
-> **O que acontece:** o time diz que "faz event sourcing" mas mantém o estado atual como verdade e o log ao lado. Alguém corrige um dado com `UPDATE`, o log e o estado divergem, e a auditoria — que era o motivo de tudo — passa a mentir.
-> **Por quê:** o log ao lado é muito mais barato e parece dar o mesmo benefício.
-> **Como evitar:** teste decisivo — **é possível apagar o estado atual e reconstruí-lo inteiro a partir dos eventos?** Se não, é log de auditoria, e chamá-lo de Event Sourcing só cria expectativa falsa sobre garantias que não existem.
+> **O que acontece:** o time diz que "faz event sourcing" mas mantém o estado atual como verdade e o log ao lado. Alguém corrige um dado com `UPDATE`, o log e o estado divergem, e a auditoria — que era o motivo de tudo — passa a mentir. **Por quê:** o log ao lado é muito mais barato e parece dar o mesmo benefício. **Como evitar:** teste decisivo — **é possível apagar o estado atual e reconstruí-lo inteiro a partir dos eventos?** Se não, é log de auditoria, e chamá-lo de Event Sourcing só cria expectativa falsa sobre garantias que não existem.
 
 ## Como explicar em inglês
 

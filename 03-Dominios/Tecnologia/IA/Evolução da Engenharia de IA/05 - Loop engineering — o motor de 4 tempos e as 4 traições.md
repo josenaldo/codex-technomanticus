@@ -42,8 +42,7 @@ Três situações, três domínios completamente diferentes — biologia pessoal
 > [!question]- Por que "motor de 4 tempos" e não só "loop de feedback"?
 > Porque "loop de feedback" já é um termo tão genérico na engenharia — de controle de sistemas a psicologia organizacional — que perdeu poder de diagnóstico. Nomear os quatro tempos individualmente força você a perguntar, de cada loop específico que você constrói ou herda: qual é exatamente a métrica escolhida (PICK)? Quem decidiu o alvo, e com que autoridade (SET)? Como o gap é medido, e com que frequência (MEASURE)? O que a ação realmente muda (ACT)? Um loop mal desenhado quase sempre tem uma resposta vaga para pelo menos um desses quatro — e é aí que ele quebra, como a segunda metade desta nota vai mostrar.
 
-![[evolucao-eng-loop-motor-4-tempos.png]]
-*Carlos E. Perez (@IntuitMachine) — o motor de 4 tempos: PICK a métrica, SET a referência, MEASURE o gap, ACT para encolhê-lo. Mesmo esqueleto no termostato, no eval loop, e em uma pessoa se pesando.*
+![[evolucao-eng-loop-motor-4-tempos.png]] *Carlos E. Perez (@IntuitMachine) — o motor de 4 tempos: PICK a métrica, SET a referência, MEASURE o gap, ACT para encolhê-lo. Mesmo esqueleto no termostato, no eval loop, e em uma pessoa se pesando.*
 
 ```mermaid
 flowchart LR
@@ -217,8 +216,7 @@ O problema é que "a taxa de resolução subiu" e "os clientes estão sendo bem 
 > [!warning] DECAY
 > Sensores driftam. O dashboard de taxa de resolução, construído cinco meses atrás para medir "o bot resolveu o problema do cliente", continua tecnicamente funcionando — continua contando tickets fechados sem escalação — mas o que ele mede de fato se afastou, mês a mês, do que ele foi desenhado para medir, sem que ninguém tenha tocado no código de instrumentação. Ninguém revalidou, ao longo dos cinco meses, se "ticket fechado sem escalar" ainda correspondia a "problema resolvido" na prática — porque o próprio motor de 4 tempos não tem, embutido em si, um passo que audite os sensores que ele usa. O dashboard continua verde. É esse verde, precisamente, que é o problema: ele para de ser sinal e vira ruído travestido de sinal, e ninguém percebe até o dado adjacente (a renovação) já ter caído pela metade. Na sua forma mais comum, essa medição escorrega de checar a realidade para checar papelada — o número de um relatório conferido contra o número de outro relatório, os dois internos, nenhum tocando o cliente de verdade. Um loop que roda no cronograma enquanto suas medições se desprenderam do mundo não está melhorando nada. É **teatro com boa frequência de público**.
 
-![[evolucao-eng-onde-um-loop-quebra.png]]
-*Carlos E. Perez (@IntuitMachine) — onde um loop quebra: Goodhart (métrica gamed), blind up (não questiona o alvo), conflict (velocidade x profundidade), decay (sensores driftam sem vigilância).*
+![[evolucao-eng-onde-um-loop-quebra.png]] *Carlos E. Perez (@IntuitMachine) — onde um loop quebra: Goodhart (métrica gamed), blind up (não questiona o alvo), conflict (velocidade x profundidade), decay (sensores driftam sem vigilância).*
 
 > [!question]- As quatro traições são independentes, ou uma causa a outra?
 > Elas se alimentam. Decay (sensores que driftam sem vigilância) é o que permite Goodhart continuar por cinco meses sem ser detectado — se alguém estivesse auditando o que "taxa de resolução" de fato media, o gaming teria aparecido antes. Blind up é o que impede o próprio loop de corrigir Goodhart quando ele acontece — mesmo que o sintoma estivesse visível, o motor de 4 tempos não tem mecanismo interno para revisar o SET. E conflict é, em certo sentido, uma pré-condição para Goodhart num sistema com múltiplos objetivos implícitos: se velocidade e profundidade competem e só velocidade está instrumentada, o caminho de menor resistência para "subir a métrica" quase sempre passa por sacrificar o que não está sendo medido. As quatro não são falhas paralelas e independentes — são facetas do mesmo limite estrutural.
@@ -262,8 +260,7 @@ Loop engineering is really just the four-stroke engine — pick a metric, set a 
 > [!tip] Assista: What's Next for AI Agentic Workflows — Andrew Ng
 > **Canal:** Sequoia Capital | **Duração:** ~14min | **Idioma:** EN
 >
-> O dado que justifica o loop: Ng mostra que GPT-3.5 embrulhado num workflow agêntico iterativo supera o GPT-4 em zero-shot. É o motor de 4 tempos aplicado a geração de código — o ganho vem do ciclo, não de trocar o modelo.
-> Trecho de destaque [01:30]: *"GPT-3.5 with an agentic [workflow] … [beats GPT-4 zero-shot]"*
+> O dado que justifica o loop: Ng mostra que GPT-3.5 embrulhado num workflow agêntico iterativo supera o GPT-4 em zero-shot. É o motor de 4 tempos aplicado a geração de código — o ganho vem do ciclo, não de trocar o modelo. Trecho de destaque [01:30]: *"GPT-3.5 with an agentic [workflow] … [beats GPT-4 zero-shot]"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=sal78ACtGTc)
 

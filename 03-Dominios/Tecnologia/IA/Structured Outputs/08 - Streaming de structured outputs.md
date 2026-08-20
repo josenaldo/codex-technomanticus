@@ -178,10 +178,7 @@ Caminho 3 só vale a pena pra schemas planos; pra nested, combine Caminho 1 + Ca
 
 ## Qual caminho escolher
 
-Os três caminhos não são mutuamente exclusivos — dá pra combinar. Mas pra decidir por onde começar,
-a pergunta certa não é "qual é melhor", é "o que eu preciso mostrar, e quão cedo". Se a resposta é
-"só quero que a UI pare de parecer travada", Caminho 1 sozinho já resolve. Se a resposta é "quero
-campos aparecendo na tela conforme chegam", você precisa de Caminho 2 ou 3 em cima do 1.
+Os três caminhos não são mutuamente exclusivos — dá pra combinar. Mas pra decidir por onde começar, a pergunta certa não é "qual é melhor", é "o que eu preciso mostrar, e quão cedo". Se a resposta é "só quero que a UI pare de parecer travada", Caminho 1 sozinho já resolve. Se a resposta é "quero campos aparecendo na tela conforme chegam", você precisa de Caminho 2 ou 3 em cima do 1.
 
 ```mermaid
 flowchart TD
@@ -199,11 +196,7 @@ flowchart TD
     F --> H
 ```
 
-Na prática, a maioria dos times de produto acaba em Caminho 1 + Caminho 2: streaming nativo do
-provider pra latência percebida, e um partial parser por cima pra desenhar a UI conforme o JSON
-fecha. Caminho 3 (emissão por campo via regex) é a opção mais barata em CPU, mas só compensa quando
-o schema é raso o bastante pra regex não precisar lidar com nesting — na dúvida, comece pelo
-Caminho 2, que generaliza melhor.
+Na prática, a maioria dos times de produto acaba em Caminho 1 + Caminho 2: streaming nativo do provider pra latência percebida, e um partial parser por cima pra desenhar a UI conforme o JSON fecha. Caminho 3 (emissão por campo via regex) é a opção mais barata em CPU, mas só compensa quando o schema é raso o bastante pra regex não precisar lidar com nesting — na dúvida, comece pelo Caminho 2, que generaliza melhor.
 
 Pattern visual em UI:
 
@@ -298,9 +291,7 @@ Em React/Next.js, Vercel AI SDK tem `useObject` que abstrai streaming structured
 ## Armadilhas comuns
 
 > [!warning] Chamar `JSON.parse(chunk)` direto no chunk, sem buffer
-> A armadilha mais básica — e a primeira que todo mundo comete antes de entender por que streaming
-> de JSON é diferente de streaming de texto (ver a primeira seção desta nota). O código parece
-> razoável até você rodar:
+> A armadilha mais básica — e a primeira que todo mundo comete antes de entender por que streaming de JSON é diferente de streaming de texto (ver a primeira seção desta nota). O código parece razoável até você rodar:
 >
 > ```typescript
 > // ❌ Ingênuo: trata cada chunk como se fosse JSON completo
@@ -316,11 +307,7 @@ Em React/Next.js, Vercel AI SDK tem `useObject` que abstrai streaming structured
 >     at processChunk (stream-handler.ts:12)
 > ```
 >
-> O erro engana: parece que o chunk chegou corrompido, mas o problema é estrutural. Cada `chunk` é
-> um *fragmento* do JSON final (`{"answer": "Sim`), não um documento completo — só o objeto inteiro,
-> no fim do stream, é JSON válido. `JSON.parse` falha em praticamente todo chunk intermediário,
-> menos o último. O conserto não é "tentar de novo": é acumular tudo num buffer e só então parsear
-> (com o parser certo — nativo no fim, ou partial parser no meio):
+> O erro engana: parece que o chunk chegou corrompido, mas o problema é estrutural. Cada `chunk` é um *fragmento* do JSON final (`{"answer": "Sim`), não um documento completo — só o objeto inteiro, no fim do stream, é JSON válido. `JSON.parse` falha em praticamente todo chunk intermediário, menos o último. O conserto não é "tentar de novo": é acumular tudo num buffer e só então parsear (com o parser certo — nativo no fim, ou partial parser no meio):
 >
 > ```typescript
 > // ✅ Acumula no buffer; usa partial parser pro estado intermediário

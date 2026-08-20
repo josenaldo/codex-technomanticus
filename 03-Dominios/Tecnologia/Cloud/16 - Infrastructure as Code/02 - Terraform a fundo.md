@@ -101,8 +101,7 @@ resource "aws_instance" "web" {
 > [!tip] Assista: Learn Terraform Block Types! - Terraform for Beginners Course
 > **Canal:** Cloud Vikings | **Duração:** ~12min | **Idioma:** EN
 >
-> Um passeio rápido pelos blocos que compõem o vocabulário HCL — `provider`, `resource`, `variable`, `data` — explicando o papel de cada um antes de você ver os exemplos completos. Bom pra fixar "o que cada palavra-chave faz" antes de ler configs reais.
-> Trecho de destaque [03:54]: *"these resource blocks define a resource type which defines the kind of infrastructure resource"*
+> Um passeio rápido pelos blocos que compõem o vocabulário HCL — `provider`, `resource`, `variable`, `data` — explicando o papel de cada um antes de você ver os exemplos completos. Bom pra fixar "o que cada palavra-chave faz" antes de ler configs reais. Trecho de destaque [03:54]: *"these resource blocks define a resource type which defines the kind of infrastructure resource"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=AlDm9hUvIsA)
 
@@ -167,8 +166,7 @@ Plan: 1 to add, 1 to change, 1 to destroy.
 > [!tip] Assista: Terraform explained in 15 mins | Terraform Tutorial for Beginners
 > **Canal:** TechWorld with Nana | **Duração:** ~18min | **Idioma:** EN
 >
-> Nana amarra o ciclo inteiro numa demo ao vivo: `plan` como prévia do que vai acontecer, `apply` executando de fato. Vale assistir pra ver a saída do `plan` na tela e associar visualmente ao `+`/`~`/`-` que a nota mostra em texto.
-> Trecho de destaque [17:03]: *"so we'd apply you can execute the plan so plan command is like a preview of what's gonna happen"*
+> Nana amarra o ciclo inteiro numa demo ao vivo: `plan` como prévia do que vai acontecer, `apply` executando de fato. Vale assistir pra ver a saída do `plan` na tela e associar visualmente ao `+`/`~`/`-` que a nota mostra em texto. Trecho de destaque [17:03]: *"so we'd apply you can execute the plan so plan command is like a preview of what's gonna happen"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=l5k1ai_GBDE)
 

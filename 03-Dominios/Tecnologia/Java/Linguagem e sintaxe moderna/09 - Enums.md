@@ -548,9 +548,7 @@ public enum Configuracao {
 
 ### Frase pronta (inglês)
 
-> "Enums in Java are not just named constants — they are full-fledged classes where each constant is a singleton instance, which means they can carry immutable state and behavior, making them ideal for modeling domain concepts like status codes or operation types."
-> "When you need to associate data with each constant, the trade-off is between keeping state in the enum itself (simple, centralized) versus an external map — but once you add mutable state, you break the implicit singleton guarantee and introduce hidden global state shared across the entire JVM."
-> "For collections of enum keys or values, `EnumMap` and `EnumSet` are the right choice over `HashMap` and `HashSet` — `EnumMap` uses an array indexed by ordinal so there is no hashing at all, and `EnumSet` uses a bit vector that fits 64 constants in a single `long` — both are O(1) and significantly faster; the caveat is that null keys or elements are not allowed."
+> "Enums in Java are not just named constants — they are full-fledged classes where each constant is a singleton instance, which means they can carry immutable state and behavior, making them ideal for modeling domain concepts like status codes or operation types." "When you need to associate data with each constant, the trade-off is between keeping state in the enum itself (simple, centralized) versus an external map — but once you add mutable state, you break the implicit singleton guarantee and introduce hidden global state shared across the entire JVM." "For collections of enum keys or values, `EnumMap` and `EnumSet` are the right choice over `HashMap` and `HashSet` — `EnumMap` uses an array indexed by ordinal so there is no hashing at all, and `EnumSet` uses a bit vector that fits 64 constants in a single `long` — both are O(1) and significantly faster; the caveat is that null keys or elements are not allowed."
 
 ### Vocabulário
 

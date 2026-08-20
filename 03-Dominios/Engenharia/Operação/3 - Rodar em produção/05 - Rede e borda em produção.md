@@ -110,9 +110,7 @@ sequenceDiagram
 ```
 
 > [!warning] Certificado autoassinado ou vencido derrubando produção silenciosamente
-> **O que acontece:** um certificado expira sem ninguém notar até um cliente (ou, pior, um sistema de terceiros que valida certificado rigorosamente) começa a rejeitar a conexão com erro de TLS.
-> **Por quê:** renovação manual é fácil de esquecer — e diferente de um deploy quebrado, que geralmente falha rápido e visível, um certificado vencido às vezes só quebra clientes específicos (os que validam cadeia com rigor), gerando um incidente confuso e parcial.
-> **Como evitar:** automatizar com cert-manager (ou equivalente gerenciado de cloud) desde o primeiro dia, e monitorar a data de expiração como uma métrica de primeira classe — um alerta "certificado expira em 15 dias" é barato de configurar e evita um incidente inteiro.
+> **O que acontece:** um certificado expira sem ninguém notar até um cliente (ou, pior, um sistema de terceiros que valida certificado rigorosamente) começa a rejeitar a conexão com erro de TLS. **Por quê:** renovação manual é fácil de esquecer — e diferente de um deploy quebrado, que geralmente falha rápido e visível, um certificado vencido às vezes só quebra clientes específicos (os que validam cadeia com rigor), gerando um incidente confuso e parcial. **Como evitar:** automatizar com cert-manager (ou equivalente gerenciado de cloud) desde o primeiro dia, e monitorar a data de expiração como uma métrica de primeira classe — um alerta "certificado expira em 15 dias" é barato de configurar e evita um incidente inteiro.
 
 ### Rate limiting na borda
 
@@ -127,9 +125,7 @@ O load balancer de borda — seja o LB da cloud (ALB, NLB) ou o próprio Ingress
 O ponto que conecta as duas coisas: quando o pod falha a readiness probe, o **Endpoints Controller** do Kubernetes o remove da lista de destinos do Service — e, em cascata, o Ingress Controller (que observa Services e Endpoints) para de rotear tráfego para esse pod. Em clusters cloud-managed, o load balancer externo da nuvem também pode ter seu **próprio** health check, configurado separadamente do readiness probe do Kubernetes — e um erro comum é os dois ficarem dessincronizados: o pod está "ready" para o Kubernetes mas o LB da cloud ainda está checando um endpoint diferente, ou com um intervalo mais lento, criando uma janela onde tráfego chega a um pod que o Kubernetes já sabe que está degradado.
 
 > [!warning] Dois health checks, duas fontes de verdade
-> **O que acontece:** o pod fica marcado como "not ready" pelo readiness probe do Kubernetes (que remove ele do Endpoint), mas o health check externo do load balancer da cloud ainda não rodou seu próprio ciclo — e continua mandando tráfego direto para esse pod por mais alguns segundos.
-> **Por quê:** em setups cloud-managed (ex.: AWS Load Balancer Controller com ALB), o LB externo pode ter healthcheck próprio, com intervalo e critério configurados independentemente do probe do Kubernetes.
-> **Como evitar:** alinhar explicitamente o endpoint e o intervalo do health check externo com a readiness probe (muitos controllers de cloud suportam anotação para herdar a config do probe diretamente) — não deixar como duas configurações que divergem silenciosamente.
+> **O que acontece:** o pod fica marcado como "not ready" pelo readiness probe do Kubernetes (que remove ele do Endpoint), mas o health check externo do load balancer da cloud ainda não rodou seu próprio ciclo — e continua mandando tráfego direto para esse pod por mais alguns segundos. **Por quê:** em setups cloud-managed (ex.: AWS Load Balancer Controller com ALB), o LB externo pode ter healthcheck próprio, com intervalo e critério configurados independentemente do probe do Kubernetes. **Como evitar:** alinhar explicitamente o endpoint e o intervalo do health check externo com a readiness probe (muitos controllers de cloud suportam anotação para herdar a config do probe diretamente) — não deixar como duas configurações que divergem silenciosamente.
 
 ## O interno: como os serviços se falam
 
@@ -177,9 +173,7 @@ Nada disso é grátis. Cada sidecar é um processo extra rodando em **cada pod**
 Além do custo de runtime, há custo operacional: mesh introduz uma camada de configuração inteira (VirtualService, DestinationRule, PeerAuthentication, e por aí vai) que alguém no time precisa entender, versionar e debugar quando algo dá errado. Para um cluster de 5-10 serviços, esse investimento raramente compensa — DNS mais NetworkPolicy já cobre boa parte da necessidade real. A decisão de adotar mesh costuma fazer sentido quando **múltiplos** desses sinais aparecem juntos: dezenas de serviços, exigência de compliance que demanda mTLS auditável, e um time de plataforma dedicado a operar a camada.
 
 > [!warning] Adotar service mesh "porque times grandes usam"
-> **O que acontece:** um time com 8 serviços instala Istio porque viu em post de engenharia de uma big tech, e passa as semanas seguintes debugando por que requisições simples têm latência extra e por que um `DestinationRule` mal configurado está derrubando uma rota inteira.
-> **Por quê:** mesh resolve problemas de **escala de comunicação** (muitos serviços, muitas equipes, necessidade de política uniforme) — não é acelerador de produtividade em si, é infraestrutura que paga dividendo só a partir de uma certa complexidade.
-> **Como evitar:** medir a dor real primeiro — quantos serviços, existe requisito de compliance para mTLS, o time já tem capacidade de operar mais uma camada de infraestrutura? Se a resposta é "poucos serviços, sem requisito de compliance, time pequeno", DNS + NetworkPolicy resolve 80% do valor com uma fração da complexidade.
+> **O que acontece:** um time com 8 serviços instala Istio porque viu em post de engenharia de uma big tech, e passa as semanas seguintes debugando por que requisições simples têm latência extra e por que um `DestinationRule` mal configurado está derrubando uma rota inteira. **Por quê:** mesh resolve problemas de **escala de comunicação** (muitos serviços, muitas equipes, necessidade de política uniforme) — não é acelerador de produtividade em si, é infraestrutura que paga dividendo só a partir de uma certa complexidade. **Como evitar:** medir a dor real primeiro — quantos serviços, existe requisito de compliance para mTLS, o time já tem capacidade de operar mais uma camada de infraestrutura? Se a resposta é "poucos serviços, sem requisito de compliance, time pequeno", DNS + NetworkPolicy resolve 80% do valor com uma fração da complexidade.
 
 ### Ambient mesh: a evolução sem sidecar
 

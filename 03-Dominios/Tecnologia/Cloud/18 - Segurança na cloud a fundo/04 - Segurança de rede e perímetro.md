@@ -155,8 +155,7 @@ Essa política, anexada ao endpoint (não ao bucket, não à role), garante que,
 > [!tip] Assista: VPC Endpoints and AWS PrivateLink - AWS SCS-C03
 > **Canal:** Cybr | **Duração:** ~7min | **Idioma:** EN
 >
-> O vídeo mostra, passo a passo, a checagem de uma endpoint policy travando (ou liberando) uma chamada a um serviço gerenciado — a mesma dupla trava (endpoint policy + política do serviço) que esta nota descreve para o Interface endpoint.
-> Trecho de destaque [03:18]: *"make sure that the endpoint policy is allowing the request as well as [...] our KMS key policy"*
+> O vídeo mostra, passo a passo, a checagem de uma endpoint policy travando (ou liberando) uma chamada a um serviço gerenciado — a mesma dupla trava (endpoint policy + política do serviço) que esta nota descreve para o Interface endpoint. Trecho de destaque [03:18]: *"make sure that the endpoint policy is allowing the request as well as [...] our KMS key policy"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=bNUdCifl1sQ)
 
@@ -213,8 +212,7 @@ Na DigitalOcean, não existe um serviço equivalente gerenciado. A prática reco
 > [!tip] Assista: How to Securely Access Private EC2 Instances: SSM vs. Bastion Hosts
 > **Canal:** AWS Explainers | **Duração:** ~7min | **Idioma:** EN
 >
-> O vídeo compara os dois caminhos lado a lado — inclusive o custo de manter um bastion rodando e a exposição permanente da porta 22 — reforçando com números concretos exatamente o argumento estrutural que esta nota faz a favor do Session Manager.
-> Trecho de destaque [02:07]: *"This means keeping port 22 open, which is basically a giant welcome sign for automated bots just scanning for weaknesses."*
+> O vídeo compara os dois caminhos lado a lado — inclusive o custo de manter um bastion rodando e a exposição permanente da porta 22 — reforçando com números concretos exatamente o argumento estrutural que esta nota faz a favor do Session Manager. Trecho de destaque [02:07]: *"This means keeping port 22 open, which is basically a giant welcome sign for automated bots just scanning for weaknesses."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=0oGNSzf_n0I)
 

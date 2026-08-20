@@ -16,11 +16,7 @@ tags:
 # Além do básico: property-based, snapshot, contract, smoke
 
 > [!abstract] Resumo
-> Quatro técnicas de nicho que não substituem unit/integração, mas rendem muito no contexto certo.
-> **Property-based** inverte a lógica do teste de exemplo: em vez de você escolher a entrada, declara uma propriedade que vale pra qualquer entrada e o framework caça o contraexemplo que você não imaginou.
-> **Snapshot** congela o output inteiro numa foto e compara — rápido de escrever, mas só protege se alguém realmente olhar o diff.
-> **Contract** faz consumer e provider concordarem sobre a forma da mensagem sem precisar subir os dois juntos, matando o e2e caro entre microserviços.
-> **Smoke** é o pulso pós-deploy: um punhado de checagens em segundos que respondem só "o sistema acordou?", antes de qualquer suite mais cara rodar.
+> Quatro técnicas de nicho que não substituem unit/integração, mas rendem muito no contexto certo. **Property-based** inverte a lógica do teste de exemplo: em vez de você escolher a entrada, declara uma propriedade que vale pra qualquer entrada e o framework caça o contraexemplo que você não imaginou. **Snapshot** congela o output inteiro numa foto e compara — rápido de escrever, mas só protege se alguém realmente olhar o diff. **Contract** faz consumer e provider concordarem sobre a forma da mensagem sem precisar subir os dois juntos, matando o e2e caro entre microserviços. **Smoke** é o pulso pós-deploy: um punhado de checagens em segundos que respondem só "o sistema acordou?", antes de qualquer suite mais cara rodar.
 
 A [[02 - A pirâmide de testes e suas variações|pirâmide]] te deu os andares principais: unit, integração, e2e. Mas existe uma **long tail** de tipos de teste que raramente aparece em tutorial e que, num nível senior, separa quem decora a pirâmide de quem sabe escolher a ferramenta certa pro problema certo.
 

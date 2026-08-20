@@ -82,8 +82,7 @@ Duas linhas encerram a discussão: ele tenta um caminho, falha, tenta outro, ach
 **"Onde ele travou?"** — anexar a um processo parado mostra a última chamada, que não retornou. `futex` significa espera por lock interno; `read` num socket significa espera por resposta de rede; ausência total de saída significa que ele não está pedindo nada ao kernel — e aí o problema é laço interno, território de depurador de aplicação, não deste galho.
 
 > [!warning] `strace` custa caro — não é ferramenta de produção quente
-> Cada chamada de sistema interceptada custa duas paradas do processo. Uma aplicação com I/O intenso pode ficar **dezenas de vezes mais lenta** sob `strace`, e num serviço em produção isso transforma investigação em incidente.
-> Regras que evitam o desastre: prefira `-c` (resumo) a saída completa; **sempre recorte** com `-e trace=`; limite o tempo (`timeout 10 strace ...`); e, se possível, reproduza fora de produção. Para observação contínua em produção, a ferramenta certa é **eBPF** (`bpftrace`, `bcc`), que roda no kernel com custo próximo de zero — assunto de tamanho próprio, e a menção fica como caminho, não como conteúdo deste galho.
+> Cada chamada de sistema interceptada custa duas paradas do processo. Uma aplicação com I/O intenso pode ficar **dezenas de vezes mais lenta** sob `strace`, e num serviço em produção isso transforma investigação em incidente. Regras que evitam o desastre: prefira `-c` (resumo) a saída completa; **sempre recorte** com `-e trace=`; limite o tempo (`timeout 10 strace ...`); e, se possível, reproduza fora de produção. Para observação contínua em produção, a ferramenta certa é **eBPF** (`bpftrace`, `bcc`), que roda no kernel com custo próximo de zero — assunto de tamanho próprio, e a menção fica como caminho, não como conteúdo deste galho.
 
 > [!info] Se o `strace` recusar anexar
 > `ptrace: Operation not permitted`, mesmo como root, costuma ser o `ptrace_scope`: várias distribuições restringem anexar a processos que não sejam filhos diretos.
@@ -196,24 +195,16 @@ O arquivo tem grupo e permissão corretos; o **diretório-pai** não deixa o ser
 ## Armadilhas comuns
 
 > [!warning] Anexar `strace` ao processo errado
-> **O que acontece:** a saída não faz sentido, ou não há saída nenhuma.
-> **Por quê:** aplicações modernas têm processo mestre e trabalhadores; anexar ao mestre mostra supervisão, não trabalho.
-> **Como evitar:** `pstree -p <pid>` para ver a árvore, e `-f` para seguir filhos. Em servidor web, o interessante quase sempre é o trabalhador.
+> **O que acontece:** a saída não faz sentido, ou não há saída nenhuma. **Por quê:** aplicações modernas têm processo mestre e trabalhadores; anexar ao mestre mostra supervisão, não trabalho. **Como evitar:** `pstree -p <pid>` para ver a árvore, e `-f` para seguir filhos. Em servidor web, o interessante quase sempre é o trabalhador.
 
 > [!warning] Deixar `strace` rodando em produção
-> **O que acontece:** a latência dispara e o incidente piora — causado pela investigação.
-> **Por quê:** cada chamada interceptada para o processo duas vezes.
-> **Como evitar:** `timeout 10 strace -c -e trace=...` recortado. E, para observação contínua, eBPF em vez de ptrace.
+> **O que acontece:** a latência dispara e o incidente piora — causado pela investigação. **Por quê:** cada chamada interceptada para o processo duas vezes. **Como evitar:** `timeout 10 strace -c -e trace=...` recortado. E, para observação contínua, eBPF em vez de ptrace.
 
 > [!warning] Ler `dmesg` sem `-T` e datar errado o evento
-> **O que acontece:** correlaciona-se com o incidente errado.
-> **Por quê:** carimbo em segundos desde o boot.
-> **Como evitar:** `-T` sempre; `journalctl -k` quando precisar de fuso e de boots anteriores.
+> **O que acontece:** correlaciona-se com o incidente errado. **Por quê:** carimbo em segundos desde o boot. **Como evitar:** `-T` sempre; `journalctl -k` quando precisar de fuso e de boots anteriores.
 
 > [!warning] Concluir que "não há nada" quando o `strace` fica mudo
-> **O que acontece:** anexa-se ao processo travado e nada aparece; conclui-se que a ferramenta falhou.
-> **Por quê:** silêncio **é** informação — o processo não está pedindo nada ao kernel.
-> **Como evitar:** leia o silêncio como "o problema é interno": laço, espera por lock em espaço de usuário, coleta de lixo. Aí a ferramenta certa é do ecossistema da linguagem, não do sistema.
+> **O que acontece:** anexa-se ao processo travado e nada aparece; conclui-se que a ferramenta falhou. **Por quê:** silêncio **é** informação — o processo não está pedindo nada ao kernel. **Como evitar:** leia o silêncio como "o problema é interno": laço, espera por lock em espaço de usuário, coleta de lixo. Aí a ferramenta certa é do ecossistema da linguagem, não do sistema.
 
 ---
 

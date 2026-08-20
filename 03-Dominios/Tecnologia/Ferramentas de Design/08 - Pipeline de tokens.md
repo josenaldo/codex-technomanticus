@@ -78,24 +78,16 @@ Um designer, sob pressão de prazo, cria um valor de cor direto no CSS de produ�
 ## Armadilhas comuns
 
 > [!warning] Confundir "mesmo formato" com "mesma automação"
-> **O que acontece:** um time assume que trocar de ferramenta de design (Figma para Sketch ou Penpot) não vai quebrar o pipeline de tokens, porque as três implementam o mesmo formato DTCG, como no Cenário 2.
-> **Por quê:** o formato compartilhado garante portabilidade do *conteúdo* — não da *automação de sincronização* específica que foi escrita contra a API de uma ferramenta em particular.
-> **Como evitar:** ao migrar de ferramenta de design, tratar a camada de sincronização como algo a reescrever, não a herdar automaticamente.
+> **O que acontece:** um time assume que trocar de ferramenta de design (Figma para Sketch ou Penpot) não vai quebrar o pipeline de tokens, porque as três implementam o mesmo formato DTCG, como no Cenário 2. **Por quê:** o formato compartilhado garante portabilidade do *conteúdo* — não da *automação de sincronização* específica que foi escrita contra a API de uma ferramenta em particular. **Como evitar:** ao migrar de ferramenta de design, tratar a camada de sincronização como algo a reescrever, não a herdar automaticamente.
 
 > [!warning] Chamar DTCG de "padrão W3C" sem qualificação
-> **O que acontece:** alguém descreve o formato de tokens que atravessa o pipeline como "padrão oficial do W3C" numa conversa técnica.
-> **Por quê:** a especificação é mantida por um Community Group, não por um Working Group no Standards Track — a distinção formal é real, e a [[03-Dominios/Engenharia/UX/Linguagem Visual e Design System/29 - Design tokens como sistema|nota 29 do SG5]] já trata isso como erro audível em entrevista técnica sênior.
-> **Como evitar:** usar a formulação precisa — "formato consolidado pelo Design Tokens Community Group, hospedado no W3C, primeira versão estável em outubro de 2025" — sempre que o assunto surgir, mantendo consistência com o resto do domínio.
+> **O que acontece:** alguém descreve o formato de tokens que atravessa o pipeline como "padrão oficial do W3C" numa conversa técnica. **Por quê:** a especificação é mantida por um Community Group, não por um Working Group no Standards Track — a distinção formal é real, e a [[03-Dominios/Engenharia/UX/Linguagem Visual e Design System/29 - Design tokens como sistema|nota 29 do SG5]] já trata isso como erro audível em entrevista técnica sênior. **Como evitar:** usar a formulação precisa — "formato consolidado pelo Design Tokens Community Group, hospedado no W3C, primeira versão estável em outubro de 2025" — sempre que o assunto surgir, mantendo consistência com o resto do domínio.
 
 > [!warning] Criar token fora do pipeline "temporariamente"
-> **O que acontece:** um valor de design entra em produção direto no código, sem passar pelo Figma nem pelo pipeline de sincronização, como atalho de emergência, e nunca é formalizado depois, como no Cenário 3.
-> **Por quê:** "depois eu formalizo" é uma promessa fácil de fazer sob pressão e fácil de esquecer sem nenhum lembrete estruturado — o token fica invisível para qualquer auditoria futura do design system.
-> **Como evitar:** registrar imediatamente qualquer token criado fora do pipeline como item de dívida técnica rastreável, não como nota mental.
+> **O que acontece:** um valor de design entra em produção direto no código, sem passar pelo Figma nem pelo pipeline de sincronização, como atalho de emergência, e nunca é formalizado depois, como no Cenário 3. **Por quê:** "depois eu formalizo" é uma promessa fácil de fazer sob pressão e fácil de esquecer sem nenhum lembrete estruturado — o token fica invisível para qualquer auditoria futura do design system. **Como evitar:** registrar imediatamente qualquer token criado fora do pipeline como item de dívida técnica rastreável, não como nota mental.
 
 > [!tip] Assista: Figma Tip — Syncing variables to code
-> **Canal:** Figma (oficial) | **Duração:** ~2min | **Idioma:** EN (legenda automática)
-> Demonstração oficial e direta dos três passos que esta nota descreve como pipeline: mudança de variable no Figma, sincronização via Variables API + Style Dictionary, e propagação para o ambiente de desenvolvimento local — com exemplo real gerando saída simultânea em CSS, iOS e JavaScript a partir da mesma fonte.
-> Trecho de destaque [1:25]: *"I'm able to see all of my primitives but also my semantic layer, which is pointing at the primitives"* — confirmação visual, em código gerado real, da hierarquia primitivo→semântico que a nota 29 do SG5 descreve conceitualmente.
+> **Canal:** Figma (oficial) | **Duração:** ~2min | **Idioma:** EN (legenda automática) Demonstração oficial e direta dos três passos que esta nota descreve como pipeline: mudança de variable no Figma, sincronização via Variables API + Style Dictionary, e propagação para o ambiente de desenvolvimento local — com exemplo real gerando saída simultânea em CSS, iOS e JavaScript a partir da mesma fonte. Trecho de destaque [1:25]: *"I'm able to see all of my primitives but also my semantic layer, which is pointing at the primitives"* — confirmação visual, em código gerado real, da hierarquia primitivo→semântico que a nota 29 do SG5 descreve conceitualmente.
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=7gMOTX4f4rc)
 

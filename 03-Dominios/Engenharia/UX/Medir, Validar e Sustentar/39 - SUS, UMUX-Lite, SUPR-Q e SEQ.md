@@ -25,9 +25,7 @@ Imagine terminar um teste de usabilidade com cinco usuários, cronometrar tempo 
 O **System Usability Scale (SUS)**, criado por John Brooke em 1986 no artigo *"SUS: a quick and dirty usability scale"*, é um questionário de 10 itens em escala de 5 pontos (discordo totalmente → concordo totalmente), metade das afirmações redigidas positivamente e metade negativamente, para reduzir o viés de aquiescência (tendência de concordar com tudo sem ler com atenção). A pontuação final é normalizada para uma escala de **0 a 100**.
 
 > [!warning] O erro clássico: tratar 0-100 como percentual, e o meio da escala como "normal"
-> **O que acontece:** alguém vê um SUS de 68 e conclui "68% de satisfação, tá razoável, tá um pouco acima da metade". Ou pior: interpreta 50 como "a média esperada", porque é o meio matemático de 0-100.
-> **Por quê:** o score do SUS **não é percentual** — não existe "68% das pessoas satisfeitas" nem "68% de usabilidade atingida". É um score numa escala construída a partir da soma ponderada de 10 respostas Likert, sem relação direta com proporção. E o benchmark empírico — calculado por **Jeff Sauro e James R. Lewis (2016)**, analisando dados agregados de centenas de estudos — mostra que **68 é a média histórica**, não o meio. Um produto com SUS 50 está **abaixo da média** de mercado, não "na média".
-> **Como evitar:** sempre reporte o SUS junto com o benchmark de referência (68 = média; abaixo de ~50 é considerado ruim; acima de ~80 é excepcional) — nunca o número isolado, e nunca convertido para "%".
+> **O que acontece:** alguém vê um SUS de 68 e conclui "68% de satisfação, tá razoável, tá um pouco acima da metade". Ou pior: interpreta 50 como "a média esperada", porque é o meio matemático de 0-100. **Por quê:** o score do SUS **não é percentual** — não existe "68% das pessoas satisfeitas" nem "68% de usabilidade atingida". É um score numa escala construída a partir da soma ponderada de 10 respostas Likert, sem relação direta com proporção. E o benchmark empírico — calculado por **Jeff Sauro e James R. Lewis (2016)**, analisando dados agregados de centenas de estudos — mostra que **68 é a média histórica**, não o meio. Um produto com SUS 50 está **abaixo da média** de mercado, não "na média". **Como evitar:** sempre reporte o SUS junto com o benchmark de referência (68 = média; abaixo de ~50 é considerado ruim; acima de ~80 é excepcional) — nunca o número isolado, e nunca convertido para "%".
 
 **Vantagem prática do SUS:** é validado por décadas de uso, tecnologicamente agnóstico (testado em terminal, site, celular, até em páginas amarelas de telefone), e a análise de Sauro/Lewis dá contexto de benchmark que nenhum dos outros três instrumentos oferece com o mesmo volume histórico de dados. **Custo:** 10 perguntas é mais fricção do que muitos testes de campo toleram, e o score sozinho não diz *o quê* está ruim — só quão ruim, de forma agregada.
 
@@ -100,24 +98,16 @@ Num teste de usabilidade, um usuário completa uma tarefa (o sistema registra "s
 ## Armadilhas comuns
 
 > [!warning] Tratar o score SUS como percentual
-> **O que acontece:** alguém lê "SUS 72" e diz "72% de satisfação" numa reunião.
-> **Por quê:** a escala vai de 0 a 100, e o cérebro associa automaticamente esse intervalo a percentual — mas o cálculo do SUS não tem essa propriedade matemática.
-> **Como evitar:** sempre reporte o SUS com a palavra "score" (nunca "%"), e ao lado do benchmark de referência (68 = média empírica).
+> **O que acontece:** alguém lê "SUS 72" e diz "72% de satisfação" numa reunião. **Por quê:** a escala vai de 0 a 100, e o cérebro associa automaticamente esse intervalo a percentual — mas o cálculo do SUS não tem essa propriedade matemática. **Como evitar:** sempre reporte o SUS com a palavra "score" (nunca "%"), e ao lado do benchmark de referência (68 = média empírica).
 
 > [!warning] Rodar SUS completo quando o objetivo era acompanhar tendência rápida
-> **O que acontece:** o time aplica os 10 itens do SUS a cada release, gerando fadiga de resposta e queda na taxa de participação do survey.
-> **Por quê:** o SUS foi desenhado para diagnóstico pontual e profundo, não para pulso contínuo de baixa fricção — usar a ferramenta errada para o objetivo errado degrada o próprio dado que se está tentando coletar.
-> **Como evitar:** use UMUX-Lite para acompanhamento de tendência frequente; reserve o SUS completo para avaliações pontuais mais espaçadas, quando o diagnóstico granular importa.
+> **O que acontece:** o time aplica os 10 itens do SUS a cada release, gerando fadiga de resposta e queda na taxa de participação do survey. **Por quê:** o SUS foi desenhado para diagnóstico pontual e profundo, não para pulso contínuo de baixa fricção — usar a ferramenta errada para o objetivo errado degrada o próprio dado que se está tentando coletar. **Como evitar:** use UMUX-Lite para acompanhamento de tendência frequente; reserve o SUS completo para avaliações pontuais mais espaçadas, quando o diagnóstico granular importa.
 
 > [!warning] Comparar SUS de laboratório com NPS de produção como se fossem a mesma régua
-> **O que acontece:** um relatório apresenta "SUS de 75 e NPS de 40" lado a lado como se fossem duas leituras da mesma coisa em momentos diferentes.
-> **Por quê:** os dois vêm de contextos de coleta completamente diferentes — SUS de uma sessão moderada com 5-8 pessoas, NPS de telemetria de produção com toda a base — e misturar as duas réguas sem nomear a diferença de origem confunde mais do que esclarece.
-> **Como evitar:** sempre rotule a origem do dado (lab/moderado vs. campo/produção) junto com o número, como no diagrama desta nota.
+> **O que acontece:** um relatório apresenta "SUS de 75 e NPS de 40" lado a lado como se fossem duas leituras da mesma coisa em momentos diferentes. **Por quê:** os dois vêm de contextos de coleta completamente diferentes — SUS de uma sessão moderada com 5-8 pessoas, NPS de telemetria de produção com toda a base — e misturar as duas réguas sem nomear a diferença de origem confunde mais do que esclarece. **Como evitar:** sempre rotule a origem do dado (lab/moderado vs. campo/produção) junto com o número, como no diagrama desta nota.
 
 > [!warning] Extrapolar amostra pequena de SUS/SUPR-Q como se fosse representativa do mercado
-> **O que acontece:** um SUS aplicado a 5 usuários guerrilha é apresentado como "o SUS do produto", implicitamente comparável ao benchmark de milhares de estudos com o mesmo peso estatístico.
-> **Por quê:** o número sai igual (0-100) independente do tamanho da amostra, então é fácil esquecer que a margem de erro de 5 respostas é enorme comparada a um estudo com centenas.
-> **Como evitar:** trate o resultado de amostra pequena como sinal direcional ("parece baixo, vale investigar") — nunca como conclusão estatística definitiva.
+> **O que acontece:** um SUS aplicado a 5 usuários guerrilha é apresentado como "o SUS do produto", implicitamente comparável ao benchmark de milhares de estudos com o mesmo peso estatístico. **Por quê:** o número sai igual (0-100) independente do tamanho da amostra, então é fácil esquecer que a margem de erro de 5 respostas é enorme comparada a um estudo com centenas. **Como evitar:** trate o resultado de amostra pequena como sinal direcional ("parece baixo, vale investigar") — nunca como conclusão estatística definitiva.
 
 ## Como explicar em inglês
 

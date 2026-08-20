@@ -10,12 +10,9 @@ tags:
 
 # Roadmap — Sustentar e Conformidade
 
-Diagnóstico + execução do enriquecimento. Gerado por `/diagnosticar-galho` (inline).
-Enriquecimento via subagentes ≤3 concorrentes.
+Diagnóstico + execução do enriquecimento. Gerado por `/diagnosticar-galho` (inline). Enriquecimento via subagentes ≤3 concorrentes.
 
-**Galho:** `03-Dominios/Tecnologia/Acessibilidade/Sustentar e Conformidade`
-**Diagnóstico:** 2026-07-28
-**Última execução:** 2026-07-28 — **enriquecimento COMPLETO (4/4 ✅)** (nota 19 completada inline após 2 falhas de subagente)
+**Galho:** `03-Dominios/Tecnologia/Acessibilidade/Sustentar e Conformidade` **Diagnóstico:** 2026-07-28 **Última execução:** 2026-07-28 — **enriquecimento COMPLETO (4/4 ✅)** (nota 19 completada inline após 2 falhas de subagente)
 
 ## Régua
 

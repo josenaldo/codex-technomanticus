@@ -60,19 +60,13 @@ Uma engenheira com 10 anos em engenharia de dados se posiciona como "fractional 
 ## Armadilhas comuns
 
 > [!warning] Nicho amplo demais pra ser memorável
-> **O que acontece:** o profissional escolhe "startups de tecnologia" como nicho, achando que já é específico o suficiente.
-> **Por quê:** "startup de tecnologia" descreve praticamente qualquer cliente em potencial — não reduz concorrência nem facilita a indicação. Um nicho útil deve excluir clientes explicitamente, não só descrever os que você aceitaria.
-> **Como evitar:** testar o nicho perguntando "quem eu recusaria com esse posicionamento?" — se a resposta for "ninguém", o nicho ainda é genérico demais.
+> **O que acontece:** o profissional escolhe "startups de tecnologia" como nicho, achando que já é específico o suficiente. **Por quê:** "startup de tecnologia" descreve praticamente qualquer cliente em potencial — não reduz concorrência nem facilita a indicação. Um nicho útil deve excluir clientes explicitamente, não só descrever os que você aceitaria. **Como evitar:** testar o nicho perguntando "quem eu recusaria com esse posicionamento?" — se a resposta for "ninguém", o nicho ainda é genérico demais.
 
 > [!warning] Trocar de nicho a cada engajamento
-> **O que acontece:** o profissional aceita qualquer projeto que aparece (fintech um mês, e-commerce no outro, healthtech depois), sem acumular padrão reconhecível de nicho.
-> **Por quê:** especialização exige repetição — é a soma de casos parecidos que constrói a reputação e o vocabulário específico do nicho, não um caso isolado.
-> **Como evitar:** aceitar 1-2 projetos fora do nicho por necessidade financeira é normal no início, mas manter uma direção declarada (ex: no LinkedIn, no site pessoal) pra que as próximas oportunidades continuem convergindo.
+> **O que acontece:** o profissional aceita qualquer projeto que aparece (fintech um mês, e-commerce no outro, healthtech depois), sem acumular padrão reconhecível de nicho. **Por quê:** especialização exige repetição — é a soma de casos parecidos que constrói a reputação e o vocabulário específico do nicho, não um caso isolado. **Como evitar:** aceitar 1-2 projetos fora do nicho por necessidade financeira é normal no início, mas manter uma direção declarada (ex: no LinkedIn, no site pessoal) pra que as próximas oportunidades continuem convergindo.
 
 > [!warning] Nicho baseado só em interesse pessoal, sem demanda de mercado
-> **O que acontece:** escolher um nicho porque é interessante (ex: "fractional CTO para jogos indie") sem verificar se existe volume suficiente de empresas nesse recorte disposto a pagar retainer fractional.
-> **Por quê:** nicho estreito sem demanda correspondente vira nicho vazio — reduz concorrência porque reduz também o mercado.
-> **Como evitar:** validar o nicho antes de se comprometer: procurar quantas vagas/pedidos fractional existem nesse recorte em marketplaces (ver [[07 - Canais de prospecção e marketplaces fractional]]) e conversar com 3-5 pessoas do setor sobre se contratariam esse perfil.
+> **O que acontece:** escolher um nicho porque é interessante (ex: "fractional CTO para jogos indie") sem verificar se existe volume suficiente de empresas nesse recorte disposto a pagar retainer fractional. **Por quê:** nicho estreito sem demanda correspondente vira nicho vazio — reduz concorrência porque reduz também o mercado. **Como evitar:** validar o nicho antes de se comprometer: procurar quantas vagas/pedidos fractional existem nesse recorte em marketplaces (ver [[07 - Canais de prospecção e marketplaces fractional]]) e conversar com 3-5 pessoas do setor sobre se contratariam esse perfil.
 
 ## Como explicar em inglês
 

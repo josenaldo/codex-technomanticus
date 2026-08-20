@@ -20,23 +20,13 @@ aliases:
 # Padrões de Projeto
 
 > [!abstract] TL;DR
-> Um **catálogo de consulta** de padrões de projeto e de arquitetura de aplicação, para o sênior de
-> plantão — inclusive (e especialmente) em **sistemas legados**. Não é uma trilha linear: é um
-> repertório onde se **procura** um padrão. Cada nota é **autocontida**, mostra o padrão em **Java,
-> TypeScript, Python e Go** (comentando como a linguagem muda ou **dissolve** o padrão) e traz uma
-> seção **Armadilhas** reforçada sobre **quando NÃO usar** — o ângulo que quase ninguém cobre.
+> Um **catálogo de consulta** de padrões de projeto e de arquitetura de aplicação, para o sênior de plantão — inclusive (e especialmente) em **sistemas legados**. Não é uma trilha linear: é um repertório onde se **procura** um padrão. Cada nota é **autocontida**, mostra o padrão em **Java, TypeScript, Python e Go** (comentando como a linguagem muda ou **dissolve** o padrão) e traz uma seção **Armadilhas** reforçada sobre **quando NÃO usar** — o ângulo que quase ninguém cobre.
 
 ## Sobre este galho
 
-Os padrões estão organizados em **famílias**, por fonte e por escala. **As seis estão completas — 90
-notas** (2026-07-28 a 31), cada uma com uma **lente própria**: cross-linguagem (GoF) · cross-ORM (Acesso
-a Dados) · cross-ferramenta (EIP) · arqueológica (Aplicação Corporativa) · acoplamento (Eventos) ·
-sacrifício (Resiliência). Como é catálogo de consulta,
-alguma **redundância** com outros galhos do vault (Comunicação, Cloud, Operação) é aceitável e
-desejada: o catálogo não pode depender de galhos que evoluem em ritmo próprio.
+Os padrões estão organizados em **famílias**, por fonte e por escala. **As seis estão completas — 90 notas** (2026-07-28 a 31), cada uma com uma **lente própria**: cross-linguagem (GoF) · cross-ORM (Acesso a Dados) · cross-ferramenta (EIP) · arqueológica (Aplicação Corporativa) · acoplamento (Eventos) · sacrifício (Resiliência). Como é catálogo de consulta, alguma **redundância** com outros galhos do vault (Comunicação, Cloud, Operação) é aceitável e desejada: o catálogo não pode depender de galhos que evoluem em ritmo próprio.
 
-> Este índice é o herdeiro do antigo monólito `Design Patterns.md` (aposentado em 2026-07-28). O
-> alias **Design Patterns** resolve para cá.
+> Este índice é o herdeiro do antigo monólito `Design Patterns.md` (aposentado em 2026-07-28). O alias **Design Patterns** resolve para cá.
 
 ## Famílias
 
@@ -53,12 +43,7 @@ Estado detalhado e rosters em [[03-Dominios/Engenharia/Design de Software/Padrõ
 
 ## A lente do catálogo
 
-Muitos padrões do GoF são contornos para lacunas das linguagens de 1994. Onde a linguagem moderna
-preenche a lacuna — funções de primeira classe (Strategy vira função), *pattern matching* (mata o
-Visitor), módulos (o Singleton evapora), argumentos nomeados (dispensa o Builder) —, o padrão
-**encolhe**, às vezes até sumir. E o outro lado: o **framework** frequentemente já implementou o
-padrão por você (`@Transactional` é Proxy, `@Service` é Facade). Reconhecer os dois movimentos é o
-que separa aplicar um padrão de empilhar cerimônia.
+Muitos padrões do GoF são contornos para lacunas das linguagens de 1994. Onde a linguagem moderna preenche a lacuna — funções de primeira classe (Strategy vira função), *pattern matching* (mata o Visitor), módulos (o Singleton evapora), argumentos nomeados (dispensa o Builder) —, o padrão **encolhe**, às vezes até sumir. E o outro lado: o **framework** frequentemente já implementou o padrão por você (`@Transactional` é Proxy, `@Service` é Facade). Reconhecer os dois movimentos é o que separa aplicar um padrão de empilhar cerimônia.
 
 **Comece por:** [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Clássicos (GoF)/01 - O que são Design Patterns|O que são Design Patterns]].
 

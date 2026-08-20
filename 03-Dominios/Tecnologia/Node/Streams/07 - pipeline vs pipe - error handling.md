@@ -268,8 +268,7 @@ Quando o sinal é abortado:
 - Nenhum recurso fica aberto.
 
 > [!warning] `signal` vai dentro de um objeto de opções
-> A assinatura é `pipeline(source, ...transforms, destination, { signal })`.
-> Passar `signal` diretamente como quinto argumento — `pipeline(a, b, c, signal)` — não funciona. O signal precisa estar dentro de um objeto `{ signal }`. Esse é um dos erros mais comuns com `AbortSignal`.
+> A assinatura é `pipeline(source, ...transforms, destination, { signal })`. Passar `signal` diretamente como quinto argumento — `pipeline(a, b, c, signal)` — não funciona. O signal precisa estar dentro de um objeto `{ signal }`. Esse é um dos erros mais comuns com `AbortSignal`.
 
 ### 6. `finished()` para aguardar stream única
 
@@ -468,9 +467,7 @@ http.createServer(async (req, res) => {
 ## Armadilhas comuns
 
 > [!warning] 1. `.pipe()` sem error handler em cada stream — file descriptor leak
-> **O que acontece:** um erro em qualquer stream da cadeia deixa todas as demais abertas — file descriptors acumulam até atingir o limite do OS (`EMFILE: too many open files`).
-> **Por quê:** `.pipe()` registra `'end'` para fechar o destination quando o source termina, mas **não registra `'error'`** — por design histórico (Node 0.x).
-> **Como evitar:** usar `pipeline()` em todo código novo; se `.pipe()` for inevitável, registrar `'error'` + `.destroy(err)` em cada stream manualmente.
+> **O que acontece:** um erro em qualquer stream da cadeia deixa todas as demais abertas — file descriptors acumulam até atingir o limite do OS (`EMFILE: too many open files`). **Por quê:** `.pipe()` registra `'end'` para fechar o destination quando o source termina, mas **não registra `'error'`** — por design histórico (Node 0.x). **Como evitar:** usar `pipeline()` em todo código novo; se `.pipe()` for inevitável, registrar `'error'` + `.destroy(err)` em cada stream manualmente.
 
 ```javascript
 // ERRADO — bug clássico que parece correto
@@ -489,9 +486,7 @@ rs.pipe(transform).pipe(ws);
 O comportamento EMFILE é a manifestação clássica desse bug em produção. O processo funciona normalmente por horas, depois começa a falhar ao abrir qualquer arquivo.
 
 > [!warning] 2. `pipeline()` async sem `await` — UnhandledPromiseRejection
-> **O que acontece:** a pipeline falha silenciosamente; em Node 15+, o processo termina com código de saída 1.
-> **Por quê:** `pipeline()` de `stream/promises` retorna uma Promise — sem `await` ou `.catch()`, a rejeição fica sem handler.
-> **Como evitar:** sempre `await pipeline(...)` ou `.catch(handleError)`.
+> **O que acontece:** a pipeline falha silenciosamente; em Node 15+, o processo termina com código de saída 1. **Por quê:** `pipeline()` de `stream/promises` retorna uma Promise — sem `await` ou `.catch()`, a rejeição fica sem handler. **Como evitar:** sempre `await pipeline(...)` ou `.catch(handleError)`.
 
 ```javascript
 // ERRADO — promise rejeitada ignorada
@@ -508,9 +503,7 @@ pipeline(...).catch(handleError);
 ```
 
 > [!warning] 3. `AbortSignal` sem objeto de opções — erro silencioso
-> **O que acontece:** `ctrl.signal` é interpretado como uma stream adicional na cadeia — TypeError obscuro ou comportamento indefinido.
-> **Por quê:** a assinatura de `pipeline()` é `pipeline(source, ...transforms, destination, options?)` — o signal vai no objeto `options`, não como argumento posicional.
-> **Como evitar:** sempre `{ signal: ctrl.signal }` como último argumento, nunca `ctrl.signal` diretamente.
+> **O que acontece:** `ctrl.signal` é interpretado como uma stream adicional na cadeia — TypeError obscuro ou comportamento indefinido. **Por quê:** a assinatura de `pipeline()` é `pipeline(source, ...transforms, destination, options?)` — o signal vai no objeto `options`, não como argumento posicional. **Como evitar:** sempre `{ signal: ctrl.signal }` como último argumento, nunca `ctrl.signal` diretamente.
 
 ```javascript
 const ctrl = new AbortController();
@@ -523,9 +516,7 @@ await pipeline(source, transform, destination, { signal: ctrl.signal });
 ```
 
 > [!warning] 4. Misturar `.pipe()` e `pipeline()` na mesma cadeia — cleanup parcial
-> **O que acontece:** se o source (conectado via `.pipe()`) errar, `pipeline()` não tem visibilidade sobre ele e não o destrói — leak.
-> **Por quê:** `pipeline()` só gerencia as streams que recebe como argumentos; o source conectado por `.pipe()` fica fora do seu controle.
-> **Como evitar:** escolha uma API para toda a cadeia — nunca misture `.pipe()` e `pipeline()`.
+> **O que acontece:** se o source (conectado via `.pipe()`) errar, `pipeline()` não tem visibilidade sobre ele e não o destrói — leak. **Por quê:** `pipeline()` só gerencia as streams que recebe como argumentos; o source conectado por `.pipe()` fica fora do seu controle. **Como evitar:** escolha uma API para toda a cadeia — nunca misture `.pipe()` e `pipeline()`.
 
 ```javascript
 // ERRADO — ambíguo e perigoso
@@ -534,9 +525,7 @@ await pipeline(partial, destination);   // pipeline não controla source → LEA
 ```
 
 > [!warning] 5. `finished()` sem `cleanup: true` em loops — listeners acumulados
-> **O que acontece:** cada `await finished(stream)` adiciona listeners `'error'`/`'end'`/`'finish'`/`'close'` que não são removidos — em loops, acumulam indefinidamente.
-> **Por quê:** o padrão de `finished()` é `cleanup: false` para proteger contra implementações incorretas que emitem eventos tardios; em loops, esse padrão vira problema.
-> **Como evitar:** usar `cleanup: true` em loops ou quando a stream pode ser usada múltiplas vezes.
+> **O que acontece:** cada `await finished(stream)` adiciona listeners `'error'`/`'end'`/`'finish'`/`'close'` que não são removidos — em loops, acumulam indefinidamente. **Por quê:** o padrão de `finished()` é `cleanup: false` para proteger contra implementações incorretas que emitem eventos tardios; em loops, esse padrão vira problema. **Como evitar:** usar `cleanup: true` em loops ou quando a stream pode ser usada múltiplas vezes.
 
 ```javascript
 // Atenção: listeners acumulam se cleanup: false (padrão)
@@ -560,20 +549,15 @@ for (const stream of muitasStreams) {
 
 ### Perguntas frequentes e respostas diretas
 
-**"Por que `.pipe()` não propaga erros?"**
-Por design histórico: adicionado em Node 0.x, registra `'end'` para fechar a destination quando a source termina, mas não registra `'error'`. Refatorar quebraria compatibilidade retroativa.
+**"Por que `.pipe()` não propaga erros?"** Por design histórico: adicionado em Node 0.x, registra `'end'` para fechar a destination quando a source termina, mas não registra `'error'`. Refatorar quebraria compatibilidade retroativa.
 
-**"Qual a diferença entre `pipeline` de `node:stream` e de `node:stream/promises`?"**
-Comportamento idêntico. Só muda a interface: callback vs. Promise. Para código novo, prefira `stream/promises` — integra com `async/await` e `try/catch`.
+**"Qual a diferença entre `pipeline` de `node:stream` e de `node:stream/promises`?"** Comportamento idêntico. Só muda a interface: callback vs. Promise. Para código novo, prefira `stream/promises` — integra com `async/await` e `try/catch`.
 
-**"O que `pipeline()` faz quando uma stream falha?"**
-Chama `.destroy(err)` em **todas** as streams da cadeia — source, todos os transforms e destination. Depois invoca o callback ou rejeita a promise. Nenhum resource fica aberto.
+**"O que `pipeline()` faz quando uma stream falha?"** Chama `.destroy(err)` em **todas** as streams da cadeia — source, todos os transforms e destination. Depois invoca o callback ou rejeita a promise. Nenhum resource fica aberto.
 
-**"Quando usar `finished()` em vez de `pipeline()`?"**
-Quando você tem uma stream única já em andamento e precisa aguardar o término — não está conectando múltiplas streams. Ex.: aguardar fim de upload ou drenar body de `Request` HTTP.
+**"Quando usar `finished()` em vez de `pipeline()`?"** Quando você tem uma stream única já em andamento e precisa aguardar o término — não está conectando múltiplas streams. Ex.: aguardar fim de upload ou drenar body de `Request` HTTP.
 
-**"Como cancelar uma pipeline em andamento?"**
-`const ctrl = new AbortController()` → passe `{ signal: ctrl.signal }` como último argumento → `ctrl.abort()` destrói todas as streams com `AbortError` e rejeita a promise.
+**"Como cancelar uma pipeline em andamento?"** `const ctrl = new AbortController()` → passe `{ signal: ctrl.signal }` como último argumento → `ctrl.abort()` destrói todas as streams com `AbortError` e rejeita a promise.
 
 ### Vocabulário PT-BR ↔ EN
 

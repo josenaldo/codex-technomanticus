@@ -125,14 +125,10 @@ D(⟨D⟩)
 `D(⟨D⟩)` para, ou não para? Só há dois casos. Vamos abrir os dois.
 
 > [!example] Caso A — suponha que `D(⟨D⟩)` PARA
-> Se `D(⟨D⟩)` termina, então — olhando o código de `D` — foi porque `H(⟨D⟩, ⟨D⟩)` respondeu `"NÃO PARA"` (é o único ramo que faz `D` parar).
-> Mas `H` é correto por hipótese. Se `H` disse `"NÃO PARA"`, então `D(⟨D⟩)` **roda pra sempre**.
-> Contradição: assumimos que parou, e concluímos que não para. 💥
+> Se `D(⟨D⟩)` termina, então — olhando o código de `D` — foi porque `H(⟨D⟩, ⟨D⟩)` respondeu `"NÃO PARA"` (é o único ramo que faz `D` parar). Mas `H` é correto por hipótese. Se `H` disse `"NÃO PARA"`, então `D(⟨D⟩)` **roda pra sempre**. Contradição: assumimos que parou, e concluímos que não para. 💥
 
 > [!example] Caso B — suponha que `D(⟨D⟩)` NÃO PARA
-> Se `D(⟨D⟩)` roda pra sempre, então foi porque `H(⟨D⟩, ⟨D⟩)` respondeu `"PARA"` (é o único ramo que joga `D` no loop infinito).
-> Mas `H` é correto. Se `H` disse `"PARA"`, então `D(⟨D⟩)` **termina**.
-> Contradição: assumimos que não para, e concluímos que para. 💥
+> Se `D(⟨D⟩)` roda pra sempre, então foi porque `H(⟨D⟩, ⟨D⟩)` respondeu `"PARA"` (é o único ramo que joga `D` no loop infinito). Mas `H` é correto. Se `H` disse `"PARA"`, então `D(⟨D⟩)` **termina**. Contradição: assumimos que não para, e concluímos que para. 💥
 
 ### 3.4. Passo 4 — Os dois casos explodem
 

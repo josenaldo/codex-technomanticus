@@ -229,24 +229,16 @@ Mesmo com PKCE, `state` e redirect exato corretos, o código de autorização em
 ## Armadilhas comuns
 
 > [!warning] Validar redirect_uri por "começa com" em vez de igualdade exata
-> **O que acontece:** o authorization server aceita qualquer `redirect_uri` que comece com o domínio registrado, ou usa um padrão com wildcard mal especificado.
-> **Por quê:** basta o app cliente ter, em algum lugar do próprio domínio, um endpoint de redirecionamento aberto (open redirect) — comum em funcionalidades de "voltar para onde eu estava" — para um atacante encadear os dois e desviar o código de autorização para um domínio próprio, mesmo com o authorization server validando o domínio corretamente.
-> **Como evitar:** exigir comparação de string exata contra a lista de `redirect_uri` pré-registrados, sem wildcard, e auditar o próprio app cliente em busca de open redirects que possam ser encadeados — a vulnerabilidade documentada no fluxo Booking.com/Facebook nasceu exatamente dessa combinação.
+> **O que acontece:** o authorization server aceita qualquer `redirect_uri` que comece com o domínio registrado, ou usa um padrão com wildcard mal especificado. **Por quê:** basta o app cliente ter, em algum lugar do próprio domínio, um endpoint de redirecionamento aberto (open redirect) — comum em funcionalidades de "voltar para onde eu estava" — para um atacante encadear os dois e desviar o código de autorização para um domínio próprio, mesmo com o authorization server validando o domínio corretamente. **Como evitar:** exigir comparação de string exata contra a lista de `redirect_uri` pré-registrados, sem wildcard, e auditar o próprio app cliente em busca de open redirects que possam ser encadeados — a vulnerabilidade documentada no fluxo Booking.com/Facebook nasceu exatamente dessa combinação.
 
 > [!warning] Tratar `code_challenge_method=plain` como equivalente a S256
-> **O que acontece:** o cliente (ou uma biblioteca desatualizada) usa o método `plain`, no qual `code_challenge` e `code_verifier` são idênticos.
-> **Por quê:** `plain` não protege contra ninguém que consiga ver a requisição de `/authorize` — e essa requisição trafega parâmetros em texto, visíveis a qualquer um com acesso a logs de proxy, histórico do dispositivo, ou a própria URL. Um code_challenge em `plain` entrega o verifier de graça.
-> **Como evitar:** usar `S256` sempre; reservar `plain` só para os poucos dispositivos comprovadamente incapazes de calcular SHA-256, documentado via metadata do authorization server — cenário raro em 2026.
+> **O que acontece:** o cliente (ou uma biblioteca desatualizada) usa o método `plain`, no qual `code_challenge` e `code_verifier` são idênticos. **Por quê:** `plain` não protege contra ninguém que consiga ver a requisição de `/authorize` — e essa requisição trafega parâmetros em texto, visíveis a qualquer um com acesso a logs de proxy, histórico do dispositivo, ou a própria URL. Um code_challenge em `plain` entrega o verifier de graça. **Como evitar:** usar `S256` sempre; reservar `plain` só para os poucos dispositivos comprovadamente incapazes de calcular SHA-256, documentado via metadata do authorization server — cenário raro em 2026.
 
 > [!warning] Confundir state (CSRF do fluxo) com nonce (replay do ID token)
-> **O que acontece:** a implementação usa só um dos dois parâmetros, ou usa o mesmo valor para ambos, achando que resolvem o mesmo problema.
-> **Por quê:** `state` protege a etapa de redirecionamento do OAuth — impede que um código gerado pelo atacante seja processado como se fosse da vítima. `nonce` protege o ID token do OIDC — impede que um ID token legítimo capturado seja reproduzido numa sessão nova. São ataques diferentes em camadas diferentes do fluxo; nenhum dos dois substitui o outro.
-> **Como evitar:** gerar `state` e `nonce` como valores aleatórios independentes, sempre que o fluxo envolver OIDC (que devolve ID token) além de OAuth puro (que só devolve access token).
+> **O que acontece:** a implementação usa só um dos dois parâmetros, ou usa o mesmo valor para ambos, achando que resolvem o mesmo problema. **Por quê:** `state` protege a etapa de redirecionamento do OAuth — impede que um código gerado pelo atacante seja processado como se fosse da vítima. `nonce` protege o ID token do OIDC — impede que um ID token legítimo capturado seja reproduzido numa sessão nova. São ataques diferentes em camadas diferentes do fluxo; nenhum dos dois substitui o outro. **Como evitar:** gerar `state` e `nonce` como valores aleatórios independentes, sempre que o fluxo envolver OIDC (que devolve ID token) além de OAuth puro (que só devolve access token).
 
 > [!warning] Deixar o código de autorização viver "só mais um pouco" além do necessário
-> **O que acontece:** o authorization server configura expiração de código generosa (a RFC permite até 10 minutos) achando que dá margem para lentidão de rede.
-> **Por quê:** a troca do código pelo token, no back channel, é uma chamada servidor-a-servidor que normalmente completa em milissegundos — não há razão prática para o código viver minutos. Cada minuto extra de validade é uma janela extra para um código vazado (via log, proxy, ou erro de implementação) ser explorado.
-> **Como evitar:** configurar expiração curta (segundos, não minutos) sempre que a infraestrutura permitir, e sempre implementar a regra de uso único com revogação em cascata — a defesa que realmente importa quando a janela de tempo, por algum motivo, não é suficiente.
+> **O que acontece:** o authorization server configura expiração de código generosa (a RFC permite até 10 minutos) achando que dá margem para lentidão de rede. **Por quê:** a troca do código pelo token, no back channel, é uma chamada servidor-a-servidor que normalmente completa em milissegundos — não há razão prática para o código viver minutos. Cada minuto extra de validade é uma janela extra para um código vazado (via log, proxy, ou erro de implementação) ser explorado. **Como evitar:** configurar expiração curta (segundos, não minutos) sempre que a infraestrutura permitir, e sempre implementar a regra de uso único com revogação em cascata — a defesa que realmente importa quando a janela de tempo, por algum motivo, não é suficiente.
 
 ## Em entrevista
 
@@ -305,25 +297,4 @@ O Authorization Code + PKCE resolve **delegação de acesso** — um código tro
 - **Securing.pl** — [*OpenID Connect Nonce explained: Where it matters and where it doesn't*](https://www.securing.pl/en/openid-connect-nonce-explained/) — a diferença entre nonce (replay do ID token) e state (CSRF do fluxo); acessado em 2026-07-10.
 - **FusionAuth** — [*OAuth 2.1: Key Updates and Differences from OAuth 2.0*](https://fusionauth.io/articles/oauth/differences-between-oauth-2-oauth-2-1) — por que o Resource Owner Password Credentials grant foi removido; acessado em 2026-07-10.
 
-[^implicit-cors]: WorkOS, *OAuth 2.1: What's new, what's gone, and how to migrate securely*; contexto histórico de CORS e implicit flow.
-[^implicit-risks]: Security Boulevard, *OAuth 2.0 vs 2.1: What's Changed and Why It Matters for Developers*.
-[^frontback]: Ayyoob Ajward, *AuthN & AuthZ for Dummies Series — Part 3: Back-Channel vs Front-Channel Communication*.
-[^authcode-channels]: Anirban Bhattacherji, *Understanding OAuth 2.0: Architecture, Use Cases, Benefits, and Limitations (Part 3 — PKCE)*.
-[^rfc7636-verifier]: RFC 7636, seção 4.1 (code_verifier) e 4.2 (code_challenge).
-[^authlete-pkce]: Authlete, *Proof Key for Code Exchange (RFC 7636)*.
-[^curity-pkce]: Curity, *What is Proof Key for Code Exchange?*.
-[^rfc8252-interception]: RFC 8252, *OAuth 2.0 for Native Apps* — authorization code interception attack.
-[^rfc7636-s256]: RFC 7636, seção 4.2 — métodos `plain` e `S256`.
-[^rfc9700-s256]: RFC 9700 — recomendação de métodos que não expõem o verifier; S256 como MTI no OAuth 2.1.
-[^oauth21-pkce-all]: draft-ietf-oauth-v2-1-15 — PKCE obrigatório para todo client no authorization code flow.
-[^rfc9700-downgrade]: RFC 9700 — mitigação do PKCE downgrade attack.
-[^oauth21-net]: oauth.net/2.1 — status do draft e consolidação de RFC 7636 + Security BCP.
-[^auth0-csrf]: Auth0, *Prevent CSRF Attacks in OAuth 2.0 Implementations*.
-[^mojoauth-state]: MojoAuth, *How do I handle OAuth2 state parameter validation to prevent CSRF attacks?*.
-[^oidc-nonce]: Securing.pl, *OpenID Connect Nonce explained*.
-[^rfc9700-redirect]: RFC 9700 — exact redirect URI matching, exceção de localhost com porta variável.
-[^rfc9700-wildcard]: RFC 9700 — riscos de padrões com wildcard em redirect_uri.
-[^booking-case]: ACM Digital Library, *OAuth 2.0 Redirect URI Validation Falls Short, Literally* — caso Booking.com/Facebook.
-[^oauth21-omitted]: draft-ietf-oauth-v2-1-15 — "The Implicit grant... is omitted from this specification."
-[^ropc-removed]: FusionAuth, *OAuth 2.1: Key Updates and Differences from OAuth 2.0*.
-[^rfc6749-code]: RFC 6749, seção 4.1.2 — uso único e expiração recomendada do authorization code.
+[^implicit-cors]: WorkOS, *OAuth 2.1: What's new, what's gone, and how to migrate securely*; contexto histórico de CORS e implicit flow. [^implicit-risks]: Security Boulevard, *OAuth 2.0 vs 2.1: What's Changed and Why It Matters for Developers*. [^frontback]: Ayyoob Ajward, *AuthN & AuthZ for Dummies Series — Part 3: Back-Channel vs Front-Channel Communication*. [^authcode-channels]: Anirban Bhattacherji, *Understanding OAuth 2.0: Architecture, Use Cases, Benefits, and Limitations (Part 3 — PKCE)*. [^rfc7636-verifier]: RFC 7636, seção 4.1 (code_verifier) e 4.2 (code_challenge). [^authlete-pkce]: Authlete, *Proof Key for Code Exchange (RFC 7636)*. [^curity-pkce]: Curity, *What is Proof Key for Code Exchange?*. [^rfc8252-interception]: RFC 8252, *OAuth 2.0 for Native Apps* — authorization code interception attack. [^rfc7636-s256]: RFC 7636, seção 4.2 — métodos `plain` e `S256`. [^rfc9700-s256]: RFC 9700 — recomendação de métodos que não expõem o verifier; S256 como MTI no OAuth 2.1. [^oauth21-pkce-all]: draft-ietf-oauth-v2-1-15 — PKCE obrigatório para todo client no authorization code flow. [^rfc9700-downgrade]: RFC 9700 — mitigação do PKCE downgrade attack. [^oauth21-net]: oauth.net/2.1 — status do draft e consolidação de RFC 7636 + Security BCP. [^auth0-csrf]: Auth0, *Prevent CSRF Attacks in OAuth 2.0 Implementations*. [^mojoauth-state]: MojoAuth, *How do I handle OAuth2 state parameter validation to prevent CSRF attacks?*. [^oidc-nonce]: Securing.pl, *OpenID Connect Nonce explained*. [^rfc9700-redirect]: RFC 9700 — exact redirect URI matching, exceção de localhost com porta variável. [^rfc9700-wildcard]: RFC 9700 — riscos de padrões com wildcard em redirect_uri. [^booking-case]: ACM Digital Library, *OAuth 2.0 Redirect URI Validation Falls Short, Literally* — caso Booking.com/Facebook. [^oauth21-omitted]: draft-ietf-oauth-v2-1-15 — "The Implicit grant... is omitted from this specification." [^ropc-removed]: FusionAuth, *OAuth 2.1: Key Updates and Differences from OAuth 2.0*. [^rfc6749-code]: RFC 6749, seção 4.1.2 — uso único e expiração recomendada do authorization code.

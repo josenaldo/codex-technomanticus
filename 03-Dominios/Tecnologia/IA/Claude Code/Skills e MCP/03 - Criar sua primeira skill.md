@@ -156,9 +156,7 @@ Use estes níveis de severidade:
 
 Para cada problema encontrado:
 ```
-[BLOQUEADOR] src/auth/login.ts:47 — senha hardcoded "admin123"
-[IMPORTANTE] src/api/orders.ts:23 — chamada async sem try/catch
-[SUGESTÃO] src/utils/format.ts:8 — considerar renomear `d` para `date`
+[BLOQUEADOR] src/auth/login.ts:47 — senha hardcoded "admin123" [IMPORTANTE] src/api/orders.ts:23 — chamada async sem try/catch [SUGESTÃO] src/utils/format.ts:8 — considerar renomear `d` para `date`
 ```
 
 Ao final, um sumário obrigatório:
@@ -335,14 +333,11 @@ metadata:
 ## Estrutura de imports
 
 ```typescript
-// 1. Node stdlib
-import { readFile } from 'fs/promises'
+// 1. Node stdlib import { readFile } from 'fs/promises'
 
-// 2. Dependências externas
-import { Injectable } from '@nestjs/common'
+// 2. Dependências externas import { Injectable } from '@nestjs/common'
 
-// 3. Internas (aliases com @/)
-import { UserRepository } from '@/domain/user.repository'
+// 3. Internas (aliases com @/) import { UserRepository } from '@/domain/user.repository'
 ```
 
 ## O que evitar

@@ -24,13 +24,7 @@ aliases:
 # Process Manager
 
 > [!abstract] TL;DR
-> Quando a saga vira orquestrada, o coordenador não é um detalhe de implementação: é um padrão com
-> nome. O **Process Manager** mantém o **estado de cada instância** do processo — onde ela está, o que
-> já respondeu, o que falta, desde quando espera —, decide o próximo passo e trata **expiração**. É a
-> diferença entre um roteador *stateless* (que olha uma mensagem e decide para onde mandar) e algo que
-> lembra da conversa. É também o [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Aplicação Corporativa/04 - Application Controller|Application Controller]]
-> da família anterior — a mesma máquina de estados, agora **distribuída e durável**, que é exatamente o
-> que a versão de 2002 não conseguia ser.
+> Quando a saga vira orquestrada, o coordenador não é um detalhe de implementação: é um padrão com nome. O **Process Manager** mantém o **estado de cada instância** do processo — onde ela está, o que já respondeu, o que falta, desde quando espera —, decide o próximo passo e trata **expiração**. É a diferença entre um roteador *stateless* (que olha uma mensagem e decide para onde mandar) e algo que lembra da conversa. É também o [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Aplicação Corporativa/04 - Application Controller|Application Controller]] da família anterior — a mesma máquina de estados, agora **distribuída e durável**, que é exatamente o que a versão de 2002 não conseguia ser.
 
 ## "Em que pé está o pedido 4471?"
 
@@ -96,19 +90,13 @@ A escolha entre "processo em código" e "processo declarativo" costuma ser a dec
 ## Armadilhas comuns
 
 > [!warning] Process manager que absorve as regras dos serviços
-> **O que acontece:** o coordenador começa sabendo a ordem e termina calculando limite de crédito e regra de frete. Os serviços viram CRUDs sem domínio, e o coordenador vira o arquivo que todo mundo edita.
-> **Por quê:** ele enxerga tudo, então toda regra que cruza passos parece pertencer a ele. Cada adição isolada é defensável; a soma esvazia os serviços.
-> **Como evitar:** ele coordena **fluxo**, não **mérito**. Se a regra responde "isto é permitido/quanto custa", é do serviço; se responde "o que vem agora / o que fazer se falhar", é dele.
+> **O que acontece:** o coordenador começa sabendo a ordem e termina calculando limite de crédito e regra de frete. Os serviços viram CRUDs sem domínio, e o coordenador vira o arquivo que todo mundo edita. **Por quê:** ele enxerga tudo, então toda regra que cruza passos parece pertencer a ele. Cada adição isolada é defensável; a soma esvazia os serviços. **Como evitar:** ele coordena **fluxo**, não **mérito**. Se a regra responde "isto é permitido/quanto custa", é do serviço; se responde "o que vem agora / o que fazer se falhar", é dele.
 
 > [!warning] Estado do processo sem durabilidade
-> **O que acontece:** um *deploy* de rotina apaga trezentas instâncias em andamento. Pedidos ficam pagos e nunca entregues — e não há como listá-los, porque a lista morreu junto.
-> **Por quê:** em desenvolvimento, os processos duram segundos e cabem na memória. A falha só aparece com duração e volume reais.
-> **Como evitar:** persista o estado da instância a cada transição, ou use um motor durável. E garanta que exista uma **consulta** por instâncias em curso — sem ela, você não sabe o que perdeu.
+> **O que acontece:** um *deploy* de rotina apaga trezentas instâncias em andamento. Pedidos ficam pagos e nunca entregues — e não há como listá-los, porque a lista morreu junto. **Por quê:** em desenvolvimento, os processos duram segundos e cabem na memória. A falha só aparece com duração e volume reais. **Como evitar:** persista o estado da instância a cada transição, ou use um motor durável. E garanta que exista uma **consulta** por instâncias em curso — sem ela, você não sabe o que perdeu.
 
 > [!warning] Processo sem relógio
-> **O que acontece:** um serviço não responde e a instância fica pendente para sempre. Como não há erro, nada alerta; a descoberta vem semanas depois, por reclamação.
-> **Por quê:** implementa-se a reação a mensagens que chegam. A **ausência** de mensagem não é um evento — é silêncio, e silêncio não dispara nada por conta própria.
-> **Como evitar:** prazo em todo passo que espera resposta, com ação definida na expiração (retentar, compensar, escalar para humano). Um Process Manager sem relógio só funciona quando tudo funciona — que é justamente quando ele não seria necessário.
+> **O que acontece:** um serviço não responde e a instância fica pendente para sempre. Como não há erro, nada alerta; a descoberta vem semanas depois, por reclamação. **Por quê:** implementa-se a reação a mensagens que chegam. A **ausência** de mensagem não é um evento — é silêncio, e silêncio não dispara nada por conta própria. **Como evitar:** prazo em todo passo que espera resposta, com ação definida na expiração (retentar, compensar, escalar para humano). Um Process Manager sem relógio só funciona quando tudo funciona — que é justamente quando ele não seria necessário.
 
 ## Como explicar em inglês
 

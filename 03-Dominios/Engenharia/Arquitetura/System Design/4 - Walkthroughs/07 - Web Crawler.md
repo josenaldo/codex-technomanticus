@@ -66,36 +66,31 @@ Com os requisitos fixados, o passo — detalhado em [[1 - Framework de entrevist
 
 **Páginas por segundo necessárias:**
 
-$$
-\frac{1.000.000.000 \text{ páginas}}{30 \times 86.400 \text{ s}} \approx 386 \text{ páginas/s (média)}
+$$ \frac{1.000.000.000 \text{ páginas}}{30 \times 86.400 \text{ s}} \approx 386 \text{ páginas/s (média)}
 $$
 
 Com um **peak factor de ~2-3x** para absorver variação de carga ao longo do dia (prática comum de estimativa citada em guias como Hello Interview):
 
-$$
-386 \times 2,5 \approx 965 \text{ páginas/s no pico}
+$$ 386 \times 2,5 \approx 965 \text{ páginas/s no pico}
 $$
 
 Quase mil páginas por segundo não é algo que um único fetcher single-threaded processa — isso é exatamente o número que justifica um **pool de workers distribuído**, na casa de centenas a milhares de threads/processos concorrentes, cada um fazendo uma requisição HTTP de cada vez (e cada requisição levando, tipicamente, algumas centenas de milissegundos a poucos segundos, dominado por latência de rede e não por CPU).
 
 **Storage total:**
 
-$$
-1.000.000.000 \text{ páginas/mês} \times 500 \text{ KB} = 500 \text{ TB/mês}
+$$ 1.000.000.000 \text{ páginas/mês} \times 500 \text{ KB} = 500 \text{ TB/mês}
 $$
 
 Ao longo de um ano de operação contínua, sem nenhuma retenção seletiva:
 
-$$
-500 \text{ TB} \times 12 \approx 6 \text{ PB/ano}
+$$ 500 \text{ TB} \times 12 \approx 6 \text{ PB/ano}
 $$
 
 Um número na casa dos **petabytes** — inviável num único servidor, mas rotineiro para um object store distribuído (S3, GCS, HDFS) projetado exatamente para esse volume, com replicação e tiers de custo (dados antigos migram para storage mais barato e mais lento).
 
 **Banda necessária:**
 
-$$
-965 \text{ páginas/s} \times 500 \text{ KB} \approx 482 \text{ MB/s} \approx 3,86 \text{ Gbps no pico}
+$$ 965 \text{ páginas/s} \times 500 \text{ KB} \approx 482 \text{ MB/s} \approx 3,86 \text{ Gbps no pico}
 $$
 
 Esse número por si só já descarta rodar o crawler de um único datacenter pequeno com um único uplink — é a ordem de grandeza que justifica múltiplos pontos de saída de rede (multi-região ou multi-AZ) e, potencialmente, negociar peering direto com provedores de trânsito, algo que crawlers de produção (Googlebot, Common Crawl) de fato fazem.
@@ -226,9 +221,7 @@ Quando uma back queue esvazia, ela é **reabastecida** puxando a próxima URL di
 **Respeitando `robots.txt` e `Crawl-delay`.** Antes de qualquer fetch, o worker consulta um cache de `robots.txt` por host (populado sob demanda, com TTL — recuperar `robots.txt` a cada requisição seria, ironicamente, impolido). Se o arquivo declarar um `Crawl-delay: N`, esse valor sobrescreve o intervalo default do heap de politeness para aquele host especificamente — hosts mais sensíveis pedem esperas maiores, e o crawler obedece.
 
 > [!warning] Tratar politeness como "adicionar um `sleep()`" no worker
-> **O que acontece:** o time implementa "politeness" como um `time.sleep(10)` fixo antes de cada requisição, dentro do próprio worker.
-> **Por quê:** parece resolver o problema — o worker realmente espera 10 segundos entre requisições. Mas isso só funciona **se cada worker for dedicado a um único host**, o que não é verdade num pool compartilhado: com mil workers livres e um roteamento ingênuo, nada impede que dois workers diferentes peguem URLs do mesmo host ao mesmo tempo, cada um com seu próprio `sleep` local — o host ainda recebe rajadas concorrentes.
-> **Como evitar:** politeness precisa ser uma propriedade **do frontier**, não do worker — é exatamente o que o design de back queue-por-host garante estruturalmente: a associação 1:1 entre host e back queue impede, por construção, que dois workers processem o mesmo host simultaneamente, independente de quantos workers existam no pool.
+> **O que acontece:** o time implementa "politeness" como um `time.sleep(10)` fixo antes de cada requisição, dentro do próprio worker. **Por quê:** parece resolver o problema — o worker realmente espera 10 segundos entre requisições. Mas isso só funciona **se cada worker for dedicado a um único host**, o que não é verdade num pool compartilhado: com mil workers livres e um roteamento ingênuo, nada impede que dois workers diferentes peguem URLs do mesmo host ao mesmo tempo, cada um com seu próprio `sleep` local — o host ainda recebe rajadas concorrentes. **Como evitar:** politeness precisa ser uma propriedade **do frontier**, não do worker — é exatamente o que o design de back queue-por-host garante estruturalmente: a associação 1:1 entre host e back queue impede, por construção, que dois workers processem o mesmo host simultaneamente, independente de quantos workers existam no pool.
 
 ### Deep dive 2 — dedup de URL e de conteúdo em escala de bilhões
 
@@ -255,9 +248,7 @@ A técnica padrão aqui é **simhash** — uma função de hash localidade-sens�
 > Porque são problemas de natureza diferente. URLs são strings curtas e exatas — ou você já a viu, ou não; não existe "URL quase igual" que precise de comparação por similaridade (URLs *parecidas* como `?utm_source=x` vs `?utm_source=y` são resolvidas por **normalização/canonicalização** antes da checagem, não por hashing difuso). Conteúdo, ao contrário, é grande e varia de forma sutil entre cópias legítimas — exigir igualdade exata (via bloom filter, que também é binário: visto ou não) geraria uma explosão de "duplicatas não detectadas" porque nenhum par de páginas reais é *byte-a-byte* idêntico. Usar simhash para URL seria over-engineering caro para um problema que já é resolvido, de forma mais barata, por um bloom filter e por normalização de URL.
 
 > [!warning] Esquecer a normalização de URL antes de qualquer dedup
-> **O que acontece:** o time implementa bloom filter e simhash corretamente, mas o frontier ainda enfileira, na prática, um volume de URLs muito maior do que o esperado.
-> **Por quê:** a mesma página é referenciada de formas textualmente diferentes — `http://Exemplo.com/pagina`, `https://exemplo.com/pagina/`, `https://exemplo.com/pagina?utm_source=twitter`, `https://exemplo.com/Pagina` — e um bloom filter compara **strings**, não significado. Sem normalização, cada variação passa pelo filtro como "nunca visto" e o sistema desperdiça um fetch inteiro numa página que, semanticamente, já foi baixada.
-> **Como evitar:** aplicar uma etapa de **canonicalização** antes de qualquer checagem de dedup — lowercase no host, remoção de parâmetros de tracking conhecidos (`utm_*`, `fbclid`, `gclid`), remoção de fragmentos (`#`), normalização de trailing slash, resolução de `.` e `..` no path. É trabalho de baixo glamour, mas sem ele o bloom filter mede o volume errado desde a entrada.
+> **O que acontece:** o time implementa bloom filter e simhash corretamente, mas o frontier ainda enfileira, na prática, um volume de URLs muito maior do que o esperado. **Por quê:** a mesma página é referenciada de formas textualmente diferentes — `http://Exemplo.com/pagina`, `https://exemplo.com/pagina/`, `https://exemplo.com/pagina?utm_source=twitter`, `https://exemplo.com/Pagina` — e um bloom filter compara **strings**, não significado. Sem normalização, cada variação passa pelo filtro como "nunca visto" e o sistema desperdiça um fetch inteiro numa página que, semanticamente, já foi baixada. **Como evitar:** aplicar uma etapa de **canonicalização** antes de qualquer checagem de dedup — lowercase no host, remoção de parâmetros de tracking conhecidos (`utm_*`, `fbclid`, `gclid`), remoção de fragmentos (`#`), normalização de trailing slash, resolução de `.` e `..` no path. É trabalho de baixo glamour, mas sem ele o bloom filter mede o volume errado desde a entrada.
 
 ### Deep dive 3 — armadilhas de spider e robustez
 
@@ -277,9 +268,7 @@ A mitigação não é uma única técnica, é uma combinação:
 **Links quebrados, timeouts e redirects em loop.** Toda requisição de fetch precisa de um **timeout** (evitar que um worker fique preso esperando um servidor lento indefinidamente) e um **limite de redirects seguidos** (um `A → B → A` de redirects, seja por erro de configuração ou má-fé, travaria o fetcher para sempre sem esse limite). Falhas de rede (DNS não resolve, conexão recusada, 5xx) entram numa política de **retry com backoff exponencial e limite de tentativas**, e depois de esgotadas, a URL é marcada como falha e não retorna ao frontier até um próximo ciclo de re-crawl.
 
 > [!warning] Confundir "URL nova" com "trabalho legítimo"
-> **O que acontece:** o crawler trata toda URL recém-descoberta (que passou pelo bloom filter) como um item de trabalho válido, sem nenhum limite de orçamento por host.
-> **Por quê:** o bloom filter só responde "eu já vi esta string exata?" — ele não tem nenhuma noção de "este host está gerando URLs de forma patológica". Um spider trap gera, por definição, URLs sempre novas, então ele nunca vai "parecer suspeito" aos olhos do bloom filter — cada URL individual é, tecnicamente, legítima e nunca vista.
-> **Como evitar:** o limite de URLs por domínio (budget) precisa existir como uma camada **separada e independente** do bloom filter, exatamente porque o bloom filter é estruturalmente incapaz de detectar esse padrão sozinho — ele resolve "URL repetida", não "host patológico".
+> **O que acontece:** o crawler trata toda URL recém-descoberta (que passou pelo bloom filter) como um item de trabalho válido, sem nenhum limite de orçamento por host. **Por quê:** o bloom filter só responde "eu já vi esta string exata?" — ele não tem nenhuma noção de "este host está gerando URLs de forma patológica". Um spider trap gera, por definição, URLs sempre novas, então ele nunca vai "parecer suspeito" aos olhos do bloom filter — cada URL individual é, tecnicamente, legítima e nunca vista. **Como evitar:** o limite de URLs por domínio (budget) precisa existir como uma camada **separada e independente** do bloom filter, exatamente porque o bloom filter é estruturalmente incapaz de detectar esse padrão sozinho — ele resolve "URL repetida", não "host patológico".
 
 ## Gargalos & trade-offs
 

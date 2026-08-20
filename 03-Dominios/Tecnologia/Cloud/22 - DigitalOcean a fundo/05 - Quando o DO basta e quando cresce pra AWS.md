@@ -51,8 +51,7 @@ Note o nó `F`: ter plataforma dedicada e já dominar AWS não é gatilho de mig
 > [!tip] Assista: Are cloud providers like Digital Ocean better than AWS?
 > **Canal:** Code The Web | **Duração:** ~15min | **Idioma:** EN
 >
-> Um dev conta a própria jornada saindo do "AWS por padrão" pra questionar quando isso realmente vale a pena — e chega em alternativas como o DigitalOcean pelo mesmo caminho desta nota: pricing mais simples de entender, sem o catálogo de 200+ produtos como ruído.
-> Trecho de destaque [00:26]: *"times where AWS is not the right way to go and some alternatives that you can use instead"*
+> Um dev conta a própria jornada saindo do "AWS por padrão" pra questionar quando isso realmente vale a pena — e chega em alternativas como o DigitalOcean pelo mesmo caminho desta nota: pricing mais simples de entender, sem o catálogo de 200+ produtos como ruído. Trecho de destaque [00:26]: *"times where AWS is not the right way to go and some alternatives that you can use instead"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=63p6kkoBjuw)
 

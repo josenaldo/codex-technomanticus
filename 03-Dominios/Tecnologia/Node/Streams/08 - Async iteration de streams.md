@@ -460,9 +460,7 @@ O async generator só faz a próxima requisição HTTP quando o consumer (via `p
 ## Armadilhas comuns
 
 > [!warning] 1. Esquecer `try/catch` — erro do stream vira `UnhandledPromiseRejection`
-> **O que acontece:** quando o stream emite `'error'`, o iterator converte em rejeição de Promise — sem `try/catch`, vira `UnhandledPromiseRejectionWarning`; em Node 15+ termina o processo.
-> **Por quê:** `for await...of` opera sobre Promises implícitas; um erro não capturado não gera stack trace legível imediatamente — dificulta o diagnóstico.
-> **Como evitar:** sempre envolver o `for await...of` em `try/catch`.
+> **O que acontece:** quando o stream emite `'error'`, o iterator converte em rejeição de Promise — sem `try/catch`, vira `UnhandledPromiseRejectionWarning`; em Node 15+ termina o processo. **Por quê:** `for await...of` opera sobre Promises implícitas; um erro não capturado não gera stack trace legível imediatamente — dificulta o diagnóstico. **Como evitar:** sempre envolver o `for await...of` em `try/catch`.
 
 ```javascript
 // ERRADO — sem try/catch
@@ -485,9 +483,7 @@ async function good(stream) {
 ```
 
 > [!warning] 2. Misturar listener `'data'` com `for await...of` — comportamento indefinido
-> **O que acontece:** chunks podem ser perdidos, duplicados ou o stream pode nunca emitir `'end'`.
-> **Por quê:** adicionar `'data'` coloca o stream em modo flowing; `for await...of` opera em modo pull; os dois modos são incompatíveis na mesma instância.
-> **Como evitar:** escolha **uma** API de consumo por stream e não misture.
+> **O que acontece:** chunks podem ser perdidos, duplicados ou o stream pode nunca emitir `'end'`. **Por quê:** adicionar `'data'` coloca o stream em modo flowing; `for await...of` opera em modo pull; os dois modos são incompatíveis na mesma instância. **Como evitar:** escolha **uma** API de consumo por stream e não misture.
 
 ```javascript
 // NUNCA faça isso
@@ -501,9 +497,7 @@ for await (const chunk of stream) { // comportamento indefinido
 A documentação oficial do Node.js é explícita: misturar `'data'`, `'readable'`, `.pipe()` e async iterators no mesmo stream produz resultados imprevisíveis.
 
 > [!warning] 3. Exceção no body e stream em estado inconsistente
-> **O que acontece:** o cleanup é automático (`.return()` destrói o stream), mas se você passar o stream para outro consumidor após o erro, ele pode já estar destruído.
-> **Por quê:** `for await...of` chama `.return()` ao sair por exceção, que destrói o stream — correto internamente, mas surpreendente se o stream for compartilhado.
-> **Como evitar:** verificar `stream.destroyed` antes de reutilizar um stream que passou por um `for await...of` com erro.
+> **O que acontece:** o cleanup é automático (`.return()` destrói o stream), mas se você passar o stream para outro consumidor após o erro, ele pode já estar destruído. **Por quê:** `for await...of` chama `.return()` ao sair por exceção, que destrói o stream — correto internamente, mas surpreendente se o stream for compartilhado. **Como evitar:** verificar `stream.destroyed` antes de reutilizar um stream que passou por um `for await...of` com erro.
 
 ```javascript
 async function risky(stream) {
@@ -519,14 +513,10 @@ async function risky(stream) {
 ```
 
 > [!warning] 4. Otimização prematura — async iter não é mais lento que event listeners
-> **O que acontece:** desenvolvedor reescreve `for await...of` de volta para callbacks `'data'` em busca de performance — perde legibilidade sem ganho real.
-> **Por quê:** o overhead do protocolo async iterator é de microssegundos por chunk. O gargalo real é sempre I/O ou processamento CPU — nunca o protocolo de iteração.
-> **Como evitar:** medir antes de otimizar; não sacrificar legibilidade por suposição de lentidão.
+> **O que acontece:** desenvolvedor reescreve `for await...of` de volta para callbacks `'data'` em busca de performance — perde legibilidade sem ganho real. **Por quê:** o overhead do protocolo async iterator é de microssegundos por chunk. O gargalo real é sempre I/O ou processamento CPU — nunca o protocolo de iteração. **Como evitar:** medir antes de otimizar; não sacrificar legibilidade por suposição de lentidão.
 
 > [!warning] 5. `Readable.from()` com objeto não-iterable — TypeError em runtime
-> **O que acontece:** `Readable.from({ data: 'hello' })` lança `TypeError` em runtime — objetos comuns não são iterables.
-> **Por quê:** `Readable.from()` exige `[Symbol.iterator]` ou `[Symbol.asyncIterator]`; um objeto literal não implementa nenhum dos dois.
-> **Como evitar:** passar array, generator ou async generator; verificar com TypeScript se os tipos estiverem corretos (o erro não aparece em compile time sem tipos adequados).
+> **O que acontece:** `Readable.from({ data: 'hello' })` lança `TypeError` em runtime — objetos comuns não são iterables. **Por quê:** `Readable.from()` exige `[Symbol.iterator]` ou `[Symbol.asyncIterator]`; um objeto literal não implementa nenhum dos dois. **Como evitar:** passar array, generator ou async generator; verificar com TypeScript se os tipos estiverem corretos (o erro não aparece em compile time sem tipos adequados).
 
 ```javascript
 // ERRADO — objeto comum não é iterable
@@ -549,17 +539,13 @@ const stream = Readable.from((async function*() { yield 'hello'; })());
 
 ### Perguntas frequentes em entrevista
 
-**"Qual a diferença entre modo flowing e async iteration?"**
-Modo flowing empurra chunks o mais rápido possível via listener `'data'`, sem esperar o consumidor. Async iteration é puxado (pull): o loop solicita o próximo chunk apenas após terminar o body da iteração — comportamento equivalente ao modo paused, mas com sintaxe moderna e backpressure automático.
+**"Qual a diferença entre modo flowing e async iteration?"** Modo flowing empurra chunks o mais rápido possível via listener `'data'`, sem esperar o consumidor. Async iteration é puxado (pull): o loop solicita o próximo chunk apenas após terminar o body da iteração — comportamento equivalente ao modo paused, mas com sintaxe moderna e backpressure automático.
 
-**"Quando você escolhe `for await...of` vs `pipeline()`?"**
-`for await...of` para lógica condicional por chunk — filtros, agregações, early exits, parsing complexo. `pipeline()` para composição linear de transforms onde cada stage recebe o stream inteiro e passa adiante. Os dois podem ser combinados: async generators dentro de `pipeline()`.
+**"Quando você escolhe `for await...of` vs `pipeline()`?"** `for await...of` para lógica condicional por chunk — filtros, agregações, early exits, parsing complexo. `pipeline()` para composição linear de transforms onde cada stage recebe o stream inteiro e passa adiante. Os dois podem ser combinados: async generators dentro de `pipeline()`.
 
-**"Como `Readable.from()` funciona internamente?"**
-Cria uma instância de `Readable` cujo `_read()` chama `.next()` no iterator fornecido e faz `push(chunk)` com o resultado. Quando o iterator retorna `done: true`, faz `push(null)` para sinalizar fim do stream.
+**"Como `Readable.from()` funciona internamente?"** Cria uma instância de `Readable` cujo `_read()` chama `.next()` no iterator fornecido e faz `push(chunk)` com o resultado. Quando o iterator retorna `done: true`, faz `push(null)` para sinalizar fim do stream.
 
-**"O que acontece se você não consumir o stream dentro do `for await`?"**
-Se você fizer `break` ou `return` antes de consumir o stream inteiro, o iterator chama `.return()` automaticamente, o que destrói o stream e libera file descriptors. Não é necessário chamar `stream.destroy()` manualmente.
+**"O que acontece se você não consumir o stream dentro do `for await`?"** Se você fizer `break` ou `return` antes de consumir o stream inteiro, o iterator chama `.return()` automaticamente, o que destrói o stream e libera file descriptors. Não é necessário chamar `stream.destroy()` manualmente.
 
 ### Vocabulário PT-BR / EN para entrevista
 

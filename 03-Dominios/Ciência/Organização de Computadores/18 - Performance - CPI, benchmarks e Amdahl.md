@@ -172,20 +172,15 @@ A geométrica trata os ratios multiplicativamente, o que é matematicamente corr
 > [!danger] Goodhart's Law aplicada a benchmarks
 > "When a measure becomes a target, it ceases to be a good measure." Compiladores modernos detectam loops específicos do SPEC e os otimizam de formas que não se generalizam para código real.
 
-**Armadilha 1 — Otimizar pro benchmark, não para a carga real:**
-Fabricantes de CPU e compiladores às vezes inserem otimizações muito específicas aos kernels do SPEC. O resultado no benchmark sobe; o resultado na aplicação do usuário não muda.
+**Armadilha 1 — Otimizar pro benchmark, não para a carga real:** Fabricantes de CPU e compiladores às vezes inserem otimizações muito específicas aos kernels do SPEC. O resultado no benchmark sobe; o resultado na aplicação do usuário não muda.
 
-**Armadilha 2 — Não-representatividade:**
-Se seu sistema processa streams de dados de sensores IoT em tempo real, os benchmarks do SPEC (que incluem compilação de C e cálculo de física) podem não refletir seu gargalo real. Benchmarks são úteis apenas se a carga modelada for próxima da sua.
+**Armadilha 2 — Não-representatividade:** Se seu sistema processa streams de dados de sensores IoT em tempo real, os benchmarks do SPEC (que incluem compilação de C e cálculo de física) podem não refletir seu gargalo real. Benchmarks são úteis apenas se a carga modelada for próxima da sua.
 
-**Armadilha 3 — Micro vs. macro benchmark:**
-Um microbenchmark que mede a latência de uma função isolada pode mostrar 10 ns. Em produção, com dados reais, cache frio e pressão de memória, a mesma função pode levar 200 ns. O contexto importa.
+**Armadilha 3 — Micro vs. macro benchmark:** Um microbenchmark que mede a latência de uma função isolada pode mostrar 10 ns. Em produção, com dados reais, cache frio e pressão de memória, a mesma função pode levar 200 ns. O contexto importa.
 
-**Armadilha 4 — Esquecimento de warm-up (JIT):**
-Em Java/JVM, as primeiras iterações são interpretadas. O JIT compila o hot path depois de ~10 mil execuções. Microbenchmarks sem warm-up medem a interpretação, não o código otimizado. Use JMH (Java Microbenchmark Harness) para lidar com isso corretamente.
+**Armadilha 4 — Esquecimento de warm-up (JIT):** Em Java/JVM, as primeiras iterações são interpretadas. O JIT compila o hot path depois de ~10 mil execuções. Microbenchmarks sem warm-up medem a interpretação, não o código otimizado. Use JMH (Java Microbenchmark Harness) para lidar com isso corretamente.
 
-**Armadilha 5 — Variância ignorada:**
-Reportar apenas a média esconde variância alta. Um sistema com latência p50 = 10 ms e p99 = 500 ms é muito diferente de outro com p50 = 12 ms e p99 = 15 ms. Sempre reporte percentis quando latência importa.
+**Armadilha 5 — Variância ignorada:** Reportar apenas a média esconde variância alta. Um sistema com latência p50 = 10 ms e p99 = 500 ms é muito diferente de outro com p50 = 12 ms e p99 = 15 ms. Sempre reporte percentis quando latência importa.
 
 ---
 

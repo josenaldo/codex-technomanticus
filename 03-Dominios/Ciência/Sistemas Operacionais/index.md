@@ -21,16 +21,11 @@ aliases:
 # Sistemas Operacionais
 
 > [!abstract] TL;DR
-> Galho de Ciência da Computação sobre a **teoria** do software que fica entre seus programas e o hardware — o sistema
-> operacional. Cobre as abstrações que ele inventa (processos, threads, memória virtual, arquivos), os
-> mecanismos com que as sustenta (system calls, escalonamento, paginação, I/O, journaling) e a divergência
-> entre os SOs reais (Linux, Windows, macOS). Não é "como usar o Linux" — é **como o SO funciona por dentro**
-> e por que isso explica metade dos problemas de performance que você vai debugar.
+> Galho de Ciência da Computação sobre a **teoria** do software que fica entre seus programas e o hardware — o sistema operacional. Cobre as abstrações que ele inventa (processos, threads, memória virtual, arquivos), os mecanismos com que as sustenta (system calls, escalonamento, paginação, I/O, journaling) e a divergência entre os SOs reais (Linux, Windows, macOS). Não é "como usar o Linux" — é **como o SO funciona por dentro** e por que isso explica metade dos problemas de performance que você vai debugar.
 
 ## Sobre este galho
 
-Este é o andar **conceitual**: os mecanismos do kernel que sobrevivem à troca de SO. Quando um endpoint está
-lento e o EXPLAIN do banco diz 20ms, a resposta costuma estar aqui — page fault, context switch, I/O wait, swap.
+Este é o andar **conceitual**: os mecanismos do kernel que sobrevivem à troca de SO. Quando um endpoint está lento e o EXPLAIN do banco diz 20ms, a resposta costuma estar aqui — page fault, context switch, I/O wait, swap.
 
 **Fronteiras (linka, não duplica):**
 - **Usar o SO** (Linux na prática, Docker, K8s, WSL) → [[03-Dominios/Tecnologia/Infraestrutura/Linux|Linux]] / [[Infraestrutura]]. Aqui é a teoria.
@@ -40,8 +35,7 @@ lento e o EXPLAIN do banco diz 20ms, a resposta costuma estar aqui — page faul
 - **Sockets e I/O não-bloqueante** → [[Redes e Protocolos]].
 - **Anéis de proteção e criptografia a fundo** → futuro galho de Segurança Conceitual (mencionados em prosa).
 
-**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista" com
-frases prontas em inglês e vocabulário técnico PT→EN. (O tema cai *parcialmente* em entrevista, mas é fundamento real.)
+**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista" com frases prontas em inglês e vocabulário técnico PT→EN. (O tema cai *parcialmente* em entrevista, mas é fundamento real.)
 
 ## Iniciado — o que o SO é e suas abstrações
 

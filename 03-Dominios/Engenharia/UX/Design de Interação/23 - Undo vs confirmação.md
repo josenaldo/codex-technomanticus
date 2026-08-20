@@ -80,19 +80,13 @@ Uma ferramenta de gestão de tickets permite selecionar 50 tickets de uma vez e 
 ## Armadilhas comuns
 
 > [!warning] Confirmação em tudo, gerando alert fatigue
-> **O que acontece:** toda ação de exclusão ou edição dispara um modal "Tem certeza?", inclusive ações triviais e facilmente reversíveis.
-> **Por quê:** confirmação parece a escolha "segura por padrão" para quem está com medo de gerar reclamação de erro do usuário — mas o excesso de confirmações treina o usuário a clicar "Confirmar" sem ler, o que anula o propósito do modal justamente quando ele importa de verdade.
-> **Como evitar:** para cada confirmação existente, pergunte "essa ação é reversível em segundos, a custo baixo?" — se sim, substitua por undo. Reserve confirmação para o pequeno subconjunto de ações genuinamente irreversíveis ou caras.
+> **O que acontece:** toda ação de exclusão ou edição dispara um modal "Tem certeza?", inclusive ações triviais e facilmente reversíveis. **Por quê:** confirmação parece a escolha "segura por padrão" para quem está com medo de gerar reclamação de erro do usuário — mas o excesso de confirmações treina o usuário a clicar "Confirmar" sem ler, o que anula o propósito do modal justamente quando ele importa de verdade. **Como evitar:** para cada confirmação existente, pergunte "essa ação é reversível em segundos, a custo baixo?" — se sim, substitua por undo. Reserve confirmação para o pequeno subconjunto de ações genuinamente irreversíveis ou caras.
 
 > [!warning] Undo "de mentira" — toast que não reverte de verdade
-> **O que acontece:** um botão "Desfazer" aparece no toast, mas ao clicar, nada acontece, ou a ação parcialmente reverte (o item some da lista, mas o efeito colateral — um e-mail de notificação já disparado, por exemplo — já aconteceu e não é desfeito).
-> **Por quê:** implementar undo real exige a modelagem de dados descrita acima; sob pressão de prazo, é tentador adicionar só o botão visual sem a lógica de reversão completa por trás.
-> **Como evitar:** antes de expor undo na interface, valide que a reversão é de fato completa — incluindo efeitos colaterais como notificações, webhooks ou integrações disparadas pela ação original.
+> **O que acontece:** um botão "Desfazer" aparece no toast, mas ao clicar, nada acontece, ou a ação parcialmente reverte (o item some da lista, mas o efeito colateral — um e-mail de notificação já disparado, por exemplo — já aconteceu e não é desfeito). **Por quê:** implementar undo real exige a modelagem de dados descrita acima; sob pressão de prazo, é tentador adicionar só o botão visual sem a lógica de reversão completa por trás. **Como evitar:** antes de expor undo na interface, valide que a reversão é de fato completa — incluindo efeitos colaterais como notificações, webhooks ou integrações disparadas pela ação original.
 
 > [!warning] Confirmação genérica sem contexto específico da ação
-> **O que acontece:** o modal diz apenas "Tem certeza que deseja continuar?" sem nomear o que exatamente vai ser afetado.
-> **Por quê:** um texto genérico é mais rápido de escrever e reutilizar entre diferentes ações — mas obriga o usuário a confiar cegamente, sem informação suficiente para decidir se aquela confirmação específica é a que ele realmente queria dar.
-> **Como evitar:** o texto de confirmação deve restatar o que vai acontecer com especificidade — "Excluir permanentemente o board 'Sprint 12' e suas 34 tarefas?" em vez de "Tem certeza?" — dando ao usuário a informação real para decidir.
+> **O que acontece:** o modal diz apenas "Tem certeza que deseja continuar?" sem nomear o que exatamente vai ser afetado. **Por quê:** um texto genérico é mais rápido de escrever e reutilizar entre diferentes ações — mas obriga o usuário a confiar cegamente, sem informação suficiente para decidir se aquela confirmação específica é a que ele realmente queria dar. **Como evitar:** o texto de confirmação deve restatar o que vai acontecer com especificidade — "Excluir permanentemente o board 'Sprint 12' e suas 34 tarefas?" em vez de "Tem certeza?" — dando ao usuário a informação real para decidir.
 
 ## Como explicar em inglês
 

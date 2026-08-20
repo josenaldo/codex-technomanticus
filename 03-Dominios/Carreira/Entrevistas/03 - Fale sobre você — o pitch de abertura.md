@@ -21,12 +21,7 @@ aliases:
 # Fale sobre você — o pitch de abertura
 
 > [!abstract] TL;DR
-> É a pergunta mais previsível de qualquer processo e a mais desperdiçada por candidatos sêniores — em
-> geral porque quem tem vinte anos de carreira tenta caber vinte anos na resposta. Ela **não pede
-> biografia**: pede que você selecione, dentre tudo que fez, o que é relevante para **aquela vaga** — o
-> que a torna, na prática, um teste de **edição**. A estrutura que funciona é presente → passado →
-> futuro, em dois minutos, terminando no motivo de você estar ali. E ela precisa de versões de tamanhos
-> diferentes, porque abre quase todas as etapas do funil.
+> É a pergunta mais previsível de qualquer processo e a mais desperdiçada por candidatos sêniores — em geral porque quem tem vinte anos de carreira tenta caber vinte anos na resposta. Ela **não pede biografia**: pede que você selecione, dentre tudo que fez, o que é relevante para **aquela vaga** — o que a torna, na prática, um teste de **edição**. A estrutura que funciona é presente → passado → futuro, em dois minutos, terminando no motivo de você estar ali. E ela precisa de versões de tamanhos diferentes, porque abre quase todas as etapas do funil.
 
 ## Vinte anos em ordem cronológica
 
@@ -93,19 +88,13 @@ Como a pergunta abre quase toda etapa, ela precisa de calibragens — mesma traj
 ## Armadilhas comuns
 
 > [!warning] Narrativa cronológica desde a formação
-> **O que acontece:** a resposta começa em um passado distante e o tempo acaba antes da parte relevante. O entrevistador ouve com atenção decrescente exatamente o que menos importa.
-> **Por quê:** cronologia é a ordem natural da memória — é assim que a pessoa lembra da própria carreira.
-> **Como evitar:** comece pelo presente. Se algo do início da carreira for genuinamente relevante, ele entra como marco escolhido no meio, não como ponto de partida.
+> **O que acontece:** a resposta começa em um passado distante e o tempo acaba antes da parte relevante. O entrevistador ouve com atenção decrescente exatamente o que menos importa. **Por quê:** cronologia é a ordem natural da memória — é assim que a pessoa lembra da própria carreira. **Como evitar:** comece pelo presente. Se algo do início da carreira for genuinamente relevante, ele entra como marco escolhido no meio, não como ponto de partida.
 
 > [!warning] Listar tecnologias em vez de contar decisões
-> **O que acontece:** a resposta vira inventário — "trabalhei com Java, Spring, Kafka, React, AWS, Kubernetes...". O entrevistador já tem essa lista: está no seu currículo, que ele leu.
-> **Por quê:** tecnologias são fáceis de enumerar e dão sensação de substância; decisões exigem escolher e explicar.
-> **Como evitar:** para cada marco, diga **o problema, a decisão e o resultado**. A tecnologia entra como detalhe da decisão, não como protagonista.
+> **O que acontece:** a resposta vira inventário — "trabalhei com Java, Spring, Kafka, React, AWS, Kubernetes...". O entrevistador já tem essa lista: está no seu currículo, que ele leu. **Por quê:** tecnologias são fáceis de enumerar e dão sensação de substância; decisões exigem escolher e explicar. **Como evitar:** para cada marco, diga **o problema, a decisão e o resultado**. A tecnologia entra como detalhe da decisão, não como protagonista.
 
 > [!warning] Terminar sem dizer o que procura
-> **O que acontece:** a resposta encerra no último emprego e paira um silêncio. O entrevistador precisa perguntar "e por que você está buscando mudança?", que era a pergunta que você deveria ter respondido de graça.
-> **Por quê:** o candidato entende a pergunta como "resuma seu currículo", que é retrospectivo por natureza.
-> **Como evitar:** feche com uma frase que ligue trajetória e vaga. Vale a versão simples: *"é por isso que uma posição com [característica específica desta vaga] me interessa agora"* — e ela exige ter lido a descrição com atenção, o que também é sinal.
+> **O que acontece:** a resposta encerra no último emprego e paira um silêncio. O entrevistador precisa perguntar "e por que você está buscando mudança?", que era a pergunta que você deveria ter respondido de graça. **Por quê:** o candidato entende a pergunta como "resuma seu currículo", que é retrospectivo por natureza. **Como evitar:** feche com uma frase que ligue trajetória e vaga. Vale a versão simples: *"é por isso que uma posição com [característica específica desta vaga] me interessa agora"* — e ela exige ter lido a descrição com atenção, o que também é sinal.
 
 ## Como soa em inglês
 

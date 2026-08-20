@@ -65,9 +65,7 @@ git restore .
 ```
 
 > [!warning] Este é o único comando genuinamente perigoso do nível 0
-> **O que acontece:** o trabalho descartado **some para sempre**. Não vai pro reflog, não vai pra lixeira, não tem `Ctrl+Z`.
-> **Por quê:** aquelas edições nunca chegaram a entrar no Git — ele não tem cópia delas para devolver. Você está pedindo pra sobrescrever o arquivo com a versão que ele *tem*.
-> **Como evitar:** antes de rodar, confira com `git status` (o que está pendente?) e `git diff` (o que exatamente vou perder?). E, na dúvida, faça um commit em vez de descartar: commit ruim se conserta depois; trabalho descartado, não.
+> **O que acontece:** o trabalho descartado **some para sempre**. Não vai pro reflog, não vai pra lixeira, não tem `Ctrl+Z`. **Por quê:** aquelas edições nunca chegaram a entrar no Git — ele não tem cópia delas para devolver. Você está pedindo pra sobrescrever o arquivo com a versão que ele *tem*. **Como evitar:** antes de rodar, confira com `git status` (o que está pendente?) e `git diff` (o que exatamente vou perder?). E, na dúvida, faça um commit em vez de descartar: commit ruim se conserta depois; trabalho descartado, não.
 
 ---
 
@@ -82,8 +80,7 @@ git restore --staged pdf-gerado.pdf
 O arquivo sai da área de preparação e volta a ser apenas "modificado". **Suas edições continuam intactas** — o comando só desfaz a escolha de incluí-lo, não o conteúdo. É uma operação totalmente segura.
 
 > [!question]- Por que os dois comandos são quase iguais, se um é perigoso e o outro não?
-> Porque a diferença está em *de onde* o Git copia para *onde*. Sem o `--staged`, ele copia do último commit por cima do seu arquivo — e o que estava no arquivo se perde. Com o `--staged`, ele copia do último commit por cima da **área de preparação**, e o seu arquivo nem é tocado.
-> Se essa proximidade te incomoda, você não está sozinho: até 2019 as duas operações eram feitas pelo mesmo comando (`git checkout`), que fazia meia dúzia de coisas diferentes conforme os argumentos — motivo de confusão histórica. O `restore` foi criado justamente para separar essas responsabilidades. Você ainda vai encontrar `git checkout -- arquivo` em tutoriais antigos; é a forma antiga do primeiro caso.
+> Porque a diferença está em *de onde* o Git copia para *onde*. Sem o `--staged`, ele copia do último commit por cima do seu arquivo — e o que estava no arquivo se perde. Com o `--staged`, ele copia do último commit por cima da **área de preparação**, e o seu arquivo nem é tocado. Se essa proximidade te incomoda, você não está sozinho: até 2019 as duas operações eram feitas pelo mesmo comando (`git checkout`), que fazia meia dúzia de coisas diferentes conforme os argumentos — motivo de confusão histórica. O `restore` foi criado justamente para separar essas responsabilidades. Você ainda vai encontrar `git checkout -- arquivo` em tutoriais antigos; é a forma antiga do primeiro caso.
 
 ---
 
@@ -105,9 +102,7 @@ git commit --amend --no-edit
 O `--no-edit` significa "mantenha a mensagem que já estava lá".
 
 > [!warning] `--amend` só é seguro antes de compartilhar
-> **O que acontece:** se você já enviou o commit para a nuvem e depois usa `--amend`, o Git vai recusar o próximo envio, reclamando que as histórias divergiram.
-> **Por quê:** o `--amend` não edita o commit; ele **cria um commit novo** no lugar do antigo. Se outra pessoa (ou o servidor) já tinha o antigo, agora existem duas versões incompatíveis da mesma história.
-> **Como evitar:** guarde a regra — **antes de enviar, a história é sua e você pode reescrever; depois de enviar, ela é de todos**. Essa regra vai reaparecer com nome próprio bem mais adiante ("a regra de ouro do rebase"); por ora, ela basta como hábito.
+> **O que acontece:** se você já enviou o commit para a nuvem e depois usa `--amend`, o Git vai recusar o próximo envio, reclamando que as histórias divergiram. **Por quê:** o `--amend` não edita o commit; ele **cria um commit novo** no lugar do antigo. Se outra pessoa (ou o servidor) já tinha o antigo, agora existem duas versões incompatíveis da mesma história. **Como evitar:** guarde a regra — **antes de enviar, a história é sua e você pode reescrever; depois de enviar, ela é de todos**. Essa regra vai reaparecer com nome próprio bem mais adiante ("a regra de ouro do rebase"); por ora, ela basta como hábito.
 
 ---
 
@@ -139,8 +134,7 @@ git restore --source=a3f1c9d capitulo-1.tex
 Esse último é o comando que resolve o caso clássico: *"aquele parágrafo que eu apaguei em abril era melhor, quero ele de volta"*. Você não precisa desfazer nada do que veio depois — só puxa a versão antiga daquele arquivo, olha, e decide o que aproveitar.
 
 > [!info] E se eu quiser voltar o projeto inteiro para um ponto antigo?
-> Dá, e há mais de uma forma — algumas seguras, outras destrutivas, e a escolha certa depende de você já ter compartilhado ou não a história. Esse é justamente o tipo de decisão que merece uma árvore de decisão inteira, e por isso ela tem nota própria (`22 — A árvore de decisão do desfazer`) num nível mais avançado.
-> Enquanto você não chegar lá: para **consultar** o passado, os comandos desta seção bastam e são seguros. Para **reverter** o projeto todo, evite copiar comandos da internet sem entender — é exatamente aí que as pessoas perdem trabalho.
+> Dá, e há mais de uma forma — algumas seguras, outras destrutivas, e a escolha certa depende de você já ter compartilhado ou não a história. Esse é justamente o tipo de decisão que merece uma árvore de decisão inteira, e por isso ela tem nota própria (`22 — A árvore de decisão do desfazer`) num nível mais avançado. Enquanto você não chegar lá: para **consultar** o passado, os comandos desta seção bastam e são seguros. Para **reverter** o projeto todo, evite copiar comandos da internet sem entender — é exatamente aí que as pessoas perdem trabalho.
 
 ---
 

@@ -23,29 +23,19 @@ aliases:
 # Banco de Dados
 
 > [!abstract] TL;DR
-> Galho de Ciência da Computação sobre como software guarda, consulta e protege dados. Coração do
-> relacional — **modelo, SQL, transações (ACID), índices, performance e concorrência** — com
-> um tratamento honesto de **distribuídos** e **NoSQL**. Para um senior, o banco raramente é
-> só persistência: é onde vivem as garantias de consistência, os maiores ganhos de performance
-> e os bugs mais caros. Interview-critical.
+> Galho de Ciência da Computação sobre como software guarda, consulta e protege dados. Coração do relacional — **modelo, SQL, transações (ACID), índices, performance e concorrência** — com um tratamento honesto de **distribuídos** e **NoSQL**. Para um senior, o banco raramente é só persistência: é onde vivem as garantias de consistência, os maiores ganhos de performance e os bugs mais caros. Interview-critical.
 
 ## Sobre este galho
 
-A narrativa default é **PostgreSQL** (o ferramental mais rico de índice e o melhor valor
-didático); MySQL/InnoDB e SQLite entram **só onde divergem de verdade** e cai em entrevista.
-O galho é stack-agnóstico em SQL/modelagem/transações e **linka** a estante Java onde a mecânica
-é específica de framework.
+A narrativa default é **PostgreSQL** (o ferramental mais rico de índice e o melhor valor didático); MySQL/InnoDB e SQLite entram **só onde divergem de verdade** e cai em entrevista. O galho é stack-agnóstico em SQL/modelagem/transações e **linka** a estante Java onde a mecânica é específica de framework.
 
 **Fronteiras (linka, não duplica):**
-- **B-Tree/B+Tree como estrutura** → [[09 - Árvores B e índices]] (galho Estruturas de Dados). Aqui
-  a nota de Índices foca em **uso**: que índice criar, quando, a que custo.
+- **B-Tree/B+Tree como estrutura** → [[09 - Árvores B e índices]] (galho Estruturas de Dados). Aqui a nota de Índices foca em **uso**: que índice criar, quando, a que custo.
 - **Scale-out de sistema** (replicação/sharding/CAP na escala de arquitetura) → [[System Design]].
-- **Saga/Outbox como padrões de mensageria** → [[Mensageria]] / [[Arquitetura de Software]]. Aqui
-  fica o lado-banco (o *dual-write problem*, 2PC, por que Outbox resolve).
+- **Saga/Outbox como padrões de mensageria** → [[Mensageria]] / [[Arquitetura de Software]]. Aqui fica o lado-banco (o *dual-write problem*, 2PC, por que Outbox resolve).
 - **JPA/Hibernate/Spring Data** → [[Spring Boot]]. O galho trata SQL/transações; o ORM linka.
 
-**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção
-"Em entrevista" com frases prontas em inglês e vocabulário técnico.
+**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista" com frases prontas em inglês e vocabulário técnico.
 
 ## Iniciado — o modelo, a linguagem, a modelagem
 

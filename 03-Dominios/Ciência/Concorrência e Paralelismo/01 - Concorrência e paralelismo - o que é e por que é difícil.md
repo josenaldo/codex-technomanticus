@@ -234,8 +234,7 @@ Leitura do diagrama: a decisão começa na pergunta de cima. Se o trabalho é CP
 
 > [!tip] A regra de bolso
 > - **CPU-bound → paralelismo** (mais núcleos fazem mais).
-> - **I/O-bound → concorrência** (sobreponha o tempo morto das esperas).
-> Confundir os dois é um erro clássico: jogar 200 threads num problema CPU-bound de 8 núcleos só gera [[02 - Processos e threads|troca de contexto]] inútil; usar paralelismo pesado para I/O desperdiça hardware que ficaria ocioso.
+> - **I/O-bound → concorrência** (sobreponha o tempo morto das esperas). Confundir os dois é um erro clássico: jogar 200 threads num problema CPU-bound de 8 núcleos só gera [[02 - Processos e threads|troca de contexto]] inútil; usar paralelismo pesado para I/O desperdiça hardware que ficaria ocioso.
 
 ## Latência × throughput: a distinção que confunde
 

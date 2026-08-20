@@ -62,23 +62,17 @@ Abaixo uma seleção dos dotfiles mais comuns em um setup Linux/macOS moderno:
 
 Versionar dotfiles com git oferece vantagens concretas:
 
-**1. Setup repetível**
-Máquina nova (novo emprego, reinstalação, container de dev) fica idêntica em minutos. Sem versionar, o processo leva horas e fica incompleto — "não lembro o que configurei há 2 anos".
+**1. Setup repetível** Máquina nova (novo emprego, reinstalação, container de dev) fica idêntica em minutos. Sem versionar, o processo leva horas e fica incompleto — "não lembro o que configurei há 2 anos".
 
-**2. Sync entre máquinas**
-Edita o `.zshrc` no laptop, commita, dá pull no desktop. Ambos ficam idênticos sem copiar arquivo manualmente.
+**2. Sync entre máquinas** Edita o `.zshrc` no laptop, commita, dá pull no desktop. Ambos ficam idênticos sem copiar arquivo manualmente.
 
-**3. Histórico de mudanças**
-"Por que está quebrando agora?" → dentro do repo de dotfiles, `git log -- zsh/.zshrc` (ou path relativo ao arquivo) mostra exatamente o que mudou e quando. Reverter uma mudança ruim vira `git revert` ou `git checkout`.
+**3. Histórico de mudanças** "Por que está quebrando agora?" → dentro do repo de dotfiles, `git log -- zsh/.zshrc` (ou path relativo ao arquivo) mostra exatamente o que mudou e quando. Reverter uma mudança ruim vira `git revert` ou `git checkout`.
 
-**4. Backup natural**
-O repo remoto (GitHub, GitLab, Codeberg) é backup automático. Disco falhou? Clone o repo e rode o bootstrap.
+**4. Backup natural** O repo remoto (GitHub, GitLab, Codeberg) é backup automático. Disco falhou? Clone o repo e rode o bootstrap.
 
-**5. Portfólio demonstrável**
-`github.com/<usuario>/dotfiles` é CV em forma de código. Recrutadores e colegas veem seu nível de proficiência com ferramentas pela qualidade dos dotfiles — comentários, organização, plugins escolhidos.
+**5. Portfólio demonstrável** `github.com/<usuario>/dotfiles` é CV em forma de código. Recrutadores e colegas veem seu nível de proficiência com ferramentas pela qualidade dos dotfiles — comentários, organização, plugins escolhidos.
 
-**6. Aprendizado comunitário**
-Ler dotfiles de outros desenvolvedores experientes é uma das formas mais eficientes de descobrir ferramentas novas, aliases úteis e configurações não óbvias. Sites como [dotfiles.github.io](https://dotfiles.github.io/) agregam exemplos da comunidade.
+**6. Aprendizado comunitário** Ler dotfiles de outros desenvolvedores experientes é uma das formas mais eficientes de descobrir ferramentas novas, aliases úteis e configurações não óbvias. Sites como [dotfiles.github.io](https://dotfiles.github.io/) agregam exemplos da comunidade.
 
 ### O que NÃO versionar
 
@@ -149,8 +143,7 @@ Para cada arquivo que você encontrar, passe pelo checklist mental:
    - Sim → versionar
    - Não (path hardcoded, config específica de hardware) → refatorar antes de versionar
 
-**Começando por onde?**
-A sequência natural para quem está adotando dotfiles pela primeira vez:
+**Começando por onde?** A sequência natural para quem está adotando dotfiles pela primeira vez:
 
 1. `~/.gitconfig` — curto, seguro (sem secrets), universal
 2. `~/.zshrc` (ou `~/.bashrc`) — o arquivo que você mais edita

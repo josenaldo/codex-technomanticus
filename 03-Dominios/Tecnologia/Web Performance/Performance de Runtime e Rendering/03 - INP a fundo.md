@@ -84,9 +84,7 @@ async function processarItens(itens) {
 **Remédio:** minimizar o trabalho de rendering na resposta — DOM menor, evitar reflows caros (notas 04 e 05), atualizar só o que mudou. Adiar trabalho **não-visual** para depois da pintura (`requestIdleCallback`) também ajuda: pinte a resposta primeiro, faça o resto depois.
 
 > [!warning] Otimizar o handler quando o problema é o input delay
-> **O que acontece:** o dev reescreve e enxuga o código do `onClick`, mas o INP mal melhora.
-> **Por quê:** se a maior parte dos 400 ms era **input delay** (a thread ocupada *antes* do handler), otimizar o handler não toca a causa. O usuário esperou a thread liberar, não o seu código rodar.
-> **Como evitar:** meça as três fases (o painel Performance e a atribuição do RUM mostram a divisão) **antes** de otimizar. Input delay dominante → cace long tasks de terceiros/hidratação; processing dominante → ceda a thread; presentation dominante → reduza o trabalho de rendering.
+> **O que acontece:** o dev reescreve e enxuga o código do `onClick`, mas o INP mal melhora. **Por quê:** se a maior parte dos 400 ms era **input delay** (a thread ocupada *antes* do handler), otimizar o handler não toca a causa. O usuário esperou a thread liberar, não o seu código rodar. **Como evitar:** meça as três fases (o painel Performance e a atribuição do RUM mostram a divisão) **antes** de otimizar. Input delay dominante → cace long tasks de terceiros/hidratação; processing dominante → ceda a thread; presentation dominante → reduza o trabalho de rendering.
 
 **INP a fundo em uma frase:** toda interação tem input delay (thread ocupada antes do handler), processing time (seu handler rodando) e presentation delay (layout+paint da resposta), e você diagnostica qual fase domina para aplicar o remédio certo — matar long tasks, ceder a thread com `scheduler.yield()`, ou reduzir o trabalho de rendering.
 

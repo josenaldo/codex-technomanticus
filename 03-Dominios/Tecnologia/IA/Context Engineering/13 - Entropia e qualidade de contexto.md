@@ -91,11 +91,9 @@ Isso significa: o problema de qualidade de contexto não se resolve adicionando 
 
 > [!example] Mesma pergunta, dois contextos
 >
-> **Baixa entropia (3K tokens):**
-> Documentação inteira do produto colada — 10 seções de features não relacionadas, 5 exemplos de código tangenciais, 2 release notes históricas, repetição de conceitos em formas diferentes.
+> **Baixa entropia (3K tokens):** Documentação inteira do produto colada — 10 seções de features não relacionadas, 5 exemplos de código tangenciais, 2 release notes históricas, repetição de conceitos em formas diferentes.
 >
-> **Alta entropia (300 tokens):**
-> Os 3 parágrafos diretamente relevantes à pergunta + 1 exemplo de código que demonstra a feature específica.
+> **Alta entropia (300 tokens):** Os 3 parágrafos diretamente relevantes à pergunta + 1 exemplo de código que demonstra a feature específica.
 >
 > O modelo responde **melhor** ao segundo. Custa **10x menos**. A atenção dilui 10x menos. Se você pode manter a qualidade da resposta com 10% dos tokens, os outros 90% eram ruído.
 
@@ -113,8 +111,7 @@ A mesma informação em múltiplas formas: documentação + comentário no códi
 
 Informação **plausível** mas irrelevante — semanticamente próxima da query mas factualmente diferente. O modelo é puxado por similaridade semântica, não por relevância real.
 
-> **Pergunta:** "Qual é a configuração de timeout do servidor de produção?"
-> **Distractor no contexto:** documentação de timeout do servidor de staging, do ambiente de CI, do ambiente de desenvolvimento local.
+> **Pergunta:** "Qual é a configuração de timeout do servidor de produção?" **Distractor no contexto:** documentação de timeout do servidor de staging, do ambiente de CI, do ambiente de desenvolvimento local.
 >
 > O modelo pode responder com a configuração de staging em vez de produção, com alta confiança.
 
@@ -252,17 +249,13 @@ Sem test gold, "melhorar o contexto" é intuição. Com test gold, é engenharia
 
 ## Estado da arte — junho de 2026
 
-**Context quality como métrica de produto**
-Em 2025-2026, times de AI produto começaram a incluir métricas de qualidade de contexto em dashboards de produto — ao lado de latência e custo. "Context utilization rate" (quão eficientemente o modelo usa a janela) e "signal density score" são KPIs citados em relatórios de engenharia de empresas como Anthropic, Cohere e Mistral.
+**Context quality como métrica de produto** Em 2025-2026, times de AI produto começaram a incluir métricas de qualidade de contexto em dashboards de produto — ao lado de latência e custo. "Context utilization rate" (quão eficientemente o modelo usa a janela) e "signal density score" são KPIs citados em relatórios de engenharia de empresas como Anthropic, Cohere e Mistral.
 
-**Avaliação automática de entropia**
-Ferramentas como LangSmith e Weave implementaram análise automática de diversidade semântica de chunks de contexto — identificam redundância e recomendando pruning antes de cada sessão. Em 2026, essas ferramentas são parte standard do toolchain de debugging de sistemas RAG.
+**Avaliação automática de entropia** Ferramentas como LangSmith e Weave implementaram análise automática de diversidade semântica de chunks de contexto — identificam redundância e recomendando pruning antes de cada sessão. Em 2026, essas ferramentas são parte standard do toolchain de debugging de sistemas RAG.
 
-**Synthetic test generation para context quality**
-Em vez de construir test gold manualmente (caro), times em 2026 usam LLMs para gerar queries sintéticas representativas a partir de amostras da base de conhecimento — e validam a geração contra um conjunto gold menor. Reduz o custo de construção de test gold em 60-80%.
+**Synthetic test generation para context quality** Em vez de construir test gold manualmente (caro), times em 2026 usam LLMs para gerar queries sintéticas representativas a partir de amostras da base de conhecimento — e validam a geração contra um conjunto gold menor. Reduz o custo de construção de test gold em 60-80%.
 
-**"Context architecture reviews" como prática de engineering**
-Da mesma forma que architecture reviews existem para sistemas de software, "context architecture reviews" emergem em 2026 — avaliações estruturadas de como o contexto é montado, quais são as fontes de ruído, e como a qualidade é monitorada. Ainda informal, mas já documentado como prática recomendada por Anthropic.
+**"Context architecture reviews" como prática de engineering** Da mesma forma que architecture reviews existem para sistemas de software, "context architecture reviews" emergem em 2026 — avaliações estruturadas de como o contexto é montado, quais são as fontes de ruído, e como a qualidade é monitorada. Ainda informal, mas já documentado como prática recomendada por Anthropic.
 
 ---
 

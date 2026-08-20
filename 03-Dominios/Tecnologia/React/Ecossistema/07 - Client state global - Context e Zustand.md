@@ -16,34 +16,16 @@ publish: true
 ---
 
 > [!abstract] TL;DR
-> **Context API** é a solução nativa do React para compartilhar estado entre componentes, mas tem
-> um problema fundamental: qualquer mudança no `value` re-renderiza **todos** os consumidores,
-> independente de quais campos eles realmente usam. Isso a torna inadequada para estado que muda
-> frequentemente. **Zustand** resolve isso com um modelo de **subscription granular** — cada
-> componente assina apenas o slice que usa via selector, re-renderizando apenas quando aquele slice
-> muda. Regra prática: Context para estado que muda raramente (tema, locale, usuário logado);
-> Zustand para estado que muda com frequência (UI interativa, carrinhos, filtros). Ambas as
-> abordagens vivem no espaço de client state — nenhuma substitui TanStack Query para server state.
+> **Context API** é a solução nativa do React para compartilhar estado entre componentes, mas tem um problema fundamental: qualquer mudança no `value` re-renderiza **todos** os consumidores, independente de quais campos eles realmente usam. Isso a torna inadequada para estado que muda frequentemente. **Zustand** resolve isso com um modelo de **subscription granular** — cada componente assina apenas o slice que usa via selector, re-renderizando apenas quando aquele slice muda. Regra prática: Context para estado que muda raramente (tema, locale, usuário logado); Zustand para estado que muda com frequência (UI interativa, carrinhos, filtros). Ambas as abordagens vivem no espaço de client state — nenhuma substitui TanStack Query para server state.
 
 > [!info] Pré-requisitos
-> Esta nota assume que você já distingue server state de client state e sabe que cada um exige
-> ferramentas diferentes. Caso contrário, comece pela
-> [[03-Dominios/Tecnologia/React/Ecossistema/02 - Server state vs client state|Nota 02 — Server vs client state]].
-> Para entender a Context API em profundidade, veja
-> [[03-Dominios/Tecnologia/React/React core/11 - useContext e Context API|React core 11]].
-> Para os fundamentos de estado local, elevado e externo no React, veja
-> [[03-Dominios/Tecnologia/React/React core/15 - Estado - local, elevado e externo|React core 15]].
+> Esta nota assume que você já distingue server state de client state e sabe que cada um exige ferramentas diferentes. Caso contrário, comece pela [[03-Dominios/Tecnologia/React/Ecossistema/02 - Server state vs client state|Nota 02 — Server vs client state]]. Para entender a Context API em profundidade, veja [[03-Dominios/Tecnologia/React/React core/11 - useContext e Context API|React core 11]]. Para os fundamentos de estado local, elevado e externo no React, veja [[03-Dominios/Tecnologia/React/React core/15 - Estado - local, elevado e externo|React core 15]].
 
 ## O problema que o Context resolve — e cria
 
-Imagine um componente `<App>` com três filhos: `<Header>`, `<Cart>` e `<Notifications>`. Os três
-precisam saber quem é o usuário logado. Você poderia passar `user` como prop de cada um, mas se
-eles estiverem profundamente aninhados — `<App> → <Layout> → <Sidebar> → <Header>` — o prop
-drilling torna o código frágil e verboso.
+Imagine um componente `<App>` com três filhos: `<Header>`, `<Cart>` e `<Notifications>`. Os três precisam saber quem é o usuário logado. Você poderia passar `user` como prop de cada um, mas se eles estiverem profundamente aninhados — `<App> → <Layout> → <Sidebar> → <Header>` — o prop drilling torna o código frágil e verboso.
 
-A Context API resolve isso: você cria um `AuthContext`, envolve a árvore com um `Provider`, e
-qualquer consumidor lê o contexto diretamente com `useContext(AuthContext)`. Problema de prop
-drilling resolvido.
+A Context API resolve isso: você cria um `AuthContext`, envolve a árvore com um `Provider`, e qualquer consumidor lê o contexto diretamente com `useContext(AuthContext)`. Problema de prop drilling resolvido.
 
 Mas aí a aplicação cresce, e você decide colocar mais dados no mesmo contexto:
 
@@ -55,18 +37,10 @@ const AuthContext = createContext<{
 }>({ user: null, cart: [], notifications: [] });
 ```
 
-O `<Header>` só precisa de `user`. O `<Cart>` só precisa de `cart`. O `<Notifications>` só precisa
-de `notifications`. Quando o usuário adiciona um item ao carrinho, o `value` do Provider muda —
-e o React re-renderiza **todos os três**. O Header não mudou em nada, mas renderizou de novo.
-Isso é o custo do Context.
+O `<Header>` só precisa de `user`. O `<Cart>` só precisa de `cart`. O `<Notifications>` só precisa de `notifications`. Quando o usuário adiciona um item ao carrinho, o `value` do Provider muda — e o React re-renderiza **todos os três**. O Header não mudou em nada, mas renderizou de novo. Isso é o custo do Context.
 
 > [!question]- Por que o Context re-renderiza todos os consumidores mesmo se apenas um campo mudou?
-> O React usa comparação por referência (`Object.is`) para saber se o `value` do Provider mudou.
-> Quando o componente pai re-renderiza (porque chamou `setState`), ele cria um **novo objeto**
-> de `value` — mesmo que os campos internos sejam idênticos. Esse novo objeto tem uma referência
-> diferente, e o React dispara re-renderização em todos os consumidores. É por isso que
-> `<Provider value={{ user, cart }}>` inline causa re-renders desnecessários: o `{}` literal
-> cria um objeto novo a cada render do pai.
+> O React usa comparação por referência (`Object.is`) para saber se o `value` do Provider mudou. Quando o componente pai re-renderiza (porque chamou `setState`), ele cria um **novo objeto** de `value` — mesmo que os campos internos sejam idênticos. Esse novo objeto tem uma referência diferente, e o React dispara re-renderização em todos os consumidores. É por isso que `<Provider value={{ user, cart }}>` inline causa re-renders desnecessários: o `{}` literal cria um objeto novo a cada render do pai.
 
 ## Quando Context basta — e quando dói
 
@@ -80,8 +54,7 @@ Para esses casos, a re-renderização universal não dói porque ela raramente a
 
 O Context começa a doer quando:
 
-- O estado muda frequentemente durante interação normal (notificações em tempo real, carrinho,
-  filtros de UI, tooltips com posição do mouse).
+- O estado muda frequentemente durante interação normal (notificações em tempo real, carrinho, filtros de UI, tooltips com posição do mouse).
 - Você tem consumidores seletivos — componentes que só usam parte do estado.
 - A árvore é profunda e re-renders se tornam perceptíveis ou desperdiçam recursos.
 
@@ -103,9 +76,7 @@ function UserProvider({ children }: { children: ReactNode }) {
 
 ```
 
-Essas técnicas funcionam para casos simples, mas exigem disciplina constante e adicionam
-boilerplate. Para estado que muda com frequência, Zustand entrega o mesmo resultado com menos
-esforço.
+Essas técnicas funcionam para casos simples, mas exigem disciplina constante e adicionam boilerplate. Para estado que muda com frequência, Zustand entrega o mesmo resultado com menos esforço.
 
 ## Context vs Zustand — o modelo de re-render
 
@@ -140,10 +111,7 @@ graph TB
     style ZST fill:#EAF4FB,stroke:#4A90D9
 ```
 
-No Context, o Provider detecta mudança no `value` (objeto novo) e notifica todos os consumidores
-indiscriminadamente. No Zustand, cada componente tem seu próprio subscriber que compara apenas o
-valor retornado pelo selector — `<Header>` assina `state => state.user`, então só re-renderiza se
-`user` mudar.
+No Context, o Provider detecta mudança no `value` (objeto novo) e notifica todos os consumidores indiscriminadamente. No Zustand, cada componente tem seu próprio subscriber que compara apenas o valor retornado pelo selector — `<Header>` assina `state => state.user`, então só re-renderiza se `user` mudar.
 
 ## Zustand — o default moderno
 
@@ -205,10 +173,7 @@ export const useCartStore = create<CartStore>()((set, get) => ({
 ```
 
 > [!question]- Por que duplos parênteses em `create<CartStore>()()`?
-> `create<CartStore>()` retorna uma função — você passa o initializer para essa segunda chamada.
-> Esse padrão curried existe porque o TypeScript não consegue fazer inferência parcial de tipos
-> genéricos: se você escrevesse `create<CartStore>((set) => ...)`, o TS perderia os tipos de `set`
-> e `get`. O currying força a inferência em dois passos, mantendo tudo tipado corretamente.
+> `create<CartStore>()` retorna uma função — você passa o initializer para essa segunda chamada. Esse padrão curried existe porque o TypeScript não consegue fazer inferência parcial de tipos genéricos: se você escrevesse `create<CartStore>((set) => ...)`, o TS perderia os tipos de `set` e `get`. O currying força a inferência em dois passos, mantendo tudo tipado corretamente.
 
 ### Selectors — a chave da granularidade
 
@@ -254,14 +219,11 @@ function CartSummary() {
 }
 ```
 
-`useShallow` faz comparação rasa (`shallowEqual`) nos campos do objeto retornado. Sem ele, um
-selector que retorna `{ items, total }` sempre retornaria uma nova referência de objeto, causando
-re-render mesmo quando os valores não mudaram.
+`useShallow` faz comparação rasa (`shallowEqual`) nos campos do objeto retornado. Sem ele, um selector que retorna `{ items, total }` sempre retornaria uma nova referência de objeto, causando re-render mesmo quando os valores não mudaram.
 
 ### Lendo e atualizando fora de componentes
 
-Zustand permite acessar e modificar a store fora da árvore React — útil em serviços, interceptors
-de API ou callbacks de WebSocket:
+Zustand permite acessar e modificar a store fora da árvore React — útil em serviços, interceptors de API ou callbacks de WebSocket:
 
 ```tsx
 // Snapshot do estado atual (não reativo)
@@ -373,8 +335,7 @@ export const useCartStore = create<CartStore>()(
 
 ## Slice pattern — stores grandes sem caos
 
-Quando a store cresce além de um domínio, o **slice pattern** divide o estado em fatias
-independentes que são compostas em uma única store:
+Quando a store cresce além de um domínio, o **slice pattern** divide o estado em fatias independentes que são compostas em uma única store:
 
 ```tsx
 import { create, StateCreator } from 'zustand';
@@ -418,16 +379,13 @@ export const useCartItems = () => useStore((state) => state.items);
 export const useCurrentUser = () => useStore((state) => state.user);
 ```
 
-Cada slice encapsula sua lógica e pode ser desenvolvido e testado isoladamente. A store final é
-a composição — os componentes nunca precisam saber que a store existe como monólito.
+Cada slice encapsula sua lógica e pode ser desenvolvido e testado isoladamente. A store final é a composição — os componentes nunca precisam saber que a store existe como monólito.
 
 ## Casos práticos
 
 ### Cenário 1: Carrinho de e-commerce com persistência entre reloads
 
-Em um e-commerce, o carrinho requer persistência, alta frequência de escrita e leitura em
-múltiplos pontos. A `useCartStore` composta com `devtools(persist(immer(...)))` — construída na
-seção Middleware — atende todos esses requisitos sem nenhum Provider:
+Em um e-commerce, o carrinho requer persistência, alta frequência de escrita e leitura em múltiplos pontos. A `useCartStore` composta com `devtools(persist(immer(...)))` — construída na seção Middleware — atende todos esses requisitos sem nenhum Provider:
 
 ```tsx
 // Uso em qualquer componente — sem Provider, sem prop drilling
@@ -436,13 +394,11 @@ const addItem    = useCartStore((s) => s.addItem);        // Página de produto
 const removeItem = useCartStore((s) => s.removeItem);     // Checkout
 ```
 
-O reload hidrata automaticamente os itens do `localStorage`; o DevTools exibe cada `addItem` na
-timeline; e o Immer elimina o spread manual nas mutations — tudo com a mesma API de selector.
+O reload hidrata automaticamente os itens do `localStorage`; o DevTools exibe cada `addItem` na timeline; e o Immer elimina o spread manual nas mutations — tudo com a mesma API de selector.
 
 ### Cenário 2: Notificações em tempo real via WebSocket
 
-Notificações chegam via WebSocket fora da árvore React. Zustand é atualizado diretamente pelo
-handler — sem precisar de `useEffect`, `useRef` ou prop drilling até o componente de badge:
+Notificações chegam via WebSocket fora da árvore React. Zustand é atualizado diretamente pelo handler — sem precisar de `useEffect`, `useRef` ou prop drilling até o componente de badge:
 
 ```tsx
 // store/notifications.ts
@@ -466,47 +422,22 @@ return unread > 0 ? <Badge>{unread}</Badge> : null;
 ## Armadilhas comuns
 
 > [!warning] Assinar o store inteiro por conveniência
-> **O que acontece:** `const store = useStore()` parece mais simples — acessa tudo de uma vez.
-> Mas isso assina toda a store: o componente re-renderiza quando **qualquer** campo mudar,
-> incluindo campos que ele nunca usa.
-> **Por quê:** sem selector, Zustand usa comparação por referência no objeto de estado inteiro.
-> **Como evitar:** sempre passe um selector: `useStore(state => state.items)`. Para múltiplos
-> campos, use `useShallow`.
+> **O que acontece:** `const store = useStore()` parece mais simples — acessa tudo de uma vez. Mas isso assina toda a store: o componente re-renderiza quando **qualquer** campo mudar, incluindo campos que ele nunca usa. **Por quê:** sem selector, Zustand usa comparação por referência no objeto de estado inteiro. **Como evitar:** sempre passe um selector: `useStore(state => state.items)`. Para múltiplos campos, use `useShallow`.
 
 > [!warning] Retornar objeto/array novo no selector sem useShallow
-> **O que acontece:** `useStore(state => ({ a: state.a, b: state.b }))` causa re-renders
-> desnecessários mesmo quando `a` e `b` não mudaram — ou em casos extremos, loops de render.
-> **Por quê:** Zustand compara o retorno do selector com `Object.is`. Um objeto literal `{}`
-> criado na chamada do hook nunca é igual ao objeto anterior por referência — são sempre
-> objetos distintos para o `Object.is`, mesmo com os mesmos valores dentro.
-> **Como evitar:** `useStore(useShallow(state => ({ a: state.a, b: state.b })))`. O `useShallow`
-> faz comparação campo a campo, não por referência.
+> **O que acontece:** `useStore(state => ({ a: state.a, b: state.b }))` causa re-renders desnecessários mesmo quando `a` e `b` não mudaram — ou em casos extremos, loops de render. **Por quê:** Zustand compara o retorno do selector com `Object.is`. Um objeto literal `{}` criado na chamada do hook nunca é igual ao objeto anterior por referência — são sempre objetos distintos para o `Object.is`, mesmo com os mesmos valores dentro. **Como evitar:** `useStore(useShallow(state => ({ a: state.a, b: state.b })))`. O `useShallow` faz comparação campo a campo, não por referência.
 
 > [!warning] Não nomear as actions no devtools
-> **O que acontece:** o Redux DevTools mostra todas as mutações como `anonymous` ou com nomes
-> gerados automaticamente, dificultando o rastreamento de bugs na timeline de ações.
-> **Por quê:** `set(newState)` com dois argumentos não passa nome da action. O devtools middleware
-> usa o nome da função como fallback, mas funções anônimas não têm nome.
-> **Como evitar:** passe o nome da action como terceiro argumento: `set(newState, false, 'cart/addItem')`.
-> Adote convenção `dominio/acao` para clareza no DevTools.
+> **O que acontece:** o Redux DevTools mostra todas as mutações como `anonymous` ou com nomes gerados automaticamente, dificultando o rastreamento de bugs na timeline de ações. **Por quê:** `set(newState)` com dois argumentos não passa nome da action. O devtools middleware usa o nome da função como fallback, mas funções anônimas não têm nome. **Como evitar:** passe o nome da action como terceiro argumento: `set(newState, false, 'cart/addItem')`. Adote convenção `dominio/acao` para clareza no DevTools.
 
 > [!warning] Middleware na ordem errada quebra o observability
-> **O que acontece:** combinando `devtools(immer(...))` sem persist no meio, o DevTools não
-> enxerga as ações do `persist` (como `rehydrate`), dificultando debug de bugs de hidratação.
-> **Por quê:** o middleware mais externo "vê" apenas o que está diretamente dentro dele.
-> **Como evitar:** siga a ordem recomendada: `devtools` > `persist` > `immer` (de fora para
-> dentro). Cada middleware intercepta as ações do que está dentro dele — devtools precisa estar
-> mais externo para enxergar tudo.
+> **O que acontece:** combinando `devtools(immer(...))` sem persist no meio, o DevTools não enxerga as ações do `persist` (como `rehydrate`), dificultando debug de bugs de hidratação. **Por quê:** o middleware mais externo "vê" apenas o que está diretamente dentro dele. **Como evitar:** siga a ordem recomendada: `devtools` > `persist` > `immer` (de fora para dentro). Cada middleware intercepta as ações do que está dentro dele — devtools precisa estar mais externo para enxergar tudo.
 
 ## Como explicar em inglês
 
 When asked about state management in React, you can frame it this way:
 
-> "For global client state, I default to Zustand over Context API for anything that updates
-> frequently. Context re-renders every consumer when the value object changes — even consumers
-> that don't care about the changed field. Zustand uses selector-based subscriptions, so components
-> only re-render when their specific slice changes. Context is still a great fit for rarely-changed
-> state like theme or locale."
+> "For global client state, I default to Zustand over Context API for anything that updates frequently. Context re-renders every consumer when the value object changes — even consumers that don't care about the changed field. Zustand uses selector-based subscriptions, so components only re-render when their specific slice changes. Context is still a great fit for rarely-changed state like theme or locale."
 
 | PT | EN |
 |----|----|
@@ -525,10 +456,7 @@ When asked about state management in React, you can frame it this way:
 
 ## O que vem a seguir
 
-Com o client state global dominado — seja com Context para dados estáticos ou Zustand para estado
-reativo — a próxima fronteira é o **roteamento**: como o React Router gerencia URLs,
-parâmetros de rota e estado derivado da URL. A navegação é, em essência, mais um tipo de estado
-global que precisa de uma ferramenta especializada.
+Com o client state global dominado — seja com Context para dados estáticos ou Zustand para estado reativo — a próxima fronteira é o **roteamento**: como o React Router gerencia URLs, parâmetros de rota e estado derivado da URL. A navegação é, em essência, mais um tipo de estado global que precisa de uma ferramenta especializada.
 
 - [[03-Dominios/Tecnologia/React/Ecossistema/02 - Server state vs client state|Nota 02 — Server vs client state]] — o contexto que motivou esta nota
 - [[03-Dominios/Tecnologia/React/React core/11 - useContext e Context API|React core 11]] — Context API em profundidade

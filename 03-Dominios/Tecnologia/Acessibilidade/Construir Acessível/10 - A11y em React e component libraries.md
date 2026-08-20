@@ -128,9 +128,7 @@ O erro mais caro que um time comete ao adotar essas libs é achar que instalou a
 4. **A semântica das suas próprias telas.** Headings, landmarks, a estrutura do documento, os formulários da nota 07 — nada disso vem de uma biblioteca de widgets. É o HTML da sua aplicação, e é seu.
 
 > [!warning] "Usamos Radix, então somos acessíveis"
-> **O que acontece:** o time adota uma lib headless e para de testar a11y, presumindo que está resolvido. Auditoria posterior encontra contraste falho, headings fora de ordem, formulários sem label, nomes acessíveis vazios — nada disso é responsabilidade da lib.
-> **Por quê:** bibliotecas de componentes cobrem a interação de *widgets*, que é uma fatia do WCAG. Contraste, estrutura, conteúdo alternativo e composição ficam fora do escopo delas.
-> **Como evitar:** trate a lib como o que ela é — uma base correta para os widgets difíceis — e mantenha o teste (SG3) sobre o app inteiro. Ferramenta é rede de segurança, não método (nota 01).
+> **O que acontece:** o time adota uma lib headless e para de testar a11y, presumindo que está resolvido. Auditoria posterior encontra contraste falho, headings fora de ordem, formulários sem label, nomes acessíveis vazios — nada disso é responsabilidade da lib. **Por quê:** bibliotecas de componentes cobrem a interação de *widgets*, que é uma fatia do WCAG. Contraste, estrutura, conteúdo alternativo e composição ficam fora do escopo delas. **Como evitar:** trate a lib como o que ela é — uma base correta para os widgets difíceis — e mantenha o teste (SG3) sobre o app inteiro. Ferramenta é rede de segurança, não método (nota 01).
 
 ## O caso especial: bibliotecas *estilizadas* vs *headless*
 

@@ -146,8 +146,7 @@ O ponto de reunir os quatro lado a lado: a mesma empresa, o mesmo desastre regio
 > [!tip] Assista: The Ultimate Guide to Disaster Recovery: RTO, RPO, & Failover!
 > **Canal:** ByteMonk | **Duração:** ~11min | **Idioma:** EN
 >
-> Percorre exatamente a escada RTO/RPO → Backup & Restore → Pilot Light → Warm Standby → Multi-Site Active/Active nessa ordem, com a mesma lógica de trade-off de custo x velocidade que esta nota usa — bom pra fixar a sequência antes de entrar nos detalhes de cada degrau.
-> Trecho de destaque [1:30]: *"recovery time objective. Think of RTO... as how fast can you get back on your feet"*
+> Percorre exatamente a escada RTO/RPO → Backup & Restore → Pilot Light → Warm Standby → Multi-Site Active/Active nessa ordem, com a mesma lógica de trade-off de custo x velocidade que esta nota usa — bom pra fixar a sequência antes de entrar nos detalhes de cada degrau. Trecho de destaque [1:30]: *"recovery time objective. Think of RTO... as how fast can you get back on your feet"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=OmASCUJEVy8)
 

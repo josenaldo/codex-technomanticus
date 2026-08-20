@@ -21,13 +21,7 @@ aliases:
 # Mediator
 
 > [!abstract] TL;DR
-> O **Mediator** encapsula **como um conjunto de objetos interage** num objeto central, para que os
-> colegas não se refiram diretamente uns aos outros — transformando uma teia de dependências
-> **muitos-para-muitos** numa topologia em **estrela**. É o padrão por trás dos *command buses* do
-> CQRS (MediatR no .NET), do `ApplicationEventMulticaster` interno do Spring e de formulários de UI
-> com campos interdependentes. Como a Facade, é pouco sensível à linguagem — o valor está na
-> **topologia**, não na sintaxe. A armadilha que domina: o mediator absorve tanta lógica que vira um
-> **God Object**, e você troca N² acoplamentos entre colegas por um monolito central que sabe tudo.
+> O **Mediator** encapsula **como um conjunto de objetos interage** num objeto central, para que os colegas não se refiram diretamente uns aos outros — transformando uma teia de dependências **muitos-para-muitos** numa topologia em **estrela**. É o padrão por trás dos *command buses* do CQRS (MediatR no .NET), do `ApplicationEventMulticaster` interno do Spring e de formulários de UI com campos interdependentes. Como a Facade, é pouco sensível à linguagem — o valor está na **topologia**, não na sintaxe. A armadilha que domina: o mediator absorve tanta lógica que vira um **God Object**, e você troca N² acoplamentos entre colegas por um monolito central que sabe tudo.
 
 ## A teia de dependências N²
 
@@ -78,19 +72,13 @@ Três coordenadores que confundem:
 ## Armadilhas comuns
 
 > [!warning] O God Mediator
-> **O que acontece:** o mediator começa coordenando e vai acumulando regra após regra, até virar uma classe gigante que contém **toda** a lógica de interação do sistema — os colegas viram fantoches anêmicos.
-> **Por quê:** o Mediator centraliza a coordenação, e centralização sem limite atrai responsabilidade. Você trocou N² acoplamentos distribuídos por **um** ponto que sabe tudo e do qual tudo depende — às vezes um negócio pior.
-> **Como evitar:** um mediator por **grupo coeso** de colaboração, não um por aplicação. Se ele cresce sem parar, quebre por contexto, ou reavalie se um bus com handlers separados (um handler por comando) não distribui melhor a lógica.
+> **O que acontece:** o mediator começa coordenando e vai acumulando regra após regra, até virar uma classe gigante que contém **toda** a lógica de interação do sistema — os colegas viram fantoches anêmicos. **Por quê:** o Mediator centraliza a coordenação, e centralização sem limite atrai responsabilidade. Você trocou N² acoplamentos distribuídos por **um** ponto que sabe tudo e do qual tudo depende — às vezes um negócio pior. **Como evitar:** um mediator por **grupo coeso** de colaboração, não um por aplicação. Se ele cresce sem parar, quebre por contexto, ou reavalie se um bus com handlers separados (um handler por comando) não distribui melhor a lógica.
 
 > [!warning] Mediator que só repassa (sem valor)
-> **O que acontece:** o mediator apenas encaminha chamadas de A para B sem coordenar nada — uma camada de indireção que não reduz acoplamento real.
-> **Por quê:** o valor do Mediator é **conter a lógica de interação**. Se ele só repassa, os colegas continuam logicamente acoplados (só que via um intermediário burro), e você pagou indireção sem ganhar coesão.
-> **Como evitar:** só introduza o mediator quando há **coordenação genuína** (várias partes que se afetam). Duas partes com uma interação simples → deixe-as conversar direto ou use um evento.
+> **O que acontece:** o mediator apenas encaminha chamadas de A para B sem coordenar nada — uma camada de indireção que não reduz acoplamento real. **Por quê:** o valor do Mediator é **conter a lógica de interação**. Se ele só repassa, os colegas continuam logicamente acoplados (só que via um intermediário burro), e você pagou indireção sem ganhar coesão. **Como evitar:** só introduza o mediator quando há **coordenação genuína** (várias partes que se afetam). Duas partes com uma interação simples → deixe-as conversar direto ou use um evento.
 
 > [!warning] Confundir com Facade ou Observer
-> **O que acontece:** chama-se de Mediator o que é uma Facade (simplificar acesso a um subsistema) ou um Observer (broadcast de eventos).
-> **Por quê:** os três "ficam no meio", mas com intenções diferentes — reduzir complexidade de acesso (Facade), notificar mudanças (Observer), coordenar interação entre pares (Mediator).
-> **Como evitar:** pergunte *"estou simplificando o acesso a algo (Facade), avisando interessados de uma mudança (Observer) ou coordenando como vários colegas colaboram entre si (Mediator)?"*.
+> **O que acontece:** chama-se de Mediator o que é uma Facade (simplificar acesso a um subsistema) ou um Observer (broadcast de eventos). **Por quê:** os três "ficam no meio", mas com intenções diferentes — reduzir complexidade de acesso (Facade), notificar mudanças (Observer), coordenar interação entre pares (Mediator). **Como evitar:** pergunte *"estou simplificando o acesso a algo (Facade), avisando interessados de uma mudança (Observer) ou coordenando como vários colegas colaboram entre si (Mediator)?"*.
 
 ## Como explicar em inglês
 

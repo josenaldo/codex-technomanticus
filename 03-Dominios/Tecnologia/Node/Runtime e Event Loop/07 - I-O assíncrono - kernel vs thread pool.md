@@ -94,8 +94,7 @@ Sem entender essa divisão, comportamentos como "thread pool exausto" parecem ma
 A raiz da confusão é que, do ponto de vista do JavaScript, toda operação parece idêntica: você chama uma função com callback e recebe o resultado de forma assíncrona. A diferença entre `net.createConnection()` e `fs.readFile()` é invisível no código JS — mas é profundamente diferente embaixo.
 
 > [!info] Regra prática rápida
-> Se a operação envolve **rede** (TCP, UDP, HTTP, WebSocket) → kernel, não satura.
-> Se a operação envolve **disco, DNS, crypto ou compressão** → thread pool, pode saturar com apenas 5 chamadas concorrentes.
+> Se a operação envolve **rede** (TCP, UDP, HTTP, WebSocket) → kernel, não satura. Se a operação envolve **disco, DNS, crypto ou compressão** → thread pool, pode saturar com apenas 5 chamadas concorrentes.
 
 ### Diagrama — os dois caminhos de I/O
 

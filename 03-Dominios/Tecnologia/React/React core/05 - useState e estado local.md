@@ -471,19 +471,13 @@ function SearchBox() {
 ## Armadilhas comuns
 
 > [!warning] Mutar estado diretamente
-> **O que acontece:** você altera `obj.prop = valor` ou `arr.push(item)` e a tela não atualiza — ou atualiza de forma imprevisível.
-> **Por quê:** React usa comparação de referência (`Object.is`). Mutação não muda a referência, então o React acha que nada mudou e não re-renderiza.
-> **Como evitar:** sempre crie um novo objeto/array. Use spread `{ ...obj, prop: valor }` para objetos, `[...arr, item]` / `arr.filter()` / `arr.map()` para arrays. Se precisar de estruturas mais complexas, considere [Immer](https://immerjs.github.io/immer/).
+> **O que acontece:** você altera `obj.prop = valor` ou `arr.push(item)` e a tela não atualiza — ou atualiza de forma imprevisível. **Por quê:** React usa comparação de referência (`Object.is`). Mutação não muda a referência, então o React acha que nada mudou e não re-renderiza. **Como evitar:** sempre crie um novo objeto/array. Use spread `{ ...obj, prop: valor }` para objetos, `[...arr, item]` / `arr.filter()` / `arr.map()` para arrays. Se precisar de estruturas mais complexas, considere [Immer](https://immerjs.github.io/immer/).
 
 > [!warning] Ler o estado logo após o setState
-> **O que acontece:** você chama `setCount(count + 1)` e na linha seguinte lê `count` esperando o novo valor — mas ainda vê o valor antigo.
-> **Por quê:** `setCount` não muda `count` imediatamente. O estado só muda *no próximo render*. `count` é um valor do render atual (snapshot), não uma referência reativa.
-> **Como evitar:** nunca leia o estado logo após setar. Se precisar do novo valor calculado, calcule antes: `const newCount = count + 1; setCount(newCount); doSomething(newCount);`
+> **O que acontece:** você chama `setCount(count + 1)` e na linha seguinte lê `count` esperando o novo valor — mas ainda vê o valor antigo. **Por quê:** `setCount` não muda `count` imediatamente. O estado só muda *no próximo render*. `count` é um valor do render atual (snapshot), não uma referência reativa. **Como evitar:** nunca leia o estado logo após setar. Se precisar do novo valor calculado, calcule antes: `const newCount = count + 1; setCount(newCount); doSomething(newCount);`
 
 > [!warning] Stale closure em setInterval / setTimeout
-> **O que acontece:** você usa `setInterval` dentro de `useEffect` e o callback continua mostrando o valor inicial do estado, mesmo depois de várias atualizações.
-> **Por quê:** o callback do `setInterval` é criado no momento do mount e captura o valor de `count` naquele instante. Cada render cria um novo `count`, mas o interval continua usando o valor antigo (a closure "velha").
-> **Como evitar:** use a updater function (`setCount(prev => prev + 1)`) dentro do callback — ela não depende da closure para calcular o novo valor. Ou, no React 19.2+, use `useEffectEvent` para ter acesso ao estado mais recente dentro de callbacks sem precisar de dependências.
+> **O que acontece:** você usa `setInterval` dentro de `useEffect` e o callback continua mostrando o valor inicial do estado, mesmo depois de várias atualizações. **Por quê:** o callback do `setInterval` é criado no momento do mount e captura o valor de `count` naquele instante. Cada render cria um novo `count`, mas o interval continua usando o valor antigo (a closure "velha"). **Como evitar:** use a updater function (`setCount(prev => prev + 1)`) dentro do callback — ela não depende da closure para calcular o novo valor. Ou, no React 19.2+, use `useEffectEvent` para ter acesso ao estado mais recente dentro de callbacks sem precisar de dependências.
 >
 > ```tsx
 > // ❌ Stale closure — count nunca passa de 1
@@ -504,14 +498,10 @@ function SearchBox() {
 > ```
 
 > [!warning] Criar objetos como estado inicial inline sempre
-> **O que acontece:** `useState({ x: 0, y: 0 })` parece inocente, mas se estiver dentro de um cálculo pesado, esse cálculo roda em todo render (mesmo que descartado).
-> **Por quê:** o argumento de `useState` é avaliado em cada chamada da função-componente. O React ignora o resultado após o primeiro render, mas o custo computacional ainda existe.
-> **Como evitar:** passe uma função inicializadora quando a inicialização for cara: `useState(() => computeExpensiveValue())`.
+> **O que acontece:** `useState({ x: 0, y: 0 })` parece inocente, mas se estiver dentro de um cálculo pesado, esse cálculo roda em todo render (mesmo que descartado). **Por quê:** o argumento de `useState` é avaliado em cada chamada da função-componente. O React ignora o resultado após o primeiro render, mas o custo computacional ainda existe. **Como evitar:** passe uma função inicializadora quando a inicialização for cara: `useState(() => computeExpensiveValue())`.
 
 > [!warning] Chamar useState condicionalmente
-> **O que acontece:** você tenta colocar `useState` dentro de um `if` e React lança um erro na runtime.
-> **Por quê:** o React rastreia a ordem de todos os hooks por index. Se um hook aparece condicionalmente, a ordem pode mudar entre renders e o React perde o controle.
-> **Como evitar:** sempre chame hooks no topo do componente, fora de condicionais, loops e funções aninhadas. Esta é a primeira Regra dos Hooks.
+> **O que acontece:** você tenta colocar `useState` dentro de um `if` e React lança um erro na runtime. **Por quê:** o React rastreia a ordem de todos os hooks por index. Se um hook aparece condicionalmente, a ordem pode mudar entre renders e o React perde o controle. **Como evitar:** sempre chame hooks no topo do componente, fora de condicionais, loops e funções aninhadas. Esta é a primeira Regra dos Hooks.
 
 ## Como explicar em inglês
 

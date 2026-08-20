@@ -89,24 +89,16 @@ Um engenheiro usa a capacidade de escrita no canvas (ainda em beta) para pedir a
 ## Armadilhas comuns
 
 > [!warning] Tratar o MCP Server como leitor perfeito de intenção de design
-> **O que acontece:** o engenheiro assume que, por ter contexto estruturado, o agente vai sempre escolher o componente certo e a variable certa sem revisão.
-> **Por quê:** contexto estruturado reduz adivinhação, mas não elimina ambiguidade — um design pode ter dois componentes visualmente parecidos sem Code Connect ligando nenhum deles à implementação certa, como no Cenário 1.
-> **Como evitar:** revisar o output do agente contra o Dev Mode manualmente (ver [[03-Dominios/Tecnologia/Ferramentas de Design/01 - Figma para o engenheiro|nota 01]]) até ter confiança repetida de que o setup de Code Connect cobre os componentes centrais do seu design system.
+> **O que acontece:** o engenheiro assume que, por ter contexto estruturado, o agente vai sempre escolher o componente certo e a variable certa sem revisão. **Por quê:** contexto estruturado reduz adivinhação, mas não elimina ambiguidade — um design pode ter dois componentes visualmente parecidos sem Code Connect ligando nenhum deles à implementação certa, como no Cenário 1. **Como evitar:** revisar o output do agente contra o Dev Mode manualmente (ver [[03-Dominios/Tecnologia/Ferramentas de Design/01 - Figma para o engenheiro|nota 01]]) até ter confiança repetida de que o setup de Code Connect cobre os componentes centrais do seu design system.
 
 > [!warning] Configurar Code Connect uma vez e nunca revisar
-> **O que acontece:** o design system evolui — componentes são renomeados, props mudam — mas o mapeamento do Code Connect não é atualizado, e o MCP passa a sugerir referências de código desatualizadas.
-> **Por quê:** Code Connect é uma ligação declarada manualmente (ou semi-automaticamente); ela não se autocorrige quando o código-fonte muda de estrutura.
-> **Como evitar:** tratar a manutenção do Code Connect como parte do checklist de qualquer refactor que renomeie ou mova componentes centrais do design system.
+> **O que acontece:** o design system evolui — componentes são renomeados, props mudam — mas o mapeamento do Code Connect não é atualizado, e o MCP passa a sugerir referências de código desatualizadas. **Por quê:** Code Connect é uma ligação declarada manualmente (ou semi-automaticamente); ela não se autocorrige quando o código-fonte muda de estrutura. **Como evitar:** tratar a manutenção do Code Connect como parte do checklist de qualquer refactor que renomeie ou mova componentes centrais do design system.
 
 > [!warning] Citar a data de um recurso em beta como se fosse definitiva
-> **O que acontece:** alguém descreve a escrita no canvas do Figma como "lançada em fevereiro de 2026" (ou março) numa conversa técnica ou entrevista, sem checar a fonte oficial.
-> **Por quê:** a informação circulou por fontes secundárias com datas divergentes — o próprio esforço de checagem desta nota encontrou duas datas diferentes sem confirmar nenhuma em fonte primária.
-> **Como evitar:** para features em beta, cite o estado ("em beta, hoje") em vez da data de lançamento, a menos que você tenha confirmado a data diretamente no changelog oficial.
+> **O que acontece:** alguém descreve a escrita no canvas do Figma como "lançada em fevereiro de 2026" (ou março) numa conversa técnica ou entrevista, sem checar a fonte oficial. **Por quê:** a informação circulou por fontes secundárias com datas divergentes — o próprio esforço de checagem desta nota encontrou duas datas diferentes sem confirmar nenhuma em fonte primária. **Como evitar:** para features em beta, cite o estado ("em beta, hoje") em vez da data de lançamento, a menos que você tenha confirmado a data diretamente no changelog oficial.
 
 > [!tip] Assista: Claude Code e Codex com Figma MCP — o fim da UI genérica?
-> **Canal:** Rafael Quintanilha — QuantBrasil | **Duração:** ~31min | **Idioma:** PT-BR (legenda automática)
-> O vídeo demonstra, em português, o setup prático do Figma MCP com Claude Code e discute o mesmo ponto central desta nota — contexto estruturado versus geração "cega" — a partir da experiência de quem tentou extrair um design system existente e reutilizá-lo com IA em vez de deixar o agente reinventar componentes.
-> Trecho de destaque [3:00]: *"o autor diz que a partir de agora você consegue utilizar os agentes de IA para fazer o design diretamente no canvas do Figma"* — citando o anúncio do blog oficial do Figma, que o autor do vídeo data de 24 de março de 2026 (data não verificada diretamente por esta nota — ver seção acima).
+> **Canal:** Rafael Quintanilha — QuantBrasil | **Duração:** ~31min | **Idioma:** PT-BR (legenda automática) O vídeo demonstra, em português, o setup prático do Figma MCP com Claude Code e discute o mesmo ponto central desta nota — contexto estruturado versus geração "cega" — a partir da experiência de quem tentou extrair um design system existente e reutilizá-lo com IA em vez de deixar o agente reinventar componentes. Trecho de destaque [3:00]: *"o autor diz que a partir de agora você consegue utilizar os agentes de IA para fazer o design diretamente no canvas do Figma"* — citando o anúncio do blog oficial do Figma, que o autor do vídeo data de 24 de março de 2026 (data não verificada diretamente por esta nota — ver seção acima).
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=VHESZ4GsoQk)
 

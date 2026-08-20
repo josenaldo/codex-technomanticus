@@ -190,8 +190,7 @@ Sem os três pilares correlacionados pelo mesmo `trace_id`, essa investigação 
 > [!tip] Assista: Observabilidade no mundo Serverless
 > **Canal:** AWS Developers LATAM | **Duração:** ~32min | **Idioma:** PT-BR
 >
-> Cobre os mesmos três pilares aplicados a uma arquitetura serverless real, com foco na questão de como organizar logs/métricas/traces em camadas distintas — reforça, com outra arquitetura de exemplo, o mesmo raciocínio que o caso do pedido perdido ilustra nesta nota.
-> Trecho de destaque [06:34]: *"pilares e os principais deles são as [métricas...]"*
+> Cobre os mesmos três pilares aplicados a uma arquitetura serverless real, com foco na questão de como organizar logs/métricas/traces em camadas distintas — reforça, com outra arquitetura de exemplo, o mesmo raciocínio que o caso do pedido perdido ilustra nesta nota. Trecho de destaque [06:34]: *"pilares e os principais deles são as [métricas...]"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=uaAmNSYqkpU)
 
@@ -206,8 +205,7 @@ Toda equipe que opera em produção enfrenta esta escolha, e ela não tem respos
 > [!tip] Assista: Observability — Best Practices for Modern Applications (AWS re:Invent 2022, COP344)
 > **Canal:** AWS Events | **Duração:** ~55min | **Idioma:** EN
 >
-> Uma talk oficial da AWS sobre como equipes de verdade decidem entre instrumentação nativa e vendor-neutra em produção, incluindo o problema específico de "dangling traces" quando a correlação entre métricas, logs e traces se perde — o mesmo problema que o caso do pedido perdido ilustrou nesta nota, visto agora em escala de re:Invent.
-> Trecho de destaque [13:27]: *"how do you avoid dangling traces, how do you get that end-to-end trace"*
+> Uma talk oficial da AWS sobre como equipes de verdade decidem entre instrumentação nativa e vendor-neutra em produção, incluindo o problema específico de "dangling traces" quando a correlação entre métricas, logs e traces se perde — o mesmo problema que o caso do pedido perdido ilustrou nesta nota, visto agora em escala de re:Invent. Trecho de destaque [13:27]: *"how do you avoid dangling traces, how do you get that end-to-end trace"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=YiegAlC_yyc)
 

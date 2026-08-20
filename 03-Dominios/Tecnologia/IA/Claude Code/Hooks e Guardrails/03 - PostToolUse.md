@@ -149,8 +149,7 @@ exit 0
 > [!tip] Assista: Hooks in Claude Code
 > **Canal:** Claude (Anthropic) | **Duração:** ~3min | **Idioma:** EN
 >
-> Vídeo oficial curto que resume por que hooks são determinísticos (rodam sempre, ao contrário de instruções em CLAUDE.md) e usa o auto-format via PostToolUse como o exemplo central — exatamente o Caso de uso 1 abaixo.
-> Trecho de destaque [1:24]: *"The most common hook. Auto formatting after edits. You set a post-tool-use hook with a matcher of edit or multi-edit... it fires whenever Claude modifies a file."*
+> Vídeo oficial curto que resume por que hooks são determinísticos (rodam sempre, ao contrário de instruções em CLAUDE.md) e usa o auto-format via PostToolUse como o exemplo central — exatamente o Caso de uso 1 abaixo. Trecho de destaque [1:24]: *"The most common hook. Auto formatting after edits. You set a post-tool-use hook with a matcher of edit or multi-edit... it fires whenever Claude modifies a file."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=IkaPHiMDazM)
 

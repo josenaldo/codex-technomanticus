@@ -228,8 +228,7 @@ claude --model claude-haiku-4-5-20251001 "rename variable x to connectionTimeout
 > [!tip] Assista: How To Save 90% of Claude Code Token Usage
 > **Canal:** John Kim | **Duração:** ~18min | **Idioma:** EN
 >
-> Vai além das estratégias já cobertas aqui: mostra indexação prévia do codebase (code graph) pra evitar leituras exploratórias repetidas, uma ferramenta de compressão de output de CLI (RTK) e uma técnica de reduzir a verbosidade das respostas do próprio agente — cada uma com seu trade-off explícito (dessincronização do índice, perda de informação na compressão, risco de contexto raso demais).
-> Trecho de destaque [6:30]: *"There's this open source library called RTK that actually takes a lot of these noisy logs and then compresses them."*
+> Vai além das estratégias já cobertas aqui: mostra indexação prévia do codebase (code graph) pra evitar leituras exploratórias repetidas, uma ferramenta de compressão de output de CLI (RTK) e uma técnica de reduzir a verbosidade das respostas do próprio agente — cada uma com seu trade-off explícito (dessincronização do índice, perda de informação na compressão, risco de contexto raso demais). Trecho de destaque [6:30]: *"There's this open source library called RTK that actually takes a lot of these noisy logs and then compresses them."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=UslVzxAkiZ0)
 

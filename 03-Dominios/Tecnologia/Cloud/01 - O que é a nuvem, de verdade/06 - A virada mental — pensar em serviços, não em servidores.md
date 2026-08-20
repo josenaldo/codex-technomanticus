@@ -109,8 +109,7 @@ Três perguntas rápidas funcionam como teste de bancada para qualquer máquina 
 > [!tip] Assista: Pets vs Cattle Architecture Explained | DevOps & Cloud Best Practices
 > **Canal:** soatmurot | **Duração:** ~6min | **Idioma:** EN
 >
-> O vídeo dramatiza o "servidor-pet" desta nota com o cenário clássico de disco rígido falhando — um dia inteiro perdido trocando disco, reinstalando o SO e tentando adivinhar as configurações — e conecta a mentalidade cattle a idempotência e pipelines de CI/CD como o mecanismo que a torna real, exatamente o gancho que esta nota faz para o galho 16.
-> Trecho de destaque [02:44]: *"Instead of trying to scale up one big fragile machine, you scale out with a massive resilient herd."*
+> O vídeo dramatiza o "servidor-pet" desta nota com o cenário clássico de disco rígido falhando — um dia inteiro perdido trocando disco, reinstalando o SO e tentando adivinhar as configurações — e conecta a mentalidade cattle a idempotência e pipelines de CI/CD como o mecanismo que a torna real, exatamente o gancho que esta nota faz para o galho 16. Trecho de destaque [02:44]: *"Instead of trying to scale up one big fragile machine, you scale out with a massive resilient herd."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=g8eK6r_qRnk)
 

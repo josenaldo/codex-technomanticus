@@ -15,15 +15,13 @@ publish: true
 
 > Glossário de conceitos essenciais para atuar como Fractional Engineer/CTO a partir do Brasil — cobrindo o modelo de negócio fractional, tributação PJ, contratos internacionais e a operação de uma carteira de clientes. Útil para consultar termos recorrentes nas notas do galho e em conversas comerciais e contratuais.
 
-<!--
-Como usar este glossário:
+<!-- Como usar este glossário:
 
 - Cada verbete é um `###` dentro de uma `##` temática.
 - Linkar de outra nota: [[Dicionário do Fractional Engineer#Nome do termo]]
 - Customizar texto exibido: [[Dicionário do Fractional Engineer#Nome do termo|texto]]
 - A skill /verbete adiciona termos automaticamente em ordem alfabética.
-- Ajuste `lang:` no frontmatter (`pt` ou `en`) — define o idioma das definições.
--->
+- Ajuste `lang:` no frontmatter (`pt` ou `en`) — define o idioma das definições. -->
 
 ## Termos
 

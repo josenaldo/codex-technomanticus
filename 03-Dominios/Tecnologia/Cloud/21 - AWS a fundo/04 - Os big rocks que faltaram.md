@@ -62,8 +62,7 @@ Se este tema te interessa de verdade — protocolos, OAuth 2.1, o "porquê" por 
 > [!tip] Assista: Amazon Cognito: User Pools vs. Identity Pools Explained
 > **Canal:** AWS Explainers | **Duração:** ~9min | **Idioma:** EN
 >
-> Fecha exatamente a distinção que esta seção traça — "quem é meu usuário" (user pool) vs. "o que meu usuário pode fazer dentro da AWS" (identity pool) — com a analogia de identity pool como uma "máquina de vender credenciais temporárias" que ajuda a fixar o modelo mental.
-> Trecho de destaque [03:19]: *"If user pools answer 'who is my user', identity pools answer a totally different question: what can my user do inside of AWS? ...Think of it more like a credential vending machine. You feed it a trusted token... and in return it spits out temporary AWS credentials."*
+> Fecha exatamente a distinção que esta seção traça — "quem é meu usuário" (user pool) vs. "o que meu usuário pode fazer dentro da AWS" (identity pool) — com a analogia de identity pool como uma "máquina de vender credenciais temporárias" que ajuda a fixar o modelo mental. Trecho de destaque [03:19]: *"If user pools answer 'who is my user', identity pools answer a totally different question: what can my user do inside of AWS? ...Think of it more like a credential vending machine. You feed it a trusted token... and in return it spits out temporary AWS credentials."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Q65JhVBoV44)
 
@@ -90,8 +89,7 @@ Step Functions integra nativamente com mais de 200 serviços AWS via SDK integra
 > [!tip] Assista: What are AWS Step Functions? (and why you should love them)
 > **Canal:** Be A Better Dev | **Duração:** ~14min | **Idioma:** EN
 >
-> Detalha o retry policy configurável (linear vs. exponential backoff) que a tabela Standard/Express desta nota só menciona por cima — útil pra visualizar por que Step Functions substitui a lógica de retry espalhada em código que esta nota descreve como o problema original.
-> Trecho de destaque [01:16]: *"It's almost as if Step Functions are an orchestration for an application — something that's really great about them... is that they have built-in retry functionality, and you can set this up however you want: retry three times, no retry policy, exponential back-off or linear."*
+> Detalha o retry policy configurável (linear vs. exponential backoff) que a tabela Standard/Express desta nota só menciona por cima — útil pra visualizar por que Step Functions substitui a lógica de retry espalhada em código que esta nota descreve como o problema original. Trecho de destaque [01:16]: *"It's almost as if Step Functions are an orchestration for an application — something that's really great about them... is that they have built-in retry functionality, and you can set this up however you want: retry three times, no retry policy, exponential back-off or linear."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=zCIpWFYDJ8s)
 

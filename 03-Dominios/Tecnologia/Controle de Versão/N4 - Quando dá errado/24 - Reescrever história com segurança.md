@@ -124,9 +124,7 @@ Usos legítimos: levar uma correção urgente da `main` para um ramo de release 
 O `-x` acrescenta à mensagem a linha `(cherry picked from commit ...)`, e vale sempre em contexto de manutenção de versões — sem ele, meses depois ninguém sabe que aqueles dois commits em ramos diferentes são a mesma correção.
 
 > [!warning] Cherry-pick sistemático é sintoma
-> **O que acontece:** o time copia dezenas de commits entre ramos toda semana.
-> **Por quê:** normalmente é a estratégia de ramificação que está errada — ramos de longa duração divergindo (nota 13).
-> **Como evitar:** cherry-pick é bom como exceção pontual. Como rotina, ele duplica história, esconde o que está em qual ramo, e cria conflitos quando os ramos finalmente se encontram.
+> **O que acontece:** o time copia dezenas de commits entre ramos toda semana. **Por quê:** normalmente é a estratégia de ramificação que está errada — ramos de longa duração divergindo (nota 13). **Como evitar:** cherry-pick é bom como exceção pontual. Como rotina, ele duplica história, esconde o que está em qual ramo, e cria conflitos quando os ramos finalmente se encontram.
 
 ---
 
@@ -153,9 +151,7 @@ graph TB
 ```
 
 > [!warning] O `--force-with-lease` tem um furo conhecido
-> **O que acontece:** você roda `git fetch` (ou uma ferramenta o faz por você, como a busca automática de alguns editores e IDEs) sem integrar nada. O `origin/main` local é atualizado, o "lease" passa a refletir o estado novo — e a proteção deixa de proteger.
-> **Por quê:** a garantia compara sua referência remota local com o servidor; um `fetch` sincroniza as duas mesmo sem você ter visto o conteúdo.
-> **Como evitar:** desde o Git 2.30 existe `--force-if-includes`, que exige adicionalmente que o que você está sobrescrevendo esteja **incluído** no seu ramo — e ele é aplicado automaticamente quando se usa `--force-with-lease` sem especificar o valor esperado. Na prática: use `--force-with-lease` sem argumentos, em Git atual, e não confie em `fetch` automático de IDE.
+> **O que acontece:** você roda `git fetch` (ou uma ferramenta o faz por você, como a busca automática de alguns editores e IDEs) sem integrar nada. O `origin/main` local é atualizado, o "lease" passa a refletir o estado novo — e a proteção deixa de proteger. **Por quê:** a garantia compara sua referência remota local com o servidor; um `fetch` sincroniza as duas mesmo sem você ter visto o conteúdo. **Como evitar:** desde o Git 2.30 existe `--force-if-includes`, que exige adicionalmente que o que você está sobrescrevendo esteja **incluído** no seu ramo — e ele é aplicado automaticamente quando se usa `--force-with-lease` sem especificar o valor esperado. Na prática: use `--force-with-lease` sem argumentos, em Git atual, e não confie em `fetch` automático de IDE.
 
 E, mesmo dando tudo certo: se o ramo é compartilhado, **avise as pessoas**. Quem já tinha o ramo antigo precisa de `git fetch` e `git reset --hard origin/<ramo>`, porque o `pull` normal vai tentar mesclar as duas versões e criar duplicatas.
 

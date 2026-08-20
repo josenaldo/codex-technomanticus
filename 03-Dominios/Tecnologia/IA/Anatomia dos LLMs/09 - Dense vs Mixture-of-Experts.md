@@ -108,17 +108,13 @@ Modelo hipotético: 8 experts, top-2 routing. Token chegando: "momentum" (contex
 | E7     | engenharia aplicada           | 1.22        |
 | E8     | conhecimento geral            | 0.67        |
 
-**Passo 2 — Softmax sobre os 8 scores → probabilidades:**
-Após softmax: E1=0.38, E4=0.21, E7=0.12, E3=0.09, ...
+**Passo 2 — Softmax sobre os 8 scores → probabilidades:** Após softmax: E1=0.38, E4=0.21, E7=0.12, E3=0.09, ...
 
-**Passo 3 — Top-2 selection: E1 (0.38) e E4 (0.21).**
-Os outros 6 experts: contribuição zero, zero computação.
+**Passo 3 — Top-2 selection: E1 (0.38) e E4 (0.21).** Os outros 6 experts: contribuição zero, zero computação.
 
-**Passo 4 — Normalizar os pesos dos 2 selecionados:**
-$w_{E1} = \frac{0.38}{0.38 + 0.21} = 0.644$, $\quad w_{E4} = \frac{0.21}{0.38 + 0.21} = 0.356$
+**Passo 4 — Normalizar os pesos dos 2 selecionados:** $w_{E1} = \frac{0.38}{0.38 + 0.21} = 0.644$, $\quad w_{E4} = \frac{0.21}{0.38 + 0.21} = 0.356$
 
-**Passo 5 — Output final:**
-$output = 0.644 \times FFN_{E1}(token) + 0.356 \times FFN_{E4}(token)$
+**Passo 5 — Output final:** $output = 0.644 \times FFN_{E1}(token) + 0.356 \times FFN_{E4}(token)$
 
 O token foi processado por 2 de 8 experts. Se cada expert tem ~10B de parâmetros, 20B foram ativados de 80B totais — 25%.
 

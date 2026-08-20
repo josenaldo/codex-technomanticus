@@ -16,9 +16,7 @@ tags:
 # Testes unitários
 
 > [!abstract] Resumo em uma linha
-> Teste unitário verifica uma unidade de comportamento isolada do resto do sistema, rápido e determinístico — e a maior briga da área é sobre o que "isolada" significa.
-> A guerra entre a escola de Londres (mockista, isola cada classe atrás de dublês) e a escola de Detroit/Chicago (clássica, deixa colaboradores baratos reais e só mocka o que dói) não é bizantina: ela muda o que o teste protege — localização precisa do defeito de um lado, resistência a refatoração do outro.
-> O critério de qualidade que separa teste unitário maduro de teste unitário só-no-nome é o acrônimo F.I.R.S.T. de `[[03 - Anatomia de um bom teste]]` — aqui, na prática, Rápido, Determinístico, Independente e Legível — e a maioria das dores de suíte (flakiness, ordem de execução, setup gigante) rastreia até a violação de uma dessas propriedades.
+> Teste unitário verifica uma unidade de comportamento isolada do resto do sistema, rápido e determinístico — e a maior briga da área é sobre o que "isolada" significa. A guerra entre a escola de Londres (mockista, isola cada classe atrás de dublês) e a escola de Detroit/Chicago (clássica, deixa colaboradores baratos reais e só mocka o que dói) não é bizantina: ela muda o que o teste protege — localização precisa do defeito de um lado, resistência a refatoração do outro. O critério de qualidade que separa teste unitário maduro de teste unitário só-no-nome é o acrônimo F.I.R.S.T. de `[[03 - Anatomia de um bom teste]]` — aqui, na prática, Rápido, Determinístico, Independente e Legível — e a maioria das dores de suíte (flakiness, ordem de execução, setup gigante) rastreia até a violação de uma dessas propriedades.
 
 Imagine um mecânico testando uma vela de ignição. Ele não liga o carro inteiro pra ver se a vela funciona. Ele monta a vela numa **bancada**, aplica corrente, e olha a faísca. Peça isolada, no banco de testes, resultado óbvio em segundos.
 

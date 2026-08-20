@@ -20,13 +20,7 @@ aliases:
 # Transaction Script
 
 > [!abstract] TL;DR
-> O **Transaction Script** organiza a lógica de negócio como um **procedimento por caso de uso** — um
-> "roteiro" por transação que valida, calcula e mexe no banco, de forma linear e direta. É a resposta
-> mais **simples e honesta** para lógica pouca: fácil de escrever, fácil de seguir, sem cerimônia de
-> modelo de objetos. Brilha em CRUD, apps de dados e prazos curtos. **Apodrece** quando a lógica
-> cresce: a mesma regra se **duplica** entre scripts, e o método vira um monstro de 200 linhas. É o
-> ponto de partida do qual se evolui para o [[03 - Domain Model]] quando a complexidade justifica. A
-> armadilha central é insistir nele quando o domínio já ficou complexo demais.
+> O **Transaction Script** organiza a lógica de negócio como um **procedimento por caso de uso** — um "roteiro" por transação que valida, calcula e mexe no banco, de forma linear e direta. É a resposta mais **simples e honesta** para lógica pouca: fácil de escrever, fácil de seguir, sem cerimônia de modelo de objetos. Brilha em CRUD, apps de dados e prazos curtos. **Apodrece** quando a lógica cresce: a mesma regra se **duplica** entre scripts, e o método vira um monstro de 200 linhas. É o ponto de partida do qual se evolui para o [[03 - Domain Model]] quando a complexidade justifica. A armadilha central é insistir nele quando o domínio já ficou complexo demais.
 
 ## Um roteiro por caso de uso
 
@@ -71,19 +65,13 @@ Combina naturalmente com os padrões de fonte de dados mais simples — um [[07 
 ## Armadilhas comuns
 
 > [!warning] Duplicação da mesma regra entre scripts
-> **O que acontece:** a regra "um pedido só muda de status se estiver pendente e dentro do limite" aparece copiada em `aprovar`, `cancelar` e `faturar`. Um dia a regra muda, e você corrige em dois dos três lugares.
-> **Por quê:** sem um modelo de objetos onde a regra **more uma vez**, cada script reimplementa a lógica de que precisa. Quanto mais casos de uso compartilham regras, mais a duplicação cresce — é o sintoma clássico de que o Transaction Script está passando do ponto.
-> **Como evitar:** extraia regras compartilhadas para funções/objetos reutilizáveis. Quando a duplicação vira regra e não exceção, é o sinal de migrar para um [[03 - Domain Model]].
+> **O que acontece:** a regra "um pedido só muda de status se estiver pendente e dentro do limite" aparece copiada em `aprovar`, `cancelar` e `faturar`. Um dia a regra muda, e você corrige em dois dos três lugares. **Por quê:** sem um modelo de objetos onde a regra **more uma vez**, cada script reimplementa a lógica de que precisa. Quanto mais casos de uso compartilham regras, mais a duplicação cresce — é o sintoma clássico de que o Transaction Script está passando do ponto. **Como evitar:** extraia regras compartilhadas para funções/objetos reutilizáveis. Quando a duplicação vira regra e não exceção, é o sinal de migrar para um [[03 - Domain Model]].
 
 > [!warning] O script que vira um God method
-> **O que acontece:** um caso de uso complexo cresce até virar um método de 150–300 linhas, com muitos `if` aninhados, chamadas ao banco no meio da lógica e responsabilidades misturadas.
-> **Por quê:** o Transaction Script não impõe estrutura interna; nada impede o roteiro de inchar. Sem a decomposição que um modelo de objetos naturalmente induz, a complexidade se acumula no procedimento.
-> **Como evitar:** quebre o script em passos nomeados; extraia sub-rotinas. Se mesmo assim ele resiste, a complexidade do domínio provavelmente já pede um Domain Model.
+> **O que acontece:** um caso de uso complexo cresce até virar um método de 150–300 linhas, com muitos `if` aninhados, chamadas ao banco no meio da lógica e responsabilidades misturadas. **Por quê:** o Transaction Script não impõe estrutura interna; nada impede o roteiro de inchar. Sem a decomposição que um modelo de objetos naturalmente induz, a complexidade se acumula no procedimento. **Como evitar:** quebre o script em passos nomeados; extraia sub-rotinas. Se mesmo assim ele resiste, a complexidade do domínio provavelmente já pede um Domain Model.
 
 > [!warning] Lógica de negócio dentro do controller (misturada com HTTP)
-> **O que acontece:** o Transaction Script é escrito **no controller**, colando validação de request, regra de negócio e acesso a banco na mesma classe.
-> **Por quê:** confunde-se "lógica simples" com "não precisa de camada". Misturar HTTP com regra de negócio dificulta testar a regra sem subir a web e reaproveitá-la em outro canal (fila, CLI).
-> **Como evitar:** o Transaction Script pode ser simples **e** morar numa camada de serviço própria, separada do controller. Simplicidade não é desculpa para acoplar transporte e negócio.
+> **O que acontece:** o Transaction Script é escrito **no controller**, colando validação de request, regra de negócio e acesso a banco na mesma classe. **Por quê:** confunde-se "lógica simples" com "não precisa de camada". Misturar HTTP com regra de negócio dificulta testar a regra sem subir a web e reaproveitá-la em outro canal (fila, CLI). **Como evitar:** o Transaction Script pode ser simples **e** morar numa camada de serviço própria, separada do controller. Simplicidade não é desculpa para acoplar transporte e negócio.
 
 ## Como explicar em inglês
 

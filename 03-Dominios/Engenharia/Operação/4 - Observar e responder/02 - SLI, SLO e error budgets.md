@@ -33,8 +33,7 @@ O ponto de partida de tudo é a métrica. Um SLI ruim contamina cada decisão qu
 
 O SRE Workbook do Google recomenda um formato específico e deliberadamente restrito: todo SLI deveria ser expresso como uma **razão entre eventos bons e eventos válidos**.
 
-$$
-\text{SLI} = \frac{\text{eventos bons}}{\text{eventos válidos}} \times 100\%
+$$ \text{SLI} = \frac{\text{eventos bons}}{\text{eventos válidos}} \times 100\%
 $$
 
 - **Eventos bons** são transações que satisfazem o critério de sucesso definido pelo usuário — um HTTP 2xx, uma resposta abaixo de um limite de latência, uma escrita que persistiu com durabilidade garantida.
@@ -56,9 +55,7 @@ Repare que "latência" como SLI não é "latência média" nem "p99 abaixo de X"
 > Porque uptime de infraestrutura e disponibilidade percebida pelo usuário são coisas diferentes, e a diferença entre elas é exatamente onde incidentes reais se escondem. Um servidor pode estar "up" (processo rodando, health check verde) e ainda assim devolver erro 500 para todo request de checkout, porque a conexão com o banco de dados caiu. Medir uptime do processo diria "tudo bem"; medir a razão de checkouts bem-sucedidos diria a verdade. É por isso que a razão eventos-bons/eventos-válidos é sempre definida do ponto de vista do consumidor da API, nunca do ponto de vista de "o processo está de pé".
 
 > [!warning] Medir o que é fácil de coletar, não o que importa
-> **O que acontece:** o time escolhe "uptime do balanceador de carga" ou "CPU abaixo de 80%" como SLI, porque esses dados já existem prontos num dashboard de infraestrutura — nenhum trabalho de instrumentação extra necessário.
-> **Por quê:** métricas de infraestrutura (CPU, uptime de processo, uso de memória) são sintomas de causa, não de efeito percebido. Um sistema pode ter CPU tranquila e ainda assim estar servindo erro para 30% dos usuários (ex.: uma dependência externa lenta, um bug de lógica). O inverso também acontece: CPU em 95% e usuários perfeitamente atendidos, porque o serviço está corretamente dimensionado para operar perto do limite.
-> **Como evitar:** todo SLI proposto passa pelo teste "se esse número piorar, um usuário real *sente* alguma coisa?" Se a resposta é não, é métrica de causa (útil para debugging, [[01 - Observabilidade como prática]] cobre isso) — não SLI. SLI é sempre sintoma do ponto de vista de quem consome o serviço.
+> **O que acontece:** o time escolhe "uptime do balanceador de carga" ou "CPU abaixo de 80%" como SLI, porque esses dados já existem prontos num dashboard de infraestrutura — nenhum trabalho de instrumentação extra necessário. **Por quê:** métricas de infraestrutura (CPU, uptime de processo, uso de memória) são sintomas de causa, não de efeito percebido. Um sistema pode ter CPU tranquila e ainda assim estar servindo erro para 30% dos usuários (ex.: uma dependência externa lenta, um bug de lógica). O inverso também acontece: CPU em 95% e usuários perfeitamente atendidos, porque o serviço está corretamente dimensionado para operar perto do limite. **Como evitar:** todo SLI proposto passa pelo teste "se esse número piorar, um usuário real *sente* alguma coisa?" Se a resposta é não, é métrica de causa (útil para debugging, [[01 - Observabilidade como prática]] cobre isso) — não SLI. SLI é sempre sintoma do ponto de vista de quem consome o serviço.
 
 ### Jornadas críticas: o ponto de partida antes do SLI
 
@@ -114,26 +111,22 @@ Aqui está o núcleo quantitativo desta nota. Considere um serviço de checkout 
 
 **Passo 1 — Total de requests no período.**
 
-$$
-50 \text{ req/s} \times 86.400 \text{ s/dia} \times 30 \text{ dias} = 129.600.000 \text{ requests}
+$$ 50 \text{ req/s} \times 86.400 \text{ s/dia} \times 30 \text{ dias} = 129.600.000 \text{ requests}
 $$
 
 **Passo 2 — O error budget em percentual.**
 
-$$
-\text{budget} = 100\% - \text{SLO} = 100\% - 99{,}9\% = 0{,}1\%
+$$ \text{budget} = 100\% - \text{SLO} = 100\% - 99{,}9\% = 0{,}1\%
 $$
 
 **Passo 3 — O error budget em requests (o número que realmente importa no dia a dia).**
 
-$$
-129.600.000 \times 0{,}001 = 129.600 \text{ requests podem falhar (ou responder acima de 2s) no período de 30 dias}
+$$ 129.600.000 \times 0{,}001 = 129.600 \text{ requests podem falhar (ou responder acima de 2s) no período de 30 dias}
 $$
 
 **Passo 4 — Traduzindo para tempo (se o SLI fosse tratado como disponibilidade contínua).** Um período de 30 dias tem 43.200 minutos. Com 99,9%, o downtime-equivalente permitido é:
 
-$$
-43.200 \times 0{,}001 = 43{,}2 \text{ minutos no período}
+$$ 43.200 \times 0{,}001 = 43{,}2 \text{ minutos no período}
 $$
 
 Isso confirma a tabela de "noves" de [[04 - Confiabilidade como feature]] — mas agora ancorado num volume real de tráfego, não numa abstração de percentual. O número que o time efetivamente acompanha no dia a dia **não é os 43,2 minutos** — é os **129.600 requests**, porque é isso que aparece contado, em tempo real, num dashboard de error budget. "Faltam 43 minutos de downtime" é uma tradução conceitual útil para conversar com quem não vive de dashboard; "faltam 62.000 requests de orçamento" é o número operacional.
@@ -148,8 +141,7 @@ graph LR
 
 **Cenário concreto**: no dia 22 do período de 30 dias, um incidente de 35 minutos derruba 40% dos requests de checkout (respondendo erro ou acima de 2s). Com 50 req/s, isso consome:
 
-$$
-35 \times 60 \times 50 \times 0{,}40 = 42.000 \text{ requests do orçamento}
+$$ 35 \times 60 \times 50 \times 0{,}40 = 42.000 \text{ requests do orçamento}
 $$
 
 De um orçamento total de 129.600, esse único incidente consumiu **32,4%** — um golpe significativo, mas não fatal, restando 67,6% do orçamento para os 8 dias restantes do ciclo. Se um segundo incidente de magnitude parecida acontecer antes do fim do período, o orçamento provavelmente estoura, e a política de error budget (próxima seção) entra em vigor.
@@ -163,8 +155,7 @@ Saber que restam 67,6% do orçamento não diz se isso é uma boa notícia. Se fa
 
 É para essa lacuna que existe a **burn rate**: a velocidade com que o error budget está sendo consumido, normalizada de forma que **burn rate = 1** signifique "no ritmo exato para gastar 100% do orçamento até o fim da janela, nem mais rápido nem mais devagar". Formalmente, o SRE Workbook define:
 
-$$
-\text{tempo até esgotar o orçamento} = \frac{1 - \text{SLO}}{\text{taxa de erro atual}} \times \text{duração da janela}
+$$ \text{tempo até esgotar o orçamento} = \frac{1 - \text{SLO}}{\text{taxa de erro atual}} \times \text{duração da janela}
 $$
 
 Alguns pontos de referência tornam a intuição concreta, para um SLO de 99,9% numa janela de 30 dias:
@@ -236,9 +227,7 @@ graph TD
 > Normalmente significa realocar a capacidade de engenharia do squad para três tipos de trabalho: (1) investigar e corrigir a causa raiz do consumo excessivo de orçamento — geralmente o incidente ou classe de incidentes que mais gastou; (2) fechar lacunas de observabilidade que dificultaram diagnosticar o problema mais rápido; (3) reduzir dívida técnica que aumenta a fragilidade do sistema (timeouts ausentes, retries sem backoff, dependências sem fallback — temas do sub-galho 3 desta trilha). O objetivo não é "ficar parado esperando o orçamento se recuperar sozinho" — é investir deliberadamente na causa, para que o próximo ciclo não repita o mesmo padrão de consumo.
 
 > [!warning] Error budget policy sem consequência real
-> **O que acontece:** a organização define formalmente uma política de error budget, publica num wiki interno, e na prática nunca a aplica — todo freeze é "reavaliado" e revertido quando alguém de liderança pressiona por uma data de lançamento.
-> **Por quê:** o valor do error budget como mecanismo depende inteiramente de ser **crível**. No momento em que o time aprende que o freeze é negociável caso a caso, ele deixa de funcionar como sinal objetivo e volta a ser a mesma política interna de sempre — só que com um número bonito decorando a decisão que já ia acontecer de qualquer forma.
-> **Como evitar:** trate a política de error budget como trataria um contrato de SLA externo — com um processo de exceção formal, custoso e raro, não uma sugestão. Se o override acontece com frequência, o problema não é a política — é que o SLO foi calibrado apertado demais para a realidade do negócio (volte ao teste da felicidade).
+> **O que acontece:** a organização define formalmente uma política de error budget, publica num wiki interno, e na prática nunca a aplica — todo freeze é "reavaliado" e revertido quando alguém de liderança pressiona por uma data de lançamento. **Por quê:** o valor do error budget como mecanismo depende inteiramente de ser **crível**. No momento em que o time aprende que o freeze é negociável caso a caso, ele deixa de funcionar como sinal objetivo e volta a ser a mesma política interna de sempre — só que com um número bonito decorando a decisão que já ia acontecer de qualquer forma. **Como evitar:** trate a política de error budget como trataria um contrato de SLA externo — com um processo de exceção formal, custoso e raro, não uma sugestão. Se o override acontece com frequência, o problema não é a política — é que o SLO foi calibrado apertado demais para a realidade do negócio (volte ao teste da felicidade).
 
 ## Anti-padrões: os erros que sabotam o mecanismo antes de começar
 

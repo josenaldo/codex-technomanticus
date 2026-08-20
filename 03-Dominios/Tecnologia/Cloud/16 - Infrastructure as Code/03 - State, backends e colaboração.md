@@ -92,8 +92,7 @@ sequenceDiagram
 > [!tip] Assista: Terraform backend using S3 and Dynamodb with state locking
 > **Canal:** Tech with Ajit | **Duração:** ~10min | **Idioma:** EN
 >
-> Uma demo curta que percorre exatamente a sequência que a nota descreve: por que externalizar o state não basta, e por que o lock é o que impede dois `apply` simultâneos de se pisarem.
-> Trecho de destaque [02:19]: *"locking is required if supported by your back end terraform will lock your state for all operations that could write state"*
+> Uma demo curta que percorre exatamente a sequência que a nota descreve: por que externalizar o state não basta, e por que o lock é o que impede dois `apply` simultâneos de se pisarem. Trecho de destaque [02:19]: *"locking is required if supported by your back end terraform will lock your state for all operations that could write state"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=q5-zsBY90j8)
 
@@ -231,8 +230,7 @@ Um ponto que costuma surpreender iniciantes: **`import` só popula o state — e
 > [!tip] Assista: How to Use Terraform Import: CLI and Import Block Explained
 > **Canal:** Spacelift | **Duração:** ~8min | **Idioma:** EN
 >
-> Reforça exatamente o ponto que mais engana iniciante: `import` só atualiza o state, não escreve o `resource` no código. O vídeo também mostra o caso de usar `import` para reorganizar um state monolítico em vários menores.
-> Trecho de destaque [00:38]: *"Terraform import lets you bring an existing real-world [resource] under Terraform's control"*
+> Reforça exatamente o ponto que mais engana iniciante: `import` só atualiza o state, não escreve o `resource` no código. O vídeo também mostra o caso de usar `import` para reorganizar um state monolítico em vários menores. Trecho de destaque [00:38]: *"Terraform import lets you bring an existing real-world [resource] under Terraform's control"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=qkWUuB8uMN4)
 

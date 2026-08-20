@@ -112,8 +112,7 @@ Riscos: mudança de interface de autenticação pode quebrar integrações exter
        → revisar documentação da API antes de prosseguir
 ```
 
-**Por que isso é valioso:**
-Antes de deixar o agente rodar 20 tool calls, você pode ver se ele entendeu corretamente o problema. Um plano ruim revelado antes da execução custa apenas uns segundos. Um plano ruim que executou por 20 minutos custou tempo, tokens, e potencialmente mudanças que precisam ser revertidas.
+**Por que isso é valioso:** Antes de deixar o agente rodar 20 tool calls, você pode ver se ele entendeu corretamente o problema. Um plano ruim revelado antes da execução custa apenas uns segundos. Um plano ruim que executou por 20 minutos custou tempo, tokens, e potencialmente mudanças que precisam ser revertidas.
 
 **Quando usar:**
 - Refactoring de módulos críticos

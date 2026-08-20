@@ -21,21 +21,13 @@ aliases:
 # Arquitetura de Eventos
 
 > [!abstract] TL;DR
-> Os padrões que aparecem quando um sistema comunica por **fatos ocorridos** em vez de comandos diretos.
-> Quinta família do galho-pai
-> [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/index|Padrões de Projeto]]. "Event-driven"
-> não nomeia uma coisa: nomeia os **quatro estilos** que Fowler separou — Event Notification,
-> Event-Carried State Transfer, Event Sourcing e CQRS —, e duas equipes podem usar o termo descrevendo
-> sistemas com propriedades opostas. A lente aqui é uma pergunta só: **o que o evento carrega, e a quem
-> isso amarra**.
+> Os padrões que aparecem quando um sistema comunica por **fatos ocorridos** em vez de comandos diretos. Quinta família do galho-pai [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/index|Padrões de Projeto]]. "Event-driven" não nomeia uma coisa: nomeia os **quatro estilos** que Fowler separou — Event Notification, Event-Carried State Transfer, Event Sourcing e CQRS —, e duas equipes podem usar o termo descrevendo sistemas com propriedades opostas. A lente aqui é uma pergunta só: **o que o evento carrega, e a quem isso amarra**.
 
 ## Sobre esta família
 
 Catálogo de consulta, com notas autocontidas e **Armadilhas** pesando no *quando não usar*.
 
-**Esta é a família com maior sobreposição do galho, e a lente existe por causa disso.** Event Sourcing,
-CQRS, Saga, Outbox e pub-sub já têm casa profunda no vault; esta família não os repete — olha-os pelo
-eixo do **acoplamento**, que aquelas notas não cobrem. A divisão de trabalho, reafirmada em cada nota:
+**Esta é a família com maior sobreposição do galho, e a lente existe por causa disso.** Event Sourcing, CQRS, Saga, Outbox e pub-sub já têm casa profunda no vault; esta família não os repete — olha-os pelo eixo do **acoplamento**, que aquelas notas não cobrem. A divisão de trabalho, reafirmada em cada nota:
 
 | Galho | Pergunta que responde |
 | --- | --- |
@@ -43,8 +35,7 @@ eixo do **acoplamento**, que aquelas notas não cobrem. A divisão de trabalho, 
 | [[03-Dominios/Engenharia/Comunicação entre Sistemas/4 - Comunicação assíncrona/index\|Comunicação assíncrona]] | *como chega?* — broker, entrega, ordenação, CDC, dual-write |
 | **Esta família** | ***o que acopla?*** — o que o evento carrega, quem depende de quem |
 
-**Eixo dorsal:** [[03 - Event Notification]] × [[04 - Event-Carried State Transfer]] — o evento magro
-contra o gordo. É a decisão mais consequente da família, e ela é **por fluxo**, não por sistema.
+**Eixo dorsal:** [[03 - Event Notification]] × [[04 - Event-Carried State Transfer]] — o evento magro contra o gordo. É a decisão mais consequente da família, e ela é **por fluxo**, não por sistema.
 
 ## Iniciado — o que é um evento, e o estilo mais magro
 
@@ -66,9 +57,7 @@ contra o gordo. É a decisão mais consequente da família, e ela é **por fluxo
 10. [[10 - CQRS]] — dois modelos para os mesmos dados; **fecha a família** com o mapa de escolha dos 10 padrões e a síntese do espectro de acoplamento.
 
 > [!tip] Atalho para quem tem um problema concreto
-> A nota [[10 - CQRS]] termina com um **mapa de escolha** que parte do sintoma — "gravei no banco e o
-> evento não saiu", "o cliente foi cobrado duas vezes", "ninguém sabe em que etapa o processo está" —
-> e leva ao padrão e à nota. É o índice mais útil da família em campo.
+> A nota [[10 - CQRS]] termina com um **mapa de escolha** que parte do sintoma — "gravei no banco e o evento não saiu", "o cliente foi cobrado duas vezes", "ninguém sabe em que etapa o processo está" — e leva ao padrão e à nota. É o índice mais útil da família em campo.
 
 ## Todas as notas
 

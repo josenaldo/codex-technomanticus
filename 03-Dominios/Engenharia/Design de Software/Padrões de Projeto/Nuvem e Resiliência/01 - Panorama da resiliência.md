@@ -23,22 +23,10 @@ aliases:
 # Panorama da resiliência
 
 > [!abstract] TL;DR
-> Num monólito, ou o sistema está no ar ou não está. Distribuído, ele fica **meio no ar** — e esse
-> estado intermediário é o que os padrões desta família administram. O inimigo não é a dependência que
-> **cai**: é a que fica **lenta**, porque a lentidão consome recursos do chamador até que ele também
-> pare, e a falha sobe a cadeia até o usuário. Cada padrão aqui corta essa corrente num ponto — e
-> **nenhum é de graça**. A lente da família é essa: todo padrão de resiliência é uma escolha sobre **o
-> que sacrificar para não cair inteiro**, e sobre **quem paga a conta**.
+> Num monólito, ou o sistema está no ar ou não está. Distribuído, ele fica **meio no ar** — e esse estado intermediário é o que os padrões desta família administram. O inimigo não é a dependência que **cai**: é a que fica **lenta**, porque a lentidão consome recursos do chamador até que ele também pare, e a falha sobe a cadeia até o usuário. Cada padrão aqui corta essa corrente num ponto — e **nenhum é de graça**. A lente da família é essa: todo padrão de resiliência é uma escolha sobre **o que sacrificar para não cair inteiro**, e sobre **quem paga a conta**.
 
 > [!info] O recorte desta família
-> Esta é a família mais coberta do vault, e a redundância é deliberada — um catálogo de padrões precisa
-> ter uma entrada para "Circuit Breaker", não um ponteiro. Mas o recorte é estreito: aqui está **o
-> trade-off explícito de cada padrão**. *Quanto aguenta* está em
-> [[03-Dominios/Engenharia/Arquitetura/System Design/3 - Padrões recorrentes/05 - Circuit Breaker e resiliência|System Design 3-05]];
-> *como tunar, operar e testar* em
-> [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/06 - Resiliência operacional|Operação 3-06]];
-> *qual serviço gerenciado faz isso* em [[03-Dominios/Tecnologia/Cloud/20 - Resiliência e continuidade/index|Cloud 20]];
-> *como migrar com Strangler Fig e ACL* na [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/index|Arqueologia]].
+> Esta é a família mais coberta do vault, e a redundância é deliberada — um catálogo de padrões precisa ter uma entrada para "Circuit Breaker", não um ponteiro. Mas o recorte é estreito: aqui está **o trade-off explícito de cada padrão**. *Quanto aguenta* está em [[03-Dominios/Engenharia/Arquitetura/System Design/3 - Padrões recorrentes/05 - Circuit Breaker e resiliência|System Design 3-05]]; *como tunar, operar e testar* em [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/06 - Resiliência operacional|Operação 3-06]]; *qual serviço gerenciado faz isso* em [[03-Dominios/Tecnologia/Cloud/20 - Resiliência e continuidade/index|Cloud 20]]; *como migrar com Strangler Fig e ACL* na [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/index|Arqueologia]].
 
 ## O serviço que não caiu — e derrubou todo o resto
 
@@ -127,19 +115,13 @@ A regra prática: **a ordem de composição importa**, e a convencional é `bulk
 ## Armadilhas comuns
 
 > [!warning] Proteger-se da queda e não da lentidão
-> **O que acontece:** o sistema trata bem `connection refused` e não tem defesa alguma contra respostas de oito segundos — que é o modo de falha que efetivamente derruba tudo.
-> **Por quê:** a queda é o que se imagina ao pensar em falha, e é fácil de simular em teste. A lentidão é mais comum, mais destrutiva e quase nunca testada.
-> **Como evitar:** teste com **latência injetada**, não só com o alvo desligado. E trate `timeout` como configuração obrigatória de toda chamada remota, não como afinação posterior.
+> **O que acontece:** o sistema trata bem `connection refused` e não tem defesa alguma contra respostas de oito segundos — que é o modo de falha que efetivamente derruba tudo. **Por quê:** a queda é o que se imagina ao pensar em falha, e é fácil de simular em teste. A lentidão é mais comum, mais destrutiva e quase nunca testada. **Como evitar:** teste com **latência injetada**, não só com o alvo desligado. E trate `timeout` como configuração obrigatória de toda chamada remota, não como afinação posterior.
 
 > [!warning] Empilhar padrões sem somar os efeitos
-> **O que acontece:** retry no cliente, no mesh e na aplicação; breakers em duas camadas; timeouts que se contradizem. Sob incidente, o sistema se comporta de um jeito que ninguém consegue prever, e o mecanismo de defesa vira parte da causa.
-> **Por quê:** cada padrão foi adicionado por um bom motivo local, por pessoas diferentes, em momentos diferentes.
-> **Como evitar:** trate a configuração de resiliência como um **conjunto** — documentada num lugar, com a ordem de composição explícita e os timeouts coerentes de fora para dentro.
+> **O que acontece:** retry no cliente, no mesh e na aplicação; breakers em duas camadas; timeouts que se contradizem. Sob incidente, o sistema se comporta de um jeito que ninguém consegue prever, e o mecanismo de defesa vira parte da causa. **Por quê:** cada padrão foi adicionado por um bom motivo local, por pessoas diferentes, em momentos diferentes. **Como evitar:** trate a configuração de resiliência como um **conjunto** — documentada num lugar, com a ordem de composição explícita e os timeouts coerentes de fora para dentro.
 
 > [!warning] Resiliência que nunca roda
-> **O que acontece:** o fallback tem um bug, o breaker está configurado com um limiar que nunca é atingido, e ninguém sabe — porque esse código só executa quando algo dá errado, e nada dá errado em teste.
-> **Por quê:** o caminho de falha é, por definição, o caminho não exercitado. Cobertura de teste alta convive perfeitamente com resiliência quebrada.
-> **Como evitar:** exercite a falha de propósito — injeção de falha e latência no ambiente de teste, e experimentos controlados em produção onde houver maturidade. Um mecanismo de resiliência nunca acionado é uma hipótese, não uma proteção.
+> **O que acontece:** o fallback tem um bug, o breaker está configurado com um limiar que nunca é atingido, e ninguém sabe — porque esse código só executa quando algo dá errado, e nada dá errado em teste. **Por quê:** o caminho de falha é, por definição, o caminho não exercitado. Cobertura de teste alta convive perfeitamente com resiliência quebrada. **Como evitar:** exercite a falha de propósito — injeção de falha e latência no ambiente de teste, e experimentos controlados em produção onde houver maturidade. Um mecanismo de resiliência nunca acionado é uma hipótese, não uma proteção.
 
 ## Como explicar em inglês
 

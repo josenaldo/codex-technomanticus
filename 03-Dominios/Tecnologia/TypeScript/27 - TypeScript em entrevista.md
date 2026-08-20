@@ -590,14 +590,11 @@ Cada uma vale uma frase e um link para a nota-dona.
 >
 > Zod schema é a source of truth — tipo é inferido de lá.
 >
-> **3. OpenAPI → tipos:**
-> Backend (Spring Boot) gera OpenAPI via SpringDoc. Frontend consome com `openapi-typescript` que gera tipos. Quando o backend muda um campo, o TypeScript quebra no frontend — erro de compilação, não runtime. Esse loop economiza tempo enorme.
+> **3. OpenAPI → tipos:** Backend (Spring Boot) gera OpenAPI via SpringDoc. Frontend consome com `openapi-typescript` que gera tipos. Quando o backend muda um campo, o TypeScript quebra no frontend — erro de compilação, não runtime. Esse loop economiza tempo enorme.
 >
-> **4. Result types em domain code:**
-> Services retornam `Result<T, DomainError>` em vez de throwing. Força o caller a lidar com erros. Nos boundaries (controllers), converto para HTTP response.
+> **4. Result types em domain code:** Services retornam `Result<T, DomainError>` em vez de throwing. Força o caller a lidar com erros. Nos boundaries (controllers), converto para HTTP response.
 >
-> **5. Discriminated unions para state:**
-> Componentes React com `LoadingState = { status: 'idle' } | { status: 'loading' } | { status: 'success'; data: T } | { status: 'error'; error: E }`. Switch exhaustivo no render.
+> **5. Discriminated unions para state:** Componentes React com `LoadingState = { status: 'idle' } | { status: 'loading' } | { status: 'success'; data: T } | { status: 'error'; error: E }`. Switch exhaustivo no render.
 >
 > **6. Branded types para IDs:**
 >
@@ -610,11 +607,9 @@ Cada uma vale uma frase e um link para a nota-dona.
 >
 > Evita trocar IDs no código — erro de compile-time.
 >
-> **7. `import type` sempre:**
-> Imports de tipos com `import type` para garantir que são removidos do JS. Melhora tree shaking.
+> **7. `import type` sempre:** Imports de tipos com `import type` para garantir que são removidos do JS. Melhora tree shaking.
 >
-> **8. Path aliases (`@/*`):**
-> Evita imports relativos horríveis. Configurado em tsconfig + Vite/Next/Jest.
+> **8. Path aliases (`@/*`):** Evita imports relativos horríveis. Configurado em tsconfig + Vite/Next/Jest.
 >
 > **Incidente memorável — `any` vazou:**
 >

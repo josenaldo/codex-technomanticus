@@ -182,14 +182,11 @@ O ponto sênior: **não é um duelo de soma zero.** O Spring 6/Boot 3 roda **sob
 
 Três armadilhas **de raciocínio** — não de sintaxe. São os erros mentais que separam quem decorou de quem entendeu.
 
-1. **"Auto-config é mágica / ela adivinha o que eu quero."**
-   *Por que erra:* não há adivinhação. A auto-config é determinística: um catálogo de classes no arquivo `...AutoConfiguration.imports` avaliado contra `@Conditional` (classpath, beans existentes, properties). Quem trata como mágica não sabe **depurar**: não roda `--debug`, não lê o conditions report, e fica perdido quando um bean esperado não aparece. Quem entende o mecanismo sabe exatamente onde olhar.
+1. **"Auto-config é mágica / ela adivinha o que eu quero."** *Por que erra:* não há adivinhação. A auto-config é determinística: um catálogo de classes no arquivo `...AutoConfiguration.imports` avaliado contra `@Conditional` (classpath, beans existentes, properties). Quem trata como mágica não sabe **depurar**: não roda `--debug`, não lê o conditions report, e fica perdido quando um bean esperado não aparece. Quem entende o mecanismo sabe exatamente onde olhar.
 
-2. **"O Spring substituiu / matou o Jakarta EE."**
-   *Por que erra:* é uma meia-verdade datada. O que acabou foi a hegemonia do app server monolítico pesado como escolha-padrão — não as especificações. O Spring 6/Boot 3 **implementa e consome** várias specs Jakarta (`jakarta.servlet`, `jakarta.validation`, `jakarta.persistence`, `jakarta.inject`, `jakarta.annotation`). Dizer que ele substituiu o Jakarta é como dizer que um carro substituiu o motor: ele tem um motor de specs por dentro.
+2. **"O Spring substituiu / matou o Jakarta EE."** *Por que erra:* é uma meia-verdade datada. O que acabou foi a hegemonia do app server monolítico pesado como escolha-padrão — não as especificações. O Spring 6/Boot 3 **implementa e consome** várias specs Jakarta (`jakarta.servlet`, `jakarta.validation`, `jakarta.persistence`, `jakarta.inject`, `jakarta.annotation`). Dizer que ele substituiu o Jakarta é como dizer que um carro substituiu o motor: ele tem um motor de specs por dentro.
 
-3. **Escolher framework por hype em vez de por requisito.**
-   *Por que erra:* "todo mundo usa X" não é um critério de arquitetura — é apelo à popularidade. A escolha correta deriva de requisitos concretos: portabilidade entre vendors, runtime alvo, footprint/startup, expertise do time, mandatos regulatórios. Trocar requisito por hype é como escolher banco de dados pela quantidade de estrelas no GitHub. O sênior justifica a escolha com **trade-offs técnicos**, não com tendência.
+3. **Escolher framework por hype em vez de por requisito.** *Por que erra:* "todo mundo usa X" não é um critério de arquitetura — é apelo à popularidade. A escolha correta deriva de requisitos concretos: portabilidade entre vendors, runtime alvo, footprint/startup, expertise do time, mandatos regulatórios. Trocar requisito por hype é como escolher banco de dados pela quantidade de estrelas no GitHub. O sênior justifica a escolha com **trade-offs técnicos**, não com tendência.
 
 ## Em entrevista
 

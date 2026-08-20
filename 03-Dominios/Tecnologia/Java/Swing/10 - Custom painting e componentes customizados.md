@@ -37,8 +37,7 @@ Os casos de uso típicos são:
 
 A base do mecanismo é simples: estenda `JComponent` (ou `JPanel` se quiser suporte a filhos) e sobrescreva `paintComponent(Graphics g)`. O Swing chama esse método automaticamente sempre que o componente precisa ser (re)pintado — seja por exposição da janela, resize, ou chamada explícita de `repaint()`.
 
-> *"Many programs will get by just fine without writing their own painting code; they will simply use the standard GUI components that are already available in the Swing API. But if you need specific control over how your graphics are drawn, then this lesson is for you."*
-> — The Java Tutorials, Performing Custom Painting
+> *"Many programs will get by just fine without writing their own painting code; they will simply use the standard GUI components that are already available in the Swing API. But if you need specific control over how your graphics are drawn, then this lesson is for you."* — The Java Tutorials, Performing Custom Painting
 
 ## Como funciona
 

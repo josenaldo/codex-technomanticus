@@ -626,8 +626,7 @@ MeuPromise.resolve(42)
 ## Para visualizar
 
 > [!tip] Vídeo recomendado — Prototype chain na prática
-> **"JavaScript Prototype Explained"** — canal Fireship (YouTube). Em ~8 minutos cobre `[[Prototype]]`, `__proto__`, `Object.create`, o que `new` faz e como `class` é açúcar. Ideal para fixar visualmente a cadeia antes de mergulhar em `setPrototypeOf` e `Symbol.species`.
-> Busque diretamente: [youtube.com/watch?v=wstwjQ1yqWQ](https://www.youtube.com/watch?v=wstwjQ1yqWQ)
+> **"JavaScript Prototype Explained"** — canal Fireship (YouTube). Em ~8 minutos cobre `[[Prototype]]`, `__proto__`, `Object.create`, o que `new` faz e como `class` é açúcar. Ideal para fixar visualmente a cadeia antes de mergulhar em `setPrototypeOf` e `Symbol.species`. Busque diretamente: [youtube.com/watch?v=wstwjQ1yqWQ](https://www.youtube.com/watch?v=wstwjQ1yqWQ)
 >
 > **"The Prototype Chain in Depth"** — Kyle Simpson (You Don't Know JS - Objects & Classes), capítulo disponível gratuitamente em [github.com/getify/You-Dont-Know-JS](https://github.com/getify/You-Dont-Know-JS/blob/2nd-ed/objects-classes/README.md). Abordagem mais rigorosa sobre delegação vs. herança.
 
@@ -636,29 +635,19 @@ MeuPromise.resolve(42)
 ## Armadilhas comuns
 
 > [!warning] Confundir `.prototype` com `[[Prototype]]`
-> **O que acontece:** `instancia.prototype` retorna `undefined`; você esperava os métodos.
-> **Por quê:** `.prototype` é propriedade da *função construtora*, não da instância. A instância tem `[[Prototype]]`, acessado via `Object.getPrototypeOf(instancia)`.
-> **Como evitar:** Memorize: funções têm `.prototype`; objetos/instâncias têm `[[Prototype]]`. Nunca mexa em `.prototype` de arrow functions (são `undefined`).
+> **O que acontece:** `instancia.prototype` retorna `undefined`; você esperava os métodos. **Por quê:** `.prototype` é propriedade da *função construtora*, não da instância. A instância tem `[[Prototype]]`, acessado via `Object.getPrototypeOf(instancia)`. **Como evitar:** Memorize: funções têm `.prototype`; objetos/instâncias têm `[[Prototype]]`. Nunca mexa em `.prototype` de arrow functions (são `undefined`).
 
 > [!warning] Mutação de `prototype` após instâncias já criadas
-> **O que acontece:** Você adiciona método ao `prototype` depois de criar objetos — e funciona. Você *reassigna* o prototype inteiro — e instâncias antigas param de herdar.
-> **Por quê:** Adicionar propriedade ao objeto apontado por `.prototype` propaga para todas as instâncias, pois a referência é viva. Reassignar `Animal.prototype = { ... }` cria um novo objeto e rompe a referência das instâncias antigas.
-> **Como evitar:** Sempre *adicione* ao prototype existente em vez de substituí-lo: `Animal.prototype.novoMetodo = fn` em vez de `Animal.prototype = { novoMetodo: fn }`.
+> **O que acontece:** Você adiciona método ao `prototype` depois de criar objetos — e funciona. Você *reassigna* o prototype inteiro — e instâncias antigas param de herdar. **Por quê:** Adicionar propriedade ao objeto apontado por `.prototype` propaga para todas as instâncias, pois a referência é viva. Reassignar `Animal.prototype = { ... }` cria um novo objeto e rompe a referência das instâncias antigas. **Como evitar:** Sempre *adicione* ao prototype existente em vez de substituí-lo: `Animal.prototype.novoMetodo = fn` em vez de `Animal.prototype = { novoMetodo: fn }`.
 
 > [!warning] `instanceof` falha com múltiplos realms (iframes, workers)
-> **O que acontece:** `array instanceof Array` retorna `false` quando o `array` veio de um `iframe`.
-> **Por quê:** Cada realm (contexto de execução) tem seu próprio `Array.prototype`. O `instanceof` compara ponteiros — os `Array.prototype` de realms diferentes não são o mesmo objeto.
-> **Como evitar:** Use `Array.isArray(valor)` para arrays; `Object.prototype.toString.call(valor)` para verificação de tipo universal.
+> **O que acontece:** `array instanceof Array` retorna `false` quando o `array` veio de um `iframe`. **Por quê:** Cada realm (contexto de execução) tem seu próprio `Array.prototype`. O `instanceof` compara ponteiros — os `Array.prototype` de realms diferentes não são o mesmo objeto. **Como evitar:** Use `Array.isArray(valor)` para arrays; `Object.prototype.toString.call(valor)` para verificação de tipo universal.
 
 > [!warning] Esquecendo `super()` antes de `this` em subclasses
-> **O que acontece:** `ReferenceError: Must call super constructor in derived class before accessing 'this'`.
-> **Por quê:** Em uma subclasse (`extends`), o objeto `this` é criado pelo construtor pai (`super()`). Até essa chamada, `this` não existe no escopo da subclasse.
-> **Como evitar:** Sempre coloque `super(args)` como primeira linha do `constructor` de uma subclasse. Se você não declarar `constructor`, isso acontece implicitamente.
+> **O que acontece:** `ReferenceError: Must call super constructor in derived class before accessing 'this'`. **Por quê:** Em uma subclasse (`extends`), o objeto `this` é criado pelo construtor pai (`super()`). Até essa chamada, `this` não existe no escopo da subclasse. **Como evitar:** Sempre coloque `super(args)` como primeira linha do `constructor` de uma subclasse. Se você não declarar `constructor`, isso acontece implicitamente.
 
 > [!warning] Campos privados `#` não são herdados pelo prototype
-> **O que acontece:** Um método do filho tenta acessar `this.#campo` definido no pai — SyntaxError.
-> **Por quê:** Campos privados `#` são ligados lexicalmente à classe onde foram declarados. Eles *existem* na instância (são own properties), mas só são acessíveis no corpo da classe que os declara.
-> **Como evitar:** Se o filho precisar de acesso, use campos `protected` via convenção (`_campo`) ou exposição explícita por método getter/setter na classe pai.
+> **O que acontece:** Um método do filho tenta acessar `this.#campo` definido no pai — SyntaxError. **Por quê:** Campos privados `#` são ligados lexicalmente à classe onde foram declarados. Eles *existem* na instância (são own properties), mas só são acessíveis no corpo da classe que os declara. **Como evitar:** Se o filho precisar de acesso, use campos `protected` via convenção (`_campo`) ou exposição explícita por método getter/setter na classe pai.
 
 ---
 

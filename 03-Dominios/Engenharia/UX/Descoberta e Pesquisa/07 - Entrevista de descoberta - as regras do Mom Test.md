@@ -93,19 +93,13 @@ Uma consultora, ansiosa para validar rápido, abre a entrevista mostrando um pro
 ## Armadilhas comuns
 
 > [!warning] Perguntar diretamente "o que você quer?"
-> **O que acontece:** o entrevistado responde com uma feature específica ("eu queria um botão que fizesse X"), e o engenheiro constrói exatamente aquilo.
-> **Por quê:** o entrevistado não é designer de produto — ele descreve a primeira solução que imagina para a dor dele, que raramente é a melhor solução possível, e frequentemente nem ataca a causa real.
-> **Como evitar:** trate qualquer resposta em formato de solução como um sintoma a investigar, não como requisito: "por que esse botão te ajudaria — o que você faz hoje sem ele?".
+> **O que acontece:** o entrevistado responde com uma feature específica ("eu queria um botão que fizesse X"), e o engenheiro constrói exatamente aquilo. **Por quê:** o entrevistado não é designer de produto — ele descreve a primeira solução que imagina para a dor dele, que raramente é a melhor solução possível, e frequentemente nem ataca a causa real. **Como evitar:** trate qualquer resposta em formato de solução como um sintoma a investigar, não como requisito: "por que esse botão te ajudaria — o que você faz hoje sem ele?".
 
 > [!warning] Perguntas fechadas que só confirmam a hipótese de quem pergunta
-> **O que acontece:** o entrevistador já tem uma ideia favorita e formula as perguntas de um jeito que só permite confirmar ("você concorda que seria mais rápido com X?").
-> **Por quê:** é viés de confirmação — a mesma armadilha nomeada na [[03-Dominios/Engenharia/UX/Descoberta e Pesquisa/06 - Generativa vs avaliativa|nota 06]] para pesquisa em geral, só que na forma mais comum: a pergunta capciosa dentro de uma entrevista que parece aberta.
-> **Como evitar:** revise seu roteiro antes da call e risque qualquer pergunta que comece implicando a resposta certa. Se a pergunta permite só "sim, concordo" como resposta plausível, reescreva.
+> **O que acontece:** o entrevistador já tem uma ideia favorita e formula as perguntas de um jeito que só permite confirmar ("você concorda que seria mais rápido com X?"). **Por quê:** é viés de confirmação — a mesma armadilha nomeada na [[03-Dominios/Engenharia/UX/Descoberta e Pesquisa/06 - Generativa vs avaliativa|nota 06]] para pesquisa em geral, só que na forma mais comum: a pergunta capciosa dentro de uma entrevista que parece aberta. **Como evitar:** revise seu roteiro antes da call e risque qualquer pergunta que comece implicando a resposta certa. Se a pergunta permite só "sim, concordo" como resposta plausível, reescreva.
 
 > [!warning] Tratar 1 entrevista como dado suficiente
-> **O que acontece:** depois de uma única conversa reveladora, o engenheiro trata o insight como validado e constrói em cima dele sem checar se é padrão ou exceção.
-> **Por quê:** 1 pessoa é uma amostra de tamanho 1 — pode ser um caso extremo, não representativo do resto dos usuários/clientes.
-> **Como evitar:** trate a primeira entrevista como hipótese a confirmar nas próximas 3-4, não como fato estabelecido. Ver a tabela "praticável sozinho" acima — 5-8 entrevistas é o piso recomendável antes de tratar um padrão como confiável.
+> **O que acontece:** depois de uma única conversa reveladora, o engenheiro trata o insight como validado e constrói em cima dele sem checar se é padrão ou exceção. **Por quê:** 1 pessoa é uma amostra de tamanho 1 — pode ser um caso extremo, não representativo do resto dos usuários/clientes. **Como evitar:** trate a primeira entrevista como hipótese a confirmar nas próximas 3-4, não como fato estabelecido. Ver a tabela "praticável sozinho" acima — 5-8 entrevistas é o piso recomendável antes de tratar um padrão como confiável.
 
 ## Como explicar em inglês
 

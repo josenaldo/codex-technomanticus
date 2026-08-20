@@ -54,9 +54,7 @@ O segredo está em como o foco funciona — e é um conceito novo:
 Cuidado com uma confusão de nomes que causa muito ARIA errado: o padrão **`menu`/`menubar`** da APG **não** é o menu de navegação do seu site (aquela barra com "Home, Sobre, Contato"). Aquilo é uma lista de links — use `<nav>` com `<ul>`/`<a>`, e pare por aí. O role `menu` é para **menus de aplicação**: o menu de um editor ("Arquivo, Editar, Ver"), um menu de contexto (botão direito), um dropdown de *ações* dentro de um app.
 
 > [!warning] `role="menu"` no menu de navegação do site
-> **O que acontece:** você põe `role="menu"` e `role="menuitem"` na navegação principal. Agora o leitor de tela entra em "modo aplicação", espera navegação por setas, e o comportamento de links normais fica estranho — Tab não percorre os itens como o usuário espera de uma navegação.
-> **Por quê:** `menu`/`menuitem` sinalizam um menu de *comandos de aplicação* com semântica e teclado próprios (setas, não Tab). Uma navegação de site é uma lista de links, semanticamente diferente.
-> **Como evitar:** navegação = `<nav><ul><li><a>`. Reserve `role="menu"` para menus de ação de aplicação de verdade, onde o teclado por setas faz sentido.
+> **O que acontece:** você põe `role="menu"` e `role="menuitem"` na navegação principal. Agora o leitor de tela entra em "modo aplicação", espera navegação por setas, e o comportamento de links normais fica estranho — Tab não percorre os itens como o usuário espera de uma navegação. **Por quê:** `menu`/`menuitem` sinalizam um menu de *comandos de aplicação* com semântica e teclado próprios (setas, não Tab). Uma navegação de site é uma lista de links, semanticamente diferente. **Como evitar:** navegação = `<nav><ul><li><a>`. Reserve `role="menu"` para menus de ação de aplicação de verdade, onde o teclado por setas faz sentido.
 
 Quando é de fato um menu de aplicação, o contrato inclui: role `menu`/`menubar` no container, `menuitem` (ou `menuitemcheckbox`/`menuitemradio`) nos itens, navegação por **setas** (não Tab), `Esc` para fechar, `Enter`/`Espaço` para ativar, e retorno de foco ao botão que abriu o menu.
 
@@ -90,24 +88,16 @@ Por isso a recomendação da comunidade e deste domínio: **para os widgets comp
 ## Armadilhas comuns
 
 > [!warning] `role="menu"` na navegação do site
-> **O que acontece:** a navegação principal (`Home`, `Sobre`, `Contato`) ganha `role="menu"`/`role="menuitem"`. O leitor de tela entra em modo de menu de aplicação, passa a esperar navegação por setas, e `Tab` para de se comportar como o usuário espera de uma lista de links.
-> **Por quê:** `menu`/`menuitem` sinalizam comandos de *aplicação*, com teclado próprio (setas, `Esc`, retorno de foco). Uma navegação de site é semanticamente uma lista de links, não um menu de app.
-> **Como evitar:** navegação = `<nav><ul><li><a>`, sem roles extras. Reserve `role="menu"` para menus de ação reais (editor, menu de contexto, dropdown de comandos).
+> **O que acontece:** a navegação principal (`Home`, `Sobre`, `Contato`) ganha `role="menu"`/`role="menuitem"`. O leitor de tela entra em modo de menu de aplicação, passa a esperar navegação por setas, e `Tab` para de se comportar como o usuário espera de uma lista de links. **Por quê:** `menu`/`menuitem` sinalizam comandos de *aplicação*, com teclado próprio (setas, `Esc`, retorno de foco). Uma navegação de site é semanticamente uma lista de links, não um menu de app. **Como evitar:** navegação = `<nav><ul><li><a>`, sem roles extras. Reserve `role="menu"` para menus de ação reais (editor, menu de contexto, dropdown de comandos).
 
 > [!warning] Combobox sem `aria-activedescendant`
-> **O que acontece:** o widget parece funcionar — a opção destacada muda de cor ao apertar ↓ — mas o leitor de tela nunca anuncia qual opção está ativa, porque o foco real nunca saiu do input e nada além do CSS mudou.
-> **Por quê:** sem `aria-activedescendant` apontando pro `id` da opção ativa, não existe nenhum sinal programático de "seleção virtual" — só a aparência visual, que tecnologia assistiva não lê.
-> **Como evitar:** sempre que o foco físico ficar no input (padrão combobox), atualize `aria-activedescendant` a cada mudança de opção ativa, e sincronize com `aria-selected` na opção correspondente.
+> **O que acontece:** o widget parece funcionar — a opção destacada muda de cor ao apertar ↓ — mas o leitor de tela nunca anuncia qual opção está ativa, porque o foco real nunca saiu do input e nada além do CSS mudou. **Por quê:** sem `aria-activedescendant` apontando pro `id` da opção ativa, não existe nenhum sinal programático de "seleção virtual" — só a aparência visual, que tecnologia assistiva não lê. **Como evitar:** sempre que o foco físico ficar no input (padrão combobox), atualize `aria-activedescendant` a cada mudança de opção ativa, e sincronize com `aria-selected` na opção correspondente.
 
 > [!warning] Escrever grid do zero em vez de `<table>`
-> **O que acontece:** o time implementa `role="grid"` completo — navegação 2D, `Home`/`End`, `Ctrl+Home`/`Ctrl+End` — para exibir dados que são só leitura.
-> **Por quê:** `role="grid"` existe para tabelas *interativas* (células editáveis/selecionáveis por teclado). Para dado estático, é complexidade paga à toa: mais JavaScript pra manter, mais superfície pra quebrar, zero ganho de acessibilidade sobre um `<table>` nativo.
-> **Como evitar:** pergunte antes: alguma célula é editável ou selecionável individualmente? Se não, `<table>` com `<th scope>` resolve — já é acessível por padrão.
+> **O que acontece:** o time implementa `role="grid"` completo — navegação 2D, `Home`/`End`, `Ctrl+Home`/`Ctrl+End` — para exibir dados que são só leitura. **Por quê:** `role="grid"` existe para tabelas *interativas* (células editáveis/selecionáveis por teclado). Para dado estático, é complexidade paga à toa: mais JavaScript pra manter, mais superfície pra quebrar, zero ganho de acessibilidade sobre um `<table>` nativo. **Como evitar:** pergunte antes: alguma célula é editável ou selecionável individualmente? Se não, `<table>` com `<th scope>` resolve — já é acessível por padrão.
 
 > [!warning] Escolher roving tabindex quando devia ser `aria-activedescendant` (ou vice-versa)
-> **O que acontece:** um combobox implementado com roving tabindex faz o foco pular fisicamente pra dentro da lista de sugestões — e o cursor de texto do input desaparece a cada seta. Ou o inverso: uma toolbar de botões implementada com `aria-activedescendant` deixa os botões "inalcançáveis" por foco real, quebrando clique e outras interações que dependem de foco físico.
-> **Por quê:** as duas estratégias resolvem o mesmo problema (mover "o item ativo" num grupo) de formas opostas — uma move o foco de verdade, a outra mantém o foco parado e move um ponteiro virtual — e servem contextos diferentes.
-> **Como evitar:** pergunte onde o foco físico *precisa* ficar. Se o usuário está digitando em algum lugar (input), use `aria-activedescendant`. Se os itens do grupo são eles mesmos focáveis/clicáveis (abas, toolbar, radiogroup), use roving tabindex.
+> **O que acontece:** um combobox implementado com roving tabindex faz o foco pular fisicamente pra dentro da lista de sugestões — e o cursor de texto do input desaparece a cada seta. Ou o inverso: uma toolbar de botões implementada com `aria-activedescendant` deixa os botões "inalcançáveis" por foco real, quebrando clique e outras interações que dependem de foco físico. **Por quê:** as duas estratégias resolvem o mesmo problema (mover "o item ativo" num grupo) de formas opostas — uma move o foco de verdade, a outra mantém o foco parado e move um ponteiro virtual — e servem contextos diferentes. **Como evitar:** pergunte onde o foco físico *precisa* ficar. Se o usuário está digitando em algum lugar (input), use `aria-activedescendant`. Se os itens do grupo são eles mesmos focáveis/clicáveis (abas, toolbar, radiogroup), use roving tabindex.
 
 ## Como explicar em inglês
 

@@ -62,9 +62,7 @@ Aqui está o mecanismo que conecta este vocabulário ao resto do domínio: o usu
 Esse é o ponto mais importante da nota inteira, porque muda o vocabulário de quem debuga um problema de interface: quando um usuário "erra" ao usar o produto — clica onde não devia, não encontra o botão certo, ignora uma ação disponível — a causa quase nunca é falta de inteligência ou atenção do usuário. É um gap entre o modelo mental que os signifiers construíram na cabeça dele e o comportamento real do sistema. Tratar isso como "erro do usuário" é abdicar do diagnóstico certo; tratar como "gap de signifier" aponta direto para a correção.
 
 > [!warning] Culpar o usuário por um erro de signifier
-> **O que acontece:** um relatório de suporte chega dizendo "o usuário não encontrou o botão de salvar" ou "o usuário clicou no lugar errado", e a resposta do time é um FAQ novo ou um tooltip explicando onde está o botão.
-> **Por quê:** o comportamento do usuário é sintoma; a causa é que o signifier do botão de salvar não comunicou affordance suficiente para ser notado ou reconhecido a tempo. Adicionar explicação resolve o sintoma para quem já teve o problema e leu o FAQ — não resolve para o próximo usuário, que também não vai ler.
-> **Como evitar:** trate "usuário não encontrou X" como um bug de signifier, não de atenção. A correção é no design do elemento (tamanho, contraste, posição, rótulo), não em documentação adicional.
+> **O que acontece:** um relatório de suporte chega dizendo "o usuário não encontrou o botão de salvar" ou "o usuário clicou no lugar errado", e a resposta do time é um FAQ novo ou um tooltip explicando onde está o botão. **Por quê:** o comportamento do usuário é sintoma; a causa é que o signifier do botão de salvar não comunicou affordance suficiente para ser notado ou reconhecido a tempo. Adicionar explicação resolve o sintoma para quem já teve o problema e leu o FAQ — não resolve para o próximo usuário, que também não vai ler. **Como evitar:** trate "usuário não encontrou X" como um bug de signifier, não de atenção. A correção é no design do elemento (tamanho, contraste, posição, rótulo), não em documentação adicional.
 
 ## A regra prática: se precisa de tooltip, o signifier falhou
 
@@ -110,19 +108,13 @@ Um app decide usar o ícone de três linhas horizontais (o "hamburguer", um sign
 ## Armadilhas comuns
 
 > [!warning] Usar "affordance" e "signifier" como sinônimos
-> **O que acontece:** numa revisão de design, alguém diz "essa sombra dá uma boa affordance" — misturando os dois termos exatamente como a comunidade de design fazia antes de 2013.
-> **Por quê:** affordance é a capacidade real (o que o elemento permite); signifier é o sinal que comunica essa capacidade. Uma sombra nunca é uma affordance — ela é, na melhor das hipóteses, um signifier de elevação/interatividade.
-> **Como evitar:** ao descrever um elemento, separe as duas perguntas: "o que ele permite fazer?" (affordance) e "o que comunica isso?" (signifier). Fica mais fácil diagnosticar qual das duas está falhando.
+> **O que acontece:** numa revisão de design, alguém diz "essa sombra dá uma boa affordance" — misturando os dois termos exatamente como a comunidade de design fazia antes de 2013. **Por quê:** affordance é a capacidade real (o que o elemento permite); signifier é o sinal que comunica essa capacidade. Uma sombra nunca é uma affordance — ela é, na melhor das hipóteses, um signifier de elevação/interatividade. **Como evitar:** ao descrever um elemento, separe as duas perguntas: "o que ele permite fazer?" (affordance) e "o que comunica isso?" (signifier). Fica mais fácil diagnosticar qual das duas está falhando.
 
 > [!warning] Adicionar tooltip em vez de redesenhar o elemento
-> **O que acontece:** um elemento pouco óbvio recebe um tooltip explicativo ("clique aqui para editar") em vez de ser redesenhado para parecer editável por conta própria.
-> **Por quê:** o tooltip resolve o problema só para quem já pairou o mouse sobre o elemento tempo suficiente para vê-lo — a maioria dos usuários nunca chega lá, e em touch o tooltip nem existe.
-> **Como evitar:** aplique a regra prática desta nota — se precisa de tooltip para a ação básica, o signifier falhou. Redesenhe antes de documentar.
+> **O que acontece:** um elemento pouco óbvio recebe um tooltip explicativo ("clique aqui para editar") em vez de ser redesenhado para parecer editável por conta própria. **Por quê:** o tooltip resolve o problema só para quem já pairou o mouse sobre o elemento tempo suficiente para vê-lo — a maioria dos usuários nunca chega lá, e em touch o tooltip nem existe. **Como evitar:** aplique a regra prática desta nota — se precisa de tooltip para a ação básica, o signifier falhou. Redesenhe antes de documentar.
 
 > [!warning] Signifier forte demais para uma affordance fraca
-> **O que acontece:** um elemento parece um botão de ação primária (cor de destaque, sombra, canto arredondado) mas dispara uma ação secundária ou trivial, ou pior, não dispara ação alguma por um bug.
-> **Por quê:** o usuário confia no signifier antes de confirmar a affordance real; um signifier "gritando" importância engana a expectativa e corrói a confiança em todos os outros signifiers do produto quando descoberto.
-> **Como evitar:** reserve o vocabulário visual de maior destaque (cor de marca, sombra, tamanho) para as ações que realmente merecem esse destaque — signifier proporcional à affordance.
+> **O que acontece:** um elemento parece um botão de ação primária (cor de destaque, sombra, canto arredondado) mas dispara uma ação secundária ou trivial, ou pior, não dispara ação alguma por um bug. **Por quê:** o usuário confia no signifier antes de confirmar a affordance real; um signifier "gritando" importância engana a expectativa e corrói a confiança em todos os outros signifiers do produto quando descoberto. **Como evitar:** reserve o vocabulário visual de maior destaque (cor de marca, sombra, tamanho) para as ações que realmente merecem esse destaque — signifier proporcional à affordance.
 
 ## Como explicar em inglês
 

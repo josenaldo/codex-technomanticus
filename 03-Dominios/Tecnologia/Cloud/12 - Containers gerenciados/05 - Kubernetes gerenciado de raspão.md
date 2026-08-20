@@ -115,8 +115,7 @@ Duas peças de gestão continuam sob responsabilidade compartilhada e vale nomea
 > [!tip] Assista: Amazon EKS Explained: Introduction to Managed Kubernetes on AWS
 > **Canal:** CodeLucky | **Duração:** ~6min | **Idioma:** EN
 >
-> Resumo rápido de exatamente a fronteira que esta nota traça: o que a AWS assume no control plane (disponibilidade, escala, patching dos componentes do master) versus o que fica com você nos node groups — sem entrar em Deployments ou manifests, só a divisão de responsabilidade.
-> Trecho de destaque [01:15]: *"you get a managed control plane where AWS automatically handles the availability, scaling, and patching of your Kubernetes master components"*
+> Resumo rápido de exatamente a fronteira que esta nota traça: o que a AWS assume no control plane (disponibilidade, escala, patching dos componentes do master) versus o que fica com você nos node groups — sem entrar em Deployments ou manifests, só a divisão de responsabilidade. Trecho de destaque [01:15]: *"you get a managed control plane where AWS automatically handles the availability, scaling, and patching of your Kubernetes master components"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=aGI_yUbmTFU)
 

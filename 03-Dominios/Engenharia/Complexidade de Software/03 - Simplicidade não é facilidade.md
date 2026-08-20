@@ -39,14 +39,12 @@ Hickey insiste que "simples" e "fácil" não são pontos numa mesma régua — s
 Então simples é uma coisa que trata de **um papel, uma tarefa, um conceito, uma dimensão** do problema. E o critério, ele crava, é estrutural:
 
 > [!quote] O que importa pra simplicidade
-> *"...what matters for simplicity is that there is no interleaving."*
-> — Rich Hickey, *Simple Made Easy* (2011)
+> *"...what matters for simplicity is that there is no interleaving."* — Rich Hickey, *Simple Made Easy* (2011)
 
 Repare na palavra: **interleaving**, entrelaçamento. Simples não é sobre *quantidade* — é sobre *separação*. E, crucial, é uma propriedade **objetiva**: ou as coisas estão trançadas, ou não estão.
 
 > [!quote] Simples é objetivo
-> *"...if something is interleaved or not, that's sort of an objective thing... simple is actually an objective notion."*
-> — Rich Hickey, *Simple Made Easy* (2011)
+> *"...if something is interleaved or not, that's sort of an objective thing... simple is actually an objective notion."* — Rich Hickey, *Simple Made Easy* (2011)
 
 **Easy** vem de outro lugar inteiro: da raiz latina de *adjacent*, "estar perto, estar à mão". Hickey decompõe em três sentidos de "perto":
 
@@ -57,8 +55,7 @@ Repare na palavra: **interleaving**, entrelaçamento. Simples não é sobre *qua
 E daí vem a diferença decisiva: fácil é **relativo**.
 
 > [!quote] Fácil é relativo
-> *"...easy is relative. Right?... easy is always going to be, you know, easy for whom, or hard for whom? It's a relative term."*
-> — Rich Hickey, *Simple Made Easy* (2011)
+> *"...easy is relative. Right?... easy is always going to be, you know, easy for whom, or hard for whom? It's a relative term."* — Rich Hickey, *Simple Made Easy* (2011)
 
 Simples é uma pergunta que você faz **ao design**. Fácil é uma pergunta que você faz **a si mesmo**. São interlocutores diferentes — e respostas que não se traduzem uma na outra.
 
@@ -95,8 +92,7 @@ flowchart TD
 Se "simples" é a ausência de entrelaçamento, precisa existir um verbo pro ato de entrelaçar. Hickey ressuscita uma palavra inglesa antiga: **complect**.
 
 > [!quote] Complect
-> *"[to] complect... to interleave or entwine or braid."*
-> — Rich Hickey, *Simple Made Easy* (2011)
+> *"[to] complect... to interleave or entwine or braid."* — Rich Hickey, *Simple Made Easy* (2011)
 
 Esse é o coração da tese. A complexidade não cai do céu — ela é **produzida**, toda vez que a gente trança duas preocupações que poderiam viver separadas.
 
@@ -175,8 +171,7 @@ Há um corolário que Hickey faz questão de cravar: **testes, type-checkers e r
 Eles te dizem quando você saiu da pista — mas não dirigem o carro por você, e não tornam o sistema simples.
 
 > [!quote] Os guardrails não dirigem
-> A imagem de Hickey: confiar em testes e ferramentas pra "garantir" um sistema emaranhado é como dirigir uma estrada de montanha *"banging against the guardrails"* — você pode até chegar, mas não é assim que se dirige bem. Simplicidade vem do *design*, antes; as ferramentas só apanham o que escapou.
-> — paráfrase de Rich Hickey, *Simple Made Easy* (2011)
+> A imagem de Hickey: confiar em testes e ferramentas pra "garantir" um sistema emaranhado é como dirigir uma estrada de montanha *"banging against the guardrails"* — você pode até chegar, mas não é assim que se dirige bem. Simplicidade vem do *design*, antes; as ferramentas só apanham o que escapou. — paráfrase de Rich Hickey, *Simple Made Easy* (2011)
 
 Ou seja: nenhuma quantidade de cobertura de testes compra simplicidade. A simplicidade é uma decisão tomada *antes* de escrever a linha — escolhendo construções que não trançam — e não um selo que você passa por cima depois.
 
@@ -187,8 +182,7 @@ Ou seja: nenhuma quantidade de cobertura de testes compra simplicidade. A simpli
 Hickey amarra simplicidade a **abstração** — mas não no sentido de "esconder", e sim na etimologia:
 
 > [!quote] Abstrair é afastar
-> *"Abstract means to draw something away... to draw away from the physical nature of something."*
-> — Rich Hickey, *Simple Made Easy* (2011)
+> *"Abstract means to draw something away... to draw away from the physical nature of something."* — Rich Hickey, *Simple Made Easy* (2011)
 
 Abstrair, pra ele, é *separar* o **what** (o quê, a especificação) do **how** (o como, a implementação) — de modo que o "como" possa virar problema de outra pessoa, outra hora.
 
@@ -205,8 +199,7 @@ Cada aspecto que você consegue nomear e separar é uma trança a menos. (Essa �
 E ele aponta a raiz cultural de a gente cair nessa de novo e de novo: olhamos só pro lado bom.
 
 > [!quote] Benefícios de tudo, tradeoffs de nada
-> *"We look all for benefits... we're not looking carefully enough at the byproducts."*
-> — Rich Hickey, *Simple Made Easy* (2011)
+> *"We look all for benefits... we're not looking carefully enough at the byproducts."* — Rich Hickey, *Simple Made Easy* (2011)
 
 Avaliamos uma ferramenta pelo que ela *permite* fazer, raramente pelo que ela *trança* em troca. Daí a herança, o ORM, o estado mutável: adotados pelos benefícios, com os tradeoffs (a complexidade que vão produzir) invisíveis até cobrarem juros.
 
@@ -242,8 +235,7 @@ flowchart LR
 *Leitura do diagrama*: as duas trajetórias largam juntas. A de cima (fácil) dispara na frente e desacelera à medida que o emaranhado cobra juros; a de baixo (simples) larga devagar — você teve que *pensar* — mas mantém o ritmo e ultrapassa. O cruzamento das curvas é a tese inteira da palestra.
 
 > [!quote] A corrida: arranque rápido, colapso lento
-> *"If you focus on ease and ignore simplicity... you will be able to go as fast as possible from the beginning of the race. But no matter what technology you use... the complexity will eventually kill you."*
-> — Rich Hickey, *Simple Made Easy* (2011)
+> *"If you focus on ease and ignore simplicity... you will be able to go as fast as possible from the beginning of the race. But no matter what technology you use... the complexity will eventually kill you."* — Rich Hickey, *Simple Made Easy* (2011)
 
 E a ironia ácida sobre processo: trocar simplicidade por velocidade de partida é tratar a corrida como uma sequência de sprints curtos, em que a gente *"fire the starting pistol every hundred yards and call it a new sprint"* — comemorando o arranque de cada trecho e nunca olhando a maratona inteira, onde a complexidade acumulada é quem decide.
 
@@ -261,8 +253,7 @@ O viés é traiçoeiro porque os dois sentidos de "near" se reforçam: a ferrame
 Um último mal-entendido, e Hickey o ataca de frente: simples **não** quer dizer "poucas coisas". A confusão é natural — "simplificar" soa como "reduzir", "ter menos". Mas o critério nunca foi cardinalidade.
 
 > [!quote] Cardinalidade não é entrelaçamento
-> *"...it's important to distinguish cardinality, right, counting things from actual interleaving."*
-> — Rich Hickey, *Simple Made Easy* (2011)
+> *"...it's important to distinguish cardinality, right, counting things from actual interleaving."* — Rich Hickey, *Simple Made Easy* (2011)
 
 Ele dá o exemplo da interface: simples *"doesn't mean an interface that only has one operation"*.
 
@@ -285,36 +276,29 @@ Hickey deu nome e etimologia, mas a ideia é velha. A engenharia de software vem
 **Tony Hoare**, na palestra do Turing Award de 1980 (*The Emperor's Old Clothes*), cravou a formulação mais citada de todas:
 
 > [!quote] Os dois jeitos de construir um design
-> *"There are two ways of constructing a software design: one way is to make it so simple that there are obviously no deficiencies and the other way is to make it so complicated that there are no obvious deficiencies. The first method is far more difficult."*
-> — C. A. R. Hoare, *The Emperor's Old Clothes* (Turing Award, 1980)
+> *"There are two ways of constructing a software design: one way is to make it so simple that there are obviously no deficiencies and the other way is to make it so complicated that there are no obvious deficiencies. The first method is far more difficult."* — C. A. R. Hoare, *The Emperor's Old Clothes* (Turing Award, 1980)
 
 Repare na última frase: o jeito simples é *mais difícil*. É a tese desta nota dita em 1980 — simples não é fácil.
 
 **Edsger Dijkstra** condensou a consequência: simplicidade não é estética, é confiabilidade.
 
 > [!quote] Simplicidade é pré-requisito de confiabilidade
-> *"Simplicity is prerequisite for reliability."*
-> — atribuído a E. W. Dijkstra (ver nota de lastro abaixo)
+> *"Simplicity is prerequisite for reliability."* — atribuído a E. W. Dijkstra (ver nota de lastro abaixo)
 
 **Antoine de Saint-Exupéry**, num registro poético que migrou pra engenharia, deu a definição negativa de perfeição:
 
 > [!quote] A perfeição pela subtração
-> *"Il semble que la perfection soit atteinte non quand il n'y a plus rien à ajouter, mais quand il n'y a plus rien à retrancher."*
-> ("Parece que a perfeição é atingida não quando não há mais nada a acrescentar, mas quando não há mais nada a retirar.")
-> — Antoine de Saint-Exupéry, *Terre des Hommes* (1939)
+> *"Il semble que la perfection soit atteinte non quand il n'y a plus rien à ajouter, mais quand il n'y a plus rien à retrancher."* ("Parece que a perfeição é atingida não quando não há mais nada a acrescentar, mas quando não há mais nada a retirar.") — Antoine de Saint-Exupéry, *Terre des Hommes* (1939)
 
 **Brian Kernighan** trouxe o argumento pro chão da depuração — e contra a esperteza:
 
 > [!quote] Esperteza demais te trava no debug
-> *"Everyone knows that debugging is twice as hard as writing a program in the first place. So if you're as clever as you can be when you write it, how will you ever debug it?"*
-> — Kernighan & Plauger, *The Elements of Programming Style* (2ª ed., 1978)
+> *"Everyone knows that debugging is twice as hard as writing a program in the first place. So if you're as clever as you can be when you write it, how will you ever debug it?"* — Kernighan & Plauger, *The Elements of Programming Style* (2ª ed., 1978)
 
 **Alan Perlis**, nos *Epigrams on Programming* (1982), deixou dois aforismos que conversam direto com Hickey:
 
 > [!quote] Perlis sobre a complexidade
-> *"Fools ignore complexity. Pragmatists suffer it. Some can avoid it. Geniuses remove it."*
-> *"Simplicity does not precede complexity, but follows it."*
-> — Alan J. Perlis, *Epigrams on Programming* (1982)
+> *"Fools ignore complexity. Pragmatists suffer it. Some can avoid it. Geniuses remove it."* *"Simplicity does not precede complexity, but follows it."* — Alan J. Perlis, *Epigrams on Programming* (1982)
 
 O segundo é especialmente afiado: a simplicidade boa não é a ingênua do começo — é a que você *conquista* depois de entender a complexidade do problema.
 
@@ -340,14 +324,12 @@ Gabriel contrasta duas filosofias de design, cada uma rankeando quatro qualidade
 A **abordagem MIT/Stanford** ("the right thing"):
 
 > [!quote] The Right Thing — simplicidade da interface
-> *"...the design must be simple, both in implementation and interface. It is more important for the interface to be simple than the implementation."*
-> — Richard P. Gabriel, *The Rise of Worse is Better* (1991)
+> *"...the design must be simple, both in implementation and interface. It is more important for the interface to be simple than the implementation."* — Richard P. Gabriel, *The Rise of Worse is Better* (1991)
 
 A **abordagem New Jersey** ("worse is better"):
 
 > [!quote] Worse is Better — simplicidade da implementação
-> *"...the design must be simple, both in implementation and interface. It is more important for the implementation to be simple than the interface. Simplicity is the most important consideration in a design."*
-> — Richard P. Gabriel, *The Rise of Worse is Better* (1991)
+> *"...the design must be simple, both in implementation and interface. It is more important for the implementation to be simple than the interface. Simplicity is the most important consideration in a design."* — Richard P. Gabriel, *The Rise of Worse is Better* (1991)
 
 A diferença cabe numa palavra: **quem paga pela simplicidade?**.
 
@@ -464,8 +446,7 @@ Peter Naur tem um nome pra esse "porquê" que evapora: a **teoria do programa**.
 ## Referências
 
 > [!tip] Assista — "Simple Made Easy" — Rich Hickey (2011)
-> **Strange Loop** · 1h01 · ["Simple Made Easy" — Rich Hickey (2011)](https://www.youtube.com/watch?v=SxdOUGdseq4)
-> A palestra canônica, e a origem de tudo que esta nota discute. Vale assistir inteira pelo menos uma vez: a distinção simple × easy, o verbo *to complect* e a crítica ao que é "fácil de escrever agora" saem daqui na formulação original.
+> **Strange Loop** · 1h01 · ["Simple Made Easy" — Rich Hickey (2011)](https://www.youtube.com/watch?v=SxdOUGdseq4) A palestra canônica, e a origem de tudo que esta nota discute. Vale assistir inteira pelo menos uma vez: a distinção simple × easy, o verbo *to complect* e a crítica ao que é "fácil de escrever agora" saem daqui na formulação original.
 
 - **Rich Hickey** — *Simple Made Easy* (Strange Loop, setembro de 2011; a palestra foi reprisada em outras conferências depois). A distinção simple/easy, as etimologias (*simplex* = "one fold or braid"; *easy* da raiz de *adjacent* = "lie near"), o verbo *complect* ("to interleave or entwine or braid"), o caráter objetivo de simples vs. relativo de fácil, a lista de construções que *complectam* (state/objects/methods/syntax/inheritance/switch/vars/loops/actors/ORM/conditionals), o kit de simplicidade (values/functions/namespaces/data/polymorphism a la carte/managed refs/queues/declarative), abstração como "draw something away" e o crivo *who/what/how/when-where/why*, os testes/types como "guardrails" e não direção, "incidental is Latin for your fault", a cegueira de "benefícios de tudo, tradeoffs de nada", a corrida (fácil arranca rápido e colapsa; simples sustenta) e a separação entre cardinalidade e entrelaçamento. [Vídeo + transcrição (InfoQ)](https://www.infoq.com/presentations/Simple-Made-Easy/) · [Página da Strange Loop](https://www.thestrangeloop.com/2011/simple-made-easy.html) · [Transcrição (talk-transcripts)](https://github.com/matthiasn/talk-transcripts/blob/master/Hickey_Rich/SimpleMadeEasy.md)
 - **C. A. R. Hoare** — *The Emperor's Old Clothes* (Turing Award Lecture, 1980; *Communications of the ACM*, fev. 1981). "Two ways of constructing a software design... so simple that there are obviously no deficiencies... The first method is far more difficult." [Wikiquote](https://en.wikiquote.org/wiki/C._A._R._Hoare) · [The Morning Paper — resumo](https://blog.acolyer.org/2016/09/07/the-emperors-old-clothes/)

@@ -86,8 +86,7 @@ Nenhuma dessas linhas é cobrança "errada" ou abusiva — cada uma reflete um c
 > [!tip] Assista: Comparing Cloud Egress Costs - Azure vs Digital Ocean vs Google Cloud vs Railway
 > **Canal:** HAMY LABS | **Duração:** ~3min | **Idioma:** EN
 >
-> Um teste prático e rápido: mesma carga de 100 GB de egress, quatro provedores, fatura lado a lado. O número fala sozinho — dá pra ver na prática por que a nota chama o egress previsível do DO de "diferencial", não só de discurso de marketing.
-> Trecho de destaque [02:06]: *"for digital ocean to be paying $1 their egress costs are quite low"*
+> Um teste prático e rápido: mesma carga de 100 GB de egress, quatro provedores, fatura lado a lado. O número fala sozinho — dá pra ver na prática por que a nota chama o egress previsível do DO de "diferencial", não só de discurso de marketing. Trecho de destaque [02:06]: *"for digital ocean to be paying $1 their egress costs are quite low"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=hx_bJiURsf8)
 

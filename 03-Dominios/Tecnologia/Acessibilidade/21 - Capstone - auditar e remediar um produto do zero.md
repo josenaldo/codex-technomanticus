@@ -161,19 +161,13 @@ A seta pontilhada de volta é o ponto que separa o profissional do amador: isto 
 ## Armadilhas comuns
 
 > [!warning] Tentar "consertar o site inteiro" de uma vez
-> **O que acontece:** o time encara um produto grande e inacessível como um único mutirão, se perde na quantidade e não entrega nada utilizável.
-> **Por quê:** cobertura difusa dilui o esforço; um site 20% melhor em tudo ainda tem todos os fluxos críticos quebrados.
-> **Como evitar:** recorte o escopo (nota 16). Rode o ciclo completo primeiro no **fluxo de maior valor** (checkout, cadastro, login) e só então expanda template a template. Impacto concentrado antes de cobertura difusa.
+> **O que acontece:** o time encara um produto grande e inacessível como um único mutirão, se perde na quantidade e não entrega nada utilizável. **Por quê:** cobertura difusa dilui o esforço; um site 20% melhor em tudo ainda tem todos os fluxos críticos quebrados. **Como evitar:** recorte o escopo (nota 16). Rode o ciclo completo primeiro no **fluxo de maior valor** (checkout, cadastro, login) e só então expanda template a template. Impacto concentrado antes de cobertura difusa.
 
 > [!warning] Remediar e não reverificar
-> **O que acontece:** o time aplica as correções e dá por encerrado, sem rodar teclado, leitor de tela e o axe de novo — e algumas "correções" não funcionam ou introduzem novos problemas.
-> **Por quê:** remediar sem reverificar é fé, não engenharia. Uma correção de ARIA mal feita pode passar a mentir (nota 05); um foco realocado pode criar um trap.
-> **Como evitar:** o passo 4 é obrigatório — refaça as três passadas manuais e adicione um teste automatizado no CI para a correção **não regredir**.
+> **O que acontece:** o time aplica as correções e dá por encerrado, sem rodar teclado, leitor de tela e o axe de novo — e algumas "correções" não funcionam ou introduzem novos problemas. **Por quê:** remediar sem reverificar é fé, não engenharia. Uma correção de ARIA mal feita pode passar a mentir (nota 05); um foco realocado pode criar um trap. **Como evitar:** o passo 4 é obrigatório — refaça as três passadas manuais e adicione um teste automatizado no CI para a correção **não regredir**.
 
 > [!warning] Tratar a auditoria como projeto com fim
-> **O que acontece:** a remediação é feita uma vez, comemora-se, e a dívida volta a acumular no primeiro sprint de features seguinte.
-> **Por quê:** acessibilidade não "termina" — cada mudança pode reintroduzir barreiras. Auditoria pontual é fotografia, não processo.
-> **Como evitar:** feche o loop no processo (nota 17): a metade automatizável roda no CI continuamente; a auditoria manual completa volta nos marcos. O capstone é o ciclo rodado uma vez; a maturidade é rodá-lo sempre.
+> **O que acontece:** a remediação é feita uma vez, comemora-se, e a dívida volta a acumular no primeiro sprint de features seguinte. **Por quê:** acessibilidade não "termina" — cada mudança pode reintroduzir barreiras. Auditoria pontual é fotografia, não processo. **Como evitar:** feche o loop no processo (nota 17): a metade automatizável roda no CI continuamente; a auditoria manual completa volta nos marcos. O capstone é o ciclo rodado uma vez; a maturidade é rodá-lo sempre.
 
 ## Como explicar em inglês
 

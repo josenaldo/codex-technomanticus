@@ -114,8 +114,7 @@ $ aws rds modify-db-instance \
 > [!tip] Assista: Introduction to Amazon Relational Database Service (RDS) for beginners
 > **Canal:** Data Tech | **Duração:** ~17min | **Idioma:** EN
 >
-> Um passo a passo criando uma instância RDS no console — vale menos pela teoria (que esta nota já cobre mais fundo) e mais por ver, na prática, engine, template, classe de instância e storage sendo escolhidos na mesma tela, um depois do outro.
-> Trecho de destaque [13:45]: *"then the instance class as I mentioned initially (...) it's the size (...) depending on your use case (...) if it is production then you can choose the size accordingly"*
+> Um passo a passo criando uma instância RDS no console — vale menos pela teoria (que esta nota já cobre mais fundo) e mais por ver, na prática, engine, template, classe de instância e storage sendo escolhidos na mesma tela, um depois do outro. Trecho de destaque [13:45]: *"then the instance class as I mentioned initially (...) it's the size (...) depending on your use case (...) if it is production then you can choose the size accordingly"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=-p0P12HboA0)
 

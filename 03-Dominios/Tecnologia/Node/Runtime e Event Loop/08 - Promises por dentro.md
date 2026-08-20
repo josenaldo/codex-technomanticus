@@ -441,14 +441,11 @@ const dados = resultados.reduce((acc, r, i) => {
 
 ### Perguntas frequentes
 
-**"Por que `.then()` é sempre assíncrono, mesmo para promises já resolvidas?"**
-Para garantir comportamento previsível e composição correta. Se `.then()` às vezes rodasse síncronamente, o código teria que lidar com dois modelos de execução dependendo do estado da promise — exatamente o problema que Promises foram criadas para resolver.
+**"Por que `.then()` é sempre assíncrono, mesmo para promises já resolvidas?"** Para garantir comportamento previsível e composição correta. Se `.then()` às vezes rodasse síncronamente, o código teria que lidar com dois modelos de execução dependendo do estado da promise — exatamente o problema que Promises foram criadas para resolver.
 
-**"Qual a diferença entre `Promise.resolve(p)` onde `p` já é uma Promise?"**
-Se `p` é uma Promise nativa, `Promise.resolve(p)` retorna `p` sem criar uma nova promise. Se `p` é um thenable de terceiros, cria uma nova promise que segue `p`.
+**"Qual a diferença entre `Promise.resolve(p)` onde `p` já é uma Promise?"** Se `p` é uma Promise nativa, `Promise.resolve(p)` retorna `p` sem criar uma nova promise. Se `p` é um thenable de terceiros, cria uma nova promise que segue `p`.
 
-**"Quando usar `Promise.allSettled` em vez de `Promise.all`?"**
-`Promise.all` é para "preciso de todos os resultados ou quero falhar rápido". `Promise.allSettled` é para "quero saber o resultado de cada operação independentemente, sem que uma falha cancele as outras".
+**"Quando usar `Promise.allSettled` em vez de `Promise.all`?"** `Promise.all` é para "preciso de todos os resultados ou quero falhar rápido". `Promise.allSettled` é para "quero saber o resultado de cada operação independentemente, sem que uma falha cancele as outras".
 
 ### Vocabulário para entrevistas
 

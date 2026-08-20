@@ -34,8 +34,7 @@ Quase todo outro mecanismo de design (modularidade, encapsulamento, interfaces) 
 A definição operacional vem de **John Ousterhout**, o mesmo autor que deu a definição de complexidade na nota de abertura:
 
 > [!quote] Definição de abstração
-> *"In modular programming, an abstraction is a simplified view of an entity, which omits unimportant details."*
-> — John Ousterhout, *A Philosophy of Software Design*
+> *"In modular programming, an abstraction is a simplified view of an entity, which omits unimportant details."* — John Ousterhout, *A Philosophy of Software Design*
 
 Repare nos dois verbos escondidos: a abstração **suprime** detalhe (o que não importa) pra **amplificar** o que importa. É um filtro deliberado.
 
@@ -66,8 +65,7 @@ Em software é o **oposto**.
 Quem cunhou a formulação definitiva foi **Edsger Dijkstra**:
 
 > [!quote] Dijkstra sobre o propósito da abstração
-> *"The purpose of abstraction is not to be vague, but to create a new semantic level in which one can be absolutely precise."*
-> — Edsger W. Dijkstra, *EWD 356* (Grenoble, dez. 1972)
+> *"The purpose of abstraction is not to be vague, but to create a new semantic level in which one can be absolutely precise."* — Edsger W. Dijkstra, *EWD 356* (Grenoble, dez. 1972)
 
 Leia com calma. A abstração não apaga informação pra te deixar na dúvida; ela **cria uma nova camada de vocabulário** em que você fala com precisão *outra* — uma precisão de nível mais alto.
 
@@ -515,8 +513,7 @@ Nenhuma das duas ideias refuta esta nota. Elas são o preço realista de levar a
 ## Referências
 
 > [!tip] Assista — Diego Ongaro sobre *On the Criteria to Be Used in Decomposing Systems into Modules*
-> **Papers We Love** · 1h08 · [Diego Ongaro sobre *On the Criteria to Be Used in Decomposing Systems into Modules*](https://www.youtube.com/watch?v=R7X4B3-k7g4)
-> O artigo de Parnas (1972) discutido em profundidade. É o texto que introduz information hiding — e a discussão deixa claro por que a decisão que se esconde é a que *pode mudar*, e não simplesmente "os dados".
+> **Papers We Love** · 1h08 · [Diego Ongaro sobre *On the Criteria to Be Used in Decomposing Systems into Modules*](https://www.youtube.com/watch?v=R7X4B3-k7g4) O artigo de Parnas (1972) discutido em profundidade. É o texto que introduz information hiding — e a discussão deixa claro por que a decisão que se esconde é a que *pode mudar*, e não simplesmente "os dados".
 
 - **David Parnas** — [On the Criteria To Be Used in Decomposing Systems into Modules](https://dl.acm.org/doi/10.1145/361598.361623) (CACM 15(12), 1972, p. 1053-1058). Origem do *information hiding*: o critério de decomposição é esconder **decisões de design propensas a mudar**, não dados nem etapas de fluxograma. Título, veículo e ano conferidos via ACM Digital Library e dblp.
 - **John Ousterhout** — *A Philosophy of Software Design* (1ª ed. 2018; 2ª ed. 2021, Yaknyam Press). Origem da definição de abstração (*"a simplified view of an entity, which omits unimportant details"*) e da distinção módulo **profundo** vs. **raso** / método *pass-through* (indireção que não abstrai).

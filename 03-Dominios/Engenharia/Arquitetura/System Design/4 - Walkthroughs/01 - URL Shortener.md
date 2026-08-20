@@ -67,8 +67,7 @@ Com os requisitos fechados, o próximo passo — detalhado em [[1 - Framework de
 
 **Escritas por segundo:**
 
-$$
-\frac{100.000.000 \text{ URLs/mês}}{30 \times 86.400 \text{ s/mês}} \approx 39 \text{ escritas/s}
+$$ \frac{100.000.000 \text{ URLs/mês}}{30 \times 86.400 \text{ s/mês}} \approx 39 \text{ escritas/s}
 $$
 
 Um número pequeno — tratável por um único banco relacional bem indexado, sem nenhuma necessidade de sharding pelo lado da escrita.
@@ -77,26 +76,22 @@ Um número pequeno — tratável por um único banco relacional bem indexado, se
 
 Com a proporção 100:1:
 
-$$
-39 \times 100 \approx 3.900 \text{ leituras/s (média)}
+$$ 39 \times 100 \approx 3.900 \text{ leituras/s (média)}
 $$
 
 Tráfego real não é uniforme ao longo do dia — aplicando um **peak factor de ~3x** (prática comum recomendada por guias de estimativa como o do Hello Interview), o pico chega perto de:
 
-$$
-3.900 \times 3 \approx 11.700 \text{ leituras/s no pico}
+$$ 3.900 \times 3 \approx 11.700 \text{ leituras/s no pico}
 $$
 
 Esse é o número que decide o design: **quase 12 mil leituras por segundo não é algo que um banco relacional sozinho aguenta com folga em <100ms** — é exatamente o padrão de carga que justifica uma camada de cache agressiva na frente do armazenamento, discutida no segundo deep dive.
 
 **Armazenamento total em 5 anos:**
 
-$$
-100.000.000 \text{ URLs/mês} \times 60 \text{ meses} = 6 \text{ bilhões de URLs}
+$$ 100.000.000 \text{ URLs/mês} \times 60 \text{ meses} = 6 \text{ bilhões de URLs}
 $$
 
-$$
-6.000.000.000 \times 500 \text{ bytes} = 3 \text{ TB}
+$$ 6.000.000.000 \times 500 \text{ bytes} = 3 \text{ TB}
 $$
 
 Três terabytes é um volume administrável por um único cluster de banco moderno com réplicas — não exige sharding *por volume*. Mas vale antecipar em voz alta que, se a proporção de crescimento subir (ou o produto virar mais popular), sharding por código vira a próxima decisão natural — reforçando [[2 - Building blocks/04 - Sharding e Consistent Hashing|Sharding e Consistent Hashing]].
@@ -249,9 +244,7 @@ A vantagem é que o KGS resolve **unicidade e não-previsibilidade ao mesmo temp
 > Nenhuma sozinha — o sinal de senioridade é apresentar o trade-off, não decorar uma escolha. Uma resposta forte soa como: "eu começaria com contador + base62 via Redis `INCR` com range allocation, porque é simples e resolve unicidade sem ambiguidade; o custo é previsibilidade, que eu mitigaria embaralhando os bits do contador antes de codificar (um XOR com uma constante, por exemplo) em vez de expor o valor cru. Se previsibilidade ou o acoplamento ao Redis viraem um problema real de produto ou de disponibilidade, eu evoluiria para um KGS dedicado." Isso mostra que você entende os três, sabe por que escolheu um como ponto de partida, e sabe qual é a próxima evolução — exatamente o roteiro descrito em [[1 - Framework de entrevista/01 - O que é System Design e o que a entrevista avalia|O que é System Design]].
 
 > [!warning] Tratar "gerar um código aleatório e torcer" como estratégia válida
-> **O que acontece:** o candidato propõe `random_string(7)` a cada criação, sem verificação de unicidade nem retry.
-> **Por quê:** parece funcionar em qualquer teste manual — colisões são raras o suficiente para nunca aparecer numa demo. Mas em escala (bilhões de códigos, ver a conta de 62⁷ da seção de estimativas), a probabilidade deixa de ser desprezível, e sem constraint de unicidade no banco, uma colisão silenciosa **sobrescreve** o mapeamento de outro usuário — o link dele passa a apontar para a URL de outra pessoa. Isso não é um bug raro tolerável; é uma falha de integridade de dado.
-> **Como evitar:** ou (a) usar um esquema com garantia estrutural de unicidade (contador, KGS), ou (b) se usar geração aleatória/hash, sempre impor uma constraint de unicidade no banco e tratar a violação com retry — nunca confiar só na baixa probabilidade matemática sem uma rede de segurança.
+> **O que acontece:** o candidato propõe `random_string(7)` a cada criação, sem verificação de unicidade nem retry. **Por quê:** parece funcionar em qualquer teste manual — colisões são raras o suficiente para nunca aparecer numa demo. Mas em escala (bilhões de códigos, ver a conta de 62⁷ da seção de estimativas), a probabilidade deixa de ser desprezível, e sem constraint de unicidade no banco, uma colisão silenciosa **sobrescreve** o mapeamento de outro usuário — o link dele passa a apontar para a URL de outra pessoa. Isso não é um bug raro tolerável; é uma falha de integridade de dado. **Como evitar:** ou (a) usar um esquema com garantia estrutural de unicidade (contador, KGS), ou (b) se usar geração aleatória/hash, sempre impor uma constraint de unicidade no banco e tratar a violação com retry — nunca confiar só na baixa probabilidade matemática sem uma rede de segurança.
 
 ### Deep dive 2 — Read path e cache
 
@@ -308,9 +301,7 @@ A maioria dos encurtadores de produção (bit.ly, TinyURL) usa **302 por padrão
 > Não — são camadas diferentes, resolvendo problemas diferentes. O cache no Redis protege o **banco de dados** de leituras repetidas *de usuários diferentes* pedindo o mesmo código (ex: mil pessoas clicando no mesmo link viral). O cache do navegador via 301 protege o **servidor inteiro** de receber qualquer requisição *do mesmo usuário* clicando o mesmo link de novo. Um sistema real com 302 (para manter analytics) ainda se beneficia enormemente do cache Redis, porque ele resolve o volume agregado entre usuários diferentes, que o cache do navegador nunca resolveria sozinho — cada usuário só cacheia localmente o que ele mesmo já visitou.
 
 > [!warning] Confundir "cache-aside resolve tudo" com "não preciso pensar em TTL"
-> **O que acontece:** a equipe implementa cache-aside sem definir TTL, ou com um TTL longo demais (dias), assumindo que "mais cache é sempre melhor".
-> **Por quê:** um mapeamento código→URL raramente muda depois de criado (a menos que o produto suporte editar o destino de um link, uma feature real em alguns encurtadores) — então parece seguro cachear "para sempre". O problema aparece quando um link expira (o requisito de TTL da seção de requisitos) ou é deletado: sem um TTL de cache curto o suficiente, ou sem um mecanismo explícito de invalidação no momento da deleção/expiração, o cache continua servindo o link **depois** que ele deveria ter parado de funcionar.
-> **Como evitar:** ou (a) invalidar explicitamente a entrada de cache no momento em que um link é deletado/expira (write-through de invalidação), ou (b) manter um TTL de cache deliberadamente mais curto que a granularidade de expiração que o produto promete — aceitando staleness de alguns minutos como trade-off consciente, não acidental.
+> **O que acontece:** a equipe implementa cache-aside sem definir TTL, ou com um TTL longo demais (dias), assumindo que "mais cache é sempre melhor". **Por quê:** um mapeamento código→URL raramente muda depois de criado (a menos que o produto suporte editar o destino de um link, uma feature real em alguns encurtadores) — então parece seguro cachear "para sempre". O problema aparece quando um link expira (o requisito de TTL da seção de requisitos) ou é deletado: sem um TTL de cache curto o suficiente, ou sem um mecanismo explícito de invalidação no momento da deleção/expiração, o cache continua servindo o link **depois** que ele deveria ter parado de funcionar. **Como evitar:** ou (a) invalidar explicitamente a entrada de cache no momento em que um link é deletado/expira (write-through de invalidação), ou (b) manter um TTL de cache deliberadamente mais curto que a granularidade de expiração que o produto promete — aceitando staleness de alguns minutos como trade-off consciente, não acidental.
 
 ## Gargalos & trade-offs
 
@@ -319,9 +310,7 @@ Nenhum dos componentes discutidos até aqui é gratuito — cada um introduz um 
 **O contador/KGS como ponto único de falha (SPOF).** Se a estratégia escolhida for contador via Redis, ou KGS dedicado, esse componente vira uma dependência crítica: se ele cair, **nenhuma URL nova pode ser criada**, mesmo que o resto do sistema esteja saudável. A mitigação padrão é dupla — replicar o Redis (leader-follower com failover automático, ou um cluster Redis com sharding) e, no caso do range allocation, cada Write Service já mantém um lote local de IDs não usados, o que dá a ele autonomia para continuar criando URLs por um tempo mesmo que o contador central fique temporariamente indisponível.
 
 > [!warning] Esquecer que a leitura sobrevive à queda do contador, mas a escrita não
-> **O que acontece:** a equipe testa a resiliência do sistema derrubando o Redis do contador e conclui "o sistema está saudável" porque os redirects continuam respondendo normalmente.
-> **Por quê:** o caminho de leitura (redirect) nunca toca o contador — ele só lê `short_code → long_url` do cache/banco, então uma falha no gerador de ID é **invisível** para quem só observa redirects. O sintoma real (criação de link falhando) fica escondido atrás de uma métrica de disponibilidade agregada que continua verde.
-> **Como evitar:** monitore a disponibilidade de escrita e de leitura como métricas **separadas**, com alertas independentes — um SPOF que derruba só 1% das requisições (as de criação, dado o perfil 100:1) ainda é uma falha total de uma capacidade inteira do produto, mesmo que o painel geral de "% de requests bem-sucedidos" mal se mexa.
+> **O que acontece:** a equipe testa a resiliência do sistema derrubando o Redis do contador e conclui "o sistema está saudável" porque os redirects continuam respondendo normalmente. **Por quê:** o caminho de leitura (redirect) nunca toca o contador — ele só lê `short_code → long_url` do cache/banco, então uma falha no gerador de ID é **invisível** para quem só observa redirects. O sintoma real (criação de link falhando) fica escondido atrás de uma métrica de disponibilidade agregada que continua verde. **Como evitar:** monitore a disponibilidade de escrita e de leitura como métricas **separadas**, com alertas independentes — um SPOF que derruba só 1% das requisições (as de criação, dado o perfil 100:1) ainda é uma falha total de uma capacidade inteira do produto, mesmo que o painel geral de "% de requests bem-sucedidos" mal se mexa.
 
 **Sharding do KV store por código.** Embora os 3TB estimados não exijam sharding por volume hoje, é o ponto natural de evolução se o produto crescer além da estimativa original. A shard key óbvia é o próprio `short_code` — alta cardinalidade, distribuição uniforme se o código for razoavelmente aleatório (reforçando por que previsibilidade importa: um contador sequencial puro criaria hot spots de escrita concentrados no shard que recebe os valores "mais recentes", exatamente o cenário descrito em [[2 - Building blocks/04 - Sharding e Consistent Hashing|Sharding e Consistent Hashing]]). Consistent hashing, não `hash % N` puro, é a escolha natural aqui pelo mesmo motivo de sempre: adicionar um shard não deveria remapear a maioria do dataset.
 

@@ -367,24 +367,16 @@ A leitura dessa tabela como um todo é o resumo do galho inteiro: não existe "o
 ## Armadilhas comuns
 
 > [!warning] Chamar código CPU-bound síncrono direto dentro de uma coroutine `async def`
-> **O que acontece:** o event loop inteiro trava pela duração do cálculo — não só a requisição atual, todas as outras conexões concorrentes também param de progredir.
-> **Por quê:** `async def` não torna a função mágica; sem nenhum `await` no meio, a coroutine roda do início ao fim como qualquer função síncrona, e o event loop não tem como interrompê-la no meio (não há preempção em `asyncio`).
-> **Como evitar:** qualquer trabalho CPU-bound genuíno dentro de um servidor `asyncio` precisa passar por `loop.run_in_executor()` com um `ProcessPoolExecutor` — o padrão inteiro da etapa 2 desta capstone.
+> **O que acontece:** o event loop inteiro trava pela duração do cálculo — não só a requisição atual, todas as outras conexões concorrentes também param de progredir. **Por quê:** `async def` não torna a função mágica; sem nenhum `await` no meio, a coroutine roda do início ao fim como qualquer função síncrona, e o event loop não tem como interrompê-la no meio (não há preempção em `asyncio`). **Como evitar:** qualquer trabalho CPU-bound genuíno dentro de um servidor `asyncio` precisa passar por `loop.run_in_executor()` com um `ProcessPoolExecutor` — o padrão inteiro da etapa 2 desta capstone.
 
 > [!warning] Usar `threading.Lock`/`Queue` em vez das versões `asyncio.Lock`/`Queue` dentro de coroutines
-> **O que acontece:** o `acquire()`/`get()` bloqueante trava o thread único do event loop, com o mesmo efeito colateral da armadilha anterior — todas as outras tarefas param, não só a que fez a chamada.
-> **Por quê:** as primitivas de `threading` não têm noção de event loop; foram desenhadas para coordenar threads reais do sistema operacional, décadas antes de `asyncio` existir.
-> **Como evitar:** dentro de coroutines, sempre usar as versões `asyncio.*` das primitivas (`Lock`, `Semaphore`, `Queue`, `Event`) — elas cedem o controle ao loop em vez de bloquear o thread.
+> **O que acontece:** o `acquire()`/`get()` bloqueante trava o thread único do event loop, com o mesmo efeito colateral da armadilha anterior — todas as outras tarefas param, não só a que fez a chamada. **Por quê:** as primitivas de `threading` não têm noção de event loop; foram desenhadas para coordenar threads reais do sistema operacional, décadas antes de `asyncio` existir. **Como evitar:** dentro de coroutines, sempre usar as versões `asyncio.*` das primitivas (`Lock`, `Semaphore`, `Queue`, `Event`) — elas cedem o controle ao loop em vez de bloquear o thread.
 
 > [!warning] Criar `Pool`/`ProcessPoolExecutor` novo a cada chamada em vez de reaproveitar um único pool de longa duração
-> **O que acontece:** cada requisição paga o custo completo de `fork`/`spawn` de vários processos-filhos, anulando (ou revertendo) o ganho de paralelismo que motivou usar `multiprocessing` em primeiro lugar.
-> **Por quê:** subir processos do sistema operacional não é uma operação barata, especialmente sob `spawn` (macOS/Windows), que reimporta o interpretador do zero a cada vez — ver [[04 - multiprocessing na prática — Pool, ProcessPoolExecutor e orquestração|nota 04]] deste galho.
-> **Como evitar:** criar o pool uma única vez, na inicialização do serviço, e reutilizá-lo entre todas as chamadas, com `shutdown(wait=True)` explícito no encerramento gracioso.
+> **O que acontece:** cada requisição paga o custo completo de `fork`/`spawn` de vários processos-filhos, anulando (ou revertendo) o ganho de paralelismo que motivou usar `multiprocessing` em primeiro lugar. **Por quê:** subir processos do sistema operacional não é uma operação barata, especialmente sob `spawn` (macOS/Windows), que reimporta o interpretador do zero a cada vez — ver [[04 - multiprocessing na prática — Pool, ProcessPoolExecutor e orquestração|nota 04]] deste galho. **Como evitar:** criar o pool uma única vez, na inicialização do serviço, e reutilizá-lo entre todas as chamadas, com `shutdown(wait=True)` explícito no encerramento gracioso.
 
 > [!warning] Misturar `asyncio.Queue` com threads reais esperando thread-safety que ela não oferece
-> **O que acontece:** comportamento indefinido sob concorrência — sem exceção clara, o que torna o bug difícil de reproduzir e mais caro de diagnosticar do que um deadlock óbvio.
-> **Por quê:** `asyncio.Queue` assume que só o thread do event loop a acessa; ela não tem o `Lock`/`Condition` interno que torna `queue.Queue` (nota 03) genuinamente thread-safe.
-> **Como evitar:** `queue.Queue` para coordenar threads; `asyncio.Queue` para coordenar coroutines do mesmo loop; uma ponte explícita (`loop.call_soon_threadsafe()`) quando os dois mundos genuinamente precisam se falar.
+> **O que acontece:** comportamento indefinido sob concorrência — sem exceção clara, o que torna o bug difícil de reproduzir e mais caro de diagnosticar do que um deadlock óbvio. **Por quê:** `asyncio.Queue` assume que só o thread do event loop a acessa; ela não tem o `Lock`/`Condition` interno que torna `queue.Queue` (nota 03) genuinamente thread-safe. **Como evitar:** `queue.Queue` para coordenar threads; `asyncio.Queue` para coordenar coroutines do mesmo loop; uma ponte explícita (`loop.call_soon_threadsafe()`) quando os dois mundos genuinamente precisam se falar.
 
 ## Em entrevista
 

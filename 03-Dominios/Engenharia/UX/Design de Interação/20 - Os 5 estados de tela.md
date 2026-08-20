@@ -79,19 +79,13 @@ Um app mobile de lista de tarefas, ao abrir sem conexão de internet, mostra exa
 ## Armadilhas comuns
 
 > [!warning] Modelar a tela como `if (loading) {...} else {...}`
-> **O que acontece:** o componente só distingue "carregando" de "com dados", tratando erro, vazio e parcial como casos acidentais que o `else` genérico absorve mal.
-> **Por quê:** o binário loading/pronto é o primeiro modelo mental que ocorre a quem escreve o componente rápido — os outros três estados só aparecem depois, em produção, como bug.
-> **Como evitar:** modele o estado da tela como union type ou enum explícito com os cinco casos nomeados desde o início, mesmo que dois deles renderizem visualmente parecido no dia 1.
+> **O que acontece:** o componente só distingue "carregando" de "com dados", tratando erro, vazio e parcial como casos acidentais que o `else` genérico absorve mal. **Por quê:** o binário loading/pronto é o primeiro modelo mental que ocorre a quem escreve o componente rápido — os outros três estados só aparecem depois, em produção, como bug. **Como evitar:** modele o estado da tela como union type ou enum explícito com os cinco casos nomeados desde o início, mesmo que dois deles renderizem visualmente parecido no dia 1.
 
 > [!warning] Tratar "parcial" como "ainda carregando"
-> **O que acontece:** quando uma de várias fontes de dados falha, a tela inteira fica presa no spinner esperando a fonte quebrada, em vez de mostrar o que já chegou.
-> **Por quê:** é mais simples de programar esperar "tudo ou nada" do que orquestrar exibição parcial com sinalização seletiva de erro — mas simples de programar não é o mesmo que correto para o usuário.
-> **Como evitar:** trate cada fonte de dado independentemente, com seu próprio estado de carregando/erro/pronto, e componha a tela a partir do estado de cada uma — não de um estado global único.
+> **O que acontece:** quando uma de várias fontes de dados falha, a tela inteira fica presa no spinner esperando a fonte quebrada, em vez de mostrar o que já chegou. **Por quê:** é mais simples de programar esperar "tudo ou nada" do que orquestrar exibição parcial com sinalização seletiva de erro — mas simples de programar não é o mesmo que correto para o usuário. **Como evitar:** trate cada fonte de dado independentemente, com seu próprio estado de carregando/erro/pronto, e componha a tela a partir do estado de cada uma — não de um estado global único.
 
 > [!warning] Confundir "estado vazio de primeiro uso" com "estado de erro"
-> **O que acontece:** a tela mostra a mesma mensagem genérica de "nada aqui" tanto para um usuário legítimo que ainda não tem dados quanto para um usuário cuja requisição falhou de verdade.
-> **Por quê:** os dois casos parecem visualmente iguais (nada na tela), então é tentador tratá-los com o mesmo componente — mas as ações corretas são opostas: no vazio de primeiro uso, a ação é "criar o primeiro item"; no erro, é "tentar de novo".
-> **Como evitar:** trate vazio e erro como dois estados distintos no seu enum, cada um com sua própria mensagem e chamada para ação, mesmo que o layout visual seja parecido.
+> **O que acontece:** a tela mostra a mesma mensagem genérica de "nada aqui" tanto para um usuário legítimo que ainda não tem dados quanto para um usuário cuja requisição falhou de verdade. **Por quê:** os dois casos parecem visualmente iguais (nada na tela), então é tentador tratá-los com o mesmo componente — mas as ações corretas são opostas: no vazio de primeiro uso, a ação é "criar o primeiro item"; no erro, é "tentar de novo". **Como evitar:** trate vazio e erro como dois estados distintos no seu enum, cada um com sua própria mensagem e chamada para ação, mesmo que o layout visual seja parecido.
 
 ## Como explicar em inglês
 

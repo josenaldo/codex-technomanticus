@@ -187,17 +187,13 @@ Aqui o agente está expondo seu raciocínio: ele identificou um risco (rotas pú
 
 ## Incerteza e erros de decisão — os padrões mais comuns
 
-**Assumir convenções sem CLAUDE.md:**
-O agente escolhe o padrão mais comum da internet, não o do seu projeto. Se você usa uma lib de erro customizada mas não documentou isso, o agente vai usar `new Error()`.
+**Assumir convenções sem CLAUDE.md:** O agente escolhe o padrão mais comum da internet, não o do seu projeto. Se você usa uma lib de erro customizada mas não documentou isso, o agente vai usar `new Error()`.
 
-**Solução local para problema sistêmico:**
-O prompt descreveu o sintoma, não a causa. O agente corrige onde o sintoma aparece, não a raiz. Exemplo: "o teste X está falhando" → agente corrige o teste em vez de o código que o teste está testando.
+**Solução local para problema sistêmico:** O prompt descreveu o sintoma, não a causa. O agente corrige onde o sintoma aparece, não a raiz. Exemplo: "o teste X está falhando" → agente corrige o teste em vez de o código que o teste está testando.
 
-**Over-engineering:**
-Prompt vago permite interpretação ampla. "Melhore a performance" pode resultar em cache, lazy loading, e reescrita do módulo quando você queria só um índice no banco.
+**Over-engineering:** Prompt vago permite interpretação ampla. "Melhore a performance" pode resultar em cache, lazy loading, e reescrita do módulo quando você queria só um índice no banco.
 
-**Under-engineering:**
-Prompt ambíguo, agente escolhe interpretação conservadora. "Adicione validação" resulta em validação mínima quando você queria validação completa com mensagens de erro detalhadas.
+**Under-engineering:** Prompt ambíguo, agente escolhe interpretação conservadora. "Adicione validação" resulta em validação mínima quando você queria validação completa com mensagens de erro detalhadas.
 
 ---
 

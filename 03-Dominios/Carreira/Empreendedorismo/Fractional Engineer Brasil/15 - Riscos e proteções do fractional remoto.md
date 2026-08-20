@@ -63,19 +63,13 @@ Uma fractional Engineering Lead, ao estruturar um engajamento hands-on de longo 
 ## Armadilhas comuns
 
 > [!warning] Aceitar exclusividade total sem perceber o risco
-> **O que acontece:** um cliente pede exclusividade (nenhum outro cliente simultâneo) em troca de um retainer mais alto, e o fractional aceita sem considerar o impacto no risco de reclassificação.
-> **Por quê:** exclusividade prolongada, combinada com outros elementos (horário fixo, subordinação direta), é justamente o padrão que caracteriza vínculo empregatício disfarçado.
-> **Como evitar:** se aceitar exclusividade temporária for necessário, limitar o prazo explicitamente e evitar acumular os outros elementos de risco (horário fixo, pessoalidade estrita) ao mesmo tempo.
+> **O que acontece:** um cliente pede exclusividade (nenhum outro cliente simultâneo) em troca de um retainer mais alto, e o fractional aceita sem considerar o impacto no risco de reclassificação. **Por quê:** exclusividade prolongada, combinada com outros elementos (horário fixo, subordinação direta), é justamente o padrão que caracteriza vínculo empregatício disfarçado. **Como evitar:** se aceitar exclusividade temporária for necessário, limitar o prazo explicitamente e evitar acumular os outros elementos de risco (horário fixo, pessoalidade estrita) ao mesmo tempo.
 
 > [!warning] Não contratar seguro por achar "não vai acontecer comigo"
-> **O que acontece:** o fractional opera anos sem seguro E&O, assumindo que sua competência técnica é proteção suficiente.
-> **Por quê:** disputas de responsabilidade profissional frequentemente não são sobre incompetência real — são sobre percepção de negligência num resultado que deu errado por múltiplas causas, algumas fora do controle do fractional. Competência não protege contra o custo de se defender de uma alegação.
-> **Como evitar:** tratar o seguro E&O como custo operacional padrão (como o próprio contador já é), não como gasto opcional pra quando "der problema".
+> **O que acontece:** o fractional opera anos sem seguro E&O, assumindo que sua competência técnica é proteção suficiente. **Por quê:** disputas de responsabilidade profissional frequentemente não são sobre incompetência real — são sobre percepção de negligência num resultado que deu errado por múltiplas causas, algumas fora do controle do fractional. Competência não protege contra o custo de se defender de uma alegação. **Como evitar:** tratar o seguro E&O como custo operacional padrão (como o próprio contador já é), não como gasto opcional pra quando "der problema".
 
 > [!warning] Confundir "estar PJ" com "estar protegido de reclassificação"
-> **O que acontece:** o fractional assume que, por ter CNPJ e contrato de prestação de serviço assinado, está automaticamente livre de risco trabalhista.
-> **Por quê:** a Justiça do Trabalho brasileira olha pra relação de fato, não pro nome do contrato — CNPJ e contrato PJ não blindam contra reconhecimento de vínculo se os elementos de subordinação, pessoalidade, não-eventualidade e onerosidade estiverem presentes.
-> **Como evitar:** revisar periodicamente se a relação com cada cliente ainda preserva as características de trabalho independente (múltiplos clientes, autonomia, sem exclusividade prolongada) — não só assumir que o CNPJ resolve isso permanentemente.
+> **O que acontece:** o fractional assume que, por ter CNPJ e contrato de prestação de serviço assinado, está automaticamente livre de risco trabalhista. **Por quê:** a Justiça do Trabalho brasileira olha pra relação de fato, não pro nome do contrato — CNPJ e contrato PJ não blindam contra reconhecimento de vínculo se os elementos de subordinação, pessoalidade, não-eventualidade e onerosidade estiverem presentes. **Como evitar:** revisar periodicamente se a relação com cada cliente ainda preserva as características de trabalho independente (múltiplos clientes, autonomia, sem exclusividade prolongada) — não só assumir que o CNPJ resolve isso permanentemente.
 
 ## Como explicar em inglês
 

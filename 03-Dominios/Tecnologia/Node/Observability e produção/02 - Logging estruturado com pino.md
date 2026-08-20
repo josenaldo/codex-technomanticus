@@ -21,10 +21,7 @@ aliases:
 # Logging estruturado com pino
 
 > [!abstract] TL;DR
-> Logging estruturado significa emitir cada entrada de log como um objeto JSON com campos padronizados — em vez de texto livre — para que ferramentas de agregação (Datadog, Loki, CloudWatch) possam indexar, filtrar e alertar sem parsing frágil de regex.
-> Pino é o logger mais rápido do ecossistema Node.js: quando usado com `pino.transport()`, delega a serialização e a escrita em disco a uma worker thread, mantendo o event loop livre; sem transport, escreve no stdout do main thread com serialização ultra-rápida via fast-json-stringify.
-> Cada log de produção deve carregar pelo menos: `timestamp`, `level`, `msg`, `requestId`, `service` e `version` — sem `requestId` é impossível correlacionar logs de uma única requisição num sistema com alta concorrência.
-> Dados sensíveis (senhas, tokens, CPFs) jamais devem aparecer em logs; use a opção `redact` do pino para remover campos automaticamente antes de qualquer I/O.
+> Logging estruturado significa emitir cada entrada de log como um objeto JSON com campos padronizados — em vez de texto livre — para que ferramentas de agregação (Datadog, Loki, CloudWatch) possam indexar, filtrar e alertar sem parsing frágil de regex. Pino é o logger mais rápido do ecossistema Node.js: quando usado com `pino.transport()`, delega a serialização e a escrita em disco a uma worker thread, mantendo o event loop livre; sem transport, escreve no stdout do main thread com serialização ultra-rápida via fast-json-stringify. Cada log de produção deve carregar pelo menos: `timestamp`, `level`, `msg`, `requestId`, `service` e `version` — sem `requestId` é impossível correlacionar logs de uma única requisição num sistema com alta concorrência. Dados sensíveis (senhas, tokens, CPFs) jamais devem aparecer em logs; use a opção `redact` do pino para remover campos automaticamente antes de qualquer I/O.
 
 Esta nota aprofunda o pilar de *logs* introduzido em [[01 - Os três pilares - logs, métricas e traces]] e faz parte do galho [[03-Dominios/Tecnologia/Node/Observability e produção/index]].
 
@@ -370,29 +367,19 @@ async function callExternalAPI(url: string) {
 ## Armadilhas comuns
 
 > [!warning] Nível `debug` em produção
-> **O que acontece:** O volume de logs pode multiplicar 5x–10x, com custo adicional de armazenamento, ingestão e CPU de serialização. Em rotas com milhares de req/s, os microssegundos extras por log se somam e aparecem no P99 de latência.
-> **Por quê:** `debug` emite dados de diagnóstico muito mais granulares que `info` — variáveis internas, fluxos e valores que não têm valor operacional em produção mas geram ruído e custo.
-> **Como evitar:** Configure `LOG_LEVEL=info` como padrão de produção. Use `debug` apenas em investigações controladas com TTL definido: ative por 15 minutos em uma instância, colete os dados, desative.
+> **O que acontece:** O volume de logs pode multiplicar 5x–10x, com custo adicional de armazenamento, ingestão e CPU de serialização. Em rotas com milhares de req/s, os microssegundos extras por log se somam e aparecem no P99 de latência. **Por quê:** `debug` emite dados de diagnóstico muito mais granulares que `info` — variáveis internas, fluxos e valores que não têm valor operacional em produção mas geram ruído e custo. **Como evitar:** Configure `LOG_LEVEL=info` como padrão de produção. Use `debug` apenas em investigações controladas com TTL definido: ative por 15 minutos em uma instância, colete os dados, desative.
 
 > [!warning] Dados sensíveis em logs
-> **O que acontece:** Senhas, tokens JWT, CPFs e cookies de sessão aparecem em texto plano nos logs — que são exportados para S3, replicados para staging e acessados por equipes de SRE. Uma violação de LGPD via log já custou multas milionárias a empresas brasileiras.
-> **Por quê:** Em sistemas sem `redact`, qualquer campo do objeto de contexto vai diretamente para o JSON de saída. Um `logger.info({ body: req.body }, 'Request')` pode expor a senha do usuário se o corpo incluir o campo `password`.
-> **Como evitar:** Configure `redact` no pino com os caminhos de campos sensíveis (`body.password`, `req.headers.authorization`, `body.cpf`). Combine com serializers para transformações estruturais. As duas abordagens são complementares — `redact` é a rede de segurança automática.
+> **O que acontece:** Senhas, tokens JWT, CPFs e cookies de sessão aparecem em texto plano nos logs — que são exportados para S3, replicados para staging e acessados por equipes de SRE. Uma violação de LGPD via log já custou multas milionárias a empresas brasileiras. **Por quê:** Em sistemas sem `redact`, qualquer campo do objeto de contexto vai diretamente para o JSON de saída. Um `logger.info({ body: req.body }, 'Request')` pode expor a senha do usuário se o corpo incluir o campo `password`. **Como evitar:** Configure `redact` no pino com os caminhos de campos sensíveis (`body.password`, `req.headers.authorization`, `body.cpf`). Combine com serializers para transformações estruturais. As duas abordagens são complementares — `redact` é a rede de segurança automática.
 
 > [!warning] Log sem `requestId`
-> **O que acontece:** Em sistemas com 100 req/s, os logs de diferentes requisições se intercalam no arquivo de saída. Sem um campo de correlação, é impossível responder "o que aconteceu nessa requisição específica?".
-> **Por quê:** Node.js é single-threaded com event loop — não há isolamento de thread por requisição. Todos os logs vão para o mesmo stream, interleaved pelo scheduler assíncrono.
-> **Como evitar:** Sempre injete `requestId` em cada log via child logger ou mixin do pino. O `requestId` é o fio que permite filtrar `requestId: "req-abc-123"` e reconstruir toda a história de uma transação — incluindo chamadas a serviços externos e queries de banco.
+> **O que acontece:** Em sistemas com 100 req/s, os logs de diferentes requisições se intercalam no arquivo de saída. Sem um campo de correlação, é impossível responder "o que aconteceu nessa requisição específica?". **Por quê:** Node.js é single-threaded com event loop — não há isolamento de thread por requisição. Todos os logs vão para o mesmo stream, interleaved pelo scheduler assíncrono. **Como evitar:** Sempre injete `requestId` em cada log via child logger ou mixin do pino. O `requestId` é o fio que permite filtrar `requestId: "req-abc-123"` e reconstruir toda a história de uma transação — incluindo chamadas a serviços externos e queries de banco.
 
 > [!warning] `console.log` em vez de pino
-> **O que acontece:** `console.log` em Node.js é síncrono — bloqueia o event loop até o write do sistema operacional completar. Em projetos com muito logging, a migração para pino frequentemente reduz 10–20ms no P99 de latência.
-> **Por quê:** `console.log` usa `process.stdout.write` síncrono, que aguarda o syscall completar antes de continuar. Pino com transport delega esse I/O a uma worker thread, liberando o event loop imediatamente.
-> **Como evitar:** Use pino como logger padrão do projeto desde o início. Para migrar código legado, faça uma busca global por `console.log/warn/error` e substitua por chamadas ao logger configurado.
+> **O que acontece:** `console.log` em Node.js é síncrono — bloqueia o event loop até o write do sistema operacional completar. Em projetos com muito logging, a migração para pino frequentemente reduz 10–20ms no P99 de latência. **Por quê:** `console.log` usa `process.stdout.write` síncrono, que aguarda o syscall completar antes de continuar. Pino com transport delega esse I/O a uma worker thread, liberando o event loop imediatamente. **Como evitar:** Use pino como logger padrão do projeto desde o início. Para migrar código legado, faça uma busca global por `console.log/warn/error` e substitua por chamadas ao logger configurado.
 
 > [!warning] pino-pretty em produção
-> **O que acontece:** O pipeline de ingestão quebra — parsers JSON esperam JSON puro, mas pino-pretty emite ANSI codes de cor. Além disso, o overhead de formatação adiciona CPU extra e aumenta o tamanho dos logs.
-> **Por quê:** pino-pretty reformata o JSON em saída colorida e legível para humanos — útil em desenvolvimento, destruidor em produção onde a saída é consumida por máquinas.
-> **Como evitar:** Condicione pino-pretty por variável de ambiente: `isDev ? pino.transport({ target: 'pino-pretty' }) : process.stdout`. Nunca comite configuração com pino-pretty incondicional.
+> **O que acontece:** O pipeline de ingestão quebra — parsers JSON esperam JSON puro, mas pino-pretty emite ANSI codes de cor. Além disso, o overhead de formatação adiciona CPU extra e aumenta o tamanho dos logs. **Por quê:** pino-pretty reformata o JSON em saída colorida e legível para humanos — útil em desenvolvimento, destruidor em produção onde a saída é consumida por máquinas. **Como evitar:** Condicione pino-pretty por variável de ambiente: `isDev ? pino.transport({ target: 'pino-pretty' }) : process.stdout`. Nunca comite configuração com pino-pretty incondicional.
 
 ---
 

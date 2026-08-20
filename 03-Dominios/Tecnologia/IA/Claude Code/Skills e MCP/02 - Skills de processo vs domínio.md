@@ -27,8 +27,7 @@ Ele tem duas coisas para aprender. Primeiro, as **técnicas**: como fazer um rou
 
 Segundo, o **contexto da casa**: que a brigada aqui usa salsinha, não coentro; que o forno de canto esquenta mais à direita; que o prato carro-chefe não leva glutén por causa da clientela.
 
-Skills de **processo** são as técnicas — transferíveis, estáveis, sobre o *como*.
-Skills de **domínio** são o contexto da casa — específicas do projeto, voláteis, sobre o *o que é aqui*.
+Skills de **processo** são as técnicas — transferíveis, estáveis, sobre o *como*. Skills de **domínio** são o contexto da casa — específicas do projeto, voláteis, sobre o *o que é aqui*.
 
 O chef (agente) precisa dos dois. Mas quando um erra, o impacto é diferente: técnica errada estraga um prato; contexto errado pode estragar a relação com toda a brigada.
 
@@ -274,11 +273,9 @@ sequenceDiagram
 
 As armadilhas acima não são hipotéticas — elas aparecem sob duas formas recorrentes em produção.
 
-**Cenário 1 — skill de domínio ficando obsoleta em silêncio**
-Um time de e-commerce mantém `arquitetura-pagamentos.md` desde que o módulo foi criado. Seis meses depois, o time migra o provedor de pagamento e passa a validar CPF/CNPJ antes de criar a cobrança — mas ninguém lembrou de atualizar a skill. Toda sessão nova de Claude Code carrega o contexto antigo, gera código que pula a validação, e os testes locais passam porque o mock não reproduz a regra nova. O bug só aparece em produção, quando um pedido com CPF inválido cria uma cobrança órfã. O time perde meio dia rastreando um problema que a skill deveria ter prevenido — e só percebe a causa raiz ao notar que `arquitetura-pagamentos.md` não tinha `updated:` há 6 meses.
+**Cenário 1 — skill de domínio ficando obsoleta em silêncio** Um time de e-commerce mantém `arquitetura-pagamentos.md` desde que o módulo foi criado. Seis meses depois, o time migra o provedor de pagamento e passa a validar CPF/CNPJ antes de criar a cobrança — mas ninguém lembrou de atualizar a skill. Toda sessão nova de Claude Code carrega o contexto antigo, gera código que pula a validação, e os testes locais passam porque o mock não reproduz a regra nova. O bug só aparece em produção, quando um pedido com CPF inválido cria uma cobrança órfã. O time perde meio dia rastreando um problema que a skill deveria ter prevenido — e só percebe a causa raiz ao notar que `arquitetura-pagamentos.md` não tinha `updated:` há 6 meses.
 
-**Cenário 2 — skill de processo rígida demais travando o agente**
-Um time adota `deploy.md` com uma sequência fixa: testes → lint → CHANGELOG → tag → push. Funciona bem até aparecer um hotfix crítico em produção, sem tempo para atualizar o CHANGELOG com o rigor normal. O agente, seguindo a skill ao pé da letra, insiste em bloquear o deploy até o CHANGELOG estar completo — mesmo com o incidente ativo. O engenheiro de plantão precisa desativar a skill manualmente para conseguir fazer o hotfix, perdendo minutos preciosos numa janela onde cada minuto importa. A correção depois de outra sessão: adicionar uma seção explícita "quando pular esta etapa" para o caso de hotfix — o mesmo remédio da armadilha "skill de processo muito rígida".
+**Cenário 2 — skill de processo rígida demais travando o agente** Um time adota `deploy.md` com uma sequência fixa: testes → lint → CHANGELOG → tag → push. Funciona bem até aparecer um hotfix crítico em produção, sem tempo para atualizar o CHANGELOG com o rigor normal. O agente, seguindo a skill ao pé da letra, insiste em bloquear o deploy até o CHANGELOG estar completo — mesmo com o incidente ativo. O engenheiro de plantão precisa desativar a skill manualmente para conseguir fazer o hotfix, perdendo minutos preciosos numa janela onde cada minuto importa. A correção depois de outra sessão: adicionar uma seção explícita "quando pular esta etapa" para o caso de hotfix — o mesmo remédio da armadilha "skill de processo muito rígida".
 
 Os dois cenários apontam para o mesmo princípio: skill de domínio exige manutenção ativa (owner + revisão periódica); skill de processo exige flexibilidade documentada (exceções previstas), não rigidez cega.
 
@@ -313,8 +310,7 @@ Se a resposta for "ambos" na primeira pergunta — parabéns, você encontrou um
 > [!tip] Assista: How to Create Good Agent Skills | Claude Code Guide
 > **Canal:** Code with Beto | **Duração:** ~10min | **Idioma:** EN
 >
-> Complementa a distinção teórica desta nota com um framework prático de criação: quando vale a pena criar uma skill (tarefa repetitiva, não tarefa única) e um exemplo passo a passo de skill de deploy — um caso concreto de skill de processo, com o mesmo cuidado de escopo que separa processo de domínio.
-> Trecho de destaque [3:38]: *"Skills are not for one-time tasks or for simple things like explaining just a piece of code. [...] Skills are for patterns that you repeat, daily or weekly or even monthly."*
+> Complementa a distinção teórica desta nota com um framework prático de criação: quando vale a pena criar uma skill (tarefa repetitiva, não tarefa única) e um exemplo passo a passo de skill de deploy — um caso concreto de skill de processo, com o mesmo cuidado de escopo que separa processo de domínio. Trecho de destaque [3:38]: *"Skills are not for one-time tasks or for simple things like explaining just a piece of code. [...] Skills are for patterns that you repeat, daily or weekly or even monthly."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Ik-Xbz2hvM0)
 

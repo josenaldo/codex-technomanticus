@@ -60,8 +60,7 @@ Diante de um problema novo — em produção, numa entrevista, num RFC — as se
 > [!tip] Assista: 6 Pillars of the AWS Well Architected Framework (you should really know this)
 > **Canal:** Be A Better Dev | **Duração:** ~19min | **Idioma:** EN
 >
-> Passa pelos seis pilares um a um com exemplos concretos de serviço AWS em cada — inclusive confirma, na fala, que Sustainability é "relativamente novo" no framework, o mesmo detalhe que o callout de verificação acima destaca.
-> Trecho de destaque [14:56]: *"Let's move on to the next pillar here, which is in terms of sustainability. This is a relatively new pillar, and it is in terms of being more sustainable, both in terms of cost and the environment."*
+> Passa pelos seis pilares um a um com exemplos concretos de serviço AWS em cada — inclusive confirma, na fala, que Sustainability é "relativamente novo" no framework, o mesmo detalhe que o callout de verificação acima destaca. Trecho de destaque [14:56]: *"Let's move on to the next pillar here, which is in terms of sustainability. This is a relatively new pillar, and it is in terms of being more sustainable, both in terms of cost and the environment."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=5odtVlORq_w)
 
@@ -105,8 +104,7 @@ O ponto de verbalizar trade-offs num loop de entrevista não é "acertar" a arqu
 > [!tip] Assista: System Design: How to Build a Scalable URL Shortener (Like Bitly)
 > **Canal:** Sandeep Vaid | **Duração:** ~12min | **Idioma:** EN
 >
-> Chega na mesma escolha de DynamoDB por um caminho quase idêntico ao das Perguntas 1 e 2 desta nota — nomeia explicitamente que o sistema é "read heavy" (muito mais leitura que escrita) antes de justificar por que um NoSQL de chave-valor com sharding automático vence uma alternativa relacional.
-> Trecho de destaque [05:24]: *"So if you think [about] some hashmap, obviously the... NoSQL DB, DynamoDB, is one of the best DB. There are some reasons for that: we can easily do sharding, and the system is very serverless and scalable. AWS DynamoDB automatically does this sharding."*
+> Chega na mesma escolha de DynamoDB por um caminho quase idêntico ao das Perguntas 1 e 2 desta nota — nomeia explicitamente que o sistema é "read heavy" (muito mais leitura que escrita) antes de justificar por que um NoSQL de chave-valor com sharding automático vence uma alternativa relacional. Trecho de destaque [05:24]: *"So if you think [about] some hashmap, obviously the... NoSQL DB, DynamoDB, is one of the best DB. There are some reasons for that: we can easily do sharding, and the system is very serverless and scalable. AWS DynamoDB automatically does this sharding."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Xb0J6MyDBtg)
 

@@ -165,9 +165,7 @@ Object.keys(usuario);    // [] — "id" não é enumerável
 ```
 
 > [!warning] Modo silencioso vs. strict mode
-> **O que acontece:** Tentar escrever em uma propriedade `writable: false` não lança erro por padrão — só ignora silenciosamente.
-> **Por quê:** Herança do JavaScript antigo onde exceções eram raras.
-> **Como evitar:** Use `"use strict"` ou módulos ES (que já são strict) para que violações de descriptor lancem `TypeError`.
+> **O que acontece:** Tentar escrever em uma propriedade `writable: false` não lança erro por padrão — só ignora silenciosamente. **Por quê:** Herança do JavaScript antigo onde exceções eram raras. **Como evitar:** Use `"use strict"` ou módulos ES (que já são strict) para que violações de descriptor lancem `TypeError`.
 
 ### Dois tipos de descriptor: data vs. accessor
 
@@ -318,9 +316,7 @@ console.log(desconto); // 0 — produto não tem "desconto", usa o default
 O default só entra quando a propriedade é `undefined`. Se for `null`, o default **não** é usado.
 
 > [!warning] Default não cobre `null`
-> **O que acontece:** `const { x = 10 } = { x: null }` resulta em `x === null`, não `10`.
-> **Por quê:** O default só substitui `undefined`. `null` é um valor explícito e diferente.
-> **Como evitar:** Use `valor ?? 10` após o destructuring quando precisar tratar `null` também.
+> **O que acontece:** `const { x = 10 } = { x: null }` resulta em `x === null`, não `10`. **Por quê:** O default só substitui `undefined`. `null` é um valor explícito e diferente. **Como evitar:** Use `valor ?? 10` após o destructuring quando precisar tratar `null` também.
 
 ### Nested (aninhado)
 
@@ -517,9 +513,7 @@ console.log(original.criado.getFullYear()); // 2026 — intacto!
 > O `JSON.stringify` é ~2-3x mais rápido para objetos simples, mas perde tipos: `Date` vira string, `undefined` e funções desaparecem, `NaN` vira `null`, e referências circulares travam. Use `structuredClone` como padrão; migre para JSON só se profiling mostrar que importa.
 
 > [!warning] `Object.freeze` também é shallow
-> **O que acontece:** `Object.freeze` congela só o primeiro nível. Objetos aninhados continuam mutáveis.
-> **Por quê:** `freeze` marca cada propriedade como `writable: false`, mas não percorre recursivamente.
-> **Como evitar:** Para congelar fundo, implemente um `deepFreeze` recursivo ou use uma biblioteca de imutabilidade.
+> **O que acontece:** `Object.freeze` congela só o primeiro nível. Objetos aninhados continuam mutáveis. **Por quê:** `freeze` marca cada propriedade como `writable: false`, mas não percorre recursivamente. **Como evitar:** Para congelar fundo, implemente um `deepFreeze` recursivo ou use uma biblioteca de imutabilidade.
 
 ---
 
@@ -594,24 +588,16 @@ Note o `Object.freeze` aninhado em `FEATURE_FLAGS` — necessário porque o free
 ## Armadilhas comuns
 
 > [!warning] `this` se perde em arrow functions como método
-> **O que acontece:** `const obj = { nome: "X", dizer: () => this.nome }` — `this` não é `obj`.
-> **Por quê:** Arrow functions capturam o `this` do escopo onde foram **definidas**, não do objeto que as contém. No módulo, `this` é `undefined` (strict mode) ou o objeto global.
-> **Como evitar:** Use funções regulares para métodos de objeto: `dizer() { return this.nome; }`.
+> **O que acontece:** `const obj = { nome: "X", dizer: () => this.nome }` — `this` não é `obj`. **Por quê:** Arrow functions capturam o `this` do escopo onde foram **definidas**, não do objeto que as contém. No módulo, `this` é `undefined` (strict mode) ou o objeto global. **Como evitar:** Use funções regulares para métodos de objeto: `dizer() { return this.nome; }`.
 
 > [!warning] Spread não copia métodos de protótipo
-> **O que acontece:** `const copia = { ...instancia }` — métodos da classe (prototype) não aparecem em `copia`.
-> **Por quê:** Spread copia só propriedades **próprias** e enumeráveis. Métodos de classe vivem no protótipo, não no objeto.
-> **Como evitar:** Para clonar instâncias, use o construtor ou `Object.create` + `Object.assign`. Ou avalie se spread realmente é o que você quer.
+> **O que acontece:** `const copia = { ...instancia }` — métodos da classe (prototype) não aparecem em `copia`. **Por quê:** Spread copia só propriedades **próprias** e enumeráveis. Métodos de classe vivem no protótipo, não no objeto. **Como evitar:** Para clonar instâncias, use o construtor ou `Object.create` + `Object.assign`. Ou avalie se spread realmente é o que você quer.
 
 > [!warning] Destructuring de `undefined` lança erro
-> **O que acontece:** `const { nome } = obterUsuario()` — se a função retornar `undefined`, você leva um `TypeError: Cannot destructure property 'nome' of undefined`.
-> **Por quê:** Você está tentando acessar uma propriedade de `undefined`.
-> **Como evitar:** `const { nome } = obterUsuario() ?? {}` — o `?? {}` garante um objeto vazio como fallback.
+> **O que acontece:** `const { nome } = obterUsuario()` — se a função retornar `undefined`, você leva um `TypeError: Cannot destructure property 'nome' of undefined`. **Por quê:** Você está tentando acessar uma propriedade de `undefined`. **Como evitar:** `const { nome } = obterUsuario() ?? {}` — o `?? {}` garante um objeto vazio como fallback.
 
 > [!warning] `delete` em objeto congelado falha silenciosamente
-> **O que acontece:** `delete CONFIG.timeout` retorna `false` sem lançar erro (em modo normal).
-> **Por quê:** Propriedades de objetos congelados têm `configurable: false`.
-> **Como evitar:** Use strict mode para que a tentativa lance `TypeError` imediatamente, em vez de falhar silenciosamente.
+> **O que acontece:** `delete CONFIG.timeout` retorna `false` sem lançar erro (em modo normal). **Por quê:** Propriedades de objetos congelados têm `configurable: false`. **Como evitar:** Use strict mode para que a tentativa lance `TypeError` imediatamente, em vez de falhar silenciosamente.
 
 ---
 

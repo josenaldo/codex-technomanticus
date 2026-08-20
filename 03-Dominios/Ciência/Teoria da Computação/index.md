@@ -20,17 +20,10 @@ aliases:
 # Teoria da Computação
 
 > [!abstract] TL;DR
-> Galho de Ciência da Computação sobre as duas perguntas que nenhum framework responde: **o que pode ser computado** e
-> **a que custo**. Sobe a "torre de poder" dos modelos de computação — autômato finito → autômato de pilha →
-> máquina de Turing — e, no topo, esbarra nos dois muros: o que **nenhuma** máquina computa (indecidibilidade:
-> o problema da parada, Rice) e o que máquina nenhuma computa **barato** (complexidade: P, NP, NP-completo,
-> P vs NP). Teoria pura, mas com resgate prático em cada limite: é *por isso* que regex não parseia HTML, que
-> linter não pega todo loop infinito, e que você para de caçar o ótimo e aproxima.
+> Galho de Ciência da Computação sobre as duas perguntas que nenhum framework responde: **o que pode ser computado** e **a que custo**. Sobe a "torre de poder" dos modelos de computação — autômato finito → autômato de pilha → máquina de Turing — e, no topo, esbarra nos dois muros: o que **nenhuma** máquina computa (indecidibilidade: o problema da parada, Rice) e o que máquina nenhuma computa **barato** (complexidade: P, NP, NP-completo, P vs NP). Teoria pura, mas com resgate prático em cada limite: é *por isso* que regex não parseia HTML, que linter não pega todo loop infinito, e que você para de caçar o ótimo e aproxima.
 
 ## Sobre este galho
-Este é o andar mais **teórico** da Ciência da Computação — e o mais antigo da Ciência da Computação (Turing, Church e
-Gödel, anos 1930, antes de existir computador). Ele dá o vocabulário formal para falar de *limites*: o que a
-computação **não** pode fazer, e o que ela só faz a um custo proibitivo.
+Este é o andar mais **teórico** da Ciência da Computação — e o mais antigo da Ciência da Computação (Turing, Church e Gödel, anos 1930, antes de existir computador). Ele dá o vocabulário formal para falar de *limites*: o que a computação **não** pode fazer, e o que ela só faz a um custo proibitivo.
 
 **Fronteiras (linka, não duplica):**
 - **A face prática de P/NP** (NP-difícil como sinal, aproximação, heurística) → [[03-Dominios/Ciência/Algoritmos/13 - Intratabilidade|Intratabilidade]]. Aqui mora o **formal** (Cook-Levin, redução polinomial, P vs NP).
@@ -39,8 +32,7 @@ computação **não** pode fazer, e o que ela só faz a um custo proibitivo.
 - **Complexidade de Software** ([[Complexidade de Software]]) é complexidade **cognitiva/de manutenção** — coisa OUTRA, não confundir com complexidade computacional.
 - **λ-cálculo pelo ângulo de estilo** → [[03-Dominios/Ciência/Paradigmas/index|Paradigmas de Programação]] (a nota da tese de Church-Turing linka de volta).
 
-**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista" com
-frases prontas em inglês e vocabulário técnico PT→EN. (O tema cai *raramente* em entrevista, mas é fundamento real.)
+**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista" com frases prontas em inglês e vocabulário técnico PT→EN. (O tema cai *raramente* em entrevista, mas é fundamento real.)
 
 ## Iniciado — o mundo regular (máquinas sem memória de verdade)
 1. [[01 - O que é computação]] — modelo de computação; decidir × reconhecer; a torre de poder; as duas grandes perguntas.

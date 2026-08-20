@@ -536,9 +536,7 @@ console.log(`Total de erros: ${count}`);
 ## Armadilhas comuns
 
 > [!warning] Generator não é reiniciável
-> **O que acontece:** você tenta reutilizar um generator que já foi exaurido e `next()` sempre retorna `{ value: undefined, done: true }`.
-> **Por quê:** o estado interno de um generator (posição de execução, variáveis locais) é preservado entre chamadas de `next()`, mas uma vez que `done: true` é retornado, o generator está permanentemente esgotado.
-> **Como evitar:** se precisar iterar mais de uma vez, guarde a **factory** (a função generator), não o objeto generator. Chame `meuGen()` novamente para uma nova instância. Ou, se for um objeto iterable customizado, certifique-se de que `[Symbol.iterator]()` cria um novo iterator a cada chamada.
+> **O que acontece:** você tenta reutilizar um generator que já foi exaurido e `next()` sempre retorna `{ value: undefined, done: true }`. **Por quê:** o estado interno de um generator (posição de execução, variáveis locais) é preservado entre chamadas de `next()`, mas uma vez que `done: true` é retornado, o generator está permanentemente esgotado. **Como evitar:** se precisar iterar mais de uma vez, guarde a **factory** (a função generator), não o objeto generator. Chame `meuGen()` novamente para uma nova instância. Ou, se for um objeto iterable customizado, certifique-se de que `[Symbol.iterator]()` cria um novo iterator a cada chamada.
 
 ```js
 // ❌ Reutilizando o mesmo generator
@@ -552,9 +550,7 @@ console.log([...range(1, 3)]); // [1, 2, 3]
 ```
 
 > [!warning] `for...of` não funciona em objetos simples
-> **O que acontece:** tentar usar `for (const x of meuObjeto)` em um POJO (Plain Old JavaScript Object) lança `TypeError: meuObjeto is not iterable`.
-> **Por quê:** objetos `{}` não implementam `[Symbol.iterator]` por design — a iteração seria ambígua (chaves? valores? entries?).
-> **Como evitar:** use `Object.keys()`, `Object.values()` ou `Object.entries()` explicitamente, ou implemente `[Symbol.iterator]` no objeto se ele tem semântica de coleção.
+> **O que acontece:** tentar usar `for (const x of meuObjeto)` em um POJO (Plain Old JavaScript Object) lança `TypeError: meuObjeto is not iterable`. **Por quê:** objetos `{}` não implementam `[Symbol.iterator]` por design — a iteração seria ambígua (chaves? valores? entries?). **Como evitar:** use `Object.keys()`, `Object.values()` ou `Object.entries()` explicitamente, ou implemente `[Symbol.iterator]` no objeto se ele tem semântica de coleção.
 
 ```js
 const obj = { a: 1, b: 2 };
@@ -567,9 +563,7 @@ for (const [k, v] of Object.entries(obj)) { ... }
 ```
 
 > [!warning] `yield` só pausa o generator, não funções internas
-> **O que acontece:** usar `yield` dentro de um callback passado ao generator não funciona — o `yield` tem que estar diretamente no corpo do `function*`.
-> **Por quê:** `yield` é uma expressão léxica do `function*` mais próximo. Um callback é uma função separada — não compartilha o contexto do generator.
-> **Como evitar:** substituir `.forEach` por `for...of` dentro do generator, ou usar `yield*` com um iterable.
+> **O que acontece:** usar `yield` dentro de um callback passado ao generator não funciona — o `yield` tem que estar diretamente no corpo do `function*`. **Por quê:** `yield` é uma expressão léxica do `function*` mais próximo. Um callback é uma função separada — não compartilha o contexto do generator. **Como evitar:** substituir `.forEach` por `for...of` dentro do generator, ou usar `yield*` com um iterable.
 
 ```js
 function* errado(arr) {
@@ -588,9 +582,7 @@ function* correto(arr) {
 ```
 
 > [!warning] Async generator precisa de `for await`, não `for...of`
-> **O que acontece:** usar `for...of` num async generator retorna Promises, não os valores resolvidos.
-> **Por quê:** async iterators retornam `Promise<{value, done}>` de `next()`. O `for...of` síncrono não aguarda essas Promises.
-> **Como evitar:** sempre use `for await...of` para consumir async generators e async iterables.
+> **O que acontece:** usar `for...of` num async generator retorna Promises, não os valores resolvidos. **Por quê:** async iterators retornam `Promise<{value, done}>` de `next()`. O `for...of` síncrono não aguarda essas Promises. **Como evitar:** sempre use `for await...of` para consumir async generators e async iterables.
 
 ```js
 async function* ticks() {

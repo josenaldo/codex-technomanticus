@@ -23,10 +23,7 @@ aliases:
 # Os três pilares: logs, métricas e traces
 
 > [!abstract] TL;DR
-> Observability é a capacidade de entender o estado interno de um sistema a partir de suas saídas externas.
-> Os três pilares — logs, métricas e traces — respondem perguntas diferentes e se complementam: logs explicam *o quê* aconteceu, métricas mostram *quantas vezes* e *quão rápido*, traces revelam *onde* o tempo foi gasto numa requisição distribuída.
-> Golden signals (latência, tráfego, erros, saturação) são o subconjunto mínimo de métricas que toda API em produção deve monitorar.
-> SLI define o que medir, SLO define a meta, SLA define a consequência contratual — confundir os três é erro clássico em entrevista e em PRs de infra.
+> Observability é a capacidade de entender o estado interno de um sistema a partir de suas saídas externas. Os três pilares — logs, métricas e traces — respondem perguntas diferentes e se complementam: logs explicam *o quê* aconteceu, métricas mostram *quantas vezes* e *quão rápido*, traces revelam *onde* o tempo foi gasto numa requisição distribuída. Golden signals (latência, tráfego, erros, saturação) são o subconjunto mínimo de métricas que toda API em produção deve monitorar. SLI define o que medir, SLO define a meta, SLA define a consequência contratual — confundir os três é erro clássico em entrevista e em PRs de infra.
 
 Esta nota é a porta de entrada do [[03-Dominios/Tecnologia/Node/Observability e produção/index]] e estabelece o vocabulário e o modelo mental usados em todas as notas do galho. Leia-a antes de qualquer outra.
 
@@ -239,24 +236,21 @@ A filosofia por trás dos golden signals: em vez de monitorar dezenas de métric
 
 Esses três termos formam a hierarquia de confiabilidade que todo time de produção precisa dominar:
 
-**SLI — Service Level Indicator** (Indicador de nível de serviço)
-Uma métrica mensurável e específica que representa a qualidade do serviço. O SLI é o *o quê* você mede.
+**SLI — Service Level Indicator** (Indicador de nível de serviço) Uma métrica mensurável e específica que representa a qualidade do serviço. O SLI é o *o quê* você mede.
 
 Exemplos:
 - Proporção de requisições respondidas em menos de 200ms
 - Disponibilidade medida como `(requisições bem-sucedidas / total de requisições) × 100%`
 - Taxa de erros da API de pagamentos
 
-**SLO — Service Level Objective** (Objetivo de nível de serviço)
-Uma meta para um SLI, medida em uma janela de tempo. O SLO é o *quanto* você quer atingir.
+**SLO — Service Level Objective** (Objetivo de nível de serviço) Uma meta para um SLI, medida em uma janela de tempo. O SLO é o *quanto* você quer atingir.
 
 Exemplos:
 - "p99 de latência < 200ms em 99,9% do tempo, medido em janela de 30 dias"
 - "Disponibilidade >= 99,95% por mês"
 - "Taxa de erros da API de pagamentos < 0,1% por semana"
 
-**SLA — Service Level Agreement** (Acordo de nível de serviço)
-Um contrato *formal e externo* com o cliente, geralmente com consequências financeiras (créditos, reembolsos) em caso de descumprimento. O SLA é baseado no SLO, mas tipicamente com meta menos agressiva para dar margem de segurança.
+**SLA — Service Level Agreement** (Acordo de nível de serviço) Um contrato *formal e externo* com o cliente, geralmente com consequências financeiras (créditos, reembolsos) em caso de descumprimento. O SLA é baseado no SLO, mas tipicamente com meta menos agressiva para dar margem de segurança.
 
 Exemplo prático completo para uma API de criação de usuários:
 
@@ -491,9 +485,7 @@ O que este exemplo demonstra na prática:
 ## Armadilhas comuns
 
 > [!warning] Logar apenas em caso de erro
-> **O que acontece:** Sem log de início e de sucesso, é impossível saber se uma operação sequer começou, quanto tempo levou no caminho feliz, ou calcular a proporção real de erros frente ao total de tentativas.
-> **Por quê:** Instrumentar apenas o `catch` cria um ponto cego total para o caminho feliz — não há como distinguir "operação lenta" de "operação nunca executada".
-> **Como evitar:** Logue sempre três momentos: início (com contexto de entrada), sucesso (com contexto de saída e duração) e erro (com causa e contexto).
+> **O que acontece:** Sem log de início e de sucesso, é impossível saber se uma operação sequer começou, quanto tempo levou no caminho feliz, ou calcular a proporção real de erros frente ao total de tentativas. **Por quê:** Instrumentar apenas o `catch` cria um ponto cego total para o caminho feliz — não há como distinguir "operação lenta" de "operação nunca executada". **Como evitar:** Logue sempre três momentos: início (com contexto de entrada), sucesso (com contexto de saída e duração) e erro (com causa e contexto).
 
 ```javascript
 // Ruim: só loga erros
@@ -521,9 +513,7 @@ async function criarUsuario(dados) {
 ```
 
 > [!warning] Alta cardinalidade como label de métrica
-> **O que acontece:** O Prometheus fica sem memória ou começa a recusar scrapers, pois cada combinação única de labels cria uma série temporal separada — um label `userId` com 1 M de usuários gera 1 M de séries por contador.
-> **Por quê:** Prometheus armazena cada combinação de labels como uma série independente. Labels de cardinalidade ilimitada multiplicam esse número de forma descontrolada.
-> **Como evitar:** Use apenas labels com cardinalidade baixa e previsível — `status` (success/error), `route` (/users), `method` (GET/POST). Dados de alta cardinalidade vão nos **logs**, não nas métricas.
+> **O que acontece:** O Prometheus fica sem memória ou começa a recusar scrapers, pois cada combinação única de labels cria uma série temporal separada — um label `userId` com 1 M de usuários gera 1 M de séries por contador. **Por quê:** Prometheus armazena cada combinação de labels como uma série independente. Labels de cardinalidade ilimitada multiplicam esse número de forma descontrolada. **Como evitar:** Use apenas labels com cardinalidade baixa e previsível — `status` (success/error), `route` (/users), `method` (GET/POST). Dados de alta cardinalidade vão nos **logs**, não nas métricas.
 
 ```javascript
 // Perigoso: userId como label cria milhões de séries
@@ -542,14 +532,10 @@ contador.inc({ status: 'success', route: '/users' });
 ```
 
 > [!warning] Confundir SLO com SLA em discussões de time
-> **O que acontece:** O time alerta no nível do SLA e, quando o alerta dispara, o contrato com o cliente já foi violado — não há tempo de reação antes das consequências contratuais.
-> **Por quê:** SLO é a meta interna com buffer de segurança. SLA é o compromisso externo. Usar o SLA como threshold de alerta elimina completamente esse buffer.
-> **Como evitar:** Alerte no SLO (ex: 99,9% de disponibilidade). O SLA (ex: 99,5%) é a linha de emergência que nunca deveria ser atingida. O error budget deriva do SLO, não do SLA.
+> **O que acontece:** O time alerta no nível do SLA e, quando o alerta dispara, o contrato com o cliente já foi violado — não há tempo de reação antes das consequências contratuais. **Por quê:** SLO é a meta interna com buffer de segurança. SLA é o compromisso externo. Usar o SLA como threshold de alerta elimina completamente esse buffer. **Como evitar:** Alerte no SLO (ex: 99,9% de disponibilidade). O SLA (ex: 99,5%) é a linha de emergência que nunca deveria ser atingida. O error budget deriva do SLO, não do SLA.
 
 > [!warning] Traces sem sampling em produção de alto volume
-> **O que acontece:** O custo de armazenamento cresce linearmente com o tráfego, tornando o tracing economicamente inviável. O overhead de serialização e envio pode adicionar latência mensurável ao path crítico em alta volumetria.
-> **Por quê:** Capturar 100% dos traces é desnecessário — a maioria das requisições bem-sucedidas tem comportamento semelhante e não agrega informação nova. O valor está nos traces de erro e nos outliers lentos.
-> **Como evitar:** Configure tail-based sampling no OpenTelemetry Collector: sempre capture traces com erro ou latência acima do p99; amostre 5–10% do restante. Assim você mantém visibilidade nos casos relevantes sem custo linear.
+> **O que acontece:** O custo de armazenamento cresce linearmente com o tráfego, tornando o tracing economicamente inviável. O overhead de serialização e envio pode adicionar latência mensurável ao path crítico em alta volumetria. **Por quê:** Capturar 100% dos traces é desnecessário — a maioria das requisições bem-sucedidas tem comportamento semelhante e não agrega informação nova. O valor está nos traces de erro e nos outliers lentos. **Como evitar:** Configure tail-based sampling no OpenTelemetry Collector: sempre capture traces com erro ou latência acima do p99; amostre 5–10% do restante. Assim você mantém visibilidade nos casos relevantes sem custo linear.
 
 ```javascript
 // Sem sampling: coleta tudo (perigoso em alta volumetria)
@@ -566,9 +552,7 @@ const provider = new NodeTracerProvider({
 ```
 
 > [!warning] Não correlacionar logs com traces
-> **O que acontece:** Logs e spans do mesmo request existem em sistemas diferentes sem forma de conectá-los. Ao investigar um trace lento no Jaeger, você não encontra os logs correspondentes no Loki — e vice-versa.
-> **Por quê:** Sem um identificador compartilhado, as duas ferramentas de observabilidade são ilhas. O diagnóstico exige alternar manualmente entre sistemas e deduzir quais registros pertencem ao mesmo evento.
-> **Como evitar:** Inclua o `traceId` do span ativo em cada log via mixin do pino. O campo `traceId` no log deve ser idêntico ao `traceId` do span correspondente para o mesmo request.
+> **O que acontece:** Logs e spans do mesmo request existem em sistemas diferentes sem forma de conectá-los. Ao investigar um trace lento no Jaeger, você não encontra os logs correspondentes no Loki — e vice-versa. **Por quê:** Sem um identificador compartilhado, as duas ferramentas de observabilidade são ilhas. O diagnóstico exige alternar manualmente entre sistemas e deduzir quais registros pertencem ao mesmo evento. **Como evitar:** Inclua o `traceId` do span ativo em cada log via mixin do pino. O campo `traceId` no log deve ser idêntico ao `traceId` do span correspondente para o mesmo request.
 
 ```javascript
 // Sem correlação: logs e traces não se encontram

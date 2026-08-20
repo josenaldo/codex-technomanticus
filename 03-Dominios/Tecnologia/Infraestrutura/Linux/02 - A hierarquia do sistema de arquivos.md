@@ -150,24 +150,16 @@ Esse exemplo antecipa a nota 03: o elo entre "arquivo" e "descritor" é o que ex
 ## Armadilhas comuns
 
 > [!warning] Presumir que caminho igual é disco igual
-> **O que acontece:** você libera espaço apagando coisas em `/home` e `/var` continua cheio.
-> **Por quê:** pontos de montagem diferentes são sistemas de arquivos independentes, com espaço independente.
-> **Como evitar:** `df -h <caminho>` antes de agir. E use `du -x`, que não atravessa para outro sistema de arquivos — sem o `-x`, a soma engana.
+> **O que acontece:** você libera espaço apagando coisas em `/home` e `/var` continua cheio. **Por quê:** pontos de montagem diferentes são sistemas de arquivos independentes, com espaço independente. **Como evitar:** `df -h <caminho>` antes de agir. E use `du -x`, que não atravessa para outro sistema de arquivos — sem o `-x`, a soma engana.
 
 > [!warning] Editar `/etc/fstab` sem testar e reiniciar
-> **O que acontece:** a máquina não sobe, e em servidor remoto isso significa console de emergência do provedor.
-> **Por quê:** entrada inválida no `fstab` pode parar o boot.
-> **Como evitar:** depois de editar, `sudo mount -a` valida sem reiniciar. Se der erro ali, teria dado no boot.
+> **O que acontece:** a máquina não sobe, e em servidor remoto isso significa console de emergência do provedor. **Por quê:** entrada inválida no `fstab` pode parar o boot. **Como evitar:** depois de editar, `sudo mount -a` valida sem reiniciar. Se der erro ali, teria dado no boot.
 
 > [!warning] Guardar em `/tmp` o que precisa sobreviver
-> **O que acontece:** o arquivo some depois de um reinício — ou antes dele.
-> **Por quê:** `/tmp` é limpo no boot e, em muitas distribuições, é `tmpfs`: mora em memória, não em disco.
-> **Como evitar:** dado que precisa persistir vai em `/var` (ou no volume do container). Se `/tmp` é `tmpfs`, escrever muito lá também **consome memória** — o que já derrubou aplicação por motivo aparentemente inexplicável.
+> **O que acontece:** o arquivo some depois de um reinício — ou antes dele. **Por quê:** `/tmp` é limpo no boot e, em muitas distribuições, é `tmpfs`: mora em memória, não em disco. **Como evitar:** dado que precisa persistir vai em `/var` (ou no volume do container). Se `/tmp` é `tmpfs`, escrever muito lá também **consome memória** — o que já derrubou aplicação por motivo aparentemente inexplicável.
 
 > [!warning] Achar que `df` e `du` deveriam bater
-> **O que acontece:** `df` diz cheio, `du` diz vazio, e a pessoa duvida das duas ferramentas.
-> **Por quê:** medem coisas diferentes — `df` pergunta ao sistema de arquivos quanto está alocado; `du` soma o que consegue **alcançar por nome**. Arquivo apagado com descritor aberto está alocado e não tem nome.
-> **Como evitar:** `lsof +L1` é a ponte entre os dois números.
+> **O que acontece:** `df` diz cheio, `du` diz vazio, e a pessoa duvida das duas ferramentas. **Por quê:** medem coisas diferentes — `df` pergunta ao sistema de arquivos quanto está alocado; `du` soma o que consegue **alcançar por nome**. Arquivo apagado com descritor aberto está alocado e não tem nome. **Como evitar:** `lsof +L1` é a ponte entre os dois números.
 
 ---
 

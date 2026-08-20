@@ -75,19 +75,13 @@ Um formulário de "criar perfil de fornecedor" foi dividido em quatro etapas seq
 ## Armadilhas comuns
 
 > [!warning] Validação hostil — a cada tecla, com mensagem genérica
-> **O que acontece:** o campo mostra erro em vermelho antes mesmo de o usuário terminar de digitar, com uma mensagem como "campo inválido" que não diz o que está errado.
-> **Por quê:** validar a cada tecla é tecnicamente mais simples de implementar (um `onChange` direto) do que orquestrar o evento de blur corretamente — e mensagens genéricas são mais rápidas de escrever do que mensagens específicas por tipo de erro.
-> **Como evitar:** valide no blur, não no change; escreva a mensagem de erro nomeando o problema específico e o formato esperado, seguindo o padrão da heurística 9 de Nielsen.
+> **O que acontece:** o campo mostra erro em vermelho antes mesmo de o usuário terminar de digitar, com uma mensagem como "campo inválido" que não diz o que está errado. **Por quê:** validar a cada tecla é tecnicamente mais simples de implementar (um `onChange` direto) do que orquestrar o evento de blur corretamente — e mensagens genéricas são mais rápidas de escrever do que mensagens específicas por tipo de erro. **Como evitar:** valide no blur, não no change; escreva a mensagem de erro nomeando o problema específico e o formato esperado, seguindo o padrão da heurística 9 de Nielsen.
 
 > [!warning] Campo que apaga o que o usuário digitou ao dar erro
-> **O que acontece:** ao detectar um valor inválido, o campo é limpo completamente em vez de manter o texto digitado com o erro sinalizado ao lado.
-> **Por quê:** é mais simples de programar "resetar o campo em caso de erro" do que preservar o valor inválido para o usuário corrigir a partir dali — mas do ponto de vista do usuário, isso força redigitação completa por um erro pequeno.
-> **Como evitar:** nunca limpe um campo automaticamente por causa de validação — mantenha o valor digitado, destaque o campo com erro, e deixe o usuário editar a partir do que já tinha escrito.
+> **O que acontece:** ao detectar um valor inválido, o campo é limpo completamente em vez de manter o texto digitado com o erro sinalizado ao lado. **Por quê:** é mais simples de programar "resetar o campo em caso de erro" do que preservar o valor inválido para o usuário corrigir a partir dali — mas do ponto de vista do usuário, isso força redigitação completa por um erro pequeno. **Como evitar:** nunca limpe um campo automaticamente por causa de validação — mantenha o valor digitado, destaque o campo com erro, e deixe o usuário editar a partir do que já tinha escrito.
 
 > [!warning] Placeholder fazendo o papel de label
-> **O que acontece:** um campo não tem label visível, só um placeholder ("Digite seu e-mail") que desaparece assim que o usuário começa a digitar.
-> **Por quê:** parece economizar espaço visual, e em formulários curtos o problema passa despercebido — até o usuário pausar no meio do preenchimento e não lembrar mais o que aquele campo pedia.
-> **Como evitar:** todo campo tem label visível e permanente, acima do campo; placeholder, quando usado, serve só para mostrar um exemplo de formato esperado, nunca para substituir o nome do campo.
+> **O que acontece:** um campo não tem label visível, só um placeholder ("Digite seu e-mail") que desaparece assim que o usuário começa a digitar. **Por quê:** parece economizar espaço visual, e em formulários curtos o problema passa despercebido — até o usuário pausar no meio do preenchimento e não lembrar mais o que aquele campo pedia. **Como evitar:** todo campo tem label visível e permanente, acima do campo; placeholder, quando usado, serve só para mostrar um exemplo de formato esperado, nunca para substituir o nome do campo.
 
 ## Como explicar em inglês
 

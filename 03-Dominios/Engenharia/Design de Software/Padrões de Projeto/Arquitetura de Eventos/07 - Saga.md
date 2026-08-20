@@ -25,19 +25,10 @@ aliases:
 # Saga
 
 > [!abstract] TL;DR
-> Um processo de negócio atravessa três serviços, cada um com seu próprio banco. Não há transação
-> distribuída viável — então não existe "desfazer tudo". A **Saga** troca atomicidade por **sequência de
-> transações locais**, cada uma com uma **compensação** que anula seu efeito quando um passo posterior
-> falha. Duas formas de conduzir: **coreografia** (cada serviço reage a eventos; nenhum ponto central, e
-> nenhum lugar onde o fluxo esteja escrito) e **orquestração** (um coordenador comanda; fluxo explícito,
-> ao custo de um componente que sabe demais). A escolha é de acoplamento — e o erro mais caro não é
-> escolher errado, é supor que **toda** compensação existe.
+> Um processo de negócio atravessa três serviços, cada um com seu próprio banco. Não há transação distribuída viável — então não existe "desfazer tudo". A **Saga** troca atomicidade por **sequência de transações locais**, cada uma com uma **compensação** que anula seu efeito quando um passo posterior falha. Duas formas de conduzir: **coreografia** (cada serviço reage a eventos; nenhum ponto central, e nenhum lugar onde o fluxo esteja escrito) e **orquestração** (um coordenador comanda; fluxo explícito, ao custo de um componente que sabe demais). A escolha é de acoplamento — e o erro mais caro não é escolher errado, é supor que **toda** compensação existe.
 
 > [!info] O recorte desta nota
-> Aqui a Saga como **decisão de acoplamento**: coreografia × orquestração, e o que cada uma amarra.
-> O exemplo trabalhado ponta a ponta e a discussão de **isolamento** (o que a Saga não garante e como
-> conviver com leituras sujas) estão em
-> [[03-Dominios/Engenharia/Comunicação entre Sistemas/4 - Comunicação assíncrona/04 - Outbox e Saga|Comunicação 4-04]].
+> Aqui a Saga como **decisão de acoplamento**: coreografia × orquestração, e o que cada uma amarra. O exemplo trabalhado ponta a ponta e a discussão de **isolamento** (o que a Saga não garante e como conviver com leituras sujas) estão em [[03-Dominios/Engenharia/Comunicação entre Sistemas/4 - Comunicação assíncrona/04 - Outbox e Saga|Comunicação 4-04]].
 
 ## O terceiro passo falhou e os dois primeiros já aconteceram
 
@@ -105,19 +96,13 @@ Daí a regra de projeto mais importante desta nota: **ordene os passos do mais r
 ## Armadilhas comuns
 
 > [!warning] Compensação que não compensa
-> **O que acontece:** a saga "compensa" enviando um segundo e-mail de desculpas depois do e-mail de confirmação; ou tenta estornar uma cobrança já repassada. O sistema se declara consistente, e o cliente viveu o efeito.
-> **Por quê:** modelou-se compensação como se todo efeito fosse reversível, porque no banco de dados ele é.
-> **Como evitar:** classifique cada passo — reversível, compensável com custo, **irreversível** — e projete a ordem em função disso. O irreversível vai por último, ou sai da saga e vira consequência do sucesso.
+> **O que acontece:** a saga "compensa" enviando um segundo e-mail de desculpas depois do e-mail de confirmação; ou tenta estornar uma cobrança já repassada. O sistema se declara consistente, e o cliente viveu o efeito. **Por quê:** modelou-se compensação como se todo efeito fosse reversível, porque no banco de dados ele é. **Como evitar:** classifique cada passo — reversível, compensável com custo, **irreversível** — e projete a ordem em função disso. O irreversível vai por último, ou sai da saga e vira consequência do sucesso.
 
 > [!warning] Saga sem timeout
-> **O que acontece:** um serviço não responde e a saga fica pendente para sempre. O estoque segue reservado, o pedido nem confirma nem cancela, e a descoberta vem por chamado de cliente semanas depois.
-> **Por quê:** o caminho feliz e o de falha explícita são implementados; **a ausência de resposta** não é uma falha visível — é silêncio, e silêncio não dispara nada.
-> **Como evitar:** todo passo com prazo e ação de expiração. Uma saga precisa de um **relógio**: alguém varrendo instâncias paradas há tempo demais. Sem isso, ela só funciona quando tudo funciona.
+> **O que acontece:** um serviço não responde e a saga fica pendente para sempre. O estoque segue reservado, o pedido nem confirma nem cancela, e a descoberta vem por chamado de cliente semanas depois. **Por quê:** o caminho feliz e o de falha explícita são implementados; **a ausência de resposta** não é uma falha visível — é silêncio, e silêncio não dispara nada. **Como evitar:** todo passo com prazo e ação de expiração. Uma saga precisa de um **relógio**: alguém varrendo instâncias paradas há tempo demais. Sem isso, ela só funciona quando tudo funciona.
 
 > [!warning] Coreografia que cresceu além da conta
-> **O que acontece:** o que eram três passos virou sete, com ramificações. Ninguém consegue desenhar o fluxo, mudanças quebram caminhos que ninguém sabia existir, e depurar exige reconstituir a sequência a partir de logs de cinco serviços.
-> **Por quê:** cada passo novo foi acrescentado por um time, localmente, sem que ninguém decidisse "agora o processo é complexo demais para ser emergente".
-> **Como evitar:** trate a passagem para orquestração como uma **migração planejada**, não como derrota. O sinal para migrar é quando alguém do negócio pergunta "em que etapa está?" — pergunta que a coreografia não sabe responder. E aí o coordenador tem nome: [[08 - Process Manager|Process Manager]].
+> **O que acontece:** o que eram três passos virou sete, com ramificações. Ninguém consegue desenhar o fluxo, mudanças quebram caminhos que ninguém sabia existir, e depurar exige reconstituir a sequência a partir de logs de cinco serviços. **Por quê:** cada passo novo foi acrescentado por um time, localmente, sem que ninguém decidisse "agora o processo é complexo demais para ser emergente". **Como evitar:** trate a passagem para orquestração como uma **migração planejada**, não como derrota. O sinal para migrar é quando alguém do negócio pergunta "em que etapa está?" — pergunta que a coreografia não sabe responder. E aí o coordenador tem nome: [[08 - Process Manager|Process Manager]].
 
 ## Como explicar em inglês
 

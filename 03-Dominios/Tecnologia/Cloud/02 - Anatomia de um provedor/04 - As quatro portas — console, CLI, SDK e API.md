@@ -84,8 +84,7 @@ E, por fim, a própria **API** — você também pode falar com ela diretamente,
 > [!tip] Assista: AWS APIs, AWS Management Console, CLI & SDKs in 7 Minutes
 > **Canal:** NextWork | **Duração:** ~7min | **Idioma:** EN
 >
-> Versão curta e direta da mesma ideia central desta seção — usando a analogia de um garçom de restaurante para explicar API, e depois mostrando console, CLI e SDK como três formas de chegar na mesma cozinha (a mesma API), sem reinventar o cardápio a cada porta.
-> Trecho de destaque [06:22]: *"you can either do it through the AWS Management console through the command line interface which goes through your terminal or through"*
+> Versão curta e direta da mesma ideia central desta seção — usando a analogia de um garçom de restaurante para explicar API, e depois mostrando console, CLI e SDK como três formas de chegar na mesma cozinha (a mesma API), sem reinventar o cardápio a cada porta. Trecho de destaque [06:22]: *"you can either do it through the AWS Management console through the command line interface which goes through your terminal or through"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=9LUKktlsv1Y)
 

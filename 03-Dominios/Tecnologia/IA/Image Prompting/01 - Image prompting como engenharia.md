@@ -171,8 +171,7 @@ cropped = img.crop(crop_box)
 - JPG quality 85-92 → imagens fotográficas; boa compressão
 - WebP → web moderna; melhor relação qualidade/tamanho
 
-**Texto overlay (quando gerador não lida bem com texto):**
-Adicionar texto pós-geração via Pillow, Canva, ou Figma. O gerador produz o visual; a ferramenta de edição adiciona tipografia controlada. Essa é a solução pragmática pra 2026 enquanto texto em imagem ainda quebra.
+**Texto overlay (quando gerador não lida bem com texto):** Adicionar texto pós-geração via Pillow, Canva, ou Figma. O gerador produz o visual; a ferramenta de edição adiciona tipografia controlada. Essa é a solução pragmática pra 2026 enquanto texto em imagem ainda quebra.
 
 ## Fluxo end-to-end de um asset visual
 

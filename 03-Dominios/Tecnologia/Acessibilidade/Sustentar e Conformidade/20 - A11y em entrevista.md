@@ -54,8 +54,7 @@ O entrevistador não soma pontos por critério citado — ele testa se as quatro
 ## As perguntas que caem, e como respondê-las como sênior
 
 > [!example] "Como você garante que uma aplicação é acessível?"
-> **Resposta júnior:** "Eu adiciono atributos ARIA e uso o axe."
-> **Resposta sênior:** "Em três camadas. Primeiro, **construo certo**: HTML semântico antes de ARIA, porque o elemento nativo já entrega role, foco e teclado sem bugs — ARIA eu reservo para o que o HTML não tem, como um combobox. Segundo, **testo em duas frentes**: automação (axe no CI) para pegar a metade mecânica — contraste, labels — e teste manual com teclado e leitor de tela para a metade que a máquina não vê, como ordem de foco e qualidade de alt text. Terceiro, **sustento**: componentes acessíveis no design system e a11y na Definition of Done, para não regredir. A automação sozinha pega só cerca de metade dos problemas, então o manual não é opcional."
+> **Resposta júnior:** "Eu adiciono atributos ARIA e uso o axe." **Resposta sênior:** "Em três camadas. Primeiro, **construo certo**: HTML semântico antes de ARIA, porque o elemento nativo já entrega role, foco e teclado sem bugs — ARIA eu reservo para o que o HTML não tem, como um combobox. Segundo, **testo em duas frentes**: automação (axe no CI) para pegar a metade mecânica — contraste, labels — e teste manual com teclado e leitor de tela para a metade que a máquina não vê, como ordem de foco e qualidade de alt text. Terceiro, **sustento**: componentes acessíveis no design system e a11y na Definition of Done, para não regredir. A automação sozinha pega só cerca de metade dos problemas, então o manual não é opcional."
 
 Repare no que a resposta sênior faz: dá **estrutura** (três camadas), justifica com **mecanismo** ("porque o nativo já entrega..."), e crava o **trade-off honesto** (o teto da automação). É o domínio inteiro em um parágrafo.
 
@@ -118,19 +117,13 @@ Numa entrevista internacional, articular a11y em inglês natural é o que conver
 Além dos red flags de fala, há erros de **comportamento na entrevista** que denunciam superficialidade mesmo quando o candidato conhece o vocabulário certo:
 
 > [!warning] Recitar critérios WCAG sem explicar o mecanismo
-> **O que acontece:** o candidato cita "1.4.3 contraste mínimo" ou "4.1.2 nome, função, valor" de cabeça, mas trava quando perguntado *por que* aquele critério existe.
-> **Por quê:** decorar números é fácil de simular com flashcard; explicar o mecanismo (o que a tecnologia assistiva lê, o que quebra sem ele) exige ter operado o problema de verdade — é exatamente o que o entrevistador está testando (seção acima).
-> **Como evitar:** treine explicar o *efeito no usuário*, não o número do critério. Troque "1.4.3" por "sem contraste suficiente, quem tem baixa visão não distingue o texto do fundo — e isso nem sempre é achado pelo Lighthouse em elementos com opacidade ou gradiente."
+> **O que acontece:** o candidato cita "1.4.3 contraste mínimo" ou "4.1.2 nome, função, valor" de cabeça, mas trava quando perguntado *por que* aquele critério existe. **Por quê:** decorar números é fácil de simular com flashcard; explicar o mecanismo (o que a tecnologia assistiva lê, o que quebra sem ele) exige ter operado o problema de verdade — é exatamente o que o entrevistador está testando (seção acima). **Como evitar:** treine explicar o *efeito no usuário*, não o número do critério. Troque "1.4.3" por "sem contraste suficiente, quem tem baixa visão não distingue o texto do fundo — e isso nem sempre é achado pelo Lighthouse em elementos com opacidade ou gradiente."
 
 > [!warning] Tratar a pergunta de a11y como pergunta de ferramenta
-> **O que acontece:** a resposta vira uma lista de nomes — "uso axe, Lighthouse, WAVE, NVDA" — sem nunca chegar ao *processo* que decide quando cada uma entra.
-> **Por quê:** ferramentas são o `quê`, não o `como`; listar nomes é o mesmo clichê de "é só adicionar ARIA" com roupa nova, porque não mostra julgamento nem sustentação (notas 13, 17).
-> **Como evitar:** ancore a resposta na estrutura de três camadas (construir → testar → sustentar) e cite as ferramentas só como exemplo dentro de cada camada, nunca como a resposta inteira.
+> **O que acontece:** a resposta vira uma lista de nomes — "uso axe, Lighthouse, WAVE, NVDA" — sem nunca chegar ao *processo* que decide quando cada uma entra. **Por quê:** ferramentas são o `quê`, não o `como`; listar nomes é o mesmo clichê de "é só adicionar ARIA" com roupa nova, porque não mostra julgamento nem sustentação (notas 13, 17). **Como evitar:** ancore a resposta na estrutura de três camadas (construir → testar → sustentar) e cite as ferramentas só como exemplo dentro de cada camada, nunca como a resposta inteira.
 
 > [!warning] Sobrecorrigir e recusar automação
-> **O que acontece:** para não soar como quem confia cegamente no Lighthouse, o candidato vai para o outro extremo e descarta a automação como "inútil" ou "não confio em ferramenta nenhuma".
-> **Por quê:** isso é tão raso quanto o excesso de confiança — ignora que a automação pega a metade mecânica dos problemas de graça e a um custo de CI desprezível (nota 13); rejeitar automação por completo sinaliza falta de pragmatismo operacional, não rigor.
-> **Como evitar:** posicione a automação como piso obrigatório e barato, não como solução — "eu rodo axe no CI porque pega metade dos problemas sem custo humano, e reservo o teste manual para a outra metade que só um humano percebe."
+> **O que acontece:** para não soar como quem confia cegamente no Lighthouse, o candidato vai para o outro extremo e descarta a automação como "inútil" ou "não confio em ferramenta nenhuma". **Por quê:** isso é tão raso quanto o excesso de confiança — ignora que a automação pega a metade mecânica dos problemas de graça e a um custo de CI desprezível (nota 13); rejeitar automação por completo sinaliza falta de pragmatismo operacional, não rigor. **Como evitar:** posicione a automação como piso obrigatório e barato, não como solução — "eu rodo axe no CI porque pega metade dos problemas sem custo humano, e reservo o teste manual para a outra metade que só um humano percebe."
 
 ## O que vem a seguir
 

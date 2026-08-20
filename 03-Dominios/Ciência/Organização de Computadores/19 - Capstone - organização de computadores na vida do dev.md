@@ -182,26 +182,19 @@ flowchart TD
 
 > [!warning] As sete armadilhas que o hardware prega em todo dev
 >
-> **1. Comparar floats com `==`**
-> `0.1 + 0.2 == 0.3` retorna `false` em todo sistema IEEE 754. Sempre use margem de erro (epsilon) ou aritmética inteira. Em Java: `Math.abs(a - b) < 1e-9`. Em dinheiro: nunca `double`.
+> **1. Comparar floats com `==`** `0.1 + 0.2 == 0.3` retorna `false` em todo sistema IEEE 754. Sempre use margem de erro (epsilon) ou aritmética inteira. Em Java: `Math.abs(a - b) < 1e-9`. Em dinheiro: nunca `double`.
 >
-> **2. Ignorar localidade ("é tudo O(1)")**
-> Um `HashMap` tem custo amortizado O(1), mas pointer-chasing em listas hash causa mais cache misses que iterar um array O(n). Constantes importam. O hardware não lê Big-O — ele lê endereços de memória.
+> **2. Ignorar localidade ("é tudo O(1)")** Um `HashMap` tem custo amortizado O(1), mas pointer-chasing em listas hash causa mais cache misses que iterar um array O(n). Constantes importam. O hardware não lê Big-O — ele lê endereços de memória.
 >
-> **3. Mais threads = mais rápido**
-> Amdahl garante que não. A fração serial trava o ganho máximo. False sharing entre threads pode tornar código paralelo *mais lento* que single-threaded. Meça antes de adicionar qualquer thread extra.
+> **3. Mais threads = mais rápido** Amdahl garante que não. A fração serial trava o ganho máximo. False sharing entre threads pode tornar código paralelo *mais lento* que single-threaded. Meça antes de adicionar qualquer thread extra.
 >
-> **4. Otimizar sem medir**
-> Premature optimization é raiz de todo mal (Knuth). Mas *não medir* antes de otimizar é pior: você otimiza o lugar errado. Sempre: profiler primeiro, hipótese depois, medição depois da mudança.
+> **4. Otimizar sem medir** Premature optimization é raiz de todo mal (Knuth). Mas *não medir* antes de otimizar é pior: você otimiza o lugar errado. Sempre: profiler primeiro, hipótese depois, medição depois da mudança.
 >
-> **5. `int` que estoura silenciosamente**
-> Em C/C++, overflow de inteiro com sinal é *undefined behavior*. Em Java, wrap-around. Nenhuma exceção. Bugs de overflow já custaram vidas (Ariane 5, 1996). Use `Math.addExact()` quando overflow importa.
+> **5. `int` que estoura silenciosamente** Em C/C++, overflow de inteiro com sinal é *undefined behavior*. Em Java, wrap-around. Nenhuma exceção. Bugs de overflow já custaram vidas (Ariane 5, 1996). Use `Math.addExact()` quando overflow importa.
 >
-> **6. Assumir que o compilador não reordena nada**
-> O compilador *e* o hardware reordenam instruções para encher o pipeline. Em código single-thread isso é transparente. Em código multi-thread, criar visibilidade de memória sem barreiras (`volatile`, `synchronized`, `lock`) leva a leituras de valores "antigos" de outros threads.
+> **6. Assumir que o compilador não reordena nada** O compilador *e* o hardware reordenam instruções para encher o pipeline. Em código single-thread isso é transparente. Em código multi-thread, criar visibilidade de memória sem barreiras (`volatile`, `synchronized`, `lock`) leva a leituras de valores "antigos" de outros threads.
 >
-> **7. Confundir latência com throughput**
-> Um sistema pode ter alto throughput (muitas operações por segundo) e alta latência (cada operação demora muito) ao mesmo tempo — como uma cozinha que prepara 100 pratos por hora mas cada prato leva 90 minutos. Benchmarks de throughput não medem latência de cauda (p99, p999). Sempre especifique o que está otimizando.
+> **7. Confundir latência com throughput** Um sistema pode ter alto throughput (muitas operações por segundo) e alta latência (cada operação demora muito) ao mesmo tempo — como uma cozinha que prepara 100 pratos por hora mas cada prato leva 90 minutos. Benchmarks de throughput não medem latência de cauda (p99, p999). Sempre especifique o que está otimizando.
 
 ---
 
@@ -224,10 +217,7 @@ Martin Thompson resume: *"The CPU is not magic. It has a pipeline. It has a cach
 O objetivo não é que todo dev conheça os tempos de latência de cada nível de cache de cor (embora a tabela esteja em `[[12 - Cache a fundo]]`). O objetivo é que ao ver um benchmark estranho, ao depurar um race condition, ao discutir uma escolha de estrutura de dados, o dev tenha o mapa mental para perguntar: *qual camada do hardware está falando aqui?*
 
 > [!question] Quando o conhecimento de hardware realmente importa?
-> **Sempre importa um pouco** — para entender por que certas escolhas de linguagem e biblioteca têm o custo que têm.
-> **Importa bastante** — para decisões de estrutura de dados e algoritmos em código de alta frequência.
-> **É crítico** — para sistemas de tempo real, drivers, código de kernel, engines de jogos, processamento de mercado financeiro.
-> **Não muda o resultado prático** — para a maior parte do código de negócio, onde o gargalo é I/O externo.
+> **Sempre importa um pouco** — para entender por que certas escolhas de linguagem e biblioteca têm o custo que têm. **Importa bastante** — para decisões de estrutura de dados e algoritmos em código de alta frequência. **É crítico** — para sistemas de tempo real, drivers, código de kernel, engines de jogos, processamento de mercado financeiro. **Não muda o resultado prático** — para a maior parte do código de negócio, onde o gargalo é I/O externo.
 
 ---
 
@@ -326,20 +316,15 @@ Em entrevistas internacionais, o hardware aparece embalado em perguntas de siste
 
 Dependendo do objetivo, as notas do galho têm pesos diferentes:
 
-**Entrevista backend / sistemas senior (prioridade alta)**
-→ `[[02 - Representação binária de inteiros]]` → `[[03 - Ponto flutuante - IEEE 754]]` → `[[12 - Cache a fundo]]` → `[[15 - Multicore, coerência de cache e consistência]]` → `[[18 - Performance - CPI, benchmarks e Amdahl]]`
+**Entrevista backend / sistemas senior (prioridade alta)** → `[[02 - Representação binária de inteiros]]` → `[[03 - Ponto flutuante - IEEE 754]]` → `[[12 - Cache a fundo]]` → `[[15 - Multicore, coerência de cache e consistência]]` → `[[18 - Performance - CPI, benchmarks e Amdahl]]`
 
-**Entrevista geral (cobertura mínima)**
-→ `[[02 - Representação binária de inteiros]]` → `[[03 - Ponto flutuante - IEEE 754]]` → `[[07 - Arquitetura de von Neumann e o ciclo de instrução]]` → `[[12 - Cache a fundo]]`
+**Entrevista geral (cobertura mínima)** → `[[02 - Representação binária de inteiros]]` → `[[03 - Ponto flutuante - IEEE 754]]` → `[[07 - Arquitetura de von Neumann e o ciclo de instrução]]` → `[[12 - Cache a fundo]]`
 
-**Curiosidade técnica / cultura de engenharia**
-→ Todo o galho em sequência, 01 a 18, antes desta nota.
+**Curiosidade técnica / cultura de engenharia** → Todo o galho em sequência, 01 a 18, antes desta nota.
 
-**Debugging de concorrência**
-→ `[[10 - Pipeline e hazards]]` → `[[14 - Branch prediction e execução especulativa]]` → `[[15 - Multicore, coerência de cache e consistência]]`
+**Debugging de concorrência** → `[[10 - Pipeline e hazards]]` → `[[14 - Branch prediction e execução especulativa]]` → `[[15 - Multicore, coerência de cache e consistência]]`
 
-**Revisão rápida pré-entrevista (1 hora)**
-→ Esta nota (capstone) + tabela de latências + cheat-sheet 1 + seção "Em entrevista"
+**Revisão rápida pré-entrevista (1 hora)** → Esta nota (capstone) + tabela de latências + cheat-sheet 1 + seção "Em entrevista"
 
 ---
 
@@ -347,14 +332,11 @@ Dependendo do objetivo, as notas do galho têm pesos diferentes:
 
 Olhando para trás nas 18 notas anteriores, o galho tem um arco claro:
 
-**Fase Iniciado (notas 01–06): como a máquina representa e processa dados**
-Do binário ao complemento de dois. De IEEE 754 às surpresas de ponto flutuante. Das portas lógicas às estruturas combinacionais e sequenciais. Da ULA ao registrador de propósito geral. Essa fase responde: *o que a máquina sabe fazer no nível mais básico?*
+**Fase Iniciado (notas 01–06): como a máquina representa e processa dados** Do binário ao complemento de dois. De IEEE 754 às surpresas de ponto flutuante. Das portas lógicas às estruturas combinacionais e sequenciais. Da ULA ao registrador de propósito geral. Essa fase responde: *o que a máquina sabe fazer no nível mais básico?*
 
-**Fase Adepto (notas 07–13): como a CPU executa e acessa memória**
-Da arquitetura de von Neumann ao ciclo fetch-decode-execute. Da ISA ao assembly. Do pipeline clássico de 5 estágios aos hazards de dados, controle e estruturais. Da execução fora de ordem à hierarquia de memória completa — L1/L2/L3, DRAM, disco, memória virtual. Essa fase responde: *como a CPU executa bilhões de instruções por segundo, e onde os dados vivem?*
+**Fase Adepto (notas 07–13): como a CPU executa e acessa memória** Da arquitetura de von Neumann ao ciclo fetch-decode-execute. Da ISA ao assembly. Do pipeline clássico de 5 estágios aos hazards de dados, controle e estruturais. Da execução fora de ordem à hierarquia de memória completa — L1/L2/L3, DRAM, disco, memória virtual. Essa fase responde: *como a CPU executa bilhões de instruções por segundo, e onde os dados vivem?*
 
-**Fase Magus (notas 14–18): onde o mundo moderno fica complicado**
-Branch prediction e execução especulativa (e suas vulnerabilidades — Spectre, Meltdown). Multicore, protocolo MESI e consistência de memória. SIMD e GPU — paralelismo de dados. Performance medida: CPI, IPC, benchmarks, lei de Amdahl. Essa fase responde: *como escrever código que escala em hardware moderno sem criar bugs de corrida ou ilusões de performance?*
+**Fase Magus (notas 14–18): onde o mundo moderno fica complicado** Branch prediction e execução especulativa (e suas vulnerabilidades — Spectre, Meltdown). Multicore, protocolo MESI e consistência de memória. SIMD e GPU — paralelismo de dados. Performance medida: CPI, IPC, benchmarks, lei de Amdahl. Essa fase responde: *como escrever código que escala em hardware moderno sem criar bugs de corrida ou ilusões de performance?*
 
 Esta nota é a síntese: o momento em que o mapa vira bússola.
 

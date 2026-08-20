@@ -73,9 +73,7 @@ O diagrama mostra o buraco. O axe verifica que o `alt` **existe**; ele não tem 
 - **Legendas corretas** — vê que há um `<track>`; não confere se a legenda está certa e sincronizada.
 
 > [!warning] "Passou no Lighthouse com 100" = acessível
-> **O que acontece:** o time celebra o score 100 de acessibilidade do Lighthouse e considera a a11y resolvida. Um usuário de leitor de tela, semanas depois, não consegue usar metade da interface.
-> **Por quê:** o score do Lighthouse reflete só as verificações automáticas (axe-core) — a metade computável do problema. Um `alt="foto"` inútil, uma ordem de foco ilógica e um combobox de teclado quebrado passam todos com nota máxima.
-> **Como evitar:** leia o próprio Lighthouse — ele *avisa* que testes manuais são necessários e lista itens "a verificar manualmente". Score alto é piso, não teto. A metade que falta é a auditoria manual da nota [[03-Dominios/Tecnologia/Acessibilidade/Auditar e Testar/15 - Auditoria manual|15]].
+> **O que acontece:** o time celebra o score 100 de acessibilidade do Lighthouse e considera a a11y resolvida. Um usuário de leitor de tela, semanas depois, não consegue usar metade da interface. **Por quê:** o score do Lighthouse reflete só as verificações automáticas (axe-core) — a metade computável do problema. Um `alt="foto"` inútil, uma ordem de foco ilógica e um combobox de teclado quebrado passam todos com nota máxima. **Como evitar:** leia o próprio Lighthouse — ele *avisa* que testes manuais são necessários e lista itens "a verificar manualmente". Score alto é piso, não teto. A metade que falta é a auditoria manual da nota [[03-Dominios/Tecnologia/Acessibilidade/Auditar e Testar/15 - Auditoria manual|15]].
 
 ## Onde a automação brilha de verdade: escala e regressão
 
@@ -97,19 +95,13 @@ O maior valor da auditoria automatizada não é o relatório pontual — é **ro
 ## Armadilhas comuns
 
 > [!warning] Confundir "passou no axe" com "é acessível"
-> **O que acontece:** zero violações reportadas vira sinônimo de "está tudo certo" na cabeça do time.
-> **Por quê:** o axe só reporta o que consegue verificar por regra. Ausência de erro reportado não é ausência de erro — é ausência do que é *mecanicamente checável*. Um `alt` presente e sem sentido, uma ordem de foco absurda: zero violações, zero acessibilidade real.
-> **Como evitar:** trate "zero violações do axe" como um checkpoint, não como a linha de chegada. A linha de chegada inclui a auditoria manual da nota [[03-Dominios/Tecnologia/Acessibilidade/Auditar e Testar/15 - Auditoria manual|15]].
+> **O que acontece:** zero violações reportadas vira sinônimo de "está tudo certo" na cabeça do time. **Por quê:** o axe só reporta o que consegue verificar por regra. Ausência de erro reportado não é ausência de erro — é ausência do que é *mecanicamente checável*. Um `alt` presente e sem sentido, uma ordem de foco absurda: zero violações, zero acessibilidade real. **Como evitar:** trate "zero violações do axe" como um checkpoint, não como a linha de chegada. A linha de chegada inclui a auditoria manual da nota [[03-Dominios/Tecnologia/Acessibilidade/Auditar e Testar/15 - Auditoria manual|15]].
 
 > [!warning] Rodar Lighthouse e axe DevTools achando que são duas opiniões independentes
-> **O que acontece:** o time roda os dois, os dois concordam, e isso é lido como "confirmação cruzada" — dupla checagem que aumenta a confiança.
-> **Por quê:** como a tabela acima mostra, a aba Accessibility do Lighthouse *é* axe-core por baixo. Rodar os dois é rodar o mesmo motor duas vezes com uma casca de UI diferente — não é redundância que aumenta cobertura, é a ilusão de cobertura.
-> **Como evitar:** para diversificar de verdade, combine axe com uma ferramenta de motor diferente (ex.: IBM Equal Access, ou a inspeção visual do WAVE) — ou, melhor ainda, com auditoria manual, que é onde a cobertura de fato aumenta.
+> **O que acontece:** o time roda os dois, os dois concordam, e isso é lido como "confirmação cruzada" — dupla checagem que aumenta a confiança. **Por quê:** como a tabela acima mostra, a aba Accessibility do Lighthouse *é* axe-core por baixo. Rodar os dois é rodar o mesmo motor duas vezes com uma casca de UI diferente — não é redundância que aumenta cobertura, é a ilusão de cobertura. **Como evitar:** para diversificar de verdade, combine axe com uma ferramenta de motor diferente (ex.: IBM Equal Access, ou a inspeção visual do WAVE) — ou, melhor ainda, com auditoria manual, que é onde a cobertura de fato aumenta.
 
 > [!warning] Ignorar os itens "a verificar manualmente" do relatório
-> **O que acontece:** o relatório do Lighthouse e do axe DevTools lista, separadamente das violações, uma seção de itens que a ferramenta **não conseguiu avaliar automaticamente** (ex.: "verifique se a ordem de leitura é lógica"). Times leem só o score e o contador de violações, e pulam essa seção.
-> **Por quê:** essa seção é literalmente a ferramenta admitindo seu próprio teto — é o mapa do que falta, escrito pela própria Deque/Google. Ignorá-la é jogar fora a informação mais honesta do relatório.
-> **Como evitar:** trate a seção "a verificar manualmente" como uma checklist obrigatória de revisão humana, não como rodapé opcional.
+> **O que acontece:** o relatório do Lighthouse e do axe DevTools lista, separadamente das violações, uma seção de itens que a ferramenta **não conseguiu avaliar automaticamente** (ex.: "verifique se a ordem de leitura é lógica"). Times leem só o score e o contador de violações, e pulam essa seção. **Por quê:** essa seção é literalmente a ferramenta admitindo seu próprio teto — é o mapa do que falta, escrito pela própria Deque/Google. Ignorá-la é jogar fora a informação mais honesta do relatório. **Como evitar:** trate a seção "a verificar manualmente" como uma checklist obrigatória de revisão humana, não como rodapé opcional.
 
 ## Como explicar em inglês
 

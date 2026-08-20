@@ -174,24 +174,16 @@ O padrão de tamanho é uma fração do sistema de arquivos, o que costuma basta
 ## Armadilhas comuns
 
 > [!warning] Descobrir que o journal era volátil depois do incidente
-> **O que acontece:** a máquina reinicia, você quer o log de antes, e ele não existe.
-> **Por quê:** sem `/var/log/journal`, o armazenamento é em memória.
-> **Como evitar:** verifique com `journalctl --list-boots` em toda máquina que você assumir. Se listar só o boot atual, o journal é volátil — e o momento de corrigir é agora, não depois.
+> **O que acontece:** a máquina reinicia, você quer o log de antes, e ele não existe. **Por quê:** sem `/var/log/journal`, o armazenamento é em memória. **Como evitar:** verifique com `journalctl --list-boots` em toda máquina que você assumir. Se listar só o boot atual, o journal é volátil — e o momento de corrigir é agora, não depois.
 
 > [!warning] `journalctl | grep` sem `--no-pager` em script
-> **O que acontece:** o comando trava esperando interação, ou o script pendura.
-> **Por quê:** o `journalctl` abre paginador quando detecta terminal.
-> **Como evitar:** `--no-pager` sempre em script. E prefira filtrar com as opções nativas — `-u`, `-p`, `--since` — que usam índice, em vez de despejar tudo no `grep`.
+> **O que acontece:** o comando trava esperando interação, ou o script pendura. **Por quê:** o `journalctl` abre paginador quando detecta terminal. **Como evitar:** `--no-pager` sempre em script. E prefira filtrar com as opções nativas — `-u`, `-p`, `--since` — que usam índice, em vez de despejar tudo no `grep`.
 
 > [!warning] Concluir que a aplicação não loga
-> **O que acontece:** `journalctl -u app` volta vazio, e a conclusão é que falta configurar log.
-> **Por quê:** ou a aplicação escreve num arquivo próprio, ou está bufferizando e ainda não descarregou.
-> **Como evitar:** confira para onde os descritores apontam — `ls -l /proc/<pid>/fd/1` — antes de mexer em configuração de log.
+> **O que acontece:** `journalctl -u app` volta vazio, e a conclusão é que falta configurar log. **Por quê:** ou a aplicação escreve num arquivo próprio, ou está bufferizando e ainda não descarregou. **Como evitar:** confira para onde os descritores apontam — `ls -l /proc/<pid>/fd/1` — antes de mexer em configuração de log.
 
 > [!warning] Confiar no relógio sem conferir o fuso
-> **O que acontece:** você correlaciona o log de duas máquinas e conclui a ordem errada dos eventos.
-> **Por quê:** o `journalctl` mostra no fuso local de cada máquina.
-> **Como evitar:** `--utc` nos dois lados durante investigação. E confirme a sincronização de horário com `timedatectl` — relógio fora de hora torna todo log inútil.
+> **O que acontece:** você correlaciona o log de duas máquinas e conclui a ordem errada dos eventos. **Por quê:** o `journalctl` mostra no fuso local de cada máquina. **Como evitar:** `--utc` nos dois lados durante investigação. E confirme a sincronização de horário com `timedatectl` — relógio fora de hora torna todo log inútil.
 
 ---
 

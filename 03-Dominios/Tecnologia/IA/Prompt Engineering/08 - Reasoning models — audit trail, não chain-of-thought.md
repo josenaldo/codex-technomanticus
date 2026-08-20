@@ -20,10 +20,7 @@ aliases:
 # 08 - Reasoning models — audit trail, não chain-of-thought
 
 > [!abstract] TL;DR
-> Em modelos clássicos, *"think step-by-step"* era uma das alavancas mais eficazes — induzia chain-of-thought, que melhorava raciocínio.
-> Em **reasoning models** (o3, R1, Gemini Thinking), esse pedido virou noise: a cadeia interna já acontece. Pedir CoT de novo polui o output sem ganho.
-> O que muda: você deixa de pedir *raciocínio*, e passa a pedir **audit trail** — pontos de checagem do raciocínio interno (assumptions, checkpoints-chave, uncertainties, como verificar).
-> Esta nota separa o que pedir e o que evitar em reasoning models, com tabela modelo × pedido recomendado × pedido a evitar.
+> Em modelos clássicos, *"think step-by-step"* era uma das alavancas mais eficazes — induzia chain-of-thought, que melhorava raciocínio. Em **reasoning models** (o3, R1, Gemini Thinking), esse pedido virou noise: a cadeia interna já acontece. Pedir CoT de novo polui o output sem ganho. O que muda: você deixa de pedir *raciocínio*, e passa a pedir **audit trail** — pontos de checagem do raciocínio interno (assumptions, checkpoints-chave, uncertainties, como verificar). Esta nota separa o que pedir e o que evitar em reasoning models, com tabela modelo × pedido recomendado × pedido a evitar.
 
 > [!question]- O que eu preciso saber antes de ler isso?
 > Esta nota pressupõe que você sabe o que é chain-of-thought (CoT) e por que ele melhora qualidade em modelos clássicos. Se não sabe, leia [[03-Dominios/Tecnologia/IA/Context Engineering/15 - Técnicas de prompting — zero-shot, few-shot, CoT, ToT|Técnicas de prompting]] antes. O ponto aqui é que reasoning models (o3, R1, Gemini Thinking, Claude com extended thinking) mudaram o jogo: o CoT acontece internamente, antes do output, e o prompt ideal para eles é diferente. Se você usa modelos clássicos, a nota anterior (few-shot, constraints) já é o suficiente; se usa reasoning models em produção, esta nota é leitura obrigatória.

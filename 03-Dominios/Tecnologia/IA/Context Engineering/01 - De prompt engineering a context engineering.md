@@ -135,8 +135,7 @@ Janela maior não elimina o context engineering — ela o torna mais importante.
 - System prompts longos (com docs, código, instruções) custam 90% menos na segunda chamada
 - Arquitetar contexto com "partes estáveis primeiro" tornou-se prática padrão
 
-**Context engineering como disciplina formal**
-Em junho de 2026, "context engineering" aparece em job descriptions de empresas como Stripe, Shopify e Linear. A distinção com "prompt engineering" está formalizada: CE inclui retrieval, compressão, orquestração de memória, versionamento de instructions e monitoramento de qualidade de contexto. É uma habilidade de engenharia de software, não de comunicação.
+**Context engineering como disciplina formal** Em junho de 2026, "context engineering" aparece em job descriptions de empresas como Stripe, Shopify e Linear. A distinção com "prompt engineering" está formalizada: CE inclui retrieval, compressão, orquestração de memória, versionamento de instructions e monitoramento de qualidade de contexto. É uma habilidade de engenharia de software, não de comunicação.
 
 **Frameworks e tooling específico**
 - **LangGraph** e **LlamaIndex** adicionaram primitivas nativas de gerenciamento de contexto
@@ -144,8 +143,7 @@ Em junho de 2026, "context engineering" aparece em job descriptions de empresas 
 - **Claude Code hooks** (PreToolUse/PostToolUse) permitem injetar contexto dinâmico em agentes
 - Observabilidade de contexto (o que o modelo recebeu, em que ordem, com qual tamanho) virou categoria própria de ferramentas (→ [[Observability]])
 
-**O modelo mental de 2026**
-A metáfora evoluiu da analogia do SO para a de um **chef de cozinha mise en place**. Mise en place é a prática de preparar e organizar todos os ingredientes antes de começar a cozinhar. Context engineering é o mise en place do agente: preparar, organizar e posicionar cada pedaço de informação no lugar certo, no momento certo, antes de a execução começar.
+**O modelo mental de 2026** A metáfora evoluiu da analogia do SO para a de um **chef de cozinha mise en place**. Mise en place é a prática de preparar e organizar todos os ingredientes antes de começar a cozinhar. Context engineering é o mise en place do agente: preparar, organizar e posicionar cada pedaço de informação no lugar certo, no momento certo, antes de a execução começar.
 
 ---
 
@@ -153,17 +151,13 @@ A metáfora evoluiu da analogia do SO para a de um **chef de cozinha mise en pla
 
 Antes de mergulhar nas técnicas específicas, quatro princípios governam qualquer decisão de CE:
 
-**1. Relevância acima de completude**
-O contexto perfeito não é o maior — é o mais relevante para o passo atual. Incluir um documento de 100 páginas quando o agente precisa de 3 parágrafos é um erro de CE tão grave quanto não incluir nada. A pergunta certa não é "posso incluir isso?" mas "o agente precisa disso para o passo atual?"
+**1. Relevância acima de completude** O contexto perfeito não é o maior — é o mais relevante para o passo atual. Incluir um documento de 100 páginas quando o agente precisa de 3 parágrafos é um erro de CE tão grave quanto não incluir nada. A pergunta certa não é "posso incluir isso?" mas "o agente precisa disso para o passo atual?"
 
-**2. Estrutura antes de conteúdo**
-A ordem e a estrutura do contexto importam tanto quanto o conteúdo. O modelo presta mais atenção ao início e ao fim da janela. Informações críticas no meio de um contexto longo são invisíveis na prática (→ [[03 - Context rot e atenção diluída]]).
+**2. Estrutura antes de conteúdo** A ordem e a estrutura do contexto importam tanto quanto o conteúdo. O modelo presta mais atenção ao início e ao fim da janela. Informações críticas no meio de um contexto longo são invisíveis na prática (→ [[03 - Context rot e atenção diluída]]).
 
-**3. Contexto é código — versione e teste**
-Um `CLAUDE.md` não documentado, não versionado, editado por qualquer pessoa a qualquer momento é uma bomba-relógio. Contexto compartilhado precisa de pull request, revisão e changelog, exatamente como qualquer outro componente de software. Uma mudança de 5 linhas no system prompt pode mudar o comportamento do agente de formas imprevisíveis — sem histórico, você não consegue fazer rollback.
+**3. Contexto é código — versione e teste** Um `CLAUDE.md` não documentado, não versionado, editado por qualquer pessoa a qualquer momento é uma bomba-relógio. Contexto compartilhado precisa de pull request, revisão e changelog, exatamente como qualquer outro componente de software. Uma mudança de 5 linhas no system prompt pode mudar o comportamento do agente de formas imprevisíveis — sem histórico, você não consegue fazer rollback.
 
-**4. Custo é uma restrição de design, não uma consequência**
-Ignorar o custo de tokens até o fim do projeto garante surpresas desagradáveis. Context engineering bem feito inclui estimativa de custo por sessão desde o design.
+**4. Custo é uma restrição de design, não uma consequência** Ignorar o custo de tokens até o fim do projeto garante surpresas desagradáveis. Context engineering bem feito inclui estimativa de custo por sessão desde o design.
 
 ---
 

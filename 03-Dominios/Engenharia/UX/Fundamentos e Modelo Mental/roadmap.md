@@ -10,17 +10,9 @@ tags:
 
 # Roadmap — Fundamentos e Modelo Mental
 
-Diagnóstico nota a nota. Cada entrada tem estado de enriquecimento, score, classificação
-de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
+Diagnóstico nota a nota. Cada entrada tem estado de enriquecimento, score, classificação de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
 
-**Galho:** `03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental`
-**Diagnóstico:** 2026-07-28
-**Última execução:** 2026-07-28 — **enriquecimento COMPLETO (5/5 ✅/➖)**
-**Retrofit M1 (2026-07-28, Task 11):** política do domínio mudou — M1 (mídia verificada) passou
-a ser **obrigatório em toda nota**, sem isenção por `fase:`. Isso sobrepõe a isenção de fase
-Iniciado usada no diagnóstico original. Ver `03-Dominios/Engenharia/UX/index.md` para a regra.
-Notas 02, 04 e 05 — antes `➖` só por causa do gap de M1 — foram reclassificadas para `✅` depois
-de receber mídia verificada. Ver entradas abaixo.
+**Galho:** `03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental` **Diagnóstico:** 2026-07-28 **Última execução:** 2026-07-28 — **enriquecimento COMPLETO (5/5 ✅/➖)** **Retrofit M1 (2026-07-28, Task 11):** política do domínio mudou — M1 (mídia verificada) passou a ser **obrigatório em toda nota**, sem isenção por `fase:`. Isso sobrepõe a isenção de fase Iniciado usada no diagnóstico original. Ver `03-Dominios/Engenharia/UX/index.md` para a regra. Notas 02, 04 e 05 — antes `➖` só por causa do gap de M1 — foram reclassificadas para `✅` depois de receber mídia verificada. Ver entradas abaixo.
 
 ## Régua de análise
 
@@ -33,8 +25,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | LINKS | L1 Wikilink cross-galho · L2 Referência externa (URL) |
 | MÍDIA | M1 Vídeo/podcast embutido |
 
-**Esquema de `fase:` detectado:** COM fase (Iniciado)
-**Piso de linhas:** aplicável — Iniciado ≥300
+**Esquema de `fase:` detectado:** COM fase (Iniciado) **Piso de linhas:** aplicável — Iniciado ≥300
 
 ## Tabela-resumo
 
@@ -46,11 +37,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | ✅ feita | 5 |
 | % concluído | 100% |
 
-> Gaps concentrados em **M1 (mídia)** nas 5 notas. No diagnóstico original, M1 era
-> recomendado-não-obrigatório em fase Iniciado — daí notas 02, 04 e 05 terem ficado `➖`
-> apesar do gap. **Essa isenção foi revogada em 2026-07-28** (Task 11): M1 é agora
-> obrigatório em toda nota do domínio, sem exceção de fase. As 5 notas do sub-galho têm
-> hoje mídia verificada e ficam `✅`.
+> Gaps concentrados em **M1 (mídia)** nas 5 notas. No diagnóstico original, M1 era recomendado-não-obrigatório em fase Iniciado — daí notas 02, 04 e 05 terem ficado `➖` apesar do gap. **Essa isenção foi revogada em 2026-07-28** (Task 11): M1 é agora obrigatório em toda nota do domínio, sem exceção de fase. As 5 notas do sub-galho têm hoje mídia verificada e ficam `✅`.
 
 ---
 

@@ -23,17 +23,10 @@ aliases:
 # Fallback e degradação graciosa
 
 > [!abstract] TL;DR
-> Timeout, retry e breaker decidem **quando desistir**. Nenhum decide **o que responder** — e essa
-> pergunta não é técnica: é de produto. O fallback é a resposta pior servida **de propósito**: valor em
-> cache, valor padrão, funcionalidade reduzida ou uma mensagem honesta. Ele é o que transforma "erro
-> 500" em "a página carregou sem o bloco de recomendações", que é a diferença entre um incidente e uma
-> imperfeição. E carrega a armadilha mais cruel da família: **o plano B nunca exercitado**, que falha
-> justamente no dia em que é acionado — transformando um incidente em dois.
+> Timeout, retry e breaker decidem **quando desistir**. Nenhum decide **o que responder** — e essa pergunta não é técnica: é de produto. O fallback é a resposta pior servida **de propósito**: valor em cache, valor padrão, funcionalidade reduzida ou uma mensagem honesta. Ele é o que transforma "erro 500" em "a página carregou sem o bloco de recomendações", que é a diferença entre um incidente e uma imperfeição. E carrega a armadilha mais cruel da família: **o plano B nunca exercitado**, que falha justamente no dia em que é acionado — transformando um incidente em dois.
 
 > [!info] O recorte desta nota
-> Aqui o fallback como decisão e o que ele sacrifica. **Como testá-lo e observá-lo em produção** em
-> [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/06 - Resiliência operacional|Operação 3-06]]
-> ("Fallback: a armadilha de ter um plano B nunca testado").
+> Aqui o fallback como decisão e o que ele sacrifica. **Como testá-lo e observá-lo em produção** em [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/06 - Resiliência operacional|Operação 3-06]] ("Fallback: a armadilha de ter um plano B nunca testado").
 
 ## O breaker abriu. E agora?
 
@@ -90,19 +83,13 @@ Quem paga é o usuário, muitas vezes **sem saber** — e daí decorre uma obrig
 ## Armadilhas comuns
 
 > [!warning] O plano B nunca exercitado
-> **O que acontece:** o fallback é acionado pela primeira vez durante um incidente real — e falha, porque tem um bug, ou porque o cache está vazio, ou porque a dependência que ele usa também caiu. O incidente vira dois, e o segundo é mais difícil de diagnosticar.
-> **Por quê:** esse código só roda quando algo já deu errado, então nunca executa em teste nem em produção normal. Cobertura alta convive perfeitamente com fallback quebrado.
-> **Como evitar:** exercite deliberadamente — injeção de falha na esteira, e um interruptor que force o caminho degradado em ambiente de teste. Alguns times mantêm uma pequena fração do tráfego real de produção passando pelo fallback, justamente para que ele nunca esteja frio.
+> **O que acontece:** o fallback é acionado pela primeira vez durante um incidente real — e falha, porque tem um bug, ou porque o cache está vazio, ou porque a dependência que ele usa também caiu. O incidente vira dois, e o segundo é mais difícil de diagnosticar. **Por quê:** esse código só roda quando algo já deu errado, então nunca executa em teste nem em produção normal. Cobertura alta convive perfeitamente com fallback quebrado. **Como evitar:** exercite deliberadamente — injeção de falha na esteira, e um interruptor que force o caminho degradado em ambiente de teste. Alguns times mantêm uma pequena fração do tráfego real de produção passando pelo fallback, justamente para que ele nunca esteja frio.
 
 > [!warning] Fallback silencioso
-> **O que acontece:** a chamada falha, o valor padrão é servido, e nada é registrado. O sistema opera degradado por semanas com painéis verdes, e a descoberta vem por reclamação de que "os dados estão estranhos".
-> **Por quê:** do ponto de vista de HTTP, a requisição teve sucesso — o `try/catch` transformou o erro em resposta 200 e a métrica de erro não vê nada.
-> **Como evitar:** toda ativação de fallback emite **métrica própria** e entra no rastreamento. Alerta quando a taxa passar de um patamar. E, para o usuário, um sinal honesto quando o dado for degradado.
+> **O que acontece:** a chamada falha, o valor padrão é servido, e nada é registrado. O sistema opera degradado por semanas com painéis verdes, e a descoberta vem por reclamação de que "os dados estão estranhos". **Por quê:** do ponto de vista de HTTP, a requisição teve sucesso — o `try/catch` transformou o erro em resposta 200 e a métrica de erro não vê nada. **Como evitar:** toda ativação de fallback emite **métrica própria** e entra no rastreamento. Alerta quando a taxa passar de um patamar. E, para o usuário, um sinal honesto quando o dado for degradado.
 
 > [!warning] Fallback que chama outra dependência
-> **O que acontece:** o plano B para o serviço de preços é consultar outro serviço — que está sobrecarregado justamente porque todo mundo migrou o tráfego para ele. A cascata continua, agora por um caminho que ninguém desenhou.
-> **Por quê:** o plano B foi pensado como funcionalidade equivalente, não como caminho de contingência sob estresse.
-> **Como evitar:** o fallback ideal é **local e barato** — cache em memória, constante, resposta parcial. Se ele precisa de rede, herda todos os problemas da chamada original e precisa das mesmas defesas: timeout, breaker e limite próprios.
+> **O que acontece:** o plano B para o serviço de preços é consultar outro serviço — que está sobrecarregado justamente porque todo mundo migrou o tráfego para ele. A cascata continua, agora por um caminho que ninguém desenhou. **Por quê:** o plano B foi pensado como funcionalidade equivalente, não como caminho de contingência sob estresse. **Como evitar:** o fallback ideal é **local e barato** — cache em memória, constante, resposta parcial. Se ele precisa de rede, herda todos os problemas da chamada original e precisa das mesmas defesas: timeout, breaker e limite próprios.
 
 ## Como explicar em inglês
 

@@ -100,9 +100,7 @@ graph TD
 Muitos testes de componente (baratos, rápidos, rodam a cada save), alguns testes E2E por fluxo crítico (checkout, cadastro, login), e — coroando tudo, insubstituível — a auditoria manual. As duas camadas de baixo são o que você automatiza no CI; a de cima é humana e é a próxima nota.
 
 > [!warning] `toHaveNoViolations` verde = componente acessível
-> **O que acontece:** o time confia que, se os testes axe passam, o componente é acessível — e para de testar com teclado e leitor de tela.
-> **Por quê:** jest-axe roda o mesmo axe-core da nota 13, com o mesmo teto de ~metade das falhas. Ele não julga qualidade de `alt`, lógica de foco nem fluxo de teclado. Um combobox com teclado quebrado pode passar liso.
-> **Como evitar:** trate os testes de código como a **rede de regressão da metade mecânica** — valiosíssima, mas parcial. A cobertura só fecha com o teste manual da nota 15. Automação e manual são complementares, nunca substitutos.
+> **O que acontece:** o time confia que, se os testes axe passam, o componente é acessível — e para de testar com teclado e leitor de tela. **Por quê:** jest-axe roda o mesmo axe-core da nota 13, com o mesmo teto de ~metade das falhas. Ele não julga qualidade de `alt`, lógica de foco nem fluxo de teclado. Um combobox com teclado quebrado pode passar liso. **Como evitar:** trate os testes de código como a **rede de regressão da metade mecânica** — valiosíssima, mas parcial. A cobertura só fecha com o teste manual da nota 15. Automação e manual são complementares, nunca substitutos.
 
 **Testes de a11y no código em uma frase:** Testing Library força semântica correta nos pontos que você testa, jest/vitest-axe varre cada componente, e Playwright+axe audita a página real em vários estados — juntos prendem a metade automatizável no CI, mas não dispensam o humano.
 
@@ -117,19 +115,13 @@ Uma refatoração de um formulário remove sem querer o `htmlFor`/`id` que ligav
 ## Armadilhas comuns
 
 > [!warning] `toHaveNoViolations` verde = componente acessível
-> **O que acontece:** o time confia que, se o `jest-axe`/`vitest-axe` passa, o componente está acessível, e para de testar com teclado e leitor de tela.
-> **Por quê:** esses matchers rodam o mesmo axe-core da nota 13, com o mesmo teto de ~metade das falhas. Não julgam qualidade de `alt`, lógica de foco nem fluxo de teclado.
-> **Como evitar:** trate os testes de código como a rede de regressão da metade mecânica — indispensável, mas parcial. A cobertura só fecha com a auditoria manual da [[03-Dominios/Tecnologia/Acessibilidade/Auditar e Testar/15 - Auditoria manual|nota 15]].
+> **O que acontece:** o time confia que, se o `jest-axe`/`vitest-axe` passa, o componente está acessível, e para de testar com teclado e leitor de tela. **Por quê:** esses matchers rodam o mesmo axe-core da nota 13, com o mesmo teto de ~metade das falhas. Não julgam qualidade de `alt`, lógica de foco nem fluxo de teclado. **Como evitar:** trate os testes de código como a rede de regressão da metade mecânica — indispensável, mas parcial. A cobertura só fecha com a auditoria manual da [[03-Dominios/Tecnologia/Acessibilidade/Auditar e Testar/15 - Auditoria manual|nota 15]].
 
 > [!warning] Buscar elementos por classe ou test-id em vez de role
-> **O que acontece:** os testes usam `container.querySelector('.btn')` ou `getByTestId('salvar')`, e continuam passando mesmo quando o elemento perde a semântica (vira `<div>`, perde o nome acessível).
-> **Por quê:** query por classe/test-id não toca a árvore de acessibilidade — ela acha o nó pela implementação, não pelo que a AT enxerga. Você perde o "teste de a11y de graça".
-> **Como evitar:** priorize `getByRole('...', { name })`. Se o teste não consegue achar o elemento por role+nome, é sinal de que a AT também não conseguiria.
+> **O que acontece:** os testes usam `container.querySelector('.btn')` ou `getByTestId('salvar')`, e continuam passando mesmo quando o elemento perde a semântica (vira `<div>`, perde o nome acessível). **Por quê:** query por classe/test-id não toca a árvore de acessibilidade — ela acha o nó pela implementação, não pelo que a AT enxerga. Você perde o "teste de a11y de graça". **Como evitar:** priorize `getByRole('...', { name })`. Se o teste não consegue achar o elemento por role+nome, é sinal de que a AT também não conseguiria.
 
 > [!warning] Testar só no jsdom e nunca na página real
-> **O que acontece:** toda a suíte roda em jsdom/happy-dom; contraste, layout sob zoom e comportamento real de foco nunca são exercitados.
-> **Por quê:** o DOM simulado não tem layout nem CSS computado de verdade — o axe ali não avalia contraste com precisão, e estados montados (modal aberto, erro exibido) podem não existir.
-> **Como evitar:** complemente com ao menos alguns testes E2E (Playwright + axe) nos fluxos críticos, auditando a página real em seus vários estados.
+> **O que acontece:** toda a suíte roda em jsdom/happy-dom; contraste, layout sob zoom e comportamento real de foco nunca são exercitados. **Por quê:** o DOM simulado não tem layout nem CSS computado de verdade — o axe ali não avalia contraste com precisão, e estados montados (modal aberto, erro exibido) podem não existir. **Como evitar:** complemente com ao menos alguns testes E2E (Playwright + axe) nos fluxos críticos, auditando a página real em seus vários estados.
 
 ## Como explicar em inglês
 

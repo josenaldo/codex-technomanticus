@@ -16,8 +16,7 @@ publish: true
 
 > Glossário do domínio Terminal: jargão de editor (Neovim, LazyVim, modal editing), shell, multiplexer, TUIs e workflow. Cada verbete é referenciado por uma ou mais notas das trilhas do domínio.
 
-<!--
-Como usar este glossário:
+<!-- Como usar este glossário:
 
 - Cada verbete é um `###` dentro de uma `##` temática.
 - Verbetes em ordem alfabética dentro de cada bloco.
@@ -25,8 +24,7 @@ Como usar este glossário:
 - Customizar texto exibido: [[Dicionário do Terminal#Nome do termo|texto]]
 - A skill /verbete adiciona termos automaticamente em ordem alfabética.
 - Ajuste `lang:` no frontmatter (`pt` ou `en`) — define o idioma das definições.
-- Cada verbete tem (i) 1-3 frases de definição em PT-BR e (ii) "Veja também:" com wikilinks para a(s) nota(s) que aprofundam.
--->
+- Cada verbete tem (i) 1-3 frases de definição em PT-BR e (ii) "Veja também:" com wikilinks para a(s) nota(s) que aprofundam. -->
 
 ## Vim / Neovim core
 

@@ -83,19 +83,13 @@ Um produto tem dois pontos de entrada para criar conta: cadastro direto pela hom
 ## Armadilhas comuns
 
 > [!warning] Desenhar só o caminho feliz e chamar de "o fluxo"
-> **O que acontece:** o diagrama tem uma sequência linear de telas, sem nenhuma ramificação de erro ou saída antecipada.
-> **Por quê:** o caminho feliz é o mais fácil de imaginar e o que a demonstração para o cliente precisa mostrar — os caminhos de erro exigem esforço extra de imaginação que fica fácil de adiar.
-> **Como evitar:** para cada seta do diagrama, pergunte "e se isso falhar, ou a pessoa desistir aqui?" antes de considerar o fluxo pronto — o mesmo hábito de cobrir os 5 estados de tela da [[03-Dominios/Engenharia/UX/Design de Interação/20 - Os 5 estados de tela|nota 20]].
+> **O que acontece:** o diagrama tem uma sequência linear de telas, sem nenhuma ramificação de erro ou saída antecipada. **Por quê:** o caminho feliz é o mais fácil de imaginar e o que a demonstração para o cliente precisa mostrar — os caminhos de erro exigem esforço extra de imaginação que fica fácil de adiar. **Como evitar:** para cada seta do diagrama, pergunte "e se isso falhar, ou a pessoa desistir aqui?" antes de considerar o fluxo pronto — o mesmo hábito de cobrir os 5 estados de tela da [[03-Dominios/Engenharia/UX/Design de Interação/20 - Os 5 estados de tela|nota 20]].
 
 > [!warning] Confundir user flow com wireframe
-> **O que acontece:** o time desenha uma sequência de telas já com pixels, cores e componentes definidos, achando que isso é o fluxo.
-> **Por quê:** é tentador pular direto pro visual porque parece mais "produto acabado" — mas misturar as duas etapas trava a discussão de *topologia* (quantos estados existem, o que conecta a quê) numa discussão prematura de *aparência* (a cor do botão).
-> **Como evitar:** desenhe o fluxo com caixas e setas nomeadas, sem nenhum elemento visual de UI — só depois de o fluxo estar validado é hora de decidir a aparência de cada tela.
+> **O que acontece:** o time desenha uma sequência de telas já com pixels, cores e componentes definidos, achando que isso é o fluxo. **Por quê:** é tentador pular direto pro visual porque parece mais "produto acabado" — mas misturar as duas etapas trava a discussão de *topologia* (quantos estados existem, o que conecta a quê) numa discussão prematura de *aparência* (a cor do botão). **Como evitar:** desenhe o fluxo com caixas e setas nomeadas, sem nenhum elemento visual de UI — só depois de o fluxo estar validado é hora de decidir a aparência de cada tela.
 
 > [!warning] Não versionar o fluxo, deixando-o só na cabeça de quem desenhou
-> **O que acontece:** o fluxo existe só como memória de quem participou da reunião de design, e se perde quando a feature é revisitada meses depois para adicionar um caso novo.
-> **Por quê:** sem artefato persistido, o fluxo não pode ser revisado em PR nem consultado por quem entra no projeto depois — o mesmo problema de um design de sistema que só existe na cabeça de quem o desenhou, nunca em ADR.
-> **Como evitar:** versione o fluxo como Mermaid dentro do próprio repositório (num `docs/` ou junto do README da feature) — barato de manter, revisável em code review, e sobrevive à saída de quem desenhou.
+> **O que acontece:** o fluxo existe só como memória de quem participou da reunião de design, e se perde quando a feature é revisitada meses depois para adicionar um caso novo. **Por quê:** sem artefato persistido, o fluxo não pode ser revisado em PR nem consultado por quem entra no projeto depois — o mesmo problema de um design de sistema que só existe na cabeça de quem o desenhou, nunca em ADR. **Como evitar:** versione o fluxo como Mermaid dentro do próprio repositório (num `docs/` ou junto do README da feature) — barato de manter, revisável em code review, e sobrevive à saída de quem desenhou.
 
 ## Como explicar em inglês
 

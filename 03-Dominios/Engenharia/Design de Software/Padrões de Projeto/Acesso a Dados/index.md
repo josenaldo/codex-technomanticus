@@ -20,22 +20,13 @@ aliases:
 # Acesso a Dados
 
 > [!abstract] TL;DR
-> Os padrões que resolvem **como um objeto conversa com o armazenamento** — todos nascidos do
-> **descasamento objeto-relacional**. Segunda família do galho-pai
-> [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/index|Padrões de Projeto]], tratada
-> como catálogo de consulta. A lente aqui não é a linguagem, é o **ORM**: qual framework encarna qual
-> padrão (Active Record = Rails/Django; Data Mapper = Hibernate/SQLAlchemy). Eixo dorsal: **Active
-> Record × Data Mapper**.
+> Os padrões que resolvem **como um objeto conversa com o armazenamento** — todos nascidos do **descasamento objeto-relacional**. Segunda família do galho-pai [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/index|Padrões de Projeto]], tratada como catálogo de consulta. A lente aqui não é a linguagem, é o **ORM**: qual framework encarna qual padrão (Active Record = Rails/Django; Data Mapper = Hibernate/SQLAlchemy). Eixo dorsal: **Active Record × Data Mapper**.
 
 ## Sobre esta família
 
-Repertório de consulta para o sênior — inclusive em legado, onde DAOs de 2008, Active Records
-inchados e Table Modules .NET ainda vivem. Cada nota é autocontida; a seção **Armadilhas** pesa no
-*quando não usar*. Sobreposição com [[03-Dominios/Tecnologia/Java/index|Java (persistência)]] e
-[[03-Dominios/Engenharia/Dados/index|Engenharia de Dados]] é intencional (cross-link como "aprofunde").
+Repertório de consulta para o sênior — inclusive em legado, onde DAOs de 2008, Active Records inchados e Table Modules .NET ainda vivem. Cada nota é autocontida; a seção **Armadilhas** pesa no *quando não usar*. Sobreposição com [[03-Dominios/Tecnologia/Java/index|Java (persistência)]] e [[03-Dominios/Engenharia/Dados/index|Engenharia de Dados]] é intencional (cross-link como "aprofunde").
 
-**Fora de escopo:** Cache-Aside, sharding, read-replicas → infra/resiliência (família Nuvem e
-Resiliência) e [[03-Dominios/Tecnologia/Cloud/index|Cloud]].
+**Fora de escopo:** Cache-Aside, sharding, read-replicas → infra/resiliência (família Nuvem e Resiliência) e [[03-Dominios/Tecnologia/Cloud/index|Cloud]].
 
 ## Iniciado — onde mora a lógica + entrada
 

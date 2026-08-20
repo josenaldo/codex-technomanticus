@@ -39,9 +39,7 @@ Quatro diferenças, quatro classes de falha:
 **4. Sem configuração nem identidade.** Se uma etapa precisa commitar (atualizar changelog, marcar versão), é preciso configurar `user.name` e `user.email` explicitamente — e ter permissão de escrita, que por padrão o token não tem para tudo (nota 15).
 
 > [!warning] O pipeline que se dispara a si mesmo
-> **O que acontece:** uma etapa commita e empurra; esse push dispara o pipeline de novo; que commita de novo. Laço infinito consumindo minutos pagos.
-> **Por quê:** o evento de push não distingue quem empurrou.
-> **Como evitar:** o token padrão do fluxo de trabalho normalmente **não** dispara novos fluxos, justamente para evitar isso — mas um token pessoal dispara. Se precisar de um, adicione a convenção `[skip ci]` na mensagem do commit automático, ou filtre por autor.
+> **O que acontece:** uma etapa commita e empurra; esse push dispara o pipeline de novo; que commita de novo. Laço infinito consumindo minutos pagos. **Por quê:** o evento de push não distingue quem empurrou. **Como evitar:** o token padrão do fluxo de trabalho normalmente **não** dispara novos fluxos, justamente para evitar isso — mas um token pessoal dispara. Se precisar de um, adicione a convenção `[skip ci]` na mensagem do commit automático, ou filtre por autor.
 
 ---
 
@@ -90,27 +88,20 @@ As consequências para quem cuida do repositório:
 - **Segredos não podem estar em texto no repositório** (nota 25). GitOps exige uma resposta explícita para isso — segredos selados (`Sealed Secrets`), operadores que buscam de um cofre externo, ou criptografia versionada (`SOPS`, `age`).
 
 > [!info] Onde este domínio para
-> Desenhar o pipeline, escolher estratégia de deploy, definir ambientes e promoção entre eles, operar Argo CD ou Flux, gerir segredos em produção — tudo isso é **disciplina de entrega**, e mora em [[03-Dominios/Engenharia/Operação/index|Engenharia/Operação]] (sub-galho "Entrega e release", nota 05 sobre GitOps e IaC).
-> Aqui o escopo é o **contrato do lado do repositório**: o que a automação precisa que o repositório forneça, e por que ele parece diferente dentro do runner.
+> Desenhar o pipeline, escolher estratégia de deploy, definir ambientes e promoção entre eles, operar Argo CD ou Flux, gerir segredos em produção — tudo isso é **disciplina de entrega**, e mora em [[03-Dominios/Engenharia/Operação/index|Engenharia/Operação]] (sub-galho "Entrega e release", nota 05 sobre GitOps e IaC). Aqui o escopo é o **contrato do lado do repositório**: o que a automação precisa que o repositório forneça, e por que ele parece diferente dentro do runner.
 
 ---
 
 ## Armadilhas comuns
 
 > [!warning] Versionamento automático quebrado pelo clone raso
-> **O que acontece:** a ferramenta de release gera sempre `0.0.1`, ou o changelog sai vazio.
-> **Por quê:** ela conta commits desde a última tag, e o clone raso não trouxe nem tags nem história.
-> **Como evitar:** `fetch-depth: 0` (ou equivalente) na etapa de release. É o sintoma mais comum desta nota inteira.
+> **O que acontece:** a ferramenta de release gera sempre `0.0.1`, ou o changelog sai vazio. **Por quê:** ela conta commits desde a última tag, e o clone raso não trouxe nem tags nem história. **Como evitar:** `fetch-depth: 0` (ou equivalente) na etapa de release. É o sintoma mais comum desta nota inteira.
 
 > [!warning] Confiar em `git diff HEAD~1` para detectar mudanças
-> **O que acontece:** o filtro de caminho não detecta arquivos alterados, e etapas necessárias são puladas.
-> **Por quê:** com clone raso, `HEAD~1` pode não existir. E em merge de PR, `HEAD~1` não é o que você imagina.
-> **Como evitar:** use os filtros de caminho do próprio serviço de CI, ou compare explicitamente contra a base do PR (`git diff origin/main...HEAD`) com a história disponível.
+> **O que acontece:** o filtro de caminho não detecta arquivos alterados, e etapas necessárias são puladas. **Por quê:** com clone raso, `HEAD~1` pode não existir. E em merge de PR, `HEAD~1` não é o que você imagina. **Como evitar:** use os filtros de caminho do próprio serviço de CI, ou compare explicitamente contra a base do PR (`git diff origin/main...HEAD`) com a história disponível.
 
 > [!warning] Etiquetar a imagem com o nome do ramo
-> **O que acontece:** duas builds do mesmo ramo produzem a mesma etiqueta, e é impossível saber o que está rodando.
-> **Por quê:** ramo é um ponteiro móvel (nota 19); ele não identifica um estado.
-> **Como evitar:** etiquete com o **hash do commit** (imutável) e adicione nomes legíveis como apelido adicional. É a aplicação direta de "commit identifica um estado, ramo identifica uma posição".
+> **O que acontece:** duas builds do mesmo ramo produzem a mesma etiqueta, e é impossível saber o que está rodando. **Por quê:** ramo é um ponteiro móvel (nota 19); ele não identifica um estado. **Como evitar:** etiquete com o **hash do commit** (imutável) e adicione nomes legíveis como apelido adicional. É a aplicação direta de "commit identifica um estado, ramo identifica uma posição".
 
 ---
 

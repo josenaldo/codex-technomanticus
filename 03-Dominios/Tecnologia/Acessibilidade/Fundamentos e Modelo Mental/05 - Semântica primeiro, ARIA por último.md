@@ -70,9 +70,7 @@ Esta frase é o mantra oficial da comunidade — e não é retórica, é medida.
 Como algo *feito para* acessibilidade piora a acessibilidade? Porque ARIA é uma **promessa sem fiscal**. Quando você escreve `role="checkbox"`, você promete à árvore de acessibilidade que aquele elemento *é* um checkbox — com estado marcado/desmarcado (`aria-checked`), operável por teclado, sincronizado a cada interação. O browser **acredita em você e não confere**. Se você promete o role mas esquece de atualizar o `aria-checked` no clique, o leitor de tela anuncia "checkbox não marcado" mesmo depois de o usuário marcar. Você não deixou o elemento sem acessibilidade — você deixou o elemento **mentindo**, o que é pior, porque agora a AT propaga informação falsa com confiança.
 
 > [!warning] ARIA que mente é pior que ausência de ARIA
-> **O que acontece:** um widget com roles ARIA corretos mas estados dessincronizados anuncia o oposto do que está na tela — "recolhido" quando está expandido, "não selecionado" quando está selecionado.
-> **Por quê:** o browser não valida as promessas do ARIA. Ele repassa o que você declarou para a árvore de acessibilidade, verdade ou não. O usuário vidente vê o estado real pela aparência; o usuário de AT recebe a declaração falsa.
-> **Como evitar:** prefira o elemento nativo (`<input type="checkbox">` reporta seu estado sozinho, sem chance de dessincronizar). Se ARIA for inevitável, o estado ARIA e o estado visual precisam mudar **na mesma linha de código** — nunca um sem o outro.
+> **O que acontece:** um widget com roles ARIA corretos mas estados dessincronizados anuncia o oposto do que está na tela — "recolhido" quando está expandido, "não selecionado" quando está selecionado. **Por quê:** o browser não valida as promessas do ARIA. Ele repassa o que você declarou para a árvore de acessibilidade, verdade ou não. O usuário vidente vê o estado real pela aparência; o usuário de AT recebe a declaração falsa. **Como evitar:** prefira o elemento nativo (`<input type="checkbox">` reporta seu estado sozinho, sem chance de dessincronizar). Se ARIA for inevitável, o estado ARIA e o estado visual precisam mudar **na mesma linha de código** — nunca um sem o outro.
 
 ## Quando ARIA é a ferramenta certa
 
@@ -113,19 +111,13 @@ Um "checkbox" customizado usa `role="checkbox"` mas esquece de atualizar `aria-c
 ## Armadilhas comuns
 
 > [!warning] Mudar a semântica nativa de um elemento
-> **O que acontece:** você escreve `<h2 role="tab">` e destrói o cabeçalho para fabricar uma aba — o texto some da navegação por cabeçalhos do leitor de tela.
-> **Por quê:** o role ARIA *substitui* o role nativo na árvore. Reaproveitar um elemento semântico apaga a semântica que ele já tinha.
-> **Como evitar:** use um elemento neutro (`<div>`/`<span>`) como base do widget ARIA, nunca um elemento com semântica própria que você precisa preservar.
+> **O que acontece:** você escreve `<h2 role="tab">` e destrói o cabeçalho para fabricar uma aba — o texto some da navegação por cabeçalhos do leitor de tela. **Por quê:** o role ARIA *substitui* o role nativo na árvore. Reaproveitar um elemento semântico apaga a semântica que ele já tinha. **Como evitar:** use um elemento neutro (`<div>`/`<span>`) como base do widget ARIA, nunca um elemento com semântica própria que você precisa preservar.
 
 > [!warning] Dar role interativo sem implementar o teclado
-> **O que acontece:** você adiciona `role="button"` ou `role="tab"` mas o elemento não responde às teclas esperadas — o leitor de tela anuncia um controle que não funciona.
-> **Por quê:** ARIA muda o que a AT *anuncia*, não o que o elemento *faz*. Declarar um role é assinar um contrato de comportamento de teclado.
-> **Como evitar:** todo controle ARIA interativo precisa ser operável por teclado como o nativo equivalente. Se você não vai implementar o teclado, use o elemento nativo.
+> **O que acontece:** você adiciona `role="button"` ou `role="tab"` mas o elemento não responde às teclas esperadas — o leitor de tela anuncia um controle que não funciona. **Por quê:** ARIA muda o que a AT *anuncia*, não o que o elemento *faz*. Declarar um role é assinar um contrato de comportamento de teclado. **Como evitar:** todo controle ARIA interativo precisa ser operável por teclado como o nativo equivalente. Se você não vai implementar o teclado, use o elemento nativo.
 
 > [!warning] Estado ARIA dessincronizado do estado visual
-> **O que acontece:** o `aria-expanded`/`aria-checked`/`aria-selected` não acompanha a mudança visual, e a AT anuncia o oposto do que está na tela.
-> **Por quê:** o browser não valida as promessas do ARIA; ele repassa o que você declarou, verdadeiro ou não.
-> **Como evitar:** mude o estado ARIA e o estado visual na **mesma** ação de código. Melhor ainda: use o elemento nativo, que reporta o estado sozinho.
+> **O que acontece:** o `aria-expanded`/`aria-checked`/`aria-selected` não acompanha a mudança visual, e a AT anuncia o oposto do que está na tela. **Por quê:** o browser não valida as promessas do ARIA; ele repassa o que você declarou, verdadeiro ou não. **Como evitar:** mude o estado ARIA e o estado visual na **mesma** ação de código. Melhor ainda: use o elemento nativo, que reporta o estado sozinho.
 
 ## Como explicar em inglês
 

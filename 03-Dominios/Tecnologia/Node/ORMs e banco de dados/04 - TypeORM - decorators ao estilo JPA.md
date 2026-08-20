@@ -19,10 +19,7 @@ tags:
 # TypeORM - decorators ao estilo JPA
 
 > [!abstract] TL;DR
-> O TypeORM em 2026 é o ORM clássico do ecossistema [[Node.js]] — usa decorators TypeScript (`@Entity`, `@Column`, `@OneToMany`) em estilo deliberadamente similar ao JPA/Hibernate do Java, tornando a transição natural para devs que vêm de Java ou C#.
-> A integração com [[03-Dominios/Tecnologia/Node/Frameworks e arquitetura/index|NestJS]] é nativa via `@nestjs/typeorm`: o módulo `TypeOrmModule` conecta ao banco, registra entidades por feature e fornece injeção de `Repository<Entity>` nos serviços com `@InjectRepository`.
-> O Repository pattern é built-in — cada entidade tem um `Repository<T>` tipado que encapsula as operações de banco, e custom repositories em v0.3 são criados com o método `.extend()` ao invés do decorator `@EntityRepository` que foi depreciado.
-> Em 2026, TypeORM v0.3 é uma escolha válida para projetos NestJS enterprise, especialmente em times que vêm de Java/C# — mas o Prisma v6 compete no mesmo espaço com melhor DX e type safety mais rigoroso; a escolha entre eles depende principalmente do contexto do time e das necessidades do projeto.
+> O TypeORM em 2026 é o ORM clássico do ecossistema [[Node.js]] — usa decorators TypeScript (`@Entity`, `@Column`, `@OneToMany`) em estilo deliberadamente similar ao JPA/Hibernate do Java, tornando a transição natural para devs que vêm de Java ou C#. A integração com [[03-Dominios/Tecnologia/Node/Frameworks e arquitetura/index|NestJS]] é nativa via `@nestjs/typeorm`: o módulo `TypeOrmModule` conecta ao banco, registra entidades por feature e fornece injeção de `Repository<Entity>` nos serviços com `@InjectRepository`. O Repository pattern é built-in — cada entidade tem um `Repository<T>` tipado que encapsula as operações de banco, e custom repositories em v0.3 são criados com o método `.extend()` ao invés do decorator `@EntityRepository` que foi depreciado. Em 2026, TypeORM v0.3 é uma escolha válida para projetos NestJS enterprise, especialmente em times que vêm de Java/C# — mas o Prisma v6 compete no mesmo espaço com melhor DX e type safety mais rigoroso; a escolha entre eles depende principalmente do contexto do time e das necessidades do projeto.
 
 ## Arquitetura TypeORM + NestJS
 

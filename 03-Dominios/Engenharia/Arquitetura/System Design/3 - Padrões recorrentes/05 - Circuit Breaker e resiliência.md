@@ -71,9 +71,7 @@ O cenário de abertura desta nota só foi possível porque `order-service` estav
 Isso não significa "timeout curto sempre". Significa **timeout deliberado**, calibrado pela latência esperada da dependência (p99 dela, não a média) mais uma margem — e nunca "o default da biblioteca", que costuma ser genérico demais ou simplesmente ausente.
 
 > [!warning] Timeout ausente ou "default da lib"
-> **O que acontece:** o time nunca configurou timeout explícito; o cliente HTTP usa o valor padrão da biblioteca — que em muitos clientes é *sem limite*.
-> **Por quê:** timeout parece um detalhe de infraestrutura, não uma decisão de design; ninguém o revisita até o incidente acontecer.
-> **Como evitar:** todo client de chamada remota (HTTP, RPC, banco, fila) declara um timeout explícito, calibrado pelo p99 da dependência + margem — nunca o default silencioso da lib. Trate a ausência de timeout como um bug de produção, não como um detalhe de configuração.
+> **O que acontece:** o time nunca configurou timeout explícito; o cliente HTTP usa o valor padrão da biblioteca — que em muitos clientes é *sem limite*. **Por quê:** timeout parece um detalhe de infraestrutura, não uma decisão de design; ninguém o revisita até o incidente acontecer. **Como evitar:** todo client de chamada remota (HTTP, RPC, banco, fila) declara um timeout explícito, calibrado pelo p99 da dependência + margem — nunca o default silencioso da lib. Trate a ausência de timeout como um bug de produção, não como um detalhe de configuração.
 
 Timeout sozinho já corta boa parte do dano de uma falha em cascata — mas ele tem um efeito colateral: agora você tem uma chamada que *falhou*. O que fazer com uma falha é o próximo problema.
 
@@ -117,9 +115,7 @@ graph LR
 Retry também tem uma pré-condição que costuma passar despercebida: só é seguro retentar uma operação se ela for **idempotente** — se executá-la duas vezes produz o mesmo efeito de executá-la uma vez. Cobrar um cartão de crédito não é naturalmente idempotente: se a primeira chamada teve sucesso no servidor mas a resposta se perdeu na rede, um retry ingênuo cobra o cliente duas vezes. A prática padrão é anexar uma **idempotency key** (um UUID gerado pelo cliente para aquela operação específica) para que o servidor detecte e ignore duplicatas — é assim que a AWS documenta em "Making retries safe with idempotent APIs", outro texto do Builders' Library.
 
 > [!warning] Retry sem checar idempotência
-> **O que acontece:** o código retenta uma chamada de escrita (criar pedido, cobrar pagamento, enviar notificação) sem se perguntar se a operação é segura para repetir.
-> **Por quê:** retry é tratado como uma preocupação puramente de rede ("a chamada falhou, tenta de novo"), sem considerar o efeito colateral do lado que recebe.
-> **Como evitar:** toda operação de escrita que pode ser retentada precisa de uma idempotency key (ou de ser naturalmente idempotente, como um PUT que sobrescreve o mesmo recurso). Sem isso, retry troca "talvez uma falha" por "com certeza um dado duplicado".
+> **O que acontece:** o código retenta uma chamada de escrita (criar pedido, cobrar pagamento, enviar notificação) sem se perguntar se a operação é segura para repetir. **Por quê:** retry é tratado como uma preocupação puramente de rede ("a chamada falhou, tenta de novo"), sem considerar o efeito colateral do lado que recebe. **Como evitar:** toda operação de escrita que pode ser retentada precisa de uma idempotency key (ou de ser naturalmente idempotente, como um PUT que sobrescreve o mesmo recurso). Sem isso, retry troca "talvez uma falha" por "com certeza um dado duplicado".
 
 ## Circuit Breaker: parar de bater numa porta que não abre
 
@@ -188,9 +184,7 @@ graph TD
 Na implementação de referência (Resilience4j), o bulkhead existe em duas variantes: um **semáforo** limitando quantas chamadas concorrentes passam na thread atual, e um **pool de threads dedicado**, que efetivamente executa a chamada arriscada num pool à parte do resto da aplicação. A escolha entre os dois é um trade-off de overhead (thread pool dedicado custa mais memória e context-switching) contra isolamento mais forte (thread pool dedicado impede até que a *duração* de uma chamada lenta contamine a thread que fez a chamada).
 
 > [!warning] Um pool de threads único para toda chamada externa
-> **O que acontece:** o serviço usa o pool HTTP padrão (ou o mesmo `ExecutorService`) para chamar todas as suas dependências, sem separação.
-> **Por quê:** parece mais simples de configurar, e a maioria do tempo funciona — até uma dependência específica adoecer e revelar que ela estava, sem ninguém perceber, compartilhando recurso com todo o resto.
-> **Como evitar:** dê a cada dependência crítica seu próprio pool (ou semáforo) dimensionado pela criticidade e pelo volume dela. Uma dependência de baixa prioridade não deveria ter capacidade de afundar uma de alta prioridade só por estarem no mesmo balde de threads.
+> **O que acontece:** o serviço usa o pool HTTP padrão (ou o mesmo `ExecutorService`) para chamar todas as suas dependências, sem separação. **Por quê:** parece mais simples de configurar, e a maioria do tempo funciona — até uma dependência específica adoecer e revelar que ela estava, sem ninguém perceber, compartilhando recurso com todo o resto. **Como evitar:** dê a cada dependência crítica seu próprio pool (ou semáforo) dimensionado pela criticidade e pelo volume dela. Uma dependência de baixa prioridade não deveria ter capacidade de afundar uma de alta prioridade só por estarem no mesmo balde de threads.
 
 ## Fallback e degradação graciosa
 
@@ -236,9 +230,7 @@ A resposta forte não cita "circuit breaker" como uma palavra mágica — ela no
 Repare na estrutura: nomeou o risco, propôs o mecanismo com um número defensável, e fechou com um fallback concreto — não genérico. Essa é a diferença entre "eu usaria circuit breaker" (decorado) e "eu usaria circuit breaker porque..." (raciocinado).
 
 > [!warning] Citar "circuit breaker" sem explicar o mecanismo
-> **O que acontece:** o candidato, ao ser cutucado sobre falhas, responde só "eu colocaria um circuit breaker aqui" e passa para o próximo tópico.
-> **Por quê:** o padrão virou vocabulário decorado de tanto aparecer em artigos, sem o candidato ter internalizado *por que* ele existe.
-> **Como evitar:** sempre amarre o padrão ao mecanismo de propagação que ele corta. "Circuit breaker porque, sem ele, `order-service` continuaria tentando `payment-service` repetidamente e mantendo threads presas mesmo sabendo que ele está fora do ar" é uma frase muito mais forte que o nome do padrão sozinho.
+> **O que acontece:** o candidato, ao ser cutucado sobre falhas, responde só "eu colocaria um circuit breaker aqui" e passa para o próximo tópico. **Por quê:** o padrão virou vocabulário decorado de tanto aparecer em artigos, sem o candidato ter internalizado *por que* ele existe. **Como evitar:** sempre amarre o padrão ao mecanismo de propagação que ele corta. "Circuit breaker porque, sem ele, `order-service` continuaria tentando `payment-service` repetidamente e mantendo threads presas mesmo sabendo que ele está fora do ar" é uma frase muito mais forte que o nome do padrão sozinho.
 
 Se o entrevistador pedir profundidade, os pontos defensáveis para ir fundo são: os thresholds exatos do disjuntor (por que 50% e não 10%?), a diferença entre janela por contagem e por tempo, e o trade-off do bulkhead (thread pool dedicado vs semáforo). Isso sinaliza que você não só conhece o nome do padrão, mas entende as decisões de engenharia dentro dele.
 

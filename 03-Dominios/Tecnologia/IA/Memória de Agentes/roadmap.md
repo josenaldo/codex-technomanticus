@@ -27,8 +27,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | LINKS | L1 Wikilink cross-galho · L2 Referência externa (URL) |
 | MÍDIA | M1 Vídeo/podcast embutido |
 
-**Esquema de `fase:` detectado:** COM fase (Iniciado) — galho usa `fase: Iniciado` em todas as notas
-**Piso de linhas:** aplicável — Iniciado ≥300
+**Esquema de `fase:` detectado:** COM fase (Iniciado) — galho usa `fase: Iniciado` em todas as notas **Piso de linhas:** aplicável — Iniciado ≥300
 
 > [!note] Notas 10–19 são de implementações específicas (frameworks/produtos) — sujeitas a caducidade de versão/pricing/estrelas GitHub. Checar conteúdo real antes de citar em decisão técnica.
 

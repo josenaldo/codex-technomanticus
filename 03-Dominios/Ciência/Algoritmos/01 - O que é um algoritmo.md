@@ -64,8 +64,7 @@ A terceira é **generalidade**. Um algoritmo resolve uma **classe** de problemas
 > Pense em retornar o n-ésimo número de Fibonacci.
 > - Uma tabela fixa com os 10 primeiros valores é *correta* só para n ≤ 10 — falha em generalidade.
 > - A recursão ingênua `fib(n) = fib(n-1) + fib(n-2)` é geral e correta, mas é O(2ⁿ) — colapsa em complexidade já em n ≈ 50.
-> - A versão iterativa com dois acumuladores é correta, geral *e* O(n).
-> Só a terceira é o que um senior chamaria de "um bom algoritmo".
+> - A versão iterativa com dois acumuladores é correta, geral *e* O(n). Só a terceira é o que um senior chamaria de "um bom algoritmo".
 
 ### A quarta propriedade: terminação
 

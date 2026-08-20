@@ -20,17 +20,10 @@ aliases:
 # O banco de histórias
 
 > [!abstract] TL;DR
-> Todas as etapas comportamentais consomem o mesmo insumo: um repertório de experiências suas, prontas
-> para serem contadas. O erro é montá-lo **por projeto** — a lista fica longa, redundante e não cobre as
-> famílias de pergunta. O método que funciona inverte dois eixos: inventariar por **decisão tomada**, não
-> por tecnologia usada, e indexar por **família de pergunta**, não por empregador. Seis a oito histórias
-> bem trabalhadas cobrem quase todo processo, e batem trinta rasas. E o melhor momento de registrar uma
-> história é **quando ela acontece** — não na véspera da entrevista, quando os números já se perderam.
+> Todas as etapas comportamentais consomem o mesmo insumo: um repertório de experiências suas, prontas para serem contadas. O erro é montá-lo **por projeto** — a lista fica longa, redundante e não cobre as famílias de pergunta. O método que funciona inverte dois eixos: inventariar por **decisão tomada**, não por tecnologia usada, e indexar por **família de pergunta**, não por empregador. Seis a oito histórias bem trabalhadas cobrem quase todo processo, e batem trinta rasas. E o melhor momento de registrar uma história é **quando ela acontece** — não na véspera da entrevista, quando os números já se perderam.
 
 > [!info] Esta nota não contém histórias
-> Ela ensina o **método**. O repertório de cada pessoa é material privado por natureza — contém nome de
-> empregador, número interno e detalhe de projeto —, e o lugar dele não é um repositório público. O que
-> se compartilha é como construí-lo.
+> Ela ensina o **método**. O repertório de cada pessoa é material privado por natureza — contém nome de empregador, número interno e detalhe de projeto —, e o lugar dele não é um repositório público. O que se compartilha é como construí-lo.
 
 ## Trinta histórias e nenhuma para a pergunta
 
@@ -113,19 +106,13 @@ Um hábito barato: ao encerrar algo relevante, registre em cinco linhas a decis�
 ## Armadilhas comuns
 
 > [!warning] Organizar por projeto ou por empregador
-> **O que acontece:** o repertório espelha o currículo, e a busca em tempo real falha — porque a pergunta chega por tipo de situação, não por empresa.
-> **Por quê:** é como a memória guarda a carreira, e como o currículo já está organizado.
-> **Como evitar:** índice por **família de pergunta**. O projeto vira metadado, não a chave de busca.
+> **O que acontece:** o repertório espelha o currículo, e a busca em tempo real falha — porque a pergunta chega por tipo de situação, não por empresa. **Por quê:** é como a memória guarda a carreira, e como o currículo já está organizado. **Como evitar:** índice por **família de pergunta**. O projeto vira metadado, não a chave de busca.
 
 > [!warning] Repertório grande e raso
-> **O que acontece:** vinte ou trinta histórias listadas em uma linha cada, nenhuma com decisão explícita, número ou versão curta. Na hora, nenhuma está pronta.
-> **Por quê:** quantidade dá sensação de preparo, e é muito mais rápida de produzir que profundidade.
-> **Como evitar:** corte para seis a oito e trabalhe cada uma até ter os seis campos da tabela. Uma história pronta vale mais que cinco esboçadas.
+> **O que acontece:** vinte ou trinta histórias listadas em uma linha cada, nenhuma com decisão explícita, número ou versão curta. Na hora, nenhuma está pronta. **Por quê:** quantidade dá sensação de preparo, e é muito mais rápida de produzir que profundidade. **Como evitar:** corte para seis a oito e trabalhe cada uma até ter os seis campos da tabela. Uma história pronta vale mais que cinco esboçadas.
 
 > [!warning] Nenhuma história de fracasso
-> **O que acontece:** o repertório é todo de sucesso. A pergunta de fracasso vem — e vem — e a resposta é improvisada, tipicamente com um erro pequeno ou terceirizado.
-> **Por quê:** ninguém coleta os próprios erros por hábito, e revisitá-los é desconfortável.
-> **Como evitar:** trate como item obrigatório de cobertura, com pelo menos duas em STAR-L. E escolha erros **reais**, com consequência — o valor da resposta está proporcionalmente ligado ao que você admite.
+> **O que acontece:** o repertório é todo de sucesso. A pergunta de fracasso vem — e vem — e a resposta é improvisada, tipicamente com um erro pequeno ou terceirizado. **Por quê:** ninguém coleta os próprios erros por hábito, e revisitá-los é desconfortável. **Como evitar:** trate como item obrigatório de cobertura, com pelo menos duas em STAR-L. E escolha erros **reais**, com consequência — o valor da resposta está proporcionalmente ligado ao que você admite.
 
 ## Como soa em inglês
 

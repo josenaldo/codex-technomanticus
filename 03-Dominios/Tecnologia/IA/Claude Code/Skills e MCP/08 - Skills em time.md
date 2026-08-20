@@ -306,8 +306,7 @@ O problema só apareceu quando um dev novo, trabalhando com o agente numa featur
 
 O mesmo sistema que funciona para 3 devs fica pesado para 30. A estrutura evolui com o time.
 
-**Time pequeno (1-3 devs)**
-Um `CLAUDE.md` + 2-3 skills básicas. Foco em processo (TDD, deploy) mais do que domínio — com 3 pessoas, o conhecimento do projeto ainda cabe na cabeça de todos.
+**Time pequeno (1-3 devs)** Um `CLAUDE.md` + 2-3 skills básicas. Foco em processo (TDD, deploy) mais do que domínio — com 3 pessoas, o conhecimento do projeto ainda cabe na cabeça de todos.
 
 ```
 .claude/skills/
@@ -316,8 +315,7 @@ Um `CLAUDE.md` + 2-3 skills básicas. Foco em processo (TDD, deploy) mais do que
   convencoes.md
 ```
 
-**Time médio (4-15 devs)**
-Skills por tipo e por módulo. Um dev de backend não precisa carregar skills de frontend ao desenvolver sua parte.
+**Time médio (4-15 devs)** Skills por tipo e por módulo. Um dev de backend não precisa carregar skills de frontend ao desenvolver sua parte.
 
 ```
 .claude/skills/
@@ -336,8 +334,7 @@ Skills por tipo e por módulo. Um dev de backend não precisa carregar skills de
     testes-ui.md
 ```
 
-**Time grande (15+ devs) ou múltiplos serviços**
-Skills distribuídas por serviço, com skills de processo compartilhadas via plugin global da organização.
+**Time grande (15+ devs) ou múltiplos serviços** Skills distribuídas por serviço, com skills de processo compartilhadas via plugin global da organização.
 
 ```
 # Plugin global (processo comum a todos)

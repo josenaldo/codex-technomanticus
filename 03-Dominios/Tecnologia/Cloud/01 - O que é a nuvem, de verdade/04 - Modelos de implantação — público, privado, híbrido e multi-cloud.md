@@ -247,8 +247,7 @@ E o custo mais silencioso de todos: **você frequentemente perde os serviços ge
 > [!tip] Assista: Hybrid Cloud and MultiCloud | Why are companies adopting it?
 > **Canal:** TechWorld with Nana | **Duração:** ~14min | **Idioma:** EN
 >
-> Cobre exatamente os dois modelos desta e da seção anterior lado a lado — híbrido (privada + uma pública) versus multi-cloud (duas ou mais públicas) — com os mesmos dois motivos de multi-cloud que esta nota nomeia: replicar o mesmo workload em vários provedores, ou dividir workloads diferentes entre eles.
-> Trecho de destaque [06:07]: *"multi-cloud is essentially when you use two or more public clouds for your workloads and there are two main reasons why companies would want to use multi-cloud"*
+> Cobre exatamente os dois modelos desta e da seção anterior lado a lado — híbrido (privada + uma pública) versus multi-cloud (duas ou mais públicas) — com os mesmos dois motivos de multi-cloud que esta nota nomeia: replicar o mesmo workload em vários provedores, ou dividir workloads diferentes entre eles. Trecho de destaque [06:07]: *"multi-cloud is essentially when you use two or more public clouds for your workloads and there are two main reasons why companies would want to use multi-cloud"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=qkj5W98Xdvw)
 

@@ -68,14 +68,10 @@ Para o dia a dia, PSI e Search Console resolvem. O BigQuery entra quando você q
 ## As duas armadilhas que confundem todo mundo
 
 > [!warning] Esperar o CrUX reagir imediatamente a uma otimização
-> **O que acontece:** você faz um deploy que melhora muito o LCP, checa o PSI no dia seguinte e o campo continua vermelho. Pânico: "não funcionou?".
-> **Por quê:** o CrUX é uma **janela móvel de 28 dias**. No dia seguinte ao deploy, só ~1/28 dos dados refletem a melhoria; os outros 27 dias ainda carregam a versão antiga. A métrica só "vira" verde depois de dias a semanas.
-> **Como evitar:** para verificar o efeito **imediato** de uma mudança, use o **seu RUM** (reage em horas) ou o **lab** (reage na hora). Trate o CrUX como o **placar oficial que atualiza devagar**, não como feedback de deploy.
+> **O que acontece:** você faz um deploy que melhora muito o LCP, checa o PSI no dia seguinte e o campo continua vermelho. Pânico: "não funcionou?". **Por quê:** o CrUX é uma **janela móvel de 28 dias**. No dia seguinte ao deploy, só ~1/28 dos dados refletem a melhoria; os outros 27 dias ainda carregam a versão antiga. A métrica só "vira" verde depois de dias a semanas. **Como evitar:** para verificar o efeito **imediato** de uma mudança, use o **seu RUM** (reage em horas) ou o **lab** (reage na hora). Trate o CrUX como o **placar oficial que atualiza devagar**, não como feedback de deploy.
 
 > [!warning] Concluir que "não tem problema" porque não há dados de campo
-> **O que acontece:** o PSI mostra "dados de campo insuficientes" e o time relaxa, achando que está tudo bem.
-> **Por quê:** ausência de dado **não é** ausência de problema — é ausência de **tráfego suficiente** no CrUX. Sites novos, páginas de baixo volume e origens pequenas simplesmente não aparecem, mesmo que estejam lentíssimos.
-> **Como evitar:** quando não há CrUX, apoie-se no **lab** (Lighthouse) e no **seu RUM** para ter sinal. E lembre: mesmo sem aparecer no CrUX, a performance ainda afeta a conversão do usuário que está lá.
+> **O que acontece:** o PSI mostra "dados de campo insuficientes" e o time relaxa, achando que está tudo bem. **Por quê:** ausência de dado **não é** ausência de problema — é ausência de **tráfego suficiente** no CrUX. Sites novos, páginas de baixo volume e origens pequenas simplesmente não aparecem, mesmo que estejam lentíssimos. **Como evitar:** quando não há CrUX, apoie-se no **lab** (Lighthouse) e no **seu RUM** para ter sinal. E lembre: mesmo sem aparecer no CrUX, a performance ainda afeta a conversão do usuário que está lá.
 
 **CrUX em uma frase:** é o RUM público do Google — Core Web Vitals de usuários reais do Chrome, no p75 de uma janela de 28 dias — que decide o seu Page Experience, poderoso para saber se você *passou*, mas lento demais e incompleto demais para servir de feedback de deploy ou cobrir sites pequenos.
 

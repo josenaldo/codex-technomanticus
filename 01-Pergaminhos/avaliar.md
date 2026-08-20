@@ -41,53 +41,10 @@ https://www.reddit.com/r/java/comments/1aweh4j/all_java_conference_talks_from_20
 
 # Repositorios
   
-System design  https://github.com/systemdesign42/system-design-academy
-Public APIs  https://github.com/public-apis/public-apis
-Tech interview handbook  https://github.com/yangshun/tech-interview-handbook
-Coding interview university  https://github.com/jwasham/coding-interview-university
-Engineering leadership  https://github.com/gregorojstersek/resources-to-become-a-great-engineering-leader
-Build your own x  https://github.com/codecrafters-io/build-your-own-x
-Free programming books  https://github.com/EbookFoundation/free-programming-books/blob/main/books/free-programming-books-pt_BR.md
-Karpathy Skills https://github.com/multica-ai/andrej-karpathy-skills
-https://www.youtube.com/playlist?list=PLoROMvodv4rOY23Y0BoGoBGgQ1zmU_MT_
+System design  https://github.com/systemdesign42/system-design-academy Public APIs  https://github.com/public-apis/public-apis Tech interview handbook  https://github.com/yangshun/tech-interview-handbook Coding interview university  https://github.com/jwasham/coding-interview-university Engineering leadership  https://github.com/gregorojstersek/resources-to-become-a-great-engineering-leader Build your own x  https://github.com/codecrafters-io/build-your-own-x Free programming books  https://github.com/EbookFoundation/free-programming-books/blob/main/books/free-programming-books-pt_BR.md Karpathy Skills https://github.com/multica-ai/andrej-karpathy-skills https://www.youtube.com/playlist?list=PLoROMvodv4rOY23Y0BoGoBGgQ1zmU_MT_
 
 # Python learning
-https://wendelmelo.net/iup/
-https://exercism.org/
-https://programming-25.mooc.fi/
-https://developers.google.com/edu/python?hl=pt-br
-https://www.codewars.com/
-https://www.w3schools.com/python/default.asp
-https://pythonspot.com/
-https://www.fullstackpython.com/
-https://inventwithpython.com/
-https://docs.python-guide.org/
-https://pymbook.readthedocs.io/en/latest/
-https://talkpython.fm/
-https://ricardoduarte.github.io/python-para-desenvolvedores/
-https://github.com/ricardoduarte/python-para-desenvolvedores
-https://do1.dr-chuck.com/pythonlearn/PT_br/pythonlearn.pdf
-https://pythonfluente.com/2/
-https://github.com/dunossauro/live-de-python
-https://fastapidozero.dunossauro.com/estavel/
-https://exercicios.dunossauro.com/
-https://www.cursoemvideo.com/curso/python-3-mundo-1/
-https://www.cursoemvideo.com/curso/python-3-mundo-2/
-https://www.cursoemvideo.com/curso/python-3-mundo-3/
-https://www.cursoemvideo.com/curso/python-3-mundo-4-40-horas/
-https://cursos.teomewhy.org/trilhas
-https://ricardoduarte.github.io/python-para-desenvolvedores/
+https://wendelmelo.net/iup/ https://exercism.org/ https://programming-25.mooc.fi/ https://developers.google.com/edu/python?hl=pt-br https://www.codewars.com/ https://www.w3schools.com/python/default.asp https://pythonspot.com/ https://www.fullstackpython.com/ https://inventwithpython.com/ https://docs.python-guide.org/ https://pymbook.readthedocs.io/en/latest/ https://talkpython.fm/ https://ricardoduarte.github.io/python-para-desenvolvedores/ https://github.com/ricardoduarte/python-para-desenvolvedores https://do1.dr-chuck.com/pythonlearn/PT_br/pythonlearn.pdf https://pythonfluente.com/2/ https://github.com/dunossauro/live-de-python https://fastapidozero.dunossauro.com/estavel/ https://exercicios.dunossauro.com/ https://www.cursoemvideo.com/curso/python-3-mundo-1/ https://www.cursoemvideo.com/curso/python-3-mundo-2/ https://www.cursoemvideo.com/curso/python-3-mundo-3/ https://www.cursoemvideo.com/curso/python-3-mundo-4-40-horas/ https://cursos.teomewhy.org/trilhas https://ricardoduarte.github.io/python-para-desenvolvedores/
 
 # Claude code repos
-https://github.com/Infopibe/everything-claude-code
-https://github.com/shanraisshan/claude-code-best-practice
-https://github.com/obra/superpowers
-https://github.com/thedotmack/claude-mem
-https://github.com/multica-ai/andrej-karpathy-skills
-https://github.com/hesreallyhim/awesome-claude-code
-https://github.com/yamadashy/repomix
-https://github.com/gsd-build/get-shit-done
-https://github.com/dair-ai/Prompt-Engineering-Guide
-https://github.com/anthropics/skills
-https://github.com/VoltAgent/awesome-claude-code-subagents
-https://github.com/VoltAgent/awesome-design-md
+https://github.com/Infopibe/everything-claude-code https://github.com/shanraisshan/claude-code-best-practice https://github.com/obra/superpowers https://github.com/thedotmack/claude-mem https://github.com/multica-ai/andrej-karpathy-skills https://github.com/hesreallyhim/awesome-claude-code https://github.com/yamadashy/repomix https://github.com/gsd-build/get-shit-done https://github.com/dair-ai/Prompt-Engineering-Guide https://github.com/anthropics/skills https://github.com/VoltAgent/awesome-claude-code-subagents https://github.com/VoltAgent/awesome-design-md

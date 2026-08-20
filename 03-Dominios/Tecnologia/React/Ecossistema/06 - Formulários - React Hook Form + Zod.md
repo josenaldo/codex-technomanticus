@@ -18,57 +18,28 @@ publish: true
 # Formulários — React Hook Form + Zod
 
 > [!abstract] TL;DR
-> Formulários controlados com `useState` por campo causam re-render a cada keystroke — lento em
-> forms grandes. **React Hook Form** (RHF) resolve isso com uma abordagem *uncontrolled-first*:
-> usa refs em vez de state, e o form só re-renderiza em submit, blur ou erro. **Zod** complementa
-> com schemas TypeScript-first: você declara a validação uma vez e `z.infer<typeof schema>` gera
-> o tipo automaticamente, sem duplicação. Juntos, entregam performance + type-safety com mínimo
-> boilerplate.
-> Em uma frase: RHF gerencia o ciclo de vida do form; Zod garante que os dados saem do form
-> exatamente no formato que o TypeScript espera.
+> Formulários controlados com `useState` por campo causam re-render a cada keystroke — lento em forms grandes. **React Hook Form** (RHF) resolve isso com uma abordagem *uncontrolled-first*: usa refs em vez de state, e o form só re-renderiza em submit, blur ou erro. **Zod** complementa com schemas TypeScript-first: você declara a validação uma vez e `z.infer<typeof schema>` gera o tipo automaticamente, sem duplicação. Juntos, entregam performance + type-safety com mínimo boilerplate. Em uma frase: RHF gerencia o ciclo de vida do form; Zod garante que os dados saem do form exatamente no formato que o TypeScript espera.
 
 > [!info] Contexto no galho
-> Esta nota cobre a camada de **formulários** do ecossistema React. Para entender por que a
-> abordagem *uncontrolled* importa, consulte
-> [[03-Dominios/Tecnologia/React/React core/06 - Eventos e formulários controlados|React core 06]]
-> que explica formulários controlados vs. não-controlados com `useState` e `useRef`. O panorama
-> completo do ecossistema está em
-> [[03-Dominios/Tecnologia/React/Ecossistema/01 - O ecossistema React - o mapa|Nota 01 — O mapa]].
-> Termos como *resolver*, *schema*, *controlled component* estão no
-> [[03-Dominios/Tecnologia/React/Dicionário de React|Dicionário de React]].
+> Esta nota cobre a camada de **formulários** do ecossistema React. Para entender por que a abordagem *uncontrolled* importa, consulte [[03-Dominios/Tecnologia/React/React core/06 - Eventos e formulários controlados|React core 06]] que explica formulários controlados vs. não-controlados com `useState` e `useRef`. O panorama completo do ecossistema está em [[03-Dominios/Tecnologia/React/Ecossistema/01 - O ecossistema React - o mapa|Nota 01 — O mapa]]. Termos como *resolver*, *schema*, *controlled component* estão no [[03-Dominios/Tecnologia/React/Dicionário de React|Dicionário de React]].
 
 ## O problema: formulários que travam na digitação
 
-Imagine um formulário de cadastro com 15 campos: nome, email, CPF, endereço (rua, número, bairro,
-cidade, estado, CEP), telefones, senha e confirmação. Você implementa cada campo com um
-`useState`, adiciona validação manual com condicionais, e cada estado de erro com mais um
-`useState`.
+Imagine um formulário de cadastro com 15 campos: nome, email, CPF, endereço (rua, número, bairro, cidade, estado, CEP), telefones, senha e confirmação. Você implementa cada campo com um `useState`, adiciona validação manual com condicionais, e cada estado de erro com mais um `useState`.
 
-O resultado: a cada keystroke em qualquer campo, o React re-renderiza o componente inteiro. Em
-15 campos, isso significa 15 estados sendo checados, 15 mensagens de erro sendo recalculadas, 15
-funções de handler sendo recriadas. Em máquinas lentas ou formulários dentro de listas, o atraso
-de digitação é perceptível.
+O resultado: a cada keystroke em qualquer campo, o React re-renderiza o componente inteiro. Em 15 campos, isso significa 15 estados sendo checados, 15 mensagens de erro sendo recalculadas, 15 funções de handler sendo recriadas. Em máquinas lentas ou formulários dentro de listas, o atraso de digitação é perceptível.
 
-Além da performance, a validação manual é um problema de manutenção: `if (!email.includes('@'))`
-vive no componente, enquanto o tipo `{ email: string }` vive no TypeScript. Quando a regra de
-validação muda (e vai mudar), você atualiza em dois lugares — e inevitavelmente desincroniza.
+Além da performance, a validação manual é um problema de manutenção: `if (!email.includes('@'))` vive no componente, enquanto o tipo `{ email: string }` vive no TypeScript. Quando a regra de validação muda (e vai mudar), você atualiza em dois lugares — e inevitavelmente desincroniza.
 
 React Hook Form + Zod resolvem esses dois problemas de formas elegantes e complementares.
 
 ## Por que `uncontrolled-first` é mais rápido
 
-A intuição de formulários controlados faz sentido: manter o valor de cada campo no state React
-garante que você sempre tem acesso ao valor atual. O problema é o custo: cada mudança de state
-dispara um ciclo de renderização.
+A intuição de formulários controlados faz sentido: manter o valor de cada campo no state React garante que você sempre tem acesso ao valor atual. O problema é o custo: cada mudança de state dispara um ciclo de renderização.
 
-React Hook Form inverte a equação. Em vez de armazenar valores no state, ele registra cada input
-com uma **ref** — uma referência direta ao elemento DOM. O valor fica no DOM, não no React. O
-formulário só entra no ciclo de renderização React quando há algo que a UI precisa mostrar:
-erros, estado de submissão, ou quando você explicitamente chama `watch()`.
+React Hook Form inverte a equação. Em vez de armazenar valores no state, ele registra cada input com uma **ref** — uma referência direta ao elemento DOM. O valor fica no DOM, não no React. O formulário só entra no ciclo de renderização React quando há algo que a UI precisa mostrar: erros, estado de submissão, ou quando você explicitamente chama `watch()`.
 
-Pense assim: a diferença entre controlado e não-controlado é como a diferença entre um chefe
-que quer ser informado de cada e-mail que passa vs. um chefe que só quer saber quando algo
-urgente acontece. O segundo modelo é mais eficiente — e é o que o RHF implementa.
+Pense assim: a diferença entre controlado e não-controlado é como a diferença entre um chefe que quer ser informado de cada e-mail que passa vs. um chefe que só quer saber quando algo urgente acontece. O segundo modelo é mais eficiente — e é o que o RHF implementa.
 
 ## `useForm`: o ponto de entrada
 
@@ -104,13 +75,11 @@ O `register` retorna props que você espalha no input:
 <input type="email" {...register('email')} />
 ```
 
-Isso registra `name`, `ref`, `onChange` e `onBlur` no input — tudo o que o RHF precisa para
-observar o campo sem controlar o state.
+Isso registra `name`, `ref`, `onChange` e `onBlur` no input — tudo o que o RHF precisa para observar o campo sem controlar o state.
 
 ## Validação com Zod: uma fonte de verdade
 
-O ponto de dor da validação manual é que tipo e regra de validação vivem separados. Zod elimina
-essa separação.
+O ponto de dor da validação manual é que tipo e regra de validação vivem separados. Zod elimina essa separação.
 
 ### Definindo o schema
 
@@ -141,8 +110,7 @@ type CadastroData = z.infer<typeof cadastroSchema>
 // }
 ```
 
-`z.infer<typeof cadastroSchema>` gera o tipo TypeScript diretamente do schema — se você mudar
-a validação, o tipo muda junto. Uma fonte de verdade, não duas.
+`z.infer<typeof cadastroSchema>` gera o tipo TypeScript diretamente do schema — se você mudar a validação, o tipo muda junto. Uma fonte de verdade, não duas.
 
 ### Conectando ao RHF via `zodResolver`
 
@@ -160,9 +128,7 @@ const { register, handleSubmit, formState: { errors } } = useForm<CadastroData>(
 })
 ```
 
-O `zodResolver` é o adaptador: ele recebe o schema Zod e o traduz para o protocolo de validação
-do RHF. Quando `handleSubmit` é chamado, o RHF passa os dados brutos para o resolver, que executa
-o schema Zod e retorna ou os dados validados ou os erros.
+O `zodResolver` é o adaptador: ele recebe o schema Zod e o traduz para o protocolo de validação do RHF. Quando `handleSubmit` é chamado, o RHF passa os dados brutos para o resolver, que executa o schema Zod e retorna ou os dados validados ou os erros.
 
 ### Formulário completo
 
@@ -252,14 +218,11 @@ graph LR
     style APP fill:#F5F5F5,stroke:#888
 ```
 
-O DOM guarda os valores; o RHF orquestra o ciclo de vida; o Zod valida e o TypeScript sabe o
-tipo antes mesmo do runtime.
+O DOM guarda os valores; o RHF orquestra o ciclo de vida; o Zod valida e o TypeScript sabe o tipo antes mesmo do runtime.
 
 ## `Controller`: para componentes controlados de UI libs
 
-Algumas bibliotecas de UI (Material-UI, Mantine, shadcn/ui, Ant Design) expõem seus componentes
-como **controlados** — eles esperam `value` e `onChange` em vez de aceitar um `ref`. O `register`
-do RHF não funciona nesses casos.
+Algumas bibliotecas de UI (Material-UI, Mantine, shadcn/ui, Ant Design) expõem seus componentes como **controlados** — eles esperam `value` e `onChange` em vez de aceitar um `ref`. O `register` do RHF não funciona nesses casos.
 
 Para isso existe o `Controller`:
 
@@ -291,15 +254,11 @@ function FormComMUI() {
 }
 ```
 
-O `Controller` age como um adaptador: por baixo dos panos ele mantém o valor no state do RHF
-(sim, controlado), mas isola o re-render apenas ao campo em questão. O spread `{...field}`
-injeta `value`, `onChange`, `onBlur` e `name` no componente de UI.
+O `Controller` age como um adaptador: por baixo dos panos ele mantém o valor no state do RHF (sim, controlado), mas isola o re-render apenas ao campo em questão. O spread `{...field}` injeta `value`, `onChange`, `onBlur` e `name` no componente de UI.
 
 ## `useFieldArray`: listas dinâmicas de campos
 
-Formulários reais frequentemente têm listas dinâmicas: múltiplos telefones, endereços,
-experiências profissionais. O `useFieldArray` gerencia arrays de campos com append, remove e
-reordenação:
+Formulários reais frequentemente têm listas dinâmicas: múltiplos telefones, endereços, experiências profissionais. O `useFieldArray` gerencia arrays de campos com append, remove e reordenação:
 
 ```tsx
 import { useFieldArray } from 'react-hook-form'
@@ -349,19 +308,14 @@ function FormTelefones() {
 }
 ```
 
-`useFieldArray` retorna também `move` (reordenar), `insert` (inserir em posição específica),
-`swap` e `prepend`. O `field.id` é gerado pelo RHF e deve ser usado como `key` — nunca o
-`index`, pois o index muda quando itens são removidos e quebra o React reconciliation.
+`useFieldArray` retorna também `move` (reordenar), `insert` (inserir em posição específica), `swap` e `prepend`. O `field.id` é gerado pelo RHF e deve ser usado como `key` — nunca o `index`, pois o index muda quando itens são removidos e quebra o React reconciliation.
 
 ## TanStack Form: a alternativa emergente
 
-Vale conhecer, mesmo que não seja o default de mercado. O **TanStack Form** (v1, lançado 2024)
-tem uma proposta diferente:
+Vale conhecer, mesmo que não seja o default de mercado. O **TanStack Form** (v1, lançado 2024) tem uma proposta diferente:
 
-- **Type-safe de ponta-a-ponta sem generics explícitos**: os tipos são inferidos de
-  `defaultValues`, sem `useForm<MinhaInterface>`.
-- **Validação por campo com timing individual**: cada campo pode ter validadores com triggers
-  diferentes (onChange, onBlur, onSubmit) configurados de forma independente.
+- **Type-safe de ponta-a-ponta sem generics explícitos**: os tipos são inferidos de `defaultValues`, sem `useForm<MinhaInterface>`.
+- **Validação por campo com timing individual**: cada campo pode ter validadores com triggers diferentes (onChange, onBlur, onSubmit) configurados de forma independente.
 - **Framework-agnóstico**: a lógica vive em `@tanstack/form-core`; o pacote React é um adapter.
 
 ```ts
@@ -372,58 +326,27 @@ const form = useForm({
 })
 ```
 
-**Quando considerar TanStack Form:** projeto novo sem legado RHF, validação assíncrona complexa
-por campo (checar e-mail disponível no servidor campo a campo), ou quando você já usa o
-ecossistema TanStack e quer consistência.
+**Quando considerar TanStack Form:** projeto novo sem legado RHF, validação assíncrona complexa por campo (checar e-mail disponível no servidor campo a campo), ou quando você já usa o ecossistema TanStack e quer consistência.
 
-**Por que RHF ainda é o default em 2026:** ecossistema maduro, documentação extensa,
-integração nativa no shadcn/ui (que virou referência de design system), e a maioria dos
-tutoriais e Stack Overflow do mundo usam RHF. Em entrevistas, RHF + Zod é o par esperado.
+**Por que RHF ainda é o default em 2026:** ecossistema maduro, documentação extensa, integração nativa no shadcn/ui (que virou referência de design system), e a maioria dos tutoriais e Stack Overflow do mundo usam RHF. Em entrevistas, RHF + Zod é o par esperado.
 
 ## Armadilhas comuns
 
 > [!warning] Usar `index` como `key` no `useFieldArray`
-> **O que acontece:** campos "saltam" de valor quando um item é removido do meio da lista.
-> **Por quê:** React usa a `key` para identificar elementos entre renders. Quando você remove
-> o item de índice 1, o índice 2 vira 1 — e o React pensa que o elemento mudou de conteúdo,
-> não que foi removido. O estado interno do input (não controlado) fica no elemento DOM errado.
-> **Como evitar:** sempre use `field.id` como `key`. O RHF gera um UUID único por campo que
-> não muda quando a ordem do array muda.
+> **O que acontece:** campos "saltam" de valor quando um item é removido do meio da lista. **Por quê:** React usa a `key` para identificar elementos entre renders. Quando você remove o item de índice 1, o índice 2 vira 1 — e o React pensa que o elemento mudou de conteúdo, não que foi removido. O estado interno do input (não controlado) fica no elemento DOM errado. **Como evitar:** sempre use `field.id` como `key`. O RHF gera um UUID único por campo que não muda quando a ordem do array muda.
 
 > [!warning] Definir `defaultValues` com `undefined` em vez de string vazia
-> **O que acontece:** TypeScript não reclama, mas o Zod pode rejeitar campos `undefined` mesmo
-> em schemas `z.string()` — que espera string, não ausência de valor. Além disso, inputs
-> sem `defaultValue` ficam *uncontrolled* do ponto de vista do DOM, e mudar para ter valor
-> gera o warning "A component is changing an uncontrolled input to be controlled".
-> **Por quê:** `undefined` não é string vazia no TypeScript nem no DOM.
-> **Como evitar:** sempre passe `defaultValues` com strings vazias `''` para campos de texto,
-> `false` para checkboxes, `[]` para arrays.
+> **O que acontece:** TypeScript não reclama, mas o Zod pode rejeitar campos `undefined` mesmo em schemas `z.string()` — que espera string, não ausência de valor. Além disso, inputs sem `defaultValue` ficam *uncontrolled* do ponto de vista do DOM, e mudar para ter valor gera o warning "A component is changing an uncontrolled input to be controlled". **Por quê:** `undefined` não é string vazia no TypeScript nem no DOM. **Como evitar:** sempre passe `defaultValues` com strings vazias `''` para campos de texto, `false` para checkboxes, `[]` para arrays.
 
 > [!warning] Chamar `register` dentro de condicionais ou loops sem `useFieldArray`
-> **O que acontece:** o RHF perde o rastreamento do campo; erros de validação aparecem no
-> campo errado ou não aparecem.
-> **Por quê:** o RHF mapeia campos por nome no momento do mount. Se o campo é desmontado e
-> remontado com um nome diferente (como `campo-0`, `campo-1` via index), o mapa interno
-> fica inconsistente.
-> **Como evitar:** para arrays dinâmicos, use sempre `useFieldArray`. Para campos condicionais,
-> use `shouldUnregister: true` na configuração do `useForm` para limpar o valor quando o campo
-> some.
+> **O que acontece:** o RHF perde o rastreamento do campo; erros de validação aparecem no campo errado ou não aparecem. **Por quê:** o RHF mapeia campos por nome no momento do mount. Se o campo é desmontado e remontado com um nome diferente (como `campo-0`, `campo-1` via index), o mapa interno fica inconsistente. **Como evitar:** para arrays dinâmicos, use sempre `useFieldArray`. Para campos condicionais, use `shouldUnregister: true` na configuração do `useForm` para limpar o valor quando o campo some.
 
 > [!warning] Esquecer de tipar o `useForm` quando não usa `zodResolver`
-> **O que acontece:** `data` no `handleSubmit` fica com tipo `FieldValues` (basicamente
-> `Record<string, any>`), anulando todo o benefício do TypeScript.
-> **Por quê:** sem um resolver ou generic explícito, o RHF não sabe o shape dos dados.
-> **Como evitar:** sempre passe o generic: `useForm<MinhaInterface>()`. Com `zodResolver`,
-> garanta que o mesmo tipo é passado: `useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) })`.
+> **O que acontece:** `data` no `handleSubmit` fica com tipo `FieldValues` (basicamente `Record<string, any>`), anulando todo o benefício do TypeScript. **Por quê:** sem um resolver ou generic explícito, o RHF não sabe o shape dos dados. **Como evitar:** sempre passe o generic: `useForm<MinhaInterface>()`. Com `zodResolver`, garanta que o mesmo tipo é passado: `useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) })`.
 
 ## Como explicar em inglês
 
-React Hook Form takes an uncontrolled-first approach to form management: instead of storing each
-field's value in React state, it registers inputs via refs, so the DOM holds the values and
-React only re-renders when there's something to show — validation errors, submission state, or
-explicitly watched fields. Zod complements this by providing TypeScript-first schema validation:
-you define the schema once, and `z.infer` derives the TypeScript type automatically, eliminating
-the drift between your types and your validation rules.
+React Hook Form takes an uncontrolled-first approach to form management: instead of storing each field's value in React state, it registers inputs via refs, so the DOM holds the values and React only re-renders when there's something to show — validation errors, submission state, or explicitly watched fields. Zod complements this by providing TypeScript-first schema validation: you define the schema once, and `z.infer` derives the TypeScript type automatically, eliminating the drift between your types and your validation rules.
 
 | PT | EN |
 |----|-----|
@@ -440,10 +363,7 @@ the drift between your types and your validation rules.
 
 ## O que vem a seguir
 
-Com formulários cobertos — coleta e validação de dados — o próximo passo natural é gerenciar o
-**estado global** da aplicação: dados que precisam ser acessados por múltiplos componentes sem
-prop drilling. Zustand e Redux Toolkit representam as duas filosofias dominantes para esse
-problema.
+Com formulários cobertos — coleta e validação de dados — o próximo passo natural é gerenciar o **estado global** da aplicação: dados que precisam ser acessados por múltiplos componentes sem prop drilling. Zustand e Redux Toolkit representam as duas filosofias dominantes para esse problema.
 
 - [[03-Dominios/Tecnologia/React/Ecossistema/01 - O ecossistema React - o mapa|Nota 01 — O mapa]] — visão geral de onde formulários se encaixam no ecossistema
 - [[03-Dominios/Tecnologia/React/Dicionário de React|Dicionário de React]] — termos como *resolver*, *controlled component*, *field array*

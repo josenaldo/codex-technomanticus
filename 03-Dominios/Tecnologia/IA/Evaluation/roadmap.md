@@ -12,9 +12,7 @@ tags:
 
 Diagnóstico migrado de guia/roadmap - ia.md (30/06). Cada entrada tem estado de enriquecimento, score, classificação de custo e plano de execução acionável.
 
-**Galho:** `03-Dominios/Tecnologia/IA/Evaluation`
-**Diagnóstico:** 2026-06-28 (migrado 2026-07-01)
-**Última execução:** 2026-07-01 — onda substantiva (01 EDD + 02 Golden datasets) + mecânica (04 LLM-as-judge). Galho 8/8 fechado.
+**Galho:** `03-Dominios/Tecnologia/IA/Evaluation` **Diagnóstico:** 2026-06-28 (migrado 2026-07-01) **Última execução:** 2026-07-01 — onda substantiva (01 EDD + 02 Golden datasets) + mecânica (04 LLM-as-judge). Galho 8/8 fechado.
 
 ## Régua de análise
 
@@ -27,8 +25,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | LINKS | L1 Wikilink cross-galho · L2 Referência externa (URL) |
 | MÍDIA | M1 Vídeo/podcast embutido |
 
-**Esquema de `fase:` detectado:** COM fase (Iniciado)
-**Piso de linhas:** aplicável — Iniciado ≥300 · Adepto ≥400 · Magus ≥500 (decisão do usuário, 2026-08-01)
+**Esquema de `fase:` detectado:** COM fase (Iniciado) **Piso de linhas:** aplicável — Iniciado ≥300 · Adepto ≥400 · Magus ≥500 (decisão do usuário, 2026-08-01)
 
 ## Tabela-resumo
 

@@ -22,12 +22,7 @@ aliases:
 # A entrevista técnica — os três formatos
 
 > [!abstract] TL;DR
-> Três formatos, três coisas medidas. **Live coding** avalia o **processo**, não a solução — clarificar
-> antes de escrever, pensar em voz alta e testar valem mais que chegar rápido ao ótimo. **Take-home**
-> avalia o que você faz **sem supervisão**: escopo respeitado, decisões documentadas e um README que
-> explique o que você **não** fez e por quê. **Pair programming / debugging ao vivo** avalia como você
-> trabalha *com alguém* — e é o único em que pedir ajuda bem é sinal positivo. O erro comum aos três é o
-> mesmo: tratar o exercício como prova de conhecimento, quando ele é uma amostra de comportamento.
+> Três formatos, três coisas medidas. **Live coding** avalia o **processo**, não a solução — clarificar antes de escrever, pensar em voz alta e testar valem mais que chegar rápido ao ótimo. **Take-home** avalia o que você faz **sem supervisão**: escopo respeitado, decisões documentadas e um README que explique o que você **não** fez e por quê. **Pair programming / debugging ao vivo** avalia como você trabalha *com alguém* — e é o único em que pedir ajuda bem é sinal positivo. O erro comum aos três é o mesmo: tratar o exercício como prova de conhecimento, quando ele é uma amostra de comportamento.
 
 ## O código certo, a entrevista perdida
 
@@ -97,19 +92,13 @@ Aqui o que se mede é colaboração sob incerteza, e três comportamentos pesam:
 ## Armadilhas comuns
 
 > [!warning] Silêncio prolongado
-> **O que acontece:** o candidato pensa em silêncio por vários minutos. Mesmo que chegue a uma boa solução, não há o que avaliar no intervalo — e o entrevistador não sabe se você está travado ou raciocinando.
-> **Por quê:** pensar em voz alta é desconfortável e não é como se programa no dia a dia.
-> **Como evitar:** narre o estado, ainda que pareça óbvio — "estou vendo se dá para fazer numa passada só". Se precisar de silêncio, **anuncie**: "me dá trinta segundos para pensar nisso" é perfeitamente aceito.
+> **O que acontece:** o candidato pensa em silêncio por vários minutos. Mesmo que chegue a uma boa solução, não há o que avaliar no intervalo — e o entrevistador não sabe se você está travado ou raciocinando. **Por quê:** pensar em voz alta é desconfortável e não é como se programa no dia a dia. **Como evitar:** narre o estado, ainda que pareça óbvio — "estou vendo se dá para fazer numa passada só". Se precisar de silêncio, **anuncie**: "me dá trinta segundos para pensar nisso" é perfeitamente aceito.
 
 > [!warning] Otimizar antes de funcionar
-> **O que acontece:** o candidato busca a solução ótima de saída, trava, e o tempo acaba sem nada rodando.
-> **Por quê:** parece que entregar a força bruta é admitir limitação.
-> **Como evitar:** faça funcionar, depois melhore — e **diga que é isso que está fazendo**. Ter algo correto no fim vale mais que uma solução elegante incompleta, e o próprio movimento de otimizar em seguida é conteúdo avaliável.
+> **O que acontece:** o candidato busca a solução ótima de saída, trava, e o tempo acaba sem nada rodando. **Por quê:** parece que entregar a força bruta é admitir limitação. **Como evitar:** faça funcionar, depois melhore — e **diga que é isso que está fazendo**. Ter algo correto no fim vale mais que uma solução elegante incompleta, e o próprio movimento de otimizar em seguida é conteúdo avaliável.
 
 > [!warning] Take-home com escopo estourado
-> **O que acontece:** o exercício sugeria quatro horas e o candidato entrega vinte, com funcionalidades extras. Em vez de dedicação, lê-se falta de calibragem — e, em alguns processos, desrespeito à regra.
-> **Por quê:** mais parece melhor, e o candidato quer se destacar.
-> **Como evitar:** respeite o tempo e use o README para mostrar o que faria a seguir. Escopo controlado **é** a demonstração de senioridade que o exercício procura.
+> **O que acontece:** o exercício sugeria quatro horas e o candidato entrega vinte, com funcionalidades extras. Em vez de dedicação, lê-se falta de calibragem — e, em alguns processos, desrespeito à regra. **Por quê:** mais parece melhor, e o candidato quer se destacar. **Como evitar:** respeite o tempo e use o README para mostrar o que faria a seguir. Escopo controlado **é** a demonstração de senioridade que o exercício procura.
 
 ## Como soa em inglês
 

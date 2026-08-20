@@ -90,24 +90,16 @@ Antes de lançar uma mudança de navegação, o time declara por escrito (seguin
 ## Armadilhas comuns
 
 > [!warning] Citar Forrester ($1→$100) sem verificar a fonte
-> **O que acontece:** o número aparece num slide ou numa conversa como argumento de autoridade, porque "todo mundo cita isso" no campo de UX.
-> **Por quê:** é um número grande, fácil de lembrar e repetir, e raramente alguém pede a fonte primária numa conversa informal — o que permite que ele circule por anos sem verificação.
-> **Como evitar:** nunca cite a estatística sem acesso à metodologia original; prefira sempre um número calculado a partir do próprio projeto, mesmo que menor.
+> **O que acontece:** o número aparece num slide ou numa conversa como argumento de autoridade, porque "todo mundo cita isso" no campo de UX. **Por quê:** é um número grande, fácil de lembrar e repetir, e raramente alguém pede a fonte primária numa conversa informal — o que permite que ele circule por anos sem verificação. **Como evitar:** nunca cite a estatística sem acesso à metodologia original; prefira sempre um número calculado a partir do próprio projeto, mesmo que menor.
 
 > [!warning] Apresentar ROI como número exato, sem faixa nem atribuição
-> **O que acontece:** um relatório diz "essa mudança vai gerar $50.000 de retorno anual", como se fosse cálculo contábil exato.
-> **Por quê:** um número único e definitivo parece mais confiante e mais fácil de defender numa apresentação — mas essa aparência de confiança se desfaz na primeira pergunta cética sobre como o número foi calculado.
-> **Como evitar:** sempre apresente ROI como faixa, com a atribuição causal nomeada explicitamente, como no Cenário 2 desta nota.
+> **O que acontece:** um relatório diz "essa mudança vai gerar $50.000 de retorno anual", como se fosse cálculo contábil exato. **Por quê:** um número único e definitivo parece mais confiante e mais fácil de defender numa apresentação — mas essa aparência de confiança se desfaz na primeira pergunta cética sobre como o número foi calculado. **Como evitar:** sempre apresente ROI como faixa, com a atribuição causal nomeada explicitamente, como no Cenário 2 desta nota.
 
 > [!warning] Escolher a métrica depois de ver qual "deu certo"
-> **O que acontece:** depois de uma mudança, o time busca entre várias métricas disponíveis qual delas melhorou, e reporta só essa, ignorando as que pioraram ou ficaram neutras.
-> **Por quê:** é tentador construir a narrativa de sucesso depois do fato, escolhendo o dado que sustenta a história desejada — mas isso é o oposto do rigor de declarar hipótese antes de medir (GSM).
-> **Como evitar:** declare, por escrito, quais métricas espera que mudem e como antes de lançar qualquer mudança, como no Cenário 3 — e reporte todas as métricas declaradas, não só as favoráveis.
+> **O que acontece:** depois de uma mudança, o time busca entre várias métricas disponíveis qual delas melhorou, e reporta só essa, ignorando as que pioraram ou ficaram neutras. **Por quê:** é tentador construir a narrativa de sucesso depois do fato, escolhendo o dado que sustenta a história desejada — mas isso é o oposto do rigor de declarar hipótese antes de medir (GSM). **Como evitar:** declare, por escrito, quais métricas espera que mudem e como antes de lançar qualquer mudança, como no Cenário 3 — e reporte todas as métricas declaradas, não só as favoráveis.
 
 > [!warning] Ignorar atribuição causal frágil para simplificar a apresentação
-> **O que acontece:** o relatório atribui 100% de uma melhora de métrica à mudança de UX, sem mencionar outras mudanças concorrentes no mesmo período (marketing, preço, sazonalidade).
-> **Por quê:** nomear a atribuição frágil parece "enfraquecer" o próprio argumento que se está tentando defender — mas omiti-la é o que de fato enfraquece o argumento, ao expô-lo a ser desmontado por qualquer pergunta cética.
-> **Como evitar:** nomeie explicitamente outras variáveis que mudaram no mesmo período, como no Cenário 2 — um argumento que já reconhece sua própria limitação é mais difícil de desmontar do que um que finge não ter nenhuma.
+> **O que acontece:** o relatório atribui 100% de uma melhora de métrica à mudança de UX, sem mencionar outras mudanças concorrentes no mesmo período (marketing, preço, sazonalidade). **Por quê:** nomear a atribuição frágil parece "enfraquecer" o próprio argumento que se está tentando defender — mas omiti-la é o que de fato enfraquece o argumento, ao expô-lo a ser desmontado por qualquer pergunta cética. **Como evitar:** nomeie explicitamente outras variáveis que mudaram no mesmo período, como no Cenário 2 — um argumento que já reconhece sua própria limitação é mais difícil de desmontar do que um que finge não ter nenhuma.
 
 ## Como explicar em inglês
 

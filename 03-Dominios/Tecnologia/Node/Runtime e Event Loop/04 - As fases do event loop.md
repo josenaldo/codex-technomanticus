@@ -55,11 +55,9 @@ Na documentação oficial do Node.js, essas fases são mencionadas apenas como "
 
 A fase **poll** é a mais importante e a mais complexa. Ela tem dois comportamentos distintos dependendo do estado do sistema:
 
-**Quando a poll queue não está vazia:**
-O event loop itera pelos callbacks na fila e os executa sincronicamente, um por um, até a fila esvaziar ou atingir um limite máximo do sistema operacional. Esses são os callbacks de I/O "prontos" — `fs.readFile` completou, uma conexão TCP chegou, dados chegaram num socket.
+**Quando a poll queue não está vazia:** O event loop itera pelos callbacks na fila e os executa sincronicamente, um por um, até a fila esvaziar ou atingir um limite máximo do sistema operacional. Esses são os callbacks de I/O "prontos" — `fs.readFile` completou, uma conexão TCP chegou, dados chegaram num socket.
 
-**Quando a poll queue está vazia:**
-O event loop entra no modo de espera. Ele usa mecanismos do OS (`epoll` no Linux, `kqueue` no macOS/BSD, `IOCP` no Windows) para bloquear a thread eficientemente aguardando novos eventos de I/O. O tempo máximo de bloqueio é calculado pelo libuv com base no timer mais próximo que está pendente:
+**Quando a poll queue está vazia:** O event loop entra no modo de espera. Ele usa mecanismos do OS (`epoll` no Linux, `kqueue` no macOS/BSD, `IOCP` no Windows) para bloquear a thread eficientemente aguardando novos eventos de I/O. O tempo máximo de bloqueio é calculado pelo libuv com base no timer mais próximo que está pendente:
 
 - Se há um timer agendado que vai expirar em Xms, o poll bloqueia por no máximo Xms
 - Se há scripts `setImmediate()` agendados, o poll não bloqueia — passa direto para a fase **check**

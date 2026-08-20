@@ -81,9 +81,7 @@ A tabela mental que vale a pena guardar:
 | **Speed Index** | Percepção geral de carregamento | Ordem e progressividade da renderização |
 
 > [!warning] Otimizar métricas de apoio como se fossem o objetivo
-> **O que acontece:** o time reduz o TTFB de 900 ms para 400 ms e comemora, mas o LCP continua ruim.
-> **Por quê:** as métricas de apoio são **diagnósticas**, não metas em si. Melhorar o TTFB só ajuda o LCP se o TTFB *era* o gargalo. Se a causa real era a imagem hero de 3 MB, cortar o TTFB pela metade quase não move o LCP.
-> **Como evitar:** use as métricas de apoio para **localizar** o gargalo do CWV, ataque **essa** causa, e valide olhando o CWV (que é o que importa pro usuário e pro ranking) voltar ao verde.
+> **O que acontece:** o time reduz o TTFB de 900 ms para 400 ms e comemora, mas o LCP continua ruim. **Por quê:** as métricas de apoio são **diagnósticas**, não metas em si. Melhorar o TTFB só ajuda o LCP se o TTFB *era* o gargalo. Se a causa real era a imagem hero de 3 MB, cortar o TTFB pela metade quase não move o LCP. **Como evitar:** use as métricas de apoio para **localizar** o gargalo do CWV, ataque **essa** causa, e valide olhando o CWV (que é o que importa pro usuário e pro ranking) voltar ao verde.
 
 **Métricas de apoio em uma frase:** TTFB, FCP, TBT e Speed Index não são ranqueadas, mas fatiam o carregamento em etapas — servidor, primeiro pixel, bloqueio de JS, preenchimento — para você descobrir *onde* um Core Web Vital emperrou e atacar a causa certa.
 

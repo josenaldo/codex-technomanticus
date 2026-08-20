@@ -23,8 +23,7 @@ aliases:
 > Quando o eixo da decisão é **síncrono**, você precisa de um **cliente HTTP declarativo**: em vez de montar a requisição à mão, você escreve uma *interface* Java e o framework gera a implementação que fala HTTP por baixo.
 > - **OpenFeign** (`@FeignClient`, `@EnableFeignClients`) foi o padrão de fato no mundo Spring Cloud por anos. Hoje está **feature-complete** desde Spring Cloud **2022.0.0 "Kilburn"** (16/dez/2022): só recebe *bugfix*, sem features novas.
 > - A Spring agora recomenda os **HTTP Interface clients** (`@HttpExchange`), nativos do **Spring Framework 6.1+**, que rodam **sobre `RestClient`/`WebClient`** (Galho 9) e **não exigem Spring Cloud**.
-> - Spring Cloud **2025.1** trouxe **load balancing + circuit breaking** transparentes para os **HTTP service groups** — fechando a última lacuna que ainda justificava o Feign.
-> Regra de bolso: **projeto novo → `@HttpExchange`.** Feign só permanece em base legada que já o usa.
+> - Spring Cloud **2025.1** trouxe **load balancing + circuit breaking** transparentes para os **HTTP service groups** — fechando a última lacuna que ainda justificava o Feign. Regra de bolso: **projeto novo → `@HttpExchange`.** Feign só permanece em base legada que já o usa.
 
 ## O que é
 
@@ -48,8 +47,7 @@ Porque a escolha de cliente síncrono é uma **aposta de longo prazo** sobre a q
 
 O ponto duro: **OpenFeign está feature-complete**. Citando a própria documentação do projeto:
 
-> *"As announced in Spring Cloud 2022.0.0 release blog entry, we're now treating the Spring Cloud OpenFeign project as feature-complete. We are only going to be adding bugfixes and possibly merging some small community feature PRs."*
-> — docs.spring.io/spring-cloud-openfeign/reference
+> *"As announced in Spring Cloud 2022.0.0 release blog entry, we're now treating the Spring Cloud OpenFeign project as feature-complete. We are only going to be adding bugfixes and possibly merging some small community feature PRs."* — docs.spring.io/spring-cloud-openfeign/reference
 
 Traduzindo o que "feature-complete" significa na prática:
 - **Bugfix?** Sim, continua recebendo.

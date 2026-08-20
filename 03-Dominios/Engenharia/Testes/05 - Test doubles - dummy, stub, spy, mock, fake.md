@@ -16,9 +16,7 @@ tags:
 # Test doubles: dummy, stub, spy, mock, fake
 
 > [!abstract] Resumo
-> *Test double* é o termo guarda-chuva pra qualquer objeto que substitui uma dependência real no teste — a analogia é o dublê de cinema: o ator principal (a dependência real) fica de fora de certas cenas, e um dublê especializado entra no lugar dele só pra aquela cena funcionar.
-> Os cinco tipos (dummy, stub, fake, spy, mock) se dividem em dois papéis: uns **alimentam** o SUT com dados ou comportamento pra ele seguir em frente (dummy, stub, fake — a asserção final olha o **estado**); outros **participam da própria verificação** (spy, mock — a asserção olha a **interação**).
-> A confusão mais cara em entrevista é achar que mock e stub são a mesma coisa: um stub **dá** uma resposta pra o SUT seguir, um mock **cobra** uma interação e falha sozinho se ela não acontecer — é a diferença de Fowler entre verificação de estado e verificação de comportamento.
+> *Test double* é o termo guarda-chuva pra qualquer objeto que substitui uma dependência real no teste — a analogia é o dublê de cinema: o ator principal (a dependência real) fica de fora de certas cenas, e um dublê especializado entra no lugar dele só pra aquela cena funcionar. Os cinco tipos (dummy, stub, fake, spy, mock) se dividem em dois papéis: uns **alimentam** o SUT com dados ou comportamento pra ele seguir em frente (dummy, stub, fake — a asserção final olha o **estado**); outros **participam da própria verificação** (spy, mock — a asserção olha a **interação**). A confusão mais cara em entrevista é achar que mock e stub são a mesma coisa: um stub **dá** uma resposta pra o SUT seguir, um mock **cobra** uma interação e falha sozinho se ela não acontecer — é a diferença de Fowler entre verificação de estado e verificação de comportamento.
 
 Quando você testa uma classe, ela quase nunca está sozinha. Ela conversa com um banco, um gateway de pagamento, um serviço de e-mail. No teste, você raramente quer o banco de verdade — quer algo no lugar dele. Esse "algo no lugar" tem nome.
 

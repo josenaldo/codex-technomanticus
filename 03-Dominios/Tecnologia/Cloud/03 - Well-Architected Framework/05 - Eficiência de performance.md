@@ -80,8 +80,7 @@ Cada princípio, na prática de uma review de arquitetura, vira uma pergunta con
 > [!tip] Assista: Understanding the Performance Efficiency Pillar of AWS Architecture
 > **Canal:** K21Academy | **Duração:** ~10min | **Idioma:** EN
 >
-> Percorre os cinco princípios de design um a um com exemplo concreto de serviço AWS para cada um — do CloudFront para "ir global em minutos" ao DynamoDB com auto scaling para "democratizar tecnologias avançadas" — útil como referência rápida de "qual serviço ilustra qual princípio".
-> Trecho de destaque [05:31]: *"go global in minutes like CloudFront... like S3, like DynamoDB — with DynamoDB you can create global tables"*.
+> Percorre os cinco princípios de design um a um com exemplo concreto de serviço AWS para cada um — do CloudFront para "ir global em minutos" ao DynamoDB com auto scaling para "democratizar tecnologias avançadas" — útil como referência rápida de "qual serviço ilustra qual princípio". Trecho de destaque [05:31]: *"go global in minutes like CloudFront... like S3, like DynamoDB — with DynamoDB you can create global tables"*.
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=rej46dgMmqM)
 
@@ -226,8 +225,7 @@ A terceira linha é o ponto inteiro do exercício: o número que importa não é
 > [!tip] Assista: AWS re:Invent 2017 - Optimizing Performance and Efficiency for Amazon EC2 and More (ARC329)
 > **Canal:** Amazon Web Services (oficial) | **Duração:** ~59min | **Idioma:** EN
 >
-> Vídeo mais antigo, mas o raciocínio continua valendo: o palestrante mostra por que escolher a instância certa é um problema de "matemática em seis dimensões" (CPU, memória, storage, rede, família de hardware e a relação entre elas) — e por que otimizar a felicidade do host, sem medir a experiência real da aplicação de ponta a ponta, é o erro clássico que o princípio de simpatia mecânica desta nota tenta evitar.
-> Trecho de destaque [16:40]: *"application quality of service and true measurement of end-to-end experience is what's important"*; e [21:04]: *"you have to be able to do six dimensional math"*.
+> Vídeo mais antigo, mas o raciocínio continua valendo: o palestrante mostra por que escolher a instância certa é um problema de "matemática em seis dimensões" (CPU, memória, storage, rede, família de hardware e a relação entre elas) — e por que otimizar a felicidade do host, sem medir a experiência real da aplicação de ponta a ponta, é o erro clássico que o princípio de simpatia mecânica desta nota tenta evitar. Trecho de destaque [16:40]: *"application quality of service and true measurement of end-to-end experience is what's important"*; e [21:04]: *"you have to be able to do six dimensional math"*.
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=r2Hhg7pA-WU)
 

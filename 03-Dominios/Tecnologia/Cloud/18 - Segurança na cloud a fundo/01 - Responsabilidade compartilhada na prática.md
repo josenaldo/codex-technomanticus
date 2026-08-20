@@ -90,8 +90,7 @@ Vale destrinchar cada um, porque cada um tem nome e sobrenome de responsabilidad
 > [!tip] Assista: AWS Shared Responsibility Model Explained | Customer vs AWS Responsibilities | CLF-C02
 > **Canal:** CloudExpert Solutions | **Duração:** ~10min | **Idioma:** EN
 >
-> O vídeo percorre exatamente os mesmos exemplos que esta nota usa pra desmontar a ilusão — patch de EC2, política de bucket S3 — mostrando na prática como a pergunta "de quem é a culpa?" muda cenário a cenário.
-> Trecho de destaque [06:44]: *"public S3 bucket. Whose responsibility [...] again customer's responsibility"*
+> O vídeo percorre exatamente os mesmos exemplos que esta nota usa pra desmontar a ilusão — patch de EC2, política de bucket S3 — mostrando na prática como a pergunta "de quem é a culpa?" muda cenário a cenário. Trecho de destaque [06:44]: *"public S3 bucket. Whose responsibility [...] again customer's responsibility"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=yCiFwQmin_0)
 

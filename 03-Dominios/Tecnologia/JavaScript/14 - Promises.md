@@ -585,9 +585,7 @@ const results = await Promise.all(
 ## Armadilhas comuns
 
 > [!warning] Esquecer o `return` no callback do `.then`
-> **O que acontece:** a Promise da cadeia seguinte resolve com `undefined`, não com o resultado da operação interna.
-> **Por quê:** se `fn` não retorna nada, `.then(fn)` cria uma P2 fulfilled com `undefined`. O próximo `.then` recebe `undefined`.
-> **Como evitar:** sempre retorne explicitamente do callback. Com arrow functions de uma linha, o retorno é implícito — cuidado ao adicionar chaves `{}` e esquecer o `return`.
+> **O que acontece:** a Promise da cadeia seguinte resolve com `undefined`, não com o resultado da operação interna. **Por quê:** se `fn` não retorna nada, `.then(fn)` cria uma P2 fulfilled com `undefined`. O próximo `.then` recebe `undefined`. **Como evitar:** sempre retorne explicitamente do callback. Com arrow functions de uma linha, o retorno é implícito — cuidado ao adicionar chaves `{}` e esquecer o `return`.
 >
 > ```javascript
 > // BUG: retorna undefined
@@ -600,19 +598,13 @@ const results = await Promise.all(
 > ```
 
 > [!warning] `.then` sem `.catch` — rejeição silenciosa
-> **O que acontece:** erros são engolidos silenciosamente. Em Node.js antigo, gerava warning; em browsers modernos, dispara `unhandledrejection`.
-> **Por quê:** sem um handler de rejeição na cadeia, a Promise simplesmente fica rejeitada e ninguém é notificado.
-> **Como evitar:** toda cadeia de Promises deve terminar com `.catch` ou ser `await`-ada dentro de um `try/catch`. Em módulos de aplicação, registre um handler global: `process.on("unhandledRejection", ...)`.
+> **O que acontece:** erros são engolidos silenciosamente. Em Node.js antigo, gerava warning; em browsers modernos, dispara `unhandledrejection`. **Por quê:** sem um handler de rejeição na cadeia, a Promise simplesmente fica rejeitada e ninguém é notificado. **Como evitar:** toda cadeia de Promises deve terminar com `.catch` ou ser `await`-ada dentro de um `try/catch`. Em módulos de aplicação, registre um handler global: `process.on("unhandledRejection", ...)`.
 
 > [!warning] `Promise.all` com fail-fast inesperado
-> **O que acontece:** um único erro cancela todo o lote; os outros resultados são perdidos.
-> **Por quê:** `Promise.all` rejeita na primeira rejeição — se 9 de 10 operações deram certo mas uma falhou, você não recebe nenhuma.
-> **Como evitar:** para operações independentes onde falha parcial é tolerável, use `Promise.allSettled`. Reserve `Promise.all` para quando você realmente precisa de todas as operações para prosseguir.
+> **O que acontece:** um único erro cancela todo o lote; os outros resultados são perdidos. **Por quê:** `Promise.all` rejeita na primeira rejeição — se 9 de 10 operações deram certo mas uma falhou, você não recebe nenhuma. **Como evitar:** para operações independentes onde falha parcial é tolerável, use `Promise.allSettled`. Reserve `Promise.all` para quando você realmente precisa de todas as operações para prosseguir.
 
 > [!warning] Criar Promise desnecessariamente (Promise constructor anti-pattern)
-> **O que acontece:** código mais complexo, maior risco de rejeição silenciosa.
-> **Por quê:** wrapping uma operação já assíncrona em `new Promise` duplica a camada de Promise sem ganho.
-> **Como evitar:** se a função já retorna Promise (como `fetch`), não envolva em `new Promise`. Retorne diretamente.
+> **O que acontece:** código mais complexo, maior risco de rejeição silenciosa. **Por quê:** wrapping uma operação já assíncrona em `new Promise` duplica a camada de Promise sem ganho. **Como evitar:** se a função já retorna Promise (como `fetch`), não envolva em `new Promise`. Retorne diretamente.
 >
 > ```javascript
 > // Anti-pattern
@@ -629,14 +621,10 @@ const results = await Promise.all(
 > ```
 
 > [!warning] Confundir `Promise.race` e `Promise.any`
-> **O que acontece:** usar `race` quando se quer o "primeiro sucesso" resulta em rejeição quando o mais rápido é um erro.
-> **Por quê:** `race` resolve/rejeita com o primeiro *settled* (qualquer estado). `any` aguarda o primeiro *fulfilled*.
-> **Como evitar:** use `race` para timeouts e corridas onde o "mais rápido" inclui falhas. Use `any` para fallbacks e redundância onde você quer ignorar rejeições.
+> **O que acontece:** usar `race` quando se quer o "primeiro sucesso" resulta em rejeição quando o mais rápido é um erro. **Por quê:** `race` resolve/rejeita com o primeiro *settled* (qualquer estado). `any` aguarda o primeiro *fulfilled*. **Como evitar:** use `race` para timeouts e corridas onde o "mais rápido" inclui falhas. Use `any` para fallbacks e redundância onde você quer ignorar rejeições.
 
 > [!warning] `Promise.race` não cancela a Promise perdedora — e isso vaza recursos
-> **O que acontece:** ao usar `Promise.race` para timeout, a operação "perdida" (ex: query ao banco) continua rodando em background, consumindo conexão, memória e CPU.
-> **Por quê:** `Promise.race` apenas ignora o resultado da Promise perdedora — não há mecanismo de cancelamento embutido. A operação segue até concluir, mesmo que você não use mais o resultado.
-> **Como evitar:** use `AbortController` para cancelar operações que suportam `signal`. O padrão correto combina `Promise.race` com `AbortController`:
+> **O que acontece:** ao usar `Promise.race` para timeout, a operação "perdida" (ex: query ao banco) continua rodando em background, consumindo conexão, memória e CPU. **Por quê:** `Promise.race` apenas ignora o resultado da Promise perdedora — não há mecanismo de cancelamento embutido. A operação segue até concluir, mesmo que você não use mais o resultado. **Como evitar:** use `AbortController` para cancelar operações que suportam `signal`. O padrão correto combina `Promise.race` com `AbortController`:
 >
 > ```javascript
 > async function withCancellableTimeout(asyncFn, ms) {

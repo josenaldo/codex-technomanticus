@@ -38,9 +38,7 @@ Tecnicamente, a ISA especifica:
 Quem não entra nessa definição? A **microarquitetura** — o circuito de verdade que implementa a ISA. Como vimos em [[01 - O que é organização de computadores]], a mesma ISA pode ser implementada por dezenas de microarquiteturas radicalmente diferentes: uma simples e barata, outra com pipeline de 20 estágios, outra com execução fora de ordem e branch prediction sofisticado. O contrato (ISA) é um; as implementações são muitas.
 
 > [!tip] Separação de contratos
-> ISA = **o quê** o hardware faz.
-> Microarquitetura = **como** o hardware faz.
-> Essa separação é o que permite a Intel lançar uma nova geração de chips todo ano sem quebrar nenhum programa escrito em 1995.
+> ISA = **o quê** o hardware faz. Microarquitetura = **como** o hardware faz. Essa separação é o que permite a Intel lançar uma nova geração de chips todo ano sem quebrar nenhum programa escrito em 1995.
 
 ---
 
@@ -158,9 +156,7 @@ Toda ISA fala a mesma língua em nível conceitual, mas com sotaque diferente. A
 | SIMD/vetorial | `VADDPS`, `NEON VADD` | Opera em múltiplos dados em paralelo |
 
 > [!example] RISC-V: instruções de controle de fluxo
-> `BEQ rs1, rs2, offset` — branch se `rs1 == rs2`, desvia para `PC + offset`.
-> `JAL rd, offset` — salta para `PC + offset`, salva `PC+4` em `rd` (o endereço de retorno).
-> `JALR rd, rs1, offset` — salta para `rs1 + offset` (retorno de função: `JALR x0, ra, 0`).
+> `BEQ rs1, rs2, offset` — branch se `rs1 == rs2`, desvia para `PC + offset`. `JAL rd, offset` — salta para `PC + offset`, salva `PC+4` em `rd` (o endereço de retorno). `JALR rd, rs1, offset` — salta para `rs1 + offset` (retorno de função: `JALR x0, ra, 0`).
 
 ---
 
@@ -273,8 +269,7 @@ RISC-V mudou isso. Qualquer pessoa pode implementar um chip RISC-V e distribuir 
 > - `A` — operações atômicas
 > - `F`/`D` — ponto flutuante simples/duplo
 > - `C` — instruções comprimidas de 16 bits (densidade de código)
-> - `V` — vetorial
-> O conjunto `IMAFD` + extensão de compressão `C` forma o perfil `G` (general purpose).
+> - `V` — vetorial O conjunto `IMAFD` + extensão de compressão `C` forma o perfil `G` (general purpose).
 
 ---
 

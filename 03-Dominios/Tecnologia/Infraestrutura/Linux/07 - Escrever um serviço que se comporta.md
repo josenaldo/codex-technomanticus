@@ -79,9 +79,7 @@ O default `simple` tem uma consequência que explica boa parte das corridas de i
 `Type=notify` é a resposta correta, quando disponível: a aplicação chama `sd_notify(READY=1)` quando de fato está servindo, e aí "ativo" passa a significar o que todo mundo supunha que significasse.
 
 > [!warning] `Type=forking` sem `PIDFile=`
-> **O que acontece:** o `systemd` supervisiona o processo errado, e o `stop` não derruba o serviço de verdade.
-> **Por quê:** com `forking`, o processo que ele executou sai, e é preciso dizer a ele qual é o processo real.
-> **Como evitar:** prefira que a aplicação **fique em primeiro plano** e use `simple`/`notify` — hoje é o modo recomendado, e desanexar virou legado. Se não houver escolha, declare `PIDFile=`.
+> **O que acontece:** o `systemd` supervisiona o processo errado, e o `stop` não derruba o serviço de verdade. **Por quê:** com `forking`, o processo que ele executou sai, e é preciso dizer a ele qual é o processo real. **Como evitar:** prefira que a aplicação **fique em primeiro plano** e use `simple`/`notify` — hoje é o modo recomendado, e desanexar virou legado. Se não houver escolha, declare `PIDFile=`.
 
 ---
 
@@ -208,24 +206,16 @@ As duas últimas linhas são as da nota 01, e continuam sendo a fonte da verdade
 ## Armadilhas comuns
 
 > [!warning] Esperar que o serviço enxergue o seu ambiente
-> **O que acontece:** a variável funciona no terminal e "não existe" para o serviço.
-> **Por quê:** o processo herda o ambiente de quem o criou, e quem o criou foi o `systemd`, não o seu shell.
-> **Como evitar:** declare com `Environment=` ou `EnvironmentFile=`. Para conferir, leia `/proc/<pid>/environ`, não o seu shell.
+> **O que acontece:** a variável funciona no terminal e "não existe" para o serviço. **Por quê:** o processo herda o ambiente de quem o criou, e quem o criou foi o `systemd`, não o seu shell. **Como evitar:** declare com `Environment=` ou `EnvironmentFile=`. Para conferir, leia `/proc/<pid>/environ`, não o seu shell.
 
 > [!warning] Segredo em `Environment=` dentro da unidade
-> **O que acontece:** a senha aparece para qualquer usuário via `systemctl cat` ou `systemctl show`.
-> **Por quê:** o arquivo de unidade é legível por todos.
-> **Como evitar:** `EnvironmentFile=` apontando para arquivo com dono do serviço e permissão `600`. Para segredo de verdade, gerenciador de segredos — a mesma conclusão da nota 25 do galho de Controle de Versão.
+> **O que acontece:** a senha aparece para qualquer usuário via `systemctl cat` ou `systemctl show`. **Por quê:** o arquivo de unidade é legível por todos. **Como evitar:** `EnvironmentFile=` apontando para arquivo com dono do serviço e permissão `600`. Para segredo de verdade, gerenciador de segredos — a mesma conclusão da nota 25 do galho de Controle de Versão.
 
 > [!warning] Omitir a seção `[Install]`
-> **O que acontece:** `systemctl enable` reclama, ou não produz efeito, e o serviço não sobe no boot.
-> **Por quê:** é `WantedBy=` que diz a que alvo a unidade se pendura ao ser habilitada.
-> **Como evitar:** `WantedBy=multi-user.target` cobre o caso comum de serviço de servidor.
+> **O que acontece:** `systemctl enable` reclama, ou não produz efeito, e o serviço não sobe no boot. **Por quê:** é `WantedBy=` que diz a que alvo a unidade se pendura ao ser habilitada. **Como evitar:** `WantedBy=multi-user.target` cobre o caso comum de serviço de servidor.
 
 > [!warning] Aumentar `TimeoutStopSec` para contornar `SIGKILL`
-> **O que acontece:** o `stop` fica lento e o problema continua — agora demorando mais para acontecer.
-> **Por quê:** a causa é a aplicação não encerrar ao receber `SIGTERM`.
-> **Como evitar:** trate `SIGTERM` na aplicação. Janela maior é legítima para trabalho longo declarado, não como remédio para sinal ignorado.
+> **O que acontece:** o `stop` fica lento e o problema continua — agora demorando mais para acontecer. **Por quê:** a causa é a aplicação não encerrar ao receber `SIGTERM`. **Como evitar:** trate `SIGTERM` na aplicação. Janela maior é legítima para trabalho longo declarado, não como remédio para sinal ignorado.
 
 ---
 

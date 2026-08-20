@@ -103,8 +103,7 @@ fetch(url, { next: { revalidate: 0 } })       // equivale a no-store
 > O modelo completo dos 4 níveis de cache — Request Memoization, Data Cache, Full Route Cache e Router Cache — e como configurar cada um está em [[03-Dominios/Tecnologia/React/Next.js/07 - O modelo de caching do Next 15|nota 07 — O modelo de caching do Next 15]].
 
 > [!warning] Mudança de padrão do Next 14 → Next 15
-> **Next 14:** `fetch` era cached por padrão (`force-cache`). Uma rota que buscava dados com `fetch` simples gerava HTML estático em build e reutilizava em cache.
-> **Next 15:** `fetch` é uncached por padrão. A mesma rota passa a buscar dados a cada request — latência maior, custos de API maiores.
+> **Next 14:** `fetch` era cached por padrão (`force-cache`). Uma rota que buscava dados com `fetch` simples gerava HTML estático em build e reutilizava em cache. **Next 15:** `fetch` é uncached por padrão. A mesma rota passa a buscar dados a cada request — latência maior, custos de API maiores.
 >
 > Se você migrou do 14 para o 15 e sua rota ficou lenta, verifique se dependia do cache implícito. Adicione `{ cache: 'force-cache' }` ou `{ next: { revalidate: N } }` onde o cache faz sentido.
 
@@ -249,8 +248,7 @@ async function Playlists({ artistId }: { artistId: string }) {
 > [!tip] Assista: Next.js App Router: Routing, Data Fetching, Caching
 > **Canal:** Vercel | **Duração:** ~14min | **Idioma:** EN
 >
-> Demonstração oficial mostrando que estratégias de cache diferentes — estático, dinâmico (`no-store`) e ISR (`revalidate`) — podem coexistir no mesmo componente via `Promise.all`. A nota explica o *porquê* do padrão paralelo; este vídeo mostra o efeito ao vivo: dados que permanecem estáticos enquanto outros mudam a cada 5 segundos na mesma página.
-> Trecho de destaque [11:03]: *"I'm using promise.all to fetch these in parallel and then I render out the name of the repository as well as the datetime."*
+> Demonstração oficial mostrando que estratégias de cache diferentes — estático, dinâmico (`no-store`) e ISR (`revalidate`) — podem coexistir no mesmo componente via `Promise.all`. A nota explica o *porquê* do padrão paralelo; este vídeo mostra o efeito ao vivo: dados que permanecem estáticos enquanto outros mudam a cada 5 segundos na mesma página. Trecho de destaque [11:03]: *"I'm using promise.all to fetch these in parallel and then I render out the name of the repository as well as the datetime."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=gSSsZReIFRk)
 

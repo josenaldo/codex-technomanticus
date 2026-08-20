@@ -115,9 +115,7 @@ A Cloudflare, operando rate limiting em mais de 330 data centers, relatou que es
 | Sliding window counter | `O(1)` por cliente | ~99,99%+ aproximada | Controlado | Produção em escala (Cloudflare, Figma) |
 
 > [!warning] Escolher fixed window "porque é mais simples de implementar"
-> **O que acontece:** o candidato propõe fixed window counter sem mencionar o problema da borda, ou o time implementa em produção e só descobre o estouro quando um cliente já causou incidente.
-> **Por quê:** fixed window *parece* correto em qualquer teste isolado — o contador nunca excede o limite *dentro de uma janela*. O bug só aparece quando você olha o intervalo que atravessa duas janelas.
-> **Como evitar:** se o limite existe para proteger capacidade real (não é só um sinal informativo), use sliding window counter ou token bucket. Reserve fixed window para casos onde um estouro ocasional de até 2x é tolerável — ex: um limite "soft" de fair use, não uma trava de segurança.
+> **O que acontece:** o candidato propõe fixed window counter sem mencionar o problema da borda, ou o time implementa em produção e só descobre o estouro quando um cliente já causou incidente. **Por quê:** fixed window *parece* correto em qualquer teste isolado — o contador nunca excede o limite *dentro de uma janela*. O bug só aparece quando você olha o intervalo que atravessa duas janelas. **Como evitar:** se o limite existe para proteger capacidade real (não é só um sinal informativo), use sliding window counter ou token bucket. Reserve fixed window para casos onde um estouro ocasional de até 2x é tolerável — ex: um limite "soft" de fair use, não uma trava de segurança.
 
 ## Um exemplo trabalhado: token bucket com números
 
@@ -196,9 +194,7 @@ A correção é fazer o **read-modify-write inteiro como uma única operação a
 Esse é exatamente o mecanismo que Kong usa na sua policy `redis` para rate limiting entre nós de um data plane distribuído, e é o padrão citado por implementações de referência de rate limiter distribuído com Redis+Lua.
 
 > [!warning] Bater no Redis a cada requisição sem medir o custo de latência
-> **O que acontece:** toda requisição da API precisa esperar uma ida e volta ao Redis antes de prosseguir, adicionando latência de rede síncrona ao caminho crítico.
-> **Por quê:** um design ingênuo trata o rate limiter como um gate bloqueante em série com o resto do processamento, sem considerar que Redis é uma dependência de rede adicional — se ele degradar, toda a API degrada junto.
-> **Como evitar:** três mitigações comuns, combináveis: (1) manter um contador **local aproximado** em cada nó e sincronizar com Redis periodicamente em lote (é o que a policy `batch-redis` do Kong faz, reduzindo chamadas por um fator de tamanho de lote); (2) usar pipelining/scripts Lua para manter a operação em uma única viagem de rede; (3) decidir explicitamente o comportamento em caso de falha do Redis — **fail-open** (deixa passar, prioriza disponibilidade) vs **fail-closed** (bloqueia, prioriza proteção) é uma escolha de trade-off que você deve declarar em voz alta na entrevista.
+> **O que acontece:** toda requisição da API precisa esperar uma ida e volta ao Redis antes de prosseguir, adicionando latência de rede síncrona ao caminho crítico. **Por quê:** um design ingênuo trata o rate limiter como um gate bloqueante em série com o resto do processamento, sem considerar que Redis é uma dependência de rede adicional — se ele degradar, toda a API degrada junto. **Como evitar:** três mitigações comuns, combináveis: (1) manter um contador **local aproximado** em cada nó e sincronizar com Redis periodicamente em lote (é o que a policy `batch-redis` do Kong faz, reduzindo chamadas por um fator de tamanho de lote); (2) usar pipelining/scripts Lua para manter a operação em uma única viagem de rede; (3) decidir explicitamente o comportamento em caso de falha do Redis — **fail-open** (deixa passar, prioriza disponibilidade) vs **fail-closed** (bloqueia, prioriza proteção) é uma escolha de trade-off que você deve declarar em voz alta na entrevista.
 
 Duas complicações adicionais valem menção rápida em entrevista, mesmo sem entrar no detalhe de implementação:
 
@@ -239,9 +235,7 @@ Como building block, o sinal esperado é rápido e cirúrgico: mencionar o algor
 Como pergunta dedicada, a progressão natural segue o framework do sub-galho 1: requisitos (qual taxa? por quem? hard ou soft limit?) → algoritmo (comparar 2-3 com trade-off explícito, não só nomear) → arquitetura distribuída (onde mora o contador? como fica atômico?) → resposta ao cliente (429, headers) → deep dive no que o entrevistador cutucar (hot keys, fail-open vs fail-closed, multi-região).
 
 > [!warning] Propor sliding window log "porque é o mais preciso" sem qualificar a escala
-> **O que acontece:** o candidato escolhe o algoritmo mais preciso tecnicamente, ignorando o custo.
-> **Por quê:** parece a escolha "correta" numa leitura superficial — mais preciso soa melhor. Mas precisão perfeita raramente é o requisito real, e o custo de memória escala com o volume de requisições, não com o número de clientes.
-> **Como evitar:** amarre a escolha ao requisito. "Preciso de exatidão perfeita porque isso é um limite de segurança crítico com poucos clientes premium → sliding window log serve. Isso é um limite de fair use com milhões de usuários → sliding window counter, a aproximação de 99,99% é mais que suficiente e custa 1000x menos memória."
+> **O que acontece:** o candidato escolhe o algoritmo mais preciso tecnicamente, ignorando o custo. **Por quê:** parece a escolha "correta" numa leitura superficial — mais preciso soa melhor. Mas precisão perfeita raramente é o requisito real, e o custo de memória escala com o volume de requisições, não com o número de clientes. **Como evitar:** amarre a escolha ao requisito. "Preciso de exatidão perfeita porque isso é um limite de segurança crítico com poucos clientes premium → sliding window log serve. Isso é um limite de fair use com milhões de usuários → sliding window counter, a aproximação de 99,99% é mais que suficiente e custa 1000x menos memória."
 
 ## Como explicar em inglês
 

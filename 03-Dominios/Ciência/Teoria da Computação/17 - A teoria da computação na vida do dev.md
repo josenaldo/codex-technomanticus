@@ -371,10 +371,7 @@ Repare no padrão que atravessa o galho inteiro. Toda vez que a teoria diz "não
 É sempre a mesma sabedoria: **reconhecer o muro, aceitar o muro, contornar o muro.** Quem nega que o muro existe bate nele. Quem o reconhece, desenha a rota ao redor. Esse é o presente que este galho deixa pra sua carreira — não fórmulas, mas um **filtro mental** que roda antes de cada decisão técnica importante.
 
 > [!quote] Três limites, três reflexos
-> **Plano vs. aninhado** → regex ou parser.
-> **Caro (NP)** → ótimo ou bom-o-suficiente.
-> **Impossível (parada/Rice)** → garantia ou heurística-com-fronteira.
-> Decore esses três pares e você carrega o galho inteiro no bolso.
+> **Plano vs. aninhado** → regex ou parser. **Caro (NP)** → ótimo ou bom-o-suficiente. **Impossível (parada/Rice)** → garantia ou heurística-com-fronteira. Decore esses três pares e você carrega o galho inteiro no bolso.
 
 ---
 

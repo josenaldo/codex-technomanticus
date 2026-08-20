@@ -66,24 +66,20 @@ Com os requisitos fechados, o próximo passo — [[1 - Framework de entrevista/0
 
 **Volume diário e QPS médio:**
 
-$$
-500.000.000 \text{ usuários} \times 4 \text{ notif/dia} = 2 \text{ bilhões de notificações/dia}
+$$ 500.000.000 \text{ usuários} \times 4 \text{ notif/dia} = 2 \text{ bilhões de notificações/dia}
 $$
 
-$$
-\frac{2.000.000.000}{86.400 \text{ s}} \approx 23.150 \text{ notificações/s (média)}
+$$ \frac{2.000.000.000}{86.400 \text{ s}} \approx 23.150 \text{ notificações/s (média)}
 $$
 
 **QPS de pico** — aplicando um peak factor de ~3x pelo padrão do dia (manhã/noite concentram tráfego) mais o efeito de campanhas em massa, que não são uniformes ao longo do dia:
 
-$$
-23.150 \times 3 \approx 70.000 \text{ notificações/s no pico "normal"}
+$$ 23.150 \times 3 \approx 70.000 \text{ notificações/s no pico "normal"}
 $$
 
 Mas o número que realmente importa para o design não é a média diária — é o **pico de um evento de fan-out em massa**. Se uma campanha de marketing dispara para 100 milhões de usuários e a expectativa de produto é "entregue em até 30 minutos":
 
-$$
-\frac{100.000.000}{30 \times 60 \text{ s}} \approx 55.500 \text{ notificações/s só dessa campanha}
+$$ \frac{100.000.000}{30 \times 60 \text{ s}} \approx 55.500 \text{ notificações/s só dessa campanha}
 $$
 
 Esse número, somado ao tráfego transacional de fundo, é a justificativa central para **separar filas por prioridade** (ver deep dive 1): se a campanha entrasse na mesma fila que os códigos de verificação de login, um pico de 55 mil/s de marketing enfileiraria atrás de si qualquer 2FA disparado no mesmo minuto — inaceitável para um RNF de "baixa latência para crítico".
@@ -100,8 +96,7 @@ O contraste de custo e de restrição regulatória entre os três canais é, por
 
 **Storage:** guardando metadados de cada notificação (destinatário, canal, status, timestamp, ~300 bytes) por 90 dias para auditoria e debugging:
 
-$$
-2.000.000.000 \text{ notif/dia} \times 90 \text{ dias} \times 300 \text{ bytes} \approx 54 \text{ TB}
+$$ 2.000.000.000 \text{ notif/dia} \times 90 \text{ dias} \times 300 \text{ bytes} \approx 54 \text{ TB}
 $$
 
 Um volume que já justifica um armazenamento colunar ou particionado por tempo (não um relacional único) — mas fora do caminho crítico de envio, então não é o foco do deep dive.
@@ -270,14 +265,10 @@ Com o circuito aberto para o APNs, os workers de push **param de tentar** — li
 **Dead-Letter Queue (DLQ).** Quando uma mensagem esgota o número máximo de tentativas de retry (tipicamente um teto configurável — 3 a 5 tentativas para notificações normais, potencialmente mais para críticas) sem sucesso, ela não é descartada silenciosamente — é publicada numa **DLQ**: um tópico/fila separado que registra "esta notificação falhou definitivamente" com o motivo. A DLQ serve dois propósitos: **auditoria** (o status da notificação é marcado como `failed` e fica consultável, em vez de simplesmente sumir) e **operação** (um consumidor da DLQ pode alertar o time de on-call quando o volume de falhas cruza um limiar, ou acionar automaticamente um canal de fallback — se o push falhou definitivamente para uma notificação crítica, escalar para SMS).
 
 > [!warning] Retentar indefinidamente sem limite nem DLQ
-> **O que acontece:** o worker retenta uma mensagem que falha permanentemente (token inválido, número de telefone inexistente) infinitas vezes, sem nunca desistir nem registrar a falha em lugar nenhum.
-> **Por quê:** o código de retry foi escrito pensando só no caso feliz ("o provedor volta, o retry funciona"), sem distinguir erro transitório de erro permanente, e sem um teto de tentativas.
-> **Como evitar:** classifique o erro (transitório vs. permanente) antes de decidir se retenta; imponha um `max_attempts` explícito; ao esgotar, publique na DLQ em vez de descartar silenciosamente — a mensagem que falhou definitivamente precisa ficar visível para alguém investigar, não desaparecer.
+> **O que acontece:** o worker retenta uma mensagem que falha permanentemente (token inválido, número de telefone inexistente) infinitas vezes, sem nunca desistir nem registrar a falha em lugar nenhum. **Por quê:** o código de retry foi escrito pensando só no caso feliz ("o provedor volta, o retry funciona"), sem distinguir erro transitório de erro permanente, e sem um teto de tentativas. **Como evitar:** classifique o erro (transitório vs. permanente) antes de decidir se retenta; imponha um `max_attempts` explícito; ao esgotar, publique na DLQ em vez de descartar silenciosamente — a mensagem que falhou definitivamente precisa ficar visível para alguém investigar, não desaparecer.
 
 > [!warning] Circuit breaker sem cooldown calibrado vira uma trava permanente
-> **O que acontece:** o circuito abre corretamente quando o APNs cai, mas o cooldown é longo demais (ou o critério de half-open é frouxo demais), e o sistema continua rejeitando chamadas ao APNs muito depois do provedor já ter se recuperado.
-> **Por quê:** o cooldown foi escolhido de forma arbitrária, sem testar o comportamento de recuperação real do provedor — um cooldown de 5 minutos pode ser ótimo para uma falha de rede transitória e péssimo (deixando push inteiro fora do ar por 5 minutos extras) para uma falha de 10 segundos.
-> **Como evitar:** calibre o cooldown com base no comportamento observado do provedor (SLAs documentados, histórico de incidentes), e prefira um estado half-open que teste com poucas chamadas reais em vez de esperar o cooldown inteiro cegamente — o objetivo é minimizar tanto o tempo gasto batendo numa parede quanto o tempo gasto artificialmente fora do ar depois que a parede sumiu.
+> **O que acontece:** o circuito abre corretamente quando o APNs cai, mas o cooldown é longo demais (ou o critério de half-open é frouxo demais), e o sistema continua rejeitando chamadas ao APNs muito depois do provedor já ter se recuperado. **Por quê:** o cooldown foi escolhido de forma arbitrária, sem testar o comportamento de recuperação real do provedor — um cooldown de 5 minutos pode ser ótimo para uma falha de rede transitória e péssimo (deixando push inteiro fora do ar por 5 minutos extras) para uma falha de 10 segundos. **Como evitar:** calibre o cooldown com base no comportamento observado do provedor (SLAs documentados, histórico de incidentes), e prefira um estado half-open que teste com poucas chamadas reais em vez de esperar o cooldown inteiro cegamente — o objetivo é minimizar tanto o tempo gasto batendo numa parede quanto o tempo gasto artificialmente fora do ar depois que a parede sumiu.
 
 ### Deep dive 3 — Dedup e idempotência
 
@@ -324,9 +315,7 @@ Dois refinamentos completam a defesa:
 > Poderia — e é uma alternativa válida, com um trade-off diferente. Uma constraint `UNIQUE(event_id, user_id, channel)` na tabela `notification_request`, com `INSERT ... ON CONFLICT DO NOTHING`, resolve a mesma duplicação sem precisar de infraestrutura adicional (nenhum Redis a mais para operar). O custo é latência: uma escrita transacional num banco relacional, mesmo bem indexada, tipicamente custa de 1 a alguns milissegundos, contra frações de milissegundo de um `SET NX` em memória — a diferença é pequena por chamada individual, mas em 23 mil verificações por segundo (o QPS médio deste sistema), a diferença agregada de latência e de carga no banco primário é real. A escolha comum em sistemas de alto throughput é usar Redis como checagem rápida no caminho crítico e o banco como fonte de verdade duradoura para status e auditoria — as duas camadas coexistem, não competem.
 
 > [!warning] Confundir "idempotência da fila" com "idempotência do provedor"
-> **O que acontece:** o time implementa a chave de idempotência corretamente no worker, mas assume que isso também protege contra o provedor externo enviar duas vezes por conta própria (ex.: um retry automático dentro do SDK do Twilio que o time desconhecia).
-> **Por quê:** idempotência é uma propriedade que precisa ser garantida em cada fronteira de rede onde uma requisição pode ser reenviada — o worker→fila é uma fronteira, o worker→provedor é outra, completamente independente. Proteger uma não protege a outra automaticamente.
-> **Como evitar:** sempre que o SDK/API do provedor oferecer um mecanismo de idempotência (header `Idempotency-Key`, `apns-collapse-id`), use-o explicitamente na chamada — não assuma que a idempotência do seu lado do sistema se propaga para dentro de uma caixa-preta de terceiros.
+> **O que acontece:** o time implementa a chave de idempotência corretamente no worker, mas assume que isso também protege contra o provedor externo enviar duas vezes por conta própria (ex.: um retry automático dentro do SDK do Twilio que o time desconhecia). **Por quê:** idempotência é uma propriedade que precisa ser garantida em cada fronteira de rede onde uma requisição pode ser reenviada — o worker→fila é uma fronteira, o worker→provedor é outra, completamente independente. Proteger uma não protege a outra automaticamente. **Como evitar:** sempre que o SDK/API do provedor oferecer um mecanismo de idempotência (header `Idempotency-Key`, `apns-collapse-id`), use-o explicitamente na chamada — não assuma que a idempotência do seu lado do sistema se propaga para dentro de uma caixa-preta de terceiros.
 
 ### Deep dive 4 — Preferências e rate limiting por usuário
 
@@ -339,9 +328,7 @@ Uma distinção que precisa estar explícita no modelo de dados, não só na ló
 **Rate limiting por usuário, independente de preferência.** Mesmo com todas as preferências respeitadas, um usuário pode legitimamente disparar múltiplas notificações elegíveis num curto período — várias atualizações de status do mesmo pedido, várias menções num chat ativo. O sistema aplica um teto por usuário por janela de tempo (ex.: no máximo N notificações não-críticas por hora), reaproveitando o mesmo padrão de **token bucket** coberto em [[3 - Padrões recorrentes/04 - Rate Limiting|Rate Limiting]] — só que a chave do bucket agora é `user_id`, não IP ou API key. Notificações que excedem o teto não são necessariamente descartadas: uma estratégia comum é **agregá-las** ("você tem 5 novas atualizações") em vez de suprimir silenciosamente, preservando a informação sem gerar cinco interrupções separadas.
 
 > [!warning] Rate limit único aplicado igualmente a crítico e a marketing
-> **O que acontece:** o sistema aplica o mesmo teto de "N notificações/hora por usuário" independente da categoria, e um código de verificação de login chega atrasado (ou é suprimido) porque o usuário já recebeu N-1 notificações de marketing na mesma janela.
-> **Por quê:** o rate limiter foi projetado pensando só em "não incomodar o usuário", sem segregar por prioridade — a mesma lacuna do deep dive de fan-out por fila, agora no nível de usuário em vez de nível de sistema.
-> **Como evitar:** o rate limit por usuário precisa de buckets separados por categoria/prioridade, do mesmo jeito que o fan-out por fila separa canais e prioridades no nível de infraestrutura — notificações `critical` (2FA, alerta de fraude, alerta de segurança) ficam fora do rate limit de conveniência que se aplica a marketing e social.
+> **O que acontece:** o sistema aplica o mesmo teto de "N notificações/hora por usuário" independente da categoria, e um código de verificação de login chega atrasado (ou é suprimido) porque o usuário já recebeu N-1 notificações de marketing na mesma janela. **Por quê:** o rate limiter foi projetado pensando só em "não incomodar o usuário", sem segregar por prioridade — a mesma lacuna do deep dive de fan-out por fila, agora no nível de usuário em vez de nível de sistema. **Como evitar:** o rate limit por usuário precisa de buckets separados por categoria/prioridade, do mesmo jeito que o fan-out por fila separa canais e prioridades no nível de infraestrutura — notificações `critical` (2FA, alerta de fraude, alerta de segurança) ficam fora do rate limit de conveniência que se aplica a marketing e social.
 
 Em uma frase: **fan-out por fila resolve "não travar o sistema"; dedup resolve "não duplicar"; preferências e rate limiting resolvem o terceiro problema, geralmente esquecido — "não irritar o usuário", que é tão parte da experiência do produto quanto entregar a notificação em si.**
 
@@ -358,9 +345,7 @@ Nenhum componente discutido é gratuito — vale nomear proativamente os pontos 
 **Ordering não é garantido, e normalmente não precisa ser.** Duas notificações do mesmo evento em canais diferentes (push e email da mesma confirmação de pedido) podem chegar fora de ordem — o push pode demorar mais que o email, ou vice-versa, dependendo da fila e do provedor de cada canal. Para a maioria dos produtos isso é aceitável (o conteúdo de cada notificação é autocontido). Quando ordering *importa* de fato — por exemplo, uma sequência de mensagens de chat que precisa aparecer na ordem certa — o design correto normalmente não é "ordenar notificações", é usar partições de fila chaveadas por `user_id` (garantindo ordem só dentro da mesma partição, o padrão de partitioning do Kafka) e tratar isso como um requisito explícito levantado com o entrevistador, não como um padrão default deste sistema.
 
 > [!warning] Ignorar a fronteira legal do opt-out (TCPA/CAN-SPAM)
-> **O que acontece:** o sistema trata "preferência do usuário" como uma feature de UX, sem tratar os requisitos legais de opt-out como um requisito funcional obrigatório.
-> **Por quê:** parece um detalhe de produto, não de arquitetura — mas nos EUA, o TCPA prevê multas estatutárias de **US$500 a US$1.500 por violação**, por mensagem, sem necessidade de provar dano real, e exige que um pedido de revogação de consentimento (o usuário respondendo "STOP") seja honrado o quanto antes, no máximo em 10 dias úteis. O CAN-SPAM impõe regra equivalente para email, com multas por email de até dezenas de milhares de dólares. Um bug que continua mandando SMS de marketing depois de um opt-out não é só uma má experiência — é passivo legal mensurável, por mensagem enviada.
-> **Como evitar:** trate a checagem de preferência e a aplicação de opt-out (incluindo reconhecer "STOP"/"CANCEL" recebidos via webhook do provedor de SMS) como parte do caminho crítico e testado do sistema, com o mesmo rigor que se dá a dedup ou a retry — não como uma tabela de configuração acessória.
+> **O que acontece:** o sistema trata "preferência do usuário" como uma feature de UX, sem tratar os requisitos legais de opt-out como um requisito funcional obrigatório. **Por quê:** parece um detalhe de produto, não de arquitetura — mas nos EUA, o TCPA prevê multas estatutárias de **US$500 a US$1.500 por violação**, por mensagem, sem necessidade de provar dano real, e exige que um pedido de revogação de consentimento (o usuário respondendo "STOP") seja honrado o quanto antes, no máximo em 10 dias úteis. O CAN-SPAM impõe regra equivalente para email, com multas por email de até dezenas de milhares de dólares. Um bug que continua mandando SMS de marketing depois de um opt-out não é só uma má experiência — é passivo legal mensurável, por mensagem enviada. **Como evitar:** trate a checagem de preferência e a aplicação de opt-out (incluindo reconhecer "STOP"/"CANCEL" recebidos via webhook do provedor de SMS) como parte do caminho crítico e testado do sistema, com o mesmo rigor que se dá a dedup ou a retry — não como uma tabela de configuração acessória.
 
 ## Variações de follow-up
 

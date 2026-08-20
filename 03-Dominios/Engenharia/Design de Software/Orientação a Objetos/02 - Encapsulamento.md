@@ -187,8 +187,7 @@ Uma analogia: encapsulamento é a parede do quarto (esconde o que está dentro).
 > - **Python**: `__x` na classe `C` é manglado para `_C__x` (só nomes com dois underscores no início e **não** dois no fim); o objetivo canônico é evitar colisão em subclasses, não segurança — confirmado em Real Python e GeeksforGeeks.
 > - **JS `#campo`**: padronizado no **ES2022 (ES13)**, privacidade imposta em *runtime* pelo motor (não serializa, não vaza em reflection).
 > - **TS `private`**: somente *compile-time*, **apagado** no JavaScript emitido — sem proteção em runtime (docs TypeScript/MDN).
-> - **Go**: visibilidade por capitalização da inicial, no escopo do **pacote** (não da classe), conforme spec da linguagem.
-> Os exemplos `Conta` são didáticos e genéricos; não representam nenhum sistema real do usuário.
+> - **Go**: visibilidade por capitalização da inicial, no escopo do **pacote** (não da classe), conforme spec da linguagem. Os exemplos `Conta` são didáticos e genéricos; não representam nenhum sistema real do usuário.
 
 ## Em entrevista
 

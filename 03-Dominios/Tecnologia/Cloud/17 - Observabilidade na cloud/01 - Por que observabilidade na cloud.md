@@ -71,16 +71,14 @@ Traces respondem à pergunta que abriu esta nota: "por onde esse pedido específ
 > [!tip] Assista: Monitoramento e Observabilidade (Logs, Métricas e Traces)
 > **Canal:** O Back Dev | **Duração:** ~19min | **Idioma:** PT-BR
 >
-> Um mergulho didático nos três pilares que complementa esta nota com exemplos de código e cenários de troubleshooting reais, mostrando como logs, métricas e traces se cruzam na prática do dia a dia.
-> Trecho de destaque [03:01]: *"resumida, os três pilares da observabilidade são: logs, métricas e traces"*
+> Um mergulho didático nos três pilares que complementa esta nota com exemplos de código e cenários de troubleshooting reais, mostrando como logs, métricas e traces se cruzam na prática do dia a dia. Trecho de destaque [03:01]: *"resumida, os três pilares da observabilidade são: logs, métricas e traces"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=qffRr6b908w)
 
 > [!tip] Assista: Monitoramento vs Observabilidade — Explicado em 4 min
 > **Canal:** Lobinho Tech | **Duração:** ~4min | **Idioma:** PT-BR
 >
-> Uma síntese rápida e visual da diferença entre monitoramento e observabilidade, útil para revisar o vocabulário desta nota antes de seguir para o CloudWatch.
-> Trecho de destaque [01:14]: *"observabilidade é a capacidade de entender o estado interno de uma aplicação, infraestrutura ou serviço, a partir de dados que ele gera, como logs, métricas e trace"*
+> Uma síntese rápida e visual da diferença entre monitoramento e observabilidade, útil para revisar o vocabulário desta nota antes de seguir para o CloudWatch. Trecho de destaque [01:14]: *"observabilidade é a capacidade de entender o estado interno de uma aplicação, infraestrutura ou serviço, a partir de dados que ele gera, como logs, métricas e trace"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=dgtuctf74SE)
 

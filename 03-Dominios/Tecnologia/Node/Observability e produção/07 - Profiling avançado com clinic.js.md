@@ -389,35 +389,25 @@ A flamegraph is a visualization where the horizontal axis represents the proport
 
 ## Vocabulário
 
-**flamegraph**
-: Visualização de profiling de CPU onde o eixo horizontal representa o tempo proporcional gasto em cada função (largura = tempo) e o eixo vertical representa a profundidade do call stack. Permite identificar visualmente funções "quentes" (hot paths) que consomem mais CPU.
+**flamegraph** : Visualização de profiling de CPU onde o eixo horizontal representa o tempo proporcional gasto em cada função (largura = tempo) e o eixo vertical representa a profundidade do call stack. Permite identificar visualmente funções "quentes" (hot paths) que consomem mais CPU.
 
-**event loop lag**
-: Atraso entre o momento em que um callback é enfileirado no event loop e o momento em que ele é efetivamente executado. Causado por operações síncronas bloqueantes ou acúmulo excessivo de microtasks. Medido em milliseconds; valores acima de 10-20ms em produção indicam problema.
+**event loop lag** : Atraso entre o momento em que um callback é enfileirado no event loop e o momento em que ele é efetivamente executado. Causado por operações síncronas bloqueantes ou acúmulo excessivo de microtasks. Medido em milliseconds; valores acima de 10-20ms em produção indicam problema.
 
-**I/O bound**
-: Descrição de uma operação ou aplicação cujo gargalo principal é o tempo de espera por operações de entrada/saída (rede, disco, banco de dados), e não pelo processamento de CPU. O event loop fica ocioso esperando callbacks de I/O.
+**I/O bound** : Descrição de uma operação ou aplicação cujo gargalo principal é o tempo de espera por operações de entrada/saída (rede, disco, banco de dados), e não pelo processamento de CPU. O event loop fica ocioso esperando callbacks de I/O.
 
-**CPU bound**
-: Descrição de uma operação ou aplicação cujo gargalo principal é o processamento de CPU — a aplicação está constantemente executando código e não pode processar mais requisições por falta de capacidade computacional, não por espera de I/O.
+**CPU bound** : Descrição de uma operação ou aplicação cujo gargalo principal é o processamento de CPU — a aplicação está constantemente executando código e não pode processar mais requisições por falta de capacidade computacional, não por espera de I/O.
 
-**heap allocation**
-: Processo de reservar memória no heap do V8 para novos objetos JavaScript. Alocações excessivas aumentam a pressão sobre o Garbage Collector. O heapprofiler do clinic.js rastreia o site de cada alocação (qual função alocou) ao longo do tempo.
+**heap allocation** : Processo de reservar memória no heap do V8 para novos objetos JavaScript. Alocações excessivas aumentam a pressão sobre o Garbage Collector. O heapprofiler do clinic.js rastreia o site de cada alocação (qual função alocou) ao longo do tempo.
 
-**async profiling**
-: Técnica de profiling que rastreia operações assíncronas — Promises, callbacks, `async/await` — do início ao fim, medindo o tempo de espera em cada estágio. clinic bubbleprof usa `async_hooks` do Node.js para isso.
+**async profiling** : Técnica de profiling que rastreia operações assíncronas — Promises, callbacks, `async/await` — do início ao fim, medindo o tempo de espera em cada estágio. clinic bubbleprof usa `async_hooks` do Node.js para isso.
 
-**hot path**
-: Trecho de código executado com alta frequência ou que consome uma proporção desproporcional de recursos (CPU ou memória). Identificar e otimizar hot paths é a estratégia central de performance tuning; um flamegraph revela hot paths visualmente.
+**hot path** : Trecho de código executado com alta frequência ou que consome uma proporção desproporcional de recursos (CPU ou memória). Identificar e otimizar hot paths é a estratégia central de performance tuning; um flamegraph revela hot paths visualmente.
 
-**wall time**
-: Tempo real decorrido ("tempo de relógio de parede") para uma operação, incluindo tempo de CPU e tempo de espera por I/O ou scheduling do SO. Diferente de CPU time (apenas tempo em que a CPU estava realmente executando código). Profilers de sampling frequentemente medem wall time.
+**wall time** : Tempo real decorrido ("tempo de relógio de parede") para uma operação, incluindo tempo de CPU e tempo de espera por I/O ou scheduling do SO. Diferente de CPU time (apenas tempo em que a CPU estava realmente executando código). Profilers de sampling frequentemente medem wall time.
 
-**tick time**
-: Duração de um "tick" do event loop do Node.js — o tempo para completar uma iteração completa do loop (processar callbacks pendentes, executar microtasks, verificar I/O). Ticks longos causam event loop lag; o ideal é que cada tick seja de poucos milliseconds.
+**tick time** : Duração de um "tick" do event loop do Node.js — o tempo para completar uma iteração completa do loop (processar callbacks pendentes, executar microtasks, verificar I/O). Ticks longos causam event loop lag; o ideal é que cada tick seja de poucos milliseconds.
 
-**deoptimização**
-: Processo pelo qual o JIT compiler do V8 abandona código otimizado e volta ao modo de interpretação mais lento, geralmente porque a premissa de tipo estático do código foi violada em runtime. Aparece como frames vermelhos/laranjas em flamegraphs do clinic flame.
+**deoptimização** : Processo pelo qual o JIT compiler do V8 abandona código otimizado e volta ao modo de interpretação mais lento, geralmente porque a premissa de tipo estático do código foi violada em runtime. Aparece como frames vermelhos/laranjas em flamegraphs do clinic flame.
 
 ## Armadilhas comuns
 

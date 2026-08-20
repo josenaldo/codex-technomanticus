@@ -25,13 +25,7 @@ aliases:
 # Optimistic × Pessimistic Offline Lock
 
 > [!abstract] TL;DR
-> Uma edição de usuário dura minutos e várias requisições; uma transação de banco dura milissegundos.
-> No intervalo entre carregar o formulário e salvá-lo, **outro usuário pode ter salvado o mesmo
-> registro** — e o segundo `UPDATE` apaga o primeiro sem erro nenhum. Isso é o *lost update*, e é o bug
-> mais silencioso que um sistema corporativo pode ter. Há duas defesas. **Otimista**: deixe editar e
-> **detecte o conflito no salvamento**, comparando versões. **Pessimista**: **impeça** a edição
-> concorrente, reservando o registro antes. A escolha é econômica — custo do retrabalho contra custo da
-> espera. **A nuvem escolheu a otimista**, porque lock distribuído é caro e difícil de acertar.
+> Uma edição de usuário dura minutos e várias requisições; uma transação de banco dura milissegundos. No intervalo entre carregar o formulário e salvá-lo, **outro usuário pode ter salvado o mesmo registro** — e o segundo `UPDATE` apaga o primeiro sem erro nenhum. Isso é o *lost update*, e é o bug mais silencioso que um sistema corporativo pode ter. Há duas defesas. **Otimista**: deixe editar e **detecte o conflito no salvamento**, comparando versões. **Pessimista**: **impeça** a edição concorrente, reservando o registro antes. A escolha é econômica — custo do retrabalho contra custo da espera. **A nuvem escolheu a otimista**, porque lock distribuído é caro e difícil de acertar.
 
 ## O bug que ninguém reporta
 
@@ -127,19 +121,13 @@ A pergunta prática que resolve quase todos os casos: **quanto dói descobrir o 
 ## Armadilhas comuns
 
 > [!warning] Lock pessimista sem expiração
-> **O que acontece:** um usuário abre o registro para editar e fecha o navegador. O registro fica travado indefinidamente, e a solução operacional vira um chamado para alguém apagar a linha na mão.
-> **Por quê:** não há evento de "usuário desistiu" — o navegador não avisa ninguém ao fechar.
-> **Como evitar:** todo lock offline precisa de **expiração** e de renovação enquanto a tela estiver ativa. E de uma forma de administrador liberar, porque o caso vai acontecer.
+> **O que acontece:** um usuário abre o registro para editar e fecha o navegador. O registro fica travado indefinidamente, e a solução operacional vira um chamado para alguém apagar a linha na mão. **Por quê:** não há evento de "usuário desistiu" — o navegador não avisa ninguém ao fechar. **Como evitar:** todo lock offline precisa de **expiração** e de renovação enquanto a tela estiver ativa. E de uma forma de administrador liberar, porque o caso vai acontecer.
 
 > [!warning] Lock otimista sem tratamento de conflito
-> **O que acontece:** o sistema detecta o conflito corretamente e responde com "erro: o registro foi modificado por outro usuário" — descartando os quarenta minutos que a pessoa acabou de digitar.
-> **Por quê:** a detecção é a parte técnica e fica pronta primeiro; o tratamento é trabalho de produto e costuma ficar para depois, o que na prática significa nunca.
-> **Como evitar:** o padrão só está completo com a resposta ao conflito. Do melhor para o pior: mesclar automaticamente quando os campos alterados são disjuntos; mostrar as diferenças e deixar a pessoa decidir; no mínimo, **preservar o que foi digitado** ao recarregar. Nunca descartar em silêncio.
+> **O que acontece:** o sistema detecta o conflito corretamente e responde com "erro: o registro foi modificado por outro usuário" — descartando os quarenta minutos que a pessoa acabou de digitar. **Por quê:** a detecção é a parte técnica e fica pronta primeiro; o tratamento é trabalho de produto e costuma ficar para depois, o que na prática significa nunca. **Como evitar:** o padrão só está completo com a resposta ao conflito. Do melhor para o pior: mesclar automaticamente quando os campos alterados são disjuntos; mostrar as diferenças e deixar a pessoa decidir; no mínimo, **preservar o que foi digitado** ao recarregar. Nunca descartar em silêncio.
 
 > [!warning] Confundir lock offline com lock de banco
-> **O que acontece:** o time usa `SELECT ... FOR UPDATE` para proteger uma edição de formulário, e o pool de conexões esgota assim que várias pessoas editam ao mesmo tempo.
-> **Por quê:** os nomes são parecidos e o mecanismo do banco é o mais conhecido — mas ele vive **dentro** de uma transação de sistema, e o problema desta nota é justamente o que acontece **entre** transações.
-> **Como evitar:** lock de banco protege milissegundos dentro de uma transação; lock offline protege minutos ao longo de uma conversa. Se a proteção precisa sobreviver a uma resposta HTTP, ela não pode ser do banco.
+> **O que acontece:** o time usa `SELECT ... FOR UPDATE` para proteger uma edição de formulário, e o pool de conexões esgota assim que várias pessoas editam ao mesmo tempo. **Por quê:** os nomes são parecidos e o mecanismo do banco é o mais conhecido — mas ele vive **dentro** de uma transação de sistema, e o problema desta nota é justamente o que acontece **entre** transações. **Como evitar:** lock de banco protege milissegundos dentro de uma transação; lock offline protege minutos ao longo de uma conversa. Se a proteção precisa sobreviver a uma resposta HTTP, ela não pode ser do banco.
 
 ## Como explicar em inglês
 

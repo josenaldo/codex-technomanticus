@@ -142,8 +142,7 @@ O fluxo prático:
 > [!tip] Assista: How the GitHub Copilot coding agent works | GitHub Checkout
 > **Canal:** GitHub (oficial) | **Duração:** ~7min | **Idioma:** EN
 >
-> Tim Rogers (engenheiro do GitHub) demonstra ao vivo o fluxo completo: atribuir múltiplas issues simultaneamente ao Copilot, acompanhar o progresso via PR draft e session view, e acionar o agent diretamente do Copilot Chat sem sair do editor. O vídeo inclui um caso real — o billing team do GitHub usou o agent para aumentar cobertura de testes enquanto a equipe trabalhava em outras prioridades.
-> Trecho de destaque [5:31]: *"you've got like a almost a team of AI interns who can be doing stuff for you in the background and helping you to get more done, and hopefully, leaving the fun stuff for you."*
+> Tim Rogers (engenheiro do GitHub) demonstra ao vivo o fluxo completo: atribuir múltiplas issues simultaneamente ao Copilot, acompanhar o progresso via PR draft e session view, e acionar o agent diretamente do Copilot Chat sem sair do editor. O vídeo inclui um caso real — o billing team do GitHub usou o agent para aumentar cobertura de testes enquanto a equipe trabalhava em outras prioridades. Trecho de destaque [5:31]: *"you've got like a almost a team of AI interns who can be doing stuff for you in the background and helping you to get more done, and hopefully, leaving the fun stuff for you."*
 >
 > 🎬 [Assistir no YouTube](https://youtube.com/watch?v=1GVBRhDI5No)
 

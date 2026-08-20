@@ -72,14 +72,11 @@ O módulo oferece 4 funções principais, com trade-offs distintos:
 
 A distinção entre os três modelos é o que permite escolher a ferramenta certa. Confundir os modelos leva a soluções que adicionam complexidade sem resolver o problema real:
 
-**"Tenho um endpoint CPU-bound. Vou usar Cluster para escalar."**
-Cluster cria N cópias do mesmo processo. Se cada cópia tem o mesmo problema CPU-bound dentro do handler, você agora tem N processos com o mesmo gargalo — não paralelizou o trabalho, só multiplicou os recursos consumidos. O trabalho dentro de um único request continua bloqueando o event loop daquele worker.
+**"Tenho um endpoint CPU-bound. Vou usar Cluster para escalar."** Cluster cria N cópias do mesmo processo. Se cada cópia tem o mesmo problema CPU-bound dentro do handler, você agora tem N processos com o mesmo gargalo — não paralelizou o trabalho, só multiplicou os recursos consumidos. O trabalho dentro de um único request continua bloqueando o event loop daquele worker.
 
-**"Quero rodar um script Python. Vou usar Worker Thread."**
-Worker Threads executam apenas JavaScript. Não há como rodar um binário externo dentro de um Worker Thread. A ferramenta correta é `child_process.spawn`.
+**"Quero rodar um script Python. Vou usar Worker Thread."** Worker Threads executam apenas JavaScript. Não há como rodar um binário externo dentro de um Worker Thread. A ferramenta correta é `child_process.spawn`.
 
-**"Quero spawnar um processo Node filho isolado. Vou usar `cluster.fork`."**
-`cluster.fork` é uma especialização que compartilha porta TCP. Para um processo Node filho isolado sem compartilhamento de porta, a ferramenta correta é `child_process.fork`.
+**"Quero spawnar um processo Node filho isolado. Vou usar `cluster.fork`."** `cluster.fork` é uma especialização que compartilha porta TCP. Para um processo Node filho isolado sem compartilhamento de porta, a ferramenta correta é `child_process.fork`.
 
 Cada ferramenta resolve uma classe diferente de problema. A decisão acontece **antes** de escrever código.
 
@@ -392,29 +389,19 @@ app.post('/transcode', async (req, res) => {
 ## Armadilhas comuns
 
 > [!warning] Usar Cluster para CPU-bound em handler
-> **O que acontece:** Cluster é adicionado esperando que CPU-bound dentro de handlers seja resolvido — mas a latência não melhora por request.
-> **Por quê:** Cluster cria N réplicas do processo. Se o problema é CPU-bound dentro de um único request (ex: parsing pesado de JSON), cada worker bloqueia **seu próprio** event loop com o mesmo trabalho. O problema foi multiplicado, não resolvido. Cluster é para escalonamento horizontal de I/O — mais conexões HTTP distribuídas entre workers — não para paralelizar cálculo dentro de um request.
-> **Como evitar:** Usar Worker Thread para CPU-bound dentro de um handler. Reservar Cluster para escalar conexões HTTP por CPU na mesma máquina.
+> **O que acontece:** Cluster é adicionado esperando que CPU-bound dentro de handlers seja resolvido — mas a latência não melhora por request. **Por quê:** Cluster cria N réplicas do processo. Se o problema é CPU-bound dentro de um único request (ex: parsing pesado de JSON), cada worker bloqueia **seu próprio** event loop com o mesmo trabalho. O problema foi multiplicado, não resolvido. Cluster é para escalonamento horizontal de I/O — mais conexões HTTP distribuídas entre workers — não para paralelizar cálculo dentro de um request. **Como evitar:** Usar Worker Thread para CPU-bound dentro de um handler. Reservar Cluster para escalar conexões HTTP por CPU na mesma máquina.
 
 > [!warning] Tentar rodar comando externo em Worker Thread
-> **O que acontece:** Um binário externo (`ffmpeg`, `python`, `imagemagick`) é chamado de dentro de um Worker Thread — e falha.
-> **Por quê:** Worker Threads executam apenas JavaScript dentro do runtime V8. Não há API para rodar binários do sistema operacional de dentro de um Worker Thread.
-> **Como evitar:** Para qualquer processo externo, usar `child_process.spawn` (streams, dados grandes) ou `child_process.exec` (output pequeno, shell necessário). Worker Thread é para código JavaScript pesado que precisa rodar fora da thread principal.
+> **O que acontece:** Um binário externo (`ffmpeg`, `python`, `imagemagick`) é chamado de dentro de um Worker Thread — e falha. **Por quê:** Worker Threads executam apenas JavaScript dentro do runtime V8. Não há API para rodar binários do sistema operacional de dentro de um Worker Thread. **Como evitar:** Para qualquer processo externo, usar `child_process.spawn` (streams, dados grandes) ou `child_process.exec` (output pequeno, shell necessário). Worker Thread é para código JavaScript pesado que precisa rodar fora da thread principal.
 
 > [!warning] Confundir cluster.fork com child_process.fork
-> **O que acontece:** `cluster.fork()` é usado para spawnar um processo Node genérico de trabalho, ou `child_process.fork()` é usado tentando compartilhar uma porta HTTP.
-> **Por quê:** São superficialmente similares — ambos criam processos Node filhos com IPC — mas com propósitos distintos. `cluster.fork()` é especialização de `child_process.fork` com compartilhamento de porta TCP: o processo filho herda o socket do servidor do primário. `child_process.fork()` cria um processo Node filho genérico com IPC, sem compartilhamento de porta.
-> **Como evitar:** Usar `cluster.fork` apenas para servidores HTTP que precisam escalar por CPU. Usar `child_process.fork` para qualquer processo Node filho isolado com comunicação via mensagens.
+> **O que acontece:** `cluster.fork()` é usado para spawnar um processo Node genérico de trabalho, ou `child_process.fork()` é usado tentando compartilhar uma porta HTTP. **Por quê:** São superficialmente similares — ambos criam processos Node filhos com IPC — mas com propósitos distintos. `cluster.fork()` é especialização de `child_process.fork` com compartilhamento de porta TCP: o processo filho herda o socket do servidor do primário. `child_process.fork()` cria um processo Node filho genérico com IPC, sem compartilhamento de porta. **Como evitar:** Usar `cluster.fork` apenas para servidores HTTP que precisam escalar por CPU. Usar `child_process.fork` para qualquer processo Node filho isolado com comunicação via mensagens.
 
 > [!warning] Decidir sem entender o tipo de problema
-> **O que acontece:** Worker Threads são implementadas sem diagnóstico — a latência não muda porque o bottleneck era I/O, não CPU. O código agora tem complexidade de threading sem benefício.
-> **Por quê:** A sequência que gera dívida técnica: "a API está lenta" → "vou usar Workers" → implementar → latência igual → código complexificado sem ganho.
-> **Como evitar:** Diagnosticar primeiro: medir event loop lag, identificar se o bottleneck é CPU ou I/O, tentar alternativas simples (streaming, paginação, API async, `UV_THREADPOOL_SIZE`). A sequência completa está em [[01 - Por que paralelismo em Node]].
+> **O que acontece:** Worker Threads são implementadas sem diagnóstico — a latência não muda porque o bottleneck era I/O, não CPU. O código agora tem complexidade de threading sem benefício. **Por quê:** A sequência que gera dívida técnica: "a API está lenta" → "vou usar Workers" → implementar → latência igual → código complexificado sem ganho. **Como evitar:** Diagnosticar primeiro: medir event loop lag, identificar se o bottleneck é CPU ou I/O, tentar alternativas simples (streaming, paginação, API async, `UV_THREADPOOL_SIZE`). A sequência completa está em [[01 - Por que paralelismo em Node]].
 
 > [!warning] Passar input não sanitizado para exec
-> **O que acontece:** Input de usuário é interpolado diretamente na string de comando passada ao `exec` — abrindo vetor de command injection.
-> **Por quê:** `child_process.exec` spawna um shell e passa a string como comando. Se `req.body.filename` contiver `; rm -rf /`, o shell vai executar os dois comandos.
-> **Como evitar:** Preferir `spawn` ou `execFile` com argumentos como array separado — sem shell, sem injeção. Quando `exec` for inevitável (pipes de shell), sanitizar e validar rigorosamente qualquer input externo antes de interpolar.
+> **O que acontece:** Input de usuário é interpolado diretamente na string de comando passada ao `exec` — abrindo vetor de command injection. **Por quê:** `child_process.exec` spawna um shell e passa a string como comando. Se `req.body.filename` contiver `; rm -rf /`, o shell vai executar os dois comandos. **Como evitar:** Preferir `spawn` ou `execFile` com argumentos como array separado — sem shell, sem injeção. Quando `exec` for inevitável (pipes de shell), sanitizar e validar rigorosamente qualquer input externo antes de interpolar.
 
 ---
 
@@ -443,17 +430,13 @@ app.post('/transcode', async (req, res) => {
 
 ### Perguntas frequentes em entrevista
 
-**"Qual a diferença entre Worker Threads e Cluster?"**
-Worker Threads são threads dentro do mesmo processo — compartilham memória possível via `SharedArrayBuffer`, custo de criação em milissegundos, ideais para CPU-bound. Cluster são processos completos separados que compartilham uma porta TCP — custo de ~100ms por fork, sem memória compartilhada, ideais para escalar um servidor HTTP por cores da máquina.
+**"Qual a diferença entre Worker Threads e Cluster?"** Worker Threads são threads dentro do mesmo processo — compartilham memória possível via `SharedArrayBuffer`, custo de criação em milissegundos, ideais para CPU-bound. Cluster são processos completos separados que compartilham uma porta TCP — custo de ~100ms por fork, sem memória compartilhada, ideais para escalar um servidor HTTP por cores da máquina.
 
-**"Quando você usaria `child_process.fork` em vez de `child_process.spawn`?"**
-`fork` quando o processo filho é Node e você precisa de comunicação bidirecional via mensagens (`child.send` / `process.on('message')`). `spawn` quando o processo filho é qualquer outro comando — binário do sistema, script shell, programa em outra linguagem.
+**"Quando você usaria `child_process.fork` em vez de `child_process.spawn`?"** `fork` quando o processo filho é Node e você precisa de comunicação bidirecional via mensagens (`child.send` / `process.on('message')`). `spawn` quando o processo filho é qualquer outro comando — binário do sistema, script shell, programa em outra linguagem.
 
-**"Cluster resolve CPU-bound?"**
-Não para um request individual. Se um handler bloqueia o event loop por 500ms de cálculo, Cluster cria N workers que individualmente bloqueiam por 500ms. Para CPU-bound dentro de um handler, a ferramenta é Worker Thread — que paraleliza o cálculo sem bloquear o event loop principal.
+**"Cluster resolve CPU-bound?"** Não para um request individual. Se um handler bloqueia o event loop por 500ms de cálculo, Cluster cria N workers que individualmente bloqueiam por 500ms. Para CPU-bound dentro de um handler, a ferramenta é Worker Thread — que paraleliza o cálculo sem bloquear o event loop principal.
 
-**"Worker Threads ajudam com I/O-bound?"**
-Não. Para I/O-bound, o event loop assíncrono nativo é mais eficiente do que criar threads. Workers adicionam overhead de serialização de dados sem benefício — o I/O vai para o kernel de qualquer forma.
+**"Worker Threads ajudam com I/O-bound?"** Não. Para I/O-bound, o event loop assíncrono nativo é mais eficiente do que criar threads. Workers adicionam overhead de serialização de dados sem benefício — o I/O vai para o kernel de qualquer forma.
 
 ---
 

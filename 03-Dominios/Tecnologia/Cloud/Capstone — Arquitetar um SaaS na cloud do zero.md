@@ -52,8 +52,7 @@ Esse é o ponto onde já dá pra prever a forma do sistema: **leitura pesada e l
 > [!tip] Assista: System Design: Encurtador de URL - Desafio Real de Entrevista RESOLVIDO
 > **Canal:** Leonardo Zamariola | **Duração:** ~50min | **Idioma:** PT-BR
 >
-> Resolve exatamente esta pergunta de entrevista do zero, em português — vale assistir como companheiro deste capítulo pra ver a mesma sequência (requisitos → esquema de geração de slug → réplicas de leitura) sendo verbalizada em tempo real, com as hesitações e correções que uma entrevista de verdade tem.
-> Trecho de destaque [39:00]: *"Seria legal que tivéssemos réplica de leitura para questão de performance e eh o link longo ter índice."*
+> Resolve exatamente esta pergunta de entrevista do zero, em português — vale assistir como companheiro deste capítulo pra ver a mesma sequência (requisitos → esquema de geração de slug → réplicas de leitura) sendo verbalizada em tempo real, com as hesitações e correções que uma entrevista de verdade tem. Trecho de destaque [39:00]: *"Seria legal que tivéssemos réplica de leitura para questão de performance e eh o link longo ter índice."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=JHavVCLQT4k)
 
@@ -74,8 +73,7 @@ Para processamento assíncrono mais pesado (gerar relatórios agregados de analy
 > [!tip] Assista: Beginner System Design Interview: Design Bitly w/ a Ex-Meta Staff Engineer
 > **Canal:** Hello Interview | **Duração:** ~60min | **Idioma:** EN
 >
-> Um ex-staff engineer da Meta conduz a mesma entrevista de encurtador de URL do início ao fim, insistindo — como este capítulo — que o requisito não é "baixa latência" genérico, e sim baixa latência especificamente no redirect. Boa referência canônica em inglês pra comparar o vocabulário técnico com a versão PT-BR acima.
-> Trecho de destaque [07:37]: *"it's not just low latency it's specifically low latency on redirects and we want to quantify it too"*
+> Um ex-staff engineer da Meta conduz a mesma entrevista de encurtador de URL do início ao fim, insistindo — como este capítulo — que o requisito não é "baixa latência" genérico, e sim baixa latência especificamente no redirect. Boa referência canônica em inglês pra comparar o vocabulário técnico com a versão PT-BR acima. Trecho de destaque [07:37]: *"it's not just low latency it's specifically low latency on redirects and we want to quantify it too"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=iUU4O1sWtJA)
 
@@ -210,8 +208,7 @@ Least privilege aplicado literalmente: a task de redirect só pode *enviar* mens
 > [!tip] Assista: AWS re:Invent 2021 - Fundamentos de Arquitetura SaaS (Software as a Service)
 > **Canal:** AWS Events | **Duração:** ~28min | **Idioma:** PT-BR
 >
-> A palestra oficial da AWS sobre arquitetura SaaS multi-tenant, em português, aprofunda exatamente o requisito NF4 desta nota: isolamento de tenant não é só "filtrar por tenant_id na query" — é uma propriedade que a arquitetura inteira precisa garantir, camada por camada.
-> Trecho de destaque [04:56]: *"que tenha isolamento de tenant onde o tenant 1 não consiga ver dados do tenant 2"*
+> A palestra oficial da AWS sobre arquitetura SaaS multi-tenant, em português, aprofunda exatamente o requisito NF4 desta nota: isolamento de tenant não é só "filtrar por tenant_id na query" — é uma propriedade que a arquitetura inteira precisa garantir, camada por camada. Trecho de destaque [04:56]: *"que tenha isolamento de tenant onde o tenant 1 não consiga ver dados do tenant 2"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=IurpNFR0Pds)
 

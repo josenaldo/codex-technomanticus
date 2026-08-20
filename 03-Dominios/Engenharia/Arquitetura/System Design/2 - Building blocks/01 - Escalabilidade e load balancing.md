@@ -156,9 +156,7 @@ Um servidor pode estar de pé (o processo roda) e ainda assim estar **inútil** 
 Na prática, sistemas de produção combinam os dois: checagem ativa para detectar problemas mesmo em baixo tráfego, e passiva para reagir instantaneamente a falhas reais.
 
 > [!warning] Health check que verifica só "o processo está de pé"
-> **O que acontece:** o endpoint de health check retorna 200 sempre que o processo web responde, mesmo que a dependência crítica dele (o banco, um serviço downstream) esteja fora do ar.
-> **Por quê:** confundir "o processo aceita conexões" com "o serviço está funcional". São coisas diferentes — o processo pode estar de pé e completamente incapaz de atender qualquer requisição real.
-> **Como evitar:** o health check deve verificar as dependências que o serviço realmente precisa para responder (conexão com o banco, cache, filas críticas) — não só "o servidor HTTP subiu". Ao mesmo tempo, cuidado para não criar uma cascata: se o health check depende de *todas* as dependências, um problema numa dependência não-crítica derruba um servidor saudável desnecessariamente.
+> **O que acontece:** o endpoint de health check retorna 200 sempre que o processo web responde, mesmo que a dependência crítica dele (o banco, um serviço downstream) esteja fora do ar. **Por quê:** confundir "o processo aceita conexões" com "o serviço está funcional". São coisas diferentes — o processo pode estar de pé e completamente incapaz de atender qualquer requisição real. **Como evitar:** o health check deve verificar as dependências que o serviço realmente precisa para responder (conexão com o banco, cache, filas críticas) — não só "o servidor HTTP subiu". Ao mesmo tempo, cuidado para não criar uma cascata: se o health check depende de *todas* as dependências, um problema numa dependência não-crítica derruba um servidor saudável desnecessariamente.
 
 ### Remover um nó vivo sem quebrar requisições em voo
 
@@ -177,9 +175,7 @@ Já ficou estabelecido que servidores stateless são a base do scale-out. Mas ne
 O problema é que sticky sessions recriam, silenciosamente, o mesmo defeito que o scale-out tentava eliminar: se aquele servidor específico cair, todo mundo "grudado" nele perde a sessão. E a distribuição de carga fica desigual — se por acaso muitos usuários "pesados" grudam no mesmo servidor, ele fica sobrecarregado enquanto outros ficam ociosos, e o LB não pode redistribuir sem quebrar a afinidade.
 
 > [!warning] Tratar sticky sessions como solução, não como remendo
-> **O que acontece:** o candidato propõe sticky sessions como resposta para "como eu lido com sessão de usuário em múltiplos servidores?" e para por aí.
-> **Por quê:** sticky sessions *parecem* resolver o problema porque a sessão "funciona" — mas só transferem o SPOF do "um servidor" para o "um servidor por usuário", sem eliminar a fragilidade.
-> **Como evitar:** em entrevista, a resposta preferida é jogar o estado para um store compartilhado (Redis, banco) e manter os servidores de aplicação genuinamente stateless. Cite sticky sessions como uma opção conhecida — útil quando reescrever para stateless não é viável no curto prazo — mas deixe claro que é um trade-off inferior, não a solução-padrão.
+> **O que acontece:** o candidato propõe sticky sessions como resposta para "como eu lido com sessão de usuário em múltiplos servidores?" e para por aí. **Por quê:** sticky sessions *parecem* resolver o problema porque a sessão "funciona" — mas só transferem o SPOF do "um servidor" para o "um servidor por usuário", sem eliminar a fragilidade. **Como evitar:** em entrevista, a resposta preferida é jogar o estado para um store compartilhado (Redis, banco) e manter os servidores de aplicação genuinamente stateless. Cite sticky sessions como uma opção conhecida — útil quando reescrever para stateless não é viável no curto prazo — mas deixe claro que é um trade-off inferior, não a solução-padrão.
 
 ## O load balancer como SPOF — e como redundá-lo
 
@@ -278,6 +274,4 @@ Com servidores de aplicação escaláveis e stateless resolvidos, o próximo gar
 - **Hello Interview** — [*Networking Essentials for System Design Interviews*](https://www.hellointerview.com/learn/system-design/core-concepts/networking-essentials) — vocabulário de rede (L4/L7, DNS, TLS) aplicado à entrevista; fonte moderna (2024+) de ex-entrevistadores FAANG.
 - **Donne Martin** — [*System Design Primer*](https://github.com/donnemartin/system-design-primer) — seção "Load balancer": algoritmos, health checks e o LB como potencial SPOF.
 
-[^1]: AWS — Application Load Balancer roteia por conteúdo da requisição HTTP (L7); Network Load Balancer opera em L4 (TCP/UDP).
-[^2]: AWS — round-robin é o algoritmo de roteamento default do ALB; least outstanding requests é uma alternativa disponível.
-[^3]: AWS — sticky sessions usam cookie gerado pelo LB (`AWSALB`) ou cookie de aplicação; a afinidade só atua depois da escolha inicial pelo algoritmo de roteamento configurado.
+[^1]: AWS — Application Load Balancer roteia por conteúdo da requisição HTTP (L7); Network Load Balancer opera em L4 (TCP/UDP). [^2]: AWS — round-robin é o algoritmo de roteamento default do ALB; least outstanding requests é uma alternativa disponível. [^3]: AWS — sticky sessions usam cookie gerado pelo LB (`AWSALB`) ou cookie de aplicação; a afinidade só atua depois da escolha inicial pelo algoritmo de roteamento configurado.

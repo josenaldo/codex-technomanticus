@@ -37,8 +37,7 @@ A teoria positiva da abstração — o que ela é e por que funciona — está e
 O termo foi cunhado e popularizado por **Joel Spolsky** no ensaio *The Law of Leaky Abstractions* (Joel on Software, 11/11/2002), com o enunciado:
 
 > [!quote] Lei das Abstrações Vazadas
-> *"All non-trivial abstractions, to some degree, are leaky."*
-> — Joel Spolsky, 2002
+> *"All non-trivial abstractions, to some degree, are leaky."* — Joel Spolsky, 2002
 
 A definição operacional: uma abstração vazada **falha em esconder completamente a complexidade subjacente** que pretendia simplificar.
 
@@ -339,8 +338,7 @@ John Ousterhout dá essa régua com o conceito de **profundidade**: quanta funci
 ## Referências
 
 > [!tip] Assista — A New Tool for Fighting Against Hyrum's Law — David Hollman (2019)
-> **CppCon** · 29min · [A New Tool for Fighting Against Hyrum's Law — David Hollman (2019)](https://www.youtube.com/watch?v=sFfRxjAvxhc)
-> Os exemplos são de C++, mas o mecanismo é universal e é exatamente o desta nota: quando usuários suficientes dependem de comportamentos observáveis, cada detalhe da implementação vira contrato de fato — e a palestra mostra o que dá para fazer a respeito.
+> **CppCon** · 29min · [A New Tool for Fighting Against Hyrum's Law — David Hollman (2019)](https://www.youtube.com/watch?v=sFfRxjAvxhc) Os exemplos são de C++, mas o mecanismo é universal e é exatamente o desta nota: quando usuários suficientes dependem de comportamentos observáveis, cada detalhe da implementação vira contrato de fato — e a palestra mostra o que dá para fazer a respeito.
 
 - **Joel Spolsky** — [The Law of Leaky Abstractions](https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/) (Joel on Software, 11/11/2002) — o ensaio fundador.
 - **Hyrum Wright / Titus Winters** — [Hyrum's Law](https://www.hyrumslaw.com/) — página canônica; também em *Software Engineering at Google* (O'Reilly, 2020, cap. 1).

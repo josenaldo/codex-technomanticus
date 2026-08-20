@@ -75,9 +75,7 @@ Ambas fazem a **mesma pergunta certa**: *quais componentes realmente precisam de
 > Não — SSR ajuda o **LCP** (o conteúdo aparece cedo, sem esperar o JS). O que prejudica o INP é a **hidratação tudo-ou-nada** que muitos setups de SSR trazem por padrão: você pagou para renderizar no servidor *e* paga de novo para hidratar tudo no cliente. A resposta certa não é abandonar o SSR, é **hidratar menos** — islands/RSC te dão o benefício do LCP do SSR sem o imposto de INP de hidratar a página inteira. É por isso que essas arquiteturas existem: separar "apareceu rápido" de "ficou interativo caro".
 
 > [!warning] Mandar tudo para um Web Worker "porque é outra thread"
-> **O que acontece:** o dev move lógica de UI para um Worker esperando acelerar, e a página fica mais complexa e às vezes mais lenta.
-> **Por quê:** Workers não podem tocar o DOM, e a comunicação por `postMessage` **serializa** os dados (custa CPU e memória copiar objetos grandes de uma thread para outra). Para trabalho leve, ou que precisa do DOM, o overhead da mensagem supera o ganho.
-> **Como evitar:** use Workers para trabalho **pesado, duradouro e independente do DOM** (o critério "vale a viagem"). Para o resto, quebrar a tarefa e ceder a thread (nota 03) resolve com menos complexidade.
+> **O que acontece:** o dev move lógica de UI para um Worker esperando acelerar, e a página fica mais complexa e às vezes mais lenta. **Por quê:** Workers não podem tocar o DOM, e a comunicação por `postMessage` **serializa** os dados (custa CPU e memória copiar objetos grandes de uma thread para outra). Para trabalho leve, ou que precisa do DOM, o overhead da mensagem supera o ganho. **Como evitar:** use Workers para trabalho **pesado, duradouro e independente do DOM** (o critério "vale a viagem"). Para o resto, quebrar a tarefa e ceder a thread (nota 03) resolve com menos complexidade.
 
 ## A síntese: a estratégia de runtime
 

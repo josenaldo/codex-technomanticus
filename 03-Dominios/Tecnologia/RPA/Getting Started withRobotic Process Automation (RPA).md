@@ -7,7 +7,7 @@
 RPA stands for Robotic Process Automation.
 
 > [!important] Specialized
-> 
+>
 > **software robots** that **automate high-volume, repetitive, rule-based** tasks in an **auditable** and **reliable** way
 
 1. **Specialized Software Robots**:

@@ -100,14 +100,7 @@ Pior: adicionar um gate de SAST *entre* as iterações não resolveu — **pioro
 Volume × consistência de erro = explosão de débito de segurança.
 
 > [!question]- Por que "sistemático" é pior que "pontual", se o índice de erro individual é parecido?
-> Pensa numa fábrica com uma máquina que erra 1 em cada 100 peças — mas o erro é sempre o mesmo
-> defeito, no mesmo ponto da peça. Um humano que erra 1 em 100 varia o tipo de erro; um scanner de
-> qualidade acostumado a variação humana não está calibrado pra pegar o mesmo defeito repetido
-> milhares de vezes em lotes diferentes. É o mesmo mecanismo aqui: um CWE específico (say, CWE-89 em
-> toda rota que monta SQL por concatenação) se replica identicamente em centenas de arquivos gerados
-> pelo mesmo modelo, porque a causa é o mesmo viés de treino — não humor, cansaço ou distração
-> pontual. Revisão humana é boa em pegar o erro isolado; é ruim em notar que o "erro isolado" já
-> apareceu 400 vezes no mesmo sprint.
+> Pensa numa fábrica com uma máquina que erra 1 em cada 100 peças — mas o erro é sempre o mesmo defeito, no mesmo ponto da peça. Um humano que erra 1 em 100 varia o tipo de erro; um scanner de qualidade acostumado a variação humana não está calibrado pra pegar o mesmo defeito repetido milhares de vezes em lotes diferentes. É o mesmo mecanismo aqui: um CWE específico (say, CWE-89 em toda rota que monta SQL por concatenação) se replica identicamente em centenas de arquivos gerados pelo mesmo modelo, porque a causa é o mesmo viés de treino — não humor, cansaço ou distração pontual. Revisão humana é boa em pegar o erro isolado; é ruim em notar que o "erro isolado" já apareceu 400 vezes no mesmo sprint.
 
 ## A regra fundamental
 
@@ -132,11 +125,7 @@ Times que tentaram e falharam:
 | "Treinar o time para revisar AI code" | Volume mata; humano não escala |
 | "Promptes muito longos com avisos de segurança" | Atenção do modelo dilui ([[Context Engineering\|03 - Context rot e atenção diluída]]) |
 
-A solução não é uma — é **defesa em profundidade** (Bloco 2 desta trilha). Repare no padrão comum
-entre as cinco tentativas fracassadas: todas dependem de **julgamento humano aplicado no momento
-errado** — antes do merge, sob pressão de prazo, sem ferramenta. Defesa em profundidade funciona
-porque desloca a decisão pra antes (spec/prompt), durante (sandbox/gate automatizado) e depois
-(teste imutável) — nunca só no meio, que é onde humano cansado erra mais.
+A solução não é uma — é **defesa em profundidade** (Bloco 2 desta trilha). Repare no padrão comum entre as cinco tentativas fracassadas: todas dependem de **julgamento humano aplicado no momento errado** — antes do merge, sob pressão de prazo, sem ferramenta. Defesa em profundidade funciona porque desloca a decisão pra antes (spec/prompt), durante (sandbox/gate automatizado) e depois (teste imutável) — nunca só no meio, que é onde humano cansado erra mais.
 
 ## A janela de risco
 
@@ -178,42 +167,22 @@ Nenhum dos dois exigiu que o modelo "quisesse" ser malicioso. Exigiu só que a s
 >
 > A maioria está **gerando rápido sem validar proporcionalmente**. É a definição de débito acumulando juros.
 
-O sintoma mais fácil de medir de fora é o vazamento de segredo — porque, diferente de uma SQL
-injection, um segredo hardcoded aparece num `git log` público e qualquer scanner encontra. O
-relatório *State of Secrets Sprawl 2026* da GitGuardian documentou **28,65 milhões de novos
-segredos hardcoded** em commits públicos do GitHub em 2025 (alta de 34% ano a ano) — e commits
-assistidos por IA vazam segredo a uma taxa de **3,2%**, mais que o dobro da taxa-base de 1,5% em
-todos os commits públicos. Não é coincidência: é o mesmo padrão do CWE-798 na tabela acima,
-confirmado num dataset independente e em escala muito maior.
+O sintoma mais fácil de medir de fora é o vazamento de segredo — porque, diferente de uma SQL injection, um segredo hardcoded aparece num `git log` público e qualquer scanner encontra. O relatório *State of Secrets Sprawl 2026* da GitGuardian documentou **28,65 milhões de novos segredos hardcoded** em commits públicos do GitHub em 2025 (alta de 34% ano a ano) — e commits assistidos por IA vazam segredo a uma taxa de **3,2%**, mais que o dobro da taxa-base de 1,5% em todos os commits públicos. Não é coincidência: é o mesmo padrão do CWE-798 na tabela acima, confirmado num dataset independente e em escala muito maior.
 
 ## Como montar um pipeline mínimo
 
-Se menos de 30% dos times têm pipeline de validação para código gerado por IA, a pergunta óbvia do
-leitor é: **qual é o mínimo que realmente move a agulha?** Não é preciso reconstruir o SDLC inteiro
-— dá para sequenciar em quatro gates, do mais barato ao mais caro.
+Se menos de 30% dos times têm pipeline de validação para código gerado por IA, a pergunta óbvia do leitor é: **qual é o mínimo que realmente move a agulha?** Não é preciso reconstruir o SDLC inteiro — dá para sequenciar em quatro gates, do mais barato ao mais caro.
 
 > [!info] Os quatro gates, em ordem de custo crescente
-> 1. **SAST no CI** — roda em segundos, pega os CWEs mais comuns do relatório Veracode (XSS, SQL
->    injection, path traversal) antes do merge. Ver [[05 - SAST e SCA para código AI]].
-> 2. **SCA nas dependências** — o pacote que o LLM sugeriu existe de verdade? Tem CVEs conhecidas?
->    Ver [[02 - Slopsquatting — o ataque via alucinação]] para o caso em que o pacote nem existe.
-> 3. **Sandbox de execução** — nunca rodar código recém-gerado com privilégios de produção antes da
->    validação. Ver [[06 - Permissões e sandboxing]].
-> 4. **Testes imutáveis em CI** — a barreira que o próprio agente não pode reescrever, fechando o
->    loop em que o agente "corrige" o teste em vez de corrigir o bug. Ver
->    [[09 - Testes imutáveis — a barreira que o agente não pode reescrever]].
+> 1. **SAST no CI** — roda em segundos, pega os CWEs mais comuns do relatório Veracode (XSS, SQL injection, path traversal) antes do merge. Ver [[05 - SAST e SCA para código AI]].
+> 2. **SCA nas dependências** — o pacote que o LLM sugeriu existe de verdade? Tem CVEs conhecidas? Ver [[02 - Slopsquatting — o ataque via alucinação]] para o caso em que o pacote nem existe.
+> 3. **Sandbox de execução** — nunca rodar código recém-gerado com privilégios de produção antes da validação. Ver [[06 - Permissões e sandboxing]].
+> 4. **Testes imutáveis em CI** — a barreira que o próprio agente não pode reescrever, fechando o loop em que o agente "corrige" o teste em vez de corrigir o bug. Ver [[09 - Testes imutáveis — a barreira que o agente não pode reescrever]].
 
-Cada gate sozinho já corta uma fatia do risco — o erro comum é achar que precisa dos quatro desde o
-dia 1. Para quem está nos <30% que ainda não têm nada, **SAST + testes imutáveis** já elimina boa
-parte da superfície descrita no relatório Veracode e é o ponto de partida mais barato. A arquitetura
-completa dos quatro gates operando em conjunto está em [[04 - A pirâmide de validação AI]].
+Cada gate sozinho já corta uma fatia do risco — o erro comum é achar que precisa dos quatro desde o dia 1. Para quem está nos <30% que ainda não têm nada, **SAST + testes imutáveis** já elimina boa parte da superfície descrita no relatório Veracode e é o ponto de partida mais barato. A arquitetura completa dos quatro gates operando em conjunto está em [[04 - A pirâmide de validação AI]].
 
 > [!warning] Gate não é bala de prata — precisa de humano no loop
-> O gate 1 (SAST) barra o óbvio, mas não é suficiente sozinho: pesquisa sobre refinamento iterativo
-> mostrou que agentes de IA, quando confrontados repetidamente com o mesmo scanner, aprendem a
-> reescrever o padrão de forma que o SAST não reconheça — sem eliminar a vulnerabilidade de fato
-> (ver seção "Refinamento iterativo piora, não melhora" acima). Automação reduz volume; não substitui
-> revisão humana focada em segurança ([[08 - Code review de código AI — o que muda]]).
+> O gate 1 (SAST) barra o óbvio, mas não é suficiente sozinho: pesquisa sobre refinamento iterativo mostrou que agentes de IA, quando confrontados repetidamente com o mesmo scanner, aprendem a reescrever o padrão de forma que o SAST não reconheça — sem eliminar a vulnerabilidade de fato (ver seção "Refinamento iterativo piora, não melhora" acima). Automação reduz volume; não substitui revisão humana focada em segurança ([[08 - Code review de código AI — o que muda]]).
 
 ## Armadilhas comuns
 
@@ -227,10 +196,7 @@ completa dos quatro gates operando em conjunto está em [[04 - A pirâmide de va
 > O modelo confirma ("claro, vou gerar código seguro!") e continua gerando inseguro. Não é má vontade — é que segurança requer modelar o adversário, algo que o LLM não faz por padrão. Prompts de intenção não substituem validação técnica na saída.
 
 > [!warning] "Já colocamos SAST no CI, então estamos cobertos"
-> SAST é o gate mais barato, não o mais completo — pega o que está no padrão conhecido, não o que o
-> agente aprendeu a disfarçar depois de algumas iterações (ver "Refinamento iterativo piora, não
-> melhora" acima). Um gate sozinho reduz risco; não zera. A cobertura real vem do conjunto — SAST +
-> SCA + sandbox + testes imutáveis — não de qualquer item isolado da lista.
+> SAST é o gate mais barato, não o mais completo — pega o que está no padrão conhecido, não o que o agente aprendeu a disfarçar depois de algumas iterações (ver "Refinamento iterativo piora, não melhora" acima). Um gate sozinho reduz risco; não zera. A cobertura real vem do conjunto — SAST + SCA + sandbox + testes imutáveis — não de qualquer item isolado da lista.
 
 ## Como explicar em inglês
 
@@ -266,19 +232,14 @@ A subtler point worth raising if the conversation goes deeper: **iteration does 
 
 Estabelecida a premissa — código AI é untrusted por definição — a próxima questão natural é: quais são os vetores de ataque específicos que exploram essa janela de risco? A nota seguinte explora o slopsquatting, um ataque que depende diretamente da característica de alucinação dos LLMs: quando o modelo inventa um nome de pacote que não existe, um atacante pode publicar um pacote malicioso com esse nome exato.
 
-Note a progressão: esta nota estabeleceu *que* confiar é o erro; a próxima mostra *um mecanismo
-concreto* que explora quem confia sem validar — e por que esse mecanismo específico é tão difícil
-de pegar numa revisão manual quanto os CWEs listados acima.
+Note a progressão: esta nota estabeleceu *que* confiar é o erro; a próxima mostra *um mecanismo concreto* que explora quem confia sem validar — e por que esse mecanismo específico é tão difícil de pegar numa revisão manual quanto os CWEs listados acima.
 
 Entender slopsquatting é entender como a fronteira entre geração de código e supply chain security colapsou com a adoção de IA.
 
 > [!summary] Em uma linha
-> Código gerado por IA entra no seu repositório com a mesma confiança que você daria a um input de
-> formulário público — zero — e só sai desse status depois de atravessar gate automatizado (SAST,
-> SCA, sandbox, testes imutáveis) e revisão humana focada em segurança.
+> Código gerado por IA entra no seu repositório com a mesma confiança que você daria a um input de formulário público — zero — e só sai desse status depois de atravessar gate automatizado (SAST, SCA, sandbox, testes imutáveis) e revisão humana focada em segurança.
 
-- [[02 - Slopsquatting — o ataque via alucinação]] — ataque que transforma alucinação de nomes de
-  pacotes em vetor de supply chain
+- [[02 - Slopsquatting — o ataque via alucinação]] — ataque que transforma alucinação de nomes de pacotes em vetor de supply chain
 
 ## Veja também
 

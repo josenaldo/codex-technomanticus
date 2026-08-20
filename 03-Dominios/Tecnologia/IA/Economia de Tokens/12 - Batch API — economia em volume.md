@@ -140,8 +140,7 @@ Formato: Google docstring style.
 Máximo: 10 linhas.
 
 ```python
-{func["signature"]}
-{func["body"]}
+{func["signature"]} {func["body"]}
 ```"""
             }],
             "max_tokens": 300
@@ -411,9 +410,7 @@ results = run_batch(requests, "migration_results.jsonl")
 # (ou o mesmo código duas vezes) em dois arquivos distintos.
 ```
 
-O corretivo é o `custom_id=str(f.relative_to(source_dir))` já usado em
-`migrate_codebase_batch` (Pattern 2 acima) — o caminho relativo é único mesmo quando
-o nome do arquivo se repete em pastas diferentes.
+O corretivo é o `custom_id=str(f.relative_to(source_dir))` já usado em `migrate_codebase_batch` (Pattern 2 acima) — o caminho relativo é único mesmo quando o nome do arquivo se repete em pastas diferentes.
 
 > [!warning] Limite de tamanho do batch
 > Anthropic permite até 10.000 requests por batch; OpenAI, até 50.000. Mas batches muito grandes têm latência proporcional. Para workloads de 100k+ itens, particione em múltiplos batches de 5-10k e submeta em paralelo. Monitore cada batch individualmente e consolide os resultados.
@@ -428,17 +425,13 @@ o nome do arquivo se repete em pastas diferentes.
 
 ## Casos práticos
 
-**Caso 1 — Documentação de SDK (300 funções):**
-Um time precisava documentar 300 funções de um SDK legado. Via API síncrona (Sonnet): $12 em 2 horas. Via Batch API (Haiku + batch): $1.50 em processamento overnight. Rodou no CI às 2am, documentação disponível às 9am. Custo total 87,5% menor.
+**Caso 1 — Documentação de SDK (300 funções):** Um time precisava documentar 300 funções de um SDK legado. Via API síncrona (Sonnet): $12 em 2 horas. Via Batch API (Haiku + batch): $1.50 em processamento overnight. Rodou no CI às 2am, documentação disponível às 9am. Custo total 87,5% menor.
 
-**Caso 2 — Migração de testes (200 arquivos):**
-Um time migrava testes de pytest para unittest em 200 arquivos. Via Batch API (Sonnet + batch): $30, processados em ~4h durante a madrugada. Via API síncrona seria $60 em tempo real. Resultado aplicado automaticamente via PR criado pelo CI.
+**Caso 2 — Migração de testes (200 arquivos):** Um time migrava testes de pytest para unittest em 200 arquivos. Via Batch API (Sonnet + batch): $30, processados em ~4h durante a madrugada. Via API síncrona seria $60 em tempo real. Resultado aplicado automaticamente via PR criado pelo CI.
 
-**Caso 3 — Classificação de 50k tickets de suporte:**
-Uma análise histórica de 6 meses de tickets (50.000 registros) para identificar padrões. Via Batch API (Haiku + batch): $9.50, processados em 3 batches de 16.667 requests cada, em ~6 horas. Via API síncrona (Haiku): $19, em ~15 horas. Batch foi 2x mais barato e 2.5x mais rápido (3 batches em paralelo vs 1 stream).
+**Caso 3 — Classificação de 50k tickets de suporte:** Uma análise histórica de 6 meses de tickets (50.000 registros) para identificar padrões. Via Batch API (Haiku + batch): $9.50, processados em 3 batches de 16.667 requests cada, em ~6 horas. Via API síncrona (Haiku): $19, em ~15 horas. Batch foi 2x mais barato e 2.5x mais rápido (3 batches em paralelo vs 1 stream).
 
-**Caso 4 — Geração de changelogs:**
-Um time gerava changelogs estruturados para cada commit do quarter (1.200 commits). Via Batch API: $8, processados em ~2h. Resultado: 1.200 changelogs em formato Markdown, usados para gerar release notes automaticamente.
+**Caso 4 — Geração de changelogs:** Um time gerava changelogs estruturados para cada commit do quarter (1.200 commits). Via Batch API: $8, processados em ~2h. Resultado: 1.200 changelogs em formato Markdown, usados para gerar release notes automaticamente.
 
 ## Checklist
 

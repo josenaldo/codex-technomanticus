@@ -16,9 +16,7 @@ publish: true
 # Capstone — React na prática e em entrevista
 
 > [!abstract] TL;DR
-> React é a equação `UI = f(estado)` materializada: dado o estado atual, o framework sabe qual árvore de DOM deve existir — e cuida de chegar lá da forma mais eficiente via reconciliation e o algoritmo Fiber.
-> Hooks tornaram esse modelo componível sem classes; React 19 estende a mesma lógica ao servidor (RSC) e à concorrência (transitions, Suspense, Actions), sem quebrar o modelo mental de base.
-> Esta nota é o mapa final do galho: revisão em três fases, banco de perguntas de entrevista com resposta-modelo, decision points de sênior, e as pontes para o ecossistema ao redor.
+> React é a equação `UI = f(estado)` materializada: dado o estado atual, o framework sabe qual árvore de DOM deve existir — e cuida de chegar lá da forma mais eficiente via reconciliation e o algoritmo Fiber. Hooks tornaram esse modelo componível sem classes; React 19 estende a mesma lógica ao servidor (RSC) e à concorrência (transitions, Suspense, Actions), sem quebrar o modelo mental de base. Esta nota é o mapa final do galho: revisão em três fases, banco de perguntas de entrevista com resposta-modelo, decision points de sênior, e as pontes para o ecossistema ao redor.
 
 ---
 
@@ -421,37 +419,27 @@ A vantagem não é menos código — é **composabilidade**: o loading state sob
 ## Armadilhas comuns
 
 > [!warning] `useEffect` com dependência faltante provoca bugs de closure
-> **O que acontece:** o efeito usa um valor do estado ou prop mas não o inclui no array de dependências. O efeito "enxerga" apenas o valor do primeiro render — a chamada `staleProps` / `staleClosure`.
-> **Por quê:** funções de componente criam um novo fechamento a cada render. `useEffect` captura aquele fechamento. Se a dependência não está no array, o React não re-executa o efeito quando o valor muda.
-> **Como evitar:** use o ESLint plugin `react-hooks/exhaustive-deps` (recomendado pela equipe do React) e nunca ignore os warnings manualmente sem entender o motivo. Se a função precisa ser estável, use `useCallback`; se for um valor, inclua-o nas deps.
+> **O que acontece:** o efeito usa um valor do estado ou prop mas não o inclui no array de dependências. O efeito "enxerga" apenas o valor do primeiro render — a chamada `staleProps` / `staleClosure`. **Por quê:** funções de componente criam um novo fechamento a cada render. `useEffect` captura aquele fechamento. Se a dependência não está no array, o React não re-executa o efeito quando o valor muda. **Como evitar:** use o ESLint plugin `react-hooks/exhaustive-deps` (recomendado pela equipe do React) e nunca ignore os warnings manualmente sem entender o motivo. Se a função precisa ser estável, use `useCallback`; se for um valor, inclua-o nas deps.
 
 ---
 
 > [!warning] Index de array como `key` em listas que reordenam ou filtram
-> **O que acontece:** ao filtrar ou reordenar uma lista, o React reutiliza os componentes errados (a posição bateu, mas o dado é outro). Campos de input controlados exibem o valor do item anterior. Animações disparam no item errado.
-> **Por quê:** a `key` é o identificador do elemento para o algoritmo de reconciliation. Se você usa o index, e o array muda de ordem, o mesmo index agora aponta para um dado diferente — mas o React pensa que é o mesmo elemento.
-> **Como evitar:** use um identificador estável e único do dado (ex: `item.id`). Só use index como chave quando a lista é estática e nunca reordena ou filtra.
+> **O que acontece:** ao filtrar ou reordenar uma lista, o React reutiliza os componentes errados (a posição bateu, mas o dado é outro). Campos de input controlados exibem o valor do item anterior. Animações disparam no item errado. **Por quê:** a `key` é o identificador do elemento para o algoritmo de reconciliation. Se você usa o index, e o array muda de ordem, o mesmo index agora aponta para um dado diferente — mas o React pensa que é o mesmo elemento. **Como evitar:** use um identificador estável e único do dado (ex: `item.id`). Só use index como chave quando a lista é estática e nunca reordena ou filtra.
 
 ---
 
 > [!warning] Memoização prematura sem problema de performance real
-> **O que acontece:** wrapping de funções em `useCallback` e valores em `useMemo` sem profiling. O resultado é código mais complexo, mais difícil de ler, e — por ironia — potencialmente mais lento (o cache do hook também tem custo).
-> **Por quê:** memoização não é gratuita. O React precisa comparar as dependências a cada render para decidir se retorna o valor cacheado. Para cálculos baratos, esse overhead supera o ganho.
-> **Como evitar:** perfil primeiro com React DevTools Profiler. Memoize apenas quando houver evidência de problema. Considere ativar o React Compiler, que resolve isso automaticamente em React 19+.
+> **O que acontece:** wrapping de funções em `useCallback` e valores em `useMemo` sem profiling. O resultado é código mais complexo, mais difícil de ler, e — por ironia — potencialmente mais lento (o cache do hook também tem custo). **Por quê:** memoização não é gratuita. O React precisa comparar as dependências a cada render para decidir se retorna o valor cacheado. Para cálculos baratos, esse overhead supera o ganho. **Como evitar:** perfil primeiro com React DevTools Profiler. Memoize apenas quando houver evidência de problema. Considere ativar o React Compiler, que resolve isso automaticamente em React 19+.
 
 ---
 
 > [!warning] `useEffect` para sincronizar estado derivado
-> **O que acontece:** `useEffect` escuta uma prop e faz `setState` do valor derivado. Isso provoca dois renders onde bastaria um — e é propício a loops infinitos.
-> **Por quê:** estado derivado de outra prop ou estado não precisa de `useEffect`. O cálculo pode acontecer diretamente no corpo do componente.
-> **Como evitar:** calcule o valor derivado diretamente na função do componente. Se o cálculo for caro, use `useMemo`. Reserve `useEffect` para sincronizar com sistemas **externos** ao React (DOM, WebSockets, timers, APIs), não para derivar estado interno.
+> **O que acontece:** `useEffect` escuta uma prop e faz `setState` do valor derivado. Isso provoca dois renders onde bastaria um — e é propício a loops infinitos. **Por quê:** estado derivado de outra prop ou estado não precisa de `useEffect`. O cálculo pode acontecer diretamente no corpo do componente. **Como evitar:** calcule o valor derivado diretamente na função do componente. Se o cálculo for caro, use `useMemo`. Reserve `useEffect` para sincronizar com sistemas **externos** ao React (DOM, WebSockets, timers, APIs), não para derivar estado interno.
 
 ---
 
 > [!warning] Mudar o `type` do componente na árvore destrói o estado
-> **O que acontece:** ao renderizar `<Input />` condicionalmente e trocar para `<TextArea />` (ou qualquer tipo diferente) na mesma posição da árvore, o React desmonta o componente anterior e monta um novo — o estado interno é destruído.
-> **Por quê:** o algoritmo Fiber usa o `type` do elemento como primeiro critério de identidade. Tipos diferentes na mesma posição = elementos diferentes.
-> **Como evitar:** se precisar preservar estado entre dois tipos de componente, use uma `key` explícita e mantenha o estado no componente pai (elevação de estado). Ou use o mesmo tipo de componente com props que controlam a renderização interna.
+> **O que acontece:** ao renderizar `<Input />` condicionalmente e trocar para `<TextArea />` (ou qualquer tipo diferente) na mesma posição da árvore, o React desmonta o componente anterior e monta um novo — o estado interno é destruído. **Por quê:** o algoritmo Fiber usa o `type` do elemento como primeiro critério de identidade. Tipos diferentes na mesma posição = elementos diferentes. **Como evitar:** se precisar preservar estado entre dois tipos de componente, use uma `key` explícita e mantenha o estado no componente pai (elevação de estado). Ou use o mesmo tipo de componente com props que controlam a renderização interna.
 
 ---
 

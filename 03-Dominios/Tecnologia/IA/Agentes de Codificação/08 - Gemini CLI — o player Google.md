@@ -150,8 +150,7 @@ A grande janela de contexto do Gemini CLI não é um número de marketing — é
  > [!tip] Assista: Gemini CLI: The AI agent that lives in your terminal
 > **Canal:** Google Cloud Tech (oficial) | **Duração:** ~5min | **Idioma:** EN
 >
-> Introdução oficial ao Gemini CLI pelo Google Cloud Tech: explica como o loop agentic funciona "sob o capô" (plan → tool call → observe → iterate), as ferramentas built-in (file system, shell, web search, memória persistente) e os casos de uso práticos — de desenvolvimento de software a análise de dados com CSV. O vídeo também destaca o diferencial de ser open-source e extensível via MCP servers.
-> Trecho de destaque [3:02]: *"Gemini CLI can run for extended periods of time doing reasoning and looping through different tool calls in order to build out entire applications or debug really tricky issues on your behalf so that you can spend time doing what you do best."*
+> Introdução oficial ao Gemini CLI pelo Google Cloud Tech: explica como o loop agentic funciona "sob o capô" (plan → tool call → observe → iterate), as ferramentas built-in (file system, shell, web search, memória persistente) e os casos de uso práticos — de desenvolvimento de software a análise de dados com CSV. O vídeo também destaca o diferencial de ser open-source e extensível via MCP servers. Trecho de destaque [3:02]: *"Gemini CLI can run for extended periods of time doing reasoning and looping through different tool calls in order to build out entire applications or debug really tricky issues on your behalf so that you can spend time doing what you do best."*
 >
 > 🎬 [Assistir no YouTube](https://youtube.com/watch?v=C5Cjvpfzc_0)
 

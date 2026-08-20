@@ -31,8 +31,7 @@ Lá em [[03 - Processos]] vimos que um processo é a abstração de "programa em
 A thread parte esse acoplamento. Ela separa o **recurso** (o que o processo possui) do **fluxo** (o que executa). Um processo pode ter muitos fluxos rodando ao mesmo tempo dentro do mesmo conjunto de recursos.
 
 > [!note] A divisão de bens
-> O que as threads de um processo **compartilham**: o segmento de código (text), as variáveis globais (data), o **heap**, e os **descritores de arquivo** (file descriptors). Abriu um arquivo numa thread? As outras enxergam o mesmo `fd`.
-> O que cada thread tem **só pra si**: a **pilha** (stack), os **registradores** da CPU, e o **PC** (program counter) — o "onde estou no código agora".
+> O que as threads de um processo **compartilham**: o segmento de código (text), as variáveis globais (data), o **heap**, e os **descritores de arquivo** (file descriptors). Abriu um arquivo numa thread? As outras enxergam o mesmo `fd`. O que cada thread tem **só pra si**: a **pilha** (stack), os **registradores** da CPU, e o **PC** (program counter) — o "onde estou no código agora".
 
 Por que a pilha tem que ser privada? Porque a pilha guarda as chamadas de função em andamento e suas variáveis locais. Se duas threads chamam funções diferentes ao mesmo tempo, elas precisam de pilhas separadas — senão uma sobrescreveria os quadros da outra. Já o heap é deliberadamente compartilhado: é por ali que as threads conversam (com todos os perigos que isso traz — veja [[Concorrência e Paralelismo]]).
 

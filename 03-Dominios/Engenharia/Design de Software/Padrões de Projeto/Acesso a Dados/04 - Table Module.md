@@ -20,14 +20,7 @@ aliases:
 # Table Module
 
 > [!abstract] TL;DR
-> O **Table Module** organiza a lógica de negócio com **um objeto por tabela** (ou view) — não um
-> objeto por registro. Uma única instância `PedidosModule` trata a lógica de **todos** os pedidos,
-> operando sobre um **Record Set** (o resultado tabular carregado em memória). É o **meio-termo** entre
-> o [[02 - Transaction Script]] (sem estrutura de domínio) e o [[03 - Domain Model]] (um objeto rico
-> por registro): dá organização orientada a objetos **sem** abandonar o pensamento tabular. Seu habitat
-> é o mundo **.NET**, onde o `DataSet`/`DataTable` torna o Record Set um cidadão de primeira classe;
-> fora dele é raro. A armadilha principal é confundi-lo com o Domain Model — a diferença é **um objeto
-> por tabela × um objeto por registro**.
+> O **Table Module** organiza a lógica de negócio com **um objeto por tabela** (ou view) — não um objeto por registro. Uma única instância `PedidosModule` trata a lógica de **todos** os pedidos, operando sobre um **Record Set** (o resultado tabular carregado em memória). É o **meio-termo** entre o [[02 - Transaction Script]] (sem estrutura de domínio) e o [[03 - Domain Model]] (um objeto rico por registro): dá organização orientada a objetos **sem** abandonar o pensamento tabular. Seu habitat é o mundo **.NET**, onde o `DataSet`/`DataTable` torna o Record Set um cidadão de primeira classe; fora dele é raro. A armadilha principal é confundi-lo com o Domain Model — a diferença é **um objeto por tabela × um objeto por registro**.
 
 ## Um objeto para a tabela inteira
 
@@ -65,19 +58,13 @@ Fora do .NET, o padrão é **raro**: o mundo Java/Ruby/Python seguiu majoritaria
 ## Armadilhas comuns
 
 > [!warning] Confundir Table Module com Domain Model
-> **O que acontece:** trata-se os dois como sinônimos, ou espera-se de um Table Module a modelagem rica (agregados, invariantes por entidade) de um Domain Model.
-> **Por quê:** a granularidade é oposta — **um objeto por tabela** versus **um objeto por registro**. O Table Module pensa em conjuntos de linhas; o Domain Model pensa em entidades individuais com identidade e regras próprias.
-> **Como evitar:** a pergunta decisiva: *o objeto representa a tabela inteira (Table Module) ou um único registro com comportamento (Domain Model)?* Se seus métodos recebem um id para saber sobre qual linha agir, é Table Module.
+> **O que acontece:** trata-se os dois como sinônimos, ou espera-se de um Table Module a modelagem rica (agregados, invariantes por entidade) de um Domain Model. **Por quê:** a granularidade é oposta — **um objeto por tabela** versus **um objeto por registro**. O Table Module pensa em conjuntos de linhas; o Domain Model pensa em entidades individuais com identidade e regras próprias. **Como evitar:** a pergunta decisiva: *o objeto representa a tabela inteira (Table Module) ou um único registro com comportamento (Domain Model)?* Se seus métodos recebem um id para saber sobre qual linha agir, é Table Module.
 
 > [!warning] Usar Table Module fora do ecossistema de Record Set
-> **O que acontece:** importa-se o padrão para Java/Python sem o suporte a Record Set, acabando com um objeto desajeitado que manipula listas de mapas ou arrays de arrays "na mão".
-> **Por quê:** o Table Module se apoia num Record Set bem-suportado (como o `DataTable` do .NET). Sem essa base, você recria uma estrutura tabular pobre e perde a produtividade que justificava o padrão.
-> **Como evitar:** fora do .NET, prefira Domain Model (para lógica rica) ou Transaction Script (para lógica rasa). Table Module sem Record Set nativo raramente compensa.
+> **O que acontece:** importa-se o padrão para Java/Python sem o suporte a Record Set, acabando com um objeto desajeitado que manipula listas de mapas ou arrays de arrays "na mão". **Por quê:** o Table Module se apoia num Record Set bem-suportado (como o `DataTable` do .NET). Sem essa base, você recria uma estrutura tabular pobre e perde a produtividade que justificava o padrão. **Como evitar:** fora do .NET, prefira Domain Model (para lógica rica) ou Transaction Script (para lógica rasa). Table Module sem Record Set nativo raramente compensa.
 
 > [!warning] O módulo que vira o God object da tabela
-> **O que acontece:** o Table Module acumula toda e qualquer operação relacionada à tabela, crescendo até virar uma classe enorme que faz de tudo com aqueles dados.
-> **Por quê:** um objeto por tabela concentra responsabilidade; sem disciplina, ele incha como qualquer God object.
-> **Como evitar:** mantenha o módulo focado na lógica de negócio da **sua** tabela; empurre orquestração entre tabelas para uma camada de serviço, e relatórios complexos para consultas dedicadas.
+> **O que acontece:** o Table Module acumula toda e qualquer operação relacionada à tabela, crescendo até virar uma classe enorme que faz de tudo com aqueles dados. **Por quê:** um objeto por tabela concentra responsabilidade; sem disciplina, ele incha como qualquer God object. **Como evitar:** mantenha o módulo focado na lógica de negócio da **sua** tabela; empurre orquestração entre tabelas para uma camada de serviço, e relatórios complexos para consultas dedicadas.
 
 ## Como explicar em inglês
 

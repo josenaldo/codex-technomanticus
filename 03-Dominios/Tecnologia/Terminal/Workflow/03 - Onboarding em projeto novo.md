@@ -110,35 +110,15 @@ Nesses casos, pare o playbook e pergunte ao time. Continuar explorando sem conte
 
 ## Armadilhas
 
-1. **Tentar entender 100% antes de tocar código**
-   **Causa:** Ansiedade de "não saber o suficiente" — medo de errar por ignorância.
-   **Sintoma:** Três dias depois você ainda está lendo docs sem ter rodado o app nenhuma vez.
-   **Como detectar:** Você marcou 30 minutos no timer mas já estorou para 2 horas e ainda não abriu o editor.
-   **Solução:** Time-box rígido. Ao bater 30 minutos, mude o objetivo para "rodar o app local" — mesmo entendendo apenas 40% do código. O restante se aprende fazendo, com o contexto prático que só a execução dá.
+1. **Tentar entender 100% antes de tocar código** **Causa:** Ansiedade de "não saber o suficiente" — medo de errar por ignorância. **Sintoma:** Três dias depois você ainda está lendo docs sem ter rodado o app nenhuma vez. **Como detectar:** Você marcou 30 minutos no timer mas já estorou para 2 horas e ainda não abriu o editor. **Solução:** Time-box rígido. Ao bater 30 minutos, mude o objetivo para "rodar o app local" — mesmo entendendo apenas 40% do código. O restante se aprende fazendo, com o contexto prático que só a execução dá.
 
-2. **Pular `bat README.md` por achar que README é sempre inútil**
-   **Causa:** Experiência acumulada com READMEs desatualizados cria viés de descarte automático.
-   **Sintoma:** Você descobre um conceito básico do domínio (ex.: o que é um "pedido" naquele sistema) apenas na semana 2, por acidente.
-   **Como detectar:** O README tem 5 ou mais linhas e você não leu nenhuma delas.
-   **Solução:** Sempre leia o README na Fase 1. Mesmo que seja trash, dá o vocabulário que o time usa — e vocabulário errado em PR comments cria atritos desnecessários.
+2. **Pular `bat README.md` por achar que README é sempre inútil** **Causa:** Experiência acumulada com READMEs desatualizados cria viés de descarte automático. **Sintoma:** Você descobre um conceito básico do domínio (ex.: o que é um "pedido" naquele sistema) apenas na semana 2, por acidente. **Como detectar:** O README tem 5 ou mais linhas e você não leu nenhuma delas. **Solução:** Sempre leia o README na Fase 1. Mesmo que seja trash, dá o vocabulário que o time usa — e vocabulário errado em PR comments cria atritos desnecessários.
 
-3. **Ignorar `lazygit log` / `git log` (Fase 3 pulada)**
-   **Causa:** "O código atual basta para entender o sistema."
-   **Sintoma:** Você faz um refactor com um pressuposto que foi explicitamente removido dois commits atrás, gerando regressão.
-   **Como detectar:** Você não consegue responder "onde o time está pensando agora?" — só "onde o código está agora?"
-   **Solução:** Fase 3 é obrigatória, não opcional. O histórico recente revela intenção e direção — o que o time está construindo, não apenas o que já construiu.
+3. **Ignorar `lazygit log` / `git log` (Fase 3 pulada)** **Causa:** "O código atual basta para entender o sistema." **Sintoma:** Você faz um refactor com um pressuposto que foi explicitamente removido dois commits atrás, gerando regressão. **Como detectar:** Você não consegue responder "onde o time está pensando agora?" — só "onde o código está agora?" **Solução:** Fase 3 é obrigatória, não opcional. O histórico recente revela intenção e direção — o que o time está construindo, não apenas o que já construiu.
 
-4. **Não anotar nada (Fase 4 esquecida)**
-   **Causa:** "Vou lembrar" — confiança excessiva na memória de curto prazo.
-   **Sintoma:** Na semana seguinte você faz o mesmo onboarding mental novamente, com as mesmas dúvidas, sem ter avançado.
-   **Como detectar:** Abre `~/scratch/myproj.md` na semana 2 — está vazio ou inexistente.
-   **Solução:** Fase 4 é inegociável. Mesmo 3 bullets já bastam. O scratch file vira fonte para a retrospectiva de onboarding e para orientar o próximo dev que entrar no mesmo projeto.
+4. **Não anotar nada (Fase 4 esquecida)** **Causa:** "Vou lembrar" — confiança excessiva na memória de curto prazo. **Sintoma:** Na semana seguinte você faz o mesmo onboarding mental novamente, com as mesmas dúvidas, sem ter avançado. **Como detectar:** Abre `~/scratch/myproj.md` na semana 2 — está vazio ou inexistente. **Solução:** Fase 4 é inegociável. Mesmo 3 bullets já bastam. O scratch file vira fonte para a retrospectiva de onboarding e para orientar o próximo dev que entrar no mesmo projeto.
 
-5. **Pular a Fase 2 e ir direto para leitura linear de arquivos**
-   **Causa:** Querer mergulhar no código antes de mapear a topologia — parece "mais produtivo".
-   **Sintoma:** Você leu 10 arquivos sem entender como eles se conectam nem qual deles é chamado primeiro.
-   **Como detectar:** Ao final, você não consegue desenhar o fluxo de uma requisição típica do app do início ao fim.
-   **Solução:** Use `rg` e Telescope **antes** de qualquer leitura linear. Identifique `main`, `index` ou `app` primeiro. Só depois desça para os módulos que esses arquivos importam.
+5. **Pular a Fase 2 e ir direto para leitura linear de arquivos** **Causa:** Querer mergulhar no código antes de mapear a topologia — parece "mais produtivo". **Sintoma:** Você leu 10 arquivos sem entender como eles se conectam nem qual deles é chamado primeiro. **Como detectar:** Ao final, você não consegue desenhar o fluxo de uma requisição típica do app do início ao fim. **Solução:** Use `rg` e Telescope **antes** de qualquer leitura linear. Identifique `main`, `index` ou `app` primeiro. Só depois desça para os módulos que esses arquivos importam.
 
 ## Em inglês
 

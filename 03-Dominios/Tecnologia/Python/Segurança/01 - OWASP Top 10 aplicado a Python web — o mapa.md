@@ -145,14 +145,10 @@ class WebhookConfig(BaseModel):
 ## Armadilhas comuns ao usar este mapa
 
 > [!warning] "Meu framework já resolve isso"
-> **O que acontece:** o time assume que, por usar Django ou FastAPI, várias categorias do Top 10 já estão cobertas por padrão — e para de verificar.
-> **Por quê:** frameworks Python têm bons defaults (Django escapa HTML por padrão, SQLAlchemy usa bind parameters por padrão), mas *default* não é *garantia incondicional*. Escape hatches existem (`|safe`, `.raw()`, `text()` com f-string) e são usados sob pressão de prazo, sem que ninguém perceba que reabriram a vulnerabilidade.
-> **Como evitar:** tratar cada uso de escape hatch como uma decisão consciente e revisada, nunca como atalho silencioso — e testar authorization/injection explicitamente, não assumir que o framework cobre.
+> **O que acontece:** o time assume que, por usar Django ou FastAPI, várias categorias do Top 10 já estão cobertas por padrão — e para de verificar. **Por quê:** frameworks Python têm bons defaults (Django escapa HTML por padrão, SQLAlchemy usa bind parameters por padrão), mas *default* não é *garantia incondicional*. Escape hatches existem (`|safe`, `.raw()`, `text()` com f-string) e são usados sob pressão de prazo, sem que ninguém perceba que reabriram a vulnerabilidade. **Como evitar:** tratar cada uso de escape hatch como uma decisão consciente e revisada, nunca como atalho silencioso — e testar authorization/injection explicitamente, não assumir que o framework cobre.
 
 > [!warning] Tratar o Top 10 como as únicas dez formas de quebrar o sistema
-> **O que acontece:** o time audita contra as dez categorias, encontra zero problemas, e declara "estamos seguros".
-> **Por quê:** o Top 10 é o conjunto das categorias mais *prevalentes* segundo dados agregados da comunidade OWASP — não o conjunto de todas as categorias possíveis. Lógica de negócio abusada de forma específica ao domínio (ex: aplicar um cupom de desconto duas vezes por uma race condition) frequentemente não cabe limpo em nenhuma das dez.
-> **Como evitar:** usar o Top 10 como piso, não como teto. Ele estrutura a conversa inicial de segurança; não substitui threat modeling específico do seu domínio de negócio (A04, que este galho não desenvolve por esse exato motivo).
+> **O que acontece:** o time audita contra as dez categorias, encontra zero problemas, e declara "estamos seguros". **Por quê:** o Top 10 é o conjunto das categorias mais *prevalentes* segundo dados agregados da comunidade OWASP — não o conjunto de todas as categorias possíveis. Lógica de negócio abusada de forma específica ao domínio (ex: aplicar um cupom de desconto duas vezes por uma race condition) frequentemente não cabe limpo em nenhuma das dez. **Como evitar:** usar o Top 10 como piso, não como teto. Ele estrutura a conversa inicial de segurança; não substitui threat modeling específico do seu domínio de negócio (A04, que este galho não desenvolve por esse exato motivo).
 
 ## Como explicar em inglês
 

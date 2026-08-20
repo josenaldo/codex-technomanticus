@@ -86,19 +86,13 @@ Uma scale-up de 25 pessoas perdeu o CTO fundador, que saiu pra outro projeto. Co
 ## Armadilhas comuns
 
 > [!warning] Tratar advisory como se fosse hands-on
-> **O que acontece:** a empresa espera que o fractional responda dúvidas urgentes fora da janela combinada, participe de decisões do dia a dia, ou "esteja disponível" além do que foi contratado.
-> **Por quê:** o modelo advisory é dimensionado pra 4-8 horas por mês — dá pra revisar decisões estruturais, não pra acompanhar a operação diária. Sem um ponto de contato interno que absorve o dia a dia, o fractional vira gargalo ou a empresa fica frustrada com a "falta de presença".
-> **Como evitar:** definir por escrito, no contrato, o que está dentro e fora do escopo advisory — e nomear quem decide no dia a dia quando o fractional não está disponível.
+> **O que acontece:** a empresa espera que o fractional responda dúvidas urgentes fora da janela combinada, participe de decisões do dia a dia, ou "esteja disponível" além do que foi contratado. **Por quê:** o modelo advisory é dimensionado pra 4-8 horas por mês — dá pra revisar decisões estruturais, não pra acompanhar a operação diária. Sem um ponto de contato interno que absorve o dia a dia, o fractional vira gargalo ou a empresa fica frustrada com a "falta de presença". **Como evitar:** definir por escrito, no contrato, o que está dentro e fora do escopo advisory — e nomear quem decide no dia a dia quando o fractional não está disponível.
 
 > [!warning] Confundir fractional com "freela de arquitetura"
-> **O que acontece:** a empresa trata o engajamento como um projeto de consultoria pontual — pede um documento, aceita, encerra — e nunca chega a testar se o fractional entrega resultado operando junto com o time.
-> **Por quê:** isso ignora o que diferencia fractional de consultoria tradicional (ver [[02 - Fractional vs freelance vs consultoria vs indie hacker]]): o valor está em ficar por perto o suficiente pra ver a decisão sair do papel, não em produzir um relatório.
-> **Como evitar:** desenhar o engajamento com cadência recorrente (retainer), não como entrega única, mesmo em fases iniciais de teste.
+> **O que acontece:** a empresa trata o engajamento como um projeto de consultoria pontual — pede um documento, aceita, encerra — e nunca chega a testar se o fractional entrega resultado operando junto com o time. **Por quê:** isso ignora o que diferencia fractional de consultoria tradicional (ver [[02 - Fractional vs freelance vs consultoria vs indie hacker]]): o valor está em ficar por perto o suficiente pra ver a decisão sair do papel, não em produzir um relatório. **Como evitar:** desenhar o engajamento com cadência recorrente (retainer), não como entrega única, mesmo em fases iniciais de teste.
 
 > [!warning] Assumir que "fractional" significa "júnior barato"
-> **O que acontece:** empresas em fase de corte de custo tentam contratar um fractional por preço de freelancer júnior, esperando o mesmo nível de responsabilidade de um executivo sênior.
-> **Por quê:** o preço do fractional reflete anos de experiência prévia em cargo equivalente full-time — não é trabalho "descontado", é trabalho fatiado. Um fractional CTO bom não vai aceitar retainer abaixo do que sua hora efetivamente vale.
-> **Como evitar:** calcular o retainer a partir do valor-hora equivalente ao cargo full-time (ver [[05 - Precificação — retainer, hourly e project-based]]), não a partir do orçamento disponível.
+> **O que acontece:** empresas em fase de corte de custo tentam contratar um fractional por preço de freelancer júnior, esperando o mesmo nível de responsabilidade de um executivo sênior. **Por quê:** o preço do fractional reflete anos de experiência prévia em cargo equivalente full-time — não é trabalho "descontado", é trabalho fatiado. Um fractional CTO bom não vai aceitar retainer abaixo do que sua hora efetivamente vale. **Como evitar:** calcular o retainer a partir do valor-hora equivalente ao cargo full-time (ver [[05 - Precificação — retainer, hourly e project-based]]), não a partir do orçamento disponível.
 
 ## Como explicar em inglês
 

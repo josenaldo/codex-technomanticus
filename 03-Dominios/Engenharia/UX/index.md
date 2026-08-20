@@ -34,24 +34,11 @@ O domínio se organiza **por disciplina de UX** (pesquisa, arquitetura de inform
 ## Política de mídia (M1 obrigatório)
 
 > [!info] Mídia verificada é obrigatória em toda nota (2026-07-28)
-> Diferente do padrão default de `verificar-nota` — que isenta M1 (vídeo/podcast embutido)
-> na fase Iniciado — este domínio segue o padrão de [[03-Dominios/Tecnologia/Acessibilidade/index|Tecnologia/Acessibilidade]]
-> (vídeo verificado em 21 de 21 notas): **M1 é obrigatório em toda nota, de qualquer fase**.
-> Isso sobrepõe tanto a isenção de fase da skill `verificar-nota` quanto a regra de
-> `diagnosticar-galho` que fecharia uma nota em `➖` só por score alto sem mídia. Uma nota
-> sem mídia verificada **não fecha**.
+> Diferente do padrão default de `verificar-nota` — que isenta M1 (vídeo/podcast embutido) na fase Iniciado — este domínio segue o padrão de [[03-Dominios/Tecnologia/Acessibilidade/index|Tecnologia/Acessibilidade]] (vídeo verificado em 21 de 21 notas): **M1 é obrigatório em toda nota, de qualquer fase**. Isso sobrepõe tanto a isenção de fase da skill `verificar-nota` quanto a regra de `diagnosticar-galho` que fecharia uma nota em `➖` só por score alto sem mídia. Uma nota sem mídia verificada **não fecha**.
 >
-> "Verificada" significa que a URL foi de fato conferida (WebFetch ou `yt-dlp`, lendo
-> transcrição/descrição) e que o conteúdo corresponde ao que a nota afirma — nunca um link
-> plausível, não conferido. Preferência por vídeo (YouTube); podcast/talk é aceitável quando
-> não há vídeo bom e verificável para o tema. Ver a skill `.claude/skills/adicionar-midia/SKILL.md`
-> para o formato do callout.
+> "Verificada" significa que a URL foi de fato conferida (WebFetch ou `yt-dlp`, lendo transcrição/descrição) e que o conteúdo corresponde ao que a nota afirma — nunca um link plausível, não conferido. Preferência por vídeo (YouTube); podcast/talk é aceitável quando não há vídeo bom e verificável para o tema. Ver a skill `.claude/skills/adicionar-midia/SKILL.md` para o formato do callout.
 >
-> **Exceção deliberada:** se, após busca extensiva, nenhuma mídia boa e verificável for
-> encontrada, a nota fica sem mídia e o roadmap do sub-galho registra isso explicitamente
-> como buraco honesto — nunca forçar um link fraco só para fechar o gate. Ver
-> [[03-Dominios/Engenharia/UX/Descoberta e Pesquisa/roadmap|roadmap de SG2]], nota 06, para
-> um exemplo real dessa exceção.
+> **Exceção deliberada:** se, após busca extensiva, nenhuma mídia boa e verificável for encontrada, a nota fica sem mídia e o roadmap do sub-galho registra isso explicitamente como buraco honesto — nunca forçar um link fraco só para fechar o gate. Ver [[03-Dominios/Engenharia/UX/Descoberta e Pesquisa/roadmap|roadmap de SG2]], nota 06, para um exemplo real dessa exceção.
 
 ## Sub-galhos
 

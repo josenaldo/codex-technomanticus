@@ -163,8 +163,7 @@ economia de aproximadamente 19% no total, sem tocar em código de negócio)
 > [!tip] Assista: Optimize Your AWS Lambda Function With Power Tuning
 > **Canal:** Be A Better Dev | **Duração:** ~11min | **Idioma:** EN
 >
-> Mostra o AWS Lambda Power Tuning citado acima em ação de verdade: roda a mesma função em várias configurações de memória, plota duração e custo lado a lado, e deixa visível — com números reais, não intuição — o ponto em que aumentar memória reduz custo total em vez de aumentar.
-> Trecho de destaque [09:32]: *"the more memory that you throw at the lambda function the more compute capacity it's going to have however there are diminishing returns... when you look at the cost increase it jumped by i would say a third of the cost"*
+> Mostra o AWS Lambda Power Tuning citado acima em ação de verdade: roda a mesma função em várias configurações de memória, plota duração e custo lado a lado, e deixa visível — com números reais, não intuição — o ponto em que aumentar memória reduz custo total em vez de aumentar. Trecho de destaque [09:32]: *"the more memory that you throw at the lambda function the more compute capacity it's going to have however there are diminishing returns... when you look at the cost increase it jumped by i would say a third of the cost"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=QUJ_Govd0CQ)
 

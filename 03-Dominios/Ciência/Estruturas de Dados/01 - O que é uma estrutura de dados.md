@@ -123,11 +123,9 @@ Agora o coração da nota: como escolher uma estrutura sem chutar.
 
 Antes de escrever uma linha de código, responda a seis perguntas. Elas filtram o espaço de estruturas de dezenas para uma ou duas candidatas.
 
-**1. Qual é o padrão de acesso dominante?**
-A pergunta-mãe. Você vai sobretudo *buscar por chave*? *iterar em sequência*? *pegar o top-K*? *fazer range queries*? Identifique a operação que roda no hot path — ela manda na escolha. Otimize para o acesso dominante, não para o raro.
+**1. Qual é o padrão de acesso dominante?** A pergunta-mãe. Você vai sobretudo *buscar por chave*? *iterar em sequência*? *pegar o top-K*? *fazer range queries*? Identifique a operação que roda no hot path — ela manda na escolha. Otimize para o acesso dominante, não para o raro.
 
-**2. Há uma chave natural?**
-Se cada elemento tem uma chave única e natural (um CPF, um ID, um e-mail), você quer um mapa — hash ou árvore. Se não há chave, e os elementos importam por posição ou só por presença, você quer um array, uma lista ou um set.
+**2. Há uma chave natural?** Se cada elemento tem uma chave única e natural (um CPF, um ID, um e-mail), você quer um mapa — hash ou árvore. Se não há chave, e os elementos importam por posição ou só por presença, você quer um array, uma lista ou um set.
 
 **3. Você precisa de ordem?**
 - ordem de inserção → `LinkedHashMap` (Java), `dict` (Python ≥ 3.7), `Map` (JS);
@@ -136,14 +134,11 @@ Se cada elemento tem uma chave única e natural (um CPF, um ID, um e-mail), voc�
 
 Não pague por ordem que você não usa.
 
-**4. O tamanho é conhecido e fixo?**
-Tamanho fixo e conhecido → um array cru vence (zero overhead, máxima localidade de cache). Tamanho dinâmico → array dinâmico (`ArrayList`, `slice`, `list`) ou mapa.
+**4. O tamanho é conhecido e fixo?** Tamanho fixo e conhecido → um array cru vence (zero overhead, máxima localidade de cache). Tamanho dinâmico → array dinâmico (`ArrayList`, `slice`, `list`) ou mapa.
 
-**5. Há concorrência?**
-Acesso de múltiplas threads muda tudo. As estruturas comuns *não* são thread-safe. Em Java, troque por `ConcurrentHashMap`, `CopyOnWriteArrayList`. Ignorar isso gera bugs que só aparecem em produção sob carga.
+**5. Há concorrência?** Acesso de múltiplas threads muda tudo. As estruturas comuns *não* são thread-safe. Em Java, troque por `ConcurrentHashMap`, `CopyOnWriteArrayList`. Ignorar isso gera bugs que só aparecem em produção sob carga.
 
-**6. Você precisa de duplicatas?**
-Duplicatas permitidas → lista. Duplicatas proibidas (unicidade automática) → set. Esta é a pergunta mais rápida e a mais frequentemente ignorada.
+**6. Você precisa de duplicatas?** Duplicatas permitidas → lista. Duplicatas proibidas (unicidade automática) → set. Esta é a pergunta mais rápida e a mais frequentemente ignorada.
 
 O diagrama abaixo encadeia essas perguntas como um fluxo de decisão até uma família de estruturas.
 

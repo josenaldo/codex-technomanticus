@@ -1053,9 +1053,7 @@ Cada alerta deve:
 3. **Ter runbook** (o que fazer quando disparar)
 4. **Ter severity** (critical, warning, info)
 
-**Critical** — precisa ação imediata, acorda alguém.
-**Warning** — precisa ação no horário de trabalho.
-**Info** — FYI, dashboard.
+**Critical** — precisa ação imediata, acorda alguém. **Warning** — precisa ação no horário de trabalho. **Info** — FYI, dashboard.
 
 ### Anti-patterns
 
@@ -1084,12 +1082,7 @@ Cada alerta deve:
 
 ### Metodologia
 
-**1. Detect** — alerta disparou
-**2. Assess** — qual o impacto real? quantos users afetados?
-**3. Mitigate** — pare o sangramento (rollback, scale up, feature flag off)
-**4. Diagnose** — causa raiz
-**5. Fix** — solução definitiva
-**6. Learn** — post-mortem
+**1. Detect** — alerta disparou **2. Assess** — qual o impacto real? quantos users afetados? **3. Mitigate** — pare o sangramento (rollback, scale up, feature flag off) **4. Diagnose** — causa raiz **5. Fix** — solução definitiva **6. Learn** — post-mortem
 
 **Key insight:** **mitigar antes de diagnosticar**. Rollback em 30s vale mais que debug perfeito em 30 min.
 

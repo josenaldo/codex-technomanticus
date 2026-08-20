@@ -53,9 +53,7 @@ Não existe uma lista universal — o que existe é um roteiro de categorias que
 **Multi-região importa agora?** Para a maioria das entrevistas de 45 minutos, a resposta é "não, foque em uma região" — e isso é uma resposta válida que simplifica seu design. Perguntar e receber essa simplificação é tão valioso quanto perguntar e receber uma restrição.
 
 > [!warning] Perguntar demais e nunca começar a desenhar
-> **O que acontece:** o candidato interroga o entrevistador por 15 minutos, cobrindo cada detalhe possível, e chega ao diagrama com metade do tempo já gasto.
-> **Por quê:** confunde "fazer perguntas de escopo" com "eliminar toda incerteza antes de agir" — mas a entrevista não recompensa isso, recompensa progresso visível.
-> **Como evitar:** limite-se a 4-6 perguntas de alto impacto (escala, read/write, escopo de features, consistência) e trate o resto como suposição documentada em voz alta: "vou assumir que não precisamos de multi-região agora — me avisa se estiver errado."
+> **O que acontece:** o candidato interroga o entrevistador por 15 minutos, cobrindo cada detalhe possível, e chega ao diagrama com metade do tempo já gasto. **Por quê:** confunde "fazer perguntas de escopo" com "eliminar toda incerteza antes de agir" — mas a entrevista não recompensa isso, recompensa progresso visível. **Como evitar:** limite-se a 4-6 perguntas de alto impacto (escala, read/write, escopo de features, consistência) e trate o resto como suposição documentada em voz alta: "vou assumir que não precisamos de multi-região agora — me avisa se estiver errado."
 
 ## Separando RF de RNF na prática
 
@@ -100,9 +98,7 @@ Frase forte: "vou focar em postar um tweet e ler o feed de quem eu sigo; vou dei
 A segunda frase faz três coisas ao mesmo tempo: mostra que você entende o tamanho real do problema, prioriza pelo que é central (o núcleo de um feed social é postar+ler), e dá ao entrevistador um gancho fácil para corrigir se sua leitura de prioridade estiver errada.
 
 > [!warning] Aceitar escopo infinito para parecer ambicioso
-> **O que acontece:** o candidato lista todas as features possíveis do sistema ("vou incluir posts, DMs, stories, live, ads, analytics...") para parecer completo.
-> **Por quê:** confunde "cobrir tudo" com "mostrar competência" — mas cobrir tudo em superfície é o oposto do que a rubrica de profundidade técnica premia.
-> **Como evitar:** proponha um núcleo pequeno e deixe explícito que o resto ficou de fora por decisão consciente, não por esquecimento. "Fora do escopo: X, Y, Z — posso voltar neles se sobrar tempo" é uma frase que sinaliza controle, não lacuna.
+> **O que acontece:** o candidato lista todas as features possíveis do sistema ("vou incluir posts, DMs, stories, live, ads, analytics...") para parecer completo. **Por quê:** confunde "cobrir tudo" com "mostrar competência" — mas cobrir tudo em superfície é o oposto do que a rubrica de profundidade técnica premia. **Como evitar:** proponha um núcleo pequeno e deixe explícito que o resto ficou de fora por decisão consciente, não por esquecimento. "Fora do escopo: X, Y, Z — posso voltar neles se sobrar tempo" é uma frase que sinaliza controle, não lacuna.
 
 ## Fixar RNFs cedo é o que dá critério depois
 
@@ -150,14 +146,10 @@ Esse resumo final também é o artefato que você vai carregar para a próxima e
 ## Armadilhas comuns
 
 > [!warning] Tratar RNF como frase solta, sem número
-> **O que acontece:** o candidato diz "precisa ser rápido e escalável" e segue direto pro diagrama, sem nunca quantificar.
-> **Por quê:** soa como requisito, mas não é acionável — "rápido" e "escalável" não decidem nenhuma escolha de arquitetura sozinhos.
-> **Como evitar:** todo RNF citado precisa virar número (mesmo que aproximado) antes de você desenhar a primeira caixa. Se não tem número ainda, isso é trabalho pra próxima etapa — mas a *categoria* do RNF (latência, disponibilidade, consistência, durabilidade, escala) já deve estar nomeada aqui.
+> **O que acontece:** o candidato diz "precisa ser rápido e escalável" e segue direto pro diagrama, sem nunca quantificar. **Por quê:** soa como requisito, mas não é acionável — "rápido" e "escalável" não decidem nenhuma escolha de arquitetura sozinhos. **Como evitar:** todo RNF citado precisa virar número (mesmo que aproximado) antes de você desenhar a primeira caixa. Se não tem número ainda, isso é trabalho pra próxima etapa — mas a *categoria* do RNF (latência, disponibilidade, consistência, durabilidade, escala) já deve estar nomeada aqui.
 
 > [!warning] Levantar requisitos e nunca mais voltar a eles
-> **O que acontece:** o candidato faz as perguntas certas nos primeiros minutos, mas no deep dive escolhe componentes sem citar o requisito que motivou a escolha.
-> **Por quê:** trata "clarificar requisitos" como um ritual de abertura, não como uma ferramenta viva que deveria ser referenciada o tempo todo.
-> **Como evitar:** cada escolha de arquitetura na frente do quadro deveria começar com "porque definimos X..." — retomando literalmente algo que você mesmo levantou nos primeiros 5 minutos. Se você não consegue amarrar uma escolha a um requisito, isso é sinal de que a escolha ainda não tem critério.
+> **O que acontece:** o candidato faz as perguntas certas nos primeiros minutos, mas no deep dive escolhe componentes sem citar o requisito que motivou a escolha. **Por quê:** trata "clarificar requisitos" como um ritual de abertura, não como uma ferramenta viva que deveria ser referenciada o tempo todo. **Como evitar:** cada escolha de arquitetura na frente do quadro deveria começar com "porque definimos X..." — retomando literalmente algo que você mesmo levantou nos primeiros 5 minutos. Se você não consegue amarrar uma escolha a um requisito, isso é sinal de que a escolha ainda não tem critério.
 
 ## Como explicar em inglês
 

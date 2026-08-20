@@ -122,9 +122,7 @@ graph TD
 ## O ganho real
 
 > [!example] Anthropic Contextual Retrieval (2024)
-> Hybrid search (BM25 + vector) sozinho: 5.7% failed retrievals
-> Hybrid + Reranker: 1.9% failed retrievals
-> **Redução de 67%** apenas adicionando reranker.
+> Hybrid search (BM25 + vector) sozinho: 5.7% failed retrievals Hybrid + Reranker: 1.9% failed retrievals **Redução de 67%** apenas adicionando reranker.
 
 Esse é o efeito típico em produção. Skip rerank = deixar dinheiro na mesa.
 

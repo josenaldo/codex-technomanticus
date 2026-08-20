@@ -22,18 +22,10 @@ aliases:
 # Timeout
 
 > [!abstract] TL;DR
-> A defesa mais simples da família e a mais esquecida — porque o **default de muitas bibliotecas é
-> esperar para sempre**, e "para sempre" é a configuração que derruba sistemas. Sem timeout, uma
-> dependência lenta retém suas threads e conexões até o pool acabar, e a lentidão dela vira
-> indisponibilidade sua. É pré-requisito de todos os outros padrões: retry, circuit breaker e bulkhead
-> pressupõem que uma tentativa **termina**. E há uma versão adulta do padrão que quase ninguém
-> implementa: **propagar o prazo** pela cadeia, em vez de cada serviço ter o seu isoladamente.
+> A defesa mais simples da família e a mais esquecida — porque o **default de muitas bibliotecas é esperar para sempre**, e "para sempre" é a configuração que derruba sistemas. Sem timeout, uma dependência lenta retém suas threads e conexões até o pool acabar, e a lentidão dela vira indisponibilidade sua. É pré-requisito de todos os outros padrões: retry, circuit breaker e bulkhead pressupõem que uma tentativa **termina**. E há uma versão adulta do padrão que quase ninguém implementa: **propagar o prazo** pela cadeia, em vez de cada serviço ter o seu isoladamente.
 
 > [!info] O recorte desta nota
-> Aqui o timeout como **decisão de projeto** e o que ele sacrifica. Como escolher o valor a partir de
-> percentis observados, e como operá-lo, está em
-> [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/06 - Resiliência operacional|Operação 3-06]]
-> ("Timeout: o valor, não o padrão").
+> Aqui o timeout como **decisão de projeto** e o que ele sacrifica. Como escolher o valor a partir de percentis observados, e como operá-lo, está em [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/06 - Resiliência operacional|Operação 3-06]] ("Timeout: o valor, não o padrão").
 
 ## A configuração que ninguém tomou
 
@@ -102,19 +94,13 @@ Essa é a assimetria que torna a decisão interessante: o benefício do timeout 
 ## Armadilhas comuns
 
 > [!warning] Confiar no default
-> **O que acontece:** nenhuma linha de configuração, e a suposição de que a biblioteca traz algo sensato. Sob lentidão, o pool enche e o serviço para.
-> **Por quê:** o default de muitos clientes é infinito ou muito alto — a biblioteca não conhece seu caso e escolhe não limitar.
-> **Como evitar:** trate timeout explícito como **obrigatório** em toda chamada remota, verificável em revisão. E confira o default de cada cliente que você usa, um por um: eles diferem entre si, e "achei que tinha" é a causa raiz frequente.
+> **O que acontece:** nenhuma linha de configuração, e a suposição de que a biblioteca traz algo sensato. Sob lentidão, o pool enche e o serviço para. **Por quê:** o default de muitos clientes é infinito ou muito alto — a biblioteca não conhece seu caso e escolhe não limitar. **Como evitar:** trate timeout explícito como **obrigatório** em toda chamada remota, verificável em revisão. E confira o default de cada cliente que você usa, um por um: eles diferem entre si, e "achei que tinha" é a causa raiz frequente.
 
 > [!warning] Timeout do chamador menor que o do chamado
-> **O que acontece:** A desiste em 2s, B continua trabalhando por mais 8s numa resposta que será descartada — retendo recursos de B exatamente quando o sistema está sob estresse.
-> **Por quê:** cada serviço configura o seu isoladamente, sem visão da cadeia.
-> **Como evitar:** os timeouts devem **decrescer** de fora para dentro, e o ideal é propagar o prazo. No mínimo, documente a cadeia e verifique a coerência quando um valor mudar.
+> **O que acontece:** A desiste em 2s, B continua trabalhando por mais 8s numa resposta que será descartada — retendo recursos de B exatamente quando o sistema está sob estresse. **Por quê:** cada serviço configura o seu isoladamente, sem visão da cadeia. **Como evitar:** os timeouts devem **decrescer** de fora para dentro, e o ideal é propagar o prazo. No mínimo, documente a cadeia e verifique a coerência quando um valor mudar.
 
 > [!warning] Esquecer que retry multiplica o tempo total
-> **O que acontece:** a chamada tem timeout de 2s e 3 tentativas. O usuário espera até 6 segundos, e a operação "com timeout de 2s" estoura o orçamento da requisição inteira.
-> **Por quê:** o timeout foi pensado por tentativa; a experiência do usuário depende do total.
-> **Como evitar:** defina um **orçamento total** para a operação e faça o retry respeitá-lo — parar de tentar quando o prazo global acabar, mesmo que restem tentativas. É o assunto direto da próxima nota.
+> **O que acontece:** a chamada tem timeout de 2s e 3 tentativas. O usuário espera até 6 segundos, e a operação "com timeout de 2s" estoura o orçamento da requisição inteira. **Por quê:** o timeout foi pensado por tentativa; a experiência do usuário depende do total. **Como evitar:** defina um **orçamento total** para a operação e faça o retry respeitá-lo — parar de tentar quando o prazo global acabar, mesmo que restem tentativas. É o assunto direto da próxima nota.
 
 ## Como explicar em inglês
 

@@ -386,24 +386,16 @@ A regra prática: se o formato tem uma spec (RFC, MIME type, W3C), existe uma li
 ## Armadilhas comuns
 
 > [!warning] Line parser sem `_flush` — última linha perdida
-> **O que acontece:** a última linha de um arquivo sem `\n` final nunca é emitida — o dado desaparece silenciosamente.
-> **Por quê:** o `_buffer` interno guarda o fragmento incompleto entre chunks. Sem `_flush`, esse fragmento nunca é liberado quando o stream encerra.
-> **Como evitar:** implementar sempre `_flush(cb)` em qualquer Transform que mantém buffer interno. Chamar `callback()` ao final.
+> **O que acontece:** a última linha de um arquivo sem `\n` final nunca é emitida — o dado desaparece silenciosamente. **Por quê:** o `_buffer` interno guarda o fragmento incompleto entre chunks. Sem `_flush`, esse fragmento nunca é liberado quando o stream encerra. **Como evitar:** implementar sempre `_flush(cb)` em qualquer Transform que mantém buffer interno. Chamar `callback()` ao final.
 
 > [!warning] Multipart sem stream — buffer everything no body
-> **O que acontece:** uploads de 2 GB usam 2 GB de RAM por requisição; sob carga, o processo fica sem memória.
-> **Por quê:** `express.json()` e `body-parser` bufferizam o corpo HTTP inteiro antes de passar para o handler. Não foram projetados para uploads de arquivo.
-> **Como evitar:** usar `busboy` (ou `multer`, que usa busboy internamente) diretamente no `req` — parseia o corpo chunk a chunk sem materializar na memória.
+> **O que acontece:** uploads de 2 GB usam 2 GB de RAM por requisição; sob carga, o processo fica sem memória. **Por quê:** `express.json()` e `body-parser` bufferizam o corpo HTTP inteiro antes de passar para o handler. Não foram projetados para uploads de arquivo. **Como evitar:** usar `busboy` (ou `multer`, que usa busboy internamente) diretamente no `req` — parseia o corpo chunk a chunk sem materializar na memória.
 
 > [!warning] Tee com consumers de velocidades muito diferentes
-> **O que acontece:** o consumer rápido fica bloqueado esperando o lento; a fonte fica parada; latência total sobe para o pior caso.
-> **Por quê:** `PassThrough` aplica backpressure de ambos os consumers. O consumer lento (ex: upload para S3 via conexão lenta) segura o rápido (ex: gravação em disco local).
-> **Como evitar:** avaliar se processamento sequencial é aceitável; ou bufferizar explicitamente no consumer lento com queue interna; ou aceitar que o rápido espera o lento.
+> **O que acontece:** o consumer rápido fica bloqueado esperando o lento; a fonte fica parada; latência total sobe para o pior caso. **Por quê:** `PassThrough` aplica backpressure de ambos os consumers. O consumer lento (ex: upload para S3 via conexão lenta) segura o rápido (ex: gravação em disco local). **Como evitar:** avaliar se processamento sequencial é aceitável; ou bufferizar explicitamente no consumer lento com queue interna; ou aceitar que o rápido espera o lento.
 
 > [!warning] `fileStream` não consumido no busboy — requisição trava
-> **O que acontece:** o evento `close` do busboy nunca dispara; a requisição HTTP fica pendurada até o cliente desistir.
-> **Por quê:** se o handler do evento `file` não consumir o `fileStream` (nem `pipeline`, nem `.resume()`), o busboy para de parsear o body — o parser fica bloqueado esperando o consumer drenar.
-> **Como evitar:**
+> **O que acontece:** o evento `close` do busboy nunca dispara; a requisição HTTP fica pendurada até o cliente desistir. **Por quê:** se o handler do evento `file` não consumir o `fileStream` (nem `pipeline`, nem `.resume()`), o busboy para de parsear o body — o parser fica bloqueado esperando o consumer drenar. **Como evitar:**
 > ```javascript
 > bb.on('file', async (fieldname, fileStream, info) => {
 >   try {
@@ -415,9 +407,7 @@ A regra prática: se o formato tem uma spec (RFC, MIME type, W3C), existe uma li
 > ```
 
 > [!warning] `TextDecoder` sem `{ stream: true }` — caracteres multibyte corrompidos
-> **O que acontece:** caracteres UTF-8 de 2–4 bytes que chegam partidos entre dois chunks são decodificados errado — exibem `?` ou `â€` no lugar do caractere original.
-> **Por quê:** sem `stream: true`, cada chamada a `decode()` trata o chunk como texto completo e descarta o estado de decodificação entre chunks.
-> **Como evitar:** sempre passar `{ stream: true }` no loop e omitir o flag (ou passar `{ stream: false }`) na chamada final após o loop.
+> **O que acontece:** caracteres UTF-8 de 2–4 bytes que chegam partidos entre dois chunks são decodificados errado — exibem `?` ou `â€` no lugar do caractere original. **Por quê:** sem `stream: true`, cada chamada a `decode()` trata o chunk como texto completo e descarta o estado de decodificação entre chunks. **Como evitar:** sempre passar `{ stream: true }` no loop e omitir o flag (ou passar `{ stream: false }`) na chamada final após o loop.
 
 ---
 
@@ -551,14 +541,11 @@ O padrão `for await...of` processa cada evento à medida que chega — sem espe
 
 **Perguntas que podem vir:**
 
-- *"Como você processaria um CSV de 10 GB sem estourar a memória?"*
-  → Pipeline: `createReadStream` → `csv-parser` (Transform) → Transform de processamento → `createWriteStream`. Nunca `fs.readFileSync`.
+- *"Como você processaria um CSV de 10 GB sem estourar a memória?"* → Pipeline: `createReadStream` → `csv-parser` (Transform) → Transform de processamento → `createWriteStream`. Nunca `fs.readFileSync`.
 
-- *"Como você implementaria upload de arquivo grande no Express?"*
-  → `busboy` pipeado do `req`, com o `fileStream` de cada arquivo pipeado para o destino final (S3 via SDK, disco via `fs`).
+- *"Como você implementaria upload de arquivo grande no Express?"* → `busboy` pipeado do `req`, com o `fileStream` de cada arquivo pipeado para o destino final (S3 via SDK, disco via `fs`).
 
-- *"Como você consumiria streaming de um LLM?"*
-  → `fetch()` → `for await (const chunk of response.body)` → decodificar com `TextDecoder({ stream: true })` → exibir token a token.
+- *"Como você consumiria streaming de um LLM?"* → `fetch()` → `for await (const chunk of response.body)` → decodificar com `TextDecoder({ stream: true })` → exibir token a token.
 
 ---
 

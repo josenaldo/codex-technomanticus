@@ -30,9 +30,7 @@ A investigação começou pelo óbvio: não havia bug de código nenhum introduz
 Não era um bug. Era a ausência de uma configuração que o gunicorn já sabe fazer — só que não faz sozinho, por padrão, sem alguém pedir explicitamente.
 
 > [!warning] Achar que "matar o processo antigo" e "desligar o processo antigo" são a mesma coisa
-> **O que acontece:** um pipeline de deploy manda `SIGTERM` pro processo antigo e considera o trabalho feito assim que o processo novo responde no health check — sem verificar o que acontece com as requisições que estavam em andamento no processo antigo naquele instante.
-> **Por quê:** `SIGTERM` é só um sinal — o que o processo faz ao recebê-lo depende inteiramente de como ele foi configurado. Sem graceful shutdown, o comportamento padrão de muitos servidores é encerrar imediatamente, cortando qualquer conexão aberta no meio, não importa o estado dela.
-> **Como evitar:** configurar explicitamente um período de graça (`--graceful-timeout` no gunicorn) durante o qual o processo para de aceitar conexões **novas**, mas continua servindo as que já estão **em andamento**, até elas terminarem ou o prazo de graça esgotar — o assunto do resto desta nota.
+> **O que acontece:** um pipeline de deploy manda `SIGTERM` pro processo antigo e considera o trabalho feito assim que o processo novo responde no health check — sem verificar o que acontece com as requisições que estavam em andamento no processo antigo naquele instante. **Por quê:** `SIGTERM` é só um sinal — o que o processo faz ao recebê-lo depende inteiramente de como ele foi configurado. Sem graceful shutdown, o comportamento padrão de muitos servidores é encerrar imediatamente, cortando qualquer conexão aberta no meio, não importa o estado dela. **Como evitar:** configurar explicitamente um período de graça (`--graceful-timeout` no gunicorn) durante o qual o processo para de aceitar conexões **novas**, mas continua servindo as que já estão **em andamento**, até elas terminarem ou o prazo de graça esgotar — o assunto do resto desta nota.
 
 ## Timeout de worker: matar quem travou, antes que trave todo mundo
 

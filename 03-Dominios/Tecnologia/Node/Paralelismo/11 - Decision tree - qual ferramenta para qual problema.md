@@ -477,17 +477,13 @@ Node child isolado?
 
 ### Perguntas frequentes em entrevista
 
-**"Como você escolheria entre Worker Thread e fork?"**
-Worker Thread é a escolha padrão para CPU-bound: menor custo de criação (~1-5ms vs ~100ms), mesma API de eventos, memória compartilhável via `SharedArrayBuffer`. `fork` ganha quando isolamento total é o requisito — código de tenant não-confiável, native addons não thread-safe, supervisor tree onde o filho pode crashar sem afetar o pai, ou processo descartável com memória limitada via `--max-old-space-size`.
+**"Como você escolheria entre Worker Thread e fork?"** Worker Thread é a escolha padrão para CPU-bound: menor custo de criação (~1-5ms vs ~100ms), mesma API de eventos, memória compartilhável via `SharedArrayBuffer`. `fork` ganha quando isolamento total é o requisito — código de tenant não-confiável, native addons não thread-safe, supervisor tree onde o filho pode crashar sem afetar o pai, ou processo descartável com memória limitada via `--max-old-space-size`.
 
-**"Por que não usar Cluster para paralelizar CPU-bound?"**
-Cluster cria N réplicas do processo completo — cada réplica com seu próprio event loop. Se o problema é CPU-bound dentro de um único handler, cada worker bloqueia seu próprio event loop com o mesmo trabalho. Você multiplicou o problema, não o paralelizou. Worker Thread paraleliza o trabalho dentro de um único request, liberando o event loop do handler. São soluções para problemas orthogonais.
+**"Por que não usar Cluster para paralelizar CPU-bound?"** Cluster cria N réplicas do processo completo — cada réplica com seu próprio event loop. Se o problema é CPU-bound dentro de um único handler, cada worker bloqueia seu próprio event loop com o mesmo trabalho. Você multiplicou o problema, não o paralelizou. Worker Thread paraleliza o trabalho dentro de um único request, liberando o event loop do handler. São soluções para problemas orthogonais.
 
-**"Quando `exec` é aceitável?"**
-Quando o comando completo é hardcoded no código — sem nenhuma variável externa na string. `exec('git log --oneline -5')` é seguro porque não há interpolação. `exec(\`git log --author=${req.query.author}\`)` é vulnerável mesmo que `author` pareça inócuo — o shell interpreta todo metacaractere. A regra: se existe qualquer variável na string, use `execFile` ou `spawn` com array.
+**"Quando `exec` é aceitável?"** Quando o comando completo é hardcoded no código — sem nenhuma variável externa na string. `exec('git log --oneline -5')` é seguro porque não há interpolação. `exec(\`git log --author=${req.query.author}\`)` é vulnerável mesmo que `author` pareça inócuo — o shell interpreta todo metacaractere. A regra: se existe qualquer variável na string, use `execFile` ou `spawn` com array.
 
-**"O que acontece se eu usar Cluster dentro de um pod K8s?"**
-Nada quebra, mas você tem overhead sem benefício equivalente. 4 réplicas K8s × 4 workers cluster = 16 processos Node com 16 heaps separadas. O K8s não consegue fazer health check por worker individualmente — o readiness probe é por pod. Se um dos 4 workers interiores crashar, o pod ainda aparece como healthy. O padrão correto é 1 processo por container; o orquestrador gerencia replicas, health check e rolling update.
+**"O que acontece se eu usar Cluster dentro de um pod K8s?"** Nada quebra, mas você tem overhead sem benefício equivalente. 4 réplicas K8s × 4 workers cluster = 16 processos Node com 16 heaps separadas. O K8s não consegue fazer health check por worker individualmente — o readiness probe é por pod. Se um dos 4 workers interiores crashar, o pod ainda aparece como healthy. O padrão correto é 1 processo por container; o orquestrador gerencia replicas, health check e rolling update.
 
 ---
 

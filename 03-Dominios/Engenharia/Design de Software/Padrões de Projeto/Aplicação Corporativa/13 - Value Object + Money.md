@@ -24,13 +24,7 @@ aliases:
 # Value Object + Money
 
 > [!abstract] TL;DR
-> Um **Value Object** tem identidade **pelo valor**, não por referência: dois objetos com o mesmo
-> conteúdo *são* o mesmo, como dois "23 de março". Ele é **imutável**, comparado por conteúdo, e serve
-> para dar nome e comportamento a conceitos que quase todo sistema representa como `String` ou
-> `BigDecimal` soltos. **Money** é o caso canônico e o mais caro de errar: representar dinheiro em
-> ponto flutuante produz erro garantido, a moeda faz **parte** do valor, e dividir exige decidir o
-> destino do resto — quatro linhas de código que dão dois anos de discrepância contábil. A ressurreição
-> veio pelo lado da **linguagem**: `record`, *branded types*, *newtype*.
+> Um **Value Object** tem identidade **pelo valor**, não por referência: dois objetos com o mesmo conteúdo *são* o mesmo, como dois "23 de março". Ele é **imutável**, comparado por conteúdo, e serve para dar nome e comportamento a conceitos que quase todo sistema representa como `String` ou `BigDecimal` soltos. **Money** é o caso canônico e o mais caro de errar: representar dinheiro em ponto flutuante produz erro garantido, a moeda faz **parte** do valor, e dividir exige decidir o destino do resto — quatro linhas de código que dão dois anos de discrepância contábil. A ressurreição veio pelo lado da **linguagem**: `record`, *branded types*, *newtype*.
 
 ## Os três centavos que não fecham
 
@@ -126,19 +120,13 @@ E há a colisão de nomes já vista na [[07 - DTO — e por que virou pejorativo
 ## Armadilhas comuns
 
 > [!warning] Dinheiro em ponto flutuante
-> **O que acontece:** somas acumulam erro e o fechamento diverge por centavos, de forma intermitente e não reproduzível em casos pequenos.
-> **Por quê:** `float` e `double` são binários e não representam exatamente frações decimais. O erro é minúsculo por operação e cresce com o volume.
-> **Como evitar:** inteiro na menor unidade ou decimal exato, do banco à API. E cuide da fronteira: um `numeric` no Postgres que vira `double` no cliente perdeu a garantia no caminho.
+> **O que acontece:** somas acumulam erro e o fechamento diverge por centavos, de forma intermitente e não reproduzível em casos pequenos. **Por quê:** `float` e `double` são binários e não representam exatamente frações decimais. O erro é minúsculo por operação e cresce com o volume. **Como evitar:** inteiro na menor unidade ou decimal exato, do banco à API. E cuide da fronteira: um `numeric` no Postgres que vira `double` no cliente perdeu a garantia no caminho.
 
 > [!warning] Value object mutável, ou com `equals`/`hashCode` inconsistentes
-> **O que acontece:** o objeto é usado como chave de mapa ou colocado num conjunto, e depois é alterado. Ele "some" da estrutura — a busca falha porque o `hashCode` mudou de balde.
-> **Por quê:** estruturas baseadas em hash assumem que a chave não muda. Implementar `equals` sem `hashCode` (ou sobre campos diferentes) produz o mesmo sintoma, com o agravante de o `equals` parecer correto em teste.
-> **Como evitar:** imutabilidade real (campos finais, sem *setters*, cópias defensivas de coleções) e os dois métodos sobre **os mesmos campos**. Em linguagens com `record`/`data class`, deixe a linguagem gerar.
+> **O que acontece:** o objeto é usado como chave de mapa ou colocado num conjunto, e depois é alterado. Ele "some" da estrutura — a busca falha porque o `hashCode` mudou de balde. **Por quê:** estruturas baseadas em hash assumem que a chave não muda. Implementar `equals` sem `hashCode` (ou sobre campos diferentes) produz o mesmo sintoma, com o agravante de o `equals` parecer correto em teste. **Como evitar:** imutabilidade real (campos finais, sem *setters*, cópias defensivas de coleções) e os dois métodos sobre **os mesmos campos**. Em linguagens com `record`/`data class`, deixe a linguagem gerar.
 
 > [!warning] Misturar moedas sem tipo
-> **O que acontece:** valores em moedas diferentes são somados. O total é numericamente plausível e semanticamente sem sentido — e o erro atravessa relatórios sem disparar nada.
-> **Por quê:** com quantia e moeda em campos separados, a soma opera só sobre a quantia, e nada no tipo impede.
-> **Como evitar:** moeda **dentro** do value object, e a operação de soma falhando explicitamente para moedas distintas. Conversão deve ser um ato deliberado, com taxa e data, nunca implícito.
+> **O que acontece:** valores em moedas diferentes são somados. O total é numericamente plausível e semanticamente sem sentido — e o erro atravessa relatórios sem disparar nada. **Por quê:** com quantia e moeda em campos separados, a soma opera só sobre a quantia, e nada no tipo impede. **Como evitar:** moeda **dentro** do value object, e a operação de soma falhando explicitamente para moedas distintas. Conversão deve ser um ato deliberado, com taxa e data, nunca implícito.
 
 ## Como explicar em inglês
 

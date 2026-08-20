@@ -71,8 +71,7 @@ Você já domina os primitivos (compute, storage, rede, bancos gerenciados) das 
 > [!tip] Assista: GCP Cloud Run Explained | Serverless Containers & Use Cases
 > **Canal:** 3 Byte | **Duração:** ~13min | **Idioma:** EN
 >
-> Explica na prática o que essa nota descreve em teoria: o modelo de cold start do Cloud Run, o limite de 60 minutos por requisição, e por que ele ocupa o meio-termo entre container gerenciado tradicional e FaaS puro.
-> Trecho de destaque [10:34]: *"once it's something is running for 60 minutes and doesn't [get killed]..."* (sobre o limite de execução por requisição)
+> Explica na prática o que essa nota descreve em teoria: o modelo de cold start do Cloud Run, o limite de 60 minutos por requisição, e por que ele ocupa o meio-termo entre container gerenciado tradicional e FaaS puro. Trecho de destaque [10:34]: *"once it's something is running for 60 minutes and doesn't [get killed]..."* (sobre o limite de execução por requisição)
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=b4VYEuCWEp8)
 
@@ -103,8 +102,7 @@ Mapeamento direto, sem grandes surpresas conceituais — os primitivos de object
 > [!tip] Assista: O que é BigQuery? Como utilizar o BigQuery na prática?
 > **Canal:** Letis Pires | **Duração:** ~12min | **Idioma:** PT-BR
 >
-> Demonstração prática em português do que essa nota descreve: BigQuery como data warehouse gerenciado, sem servidor, que escala pra petabytes e aceita SQL padrão direto — sem provisionar cluster nem dimensionar nó.
-> Trecho de destaque [01:31]: *"escala de petabytes... totalmente gerenciado e sem servidor"*
+> Demonstração prática em português do que essa nota descreve: BigQuery como data warehouse gerenciado, sem servidor, que escala pra petabytes e aceita SQL padrão direto — sem provisionar cluster nem dimensionar nó. Trecho de destaque [01:31]: *"escala de petabytes... totalmente gerenciado e sem servidor"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=pMXk1-LHHQM)
 

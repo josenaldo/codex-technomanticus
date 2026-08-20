@@ -27,8 +27,7 @@ Esta nota permanece como índice de referências externas. O tratamento conceitu
 ### Protocol Buffers
 
 > [!info] Protocol Buffers — documentação oficial
-> Language-neutral, platform-neutral extensible mechanisms for serializing structured data.
-> [https://protobuf.dev/](https://protobuf.dev/)
+> Language-neutral, platform-neutral extensible mechanisms for serializing structured data. [https://protobuf.dev/](https://protobuf.dev/)
 
 > [!info] Protocol Buffers — repositório
 > [https://github.com/protocolbuffers](https://github.com/protocolbuffers)
@@ -36,12 +35,10 @@ Esta nota permanece como índice de referências externas. O tratamento conceitu
 ### gRPC
 
 > [!info] gRPC — documentação oficial
-> A high-performance, open source universal RPC framework.
-> [https://grpc.io/docs/](https://grpc.io/docs/)
+> A high-performance, open source universal RPC framework. [https://grpc.io/docs/](https://grpc.io/docs/)
 
 > [!info] grpc-java — repositório
-> A implementação Java do gRPC.
-> [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
+> A implementação Java do gRPC. [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
 
 > [!info] gRPC — canal no YouTube
 > [https://www.youtube.com/@grpcio](https://www.youtube.com/@grpcio)

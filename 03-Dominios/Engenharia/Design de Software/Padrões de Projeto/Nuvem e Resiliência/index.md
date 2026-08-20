@@ -22,20 +22,13 @@ aliases:
 # Nuvem e Resiliência
 
 > [!abstract] TL;DR
-> Os padrões que administram a **falha parcial** — o estado que só existe em sistemas distribuídos, onde
-> o sistema não está no ar nem fora dele, e sim *meio* no ar. Sexta e **última** família do galho-pai
-> [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/index|Padrões de Projeto]]. O inimigo não
-> é a dependência que cai: é a que fica **lenta**, porque a lentidão retém seus recursos até você parar
-> também. A lente aqui é o trade-off explícito: **todo padrão de resiliência é uma escolha sobre o que
-> sacrificar para não cair inteiro — e sobre quem paga a conta**.
+> Os padrões que administram a **falha parcial** — o estado que só existe em sistemas distribuídos, onde o sistema não está no ar nem fora dele, e sim *meio* no ar. Sexta e **última** família do galho-pai [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/index|Padrões de Projeto]]. O inimigo não é a dependência que cai: é a que fica **lenta**, porque a lentidão retém seus recursos até você parar também. A lente aqui é o trade-off explícito: **todo padrão de resiliência é uma escolha sobre o que sacrificar para não cair inteiro — e sobre quem paga a conta**.
 
 ## Sobre esta família
 
 Catálogo de consulta, com notas autocontidas e **Armadilhas** pesando no *quando não usar*.
 
-**Esta é a família mais coberta do vault, e escrevê-la foi decisão deliberada** — um catálogo de padrões
-precisa ter uma entrada para "Circuit Breaker", não um ponteiro. Por isso **toda nota abre declarando o
-recorte**: o que ela trata, e para onde ir atrás de escala, afinação ou serviço gerenciado.
+**Esta é a família mais coberta do vault, e escrevê-la foi decisão deliberada** — um catálogo de padrões precisa ter uma entrada para "Circuit Breaker", não um ponteiro. Por isso **toda nota abre declarando o recorte**: o que ela trata, e para onde ir atrás de escala, afinação ou serviço gerenciado.
 
 | Galho | Pergunta que responde |
 | --- | --- |
@@ -69,10 +62,7 @@ recorte**: o que ela trata, e para onde ir atrás de escala, afinação ou servi
 14. [[14 - Escolher o padrão de resiliência (capstone)]] — **fecha a família e o galho-pai**: mapa por sintoma, quem paga cada conta, ordem de composição, e a síntese das seis famílias.
 
 > [!tip] Atalho para a hora do incidente
-> A [[14 - Escolher o padrão de resiliência (capstone)|nota 14]] começa com uma tabela **sintoma → padrão**
-> ("a dependência está lenta", "uma funcionalidade opcional derrubou uma essencial", "um job roda N vezes
-> numa frota de N") e traz a **ordem de composição** — timeout dentro de retry dentro de breaker dentro
-> de bulkhead — que é o que evita as três somas que causam incidentes.
+> A [[14 - Escolher o padrão de resiliência (capstone)|nota 14]] começa com uma tabela **sintoma → padrão** ("a dependência está lenta", "uma funcionalidade opcional derrubou uma essencial", "um job roda N vezes numa frota de N") e traz a **ordem de composição** — timeout dentro de retry dentro de breaker dentro de bulkhead — que é o que evita as três somas que causam incidentes.
 
 ## Todas as notas
 

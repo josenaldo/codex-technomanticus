@@ -10,17 +10,11 @@ tags:
 
 # Roadmap — Workflows
 
-Roadmap **de galho-pai**: mapeia as **notas diretas** (agora 11: sequência 01→10 + 12) e o
-**sub-galho** `11 - Estratégias estruturais de contexto`. Gerado por `/diagnosticar-galho`.
+Roadmap **de galho-pai**: mapeia as **notas diretas** (agora 11: sequência 01→10 + 12) e o **sub-galho** `11 - Estratégias estruturais de contexto`. Gerado por `/diagnosticar-galho`.
 
-**Galho:** `03-Dominios/Tecnologia/IA/Claude Code/Workflows`
-**Nível:** galho-pai (contém sub-galho)
-**Diagnóstico:** 2026-07-02
-**Última execução:** 2026-07-08 (COMPLETO: 9/9 notas diretas acionáveis ✅ + sub-galho 11 4/4 ✅; 07 dispensada)
-**Nota 12 adicionada:** 2026-07-21 (fora do ciclo de `/enriquecer-galho`; ainda não passou por diagnóstico/auditoria)
+**Galho:** `03-Dominios/Tecnologia/IA/Claude Code/Workflows` **Nível:** galho-pai (contém sub-galho) **Diagnóstico:** 2026-07-02 **Última execução:** 2026-07-08 (COMPLETO: 9/9 notas diretas acionáveis ✅ + sub-galho 11 4/4 ✅; 07 dispensada) **Nota 12 adicionada:** 2026-07-21 (fora do ciclo de `/enriquecer-galho`; ainda não passou por diagnóstico/auditoria)
 
-**Esquema de `fase:` detectado:** COM fase (Adepto nas 10 diretas originais; nota 12 é Magus; sub-galho 11 misto)
-**Piso de linhas:** Iniciado ≥300 · Adepto ≥400 · Magus ≥500
+**Esquema de `fase:` detectado:** COM fase (Adepto nas 10 diretas originais; nota 12 é Magus; sub-galho 11 misto) **Piso de linhas:** Iniciado ≥300 · Adepto ≥400 · Magus ≥500
 
 ## Tabela-resumo (notas diretas)
 

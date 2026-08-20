@@ -22,18 +22,10 @@ aliases:
 # Contratação remota internacional
 
 > [!abstract] TL;DR
-> Passar na entrevista é metade do problema; a outra metade é **sob que arranjo você será contratado** —
-> e ela quase nunca é discutida antes da oferta, quando já é tarde para se preparar. As três formas
-> usuais são **contractor** (você emite fatura; máxima flexibilidade, zero rede de proteção), **EOR**
-> (uma empresa intermediária te contrata localmente em nome da estrangeira; benefícios sem que ela abra
-> subsidiária) e **subsidiária local** (vínculo tradicional). Some-se a isso **fuso horário** — que é
-> critério eliminatório real, não detalhe — e a assimetria de faixas entre regiões. Esta nota descreve o
-> terreno; **não é aconselhamento jurídico nem fiscal**.
+> Passar na entrevista é metade do problema; a outra metade é **sob que arranjo você será contratado** — e ela quase nunca é discutida antes da oferta, quando já é tarde para se preparar. As três formas usuais são **contractor** (você emite fatura; máxima flexibilidade, zero rede de proteção), **EOR** (uma empresa intermediária te contrata localmente em nome da estrangeira; benefícios sem que ela abra subsidiária) e **subsidiária local** (vínculo tradicional). Some-se a isso **fuso horário** — que é critério eliminatório real, não detalhe — e a assimetria de faixas entre regiões. Esta nota descreve o terreno; **não é aconselhamento jurídico nem fiscal**.
 
 > [!warning] O que esta nota não é
-> Um panorama para você **saber o que perguntar** — a um contador, a um advogado, ao recrutador. Regras
-> tributárias e trabalhistas variam por país, mudam com frequência e dependem da sua situação. Nada aqui
-> substitui profissional habilitado, e valores citados são ordens de grandeza, não cotações.
+> Um panorama para você **saber o que perguntar** — a um contador, a um advogado, ao recrutador. Regras tributárias e trabalhistas variam por país, mudam com frequência e dependem da sua situação. Nada aqui substitui profissional habilitado, e valores citados são ordens de grandeza, não cotações.
 
 ## A oferta que chegou e ninguém sabia responder
 
@@ -100,19 +92,13 @@ Três consequências práticas:
 ## Armadilhas comuns
 
 > [!warning] Comparar bruto internacional com líquido local
-> **O que acontece:** a oferta parece três vezes melhor; depois de impostos, plano de saúde, previdência e reserva de férias, a diferença real é bem menor — às vezes desfavorável, considerando estabilidade.
-> **Por quê:** os dois números não são da mesma natureza, mas parecem, porque ambos são "quanto eu ganho".
-> **Como evitar:** faça a conta **antes** de negociar, com um contador. Chegar à conversa de oferta sabendo seu número líquido-equivalente muda a qualidade da negociação.
+> **O que acontece:** a oferta parece três vezes melhor; depois de impostos, plano de saúde, previdência e reserva de férias, a diferença real é bem menor — às vezes desfavorável, considerando estabilidade. **Por quê:** os dois números não são da mesma natureza, mas parecem, porque ambos são "quanto eu ganho". **Como evitar:** faça a conta **antes** de negociar, com um contador. Chegar à conversa de oferta sabendo seu número líquido-equivalente muda a qualidade da negociação.
 
 > [!warning] Descobrir a modalidade só na oferta
-> **O que acontece:** cinco etapas depois, você descobre que é contractor sem benefícios — e agora precisa decidir sob pressão de prazo, com o custo emocional de ter investido semanas.
-> **Por quê:** parece cedo demais ou deselegante perguntar isso no começo.
-> **Como evitar:** pergunte na **triagem**. "Qual o modelo de contratação para esta posição — contractor, EOR ou entidade local?" é uma pergunta profissional e comum. Recrutador experiente responde na hora, e a resposta te poupa semanas.
+> **O que acontece:** cinco etapas depois, você descobre que é contractor sem benefícios — e agora precisa decidir sob pressão de prazo, com o custo emocional de ter investido semanas. **Por quê:** parece cedo demais ou deselegante perguntar isso no começo. **Como evitar:** pergunte na **triagem**. "Qual o modelo de contratação para esta posição — contractor, EOR ou entidade local?" é uma pergunta profissional e comum. Recrutador experiente responde na hora, e a resposta te poupa semanas.
 
 > [!warning] Ignorar o custo do equipamento e do ambiente
-> **O que acontece:** a pessoa assume o arranjo sem verificar quem paga notebook, monitor, cadeira, internet e coworking. Em contrato de contractor, o default costuma ser: você.
-> **Por quê:** em emprego tradicional isso é invisível — o equipamento simplesmente aparece.
-> **Como evitar:** trate como item de negociação. Orçamento de equipamento, *home office stipend* e verba de aprendizado são itens comuns e frequentemente concedidos, inclusive quando o salário-base está travado.
+> **O que acontece:** a pessoa assume o arranjo sem verificar quem paga notebook, monitor, cadeira, internet e coworking. Em contrato de contractor, o default costuma ser: você. **Por quê:** em emprego tradicional isso é invisível — o equipamento simplesmente aparece. **Como evitar:** trate como item de negociação. Orçamento de equipamento, *home office stipend* e verba de aprendizado são itens comuns e frequentemente concedidos, inclusive quando o salário-base está travado.
 
 ## Como soa em inglês
 

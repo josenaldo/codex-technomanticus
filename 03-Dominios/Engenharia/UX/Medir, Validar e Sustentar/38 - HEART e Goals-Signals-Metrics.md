@@ -108,24 +108,16 @@ Um dashboard de produto mostra que a taxa de conclusão do checkout (Task Succes
 ## Armadilhas comuns
 
 > [!warning] Tratar Happiness e Engagement como intercambiáveis
-> **O que acontece:** o time reporta "satisfação subiu" citando número de acessos ou cliques, sem nenhuma pergunta feita a ninguém.
-> **Por quê:** as duas categorias parecem correlacionadas na intuição ("se usa mais, deve gostar mais"), mas medem coisas estruturalmente diferentes — atitude vs. comportamento — e podem divergir, principalmente em produtos com usuário cativo.
-> **Como evitar:** nomeie explicitamente a categoria HEART de cada número no relatório; se não veio de pergunta direta, não é Happiness.
+> **O que acontece:** o time reporta "satisfação subiu" citando número de acessos ou cliques, sem nenhuma pergunta feita a ninguém. **Por quê:** as duas categorias parecem correlacionadas na intuição ("se usa mais, deve gostar mais"), mas medem coisas estruturalmente diferentes — atitude vs. comportamento — e podem divergir, principalmente em produtos com usuário cativo. **Como evitar:** nomeie explicitamente a categoria HEART de cada número no relatório; se não veio de pergunta direta, não é Happiness.
 
 > [!warning] Instrumentar tudo antes de nomear o Goal
-> **O que acontece:** o time adiciona tracking de evento em cada botão "por via das dúvidas", sem que nenhum deles esteja ligado a um objetivo declarado — e o painel vira o cenário de abertura desta nota.
-> **Por quê:** instrumentar parece produtivo (mais dado é sempre visto como "bom"), mas dado sem Goal declarado não informa decisão nenhuma — só cresce em volume e complexidade de manutenção.
-> **Como evitar:** escreva o Goal em prosa antes de abrir o editor de tracking; se não consegue nomear o objetivo em uma frase, ainda não é hora de instrumentar.
+> **O que acontece:** o time adiciona tracking de evento em cada botão "por via das dúvidas", sem que nenhum deles esteja ligado a um objetivo declarado — e o painel vira o cenário de abertura desta nota. **Por quê:** instrumentar parece produtivo (mais dado é sempre visto como "bom"), mas dado sem Goal declarado não informa decisão nenhuma — só cresce em volume e complexidade de manutenção. **Como evitar:** escreva o Goal em prosa antes de abrir o editor de tracking; se não consegue nomear o objetivo em uma frase, ainda não é hora de instrumentar.
 
 > [!warning] Confundir métrica de performance com métrica de UX
-> **O que acontece:** o relatório de produto passa a citar INP ou LCP como se fossem, elas mesmas, a métrica de experiência do usuário — "a UX melhorou porque o LCP caiu".
-> **Por quê:** performance é fácil de medir automaticamente (RUM, CrUX) e correlaciona com experiência, então é tentador tratá-la como substituto direto — mas ela é insumo causal, não o efeito medido.
-> **Como evitar:** sempre reporte a métrica comportamental ou atitudinal (a categoria HEART) como o número principal, e cite a métrica de performance como explicação candidata quando ela mudar — nunca a apresente como a métrica de UX em si.
+> **O que acontece:** o relatório de produto passa a citar INP ou LCP como se fossem, elas mesmas, a métrica de experiência do usuário — "a UX melhorou porque o LCP caiu". **Por quê:** performance é fácil de medir automaticamente (RUM, CrUX) e correlaciona com experiência, então é tentador tratá-la como substituto direto — mas ela é insumo causal, não o efeito medido. **Como evitar:** sempre reporte a métrica comportamental ou atitudinal (a categoria HEART) como o número principal, e cite a métrica de performance como explicação candidata quando ela mudar — nunca a apresente como a métrica de UX em si.
 
 > [!warning] Aplicar as cinco categorias HEART a toda feature, sem critério
-> **O que acontece:** cada relatório de feature vem com as cinco caixas preenchidas, mesmo quando algumas não fazem sentido para aquele contexto específico — Retention forçado numa tela de configuração usada uma vez.
-> **Por quê:** o framework parece pedir as cinco categorias porque tem cinco letras, e preencher todas parece mais "completo" — mas força métrica artificial em categorias irrelevantes.
-> **Como evitar:** escolha, para cada feature, só as categorias HEART que respondem a uma pergunta real de negócio; uma feature com duas categorias bem escolhidas vale mais que cinco mal encaixadas.
+> **O que acontece:** cada relatório de feature vem com as cinco caixas preenchidas, mesmo quando algumas não fazem sentido para aquele contexto específico — Retention forçado numa tela de configuração usada uma vez. **Por quê:** o framework parece pedir as cinco categorias porque tem cinco letras, e preencher todas parece mais "completo" — mas força métrica artificial em categorias irrelevantes. **Como evitar:** escolha, para cada feature, só as categorias HEART que respondem a uma pergunta real de negócio; uma feature com duas categorias bem escolhidas vale mais que cinco mal encaixadas.
 
 ## Como explicar em inglês
 

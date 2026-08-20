@@ -10,13 +10,9 @@ tags:
 
 # Roadmap — Skills e MCP
 
-Diagnóstico nota a nota. Cada entrada tem estado de enriquecimento, score, classificação
-de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
+Diagnóstico nota a nota. Cada entrada tem estado de enriquecimento, score, classificação de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
 
-**Galho:** `03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP`
-**Nível:** galho-folha
-**Diagnóstico:** 2026-07-02
-**Última execução:** 2026-07-08 (onda 6: notas 07·08 ✅ — galho completo 8/8)
+**Galho:** `03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP` **Nível:** galho-folha **Diagnóstico:** 2026-07-02 **Última execução:** 2026-07-08 (onda 6: notas 07·08 ✅ — galho completo 8/8)
 
 ## Régua de análise
 
@@ -29,8 +25,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | LINKS | L1 Wikilink cross-galho · L2 Referência externa (URL) |
 | MÍDIA | M1 Vídeo/podcast embutido |
 
-**Esquema de `fase:` detectado:** SEM fase (sequência 01→08)
-**Piso de linhas:** não aplicável
+**Esquema de `fase:` detectado:** SEM fase (sequência 01→08) **Piso de linhas:** não aplicável
 
 ## Tabela-resumo
 

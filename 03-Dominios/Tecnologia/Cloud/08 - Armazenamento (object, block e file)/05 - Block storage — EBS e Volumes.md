@@ -126,8 +126,7 @@ $ aws ec2 modify-volume \
 > [!tip] Assista: AWS re:Invent 2022 — Optimize price and performance with Amazon EBS (STG204)
 > **Canal:** AWS Events | **Duração:** ~54min | **Idioma:** EN
 >
-> Talk oficial da AWS que narra a própria evolução dos tipos de volume EBS até o gp3 virar default, incluindo a motivação por trás do io2 Block Express e das camadas de arquivamento de snapshot — bom complemento histórico ao "porquê" que esta seção só explica do ponto de vista técnico.
-> Trecho de destaque [20:03]: *"gp3 which is actually it feeds fits most [workloads]"*
+> Talk oficial da AWS que narra a própria evolução dos tipos de volume EBS até o gp3 virar default, incluindo a motivação por trás do io2 Block Express e das camadas de arquivamento de snapshot — bom complemento histórico ao "porquê" que esta seção só explica do ponto de vista técnico. Trecho de destaque [20:03]: *"gp3 which is actually it feeds fits most [workloads]"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=sewKEuZZ1BA)
 

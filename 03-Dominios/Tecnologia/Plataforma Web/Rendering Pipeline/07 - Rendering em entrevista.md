@@ -240,8 +240,7 @@ Solução: mover para `transform`/`opacity`, ou usar `will-change` para promover
 | Acessa DOM | Pode não estar pronto | DOM está pronto |
 | Uso | Analytics, scripts independentes | Scripts de app que precisam do DOM |
 
-Para scripts de aplicação que manipulam DOM: sempre `defer`.
-Para scripts independentes como analytics: `async`.
+Para scripts de aplicação que manipulam DOM: sempre `defer`. Para scripts independentes como analytics: `async`.
 
 ---
 

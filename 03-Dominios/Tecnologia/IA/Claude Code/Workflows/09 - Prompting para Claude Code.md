@@ -71,8 +71,7 @@ A diferença mais importante em prompting para agentes:
            mais adequada para isso."
 ```
 
-Quando você especifica o "como", o agente implementa mecanicamente.
-Quando você especifica o "porquê", o agente entende o objetivo e pode:
+Quando você especifica o "como", o agente implementa mecanicamente. Quando você especifica o "porquê", o agente entende o objetivo e pode:
 - Identificar que sua solução proposta não resolve o problema
 - Sugerir uma abordagem melhor
 - Fazer a implementação correta mesmo em edge cases não especificados
@@ -265,8 +264,7 @@ Se a explicação estiver errada, corrija antes de gastar tokens na implementaç
 
 Prompts mais longos não são sempre melhores. O que importa é a relação sinal/ruído:
 
-**Alto sinal:** contexto que muda a decisão do agente
-**Ruído:** contexto que o agente ignoraria de qualquer forma
+**Alto sinal:** contexto que muda a decisão do agente **Ruído:** contexto que o agente ignoraria de qualquer forma
 
 ```
 ❌ Ruído:
@@ -298,22 +296,12 @@ Prompt de correção específico é mais rápido do que refazer tudo — e prese
 
 ## Caso 4: decompor uma tarefa grande em etapas verificáveis
 
-Os Casos 1-3 cobrem prompts para uma unidade de trabalho — um bug, uma feature, uma decisão. Mas
-o problema muda de forma quando a tarefa é grande demais para uma unidade só: "migre o serviço de
-pagamentos para o novo provedor" não é um prompt, é um projeto.
+Os Casos 1-3 cobrem prompts para uma unidade de trabalho — um bug, uma feature, uma decisão. Mas o problema muda de forma quando a tarefa é grande demais para uma unidade só: "migre o serviço de pagamentos para o novo provedor" não é um prompt, é um projeto.
 
 > [!question]- Por que não simplesmente descrever a tarefa grande e deixar o agente quebrar em passos?
-> Porque o agente vai quebrar em passos — só que com os cortes que *ele* acha razoáveis, não os que
-> preservam propriedades que importam pra você (rollback seguro, deploy incremental, compatibilidade
-> durante a transição). Decompor tarefas grandes tem a mesma lógica de "porquê antes do como": se você
-> não especifica onde os cortes devem ficar, o agente escolhe cortes que fazem sentido tecnicamente mas
-> podem não fazer sentido operacionalmente.
+> Porque o agente vai quebrar em passos — só que com os cortes que *ele* acha razoáveis, não os que preservam propriedades que importam pra você (rollback seguro, deploy incremental, compatibilidade durante a transição). Decompor tarefas grandes tem a mesma lógica de "porquê antes do como": se você não especifica onde os cortes devem ficar, o agente escolhe cortes que fazem sentido tecnicamente mas podem não fazer sentido operacionalmente.
 
-Pense em uma reforma de casa: você não entrega ao empreiteiro "reforme a casa" e vai embora por três
-meses. Você define fases (fundação, estrutura, acabamento), cada uma com um critério de "pronto" que
-você pode verificar antes de liberar a próxima. Prompting para tarefas grandes segue o mesmo padrão —
-cada etapa precisa ser uma unidade que pode ser validada isoladamente, não apenas um pedaço arbitrário
-do trabalho total.
+Pense em uma reforma de casa: você não entrega ao empreiteiro "reforme a casa" e vai embora por três meses. Você define fases (fundação, estrutura, acabamento), cada uma com um critério de "pronto" que você pode verificar antes de liberar a próxima. Prompting para tarefas grandes segue o mesmo padrão — cada etapa precisa ser uma unidade que pode ser validada isoladamente, não apenas um pedaço arbitrário do trabalho total.
 
 ```
 ❌ Tarefa grande sem decomposição:
@@ -337,17 +325,10 @@ fallback. Critério de pronto: só JWT é aceito; suite de auth
 100% verde."
 ```
 
-O ponto central: cada etapa tem (a) escopo fechado, (b) um critério de sucesso observável, e (c) um
-gate explícito de confirmação antes de avançar para a próxima. Isso transforma uma tarefa arriscada
-("vai que ele refatora tudo errado e eu só descubro no final") em uma sequência de tarefas pequenas,
-cada uma revisável — o mesmo princípio do prompt de diagnóstico, aplicado ao longo de um projeto
-inteiro em vez de uma única troca.
+O ponto central: cada etapa tem (a) escopo fechado, (b) um critério de sucesso observável, e (c) um gate explícito de confirmação antes de avançar para a próxima. Isso transforma uma tarefa arriscada ("vai que ele refatora tudo errado e eu só descubro no final") em uma sequência de tarefas pequenas, cada uma revisável — o mesmo princípio do prompt de diagnóstico, aplicado ao longo de um projeto inteiro em vez de uma única troca.
 
 > [!warning] Decompor demais também tem custo
-> Etapas granulares demais viram overhead de coordenação — você gasta mais tempo revisando checkpoints
-> do que economiza em segurança. A régua prática: decomponha no nível em que um erro te custaria caro
-> pra reverter (mudança de contrato de API, remoção de dado, deploy em produção). Trocas internas e
-> reversíveis podem ficar numa etapa só.
+> Etapas granulares demais viram overhead de coordenação — você gasta mais tempo revisando checkpoints do que economiza em segurança. A régua prática: decomponha no nível em que um erro te custaria caro pra reverter (mudança de contrato de API, remoção de dado, deploy em produção). Trocas internas e reversíveis podem ficar numa etapa só.
 
 > [!summary] Tarefas grandes não precisam de um prompt maior — precisam de vários prompts pequenos,
 > cada um com critério de sucesso próprio e um gate de confirmação entre eles.

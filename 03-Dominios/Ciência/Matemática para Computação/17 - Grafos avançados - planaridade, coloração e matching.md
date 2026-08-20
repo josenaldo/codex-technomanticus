@@ -16,10 +16,7 @@ tags:
 # Grafos avançados: planaridade, coloração e matching
 
 > [!abstract] TL;DR
-> Três famílias de problemas que aparecem disfarçadas no seu dia a dia de dev.
-> **Planaridade**: dá pra desenhar o grafo sem cruzar arestas? A fórmula de Euler V − E + F = 2 governa isso, e dois grafos — K₅ e K₃,₃ — são os "pecados originais" que tornam qualquer grafo não-planar (Kuratowski).
-> **Coloração**: pintar vértices vizinhos com cores diferentes usando o mínimo de cores (o número cromático χ). É alocação de registrador, é Sudoku, é grade de horário. Todo grafo planar precisa de no máximo 4 cores (teorema das 4 cores, Appel-Haken 1976), mas no caso geral colorir é NP-difícil.
-> **Matching**: parear elementos sem conflito. Trabalhadores↔tarefas, candidatos↔vagas, doadores↔receptores. O teorema de Hall te diz exatamente quando um pareamento completo é possível.
+> Três famílias de problemas que aparecem disfarçadas no seu dia a dia de dev. **Planaridade**: dá pra desenhar o grafo sem cruzar arestas? A fórmula de Euler V − E + F = 2 governa isso, e dois grafos — K₅ e K₃,₃ — são os "pecados originais" que tornam qualquer grafo não-planar (Kuratowski). **Coloração**: pintar vértices vizinhos com cores diferentes usando o mínimo de cores (o número cromático χ). É alocação de registrador, é Sudoku, é grade de horário. Todo grafo planar precisa de no máximo 4 cores (teorema das 4 cores, Appel-Haken 1976), mas no caso geral colorir é NP-difícil. **Matching**: parear elementos sem conflito. Trabalhadores↔tarefas, candidatos↔vagas, doadores↔receptores. O teorema de Hall te diz exatamente quando um pareamento completo é possível.
 >
 > Em uma frase: estes três temas são a ponte entre [[16 - Teoria dos grafos - o lado matemático]] e os problemas de otimização que você resolve (ou aproxima) na prática.
 
@@ -100,9 +97,7 @@ Substitua F = 2 − V + E (da fórmula de Euler) e resolva: você chega em E ≤
 Esse corolário é uma **arma de rejeição rápida**. Se um grafo tem arestas demais para seus vértices, ele *não pode* ser planar — sem precisar nem tentar desenhar.
 
 > [!example] Aplicando a K₅
-> K₅ é o grafo completo com 5 vértices: todos ligados a todos. Então V = 5 e E = 10 (são C(5,2) = 10 pares).
-> O limite diz: E ≤ 3·5 − 6 = 9.
-> Mas E = 10 > 9. **Contradição.** Logo K₅ **não é planar.** Provado em duas linhas.
+> K₅ é o grafo completo com 5 vértices: todos ligados a todos. Então V = 5 e E = 10 (são C(5,2) = 10 pares). O limite diz: E ≤ 3·5 − 6 = 9. Mas E = 10 > 9. **Contradição.** Logo K₅ **não é planar.** Provado em duas linhas.
 
 ### K₅ e K₃,₃: os dois vilões
 
@@ -162,8 +157,7 @@ Por que isso importa? Porque colorir um **mapa** (regiões) é o mesmo que color
 Mude de problema. Agora você tem vértices que **não podem ter a mesma cor que seus vizinhos**. Quantas cores você precisa, no mínimo?
 
 > [!info] Coloração própria e número cromático
-> Uma **coloração própria** atribui uma cor a cada vértice de modo que vértices adjacentes (ligados por aresta) tenham cores **diferentes**.
-> O **número cromático** χ(G) (lê-se "chi de G") é o menor número de cores que torna isso possível.
+> Uma **coloração própria** atribui uma cor a cada vértice de modo que vértices adjacentes (ligados por aresta) tenham cores **diferentes**. O **número cromático** χ(G) (lê-se "chi de G") é o menor número de cores que torna isso possível.
 
 A palavra "vizinho" aqui é a fonte de todo o poder prático. Vizinhos = coisas em conflito. Cores = recursos ou slots. Vamos ver isso explodir em aplicações na Parte 4.
 
@@ -327,9 +321,7 @@ Tudo bonito, mas cadê o `git push`? Aqui. Estes três temas são **máquinas de
 ### Coloração no mundo real
 
 > [!example] Alocação de registradores (o exemplo rei)
-> Num compilador, cada variável "viva" num trecho de código é um **vértice**. Duas variáveis vivas **ao mesmo tempo** não podem ocupar o mesmo registrador físico — então traçamos uma **aresta** entre elas. Esse é o **grafo de interferência**.
-> Colorir esse grafo = atribuir registradores. As **cores** são os registradores da CPU. χ = número de registradores necessários.
-> Se χ > registradores disponíveis, falta cor → o compilador faz **spill**: joga a variável pra memória (lento, mas necessário). Como colorir é NP-difícil, compiladores usam **heurísticas** (o clássico Chaitin-Briggs).
+> Num compilador, cada variável "viva" num trecho de código é um **vértice**. Duas variáveis vivas **ao mesmo tempo** não podem ocupar o mesmo registrador físico — então traçamos uma **aresta** entre elas. Esse é o **grafo de interferência**. Colorir esse grafo = atribuir registradores. As **cores** são os registradores da CPU. χ = número de registradores necessários. Se χ > registradores disponíveis, falta cor → o compilador faz **spill**: joga a variável pra memória (lento, mas necessário). Como colorir é NP-difícil, compiladores usam **heurísticas** (o clássico Chaitin-Briggs).
 
 Outros mapeamentos diretos:
 
@@ -389,15 +381,7 @@ graph TD
 
 Em entrevistas de design e de algoritmos, o valor não está em recitar teoremas, e sim em **reconhecer o padrão**: "isto é coloração de grafo, e coloração geral é NP-difícil, então vou usar uma heurística greedy" ou "isto é matching bipartido, que é polinomial — uso fluxo máximo". Quando a conversa virar para compiladores, mencione alocação de registradores como coloração do grafo de interferência: é um dos exemplos mais elegantes de teoria virando prática. Se perguntarem sobre o teorema das 4 cores, lembre que ele só vale para grafos planares e que foi a primeira prova assistida por computador — um gancho rico sobre confiança em verificação automatizada.
 
-*"A planar graph can always be drawn without crossing edges, and Euler's formula V minus E plus F equals 2 governs its structure."*
-*"By Kuratowski's theorem, a graph is planar exactly when it has no subdivision of K-five or K-three-three."*
-*"The chromatic number is the minimum colors for a proper coloring where no two adjacent vertices share a color."*
-*"Deciding two-colorability is easy and linear, but three-colorability is NP-complete — that jump is the heart of the difficulty."*
-*"The four color theorem says every planar graph is four-colorable; it was the first major result proved with computer assistance, by Appel and Haken in 1976."*
-*"Register allocation maps directly to graph coloring: variables are vertices, interferences are edges, registers are colors, and a spill happens when we run out of colors."*
-*"A maximum matching is the globally largest one, while a maximal matching just can't be extended — they're often confused."*
-*"Hall's theorem tells us a bipartite graph has a matching saturating one side if and only if every subset S satisfies neighbor-of-S at least the size of S."*
-*"Bipartite maximum matching is solvable in polynomial time via augmenting paths, unlike general graph coloring."*
+*"A planar graph can always be drawn without crossing edges, and Euler's formula V minus E plus F equals 2 governs its structure."* *"By Kuratowski's theorem, a graph is planar exactly when it has no subdivision of K-five or K-three-three."* *"The chromatic number is the minimum colors for a proper coloring where no two adjacent vertices share a color."* *"Deciding two-colorability is easy and linear, but three-colorability is NP-complete — that jump is the heart of the difficulty."* *"The four color theorem says every planar graph is four-colorable; it was the first major result proved with computer assistance, by Appel and Haken in 1976."* *"Register allocation maps directly to graph coloring: variables are vertices, interferences are edges, registers are colors, and a spill happens when we run out of colors."* *"A maximum matching is the globally largest one, while a maximal matching just can't be extended — they're often confused."* *"Hall's theorem tells us a bipartite graph has a matching saturating one side if and only if every subset S satisfies neighbor-of-S at least the size of S."* *"Bipartite maximum matching is solvable in polynomial time via augmenting paths, unlike general graph coloring."*
 
 | Português | English |
 | --- | --- |

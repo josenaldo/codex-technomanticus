@@ -14,10 +14,7 @@ publish: true
 ---
 
 > [!abstract] TL;DR
-> A Context API resolve **prop drilling** — a passagem de dados por vários níveis de componentes que não usam esses dados, só repassam. Com `createContext`, um `Provider` e `useContext`, qualquer componente na árvore acessa o valor diretamente.
-> No React 19, o `<MyContext>` pode ser usado como provider diretamente, sem o sufixo `.Provider`.
-> O custo é real: **todo consumidor re-renderiza quando o value do Provider muda**, inclusive por referência. Objeto literal inline no `value` é a armadilha mais comum. As mitigações são: split de contextos, memoizar o value com `useMemo`, e encapsular o contexto em um custom hook com guard de Provider ausente.
-> Context é ideal para dados de baixa frequência de mudança (tema, auth, locale) — **não** substitui gerenciamento de estado global de alta frequência.
+> A Context API resolve **prop drilling** — a passagem de dados por vários níveis de componentes que não usam esses dados, só repassam. Com `createContext`, um `Provider` e `useContext`, qualquer componente na árvore acessa o valor diretamente. No React 19, o `<MyContext>` pode ser usado como provider diretamente, sem o sufixo `.Provider`. O custo é real: **todo consumidor re-renderiza quando o value do Provider muda**, inclusive por referência. Objeto literal inline no `value` é a armadilha mais comum. As mitigações são: split de contextos, memoizar o value com `useMemo`, e encapsular o contexto em um custom hook com guard de Provider ausente. Context é ideal para dados de baixa frequência de mudança (tema, auth, locale) — **não** substitui gerenciamento de estado global de alta frequência.
 
 ## O problema: prop drilling em 5 níveis
 
@@ -448,24 +445,16 @@ export function BotaoTema() {
 ## Armadilhas comuns
 
 > [!warning] Objeto literal inline no `value` causa re-render em cascata
-> **O que acontece:** todos os consumidores do contexto re-renderizam mesmo quando o dado não mudou.
-> **Por quê:** `{ user, setUser }` cria um novo objeto a cada render do Provider. React usa `===` para comparar values — referências diferentes = mudança detectada = re-render em todos os consumidores.
-> **Como evitar:** sempre memoize o objeto do `value` com `useMemo(() => ({...}), [deps])`. Alternativa: split de contextos (estado num context, dispatch em outro).
+> **O que acontece:** todos os consumidores do contexto re-renderizam mesmo quando o dado não mudou. **Por quê:** `{ user, setUser }` cria um novo objeto a cada render do Provider. React usa `===` para comparar values — referências diferentes = mudança detectada = re-render em todos os consumidores. **Como evitar:** sempre memoize o objeto do `value` com `useMemo(() => ({...}), [deps])`. Alternativa: split de contextos (estado num context, dispatch em outro).
 
 > [!warning] `useContext` sem Provider retorna valor padrão silenciosamente
-> **O que acontece:** o componente funciona aparentemente normal, mas com dados incorretos (o valor padrão de `createContext`).
-> **Por quê:** quando não há Provider na árvore acima, `useContext` retorna o valor padrão passado para `createContext` — sem erro, sem aviso.
-> **Como evitar:** use o padrão `createContext<T | undefined>(undefined)` + custom hook com `if (context === undefined) throw new Error(...)`. O erro aparece imediatamente e com mensagem clara.
+> **O que acontece:** o componente funciona aparentemente normal, mas com dados incorretos (o valor padrão de `createContext`). **Por quê:** quando não há Provider na árvore acima, `useContext` retorna o valor padrão passado para `createContext` — sem erro, sem aviso. **Como evitar:** use o padrão `createContext<T | undefined>(undefined)` + custom hook com `if (context === undefined) throw new Error(...)`. O erro aparece imediatamente e com mensagem clara.
 
 > [!warning] Context para estado de alta frequência degrada performance
-> **O que acontece:** UI lenta, frames perdidos, experiência jank.
-> **Por quê:** cada atualização do value re-renderiza todos os consumidores síncronamente. Para posição de mouse (60fps+), isso significa re-renders constantes em toda a sub-árvore de consumidores.
-> **Como evitar:** use estado local para dados que mudam frequentemente. Considere refs (`useRef`) para valores que não precisam disparar re-render. Para estado global de alta frequência, avalie Zustand ou Jotai que têm mecanismos de subscrição mais granulares. Veja `[[15 - Estado - local, elevado e externo]]` (nota futura do galho).
+> **O que acontece:** UI lenta, frames perdidos, experiência jank. **Por quê:** cada atualização do value re-renderiza todos os consumidores síncronamente. Para posição de mouse (60fps+), isso significa re-renders constantes em toda a sub-árvore de consumidores. **Como evitar:** use estado local para dados que mudam frequentemente. Considere refs (`useRef`) para valores que não precisam disparar re-render. Para estado global de alta frequência, avalie Zustand ou Jotai que têm mecanismos de subscrição mais granulares. Veja `[[15 - Estado - local, elevado e externo]]` (nota futura do galho).
 
 > [!warning] Context não substitui gerenciamento de estado global
-> **O que acontece:** contexto vira um "mini-Redux" improvisado, difícil de manter.
-> **Por quê:** Context não tem DevTools, não tem middleware, não tem seletores nativos. Com múltiplos contextos aninhados, a árvore de Providers se torna um "Provider hell".
-> **Como evitar:** use Context para dados transversais de baixa frequência (tema, auth, locale). Para estado global complexo com ações, mutations, e cache, use uma lib dedicada (Zustand, TanStack Query, Redux Toolkit).
+> **O que acontece:** contexto vira um "mini-Redux" improvisado, difícil de manter. **Por quê:** Context não tem DevTools, não tem middleware, não tem seletores nativos. Com múltiplos contextos aninhados, a árvore de Providers se torna um "Provider hell". **Como evitar:** use Context para dados transversais de baixa frequência (tema, auth, locale). Para estado global complexo com ações, mutations, e cache, use uma lib dedicada (Zustand, TanStack Query, Redux Toolkit).
 
 ## Tipando Context com TypeScript
 

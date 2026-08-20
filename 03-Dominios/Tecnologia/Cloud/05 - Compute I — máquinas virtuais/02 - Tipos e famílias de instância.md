@@ -30,8 +30,7 @@ Os dois casos têm a mesma causa raiz: a instância foi escolhida pelo **tamanho
 > [!tip] Assista: EC2 Instance Types Explained | Ep 07 | AWS for Absolute Beginners
 > **Canal:** ImTechnos | **Duração:** ~8min | **Idioma:** EN
 >
-> Uma introdução curta e didática à ideia de família de instância, usando a analogia de tamanhos de apartamento para diferentes perfis de morador — útil para fixar por que "escolher pelo número" não basta antes de entrar nas quatro dimensões técnicas.
-> Trecho de destaque [01:03]: *"Think of renting apartments. A single person may need a small apartment. A family man needs a bigger apartment."*
+> Uma introdução curta e didática à ideia de família de instância, usando a analogia de tamanhos de apartamento para diferentes perfis de morador — útil para fixar por que "escolher pelo número" não basta antes de entrar nas quatro dimensões técnicas. Trecho de destaque [01:03]: *"Think of renting apartments. A single person may need a small apartment. A family man needs a bigger apartment."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=qoacPP4EzH0)
 
@@ -102,8 +101,7 @@ Um segundo exemplo, com duas letras de opção combinadas: `c7gn.2xlarge` é a s
 > [!tip] Assista: AWS EC2 Instance types Explained | AWS SAA C03
 > **Canal:** Cloud Champ | **Duração:** ~9min | **Idioma:** EN
 >
-> Decodifica um nome de instância ao vivo (`R5DXlarge`) peça por peça — família, geração, capacidades extras e tamanho — reforçando com outro exemplo o mesmo mecanismo de leitura que a nota acabou de decompor em `m7g.xlarge`.
-> Trecho de destaque [02:34]: *"the r stands for the instance family it belongs to, five is the instance generation, D is the additional capabilities for that particular instance, and this is the actual size"*
+> Decodifica um nome de instância ao vivo (`R5DXlarge`) peça por peça — família, geração, capacidades extras e tamanho — reforçando com outro exemplo o mesmo mecanismo de leitura que a nota acabou de decompor em `m7g.xlarge`. Trecho de destaque [02:34]: *"the r stands for the instance family it belongs to, five is the instance generation, D is the additional capabilities for that particular instance, and this is the actual size"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=4gQ5SOfBUm4)
 

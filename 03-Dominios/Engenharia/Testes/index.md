@@ -22,16 +22,11 @@ aliases:
 # Testes
 
 > [!abstract] TL;DR
-> Galho de Engenharia sobre como verificar que o software funciona — e **continua** funcionando após
-> mudanças. Escrever um teste é fácil; **desenhar uma estratégia de testes** que equilibra confiança,
-> velocidade e custo de manutenção é o que diferencia um senior. Cobre a pirâmide, os tipos de teste,
-> test doubles, TDD, técnicas de design de caso, flaky tests, coverage e CI/CD — tudo **stack-agnóstico**,
-> linkando Java e JavaScript para o ferramental. Interview-critical.
+> Galho de Engenharia sobre como verificar que o software funciona — e **continua** funcionando após mudanças. Escrever um teste é fácil; **desenhar uma estratégia de testes** que equilibra confiança, velocidade e custo de manutenção é o que diferencia um senior. Cobre a pirâmide, os tipos de teste, test doubles, TDD, técnicas de design de caso, flaky tests, coverage e CI/CD — tudo **stack-agnóstico**, linkando Java e JavaScript para o ferramental. Interview-critical.
 
 ## Sobre este galho
 
-Este galho é a **teoria e estratégia** de testes: o que testar, qual tipo de teste, e por quê. O ferramental
-concreto vive nos galhos de stack — aqui ele entra só como ponteiro.
+Este galho é a **teoria e estratégia** de testes: o que testar, qual tipo de teste, e por quê. O ferramental concreto vive nos galhos de stack — aqui ele entra só como ponteiro.
 
 **Fronteiras (linka, não duplica):** o ferramental concreto por stack — mesmo conceito, ecossistema diferente:
 
@@ -49,8 +44,7 @@ E as fronteiras conceituais que este galho não cobre:
 - **A esteira que roda esses testes em produção** (deploy, rollback, observabilidade) → [[03-Dominios/Engenharia/Operação/index|Operação]].
 - **Testar legado sem rede de segurança** (characterization tests antes da mudança) → [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/index|Arqueologia e Restauração de Software]].
 
-**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista"
-com frases prontas em inglês e vocabulário técnico PT→EN.
+**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista" com frases prontas em inglês e vocabulário técnico PT→EN.
 
 ## Iniciado — o que, por que e o básico de um bom teste
 

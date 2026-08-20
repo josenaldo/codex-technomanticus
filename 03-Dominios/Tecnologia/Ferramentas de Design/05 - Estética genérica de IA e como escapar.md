@@ -77,24 +77,16 @@ Um engenheiro usa a skill `frontend-design` para gerar um dashboard, e a paleta 
 ## Armadilhas comuns
 
 > [!warning] Confundir "não parece genérico" com "tem decisão de verdade"
-> **O que acontece:** uma tela evita os sinais mais óbvios do fingerprint (sem gradiente roxo, sem Inter) e é aprovada como "boa", mesmo tendo hierarquia zero por baixo, como no Cenário 3.
-> **Por quê:** os sinais visuais mais citados de slop (cor, fonte) são os mais fáceis de checar a olho — e por isso o problema estrutural mais profundo (hierarquia, decisão de importância) passa despercebido quando a checagem para na superfície.
-> **Como evitar:** tratar "evitar o fingerprint de cor" e "ter hierarquia visual real" como dois itens separados de revisão, nunca um substituindo o outro.
+> **O que acontece:** uma tela evita os sinais mais óbvios do fingerprint (sem gradiente roxo, sem Inter) e é aprovada como "boa", mesmo tendo hierarquia zero por baixo, como no Cenário 3. **Por quê:** os sinais visuais mais citados de slop (cor, fonte) são os mais fáceis de checar a olho — e por isso o problema estrutural mais profundo (hierarquia, decisão de importância) passa despercebido quando a checagem para na superfície. **Como evitar:** tratar "evitar o fingerprint de cor" e "ter hierarquia visual real" como dois itens separados de revisão, nunca um substituindo o outro.
 
 > [!warning] Pedir "mais criatividade" em vez de dar restrição
-> **O que acontece:** o engenheiro, insatisfeito com uma saída genérica, reformula o prompt pedindo "seja mais criativo" ou "menos genérico" — e recebe uma variação igualmente genérica, só que com cores diferentes.
-> **Por quê:** "criatividade" não é uma instrução operacional para um modelo que prevê a média estatística — é vago o suficiente para ser preenchido, de novo, com o padrão seguro do treino, só que amostrado de um jeito ligeiramente diferente.
-> **Como evitar:** substituir pedidos vagos por restrições concretas — paleta com valores reais, fonte nomeada, regra explícita de hierarquia — seguindo a Seção "Como escapar" desta nota.
+> **O que acontece:** o engenheiro, insatisfeito com uma saída genérica, reformula o prompt pedindo "seja mais criativo" ou "menos genérico" — e recebe uma variação igualmente genérica, só que com cores diferentes. **Por quê:** "criatividade" não é uma instrução operacional para um modelo que prevê a média estatística — é vago o suficiente para ser preenchido, de novo, com o padrão seguro do treino, só que amostrado de um jeito ligeiramente diferente. **Como evitar:** substituir pedidos vagos por restrições concretas — paleta com valores reais, fonte nomeada, regra explícita de hierarquia — seguindo a Seção "Como escapar" desta nota.
 
 > [!warning] Citar número de estrelas ou métrica de projeto open-source sem revalidar
-> **O que acontece:** alguém cita "a Hallmark tem X mil estrelas" numa conversa técnica meses depois de ter checado, sem revalidar.
-> **Por quê:** projetos open-source populares em categorias quentes (como anti-AI-slop, em 2026) crescem rápido — esta própria nota encontrou um número dez vezes maior do que a estimativa da pesquisa que a precedeu, um dia antes.
-> **Como evitar:** tratar métricas de projeto open-source como dado perecível, igual a preço — cheque a fonte (a própria página do repositório) no momento de citar, não confie em memória de leitura anterior.
+> **O que acontece:** alguém cita "a Hallmark tem X mil estrelas" numa conversa técnica meses depois de ter checado, sem revalidar. **Por quê:** projetos open-source populares em categorias quentes (como anti-AI-slop, em 2026) crescem rápido — esta própria nota encontrou um número dez vezes maior do que a estimativa da pesquisa que a precedeu, um dia antes. **Como evitar:** tratar métricas de projeto open-source como dado perecível, igual a preço — cheque a fonte (a própria página do repositório) no momento de citar, não confie em memória de leitura anterior.
 
 > [!tip] Assista: How to Avoid AI Slop in Vibe-Coded Landing Pages
-> **Canal:** DesignCode | **Duração:** ~22min | **Idioma:** EN (legenda automática)
-> O vídeo compara saídas de diferentes modelos para o mesmo prompt de landing page, apontando ao vivo os sinais de slop — incluindo o gradiente roxo, citado literalmente como "muito 2025" — e demonstra a técnica de gerar imagens customizadas como uma das formas de quebrar o padrão default, reforçando a tese de que a saída melhora quando alguma restrição real é introduzida.
-> Trecho de destaque [1:03]: *"we all know the purple gradient — this is very 2025"* — reconhecimento explícito do fingerprint que esta nota descreve.
+> **Canal:** DesignCode | **Duração:** ~22min | **Idioma:** EN (legenda automática) O vídeo compara saídas de diferentes modelos para o mesmo prompt de landing page, apontando ao vivo os sinais de slop — incluindo o gradiente roxo, citado literalmente como "muito 2025" — e demonstra a técnica de gerar imagens customizadas como uma das formas de quebrar o padrão default, reforçando a tese de que a saída melhora quando alguma restrição real é introduzida. Trecho de destaque [1:03]: *"we all know the purple gradient — this is very 2025"* — reconhecimento explícito do fingerprint que esta nota descreve.
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=M4DNgmI7MIM)
 

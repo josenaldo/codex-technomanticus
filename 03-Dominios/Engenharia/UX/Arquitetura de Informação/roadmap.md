@@ -10,58 +10,21 @@ tags:
 
 # Roadmap — Arquitetura de Informação
 
-Diagnóstico nota a nota. Cada entrada tem estado de enriquecimento, score, classificação
-de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`, a partir da
-auditoria já registrada em `.superpowers/sdd/2026-07-28-dominio-ux-plano/task-6-report.md`
-(gate `/verificar-nota` rodado manualmente nota a nota na Task 6, rodada de escrita) —
-confirmada por amostragem nesta rodada (Task 6, Passos D–F): contagem de linhas real
-(`wc -l`), validador `validar-mermaid.mjs` (4/4 blocos ok) e resolução em disco (`test -f`)
-dos 7 wikilinks cross-galho, todos conferidos diretamente nesta rodada.
+Diagnóstico nota a nota. Cada entrada tem estado de enriquecimento, score, classificação de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`, a partir da auditoria já registrada em `.superpowers/sdd/2026-07-28-dominio-ux-plano/task-6-report.md` (gate `/verificar-nota` rodado manualmente nota a nota na Task 6, rodada de escrita) — confirmada por amostragem nesta rodada (Task 6, Passos D–F): contagem de linhas real (`wc -l`), validador `validar-mermaid.mjs` (4/4 blocos ok) e resolução em disco (`test -f`) dos 7 wikilinks cross-galho, todos conferidos diretamente nesta rodada.
 
-**Galho:** `03-Dominios/Engenharia/UX/Arquitetura de Informação`
-**Diagnóstico:** 2026-07-29
-**Última execução:** 2026-07-29 — **diagnóstico COMPLETO, enriquecimento não necessário (4/4 ➖)**
+**Galho:** `03-Dominios/Engenharia/UX/Arquitetura de Informação` **Diagnóstico:** 2026-07-29 **Última execução:** 2026-07-29 — **diagnóstico COMPLETO, enriquecimento não necessário (4/4 ➖)**
 
 > [!info] Política de M1 obrigatório (herdada do domínio, 2026-07-28, Task 11) — com uma exceção documentada
-> M1 (mídia verificada — vídeo ou podcast) é **obrigatória em toda nota** deste domínio, sem
-> isenção por `fase:`. **3 das 4 notas** deste sub-galho (15, 17, 18) têm mídia verificada por
-> transcrição completa (`yt-dlp`, legenda lida por inteiro, não só título). **A nota 16
-> (Schema de banco não é estrutura de navegação) é exceção documentada e aceita**: buscas
-> dirigidas por talk/vídeo sobre o contraste exato "schema de banco relacional vs. estrutura
-> de navegação" não retornaram candidato verificável — o tema é interseção de nicho entre UX
-> e engenharia de dados, sem material dedicado no YouTube. O buraco é reportado na própria
-> nota (não escondido). **Decisão do usuário registrada (2026-07-28/29): buracos de mídia
-> seguem em julgamento caso a caso, sem teto numérico** — nenhuma mídia fraca foi forçada na
-> nota 16, e ela não é marcada como pendente por causa disso. Se aparecer candidato
-> verificável no futuro, reabrir com `/adicionar-midia`.
+> M1 (mídia verificada — vídeo ou podcast) é **obrigatória em toda nota** deste domínio, sem isenção por `fase:`. **3 das 4 notas** deste sub-galho (15, 17, 18) têm mídia verificada por transcrição completa (`yt-dlp`, legenda lida por inteiro, não só título). **A nota 16 (Schema de banco não é estrutura de navegação) é exceção documentada e aceita**: buscas dirigidas por talk/vídeo sobre o contraste exato "schema de banco relacional vs. estrutura de navegação" não retornaram candidato verificável — o tema é interseção de nicho entre UX e engenharia de dados, sem material dedicado no YouTube. O buraco é reportado na própria nota (não escondido). **Decisão do usuário registrada (2026-07-28/29): buracos de mídia seguem em julgamento caso a caso, sem teto numérico** — nenhuma mídia fraca foi forçada na nota 16, e ela não é marcada como pendente por causa disso. Se aparecer candidato verificável no futuro, reabrir com `/adicionar-midia`.
 
 > [!info] Âncora de profundidade é o SG1 (não o bloco anterior)
-> Por decisão do plano (2026-07-28), o piso qualitativo de comparação é sempre o SG1
-> (Fundamentos e Modelo Mental), nunca o bloco imediatamente anterior — evita erosão gradual.
-> Piso qualitativo: ≥3 casos práticos por nota + recorte em prosa ("praticável sozinho vs.
-> exige time"). As 4 notas do SG3 atendem a isso desde a primeira rodada (Task 6), sem
-> correção adicional necessária. Fronteiras preservadas: nota 15 → nota 34 (SG6, glossário/
-> rotulação); nota 16 → `Ciência/Banco de Dados` (modelagem) e `Engenharia/Dados` — como
-> **contraste**, sem reexplicar modelagem; nota 17 → nota 13 (SG2, teste de guerrilha), mesmo
-> espírito de método leve; nota 18 → nota 04 (SG1, Jakob's Law) e notas 19/22 (SG4, user flow
-> e modal empilhado).
+> Por decisão do plano (2026-07-28), o piso qualitativo de comparação é sempre o SG1 (Fundamentos e Modelo Mental), nunca o bloco imediatamente anterior — evita erosão gradual. Piso qualitativo: ≥3 casos práticos por nota + recorte em prosa ("praticável sozinho vs. exige time"). As 4 notas do SG3 atendem a isso desde a primeira rodada (Task 6), sem correção adicional necessária. Fronteiras preservadas: nota 15 → nota 34 (SG6, glossário/ rotulação); nota 16 → `Ciência/Banco de Dados` (modelagem) e `Engenharia/Dados` — como **contraste**, sem reexplicar modelagem; nota 17 → nota 13 (SG2, teste de guerrilha), mesmo espírito de método leve; nota 18 → nota 04 (SG1, Jakob's Law) e notas 19/22 (SG4, user flow e modal empilhado).
 
 > [!info] Piso de linhas — desvio documentado
-> `verificar-nota` cobra T2 (Adepto ≥400 linhas) como item de score. Este domínio segue
-> `00-Meta/guia/Convenções de escrita.md`: "Comprimento não é meta — é consequência. Não
-> existe piso de linhas". As 4 notas ficam em **121–130 linhas** (30%–33% do piso nominal
-> T2) — abaixo do piso nominal, na mesma faixa do SG1 aprovado (138–187), SG4 (115–137), SG5
-> (115–162) e SG6 (125–147), mesmo desvio já registrado nesses sub-galhos. T2 é tratado como
-> não-bloqueante neste diagnóstico; densidade (casos práticos concretos, mecanismo explicado
-> "em uma frase", armadilhas com causa e correção), não contagem de linhas, é o critério real.
-> Ver `task-6-report.md` para a tabela nota → score → mídia → verificação desta rodada.
+> `verificar-nota` cobra T2 (Adepto ≥400 linhas) como item de score. Este domínio segue `00-Meta/guia/Convenções de escrita.md`: "Comprimento não é meta — é consequência. Não existe piso de linhas". As 4 notas ficam em **121–130 linhas** (30%–33% do piso nominal T2) — abaixo do piso nominal, na mesma faixa do SG1 aprovado (138–187), SG4 (115–137), SG5 (115–162) e SG6 (125–147), mesmo desvio já registrado nesses sub-galhos. T2 é tratado como não-bloqueante neste diagnóstico; densidade (casos práticos concretos, mecanismo explicado "em uma frase", armadilhas com causa e correção), não contagem de linhas, é o critério real. Ver `task-6-report.md` para a tabela nota → score → mídia → verificação desta rodada.
 
 > [!info] Correção pontual — duração de vídeo (nota 17)
-> Revisão anterior (achado da rodada de review do SG6) apontou que uma duração de vídeo
-> citada de forma imprecisa num callout é o tipo de erro que este domínio não tolera ("não
-> afirmar o não-verificado"). Na nota 17, o vídeo da Optimal Workshop estava citado como
-> "~4min"; conferido nesta rodada via `yt-dlp --print duration_string` → **2:31**. Corrigido
-> na nota antes deste diagnóstico.
+> Revisão anterior (achado da rodada de review do SG6) apontou que uma duração de vídeo citada de forma imprecisa num callout é o tipo de erro que este domínio não tolera ("não afirmar o não-verificado"). Na nota 17, o vídeo da Optimal Workshop estava citado como "~4min"; conferido nesta rodada via `yt-dlp --print duration_string` → **2:31**. Corrigido na nota antes deste diagnóstico.
 
 ## Régua de análise
 
@@ -74,8 +37,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | LINKS | L1 Wikilink cross-galho · L2 Referência externa (URL) |
 | MÍDIA | M1 Vídeo/podcast embutido |
 
-**Esquema de `fase:` detectado:** COM fase (Adepto 15–18)
-**Piso de linhas:** T2 nominal tratado como não-bloqueante — ver desvio documentado acima.
+**Esquema de `fase:` detectado:** COM fase (Adepto 15–18) **Piso de linhas:** T2 nominal tratado como não-bloqueante — ver desvio documentado acima.
 
 ## Tabela-resumo
 
@@ -87,11 +49,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | ✅ feita | 0 |
 | % concluído | 100% |
 
-> Diagnóstico concluído em 2026-07-29: as 4 notas já atendem ao núcleo completo (E1-E8, P2,
-> L1, L2; M1 em 3/4, buraco honesto na nota 16; P3 N/A por serem `fase: Adepto`) — nenhuma
-> entra no loop de execução do `enriquecer-galho`. `% concluído` conta `➖ não precisa` como
-> concluído (nada a fazer), não `✅ feita` (nenhuma execução foi disparada, pois não havia
-> gap de núcleo).
+> Diagnóstico concluído em 2026-07-29: as 4 notas já atendem ao núcleo completo (E1-E8, P2, L1, L2; M1 em 3/4, buraco honesto na nota 16; P3 N/A por serem `fase: Adepto`) — nenhuma entra no loop de execução do `enriquecer-galho`. `% concluído` conta `➖ não precisa` como concluído (nada a fazer), não `✅ feita` (nenhuma execução foi disparada, pois não havia gap de núcleo).
 
 ---
 

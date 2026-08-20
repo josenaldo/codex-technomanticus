@@ -91,9 +91,7 @@ expect(result.current.usuario.nome).toBe('Ana');
 O mesmo padrão de `wrapper` serve para qualquer provider (React Query, tema, i18n, store) — e é reaproveitável entre testes de hook e de componente (você pode extrair um `renderComProviders` que aplica todos os providers de uma vez).
 
 > [!warning] Guardar `result.current` numa variável antes da atualização
-> **O que acontece:** `const valor = result.current.valor;` antes do `act`, e depois você afirma sobre `valor` — o teste vê o valor **antigo**, mesmo após a atualização.
-> **Por quê:** `result.current` é substituído a cada re-render; a variável que você guardou aponta para o snapshot **anterior**, congelado. A atualização criou um novo `current`, mas sua variável não o acompanha.
-> **Como evitar:** sempre leia `result.current.x` **na hora da asserção**, depois do `act`. Nunca desestruture/guarde valores de `result.current` para reusar após uma atualização.
+> **O que acontece:** `const valor = result.current.valor;` antes do `act`, e depois você afirma sobre `valor` — o teste vê o valor **antigo**, mesmo após a atualização. **Por quê:** `result.current` é substituído a cada re-render; a variável que você guardou aponta para o snapshot **anterior**, congelado. A atualização criou um novo `current`, mas sua variável não o acompanha. **Como evitar:** sempre leia `result.current.x` **na hora da asserção**, depois do `act`. Nunca desestruture/guarde valores de `result.current` para reusar após uma atualização.
 
 **Testando hooks em uma frase:** `renderHook` monta o hook num componente mínimo e expõe seu retorno em `result.current` (sempre lido na hora, nunca guardado), atualizações manuais de estado vão dentro de `act` (mas `render`/`userEvent`/`waitFor` já embrulham), e hooks que dependem de contexto recebem um `wrapper` com os providers.
 

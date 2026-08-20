@@ -21,13 +21,7 @@ aliases:
 # Negociação de oferta (capstone)
 
 > [!abstract] TL;DR
-> A negociação **não começa na oferta** — começa na triagem, quando alguém pergunta sua expectativa
-> salarial, e quem responde um número naquele momento define o teto de tudo que vem depois. Os conceitos
-> que organizam a etapa são três: **ancoragem** (o primeiro número molda a faixa inteira), **BATNA** (seu
-> poder real vem de ter alternativa, não de argumentar bem) e a **estrutura do pacote** (base é um item
-> entre muitos, e frequentemente o mais travado). Vale sempre negociar, e vale fazê-lo sem hostilidade:
-> a pessoa do outro lado será sua colega na segunda-feira. Esta nota **fecha o galho** com o mapa das 14
-> notas por etapa do funil.
+> A negociação **não começa na oferta** — começa na triagem, quando alguém pergunta sua expectativa salarial, e quem responde um número naquele momento define o teto de tudo que vem depois. Os conceitos que organizam a etapa são três: **ancoragem** (o primeiro número molda a faixa inteira), **BATNA** (seu poder real vem de ter alternativa, não de argumentar bem) e a **estrutura do pacote** (base é um item entre muitos, e frequentemente o mais travado). Vale sempre negociar, e vale fazê-lo sem hostilidade: a pessoa do outro lado será sua colega na segunda-feira. Esta nota **fecha o galho** com o mapa das 14 notas por etapa do funil.
 
 ## O número dito em cinco segundos
 
@@ -142,19 +136,13 @@ A lente do galho, condensada — porque é o que sobra quando os detalhes se apa
 ## Armadilhas comuns
 
 > [!warning] Ancorar no salário atual
-> **O que acontece:** o candidato responde a expectativa com base no que ganha hoje, num mercado de faixa menor, e recebe exatamente isso — sem nunca saber qual era a faixa da vaga.
-> **Por quê:** parece a referência honesta e disponível, e a pergunta chega cedo, quando ninguém está pensando em negociação.
-> **Como evitar:** devolva a pergunta, adie, ou dê uma faixa **pesquisada** para a vaga e a região. Seu salário atual é dado sobre o seu passado, não sobre o valor do trabalho.
+> **O que acontece:** o candidato responde a expectativa com base no que ganha hoje, num mercado de faixa menor, e recebe exatamente isso — sem nunca saber qual era a faixa da vaga. **Por quê:** parece a referência honesta e disponível, e a pergunta chega cedo, quando ninguém está pensando em negociação. **Como evitar:** devolva a pergunta, adie, ou dê uma faixa **pesquisada** para a vaga e a região. Seu salário atual é dado sobre o seu passado, não sobre o valor do trabalho.
 
 > [!warning] Negociar só a base
-> **O que acontece:** a conversa trava no item mais engessado, e o candidato aceita a oferta original achando que não havia espaço — quando havia, em signing, equipamento, aprendizado ou data de início.
-> **Por quê:** salário é o número visível e o mais fácil de comparar.
-> **Como evitar:** peça o **pacote completo** por escrito e negocie o conjunto. Onde a base está travada por equidade interna, os itens de pagamento único costumam ter aprovação bem mais simples.
+> **O que acontece:** a conversa trava no item mais engessado, e o candidato aceita a oferta original achando que não havia espaço — quando havia, em signing, equipamento, aprendizado ou data de início. **Por quê:** salário é o número visível e o mais fácil de comparar. **Como evitar:** peça o **pacote completo** por escrito e negocie o conjunto. Onde a base está travada por equidade interna, os itens de pagamento único costumam ter aprovação bem mais simples.
 
 > [!warning] Blefar com uma alternativa que não existe
-> **O que acontece:** o candidato inventa outra oferta para ganhar margem. Pedem detalhes, ou simplesmente aceitam o risco de perdê-lo — e a negociação termina pior do que começou, às vezes com a relação danificada antes do primeiro dia.
-> **Por quê:** BATNA fraca é desconfortável de admitir, e o blefe parece barato.
-> **Como evitar:** negocie com o que é verdade. Argumentos de mercado, escopo e responsabilidade funcionam sem exigir alternativa inventada — e, se sua BATNA é fraca, o caminho é construí-la (rodar mais processos), não simulá-la.
+> **O que acontece:** o candidato inventa outra oferta para ganhar margem. Pedem detalhes, ou simplesmente aceitam o risco de perdê-lo — e a negociação termina pior do que começou, às vezes com a relação danificada antes do primeiro dia. **Por quê:** BATNA fraca é desconfortável de admitir, e o blefe parece barato. **Como evitar:** negocie com o que é verdade. Argumentos de mercado, escopo e responsabilidade funcionam sem exigir alternativa inventada — e, se sua BATNA é fraca, o caminho é construí-la (rodar mais processos), não simulá-la.
 
 ## Como soa em inglês
 

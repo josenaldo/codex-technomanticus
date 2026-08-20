@@ -126,9 +126,7 @@ Hooks são scripts em `.git/hooks/` que o Git executa em momentos determinados. 
 | `post-checkout` | ao trocar de ramo | reinstalar dependências |
 
 > [!warning] Hooks não são versionados
-> **O que acontece:** você escreve um `pre-commit` excelente, e nenhum colega o tem — porque `.git/` não vai no clone.
-> **Por quê:** é proposital, e é uma decisão de segurança: se hooks fossem versionados, clonar um repositório qualquer executaria código de terceiros na sua máquina.
-> **Como resolver:** ou aponte para uma pasta versionada — `git config core.hooksPath .githooks` —, ou use um framework que faz isso: **lefthook** e **pre-commit** são agnósticos de linguagem; **husky** e **lint-staged** são o padrão no ecossistema JS, e o vault os cobre em [[03-Dominios/Tecnologia/Tooling e Build/index|Tooling e Build]] (nota 16).
+> **O que acontece:** você escreve um `pre-commit` excelente, e nenhum colega o tem — porque `.git/` não vai no clone. **Por quê:** é proposital, e é uma decisão de segurança: se hooks fossem versionados, clonar um repositório qualquer executaria código de terceiros na sua máquina. **Como resolver:** ou aponte para uma pasta versionada — `git config core.hooksPath .githooks` —, ou use um framework que faz isso: **lefthook** e **pre-commit** são agnósticos de linguagem; **husky** e **lint-staged** são o padrão no ecossistema JS, e o vault os cobre em [[03-Dominios/Tecnologia/Tooling e Build/index|Tooling e Build]] (nota 16).
 
 E a contrapartida honesta: hooks locais são **contornáveis** (`git commit --no-verify`). Eles servem para dar retorno rápido ao desenvolvedor, não para garantir. A garantia mora no servidor — CI e rulesets (nota 15).
 
@@ -202,19 +200,13 @@ O `fsmonitor` acelera drasticamente o `git status` em projetos enormes, porque o
 ## Armadilhas comuns
 
 > [!warning] Configuração global que muda o comportamento do time
-> **O que acontece:** você configura `pull.rebase = true` globalmente, alguém do time não, e os históricos saem diferentes conforme quem sincronizou.
-> **Por quê:** `~/.gitconfig` é individual.
-> **Como evitar:** o que precisa ser igual para todos vai em `.gitattributes` (versionado) ou em regra de servidor (nota 15). O `.gitconfig` é para preferência pessoal.
+> **O que acontece:** você configura `pull.rebase = true` globalmente, alguém do time não, e os históricos saem diferentes conforme quem sincronizou. **Por quê:** `~/.gitconfig` é individual. **Como evitar:** o que precisa ser igual para todos vai em `.gitattributes` (versionado) ou em regra de servidor (nota 15). O `.gitconfig` é para preferência pessoal.
 
 > [!warning] `help.autocorrect` com correção automática
-> **O que acontece:** configurado com um número (`autocorrect = 20`), o Git **executa** o comando que ele adivinhou após dois segundos. Um dia ele adivinha errado e executa algo destrutivo.
-> **Por quê:** o valor numérico é o tempo de espera, não uma confirmação.
-> **Como evitar:** use `prompt`, que pergunta antes.
+> **O que acontece:** configurado com um número (`autocorrect = 20`), o Git **executa** o comando que ele adivinhou após dois segundos. Um dia ele adivinha errado e executa algo destrutivo. **Por quê:** o valor numérico é o tempo de espera, não uma confirmação. **Como evitar:** use `prompt`, que pergunta antes.
 
 > [!warning] Copiar um `.gitconfig` inteiro da internet
-> **O que acontece:** o comportamento do Git muda de formas que você não consegue explicar, e depurar fica impossível.
-> **Por quê:** cada linha muda um comportamento, e algumas interagem.
-> **Como evitar:** adicione uma configuração por vez, entendendo qual dor ela resolve. `git config --list --show-origin` (nota 02) mostra de onde veio cada valor quando algo estranho acontecer.
+> **O que acontece:** o comportamento do Git muda de formas que você não consegue explicar, e depurar fica impossível. **Por quê:** cada linha muda um comportamento, e algumas interagem. **Como evitar:** adicione uma configuração por vez, entendendo qual dor ela resolve. `git config --list --show-origin` (nota 02) mostra de onde veio cada valor quando algo estranho acontecer.
 
 ---
 

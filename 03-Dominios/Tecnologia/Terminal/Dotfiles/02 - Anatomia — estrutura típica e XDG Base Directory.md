@@ -98,8 +98,7 @@ Apps legados que mantêm paths hard-coded em `$HOME`:
 
 Quatro estratégias, do mais ao menos recomendado:
 
-**1. Env var própria do app**
-Muitos apps legados têm variável própria que sobrescreve o path:
+**1. Env var própria do app** Muitos apps legados têm variável própria que sobrescreve o path:
 ```bash
 # bash usa HISTFILE
 export HISTFILE="$XDG_STATE_HOME/bash/history"
@@ -110,16 +109,14 @@ export HISTFILE="$XDG_STATE_HOME/zsh/history"
 mkdir -p "${HISTFILE%/*}"
 ```
 
-**2. Flag de linha de comando**
-Alguns apps aceitam `--config` ou `--config-dir` na invocação.
+**2. Flag de linha de comando** Alguns apps aceitam `--config` ou `--config-dir` na invocação.
 
 **3. Wrapper alias**
 ```bash
 alias vim='vim -u "$XDG_CONFIG_HOME/vim/vimrc"'
 ```
 
-**4. Aceitar e deixar legacy**
-Quando o app não tem mecanismo de override (ssh, gpg), simplesmente aceite o path legado e versione de lá. Forçar override em apps que não suportam causa mais problemas do que resolve.
+**4. Aceitar e deixar legacy** Quando o app não tem mecanismo de override (ssh, gpg), simplesmente aceite o path legado e versione de lá. Forçar override em apps que não suportam causa mais problemas do que resolve.
 
 ### `~/.local/bin/`
 

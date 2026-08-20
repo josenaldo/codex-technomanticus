@@ -79,9 +79,7 @@ Pior: o custo de um problema encontrado tarde é maior. Num PR pequeno, um comen
 ## O que revisar (e o que não)
 
 > [!warning] Não gaste revisão humana com o que a máquina faz melhor
-> **O que acontece:** metade dos comentários do PR é sobre espaçamento, aspas simples × duplas, ordem de importações.
-> **Por quê:** são coisas objetivas e verificáveis — exatamente o perfil do que uma ferramenta resolve.
-> **Como evitar:** formatador automático e linter na CI, com regra acordada uma vez. Discussão de estilo em PR é conflito interpessoal disfarçado de técnica, e some quando a máquina passa a ser a autoridade.
+> **O que acontece:** metade dos comentários do PR é sobre espaçamento, aspas simples × duplas, ordem de importações. **Por quê:** são coisas objetivas e verificáveis — exatamente o perfil do que uma ferramenta resolve. **Como evitar:** formatador automático e linter na CI, com regra acordada uma vez. Discussão de estilo em PR é conflito interpessoal disfarçado de técnica, e some quando a máquina passa a ser a autoridade.
 
 O que sobra para gente, que é o que importa:
 
@@ -138,19 +136,13 @@ Para a maioria das equipes, **squash** é o padrão razoável: a `main` fica com
 ## Armadilhas comuns
 
 > [!warning] O PR que fica aberto duas semanas
-> **O que acontece:** enquanto espera revisão, a `main` avança; o ramo diverge; aparecem conflitos que não existiam; a pessoa sincroniza e a revisão recomeça do zero.
-> **Por quê:** custo de integração cresce com o tempo de separação — o mesmo princípio da nota 09.
-> **Como evitar:** trate revisão como interrupção legítima, não como algo para "quando sobrar tempo". Muitas equipes adotam um acordo de responder a PRs em menos de 24 horas. E PR pequeno é revisado rápido, o que fecha o círculo.
+> **O que acontece:** enquanto espera revisão, a `main` avança; o ramo diverge; aparecem conflitos que não existiam; a pessoa sincroniza e a revisão recomeça do zero. **Por quê:** custo de integração cresce com o tempo de separação — o mesmo princípio da nota 09. **Como evitar:** trate revisão como interrupção legítima, não como algo para "quando sobrar tempo". Muitas equipes adotam um acordo de responder a PRs em menos de 24 horas. E PR pequeno é revisado rápido, o que fecha o círculo.
 
 > [!warning] Aprovar sem ler
-> **O que acontece:** o "LGTM" em 30 segundos num PR de 800 linhas. A aprovação vira um carimbo, e quando algo quebra ninguém se sente responsável.
-> **Por quê:** normalmente é sintoma de PR grande demais, não de má-fé.
-> **Como evitar:** se você não consegue revisar de verdade, diga isso em vez de aprovar — "não tenho contexto para avaliar a parte X" é uma resposta honesta e útil.
+> **O que acontece:** o "LGTM" em 30 segundos num PR de 800 linhas. A aprovação vira um carimbo, e quando algo quebra ninguém se sente responsável. **Por quê:** normalmente é sintoma de PR grande demais, não de má-fé. **Como evitar:** se você não consegue revisar de verdade, diga isso em vez de aprovar — "não tenho contexto para avaliar a parte X" é uma resposta honesta e útil.
 
 > [!warning] Confundir revisão com aprovação de pessoa
-> **O que acontece:** um mesmo comentário é aceito de uma pessoa e contestado de outra; revisões viram medição de status.
-> **Por quê:** falta de critério explícito. Sem regra escrita, prevalece hierarquia.
-> **Como evitar:** acorde e escreva o que bloqueia um merge (teste falhando, bug, decisão irreversível) e o que não bloqueia (preferência de estilo). Um `CONTRIBUTING.md` de uma página resolve mais conflito que qualquer ferramenta.
+> **O que acontece:** um mesmo comentário é aceito de uma pessoa e contestado de outra; revisões viram medição de status. **Por quê:** falta de critério explícito. Sem regra escrita, prevalece hierarquia. **Como evitar:** acorde e escreva o que bloqueia um merge (teste falhando, bug, decisão irreversível) e o que não bloqueia (preferência de estilo). Um `CONTRIBUTING.md` de uma página resolve mais conflito que qualquer ferramenta.
 
 ---
 

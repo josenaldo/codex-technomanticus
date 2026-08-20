@@ -20,12 +20,7 @@ aliases:
 # Comunicar trade-offs sob pressão
 
 > [!abstract] TL;DR
-> É a habilidade que mais separa sênior de pleno na avaliação — e ela é de **comunicação**, não de
-> arquitetura. A estrutura que funciona tem cinco partes: o problema, as opções consideradas, o critério
-> de decisão, a escolha e — a parte que quase todo mundo omite — **o que se perdeu**. Admitir o custo
-> não enfraquece a decisão: é o que a torna crível, porque decisão sem custo declarado soa a quem não
-> examinou as alternativas. Some-se a isso o ajuste de **profundidade por audiência** e o hábito de abrir
-> pela conclusão (**BLUF**) quando o interlocutor é executivo.
+> É a habilidade que mais separa sênior de pleno na avaliação — e ela é de **comunicação**, não de arquitetura. A estrutura que funciona tem cinco partes: o problema, as opções consideradas, o critério de decisão, a escolha e — a parte que quase todo mundo omite — **o que se perdeu**. Admitir o custo não enfraquece a decisão: é o que a torna crível, porque decisão sem custo declarado soa a quem não examinou as alternativas. Some-se a isso o ajuste de **profundidade por audiência** e o hábito de abrir pela conclusão (**BLUF**) quando o interlocutor é executivo.
 
 ## A resposta tecnicamente correta que não convenceu
 
@@ -99,19 +94,13 @@ A mesma decisão, quatro conversas — como na [[02 - A anatomia do funil intern
 ## Armadilhas comuns
 
 > [!warning] Apresentar decisão sem alternativa
-> **O que acontece:** "escolhemos X porque é melhor". Sem comparação, o entrevistador não tem como avaliar o julgamento — e conclui que houve default, não escolha.
-> **Por quê:** a alternativa descartada parece irrelevante, já que não foi usada.
-> **Como evitar:** nomeie **ao menos uma** alternativa séria e diga por que ela perdeu. Se a única alternativa era ruim, isso também precisa ser dito — significa que não havia decisão a tomar, e é uma resposta legítima.
+> **O que acontece:** "escolhemos X porque é melhor". Sem comparação, o entrevistador não tem como avaliar o julgamento — e conclui que houve default, não escolha. **Por quê:** a alternativa descartada parece irrelevante, já que não foi usada. **Como evitar:** nomeie **ao menos uma** alternativa séria e diga por que ela perdeu. Se a única alternativa era ruim, isso também precisa ser dito — significa que não havia decisão a tomar, e é uma resposta legítima.
 
 > [!warning] Esconder o custo
-> **O que acontece:** o candidato descreve a escolha como acerto sem contrapartida. Soa a vendedor, e o follow-up quase sempre vem: "e qual foi o problema disso?".
-> **Por quê:** em contexto de avaliação, admitir custo parece admitir erro.
-> **Como evitar:** apresente o custo você mesmo, antes da pergunta — e siga com mitigação. Quem antecipa o contra-argumento controla a conversa; quem espera ser confrontado responde na defensiva.
+> **O que acontece:** o candidato descreve a escolha como acerto sem contrapartida. Soa a vendedor, e o follow-up quase sempre vem: "e qual foi o problema disso?". **Por quê:** em contexto de avaliação, admitir custo parece admitir erro. **Como evitar:** apresente o custo você mesmo, antes da pergunta — e siga com mitigação. Quem antecipa o contra-argumento controla a conversa; quem espera ser confrontado responde na defensiva.
 
 > [!warning] Profundidade errada para a audiência
-> **O que acontece:** detalhe de implementação para um executivo, ou resposta genérica para um staff engineer. Nos dois casos, registra-se falha de comunicação — que num sênior pesa tanto quanto falha técnica.
-> **Por quê:** o candidato prepara **o conteúdo** e não pensa em quem está do outro lado.
-> **Como evitar:** antes de responder, identifique a audiência e escolha a camada. Na dúvida, comece pela conclusão (BLUF) e ofereça: *"posso detalhar a parte técnica, se for útil"* — deixa a profundidade a critério de quem pergunta.
+> **O que acontece:** detalhe de implementação para um executivo, ou resposta genérica para um staff engineer. Nos dois casos, registra-se falha de comunicação — que num sênior pesa tanto quanto falha técnica. **Por quê:** o candidato prepara **o conteúdo** e não pensa em quem está do outro lado. **Como evitar:** antes de responder, identifique a audiência e escolha a camada. Na dúvida, comece pela conclusão (BLUF) e ofereça: *"posso detalhar a parte técnica, se for útil"* — deixa a profundidade a critério de quem pergunta.
 
 ## Como soa em inglês
 

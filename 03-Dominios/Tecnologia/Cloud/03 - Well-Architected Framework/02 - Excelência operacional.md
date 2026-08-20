@@ -126,16 +126,14 @@ Resumida em forma de tabela — útil como referência rápida durante uma revie
 > [!tip] Assista: AWS Well-Architected for Startups - Operational Excellence
 > **Canal:** Amazon Web Services (oficial) | **Duração:** ~6min | **Idioma:** EN
 >
-> Um arquiteto de soluções da AWS percorre os cinco princípios de design (dos oito) com um exemplo trabalhado de pipeline CI/CD (CodeCommit → CodeBuild → CodeDeploy → CodePipeline) mostrando, na prática, como automação reduz o "blast radius" de uma mudança — o mesmo raciocínio por trás do princípio 4 desta nota.
-> Trecho de destaque [02:10]: *"make frequent small reversible changes"* — e, sobre antecipar falha, [04:27]: *"everything fails all the time"*.
+> Um arquiteto de soluções da AWS percorre os cinco princípios de design (dos oito) com um exemplo trabalhado de pipeline CI/CD (CodeCommit → CodeBuild → CodeDeploy → CodePipeline) mostrando, na prática, como automação reduz o "blast radius" de uma mudança — o mesmo raciocínio por trás do princípio 4 desta nota. Trecho de destaque [02:10]: *"make frequent small reversible changes"* — e, sobre antecipar falha, [04:27]: *"everything fails all the time"*.
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=m0iUkVYUYeY)
 
 > [!tip] Assista: AWS Supports You - Driving Operational Excellence using AWS Well-Architected
 > **Canal:** Amazon Web Services (oficial) | **Duração:** ~51min | **Idioma:** EN
 >
-> Deep dive oficial que detalha o princípio "operações como código" além do óbvio: não é só infraestrutura como código, é change management, incident management e patch management codificados — com exemplos usando AWS Systems Manager para automatizar runbooks em resposta a eventos, em vez de só disparar scripts manualmente.
-> Trecho de destaque [17:47]: *"it is not just automation either... with operations as code you can trigger your automated runbooks in response to events"*.
+> Deep dive oficial que detalha o princípio "operações como código" além do óbvio: não é só infraestrutura como código, é change management, incident management e patch management codificados — com exemplos usando AWS Systems Manager para automatizar runbooks em resposta a eventos, em vez de só disparar scripts manualmente. Trecho de destaque [17:47]: *"it is not just automation either... with operations as code you can trigger your automated runbooks in response to events"*.
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=-rRF8V3zk6A)
 

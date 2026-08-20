@@ -145,16 +145,14 @@ Sem tracing, essa mesma investigação exigiria: abrir cada log group, adivinhar
 > [!tip] Assista: Conhecendo o AWS X-Ray — Service Map na AWS
 > **Canal:** Bruno Russi | **Duração:** ~11min | **Idioma:** PT-BR
 >
-> Uma demonstração ao vivo do console do X-Ray, mostrando o service map colorido e um trace individual sendo aberto pra achar exatamente onde um salto ficou lento — o mesmo fluxo de debug que esta nota descreve em prosa.
-> Trecho de destaque [02:24]: *"esse carinha aqui que teve um tempo aproximadamente de quatro segundos né e a gente consegue ver para esse Trace"*
+> Uma demonstração ao vivo do console do X-Ray, mostrando o service map colorido e um trace individual sendo aberto pra achar exatamente onde um salto ficou lento — o mesmo fluxo de debug que esta nota descreve em prosa. Trecho de destaque [02:24]: *"esse carinha aqui que teve um tempo aproximadamente de quatro segundos né e a gente consegue ver para esse Trace"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=RXxy7EMh7C8)
 
 > [!tip] Assista: Como utilizar o AWS X-Ray com Docker para tracing e identificar problemas de performance
 > **Canal:** Domine AWS com Henrylle Maia | **Duração:** ~30min | **Idioma:** PT-BR
 >
-> Complementa a seção de instrumentação com um passo a passo de configurar o daemon do X-Ray fora do Lambda (ECS/Docker) — o cenário que esta nota só descreve rapidamente como "sidecar container ou processo separado".
-> Trecho de destaque [02:27]: *"conseguir ter rastreabilidade do que está acontecendo na sua aplicação"*
+> Complementa a seção de instrumentação com um passo a passo de configurar o daemon do X-Ray fora do Lambda (ECS/Docker) — o cenário que esta nota só descreve rapidamente como "sidecar container ou processo separado". Trecho de destaque [02:27]: *"conseguir ter rastreabilidade do que está acontecendo na sua aplicação"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=PFU278j4c2A)
 

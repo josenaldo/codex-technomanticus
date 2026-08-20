@@ -16,13 +16,11 @@ aliases:
 # Carreira
 
 > [!abstract] TL;DR
-> Camada não-técnica — o que serve à carreira sem ser ciência, engenharia ou tecnologia:
-> preparação de entrevistas, inglês para contextos internacionais e empreendedorismo.
+> Camada não-técnica — o que serve à carreira sem ser ciência, engenharia ou tecnologia: preparação de entrevistas, inglês para contextos internacionais e empreendedorismo.
 
 ## Sobre esta camada
 
-A única camada fora do eixo técnico. Reúne o desenvolvimento profissional que sustenta a trajetória
-de dev — comunicação, entrevistas internacionais, idioma e negócio próprio.
+A única camada fora do eixo técnico. Reúne o desenvolvimento profissional que sustenta a trajetória de dev — comunicação, entrevistas internacionais, idioma e negócio próprio.
 
 ## Domínios
 

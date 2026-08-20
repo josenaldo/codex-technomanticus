@@ -48,9 +48,7 @@ Esse não é um problema técnico no sentido de query lenta ou pipeline quebrado
 Nenhum desses sintomas se resolve escrevendo uma query melhor ou otimizando um pipeline. Eles se resolvem com infraestrutura de **metadados**, **descoberta** e **política** — o assunto desta nota.
 
 > [!warning] "Documentação em wiki resolve isso"
-> **O que acontece:** o time cria uma página de wiki listando as tabelas principais do warehouse, com uma frase de descrição cada.
-> **Por quê:** a wiki desatualiza no primeiro mês. Ninguém lembra de editá-la quando cria uma tabela nova, renomeia uma coluna ou deprecia um modelo — porque a wiki vive fora do fluxo de trabalho de quem produz o dado. Em pouco tempo, a wiki é menos confiável do que perguntar no Slack.
-> **Como evitar:** metadados que importam precisam viver **perto do dado**, idealmente gerados automaticamente a partir do próprio schema e do próprio pipeline (via introspecção do warehouse, ou como efeito colateral de rodar um job de transformação) — não digitados à mão num documento separado que ninguém tem incentivo de manter.
+> **O que acontece:** o time cria uma página de wiki listando as tabelas principais do warehouse, com uma frase de descrição cada. **Por quê:** a wiki desatualiza no primeiro mês. Ninguém lembra de editá-la quando cria uma tabela nova, renomeia uma coluna ou deprecia um modelo — porque a wiki vive fora do fluxo de trabalho de quem produz o dado. Em pouco tempo, a wiki é menos confiável do que perguntar no Slack. **Como evitar:** metadados que importam precisam viver **perto do dado**, idealmente gerados automaticamente a partir do próprio schema e do próprio pipeline (via introspecção do warehouse, ou como efeito colateral de rodar um job de transformação) — não digitados à mão num documento separado que ninguém tem incentivo de manter.
 
 ## Metadados: dado sobre o dado
 
@@ -158,9 +156,7 @@ Dentro do warehouse, esses princípios se traduzem em práticas concretas:
 **Controle de acesso por coluna.** Nem todo consumidor do warehouse deveria enxergar a mesma versão de uma tabela. Um dashboard de vendas agregadas não precisa de acesso a coluna de e-mail; uma investigação de fraude específica pode precisar, sob processo de aprovação. Warehouses modernos oferecem mecanismos de controle de acesso em nível de coluna ou de linha para viabilizar exatamente essa segmentação — a implementação técnica desses controles é, de novo, terreno de [[03-Dominios/Engenharia/Segurança/index|Segurança]].
 
 > [!warning] "A gente cripto­grafa o disco, então está protegido"
-> **O que acontece:** o time considera a proteção de PII resolvida porque o armazenamento subjacente do warehouse é criptografado em repouso.
-> **Por quê:** criptografia em repouso protege contra um cenário específico — alguém roubar o disco físico ou o backup. Ela não impede que um analista com acesso de leitura legítimo rode `SELECT cpf FROM dim_cliente` e veja o dado em texto claro. O risco que mascaramento e controle de acesso por coluna endereçam é outro: **acesso legítimo, mas desnecessariamente amplo** — a maior parte dos vazamentos de dado dentro de uma organização não vem de invasão externa, vem de gente com acesso demais para o que o trabalho dela exige.
-> **Como evitar:** trate criptografia em repouso e controle de acesso a colunas sensíveis como camadas complementares, não substitutas uma da outra. A primeira protege contra roubo físico; a segunda protege contra exposição por acesso amplo demais dentro da própria organização.
+> **O que acontece:** o time considera a proteção de PII resolvida porque o armazenamento subjacente do warehouse é criptografado em repouso. **Por quê:** criptografia em repouso protege contra um cenário específico — alguém roubar o disco físico ou o backup. Ela não impede que um analista com acesso de leitura legítimo rode `SELECT cpf FROM dim_cliente` e veja o dado em texto claro. O risco que mascaramento e controle de acesso por coluna endereçam é outro: **acesso legítimo, mas desnecessariamente amplo** — a maior parte dos vazamentos de dado dentro de uma organização não vem de invasão externa, vem de gente com acesso demais para o que o trabalho dela exige. **Como evitar:** trate criptografia em repouso e controle de acesso a colunas sensíveis como camadas complementares, não substitutas uma da outra. A primeira protege contra roubo físico; a segunda protege contra exposição por acesso amplo demais dentro da própria organização.
 
 ## Data as a product
 
@@ -231,5 +227,4 @@ Estabelecemos a infraestrutura de confiança — metadado, catálogo, lineage �
 - DataHub Project — [*DataHub: The Metadata Platform*](https://datahubproject.io/) — exemplo de data catalog open source, citado como referência de categoria, não como tutorial.
 - Autoridade Nacional de Proteção de Dados (ANPD) — [Lei Geral de Proteção de Dados Pessoais (LGPD), Lei nº 13.709/2018](https://www.gov.br/anpd/pt-br) — referência institucional brasileira para os princípios de base legal, minimização e direitos do titular citados nesta nota.
 
-[^datahub]: DataHub Project, *DataHub: The Metadata Platform*; Dehghani, *Data Mesh*, O'Reilly, 2022.
-[^openlineage]: OpenLineage, *An Open Standard for Data Lineage Collection*.
+[^datahub]: DataHub Project, *DataHub: The Metadata Platform*; Dehghani, *Data Mesh*, O'Reilly, 2022. [^openlineage]: OpenLineage, *An Open Standard for Data Lineage Collection*.

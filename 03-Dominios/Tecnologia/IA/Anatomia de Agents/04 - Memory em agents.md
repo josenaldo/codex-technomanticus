@@ -78,9 +78,7 @@ project/
     └── facts/
 ```
 
-**Prós:** simples, inspecionável, git-friendly, agent pode editar como qualquer arquivo
-**Contras:** não escala para milhares de fatos
-**Use quando:** projeto solo ou time pequeno, codebase ou vault Obsidian
+**Prós:** simples, inspecionável, git-friendly, agent pode editar como qualquer arquivo **Contras:** não escala para milhares de fatos **Use quando:** projeto solo ou time pequeno, codebase ou vault Obsidian
 
 Detalhamento em [[Context Engineering|10 - Structured state tracking]].
 
@@ -88,9 +86,7 @@ Detalhamento em [[Context Engineering|10 - Structured state tracking]].
 
 Embeddings de memórias passadas, recuperadas por similaridade semântica.
 
-**Prós:** escalável, busca natural por significado
-**Contras:** menos controlável, pode trazer noise
-**Tools:** Pinecone, Weaviate, Qdrant, Mem0/Zep
+**Prós:** escalável, busca natural por significado **Contras:** menos controlável, pode trazer noise **Tools:** Pinecone, Weaviate, Qdrant, Mem0/Zep
 
 ### Structured DB
 

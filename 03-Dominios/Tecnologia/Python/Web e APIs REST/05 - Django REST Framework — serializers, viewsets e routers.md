@@ -418,19 +418,13 @@ A régua sênior, resumida: **DRF vale quando o Django já está no meio da equa
 ## Armadilhas comuns
 
 > [!warning] `fields = "__all__"` em produção
-> **O que acontece:** o incidente de abertura desta nota — qualquer coluna do `Model`, presente ou futura, vaza na resposta HTTP sem revisão.
-> **Por quê:** `ModelSerializer` infere o schema de saída direto do `Model`; `"__all__"` remove a única barreira declarativa entre "coluna existe no banco" e "campo aparece na API".
-> **Como evitar:** listar `fields` explicitamente (ou `exclude` com lista curta e mantida), revisando toda vez que o `Model` ganha uma coluna nova — o mesmo princípio do `response_model` explícito da nota 03.
+> **O que acontece:** o incidente de abertura desta nota — qualquer coluna do `Model`, presente ou futura, vaza na resposta HTTP sem revisão. **Por quê:** `ModelSerializer` infere o schema de saída direto do `Model`; `"__all__"` remove a única barreira declarativa entre "coluna existe no banco" e "campo aparece na API". **Como evitar:** listar `fields` explicitamente (ou `exclude` com lista curta e mantida), revisando toda vez que o `Model` ganha uma coluna nova — o mesmo princípio do `response_model` explícito da nota 03.
 
 > [!warning] Confundir `Serializer.is_valid()` esquecido com dado "sempre válido"
-> **O que acontece:** chamar `serializer.save()` sem checar `serializer.is_valid()` antes levanta `AssertionError` em runtime — mas às vezes o erro só aparece em produção, se o caminho de teste sempre mandou dado válido.
-> **Por quê:** `is_valid()` popula `serializer.validated_data`/`serializer.errors`; `save()` depende desse estado interno já ter sido calculado.
-> **Como evitar:** todo `save()` é precedido por `if serializer.is_valid():` (ou `is_valid(raise_exception=True)`, que já converte para `400` automaticamente dentro de uma `APIView`/`ViewSet`) — nunca assumir que o dado que chegou está bem formado.
+> **O que acontece:** chamar `serializer.save()` sem checar `serializer.is_valid()` antes levanta `AssertionError` em runtime — mas às vezes o erro só aparece em produção, se o caminho de teste sempre mandou dado válido. **Por quê:** `is_valid()` popula `serializer.validated_data`/`serializer.errors`; `save()` depende desse estado interno já ter sido calculado. **Como evitar:** todo `save()` é precedido por `if serializer.is_valid():` (ou `is_valid(raise_exception=True)`, que já converte para `400` automaticamente dentro de uma `APIView`/`ViewSet`) — nunca assumir que o dado que chegou está bem formado.
 
 > [!warning] `ViewSet` genérico demais escondendo lógica de negócio importante
-> **O que acontece:** um `ModelViewSet` de quatro linhas parece elegante, mas esconde que nenhuma regra de negócio real (quem pode criar, quais campos são derivados, o que dispara uma notificação) está sendo aplicada — o CRUD "genérico" vira, sem querer, o contrato de negócio inteiro do recurso.
-> **Por quê:** a economia de linhas do `ModelViewSet` é real, mas ela cobre só o CRUD mecânico; qualquer regra além disso (associar `criado_por`, restringir `queryset` por usuário, validar uma transição de estado) precisa ser adicionada explicitamente via `perform_create`/`get_queryset`/validação customizada no serializer — não aparece de graça.
-> **Como evitar:** tratar `ModelViewSet` como ponto de partida, não como destino final — revisar, recurso a recurso, se o CRUD genérico realmente cobre as regras de negócio ou se algumas ações precisam de sobrescrita.
+> **O que acontece:** um `ModelViewSet` de quatro linhas parece elegante, mas esconde que nenhuma regra de negócio real (quem pode criar, quais campos são derivados, o que dispara uma notificação) está sendo aplicada — o CRUD "genérico" vira, sem querer, o contrato de negócio inteiro do recurso. **Por quê:** a economia de linhas do `ModelViewSet` é real, mas ela cobre só o CRUD mecânico; qualquer regra além disso (associar `criado_por`, restringir `queryset` por usuário, validar uma transição de estado) precisa ser adicionada explicitamente via `perform_create`/`get_queryset`/validação customizada no serializer — não aparece de graça. **Como evitar:** tratar `ModelViewSet` como ponto de partida, não como destino final — revisar, recurso a recurso, se o CRUD genérico realmente cobre as regras de negócio ou se algumas ações precisam de sobrescrita.
 
 ## Em entrevista
 

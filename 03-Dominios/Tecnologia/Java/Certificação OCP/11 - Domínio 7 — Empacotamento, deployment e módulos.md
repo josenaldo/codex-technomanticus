@@ -18,8 +18,7 @@ aliases:
 # Domínio 7 — Empacotamento, deployment e módulos
 
 > [!abstract] TL;DR
-> Este é um domínio de **cobertura parcial** na trilha: o sistema de módulos (JPMS) e as ferramentas `jlink`/`jpackage` já têm notas dedicadas nos galhos de JVM e JavaFX, mas três tópicos da prova — `jar`/MANIFEST, JShell e implicit classes/instance main — ainda não têm casa própria (veja a seção **Lacuna da trilha**, abaixo).
-> Atenção redobrada com **JPMS**: é pouco usado em produção real (Spring e Jakarta EE não dependem dele agressivamente), mas **cai muito** na prova. Estude mesmo que você nunca vá escrever um `module-info.java` no trabalho.
+> Este é um domínio de **cobertura parcial** na trilha: o sistema de módulos (JPMS) e as ferramentas `jlink`/`jpackage` já têm notas dedicadas nos galhos de JVM e JavaFX, mas três tópicos da prova — `jar`/MANIFEST, JShell e implicit classes/instance main — ainda não têm casa própria (veja a seção **Lacuna da trilha**, abaixo). Atenção redobrada com **JPMS**: é pouco usado em produção real (Spring e Jakarta EE não dependem dele agressivamente), mas **cai muito** na prova. Estude mesmo que você nunca vá escrever um `module-info.java` no trabalho.
 
 > [!info] Títulos oficiais
 > - **1Z0-830 (Java 21):** *Packaging and Deploying Java Code*

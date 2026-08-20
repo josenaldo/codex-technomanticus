@@ -85,24 +85,16 @@ Um produto com app mobile e site web dispara `onboarding_started` — mas o mobi
 ## Armadilhas comuns
 
 > [!warning] Adicionar evento novo sem checar se um equivalente já existe
-> **O que acontece:** cada desenvolvedor (ou você mesmo, meses depois, esquecendo o que já fez) cria um nome novo para uma ação que já tinha instrumentação, gerando duplicidade silenciosa.
-> **Por quê:** é mais rápido escrever `track("novo_nome")` do que parar para procurar se já existe algo parecido — e sem um tracking plan centralizado, não há onde procurar.
-> **Como evitar:** trate "checar o tracking plan antes de criar evento novo" como parte do processo de escrever a feature, não como etapa opcional — o mesmo hábito de checar se uma função utilitária já existe antes de escrever outra.
+> **O que acontece:** cada desenvolvedor (ou você mesmo, meses depois, esquecendo o que já fez) cria um nome novo para uma ação que já tinha instrumentação, gerando duplicidade silenciosa. **Por quê:** é mais rápido escrever `track("novo_nome")` do que parar para procurar se já existe algo parecido — e sem um tracking plan centralizado, não há onde procurar. **Como evitar:** trate "checar o tracking plan antes de criar evento novo" como parte do processo de escrever a feature, não como etapa opcional — o mesmo hábito de checar se uma função utilitária já existe antes de escrever outra.
 
 > [!warning] Deixar o nome do evento livre de vocabulário controlado
-> **O que acontece:** verbos diferentes para a mesma semântica (`completed`, `finished`, `done`) aparecem espalhados pelo código, cada um escolhido pelo gosto de quem escreveu naquele momento.
-> **Por quê:** sem uma lista fixa e documentada de verbos permitidos, cada pessoa (inclusive você mesmo em dias diferentes) escolhe a palavra que "soa certo" no momento, sem lembrar da escolha anterior.
-> **Como evitar:** fixe um vocabulário curto de verbos no tracking plan (5-8 verbos cobrem a maioria dos casos) e trate qualquer verbo fora da lista como sinal para revisar antes de adicionar.
+> **O que acontece:** verbos diferentes para a mesma semântica (`completed`, `finished`, `done`) aparecem espalhados pelo código, cada um escolhido pelo gosto de quem escreveu naquele momento. **Por quê:** sem uma lista fixa e documentada de verbos permitidos, cada pessoa (inclusive você mesmo em dias diferentes) escolhe a palavra que "soa certo" no momento, sem lembrar da escolha anterior. **Como evitar:** fixe um vocabulário curto de verbos no tracking plan (5-8 verbos cobrem a maioria dos casos) e trate qualquer verbo fora da lista como sinal para revisar antes de adicionar.
 
 > [!warning] Confiar em propriedade com nome genérico sem documentar tipo e unidade
-> **O que acontece:** propriedades como `value`, `amount`, `type` acumulam significados diferentes entre eventos, como no Cenário 2 desta nota.
-> **Por quê:** nomes genéricos parecem reutilizáveis e economizam esforço de nomeação no momento — mas escondem ambiguidade que só aparece quando alguém tenta agregar os dados de dois eventos diferentes.
-> **Como evitar:** documente tipo, unidade e significado de cada propriedade no tracking plan, e prefira nomes específicos (`amount_brl`) a nomes genéricos (`value`) sempre que a mesma propriedade puder existir em mais de um evento com significado diferente.
+> **O que acontece:** propriedades como `value`, `amount`, `type` acumulam significados diferentes entre eventos, como no Cenário 2 desta nota. **Por quê:** nomes genéricos parecem reutilizáveis e economizam esforço de nomeação no momento — mas escondem ambiguidade que só aparece quando alguém tenta agregar os dados de dois eventos diferentes. **Como evitar:** documente tipo, unidade e significado de cada propriedade no tracking plan, e prefira nomes específicos (`amount_brl`) a nomes genéricos (`value`) sempre que a mesma propriedade puder existir em mais de um evento com significado diferente.
 
 > [!warning] Instrumentar sem hipótese, esperando que o dado "fale sozinho" depois
-> **O que acontece:** eventos são adicionados por precaução ("pode ser útil depois"), sem estarem ligados a um Goal declarado (ver [[03-Dominios/Engenharia/UX/Medir, Validar e Sustentar/38 - HEART e Goals-Signals-Metrics|nota 38]]), inflando o tracking plan com ruído que ninguém nunca consulta.
-> **Por quê:** instrumentar parece de baixo custo e alto potencial futuro — mas cada evento adicionado sem propósito claro é manutenção futura (documentação, revisão de schema, espaço no tracking plan) sem retorno correspondente.
-> **Como evitar:** só adicione evento novo quando conseguir nomear, em uma frase, qual Goal/Signal/Metric ele alimenta — se não consegue, ainda não é hora de instrumentar.
+> **O que acontece:** eventos são adicionados por precaução ("pode ser útil depois"), sem estarem ligados a um Goal declarado (ver [[03-Dominios/Engenharia/UX/Medir, Validar e Sustentar/38 - HEART e Goals-Signals-Metrics|nota 38]]), inflando o tracking plan com ruído que ninguém nunca consulta. **Por quê:** instrumentar parece de baixo custo e alto potencial futuro — mas cada evento adicionado sem propósito claro é manutenção futura (documentação, revisão de schema, espaço no tracking plan) sem retorno correspondente. **Como evitar:** só adicione evento novo quando conseguir nomear, em uma frase, qual Goal/Signal/Metric ele alimenta — se não consegue, ainda não é hora de instrumentar.
 
 ## Como explicar em inglês
 

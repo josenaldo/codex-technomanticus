@@ -53,8 +53,7 @@ E o ganho é grande:
 - **A integridade se verifica ponto a ponto** — cada commit descreve um estado completo e conferível.
 
 > [!question]- Então o Git não guarda diffs em lugar nenhum?
-> Conceitualmente, não. Fisicamente, sim — como otimização. Quando o Git empacota objetos (`git gc`), ele guarda alguns como diferenças em relação a outros parecidos, para economizar disco.
-> A distinção importa: essa compressão é invisível e reversível, e **não** é a estrutura da história. Um commit continua sendo "o projeto inteiro naquele instante", e o Git pode reescrever o empacotamento quando quiser sem alterar hash nenhum. Modelo e armazenamento são camadas diferentes.
+> Conceitualmente, não. Fisicamente, sim — como otimização. Quando o Git empacota objetos (`git gc`), ele guarda alguns como diferenças em relação a outros parecidos, para economizar disco. A distinção importa: essa compressão é invisível e reversível, e **não** é a estrutura da história. Um commit continua sendo "o projeto inteiro naquele instante", e o Git pode reescrever o empacotamento quando quiser sem alterar hash nenhum. Modelo e armazenamento são camadas diferentes.
 
 ---
 
@@ -127,19 +126,13 @@ E é por isso que a lista de commits que o Git te mostra pode não bater com "a 
 ## Armadilhas comuns
 
 > [!warning] Imaginar a história como uma linha
-> **O que acontece:** a pessoa espera que "o commit anterior" seja sempre único e bem definido, e se confunde ao encontrar um merge — onde `HEAD~1` e `HEAD^2` apontam para lugares diferentes.
-> **Por quê:** num merge, há dois pais. `HEAD^1` é o primeiro (o ramo em que você estava), `HEAD^2` é o segundo (o que foi incorporado). E `HEAD~2` significa "dois passos para trás seguindo sempre o primeiro pai" — que é diferente de `HEAD^2`.
-> **Como evitar:** `~` anda gerações pelo primeiro pai; `^` escolhe **qual** pai. Guardar essa distinção evita erros com consequências reais em `reset` e `revert`.
+> **O que acontece:** a pessoa espera que "o commit anterior" seja sempre único e bem definido, e se confunde ao encontrar um merge — onde `HEAD~1` e `HEAD^2` apontam para lugares diferentes. **Por quê:** num merge, há dois pais. `HEAD^1` é o primeiro (o ramo em que você estava), `HEAD^2` é o segundo (o que foi incorporado). E `HEAD~2` significa "dois passos para trás seguindo sempre o primeiro pai" — que é diferente de `HEAD^2`. **Como evitar:** `~` anda gerações pelo primeiro pai; `^` escolhe **qual** pai. Guardar essa distinção evita erros com consequências reais em `reset` e `revert`.
 
 > [!warning] Reverter um merge sem escolher o lado
-> **O que acontece:** `git revert` num commit de merge falha pedindo `-m`.
-> **Por quê:** desfazer um merge significa "voltar a ser como qual dos dois pais?" — e o Git não tem como adivinhar.
-> **Como evitar:** `git revert -m 1 <merge>` mantém a linha principal (o primeiro pai). E saiba que reverter um merge tem um efeito de segunda ordem desagradável: o ramo revertido não pode simplesmente ser mergeado de novo depois, porque o Git o considera já integrado.
+> **O que acontece:** `git revert` num commit de merge falha pedindo `-m`. **Por quê:** desfazer um merge significa "voltar a ser como qual dos dois pais?" — e o Git não tem como adivinhar. **Como evitar:** `git revert -m 1 <merge>` mantém a linha principal (o primeiro pai). E saiba que reverter um merge tem um efeito de segunda ordem desagradável: o ramo revertido não pode simplesmente ser mergeado de novo depois, porque o Git o considera já integrado.
 
 > [!warning] Achar que `git log` mostra tudo que existe
-> **O que acontece:** um commit "sumiu" depois de um rebase ou de um reset.
-> **Por quê:** o `log` mostra o que é **alcançável a partir de onde você está**. Objetos órfãos continuam no banco, mas fora do alcance.
-> **Como resolver:** `git reflog` (nota 23) alcança o que o `log` não vê, e `git fsck --lost-found` encontra órfãos de verdade.
+> **O que acontece:** um commit "sumiu" depois de um rebase ou de um reset. **Por quê:** o `log` mostra o que é **alcançável a partir de onde você está**. Objetos órfãos continuam no banco, mas fora do alcance. **Como resolver:** `git reflog` (nota 23) alcança o que o `log` não vê, e `git fsck --lost-found` encontra órfãos de verdade.
 
 ---
 

@@ -79,12 +79,10 @@ A mesma fórmula, dois veredictos. **Sempre fixe o domínio antes de quantificar
 Quantificador é o operador que pega o buraco aberto do predicado e o amarra varrendo o domínio.
 
 > [!example] ∀ — Universal
-> **∀x P(x)** lê-se "para todo x, P(x)". É V quando P(x) é V para **cada** elemento do domínio. Um único contraexemplo derruba tudo.
-> *Mnemônico*: ∀ é um **A** de cabeça pra baixo — **A**ll.
+> **∀x P(x)** lê-se "para todo x, P(x)". É V quando P(x) é V para **cada** elemento do domínio. Um único contraexemplo derruba tudo. *Mnemônico*: ∀ é um **A** de cabeça pra baixo — **A**ll.
 
 > [!example] ∃ — Existencial
-> **∃x P(x)** lê-se "existe x tal que P(x)". É V quando P(x) é V para **pelo menos um** elemento. Uma única testemunha basta.
-> *Mnemônico*: ∃ é um **E** espelhado — **E**xists.
+> **∃x P(x)** lê-se "existe x tal que P(x)". É V quando P(x) é V para **pelo menos um** elemento. Uma única testemunha basta. *Mnemônico*: ∃ é um **E** espelhado — **E**xists.
 
 > [!example] ∃! — Existe único (bônus)
 > **∃!x P(x)** lê-se "existe um único x tal que P(x)". V quando há **exatamente um** elemento satisfazendo P. É açúcar: ∃!x P(x) significa "existe pelo menos um E não existem dois diferentes".
@@ -155,9 +153,7 @@ O exemplo canônico, sobre os naturais ℕ, com P(x, y) := "y > x":
 Mesmos símbolos, ordem trocada: um é verdadeiro, o outro é falso. A diferença é **quem escolhe depois de quem**.
 
 > [!tip] A analogia da mãe
-> "Toda pessoa tem uma mãe" (∀x ∃y, y é mãe de x) — **verdade**: cada pessoa tem a sua.
-> "Existe uma pessoa que é mãe de todas" (∃y ∀x, y é mãe de x) — **falso**: não há uma única super-mãe universal.
-> No ∀x∃y, o `y` pode **depender** do `x` (cada x pega o seu). No ∃y∀x, o `y` é fixado **antes** e precisa servir a todos.
+> "Toda pessoa tem uma mãe" (∀x ∃y, y é mãe de x) — **verdade**: cada pessoa tem a sua. "Existe uma pessoa que é mãe de todas" (∃y ∀x, y é mãe de x) — **falso**: não há uma única super-mãe universal. No ∀x∃y, o `y` pode **depender** do `x` (cada x pega o seu). No ∃y∀x, o `y` é fixado **antes** e precisa servir a todos.
 
 ```mermaid
 flowchart TB

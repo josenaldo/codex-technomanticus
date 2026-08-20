@@ -61,19 +61,13 @@ Um Head of Engineering se anuncia como "fractional CTO" mas, na prática, vende 
 ## Armadilhas comuns
 
 > [!warning] Vender fractional mas entregar consultoria
-> **O que acontece:** o profissional se apresenta como "fractional" pra cobrar mais, mas o formato real do trabalho (diagnóstico → relatório → fim) é de consultoria.
-> **Por quê:** o cliente comprou continuidade e ownership, não um relatório; a expectativa desalinhada gera frustração e cancela a chance de renovação.
-> **Como evitar:** desenhar o engajamento com cadência recorrente de verdade (reuniões semanais/quinzenais, participação em decisões ao longo do tempo), não como uma entrega única travestida de retainer.
+> **O que acontece:** o profissional se apresenta como "fractional" pra cobrar mais, mas o formato real do trabalho (diagnóstico → relatório → fim) é de consultoria. **Por quê:** o cliente comprou continuidade e ownership, não um relatório; a expectativa desalinhada gera frustração e cancela a chance de renovação. **Como evitar:** desenhar o engajamento com cadência recorrente de verdade (reuniões semanais/quinzenais, participação em decisões ao longo do tempo), não como uma entrega única travestida de retainer.
 
 > [!warning] Ficar preso a um único freelance "grande demais"
-> **O que acontece:** um projeto freelance ocupa tanto tempo que a pessoa não consegue montar a carteira de 2-4 clientes que caracteriza (e sustenta financeiramente) o modelo fractional.
-> **Por quê:** freelance por hora tende a se expandir pra preencher todo o tempo disponível, especialmente quando o cliente pede "mais um pouco" repetidamente.
-> **Como evitar:** definir um teto de horas por cliente desde o início, mesmo em projetos freelance — isso protege a capacidade que será necessária pra migrar pra fractional depois.
+> **O que acontece:** um projeto freelance ocupa tanto tempo que a pessoa não consegue montar a carteira de 2-4 clientes que caracteriza (e sustenta financeiramente) o modelo fractional. **Por quê:** freelance por hora tende a se expandir pra preencher todo o tempo disponível, especialmente quando o cliente pede "mais um pouco" repetidamente. **Como evitar:** definir um teto de horas por cliente desde o início, mesmo em projetos freelance — isso protege a capacidade que será necessária pra migrar pra fractional depois.
 
 > [!warning] Achar que indie hacking e fractional competem pelo mesmo tempo do mesmo jeito
-> **O que acontece:** tentar tocar um produto indie e 3 clientes fractional hands-on ao mesmo tempo, sem escolher qual é o foco principal.
-> **Por quê:** indie hacking pede foco de execução profunda (ver [[03-Dominios/Carreira/Empreendedorismo/Indie Hacker 101/index|Indie Hacker 101]]); fractional hands-on pede presença confiável e previsível pro cliente. Os dois competindo por atenção plena geram mediocridade nos dois.
-> **Como evitar:** se for combinar os dois, manter o fractional em modelo advisory (baixa carga) enquanto o produto indie está em fase de validação, e só escalar advisory pra hands-on quando o produto tiver tração suficiente pra não precisar de foco total.
+> **O que acontece:** tentar tocar um produto indie e 3 clientes fractional hands-on ao mesmo tempo, sem escolher qual é o foco principal. **Por quê:** indie hacking pede foco de execução profunda (ver [[03-Dominios/Carreira/Empreendedorismo/Indie Hacker 101/index|Indie Hacker 101]]); fractional hands-on pede presença confiável e previsível pro cliente. Os dois competindo por atenção plena geram mediocridade nos dois. **Como evitar:** se for combinar os dois, manter o fractional em modelo advisory (baixa carga) enquanto o produto indie está em fase de validação, e só escalar advisory pra hands-on quando o produto tiver tração suficiente pra não precisar de foco total.
 
 ## Como explicar em inglês
 

@@ -24,13 +24,7 @@ aliases:
 # Page Controller × Front Controller
 
 > [!abstract] TL;DR
-> Duas respostas para "quem recebe a requisição". **Page Controller**: um controlador por página ou
-> ação — simples, localizado, e duplica tudo que é transversal. **Front Controller**: um ponto único
-> que recebe tudo, resolve o transversal e delega — centraliza, mas vira gargalo de decisão. Os
-> frameworks MVC dos anos 2000 declararam a disputa encerrada em favor do Front Controller. **E então
-> o Page Controller voltou inteiro**, pelo *file-based routing* (`app/`, `pages/`, `routes/`) e por uma
-> função serverless por rota — enquanto o Front Controller **mudou de camada** e virou infraestrutura:
-> API Gateway, ingress, middleware de edge. Hoje você quase sempre usa os dois ao mesmo tempo.
+> Duas respostas para "quem recebe a requisição". **Page Controller**: um controlador por página ou ação — simples, localizado, e duplica tudo que é transversal. **Front Controller**: um ponto único que recebe tudo, resolve o transversal e delega — centraliza, mas vira gargalo de decisão. Os frameworks MVC dos anos 2000 declararam a disputa encerrada em favor do Front Controller. **E então o Page Controller voltou inteiro**, pelo *file-based routing* (`app/`, `pages/`, `routes/`) e por uma função serverless por rota — enquanto o Front Controller **mudou de camada** e virou infraestrutura: API Gateway, ingress, middleware de edge. Hoje você quase sempre usa os dois ao mesmo tempo.
 
 ## Dois repositórios que parecem opostos
 
@@ -121,19 +115,13 @@ E então ela reabriu — pelos dois lados ao mesmo tempo.
 ## Armadilhas comuns
 
 > [!warning] God dispatcher — o Front Controller que decide demais
-> **O que acontece:** o controlador frontal acumula regra de negócio ("se for cliente premium, redirecione para..."), cresce sem limite, e vira o arquivo que todo mundo precisa editar — com todo conflito de merge do time passando por ele.
-> **Por quê:** ele é o único ponto que vê **toda** requisição, então toda decisão "global" parece caber ali. Cada adição individual é razoável; a soma não é.
-> **Como evitar:** o Front Controller resolve o que é **genuinamente independente de rota** (autenticação, log, correlação, erro). Se a decisão depende de qual rota é, ela pertence ao handler. Sintoma diagnóstico: um `switch` sobre o caminho da URL dentro do dispatcher.
+> **O que acontece:** o controlador frontal acumula regra de negócio ("se for cliente premium, redirecione para..."), cresce sem limite, e vira o arquivo que todo mundo precisa editar — com todo conflito de merge do time passando por ele. **Por quê:** ele é o único ponto que vê **toda** requisição, então toda decisão "global" parece caber ali. Cada adição individual é razoável; a soma não é. **Como evitar:** o Front Controller resolve o que é **genuinamente independente de rota** (autenticação, log, correlação, erro). Se a decisão depende de qual rota é, ela pertence ao handler. Sintoma diagnóstico: um `switch` sobre o caminho da URL dentro do dispatcher.
 
 > [!warning] Duplicação divergente no Page Controller
-> **O que acontece:** as mesmas seis linhas de checagem de sessão em trinta e um arquivos, em duas versões — porque uma correção foi aplicada só onde o bug apareceu. A vulnerabilidade sobrevive nas outras.
-> **Por quê:** copiar é mais barato que abstrair no momento de escrever, e nada no sistema torna a divergência visível depois.
-> **Como evitar:** transversal não pode viver na página. Suba-o para middleware, *layout* ou um Front Controller — e trate qualquer preâmbulo repetido em rotas como dívida com risco de segurança, não como estilo.
+> **O que acontece:** as mesmas seis linhas de checagem de sessão em trinta e um arquivos, em duas versões — porque uma correção foi aplicada só onde o bug apareceu. A vulnerabilidade sobrevive nas outras. **Por quê:** copiar é mais barato que abstrair no momento de escrever, e nada no sistema torna a divergência visível depois. **Como evitar:** transversal não pode viver na página. Suba-o para middleware, *layout* ou um Front Controller — e trate qualquer preâmbulo repetido em rotas como dívida com risco de segurança, não como estilo.
 
 > [!warning] Migrar de um para o outro sem o mecanismo de suporte
-> **O que acontece:** o time adota file-based routing num sistema que tinha um Front Controller robusto, e a autenticação — que era uma linha no dispatcher — se espalha por cinquenta arquivos de rota.
-> **Por quê:** o Page Controller **só** é viável quando existe outra camada cuidando do transversal. Migrar o roteamento sem migrar essa responsabilidade importa a virtude e o defeito juntos.
-> **Como evitar:** antes de mover o roteamento, decida onde o transversal vai morar — middleware, layout, gateway — e mova-o **primeiro**.
+> **O que acontece:** o time adota file-based routing num sistema que tinha um Front Controller robusto, e a autenticação — que era uma linha no dispatcher — se espalha por cinquenta arquivos de rota. **Por quê:** o Page Controller **só** é viável quando existe outra camada cuidando do transversal. Migrar o roteamento sem migrar essa responsabilidade importa a virtude e o defeito juntos. **Como evitar:** antes de mover o roteamento, decida onde o transversal vai morar — middleware, layout, gateway — e mova-o **primeiro**.
 
 ## Como explicar em inglês
 

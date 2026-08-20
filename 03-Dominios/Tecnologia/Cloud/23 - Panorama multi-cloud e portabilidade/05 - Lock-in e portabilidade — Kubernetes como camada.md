@@ -23,8 +23,7 @@ A pergunta certa não é "isso me prende?". É: **"se eu precisar trocar, quanto
 > [!tip] Assista: Vendor Lock-In: Nobody Cares.
 > **Canal:** Theo - t3.gg | **Duração:** ~6min | **Idioma:** EN
 >
-> Reforça, de um ângulo provocador, a mesma virada de chave que esta nota propõe: a diferença entre lock-in (trabalho que você precisa *remover* pra sair) e built-in (trabalho que alguém já fez *por* você, e que você teria que *adicionar* de volta se saísse). Cita DynamoDB e Aurora como exemplos exatos de lock-in "de verdade" — o mesmo caso desta nota.
-> Trecho de destaque [02:45]: *"if you're using Dynamo DB or Aurora on AWS, good luck moving"*
+> Reforça, de um ângulo provocador, a mesma virada de chave que esta nota propõe: a diferença entre lock-in (trabalho que você precisa *remover* pra sair) e built-in (trabalho que alguém já fez *por* você, e que você teria que *adicionar* de volta se saísse). Cita DynamoDB e Aurora como exemplos exatos de lock-in "de verdade" — o mesmo caso desta nota. Trecho de destaque [02:45]: *"if you're using Dynamo DB or Aurora on AWS, good luck moving"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=rtgjFEJaFI8)
 
@@ -106,8 +105,7 @@ Vale registrar também que Kubernetes em si tem um custo de entrada consideráve
 > [!tip] Assista: Kubernetes & The Myth of Multi-cloud
 > **Canal:** Devoxx | **Duração:** ~38min | **Idioma:** EN
 >
-> Talk de conferência que faz, ao vivo, o experimento que esta seção descreve: migra uma aplicação de EKS pra GKE e mostra exatamente onde o "Kubernetes é portável" quebra — a chamada de storage funciona até descobrir que "Google Cloud Storage não é S3-compatible", forçando escolher entre trazer dependências pra dentro do cluster (mais manutenção) ou trocar o endpoint (menos portabilidade real).
-> Trecho de destaque [16:55]: *"somebody said Google Cloud Storage is not S3 compatible"*
+> Talk de conferência que faz, ao vivo, o experimento que esta seção descreve: migra uma aplicação de EKS pra GKE e mostra exatamente onde o "Kubernetes é portável" quebra — a chamada de storage funciona até descobrir que "Google Cloud Storage não é S3-compatible", forçando escolher entre trazer dependências pra dentro do cluster (mais manutenção) ou trocar o endpoint (menos portabilidade real). Trecho de destaque [16:55]: *"somebody said Google Cloud Storage is not S3 compatible"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=xS7wSUCrllA)
 

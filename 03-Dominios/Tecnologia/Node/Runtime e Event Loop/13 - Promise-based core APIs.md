@@ -21,9 +21,7 @@ aliases:
 # Promise-based core APIs
 
 > [!abstract] TL;DR
-> Node.js expõe versões Promise-based dos módulos core via submódulos `node:fs/promises`, `node:stream/promises`, `node:timers/promises`, `node:readline/promises` e `node:dns/promises` — use-os sempre que escrever código async/await em vez de misturar callbacks no meio de promises.
-> `stream/promises.pipeline()` é a forma correta de encadear streams sem vazar listeners em caso de erro; `.pipe()` manual não faz cleanup automático.
-> O prefixo `node:` nos imports é recomendado desde Node 14.18.0 para distinguir módulos core de pacotes npm com o mesmo nome.
+> Node.js expõe versões Promise-based dos módulos core via submódulos `node:fs/promises`, `node:stream/promises`, `node:timers/promises`, `node:readline/promises` e `node:dns/promises` — use-os sempre que escrever código async/await em vez de misturar callbacks no meio de promises. `stream/promises.pipeline()` é a forma correta de encadear streams sem vazar listeners em caso de erro; `.pipe()` manual não faz cleanup automático. O prefixo `node:` nos imports é recomendado desde Node 14.18.0 para distinguir módulos core de pacotes npm com o mesmo nome.
 
 ---
 

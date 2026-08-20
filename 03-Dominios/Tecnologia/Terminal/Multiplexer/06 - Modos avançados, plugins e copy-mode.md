@@ -204,8 +204,7 @@ O campo `location` aceita:
 
 ### Plugin 1 — zjstatus
 
-**Repo:** https://github.com/dj95/zjstatus
-**Status:** ativo — último release v0.23.0 em abril/2026. 970 stars.
+**Repo:** https://github.com/dj95/zjstatus **Status:** ativo — último release v0.23.0 em abril/2026. 970 stars.
 
 zjstatus é um substituto customizável para a status bar built-in do Zellij. Em vez de uma barra fixa, zjstatus expõe módulos configuráveis por layout:
 
@@ -245,8 +244,7 @@ O zjstatus também inclui **zjframes**: plugin companion que oculta bordas de pa
 
 ### Plugin 2 — vim-zellij-navigator
 
-**Repo:** https://github.com/hiasr/vim-zellij-navigator
-**Status:** ativo — último release v0.3.0 em julho/2025. 172 stars.
+**Repo:** https://github.com/hiasr/vim-zellij-navigator **Status:** ativo — último release v0.3.0 em julho/2025. 172 stars.
 
 vim-zellij-navigator é um plugin que unifica navegação entre splits do Neovim e panes do Zellij. Com ele, `Ctrl-h/j/k/l` funciona de forma transparente: se o foco está no Neovim, navega entre windows do Neovim; se está num pane terminal, navega entre panes do Zellij.
 
@@ -256,8 +254,7 @@ Esta nota cobre o plugin brevemente como exemplo de integração WASM. A [[07 - 
 
 ### Plugin 3 — room
 
-**Repo:** https://github.com/rvcas/room
-**Status:** ativo — último release v1.2.1 em janeiro/2026. 278 stars.
+**Repo:** https://github.com/rvcas/room **Status:** ativo — último release v1.2.1 em janeiro/2026. 278 stars.
 
 room é um plugin de tab switching fuzzy — um fuzzy finder para as tabs da session atual, exibido como pane floating:
 

@@ -84,10 +84,7 @@ Lógica de predicados vai além: ∀ e ∃ aparecem explicitamente em SQL (`FOR 
 
 **O que te dá**: estratégia para convencer você mesmo (e outros) de que algo é correto.
 
-Prova direta → seguir o caminho feliz.
-Contrapositiva → "se o output é errado, o input era inválido".
-Contradição → "se esse bug não existisse, chegaríamos a um absurdo".
-Contraexemplo → uma única entrada que destrói uma afirmação universal.
+Prova direta → seguir o caminho feliz. Contrapositiva → "se o output é errado, o input era inválido". Contradição → "se esse bug não existisse, chegaríamos a um absurdo". Contraexemplo → uma única entrada que destrói uma afirmação universal.
 
 Você usa isso em revisão de código e em debugging. Formalizá-lo só torna o processo mais rápido.
 
@@ -111,10 +108,7 @@ Veja [[08 - Somatórios, logaritmos e crescimento]] para as séries fundamentais
 
 **O que te dá**: o vocabulário de tipos, estruturas de dados e ordenação.
 
-Conjuntos → sets, dicionários, deduplicação.
-Funções injetoras/sobrejetoras/bijetoras → qual hash pode ter colisão, qual mapeamento é reversível.
-Relações de equivalência → classes de equivalência, partição de casos de teste, tabelas de banco normalizadas.
-Ordem parcial → ordenação topológica de dependências (o `topo sort` que roda em todo sistema de build).
+Conjuntos → sets, dicionários, deduplicação. Funções injetoras/sobrejetoras/bijetoras → qual hash pode ter colisão, qual mapeamento é reversível. Relações de equivalência → classes de equivalência, partição de casos de teste, tabelas de banco normalizadas. Ordem parcial → ordenação topológica de dependências (o `topo sort` que roda em todo sistema de build).
 
 ### Bloco 6 — Combinatória (nota 11)
 
@@ -245,23 +239,17 @@ Probabilidade é o diferencial. Poucas pessoas chegam em entrevista sabendo expl
 
 > [!warning] Os erros que derrotam devs bons
 >
-> **1. Confundir correlação com causalidade em análise de dados.**
-> Dois eventos co-ocorrem não implica que um causa o outro. Isso vicia decisões de produto e destrói experimentos A/B.
+> **1. Confundir correlação com causalidade em análise de dados.** Dois eventos co-ocorrem não implica que um causa o outro. Isso vicia decisões de produto e destrói experimentos A/B.
 >
-> **2. Esquecer a base da indução.**
-> A prova de que P(n) vale para todo n ≥ 1 é inválida se P(1) não foi verificado. É o bug mais sutil de provas de corretude de loops.
+> **2. Esquecer a base da indução.** A prova de que P(n) vale para todo n ≥ 1 é inválida se P(1) não foi verificado. É o bug mais sutil de provas de corretude de loops.
 >
-> **3. Achar que teste prova corretude.**
-> Dijkstra: "Program testing can be used to show the presence of bugs, but never to show their absence." Testes encontram bugs; indução e verificação formal provam ausência.
+> **3. Achar que teste prova corretude.** Dijkstra: "Program testing can be used to show the presence of bugs, but never to show their absence." Testes encontram bugs; indução e verificação formal provam ausência.
 >
-> **4. Confundir independência com exclusão mútua.**
-> Eventos independentes podem co-ocorrer. Eventos mutuamente exclusivos não podem co-ocorrer mas não são necessariamente independentes. Essa confusão gera probabilidades erradas em sistemas de monitoramento e alertas.
+> **4. Confundir independência com exclusão mútua.** Eventos independentes podem co-ocorrer. Eventos mutuamente exclusivos não podem co-ocorrer mas não são necessariamente independentes. Essa confusão gera probabilidades erradas em sistemas de monitoramento e alertas.
 >
-> **5. Reescrever Big-O sem base em somatórios.**
-> "Esse loop é O(n²) porque tem dois fors aninhados" está errado quando os loops não iteram até n de forma independente. O raciocínio correto vem de contar o número de operações via somatório.
+> **5. Reescrever Big-O sem base em somatórios.** "Esse loop é O(n²) porque tem dois fors aninhados" está errado quando os loops não iteram até n de forma independente. O raciocínio correto vem de contar o número de operações via somatório.
 >
-> **6. Tratar ∞ como um número.**
-> Cardinalidade mostra que existem infinitos de tamanhos diferentes. Isso importa quando você raciocina sobre completude de conjuntos de dados ou sobre o que streams infinitos podem computar.
+> **6. Tratar ∞ como um número.** Cardinalidade mostra que existem infinitos de tamanhos diferentes. Isso importa quando você raciocina sobre completude de conjuntos de dados ou sobre o que streams infinitos podem computar.
 
 ---
 
@@ -362,14 +350,11 @@ Este capstone fecha o galho, mas o galho não é um fim. É um pré-requisito pa
 
 Matemática para computação não muda o que você digita. Muda **como você pensa antes de digitar**.
 
-Antes: "parece que funciona, vou testar".
-Depois: "o invariante garante que funciona, o teste vai confirmar".
+Antes: "parece que funciona, vou testar". Depois: "o invariante garante que funciona, o teste vai confirmar".
 
-Antes: "esse algoritmo é lento, vou otimizar no olho".
-Depois: "a análise diz que o gargalo é o somatório quadrático no inner loop; preciso reduzir a estrutura".
+Antes: "esse algoritmo é lento, vou otimizar no olho". Depois: "a análise diz que o gargalo é o somatório quadrático no inner loop; preciso reduzir a estrutura".
 
-Antes: "colisões de hash são raras".
-Depois: "colisões esperadas aparecem com √(|espaço|) elementos; para uma tabela de 2³²  entradas, isso é 65 mil — preciso de hash de 64 bits se minha base vai além disso".
+Antes: "colisões de hash são raras". Depois: "colisões esperadas aparecem com √(|espaço|) elementos; para uma tabela de 2³²  entradas, isso é 65 mil — preciso de hash de 64 bits se minha base vai além disso".
 
 A matemática deste galho não é um conjunto de truques. É um jeito de ver. E uma vez que você vê assim, é difícil voltar a não ver.
 

@@ -138,9 +138,7 @@ Toda a movimentação desenhada até aqui é **batch**: roda periodicamente, ent
 A [[03-Dominios/Engenharia/Dados/3 - Pipelines - movimentação e transformação/05 - Dados em movimento|nota de dados em movimento]] traça a fronteira entre batch e streaming com o critério certo: não é "streaming é mais moderno", é "que frescor esta decisão de negócio especificamente exige". Para o e-commerce, a resposta madura é híbrida — a maior parte da plataforma continua batch (barato, simples, suficiente), e só os dois casos que genuinamente exigem reação em segundos (fraude, painel operacional) ganham um pipeline de streaming dedicado, com o custo operacional adicional (lidar com eventos fora de ordem, backpressure, reprocessamento) que só se justifica ali.
 
 > [!warning] Construir streaming quando batch diário resolveria
-> **O que acontece:** o time monta uma arquitetura de processamento em tempo real para alimentar um relatório que a diretoria só olha uma vez por dia, de manhã.
-> **Por quê:** streaming é ordens de magnitude mais complexo de operar do que um pipeline batch que roda uma vez por noite — complexidade que não compra frescor que ninguém usa é puro custo.
-> **Como evitar:** perguntar primeiro qual frescor a decisão de negócio realmente exige, e só então escolher o mecanismo — nunca o inverso.
+> **O que acontece:** o time monta uma arquitetura de processamento em tempo real para alimentar um relatório que a diretoria só olha uma vez por dia, de manhã. **Por quê:** streaming é ordens de magnitude mais complexo de operar do que um pipeline batch que roda uma vez por noite — complexidade que não compra frescor que ninguém usa é puro custo. **Como evitar:** perguntar primeiro qual frescor a decisão de negócio realmente exige, e só então escolher o mecanismo — nunca o inverso.
 
 ## 6. Confiar no que a plataforma entrega: qualidade e contratos
 
@@ -269,9 +267,7 @@ Três perguntas de acompanhamento comuns, e como esta nota já as respondeu:
 - **"Quando você migraria de um time central de dados para data mesh?"** — aponta para a seção 8: quando o número de domínios de negócio cresce a ponto de o time central virar gargalo, e não antes — migrar cedo demais importa complexidade organizacional sem o volume que a justifica.
 
 > [!warning] Responder com uma lista de ferramentas em vez de um grafo de decisões
-> **O que acontece:** perguntado "como você desenharia a plataforma de dados desta empresa?", o candidato lista ferramentas — "eu usaria Snowflake, dbt, Airflow, Fivetran, Great Expectations" — sem conectar cada uma a uma etapa específica do ciclo de vida e a um motivo específico.
-> **Por quê:** uma lista de ferramentas, por mais correta que seja individualmente, não demonstra a habilidade que a pergunta testa — a capacidade de mapear cada decisão a um requisito real do cenário, não a familiaridade com nomes de produto.
-> **Como evitar:** narrar a decisão na mesma ordem desta sessão — do gatilho de negócio até a organização do time — nomeando, a cada passo, o trade-off resolvido e por que essa etapa específica pede essa escolha específica, exatamente como as oito seções acima fizeram.
+> **O que acontece:** perguntado "como você desenharia a plataforma de dados desta empresa?", o candidato lista ferramentas — "eu usaria Snowflake, dbt, Airflow, Fivetran, Great Expectations" — sem conectar cada uma a uma etapa específica do ciclo de vida e a um motivo específico. **Por quê:** uma lista de ferramentas, por mais correta que seja individualmente, não demonstra a habilidade que a pergunta testa — a capacidade de mapear cada decisão a um requisito real do cenário, não a familiaridade com nomes de produto. **Como evitar:** narrar a decisão na mesma ordem desta sessão — do gatilho de negócio até a organização do time — nomeando, a cada passo, o trade-off resolvido e por que essa etapa específica pede essa escolha específica, exatamente como as oito seções acima fizeram.
 
 ## How to explain in English
 

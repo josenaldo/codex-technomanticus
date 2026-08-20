@@ -428,16 +428,7 @@ Em entrevistas de nível sênior, o tema de aleatoriedade aparece em perguntas d
 
 Os pontos mais cobrados: saber a diferença Monte Carlo × Las Vegas; explicar o trade-off do Bloom filter (m, k, n e a fórmula); descrever reservoir sampling com a prova de uniformidade; e conectar hashing universal com segurança de sistemas.
 
-*Monte Carlo algorithm: fixed time, may err with small probability; repeat to reduce error exponentially.*
-*Las Vegas algorithm: always correct, randomized running time; expected performance is the guarantee.*
-*Universal hash family: a set of hash functions where any two keys collide with probability at most 1/m under a randomly chosen function.*
-*Bloom filter: a space-efficient probabilistic data structure using k hash functions and m bits; no false negatives, controlled false positive rate.*
-*False positive rate: the probability that a Bloom filter incorrectly reports an element as present.*
-*Skip list: a probabilistic data structure with multiple linked layers; O(log n) expected search without rotations.*
-*Power of two choices: a load balancing strategy that picks the least-loaded of two random candidates; reduces max load from log n to log log n.*
-*Miller-Rabin primality test: a Monte Carlo test where each round eliminates at least 3/4 of composite witnesses.*
-*Reservoir sampling: an algorithm to maintain a uniform k-sample from a stream of unknown size in O(k) memory.*
-*Hash-DoS: a denial-of-service attack exploiting deterministic hash functions by crafting keys that all collide.*
+*Monte Carlo algorithm: fixed time, may err with small probability; repeat to reduce error exponentially.* *Las Vegas algorithm: always correct, randomized running time; expected performance is the guarantee.* *Universal hash family: a set of hash functions where any two keys collide with probability at most 1/m under a randomly chosen function.* *Bloom filter: a space-efficient probabilistic data structure using k hash functions and m bits; no false negatives, controlled false positive rate.* *False positive rate: the probability that a Bloom filter incorrectly reports an element as present.* *Skip list: a probabilistic data structure with multiple linked layers; O(log n) expected search without rotations.* *Power of two choices: a load balancing strategy that picks the least-loaded of two random candidates; reduces max load from log n to log log n.* *Miller-Rabin primality test: a Monte Carlo test where each round eliminates at least 3/4 of composite witnesses.* *Reservoir sampling: an algorithm to maintain a uniform k-sample from a stream of unknown size in O(k) memory.* *Hash-DoS: a denial-of-service attack exploiting deterministic hash functions by crafting keys that all collide.*
 
 | Termo PT | Termo EN |
 |---|---|

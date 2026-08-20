@@ -165,8 +165,7 @@ O padrão geral, que atravessa todas as seis linhas acima: **cada galho do Bloco
 > [!tip] Assista: AWS re:Invent 2022 - Multi-Region design patterns and best practices (ARC306)
 > **Canal:** AWS re:Invent | **Duração:** ~58min | **Idioma:** EN
 >
-> Vai um degrau acima do que esta seção cobre — de "sobreviver a uma AZ" para "sobreviver a uma região inteira" — usando o Route 53 failover routing como a mesma peça de DNS desta trilha, só que orquestrando um failover ativo-passivo entre regiões completas.
-> Trecho de destaque [15:34]: *"failover in one tool you know we have at AWS and I briefly called out is Route 53"*
+> Vai um degrau acima do que esta seção cobre — de "sobreviver a uma AZ" para "sobreviver a uma região inteira" — usando o Route 53 failover routing como a mesma peça de DNS desta trilha, só que orquestrando um failover ativo-passivo entre regiões completas. Trecho de destaque [15:34]: *"failover in one tool you know we have at AWS and I briefly called out is Route 53"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=ilgpzlE7Hds)
 

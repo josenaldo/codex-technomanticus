@@ -212,9 +212,7 @@ graph TD
 A leitura pragmática de 2026: a maioria das plataformas oferece um modelo em camadas — passkeys sincronizadas liberadas para acesso de risco baixo/médio (a maioria das contas de consumidor, CIAM), reservando device-bound (chaves de hardware) para papéis elevados ou fluxos regulados que exigem AAL3, como acesso administrativo ou setores sob compliance rígido[^syncdevice]. Não existe "a opção certa" universal — existe a pergunta "o que essa conta específica precisa: recuperabilidade ou garantia de não-exportabilidade?".
 
 > [!warning] Achar que passkey sincronizada é equivalente a device-bound para efeitos de compliance
-> **O que acontece:** um time de segurança anuncia "migramos para passkeys, agora somos AAL3/phishing-resistant nível hardware" sem checar qual modelo de armazenamento os usuários de fato ativaram.
-> **Por quê:** a maioria dos usuários, por padrão, ativa passkeys sincronizadas (é o caminho de menor fricção oferecido pela plataforma) — que atingem AAL2, não AAL3, porque a chave, tecnicamente, é exportável dentro do ecossistema de sincronização do provedor.
-> **Como evitar:** se o requisito regulatório exige AAL3 (chave não-exportável), a política de registro deve **forçar** `residentKey`/`authenticatorAttachment` compatíveis com autenticadores device-bound (ex.: exigir chave de hardware FIDO2 registrada), não apenas "aceitar qualquer passkey".
+> **O que acontece:** um time de segurança anuncia "migramos para passkeys, agora somos AAL3/phishing-resistant nível hardware" sem checar qual modelo de armazenamento os usuários de fato ativaram. **Por quê:** a maioria dos usuários, por padrão, ativa passkeys sincronizadas (é o caminho de menor fricção oferecido pela plataforma) — que atingem AAL2, não AAL3, porque a chave, tecnicamente, é exportável dentro do ecossistema de sincronização do provedor. **Como evitar:** se o requisito regulatório exige AAL3 (chave não-exportável), a política de registro deve **forçar** `residentKey`/`authenticatorAttachment` compatíveis com autenticadores device-bound (ex.: exigir chave de hardware FIDO2 registrada), não apenas "aceitar qualquer passkey".
 
 Em uma frase: **synced troca garantia criptográfica por recuperabilidade; device-bound troca recuperabilidade por garantia — e a escolha certa depende do que a conta protege, não de qual é "mais moderna".**
 
@@ -264,14 +262,10 @@ sequenceDiagram
 O mecanismo confirma, de forma quase matemática, um princípio que vale para qualquer sistema de segurança em camadas: **um atacante ataca a rota mais fraca disponível, não a mais forte que você implementou**[^downgrade]. Uma conta com passkey *e* SMS como fallback tem, na prática, o nível de segurança do SMS — porque é a rota que o atacante vai forçar toda vez. A mitigação recomendada pelos próprios pesquisadores é dura: eliminar fallbacks fracos sempre que o risco justificar, ou pelo menos monitorar e alertar quando uma sessão é criada por uma rota de fallback em vez da rota forte — nunca tratar "temos passkey disponível" como sinônimo de "estamos protegidos", se o fallback continua ligado e sem controle.
 
 > [!warning] Tratar "oferecemos passkey" como "somos phishing-resistant"
-> **O que acontece:** o time de produto anuncia resistência a phishing porque passkey está disponível, mas o fluxo de login mantém senha + SMS/TOTP como fallback sempre acessível, sem restrição.
-> **Por quê:** resistência a phishing é uma propriedade do *caminho mais fraco permitido*, não do caminho mais forte oferecido. Um atacante sofisticado simplesmente força o fallback, como no downgrade attack documentado pela Proofpoint.
-> **Como evitar:** trate fallback como superfície de risco ativa — restrinja-o a cenários de recuperação de conta genuinamente excepcionais, com verificações adicionais (ex.: espera de 24-48h, notificação a outros dispositivos), e monitore/alerte quando login acontece por fallback em vez de passkey.
+> **O que acontece:** o time de produto anuncia resistência a phishing porque passkey está disponível, mas o fluxo de login mantém senha + SMS/TOTP como fallback sempre acessível, sem restrição. **Por quê:** resistência a phishing é uma propriedade do *caminho mais fraco permitido*, não do caminho mais forte oferecido. Um atacante sofisticado simplesmente força o fallback, como no downgrade attack documentado pela Proofpoint. **Como evitar:** trate fallback como superfície de risco ativa — restrinja-o a cenários de recuperação de conta genuinamente excepcionais, com verificações adicionais (ex.: espera de 24-48h, notificação a outros dispositivos), e monitore/alerte quando login acontece por fallback em vez de passkey.
 
 > [!warning] Confundir attestation com verificação de identidade do usuário
-> **O que acontece:** um time interpreta a attestation do registro como prova de "este é o usuário certo", e passa a confiar demais nela para decisões de autorização.
-> **Por quê:** attestation prova a **procedência do hardware** (que modelo de authenticator gerou a chave), não quem está operando esse hardware. Em contexto consumer, a maioria das implementações usa `attestation: "none"` — não há verificação de fabricante nenhuma, e mesmo quando há, ela nada diz sobre a identidade da pessoa.
-> **Como evitar:** trate attestation como um sinal de compliance/procedência de hardware (útil em contexto enterprise regulado que exige um modelo específico de chave), nunca como prova de identidade. Quem confirma identidade é o vínculo already-estabelecido entre a conta e o `credential ID`, não a attestation.
+> **O que acontece:** um time interpreta a attestation do registro como prova de "este é o usuário certo", e passa a confiar demais nela para decisões de autorização. **Por quê:** attestation prova a **procedência do hardware** (que modelo de authenticator gerou a chave), não quem está operando esse hardware. Em contexto consumer, a maioria das implementações usa `attestation: "none"` — não há verificação de fabricante nenhuma, e mesmo quando há, ela nada diz sobre a identidade da pessoa. **Como evitar:** trate attestation como um sinal de compliance/procedência de hardware (útil em contexto enterprise regulado que exige um modelo específico de chave), nunca como prova de identidade. Quem confirma identidade é o vínculo already-estabelecido entre a conta e o `credential ID`, não a attestation.
 
 ## Limitações honestas
 
@@ -285,9 +279,7 @@ Passkeys não são universalmente superiores em toda dimensão, e um rollout mad
 Nenhuma dessas limitações invalida o modelo — mas um capstone de decisão de produto (a exemplo do que esta trilha fecha no capstone geral) precisa contar com elas na estratégia de rollout, não descobri-las em produção.
 
 > [!warning] Presumir que passkey resolve 100% dos casos de login sem plano B
-> **O que acontece:** um produto remove senha completamente do fluxo de novos cadastros, sem um caminho de exceção claro para dispositivos antigos, contas compartilhadas ou ambientes enterprise travados.
-> **Por quê:** a base instalada de dispositivos, políticas corporativas e cenários de uso compartilhado não desaparece só porque o protocolo é superior tecnicamente — parte relevante dos usuários simplesmente não consegue completar a cerimônia.
-> **Como evitar:** mantenha um caminho de exceção auditado e monitorado (não um fallback silencioso e sempre disponível) para os casos legítimos de incompatibilidade, distinto do fallback de conveniência que abre a porta ao downgrade attack.
+> **O que acontece:** um produto remove senha completamente do fluxo de novos cadastros, sem um caminho de exceção claro para dispositivos antigos, contas compartilhadas ou ambientes enterprise travados. **Por quê:** a base instalada de dispositivos, políticas corporativas e cenários de uso compartilhado não desaparece só porque o protocolo é superior tecnicamente — parte relevante dos usuários simplesmente não consegue completar a cerimônia. **Como evitar:** mantenha um caminho de exceção auditado e monitorado (não um fallback silencioso e sempre disponível) para os casos legítimos de incompatibilidade, distinto do fallback de conveniência que abre a porta ao downgrade attack.
 
 ## Em entrevista
 
@@ -346,16 +338,4 @@ Fechamos o sub-galho 1: agora você tem o vocabulário (AAA, fatores, CIAM vs wo
 - **MojoAuth Blog** — [*Why Most Passkey Rollouts Stall at 5 Percent Adoption*](https://mojoauth.com/blog/passkey-adoption-patterns-5-vs-80-percent) — o modelo de rollout em fases (habilitar → nudge → inverter default) e a janela de 12-24 meses; acessado em 2026-07-10.
 - **Keycloak** — [*Passkeys support in upcoming Keycloak release (26.4)*](https://www.keycloak.org/2025/09/passkeys-support-26-4) — conditional/modal UI e discoverable credentials nativas no Keycloak; acessado em 2026-07-10.
 
-[^fido2]: Microsoft Tech Community, *All about FIDO2, CTAP2 and WebAuthn*.
-[^webauthn3]: W3C, *Web Authentication: An API for accessing Public Key Credentials — Level 3*.
-[^webauthnguide]: webauthn.guide, *Guide to Web Authentication*.
-[^attestation]: MDN, *Attestation and Assertion*.
-[^assertion]: MDN, *Attestation and Assertion*.
-[^discoverable]: web.dev, *Discoverable credentials deep dive*; Yubico Developers, *Discoverable vs non-discoverable credentials*.
-[^conditionalui]: Chrome for Developers, *Passwordless sign-in on forms with WebAuthn passkey autofill*.
-[^syncdevice]: AuthSignal, *Synced vs Device-Bound Passkeys*.
-[^fidoreport2026]: FIDO Alliance, *Five Billion Passkeys: FIDO Alliance Reports Mainstream Global Usage on World Passkey Day 2026*.
-[^rollout]: MojoAuth Blog, *Why Most Passkey Rollouts Stall at 5 Percent Adoption*.
-[^downgrade]: Proofpoint, *Don't Phish-let Me Down: FIDO Authentication Downgrade*; Push Security, *How attackers are getting around phishing-resistant auth*.
-[^enterprise]: Corbado, *Enterprise Passkey Deployment Challenges & Solutions*.
-[^hybrid]: Corbado, *WebAuthn Passkey QR Codes & Bluetooth: Hybrid Transport*.
+[^fido2]: Microsoft Tech Community, *All about FIDO2, CTAP2 and WebAuthn*. [^webauthn3]: W3C, *Web Authentication: An API for accessing Public Key Credentials — Level 3*. [^webauthnguide]: webauthn.guide, *Guide to Web Authentication*. [^attestation]: MDN, *Attestation and Assertion*. [^assertion]: MDN, *Attestation and Assertion*. [^discoverable]: web.dev, *Discoverable credentials deep dive*; Yubico Developers, *Discoverable vs non-discoverable credentials*. [^conditionalui]: Chrome for Developers, *Passwordless sign-in on forms with WebAuthn passkey autofill*. [^syncdevice]: AuthSignal, *Synced vs Device-Bound Passkeys*. [^fidoreport2026]: FIDO Alliance, *Five Billion Passkeys: FIDO Alliance Reports Mainstream Global Usage on World Passkey Day 2026*. [^rollout]: MojoAuth Blog, *Why Most Passkey Rollouts Stall at 5 Percent Adoption*. [^downgrade]: Proofpoint, *Don't Phish-let Me Down: FIDO Authentication Downgrade*; Push Security, *How attackers are getting around phishing-resistant auth*. [^enterprise]: Corbado, *Enterprise Passkey Deployment Challenges & Solutions*. [^hybrid]: Corbado, *WebAuthn Passkey QR Codes & Bluetooth: Hybrid Transport*.

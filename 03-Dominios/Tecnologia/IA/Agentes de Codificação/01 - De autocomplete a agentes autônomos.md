@@ -253,8 +253,7 @@ Um módulo crítico de 3.000 linhas não tem cobertura de testes. Escrever teste
 > [!tip] Assista: Andrej Karpathy — From Vibe Coding to Agentic Engineering
 > **Canal:** Sequoia Capital | **Duração:** ~30min | **Idioma:** EN
 >
-> Karpathy narra em primeira pessoa o inflection point de dezembro 2024 — quando o modelo parou de errar e ele simplesmente parou de corrigir. A partir daí, ele articula o framework Software 1.0/2.0/3.0: programar virou prompting, e o contexto substituiu o código como alavanca sobre o sistema. O arco do vídeo espelha exatamente a progressão desta nota — de autocomplete a engenheiro agentic — com a vantagem de vir de quem ajudou a construir a infraestrutura que tornou isso possível.
-> Trecho de destaque [2:03]: *"Things have changed fundamentally — especially on this agentic coherent workflow that really started to actually work."*
+> Karpathy narra em primeira pessoa o inflection point de dezembro 2024 — quando o modelo parou de errar e ele simplesmente parou de corrigir. A partir daí, ele articula o framework Software 1.0/2.0/3.0: programar virou prompting, e o contexto substituiu o código como alavanca sobre o sistema. O arco do vídeo espelha exatamente a progressão desta nota — de autocomplete a engenheiro agentic — com a vantagem de vir de quem ajudou a construir a infraestrutura que tornou isso possível. Trecho de destaque [2:03]: *"Things have changed fundamentally — especially on this agentic coherent workflow that really started to actually work."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=96jN2OCOfLs)
 
@@ -373,17 +372,13 @@ A curva de aprendizado de agentes de codificação é mais longa do que parece. 
 
 Antes de começar a progressão, um pré-requisito mental: diferencie *usar a ferramenta* de *desenvolver julgamento sobre a ferramenta*. Você pode usar Claude Code no primeiro dia — mas desenvolver o instinto de quando confiar no output e quando questionar leva semanas de prática deliberada. Os passos abaixo aceleram esse processo.
 
-**Semana 1-2: IDE assistant**
-Configure Copilot inline ou Cursor Tab e use exclusivamente para autocomplete e edição de um arquivo. O objetivo é calibrar o que a ferramenta faz bem e mal em contexto de baixo risco — nenhum commit vai para produção sem você ter lido cada linha.
+**Semana 1-2: IDE assistant** Configure Copilot inline ou Cursor Tab e use exclusivamente para autocomplete e edição de um arquivo. O objetivo é calibrar o que a ferramenta faz bem e mal em contexto de baixo risco — nenhum commit vai para produção sem você ter lido cada linha.
 
-**Semana 3-4: AI-native IDE**
-Migre para Cursor ou Windsurf e comece a usar o modo multi-file (Composer/Cascade). Comece com tarefas de refactoring onde você conhece bem o código — assim você detecta erros facilmente. Configure `.cursorrules` com as convenções do projeto.
+**Semana 3-4: AI-native IDE** Migre para Cursor ou Windsurf e comece a usar o modo multi-file (Composer/Cascade). Comece com tarefas de refactoring onde você conhece bem o código — assim você detecta erros facilmente. Configure `.cursorrules` com as convenções do projeto.
 
-**Mês 2: Terminal agent (interativo)**
-Instale Claude Code ou equivalente. Comece com tasks pequenas e auto-contidas (escrever testes para uma função existente, atualizar dependências, fazer linting automático). Crie um `CLAUDE.md` com as regras do projeto. Use o modo interativo — não delegue sem supervisão ainda.
+**Mês 2: Terminal agent (interativo)** Instale Claude Code ou equivalente. Comece com tasks pequenas e auto-contidas (escrever testes para uma função existente, atualizar dependências, fazer linting automático). Crie um `CLAUDE.md` com as regras do projeto. Use o modo interativo — não delegue sem supervisão ainda.
 
-**Mês 3+: Terminal agent (delegação crescente)**
-À medida que você aprende a reconhecer os padrões de erro do agente no seu codebase, comece a delegar tasks maiores com menos supervisão. Implemente o comprehension gate como ritual padrão. Depois, experimente background agents para tasks verdadeiramente mecânicas.
+**Mês 3+: Terminal agent (delegação crescente)** À medida que você aprende a reconhecer os padrões de erro do agente no seu codebase, comece a delegar tasks maiores com menos supervisão. Implemente o comprehension gate como ritual padrão. Depois, experimente background agents para tasks verdadeiramente mecânicas.
 
 O erro mais comum é pular etapas — ir direto para agentes autônomos antes de desenvolver o instinto de revisão. O resultado é acumular dívida técnica de código AI-gerado que ninguém entende, inclusive quem aprovou o PR.
 

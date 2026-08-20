@@ -574,24 +574,16 @@ Para mais sobre o hook `use()`, veja [[21 - O hook use()]].
 ## Armadilhas comuns
 
 > [!warning] Colocar `'use client'` em tudo porque "é mais seguro"
-> **O que acontece:** Todo o potencial de RSC é anulado. Dependências pesadas voltam ao bundle, fetches voltam ao cliente, waterfall volta.
-> **Por quê:** `'use client'` não é apenas "modo cliente" — é uma declaração que puxa tudo que o arquivo importa para o bundle do cliente.
-> **Como evitar:** Só adicione `'use client'` quando o componente precisar de estado (`useState`), efeitos (`useEffect`), event handlers, ou browser APIs. Tudo mais permanece Server Component por padrão.
+> **O que acontece:** Todo o potencial de RSC é anulado. Dependências pesadas voltam ao bundle, fetches voltam ao cliente, waterfall volta. **Por quê:** `'use client'` não é apenas "modo cliente" — é uma declaração que puxa tudo que o arquivo importa para o bundle do cliente. **Como evitar:** Só adicione `'use client'` quando o componente precisar de estado (`useState`), efeitos (`useEffect`), event handlers, ou browser APIs. Tudo mais permanece Server Component por padrão.
 
 > [!warning] Passar função como prop de Server Component para Client Component
-> **O que acontece:** Erro em runtime — "Functions are not valid as a React child" ou erro de serialização.
-> **Por quê:** Props que cruzam a fronteira server-client precisam ser serializáveis. Funções não são serializáveis — elas são closures que capturam referências do ambiente de execução do servidor.
-> **Como evitar:** Para passar lógica ao cliente, use Server Functions (Actions) com `'use server'`. Para callbacks, implemente a lógica no próprio Client Component.
+> **O que acontece:** Erro em runtime — "Functions are not valid as a React child" ou erro de serialização. **Por quê:** Props que cruzam a fronteira server-client precisam ser serializáveis. Funções não são serializáveis — elas são closures que capturam referências do ambiente de execução do servidor. **Como evitar:** Para passar lógica ao cliente, use Server Functions (Actions) com `'use server'`. Para callbacks, implemente a lógica no próprio Client Component.
 
 > [!warning] Usar `useState` ou `useEffect` diretamente em um Server Component
-> **O que acontece:** Erro de runtime — "useState is not defined" ou "You're importing a component that needs useState".
-> **Por quê:** `useState` e outros hooks de estado e efeito existem no runtime do cliente. Server Components executam num ambiente sem esses hooks.
-> **Como evitar:** Se o componente precisar de estado, extraia a parte com estado para um Client Component separado. O Server Component passa dados como props.
+> **O que acontece:** Erro de runtime — "useState is not defined" ou "You're importing a component that needs useState". **Por quê:** `useState` e outros hooks de estado e efeito existem no runtime do cliente. Server Components executam num ambiente sem esses hooks. **Como evitar:** Se o componente precisar de estado, extraia a parte com estado para um Client Component separado. O Server Component passa dados como props.
 
 > [!warning] Importar Server Component de dentro de Client Component
-> **O que acontece:** O Server Component é silenciosamente tratado como Client Component (ou o bundler lança erro).
-> **Por quê:** Tudo importado por um Client Component entra no bundle do cliente. Server Components não têm runtime no cliente.
-> **Como evitar:** Passe Server Components como `children` ou outras props — deixe o Server Component pai renderizá-los e passá-los "descidos" ao Client Component.
+> **O que acontece:** O Server Component é silenciosamente tratado como Client Component (ou o bundler lança erro). **Por quê:** Tudo importado por um Client Component entra no bundle do cliente. Server Components não têm runtime no cliente. **Como evitar:** Passe Server Components como `children` ou outras props — deixe o Server Component pai renderizá-los e passá-los "descidos" ao Client Component.
 
 ---
 

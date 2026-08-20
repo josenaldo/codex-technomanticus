@@ -20,9 +20,7 @@ aliases:
 # O que é MCP e por que importa
 
 > [!abstract] TL;DR
-> **[[Dicionário de IA#MCP (Model Context Protocol)|MCP (Model Context Protocol)]]** é o "USB-C para agents de IA". Antes dele, cada integração entre [[Dicionário de IA#LLM (Large Language Model)|LLM]] e sistema externo (banco de dados, filesystem, Jira, Slack) era reinventar a roda — cada cliente (Claude, Cursor, Copilot) tinha seu próprio formato de plugin. MCP, lançado pela Anthropic em **novembro de 2024** e adotado em 2025-2026 por OpenAI, Google, Microsoft, é a padronização dessa conexão.
-> Tecnicamente, MCP é uma camada JSON-RPC 2.0 sobre um transporte (stdio local ou HTTP+SSE remoto) que define três primitivos — Tools, Resources, Prompts — e um handshake de descoberta (`list_tools`, `list_resources`, `list_prompts`) que qualquer client pode chamar sem conhecer o server de antemão. Isso é o que transforma N×M integrações custom em N+M conexões padronizadas: o server é escrito uma vez e funciona em qualquer client compatível.
-> Em 2026, **se você está construindo aplicação com agents, MCP é infraestrutura básica, como HTTP** — a decisão não é "usar ou não", é "como estruturar os servers".
+> **[[Dicionário de IA#MCP (Model Context Protocol)|MCP (Model Context Protocol)]]** é o "USB-C para agents de IA". Antes dele, cada integração entre [[Dicionário de IA#LLM (Large Language Model)|LLM]] e sistema externo (banco de dados, filesystem, Jira, Slack) era reinventar a roda — cada cliente (Claude, Cursor, Copilot) tinha seu próprio formato de plugin. MCP, lançado pela Anthropic em **novembro de 2024** e adotado em 2025-2026 por OpenAI, Google, Microsoft, é a padronização dessa conexão. Tecnicamente, MCP é uma camada JSON-RPC 2.0 sobre um transporte (stdio local ou HTTP+SSE remoto) que define três primitivos — Tools, Resources, Prompts — e um handshake de descoberta (`list_tools`, `list_resources`, `list_prompts`) que qualquer client pode chamar sem conhecer o server de antemão. Isso é o que transforma N×M integrações custom em N+M conexões padronizadas: o server é escrito uma vez e funciona em qualquer client compatível. Em 2026, **se você está construindo aplicação com agents, MCP é infraestrutura básica, como HTTP** — a decisão não é "usar ou não", é "como estruturar os servers".
 
 > [!question]- Por que MCP e não só function calling diretamente?
 > Function calling resolve o problema local: "este model, neste app, chama esta função". MCP resolve o problema de escala: "qualquer model, em qualquer client, chama esta capability sem que o server precise saber quem está chamando". A diferença é de O(N×M) para O(N+M) — um server implementado uma vez funciona em Claude, Cursor, Copilot e qualquer client futuro, sem mudança. Function calling é adequado para tools acopladas a um produto; MCP é para capabilities que precisam ser compartilhadas ou reutilizadas entre contextos.
@@ -144,20 +142,15 @@ sequenceDiagram
 
 ## Quando MCP brilha
 
-✅ **Compartilhar integração entre múltiplos clients**
-*"Quero que Claude E Cursor acessem nosso DB interno"*
+✅ **Compartilhar integração entre múltiplos clients** *"Quero que Claude E Cursor acessem nosso DB interno"*
 
-✅ **Distribuir capability entre projetos**
-*"Vou expor nossa API interna como MCP server, qualquer dev usa em qualquer ferramenta"*
+✅ **Distribuir capability entre projetos** *"Vou expor nossa API interna como MCP server, qualquer dev usa em qualquer ferramenta"*
 
-✅ **Aproveitar ecossistema**
-*"[Awesome MCP Servers](https://github.com/punkpeye/awesome-mcp-servers) tem 500+ integrações já feitas — quero plugar Stripe, Linear, GitHub direto"*
+✅ **Aproveitar ecossistema** *"[Awesome MCP Servers](https://github.com/punkpeye/awesome-mcp-servers) tem 500+ integrações já feitas — quero plugar Stripe, Linear, GitHub direto"*
 
 ## Quando MCP NÃO é a resposta
 
-❌ **App single-user com tools internas** — implementação direta com SDK pode ser mais simples
-❌ **Latência crítica <50ms** — overhead do protocol
-❌ **Tools triviais** (calculator, regex) — não vale o setup
+❌ **App single-user com tools internas** — implementação direta com SDK pode ser mais simples ❌ **Latência crítica <50ms** — overhead do protocol ❌ **Tools triviais** (calculator, regex) — não vale o setup
 
 ## O modelo mental
 

@@ -160,8 +160,7 @@ Garante que um dado ou mensagem é genuíno e vem de quem diz vir. HMAC (Hash-ba
 
 Esta é a virada conceitual mais importante da disciplina. Entender isso separa quem **usa** segurança de quem **pensa** em segurança.
 
-> "Security is about preventing adverse consequences from the intentional and unwarranted actions of others."
-> — Bruce Schneier, *Beyond Fear* (2003)
+> "Security is about preventing adverse consequences from the intentional and unwarranted actions of others." — Bruce Schneier, *Beyond Fear* (2003)
 
 ### Segurança ≠ Confiabilidade
 
@@ -244,12 +243,7 @@ flowchart LR
 > Risco é uma função de três variáveis. Você pode reduzir risco atacando qualquer uma delas: eliminar a vulnerabilidade (patch), reduzir o impacto (backups, segmentação de rede), ou reduzir a ameaça (threat intelligence, monitoramento). Segurança é gestão de risco — não eliminação de risco.
 
 > [!example] Exemplo concreto
-> **Ativo:** dados de cartão de crédito no banco de dados.
-> **Ameaça:** atacante externo tentando exfiltrar esses dados.
-> **Vulnerabilidade:** endpoint `/api/pagamentos` sem rate limiting e com SQL concatenado.
-> **Exploit:** script que itera IDs e extrai registros via UNION SELECT.
-> **Risco:** alto (probabilidade alta dado que o endpoint é público; impacto alto dado PCI-DSS e multas).
-> **Controle:** parameterized queries + rate limiting + WAF = reduz vulnerabilidade e dificulta a ameaça.
+> **Ativo:** dados de cartão de crédito no banco de dados. **Ameaça:** atacante externo tentando exfiltrar esses dados. **Vulnerabilidade:** endpoint `/api/pagamentos` sem rate limiting e com SQL concatenado. **Exploit:** script que itera IDs e extrai registros via UNION SELECT. **Risco:** alto (probabilidade alta dado que o endpoint é público; impacto alto dado PCI-DSS e multas). **Controle:** parameterized queries + rate limiting + WAF = reduz vulnerabilidade e dificulta a ameaça.
 
 ---
 

@@ -240,8 +240,7 @@ O campo que muda entre as duas chamadas é `Desejado` — e ninguém editou esse
 > [!tip] Assista: AWS EC2 Auto Scaling - How it Works
 > **Canal:** Digital Cloud Training | **Duração:** ~8min | **Idioma:** EN
 >
-> Um resumo curto que amarra os dois personagens desta nota — Elastic Load Balancing e EC2 Auto Scaling — e marca explicitamente a diferença entre "escalar" e "ser elástico" que a seção acima acabou de estabelecer.
-> Trecho de destaque [04:03]: *"it's providing both elasticity and scalability, elasticity is the scaling out but then elastic means that it's..."*
+> Um resumo curto que amarra os dois personagens desta nota — Elastic Load Balancing e EC2 Auto Scaling — e marca explicitamente a diferença entre "escalar" e "ser elástico" que a seção acima acabou de estabelecer. Trecho de destaque [04:03]: *"it's providing both elasticity and scalability, elasticity is the scaling out but then elastic means that it's..."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=rcWgcFMlwFw)
 

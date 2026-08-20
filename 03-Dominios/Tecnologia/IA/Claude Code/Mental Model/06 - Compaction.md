@@ -354,8 +354,7 @@ Pensar em compaction como um colaborador que mantém notas de projeto: ele sabe 
 Esta é também a razão pela qual ferramentas como `git log` e `git diff` são mais confiáveis que a memória do agente para rastrear o que foi mudado: o repositório tem o estado real do código; o resumo de compaction tem a intenção e as decisões.
 
 > [!tip] Vídeo — Effective context engineering for AI agents (Anthropic, 2025)
-> A própria Anthropic publicou um vídeo oficial explicando a filosofia por trás de compaction e das outras técnicas de gerenciamento de contexto (write/select/compress/isolate) que sustentam sessões longas em agentes. Bom complemento para quem quer o racional por trás do mecanismo, não só o comando.
-> [Effective context engineering for AI agents](https://www.youtube.com/watch?v=139Cfcrt2Mk) — Anthropic, publicado em 30/10/2025.
+> A própria Anthropic publicou um vídeo oficial explicando a filosofia por trás de compaction e das outras técnicas de gerenciamento de contexto (write/select/compress/isolate) que sustentam sessões longas em agentes. Bom complemento para quem quer o racional por trás do mecanismo, não só o comando. [Effective context engineering for AI agents](https://www.youtube.com/watch?v=139Cfcrt2Mk) — Anthropic, publicado em 30/10/2025.
 
 ---
 

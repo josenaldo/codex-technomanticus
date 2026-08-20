@@ -160,23 +160,17 @@ Essas perguntas não invalidam LongMemEval — validam o uso criterioso de um in
 
 Recomendar pelo score puro é o erro mais comum. As recomendações abaixo são por **caso de uso real**.
 
-**Consultor solo / freelancer / knowledge worker que já vive no Obsidian.**
-[[13 - basic-memory — MCP nativo Obsidian|basic-memory]] (vault Obsidian, MCP nativo) ou [[17 - MemPalace (Milla Jovovich)|MemPalace]] (local-first, ChromaDB embarcado). Score alto onde foi medido, custo zero, dados na própria máquina. Para fluxo Obsidian puro, basic-memory é menos invasivo; para fluxo Claude Code com workload de retrieval mais agressivo, MemPalace.
+**Consultor solo / freelancer / knowledge worker que já vive no Obsidian.** [[13 - basic-memory — MCP nativo Obsidian|basic-memory]] (vault Obsidian, MCP nativo) ou [[17 - MemPalace (Milla Jovovich)|MemPalace]] (local-first, ChromaDB embarcado). Score alto onde foi medido, custo zero, dados na própria máquina. Para fluxo Obsidian puro, basic-memory é menos invasivo; para fluxo Claude Code com workload de retrieval mais agressivo, MemPalace.
 
-**Startup early-stage que precisa de memória "que funciona" ontem.**
-[[15 - Mem0 — vetorial + grafo|Mem0]]. Lib open source (Apache 2.0), integrações com cerca de 24 frameworks, score auto-reportado de 93,4% em LongMemEval, latência reduzida em ≈91% vs full-context. Trade-off: o número é auto-reportado; reprodutibilidade externa é aceitável mas não comparável a um peer-reviewed completo.
+**Startup early-stage que precisa de memória "que funciona" ontem.** [[15 - Mem0 — vetorial + grafo|Mem0]]. Lib open source (Apache 2.0), integrações com cerca de 24 frameworks, score auto-reportado de 93,4% em LongMemEval, latência reduzida em ≈91% vs full-context. Trade-off: o número é auto-reportado; reprodutibilidade externa é aceitável mas não comparável a um peer-reviewed completo.
 
-**Enterprise regulado (banking, healthcare, gov).**
-[[16 - Zep e Graphiti — knowledge graph temporal|Zep/Graphiti]] pelo *audit trail temporal* embutido no KG (Neo4j) — caso clássico de *temporal reasoning* (saber não só o fato, mas quando ele passou a valer e quando deixou de valer). Score absoluto mais baixo (71,2% com gpt-4o), mas o ganho de governança compensa em domínio regulado. Alternativa: [[14 - Letta (ex-MemGPT)|Letta]] (Apache 2.0, self-host on-prem fácil, sem score público mas com hierarquia clara RAM/disk e *core memory blocks*).
+**Enterprise regulado (banking, healthcare, gov).** [[16 - Zep e Graphiti — knowledge graph temporal|Zep/Graphiti]] pelo *audit trail temporal* embutido no KG (Neo4j) — caso clássico de *temporal reasoning* (saber não só o fato, mas quando ele passou a valer e quando deixou de valer). Score absoluto mais baixo (71,2% com gpt-4o), mas o ganho de governança compensa em domínio regulado. Alternativa: [[14 - Letta (ex-MemGPT)|Letta]] (Apache 2.0, self-host on-prem fácil, sem score público mas com hierarquia clara RAM/disk e *core memory blocks*).
 
-**Pesquisador acadêmico.**
-[[19 - A-MEM — Zettelkasten dinâmico|A-MEM]] (paper NeurIPS 2025 + repo) como base experimental, **rodando LongMemEval e LoCoMo em paralelo** para benchmark próprio. A vantagem é que A-MEM expõe os hooks de Zettelkasten dinâmico, ideais para experimentar variações de write-path e linking automático.
+**Pesquisador acadêmico.** [[19 - A-MEM — Zettelkasten dinâmico|A-MEM]] (paper NeurIPS 2025 + repo) como base experimental, **rodando LongMemEval e LoCoMo em paralelo** para benchmark próprio. A vantagem é que A-MEM expõe os hooks de Zettelkasten dinâmico, ideais para experimentar variações de write-path e linking automático.
 
-**Quem quer dominar o pattern antes de adotar framework.**
-[[10 - LLM-knowledge-base (Wendel) — direto do gist|LLM-knowledge-base (Wendel)]] + [[06 - O LLM Wiki Pattern (gist do Karpathy)|gist do Karpathy]]. Score nenhum publicado (não é o foco), mas a clareza didática é máxima — entende-se o esqueleto do pattern, e depois qualquer framework "sofisticado" vira uma variação compreensível.
+**Quem quer dominar o pattern antes de adotar framework.** [[10 - LLM-knowledge-base (Wendel) — direto do gist|LLM-knowledge-base (Wendel)]] + [[06 - O LLM Wiki Pattern (gist do Karpathy)|gist do Karpathy]]. Score nenhum publicado (não é o foco), mas a clareza didática é máxima — entende-se o esqueleto do pattern, e depois qualquer framework "sofisticado" vira uma variação compreensível.
 
-**Quem precisa de KG com pipeline customizável.**
-[[12 - graphify — knowledge graph de raw|graphify]] ou Cognee. Sem score público em LongMemEval, mas KG é forte em multi-hop e integridade referencial, áreas onde benchmarks de QA puro nem sempre brilham.
+**Quem precisa de KG com pipeline customizável.** [[12 - graphify — knowledge graph de raw|graphify]] ou Cognee. Sem score público em LongMemEval, mas KG é forte em multi-hop e integridade referencial, áreas onde benchmarks de QA puro nem sempre brilham.
 
 ## Análise por categoria do benchmark
 

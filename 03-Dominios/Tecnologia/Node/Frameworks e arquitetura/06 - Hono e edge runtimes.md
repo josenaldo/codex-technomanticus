@@ -427,63 +427,41 @@ Com Hono e edge runtimes mapeados, o próximo passo é entender como validation 
 ## Armadilhas comuns
 
 > [!warning] Assumir `fs`/`net` em edge runtime
-> **O que acontece:** A aplicação lança `Error: fs is not defined` ou silenciosamente falha no Cloudflare Workers.
-> **Por quê:** Edge runtimes não implementam APIs Node-only — filesystem e TCP sockets não existem.
-> **Como evitar:** Audite todas as dependências com `import` de `node:*`. Use equivalentes Web API (`crypto`, `fetch`, `URL`) ou bindings do runtime.
+> **O que acontece:** A aplicação lança `Error: fs is not defined` ou silenciosamente falha no Cloudflare Workers. **Por quê:** Edge runtimes não implementam APIs Node-only — filesystem e TCP sockets não existem. **Como evitar:** Audite todas as dependências com `import` de `node:*`. Use equivalentes Web API (`crypto`, `fetch`, `URL`) ou bindings do runtime.
 
 > [!warning] CPU-heavy handler em edge
-> **O que acontece:** Request é abortada por timeout de CPU — o worker excede o limite do provedor.
-> **Por quê:** Edge tem limite de CPU time por invocação, muito menor que servidor tradicional.
-> **Como evitar:** Operações pesadas (transformação de imagem, geração de PDF, encoding) devem ir para worker assíncrono ou serviço dedicado. Handler Hono deve ser I/O-bound.
+> **O que acontece:** Request é abortada por timeout de CPU — o worker excede o limite do provedor. **Por quê:** Edge tem limite de CPU time por invocação, muito menor que servidor tradicional. **Como evitar:** Operações pesadas (transformação de imagem, geração de PDF, encoding) devem ir para worker assíncrono ou serviço dedicado. Handler Hono deve ser I/O-bound.
 
 > [!warning] Estado mutável global como fonte de verdade
-> **O que acontece:** Dados que parecem persistir entre requests podem ser perdidos quando o worker é reiniciado ou escalado.
-> **Por quê:** Edge pode criar múltiplas instâncias isoladas; estado global não é compartilhado entre elas.
-> **Como evitar:** Use KV, D1, Durable Objects ou banco externo para qualquer dado que precisa de consistência. Estado global só para cache best-effort.
+> **O que acontece:** Dados que parecem persistir entre requests podem ser perdidos quando o worker é reiniciado ou escalado. **Por quê:** Edge pode criar múltiplas instâncias isoladas; estado global não é compartilhado entre elas. **Como evitar:** Use KV, D1, Durable Objects ou banco externo para qualquer dado que precisa de consistência. Estado global só para cache best-effort.
 
 > [!warning] Esquecer `await next()` no middleware onion
-> **O que acontece:** Handlers registrados depois do middleware nunca executam — a request não avança.
-> **Por quê:** O modelo onion de Hono exige que o middleware chame `await next()` para continuar a cadeia.
-> **Como evitar:** Todo middleware que não é "terminal" deve ter `await next()`. Adicione teste de integração que verifica a resposta final de uma rota com middlewares.
+> **O que acontece:** Handlers registrados depois do middleware nunca executam — a request não avança. **Por quê:** O modelo onion de Hono exige que o middleware chame `await next()` para continuar a cadeia. **Como evitar:** Todo middleware que não é "terminal" deve ter `await next()`. Adicione teste de integração que verifica a resposta final de uma rota com middlewares.
 
 > [!warning] Bibliotecas de auth/storage que dependem de Node internals
-> **O que acontece:** `jsonwebtoken`, `bcrypt`, `prisma` e similares falham em edge porque usam C++ bindings ou APIs Node.
-> **Por quê:** Essas libs foram construídas para Node, não para Web Standards.
-> **Como evitar:** Prefira `jose` (JWT/JOSE para Web Crypto), `@noble/hashes` (crypto puro), `@cloudflare/d1` ou SDKs nativos do provedor.
+> **O que acontece:** `jsonwebtoken`, `bcrypt`, `prisma` e similares falham em edge porque usam C++ bindings ou APIs Node. **Por quê:** Essas libs foram construídas para Node, não para Web Standards. **Como evitar:** Prefira `jose` (JWT/JOSE para Web Crypto), `@noble/hashes` (crypto puro), `@cloudflare/d1` ou SDKs nativos do provedor.
 
 > [!warning] Tratar KV como banco transacional
-> **O que acontece:** Leituras do KV retornam valor desatualizado em região diferente; writes não são atômicos por default.
-> **Por quê:** KV é eventually consistent — otimizado para leitura global, não para consistência forte.
-> **Como evitar:** KV serve para configuração, feature flags, sessão e cache. Para transações, use D1, Durable Objects ou banco externo com consistência forte.
+> **O que acontece:** Leituras do KV retornam valor desatualizado em região diferente; writes não são atômicos por default. **Por quê:** KV é eventually consistent — otimizado para leitura global, não para consistência forte. **Como evitar:** KV serve para configuração, feature flags, sessão e cache. Para transações, use D1, Durable Objects ou banco externo com consistência forte.
 
 > [!warning] Client pesado criado por request
-> **O que acontece:** Conexão de banco ou inicialização de SDK acontece a cada invocação do worker — latência alta e custo desnecessário.
-> **Por quê:** Workers têm cold start, mas clientes devem ser criados uma vez por instância, não por request.
-> **Como evitar:** Inicialize clientes fora do handler, no escopo do módulo — eles são reutilizados enquanto a instância do worker existir.
+> **O que acontece:** Conexão de banco ou inicialização de SDK acontece a cada invocação do worker — latência alta e custo desnecessário. **Por quê:** Workers têm cold start, mas clientes devem ser criados uma vez por instância, não por request. **Como evitar:** Inicialize clientes fora do handler, no escopo do módulo — eles são reutilizados enquanto a instância do worker existir.
 
 > [!warning] Achar que multi-runtime é grátis
-> **O que acontece:** App que "roda em Hono" precisa de meses de trabalho para realmente rodar em todos os runtimes.
-> **Por quê:** Cada runtime tem bindings próprios, limites de CPU/memória, modelo de deploy e tooling.
-> **Como evitar:** Defina o runtime alvo antes de começar. "Portabilidade" como objetivo secundário é razoável; como objetivo primário, audite o ecossistema de dependências de cada runtime antes de comprometer.
+> **O que acontece:** App que "roda em Hono" precisa de meses de trabalho para realmente rodar em todos os runtimes. **Por quê:** Cada runtime tem bindings próprios, limites de CPU/memória, modelo de deploy e tooling. **Como evitar:** Defina o runtime alvo antes de começar. "Portabilidade" como objetivo secundário é razoável; como objetivo primário, audite o ecossistema de dependências de cada runtime antes de comprometer.
 
 > [!warning] `c.req.url` retornando URL relativa em alguns contextos
-> **O que acontece:** `new URL(c.req.url)` lança `TypeError: Invalid URL` quando `c.req.url` é um pathname relativo.
-> **Por quê:** Em alguns adapters ou ambientes, `c.req.url` pode ser relativa — `URL` constructor exige base.
-> **Como evitar:** Use `c.req.url` com base explícita: `new URL(c.req.url, "http://localhost")` ou use `c.req.path` para o pathname.
+> **O que acontece:** `new URL(c.req.url)` lança `TypeError: Invalid URL` quando `c.req.url` é um pathname relativo. **Por quê:** Em alguns adapters ou ambientes, `c.req.url` pode ser relativa — `URL` constructor exige base. **Como evitar:** Use `c.req.url` com base explícita: `new URL(c.req.url, "http://localhost")` ou use `c.req.path` para o pathname.
 
 ## Perguntas de entrevista
 
-**O que diferencia Hono de Express?**
-Hono é baseado em Fetch API e Web Standards, pensado para múltiplos runtimes. Express é centrado no modelo HTTP de Node.
+**O que diferencia Hono de Express?** Hono é baseado em Fetch API e Web Standards, pensado para múltiplos runtimes. Express é centrado no modelo HTTP de Node.
 
-**Quando Hono não é boa escolha?**
-Quando o app depende profundamente de APIs Node-only, sockets, filesystem local, libs nativas ou processos longos.
+**Quando Hono não é boa escolha?** Quando o app depende profundamente de APIs Node-only, sockets, filesystem local, libs nativas ou processos longos.
 
-**O que é onion middleware?**
-Um middleware executa lógica antes de `await next()` e depois que os próximos handlers terminam.
+**O que é onion middleware?** Um middleware executa lógica antes de `await next()` e depois que os próximos handlers terminam.
 
-**Qual é a decisão principal antes de usar Hono?**
-Confirmar deploy target. Se o runtime é edge/serverless multi-runtime, Hono faz sentido; se é Node container tradicional, compare com Express/Fastify.
+**Qual é a decisão principal antes de usar Hono?** Confirmar deploy target. Se o runtime é edge/serverless multi-runtime, Hono faz sentido; se é Node container tradicional, compare com Express/Fastify.
 
 ## Em entrevista
 

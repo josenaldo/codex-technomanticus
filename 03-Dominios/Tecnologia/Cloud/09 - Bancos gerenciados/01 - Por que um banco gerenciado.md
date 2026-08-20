@@ -50,8 +50,7 @@ O que **não** muda de mãos — porque nenhum provedor consegue fazer isso por 
 > [!tip] Assista: RDS Overview: Understanding Amazon Relational Database Service (RDS)
 > **Canal:** AWS For Everyone | **Duração:** ~6min | **Idioma:** EN
 >
-> Um resumo rápido e direto do que o provedor assume ao ligar o RDS — útil como segunda voz confirmando a lista de responsabilidades que esta seção acabou de nomear, sem se alongar em nenhuma delas.
-> Trecho de destaque [01:54]: *"it has inbuilt failover capabilities it has automated backups (...) it provides multi-az support (...) another really cool functionality (...) called read replicas"*
+> Um resumo rápido e direto do que o provedor assume ao ligar o RDS — útil como segunda voz confirmando a lista de responsabilidades que esta seção acabou de nomear, sem se alongar em nenhuma delas. Trecho de destaque [01:54]: *"it has inbuilt failover capabilities it has automated backups (...) it provides multi-az support (...) another really cool functionality (...) called read replicas"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=qelK_DMqJsc)
 

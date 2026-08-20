@@ -504,9 +504,7 @@ O callback de `_write` só é chamado após a confirmação do storage — o que
 ## Armadilhas comuns
 
 > [!warning] 1. Ignorar o boolean de `.write()` em loop — memory growth silencioso
-> **O que acontece:** o buffer interno cresce sem limite; o processo consome memória progressivamente até OOM. Não há erro — apenas lentidão crescente e eventual crash.
-> **Por quê:** `ws.write()` aceita dados mesmo com o buffer acima do `highWaterMark`; o único sinal é o `boolean` retornado — se ignorado, o buffer nunca para de crescer.
-> **Como evitar:** verificar o retorno de cada `.write()` e aguardar `'drain'` antes de continuar.
+> **O que acontece:** o buffer interno cresce sem limite; o processo consome memória progressivamente até OOM. Não há erro — apenas lentidão crescente e eventual crash. **Por quê:** `ws.write()` aceita dados mesmo com o buffer acima do `highWaterMark`; o único sinal é o `boolean` retornado — se ignorado, o buffer nunca para de crescer. **Como evitar:** verificar o retorno de cada `.write()` e aguardar `'drain'` antes de continuar.
 
 ```javascript
 // ERRADO — vaza memória de forma silenciosa em produção
@@ -520,9 +518,7 @@ ws.end();
 Esse código funciona perfeitamente em testes com datasets pequenos. Em produção, quando o relatório tem 500 MB, o processo consome 1,5 GB+ antes de terminar.
 
 > [!warning] 2. `for...of` com array grande — pausa impossível
-> **O que acontece:** o loop percorre o array inteiro sem jamais pausar, ignorando todos os `false` retornados por `.write()`.
-> **Por quê:** JavaScript não tem como "suspender" um `for...of` em andamento — uma vez iniciado, vai até o fim independente dos sinais de backpressure.
-> **Como evitar:** substituir o `for...of` por um padrão que pode pausar: `async/await` com verificação do retorno ou `while + once('drain')`.
+> **O que acontece:** o loop percorre o array inteiro sem jamais pausar, ignorando todos os `false` retornados por `.write()`. **Por quê:** JavaScript não tem como "suspender" um `for...of` em andamento — uma vez iniciado, vai até o fim independente dos sinais de backpressure. **Como evitar:** substituir o `for...of` por um padrão que pode pausar: `async/await` com verificação do retorno ou `while + once('drain')`.
 
 ```javascript
 // Substitua o for...of por um padrão que pode pausar
@@ -534,14 +530,10 @@ for (const chunk of chunks) {
 ```
 
 > [!warning] 3. Achar que `pipeline()` elimina backpressure — não elimina, gerencia
-> **O que acontece:** código "otimiza" `pipeline()` aumentando `highWaterMark` sem medir, mascarando gargalos reais.
-> **Por quê:** `pipeline()` gerencia backpressure automaticamente, mas não elimina a limitação de throughput do consumer. O gargalo real (consumer lento) permanece oculto pelo buffer maior.
-> **Como evitar:** medir throughput antes de tunar `highWaterMark`; um buffer maior não significa consumer mais rápido.
+> **O que acontece:** código "otimiza" `pipeline()` aumentando `highWaterMark` sem medir, mascarando gargalos reais. **Por quê:** `pipeline()` gerencia backpressure automaticamente, mas não elimina a limitação de throughput do consumer. O gargalo real (consumer lento) permanece oculto pelo buffer maior. **Como evitar:** medir throughput antes de tunar `highWaterMark`; um buffer maior não significa consumer mais rápido.
 
 > [!warning] 4. Tunar `highWaterMark` sem medir — troca memória por falsa velocidade
-> **O que acontece:** o processo usa muito mais memória em pico e o GC sofre quando o buffer gigante finalmente drena.
-> **Por quê:** `highWaterMark` alto faz o producer escrever mais antes de pausar — parece mais rápido, mas é só buffer maior. O throughput real não muda.
-> **Como evitar:** benchmarque com dados reais; aumente `highWaterMark` apenas se o profiling mostrar que o overhead de ciclos de backpressure é o gargalo.
+> **O que acontece:** o processo usa muito mais memória em pico e o GC sofre quando o buffer gigante finalmente drena. **Por quê:** `highWaterMark` alto faz o producer escrever mais antes de pausar — parece mais rápido, mas é só buffer maior. O throughput real não muda. **Como evitar:** benchmarque com dados reais; aumente `highWaterMark` apenas se o profiling mostrar que o overhead de ciclos de backpressure é o gargalo.
 
 ```javascript
 // Tentação: o pipeline está "lento", então aumento o highWaterMark
@@ -553,9 +545,7 @@ const ws = createWriteStream('./out.bin', {
 Com `highWaterMark` muito alto, backpressure dispara com menos frequência. Você aumentou o buffer, não o throughput. O processo agora usa 16x mais memória e o GC vai sofrer mais quando o buffer finalmente drenar.
 
 > [!warning] 5. `readable.on('data')` sem pausar — produtor irrestrito
-> **O que acontece:** o Readable produz na velocidade máxima enquanto a Writable acumula sem limite — equivalente a ignorar o boolean de `.write()`.
-> **Por quê:** adicionar listener `'data'` coloca o Readable em modo flowing; sem verificar o retorno de `.write()`, você conecta um produtor irrestrito a um consumer com buffer limitado.
-> **Como evitar:** verificar o retorno de `.write()` e chamar `readable.pause()` quando `false`; ou usar `pipeline()`.
+> **O que acontece:** o Readable produz na velocidade máxima enquanto a Writable acumula sem limite — equivalente a ignorar o boolean de `.write()`. **Por quê:** adicionar listener `'data'` coloca o Readable em modo flowing; sem verificar o retorno de `.write()`, você conecta um produtor irrestrito a um consumer com buffer limitado. **Como evitar:** verificar o retorno de `.write()` e chamar `readable.pause()` quando `false`; ou usar `pipeline()`.
 
 ```javascript
 // ERRADO: 'data' handler sem backpressure
@@ -576,9 +566,7 @@ await pipeline(readable, writable);
 ```
 
 > [!warning] 6. `on` em vez de `once` no listener `'drain'` — listeners acumulados
-> **O que acontece:** `resumeWriting` é chamado N vezes no (N+1)-ésimo drain — múltiplas retomadas por evento, comportamento imprevisível.
-> **Por quê:** `on` registra listener permanente; com múltiplos ciclos de backpressure, você acumula listeners que disparam todos juntos no próximo `'drain'`.
-> **Como evitar:** sempre `ws.once('drain', cb)` — listener que se autorremove após a primeira dispara.
+> **O que acontece:** `resumeWriting` é chamado N vezes no (N+1)-ésimo drain — múltiplas retomadas por evento, comportamento imprevisível. **Por quê:** `on` registra listener permanente; com múltiplos ciclos de backpressure, você acumula listeners que disparam todos juntos no próximo `'drain'`. **Como evitar:** sempre `ws.once('drain', cb)` — listener que se autorremove após a primeira dispara.
 
 ```javascript
 // ERRADO: listener permanente — acumula a cada ciclo de backpressure
@@ -598,23 +586,17 @@ ws.once('drain', resumeWriting);
 
 ### Perguntas frequentes e respostas diretas
 
-**"O que acontece se você ignorar o retorno de `.write()`?"**
-O buffer interno cresce sem limite. Não há erro imediato — o código parece funcionar. Em produção, com alto volume, o processo consome memória progressivamente. O GC degrada. Throughput cai. O processo morre por OOM. O benchmark oficial mostra 17x mais memória sem backpressure vs. com backpressure.
+**"O que acontece se você ignorar o retorno de `.write()`?"** O buffer interno cresce sem limite. Não há erro imediato — o código parece funcionar. Em produção, com alto volume, o processo consome memória progressivamente. O GC degrada. Throughput cai. O processo morre por OOM. O benchmark oficial mostra 17x mais memória sem backpressure vs. com backpressure.
 
-**"Qual a diferença entre `highWaterMark` e o buffer do SO?"**
-`highWaterMark` é o buffer **interno do stream Node**, gerenciado em userland. O buffer do SO (socket buffer, kernel buffer) é separado e gerenciado pelo kernel. Backpressure de streams Node atua no buffer userland — o buffer do SO tem seus próprios mecanismos de controle de fluxo (TCP flow control, por exemplo).
+**"Qual a diferença entre `highWaterMark` e o buffer do SO?"** `highWaterMark` é o buffer **interno do stream Node**, gerenciado em userland. O buffer do SO (socket buffer, kernel buffer) é separado e gerenciado pelo kernel. Backpressure de streams Node atua no buffer userland — o buffer do SO tem seus próprios mecanismos de controle de fluxo (TCP flow control, por exemplo).
 
-**"Por que usar `once('drain')` e não `on('drain')`?"**
-Porque você quer retomar uma vez por ciclo de backpressure. `on` adiciona um listener permanente — com múltiplos ciclos, você acumula listeners que disparam repetidamente no mesmo evento. `once` registra um listener que se autorremove após a primeira dispara.
+**"Por que usar `once('drain')` e não `on('drain')`?"** Porque você quer retomar uma vez por ciclo de backpressure. `on` adiciona um listener permanente — com múltiplos ciclos, você acumula listeners que disparam repetidamente no mesmo evento. `once` registra um listener que se autorremove após a primeira dispara.
 
-**"Como `pipeline()` implementa backpressure internamente?"**
-Quando `.write()` retorna `false`, `pipeline()` chama `.pause()` no Readable de origem e registra `ws.once('drain', resume)`. Quando `'drain'` dispara, chama `.resume()` no Readable. É exatamente o padrão manual — mas implementado de forma robusta e com tratamento de erro para todos os streams da cadeia.
+**"Como `pipeline()` implementa backpressure internamente?"** Quando `.write()` retorna `false`, `pipeline()` chama `.pause()` no Readable de origem e registra `ws.once('drain', resume)`. Quando `'drain'` dispara, chama `.resume()` no Readable. É exatamente o padrão manual — mas implementado de forma robusta e com tratamento de erro para todos os streams da cadeia.
 
-**"Em que cenário você precisaria de backpressure manual em vez de `pipeline()`?"**
-Quando você produz dados programaticamente sem um Readable de origem — por exemplo, iterando sobre um array em memória e escrevendo em um arquivo, ou gerando um relatório linha a linha. Nesses casos não há Readable para pausar, então você controla o ritmo manualmente via `if (!ws.write(chunk)) await drain`.
+**"Em que cenário você precisaria de backpressure manual em vez de `pipeline()`?"** Quando você produz dados programaticamente sem um Readable de origem — por exemplo, iterando sobre um array em memória e escrevendo em um arquivo, ou gerando um relatório linha a linha. Nesses casos não há Readable para pausar, então você controla o ritmo manualmente via `if (!ws.write(chunk)) await drain`.
 
-**"O que acontece se `_write` nunca chamar o callback?"**
-O stream trava permanentemente. O runtime não entrega nenhum chunk adicional enquanto aguarda o callback. Do ponto de vista do produtor, a Writable parece ter parado de consumir — backpressure permanente. Qualquer `pipeline()` que termine nessa Writable nunca resolverá.
+**"O que acontece se `_write` nunca chamar o callback?"** O stream trava permanentemente. O runtime não entrega nenhum chunk adicional enquanto aguarda o callback. Do ponto de vista do produtor, a Writable parece ter parado de consumir — backpressure permanente. Qualquer `pipeline()` que termine nessa Writable nunca resolverá.
 
 ### Vocabulário PT-BR ↔ EN
 

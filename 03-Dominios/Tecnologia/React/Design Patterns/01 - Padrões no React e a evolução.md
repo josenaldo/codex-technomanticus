@@ -404,24 +404,16 @@ Se alguém em entrevista perguntar "What are React design patterns and how have 
 ## Armadilhas comuns
 
 > [!warning] Aplicar padrão sem necessidade (over-engineering)
-> **O que acontece:** Você cria um HOC ou Compound Component para um caso que poderia ser resolvido com props simples e um `if`.
-> **Por quê:** Padrões parecem "profissionais"; existe pressão para demonstrar conhecimento técnico em revisões de código.
-> **Como evitar:** Comece sempre com a solução mais simples. Adicione um padrão quando a duplicação aparecer duas ou três vezes — não antes. A regra do "Wait for it to hurt" se aplica bem aqui.
+> **O que acontece:** Você cria um HOC ou Compound Component para um caso que poderia ser resolvido com props simples e um `if`. **Por quê:** Padrões parecem "profissionais"; existe pressão para demonstrar conhecimento técnico em revisões de código. **Como evitar:** Comece sempre com a solução mais simples. Adicione um padrão quando a duplicação aparecer duas ou três vezes — não antes. A regra do "Wait for it to hurt" se aplica bem aqui.
 
 > [!warning] Cargo-culting — copiar o padrão sem entender o problema que ele resolve
-> **O que acontece:** Você usa Provider Pattern para estado local de um único componente. Ou Compound Components para algo com apenas duas variantes simples. Ou um HOC quando uma função utilitária bastaria.
-> **Por quê:** Você viu o padrão em uma lib famosa e concluiu que era "a forma certa de fazer React".
-> **Como evitar:** Para cada padrão que você considera, pergunte: "qual problema específico ele resolve no meu caso?" Se você não consegue nomear o problema, provavelmente não precisa do padrão.
+> **O que acontece:** Você usa Provider Pattern para estado local de um único componente. Ou Compound Components para algo com apenas duas variantes simples. Ou um HOC quando uma função utilitária bastaria. **Por quê:** Você viu o padrão em uma lib famosa e concluiu que era "a forma certa de fazer React". **Como evitar:** Para cada padrão que você considera, pergunte: "qual problema específico ele resolve no meu caso?" Se você não consegue nomear o problema, provavelmente não precisa do padrão.
 
 > [!warning] HOC quando Custom Hook resolve melhor
-> **O que acontece:** Você escreve `withHover(MyComponent)` quando poderia escrever `useHover()` e chamar dentro do componente diretamente.
-> **Por quê:** HOCs parecem mais "orientados a objetos" para quem vem de Java/Python; tutoriais antigos ainda os mostram como padrão principal.
-> **Como evitar:** Regra de ouro: se você precisa apenas de **lógica** (state + efeitos), use Custom Hook. Se precisa **substituir ou bloquear o que é renderizado** de forma global e condicional (ex: `withAuth` que redireciona para login antes de qualquer render), HOC ainda pode fazer sentido.
+> **O que acontece:** Você escreve `withHover(MyComponent)` quando poderia escrever `useHover()` e chamar dentro do componente diretamente. **Por quê:** HOCs parecem mais "orientados a objetos" para quem vem de Java/Python; tutoriais antigos ainda os mostram como padrão principal. **Como evitar:** Regra de ouro: se você precisa apenas de **lógica** (state + efeitos), use Custom Hook. Se precisa **substituir ou bloquear o que é renderizado** de forma global e condicional (ex: `withAuth` que redireciona para login antes de qualquer render), HOC ainda pode fazer sentido.
 
 > [!warning] Confundir padrões de UI com padrões de compartilhamento de lógica
-> **O que acontece:** Você usa Compound Components para gerenciar estado global compartilhado, quando Provider seria mais adequado. Ou usa Context/Provider para passar uma prop que só precisa ir dois níveis abaixo.
-> **Por quê:** Os padrões têm nomes que soam similares e os exemplos online simplificam os contextos de uso.
-> **Como evitar:** Compound Components = componentes que só fazem sentido em conjunto, compartilhando estado via Context interno (`<Select>` + `<Select.Option>`). Provider Pattern = dados que precisam chegar em pontos distantes da árvore sem prop drilling. Props simples = tudo o mais.
+> **O que acontece:** Você usa Compound Components para gerenciar estado global compartilhado, quando Provider seria mais adequado. Ou usa Context/Provider para passar uma prop que só precisa ir dois níveis abaixo. **Por quê:** Os padrões têm nomes que soam similares e os exemplos online simplificam os contextos de uso. **Como evitar:** Compound Components = componentes que só fazem sentido em conjunto, compartilhando estado via Context interno (`<Select>` + `<Select.Option>`). Provider Pattern = dados que precisam chegar em pontos distantes da árvore sem prop drilling. Props simples = tudo o mais.
 
 ## Design patterns em uma frase
 

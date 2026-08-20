@@ -98,8 +98,7 @@ Há também o eixo de segurança que a tabela acima captura com "❌ Vulnerável
 > [!tip] Assista: Software Is Changing (Again)
 > **Canal:** Y Combinator / AI Startup School | **Duração:** ~39min | **Idioma:** EN
 >
-> Karpathy descreve em primeira pessoa a experiência que esta nota trata em teoria: criou o app MenuGen com vibe coding em horas — mas auth, pagamento, deploy e domínio levaram uma semana a mais. O código foi a parte fácil. "Make it real" é onde o vibe falha, exatamente o 70% problem de Addy Osmani. A talk também apresenta o framework Software 1.0/2.0/3.0 que contextualiza historicamente onde o vibe coding se encaixa.
-> Trecho de destaque [32:23]: *"The fascinating thing about MenuGen for me is that the code — the vibe coding part — was actually the easy part. Most of it was when I tried to make it real: authentication, payments, the domain name, deployment."*
+> Karpathy descreve em primeira pessoa a experiência que esta nota trata em teoria: criou o app MenuGen com vibe coding em horas — mas auth, pagamento, deploy e domínio levaram uma semana a mais. O código foi a parte fácil. "Make it real" é onde o vibe falha, exatamente o 70% problem de Addy Osmani. A talk também apresenta o framework Software 1.0/2.0/3.0 que contextualiza historicamente onde o vibe coding se encaixa. Trecho de destaque [32:23]: *"The fascinating thing about MenuGen for me is that the code — the vibe coding part — was actually the easy part. Most of it was when I tried to make it real: authentication, payments, the domain name, deployment."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=LCEmiRjPEtQ)
 
@@ -256,11 +255,9 @@ O que a spec *não* precisa ser: um documento de 40 páginas. Para features simp
 > Um prompt é uma instrução em linguagem natural que maximiza o que o modelo vai fazer. Uma spec é um contrato que delimita o que o modelo *pode* fazer. A distinção é sutil, mas decisiva: um prompt ótimo para vibe coding ("faz um sistema de login seguro") é uma spec péssima porque não fecha nenhuma das quatro dimensões acima.
 
 > [!example]- Spec ruim vs spec boa (mesmo feature)
-> **Ruim (prompt disfarçado de spec):**
-> "Implementar autenticação JWT. O usuário deve conseguir fazer login com e-mail e senha."
+> **Ruim (prompt disfarçado de spec):** "Implementar autenticação JWT. O usuário deve conseguir fazer login com e-mail e senha."
 >
-> **Boa (fecha as quatro dimensões):**
-> "Implementar endpoint `POST /auth/login`. Recebe `{email, password}`. Valida o hash com bcrypt (cost 12). Retorna `{token, expiresAt}` onde token é JWT com `exp` de 1h e `iss: api.prod`. Não armazena senhas em texto claro. Não usa algoritmos HS256 (usar RS256). Edge cases: email inexistente → 401 com mensagem genérica (não revelar se e-mail existe); senha incorreta → 401 com delay mínimo de 200ms (proteção timing attack); payload inválido → 400. Testes de acceptance: (1) login válido retorna token decodificável, (2) login com senha errada retorna 401, (3) endpoint leva ≥200ms em caso de falha."
+> **Boa (fecha as quatro dimensões):** "Implementar endpoint `POST /auth/login`. Recebe `{email, password}`. Valida o hash com bcrypt (cost 12). Retorna `{token, expiresAt}` onde token é JWT com `exp` de 1h e `iss: api.prod`. Não armazena senhas em texto claro. Não usa algoritmos HS256 (usar RS256). Edge cases: email inexistente → 401 com mensagem genérica (não revelar se e-mail existe); senha incorreta → 401 com delay mínimo de 200ms (proteção timing attack); payload inválido → 400. Testes de acceptance: (1) login válido retorna token decodificável, (2) login com senha errada retorna 401, (3) endpoint leva ≥200ms em caso de falha."
 >
 > A diferença: a spec ruim diz *o quê* o sistema faz. A boa fecha *como* e *o que não* — e define como verificar.
 
@@ -268,23 +265,17 @@ O que a spec *não* precisa ser: um documento de 40 páginas. Para features simp
 
 A disciplina não é uma postura filosófica — é um conjunto de verificações concretas. Estas seis perguntas separam o merge seguro do acidente esperando acontecer. Todas são rápidas o suficiente para caber em um review normal — e cada uma já detectou bugs reais em contextos reais de produção:
 
-**1. Eu entendo o que cada função faz e por quê?**
-Se a resposta for "mais ou menos", não aprove. O comprehension gate não é burocracia — é a única barreira entre você e código que ninguém vai conseguir manter. Peça ao agente para explicar cada decisão não-óbvia antes de você aprovar.
+**1. Eu entendo o que cada função faz e por quê?** Se a resposta for "mais ou menos", não aprove. O comprehension gate não é burocracia — é a única barreira entre você e código que ninguém vai conseguir manter. Peça ao agente para explicar cada decisão não-óbvia antes de você aprovar.
 
-**2. Os testes cobrem os edge cases que eu especifiquei?**
-"Os testes passam" não é o mesmo que "os testes cobrem o que importa". O agente pode ter escrito testes que passam para o caso feliz e ignoram os casos que vão pra produção amanhã. Revise o que os testes *não* testam, não só o que testam.
+**2. Os testes cobrem os edge cases que eu especifiquei?** "Os testes passam" não é o mesmo que "os testes cobrem o que importa". O agente pode ter escrito testes que passam para o caso feliz e ignoram os casos que vão pra produção amanhã. Revise o que os testes *não* testam, não só o que testam.
 
-**3. O PR toca `tests/` e `src/` ao mesmo tempo?**
-Se sim, leia os dois juntos e verifique se o agente modificou testes para fazer o código passar em vez de fazer o código passar nos testes. São situações opostas com o mesmo resultado superficial.
+**3. O PR toca `tests/` e `src/` ao mesmo tempo?** Se sim, leia os dois juntos e verifique se o agente modificou testes para fazer o código passar em vez de fazer o código passar nos testes. São situações opostas com o mesmo resultado superficial.
 
-**4. Há alguma string que parece um segredo hardcoded?**
-Commits de AI mostram 3,2% de taxa de secret-leak contra 1,5% humano. Uma busca rápida por padrões de API key, password, ou token antes do merge custa 30 segundos e pode evitar uma rotação de credenciais de emergência às 2h. O agente frequentemente inclui segredos "de exemplo" que nunca deveriam sair do ambiente local — e sem review, vão. Ferramentas como `git-secrets`, `trufflehog` ou `detect-secrets` automatizam boa parte dessa verificação e valem ser configuradas como hook de pre-commit.
+**4. Há alguma string que parece um segredo hardcoded?** Commits de AI mostram 3,2% de taxa de secret-leak contra 1,5% humano. Uma busca rápida por padrões de API key, password, ou token antes do merge custa 30 segundos e pode evitar uma rotação de credenciais de emergência às 2h. O agente frequentemente inclui segredos "de exemplo" que nunca deveriam sair do ambiente local — e sem review, vão. Ferramentas como `git-secrets`, `trufflehog` ou `detect-secrets` automatizam boa parte dessa verificação e valem ser configuradas como hook de pre-commit.
 
-**5. O código segue os padrões do projeto ou introduziu um novo padrão?**
-O agente não conhece as convenções implícitas do time — só as explícitas que estão no context file. Se há um padrão novo, foi deliberado? Se sim, atualiza o context file. Se não, rejeita e pede para o agente seguir o padrão existente.
+**5. O código segue os padrões do projeto ou introduziu um novo padrão?** O agente não conhece as convenções implícitas do time — só as explícitas que estão no context file. Se há um padrão novo, foi deliberado? Se sim, atualiza o context file. Se não, rejeita e pede para o agente seguir o padrão existente.
 
-**6. Existe alguma dependência nova que o agente adicionou sem mencionar?**
-Agentes costumam resolver problemas importando bibliotecas que "já resolvem isso" — sem verificar se estão na lista de dependências aprovadas do projeto, sem checar licenças, sem olhar o histórico de manutenção. Um `package.json` ou `pom.xml` com uma dependência nova não solicitada precisa de revisão explícita: por que essa biblioteca? qual a alternativa nativa? qual a última versão estável? está ativa?
+**6. Existe alguma dependência nova que o agente adicionou sem mencionar?** Agentes costumam resolver problemas importando bibliotecas que "já resolvem isso" — sem verificar se estão na lista de dependências aprovadas do projeto, sem checar licenças, sem olhar o histórico de manutenção. Um `package.json` ou `pom.xml` com uma dependência nova não solicitada precisa de revisão explícita: por que essa biblioteca? qual a alternativa nativa? qual a última versão estável? está ativa?
 
 > [!summary] O checklist em uma frase
 > As seis verificações traduzem o comprehension gate para o cotidiano: você aprova código de agente que pode explicar, com testes que validou você mesmo, sem segredos hardcoded, sem testes adulterados para passar, alinhado com os padrões do context file, e sem dependências não solicitadas.

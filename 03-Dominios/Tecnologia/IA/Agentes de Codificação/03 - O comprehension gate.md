@@ -268,8 +268,7 @@ O segundo papel é menos óbvio mas igualmente importante. Um time que pratica o
 > [!tip] Assista: We Need To Talk About The Vibe Coding Pandemic
 > **Canal:** CodeHead | **Duração:** ~5min | **Idioma:** EN
 >
-> Em 5 minutos, documenta empiricamente o que o comprehension gate tenta reverter: juniors que usam IA para tudo constroem sem modelo mental e não conseguem debugar quando algo quebra em produção. A distinção central — seniores leem código de IA como leriam um PR de júnior, com suspeita; juniores não têm modelo mental para debugar — é a descrição mais concisa da atitude que o gate formaliza.
-> Trecho de destaque [1:42]: *"A senior dev uses AI to knock out boilerplate fast, and then handles the architecture themselves. They read what the AI wrote the way they'd read a junior's pull request, with suspicion. A junior dev uses it for everything. And when something breaks in production, they have no mental model to debug from."*
+> Em 5 minutos, documenta empiricamente o que o comprehension gate tenta reverter: juniors que usam IA para tudo constroem sem modelo mental e não conseguem debugar quando algo quebra em produção. A distinção central — seniores leem código de IA como leriam um PR de júnior, com suspeita; juniores não têm modelo mental para debugar — é a descrição mais concisa da atitude que o gate formaliza. Trecho de destaque [1:42]: *"A senior dev uses AI to knock out boilerplate fast, and then handles the architecture themselves. They read what the AI wrote the way they'd read a junior's pull request, with suspicion. A junior dev uses it for everything. And when something breaks in production, they have no mental model to debug from."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=z4QMrqQhv34)
 

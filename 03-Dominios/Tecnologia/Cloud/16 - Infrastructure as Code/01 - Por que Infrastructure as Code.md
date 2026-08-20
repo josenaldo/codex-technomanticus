@@ -91,8 +91,7 @@ Essa propriedade de "rodar de novo não muda nada se já está no estado desejad
 > [!tip] Assista: Terraform explained in 15 mins | Terraform Tutorial for Beginners
 > **Canal:** TechWorld with Nana | **Duração:** ~18min | **Idioma:** EN
 >
-> Nana usa uma analogia direta pra fixar a diferença: no imperativo você lista os passos ("remova dois servidores, adicione um firewall"); no declarativo você só declara o número final desejado e deixa a ferramenta calcular o diff.
-> Trecho de destaque [13:02]: *"instead of defining what steps to be executed... you define the end state you desire"*
+> Nana usa uma analogia direta pra fixar a diferença: no imperativo você lista os passos ("remova dois servidores, adicione um firewall"); no declarativo você só declara o número final desejado e deixa a ferramenta calcular o diff. Trecho de destaque [13:02]: *"instead of defining what steps to be executed... you define the end state you desire"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=l5k1ai_GBDE)
 

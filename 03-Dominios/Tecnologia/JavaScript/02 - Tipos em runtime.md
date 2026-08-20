@@ -90,8 +90,7 @@ Number.MAX_SAFE_INTEGER  // 9007199254740991 (2^53 - 1)
 Acima de `MAX_SAFE_INTEGER`, inteiros não são representados com precisão exata. Para isso existe o `bigint`.
 
 > [!warning] Números em dinheiro: nunca use `number` diretamente
-> **O que acontece:** `0.1 + 0.2 === 0.30000000000000004` — erro imperceptível em tela, mas catastrófico em finanças.
-> **Padrão de produção:** trabalhar em **centavos** (inteiros) em vez de reais/dólares. Multiplique antes de operar, divida só para exibir:
+> **O que acontece:** `0.1 + 0.2 === 0.30000000000000004` — erro imperceptível em tela, mas catastrófico em finanças. **Padrão de produção:** trabalhar em **centavos** (inteiros) em vez de reais/dólares. Multiplique antes de operar, divida só para exibir:
 > ```js
 > // ❌ Arriscado em sistemas financeiros
 > const total = 19.9 * 3; // 59.699999999999996
@@ -190,13 +189,10 @@ O valor "nenhum objeto aqui, intencionalmente". Enquanto `undefined` é "ainda n
 > console.log(typeof bar);  // ReferenceError! — bar existe mas está na TDZ
 > let bar = 42;
 > ```
-> **Por quê:** O motor sabe que `bar` existe (foi hoisted), mas a TDZ proíbe qualquer acesso antes da inicialização — inclusive `typeof`. É uma quebra deliberada: `foo` é verdadeiramente inexistente; `bar` existe mas está "bloqueado".
-> **Como evitar:** Declare variáveis `let`/`const` antes de qualquer acesso — inclusive antes de testes de tipo.
+> **Por quê:** O motor sabe que `bar` existe (foi hoisted), mas a TDZ proíbe qualquer acesso antes da inicialização — inclusive `typeof`. É uma quebra deliberada: `foo` é verdadeiramente inexistente; `bar` existe mas está "bloqueado". **Como evitar:** Declare variáveis `let`/`const` antes de qualquer acesso — inclusive antes de testes de tipo.
 
 > [!warning] A pegadinha histórica: `typeof null === "object"`
-> **O que acontece:** `typeof null` retorna `"object"`, mas `null` é um primitivo — não é um objeto.
-> **Por quê:** Na implementação original do JavaScript em 1995, valores eram armazenados com uma tag de tipo nos bits menos significativos. A tag `000` significava "object". `null` era representado internamente como o ponteiro nulo (todos os bits zero) — então a tag de tipo `000` era lida erroneamente como "object".
-> **Como evitar:** Para checar `null`, sempre use `=== null` explicitamente:
+> **O que acontece:** `typeof null` retorna `"object"`, mas `null` é um primitivo — não é um objeto. **Por quê:** Na implementação original do JavaScript em 1995, valores eram armazenados com uma tag de tipo nos bits menos significativos. A tag `000` significava "object". `null` era representado internamente como o ponteiro nulo (todos os bits zero) — então a tag de tipo `000` era lida erroneamente como "object". **Como evitar:** Para checar `null`, sempre use `=== null` explicitamente:
 > ```js
 > // ❌ Não funciona:
 > typeof null === "object"  // true, mas enganoso
@@ -306,8 +302,7 @@ new String("hello").toUpperCase()  → "HELLO"
 Os três wrappers são `String`, `Number` e `Boolean`. Eles existem principalmente para que os primitivos tenham acesso a métodos.
 
 > [!warning] Nunca use `new String()`, `new Number()`, `new Boolean()`
-> **O que acontece:** Você cria um **objeto**, não um primitivo. Isso quebra comparações de igualdade de formas inesperadas.
-> **Por quê:**
+> **O que acontece:** Você cria um **objeto**, não um primitivo. Isso quebra comparações de igualdade de formas inesperadas. **Por quê:**
 > ```js
 > const a = "hello";
 > const b = new String("hello");
@@ -364,9 +359,7 @@ null === undefined  // false
 A convenção prática: **deixe o runtime usar `undefined`; use `null` quando você quer sinalizar explicitamente "nenhum valor aqui"**.
 
 > [!warning] Acessar propriedade em `null` ou `undefined` lança TypeError
-> **O que acontece:** `Cannot read properties of null (reading 'nome')` — provavelmente o erro mais frequente em JavaScript.
-> **Por quê:** `null` e `undefined` não têm propriedades. Autoboxing não se aplica a eles.
-> **Como evitar:** Use optional chaining:
+> **O que acontece:** `Cannot read properties of null (reading 'nome')` — provavelmente o erro mais frequente em JavaScript. **Por quê:** `null` e `undefined` não têm propriedades. Autoboxing não se aplica a eles. **Como evitar:** Use optional chaining:
 > ```js
 > const nome = usuario?.nome; // undefined se usuario for null/undefined
 > ```
@@ -411,18 +404,14 @@ console.log(pessoa);       // { idade: 30 }
 ## Armadilhas comuns
 
 > [!warning] `NaN` não é igual a si mesmo
-> **O que acontece:** `NaN === NaN` retorna `false` — é a única coisa em JavaScript que não é igual a si mesma.
-> **Por quê:** É assim definido no padrão IEEE 754: "not a number" não é um valor específico, é uma categoria de resultados inválidos.
-> **Como evitar:** Use `Number.isNaN(valor)` em vez de `valor === NaN`:
+> **O que acontece:** `NaN === NaN` retorna `false` — é a única coisa em JavaScript que não é igual a si mesma. **Por quê:** É assim definido no padrão IEEE 754: "not a number" não é um valor específico, é uma categoria de resultados inválidos. **Como evitar:** Use `Number.isNaN(valor)` em vez de `valor === NaN`:
 > ```js
 > Number.isNaN(NaN)       // true
 > Number.isNaN("texto")   // false (não converte, ao contrário de isNaN global)
 > ```
 
 > [!warning] Comparação de objetos nunca é por valor
-> **O que acontece:** Dois objetos com o mesmo conteúdo não são iguais via `===`.
-> **Por quê:** `===` compara referências (endereços de memória), não conteúdo.
-> **Como evitar:**
+> **O que acontece:** Dois objetos com o mesmo conteúdo não são iguais via `===`. **Por quê:** `===` compara referências (endereços de memória), não conteúdo. **Como evitar:**
 > ```js
 > { a: 1 } === { a: 1 }  // false — objetos diferentes na memória
 >
@@ -432,9 +421,7 @@ console.log(pessoa);       // { idade: 30 }
 > ```
 
 > [!warning] `typeof` não distingue `null` de objetos
-> **O que acontece:** `typeof null === "object"` retorna `true`, confundindo quem testa o tipo para decidir se algo é um objeto.
-> **Por quê:** Bug histórico (ver seção de `typeof`).
-> **Como evitar:**
+> **O que acontece:** `typeof null === "object"` retorna `true`, confundindo quem testa o tipo para decidir se algo é um objeto. **Por quê:** Bug histórico (ver seção de `typeof`). **Como evitar:**
 > ```js
 > // Padrão para checar "é um objeto real (não null)":
 > function isObject(val) {
@@ -443,9 +430,7 @@ console.log(pessoa);       // { idade: 30 }
 > ```
 
 > [!warning] Spread não faz cópia profunda de objetos aninhados
-> **O que acontece:** `{ ...obj }` copia apenas o primeiro nível — objetos aninhados ainda são referências compartilhadas.
-> **Por quê:** Spread copia as referências das propriedades, não os valores dos objetos aninhados.
-> **Como evitar:**
+> **O que acontece:** `{ ...obj }` copia apenas o primeiro nível — objetos aninhados ainda são referências compartilhadas. **Por quê:** Spread copia as referências das propriedades, não os valores dos objetos aninhados. **Como evitar:**
 > ```js
 > const original = { a: 1, nested: { b: 2 } };
 > const copia = { ...original };
@@ -463,8 +448,7 @@ console.log(pessoa);       // { idade: 30 }
 > structuredClone({ fn: () => {} }) // DataCloneError: () => {} could not be cloned
 > structuredClone(document.body)    // DataCloneError: HTMLBodyElement
 > ```
-> **Benchmark:** `JSON.stringify` é ~2-3× mais rápido para objetos simples, mas perde `Date` (vira string), `undefined`, `Map` e `Set`. `structuredClone` é a escolha correta para estado rico; `JSON.stringify` para payloads simples de serialização/cache.
-> **Alternativa para funções:** `lodash.cloneDeep` ou serialização manual campo a campo.
+> **Benchmark:** `JSON.stringify` é ~2-3× mais rápido para objetos simples, mas perde `Date` (vira string), `undefined`, `Map` e `Set`. `structuredClone` é a escolha correta para estado rico; `JSON.stringify` para payloads simples de serialização/cache. **Alternativa para funções:** `lodash.cloneDeep` ou serialização manual campo a campo.
 
 ---
 

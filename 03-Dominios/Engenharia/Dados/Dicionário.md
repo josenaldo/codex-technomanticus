@@ -16,15 +16,13 @@ publish: true
 
 > Glossário do domínio Engenharia de Dados: vocabulário da construção de sistemas analíticos — modelagem, pipelines, plataformas — neutro de ferramenta, com o exemplo de mercado citado quando ancora o conceito. Cada verbete é referenciado por uma ou mais notas das trilhas do domínio.
 
-<!--
-Como usar este glossário:
+<!-- Como usar este glossário:
 
 - Verbetes em ordem alfabética, um `###` cada.
 - Linkar de outra nota: `[[03-Dominios/Engenharia/Dados/Dicionário#Nome do termo]]`
 - Customizar texto exibido: `[[03-Dominios/Engenharia/Dados/Dicionário#Nome do termo|texto]]`
 - A skill /verbete adiciona termos automaticamente em ordem alfabética.
-- Cada verbete tem 2-4 linhas de definição em PT-BR, neutra de ferramenta.
--->
+- Cada verbete tem 2-4 linhas de definição em PT-BR, neutra de ferramenta. -->
 
 ### OLAP
 

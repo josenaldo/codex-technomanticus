@@ -32,8 +32,7 @@ No modelo de troca de mensagens, cada cozinheiro tem **sua própria** bancada. N
 Essa é a frase que virou bandeira de Go, atribuída a Rob Pike:
 
 > [!quote] O lema
-> "Don't communicate by sharing memory; share memory by communicating."
-> — Rob Pike (Go Proverbs, Gopherfest SV 2015). Verificado.
+> "Don't communicate by sharing memory; share memory by communicating." — Rob Pike (Go Proverbs, Gopherfest SV 2015). Verificado.
 
 Releia com atenção: não é "nunca compartilhe memória". É "não use memória compartilhada como **mecanismo de comunicação**". Em vez de duas tarefas espiarem a mesma variável e disputarem com lock, uma tarefa **envia o valor** para a outra por um canal. As duas se sincronizam no ato do envio. A comunicação e a sincronização viram a mesma coisa.
 

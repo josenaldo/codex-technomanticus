@@ -65,9 +65,7 @@ Isso significa dizer em voz alta, enquanto desenha: "o cliente manda a URL longa
 Cada seta ganha uma frase que a amarra a uma decisão anterior. É a mesma disciplina de "nunca porque sim" que atravessa este sub-galho inteiro.
 
 > [!warning] Diagrama macro que nunca chega ao deep dive
-> **O que acontece:** o candidato passa 25-30 minutos refinando o diagrama de alto nível — adicionando mais caixas, redesenhando o layout, detalhando cada seta — e o relógio acaba antes do deep dive começar.
-> **Por quê:** o diagrama macro é visualmente satisfatório e dá uma sensação de progresso; aprofundar em um componente é mais difícil e expõe lacunas de conhecimento, então o candidato — mesmo sem perceber — adia o momento desconfortável.
-> **Como evitar:** trate o passo 4 como um orçamento fixo de ~10 minutos, não elástico. Assim que o diagrama satisfaz os endpoints e os requisitos declarados, pare de mexer nele e anuncie a transição em voz alta: "esse é o esqueleto; agora eu queria aprofundar em [componente] porque é onde a carga é mais séria — pode ser?"
+> **O que acontece:** o candidato passa 25-30 minutos refinando o diagrama de alto nível — adicionando mais caixas, redesenhando o layout, detalhando cada seta — e o relógio acaba antes do deep dive começar. **Por quê:** o diagrama macro é visualmente satisfatório e dá uma sensação de progresso; aprofundar em um componente é mais difícil e expõe lacunas de conhecimento, então o candidato — mesmo sem perceber — adia o momento desconfortável. **Como evitar:** trate o passo 4 como um orçamento fixo de ~10 minutos, não elástico. Assim que o diagrama satisfaz os endpoints e os requisitos declarados, pare de mexer nele e anuncie a transição em voz alta: "esse é o esqueleto; agora eu queria aprofundar em [componente] porque é onde a carga é mais séria — pode ser?"
 
 ## Passo 5: o deep dive — onde a profundidade é medida
 
@@ -109,9 +107,7 @@ graph LR
 > Ótimo — isso ainda é colaboração, não fracasso. A diferença de senioridade não é *quem* escolhe, é como você reage: um candidato sênior, mesmo guiado, aprofunda com a mesma estrutura (falha → impacto → alternativas → escolha). O sinal ruim não é "o entrevistador apontou" — é "o candidato descreveu superficialmente mesmo apontado". Se antes disso você já tinha oferecido um candidato próprio ("eu sugeriria irmos fundo na geração de código, mas se preferir outro lugar, me avisa"), você já ganhou o ponto de iniciativa antes mesmo de saber qual será o deep dive real.
 
 > [!warning] Não assumir nenhum trade-off
-> **O que acontece:** o candidato descreve o deep dive como se a solução escolhida não tivesse custo nenhum — "eu uso um contador distribuído e resolve tudo".
-> **Por quê:** parece mais forte apresentar uma solução "perfeita" do que admitir uma fraqueza; na prática, admitir fraquezas é o comportamento premiado, não o penalizado.
-> **Como evitar:** toda escolha técnica tem um preço — nomeie-o. "O contador distribuído elimina colisão, mas adiciona uma dependência e um ponto de coordenação a mais; se esse serviço cair, a criação de URLs para de funcionar até eu ter um fallback de geração local." Um design sem trade-off admitido não parece maduro — parece que você não pensou o suficiente para encontrar a rachadura.
+> **O que acontece:** o candidato descreve o deep dive como se a solução escolhida não tivesse custo nenhum — "eu uso um contador distribuído e resolve tudo". **Por quê:** parece mais forte apresentar uma solução "perfeita" do que admitir uma fraqueza; na prática, admitir fraquezas é o comportamento premiado, não o penalizado. **Como evitar:** toda escolha técnica tem um preço — nomeie-o. "O contador distribuído elimina colisão, mas adiciona uma dependência e um ponto de coordenação a mais; se esse serviço cair, a criação de URLs para de funcionar até eu ter um fallback de geração local." Um design sem trade-off admitido não parece maduro — parece que você não pensou o suficiente para encontrar a rachadura.
 
 ## Passo 6: trade-offs e evolução
 
@@ -129,9 +125,7 @@ Essa fala faz duas coisas ao mesmo tempo: **assume um limite honesto** ("isto n�
 > Só mencionar, com a mesma disciplina de "número → decisão" das notas anteriores: nomeie o gatilho quantificado ("se passar de X QPS" ou "se o produto for global") e a mudança concreta que ele dispara ("eu trocaria Y por Z"). Detalhar a implementação da evolução não cabe nos 5 minutos finais — e normalmente nem é pedido. O que a rubrica quer ver aqui é que você entende arquitetura como algo que **muda com a escala**, não como um artefato estático que se acerta de primeira.
 
 > [!warning] Tratar o design como definitivo
-> **O que acontece:** o candidato encerra a entrevista sem mencionar nenhum limite do próprio design, como se a arquitetura desenhada fosse válida para qualquer escala futura.
-> **Por quê:** parece contraditório "vender" uma solução e simultaneamente apontar onde ela quebra — mas a entrevista não está comprando a solução, está avaliando se você entende suas fronteiras.
-> **Como evitar:** reserve deliberadamente a última fala para uma frase de honestidade: "isso funciona bem para os requisitos de hoje; o próximo gargalo, se a escala for N vezes maior, seria X — e eu resolveria com Y". Isso fecha a entrevista no eixo exato — trade-offs — que mais separa sênior de pleno segundo a rubrica da nota 01.
+> **O que acontece:** o candidato encerra a entrevista sem mencionar nenhum limite do próprio design, como se a arquitetura desenhada fosse válida para qualquer escala futura. **Por quê:** parece contraditório "vender" uma solução e simultaneamente apontar onde ela quebra — mas a entrevista não está comprando a solução, está avaliando se você entende suas fronteiras. **Como evitar:** reserve deliberadamente a última fala para uma frase de honestidade: "isso funciona bem para os requisitos de hoje; o próximo gargalo, se a escala for N vezes maior, seria X — e eu resolveria com Y". Isso fecha a entrevista no eixo exato — trade-offs — que mais separa sênior de pleno segundo a rubrica da nota 01.
 
 ## Gestão de tempo: por que o deep dive é o maior bloco
 

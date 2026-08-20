@@ -96,8 +96,7 @@ A régua mental: **Multi-AZ existe pra você não perceber que algo quebrou** (�
 > [!tip] Assista: SAA-C03 Part 11: RDS, RDS Multi-AZ vs Read Replicas & Aurora AWS Solutions Architect Exam Prep
 > **Canal:** TechBytes by Sam | **Duração:** ~12min | **Idioma:** EN
 >
-> Resolve, no formato de questão-comentada, exatamente esta pegadinha-mãe — mesmo padrão de cenário "alta disponibilidade + escala de leitura" que a nota usa, com a explicação técnica do porquê (síncrono vs assíncrono).
-> Trecho de destaque [01:01]: *"Multi-AZ deployments provide synchronous replication to a standby instance in a different availability zone, ensuring high availability and automatic failover. Read replicas are designed for scaling read-heavy database workloads by providing asynchronous copies"*
+> Resolve, no formato de questão-comentada, exatamente esta pegadinha-mãe — mesmo padrão de cenário "alta disponibilidade + escala de leitura" que a nota usa, com a explicação técnica do porquê (síncrono vs assíncrono). Trecho de destaque [01:01]: *"Multi-AZ deployments provide synchronous replication to a standby instance in a different availability zone, ensuring high availability and automatic failover. Read replicas are designed for scaling read-heavy database workloads by providing asynchronous copies"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=VQ4rKQ08C3I)
 
@@ -108,8 +107,7 @@ O segundo par mais confundido. A régua: SG lembra que deixou o tráfego sair, e
 > [!tip] Assista: Difference between NACL vs Security Group
 > **Canal:** Byte Novus | **Duração:** ~11min | **Idioma:** EN
 >
-> Reforça a mesma régua stateful/stateless desta nota com exemplo de IP específico — bom pra fixar por que "liberar entrada" numa NACL não libera a saída da resposta automaticamente, ao contrário do Security Group.
-> Trecho de destaque [06:43]: *"nacl is stateless where a security group is a stateful (...) in nacl, for a specific IP address, only inbound is allowed but the outbound is not allowed (...) whereas in security group it is stateful"*
+> Reforça a mesma régua stateful/stateless desta nota com exemplo de IP específico — bom pra fixar por que "liberar entrada" numa NACL não libera a saída da resposta automaticamente, ao contrário do Security Group. Trecho de destaque [06:43]: *"nacl is stateless where a security group is a stateful (...) in nacl, for a specific IP address, only inbound is allowed but the outbound is not allowed (...) whereas in security group it is stateful"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=32RRUEv-yt4)
 
@@ -151,10 +149,7 @@ Um roteiro de leitura que funciona:
 
 > Uma empresa roda um e-commerce em uma única instância EC2 atrás de um Application Load Balancer. Durante picos de tráfego sazonais, os clientes relatam lentidão no checkout. A equipe quer garantir que, se a instância atual falhar, o sistema continue disponível sem intervenção manual, mas sem aumentar significativamente o custo operacional em dias normais. Qual solução atende ao requisito com o MENOR esforço operacional?
 >
-> A. Criar uma segunda instância EC2 manualmente em outra AZ e configurar failover via script
-> B. Colocar a instância em um Auto Scaling Group com mínimo de 2 instâncias em AZs diferentes, atrás do ALB existente
-> C. Migrar o e-commerce para uma única instância EC2 maior (vertical scaling)
-> D. Configurar Multi-AZ no RDS que dá suporte à aplicação
+> A. Criar uma segunda instância EC2 manualmente em outra AZ e configurar failover via script B. Colocar a instância em um Auto Scaling Group com mínimo de 2 instâncias em AZs diferentes, atrás do ALB existente C. Migrar o e-commerce para uma única instância EC2 maior (vertical scaling) D. Configurar Multi-AZ no RDS que dá suporte à aplicação
 
 **Resolvendo pelo roteiro**: a pergunta pede "menor esforço operacional" + "sem intervenção manual" + "sem aumentar custo em dias normais". A restrição elimina C (não resolve falha de instância, só aumenta capacidade de uma única) e D (Multi-AZ é sobre o banco, não sobre a camada de aplicação que o cenário descreve). Entre A e B, A tem "script" e "manualmente" — contradiz "sem intervenção manual" e "menor esforço operacional". B é gerenciado (Auto Scaling Group), cobre falha de AZ automaticamente, e escala só quando necessário (custo normal em dias normais). **Resposta: B.**
 
@@ -214,10 +209,7 @@ Esse mapeamento nota-a-nota mais completo, cobrindo os 23 galhos anteriores e os
 
 > Uma aplicação de processamento de imagens recebe uploads de usuários e precisa redimensioná-los de forma assíncrona. Em horários de pico, o volume de uploads é 20x maior que em horários normais, e picos inesperados às vezes fazem a fila de processamento crescer sem controle, derrubando o serviço downstream. A solução deve absorver picos sem perder uploads e sem exigir que a equipe gerencie servidores.
 >
-> A. Escrever os uploads direto em uma instância EC2 que processa a fila em memória
-> B. Publicar cada upload em um tópico SNS que aciona diretamente uma função Lambda de redimensionamento
-> C. Enviar cada upload para uma fila SQS Standard; uma função Lambda consome a fila com concorrência controlada
-> D. Escrever os uploads em uma tabela DynamoDB e rodar um cron job em EC2 que varre a tabela a cada minuto
+> A. Escrever os uploads direto em uma instância EC2 que processa a fila em memória B. Publicar cada upload em um tópico SNS que aciona diretamente uma função Lambda de redimensionamento C. Enviar cada upload para uma fila SQS Standard; uma função Lambda consome a fila com concorrência controlada D. Escrever os uploads em uma tabela DynamoDB e rodar um cron job em EC2 que varre a tabela a cada minuto
 
 **Resolvendo pelo roteiro**: a restrição-chave é "absorver picos sem perder uploads" + "sem gerenciar servidores". A elimina-se de cara (servidor gerenciado manualmente, sem buffer — "decouple" gritando na cara do candidato). D elimina-se por "cron job em EC2" (servidor gerenciado) e por polling ineficiente. Entre B e C, a diferença é sutil e é exatamente o tipo de nuance que separa quem decorou "SNS = desacoplar" de quem entende o mecanismo: SNS entrega diretamente ao Lambda sem buffer — se o Lambda não conseguir processar no ritmo do pico, o SNS não segura a carga do jeito que uma fila segura. SQS, por ser uma fila real com profundidade configurável, absorve o pico e permite controlar a concorrência do Lambda (via configuração de concorrência reservada), evitando que o downstream seja sobrecarregado. **Resposta: C.**
 

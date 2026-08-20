@@ -62,9 +62,7 @@ Formulada por **George Miller em 1956**, num artigo célebre sobre os limites da
 Aqui a ressalva é mais importante do que o número em si. **Miller's Law é frequentemente citada de forma frouxa como se fosse uma regra de design** — "um menu não deve ter mais que 7 itens", "uma tela não deve ter mais que 9 elementos". Essa aplicação literal não é o que Miller estudou nem o que o número suporta: o estudo original mede memória de curto prazo em tarefas específicas de laboratório, não capacidade de processar um layout visual. **Trate 7±2 como ordem de grandeza — um lembrete de que a memória de curto prazo é limitada — não como uma regra rígida de quantos itens cabem numa tela ou num menu.** Decisões reais de quantos itens mostrar dependem de contexto, agrupamento visual (ver [[03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental/05 - Gestalt aplicada a UI|nota 05]]) e da tarefa — não de uma contagem mágica.
 
 > [!warning] Citar "regra dos 7 itens" como se fosse uma lei de layout
-> **O que acontece:** alguém rejeita um menu de 9 itens citando "a regra dos 7±2 de Miller" como justificativa técnica definitiva.
-> **Por quê:** Miller mediu memória de curto prazo em condições de laboratório específicas — recall de sequências, não navegação visual com suporte de reconhecimento (que é justamente o que a heurística 6 de Nielsen recomenda usar em vez de recordação). Aplicar o número fora do contexto que ele mede é usar ciência real para justificar uma opinião de design.
-> **Como evitar:** use Miller's Law como lembrete qualitativo ("a memória de curto prazo é limitada, agrupe itens relacionados") e decida a contagem real por teste com usuário e por agrupamento Gestalt, não por aritmética.
+> **O que acontece:** alguém rejeita um menu de 9 itens citando "a regra dos 7±2 de Miller" como justificativa técnica definitiva. **Por quê:** Miller mediu memória de curto prazo em condições de laboratório específicas — recall de sequências, não navegação visual com suporte de reconhecimento (que é justamente o que a heurística 6 de Nielsen recomenda usar em vez de recordação). Aplicar o número fora do contexto que ele mede é usar ciência real para justificar uma opinião de design. **Como evitar:** use Miller's Law como lembrete qualitativo ("a memória de curto prazo é limitada, agrupe itens relacionados") e decida a contagem real por teste com usuário e por agrupamento Gestalt, não por aritmética.
 
 ## Peak-End Rule — o que fica na memória
 
@@ -111,19 +109,13 @@ Um SaaS B2B pede que o usuário complete o perfil da empresa num único formulá
 ## Armadilhas comuns
 
 > [!warning] Atribuir as leis a Yablonski
-> **O que acontece:** alguém cita "a lei de Fitts do Yablonski" ou trata *Laws of UX* como a fonte original dos princípios.
-> **Por quê:** Yablonski é curador — organizou e popularizou 21 princípios de pesquisadores de psicologia e cognição de décadas diferentes. A atribuição correta é ao pesquisador original (Fitts, Hick, Miller, Kahneman), com Yablonski citado como a fonte de curadoria/aplicação a UI.
-> **Como evitar:** ao citar uma lei, nomeie o pesquisador original; cite Yablonski/*Laws of UX* quando a referência for especificamente à curadoria e aos exemplos aplicados a interface.
+> **O que acontece:** alguém cita "a lei de Fitts do Yablonski" ou trata *Laws of UX* como a fonte original dos princípios. **Por quê:** Yablonski é curador — organizou e popularizou 21 princípios de pesquisadores de psicologia e cognição de décadas diferentes. A atribuição correta é ao pesquisador original (Fitts, Hick, Miller, Kahneman), com Yablonski citado como a fonte de curadoria/aplicação a UI. **Como evitar:** ao citar uma lei, nomeie o pesquisador original; cite Yablonski/*Laws of UX* quando a referência for especificamente à curadoria e aos exemplos aplicados a interface.
 
 > [!warning] Usar Miller's Law como regra literal de contagem
-> **O que acontece:** decisões de quantos itens caber num menu são justificadas citando "7±2" como se fosse uma especificação técnica.
-> **Por quê:** como detalhado na seção sobre Miller acima, o estudo original mede memória de curto prazo em condições muito específicas, não capacidade de processar um layout visual com suporte de reconhecimento.
-> **Como evitar:** use o número como lembrete qualitativo de que a memória é limitada; decida a contagem real por teste com usuário e por agrupamento visual (Gestalt).
+> **O que acontece:** decisões de quantos itens caber num menu são justificadas citando "7±2" como se fosse uma especificação técnica. **Por quê:** como detalhado na seção sobre Miller acima, o estudo original mede memória de curto prazo em condições muito específicas, não capacidade de processar um layout visual com suporte de reconhecimento. **Como evitar:** use o número como lembrete qualitativo de que a memória é limitada; decida a contagem real por teste com usuário e por agrupamento visual (Gestalt).
 
 > [!warning] Ignorar Peak-End na tela de erro
-> **O que acontece:** o time investe pesado no fluxo feliz e trata a tela de erro como um afterthought — mensagem genérica, sem próximo passo, sem cuidado visual.
-> **Por quê:** pela Peak-End Rule, a tela de erro é exatamente o tipo de momento de pico (neste caso, negativo) que fica gravado na memória da experiência inteira — desproporcionalmente ao tempo que o usuário passa nela.
-> **Como evitar:** trate telas de erro e de sucesso como superfícies de design de primeira classe, não como "o que sobra depois do fluxo principal estar pronto".
+> **O que acontece:** o time investe pesado no fluxo feliz e trata a tela de erro como um afterthought — mensagem genérica, sem próximo passo, sem cuidado visual. **Por quê:** pela Peak-End Rule, a tela de erro é exatamente o tipo de momento de pico (neste caso, negativo) que fica gravado na memória da experiência inteira — desproporcionalmente ao tempo que o usuário passa nela. **Como evitar:** trate telas de erro e de sucesso como superfícies de design de primeira classe, não como "o que sobra depois do fluxo principal estar pronto".
 
 ## Como explicar em inglês
 

@@ -70,9 +70,7 @@ A fase de **presentation delay** do INP (ver [[03-Dominios/Tecnologia/Web Perfor
 E há um agravante de runtime que merece nota própria: se o seu JavaScript **lê** propriedades geométricas logo depois de **escrever** no DOM, ele pode forçar o browser a fazer reflows síncronos repetidos no meio de um loop — o *layout thrashing*, tema da próxima nota.
 
 > [!warning] Animar `width`/`height`/`top`/`left`
-> **O que acontece:** uma animação ou transição usando `width`, `height`, `top` ou `left` engasga, especialmente no mobile.
-> **Por quê:** cada quadro da animação dispara um **reflow** (layout) da subárvore afetada — 60 vezes por segundo, se der conta. Em telas complexas ou aparelhos fracos, não dá: os quadros caem e a animação treme.
-> **Como evitar:** anime com `transform` (para mover/escalar/rotacionar) e `opacity` (para aparecer/sumir). Se precisar de um efeito de tamanho, use `transform: scale()` em vez de `width`/`height`. A dica canônica: "anime apenas `transform` e `opacity`".
+> **O que acontece:** uma animação ou transição usando `width`, `height`, `top` ou `left` engasga, especialmente no mobile. **Por quê:** cada quadro da animação dispara um **reflow** (layout) da subárvore afetada — 60 vezes por segundo, se der conta. Em telas complexas ou aparelhos fracos, não dá: os quadros caem e a animação treme. **Como evitar:** anime com `transform` (para mover/escalar/rotacionar) e `opacity` (para aparecer/sumir). Se precisar de um efeito de tamanho, use `transform: scale()` em vez de `width`/`height`. A dica canônica: "anime apenas `transform` e `opacity`".
 
 **Reflow, repaint e composite em uma frase:** mudanças de geometria custam caro porque disparam layout → paint → composite, mudanças de aparência custam médio (paint → composite), e `transform`/`opacity` custam pouco (só composite, na GPU) — então para animar e responder rápido, prefira as propriedades que só compõem.
 

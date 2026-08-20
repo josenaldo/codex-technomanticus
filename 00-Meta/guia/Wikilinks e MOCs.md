@@ -92,10 +92,7 @@ Um bom MOC tem:
 
 ````markdown
 ```dataview
-LIST
-FROM "03-Dominios/Tecnologia/Java"
-WHERE type != "moc"
-SORT file.name ASC
+LIST FROM "03-Dominios/Tecnologia/Java" WHERE type != "moc" SORT file.name ASC
 ```
 ````
 

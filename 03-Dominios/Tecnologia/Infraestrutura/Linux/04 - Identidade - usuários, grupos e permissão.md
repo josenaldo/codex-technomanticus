@@ -182,24 +182,16 @@ Vale saber que existe um modelo mais fino que "root ou não root": as **capabili
 ## Armadilhas comuns
 
 > [!warning] `chmod 777` como solução de permissão negada
-> **O que acontece:** funciona, e por isso vira hábito. Depois, qualquer processo da máquina pode alterar o arquivo — inclusive um comprometido.
-> **Por quê:** `777` não corrige o problema, ele o **remove**, junto com a proteção.
-> **Como evitar:** diagnostique antes. `namei -l <caminho>` mostra onde a cadeia quebra, e quase sempre a resposta é `x` faltando num diretório-pai ou o dono errado — coisas que `chown` e um `chmod` cirúrgico resolvem.
+> **O que acontece:** funciona, e por isso vira hábito. Depois, qualquer processo da máquina pode alterar o arquivo — inclusive um comprometido. **Por quê:** `777` não corrige o problema, ele o **remove**, junto com a proteção. **Como evitar:** diagnostique antes. `namei -l <caminho>` mostra onde a cadeia quebra, e quase sempre a resposta é `x` faltando num diretório-pai ou o dono errado — coisas que `chown` e um `chmod` cirúrgico resolvem.
 
 > [!warning] `chmod -R 755` num diretório com arquivos
-> **O que acontece:** todo arquivo de dado vira executável.
-> **Por quê:** o mesmo `x` que significa "atravessar" em diretório significa "executar" em arquivo, e o `-R` não distingue.
-> **Como evitar:** trate os dois separadamente — `find . -type d -exec chmod 755 {} +` e `find . -type f -exec chmod 644 {} +`. Ou use as maiúsculas do modo simbólico: `chmod -R a+rX .`, onde `X` só aplica `x` a diretórios e ao que já era executável.
+> **O que acontece:** todo arquivo de dado vira executável. **Por quê:** o mesmo `x` que significa "atravessar" em diretório significa "executar" em arquivo, e o `-R` não distingue. **Como evitar:** trate os dois separadamente — `find . -type d -exec chmod 755 {} +` e `find . -type f -exec chmod 644 {} +`. Ou use as maiúsculas do modo simbólico: `chmod -R a+rX .`, onde `X` só aplica `x` a diretórios e ao que já era executável.
 
 > [!warning] Achar que grupo mais permissivo ajuda o dono
-> **O que acontece:** arquivo `r--rw----`, o dono não consegue escrever, e ninguém entende.
-> **Por quê:** o kernel avalia **um** trio. Sendo você o dono, valem os bits do dono, e acabou.
-> **Como evitar:** ler a permissão pela ordem de avaliação, não como soma.
+> **O que acontece:** arquivo `r--rw----`, o dono não consegue escrever, e ninguém entende. **Por quê:** o kernel avalia **um** trio. Sendo você o dono, valem os bits do dono, e acabou. **Como evitar:** ler a permissão pela ordem de avaliação, não como soma.
 
 > [!warning] Rodar tudo como root porque "é mais simples"
-> **O que acontece:** funciona sempre — inclusive quando não deveria. Um caminho errado apaga o que não devia; uma falha na aplicação vira controle da máquina.
-> **Por quê:** root não passa por verificação.
-> **Como evitar:** usuário de serviço por aplicação, com o mínimo. Em container vale o mesmo, e com um agravante: UID 0 dentro do container é UID 0 no kernel do host, salvo namespace de usuário — é a razão de o `USER` no Dockerfile importar.
+> **O que acontece:** funciona sempre — inclusive quando não deveria. Um caminho errado apaga o que não devia; uma falha na aplicação vira controle da máquina. **Por quê:** root não passa por verificação. **Como evitar:** usuário de serviço por aplicação, com o mínimo. Em container vale o mesmo, e com um agravante: UID 0 dentro do container é UID 0 no kernel do host, salvo namespace de usuário — é a razão de o `USER` no Dockerfile importar.
 
 ---
 

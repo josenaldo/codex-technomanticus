@@ -18,20 +18,10 @@ aliases:
 # System design em entrevista — a ponte
 
 > [!abstract] TL;DR
-> Esta nota é **deliberadamente curta**. A entrevista de system design tem trilha inteira neste vault —
-> framework de cinco notas, blocos de construção, padrões recorrentes, oito walkthroughs e um capstone
-> sobre conduzir a conversa. Aqui fica só o que pertence a **este** galho: onde a etapa se encaixa no
-> funil, o que ela mede num sênior (que não é conhecimento de componentes, e sim **julgamento sob
-> ambiguidade**) e o comportamento que a reprova com mais frequência — projetar para uma escala que
-> ninguém pediu. Para estudar a etapa, o caminho é a trilha.
+> Esta nota é **deliberadamente curta**. A entrevista de system design tem trilha inteira neste vault — framework de cinco notas, blocos de construção, padrões recorrentes, oito walkthroughs e um capstone sobre conduzir a conversa. Aqui fica só o que pertence a **este** galho: onde a etapa se encaixa no funil, o que ela mede num sênior (que não é conhecimento de componentes, e sim **julgamento sob ambiguidade**) e o comportamento que a reprova com mais frequência — projetar para uma escala que ninguém pediu. Para estudar a etapa, o caminho é a trilha.
 
 > [!info] Onde estudar de verdade
-> **[[03-Dominios/Engenharia/Arquitetura/System Design/index|System Design]]** — a trilha completa:
-> [[03-Dominios/Engenharia/Arquitetura/System Design/1 - Framework de entrevista/index|framework de entrevista]] (clarificar requisitos, estimativas, API e modelo de dados, do macro ao deep dive),
-> [[03-Dominios/Engenharia/Arquitetura/System Design/2 - Building blocks/index|building blocks]],
-> [[03-Dominios/Engenharia/Arquitetura/System Design/3 - Padrões recorrentes/index|padrões recorrentes]],
-> [[03-Dominios/Engenharia/Arquitetura/System Design/4 - Walkthroughs/index|walkthroughs]] e o capstone
-> [[03-Dominios/Engenharia/Arquitetura/System Design/Conduzindo a entrevista completa|Conduzindo a entrevista completa]].
+> **[[03-Dominios/Engenharia/Arquitetura/System Design/index|System Design]]** — a trilha completa: [[03-Dominios/Engenharia/Arquitetura/System Design/1 - Framework de entrevista/index|framework de entrevista]] (clarificar requisitos, estimativas, API e modelo de dados, do macro ao deep dive), [[03-Dominios/Engenharia/Arquitetura/System Design/2 - Building blocks/index|building blocks]], [[03-Dominios/Engenharia/Arquitetura/System Design/3 - Padrões recorrentes/index|padrões recorrentes]], [[03-Dominios/Engenharia/Arquitetura/System Design/4 - Walkthroughs/index|walkthroughs]] e o capstone [[03-Dominios/Engenharia/Arquitetura/System Design/Conduzindo a entrevista completa|Conduzindo a entrevista completa]].
 
 ## Por que esta nota existe
 

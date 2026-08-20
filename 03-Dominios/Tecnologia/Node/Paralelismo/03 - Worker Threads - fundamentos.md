@@ -596,17 +596,13 @@ Com o ciclo de vida de um Worker Thread claro — como criá-lo, controlar os ev
 
 ### Perguntas frequentes em entrevista
 
-**"O que é `parentPort` e quem pode usá-lo?"**
-`parentPort` é o `MessagePort` que conecta o worker à thread que o criou. Só existe dentro de um worker — é `null` no main thread. O worker usa `parentPort.postMessage(data)` para enviar dados ao main; o main usa `worker.postMessage(data)` para enviar ao worker (recebido via `parentPort.on('message', ...)`).
+**"O que é `parentPort` e quem pode usá-lo?"** `parentPort` é o `MessagePort` que conecta o worker à thread que o criou. Só existe dentro de um worker — é `null` no main thread. O worker usa `parentPort.postMessage(data)` para enviar dados ao main; o main usa `worker.postMessage(data)` para enviar ao worker (recebido via `parentPort.on('message', ...)`).
 
-**"Qual a diferença entre `workerData` e `postMessage`?"**
-`workerData` é passado uma única vez na criação do worker via construtor — é estático, não pode ser alterado depois. `postMessage` permite troca de mensagens dinâmica durante todo o ciclo de vida do worker em ambas as direções. Use `workerData` para configuração e input inicial; `postMessage` para comunicação contínua.
+**"Qual a diferença entre `workerData` e `postMessage`?"** `workerData` é passado uma única vez na criação do worker via construtor — é estático, não pode ser alterado depois. `postMessage` permite troca de mensagens dinâmica durante todo o ciclo de vida do worker em ambas as direções. Use `workerData` para configuração e input inicial; `postMessage` para comunicação contínua.
 
-**"O que acontece se eu não chamar `terminate()` e o worker nunca encerrar?"**
-O processo Node não encerra enquanto houver workers ativos (a menos que `unref()` tenha sido chamado). Um worker "travado" — esperando por mensagem que nunca vem, ou em loop infinito — mantém o processo vivo indefinidamente. A solução é garantir que o worker encerra sozinho após o trabalho, ou usar encerramento cooperativo via mensagem + fallback de timeout com `terminate()`.
+**"O que acontece se eu não chamar `terminate()` e o worker nunca encerrar?"** O processo Node não encerra enquanto houver workers ativos (a menos que `unref()` tenha sido chamado). Um worker "travado" — esperando por mensagem que nunca vem, ou em loop infinito — mantém o processo vivo indefinidamente. A solução é garantir que o worker encerra sozinho após o trabalho, ou usar encerramento cooperativo via mensagem + fallback de timeout com `terminate()`.
 
-**"Por que não usar `terminate()` como primeira opção?"**
-`terminate()` é equivalente semanticamente a `SIGKILL`: nenhum cleanup é executado no worker. Operações de I/O em progresso ficam parcialmente executadas, arquivos podem ficar corrompidos, conexões podem ficar abertas. Em workers que realizam I/O ou acesso a banco de dados, `terminate()` é um último recurso — não o mecanismo primário de encerramento.
+**"Por que não usar `terminate()` como primeira opção?"** `terminate()` é equivalente semanticamente a `SIGKILL`: nenhum cleanup é executado no worker. Operações de I/O em progresso ficam parcialmente executadas, arquivos podem ficar corrompidos, conexões podem ficar abertas. Em workers que realizam I/O ou acesso a banco de dados, `terminate()` é um último recurso — não o mecanismo primário de encerramento.
 
 ---
 

@@ -21,9 +21,7 @@ aliases:
 > Recomendado ter passado por [[Anatomia de Agents]] (Trilha 2 — fundamentos de tools) e [[Agentes de Codificação]] (visão prática). Para construção de servers, helps ter Python ou TypeScript.
 
 > [!tip] A premissa central
-> N clients × M sistemas = N×M integrações custom (era pré-MCP).
-> Com MCP: N clients + M servers = N+M conexões padronizadas.
-> Quando N e M crescem, a diferença é gigante.
+> N clients × M sistemas = N×M integrações custom (era pré-MCP). Com MCP: N clients + M servers = N+M conexões padronizadas. Quando N e M crescem, a diferença é gigante.
 
 ## Comece por aqui
 

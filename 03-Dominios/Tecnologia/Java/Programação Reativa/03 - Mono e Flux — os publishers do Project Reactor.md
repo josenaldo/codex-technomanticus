@@ -22,9 +22,7 @@ aliases:
 # Mono e Flux — os publishers do Project Reactor
 
 > [!abstract] TL;DR
-> `Mono<T>` representa **0-1 elemento** e `Flux<T>` representa **0-N elementos** — a cardinalidade fica codificada no próprio **sistema de tipos**, não escondida em documentação.
-> Ambos são `Publisher`s **lazy**: descrever o pipeline (assembly) não dispara nada; o trabalho só roda no `subscribe`.
-> São as duas peças centrais do **Project Reactor** (família 3.x, hoje 3.8.x), a implementação de Reactive Streams adotada pelo Spring WebFlux.
+> `Mono<T>` representa **0-1 elemento** e `Flux<T>` representa **0-N elementos** — a cardinalidade fica codificada no próprio **sistema de tipos**, não escondida em documentação. Ambos são `Publisher`s **lazy**: descrever o pipeline (assembly) não dispara nada; o trabalho só roda no `subscribe`. São as duas peças centrais do **Project Reactor** (família 3.x, hoje 3.8.x), a implementação de Reactive Streams adotada pelo Spring WebFlux.
 
 ## O que é
 

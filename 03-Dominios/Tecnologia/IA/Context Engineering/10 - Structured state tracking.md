@@ -256,17 +256,13 @@ Structured state em arquivos é o começo. Há cenários onde ele não resolve:
 
 ## Estado da arte — junho de 2026
 
-**File-based state como padrão em coding agents**
-Em 2025-2026, o padrão de arquivos de estado tornou-se standard em coding agents comerciais. Claude Code usa `CLAUDE.md` como anchor de contexto de projeto. Cursor usa `.cursor/rules`. Copilot usa `.github/copilot-instructions.md`. Todos são variações do mesmo princípio: estado configurável e durável em arquivos de texto que o agente lê no início de cada sessão.
+**File-based state como padrão em coding agents** Em 2025-2026, o padrão de arquivos de estado tornou-se standard em coding agents comerciais. Claude Code usa `CLAUDE.md` como anchor de contexto de projeto. Cursor usa `.cursor/rules`. Copilot usa `.github/copilot-instructions.md`. Todos são variações do mesmo princípio: estado configurável e durável em arquivos de texto que o agente lê no início de cada sessão.
 
-**Structured compaction via state files**
-Uma evolução de 2026: em vez de compactar o histórico de conversa (que pode perder informação), compactar em NOTES.md — o agente decide o que preservar em formato estruturado, e o histórico bruto é descartado. A compactação é semântica, não automática.
+**Structured compaction via state files** Uma evolução de 2026: em vez de compactar o histórico de conversa (que pode perder informação), compactar em NOTES.md — o agente decide o que preservar em formato estruturado, e o histórico bruto é descartado. A compactação é semântica, não automática.
 
-**Git como sistema de memória**
-Um insight que ganhou tração em 2026: o histórico git é memória de agente gratuita. Commit messages bem escritos ("refatorou fetch_transactions para eager loading — resolveu p95=2.3s → 340ms") são NOTES.md implícito. Agentes que fazem commits atômicos por decisão (não por sessão) têm melhor "memória" do que agentes que compactam em arquivo separado.
+**Git como sistema de memória** Um insight que ganhou tração em 2026: o histórico git é memória de agente gratuita. Commit messages bem escritos ("refatorou fetch_transactions para eager loading — resolveu p95=2.3s → 340ms") são NOTES.md implícito. Agentes que fazem commits atômicos por decisão (não por sessão) têm melhor "memória" do que agentes que compactam em arquivo separado.
 
-**TypeSpec e JSON Schema para state validation**
-Para agentes que precisam de state mais estruturado, 2026 viu adoção de schemas para validar os arquivos de estado antes de persistir. O agente gera `STATE.json` validado por um schema — garantindo que campos críticos nunca estão ausentes sem depender de boa vontade do modelo.
+**TypeSpec e JSON Schema para state validation** Para agentes que precisam de state mais estruturado, 2026 viu adoção de schemas para validar os arquivos de estado antes de persistir. O agente gera `STATE.json` validado por um schema — garantindo que campos críticos nunca estão ausentes sem depender de boa vontade do modelo.
 
 ---
 

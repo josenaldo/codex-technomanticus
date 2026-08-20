@@ -69,19 +69,13 @@ Um fractional vinha cobrando $200/hora de um cliente, faturando em média 35 hor
 ## Armadilhas comuns
 
 > [!warning] Ancorar preço baixo na primeira negociação
-> **O que acontece:** sob pressão de fechar o primeiro cliente, o profissional aceita um valor abaixo do calculado, achando que "depois eu subo".
-> **Por quê:** o primeiro preço vira referência — tanto pro próprio cliente em renovações quanto psicologicamente pro profissional, que passa a ancorar negociações futuras nesse número.
-> **Como evitar:** calcular o número antes da conversa (ver método acima) e tratá-lo como piso, não como ponto de partida pra negociação pra baixo.
+> **O que acontece:** sob pressão de fechar o primeiro cliente, o profissional aceita um valor abaixo do calculado, achando que "depois eu subo". **Por quê:** o primeiro preço vira referência — tanto pro próprio cliente em renovações quanto psicologicamente pro profissional, que passa a ancorar negociações futuras nesse número. **Como evitar:** calcular o número antes da conversa (ver método acima) e tratá-lo como piso, não como ponto de partida pra negociação pra baixo.
 
 > [!warning] "Desconto geográfico" automático por estar no Brasil
-> **O que acontece:** o profissional assume que, por morar no Brasil, deveria cobrar significativamente menos que o mercado americano, independente da qualidade da entrega.
-> **Por quê:** o cliente internacional está pagando pelo resultado técnico, não pelo custo de vida do fractional — um fractional brasileiro competente entrega o mesmo valor que um americano equivalente. Descontar demais deixa dinheiro na mesa sem necessidade.
-> **Como evitar:** precificar pelo valor entregue e pela faixa de mercado do cliente, com um desconto moderado e consciente (não automático) enquanto o portfolio ainda está em construção — ver [[08 - Se diferenciando como fractional brasileiro]] pra como transformar isso em vantagem competitiva em vez de justificativa pra cobrar pouco.
+> **O que acontece:** o profissional assume que, por morar no Brasil, deveria cobrar significativamente menos que o mercado americano, independente da qualidade da entrega. **Por quê:** o cliente internacional está pagando pelo resultado técnico, não pelo custo de vida do fractional — um fractional brasileiro competente entrega o mesmo valor que um americano equivalente. Descontar demais deixa dinheiro na mesa sem necessidade. **Como evitar:** precificar pelo valor entregue e pela faixa de mercado do cliente, com um desconto moderado e consciente (não automático) enquanto o portfolio ainda está em construção — ver [[08 - Se diferenciando como fractional brasileiro]] pra como transformar isso em vantagem competitiva em vez de justificativa pra cobrar pouco.
 
 > [!warning] Não reajustar o retainer com o tempo
-> **O que acontece:** o mesmo retainer segue igual por anos, mesmo com o custo de vida, a experiência acumulada e a demanda pelo profissional crescendo.
-> **Por quê:** clientes raramente oferecem reajuste espontâneo — cabe ao fractional revisitar o valor periodicamente, especialmente em renovação de contrato.
-> **Como evitar:** definir de antemão uma cadência de revisão (ex: anual, ou a cada renovação de 6 meses) e comunicar isso já no contrato inicial (ver [[13 - Anatomia de um contrato internacional de serviço]]).
+> **O que acontece:** o mesmo retainer segue igual por anos, mesmo com o custo de vida, a experiência acumulada e a demanda pelo profissional crescendo. **Por quê:** clientes raramente oferecem reajuste espontâneo — cabe ao fractional revisitar o valor periodicamente, especialmente em renovação de contrato. **Como evitar:** definir de antemão uma cadência de revisão (ex: anual, ou a cada renovação de 6 meses) e comunicar isso já no contrato inicial (ver [[13 - Anatomia de um contrato internacional de serviço]]).
 
 ## Como explicar em inglês
 

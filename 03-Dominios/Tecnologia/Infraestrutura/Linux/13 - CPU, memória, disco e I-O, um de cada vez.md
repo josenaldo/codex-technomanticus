@@ -47,8 +47,7 @@ Duas leituras que só aparecem com `-P ALL`:
 | `%idle` | ocioso de fato | — |
 
 > [!warning] `%iowait` não significa "o disco está lento"
-> Ele mede **CPU ociosa enquanto há I/O pendente**. Se a máquina tem trabalho de CPU para fazer, o `%iowait` cai — sem que o disco tenha melhorado em nada. E o contrário: numa máquina sem outro trabalho, um único processo lendo disco produz `%iowait` alto e isso pode ser perfeitamente normal.
-> Ele é **pista para mudar de eixo**, nunca conclusão. Quem responde sobre o disco é o `iostat`.
+> Ele mede **CPU ociosa enquanto há I/O pendente**. Se a máquina tem trabalho de CPU para fazer, o `%iowait` cai — sem que o disco tenha melhorado em nada. E o contrário: numa máquina sem outro trabalho, um único processo lendo disco produz `%iowait` alto e isso pode ser perfeitamente normal. Ele é **pista para mudar de eixo**, nunca conclusão. Quem responde sobre o disco é o `iostat`.
 
 O `%steal` merece nota própria porque quase ninguém olha: em VM na nuvem, ele mede o tempo em que a sua CPU virtual **quis rodar e não conseguiu**, porque o hospedeiro estava atendendo outro cliente. `%steal` consistentemente alto significa vizinho barulhento ou hospedeiro superlotado — e a ação é trocar de instância ou falar com o provedor, não otimizar o seu código.
 
@@ -128,8 +127,7 @@ As colunas que decidem:
 | `%util` | fração do tempo com ao menos uma requisição em andamento |
 
 > [!warning] `%util` deixou de significar o que significava
-> Em disco rotacional, que atende uma requisição por vez, `%util` em 100% queria dizer saturado. Em **SSD e NVMe**, que atendem dezenas de requisições em paralelo, o dispositivo pode estar em 100% de `%util` e ainda ter muita capacidade sobrando — basta haver sempre alguma operação em voo.
-> O par que substitui: **`await`** (a latência doeu?) e **`aqu-sz`** (há fila?). Uma referência grosseira ajuda a calibrar: NVMe costuma responder abaixo de 1 ms; SSD SATA na casa de poucos ms; disco rotacional em dezenas de ms. `await` de 200 ms num NVMe é anomalia, mesmo com `%util` moderado.
+> Em disco rotacional, que atende uma requisição por vez, `%util` em 100% queria dizer saturado. Em **SSD e NVMe**, que atendem dezenas de requisições em paralelo, o dispositivo pode estar em 100% de `%util` e ainda ter muita capacidade sobrando — basta haver sempre alguma operação em voo. O par que substitui: **`await`** (a latência doeu?) e **`aqu-sz`** (há fila?). Uma referência grosseira ajuda a calibrar: NVMe costuma responder abaixo de 1 ms; SSD SATA na casa de poucos ms; disco rotacional em dezenas de ms. `await` de 200 ms num NVMe é anomalia, mesmo com `%util` moderado.
 
 E para descobrir **quem** está fazendo o I/O:
 
@@ -200,24 +198,16 @@ A ação é externa: mudar de tipo de instância, migrar para outro hospedeiro, 
 ## Armadilhas comuns
 
 > [!warning] "A memória está cheia"
-> **O que acontece:** alguém vê `free` baixo e conclui falta de memória; às vezes reinicia o serviço "para liberar".
-> **Por quê:** o cache de página ocupa a memória ociosa de propósito, e é devolvido sob demanda.
-> **Como evitar:** leia `available`. E jamais use `drop_caches` em produção para "melhorar" — isso descarta cache útil e piora o desempenho até o cache se reconstruir.
+> **O que acontece:** alguém vê `free` baixo e conclui falta de memória; às vezes reinicia o serviço "para liberar". **Por quê:** o cache de página ocupa a memória ociosa de propósito, e é devolvido sob demanda. **Como evitar:** leia `available`. E jamais use `drop_caches` em produção para "melhorar" — isso descarta cache útil e piora o desempenho até o cache se reconstruir.
 
 > [!warning] Tratar `%util` de NVMe como saturação
-> **O que acontece:** troca-se o disco por um mais rápido e nada muda.
-> **Por quê:** `%util` mede tempo com I/O em voo, não capacidade — e dispositivos paralelos chegam a 100% sem estarem no limite.
-> **Como evitar:** `await` e `aqu-sz`. Se a latência está boa e a fila vazia, o disco não é o gargalo, por mais alto que esteja o `%util`.
+> **O que acontece:** troca-se o disco por um mais rápido e nada muda. **Por quê:** `%util` mede tempo com I/O em voo, não capacidade — e dispositivos paralelos chegam a 100% sem estarem no limite. **Como evitar:** `await` e `aqu-sz`. Se a latência está boa e a fila vazia, o disco não é o gargalo, por mais alto que esteja o `%util`.
 
 > [!warning] Ignorar `%steal` em máquina virtual
-> **O que acontece:** meses otimizando o que não é seu.
-> **Por quê:** a coluna quase nunca é olhada, e em máquina física ela é sempre zero — então o hábito não se forma.
-> **Como evitar:** em nuvem, `%steal` entra na primeira olhada, junto com `%usr` e `%iowait`.
+> **O que acontece:** meses otimizando o que não é seu. **Por quê:** a coluna quase nunca é olhada, e em máquina física ela é sempre zero — então o hábito não se forma. **Como evitar:** em nuvem, `%steal` entra na primeira olhada, junto com `%usr` e `%iowait`.
 
 > [!warning] Otimizar o eixo errado por causa de um único número
-> **O que acontece:** dobra-se a CPU e a latência continua igual.
-> **Por quê:** um número alto não é o gargalo; o gargalo é o recurso com **saturação**.
-> **Como evitar:** a grade da nota 12 — utilização, saturação e erros, nos quatro eixos — antes de qualquer mudança. E medir depois, para confirmar que a mudança fez efeito.
+> **O que acontece:** dobra-se a CPU e a latência continua igual. **Por quê:** um número alto não é o gargalo; o gargalo é o recurso com **saturação**. **Como evitar:** a grade da nota 12 — utilização, saturação e erros, nos quatro eixos — antes de qualquer mudança. E medir depois, para confirmar que a mudança fez efeito.
 
 ---
 

@@ -86,9 +86,7 @@ A ordem importa: as regras são aplicadas de cima para baixo, e a última que ca
 ```
 
 > [!warning] A negação não funciona se a pasta inteira estiver ignorada
-> **O que acontece:** você escreve `dados/` e depois `!dados/amostra.csv`, e o arquivo continua ignorado.
-> **Por quê:** quando o Git ignora uma **pasta**, ele nem entra nela para avaliar o conteúdo. A exceção nunca é lida.
-> **Como evitar:** ignore o conteúdo em vez da pasta — `dados/*` no lugar de `dados/`. Aí a negação passa a ser avaliada.
+> **O que acontece:** você escreve `dados/` e depois `!dados/amostra.csv`, e o arquivo continua ignorado. **Por quê:** quando o Git ignora uma **pasta**, ele nem entra nela para avaliar o conteúdo. A exceção nunca é lida. **Como evitar:** ignore o conteúdo em vez da pasta — `dados/*` no lugar de `dados/`. Aí a negação passa a ser avaliada.
 
 ---
 
@@ -117,9 +115,7 @@ E dentro de `~/.gitignore_global`, as suas sujeiras pessoais.
 ## A pegadinha número um
 
 > [!warning] O `.gitignore` não afeta arquivos que o Git já rastreia
-> **O que acontece:** você commitou o `monografia.pdf` na semana passada. Hoje adiciona `monografia.pdf` ao `.gitignore` — e ele continua aparecendo como modificado a cada compilação.
-> **Por quê:** o `.gitignore` só decide sobre arquivos **não rastreados**. Uma vez que um arquivo entrou no histórico, o Git assume que você quer continuar acompanhando as mudanças dele; ignorá-lo silenciosamente seria perigoso.
-> **Como resolver:** peça explicitamente para parar de rastrear, mantendo o arquivo em disco:
+> **O que acontece:** você commitou o `monografia.pdf` na semana passada. Hoje adiciona `monografia.pdf` ao `.gitignore` — e ele continua aparecendo como modificado a cada compilação. **Por quê:** o `.gitignore` só decide sobre arquivos **não rastreados**. Uma vez que um arquivo entrou no histórico, o Git assume que você quer continuar acompanhando as mudanças dele; ignorá-lo silenciosamente seria perigoso. **Como resolver:** peça explicitamente para parar de rastrear, mantendo o arquivo em disco:
 > ```bash
 > git rm --cached monografia.pdf
 > git commit -m "Para de versionar o PDF gerado"
@@ -131,9 +127,7 @@ E dentro de `~/.gitignore_global`, as suas sujeiras pessoais.
 ## A pegadinha número dois
 
 > [!warning] Ignorar não é proteger
-> **O que acontece:** alguém commita um arquivo com senha, percebe, adiciona ao `.gitignore` e acha que resolveu.
-> **Por quê:** o `.gitignore` só age sobre o futuro. O commit onde o arquivo entrou continua existindo, e o conteúdo é recuperável por qualquer pessoa com acesso ao repositório — inclusive num repositório público, onde robôs varrem exatamente isso.
-> **Como resolver:** **troque a credencial imediatamente.** Essa é a ação que realmente importa; a limpeza do histórico é secundária, trabalhosa, e tem nota própria mais adiante (`25 — Segredos no histórico`). Prevenção vale muito mais que remédio aqui.
+> **O que acontece:** alguém commita um arquivo com senha, percebe, adiciona ao `.gitignore` e acha que resolveu. **Por quê:** o `.gitignore` só age sobre o futuro. O commit onde o arquivo entrou continua existindo, e o conteúdo é recuperável por qualquer pessoa com acesso ao repositório — inclusive num repositório público, onde robôs varrem exatamente isso. **Como resolver:** **troque a credencial imediatamente.** Essa é a ação que realmente importa; a limpeza do histórico é secundária, trabalhosa, e tem nota própria mais adiante (`25 — Segredos no histórico`). Prevenção vale muito mais que remédio aqui.
 
 ---
 

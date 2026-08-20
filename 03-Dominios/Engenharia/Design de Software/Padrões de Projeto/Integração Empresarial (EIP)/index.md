@@ -21,25 +21,13 @@ aliases:
 # Integração Empresarial (EIP)
 
 > [!abstract] TL;DR
-> Os padrões que resolvem **como sistemas heterogêneos se integram por mensagens** — o vocabulário
-> nomeado de **Hohpe & Woolf** (*Enterprise Integration Patterns*, 2004). Terceira família do galho-pai
-> [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/index|Padrões de Projeto]], tratada como
-> catálogo de consulta. A lente aqui é a **ferramenta de integração**: como **Apache Camel** e **Spring
-> Integration** — que *são* implementações dos EIPs — encarnam cada padrão. Do bloco base (Message,
-> Channel, Pipes and Filters) ao roteamento (routers, splitter/aggregator) e à confiabilidade de produção
-> (guaranteed delivery, dead letter, competing consumers).
+> Os padrões que resolvem **como sistemas heterogêneos se integram por mensagens** — o vocabulário nomeado de **Hohpe & Woolf** (*Enterprise Integration Patterns*, 2004). Terceira família do galho-pai [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/index|Padrões de Projeto]], tratada como catálogo de consulta. A lente aqui é a **ferramenta de integração**: como **Apache Camel** e **Spring Integration** — que *são* implementações dos EIPs — encarnam cada padrão. Do bloco base (Message, Channel, Pipes and Filters) ao roteamento (routers, splitter/aggregator) e à confiabilidade de produção (guaranteed delivery, dead letter, competing consumers).
 
 ## Sobre esta família
 
-Repertório de consulta para o sênior — inclusive em legado, onde ESBs, MOM (JMS/IBM MQ) e rotas Camel
-ainda movem o coração de bancos e seguradoras. Cada nota é autocontida; a seção **Armadilhas** pesa no
-*quando não usar*.
+Repertório de consulta para o sênior — inclusive em legado, onde ESBs, MOM (JMS/IBM MQ) e rotas Camel ainda movem o coração de bancos e seguradoras. Cada nota é autocontida; a seção **Armadilhas** pesa no *quando não usar*.
 
-**Fronteira com [[03-Dominios/Engenharia/Comunicação entre Sistemas/index|Comunicação entre Sistemas]]:**
-este catálogo trata os **padrões nomeados como vocabulário de design** (lente Camel/Spring Integration);
-o galho Comunicação trata a **infra e a decisão** (qual broker, síncrono × assíncrono, JMS/IBM MQ/ESB,
-garantias de entrega). Sobreposição intencional → cross-link "aprofunde na infra". **Outbox e Saga** são
-padrões de arquitetura de eventos (família 5 Eventos), fora desta.
+**Fronteira com [[03-Dominios/Engenharia/Comunicação entre Sistemas/index|Comunicação entre Sistemas]]:** este catálogo trata os **padrões nomeados como vocabulário de design** (lente Camel/Spring Integration); o galho Comunicação trata a **infra e a decisão** (qual broker, síncrono × assíncrono, JMS/IBM MQ/ESB, garantias de entrega). Sobreposição intencional → cross-link "aprofunde na infra". **Outbox e Saga** são padrões de arquitetura de eventos (família 5 Eventos), fora desta.
 
 ## Iniciado — os blocos base
 

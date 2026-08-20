@@ -329,19 +329,13 @@ Note a costura das duas peças desta nota: o app Express mantém uma **sessão w
 ## Armadilhas comuns
 
 > [!warning] Deixar `express-session` no `MemoryStore` além do ambiente de desenvolvimento
-> **O que acontece:** a aplicação funciona perfeitamente em desenvolvimento e nos primeiros dias de produção com tráfego baixo, até o processo reiniciar (deploy, crash, autoscaling) e todo mundo ser deslogado — ou, pior, até você escalar para dois processos e usuários começarem a "perder login" aleatoriamente dependendo de qual worker atendeu a requisição.
-> **Por quê:** `MemoryStore` vive isolado por processo e vaza memória sob a maioria das cargas reais — é literalmente rotulado pela própria biblioteca como não-destinado a produção.
-> **Como evitar:** configure `connect-redis` (ou outro store compartilhado) desde o primeiro deploy, não como otimização posterior — o aviso no console na primeira execução já é o sinal para trocar.
+> **O que acontece:** a aplicação funciona perfeitamente em desenvolvimento e nos primeiros dias de produção com tráfego baixo, até o processo reiniciar (deploy, crash, autoscaling) e todo mundo ser deslogado — ou, pior, até você escalar para dois processos e usuários começarem a "perder login" aleatoriamente dependendo de qual worker atendeu a requisição. **Por quê:** `MemoryStore` vive isolado por processo e vaza memória sob a maioria das cargas reais — é literalmente rotulado pela própria biblioteca como não-destinado a produção. **Como evitar:** configure `connect-redis` (ou outro store compartilhado) desde o primeiro deploy, não como otimização posterior — o aviso no console na primeira execução já é o sinal para trocar.
 
 > [!warning] Não regenerar a sessão no login
-> **O que acontece:** um atacante consegue fixar um ID de sessão conhecido na vítima (via link malicioso, subdomínio comprometido, ou qualquer canal que grave um cookie de sessão antes do login) e, quando a vítima se autentica sem que o ID mude, o atacante ganha acesso à sessão autenticada usando o mesmo ID que já conhecia.
-> **Por quê:** anexar `userId` a uma sessão pré-existente, sem trocar seu identificador, não distingue "sessão de visitante anônimo" de "sessão de usuário autenticado" — ambas compartilham o mesmo ID vulnerável.
-> **Como evitar:** chame `req.session.regenerate()` no exato momento em que a autenticação é confirmada, antes de gravar qualquer dado de usuário na sessão — em qualquer fluxo, seja login por senha ou callback OIDC.
+> **O que acontece:** um atacante consegue fixar um ID de sessão conhecido na vítima (via link malicioso, subdomínio comprometido, ou qualquer canal que grave um cookie de sessão antes do login) e, quando a vítima se autentica sem que o ID mude, o atacante ganha acesso à sessão autenticada usando o mesmo ID que já conhecia. **Por quê:** anexar `userId` a uma sessão pré-existente, sem trocar seu identificador, não distingue "sessão de visitante anônimo" de "sessão de usuário autenticado" — ambas compartilham o mesmo ID vulnerável. **Como evitar:** chame `req.session.regenerate()` no exato momento em que a autenticação é confirmada, antes de gravar qualquer dado de usuário na sessão — em qualquer fluxo, seja login por senha ou callback OIDC.
 
 > [!warning] `express.json()` montado antes do handler do better-auth
-> **O que acontece:** as chamadas do client SDK do better-auth (login, registro, refresh) ficam presas em "pending" indefinidamente, sem erro explícito no console — um dos bugs de integração mais reportados pela comunidade.
-> **Por quê:** o handler do better-auth espera consumir o corpo bruto da requisição; se `express.json()` já consumiu e parseou o stream antes, o handler não recebe o payload que espera.
-> **Como evitar:** monte `app.all('/api/auth/*', toNodeHandler(auth))` antes de `app.use(express.json())`, reservando o parser de JSON só para as rotas da aplicação que vêm depois.
+> **O que acontece:** as chamadas do client SDK do better-auth (login, registro, refresh) ficam presas em "pending" indefinidamente, sem erro explícito no console — um dos bugs de integração mais reportados pela comunidade. **Por quê:** o handler do better-auth espera consumir o corpo bruto da requisição; se `express.json()` já consumiu e parseou o stream antes, o handler não recebe o payload que espera. **Como evitar:** monte `app.all('/api/auth/*', toNodeHandler(auth))` antes de `app.use(express.json())`, reservando o parser de JSON só para as rotas da aplicação que vêm depois.
 
 ## Em entrevista
 
@@ -398,15 +392,4 @@ Express cobre o padrão HTML-server-side/BFF com sessão explícita. O NestJS, p
 - **Medium (Austin Cunningham)** — [*Keycloak Express Openid-client*](https://medium.com/keycloak/keycloak-express-openid-client-fabea857f11f) — deprecação do `keycloak-connect` e recomendação de `openid-client`; acessado em 2026-07-11.
 - **Keycloak** — [*Node.js adapter*](https://www.keycloak.org/securing-apps/nodejs-adapter) — status do adapter oficial e alternativas recomendadas; acessado em 2026-07-11.
 
-[^memorystore-warning]: GitHub expressjs/session Issue #556 — MemoryStore leaks memory, não escala além de um processo.
-[^rolling-sessions]: Express.js session middleware docs — opção `rolling` e renovação de expiração por request.
-[^samesite-lax]: barrion.io, Cookie Security Guide — SameSite=Lax como controle mais efetivo contra CSRF sem quebrar navegação normal.
-[^session-fixation]: Sourcery, Session Fixation Attack Vulnerabilities — mecânica do ataque e impacto (account takeover).
-[^express-session-docs]: Express.js session middleware docs — recomendação de `req.session.regenerate()` após login.
-[^passport-features]: Passport.js Features/Strategies docs — 500+ strategies, 2M+ downloads semanais.
-[^passportjs-docs]: Passport.js Documentation — não monta rotas, não assume schema, maximiza flexibilidade.
-[^workos-2026]: WorkOS, Top 5 authentication solutions for secure Node.js apps in 2026 — trade-offs de baixo nível do Passport.
-[^better-auth-github]: GitHub better-auth/better-auth — design framework-agnostic desde o início.
-[^better-auth-org]: Better Auth docs, plugin Organization — roles prontos e access control customizável.
-[^authjs-joins]: Better Auth blog, Auth.js is now part of Better Auth — fusão de manutenção, setembro de 2025.
-[^keycloak-deprecation]: Medium/Keycloak, Keycloak Express Openid-client — deprecação do keycloak-connect, recomendação de openid-client.
+[^memorystore-warning]: GitHub expressjs/session Issue #556 — MemoryStore leaks memory, não escala além de um processo. [^rolling-sessions]: Express.js session middleware docs — opção `rolling` e renovação de expiração por request. [^samesite-lax]: barrion.io, Cookie Security Guide — SameSite=Lax como controle mais efetivo contra CSRF sem quebrar navegação normal. [^session-fixation]: Sourcery, Session Fixation Attack Vulnerabilities — mecânica do ataque e impacto (account takeover). [^express-session-docs]: Express.js session middleware docs — recomendação de `req.session.regenerate()` após login. [^passport-features]: Passport.js Features/Strategies docs — 500+ strategies, 2M+ downloads semanais. [^passportjs-docs]: Passport.js Documentation — não monta rotas, não assume schema, maximiza flexibilidade. [^workos-2026]: WorkOS, Top 5 authentication solutions for secure Node.js apps in 2026 — trade-offs de baixo nível do Passport. [^better-auth-github]: GitHub better-auth/better-auth — design framework-agnostic desde o início. [^better-auth-org]: Better Auth docs, plugin Organization — roles prontos e access control customizável. [^authjs-joins]: Better Auth blog, Auth.js is now part of Better Auth — fusão de manutenção, setembro de 2025. [^keycloak-deprecation]: Medium/Keycloak, Keycloak Express Openid-client — deprecação do keycloak-connect, recomendação de openid-client.

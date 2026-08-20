@@ -152,14 +152,10 @@ Dentro de um workflow do Actions, o `gh` já vem instalado; basta fornecer o tok
 ```
 
 > [!warning] Token de automação com escopo demais
-> **O que acontece:** um script usa um token pessoal com acesso a todos os repositórios da conta, guardado numa variável de ambiente.
-> **Por quê:** é o caminho mais rápido para fazer funcionar.
-> **Como evitar:** em CI, use o `GITHUB_TOKEN` do próprio workflow, que é temporário e restrito ao repositório. Fora dela, prefira tokens de escopo fino, limitados aos repositórios e permissões necessários, com validade. E nunca escreva o token no `.gh` do repositório nem em arquivo versionado — vale a nota 06 inteira aqui.
+> **O que acontece:** um script usa um token pessoal com acesso a todos os repositórios da conta, guardado numa variável de ambiente. **Por quê:** é o caminho mais rápido para fazer funcionar. **Como evitar:** em CI, use o `GITHUB_TOKEN` do próprio workflow, que é temporário e restrito ao repositório. Fora dela, prefira tokens de escopo fino, limitados aos repositórios e permissões necessários, com validade. E nunca escreva o token no `.gh` do repositório nem em arquivo versionado — vale a nota 06 inteira aqui.
 
 > [!warning] `gh` autenticado como a conta errada
-> **O que acontece:** você opera num repositório de trabalho com a conta pessoal (ou o inverso), e o PR sai com a autoria errada.
-> **Por quê:** o `gh` guarda credenciais por host, e é comum ter mais de uma conta.
-> **Como evitar:** `gh auth status` mostra quem está ativo. Para múltiplas contas, `gh auth switch`.
+> **O que acontece:** você opera num repositório de trabalho com a conta pessoal (ou o inverso), e o PR sai com a autoria errada. **Por quê:** o `gh` guarda credenciais por host, e é comum ter mais de uma conta. **Como evitar:** `gh auth status` mostra quem está ativo. Para múltiplas contas, `gh auth switch`.
 
 ---
 

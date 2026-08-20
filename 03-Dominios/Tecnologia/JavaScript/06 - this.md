@@ -16,10 +16,7 @@ publish: true
 # `this` em JavaScript
 
 > [!abstract] TL;DR
-> `this` é uma referência ao **contexto de execução** de uma função — e o seu valor é determinado por **como** a função é chamada, não por onde ela foi definida.
-> Existem quatro regras de binding em ordem de precedência: `new` > explícito (`call`/`apply`/`bind`) > implícito (método) > default (global ou `undefined` em strict mode).
-> Arrow functions não têm `this` próprio: elas herdam o `this` do escopo léxico onde foram criadas.
-> A maior fonte de bugs é "perda de `this`": passar um método como callback faz com que ele perca o vínculo com o objeto original.
+> `this` é uma referência ao **contexto de execução** de uma função — e o seu valor é determinado por **como** a função é chamada, não por onde ela foi definida. Existem quatro regras de binding em ordem de precedência: `new` > explícito (`call`/`apply`/`bind`) > implícito (método) > default (global ou `undefined` em strict mode). Arrow functions não têm `this` próprio: elas herdam o `this` do escopo léxico onde foram criadas. A maior fonte de bugs é "perda de `this`": passar um método como callback faz com que ele perca o vínculo com o objeto original.
 
 ---
 
@@ -190,8 +187,7 @@ fusca.ligar(); // "Fusca ligado."
 `new` tem a maior precedência de todas as regras: mesmo que você tente usar `call`/`apply`/`bind` junto com `new`, o `new` vence.
 
 > [!question]- Mas `bind` não fixa o `this` permanentemente? Como `new` consegue sobrepor?
-> Boa pergunta — essa é a ressalva que a MDN chama de *bound functions used as constructors*.
-> Quando você usa `bind` para criar uma *hardbound function* e depois a chama com `new`, a spec ECMAScript define que construtores invocados com `new` **sempre** recebem um objeto recém-alocado como `this`, ignorando qualquer bind anterior.
+> Boa pergunta — essa é a ressalva que a MDN chama de *bound functions used as constructors*. Quando você usa `bind` para criar uma *hardbound function* e depois a chama com `new`, a spec ECMAScript define que construtores invocados com `new` **sempre** recebem um objeto recém-alocado como `this`, ignorando qualquer bind anterior.
 >
 > ```js
 > function Carro(modelo) { this.modelo = modelo; }
@@ -485,24 +481,16 @@ cumprimentar2(); // "Olá, Diana!"
 ## Armadilhas comuns
 
 > [!warning] Perda de `this` ao passar método como argumento
-> **O que acontece:** `obj.metodo` passado como callback imprime `undefined` ou acessa o global.
-> **Por quê:** Ao separar a função do objeto (`const fn = obj.metodo`), você perde o vínculo. A função existe, mas o contexto desapareceu.
-> **Como evitar:** Use `() => obj.metodo()` (arrow wrapper) ou `obj.metodo.bind(obj)` para preservar o contexto.
+> **O que acontece:** `obj.metodo` passado como callback imprime `undefined` ou acessa o global. **Por quê:** Ao separar a função do objeto (`const fn = obj.metodo`), você perde o vínculo. A função existe, mas o contexto desapareceu. **Como evitar:** Use `() => obj.metodo()` (arrow wrapper) ou `obj.metodo.bind(obj)` para preservar o contexto.
 
 > [!warning] Arrow function como método de objeto não funciona como esperado
-> **O que acontece:** Você define `{ saudar: () => this.nome }` esperando que `this` seja o objeto — mas não é.
-> **Por quê:** Arrow captura o `this` léxico do escopo onde foi **criada**. Se o objeto foi criado no escopo global, `this` dentro da arrow é `window`/`undefined`, não o objeto.
-> **Como evitar:** Métodos de objeto devem ser funções normais (`function`) ou métodos de classe. Reserve arrow functions para callbacks dentro desses métodos.
+> **O que acontece:** Você define `{ saudar: () => this.nome }` esperando que `this` seja o objeto — mas não é. **Por quê:** Arrow captura o `this` léxico do escopo onde foi **criada**. Se o objeto foi criado no escopo global, `this` dentro da arrow é `window`/`undefined`, não o objeto. **Como evitar:** Métodos de objeto devem ser funções normais (`function`) ou métodos de classe. Reserve arrow functions para callbacks dentro desses métodos.
 
 > [!warning] `this` em setTimeout e setInterval é o global
-> **O que acontece:** Código dentro de `setTimeout(function() { this.x }, ms)` acessa `this` global.
-> **Por quê:** `setTimeout` chama o callback como função standalone — default binding.
-> **Como evitar:** Use arrow function: `setTimeout(() => { this.x }, ms)` captura o `this` léxico correto.
+> **O que acontece:** Código dentro de `setTimeout(function() { this.x }, ms)` acessa `this` global. **Por quê:** `setTimeout` chama o callback como função standalone — default binding. **Como evitar:** Use arrow function: `setTimeout(() => { this.x }, ms)` captura o `this` léxico correto.
 
 > [!warning] Classes são strict por padrão — erros aparecem mais cedo
-> **O que acontece:** Método de classe chamado sem objeto lança `TypeError` em vez de acessar silenciosamente o global.
-> **Por quê:** O corpo de uma classe executa em strict mode automaticamente, onde `this` sem binding é `undefined`.
-> **Como evitar:** Sempre chame métodos via instância, ou use `bind` / arrow fields no construtor.
+> **O que acontece:** Método de classe chamado sem objeto lança `TypeError` em vez de acessar silenciosamente o global. **Por quê:** O corpo de uma classe executa em strict mode automaticamente, onde `this` sem binding é `undefined`. **Como evitar:** Sempre chame métodos via instância, ou use `bind` / arrow fields no construtor.
 
 ---
 

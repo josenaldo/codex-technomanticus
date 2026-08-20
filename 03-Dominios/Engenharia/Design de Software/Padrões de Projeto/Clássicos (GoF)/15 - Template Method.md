@@ -21,14 +21,7 @@ aliases:
 # Template Method
 
 > [!abstract] TL;DR
-> O **Template Method** define o **esqueleto** de um algoritmo numa classe base — a ordem fixa dos
-> passos — e deixa as **subclasses preencherem** os passos que variam, sem mudar a estrutura geral.
-> É o padrão comportamental **mais dependente de herança** do GoF, e por isso o que mais muda na
-> nossa lente cross-linguagem: **Go não tem herança**, então lá ele vira **composição** (passar os
-> passos como funções, ou embutir); e mesmo em Java moderno, a tendência é preferir composição +
-> lambdas (essencialmente um [[12 - Strategy|Strategy]]) à hierarquia rígida. Segue o "princípio de
-> Hollywood": *não nos chame, nós chamamos você* — a base controla o fluxo e invoca seus ganchos. A
-> armadilha central é a **classe-base frágil**: mudar a base quebra silenciosamente as subclasses.
+> O **Template Method** define o **esqueleto** de um algoritmo numa classe base — a ordem fixa dos passos — e deixa as **subclasses preencherem** os passos que variam, sem mudar a estrutura geral. É o padrão comportamental **mais dependente de herança** do GoF, e por isso o que mais muda na nossa lente cross-linguagem: **Go não tem herança**, então lá ele vira **composição** (passar os passos como funções, ou embutir); e mesmo em Java moderno, a tendência é preferir composição + lambdas (essencialmente um [[12 - Strategy|Strategy]]) à hierarquia rígida. Segue o "princípio de Hollywood": *não nos chame, nós chamamos você* — a base controla o fluxo e invoca seus ganchos. A armadilha central é a **classe-base frágil**: mudar a base quebra silenciosamente as subclasses.
 
 ## Quatro classes que fazem quase a mesma coisa
 
@@ -91,19 +84,13 @@ Repare: isso já **é** um Strategy. Em Go, o Template Method e o Strategy conve
 ## Armadilhas comuns
 
 > [!warning] Classe-base frágil (fragile base class)
-> **O que acontece:** você muda a classe base (reordena passos, ajusta um método default) e **quebra** subclasses distantes, que dependiam do comportamento anterior — muitas vezes sem erro de compilação, só bug em runtime.
-> **Por quê:** a herança cria um acoplamento **forte e implícito** entre base e subclasses. O template method assume que os ganchos se comportam de certo jeito; a subclasse assume que o fluxo é de certo jeito. Mudar um lado fere o outro à distância.
-> **Como evitar:** mantenha o template method `final` (ninguém reescreve o fluxo); documente o contrato de cada gancho (o que ele deve/não deve fazer); mudanças na base exigem revisar as subclasses. Onde o acoplamento incomoda, prefira composição.
+> **O que acontece:** você muda a classe base (reordena passos, ajusta um método default) e **quebra** subclasses distantes, que dependiam do comportamento anterior — muitas vezes sem erro de compilação, só bug em runtime. **Por quê:** a herança cria um acoplamento **forte e implícito** entre base e subclasses. O template method assume que os ganchos se comportam de certo jeito; a subclasse assume que o fluxo é de certo jeito. Mudar um lado fere o outro à distância. **Como evitar:** mantenha o template method `final` (ninguém reescreve o fluxo); documente o contrato de cada gancho (o que ele deve/não deve fazer); mudanças na base exigem revisar as subclasses. Onde o acoplamento incomoda, prefira composição.
 
 > [!warning] Ganchos demais / inversão confusa
-> **O que acontece:** a base define muitos *hooks* opcionais; entender o que a subclasse precisa (ou pode) sobrescrever exige ler a base inteira, e a ordem de chamada fica obscura.
-> **Por quê:** o "não nos chame, nós chamamos você" inverte o fluxo de controle. Com poucos ganchos é elegante; com muitos, vira um framework implícito difícil de seguir.
-> **Como evitar:** poucos pontos de variação, bem nomeados. Se há muitos passos independentes variando, talvez sejam **estratégias** separadas, não ganchos de uma base só.
+> **O que acontece:** a base define muitos *hooks* opcionais; entender o que a subclasse precisa (ou pode) sobrescrever exige ler a base inteira, e a ordem de chamada fica obscura. **Por quê:** o "não nos chame, nós chamamos você" inverte o fluxo de controle. Com poucos ganchos é elegante; com muitos, vira um framework implícito difícil de seguir. **Como evitar:** poucos pontos de variação, bem nomeados. Se há muitos passos independentes variando, talvez sejam **estratégias** separadas, não ganchos de uma base só.
 
 > [!warning] Herança onde composição seria mais flexível
-> **O que acontece:** usa-se Template Method (herança) para variar um único passo que muda em runtime, e depois se descobre que era preciso trocar esse passo dinamicamente — o que a herança não permite.
-> **Por quê:** herança fixa a variação em **tempo de compilação** (a subclasse *é* o que é). Se a variação precisa mudar por requisição/contexto, você precisava de composição (Strategy) desde o início.
-> **Como evitar:** varia em runtime, ou é um passo só? Prefira **Strategy** (injetar a função/objeto). Reserve o Template Method para quando há um **fluxo com vários passos** genuinamente compartilhado e a variação é por tipo, não por instância.
+> **O que acontece:** usa-se Template Method (herança) para variar um único passo que muda em runtime, e depois se descobre que era preciso trocar esse passo dinamicamente — o que a herança não permite. **Por quê:** herança fixa a variação em **tempo de compilação** (a subclasse *é* o que é). Se a variação precisa mudar por requisição/contexto, você precisava de composição (Strategy) desde o início. **Como evitar:** varia em runtime, ou é um passo só? Prefira **Strategy** (injetar a função/objeto). Reserve o Template Method para quando há um **fluxo com vários passos** genuinamente compartilhado e a variação é por tipo, não por instância.
 
 ## Como explicar em inglês
 

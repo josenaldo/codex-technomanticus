@@ -21,14 +21,7 @@ aliases:
 # Strategy
 
 > [!abstract] TL;DR
-> O **Strategy** encapsula **algoritmos intercambiáveis** atrás de uma interface comum, deixando o
-> cliente escolher a implementação em **runtime**. É o comportamental mais útil do dia a dia e o
-> **caso-ouro** da lente deste catálogo: onde há **função de primeira classe**, o Strategy vira
-> literalmente uma **função** (uma lambda em Java, uma função em Python/Go/TS) — a interface e a
-> classe do GoF eram, em parte, um contorno para a falta desse recurso. No Spring, o idioma é
-> injetar um `Map<String, Strategy>`. A armadilha número um, e a mais cometida de todo o catálogo:
-> criar a interface de Strategy com **uma única implementação** e nenhuma perspectiva de segunda —
-> abstração prematura em estado puro.
+> O **Strategy** encapsula **algoritmos intercambiáveis** atrás de uma interface comum, deixando o cliente escolher a implementação em **runtime**. É o comportamental mais útil do dia a dia e o **caso-ouro** da lente deste catálogo: onde há **função de primeira classe**, o Strategy vira literalmente uma **função** (uma lambda em Java, uma função em Python/Go/TS) — a interface e a classe do GoF eram, em parte, um contorno para a falta desse recurso. No Spring, o idioma é injetar um `Map<String, Strategy>`. A armadilha número um, e a mais cometida de todo o catálogo: criar a interface de Strategy com **uma única implementação** e nenhuma perspectiva de segunda — abstração prematura em estado puro.
 
 ## O `if-else-if` que cresce sem parar
 
@@ -120,19 +113,13 @@ public class FreteService {
 ## Armadilhas comuns
 
 > [!warning] Strategy com uma única implementação (abstração prematura)
-> **O que acontece:** cria-se a interface `XStrategy` e **uma** classe que a implementa, "porque um dia pode ter outra". A segunda implementação nunca chega, e o código carrega uma indireção sem motivo por anos.
-> **Por quê:** o valor do Strategy é ter **variação real**. Com uma implementação só, você pagou o custo (interface, injeção, um arquivo a mais) sem o benefício (trocar algoritmos). É a abstração prematura mais comum de todo o catálogo — "tão ruim quanto não ter abstração nenhuma".
-> **Como evitar:** só extraia a estratégia quando existir a **segunda** implementação (ou ela for concretamente iminente). Uma regra só → um método direto. Adicione a abstração quando o segundo caso aparecer, não antes.
+> **O que acontece:** cria-se a interface `XStrategy` e **uma** classe que a implementa, "porque um dia pode ter outra". A segunda implementação nunca chega, e o código carrega uma indireção sem motivo por anos. **Por quê:** o valor do Strategy é ter **variação real**. Com uma implementação só, você pagou o custo (interface, injeção, um arquivo a mais) sem o benefício (trocar algoritmos). É a abstração prematura mais comum de todo o catálogo — "tão ruim quanto não ter abstração nenhuma". **Como evitar:** só extraia a estratégia quando existir a **segunda** implementação (ou ela for concretamente iminente). Uma regra só → um método direto. Adicione a abstração quando o segundo caso aparecer, não antes.
 
 > [!warning] Estratégia com estado compartilhado
-> **O que acontece:** a implementação de Strategy guarda estado mutável entre chamadas; usada como bean singleton compartilhado, um cálculo contamina o outro (bugs de concorrência).
-> **Por quê:** estratégias costumam ser **sem estado** (recebem o input, devolvem o resultado). Estado mutável num objeto compartilhado reintroduz os problemas de estado global.
-> **Como evitar:** mantenha a estratégia sem estado; o que varia por chamada entra como **parâmetro**, não como campo.
+> **O que acontece:** a implementação de Strategy guarda estado mutável entre chamadas; usada como bean singleton compartilhado, um cálculo contamina o outro (bugs de concorrência). **Por quê:** estratégias costumam ser **sem estado** (recebem o input, devolvem o resultado). Estado mutável num objeto compartilhado reintroduz os problemas de estado global. **Como evitar:** mantenha a estratégia sem estado; o que varia por chamada entra como **parâmetro**, não como campo.
 
 > [!warning] Strategy onde um enum + função basta
-> **O que acontece:** monta-se a hierarquia completa de Strategy para duas variações triviais que um `enum` com um método, ou um parâmetro-função, resolveria em linhas.
-> **Por quê:** para pouquíssimas variações simples e estáveis, a maquinaria de interface + implementações + injeção é peso morto.
-> **Como evitar:** poucas variações fixas → `enum` com comportamento, ou passar a função direto. Reserve o Strategy nomeado para quando o conjunto cresce ou precisa ser plugável/injetável.
+> **O que acontece:** monta-se a hierarquia completa de Strategy para duas variações triviais que um `enum` com um método, ou um parâmetro-função, resolveria em linhas. **Por quê:** para pouquíssimas variações simples e estáveis, a maquinaria de interface + implementações + injeção é peso morto. **Como evitar:** poucas variações fixas → `enum` com comportamento, ou passar a função direto. Reserve o Strategy nomeado para quando o conjunto cresce ou precisa ser plugável/injetável.
 
 ## Como explicar em inglês
 

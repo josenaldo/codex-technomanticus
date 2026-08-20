@@ -20,14 +20,7 @@ aliases:
 # Active Record
 
 > [!abstract] TL;DR
-> O **Active Record** envolve uma **linha da tabela** num objeto que carrega **dados, comportamento e
-> persistência juntos** — o objeto *é* a linha e sabe se salvar: `user.save()`, `Order.find(1)`. É
-> metade do eixo dorsal da família (a outra é o [[08 - Data Mapper]]). Sua marca registrada é a
-> **produtividade**: é a alma do Rails, do Django ORM e do Laravel Eloquent, e por isso esses
-> frameworks decolaram para CRUD. O preço vem depois: o objeto **acopla o domínio ao esquema** do
-> banco, tende a virar um **God object** (regra + persistência + validação na mesma classe) e é
-> **difícil de testar** sem banco. A regra prática: comece com Active Record pela velocidade; migre
-> para Data Mapper quando o domínio ficar rico demais.
+> O **Active Record** envolve uma **linha da tabela** num objeto que carrega **dados, comportamento e persistência juntos** — o objeto *é* a linha e sabe se salvar: `user.save()`, `Order.find(1)`. É metade do eixo dorsal da família (a outra é o [[08 - Data Mapper]]). Sua marca registrada é a **produtividade**: é a alma do Rails, do Django ORM e do Laravel Eloquent, e por isso esses frameworks decolaram para CRUD. O preço vem depois: o objeto **acopla o domínio ao esquema** do banco, tende a virar um **God object** (regra + persistência + validação na mesma classe) e é **difícil de testar** sem banco. A regra prática: comece com Active Record pela velocidade; migre para Data Mapper quando o domínio ficar rico demais.
 
 ## O objeto que sabe se salvar
 
@@ -72,19 +65,13 @@ Tudo num objeto só. Isso é conveniente — e é exatamente a raiz das fraqueza
 ## Armadilhas comuns
 
 > [!warning] O fat model / God object
-> **O que acontece:** o modelo Active Record acumula validações, regras de negócio, callbacks, escopos de query e persistência, crescendo para centenas de linhas — a clássica *fat model* de Rails.
-> **Por quê:** o padrão **convida** a pôr tudo relacionado à entidade no mesmo objeto, e não há fronteira que impeça o acúmulo. Persistência + domínio + validação numa classe fere o SRP de forma estrutural.
-> **Como evitar:** extraia regras complexas para objetos de serviço/domínio à parte (service objects, form objects); mantenha o Active Record focado em persistência + comportamento simples. Quando o modelo resiste a emagrecer, considere migrar para Data Mapper.
+> **O que acontece:** o modelo Active Record acumula validações, regras de negócio, callbacks, escopos de query e persistência, crescendo para centenas de linhas — a clássica *fat model* de Rails. **Por quê:** o padrão **convida** a pôr tudo relacionado à entidade no mesmo objeto, e não há fronteira que impeça o acúmulo. Persistência + domínio + validação numa classe fere o SRP de forma estrutural. **Como evitar:** extraia regras complexas para objetos de serviço/domínio à parte (service objects, form objects); mantenha o Active Record focado em persistência + comportamento simples. Quando o modelo resiste a emagrecer, considere migrar para Data Mapper.
 
 > [!warning] Difícil de testar sem banco
-> **O que acontece:** testar uma regra de negócio exige instanciar o modelo, que já está atado à persistência — os testes precisam de um banco (ou de mocks pesados) mesmo para lógica que não deveria tocar o disco.
-> **Por quê:** dados e persistência estão **fundidos** no mesmo objeto; não há como exercitar a regra isoladamente, porque o objeto não existe sem seu vínculo com a tabela.
-> **Como evitar:** isole a lógica pura em objetos que não herdam do Active Record (POROs — plain old Ruby objects, ou equivalentes); reserve o modelo para persistência. É paliativo — a testabilidade nativa é justamente o que o Data Mapper oferece.
+> **O que acontece:** testar uma regra de negócio exige instanciar o modelo, que já está atado à persistência — os testes precisam de um banco (ou de mocks pesados) mesmo para lógica que não deveria tocar o disco. **Por quê:** dados e persistência estão **fundidos** no mesmo objeto; não há como exercitar a regra isoladamente, porque o objeto não existe sem seu vínculo com a tabela. **Como evitar:** isole a lógica pura em objetos que não herdam do Active Record (POROs — plain old Ruby objects, ou equivalentes); reserve o modelo para persistência. É paliativo — a testabilidade nativa é justamente o que o Data Mapper oferece.
 
 > [!warning] Domínio acoplado ao esquema
-> **O que acontece:** a forma do objeto **é** a forma da tabela; uma mudança de esquema (renomear coluna, quebrar uma tabela em duas) reverbera direto no domínio e em tudo que o usa.
-> **Por quê:** o Active Record **espelha** a tabela por design. Sem uma camada de tradução, não há folga entre o modelo de negócio e o modelo de dados — eles são a mesma coisa.
-> **Como evitar:** aceite o acoplamento enquanto ele for barato (domínio simples, esquema estável). Quando o modelo de negócio precisar divergir do modelo de dados, é o sinal do Data Mapper.
+> **O que acontece:** a forma do objeto **é** a forma da tabela; uma mudança de esquema (renomear coluna, quebrar uma tabela em duas) reverbera direto no domínio e em tudo que o usa. **Por quê:** o Active Record **espelha** a tabela por design. Sem uma camada de tradução, não há folga entre o modelo de negócio e o modelo de dados — eles são a mesma coisa. **Como evitar:** aceite o acoplamento enquanto ele for barato (domínio simples, esquema estável). Quando o modelo de negócio precisar divergir do modelo de dados, é o sinal do Data Mapper.
 
 ## Como explicar em inglês
 

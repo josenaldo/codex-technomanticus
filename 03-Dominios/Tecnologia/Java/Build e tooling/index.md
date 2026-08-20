@@ -20,9 +20,7 @@ aliases:
 # Build, tooling e ecossistema
 
 > [!abstract] TL;DR
-> O Galho 15 cobre como um projeto Java é construído, versionado, empacotado e publicado — Maven e Gradle (modelo, lifecycle/tasks, performance), gestão de dependências (resolução transitiva, conflitos, BOM), multi-módulo, distribuições do JDK e licenciamento, annotation processing (Lombok/MapStruct), empacotamento, quality gates no build e cadeia de suprimentos (reproducible builds, SBOM).
-> A tese: **um build tool resolve o grafo de dependências e produz um artefato reprodutível — não "compila"; e Maven vs Gradle é convenção vs flexibilidade, não "melhor vs pior".**
-> São **20 notas** em 3 fases.
+> O Galho 15 cobre como um projeto Java é construído, versionado, empacotado e publicado — Maven e Gradle (modelo, lifecycle/tasks, performance), gestão de dependências (resolução transitiva, conflitos, BOM), multi-módulo, distribuições do JDK e licenciamento, annotation processing (Lombok/MapStruct), empacotamento, quality gates no build e cadeia de suprimentos (reproducible builds, SBOM). A tese: **um build tool resolve o grafo de dependências e produz um artefato reprodutível — não "compila"; e Maven vs Gradle é convenção vs flexibilidade, não "melhor vs pior".** São **20 notas** em 3 fases.
 
 ## Sobre este galho
 

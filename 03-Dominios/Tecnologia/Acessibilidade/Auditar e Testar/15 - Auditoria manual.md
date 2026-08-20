@@ -105,9 +105,7 @@ flowchart LR
 ```
 
 > [!warning] Auditar só com automação e pular o manual
-> **O que acontece:** a equipe roda axe/Lighthouse no CI, tudo verde, e entrega. Um teclado-trap num widget de terceiro, um `alt` sem sentido e uma ordem de foco caótica passam para produção.
-> **Por quê:** esses três são invisíveis para a automação — exigem julgamento humano e interação real. São, não por acaso, dos problemas que mais impactam o usuário.
-> **Como evitar:** as três passadas manuais são baratas (minutos por tela) e não-negociáveis para fluxos críticos. Automação encontra muitos problemas rápido; o manual encontra os que importam.
+> **O que acontece:** a equipe roda axe/Lighthouse no CI, tudo verde, e entrega. Um teclado-trap num widget de terceiro, um `alt` sem sentido e uma ordem de foco caótica passam para produção. **Por quê:** esses três são invisíveis para a automação — exigem julgamento humano e interação real. São, não por acaso, dos problemas que mais impactam o usuário. **Como evitar:** as três passadas manuais são baratas (minutos por tela) e não-negociáveis para fluxos críticos. Automação encontra muitos problemas rápido; o manual encontra os que importam.
 
 **Auditoria manual em uma frase:** três passadas — só teclado, leitor de tela nos fluxos críticos, e zoom a 200%/400% — cobrem a metade que a máquina não vê, e a maioria não exige nada além de um roteiro e disciplina.
 
@@ -120,23 +118,16 @@ flowchart LR
 ## Armadilhas comuns
 
 > [!warning] Confiar só na automação e pular o manual
-> **O que acontece:** a suíte de axe/Lighthouse do CI passa 100% verde e a equipe interpreta isso como "acessível". Keyboard traps, ordem de foco incoerente e reflow quebrado — que a automação não enxerga (nota 13/14) — vão para produção sem que ninguém tenha tentado usar a tela sem mouse ou sem olhos.
-> **Como evitar:** trate o score de automação como piso, não teto. As três passadas manuais são obrigatórias em qualquer fluxo crítico antes de dar a tela por pronta.
+> **O que acontece:** a suíte de axe/Lighthouse do CI passa 100% verde e a equipe interpreta isso como "acessível". Keyboard traps, ordem de foco incoerente e reflow quebrado — que a automação não enxerga (nota 13/14) — vão para produção sem que ninguém tenha tentado usar a tela sem mouse ou sem olhos. **Como evitar:** trate o score de automação como piso, não teto. As três passadas manuais são obrigatórias em qualquer fluxo crítico antes de dar a tela por pronta.
 
 > [!warning] Testar leitor de tela em um único software e achar que cobriu o caso
-> **O que acontece:** o time testa só com VoiceOver (porque só tem Mac disponível) e considera o fluxo "validado para leitor de tela". Meses depois, um usuário de NVDA no Windows reporta que o mesmo formulário é inutilizável — um erro de validação que o VoiceOver anunciava automaticamente, o NVDA não anuncia da mesma forma.
-> **Por quê:** leitores de tela diferem em como implementam ARIA, quando anunciam live regions e como navegam por landmarks — a nota 03 documenta essas divergências. Testar em um só cobre um comportamento, não o conjunto.
-> **Como evitar:** para fluxos verdadeiramente críticos (login, checkout), teste em pelo menos dois pares leitor+navegador (ex.: NVDA+Chrome e VoiceOver+Safari). Fora deles, um teste bem feito num leitor já pega a maioria dos bugs estruturais.
+> **O que acontece:** o time testa só com VoiceOver (porque só tem Mac disponível) e considera o fluxo "validado para leitor de tela". Meses depois, um usuário de NVDA no Windows reporta que o mesmo formulário é inutilizável — um erro de validação que o VoiceOver anunciava automaticamente, o NVDA não anuncia da mesma forma. **Por quê:** leitores de tela diferem em como implementam ARIA, quando anunciam live regions e como navegam por landmarks — a nota 03 documenta essas divergências. Testar em um só cobre um comportamento, não o conjunto. **Como evitar:** para fluxos verdadeiramente críticos (login, checkout), teste em pelo menos dois pares leitor+navegador (ex.: NVDA+Chrome e VoiceOver+Safari). Fora deles, um teste bem feito num leitor já pega a maioria dos bugs estruturais.
 
 > [!warning] "Eu vejo o indicador de foco" sem testar a ordem
-> **O que acontece:** o desenvolvedor tabula a página, vê o contorno azul se mover, conclui "o foco está visível, então está acessível" — e nunca checa se a **sequência** em que o foco pula faz sentido.
-> **Por quê:** o indicador visível (nota 11) e a ordem de foco (esta nota) são propriedades diferentes. CSS que reordena visualmente sem reordenar o DOM (flex/grid `order`, posicionamento absoluto) produz um foco perfeitamente visível que salta de forma caótica — o olho vê uma ordem, o Tab segue outra.
-> **Como evitar:** não basta ver o foco; é preciso **narrar** a sequência em voz alta (ou anotar) e confrontar com a ordem de leitura visual, como descrito no callout da Passada 1.
+> **O que acontece:** o desenvolvedor tabula a página, vê o contorno azul se mover, conclui "o foco está visível, então está acessível" — e nunca checa se a **sequência** em que o foco pula faz sentido. **Por quê:** o indicador visível (nota 11) e a ordem de foco (esta nota) são propriedades diferentes. CSS que reordena visualmente sem reordenar o DOM (flex/grid `order`, posicionamento absoluto) produz um foco perfeitamente visível que salta de forma caótica — o olho vê uma ordem, o Tab segue outra. **Como evitar:** não basta ver o foco; é preciso **narrar** a sequência em voz alta (ou anotar) e confrontar com a ordem de leitura visual, como descrito no callout da Passada 1.
 
 > [!warning] Ignorar o zoom porque "ninguém usa isso"
-> **O que acontece:** a auditoria cobre teclado e leitor de tela com rigor, mas pula a Passada 3 porque parece um teste "de nicho" — poucos usuários ampliam a tela, certo? A equipe descobre o contrário só quando um usuário de baixa visão (uma fatia grande e crescente da população, principalmente 60+) reporta que o checkout "desaparece" a 400%.
-> **Por quê:** baixa visão é uma das deficiências mais comuns e menos testadas, justamente porque não exige nenhuma tecnologia assistiva exótica — só o zoom nativo do navegador, algo que qualquer testador consegue reproduzir em 10 segundos.
-> **Como evitar:** trate a Passada 3 como não-negociável quanto as outras duas; ela é a mais barata das três (não exige instalar nada) e ainda assim é a mais frequentemente pulada.
+> **O que acontece:** a auditoria cobre teclado e leitor de tela com rigor, mas pula a Passada 3 porque parece um teste "de nicho" — poucos usuários ampliam a tela, certo? A equipe descobre o contrário só quando um usuário de baixa visão (uma fatia grande e crescente da população, principalmente 60+) reporta que o checkout "desaparece" a 400%. **Por quê:** baixa visão é uma das deficiências mais comuns e menos testadas, justamente porque não exige nenhuma tecnologia assistiva exótica — só o zoom nativo do navegador, algo que qualquer testador consegue reproduzir em 10 segundos. **Como evitar:** trate a Passada 3 como não-negociável quanto as outras duas; ela é a mais barata das três (não exige instalar nada) e ainda assim é a mais frequentemente pulada.
 
 ## Como explicar em inglês
 

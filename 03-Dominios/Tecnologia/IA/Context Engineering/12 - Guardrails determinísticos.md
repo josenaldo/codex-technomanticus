@@ -233,14 +233,11 @@ Lendo o fluxo da esquerda pra direita:
 
 ## Estado da arte — junho de 2026
 
-**Determinismo como requisito de compliance**
-Em 2025-2026, regulações financeiras e de saúde em vários países começaram a exigir que sistemas de IA em domínios críticos tenham guardrails demonstravelmente determinísticos — não "um modelo que provavelmente vai rejeitar". Isso acelerou a adoção de código puro como primeiro tier e prova formal como requisito em regulados.
+**Determinismo como requisito de compliance** Em 2025-2026, regulações financeiras e de saúde em vários países começaram a exigir que sistemas de IA em domínios críticos tenham guardrails demonstravelmente determinísticos — não "um modelo que provavelmente vai rejeitar". Isso acelerou a adoção de código puro como primeiro tier e prova formal como requisito em regulados.
 
-**Adversarial testing como prática padrão**
-Times de segurança em 2026 fazem red team de guardrails regularmente — tentam ativamente contornar as regras com inputs adversariais, prompt injection, e engenharia social. Guardrails sem adversarial testing são guardrails testados apenas pelo happy path.
+**Adversarial testing como prática padrão** Times de segurança em 2026 fazem red team de guardrails regularmente — tentam ativamente contornar as regras com inputs adversariais, prompt injection, e engenharia social. Guardrails sem adversarial testing são guardrails testados apenas pelo happy path.
 
-**Tooling de observabilidade para guardrails**
-Plataformas como LangSmith, Weave e Arize adicionaram dashboards específicos para métricas de guardrail: taxa de bloqueio por categoria, trends de escalação, latência adicionada por tier. Em 2026, não monitorar guardrails com a mesma seriedade que monitorar APIs de produção é considerado prática inadequada.
+**Tooling de observabilidade para guardrails** Plataformas como LangSmith, Weave e Arize adicionaram dashboards específicos para métricas de guardrail: taxa de bloqueio por categoria, trends de escalação, latência adicionada por tier. Em 2026, não monitorar guardrails com a mesma seriedade que monitorar APIs de produção é considerado prática inadequada.
 
 Essas três correntes apontam pra mesma direção: guardrail deixou de ser detalhe de implementação e virou linha de produto.
 

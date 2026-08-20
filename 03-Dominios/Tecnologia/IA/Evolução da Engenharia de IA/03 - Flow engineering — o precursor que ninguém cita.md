@@ -358,8 +358,7 @@ If you're walking a colleague through this in English: flow engineering and loop
 > [!tip] Assista: AI Agent Flow Engineering — Itamar Friedman (CEO, Codium AI)
 > **Canal:** On The Frontier | **Duração:** ~46min | **Idioma:** EN
 >
-> O próprio autor do AlphaCodium explica por que gastou mais de 95% do tempo de pesquisa em flow engineering, não em prompt — e o que muda quando você projeta o fluxo em vez de caçar a frase certa.
-> Trecho de destaque [00:15]: *"it's the shift from prompt engineering [to flow engineering]"*
+> O próprio autor do AlphaCodium explica por que gastou mais de 95% do tempo de pesquisa em flow engineering, não em prompt — e o que muda quando você projeta o fluxo em vez de caçar a frase certa. Trecho de destaque [00:15]: *"it's the shift from prompt engineering [to flow engineering]"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=IiIdEKbMym4)
 

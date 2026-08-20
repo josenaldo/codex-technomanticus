@@ -23,18 +23,10 @@ aliases:
 # Outbox
 
 > [!abstract] TL;DR
-> Gravar no banco e publicar no broker são **duas** operações, e não existe transação que cubra as duas.
-> Qualquer ordem tem um caso de falha: publicar antes arrisca anunciar um fato que não se consumou;
-> gravar antes arrisca um fato consumado que ninguém soube. É o ***dual-write problem***. O **Outbox**
-> desfaz o dilema gravando o evento **numa tabela, na mesma transação do dado** — uma escrita, atômica
-> por construção — e publicando depois, a partir dessa tabela. O que ele garante é preciso e limitado:
-> *se o dado foi gravado, o evento será publicado* — **pelo menos uma vez**. Nunca exatamente uma.
+> Gravar no banco e publicar no broker são **duas** operações, e não existe transação que cubra as duas. Qualquer ordem tem um caso de falha: publicar antes arrisca anunciar um fato que não se consumou; gravar antes arrisca um fato consumado que ninguém soube. É o ***dual-write problem***. O **Outbox** desfaz o dilema gravando o evento **numa tabela, na mesma transação do dado** — uma escrita, atômica por construção — e publicando depois, a partir dessa tabela. O que ele garante é preciso e limitado: *se o dado foi gravado, o evento será publicado* — **pelo menos uma vez**. Nunca exatamente uma.
 
 > [!info] O recorte desta nota
-> Aqui o Outbox como **decisão de design**: que falha ele fecha, o que garante e o que não garante.
-> A **implementação** — Polling Publisher, *transaction log tailing* / CDC com Debezium, e o isolamento
-> que a Saga não dá — está desenvolvida em
-> [[03-Dominios/Engenharia/Comunicação entre Sistemas/4 - Comunicação assíncrona/04 - Outbox e Saga|Comunicação 4-04]].
+> Aqui o Outbox como **decisão de design**: que falha ele fecha, o que garante e o que não garante. A **implementação** — Polling Publisher, *transaction log tailing* / CDC com Debezium, e o isolamento que a Saga não dá — está desenvolvida em [[03-Dominios/Engenharia/Comunicação entre Sistemas/4 - Comunicação assíncrona/04 - Outbox e Saga|Comunicação 4-04]].
 
 ## As duas ordens, e as duas falhas
 
@@ -100,19 +92,13 @@ Pela lente da família, o Outbox é peculiar: ele **não muda o acoplamento entr
 ## Armadilhas comuns
 
 > [!warning] Achar que o Outbox dá *exactly-once*
-> **O que acontece:** o time adota o Outbox e considera o problema resolvido. Meses depois, um cliente é cobrado duas vezes porque o relay republicou um evento após uma falha.
-> **Por quê:** o padrão garante que o evento **não se perde**, e ninguém verifica a outra ponta. Publicar e marcar como publicado não são atômicos.
-> **Como evitar:** trate Outbox e [[06 - Idempotent Consumer (Inbox)|consumidor idempotente]] como um **par**. Um sem o outro é meia solução — e a metade que falta é a que produz efeito visível para o cliente.
+> **O que acontece:** o time adota o Outbox e considera o problema resolvido. Meses depois, um cliente é cobrado duas vezes porque o relay republicou um evento após uma falha. **Por quê:** o padrão garante que o evento **não se perde**, e ninguém verifica a outra ponta. Publicar e marcar como publicado não são atômicos. **Como evitar:** trate Outbox e [[06 - Idempotent Consumer (Inbox)|consumidor idempotente]] como um **par**. Um sem o outro é meia solução — e a metade que falta é a que produz efeito visível para o cliente.
 
 > [!warning] Tabela de outbox sem expurgo
-> **O que acontece:** a tabela cresce indefinidamente. A consulta do relay fica lenta, o backup incha, e um dia o disco acaba — derrubando o banco **transacional**, não um sistema periférico.
-> **Por quê:** o registro publicado não serve mais a nada, mas apagá-lo é trabalho que ninguém prioriza, e o crescimento é invisível até o limite.
-> **Como evitar:** política de retenção desde o primeiro dia — apagar ou arquivar depois de publicado e de uma janela de segurança. E monitore o **tamanho da fila não publicada**: ela crescer é o sinal mais precoce de que o relay parou.
+> **O que acontece:** a tabela cresce indefinidamente. A consulta do relay fica lenta, o backup incha, e um dia o disco acaba — derrubando o banco **transacional**, não um sistema periférico. **Por quê:** o registro publicado não serve mais a nada, mas apagá-lo é trabalho que ninguém prioriza, e o crescimento é invisível até o limite. **Como evitar:** política de retenção desde o primeiro dia — apagar ou arquivar depois de publicado e de uma janela de segurança. E monitore o **tamanho da fila não publicada**: ela crescer é o sinal mais precoce de que o relay parou.
 
 > [!warning] Publicar direto do código da aplicação "porque é mais simples"
-> **O que acontece:** alguém acrescenta um `publish()` logo após o `commit()`, contornando a outbox para um caso específico. Aquele caminho volta a ter o dual-write, e a inconsistência reaparece só ali — difícil de correlacionar, porque o resto do sistema é confiável.
-> **Por quê:** a outbox parece cerimônia quando se está escrevendo um fluxo simples e o broker está funcionando.
-> **Como evitar:** a publicação deve ter **um caminho só**, idealmente encapsulado (o repositório grava o evento junto do agregado, e nada mais publica). Exceção pontual em confiabilidade é como exceção em camadas: o custo não é o caso, é o precedente.
+> **O que acontece:** alguém acrescenta um `publish()` logo após o `commit()`, contornando a outbox para um caso específico. Aquele caminho volta a ter o dual-write, e a inconsistência reaparece só ali — difícil de correlacionar, porque o resto do sistema é confiável. **Por quê:** a outbox parece cerimônia quando se está escrevendo um fluxo simples e o broker está funcionando. **Como evitar:** a publicação deve ter **um caminho só**, idealmente encapsulado (o repositório grava o evento junto do agregado, e nada mais publica). Exceção pontual em confiabilidade é como exceção em camadas: o custo não é o caso, é o precedente.
 
 ## Como explicar em inglês
 

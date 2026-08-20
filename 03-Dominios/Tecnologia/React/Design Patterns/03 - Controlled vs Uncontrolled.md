@@ -16,10 +16,7 @@ publish: true
 # Controlled vs Uncontrolled
 
 > [!abstract] TL;DR
-> O padrão **Controlled vs Uncontrolled** responde a uma única pergunta: quem é a **fonte da verdade** do valor de um input — o React (via estado) ou o DOM (via memória interna)?
-> No modo **controlado**, você passa `value` + `onChange` e o React detém o valor a cada tecla. No modo **não-controlado**, você passa `defaultValue` e lê o valor com uma `ref` apenas quando precisar.
-> Componentes de biblioteca bem projetados suportam **ambos os modos** ao mesmo tempo: se o pai passar `value`, o componente opera controlado; caso contrário, gerencia o estado internamente — exatamente o que `<input>` nativo faz.
-> Use controlado para validação em tempo real ou UI condicional; use não-controlado (ou React Hook Form) para formulários grandes com foco em performance.
+> O padrão **Controlled vs Uncontrolled** responde a uma única pergunta: quem é a **fonte da verdade** do valor de um input — o React (via estado) ou o DOM (via memória interna)? No modo **controlado**, você passa `value` + `onChange` e o React detém o valor a cada tecla. No modo **não-controlado**, você passa `defaultValue` e lê o valor com uma `ref` apenas quando precisar. Componentes de biblioteca bem projetados suportam **ambos os modos** ao mesmo tempo: se o pai passar `value`, o componente opera controlado; caso contrário, gerencia o estado internamente — exatamente o que `<input>` nativo faz. Use controlado para validação em tempo real ou UI condicional; use não-controlado (ou React Hook Form) para formulários grandes com foco em performance.
 
 ## O problema: o componente que o pai não consegue controlar
 
@@ -136,9 +133,7 @@ Aqui, React não re-renderiza a cada tecla. O DOM cuida do valor internamente. V
 **Vantagem real:** em formulários com dezenas de campos, cada tecla não dispara uma re-renderização. É significativamente mais performático.
 
 > [!info] `defaultValue` vs `value`
-> `defaultValue` seta o valor **inicial** e deixa o DOM assumir o controle a partir daí.
-> `value` seta o valor **a cada render** e impõe o controle do React.
-> Confundir os dois é a causa mais comum do warning "A component is changing an uncontrolled input".
+> `defaultValue` seta o valor **inicial** e deixa o DOM assumir o controle a partir daí. `value` seta o valor **a cada render** e impõe o controle do React. Confundir os dois é a causa mais comum do warning "A component is changing an uncontrolled input".
 
 ---
 
@@ -289,9 +284,7 @@ Agora o componente funciona nos dois cenários:
 ## Armadilhas comuns
 
 > [!warning] Controlado sem `onChange` — o campo congela
-> **O que acontece:** Você passa `value` mas esquece o `onChange`. O campo não responde ao que o usuário digita — parece travado.
-> **Por quê:** React re-renderiza o input com o mesmo `value` a cada tecla. Como o estado nunca muda, o valor nunca muda. O React está "ganhando a disputa" contra o DOM.
-> **Como evitar:** Se você passa `value`, sempre passe `onChange` também. Se o campo deve ser somente-leitura, use `readOnly` explicitamente — deixa claro a intenção.
+> **O que acontece:** Você passa `value` mas esquece o `onChange`. O campo não responde ao que o usuário digita — parece travado. **Por quê:** React re-renderiza o input com o mesmo `value` a cada tecla. Como o estado nunca muda, o valor nunca muda. O React está "ganhando a disputa" contra o DOM. **Como evitar:** Se você passa `value`, sempre passe `onChange` também. Se o campo deve ser somente-leitura, use `readOnly` explicitamente — deixa claro a intenção.
 >
 > ```tsx
 > // ❌ Campo congelado
@@ -305,9 +298,7 @@ Agora o componente funciona nos dois cenários:
 > ```
 
 > [!warning] Alternar entre controlado e não-controlado no mesmo input
-> **O que acontece:** Você recebe o aviso `Warning: A component is changing an uncontrolled input to be controlled`. O comportamento do campo fica imprevisível.
-> **Por quê:** Inicialmente, `value` é `undefined` (não-controlado). Depois de uma ação, passa a ser uma string (controlado). O React não sabe como reconciliar esse estado.
-> **Como evitar:** Inicialize sempre com uma string, nunca com `undefined` ou `null`.
+> **O que acontece:** Você recebe o aviso `Warning: A component is changing an uncontrolled input to be controlled`. O comportamento do campo fica imprevisível. **Por quê:** Inicialmente, `value` é `undefined` (não-controlado). Depois de uma ação, passa a ser uma string (controlado). O React não sabe como reconciliar esse estado. **Como evitar:** Inicialize sempre com uma string, nunca com `undefined` ou `null`.
 >
 > ```tsx
 > // ❌ Começa não-controlado, vira controlado
@@ -323,9 +314,7 @@ Agora o componente funciona nos dois cenários:
 > ```
 
 > [!warning] Ler a `ref` antes do mount
-> **O que acontece:** Você tenta acessar `ref.current.value` em um `useEffect` sem dependência, ou no próprio corpo do componente — e obtém `null`.
-> **Por quê:** A `ref` só aponta para o elemento DOM **depois** que o componente é montado. Durante a renderização inicial, `ref.current` é `null`.
-> **Como evitar:** Leia `ref.current` apenas dentro de event handlers (que só disparam após o mount) ou em `useEffect` (que roda após o mount). Nunca leia no corpo do componente ou no `useMemo`.
+> **O que acontece:** Você tenta acessar `ref.current.value` em um `useEffect` sem dependência, ou no próprio corpo do componente — e obtém `null`. **Por quê:** A `ref` só aponta para o elemento DOM **depois** que o componente é montado. Durante a renderização inicial, `ref.current` é `null`. **Como evitar:** Leia `ref.current` apenas dentro de event handlers (que só disparam após o mount) ou em `useEffect` (que roda após o mount). Nunca leia no corpo do componente ou no `useMemo`.
 >
 > ```tsx
 > const inputRef = useRef<HTMLInputElement>(null);

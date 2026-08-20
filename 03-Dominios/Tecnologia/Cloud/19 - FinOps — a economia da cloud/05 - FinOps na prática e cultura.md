@@ -59,8 +59,7 @@ O ciclo nunca "termina". A cada sprint, a cada trimestre, você reentra em Infor
 > [!tip] Assista: The FinOps Framework
 > **Canal:** Eddy Says Hi (#EddySaysHi) | **Duração:** ~6min | **Idioma:** EN
 >
-> Percorre as três fases na mesma ordem desta nota e reforça o ponto central: FinOps não é uma ferramenta, é "the social contract for how your company operates" — a cultura é o produto final, não o dashboard.
-> Trecho de destaque [04:43]: *"First, you inform. This phase is (...) spending, you move on to optimize (...) operate. This is where you bake these"*
+> Percorre as três fases na mesma ordem desta nota e reforça o ponto central: FinOps não é uma ferramenta, é "the social contract for how your company operates" — a cultura é o produto final, não o dashboard. Trecho de destaque [04:43]: *"First, you inform. This phase is (...) spending, you move on to optimize (...) operate. This is where you bake these"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=8Dz54waDj1Q)
 
@@ -79,8 +78,7 @@ Times pequenos geralmente vivem em Crawl ou Walk — e isso não é um fracasso,
 > [!tip] Assista: Adotando FinOps
 > **Canal:** Jornada FinOps | **Duração:** ~9min | **Idioma:** PT-BR
 >
-> Reforça, em português, que o objetivo não é ferramenta nem relatório — é construir uma cultura de responsabilidade, e que o ciclo Inform/Optimize/Operate precisa ser adaptado à maturidade e à cultura de cada empresa, não aplicado como receita de bolo.
-> Trecho de destaque [05:45]: *"aquele modelo do Finops de informar, otimizar e operar não é uma receita de bolo, tem que adaptar pra realidade da sua empresa, pra maturidade, pra cultura"*
+> Reforça, em português, que o objetivo não é ferramenta nem relatório — é construir uma cultura de responsabilidade, e que o ciclo Inform/Optimize/Operate precisa ser adaptado à maturidade e à cultura de cada empresa, não aplicado como receita de bolo. Trecho de destaque [05:45]: *"aquele modelo do Finops de informar, otimizar e operar não é uma receita de bolo, tem que adaptar pra realidade da sua empresa, pra maturidade, pra cultura"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=dLas0dHpKA0)
 

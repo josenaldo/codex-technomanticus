@@ -101,8 +101,7 @@ Na prática, muitos times usam os dois lado a lado: Secrets Manager pra credenci
 > [!tip] Assista: Secrets Management: Secrets Manager vs. Parameter Store
 > **Canal:** AWS Explainers | **Duração:** ~8min | **Idioma:** EN
 >
-> O vídeo amarra os mesmos três critérios de decisão desta nota — rotação, custo e cache — com um exemplo numérico de uma Lambda que reduz de milhares pra poucas dezenas de chamadas usando cache, exatamente o raciocínio do "cenário de custo pra fixar a diferença" acima.
-> Trecho de destaque [02:16]: *"automatic rotation. See that? Secrets Manager has it built right in for services like RDS. Parameter Store, you're kind of on your own there."*
+> O vídeo amarra os mesmos três critérios de decisão desta nota — rotação, custo e cache — com um exemplo numérico de uma Lambda que reduz de milhares pra poucas dezenas de chamadas usando cache, exatamente o raciocínio do "cenário de custo pra fixar a diferença" acima. Trecho de destaque [02:16]: *"automatic rotation. See that? Secrets Manager has it built right in for services like RDS. Parameter Store, you're kind of on your own there."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=KzF-HWoz5Cw)
 

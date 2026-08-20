@@ -324,17 +324,13 @@ Quando usar: extração simples, sem necessidade de chamadas externas, sem side 
 
 ## Casos práticos
 
-**Caso 1 — Agente de code review com 20 tools:**
-Um agente de review tinha 20 tools verbosas (read, write, search, bash, browse, e variações). Custo de tools por PR: $0.08. Após comprimir descriptions (60% menos tokens), fazer lazy loading por fase (só 5 tools por fase) e cachear o bloco: custo caiu para $0.004 por PR — uma redução de 95%.
+**Caso 1 — Agente de code review com 20 tools:** Um agente de review tinha 20 tools verbosas (read, write, search, bash, browse, e variações). Custo de tools por PR: $0.08. Após comprimir descriptions (60% menos tokens), fazer lazy loading por fase (só 5 tools por fase) e cachear o bloco: custo caiu para $0.004 por PR — uma redução de 95%.
 
-**Caso 2 — Chatbot de suporte com 12 tools de API:**
-As 12 tools do chatbot somavam 6.000 tokens de definitions — mais que o sistema prompt. Após agrupamento em 4 tools por domínio (billing, tech_support, account, status) e compressão de descriptions: 6.000 → 900 tokens (85% de economia). O modelo continuou chamando as tools corretamente porque as descriptions dos parâmetros `action` eram suficientemente informativas.
+**Caso 2 — Chatbot de suporte com 12 tools de API:** As 12 tools do chatbot somavam 6.000 tokens de definitions — mais que o sistema prompt. Após agrupamento em 4 tools por domínio (billing, tech_support, account, status) e compressão de descriptions: 6.000 → 900 tokens (85% de economia). O modelo continuou chamando as tools corretamente porque as descriptions dos parâmetros `action` eram suficientemente informativas.
 
-**Caso 3 — Sistema multi-agente com tools compartilhadas:**
-Um orquestrador passava o mesmo conjunto de 15 tools para cada subagente, independente da tarefa. Após implementar seleção de tools por tipo de agente (reader, writer, searcher, executor), cada subagente recebeu 3-5 tools. Custo total de tools no sistema caiu de $1.20/hora para $0.15/hora.
+**Caso 3 — Sistema multi-agente com tools compartilhadas:** Um orquestrador passava o mesmo conjunto de 15 tools para cada subagente, independente da tarefa. Após implementar seleção de tools por tipo de agente (reader, writer, searcher, executor), cada subagente recebeu 3-5 tools. Custo total de tools no sistema caiu de $1.20/hora para $0.15/hora.
 
-**Caso 4 — Auditoria revelou tools nunca chamadas:**
-Uma auditoria de 10k chamadas à API revelou que 6 das 18 tools disponíveis nunca foram chamadas em produção. Remoção das 6 tools: 33% de redução imediata nos tokens de tool definitions. Sem nenhuma mudança na lógica do agente.
+**Caso 4 — Auditoria revelou tools nunca chamadas:** Uma auditoria de 10k chamadas à API revelou que 6 das 18 tools disponíveis nunca foram chamadas em produção. Remoção das 6 tools: 33% de redução imediata nos tokens de tool definitions. Sem nenhuma mudança na lógica do agente.
 
 ## Checklist
 

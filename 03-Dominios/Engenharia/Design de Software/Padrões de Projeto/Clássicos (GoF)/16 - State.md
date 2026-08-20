@@ -21,14 +21,7 @@ aliases:
 # State
 
 > [!abstract] TL;DR
-> O **State** permite que um objeto **altere seu comportamento** quando seu **estado interno** muda —
-> a ponto de parecer que ele trocou de classe. Cada estado vira um objeto que implementa a mesma
-> interface, e o contexto **delega** ao estado atual, que também decide as **transições**. É a versão
-> orientada a objetos de uma **máquina de estados finitos**. Na lente cross-linguagem, ele tem um
-> rival forte: **enum com comportamento**, **união discriminada** (TypeScript) e **sealed types**
-> (Java 21+) modelam a mesma FSM de forma mais enxuta quando o comportamento por estado é simples. A
-> armadilha central é justamente essa: montar uma classe por estado onde um `enum` + `switch`
-> resolveria — e vice-versa, espalhar `if(estado == ...)` por todo método quando o State organizaria.
+> O **State** permite que um objeto **altere seu comportamento** quando seu **estado interno** muda — a ponto de parecer que ele trocou de classe. Cada estado vira um objeto que implementa a mesma interface, e o contexto **delega** ao estado atual, que também decide as **transições**. É a versão orientada a objetos de uma **máquina de estados finitos**. Na lente cross-linguagem, ele tem um rival forte: **enum com comportamento**, **união discriminada** (TypeScript) e **sealed types** (Java 21+) modelam a mesma FSM de forma mais enxuta quando o comportamento por estado é simples. A armadilha central é justamente essa: montar uma classe por estado onde um `enum` + `switch` resolveria — e vice-versa, espalhar `if(estado == ...)` por todo método quando o State organizaria.
 
 ## O `if (status == ...)` que se repete em todo método
 
@@ -97,19 +90,13 @@ Estruturalmente idênticos — um contexto delega a um objeto intercambiável �
 ## Armadilhas comuns
 
 > [!warning] State pattern onde um enum + switch basta
-> **O que acontece:** cria-se uma classe por estado (com toda a hierarquia) para uma máquina de três estados cujo comportamento é trivial.
-> **Por quê:** o State se paga quando cada estado carrega **comportamento substancial**. Para transições simples, a maquinaria de classes é peso morto — um `enum` com um método, ou um `switch` exaustivo, é mais curto e ainda ganha checagem de exaustividade do compilador.
-> **Como evitar:** comportamento rico por estado → State (objetos). Só "qual transição é válida" → enum/união/sealed. Deixe a complexidade real decidir.
+> **O que acontece:** cria-se uma classe por estado (com toda a hierarquia) para uma máquina de três estados cujo comportamento é trivial. **Por quê:** o State se paga quando cada estado carrega **comportamento substancial**. Para transições simples, a maquinaria de classes é peso morto — um `enum` com um método, ou um `switch` exaustivo, é mais curto e ainda ganha checagem de exaustividade do compilador. **Como evitar:** comportamento rico por estado → State (objetos). Só "qual transição é válida" → enum/união/sealed. Deixe a complexidade real decidir.
 
 > [!warning] Quem decide a transição? (context-god ou state-god)
-> **O que acontece:** ou o contexto concentra toda a lógica de transição (e os estados viram sacos de dados), ou os estados conhecem demais do contexto e uns dos outros, virando um emaranhado acoplado.
-> **Por quê:** a transição precisa morar em algum lugar coerente. Espalhada, reintroduz o `if` que o padrão veio eliminar; concentrada demais num estado onisciente, acopla tudo.
-> **Como evitar:** deixe **cada estado** decidir suas próprias transições de saída (é o que dá coesão). O contexto só guarda o estado atual e delega.
+> **O que acontece:** ou o contexto concentra toda a lógica de transição (e os estados viram sacos de dados), ou os estados conhecem demais do contexto e uns dos outros, virando um emaranhado acoplado. **Por quê:** a transição precisa morar em algum lugar coerente. Espalhada, reintroduz o `if` que o padrão veio eliminar; concentrada demais num estado onisciente, acopla tudo. **Como evitar:** deixe **cada estado** decidir suas próprias transições de saída (é o que dá coesão). O contexto só guarda o estado atual e delega.
 
 > [!warning] Explosão de classes com comportamento duplicado
-> **O que acontece:** muitos estados que compartilham quase todo o comportamento geram muitas classes quase iguais, com duplicação.
-> **Por quê:** um objeto por estado multiplica classes; se os estados diferem pouco, a maior parte é repetição.
-> **Como evitar:** use uma classe-base de estado com defaults (comportamento comum) e sobrescreva só o que difere; ou reavalie se um enum não seria mais adequado para esse caso de baixa variação.
+> **O que acontece:** muitos estados que compartilham quase todo o comportamento geram muitas classes quase iguais, com duplicação. **Por quê:** um objeto por estado multiplica classes; se os estados diferem pouco, a maior parte é repetição. **Como evitar:** use uma classe-base de estado com defaults (comportamento comum) e sobrescreva só o que difere; ou reavalie se um enum não seria mais adequado para esse caso de baixa variação.
 
 ## Como explicar em inglês
 

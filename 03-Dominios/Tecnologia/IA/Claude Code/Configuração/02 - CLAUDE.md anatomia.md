@@ -32,8 +32,7 @@ Quanto melhor o briefing, menos tempo o agente gasta descobrindo o que você pod
 > [!tip] Assista: Claude Code best practices (Code w/ Claude)
 > **Canal:** Anthropic | **Duração:** ~26min | **Idioma:** EN
 >
-> Talk oficial da Anthropic (Cal Rueb) onde o CLAUDE.md aparece como a primeira best practice, explicado com a mesma ideia-chave desta nota: o agente não tem memória entre sessões, e o CLAUDE.md é o mecanismo de compartilhar estado — com o time e com você mesmo — ao longo do tempo.
-> Trecho de destaque [10:34]: *"[Claude Code] doesn't really have memory. And so the main way we share state across sessions [...] is this CLAUDE.md file. [...] It's just plopped into context [...] these are important instructions the developer left for you."*
+> Talk oficial da Anthropic (Cal Rueb) onde o CLAUDE.md aparece como a primeira best practice, explicado com a mesma ideia-chave desta nota: o agente não tem memória entre sessões, e o CLAUDE.md é o mecanismo de compartilhar estado — com o time e com você mesmo — ao longo do tempo. Trecho de destaque [10:34]: *"[Claude Code] doesn't really have memory. And so the main way we share state across sessions [...] is this CLAUDE.md file. [...] It's just plopped into context [...] these are important instructions the developer left for you."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=gv0WHhKelSE)
 

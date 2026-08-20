@@ -118,57 +118,43 @@ O nível que diferencia quem escreve código de quem entende o que o código faz
 
 ### Fundamentos e tipos
 
-**"Qual a diferença entre `null` e `undefined`?"**
-`undefined` é o valor padrão de variáveis declaradas mas não inicializadas — o engine atribui. `null` é ausência intencional, atribuída pelo programador. O único caso onde `==` é aceitável: `x == null` captura ambos sem coerção estranha. Aprofunda em [[03-Dominios/Tecnologia/JavaScript/02 - Tipos em runtime|Tipos em runtime]].
+**"Qual a diferença entre `null` e `undefined`?"** `undefined` é o valor padrão de variáveis declaradas mas não inicializadas — o engine atribui. `null` é ausência intencional, atribuída pelo programador. O único caso onde `==` é aceitável: `x == null` captura ambos sem coerção estranha. Aprofunda em [[03-Dominios/Tecnologia/JavaScript/02 - Tipos em runtime|Tipos em runtime]].
 
-**"Por que `0.1 + 0.2 !== 0.3`?"**
-JavaScript usa IEEE 754 double-precision. `0.1` e `0.2` não têm representação exata em binário — a soma acumula erro de arredondamento. Para comparações financeiras, use `Math.round(valor * 100) / 100` ou bibliotecas como `decimal.js`. Veja [[03-Dominios/Tecnologia/JavaScript/13 - Números, BigInt e precisão|Números, BigInt e precisão]].
+**"Por que `0.1 + 0.2 !== 0.3`?"** JavaScript usa IEEE 754 double-precision. `0.1` e `0.2` não têm representação exata em binário — a soma acumula erro de arredondamento. Para comparações financeiras, use `Math.round(valor * 100) / 100` ou bibliotecas como `decimal.js`. Veja [[03-Dominios/Tecnologia/JavaScript/13 - Números, BigInt e precisão|Números, BigInt e precisão]].
 
-**"Explique o que é coerção e quando ela é problemática."**
-Coerção é a conversão implícita de tipos que o engine faz para executar operações. É problemática quando `+` concatena strings em vez de somar (`"5" + 3 === "53"`), ou quando `==` compara após conversão surpreendente (`[] == false`). Regra: use `===` sempre, exceto `== null`. Veja [[03-Dominios/Tecnologia/JavaScript/03 - Coerção e igualdade|Coerção e igualdade]].
+**"Explique o que é coerção e quando ela é problemática."** Coerção é a conversão implícita de tipos que o engine faz para executar operações. É problemática quando `+` concatena strings em vez de somar (`"5" + 3 === "53"`), ou quando `==` compara após conversão surpreendente (`[] == false`). Regra: use `===` sempre, exceto `== null`. Veja [[03-Dominios/Tecnologia/JavaScript/03 - Coerção e igualdade|Coerção e igualdade]].
 
 ### Escopo, closures e `this`
 
-**"O que é closure e qual problema ela resolve?"**
-Closure é a capacidade de uma função acessar variáveis do escopo onde foi *definida*, mesmo depois que aquele escopo encerrou. Resolve encapsulamento sem classes: a variável privada só existe na closure. O módulo pattern clássico é construído inteiro sobre closures. Veja [[03-Dominios/Tecnologia/JavaScript/10 - Closures|Closures]].
+**"O que é closure e qual problema ela resolve?"** Closure é a capacidade de uma função acessar variáveis do escopo onde foi *definida*, mesmo depois que aquele escopo encerrou. Resolve encapsulamento sem classes: a variável privada só existe na closure. O módulo pattern clássico é construído inteiro sobre closures. Veja [[03-Dominios/Tecnologia/JavaScript/10 - Closures|Closures]].
 
-**"Como `this` é determinado em JavaScript?"**
-`this` não é capturado na definição — é resolvido no call site. Quatro regras em ordem de precedência: (1) `new` binding; (2) explicit binding via `call`/`apply`/`bind`; (3) implicit binding — o objeto antes do ponto; (4) default binding — `undefined` em strict mode, `globalThis` fora. Arrow functions são exceção: herdam `this` do escopo léxico e não podem ser rebinadas. Veja [[03-Dominios/Tecnologia/JavaScript/06 - this|this]].
+**"Como `this` é determinado em JavaScript?"** `this` não é capturado na definição — é resolvido no call site. Quatro regras em ordem de precedência: (1) `new` binding; (2) explicit binding via `call`/`apply`/`bind`; (3) implicit binding — o objeto antes do ponto; (4) default binding — `undefined` em strict mode, `globalThis` fora. Arrow functions são exceção: herdam `this` do escopo léxico e não podem ser rebinadas. Veja [[03-Dominios/Tecnologia/JavaScript/06 - this|this]].
 
-**"Qual a diferença entre `var`, `let` e `const`?"**
-`var` tem escopo de função e é hoisted com valor `undefined`. `let` e `const` têm escopo de bloco e entram na Temporal Dead Zone (TDZ) — acessá-los antes da declaração lança `ReferenceError`, não retorna `undefined`. `const` impede reassignment, não mutação do valor. Veja [[03-Dominios/Tecnologia/JavaScript/04 - Variáveis e escopo|Variáveis e escopo]].
+**"Qual a diferença entre `var`, `let` e `const`?"** `var` tem escopo de função e é hoisted com valor `undefined`. `let` e `const` têm escopo de bloco e entram na Temporal Dead Zone (TDZ) — acessá-los antes da declaração lança `ReferenceError`, não retorna `undefined`. `const` impede reassignment, não mutação do valor. Veja [[03-Dominios/Tecnologia/JavaScript/04 - Variáveis e escopo|Variáveis e escopo]].
 
 ### Prototypes e herança
 
-**"Como funciona herança prototypal? Como difere de herança clássica?"**
-Em herança clássica, a classe é um molde — o objeto criado é uma cópia. Em herança prototypal, objetos delegam para outros objetos via `[[Prototype]]`. Quando você acessa `obj.método`, o engine sobe a chain até encontrar ou retornar `undefined`. A sintaxe `class` é açúcar sintático sobre isso — não há classes reais. Vantagem: você pode mudar o prototype em runtime; desvantagem: a mutabilidade exige cuidado. Veja [[03-Dominios/Tecnologia/JavaScript/11 - Prototypes e herança|Prototypes e herança]].
+**"Como funciona herança prototypal? Como difere de herança clássica?"** Em herança clássica, a classe é um molde — o objeto criado é uma cópia. Em herança prototypal, objetos delegam para outros objetos via `[[Prototype]]`. Quando você acessa `obj.método`, o engine sobe a chain até encontrar ou retornar `undefined`. A sintaxe `class` é açúcar sintático sobre isso — não há classes reais. Vantagem: você pode mudar o prototype em runtime; desvantagem: a mutabilidade exige cuidado. Veja [[03-Dominios/Tecnologia/JavaScript/11 - Prototypes e herança|Prototypes e herança]].
 
 ### Event loop e async
 
-**"Explique o event loop e por que JavaScript não bloqueia."**
-JavaScript tem uma única call stack. Operações I/O são delegadas às APIs da plataforma (browser/Node). Quando completam, o callback vai para a task queue. O event loop monitora: se a call stack está vazia, move o próximo item da queue para a stack. Microtasks (Promises, `queueMicrotask`) têm fila própria e são processadas *antes* da próxima macrotask — por isso `.then()` roda antes de `setTimeout(..., 0)`. Veja [[03-Dominios/Tecnologia/JavaScript/19 - Modelo de execução a fundo|Modelo de execução a fundo]].
+**"Explique o event loop e por que JavaScript não bloqueia."** JavaScript tem uma única call stack. Operações I/O são delegadas às APIs da plataforma (browser/Node). Quando completam, o callback vai para a task queue. O event loop monitora: se a call stack está vazia, move o próximo item da queue para a stack. Microtasks (Promises, `queueMicrotask`) têm fila própria e são processadas *antes* da próxima macrotask — por isso `.then()` roda antes de `setTimeout(..., 0)`. Veja [[03-Dominios/Tecnologia/JavaScript/19 - Modelo de execução a fundo|Modelo de execução a fundo]].
 
-**"Qual a diferença entre `Promise.all` e `Promise.allSettled`?"**
-`Promise.all` rejeita imediatamente se *qualquer* promise rejeitar (fail-fast). `Promise.allSettled` espera todas terminarem e retorna um array com o status de cada uma — ideal quando você quer processar resultados parciais mesmo com falhas. Use `Promise.all` para dependência mútua; `allSettled` para operações independentes onde falhas parciais são aceitáveis. Veja [[03-Dominios/Tecnologia/JavaScript/14 - Promises|Promises]].
+**"Qual a diferença entre `Promise.all` e `Promise.allSettled`?"** `Promise.all` rejeita imediatamente se *qualquer* promise rejeitar (fail-fast). `Promise.allSettled` espera todas terminarem e retorna um array com o status de cada uma — ideal quando você quer processar resultados parciais mesmo com falhas. Use `Promise.all` para dependência mútua; `allSettled` para operações independentes onde falhas parciais são aceitáveis. Veja [[03-Dominios/Tecnologia/JavaScript/14 - Promises|Promises]].
 
-**"Quando usar async/await em loop? Qual a armadilha?"**
-`forEach` não funciona com async — o callback é chamado sem aguardar a promise. Use `for...of` para execução sequencial ou `Promise.all(array.map(...))` para paralela. A escolha importa: sequencial gasta mais tempo mas evita sobrecarga; paralelo é mais rápido mas pode sobrecarregar a API chamada. Veja [[03-Dominios/Tecnologia/JavaScript/15 - async-await|async/await]].
+**"Quando usar async/await em loop? Qual a armadilha?"** `forEach` não funciona com async — o callback é chamado sem aguardar a promise. Use `for...of` para execução sequencial ou `Promise.all(array.map(...))` para paralela. A escolha importa: sequencial gasta mais tempo mas evita sobrecarga; paralelo é mais rápido mas pode sobrecarregar a API chamada. Veja [[03-Dominios/Tecnologia/JavaScript/15 - async-await|async/await]].
 
 ### Módulos e metaprogramação
 
-**"Qual a diferença entre ESM e CommonJS?"**
-ESM (`import`/`export`) é analisado estaticamente — o bundler sabe o grafo de dependências antes de executar, permitindo tree-shaking. CommonJS (`require`) é dinâmico — pode-se fazer `require` condicional, mas o bundler não consegue eliminar código morto com a mesma precisão. ESM tem `top-level await`; CommonJS não. Veja [[03-Dominios/Tecnologia/JavaScript/17 - Módulos ESM|Módulos ESM]].
+**"Qual a diferença entre ESM e CommonJS?"** ESM (`import`/`export`) é analisado estaticamente — o bundler sabe o grafo de dependências antes de executar, permitindo tree-shaking. CommonJS (`require`) é dinâmico — pode-se fazer `require` condicional, mas o bundler não consegue eliminar código morto com a mesma precisão. ESM tem `top-level await`; CommonJS não. Veja [[03-Dominios/Tecnologia/JavaScript/17 - Módulos ESM|Módulos ESM]].
 
-**"O que é um Proxy e quando você usaria?"**
-`Proxy` intercepta operações fundamentais em objetos: leitura, escrita, deleção, chamada de função. Casos de uso reais: validação reativa (interceptar `set` para validar antes de atribuir), logging transparente, objetos observáveis (Vue 3 usa Proxy para reatividade), mocking em testes. O custo é overhead de runtime — não use sem necessidade. Veja [[03-Dominios/Tecnologia/JavaScript/22 - Metaprogramação|Metaprogramação]].
+**"O que é um Proxy e quando você usaria?"** `Proxy` intercepta operações fundamentais em objetos: leitura, escrita, deleção, chamada de função. Casos de uso reais: validação reativa (interceptar `set` para validar antes de atribuir), logging transparente, objetos observáveis (Vue 3 usa Proxy para reatividade), mocking em testes. O custo é overhead de runtime — não use sem necessidade. Veja [[03-Dominios/Tecnologia/JavaScript/22 - Metaprogramação|Metaprogramação]].
 
 ### Recursos modernos e armadilhas
 
-**"O que é optional chaining e qual armadilha ela esconde?"**
-`?.` curto-circuita a expressão para `undefined` se o operando esquerdo for `null` ou `undefined`. O risco: silencia erros legítimos — se `user?.address.city` retorna `undefined`, você não sabe se `user` é nulo ou se `address` não tem `city`. Em código crítico, prefira checar a presença do objeto antes de acessar propriedades aninhadas. Veja [[03-Dominios/Tecnologia/JavaScript/23 - Recursos modernos (ES2020 a ES2025)|Recursos modernos (ES2020–ES2025)]].
+**"O que é optional chaining e qual armadilha ela esconde?"** `?.` curto-circuita a expressão para `undefined` se o operando esquerdo for `null` ou `undefined`. O risco: silencia erros legítimos — se `user?.address.city` retorna `undefined`, você não sabe se `user` é nulo ou se `address` não tem `city`. Em código crítico, prefira checar a presença do objeto antes de acessar propriedades aninhadas. Veja [[03-Dominios/Tecnologia/JavaScript/23 - Recursos modernos (ES2020 a ES2025)|Recursos modernos (ES2020–ES2025)]].
 
-**"Qual a diferença entre `??` (nullish coalescing) e `||`?"**
-`||` usa o valor direito quando o esquerdo é *falsy* — isso inclui `0`, `""` e `false`, o que frequentemente não é o que você quer. `??` usa o valor direito *somente* quando o esquerdo é `null` ou `undefined`. Para valores default de configuração (onde `0` ou `""` são válidos), `??` é o correto. Veja [[03-Dominios/Tecnologia/JavaScript/23 - Recursos modernos (ES2020 a ES2025)|Recursos modernos (ES2020–ES2025)]].
+**"Qual a diferença entre `??` (nullish coalescing) e `||`?"** `||` usa o valor direito quando o esquerdo é *falsy* — isso inclui `0`, `""` e `false`, o que frequentemente não é o que você quer. `??` usa o valor direito *somente* quando o esquerdo é `null` ou `undefined`. Para valores default de configuração (onde `0` ou `""` são válidos), `??` é o correto. Veja [[03-Dominios/Tecnologia/JavaScript/23 - Recursos modernos (ES2020 a ES2025)|Recursos modernos (ES2020–ES2025)]].
 
 ---
 
@@ -297,34 +283,22 @@ Estas frases são construídas para entrevistas técnicas em inglês — naturai
 ## Armadilhas comuns
 
 > [!warning] `typeof null === "object"`
-> **O que acontece:** código que testa `typeof value === "object"` para verificar se é objeto passa também para `null`.
-> **Por quê:** decisão histórica do JavaScript que não foi corrigida para não quebrar compatibilidade.
-> **Como evitar:** sempre use `value !== null && typeof value === "object"` para verificar objeto real.
+> **O que acontece:** código que testa `typeof value === "object"` para verificar se é objeto passa também para `null`. **Por quê:** decisão histórica do JavaScript que não foi corrigida para não quebrar compatibilidade. **Como evitar:** sempre use `value !== null && typeof value === "object"` para verificar objeto real.
 
 > [!warning] `this` perdido em callbacks
-> **O que acontece:** método passado como callback perde o `this` do objeto original — o contexto é determinado por quem chama, não por quem definiu.
-> **Por quê:** `this` é resolvido no call site. Quando a função é passada como argumento, o call site é o invocador externo, não o objeto original.
-> **Como evitar:** use arrow function (`onClick={() => this.handle()}`) ou bind explícito (`this.handle.bind(this)`).
+> **O que acontece:** método passado como callback perde o `this` do objeto original — o contexto é determinado por quem chama, não por quem definiu. **Por quê:** `this` é resolvido no call site. Quando a função é passada como argumento, o call site é o invocador externo, não o objeto original. **Como evitar:** use arrow function (`onClick={() => this.handle()}`) ou bind explícito (`this.handle.bind(this)`).
 
 > [!warning] `async` em `forEach` não funciona como esperado
-> **O que acontece:** `array.forEach(async fn)` dispara todas as promises mas não espera nenhuma — o `forEach` retorna `undefined`, não uma promise.
-> **Por quê:** `forEach` ignora o retorno do callback; não há mecanismo de agregação de promises.
-> **Como evitar:** use `for...of` para sequencial, `Promise.all(array.map(async fn))` para paralelo.
+> **O que acontece:** `array.forEach(async fn)` dispara todas as promises mas não espera nenhuma — o `forEach` retorna `undefined`, não uma promise. **Por quê:** `forEach` ignora o retorno do callback; não há mecanismo de agregação de promises. **Como evitar:** use `for...of` para sequencial, `Promise.all(array.map(async fn))` para paralelo.
 
 > [!warning] Closure em loop com `var`
-> **O que acontece:** `for (var i = 0; i < 3; i++) { setTimeout(() => console.log(i)) }` imprime `3, 3, 3`, não `0, 1, 2`.
-> **Por quê:** `var` tem escopo de função — todas as closures compartilham a *mesma* variável `i`, que é 3 quando os callbacks executam.
-> **Como evitar:** use `let` (cria novo binding por iteração) ou IIFE para capturar o valor.
+> **O que acontece:** `for (var i = 0; i < 3; i++) { setTimeout(() => console.log(i)) }` imprime `3, 3, 3`, não `0, 1, 2`. **Por quê:** `var` tem escopo de função — todas as closures compartilham a *mesma* variável `i`, que é 3 quando os callbacks executam. **Como evitar:** use `let` (cria novo binding por iteração) ou IIFE para capturar o valor.
 
 > [!warning] Modificar objeto recebido como argumento
-> **O que acontece:** funções que mutam objetos recebidos criam efeitos colaterais invisíveis — o chamador não espera que seu objeto seja modificado.
-> **Por quê:** objetos são passados por referência em JavaScript — a função recebe a *mesma* referência, não uma cópia.
-> **Como evitar:** crie uma cópia no início (`const copy = { ...obj }`) ou documente explicitamente que a função é destrutiva.
+> **O que acontece:** funções que mutam objetos recebidos criam efeitos colaterais invisíveis — o chamador não espera que seu objeto seja modificado. **Por quê:** objetos são passados por referência em JavaScript — a função recebe a *mesma* referência, não uma cópia. **Como evitar:** crie uma cópia no início (`const copy = { ...obj }`) ou documente explicitamente que a função é destrutiva.
 
 > [!warning] `Promise.all` falha rápido sem tratar as outras
-> **O que acontece:** se uma promise rejeitar em `Promise.all`, o resultado rejeita imediatamente — mas as outras promises *continuam executando* (não são canceladas).
-> **Por quê:** Promises em JavaScript não têm cancelamento nativo. `Promise.all` apenas muda o resultado, não para as operações em andamento.
-> **Como evitar:** use `Promise.allSettled` quando precisar do resultado de todas, mesmo com falhas parciais.
+> **O que acontece:** se uma promise rejeitar em `Promise.all`, o resultado rejeita imediatamente — mas as outras promises *continuam executando* (não são canceladas). **Por quê:** Promises em JavaScript não têm cancelamento nativo. `Promise.all` apenas muda o resultado, não para as operações em andamento. **Como evitar:** use `Promise.allSettled` quando precisar do resultado de todas, mesmo com falhas parciais.
 
 ---
 
@@ -753,9 +727,7 @@ function evictExpired() {
 **Lição de entrevista:** a pergunta "Map vs Object" é uma das mais frequentes em entrevistas sênior. A resposta que impressiona não é "use Map quando as chaves não são strings" — é articular os trade-offs operacionais: colisão com prototype, performance de mutação frequente, e o custo de `size` em objetos.
 
 > [!tip] Vídeo recomendado — Event loop e performance assíncrona
-> **Jake Archibald — "In the Loop"** (JSConf Asia 2018, 35 min)
-> [https://www.youtube.com/watch?v=cCOL7MC4Pl0](https://www.youtube.com/watch?v=cCOL7MC4Pl0)
-> A melhor explicação visual do event loop, task queue vs microtask queue e como o browser usa cada uma para rendering. Fundamental para entender por que `.then()` roda antes de `setTimeout(..., 0)` e como evitar jank de UI. Complementa diretamente as notas 14, 15 e 19 desta trilha.
+> **Jake Archibald — "In the Loop"** (JSConf Asia 2018, 35 min) [https://www.youtube.com/watch?v=cCOL7MC4Pl0](https://www.youtube.com/watch?v=cCOL7MC4Pl0) A melhor explicação visual do event loop, task queue vs microtask queue e como o browser usa cada uma para rendering. Fundamental para entender por que `.then()` roda antes de `setTimeout(..., 0)` e como evitar jank de UI. Complementa diretamente as notas 14, 15 e 19 desta trilha.
 
 ---
 

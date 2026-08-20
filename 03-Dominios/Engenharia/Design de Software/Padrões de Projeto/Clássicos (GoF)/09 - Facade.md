@@ -21,13 +21,7 @@ aliases:
 # Facade
 
 > [!abstract] TL;DR
-> O **Facade** oferece uma interface **simplificada** para um subsistema complexo, escondendo várias
-> classes e dependências atrás de uma API única e limpa. É, sem exagero, **o padrão mais usado do
-> mundo** — quase todo `@Service` que orquestra repositórios, clientes e validadores é uma Facade,
-> mesmo que ninguém a chame assim. Curiosidade da nossa lente cross-linguagem: diferente de Builder
-> ou Singleton, a linguagem **não dissolve** a Facade, porque ela não é um contorno para uma lacuna
-> técnica — é sobre **organização em escala humana**. Por isso ela é idêntica em Java, Python, Go e
-> TS. A armadilha campeã: a **God Facade** que cresce sem limite e vira um God Object.
+> O **Facade** oferece uma interface **simplificada** para um subsistema complexo, escondendo várias classes e dependências atrás de uma API única e limpa. É, sem exagero, **o padrão mais usado do mundo** — quase todo `@Service` que orquestra repositórios, clientes e validadores é uma Facade, mesmo que ninguém a chame assim. Curiosidade da nossa lente cross-linguagem: diferente de Builder ou Singleton, a linguagem **não dissolve** a Facade, porque ela não é um contorno para uma lacuna técnica — é sobre **organização em escala humana**. Por isso ela é idêntica em Java, Python, Go e TS. A armadilha campeã: a **God Facade** que cresce sem limite e vira um God Object.
 
 ## O fluxo que atravessa cinco serviços
 
@@ -88,19 +82,13 @@ Três estruturais parecidos, distinções que caem em entrevista:
 ## Armadilhas comuns
 
 > [!warning] A God Facade
-> **O que acontece:** a fachada começa enxuta e vai ganhando método após método, até virar uma classe de milhares de linhas que orquestra o sistema inteiro — um God Object com nome de padrão.
-> **Por quê:** a Facade concentra orquestração, e concentração sem limite atrai responsabilidade. Sem uma fronteira clara ("esta fachada cobre *checkout*, não o app todo"), ela cresce por gravidade.
-> **Como evitar:** uma Facade por **caso de uso ou subsistema coeso**, não uma por aplicação. Quando ela passa a coordenar coisas não relacionadas, quebre-a em fachadas menores.
+> **O que acontece:** a fachada começa enxuta e vai ganhando método após método, até virar uma classe de milhares de linhas que orquestra o sistema inteiro — um God Object com nome de padrão. **Por quê:** a Facade concentra orquestração, e concentração sem limite atrai responsabilidade. Sem uma fronteira clara ("esta fachada cobre *checkout*, não o app todo"), ela cresce por gravidade. **Como evitar:** uma Facade por **caso de uso ou subsistema coeso**, não uma por aplicação. Quando ela passa a coordenar coisas não relacionadas, quebre-a em fachadas menores.
 
 > [!warning] A fachada que vaza o subsistema
-> **O que acontece:** o método da fachada devolve tipos internos do subsistema (uma entidade do ORM, um objeto do SDK de pagamento), ou exige que o cliente monte esses tipos para chamá-la.
-> **Por quê:** se os tipos internos cruzam a fachada, o cliente volta a depender do subsistema — a simplificação foi só aparente, e o acoplamento continua lá.
-> **Como evitar:** a fachada fala a língua do cliente na entrada e na saída (DTOs/objetos de domínio), traduzindo internamente. O subsistema fica atrás da porta.
+> **O que acontece:** o método da fachada devolve tipos internos do subsistema (uma entidade do ORM, um objeto do SDK de pagamento), ou exige que o cliente monte esses tipos para chamá-la. **Por quê:** se os tipos internos cruzam a fachada, o cliente volta a depender do subsistema — a simplificação foi só aparente, e o acoplamento continua lá. **Como evitar:** a fachada fala a língua do cliente na entrada e na saída (DTOs/objetos de domínio), traduzindo internamente. O subsistema fica atrás da porta.
 
 > [!warning] Facade sobre um subsistema que já é simples
-> **O que acontece:** envolve-se uma única classe (ou duas triviais) numa fachada "por padronização".
-> **Por quê:** a Facade se paga quando há **complexidade real** a esconder (várias dependências, ordem, tratamento de erro). Sobre algo já simples, ela é só uma camada de repasse que afasta o leitor do código real.
-> **Como evitar:** só introduza a fachada quando o caso comum atravessa **múltiplos** colaboradores. Uma dependência só → chame direto.
+> **O que acontece:** envolve-se uma única classe (ou duas triviais) numa fachada "por padronização". **Por quê:** a Facade se paga quando há **complexidade real** a esconder (várias dependências, ordem, tratamento de erro). Sobre algo já simples, ela é só uma camada de repasse que afasta o leitor do código real. **Como evitar:** só introduza a fachada quando o caso comum atravessa **múltiplos** colaboradores. Uma dependência só → chame direto.
 
 ## Como explicar em inglês
 

@@ -44,8 +44,7 @@ Um você muda em cinco minutos. No outro, qualquer mexida vira uma tarde de medo
 A definição que este galho adota é a de **John Ousterhout**, em *A Philosophy of Software Design*:
 
 > [!quote] Definição operacional de complexidade
-> *"Complexity is anything related to the structure of a software system that makes it hard to understand and modify the system."*
-> — John Ousterhout, *A Philosophy of Software Design*
+> *"Complexity is anything related to the structure of a software system that makes it hard to understand and modify the system."* — John Ousterhout, *A Philosophy of Software Design*
 
 Repare no que essa definição faz de inteligente: ela é **operacional**, não estética.
 
@@ -83,8 +82,7 @@ Entender complexidade primeiro é entender o "porquê" de todo o resto.
 Dijkstra dizia isso de forma quase poética, e é a frase que melhor resume a profissão:
 
 > [!quote] Programar é organizar complexidade
-> *"The art of programming is the art of organizing complexity, of mastering multitude and avoiding its bastard chaos as effectively as possible."*
-> — Edsger Dijkstra, *Notes on Structured Programming* (EWD249, 1970)
+> *"The art of programming is the art of organizing complexity, of mastering multitude and avoiding its bastard chaos as effectively as possible."* — Edsger Dijkstra, *Notes on Structured Programming* (EWD249, 1970)
 
 ## Por que software é singularmente difícil — as quatro propriedades de Brooks
 
@@ -254,8 +252,7 @@ Quando a complexidade fica óbvia o bastante pra justificar um "grande refator",
 E não conte com o refator como salvação garantida: Gerald Weinberg avisa que a mão que mexe também piora.
 
 > [!quote] A manutenção sempre pode piorar
-> *"There is no code so big, twisted, or complex that maintenance can't make it worse."*
-> — Gerald M. Weinberg
+> *"There is no code so big, twisted, or complex that maintenance can't make it worse."* — Gerald M. Weinberg
 
 O combate eficaz é, então, o oposto do heroísmo: é **constante, pequeno e chato** — recusar cada incremento de complexidade no momento em que ele tentaria entrar.
 
@@ -276,8 +273,7 @@ Funcionou? Próximo. Cada atalho parece uma vitória de velocidade.
 Código que funciona é o mínimo; design que continua barato de mudar é o alvo.
 
 > [!quote] A meta da programação estratégica
-> *"Your primary goal must be to produce a great design, which also happens to work. This is strategic programming."*
-> — John Ousterhout, *A Philosophy of Software Design*
+> *"Your primary goal must be to produce a great design, which also happens to work. This is strategic programming."* — John Ousterhout, *A Philosophy of Software Design*
 
 A diferença não é sobre ser caprichoso ou relaxado. É sobre **horizonte de tempo**.
 
@@ -392,8 +388,7 @@ Se você lê só uma frase deste galho, que seja esta: **toda decisão de design
 E a postura que faz a diferença tem dois nomes que Dijkstra resumiria assim:
 
 > [!quote] A humildade como método
-> *"The competent programmer is fully aware of the strictly limited size of his own skull; therefore he approaches the programming task in full humility."*
-> — Edsger Dijkstra, *The Humble Programmer* (EWD340, 1972)
+> *"The competent programmer is fully aware of the strictly limited size of his own skull; therefore he approaches the programming task in full humility."* — Edsger Dijkstra, *The Humble Programmer* (EWD340, 1972)
 
 Domar a complexidade começa por reconhecer que a sua cabeça é pequena.
 
@@ -463,8 +458,7 @@ Separar as duas com precisão é o que evita dois erros simétricos: gastar ener
 ## Referências
 
 > [!tip] Assista — A Philosophy of Software Design — John Ousterhout
-> **Talks at Google** · 1h02 · [A Philosophy of Software Design — John Ousterhout](https://www.youtube.com/watch?v=bmSAYlu0NcY)
-> Ousterhout apresentando a tese do próprio livro. É a fonte direta de quase tudo que esta nota chama de sintoma — change amplification, carga cognitiva e unknown unknowns aparecem nomeados e exemplificados por quem cunhou o recorte.
+> **Talks at Google** · 1h02 · [A Philosophy of Software Design — John Ousterhout](https://www.youtube.com/watch?v=bmSAYlu0NcY) Ousterhout apresentando a tese do próprio livro. É a fonte direta de quase tudo que esta nota chama de sintoma — change amplification, carga cognitiva e unknown unknowns aparecem nomeados e exemplificados por quem cunhou o recorte.
 
 - **Frederick P. Brooks Jr.** — *No Silver Bullet — Essence and Accident in Software Engineering* (1986; reimpresso em *Computer*, vol. 20, n. 4, abril de 1987, p. 10-19; incluído na edição de aniversário de *The Mythical Man-Month*). Origem das **quatro propriedades essenciais** do software (complexidade, conformidade, mutabilidade, invisibilidade) e da tese essencial-vs-acidental. [PDF (worrydream.com)](https://worrydream.com/refs/Brooks_1986_-_No_Silver_Bullet.pdf) · [TR86-020 (UNC)](https://www.cs.unc.edu/techreports/86-020.pdf) · [Wikipedia](https://en.wikipedia.org/wiki/No_Silver_Bullet)
 - **John Ousterhout** — *A Philosophy of Software Design* (1ª ed. 2018; 2ª ed. 2021, Yaknyam Press). Definição operacional de complexidade; os três sintomas (*change amplification*, *cognitive load*, *unknown unknowns*); as duas causas (dependências e obscuridade); a natureza incremental da complexidade; e a distinção **tático vs. estratégico** (incl. o *tactical tornado* e a regra dos ~10–20% de investimento). [Amazon (2nd ed., ISBN 9781732102217)](https://www.amazon.com/Philosophy-Software-Design-2nd/dp/173210221X)

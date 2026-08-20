@@ -10,12 +10,9 @@ tags:
 
 # Roadmap — Construir Acessível
 
-Diagnóstico nota a nota + execução do enriquecimento. Gerado por `/diagnosticar-galho`
-(inline — notas recém-escritas em contexto). Enriquecimento via subagentes ≤3 concorrentes.
+Diagnóstico nota a nota + execução do enriquecimento. Gerado por `/diagnosticar-galho` (inline — notas recém-escritas em contexto). Enriquecimento via subagentes ≤3 concorrentes.
 
-**Galho:** `03-Dominios/Tecnologia/Acessibilidade/Construir Acessível`
-**Diagnóstico:** 2026-07-28
-**Última execução:** 2026-07-28 — **enriquecimento COMPLETO (7/7 ✅)**
+**Galho:** `03-Dominios/Tecnologia/Acessibilidade/Construir Acessível` **Diagnóstico:** 2026-07-28 **Última execução:** 2026-07-28 — **enriquecimento COMPLETO (7/7 ✅)**
 
 ## Régua de análise
 

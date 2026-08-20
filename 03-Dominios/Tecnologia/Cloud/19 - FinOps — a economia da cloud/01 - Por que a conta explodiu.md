@@ -25,8 +25,7 @@ Esse é o paradoxo central da nuvem pública: o mesmo modelo que dá **elasticid
 > [!tip] Assista: O que é FinOps com Marcelo Scharan, CEO da Pier Cloud
 > **Canal:** Papo Cloud | **Duração:** ~40min | **Idioma:** PT-BR
 >
-> Um bate-papo que ajuda a entender por que o desperdício em nuvem é tão mais visível — e tão mais constrangedor — do que era no data center: lá, capacidade ociosa nunca aparecia como linha de fatura; na nuvem, o "cartão de crédito" mostra cada centavo, mês a mês, sem esconderijo.
-> Trecho de destaque [16:57]: *"igual uma conta de cartão de crédito, você comprou, vai vir a conta no final do mês, o número vai aparecer, não tem como (...) ocultado"*
+> Um bate-papo que ajuda a entender por que o desperdício em nuvem é tão mais visível — e tão mais constrangedor — do que era no data center: lá, capacidade ociosa nunca aparecia como linha de fatura; na nuvem, o "cartão de crédito" mostra cada centavo, mês a mês, sem esconderijo. Trecho de destaque [16:57]: *"igual uma conta de cartão de crédito, você comprou, vai vir a conta no final do mês, o número vai aparecer, não tem como (...) ocultado"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=KgnIB_zAF3U)
 
@@ -91,8 +90,7 @@ Note que esse ciclo aprofunda, na prática, algo que já apareceu no [[03-Domini
 > [!tip] Assista: AWS FinOps Explained in 5 Minutes
 > **Canal:** AWS With A Beer | **Duração:** ~5min | **Idioma:** EN
 >
-> Um resumo rápido pra quem quer a definição de FinOps sem rodeio: não é só "economizar", é o guardrail financeiro que faz engenharia, financeiro e liderança falarem a mesma língua sobre custo antes que a fatura vire surpresa.
-> Trecho de destaque [01:18]: *"finops is your financial guard rail ensuring every dollar spent on AWS delivers maximum value"*
+> Um resumo rápido pra quem quer a definição de FinOps sem rodeio: não é só "economizar", é o guardrail financeiro que faz engenharia, financeiro e liderança falarem a mesma língua sobre custo antes que a fatura vire surpresa. Trecho de destaque [01:18]: *"finops is your financial guard rail ensuring every dollar spent on AWS delivers maximum value"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=6qqv9Ss3MaE)
 

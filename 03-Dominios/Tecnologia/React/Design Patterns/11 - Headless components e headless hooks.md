@@ -16,50 +16,32 @@ publish: true
 # Headless components e headless hooks
 
 > [!abstract] TL;DR
-> **Headless** é o padrão que separa lógica, estado e acessibilidade (a11y) da apresentação visual: a
-> biblioteca entrega o "cérebro" (comportamento, ARIA, teclado, foco) e **você** fornece o visual.
-> Existem duas formas: **headless hooks** (ex: TanStack Table, React Aria), onde um hook devolve
-> getters e handlers para você aplicar onde quiser; e **headless components** (ex: Radix UI, Base UI,
-> Headless UI), onde componentes sem estilo embrulham o comportamento e você estiliza com CSS/Tailwind.
-> É o padrão dominante de design systems em 2026 porque resolve a tensão real: equipes precisam de
-> controle visual total mas não têm como reimplementar a11y de teclado + ARIA + foco do zero para
-> cada componente. O trade-off central: **máxima flexibilidade contra mais código de montagem**.
-> Veja também [[03-Dominios/Tecnologia/React/Dicionário de React|Dicionário de React]].
+> **Headless** é o padrão que separa lógica, estado e acessibilidade (a11y) da apresentação visual: a biblioteca entrega o "cérebro" (comportamento, ARIA, teclado, foco) e **você** fornece o visual. Existem duas formas: **headless hooks** (ex: TanStack Table, React Aria), onde um hook devolve getters e handlers para você aplicar onde quiser; e **headless components** (ex: Radix UI, Base UI, Headless UI), onde componentes sem estilo embrulham o comportamento e você estiliza com CSS/Tailwind. É o padrão dominante de design systems em 2026 porque resolve a tensão real: equipes precisam de controle visual total mas não têm como reimplementar a11y de teclado + ARIA + foco do zero para cada componente. O trade-off central: **máxima flexibilidade contra mais código de montagem**. Veja também [[03-Dominios/Tecnologia/React/Dicionário de React|Dicionário de React]].
 
 ---
 
 ## O problema que o headless resolve
 
-Imagine o seguinte cenário: sua empresa adotou uma biblioteca de componentes React completa — botões,
-modais, comboboxes, tudo estilizado. Mas o novo design system exige fontes diferentes, raios de
-borda diferentes, e um estado de foco que não combina em nada com o padrão da lib. Você começa a
-fazer `!important` em cascata, sobrescrever variáveis CSS de uma forma que nunca foi documentada, e
-por fim percebe que a próxima versão da lib vai quebrar tudo.
+Imagine o seguinte cenário: sua empresa adotou uma biblioteca de componentes React completa — botões, modais, comboboxes, tudo estilizado. Mas o novo design system exige fontes diferentes, raios de borda diferentes, e um estado de foco que não combina em nada com o padrão da lib. Você começa a fazer `!important` em cascata, sobrescrever variáveis CSS de uma forma que nunca foi documentada, e por fim percebe que a próxima versão da lib vai quebrar tudo.
 
-A solução óbvia parece ser: "então vou escrever os componentes do zero." Mas aí aparece o custo
-real. Um `<Combobox>` acessível não é só um `<input>` com uma lista. Ele precisa de:
+A solução óbvia parece ser: "então vou escrever os componentes do zero." Mas aí aparece o custo real. Um `<Combobox>` acessível não é só um `<input>` com uma lista. Ele precisa de:
 
 - `role="combobox"` no input, `role="listbox"` na lista, `role="option"` em cada item
 - `aria-expanded`, `aria-haspopup`, `aria-activedescendant`, `aria-autocomplete`
-- Foco gerenciado via teclado: ↑↓ navega opções, Enter seleciona, Escape fecha, Home/End vão ao
-  início/fim
+- Foco gerenciado via teclado: ↑↓ navega opções, Enter seleciona, Escape fecha, Home/End vão ao início/fim
 - Portabilidade de foco de volta ao input ao fechar
 - Comportamento diferente em leitores de tela (VoiceOver, NVDA, JAWS)
 - Interoperabilidade com formulários (`name`, `value`, integração com `<form>`)
 
-Reimplementar isso "do zero" a cada componente equivale a meses de trabalho — e a maioria dos times
-nunca faz isso direito. É aí que o padrão headless entra.
+Reimplementar isso "do zero" a cada componente equivale a meses de trabalho — e a maioria dos times nunca faz isso direito. É aí que o padrão headless entra.
 
 ---
 
 ## A analogia: motor sem carroceria
 
-Pense em um motor de carro industrial: ele tem toda a mecânica — torque, câmbio, sistema de
-injeção, direção assistida. O motor não decide a cor do carro, a forma da lataria, nem o material
-dos bancos. Você instala o motor e coloca **a carroceria que quiser**.
+Pense em um motor de carro industrial: ele tem toda a mecânica — torque, câmbio, sistema de injeção, direção assistida. O motor não decide a cor do carro, a forma da lataria, nem o material dos bancos. Você instala o motor e coloca **a carroceria que quiser**.
 
-Headless é esse motor. A biblioteca entrega o motor (estado, lógica de teclado, ARIA semântica,
-gerenciamento de foco). Você decide a carroceria — os elementos HTML, as classes CSS, o visual.
+Headless é esse motor. A biblioteca entrega o motor (estado, lógica de teclado, ARIA semântica, gerenciamento de foco). Você decide a carroceria — os elementos HTML, as classes CSS, o visual.
 
 Duas fábricas fornecem esse motor de formas ligeiramente diferentes:
 
@@ -72,15 +54,11 @@ Duas fábricas fornecem esse motor de formas ligeiramente diferentes:
 
 ## Forma 1: headless hooks
 
-Um headless hook devolve tudo que você precisa para montar o componente: estado atual, callbacks,
-e **prop getters** — funções que retornam o conjunto certo de props HTML/ARIA para aplicar em cada
-elemento.
+Um headless hook devolve tudo que você precisa para montar o componente: estado atual, callbacks, e **prop getters** — funções que retornam o conjunto certo de props HTML/ARIA para aplicar em cada elemento.
 
 ### useDisclosure — exemplo mínimo
 
-O caso mais simples é um hook de abertura/fechamento. Ele encapsula o estado `isOpen`, os handlers
-`open`/`close`/`toggle`, e devolve os prop getters que colocam o `aria-expanded` e o
-`aria-controls` corretos:
+O caso mais simples é um hook de abertura/fechamento. Ele encapsula o estado `isOpen`, os handlers `open`/`close`/`toggle`, e devolve os prop getters que colocam o `aria-expanded` e o `aria-controls` corretos:
 
 ```tsx
 // hooks/useDisclosure.ts
@@ -169,9 +147,7 @@ export function Accordion({ title, children }: { title: string; children: React.
 }
 ```
 
-O hook não sabe que existe um `<div>` com `overflow-hidden` ou uma `span` com `rotate-180`. Ele só
-gerencia o estado e a semântica ARIA. Você pode reutilizá-lo para um modal, um tooltip, um menu —
-qualquer coisa que abre e fecha.
+O hook não sabe que existe um `<div>` com `overflow-hidden` ou uma `span` com `rotate-180`. Ele só gerencia o estado e a semântica ARIA. Você pode reutilizá-lo para um modal, um tooltip, um menu — qualquer coisa que abre e fecha.
 
 ### useCombobox — exemplo mínimo com teclado
 
@@ -293,15 +269,13 @@ export function useCombobox(options: Option[]) {
 }
 ```
 
-O hook não renderiza nada. Quem renderiza é o componente que o consume — com qualquer estrutura
-HTML e qualquer classe CSS.
+O hook não renderiza nada. Quem renderiza é o componente que o consume — com qualquer estrutura HTML e qualquer classe CSS.
 
 ---
 
 ## Forma 2: headless components (Radix UI)
 
-A segunda forma são componentes sem estilo — você importa o componente, mas ele não traz CSS
-algum. O comportamento, a semântica ARIA e o foco já estão lá; você aplica suas classes.
+A segunda forma são componentes sem estilo — você importa o componente, mas ele não traz CSS algum. O comportamento, a semântica ARIA e o foco já estão lá; você aplica suas classes.
 
 O exemplo clássico é o Dialog do Radix UI:
 
@@ -360,10 +334,7 @@ export function ConfirmModal({ trigger, title, description, onConfirm }: Confirm
 }
 ```
 
-O Radix cuidou de: `role="dialog"`, `aria-modal="true"`, `aria-labelledby` apontando para o
-`<Dialog.Title>`, trap de foco (Tab fica dentro do modal), retorno de foco ao elemento que abriu
-o modal ao fechar, fechar com Escape, gerenciar scroll do `<body>`. Você não escreveu uma linha
-de JavaScript de a11y — só CSS.
+O Radix cuidou de: `role="dialog"`, `aria-modal="true"`, `aria-labelledby` apontando para o `<Dialog.Title>`, trap de foco (Tab fica dentro do modal), retorno de foco ao elemento que abriu o modal ao fechar, fechar com Escape, gerenciar scroll do `<body>`. Você não escreveu uma linha de JavaScript de a11y — só CSS.
 
 ---
 
@@ -406,9 +377,7 @@ graph TB
 
 ## TanStack Table: o template canônico de headless hooks
 
-O TanStack Table (ex React Table) é o exemplo mais didático do padrão em escala. Ele gerencia
-sorting, filtering, grouping, pagination, row selection, column visibility, virtualization — e
-não renderiza **absolutamente nada**.
+O TanStack Table (ex React Table) é o exemplo mais didático do padrão em escala. Ele gerencia sorting, filtering, grouping, pagination, row selection, column visibility, virtualization — e não renderiza **absolutamente nada**.
 
 ```tsx
 // exemplo simplificado com TanStack Table v8 / v9
@@ -519,9 +488,7 @@ Headless hooks = custom hooks + prop getters. Headless components = compound com
 | **Downloads/semana** | ~4,4M | ~5,5M | ~4,5M | ~3,7M |
 
 > [!info] shadcn/ui não é headless — é uma camada acima
-> shadcn/ui usa Radix (e agora Base UI) como primitivo e já vem estilizado com Tailwind. É a escolha
-> para "quero componentes prontos mas quero o código no meu projeto". Com ~3,9M downloads/semana em
-> 2026, é o consumer mais popular das libs headless, não um concorrente direto.
+> shadcn/ui usa Radix (e agora Base UI) como primitivo e já vem estilizado com Tailwind. É a escolha para "quero componentes prontos mas quero o código no meu projeto". Com ~3,9M downloads/semana em 2026, é o consumer mais popular das libs headless, não um concorrente direto.
 
 ---
 
@@ -529,61 +496,31 @@ Headless hooks = custom hooks + prop getters. Headless components = compound com
 
 ### Cenário 1: design system multi-produto
 
-Uma empresa fintech mantém três produtos com branding completamente diferente — cores, fontes,
-raios de borda. Os componentes de comportamento são os mesmos: `<Combobox>`, `<DatePicker>`,
-`<Modal>`. Com headless, o time de plataforma publica um pacote `@acme/primitives` baseado em
-Radix/React Aria, e cada produto importa e estiliza com seu próprio CSS. Nenhum comportamento é
-duplicado; nenhuma tela de produto força o visual do outro.
+Uma empresa fintech mantém três produtos com branding completamente diferente — cores, fontes, raios de borda. Os componentes de comportamento são os mesmos: `<Combobox>`, `<DatePicker>`, `<Modal>`. Com headless, o time de plataforma publica um pacote `@acme/primitives` baseado em Radix/React Aria, e cada produto importa e estiliza com seu próprio CSS. Nenhum comportamento é duplicado; nenhuma tela de produto força o visual do outro.
 
 ### Cenário 2: migração de visual sem quebrar a11y
 
-Uma startup usava um `<Select>` personalizado, feito do zero, que funcionava bem visualmente mas
-tinha problemas sérios com VoiceOver no iOS. A migração para o `Select` do Radix UI trocou apenas
-o markup e o CSS — o comportamento melhorou drasticamente sem que o time tivesse que aprender ARIA
-authoring practices do zero.
+Uma startup usava um `<Select>` personalizado, feito do zero, que funcionava bem visualmente mas tinha problemas sérios com VoiceOver no iOS. A migração para o `Select` do Radix UI trocou apenas o markup e o CSS — o comportamento melhorou drasticamente sem que o time tivesse que aprender ARIA authoring practices do zero.
 
 ### Cenário 3: tabela server-side com API proprietária
 
-Um painel de dados usa paginação, ordenação e filtros vindos do backend. O time usou TanStack Table
-no modo `manualPagination` + `manualSorting`: o hook gerencia o estado de UI (qual página, qual
-coluna ordenada, em qual direção), e o time só precisou conectar esses valores aos parâmetros da
-API. O markup da tabela é 100% customizado para o design system interno.
+Um painel de dados usa paginação, ordenação e filtros vindos do backend. O time usou TanStack Table no modo `manualPagination` + `manualSorting`: o hook gerencia o estado de UI (qual página, qual coluna ordenada, em qual direção), e o time só precisou conectar esses valores aos parâmetros da API. O markup da tabela é 100% customizado para o design system interno.
 
 ---
 
 ## Armadilhas comuns
 
 > [!warning] Reinventar a11y dentro do hook headless
-> **O que acontece:** O desenvolvedor cria um headless hook próprio, mas esquece de incluir os
-> atributos ARIA corretos nos prop getters — devolvendo apenas handlers de `onClick` sem
-> `aria-expanded`, `role`, `aria-controls`, etc.
-> **Por quê:** A parte "headless" parece ser só separar estado do visual; a a11y parece opcional.
-> **Como evitar:** Se você vai criar seu próprio headless hook para um componente interativo
-> (Combobox, Menu, Dialog), siga os padrões do WAI-ARIA APG (Authoring Practices Guide). Ou melhor:
-> use React Aria — os hooks dela já implementam tudo.
+> **O que acontece:** O desenvolvedor cria um headless hook próprio, mas esquece de incluir os atributos ARIA corretos nos prop getters — devolvendo apenas handlers de `onClick` sem `aria-expanded`, `role`, `aria-controls`, etc. **Por quê:** A parte "headless" parece ser só separar estado do visual; a a11y parece opcional. **Como evitar:** Se você vai criar seu próprio headless hook para um componente interativo (Combobox, Menu, Dialog), siga os padrões do WAI-ARIA APG (Authoring Practices Guide). Ou melhor: use React Aria — os hooks dela já implementam tudo.
 
 > [!warning] Achar que headless = sem estilo padrão para sempre
-> **O que acontece:** O time não aplica nenhum estilo de reset (ex: `all: unset` ou um Preflight),
-> e os componentes Radix herdam estilos globais do navegador e do CSS do projeto, causando
-> inconsistências visuais difíceis de debugar.
-> **Por quê:** Sem estilo "padrão" não significa sem estilo nenhum — o navegador aplica UA stylesheet.
-> **Como evitar:** Aplicar um CSS reset consistente, usar `asChild` do Radix com moderação e
-> entender que cada elemento renderizado ainda herda a cascade do CSS.
+> **O que acontece:** O time não aplica nenhum estilo de reset (ex: `all: unset` ou um Preflight), e os componentes Radix herdam estilos globais do navegador e do CSS do projeto, causando inconsistências visuais difíceis de debugar. **Por quê:** Sem estilo "padrão" não significa sem estilo nenhum — o navegador aplica UA stylesheet. **Como evitar:** Aplicar um CSS reset consistente, usar `asChild` do Radix com moderação e entender que cada elemento renderizado ainda herda a cascade do CSS.
 
 > [!warning] Acoplar lógica visual dentro do headless hook
-> **O que acontece:** O hook começa retornando apenas estado e handlers, mas ao longo do tempo
-> começa a retornar classes CSS condicionais, strings de texto, ou até JSX — porque é "mais prático."
-> **Por quê:** A pressão de prazo leva a atalhos; a separação de responsabilidades se degrada.
-> **Como evitar:** A regra é simples: o headless hook nunca importa nada do mundo visual (className,
-> estilos, i18n de texto de UI, JSX). Se precisar, coloque num componente de apresentação separado.
+> **O que acontece:** O hook começa retornando apenas estado e handlers, mas ao longo do tempo começa a retornar classes CSS condicionais, strings de texto, ou até JSX — porque é "mais prático." **Por quê:** A pressão de prazo leva a atalhos; a separação de responsabilidades se degrada. **Como evitar:** A regra é simples: o headless hook nunca importa nada do mundo visual (className, estilos, i18n de texto de UI, JSX). Se precisar, coloque num componente de apresentação separado.
 
 > [!warning] Não memorizar colunas e dados no TanStack Table
-> **O que acontece:** O componente pai re-renderiza por qualquer razão, recria os arrays `columns` e
-> `data` a cada render, e o TanStack Table recalcula todo o row model desnecessariamente — causando
-> flicker ou lentidão em tabelas grandes.
-> **Por quê:** O TanStack Table usa referencial equality para detectar mudanças.
-> **Como evitar:** Sempre envolver `columns` em `useMemo` e garantir que `data` só mude quando
-> realmente mudar (não recriar o array na mesma referência a cada render).
+> **O que acontece:** O componente pai re-renderiza por qualquer razão, recria os arrays `columns` e `data` a cada render, e o TanStack Table recalcula todo o row model desnecessariamente — causando flicker ou lentidão em tabelas grandes. **Por quê:** O TanStack Table usa referencial equality para detectar mudanças. **Como evitar:** Sempre envolver `columns` em `useMemo` e garantir que `data` só mude quando realmente mudar (não recriar o array na mesma referência a cada render).
 
 ---
 
@@ -613,12 +550,7 @@ O padrão headless não é gratuito. Ele transfere responsabilidade da bibliotec
 
 ## Como explicar em inglês
 
-> "Headless components and hooks separate behavior from presentation. The library ships the logic,
-> accessibility, and keyboard interactions — you own the markup and styles. Think of it as the
-> engine without the body: Radix UI, React Aria, and TanStack Table give you a fully functional
-> engine that you can wrap in any visual shell you want. This is the dominant pattern for design
-> systems in 2026 because teams need full visual control but can't afford to reimplement ARIA
-> semantics and keyboard navigation from scratch for every complex component."
+> "Headless components and hooks separate behavior from presentation. The library ships the logic, accessibility, and keyboard interactions — you own the markup and styles. Think of it as the engine without the body: Radix UI, React Aria, and TanStack Table give you a fully functional engine that you can wrap in any visual shell you want. This is the dominant pattern for design systems in 2026 because teams need full visual control but can't afford to reimplement ARIA semantics and keyboard navigation from scratch for every complex component."
 
 | PT | EN |
 |----|----|
@@ -638,15 +570,10 @@ O padrão headless não é gratuito. Ele transfere responsabilidade da bibliotec
 
 ## O que vem a seguir
 
-O padrão headless é o ponto mais avançado do catálogo de design patterns deste galho. Mas há um
-padrão que aparece dentro de muitas implementações headless que ainda não abordamos isoladamente:
-o **state reducer** — a técnica de deixar o consumidor sobrescrever transições de estado específicas
-dentro do hook headless sem precisar reescrever o hook inteiro. É o último grau de extensibilidade.
+O padrão headless é o ponto mais avançado do catálogo de design patterns deste galho. Mas há um padrão que aparece dentro de muitas implementações headless que ainda não abordamos isoladamente: o **state reducer** — a técnica de deixar o consumidor sobrescrever transições de estado específicas dentro do hook headless sem precisar reescrever o hook inteiro. É o último grau de extensibilidade.
 
-- **10 - State reducer e prop getters** — como deixar o consumidor do hook intervir em transições
-  de estado específicas (ainda não escrito; é o padrão usado pelo Downshift internamente)
-- [[08 - Render props e function-as-child]] — a raiz histórica dos prop getters; entender render
-  props ajuda a ler o código de libs headless mais antigas
+- **10 - State reducer e prop getters** — como deixar o consumidor do hook intervir em transições de estado específicas (ainda não escrito; é o padrão usado pelo Downshift internamente)
+- [[08 - Render props e function-as-child]] — a raiz histórica dos prop getters; entender render props ajuda a ler o código de libs headless mais antigas
 - [[07 - Compound components]] — como o Radix UI estrutura seus componentes compostos internamente
 - [[04 - Custom hooks como padrão de reuso de lógica]] — a fundação de todo hook headless
 

@@ -148,8 +148,7 @@ O trade-off é direto: você ganha controle total — o mesmo nível de sofistic
 > [!tip] Assista: API Gateway e Kong na prática
 > **Canal:** Full Cycle | **Duração:** ~2h11min | **Idioma:** PT-BR
 >
-> Vídeo longo (curso completo), mas o trecho de destaque confirma exatamente o caminho descrito aqui: Kong não nasceu como API Gateway gerenciado — ele se popularizou como ingress controller de Kubernetes, o que explica por que o deployment via Helm no DOKS é o caminho mais natural pra quem já vive nesse mundo.
-> Trecho de destaque [34:39]: *"você pode usar ele ali com API Gateway, mas principalmente como ingress controller... a Full Cycle, que a gente utiliza Kubernetes, tem lá um Kong funcionando por debaixo dos panos pra fazer o nosso ingress."*
+> Vídeo longo (curso completo), mas o trecho de destaque confirma exatamente o caminho descrito aqui: Kong não nasceu como API Gateway gerenciado — ele se popularizou como ingress controller de Kubernetes, o que explica por que o deployment via Helm no DOKS é o caminho mais natural pra quem já vive nesse mundo. Trecho de destaque [34:39]: *"você pode usar ele ali com API Gateway, mas principalmente como ingress controller... a Full Cycle, que a gente utiliza Kubernetes, tem lá um Kong funcionando por debaixo dos panos pra fazer o nosso ingress."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=uY_cp41E7SU)
 

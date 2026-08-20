@@ -78,8 +78,7 @@ A ferramenta que a AWS oferece para essa medição própria (não a comparação
 > [!tip] Assista: AWS re:Invent 2022 - Architecting sustainably and reducing your AWS carbon footprint (SUS205)
 > **Canal:** AWS Events (oficial) | **Duração:** ~48min | **Idioma:** EN
 >
-> A líder técnica mundial de sustentabilidade da AWS detalha, ponto a ponto, o mesmo processo de duas decisões que esta seção descreve — primeiro os requisitos de negócio inegociáveis (soberania de dado, latência), depois a escolha entre as regiões restantes por proximidade de projeto de energia renovável ou menor intensidade de carbono da rede — junto com o funcionamento por trás da ferramenta de carbono da própria conta.
-> Trecho de destaque [13:04]: *"Great, but how do I pick a region?"* — a pergunta que a talk inteira responde.
+> A líder técnica mundial de sustentabilidade da AWS detalha, ponto a ponto, o mesmo processo de duas decisões que esta seção descreve — primeiro os requisitos de negócio inegociáveis (soberania de dado, latência), depois a escolha entre as regiões restantes por proximidade de projeto de energia renovável ou menor intensidade de carbono da rede — junto com o funcionamento por trás da ferramenta de carbono da própria conta. Trecho de destaque [13:04]: *"Great, but how do I pick a region?"* — a pergunta que a talk inteira responde.
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=jsbamOLpCr8)
 
@@ -150,8 +149,7 @@ A verdade desconfortável, e o motivo pelo qual esta nota fecha o galho em vez d
 > [!tip] Assista: Software Architecture: The Hard Parts
 > **Canal:** GOTO Conferences | **Duração:** ~43min | **Idioma:** EN
 >
-> Neal Ford e Mark Richards (autores do livro homônimo) nomeiam, fora do vocabulário específico da AWS, exatamente a mesma verdade que esta seção defende: a primeira das duas "leis" de arquitetura de software que eles cunharam é que **tudo em arquitetura de software é um trade-off** — não existe decisão sem lado que cede. É a mesma ideia desta nota, vista de fora do Well-Architected Framework, confirmando que o padrão não é peculiaridade da AWS, é estrutural à disciplina.
-> Trecho de destaque [41:38]: *"everything in software architecture is a tradeoff"*.
+> Neal Ford e Mark Richards (autores do livro homônimo) nomeiam, fora do vocabulário específico da AWS, exatamente a mesma verdade que esta seção defende: a primeira das duas "leis" de arquitetura de software que eles cunharam é que **tudo em arquitetura de software é um trade-off** — não existe decisão sem lado que cede. É a mesma ideia desta nota, vista de fora do Well-Architected Framework, confirmando que o padrão não é peculiaridade da AWS, é estrutural à disciplina. Trecho de destaque [41:38]: *"everything in software architecture is a tradeoff"*.
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=rhNWmiC-0sk)
 

@@ -19,11 +19,7 @@ aliases:
 # Cheatsheet e decision tree de integrações
 
 > [!abstract] TL;DR
-> Para banco de dados relacional: prefira `pg` (node-postgres) quando precisar de controle total e performance crítica, ou `postgres.js` quando quiser DX moderna com tagged templates; use um ORM apenas quando o modelo de domínio for complexo (ver [[03-Dominios/Tecnologia/Node/ORMs e banco de dados/index|ORMs e banco de dados]]).
-> Para cache e mensageria leve: `ioredis` para sessões, pub/sub e locks distribuídos; use BullMQ sobre Redis quando precisar de durabilidade, retry e dead-letter queue.
-> Para comunicação entre serviços: gRPC para microserviços internos com contrato forte e performance; REST para APIs públicas; GraphQL quando o cliente precisa de flexibilidade para compor dados.
-> Para resiliência: cockatiel (retry + circuit breaker + bulkhead) ou opossum (circuit breaker stand-alone) devem envolver **toda** chamada a serviço externo em produção.
-> O galho 9 cobre todos esses padrões em detalhe — esta nota é o mapa de navegação. Veja [[03-Dominios/Tecnologia/Node/Integrações/index|Integrações]].
+> Para banco de dados relacional: prefira `pg` (node-postgres) quando precisar de controle total e performance crítica, ou `postgres.js` quando quiser DX moderna com tagged templates; use um ORM apenas quando o modelo de domínio for complexo (ver [[03-Dominios/Tecnologia/Node/ORMs e banco de dados/index|ORMs e banco de dados]]). Para cache e mensageria leve: `ioredis` para sessões, pub/sub e locks distribuídos; use BullMQ sobre Redis quando precisar de durabilidade, retry e dead-letter queue. Para comunicação entre serviços: gRPC para microserviços internos com contrato forte e performance; REST para APIs públicas; GraphQL quando o cliente precisa de flexibilidade para compor dados. Para resiliência: cockatiel (retry + circuit breaker + bulkhead) ou opossum (circuit breaker stand-alone) devem envolver **toda** chamada a serviço externo em produção. O galho 9 cobre todos esses padrões em detalhe — esta nota é o mapa de navegação. Veja [[03-Dominios/Tecnologia/Node/Integrações/index|Integrações]].
 
 ## Como funciona
 

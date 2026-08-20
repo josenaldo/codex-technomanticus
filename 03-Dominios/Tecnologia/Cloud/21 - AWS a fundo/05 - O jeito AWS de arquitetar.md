@@ -171,8 +171,7 @@ O detalhe conceitual que costuma confundir quem chega da IAM tradicional: uma SC
 > [!tip] Assista: Set Up a Multi-Account AWS Environment that Uses Best Practices for AWS Organizations
 > **Canal:** Amazon Web Services | **Duração:** ~6min | **Idioma:** EN
 >
-> Vídeo curto e oficial mostrando a criação da hierarquia de OUs (Security, Sandbox, Workloads) dentro do console do AWS Organizations — visualiza exatamente a estrutura em árvore que o diagrama desta seção descreve, com a "root" gerando automaticamente as contas e a organização.
-> Trecho de destaque [00:08]: *"With this service you can centrally manage multiple accounts, reduce organizational overhead, and adapt the structure of your organizational units, or OUs, to meet your business's needs."*
+> Vídeo curto e oficial mostrando a criação da hierarquia de OUs (Security, Sandbox, Workloads) dentro do console do AWS Organizations — visualiza exatamente a estrutura em árvore que o diagrama desta seção descreve, com a "root" gerando automaticamente as contas e a organização. Trecho de destaque [00:08]: *"With this service you can centrally manage multiple accounts, reduce organizational overhead, and adapt the structure of your organizational units, or OUs, to meet your business's needs."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=uOrq8ZUuaAQ)
 
@@ -276,8 +275,7 @@ Adicionar um quarto canal de notificação no futuro — SMS, por exemplo — n�
 > [!tip] Assista: Event Driven Architectures vs Workflows (with AWS Services!)
 > **Canal:** Be A Better Dev | **Duração:** ~16min | **Idioma:** EN
 >
-> Constrói, passo a passo, um pipeline de processamento de pedido em e-commerce quase idêntico ao segundo exemplo desta nota — Lambda grava no DynamoDB, o change stream dispara outra Lambda, que faz broadcast via SNS pra quem quiser escutar. Bom pra ver o fan-out event-driven sendo montado peça por peça, não só descrito.
-> Trecho de destaque [02:16]: *"That DynamoDB table may trigger another Lambda function as a result of change events, and it's going to broadcast the fact that an order was placed out to other services that may want to listen, using an SNS topic — we're done so far with the placing of the order."*
+> Constrói, passo a passo, um pipeline de processamento de pedido em e-commerce quase idêntico ao segundo exemplo desta nota — Lambda grava no DynamoDB, o change stream dispara outra Lambda, que faz broadcast via SNS pra quem quiser escutar. Bom pra ver o fan-out event-driven sendo montado peça por peça, não só descrito. Trecho de destaque [02:16]: *"That DynamoDB table may trigger another Lambda function as a result of change events, and it's going to broadcast the fact that an order was placed out to other services that may want to listen, using an SNS topic — we're done so far with the placing of the order."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Q_QCu6OP2mQ)
 

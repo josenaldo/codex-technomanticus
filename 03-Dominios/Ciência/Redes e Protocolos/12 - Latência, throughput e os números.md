@@ -199,8 +199,7 @@ A consequência: **paralelize o que for independente; faça batch do que for rep
 
 Latência, throughput e concorrência não são três grandezas soltas. Uma lei simples e universal as costura: a **Lei de Little**. Ela diz que o número de requests "em voo" dentro do sistema (a **concorrência**) é igual ao throughput multiplicado pela latência média:
 
-> concorrência = throughput × latência
-> L = λ × W
+> concorrência = throughput × latência L = λ × W
 
 Pense numa fila de banco. Se chegam 2 clientes por minuto (throughput, λ) e cada um leva 5 minutos sendo atendido (latência, W), em regime estável há sempre ~10 clientes dentro da agência (concorrência, L). Não é mágica: é contagem. O que entra menos o que sai se acumula, e em equilíbrio o estoque é o produto dos dois.
 

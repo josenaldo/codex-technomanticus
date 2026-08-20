@@ -20,14 +20,7 @@ aliases:
 # Abstract Factory
 
 > [!abstract] TL;DR
-> O **Abstract Factory** cria **famílias de objetos relacionados** sem acoplar o código às classes
-> concretas — garantindo que os membros da família **combinem entre si**. É o Factory Method subido
-> um nível: em vez de criar *um* objeto cuja classe varia, cria um *conjunto coeso* que varia em
-> bloco (todos os widgets de um tema, todos os drivers de um banco). É o padrão criacional **mais
-> raro em backend moderno**: quando aparece, é em *toolkits* de UI, drivers de banco de dados,
-> suporte a múltiplas plataformas ou dublês de teste. Sua fraqueza estrutural conhecida: é fácil
-> adicionar uma **nova família**, mas doloroso adicionar um **novo produto** à família — mexe em
-> todas as fábricas.
+> O **Abstract Factory** cria **famílias de objetos relacionados** sem acoplar o código às classes concretas — garantindo que os membros da família **combinem entre si**. É o Factory Method subido um nível: em vez de criar *um* objeto cuja classe varia, cria um *conjunto coeso* que varia em bloco (todos os widgets de um tema, todos os drivers de um banco). É o padrão criacional **mais raro em backend moderno**: quando aparece, é em *toolkits* de UI, drivers de banco de dados, suporte a múltiplas plataformas ou dublês de teste. Sua fraqueza estrutural conhecida: é fácil adicionar uma **nova família**, mas doloroso adicionar um **novo produto** à família — mexe em todas as fábricas.
 
 ## Quando um objeto não vem sozinho
 
@@ -132,19 +125,13 @@ Fora desses, desconfie. Quase sempre o que você precisa é um Factory Method si
 ## Armadilhas comuns
 
 > [!warning] Abstract Factory prematura (fábrica de fábricas sem necessidade)
-> **O que acontece:** para criar objetos que **não** variam em família, monta-se uma hierarquia de fábricas abstratas "para o caso de um dia precisar".
-> **Por quê:** o padrão só se paga quando existem **múltiplas famílias coerentes** que variam juntas. Com uma família só, é indireção pura — YAGNI em estado puro.
-> **Como evitar:** exija ver **pelo menos duas** famílias reais antes de abstrair. Uma? Factory Method ou construtor direto.
+> **O que acontece:** para criar objetos que **não** variam em família, monta-se uma hierarquia de fábricas abstratas "para o caso de um dia precisar". **Por quê:** o padrão só se paga quando existem **múltiplas famílias coerentes** que variam juntas. Com uma família só, é indireção pura — YAGNI em estado puro. **Como evitar:** exija ver **pelo menos duas** famílias reais antes de abstrair. Uma? Factory Method ou construtor direto.
 
 > [!warning] Adicionar um novo produto quebra todas as fábricas
-> **O que acontece:** a família tem Botão e Janela; você precisa acrescentar um Menu. Agora **toda** implementação de `UIFactory` precisa ganhar `criarMenu()` — a interface muda e todas as fábricas junto.
-> **Por quê:** é a fraqueza estrutural conhecida do padrão: ele é **aberto para novas famílias** (adicionar TemaAltoContraste é fácil) mas **fechado para novos produtos** (adicionar um tipo de widget é caro). A rigidez está na interface de família.
-> **Como evitar:** só use Abstract Factory quando o **conjunto de produtos é estável** e o que varia são as **famílias**. Se novos produtos entram toda hora, o padrão vai te atrapalhar.
+> **O que acontece:** a família tem Botão e Janela; você precisa acrescentar um Menu. Agora **toda** implementação de `UIFactory` precisa ganhar `criarMenu()` — a interface muda e todas as fábricas junto. **Por quê:** é a fraqueza estrutural conhecida do padrão: ele é **aberto para novas famílias** (adicionar TemaAltoContraste é fácil) mas **fechado para novos produtos** (adicionar um tipo de widget é caro). A rigidez está na interface de família. **Como evitar:** só use Abstract Factory quando o **conjunto de produtos é estável** e o que varia são as **famílias**. Se novos produtos entram toda hora, o padrão vai te atrapalhar.
 
 > [!warning] Confundir com Factory Method
-> **O que acontece:** usa-se "Abstract Factory" para criar um único tipo de objeto, ou "Factory Method" onde há uma família inteira variando junto.
-> **Por quê:** são escalas diferentes — um objeto (Factory Method) versus um conjunto coeso (Abstract Factory). Trocar um pelo outro gera ou over-engineering, ou incoerência de família.
-> **Como evitar:** a pergunta decisiva é: *"o que varia é um objeto, ou um conjunto que precisa combinar entre si?"*
+> **O que acontece:** usa-se "Abstract Factory" para criar um único tipo de objeto, ou "Factory Method" onde há uma família inteira variando junto. **Por quê:** são escalas diferentes — um objeto (Factory Method) versus um conjunto coeso (Abstract Factory). Trocar um pelo outro gera ou over-engineering, ou incoerência de família. **Como evitar:** a pergunta decisiva é: *"o que varia é um objeto, ou um conjunto que precisa combinar entre si?"*
 
 ## Como explicar em inglês
 

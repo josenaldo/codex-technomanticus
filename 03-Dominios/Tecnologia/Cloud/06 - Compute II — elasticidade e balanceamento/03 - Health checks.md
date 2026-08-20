@@ -106,8 +106,7 @@ O eixo que a tabela não mostra, mas que pesa tanto quanto o `interval`, é o `h
 > [!tip] Assista: AWS Class: Explore Application Load Balancer and it's Functionalities
 > **Canal:** Me Tech Architect | **Duração:** ~34min | **Idioma:** EN
 >
-> Demonstra ao vivo, no console, exatamente os quatro parâmetros desta seção — healthy threshold, unhealthy threshold, timeout e interval — e mostra o efeito prático de um alvo saindo e voltando pro rodízio, o que ajuda a visualizar a "conta" que a nota acabou de fazer em prosa.
-> Trecho de destaque [14:39]: *"healthy threshold is after how much [interval]... consider that as healthy"*
+> Demonstra ao vivo, no console, exatamente os quatro parâmetros desta seção — healthy threshold, unhealthy threshold, timeout e interval — e mostra o efeito prático de um alvo saindo e voltando pro rodízio, o que ajuda a visualizar a "conta" que a nota acabou de fazer em prosa. Trecho de destaque [14:39]: *"healthy threshold is after how much [interval]... consider that as healthy"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=smxGO_wcjOo)
 

@@ -125,16 +125,14 @@ A decisão certa nunca é "o máximo de resiliência que dá pra comprar" — é
 > [!tip] Assista: 6 Pillars of the AWS Well-Architected Framework (you should really know this)
 > **Canal:** Be A Better Dev | **Duração:** ~19min | **Idioma:** EN
 >
-> Situa o pilar de Reliability (o motor por trás do triângulo desta nota) ao lado do pilar de Cost Optimization — dá o pano de fundo do framework inteiro que justifica por que a AWS documenta resiliência e custo como forças competindo pelo mesmo orçamento, e não como dois assuntos separados.
-> Trecho de destaque [8:10]: *"all of application building is for nothing if we can't ensure their application remain stable"*
+> Situa o pilar de Reliability (o motor por trás do triângulo desta nota) ao lado do pilar de Cost Optimization — dá o pano de fundo do framework inteiro que justifica por que a AWS documenta resiliência e custo como forças competindo pelo mesmo orçamento, e não como dois assuntos separados. Trecho de destaque [8:10]: *"all of application building is for nothing if we can't ensure their application remain stable"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=5odtVlORq_w)
 
 > [!tip] Assista: AWS Summit DC 2021 — Increase resiliency with cloud-based disaster recovery
 > **Canal:** AWS Events | **Duração:** ~42min | **Idioma:** EN
 >
-> Talk oficial da AWS que percorre o mesmo espectro de estratégias de DR desta trilha (backup simples até multi-site) sempre amarrando cada nível a seu overhead de custo — o mesmo raciocínio "quanto mais RTO/RPO agressivo, mais capacidade parada" que o triângulo desta nota formaliza em diagrama.
-> Trecho de destaque [4:04]: *"recover quickly but there's a trade-off, there's usually larger overhead costs"*
+> Talk oficial da AWS que percorre o mesmo espectro de estratégias de DR desta trilha (backup simples até multi-site) sempre amarrando cada nível a seu overhead de custo — o mesmo raciocínio "quanto mais RTO/RPO agressivo, mais capacidade parada" que o triângulo desta nota formaliza em diagrama. Trecho de destaque [4:04]: *"recover quickly but there's a trade-off, there's usually larger overhead costs"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=AdEncgHdHTM)
 

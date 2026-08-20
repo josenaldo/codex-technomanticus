@@ -48,8 +48,7 @@ No GitHub, a forma atual são os **rulesets** (a antiga *branch protection* cont
 | **Exigir resolução de comentários** | mergear deixando conversa aberta |
 
 > [!info] Comece por três
-> Para um repositório qualquer, três regras entregam quase todo o benefício: **PR obrigatório**, **1 aprovação** e **checks obrigatórios**. As demais resolvem problemas que você ainda não tem — e regra demais no começo gera contorno, não disciplina.
-> Um detalhe que morde: por padrão, administradores costumam ficar **isentos**. Isso é razoável para emergência e péssimo como rotina — se a regra não vale para quem mais empurra código, ela não vale.
+> Para um repositório qualquer, três regras entregam quase todo o benefício: **PR obrigatório**, **1 aprovação** e **checks obrigatórios**. As demais resolvem problemas que você ainda não tem — e regra demais no começo gera contorno, não disciplina. Um detalhe que morde: por padrão, administradores costumam ficar **isentos**. Isso é razoável para emergência e péssimo como rotina — se a regra não vale para quem mais empurra código, ela não vale.
 
 ---
 
@@ -106,9 +105,7 @@ O que importa **para este domínio** é o contrato entre repositório e pipeline
 O resto — desenhar pipeline, estratégias de deploy, ambientes, promoção entre estágios — é disciplina de entrega e mora em [[03-Dominios/Engenharia/Operação/index|Engenharia/Operação]]. Este domínio para na fronteira, e a nota 30 (nível 5) fecha o que sobra do lado do repositório.
 
 > [!warning] Permissão do token do workflow
-> **O que acontece:** um fluxo de trabalho com permissões amplas é explorado por uma dependência comprometida ou por um PR vindo de fork.
-> **Por quê:** o token que o Actions injeta pode ter escrita no repositório, e ações de terceiros rodam com ele.
-> **Como evitar:** permissão mínima explícita (`permissions:` no topo do fluxo), ações de terceiros fixadas por commit em vez de tag móvel, e cuidado redobrado com o evento `pull_request_target`, que roda com permissões elevadas em código de fora.
+> **O que acontece:** um fluxo de trabalho com permissões amplas é explorado por uma dependência comprometida ou por um PR vindo de fork. **Por quê:** o token que o Actions injeta pode ter escrita no repositório, e ações de terceiros rodam com ele. **Como evitar:** permissão mínima explícita (`permissions:` no topo do fluxo), ações de terceiros fixadas por commit em vez de tag móvel, e cuidado redobrado com o evento `pull_request_target`, que roda com permissões elevadas em código de fora.
 
 ---
 
@@ -146,19 +143,13 @@ O `CITATION.cff` merece destaque para quem publica pesquisa: ele faz o GitHub ex
 ## Armadilhas comuns
 
 > [!warning] Confiar que "está protegido" sem testar
-> **O que acontece:** a regra foi criada com um padrão de nome que não casa com a branch real (`main` × `master`, ou um padrão com asterisco no lugar errado), e ninguém percebe até alguém empurrar direto.
-> **Por quê:** regras casam por padrão de nome, e a interface não avisa que o padrão não pegou nada.
-> **Como evitar:** teste. Tente empurrar direto na `main` e confirme que é recusado. Um minuto de verificação vale mais que a tela de configuração toda verde.
+> **O que acontece:** a regra foi criada com um padrão de nome que não casa com a branch real (`main` × `master`, ou um padrão com asterisco no lugar errado), e ninguém percebe até alguém empurrar direto. **Por quê:** regras casam por padrão de nome, e a interface não avisa que o padrão não pegou nada. **Como evitar:** teste. Tente empurrar direto na `main` e confirme que é recusado. Um minuto de verificação vale mais que a tela de configuração toda verde.
 
 > [!warning] Automatizar processo antes de acordá-lo
-> **O que acontece:** o time liga exigência de duas aprovações num time de três pessoas, e tudo trava.
-> **Por quê:** a regra codifica um acordo que não existia; o resultado é contorno (aprovações automáticas de cortesia) em vez de qualidade.
-> **Como evitar:** acorde primeiro, verifique que funciona por hábito, e só então torne obrigatório. Regra existe para impedir o esquecimento, não para criar disciplina do zero.
+> **O que acontece:** o time liga exigência de duas aprovações num time de três pessoas, e tudo trava. **Por quê:** a regra codifica um acordo que não existia; o resultado é contorno (aprovações automáticas de cortesia) em vez de qualidade. **Como evitar:** acorde primeiro, verifique que funciona por hábito, e só então torne obrigatório. Regra existe para impedir o esquecimento, não para criar disciplina do zero.
 
 > [!warning] Tornar público o que não deveria
-> **O que acontece:** um repositório interno vira público numa arrumação de organização, com histórico inteiro exposto.
-> **Por quê:** a mudança de visibilidade é uma configuração simples, sem etapa de revisão por padrão.
-> **Como evitar:** em organização, restrinja quem pode alterar visibilidade. E lembre da nota 05: tornar público é irreversível na prática, porque o que foi lido não volta.
+> **O que acontece:** um repositório interno vira público numa arrumação de organização, com histórico inteiro exposto. **Por quê:** a mudança de visibilidade é uma configuração simples, sem etapa de revisão por padrão. **Como evitar:** em organização, restrinja quem pode alterar visibilidade. E lembre da nota 05: tornar público é irreversível na prática, porque o que foi lido não volta.
 
 ---
 

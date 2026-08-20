@@ -519,17 +519,13 @@ Use essa frase para responder:
 
 ### Perguntas de follow-up comuns
 
-**"O que acontece se eu passar delay 0 para `setTimeout`?"**
-O delay é normalizado internamente para 1ms pelo libuv. O callback nunca dispara sincronamente e sempre aguarda pelo menos 1ms — além do tempo que outras fases levarem para terminar antes de a fase `timers` ser alcançada.
+**"O que acontece se eu passar delay 0 para `setTimeout`?"** O delay é normalizado internamente para 1ms pelo libuv. O callback nunca dispara sincronamente e sempre aguarda pelo menos 1ms — além do tempo que outras fases levarem para terminar antes de a fase `timers` ser alcançada.
 
-**"Como evitar drift em um polling periódico?"**
-Usar `setTimeout` recursivo com cálculo: `setTimeout(fn, Math.max(0, intervalo - tempoGasto))`. Ou usar `timers/promises setInterval` com `for await`, que aguarda cada iteração completar antes de iniciar a próxima.
+**"Como evitar drift em um polling periódico?"** Usar `setTimeout` recursivo com cálculo: `setTimeout(fn, Math.max(0, intervalo - tempoGasto))`. Ou usar `timers/promises setInterval` com `for await`, que aguarda cada iteração completar antes de iniciar a próxima.
 
-**"Quando `setImmediate` é garantidamente determinístico?"**
-Apenas quando agendado de dentro de um callback de I/O (fase poll). Nesse contexto, `setImmediate` sempre precede qualquer `setTimeout(fn, 0)` agendado no mesmo callback.
+**"Quando `setImmediate` é garantidamente determinístico?"** Apenas quando agendado de dentro de um callback de I/O (fase poll). Nesse contexto, `setImmediate` sempre precede qualquer `setTimeout(fn, 0)` agendado no mesmo callback.
 
-**"Por que `setInterval` raramente é correto em produção?"**
-Porque ele não aguarda o handler completar antes de agendar o próximo disparo. Com operações assíncronas, o intervalo entre o fim de uma execução e o início da próxima pode ser zero — ou negativo em termos de intent. O padrão com `setTimeout` recursivo ou `for await` com `timers/promises` é mais seguro.
+**"Por que `setInterval` raramente é correto em produção?"** Porque ele não aguarda o handler completar antes de agendar o próximo disparo. Com operações assíncronas, o intervalo entre o fim de uma execução e o início da próxima pode ser zero — ou negativo em termos de intent. O padrão com `setTimeout` recursivo ou `for await` com `timers/promises` é mais seguro.
 
 ## O que vem a seguir
 

@@ -408,68 +408,44 @@ Esse teste protege contra regressão de `.strict()` removido por acidente.
 ## Armadilhas comuns
 
 > [!warning] Schema permissivo sem `.strict()` aceita campos desconhecidos
-> **O que acontece:** campos extras do cliente passam pela validation e podem atingir o banco ou o domínio — risco de mass assignment.
-> **Por quê:** por padrão, zod permite campos extras; JSON Schema também requer `additionalProperties: false` explícito.
-> **Como evitar:** use `.strict()` em zod ou `additionalProperties: false` em JSON Schema para todos os schemas de input externo.
+> **O que acontece:** campos extras do cliente passam pela validation e podem atingir o banco ou o domínio — risco de mass assignment. **Por quê:** por padrão, zod permite campos extras; JSON Schema também requer `additionalProperties: false` explícito. **Como evitar:** use `.strict()` em zod ou `additionalProperties: false` em JSON Schema para todos os schemas de input externo.
 
 > [!warning] Validar só body e esquecer query/params/headers
-> **O que acontece:** `req.params.id` chega como string UUID não validada; um ID com formato errado causa erro de banco, não 400.
-> **Por quê:** body recebe atenção; params e query são vistos como secundários mas são tão externos quanto o body.
-> **Como evitar:** trate cada parte do request como `unknown`; aplique schema a params, query e headers críticos.
+> **O que acontece:** `req.params.id` chega como string UUID não validada; um ID com formato errado causa erro de banco, não 400. **Por quê:** body recebe atenção; params e query são vistos como secundários mas são tão externos quanto o body. **Como evitar:** trate cada parte do request como `unknown`; aplique schema a params, query e headers críticos.
 
 > [!warning] Misturar zod e `class-validator` sem convenção clara
-> **O que acontece:** metade dos endpoints valida com zod, metade com decorators; erros têm formatos diferentes; testes duplicam.
-> **Por quê:** times diferentes adotam padrões diferentes sem alinhamento; NestJS vem com class-validator, mas zod é mais ergonômico em TS puro.
-> **Como evitar:** escolha uma biblioteca por domínio/repositório e documente a escolha; wrappers como `nestjs-zod` unificam se necessário.
+> **O que acontece:** metade dos endpoints valida com zod, metade com decorators; erros têm formatos diferentes; testes duplicam. **Por quê:** times diferentes adotam padrões diferentes sem alinhamento; NestJS vem com class-validator, mas zod é mais ergonômico em TS puro. **Como evitar:** escolha uma biblioteca por domínio/repositório e documente a escolha; wrappers como `nestjs-zod` unificam se necessário.
 
 > [!warning] Mensagens de erro cruas expostas para o cliente
-> **O que acontece:** cliente vê mensagens internas como `Expected string, received number at path "items.0.productId"` diretamente na response.
-> **Por quê:** `ZodError` é lançado cru sem mapeamento para Problem Details com `invalidParams` legíveis.
-> **Como evitar:** mapeie `ZodError.issues` para `invalidParams` no handler de erro global; mantenha a mensagem interna no log.
+> **O que acontece:** cliente vê mensagens internas como `Expected string, received number at path "items.0.productId"` diretamente na response. **Por quê:** `ZodError` é lançado cru sem mapeamento para Problem Details com `invalidParams` legíveis. **Como evitar:** mapeie `ZodError.issues` para `invalidParams` no handler de erro global; mantenha a mensagem interna no log.
 
 > [!warning] Validar depois do use case: domínio recebeu dado inválido
-> **O que acontece:** use case processa dados malformados, corrompe estado ou lança erro interno difícil de rastrear.
-> **Por quê:** validation foi postergada por acidente ou colocada dentro do use case em vez de na boundary HTTP.
-> **Como evitar:** validation é sempre a primeira coisa que acontece na boundary — antes de qualquer lógica de aplicação.
+> **O que acontece:** use case processa dados malformados, corrompe estado ou lança erro interno difícil de rastrear. **Por quê:** validation foi postergada por acidente ou colocada dentro do use case em vez de na boundary HTTP. **Como evitar:** validation é sempre a primeira coisa que acontece na boundary — antes de qualquer lógica de aplicação.
 
 > [!warning] Coerção ampla com `z.coerce` aceita input ambíguo
-> **O que acontece:** `z.coerce.number().parse("abc")` retorna `NaN`; `z.coerce.boolean().parse("false")` retorna `true`.
-> **Por quê:** `z.coerce` usa cast JavaScript nativo, que tem regras permissivas; `Boolean("false") === true`.
-> **Como evitar:** use `z.coerce` apenas para conversões previsíveis como query string de número; adicione `.refine()` para casos limítrofes.
+> **O que acontece:** `z.coerce.number().parse("abc")` retorna `NaN`; `z.coerce.boolean().parse("false")` retorna `true`. **Por quê:** `z.coerce` usa cast JavaScript nativo, que tem regras permissivas; `Boolean("false") === true`. **Como evitar:** use `z.coerce` apenas para conversões previsíveis como query string de número; adicione `.refine()` para casos limítrofes.
 
 > [!warning] Usar schema de DTO como entity de domínio
-> **O que acontece:** lógica de domínio fica acoplada ao formato de entrada; trocar a API exige mudar o domínio.
-> **Por quê:** conveniência leva a reutilizar o tipo inferido pelo schema como tipo de domínio direto.
-> **Como evitar:** schema de input → DTO/input type; domínio → entity/value object com invariantes próprias; mapeie entre eles no adapter.
+> **O que acontece:** lógica de domínio fica acoplada ao formato de entrada; trocar a API exige mudar o domínio. **Por quê:** conveniência leva a reutilizar o tipo inferido pelo schema como tipo de domínio direto. **Como evitar:** schema de input → DTO/input type; domínio → entity/value object com invariantes próprias; mapeie entre eles no adapter.
 
 > [!warning] Alterar schema público sem versionamento
-> **O que acontece:** clientes existentes enviam payload no formato antigo e recebem 400 inesperado.
-> **Por quê:** mudança incompatível (campo obrigatório, rename, remoção) foi feita sem criar nova versão da rota.
-> **Como evitar:** campos novos obrigatórios exigem versão nova; use `.default()` para tornar campos novos opcionais de forma compatível.
+> **O que acontece:** clientes existentes enviam payload no formato antigo e recebem 400 inesperado. **Por quê:** mudança incompatível (campo obrigatório, rename, remoção) foi feita sem criar nova versão da rota. **Como evitar:** campos novos obrigatórios exigem versão nova; use `.default()` para tornar campos novos opcionais de forma compatível.
 
 > [!warning] Validar webhook depois de executar efeito colateral
-> **O que acontece:** efeito colateral (email enviado, estoque decrementado) acontece com payload inválido ou de versão incompatível.
-> **Por quê:** validation foi colocada após a lógica principal por simplicidade.
-> **Como evitar:** em webhooks e mensagens de fila, validate primeiro com `safeParse`; redirecione para dead-letter queue se inválido; nunca processe antes de validar.
+> **O que acontece:** efeito colateral (email enviado, estoque decrementado) acontece com payload inválido ou de versão incompatível. **Por quê:** validation foi colocada após a lógica principal por simplicidade. **Como evitar:** em webhooks e mensagens de fila, validate primeiro com `safeParse`; redirecione para dead-letter queue se inválido; nunca processe antes de validar.
 
 > [!warning] Sem testes de schema: regressão silenciosa
-> **O que acontece:** alguém remove `.strict()` ou adiciona `.optional()` e o contrato muda sem detectar.
-> **Por quê:** schema é tratado como configuração, não como código que precisa de teste.
-> **Como evitar:** teste schemas públicos com payloads válidos, inválidos e com campos extras; inclua no CI.
+> **O que acontece:** alguém remove `.strict()` ou adiciona `.optional()` e o contrato muda sem detectar. **Por quê:** schema é tratado como configuração, não como código que precisa de teste. **Como evitar:** teste schemas públicos com payloads válidos, inválidos e com campos extras; inclua no CI.
 
 ## Perguntas de entrevista
 
-**Por que schema-first é melhor que validação manual?**
-Porque centraliza contrato, reduz duplicação, permite type inference e torna erro/teste mais previsível.
+**Por que schema-first é melhor que validação manual?** Porque centraliza contrato, reduz duplicação, permite type inference e torna erro/teste mais previsível.
 
-**Onde validar query string?**
-Na boundary HTTP, antes do use case. Query chega como string e precisa de parsing/coerção explícita.
+**Onde validar query string?** Na boundary HTTP, antes do use case. Query chega como string e precisa de parsing/coerção explícita.
 
-**Qual a diferença entre DTO e entidade?**
-DTO representa formato de entrada/saída. Entidade representa regra de domínio e invariantes internas.
+**Qual a diferença entre DTO e entidade?** DTO representa formato de entrada/saída. Entidade representa regra de domínio e invariantes internas.
 
-**Como devolver erro de validação para cliente?**
-Com formato estruturado, idealmente Problem Details com lista de campos inválidos.
+**Como devolver erro de validação para cliente?** Com formato estruturado, idealmente Problem Details com lista de campos inválidos.
 
 ## Em entrevista
 

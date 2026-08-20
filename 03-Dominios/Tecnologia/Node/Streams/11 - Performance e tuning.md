@@ -406,29 +406,19 @@ import { Worker } from 'node:worker_threads';
 ## Armadilhas comuns
 
 > [!warning] Tunar `highWaterMark` sem medir — pode mascarar bug
-> **O que acontece:** a lentidão do pipeline persiste ou a memória aumenta; o ajuste não resolve nada.
-> **Por quê:** aumentar `highWaterMark` reduz a frequência de backpressure. Se a lentidão é causada por um consumer lento (I/O degradado, query sem índice, chamada HTTP com timeout), aumentar o buffer apenas adia o problema e aumenta o uso de memória.
-> **Como evitar:** medir com `writableNeedDrain` e `writableLength` antes de qualquer ajuste. Confirmar que o buffer está sistematicamente vazio (producer rápido) antes de aumentar o `highWaterMark`.
+> **O que acontece:** a lentidão do pipeline persiste ou a memória aumenta; o ajuste não resolve nada. **Por quê:** aumentar `highWaterMark` reduz a frequência de backpressure. Se a lentidão é causada por um consumer lento (I/O degradado, query sem índice, chamada HTTP com timeout), aumentar o buffer apenas adia o problema e aumenta o uso de memória. **Como evitar:** medir com `writableNeedDrain` e `writableLength` antes de qualquer ajuste. Confirmar que o buffer está sistematicamente vazio (producer rápido) antes de aumentar o `highWaterMark`.
 
 > [!warning] Assumir que stream é sempre mais rápido — overhead em casos pequenos
-> **O que acontece:** código com streams para processar 100 registros ou arquivos de 2 MB é mais lento e mais difícil de entender do que o equivalente com `readFile` + `.map()`.
-> **Por quê:** para payloads que cabem em memória (<10 MB), o overhead de evento, buffer e callback por chunk supera o benefício. Não há ganho de memória se os dados cabem — só há overhead extra.
-> **Como evitar:** usar o fluxo de decisão: payload pequeno + operação pontual → buffer everything. Streams são para escala e throughput sustentado.
+> **O que acontece:** código com streams para processar 100 registros ou arquivos de 2 MB é mais lento e mais difícil de entender do que o equivalente com `readFile` + `.map()`. **Por quê:** para payloads que cabem em memória (<10 MB), o overhead de evento, buffer e callback por chunk supera o benefício. Não há ganho de memória se os dados cabem — só há overhead extra. **Como evitar:** usar o fluxo de decisão: payload pequeno + operação pontual → buffer everything. Streams são para escala e throughput sustentado.
 
 > [!warning] Transform síncrono com > 1ms de CPU — bloqueio invisível do event loop
-> **O que acontece:** todas as outras requisições do processo ficam com latência elevada; não há exceção nem log de erro — apenas degradação silenciosa.
-> **Por quê:** `_transform` síncrono bloqueia a thread JS durante sua execução. Um parse de 5ms por chunk × 10.000 chunks = 50 segundos de bloqueio acumulado no event loop.
-> **Como evitar:** usar `async _transform` com `await setImmediate()` para yields periódicos quando há CPU pesada, ou mover o processamento para Worker Thread quando o transform exceder consistentemente 1ms.
+> **O que acontece:** todas as outras requisições do processo ficam com latência elevada; não há exceção nem log de erro — apenas degradação silenciosa. **Por quê:** `_transform` síncrono bloqueia a thread JS durante sua execução. Um parse de 5ms por chunk × 10.000 chunks = 50 segundos de bloqueio acumulado no event loop. **Como evitar:** usar `async _transform` com `await setImmediate()` para yields periódicos quando há CPU pesada, ou mover o processamento para Worker Thread quando o transform exceder consistentemente 1ms.
 
 > [!warning] Misturar sync e async transforms — gargalo invisível na pipeline
-> **O que acontece:** o Transform sync produz na velocidade máxima, mas a pipeline fica tão lenta quanto o Transform async mais lento; memória cresce se o buffer absorver a diferença.
-> **Por quê:** um Transform sync seguido de um Transform async que aguarda banco de dados por chunk cria backpressure assimétrico. O sync acumula chunks no buffer do async enquanto o async drena um por vez.
-> **Como evitar:** dimensionar o `highWaterMark` do Transform async para refletir a capacidade real de processamento, ou usar batching — acumular N chunks no sync e processar N em paralelo no async com `Promise.all`.
+> **O que acontece:** o Transform sync produz na velocidade máxima, mas a pipeline fica tão lenta quanto o Transform async mais lento; memória cresce se o buffer absorver a diferença. **Por quê:** um Transform sync seguido de um Transform async que aguarda banco de dados por chunk cria backpressure assimétrico. O sync acumula chunks no buffer do async enquanto o async drena um por vez. **Como evitar:** dimensionar o `highWaterMark` do Transform async para refletir a capacidade real de processamento, ou usar batching — acumular N chunks no sync e processar N em paralelo no async com `Promise.all`.
 
 > [!warning] `highWaterMark` em object mode não representa bytes
-> **O que acontece:** buffers efetivos variam de 16 bytes a dezenas de MB dependendo do tamanho médio dos objetos — sem nenhum aviso.
-> **Por quê:** object mode conta objetos, não bytes. Com default de 16 objetos: se cada objeto tem 10 KB, o buffer efetivo é 160 KB; se cada objeto tem 1 MB, o buffer efetivo é 16 MB.
-> **Como evitar:** em pipelines de object mode com objetos grandes, calcular o buffer efetivo esperado e ajustar `highWaterMark` para um número menor de objetos que represente a capacidade de memória desejada.
+> **O que acontece:** buffers efetivos variam de 16 bytes a dezenas de MB dependendo do tamanho médio dos objetos — sem nenhum aviso. **Por quê:** object mode conta objetos, não bytes. Com default de 16 objetos: se cada objeto tem 10 KB, o buffer efetivo é 160 KB; se cada objeto tem 1 MB, o buffer efetivo é 16 MB. **Como evitar:** em pipelines de object mode com objetos grandes, calcular o buffer efetivo esperado e ajustar `highWaterMark` para um número menor de objetos que represente a capacidade de memória desejada.
 
 ---
 
@@ -574,17 +564,13 @@ O ajuste de `highWaterMark` para 256 KB no destino reduz a frequência de drains
 
 **Perguntas que podem vir:**
 
-*"Quando streams são mais lentos do que buffer everything?"*
-→ Para payloads pequenos que cabem em memória (<10 MB típico), o overhead constante por chunk — eventos, callbacks, buffer management — supera o benefício. Buffer everything em um array e processe com `.map()` / `.filter()`.
+*"Quando streams são mais lentos do que buffer everything?"* → Para payloads pequenos que cabem em memória (<10 MB típico), o overhead constante por chunk — eventos, callbacks, buffer management — supera o benefício. Buffer everything em um array e processe com `.map()` / `.filter()`.
 
-*"O que você ajusta quando um pipeline de stream está lento?"*
-→ Primeiro, mede: `writableLength` (buffer cheio ou vazio?), `writableNeedDrain` (backpressure frequente?), `process.memoryUsage()` (heap crescendo?). Depois, identifica o gargalo: producer lento, consumer lento, ou transform CPU-bound. Tunar `highWaterMark` é o último recurso, não o primeiro.
+*"O que você ajusta quando um pipeline de stream está lento?"* → Primeiro, mede: `writableLength` (buffer cheio ou vazio?), `writableNeedDrain` (backpressure frequente?), `process.memoryUsage()` (heap crescendo?). Depois, identifica o gargalo: producer lento, consumer lento, ou transform CPU-bound. Tunar `highWaterMark` é o último recurso, não o primeiro.
 
-*"Por que transforms síncronos podem ser um problema?"*
-→ Um `_transform` síncrono que demora >1ms bloqueia o event loop durante a execução. Com alta concorrência, isso degrada latência de todas as requisições do processo. O problema não aparece em testes com poucos dados — aparece em produção com volume.
+*"Por que transforms síncronos podem ser um problema?"* → Um `_transform` síncrono que demora >1ms bloqueia o event loop durante a execução. Com alta concorrência, isso degrada latência de todas as requisições do processo. O problema não aparece em testes com poucos dados — aparece em produção com volume.
 
-*"Como você debugaria uso de memória crescente em um pipeline de streams?"*
-→ Verifico se backpressure está sendo respeitado (`writableNeedDrain`), se o `highWaterMark` foi aumentado sem necessidade (buffer grande acumulando), e se algum Transform está materializando tudo em memória em vez de emitir chunk a chunk.
+*"Como você debugaria uso de memória crescente em um pipeline de streams?"* → Verifico se backpressure está sendo respeitado (`writableNeedDrain`), se o `highWaterMark` foi aumentado sem necessidade (buffer grande acumulando), e se algum Transform está materializando tudo em memória em vez de emitir chunk a chunk.
 
 ---
 

@@ -22,18 +22,10 @@ aliases:
 # Cache-Aside
 
 > [!abstract] TL;DR
-> A aplicação consulta o cache; se não achar, busca na origem e **popula** o cache antes de responder. É
-> o padrão de cache mais comum, e nesta família ele entra por um ângulo específico: como padrão de
-> **resiliência**, não de desempenho. Um cache quente absorve a indisponibilidade da origem — você
-> continua servindo o que já conhece. Em troca, sacrifica **frescor** e acrescenta um segundo sistema
-> que também pode falhar. E traz um modo de falha próprio, que transforma cache em causa de incidente:
-> a **debandada** (*stampede*), quando muitas chaves expiram juntas e todo o tráfego cai na origem de
-> uma vez.
+> A aplicação consulta o cache; se não achar, busca na origem e **popula** o cache antes de responder. É o padrão de cache mais comum, e nesta família ele entra por um ângulo específico: como padrão de **resiliência**, não de desempenho. Um cache quente absorve a indisponibilidade da origem — você continua servindo o que já conhece. Em troca, sacrifica **frescor** e acrescenta um segundo sistema que também pode falhar. E traz um modo de falha próprio, que transforma cache em causa de incidente: a **debandada** (*stampede*), quando muitas chaves expiram juntas e todo o tráfego cai na origem de uma vez.
 
 > [!info] O recorte desta nota
-> Aqui o cache como decisão de **resiliência** e seus sacrifícios. Estratégias de cache, invalidação,
-> camadas e dimensionamento estão desenvolvidos em
-> [[03-Dominios/Engenharia/Arquitetura/System Design/2 - Building blocks/02 - Caching|System Design 2-02]].
+> Aqui o cache como decisão de **resiliência** e seus sacrifícios. Estratégias de cache, invalidação, camadas e dimensionamento estão desenvolvidos em [[03-Dominios/Engenharia/Arquitetura/System Design/2 - Building blocks/02 - Caching|System Design 2-02]].
 
 ## O cache que salvou — e o cache que derrubou
 
@@ -94,19 +86,13 @@ E, para o caso da segunda cena, **aquecimento**: se o cache é parte da capacida
 ## Armadilhas comuns
 
 > [!warning] Cache no caminho crítico sem *fail-open*
-> **O que acontece:** o Redis fica lento, e as requisições passam a esperar por ele antes mesmo de tentar a origem. Um componente que existia para melhorar disponibilidade passa a reduzi-la.
-> **Por quê:** a chamada ao cache é escrita como se fosse local e infalível — sem timeout, sem tratamento —, porque "é só um cache".
-> **Como evitar:** timeout **curto** e agressivo na consulta ao cache, e erro de cache tratado como falta. A regra é: o cache pode tornar a resposta mais lenta em milissegundos, nunca impedi-la.
+> **O que acontece:** o Redis fica lento, e as requisições passam a esperar por ele antes mesmo de tentar a origem. Um componente que existia para melhorar disponibilidade passa a reduzi-la. **Por quê:** a chamada ao cache é escrita como se fosse local e infalível — sem timeout, sem tratamento —, porque "é só um cache". **Como evitar:** timeout **curto** e agressivo na consulta ao cache, e erro de cache tratado como falta. A regra é: o cache pode tornar a resposta mais lenta em milissegundos, nunca impedi-la.
 
 > [!warning] Debandada por expiração sincronizada
-> **O que acontece:** implantação ou aquecimento populam tudo junto; o TTL uniforme faz tudo expirar junto; a origem recebe o pico inteiro e satura.
-> **Por quê:** TTL fixo é o default de toda biblioteca, e o efeito só aparece com volume e com muitas chaves populadas no mesmo instante.
-> **Como evitar:** **jitter no TTL** e **voo único** por chave. Se o cache é parte da capacidade, some a isso o aquecimento antes de receber tráfego.
+> **O que acontece:** implantação ou aquecimento populam tudo junto; o TTL uniforme faz tudo expirar junto; a origem recebe o pico inteiro e satura. **Por quê:** TTL fixo é o default de toda biblioteca, e o efeito só aparece com volume e com muitas chaves populadas no mesmo instante. **Como evitar:** **jitter no TTL** e **voo único** por chave. Se o cache é parte da capacidade, some a isso o aquecimento antes de receber tráfego.
 
 > [!warning] Invalidação que nunca acontece
-> **O que acontece:** o dado é atualizado na origem e o cache não é invalidado — por um caminho de escrita que ninguém lembrou de instrumentar. O sistema serve informação errada até o TTL expirar, ou para sempre, se não houver TTL.
-> **Por quê:** a invalidação vive espalhada por todos os pontos de escrita, e basta um esquecido.
-> **Como evitar:** prefira **TTL curto** a confiar apenas em invalidação explícita — o TTL é a rede de segurança para a invalidação que você esqueceu. Concentre a escrita num ponto que invalida, em vez de espalhar a responsabilidade.
+> **O que acontece:** o dado é atualizado na origem e o cache não é invalidado — por um caminho de escrita que ninguém lembrou de instrumentar. O sistema serve informação errada até o TTL expirar, ou para sempre, se não houver TTL. **Por quê:** a invalidação vive espalhada por todos os pontos de escrita, e basta um esquecido. **Como evitar:** prefira **TTL curto** a confiar apenas em invalidação explícita — o TTL é a rede de segurança para a invalidação que você esqueceu. Concentre a escrita num ponto que invalida, em vez de espalhar a responsabilidade.
 
 ## Como explicar em inglês
 

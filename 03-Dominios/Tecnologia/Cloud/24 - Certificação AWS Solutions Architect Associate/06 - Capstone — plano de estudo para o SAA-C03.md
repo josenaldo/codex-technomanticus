@@ -121,8 +121,7 @@ Se o primeiro simulado da semana 4 já bateu 80%+ de forma consistente (o patama
 > [!tip] Assista: Pass AWS Certified Solutions Architect Associate - FAST and SIMPLE Study Plan for SAA-C03
 > **Canal:** Trevor Spires | **Duração:** ~8min | **Idioma:** EN
 >
-> Relato de quem seguiu praticamente o mesmo esqueleto desta nota (semanas de estudo + revisão + simulado antes de agendar) e reconheceu, depois, que uma janela mais curta bastava — reforça o aviso desta nota de que a duração é ajustável à sua realidade, não fixa.
-> Trecho de destaque [02:28]: *"first and foremost i spend about five weeks studying, five days per week, roughly two hours a day (...) i wish i would have probably just done four and got it over with"*
+> Relato de quem seguiu praticamente o mesmo esqueleto desta nota (semanas de estudo + revisão + simulado antes de agendar) e reconheceu, depois, que uma janela mais curta bastava — reforça o aviso desta nota de que a duração é ajustável à sua realidade, não fixa. Trecho de destaque [02:28]: *"first and foremost i spend about five weeks studying, five days per week, roughly two hours a day (...) i wish i would have probably just done four and got it over with"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=pmEqDqRn9V0)
 
@@ -141,8 +140,7 @@ A trilha (galhos 1-23 mais estas seis notas de certificação) é a espinha dors
 > [!tip] Assista: How I passed AWS Solution Architect SAA-C03 in four weeks
 > **Canal:** Here Is Cloud | **Duração:** ~17min | **Idioma:** EN
 >
-> Detalha o mesmo funil de recursos desta nota — curso, simulados de terceiros (Tutorials Dojo) e o exame oficial de prática da AWS — com o mesmo limiar de "pontuação consistente acima de determinado patamar" antes de agendar, e reforça que o oficial pago (Skill Builder) é o mais próximo da prova real.
-> Trecho de destaque [10:31]: *"after that I highly recommend tutorial Dojo practice exam, that's a set of exams which you can definitely use for practice, and when you start getting 75 or more from the practice exams that means you're ready to schedule your real exam"*
+> Detalha o mesmo funil de recursos desta nota — curso, simulados de terceiros (Tutorials Dojo) e o exame oficial de prática da AWS — com o mesmo limiar de "pontuação consistente acima de determinado patamar" antes de agendar, e reforça que o oficial pago (Skill Builder) é o mais próximo da prova real. Trecho de destaque [10:31]: *"after that I highly recommend tutorial Dojo practice exam, that's a set of exams which you can definitely use for practice, and when you start getting 75 or more from the practice exams that means you're ready to schedule your real exam"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=nVrNAnWyUIo)
 

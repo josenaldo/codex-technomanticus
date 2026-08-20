@@ -21,14 +21,7 @@ aliases:
 # Chain of Responsibility
 
 > [!abstract] TL;DR
-> O **Chain of Responsibility** passa uma requisição por uma **cadeia de tratadores**, cada um
-> decidindo se a processa e/ou a repassa ao próximo — desacoplando quem envia de quem trata. É o
-> padrão por trás de **todo pipeline de middleware**: servlet filters, a filter chain do Spring
-> Security, o middleware do Express/NestJS, pipelines de validação. Na lente cross-linguagem, o
-> "handler com `setNext`" do GoF encolhe para uma **composição de funções** — o middleware moderno
-> (`(req, next) => ...`) é o Chain of Responsibility funcional. As armadilhas que mais mordem: uma
-> requisição que **cai no fim da cadeia sem ninguém tratar** (silenciosamente), e a **ordem
-> implícita** dos elos, frágil e difícil de enxergar.
+> O **Chain of Responsibility** passa uma requisição por uma **cadeia de tratadores**, cada um decidindo se a processa e/ou a repassa ao próximo — desacoplando quem envia de quem trata. É o padrão por trás de **todo pipeline de middleware**: servlet filters, a filter chain do Spring Security, o middleware do Express/NestJS, pipelines de validação. Na lente cross-linguagem, o "handler com `setNext`" do GoF encolhe para uma **composição de funções** — o middleware moderno (`(req, next) => ...`) é o Chain of Responsibility funcional. As armadilhas que mais mordem: uma requisição que **cai no fim da cadeia sem ninguém tratar** (silenciosamente), e a **ordem implícita** dos elos, frágil e difícil de enxergar.
 
 ## Uma requisição, vários filtros em sequência
 
@@ -94,19 +87,13 @@ Estruturalmente parecidos (camadas que envolvem/encadeiam), mas: o **Decorator**
 ## Armadilhas comuns
 
 > [!warning] A requisição que cai no fim sem ninguém tratar
-> **O que acontece:** nenhum elo assume a requisição e ela chega ao fim da cadeia silenciosamente — sem resposta, sem erro, "sumindo".
-> **Por quê:** o Chain não garante que **alguém** vai tratar; se nenhum elo assume e não há um tratador-padrão no fim, a requisição simplesmente escoa.
-> **Como evitar:** coloque um **elo final garantido** (um *default handler* que trata ou lança "não tratado"). Decida explicitamente o que acontece quando ninguém assume — não deixe isso ao acaso.
+> **O que acontece:** nenhum elo assume a requisição e ela chega ao fim da cadeia silenciosamente — sem resposta, sem erro, "sumindo". **Por quê:** o Chain não garante que **alguém** vai tratar; se nenhum elo assume e não há um tratador-padrão no fim, a requisição simplesmente escoa. **Como evitar:** coloque um **elo final garantido** (um *default handler* que trata ou lança "não tratado"). Decida explicitamente o que acontece quando ninguém assume — não deixe isso ao acaso.
 
 > [!warning] Ordem implícita e frágil
-> **O que acontece:** a cadeia depende da ordem (autenticar **antes** de autorizar; rate limit **antes** do trabalho caro), mas essa ordem está espalhada na configuração e não é óbvia. Reordenar por engano introduz falhas de segurança ou performance.
-> **Por quê:** a corretude da cadeia mora na **sequência** dos elos, que é um estado global implícito. Nada no elo individual revela onde ele deve estar.
-> **Como evitar:** torne a ordem **explícita e centralizada** (uma lista ordenada num lugar), documente as dependências de ordem, e teste o fluxo fim a fim. Ordem é parte do contrato.
+> **O que acontece:** a cadeia depende da ordem (autenticar **antes** de autorizar; rate limit **antes** do trabalho caro), mas essa ordem está espalhada na configuração e não é óbvia. Reordenar por engano introduz falhas de segurança ou performance. **Por quê:** a corretude da cadeia mora na **sequência** dos elos, que é um estado global implícito. Nada no elo individual revela onde ele deve estar. **Como evitar:** torne a ordem **explícita e centralizada** (uma lista ordenada num lugar), documente as dependências de ordem, e teste o fluxo fim a fim. Ordem é parte do contrato.
 
 > [!warning] Elo que faz demais / cadeia longa e opaca
-> **O que acontece:** um elo acumula várias responsabilidades, ou a cadeia fica tão longa que rastrear onde uma requisição foi barrada exige percorrer dez camadas.
-> **Por quê:** o desacoplamento facilita empilhar elos, e a transparência de cada um esconde o todo — como no middleware, o fluxo real fica difuso.
-> **Como evitar:** um elo, uma responsabilidade; mantenha a cadeia curta e nomeada; logue por qual elo a requisição passou/foi barrada quando precisar depurar.
+> **O que acontece:** um elo acumula várias responsabilidades, ou a cadeia fica tão longa que rastrear onde uma requisição foi barrada exige percorrer dez camadas. **Por quê:** o desacoplamento facilita empilhar elos, e a transparência de cada um esconde o todo — como no middleware, o fluxo real fica difuso. **Como evitar:** um elo, uma responsabilidade; mantenha a cadeia curta e nomeada; logue por qual elo a requisição passou/foi barrada quando precisar depurar.
 
 ## Como explicar em inglês
 

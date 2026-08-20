@@ -87,9 +87,7 @@ Repare no que **não** está aqui: sem campos de metadata de analytics, sem aute
 Um framework popular para essa passada chama a sequência de **R-CRUD**: *Requirements → Core resources → URIs & methods → Data schemas* ([Prachub, "API Design Interview Framework"](https://prachub.com/resources/api-design-interview-framework-step-by-step-guide-2026), 2026) — o nome muda entre guias, mas a lógica é a mesma que já vimos nas notas 02 e 03: requisitos primeiro, forma depois.
 
 > [!warning] Gastar os 5 minutos detalhando campos opcionais
-> **O que acontece:** o candidato passa minutos decidindo se o campo se chama `long_url` ou `original_url`, se `expires_at` é obrigatório, se existe um campo `created_by`.
-> **Por quê:** o cérebro trata "escrever JSON" como uma tarefa de programação normal — onde esses detalhes importam de verdade — e esquece que aqui é sinalização de raciocínio, não implementação.
-> **Como evitar:** decida os campos *essenciais para o requisito* (entrada e saída mínimas) e siga. Se o entrevistador quiser mais detalhe, ele pergunta.
+> **O que acontece:** o candidato passa minutos decidindo se o campo se chama `long_url` ou `original_url`, se `expires_at` é obrigatório, se existe um campo `created_by`. **Por quê:** o cérebro trata "escrever JSON" como uma tarefa de programação normal — onde esses detalhes importam de verdade — e esquece que aqui é sinalização de raciocínio, não implementação. **Como evitar:** decida os campos *essenciais para o requisito* (entrada e saída mínimas) e siga. Se o entrevistador quiser mais detalhe, ele pergunta.
 
 ### Idempotência: uma frase, não uma discussão
 
@@ -176,14 +174,10 @@ Uma linha. É tudo que o exemplo exige — e é exatamente por isso que ele é o
 O sintoma mais comum do passo 3 mal conduzido não é fazer pouco — é fazer *demais* no lugar errado. Índices secundários, constraints de unicidade, campos de auditoria, normalização até a terceira forma normal: tudo isso é trabalho real de banco de dados, e nada disso pertence aos 5 minutos deste passo.
 
 > [!warning] Desenhar o schema como se fosse para produção
-> **O que acontece:** o candidato lista 12 colunas por tabela, discute tipos de dado exatos (`VARCHAR(255)` vs `TEXT`), propõe índices compostos — antes mesmo de ter desenhado uma única caixa do sistema.
-> **Por quê:** confunde "mostrar profundidade técnica" com "mostrar todo o conhecimento que tenho sobre bancos de dados", numa fase da entrevista que pede o oposto: um esboço rápido que **habilite** a próxima etapa.
-> **Como evitar:** liste só os campos que um endpoint lê ou escreve. Se o entrevistador quiser mais — índices, replicação, sharding — isso é matéria do deep dive (passo 5), não do esboço inicial. Sinalize a intenção: "vou manter o schema mínimo aqui e aprofundar índices se formos falar de performance de leitura."
+> **O que acontece:** o candidato lista 12 colunas por tabela, discute tipos de dado exatos (`VARCHAR(255)` vs `TEXT`), propõe índices compostos — antes mesmo de ter desenhado uma única caixa do sistema. **Por quê:** confunde "mostrar profundidade técnica" com "mostrar todo o conhecimento que tenho sobre bancos de dados", numa fase da entrevista que pede o oposto: um esboço rápido que **habilite** a próxima etapa. **Como evitar:** liste só os campos que um endpoint lê ou escreve. Se o entrevistador quiser mais — índices, replicação, sharding — isso é matéria do deep dive (passo 5), não do esboço inicial. Sinalize a intenção: "vou manter o schema mínimo aqui e aprofundar índices se formos falar de performance de leitura."
 
 > [!warning] Escolher o banco antes de saber o padrão de acesso
-> **O que acontece:** o candidato diz "vou usar MongoDB" ou "vou usar Postgres" logo de cara, como reflexo, sem ter examinado os endpoints.
-> **Por quê:** tratamento de "banco de dados" como uma escolha de estilo pessoal, não como uma consequência lógica dos requisitos e da API.
-> **Como evitar:** primeiro os endpoints, depois as entidades, só então a decisão SQL/NoSQL — sempre amarrada a uma frase do tipo "porque o acesso é X, então Y". Se você não consegue completar essa frase, ainda não é hora de escolher o banco.
+> **O que acontece:** o candidato diz "vou usar MongoDB" ou "vou usar Postgres" logo de cara, como reflexo, sem ter examinado os endpoints. **Por quê:** tratamento de "banco de dados" como uma escolha de estilo pessoal, não como uma consequência lógica dos requisitos e da API. **Como evitar:** primeiro os endpoints, depois as entidades, só então a decisão SQL/NoSQL — sempre amarrada a uma frase do tipo "porque o acesso é X, então Y". Se você não consegue completar essa frase, ainda não é hora de escolher o banco.
 
 ## Fechando o passo em uma frase por peça
 

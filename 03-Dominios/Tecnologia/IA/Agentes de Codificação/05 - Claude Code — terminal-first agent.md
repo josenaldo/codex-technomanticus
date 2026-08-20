@@ -135,8 +135,7 @@ Stack: Node.js 22, TypeScript, Fastify, Drizzle, PostgreSQL.
 > [!tip] Assista: Claude Code Best Practices — Code w/ Claude (Anthropic)
 > **Canal:** Anthropic | **Duração:** ~25min | **Idioma:** EN
 >
-> Talk oficial de Cal, engenheiro da Anthropic que trabalha no sistema de prompts do Claude Code. O vídeo explica o que o CLAUDE.md realmente faz sob o capô — não é "memória do agente", é contexto inserido no início de cada conversa. Esse detalhe de implementação muda como você escreve o arquivo: em vez de "lembrete", é um onboarding document que o agente lê do zero a cada sessão.
-> Trecho de destaque [10:51]: *"Claude Code doesn't really have memory. And so the main way we share state across sessions or across our team is this CLAUDE.md file. When we start Claude Code, if there's this file in the working directory, it's just plopped into context — these are important instructions the developer left for you."*
+> Talk oficial de Cal, engenheiro da Anthropic que trabalha no sistema de prompts do Claude Code. O vídeo explica o que o CLAUDE.md realmente faz sob o capô — não é "memória do agente", é contexto inserido no início de cada conversa. Esse detalhe de implementação muda como você escreve o arquivo: em vez de "lembrete", é um onboarding document que o agente lê do zero a cada sessão. Trecho de destaque [10:51]: *"Claude Code doesn't really have memory. And so the main way we share state across sessions or across our team is this CLAUDE.md file. When we start Claude Code, if there's this file in the working directory, it's just plopped into context — these are important instructions the developer left for you."*
 >
 > 🎬 [Assistir no YouTube](https://youtube.com/watch?v=gv0WHhKelSE)
 

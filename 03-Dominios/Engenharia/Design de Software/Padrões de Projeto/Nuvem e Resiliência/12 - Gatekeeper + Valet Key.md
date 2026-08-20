@@ -23,19 +23,10 @@ aliases:
 # Gatekeeper + Valet Key
 
 > [!abstract] TL;DR
-> Dois padrões de **borda**, com propósitos opostos e complementares. O **Gatekeeper** coloca uma
-> instância intermediária entre o cliente e o serviço: ela valida, sanitiza e só então encaminha — de
-> modo que o serviço rode com **privilégio menor** e nunca seja exposto diretamente. O **Valet Key** faz
-> o inverso: em vez de proxyar dados pesados, entrega ao cliente uma **chave temporária e limitada** para
-> falar direto com o armazenamento (a URL pré-assinada do S3), tirando a aplicação do caminho dos bytes.
-> Um **interpõe** para proteger; o outro **sai da frente** para não virar gargalo — e é por isso que
-> entram numa família de resiliência, e não só de segurança.
+> Dois padrões de **borda**, com propósitos opostos e complementares. O **Gatekeeper** coloca uma instância intermediária entre o cliente e o serviço: ela valida, sanitiza e só então encaminha — de modo que o serviço rode com **privilégio menor** e nunca seja exposto diretamente. O **Valet Key** faz o inverso: em vez de proxyar dados pesados, entrega ao cliente uma **chave temporária e limitada** para falar direto com o armazenamento (a URL pré-assinada do S3), tirando a aplicação do caminho dos bytes. Um **interpõe** para proteger; o outro **sai da frente** para não virar gargalo — e é por isso que entram numa família de resiliência, e não só de segurança.
 
 > [!info] O recorte desta nota
-> Aqui os dois padrões como decisão de topologia e o que sacrificam. **Autorização na borda de API** em
-> [[03-Dominios/Tecnologia/Cloud/14 - API Gateway e edge de aplicação/04 - Autorização na borda de API|Cloud 14-04]];
-> os fundamentos de **autorização e credenciais** no galho
-> [[03-Dominios/Engenharia/Auth e Identidade/index|Auth e Identidade]].
+> Aqui os dois padrões como decisão de topologia e o que sacrificam. **Autorização na borda de API** em [[03-Dominios/Tecnologia/Cloud/14 - API Gateway e edge de aplicação/04 - Autorização na borda de API|Cloud 14-04]]; os fundamentos de **autorização e credenciais** no galho [[03-Dominios/Engenharia/Auth e Identidade/index|Auth e Identidade]].
 
 ## O serviço que precisava de privilégio para servir arquivos
 
@@ -95,19 +86,13 @@ Em ambos, quem paga é o **usuário legítimo** em casos de borda — um token q
 ## Armadilhas comuns
 
 > [!warning] Valet key com escopo largo ou validade longa
-> **O que acontece:** o token vale para o bucket inteiro, ou por 24 horas, "para simplificar". Ele vaza num log, num histórico de navegador ou num compartilhamento — e agora é uma credencial de acesso amplo circulando fora do seu controle.
-> **Por quê:** escopo restrito exige gerar um token por operação, o que dá mais trabalho que gerar um genérico e reutilizável.
-> **Como evitar:** **um objeto, uma operação, minutos**. Se o upload é longo, use upload em partes com renovação, não um token de horas. E trate a URL assinada como segredo: fora de log e de qualquer lugar persistente.
+> **O que acontece:** o token vale para o bucket inteiro, ou por 24 horas, "para simplificar". Ele vaza num log, num histórico de navegador ou num compartilhamento — e agora é uma credencial de acesso amplo circulando fora do seu controle. **Por quê:** escopo restrito exige gerar um token por operação, o que dá mais trabalho que gerar um genérico e reutilizável. **Como evitar:** **um objeto, uma operação, minutos**. Se o upload é longo, use upload em partes com renovação, não um token de horas. E trate a URL assinada como segredo: fora de log e de qualquer lugar persistente.
 
 > [!warning] Gatekeeper que vira God proxy
-> **O que acontece:** o porteiro começa validando formato e termina executando regra de negócio, consultando banco e tomando decisões — o que exige dar a ele exatamente as credenciais que o padrão existia para lhe negar.
-> **Por quê:** ele é o único ponto que vê toda requisição, então toda validação "que precisa de contexto" parece caber ali. É a mesma dinâmica do *God dispatcher* da família 4.
-> **Como evitar:** o porteiro valida o que dá para validar **sem estado e sem credenciais** — esquema, tamanho, autenticação, limites. Regra que precisa do domínio pertence ao serviço, e se o porteiro precisa de credenciais fortes, o padrão foi desfeito.
+> **O que acontece:** o porteiro começa validando formato e termina executando regra de negócio, consultando banco e tomando decisões — o que exige dar a ele exatamente as credenciais que o padrão existia para lhe negar. **Por quê:** ele é o único ponto que vê toda requisição, então toda validação "que precisa de contexto" parece caber ali. É a mesma dinâmica do *God dispatcher* da família 4. **Como evitar:** o porteiro valida o que dá para validar **sem estado e sem credenciais** — esquema, tamanho, autenticação, limites. Regra que precisa do domínio pertence ao serviço, e se o porteiro precisa de credenciais fortes, o padrão foi desfeito.
 
 > [!warning] Assumir que o token não vaza
-> **O que acontece:** a URL assinada é registrada em log de acesso, aparece no *referer*, ou é compartilhada pelo próprio usuário. O acesso passa a existir fora de quem você autorizou.
-> **Por quê:** ela parece uma URL comum, e URLs vazam por muitos caminhos que ninguém considera individualmente.
-> **Como evitar:** valide-a como credencial de curta duração — validade mínima viável, escopo mínimo, e monitoramento de uso anômalo do lado do armazenamento. E onde o dado for sensível, considere restringir também por origem ou por IP, quando o provedor permitir.
+> **O que acontece:** a URL assinada é registrada em log de acesso, aparece no *referer*, ou é compartilhada pelo próprio usuário. O acesso passa a existir fora de quem você autorizou. **Por quê:** ela parece uma URL comum, e URLs vazam por muitos caminhos que ninguém considera individualmente. **Como evitar:** valide-a como credencial de curta duração — validade mínima viável, escopo mínimo, e monitoramento de uso anômalo do lado do armazenamento. E onde o dado for sensível, considere restringir também por origem ou por IP, quando o provedor permitir.
 
 ## Como explicar em inglês
 

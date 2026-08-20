@@ -153,8 +153,7 @@ Na prática, Flows significa que a IA do Windsurf monitora suas edições contin
 > [!tip] Assista: How Windsurf writes 90% of your code with an Agentic IDE — Kevin Hou (AI Engineer Summit)
 > **Canal:** AI Engineer | **Duração:** ~20min | **Idioma:** EN
 >
-> Kevin Hou, head de product engineering da Codeium, apresenta a filosofia por trás do Windsurf na AI Engineer Summit 2025. O talk explica por que o conceito de Flows (unir o lado agentic e o lado humano no mesmo editor) é o diferencial central do produto — não é só uma feature, é um princípio de design.
-> Trecho de destaque [11:05]: *"this is all part of our effort to bring these two sides the agentic side and the human side close together as close together as possible and you do this through building a unified product."*
+> Kevin Hou, head de product engineering da Codeium, apresenta a filosofia por trás do Windsurf na AI Engineer Summit 2025. O talk explica por que o conceito de Flows (unir o lado agentic e o lado humano no mesmo editor) é o diferencial central do produto — não é só uma feature, é um princípio de design. Trecho de destaque [11:05]: *"this is all part of our effort to bring these two sides the agentic side and the human side close together as close together as possible and you do this through building a unified product."*
 >
 > 🎬 [Assistir no YouTube](https://youtube.com/watch?v=bVNNvWq6dKo)
 

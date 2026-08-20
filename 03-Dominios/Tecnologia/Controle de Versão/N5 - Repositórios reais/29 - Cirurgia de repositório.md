@@ -68,9 +68,7 @@ O `--stdlayout` assume a convenção `trunk/`, `branches/`, `tags/`. Se o reposi
 **Passo 4: limpar e publicar.** Revise o resultado (`git log`, contagem de commits, ramos), remova os metadados `git-svn-id` das mensagens se quiser (`filter-repo --message-callback`), e publique.
 
 > [!warning] O clone pode levar dias
-> **O que acontece:** repositórios SVN grandes, com muitas revisões, levam horas ou dias para converter — o `git svn` busca revisão por revisão.
-> **Por quê:** o protocolo do SVN é centralizado e cada revisão é uma consulta.
-> **Como conviver:** rode num servidor, em sessão que sobreviva à desconexão, e valide numa amostra (`-r HEAD~1000:HEAD`) antes de rodar tudo. Para repositórios realmente grandes ou com história bagunçada, ferramentas dedicadas de conversão (como o `reposurgeon`) existem justamente para isso.
+> **O que acontece:** repositórios SVN grandes, com muitas revisões, levam horas ou dias para converter — o `git svn` busca revisão por revisão. **Por quê:** o protocolo do SVN é centralizado e cada revisão é uma consulta. **Como conviver:** rode num servidor, em sessão que sobreviva à desconexão, e valide numa amostra (`-r HEAD~1000:HEAD`) antes de rodar tudo. Para repositórios realmente grandes ou com história bagunçada, ferramentas dedicadas de conversão (como o `reposurgeon`) existem justamente para isso.
 
 ---
 
@@ -150,19 +148,13 @@ O último item é o que separa uma cirurgia de uma bagunça: **quem herdar esse 
 ## Armadilhas comuns
 
 > [!warning] Fazer cirurgia sem congelar o trabalho
-> **O que acontece:** enquanto você converte, alguém commita no original. O resultado da migração já nasce desatualizado, e reconciliar é pior que refazer.
-> **Por quê:** a operação leva tempo e produz uma história incompatível.
-> **Como evitar:** janela combinada, repositório em modo somente leitura durante a operação, e um ensaio completo antes — inclusive da parte de coordenação.
+> **O que acontece:** enquanto você converte, alguém commita no original. O resultado da migração já nasce desatualizado, e reconciliar é pior que refazer. **Por quê:** a operação leva tempo e produz uma história incompatível. **Como evitar:** janela combinada, repositório em modo somente leitura durante a operação, e um ensaio completo antes — inclusive da parte de coordenação.
 
 > [!warning] Migrar tudo "porque dá"
-> **O que acontece:** trazem-se vinte anos de história de um SVN que ninguém vai consultar, com meses de trabalho de limpeza.
-> **Por quê:** parece perda descartar história.
-> **Como decidir:** pergunte quem vai consultar e para quê. Uma alternativa honesta e muito usada: importar apenas os últimos anos, e **manter o SVN em modo leitura** como arquivo consultável. Registre a decisão no `MIGRACAO.md`.
+> **O que acontece:** trazem-se vinte anos de história de um SVN que ninguém vai consultar, com meses de trabalho de limpeza. **Por quê:** parece perda descartar história. **Como decidir:** pergunte quem vai consultar e para quê. Uma alternativa honesta e muito usada: importar apenas os últimos anos, e **manter o SVN em modo leitura** como arquivo consultável. Registre a decisão no `MIGRACAO.md`.
 
 > [!warning] Esquecer que forks e clones antigos continuam existindo
-> **O que acontece:** meses depois, alguém empurra a partir de um clone pré-cirurgia e reintroduz a história antiga.
-> **Por quê:** cópias são autônomas (nota 01).
-> **Como evitar:** proteções de branch impedindo push não-fast-forward (nota 15), e comunicação explícita de que clones antigos devem ser apagados.
+> **O que acontece:** meses depois, alguém empurra a partir de um clone pré-cirurgia e reintroduz a história antiga. **Por quê:** cópias são autônomas (nota 01). **Como evitar:** proteções de branch impedindo push não-fast-forward (nota 15), e comunicação explícita de que clones antigos devem ser apagados.
 
 ---
 

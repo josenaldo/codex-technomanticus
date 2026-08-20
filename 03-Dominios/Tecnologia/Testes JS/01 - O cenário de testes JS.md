@@ -70,9 +70,7 @@ A confusão mais cara é achar que "aprender a testar em JS" é aprender a teori
 - O galho-**paralelo** é [[03-Dominios/Tecnologia/Java/Testes/index|Java/Testes]] — o mesmo papel, para o stack Java. E o `node:test` nativo e o panorama de runners estão em [[03-Dominios/Tecnologia/Tooling e Build/19 - Test runner nativo (node-test) e o cenário de testes|Tooling 19]].
 
 > [!warning] Escolher a ferramenta antes de entender a camada
-> **O que acontece:** o time decide "vamos usar Cypress para tudo" ou "Jest resolve", e meses depois luta para testar o que a ferramenta não cobre bem (unit lento no Cypress, E2E frágil no jsdom).
-> **Por quê:** nenhuma ferramenta cobre todas as camadas bem. Runner (Vitest) é para unit/integração rápidos; E2E (Playwright) é para o fluxo no browser. Forçar uma na camada errada gera testes lentos, frágeis ou impossíveis.
-> **Como evitar:** escolha **por camada**, não por preferência única. O stack saudável combina Vitest + Testing Library + MSW + Playwright — cada um no seu papel. Este galho segue exatamente essa ordem.
+> **O que acontece:** o time decide "vamos usar Cypress para tudo" ou "Jest resolve", e meses depois luta para testar o que a ferramenta não cobre bem (unit lento no Cypress, E2E frágil no jsdom). **Por quê:** nenhuma ferramenta cobre todas as camadas bem. Runner (Vitest) é para unit/integração rápidos; E2E (Playwright) é para o fluxo no browser. Forçar uma na camada errada gera testes lentos, frágeis ou impossíveis. **Como evitar:** escolha **por camada**, não por preferência única. O stack saudável combina Vitest + Testing Library + MSW + Playwright — cada um no seu papel. Este galho segue exatamente essa ordem.
 
 **O cenário de testes JS em uma frase:** o stack se empilha por camada — Vitest (ou Jest legacy) para unit/integração, Testing Library para componentes, MSW para rede, Playwright para E2E —, e este galho ensina o *ferramental* de cada camada, deixando a *teoria* para [[03-Dominios/Engenharia/Testes/index|Engenharia/Testes]].
 

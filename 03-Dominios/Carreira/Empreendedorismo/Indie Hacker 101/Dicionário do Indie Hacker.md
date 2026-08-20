@@ -15,15 +15,13 @@ publish: true
 
 > Glossário de conceitos essenciais para entender negócios indie hacker, startups bootstrapped e métricas de produtos digitais. Útil para consultar termos recorrentes em estudos, ideias de produto, análise de modelos de negócio e decisões de crescimento sustentável.
 
-<!--
-Como usar este glossário:
+<!-- Como usar este glossário:
 
 - Cada verbete é um `###` dentro de uma `##` temática.
 - Linkar de outra nota: [[Dicionário do Indie Hacker#Nome do termo]]
 - Customizar texto exibido: [[Dicionário do Indie Hacker#Nome do termo|texto]]
 - A skill /verbete adiciona termos automaticamente em ordem alfabética.
-- Ajuste `lang:` no frontmatter (`pt` ou `en`) — define o idioma das definições.
--->
+- Ajuste `lang:` no frontmatter (`pt` ou `en`) — define o idioma das definições. -->
 
 ## Termos
 

@@ -105,9 +105,7 @@ test('renderiza e clica', async ({ mount }) => {
 Para UIs complexas (drag-and-drop, WebGL, media, medições de layout), isso elimina a divergência jsdom-vs-browser. Como ainda é experimental, para componentes simples o combo Vitest + Testing Library (jsdom) segue mais rápido e maduro; o CT do Playwright brilha onde o browser real importa.
 
 > [!warning] Screenshots visuais sem estabilizar o ambiente
-> **O que acontece:** o teste visual falha em toda execução com diferenças mínimas — uma fonte que renderiza diferente, um cursor piscando, um timestamp na tela.
-> **Por quê:** comparação pixel a pixel é sensível a qualquer não-determinismo: animações, fontes do SO, dados dinâmicos, antialiasing entre ambientes (seu Mac vs. o Linux da CI).
-> **Como evitar:** estabilize antes de capturar — desligue animações (`animations: 'disabled'`), fixe dados/datas, rode a captura de referência **no mesmo ambiente da CI** (via Docker), e use `maxDiffPixels`/tolerância. Screenshot instável é o snapshot gigante da nota 11 em forma visual.
+> **O que acontece:** o teste visual falha em toda execução com diferenças mínimas — uma fonte que renderiza diferente, um cursor piscando, um timestamp na tela. **Por quê:** comparação pixel a pixel é sensível a qualquer não-determinismo: animações, fontes do SO, dados dinâmicos, antialiasing entre ambientes (seu Mac vs. o Linux da CI). **Como evitar:** estabilize antes de capturar — desligue animações (`animations: 'disabled'`), fixe dados/datas, rode a captura de referência **no mesmo ambiente da CI** (via Docker), e use `maxDiffPixels`/tolerância. Screenshot instável é o snapshot gigante da nota 11 em forma visual.
 
 **Playwright além do básico em uma frase:** `storageState` reusa o login (rápido), `page.route` mocka a rede no browser para estados difíceis, `toHaveScreenshot` pega regressões visuais, e o component testing experimental roda componentes em browser real — cobrindo do componente ao fluxo, com os mesmos cuidados de estabilização dos snapshots.
 

@@ -174,24 +174,16 @@ Isso conversa diretamente com o galho de Nginx, cuja nota 13 trata `worker_rlimi
 ## Armadilhas comuns
 
 > [!warning] Trocar a ordem de `> arquivo` e `2>&1`
-> **O que acontece:** o erro continua na tela, ou não é capturado no log.
-> **Por quê:** `2>&1` copia o destino que o `1` tem **naquele instante**. Antes do `>`, ele ainda é o terminal.
-> **Como evitar:** `> arquivo 2>&1` — redirecione o 1 primeiro. Ou use `&> arquivo` no Bash, que não tem ordem para errar.
+> **O que acontece:** o erro continua na tela, ou não é capturado no log. **Por quê:** `2>&1` copia o destino que o `1` tem **naquele instante**. Antes do `>`, ele ainda é o terminal. **Como evitar:** `> arquivo 2>&1` — redirecione o 1 primeiro. Ou use `&> arquivo` no Bash, que não tem ordem para errar.
 
 > [!warning] `grep` que não encontra a mensagem de erro
-> **O que acontece:** `comando | grep falha` não devolve nada, embora a falha esteja visível na tela.
-> **Por quê:** o pipe conecta apenas o descritor 1. O erro sai pelo 2 e passa ao largo.
-> **Como evitar:** `comando 2>&1 | grep falha`.
+> **O que acontece:** `comando | grep falha` não devolve nada, embora a falha esteja visível na tela. **Por quê:** o pipe conecta apenas o descritor 1. O erro sai pelo 2 e passa ao largo. **Como evitar:** `comando 2>&1 | grep falha`.
 
 > [!warning] Achar que `> arquivo` acrescenta
-> **O que acontece:** o conteúdo anterior some, e em log isso é perda real.
-> **Por quê:** `>` trunca o arquivo antes de escrever.
-> **Como evitar:** `>>` para acrescentar. Em Bash, `set -o noclobber` faz `>` recusar sobrescrever arquivo existente — vale em sessões de operação.
+> **O que acontece:** o conteúdo anterior some, e em log isso é perda real. **Por quê:** `>` trunca o arquivo antes de escrever. **Como evitar:** `>>` para acrescentar. Em Bash, `set -o noclobber` faz `>` recusar sobrescrever arquivo existente — vale em sessões de operação.
 
 > [!warning] Rotacionar log sem avisar o processo
-> **O que acontece:** o arquivo novo fica vazio e o espaço não é liberado.
-> **Por quê:** o processo continua escrevendo no **descritor**, que aponta para o arquivo antigo — agora sem nome.
-> **Como evitar:** é o que a diretiva `postrotate` do `logrotate` existe para fazer: sinalizar o processo para reabrir. Alternativa mais robusta: `copytruncate`, com a ressalva de que ela pode perder as linhas escritas entre a cópia e o truncamento.
+> **O que acontece:** o arquivo novo fica vazio e o espaço não é liberado. **Por quê:** o processo continua escrevendo no **descritor**, que aponta para o arquivo antigo — agora sem nome. **Como evitar:** é o que a diretiva `postrotate` do `logrotate` existe para fazer: sinalizar o processo para reabrir. Alternativa mais robusta: `copytruncate`, com a ressalva de que ela pode perder as linhas escritas entre a cópia e o truncamento.
 
 ---
 

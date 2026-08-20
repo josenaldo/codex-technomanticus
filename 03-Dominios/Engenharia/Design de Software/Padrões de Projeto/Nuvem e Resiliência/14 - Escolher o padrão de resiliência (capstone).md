@@ -23,13 +23,7 @@ aliases:
 # Escolher o padrão de resiliência (capstone)
 
 > [!abstract] TL;DR
-> Fechamento em duas camadas. Primeiro, o **mapa da família**: do sintoma que você tem ao padrão que o
-> trata, a tabela de **quem paga cada sacrifício**, e — a parte que mais importa — a **ordem de
-> composição**, porque os padrões desta família interagem e empilhá-los sem somar produz falhas novas.
-> Depois, o fechamento do **galho-pai**: seis famílias, noventa padrões, seis lentes diferentes. E a
-> única conclusão que atravessa todas elas: **um padrão não nomeia uma solução, nomeia um trade-off** —
-> e por isso a pergunta que dá acesso ao catálogo inteiro nunca é "qual padrão usar?", mas "o que estou
-> disposto a trocar?".
+> Fechamento em duas camadas. Primeiro, o **mapa da família**: do sintoma que você tem ao padrão que o trata, a tabela de **quem paga cada sacrifício**, e — a parte que mais importa — a **ordem de composição**, porque os padrões desta família interagem e empilhá-los sem somar produz falhas novas. Depois, o fechamento do **galho-pai**: seis famílias, noventa padrões, seis lentes diferentes. E a única conclusão que atravessa todas elas: **um padrão não nomeia uma solução, nomeia um trade-off** — e por isso a pergunta que dá acesso ao catálogo inteiro nunca é "qual padrão usar?", mas "o que estou disposto a trocar?".
 
 ## Parte I — Escolher na hora do incidente
 

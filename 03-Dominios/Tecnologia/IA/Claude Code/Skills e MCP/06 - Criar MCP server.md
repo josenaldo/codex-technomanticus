@@ -329,19 +329,16 @@ O server fica no repo do projeto, versionado junto. Todo dev que clona o projeto
 
 ## Boas práticas de design de tools
 
-**Nome descritivo com contexto**
-`query_pedidos` é melhor que `query`. O agente escolhe a tool certa pelo nome + descrição. Em projetos com múltiplos servers, o contexto no nome evita ambiguidade.
+**Nome descritivo com contexto** `query_pedidos` é melhor que `query`. O agente escolhe a tool certa pelo nome + descrição. Em projetos com múltiplos servers, o contexto no nome evita ambiguidade.
 
-**Descrição acionável**
-Descreva o que a tool faz *e quando usá-la*. O agente usa a `description` para decidir se invoca.
+**Descrição acionável** Descreva o que a tool faz *e quando usá-la*. O agente usa a `description` para decidir se invoca.
 
 ```
 ❌ "Retorna dados de pedidos"
 ✅ "Busca pedidos por status ou cliente. Use quando precisar verificar o estado atual de pedidos antes de implementar lógica de processamento."
 ```
 
-**Retorno estruturado**
-JSON tipado em vez de texto livre. O agente raciocina sobre estrutura, não sobre texto.
+**Retorno estruturado** JSON tipado em vez de texto livre. O agente raciocina sobre estrutura, não sobre texto.
 
 ```typescript
 // ❌ Retorno difícil de processar
@@ -351,11 +348,9 @@ return { content: [{ type: "text", text: "Pedido 123: status pendente, total R$ 
 return { content: [{ type: "text", text: JSON.stringify({ id: 123, status: "pendente", total: 150.00 }) }] };
 ```
 
-**Limite nos retornos**
-Uma tool que retorna 10.000 rows vai consumir todo o contexto da sessão. Adicione paginação ou filtros obrigatórios. Documente o limite na description.
+**Limite nos retornos** Uma tool que retorna 10.000 rows vai consumir todo o contexto da sessão. Adicione paginação ou filtros obrigatórios. Documente o limite na description.
 
-**Erros explícitos e acionáveis**
-"Serviço não encontrado: payments-v3" é melhor que "404 Not Found". O agente pode agir com uma mensagem que explica o que falhou.
+**Erros explícitos e acionáveis** "Serviço não encontrado: payments-v3" é melhor que "404 Not Found". O agente pode agir com uma mensagem que explica o que falhou.
 
 ## Armadilhas comuns
 
@@ -404,11 +399,9 @@ Uma tool que retorna 10.000 rows vai consumir todo o contexto da sessão. Adicio
 
 ## Casos práticos
 
-**1. Painel de suporte consultando pedidos em produção**
-Um time de suporte usa o Claude Code para investigar tickets. Em vez de pedir pro agente rodar `psql` cru (arriscado, sem paginação, sem controle de acesso), o server `db-interno` da seção [[#Server com estado (conexão de banco persistente)|"Server com estado"]] expõe a tool `query_pedidos` — schema tipado, limite de 50 rows, filtro obrigatório por status. O agente investiga o pedido pedindo dados estruturados, nunca escrevendo SQL solto contra o banco de produção. A conexão do `Pool` fica viva entre chamadas (evita reabrir conexão a cada tool call) e o `SIGTERM` garante que ela fecha limpa quando a sessão encerra.
+**1. Painel de suporte consultando pedidos em produção** Um time de suporte usa o Claude Code para investigar tickets. Em vez de pedir pro agente rodar `psql` cru (arriscado, sem paginação, sem controle de acesso), o server `db-interno` da seção [[#Server com estado (conexão de banco persistente)|"Server com estado"]] expõe a tool `query_pedidos` — schema tipado, limite de 50 rows, filtro obrigatório por status. O agente investiga o pedido pedindo dados estruturados, nunca escrevendo SQL solto contra o banco de produção. A conexão do `Pool` fica viva entre chamadas (evita reabrir conexão a cada tool call) e o `SIGTERM` garante que ela fecha limpa quando a sessão encerra.
 
-**2. Onboarding de novos devs com contexto do projeto**
-Um projeto com múltiplos microsserviços tem regras de negócio e mapa de serviços espalhados em READMEs desatualizados. O server `contexto-projeto` da seção [[#Expondo resources (dados somente leitura)|"Expondo resources"]] publica `projeto://servicos` e `projeto://regras-negocio` como resources somente-leitura — sem efeito colateral, sem risco de o agente "executar" algo ao consultar. Um dev novo (ou o próprio agente investigando uma tarefa) lê o mapa de serviços como referência viva antes de tocar código, em vez de confiar em documentação que ninguém atualiza.
+**2. Onboarding de novos devs com contexto do projeto** Um projeto com múltiplos microsserviços tem regras de negócio e mapa de serviços espalhados em READMEs desatualizados. O server `contexto-projeto` da seção [[#Expondo resources (dados somente leitura)|"Expondo resources"]] publica `projeto://servicos` e `projeto://regras-negocio` como resources somente-leitura — sem efeito colateral, sem risco de o agente "executar" algo ao consultar. Um dev novo (ou o próprio agente investigando uma tarefa) lê o mapa de serviços como referência viva antes de tocar código, em vez de confiar em documentação que ninguém atualiza.
 
 ## O que vem a seguir
 

@@ -93,8 +93,7 @@ aws dynamodb update-table \
 > [!tip] Assista: AWS DynamoDB Global Tables Demo — Active Active Model, Multi Regional
 > **Canal:** Soumil Shah | **Duração:** ~7min | **Idioma:** EN
 >
-> Demonstração prática de criar uma Global Table e escrever nos dois lados (duas regiões diferentes) pra ver a replicação multi-ativa acontecendo de verdade — bom complemento pro comando `update-table` acima, que mostra a sintaxe mas não o "e depois, o que eu vejo na outra região?".
-> Trecho de destaque [0:11]: *"when mission critical applications are involved which means they need sub second latency and the data has to be highly available"*
+> Demonstração prática de criar uma Global Table e escrever nos dois lados (duas regiões diferentes) pra ver a replicação multi-ativa acontecendo de verdade — bom complemento pro comando `update-table` acima, que mostra a sintaxe mas não o "e depois, o que eu vejo na outra região?". Trecho de destaque [0:11]: *"when mission critical applications are involved which means they need sub second latency and the data has to be highly available"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=EvB--OgzKEU)
 
@@ -191,8 +190,7 @@ Repare no `TTL: 30` — é a alavanca que você controla diretamente: TTL baixo 
 > [!tip] Assista: Amazon Route 53 — DNS, Routing Policies, Hybrid DNS e ARC (SOA-C03, Seção 21)
 > **Canal:** Jean Diogo | **Duração:** ~30min | **Idioma:** PT-BR
 >
-> Aula completa em português que passa pelos mesmos health checks e failover routing que o bloco de comandos acima materializa — útil pra ver o mesmo conceito explicado com outras palavras antes de aplicar a sintaxe da AWS CLI.
-> Trecho de destaque [17:52]: *"failover a passive, que é um destino... health check do primeiro passa, todo o [tráfego vai pra ele]"*
+> Aula completa em português que passa pelos mesmos health checks e failover routing que o bloco de comandos acima materializa — útil pra ver o mesmo conceito explicado com outras palavras antes de aplicar a sintaxe da AWS CLI. Trecho de destaque [17:52]: *"failover a passive, que é um destino... health check do primeiro passa, todo o [tráfego vai pra ele]"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=bAqJhv6AkI4)
 

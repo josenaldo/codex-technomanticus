@@ -22,30 +22,20 @@ aliases:
 # Paradigmas de Programação
 
 > [!abstract] TL;DR
-> Galho de Ciência da Computação sobre os **modelos mentais** de programar — imperativo, orientado a objetos,
-> declarativo, funcional, lógico, reativo. Um paradigma não é uma linguagem: é um jeito de *pensar* o
-> problema, e as linguagens modernas misturam vários. O coração do galho é o **paradigma funcional**
-> (pureza, imutabilidade, composição, tipos algébricos) — o estilo que mais saiu do nicho para o
-> mainstream. A tese final: paradigma é ferramenta, não religião; o senior escolhe por problema.
+> Galho de Ciência da Computação sobre os **modelos mentais** de programar — imperativo, orientado a objetos, declarativo, funcional, lógico, reativo. Um paradigma não é uma linguagem: é um jeito de *pensar* o problema, e as linguagens modernas misturam vários. O coração do galho é o **paradigma funcional** (pureza, imutabilidade, composição, tipos algébricos) — o estilo que mais saiu do nicho para o mainstream. A tese final: paradigma é ferramenta, não religião; o senior escolhe por problema.
 
 ## Sobre este galho
 
-Este galho é **stack-agnóstico**: trata os paradigmas como conceitos, com exemplos mínimos em várias
-linguagens e ponteiros para o ferramental concreto.
+Este galho é **stack-agnóstico**: trata os paradigmas como conceitos, com exemplos mínimos em várias linguagens e ponteiros para o ferramental concreto.
 
 **Fronteiras (linka, não duplica):**
-- **OO em profundidade** (os 4 pilares, composição, modelagem) → [[Orientação a Objetos]]. Aqui OO é
-  tratado *como um paradigma entre vários*.
-- **Programação reativa com Reactor/WebFlux** → [[Programação Reativa]] (estante Java). Aqui fica o conceito
-  de paradigma reativo/dataflow.
+- **OO em profundidade** (os 4 pilares, composição, modelagem) → [[Orientação a Objetos]]. Aqui OO é tratado *como um paradigma entre vários*.
+- **Programação reativa com Reactor/WebFlux** → [[Programação Reativa]] (estante Java). Aqui fica o conceito de paradigma reativo/dataflow.
 - **Funcional na prática com ferramental** → [[03-Dominios/Tecnologia/Java/Collections e Streams/index|Streams (Java)]] e [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]].
-- **Concorrência e paralelismo** (atores, CSP, memória compartilhada) → futuro galho da Camada B; aqui só
-  mencionados em prosa, como benefício da imutabilidade.
+- **Concorrência e paralelismo** (atores, CSP, memória compartilhada) → futuro galho da Camada B; aqui só mencionados em prosa, como benefício da imutabilidade.
 - **Princípios de design** → [[SOLID]]; **raciocínio sobre complexidade/estado** → [[Complexidade de Software]].
 
-**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista"
-com frases prontas em inglês e vocabulário técnico PT→EN. (O tema cai *parcialmente* em entrevista, mas é
-fundamento real.)
+**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista" com frases prontas em inglês e vocabulário técnico PT→EN. (O tema cai *parcialmente* em entrevista, mas é fundamento real.)
 
 ## Iniciado — o mapa e os mundos base
 

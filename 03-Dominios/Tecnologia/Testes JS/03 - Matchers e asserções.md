@@ -91,9 +91,7 @@ expect(lista).not.toContain('x');
 ```
 
 > [!warning] `toBe` com números de ponto flutuante
-> **O que acontece:** `expect(0.1 + 0.2).toBe(0.3)` **falha** — o teste acusa erro num cálculo correto.
-> **Por quê:** `0.1 + 0.2` é `0.30000000000000004` em ponto flutuante IEEE-754; não é exatamente `0.3`. `toBe` usa igualdade estrita e vê a diferença.
-> **Como evitar:** para decimais, use **`toBeCloseTo(0.3)`** (que compara com uma tolerância de casas decimais). Reserve `toBe` para inteiros e primitivos exatos.
+> **O que acontece:** `expect(0.1 + 0.2).toBe(0.3)` **falha** — o teste acusa erro num cálculo correto. **Por quê:** `0.1 + 0.2` é `0.30000000000000004` em ponto flutuante IEEE-754; não é exatamente `0.3`. `toBe` usa igualdade estrita e vê a diferença. **Como evitar:** para decimais, use **`toBeCloseTo(0.3)`** (que compara com uma tolerância de casas decimais). Reserve `toBe` para inteiros e primitivos exatos.
 
 ## Exceções, promises e matchers assimétricos
 

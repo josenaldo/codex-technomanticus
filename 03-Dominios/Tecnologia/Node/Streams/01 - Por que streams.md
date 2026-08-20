@@ -335,24 +335,16 @@ A distinção importante aqui: o body da requisição (a mensagem do usuário, g
 ## Armadilhas comuns
 
 > [!warning] 1. Usar stream em payload pequeno — overhead sem benefício
-> **O que acontece:** A criação de objetos de stream, o controle de eventos e o gerenciamento de backpressure adicionam indireção mensurável que não se paga em payloads pequenos.
-> **Por quê:** Para arquivos de 50 KB ou payloads de API típicos, o overhead de criação e coordenação dos estágios da pipeline supera o benefício de memória constante. O código fica mais complexo sem ganho real.
-> **Como evitar:** Abaixo de 10 MB e sem requisito de latência de primeiro chunk, prefira `readFile` + processamento síncrono. Streams se pagam quando o dado é grande (>100 MB), contínuo, ou vem de I/O de longa duração.
+> **O que acontece:** A criação de objetos de stream, o controle de eventos e o gerenciamento de backpressure adicionam indireção mensurável que não se paga em payloads pequenos. **Por quê:** Para arquivos de 50 KB ou payloads de API típicos, o overhead de criação e coordenação dos estágios da pipeline supera o benefício de memória constante. O código fica mais complexo sem ganho real. **Como evitar:** Abaixo de 10 MB e sem requisito de latência de primeiro chunk, prefira `readFile` + processamento síncrono. Streams se pagam quando o dado é grande (>100 MB), contínuo, ou vem de I/O de longa duração.
 
 > [!warning] 2. Confundir "streaming HTTP" com "Node Streams"
-> **O que acontece:** Código que trata Transfer-Encoding chunked e a API `node:stream` como se fossem camadas que exigem mapeamento explícito — levando a wrapping desnecessário de objetos que já são streams.
-> **Por quê:** Streaming HTTP é um protocolo de transporte; Node Streams são uma abstração de runtime. Os dois se tocam — `req` e `res` já são Node Streams — mas são conceitos distintos. É possível consumir HTTP em streaming via `response.body` da Fetch API sem usar `node:stream` explicitamente.
-> **Como evitar:** Entenda o nível de abstração com que está trabalhando. `req` e `res` já são streams nativos; não os envolva em mais camadas além do que a tarefa exige.
+> **O que acontece:** Código que trata Transfer-Encoding chunked e a API `node:stream` como se fossem camadas que exigem mapeamento explícito — levando a wrapping desnecessário de objetos que já são streams. **Por quê:** Streaming HTTP é um protocolo de transporte; Node Streams são uma abstração de runtime. Os dois se tocam — `req` e `res` já são Node Streams — mas são conceitos distintos. É possível consumir HTTP em streaming via `response.body` da Fetch API sem usar `node:stream` explicitamente. **Como evitar:** Entenda o nível de abstração com que está trabalhando. `req` e `res` já são streams nativos; não os envolva em mais camadas além do que a tarefa exige.
 
 > [!warning] 3. Achar que streams resolvem memória sem implementar backpressure
-> **O que acontece:** Um Readable rápido (leitura de NVMe) conectado a um Writable lento (rede com latência) enche o buffer interno do Writable indefinidamente — a memória explode mesmo com stream.
-> **Por quê:** O argumento de "memória constante" assume que produtor e consumidor operam em velocidades compatíveis OU que backpressure está ativo. Sem backpressure, o buffer cresce como se não houvesse stream algum.
-> **Como evitar:** Use `pipeline()` de `node:stream/promises` — ele implementa backpressure automaticamente entre todos os estágios. Ao conectar streams manualmente via eventos `data`, implemente `readable.pause()` / `readable.resume()` explicitamente.
+> **O que acontece:** Um Readable rápido (leitura de NVMe) conectado a um Writable lento (rede com latência) enche o buffer interno do Writable indefinidamente — a memória explode mesmo com stream. **Por quê:** O argumento de "memória constante" assume que produtor e consumidor operam em velocidades compatíveis OU que backpressure está ativo. Sem backpressure, o buffer cresce como se não houvesse stream algum. **Como evitar:** Use `pipeline()` de `node:stream/promises` — ele implementa backpressure automaticamente entre todos os estágios. Ao conectar streams manualmente via eventos `data`, implemente `readable.pause()` / `readable.resume()` explicitamente.
 
 > [!warning] 4. Usar `stream.pipe()` em código novo
-> **O que acontece:** Quando um stream downstream falha, `pipe()` não propaga o erro para upstream nem destrói os streams restantes — o que leva a vazamento de file descriptors e memória.
-> **Por quê:** `pipe()` é a API original de streams em Node; sua semântica de erro é fraca por design histórico. A falha de um estágio intermediário não limpa os demais estágios da cadeia.
-> **Como evitar:** Use `pipeline()` de `node:stream/promises` em todo código novo. `pipeline` propaga erros e faz cleanup de todos os estágios automaticamente. `.pipe()` ainda aparece em código legado — reconheça mas não reproduza em código novo.
+> **O que acontece:** Quando um stream downstream falha, `pipe()` não propaga o erro para upstream nem destrói os streams restantes — o que leva a vazamento de file descriptors e memória. **Por quê:** `pipe()` é a API original de streams em Node; sua semântica de erro é fraca por design histórico. A falha de um estágio intermediário não limpa os demais estágios da cadeia. **Como evitar:** Use `pipeline()` de `node:stream/promises` em todo código novo. `pipeline` propaga erros e faz cleanup de todos os estágios automaticamente. `.pipe()` ainda aparece em código legado — reconheça mas não reproduza em código novo.
 
 ---
 
@@ -377,14 +369,11 @@ A distinção importante aqui: o body da requisição (a mensagem do usuário, g
 
 ### Perguntas frequentes em entrevista
 
-**"Qual a diferença entre stream e buffer em Node?"**
-Buffer carrega todos os dados em memória antes de qualquer processamento — uso de memória O(N). Stream entrega dados em chunks incrementais — uso de memória O(chunkSize). A diferença é relevante para payloads grandes; para dados pequenos, ambos têm desempenho equivalente.
+**"Qual a diferença entre stream e buffer em Node?"** Buffer carrega todos os dados em memória antes de qualquer processamento — uso de memória O(N). Stream entrega dados em chunks incrementais — uso de memória O(chunkSize). A diferença é relevante para payloads grandes; para dados pequenos, ambos têm desempenho equivalente.
 
-**"Quando streams não são a resposta certa?"**
-Quando o payload é pequeno (overhead de stream não se paga), quando a operação exige visão global dos dados (sort, dedup, join), ou quando a latência de entrega do primeiro chunk não é um requisito — nesse caso, buffer com paginação pode ter latência total menor com menor complexidade.
+**"Quando streams não são a resposta certa?"** Quando o payload é pequeno (overhead de stream não se paga), quando a operação exige visão global dos dados (sort, dedup, join), ou quando a latência de entrega do primeiro chunk não é um requisito — nesse caso, buffer com paginação pode ter latência total menor com menor complexidade.
 
-**"O que é backpressure e por que importa?"**
-Backpressure é o mecanismo pelo qual um consumidor lento sinaliza ao produtor para pausar. Sem ele, um produtor rápido enche o buffer interno do consumidor até o heap estourar. `pipeline` gerencia backpressure automaticamente; `pipe` faz o mesmo; conectar streams manualmente via eventos `data` exige implementar backpressure explicitamente via `readable.pause()` / `readable.resume()`.
+**"O que é backpressure e por que importa?"** Backpressure é o mecanismo pelo qual um consumidor lento sinaliza ao produtor para pausar. Sem ele, um produtor rápido enche o buffer interno do consumidor até o heap estourar. `pipeline` gerencia backpressure automaticamente; `pipe` faz o mesmo; conectar streams manualmente via eventos `data` exige implementar backpressure explicitamente via `readable.pause()` / `readable.resume()`.
 
 ---
 

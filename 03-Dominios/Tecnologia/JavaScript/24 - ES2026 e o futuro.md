@@ -124,8 +124,7 @@ new Date('01/01/2026');         // Local timezone em alguns engines
 new Date('January 1, 2026');    // Funciona no V8, pode falhar em outros
 ```
 
-**Sem timezone real:**
-O `Date` armazena internamente um timestamp UTC e só exibe em local timezone do sistema. Não há como dizer "esta data é em São Paulo" de forma robusta sem bibliotecas externas.
+**Sem timezone real:** O `Date` armazena internamente um timestamp UTC e só exibe em local timezone do sistema. Não há como dizer "esta data é em São Paulo" de forma robusta sem bibliotecas externas.
 
 **Aritmética dolorosa:**
 ```javascript
@@ -258,8 +257,7 @@ async function sincronizarBanco() {
 }
 ```
 
-**Erros agregados com `SuppressedError`:**
-Se o `dispose()` lançar quando já há um erro em voo, o ERM cria um `SuppressedError` que contém ambos — o erro original e o erro do cleanup. Você não perde nenhum:
+**Erros agregados com `SuppressedError`:** Se o `dispose()` lançar quando já há um erro em voo, o ERM cria um `SuppressedError` que contém ambos — o erro original e o erro do cleanup. Você não perde nenhum:
 
 ```javascript
 // SuppressedError {
@@ -557,24 +555,16 @@ Se `executarLogicaDeNegocio()` lançar, `Symbol.asyncDispose` ainda é chamado, 
 ## Armadilhas comuns
 
 > [!warning] Confundir Temporal.PlainDate com Temporal.ZonedDateTime
-> **O que acontece:** Você usa `PlainDate` para agendar reuniões com timezone e percebe que o horário "errou" ao exibir para usuários em outro fuso.
-> **Por quê:** `PlainDate` (e `PlainDateTime`) intencionalmente não tem timezone — é uma data "flutuante". Para eventos que ocorrem em um momento exato no tempo, use `ZonedDateTime`.
-> **Como evitar:** Regra de ouro — se o evento tem relevância global ou precisa de conversão de tz, use `ZonedDateTime`. Se é uma data de nascimento ou aniversário (sem hora), use `PlainDate`.
+> **O que acontece:** Você usa `PlainDate` para agendar reuniões com timezone e percebe que o horário "errou" ao exibir para usuários em outro fuso. **Por quê:** `PlainDate` (e `PlainDateTime`) intencionalmente não tem timezone — é uma data "flutuante". Para eventos que ocorrem em um momento exato no tempo, use `ZonedDateTime`. **Como evitar:** Regra de ouro — se o evento tem relevância global ou precisa de conversão de tz, use `ZonedDateTime`. Se é uma data de nascimento ou aniversário (sem hora), use `PlainDate`.
 
 > [!warning] `using` não funciona com recursos que exigem cleanup assíncrono em contexto síncrono
-> **O que acontece:** Você usa `using` (síncrono) com um recurso que tem `Symbol.asyncDispose`, e o cleanup não aguarda o Promise — o recurso pode ser fechado antes de operações assíncronas pendentes terminarem.
-> **Por quê:** `using` é síncrono por design. Para recursos com cleanup async, o contexto precisa ser `async` e a declaração precisa ser `await using`.
-> **Como evitar:** Sempre use `await using` em contextos async quando o recurso implementa `Symbol.asyncDispose`. Se o recurso tem ambos (`Symbol.dispose` e `Symbol.asyncDispose`), `using` usará o síncrono — implemente-os de forma consistente.
+> **O que acontece:** Você usa `using` (síncrono) com um recurso que tem `Symbol.asyncDispose`, e o cleanup não aguarda o Promise — o recurso pode ser fechado antes de operações assíncronas pendentes terminarem. **Por quê:** `using` é síncrono por design. Para recursos com cleanup async, o contexto precisa ser `async` e a declaração precisa ser `await using`. **Como evitar:** Sempre use `await using` em contextos async quando o recurso implementa `Symbol.asyncDispose`. Se o recurso tem ambos (`Symbol.dispose` e `Symbol.asyncDispose`), `using` usará o síncrono — implemente-os de forma consistente.
 
 > [!warning] Decorator behavior varia entre TypeScript legacy e Stage 3
-> **O que acontece:** Código com `experimentalDecorators: true` (TypeScript legacy) se comporta diferente de decorators Stage 3. Você mistura as duas formas e tem bugs difíceis de rastrear.
-> **Por quê:** O TC39 reescreveu a spec de decorators completamente. O TypeScript suportou uma versão experimental por anos antes de stage 3. As APIs são incompatíveis.
-> **Como evitar:** Em projetos novos, use TypeScript 5.0+ sem `experimentalDecorators`. Se migrando, refatore um arquivo de cada vez e teste o comportamento dos decorators explicitamente.
+> **O que acontece:** Código com `experimentalDecorators: true` (TypeScript legacy) se comporta diferente de decorators Stage 3. Você mistura as duas formas e tem bugs difíceis de rastrear. **Por quê:** O TC39 reescreveu a spec de decorators completamente. O TypeScript suportou uma versão experimental por anos antes de stage 3. As APIs são incompatíveis. **Como evitar:** Em projetos novos, use TypeScript 5.0+ sem `experimentalDecorators`. Se migrando, refatore um arquivo de cada vez e teste o comportamento dos decorators explicitamente.
 
 > [!warning] Records & Tuples: não tente reimplementar com Proxy ou freeze esperando igualdade por valor
-> **O que acontece:** Você viu a proposta, adorou a ideia de `===` por valor, e tenta simular com `Object.freeze` ou `Proxy`. O resultado não funciona como esperado: dois objetos freeze com os mesmos valores ainda são `!==`.
-> **Por quê:** Igualdade por valor para objetos exigiria interning ou comparação estrutural no nível do engine — não é possível no userland.
-> **Como evitar:** Use serialização para comparações (JSON.stringify para casos simples, deep-equal para casos complexos). Para imutabilidade de estado em apps React/Vue, use Immer. Aceite que o JavaScript não terá primitivos imutáveis em curto prazo.
+> **O que acontece:** Você viu a proposta, adorou a ideia de `===` por valor, e tenta simular com `Object.freeze` ou `Proxy`. O resultado não funciona como esperado: dois objetos freeze com os mesmos valores ainda são `!==`. **Por quê:** Igualdade por valor para objetos exigiria interning ou comparação estrutural no nível do engine — não é possível no userland. **Como evitar:** Use serialização para comparações (JSON.stringify para casos simples, deep-equal para casos complexos). Para imutabilidade de estado em apps React/Vue, use Immer. Aceite que o JavaScript não terá primitivos imutáveis em curto prazo.
 
 ---
 

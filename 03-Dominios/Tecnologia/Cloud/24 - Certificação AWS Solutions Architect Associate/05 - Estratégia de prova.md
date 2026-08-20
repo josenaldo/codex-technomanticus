@@ -77,10 +77,7 @@ Vale ver o mecanismo em ação, com um cenário no estilo do exame (não é uma 
 
 > *"Uma empresa roda uma aplicação de processamento de imagens que recebe uploads em rajadas imprevisíveis — pode passar horas sem tráfego e depois receber milhares de arquivos em minutos. O time de arquitetura precisa de uma solução que escale automaticamente com a demanda, sem que a equipe precise gerenciar servidores, e que minimize o custo quando não há tráfego. Qual solução atende aos requisitos?"*
 >
-> A) EC2 Auto Scaling Group com instâncias t3.medium, escalando por métrica de CPU
-> B) Uma frota EC2 de tamanho fixo dimensionada para o pico esperado
-> C) AWS Lambda acionada por eventos de upload no S3
-> D) Um cluster ECS on EC2 com scaling manual configurado pela equipe de operações
+> A) EC2 Auto Scaling Group com instâncias t3.medium, escalando por métrica de CPU B) Uma frota EC2 de tamanho fixo dimensionada para o pico esperado C) AWS Lambda acionada por eventos de upload no S3 D) Um cluster ECS on EC2 com scaling manual configurado pela equipe de operações
 
 Aplicando a eliminação: **(B)** é a descartável óbvia — "tamanho fixo dimensionada para o pico" é exatamente o oposto de "minimize custo quando não há tráfego" (paga o pico o tempo todo). **(D)** também cai rápido — "scaling manual" contradiz "escala automaticamente" e ainda exige EC2 rodando (não é "sem gerenciar servidores"). Sobram **(A)** e **(C)**, ambas tecnicamente capazes de escalar. O discriminador está em duas frases do enunciado: "sem que a equipe precise gerenciar servidores" elimina EC2 (mesmo em Auto Scaling Group, ainda são instâncias para corrigir, atualizar, corrigir vulnerabilidade de SO) e "minimize o custo quando não há tráfego" aponta para um modelo que não cobra em repouso — que é exatamente o modelo de cobrança por invocação do Lambda. Resposta: **(C)**. O padrão "rajadas imprevisíveis + zero servidor + custo zero em repouso" é a assinatura clássica de Lambda que a nota 04 deste galho já cataloga como uma das combinações mais recorrentes do exame.
 

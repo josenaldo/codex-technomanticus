@@ -20,23 +20,13 @@ aliases:
 # Clássicos (GoF)
 
 > [!abstract] TL;DR
-> Os **23 padrões do Gang of Four** (1994) — criacionais, estruturais e comportamentais —
-> tratados como **catálogo de consulta** para o sênior, com uma lente que a maioria dos tutoriais
-> ignora: cada padrão em **Java, TypeScript, Python e Go**, mostrando como os recursos da linguagem
-> mudam (ou **dissolvem**) a implementação, e uma seção **Armadilhas** reforçada sobre **quando NÃO
-> usar**. Primeira família do galho-pai [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/roadmap|Padrões de Projeto]].
+> Os **23 padrões do Gang of Four** (1994) — criacionais, estruturais e comportamentais — tratados como **catálogo de consulta** para o sênior, com uma lente que a maioria dos tutoriais ignora: cada padrão em **Java, TypeScript, Python e Go**, mostrando como os recursos da linguagem mudam (ou **dissolvem**) a implementação, e uma seção **Armadilhas** reforçada sobre **quando NÃO usar**. Primeira família do galho-pai [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/roadmap|Padrões de Projeto]].
 
 ## Sobre esta família
 
-Este não é um curso linear: é um **repertório**. Cada nota é autocontida — dá para pular direto no
-padrão que você procura. As **fases** ordenam por *centralidade/frequência* (não por dificuldade):
-**Iniciado** = os que todo dev encontra primeiro; **Adepto** = o catálogo de trabalho do dia a dia;
-**Magus** = os situacionais mais a síntese de discernimento sênior.
+Este não é um curso linear: é um **repertório**. Cada nota é autocontida — dá para pular direto no padrão que você procura. As **fases** ordenam por *centralidade/frequência* (não por dificuldade): **Iniciado** = os que todo dev encontra primeiro; **Adepto** = o catálogo de trabalho do dia a dia; **Magus** = os situacionais mais a síntese de discernimento sênior.
 
-**A lente do catálogo:** muitos padrões do GoF são contornos para lacunas das linguagens de 1994.
-Onde a linguagem moderna preenche a lacuna (funções de primeira classe, módulos, *pattern matching*,
-argumentos nomeados), o padrão encolhe — às vezes até sumir. Reconhecer isso é o que separa aplicar
-um padrão de empilhar cerimônia.
+**A lente do catálogo:** muitos padrões do GoF são contornos para lacunas das linguagens de 1994. Onde a linguagem moderna preenche a lacuna (funções de primeira classe, módulos, *pattern matching*, argumentos nomeados), o padrão encolhe — às vezes até sumir. Reconhecer isso é o que separa aplicar um padrão de empilhar cerimônia.
 
 **Fronteiras (linka, não duplica):**
 - **Princípios** que os padrões materializam → [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]] (OCP, DIP).

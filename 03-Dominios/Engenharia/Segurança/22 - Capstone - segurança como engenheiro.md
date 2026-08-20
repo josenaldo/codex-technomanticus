@@ -400,21 +400,13 @@ A experiência de campo mostra que alguns erros são tão comuns que merecem nom
 
 Estas são perguntas reais de entrevistas de engenheiro sênior. O que o entrevistador avalia está entre parênteses.
 
-**"Como você armazenaria senhas num banco de dados?"**
-*(avalia: conhecimento de hashing lento vs. rápido)*
-→ Argon2id com salt aleatório de 128 bits, parâmetros memory ≥ 64 MB. Nunca MD5/SHA sem custo. Comparação em tempo constante para evitar timing attack.
+**"Como você armazenaria senhas num banco de dados?"** *(avalia: conhecimento de hashing lento vs. rápido)* → Argon2id com salt aleatório de 128 bits, parâmetros memory ≥ 64 MB. Nunca MD5/SHA sem custo. Comparação em tempo constante para evitar timing attack.
 
-**"Explique por que JWT pode ser problemático."**
-*(avalia: profundidade sobre autenticação e estado)*
-→ JWTs stateless não podem ser invalidados antes do exp. Um token comprometido fica válido até expirar. Mitigação: TTL curto (15 min) + refresh token com revogação server-side. O bug histórico do `alg: none` mostra que a biblioteca importa tanto quanto o protocolo.
+**"Explique por que JWT pode ser problemático."** *(avalia: profundidade sobre autenticação e estado)* → JWTs stateless não podem ser invalidados antes do exp. Um token comprometido fica válido até expirar. Mitigação: TTL curto (15 min) + refresh token com revogação server-side. O bug histórico do `alg: none` mostra que a biblioteca importa tanto quanto o protocolo.
 
-**"Qual a diferença entre autenticação e autorização? Dê um exemplo onde as duas falham separadamente."**
-*(avalia: precisão conceitual — confusão entre os dois é sinal de júnior)*
-→ Autenticação: provar quem você é. Autorização: verificar o que você pode fazer. Falha isolada de autenticação: bypass de login (sem verificar a senha). Falha isolada de autorização: login correto mas acesso a `/api/pedidos/4521` sem verificar se o pedido é do usuário logado (IDOR).
+**"Qual a diferença entre autenticação e autorização? Dê um exemplo onde as duas falham separadamente."** *(avalia: precisão conceitual — confusão entre os dois é sinal de júnior)* → Autenticação: provar quem você é. Autorização: verificar o que você pode fazer. Falha isolada de autenticação: bypass de login (sem verificar a senha). Falha isolada de autorização: login correto mas acesso a `/api/pedidos/4521` sem verificar se o pedido é do usuário logado (IDOR).
 
-**"O que é zero trust e quando você usaria?"**
-*(avalia: compreensão de arquitetura moderna)*
-→ Zero trust substitui o modelo de perímetro ("dentro da rede = confiável") por "never trust, always verify". Cada requisição é autenticada e autorizada independentemente da origem. Aplicável em arquitetura de microserviços onde serviços se chamam internamente: mTLS + SPIFFE/SPIRE para identidade de serviço.
+**"O que é zero trust e quando você usaria?"** *(avalia: compreensão de arquitetura moderna)* → Zero trust substitui o modelo de perímetro ("dentro da rede = confiável") por "never trust, always verify". Cada requisição é autenticada e autorizada independentemente da origem. Aplicável em arquitetura de microserviços onde serviços se chamam internamente: mTLS + SPIFFE/SPIRE para identidade de serviço.
 
 ---
 

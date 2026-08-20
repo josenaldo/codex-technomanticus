@@ -21,9 +21,7 @@ aliases:
 # Microservices e sistemas distribuídos
 
 > [!abstract] TL;DR
-> Este galho cobre como vários serviços formam uma plataforma distribuída: o modelo e a tese honesta, o ecossistema Spring Cloud, service discovery, API Gateway, resiliência com Resilience4j, comunicação síncrona entre serviços, segurança serviço a serviço, tracing distribuído com OpenTelemetry, consistência e service mesh.
-> A tese que atravessa tudo: microservices é um **trade-off**, não o default. Quase sempre o **monólito modular basta**, e a **rede é o inimigo** — toda chamada que vira HTTP ganha latência, falha parcial e complexidade operacional.
-> São **24 notas em 3 fases** (Iniciado, Adepto, Magus).
+> Este galho cobre como vários serviços formam uma plataforma distribuída: o modelo e a tese honesta, o ecossistema Spring Cloud, service discovery, API Gateway, resiliência com Resilience4j, comunicação síncrona entre serviços, segurança serviço a serviço, tracing distribuído com OpenTelemetry, consistência e service mesh. A tese que atravessa tudo: microservices é um **trade-off**, não o default. Quase sempre o **monólito modular basta**, e a **rede é o inimigo** — toda chamada que vira HTTP ganha latência, falha parcial e complexidade operacional. São **24 notas em 3 fases** (Iniciado, Adepto, Magus).
 
 ## Sobre este galho
 

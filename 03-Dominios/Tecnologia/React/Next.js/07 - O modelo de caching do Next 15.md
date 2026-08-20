@@ -68,9 +68,7 @@ Cada camada tem escopo, duração e regras de invalidação diferentes. Confundi
 
 ## Cache 1: Request Memoization
 
-**Escopo:** servidor, dentro de um único render pass.
-**Duração:** até o fim da árvore de componentes renderizada.
-**Gerenciado por:** React (não pelo Next.js).
+**Escopo:** servidor, dentro de um único render pass. **Duração:** até o fim da árvore de componentes renderizada. **Gerenciado por:** React (não pelo Next.js).
 
 O problema que resolve: um layout busca `getUser()`, a página busca `getUser()`, e três componentes filhos também. Sem memoização, seriam 5 requests ao banco. Com memoização, são 1.
 
@@ -107,9 +105,7 @@ async function getUser(id: string) {
 
 ## Cache 2: Data Cache
 
-**Escopo:** servidor, persistente entre requests e entre deployments.
-**Duração:** indefinida, até revalidação explícita.
-**Controlado por:** opções do `fetch` ou `unstable_cache`.
+**Escopo:** servidor, persistente entre requests e entre deployments. **Duração:** indefinida, até revalidação explícita. **Controlado por:** opções do `fetch` ou `unstable_cache`.
 
 Este é o cache que a maioria pensa quando ouve "cache em Next.js". É onde os dados de `fetch` ficam guardados no filesystem do servidor (ou na camada de cache do Vercel) entre uma request e outra.
 
@@ -185,9 +181,7 @@ export const getCachedPosts = unstable_cache(
 
 ## Cache 3: Full Route Cache
 
-**Escopo:** servidor, persistente entre requests.
-**Duração:** até novo deploy ou revalidação do Data Cache.
-**O que guarda:** HTML renderizado + RSC payload de rotas estáticas.
+**Escopo:** servidor, persistente entre requests. **Duração:** até novo deploy ou revalidação do Data Cache. **O que guarda:** HTML renderizado + RSC payload de rotas estáticas.
 
 O Full Route Cache é o que torna uma página "estática" no sentido prático: ao invés de renderizar JSX para cada request, o Next.js guarda o resultado HTML+RSC do build e serve diretamente — sem executar código, sem bater em banco.
 
@@ -222,9 +216,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
 
 ## Cache 4: Router Cache (client-side)
 
-**Escopo:** cliente (browser), in-memory por sessão.
-**Duração:** enquanto a aba estiver aberta; limpa no `refresh()`.
-**O que guarda:** RSC payload de segmentos visitados e pré-buscados.
+**Escopo:** cliente (browser), in-memory por sessão. **Duração:** enquanto a aba estiver aberta; limpa no `refresh()`. **O que guarda:** RSC payload de segmentos visitados e pré-buscados.
 
 O Router Cache é invisível para o servidor — vive inteiramente no JavaScript do cliente. Ele é o que torna a navegação entre páginas instantânea: ao navegar de `/blog` para `/about`, se os segmentos estiverem no Router Cache, não há request ao servidor.
 
@@ -308,8 +300,7 @@ export async function GET() { ... }
 > [!tip] Assista: use cache — NextJS's Latest Take on Data Caching
 > **Canal:** Jack Herrington | **Duração:** ~17min | **Idioma:** EN
 >
-> Jack compara os três modelos de caching do Next.js 15 (Pages Router, App Router padrão e dynamicIO experimental) usando um e-commerce real com 9 requests e requisitos de cache diferentes por dado — preço nunca cacheia, produtos cacheiam por hora. A demonstração mostra *por que* o Next 15 virou a mesa: quando você precisa de granularidade por fetch, o "cache tudo implicitamente" do Next 14 se torna um pesadelo de debugging.
-> Trecho de destaque [6:23]: *"by default with Next.js 15 these fetches are uncached — with Next.js 14 all of the fetches were aggressively cached, so this time we have to ask for a cache"*
+> Jack compara os três modelos de caching do Next.js 15 (Pages Router, App Router padrão e dynamicIO experimental) usando um e-commerce real com 9 requests e requisitos de cache diferentes por dado — preço nunca cacheia, produtos cacheiam por hora. A demonstração mostra *por que* o Next 15 virou a mesa: quando você precisa de granularidade por fetch, o "cache tudo implicitamente" do Next 14 se torna um pesadelo de debugging. Trecho de destaque [6:23]: *"by default with Next.js 15 these fetches are uncached — with Next.js 14 all of the fetches were aggressively cached, so this time we have to ask for a cache"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=ZDRGEewXkrs)
 

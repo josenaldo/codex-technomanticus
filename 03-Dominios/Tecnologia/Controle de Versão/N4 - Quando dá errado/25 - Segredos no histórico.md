@@ -36,9 +36,7 @@ graph TB
 **A ordem importa mais que a técnica.** Rotacionar é rápido, resolve o risco real, e não depende de coordenar ninguém. Limpar histórico é demorado, disruptivo e não desfaz nada que já foi copiado.
 
 > [!warning] Assuma que já foi lido
-> **O que acontece:** "ficou público por dez minutos, tudo bem".
-> **Por quê:** existem robôs que monitoram o fluxo público de commits em tempo real, exatamente procurando por padrões de chave. Dez minutos é tempo de sobra; há relatos de exploração em menos de um minuto.
-> **Como agir:** em repositório público, trate como comprometida **sempre**, sem exceção. Em repositório privado, avalie quem tinha acesso — mas o custo de rotacionar costuma ser menor que o de investigar.
+> **O que acontece:** "ficou público por dez minutos, tudo bem". **Por quê:** existem robôs que monitoram o fluxo público de commits em tempo real, exatamente procurando por padrões de chave. Dez minutos é tempo de sobra; há relatos de exploração em menos de um minuto. **Como agir:** em repositório público, trate como comprometida **sempre**, sem exceção. Em repositório privado, avalie quem tinha acesso — mas o custo de rotacionar costuma ser menor que o de investigar.
 
 ---
 
@@ -134,19 +132,13 @@ O `filter-repo` serve para mais do que segredo:
 ## Armadilhas comuns
 
 > [!warning] Limpar o histórico e não rotacionar
-> **O que acontece:** duas horas de reescrita, todo mundo reclonando, e a chave continua válida — e já copiada.
-> **Por quê:** inversão de prioridade por pânico estético.
-> **Como evitar:** rotacione **primeiro**. Sempre. Se só der para fazer uma das duas coisas, faça essa.
+> **O que acontece:** duas horas de reescrita, todo mundo reclonando, e a chave continua válida — e já copiada. **Por quê:** inversão de prioridade por pânico estético. **Como evitar:** rotacione **primeiro**. Sempre. Se só der para fazer uma das duas coisas, faça essa.
 
 > [!warning] Rodar `filter-branch` porque foi o que apareceu na busca
-> **O que acontece:** a operação demora horas num repositório médio e frequentemente produz resultado incorreto (tags perdidas, refs inconsistentes).
-> **Por quê:** é a ferramenta antiga, e a própria documentação do Git desaconselha o uso.
-> **Como evitar:** `git filter-repo` ou BFG. A página oficial do `filter-branch` traz o aviso no topo.
+> **O que acontece:** a operação demora horas num repositório médio e frequentemente produz resultado incorreto (tags perdidas, refs inconsistentes). **Por quê:** é a ferramenta antiga, e a própria documentação do Git desaconselha o uso. **Como evitar:** `git filter-repo` ou BFG. A página oficial do `filter-branch` traz o aviso no topo.
 
 > [!warning] Achar que repositório privado é cofre
-> **O que acontece:** o segredo vive no repositório privado "porque só o time tem acesso". Um dia o repositório vira público, alguém sai da empresa, ou um integrador ganha acesso de leitura.
-> **Por quê:** controle de acesso a repositório não é gestão de segredos — não há rotação, auditoria de uso, nem escopo por ambiente.
-> **Como evitar:** segredo mora em cofre, e o repositório referencia o nome, não o valor.
+> **O que acontece:** o segredo vive no repositório privado "porque só o time tem acesso". Um dia o repositório vira público, alguém sai da empresa, ou um integrador ganha acesso de leitura. **Por quê:** controle de acesso a repositório não é gestão de segredos — não há rotação, auditoria de uso, nem escopo por ambiente. **Como evitar:** segredo mora em cofre, e o repositório referencia o nome, não o valor.
 
 ---
 

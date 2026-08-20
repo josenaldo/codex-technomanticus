@@ -18,22 +18,13 @@ aliases:
 # Complexidade de Software
 
 > [!abstract] TL;DR
-> Galho 12 de Engenharia. O estudo daquilo que torna software difícil de construir e
-> manter — complexidade essencial vs. acidental, os limites da abstração, carga cognitiva,
-> as três dívidas (técnica, cognitiva, intenção) e o decaimento dos sistemas no tempo. A
-> espinha: *o que ajuda a entender ou gerenciar a complexidade do software?*
+> Galho 12 de Engenharia. O estudo daquilo que torna software difícil de construir e manter — complexidade essencial vs. acidental, os limites da abstração, carga cognitiva, as três dívidas (técnica, cognitiva, intenção) e o decaimento dos sistemas no tempo. A espinha: *o que ajuda a entender ou gerenciar a complexidade do software?*
 
 ## Sobre este galho
 
-Cobre a complexidade como o problema central do software, de ponta a ponta: por que software
-é difícil (Brooks, Tar Pit, Hickey, Naur), os mecanismos com que a gerenciamos e onde eles
-falham (abstração, information hiding, módulos, carga cognitiva), as três dívidas do Triple
-Debt Model (Storey) e a gestão da complexidade no tempo e no todo (entropia, manutenção,
-pensamento sistêmico, Lei de Conway).
+Cobre a complexidade como o problema central do software, de ponta a ponta: por que software é difícil (Brooks, Tar Pit, Hickey, Naur), os mecanismos com que a gerenciamos e onde eles falham (abstração, information hiding, módulos, carga cognitiva), as três dívidas do Triple Debt Model (Storey) e a gestão da complexidade no tempo e no todo (entropia, manutenção, pensamento sistêmico, Lei de Conway).
 
-**Não cobre:** Design Patterns e estilos arquiteturais (ficam em [[03-Dominios/Engenharia/Arquitetura/index|Arquitetura]]);
-as manifestações AI-specific dos débitos (ficam em [[03-Dominios/Tecnologia/IA/O Lado Sombrio da IA/index|O Lado Sombrio da IA]],
-sob a lente da IA — este galho trata sob a lente geral/atemporal, cross-linkado).
+**Não cobre:** Design Patterns e estilos arquiteturais (ficam em [[03-Dominios/Engenharia/Arquitetura/index|Arquitetura]]); as manifestações AI-specific dos débitos (ficam em [[03-Dominios/Tecnologia/IA/O Lado Sombrio da IA/index|O Lado Sombrio da IA]], sob a lente da IA — este galho trata sob a lente geral/atemporal, cross-linkado).
 
 ## Iniciado
 

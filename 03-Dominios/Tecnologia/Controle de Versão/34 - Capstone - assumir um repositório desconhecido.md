@@ -187,8 +187,7 @@ A última linha é a mais importante. O tempo das duas pessoas que ainda sabem a
 E fecha a lente do domínio: o repositório é **fonte de verdade** (foi assim que o time trabalhou) e **testemunha** (foi isto que aconteceu com o sistema).
 
 > [!warning] O limite honesto deste exercício
-> O repositório registra o que foi feito, não o que se pretendia. Ele não guarda as decisões tomadas em reunião, os requisitos que mudaram, a pressão de prazo que produziu aquele módulo, nem o contexto de negócio que fazia sentido em 2019. Quatro horas de investigação dão a você um mapa **do território**, não das intenções.
-> Confundir uma coisa com a outra é o erro mais comum de quem chega com boa ferramenta e pouca humildade — e leva a diagnósticos tecnicamente corretos e politicamente suicidas. O que fazer com o mapa é o ofício, e mora em [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/index|Engenharia/Arqueologia e Restauração de Software]].
+> O repositório registra o que foi feito, não o que se pretendia. Ele não guarda as decisões tomadas em reunião, os requisitos que mudaram, a pressão de prazo que produziu aquele módulo, nem o contexto de negócio que fazia sentido em 2019. Quatro horas de investigação dão a você um mapa **do território**, não das intenções. Confundir uma coisa com a outra é o erro mais comum de quem chega com boa ferramenta e pouca humildade — e leva a diagnósticos tecnicamente corretos e politicamente suicidas. O que fazer com o mapa é o ofício, e mora em [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/index|Engenharia/Arqueologia e Restauração de Software]].
 
 ---
 

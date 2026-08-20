@@ -23,17 +23,10 @@ aliases:
 # Bulkhead
 
 > [!abstract] TL;DR
-> Timeout, retry e breaker protegem **uma chamada**. O bulkhead protege o **resto do sistema** de uma
-> chamada: em vez de um pool compartilhado por todas as dependências, cada uma recebe seu compartimento
-> de recursos. Assim, a dependência que afunda leva junto apenas o próprio compartimento, e as
-> funcionalidades que nada têm a ver com ela continuam funcionando. O nome vem dos anteparos do casco de
-> um navio — o furo alaga uma seção, não o barco. O sacrifício é **utilização**: capacidade reservada
-> num compartimento fica ociosa mesmo quando outro está sufocando.
+> Timeout, retry e breaker protegem **uma chamada**. O bulkhead protege o **resto do sistema** de uma chamada: em vez de um pool compartilhado por todas as dependências, cada uma recebe seu compartimento de recursos. Assim, a dependência que afunda leva junto apenas o próprio compartimento, e as funcionalidades que nada têm a ver com ela continuam funcionando. O nome vem dos anteparos do casco de um navio — o furo alaga uma seção, não o barco. O sacrifício é **utilização**: capacidade reservada num compartimento fica ociosa mesmo quando outro está sufocando.
 
 > [!info] O recorte desta nota
-> Aqui o padrão como decisão e o que ele custa. **Dimensionar os compartimentos com dados reais** em
-> [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/06 - Resiliência operacional|Operação 3-06]]
-> ("Bulkhead: dimensionando o isolamento").
+> Aqui o padrão como decisão e o que ele custa. **Dimensionar os compartimentos com dados reais** em [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/06 - Resiliência operacional|Operação 3-06]] ("Bulkhead: dimensionando o isolamento").
 
 ## A funcionalidade que caiu sem ter culpa
 
@@ -96,19 +89,13 @@ Quem paga é o **orçamento de infraestrutura** — você provisiona mais para t
 ## Armadilhas comuns
 
 > [!warning] Isolar a thread e compartilhar o recurso real
-> **O que acontece:** cada dependência ganha seu pool de threads, mas todas apontam para o **mesmo banco de dados** com o mesmo pool de conexões. A dependência lenta esgota as conexões, e o isolamento de threads não protege nada.
-> **Por quê:** compartimentou-se a camada visível — as threads da aplicação — e não o recurso escasso de verdade.
-> **Como evitar:** identifique **qual** recurso satura primeiro (conexões de banco, sockets, memória, CPU) e compartimente **esse**. Isolar a camada errada dá uma falsa sensação de proteção, que é pior que não ter.
+> **O que acontece:** cada dependência ganha seu pool de threads, mas todas apontam para o **mesmo banco de dados** com o mesmo pool de conexões. A dependência lenta esgota as conexões, e o isolamento de threads não protege nada. **Por quê:** compartimentou-se a camada visível — as threads da aplicação — e não o recurso escasso de verdade. **Como evitar:** identifique **qual** recurso satura primeiro (conexões de banco, sockets, memória, CPU) e compartimente **esse**. Isolar a camada errada dá uma falsa sensação de proteção, que é pior que não ter.
 
 > [!warning] Compartimentos pequenos demais
-> **O que acontece:** o pool dedicado é dimensionado com folga mínima e passa a rejeitar requisições sob picos **normais** — o mecanismo de proteção virou fonte de erro no dia a dia.
-> **Por quê:** dimensionou-se pela média, não pelo pico observado, e sem margem para variação.
-> **Como evitar:** use percentil alto de concorrência real, com folga, e trate rejeição por bulkhead como **métrica de primeira classe**. Se ela dispara fora de incidente, o compartimento está apertado — não o tráfego, errado.
+> **O que acontece:** o pool dedicado é dimensionado com folga mínima e passa a rejeitar requisições sob picos **normais** — o mecanismo de proteção virou fonte de erro no dia a dia. **Por quê:** dimensionou-se pela média, não pelo pico observado, e sem margem para variação. **Como evitar:** use percentil alto de concorrência real, com folga, e trate rejeição por bulkhead como **métrica de primeira classe**. Se ela dispara fora de incidente, o compartimento está apertado — não o tráfego, errado.
 
 > [!warning] Compartimentar sem observabilidade por compartimento
-> **O que acontece:** o sistema degrada de forma parcial e ninguém entende por quê, porque as métricas são agregadas — a saturação de um compartimento fica invisível na média geral, que continua saudável.
-> **Por quê:** a instrumentação foi criada antes da compartimentação e nunca foi segmentada.
-> **Como evitar:** métricas **por compartimento** — utilização, rejeições, tempo de espera na fila. O valor do bulkhead é a falha parcial e localizada; sem visibilidade por parte, você perde justamente a informação que ele produz.
+> **O que acontece:** o sistema degrada de forma parcial e ninguém entende por quê, porque as métricas são agregadas — a saturação de um compartimento fica invisível na média geral, que continua saudável. **Por quê:** a instrumentação foi criada antes da compartimentação e nunca foi segmentada. **Como evitar:** métricas **por compartimento** — utilização, rejeições, tempo de espera na fila. O valor do bulkhead é a falha parcial e localizada; sem visibilidade por parte, você perde justamente a informação que ele produz.
 
 ## Como explicar em inglês
 

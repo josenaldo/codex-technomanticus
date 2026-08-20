@@ -77,9 +77,7 @@ graph TB
 O atributo `loading="lazy"` (nativo, sem JS) adia o download de imagens **abaixo da dobra** até o usuário chegar perto delas. Ótimo para uma galeria longa — mas mortal se aplicado à imagem errada.
 
 > [!warning] Lazy-load na imagem do LCP
-> **O que acontece:** o dev coloca `loading="lazy"` em *todas* as imagens "para ser consistente", incluindo o hero — e o LCP piora feio.
-> **Por quê:** `loading="lazy"` faz o browser **adiar** e **despriorizar** a imagem até confirmar que ela está na viewport. Para a imagem do LCP (que está no topo, é o que o usuário espera ver), isso adiciona um atraso justamente onde você não pode ter nenhum. Você atrasou de propósito a métrica que quer melhorar.
-> **Como evitar:** a imagem-LCP recebe `loading="eager"` (ou nada, que já é eager) **+** `fetchpriority="high"`. Só imagens abaixo da dobra levam `loading="lazy"`.
+> **O que acontece:** o dev coloca `loading="lazy"` em *todas* as imagens "para ser consistente", incluindo o hero — e o LCP piora feio. **Por quê:** `loading="lazy"` faz o browser **adiar** e **despriorizar** a imagem até confirmar que ela está na viewport. Para a imagem do LCP (que está no topo, é o que o usuário espera ver), isso adiciona um atraso justamente onde você não pode ter nenhum. Você atrasou de propósito a métrica que quer melhorar. **Como evitar:** a imagem-LCP recebe `loading="eager"` (ou nada, que já é eager) **+** `fetchpriority="high"`. Só imagens abaixo da dobra levam `loading="lazy"`.
 
 O par de regras, então:
 

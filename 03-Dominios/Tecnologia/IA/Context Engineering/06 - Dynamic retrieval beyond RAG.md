@@ -170,8 +170,7 @@ O índice de paths é leve, sempre fresco, e cabe na camada imutável/persistent
 
 ### 2. Two-stage retrieval (busca estrutural → busca de conteúdo)
 
-Estágio 1: busca **estrutural** — quais paths/IDs/metadados são candidatos?
-Estágio 2: carrega **conteúdo** apenas dos top-N candidatos.
+Estágio 1: busca **estrutural** — quais paths/IDs/metadados são candidatos? Estágio 2: carrega **conteúdo** apenas dos top-N candidatos.
 
 Isso reduz o volume de tokens lido em ~10x em relação a carregar todos os candidatos diretamente. A busca estrutural é barata (metadados, embeddings leves); a leitura de conteúdo é cara (tokens completos) — use-a seletivamente.
 
@@ -217,23 +216,17 @@ Uma forma de pensar nisso: quanto custaria um erro causado por stale data vs. qu
 
 ## Estado da arte — junho de 2026
 
-**Retrieval agentico como padrão**
-Em 2026, a fronteira não é mais "RAG vs. sem RAG" — é "qual o nível de agência no retrieval?". Sistemas maduros permitem que o modelo decida não só *o que* recuperar, mas *quando*, *quantas vezes*, e *de quais fontes combinadas*. O modelo faz seu próprio loop de retrieval até ter informação suficiente para responder.
+**Retrieval agentico como padrão** Em 2026, a fronteira não é mais "RAG vs. sem RAG" — é "qual o nível de agência no retrieval?". Sistemas maduros permitem que o modelo decida não só *o que* recuperar, mas *quando*, *quantas vezes*, e *de quais fontes combinadas*. O modelo faz seu próprio loop de retrieval até ter informação suficiente para responder.
 
-**Agentic RAG — o loop de retrieval autônomo**
-Uma arquitetura emergente: o modelo executa múltiplas rodadas de retrieval, onde cada rodada informa a próxima. "Não encontrei o que precisava, vou refinar a query" — um comportamento que RAG clássico não suporta. LangGraph e CrewAI implementam esse pattern como um grafo de nós de retrieval.
+**Agentic RAG — o loop de retrieval autônomo** Uma arquitetura emergente: o modelo executa múltiplas rodadas de retrieval, onde cada rodada informa a próxima. "Não encontrei o que precisava, vou refinar a query" — um comportamento que RAG clássico não suporta. LangGraph e CrewAI implementam esse pattern como um grafo de nós de retrieval.
 
-**Multi-modal JIT**
-MCP servers agora expõem não só texto mas imagens, PDFs, vídeos (via transcrição), e dados estruturados. Um agente de análise de design pode fazer JIT de wireframes; um agente de suporte pode ler screenshots de erros. O "retrieval" se expande para dados multimodais.
+**Multi-modal JIT** MCP servers agora expõem não só texto mas imagens, PDFs, vídeos (via transcrição), e dados estruturados. Um agente de análise de design pode fazer JIT de wireframes; um agente de suporte pode ler screenshots de erros. O "retrieval" se expande para dados multimodais.
 
-**Graph RAG — recuperação sobre grafos de conhecimento**
-Microsoft Research lançou Graph RAG em 2024, adotado amplamente em 2025-2026: em vez de buscar por similaridade semântica, o retrieval navega um grafo de entidades e relações. Para domínios com estrutura relacional rica (médico, legal, corporativo), Graph RAG produz respostas mais coerentes do que RAG vetorial puro. Neo4j e LlamaIndex oferecem implementações production-ready.
+**Graph RAG — recuperação sobre grafos de conhecimento** Microsoft Research lançou Graph RAG em 2024, adotado amplamente em 2025-2026: em vez de buscar por similaridade semântica, o retrieval navega um grafo de entidades e relações. Para domínios com estrutura relacional rica (médico, legal, corporativo), Graph RAG produz respostas mais coerentes do que RAG vetorial puro. Neo4j e LlamaIndex oferecem implementações production-ready.
 
-**Semantic caching como padrão de produção**
-Para sistemas com alto volume de queries similares, semantic cache (GPTCache, Redis + embeddings) retorna respostas de queries semanticamente próximas sem chamar o modelo ou fazer retrieval. Em 2026, essa é uma camada padrão antes do RAG em sistemas de alto tráfego — reduz custo em 60-80% para padrões de query repetitivos.
+**Semantic caching como padrão de produção** Para sistemas com alto volume de queries similares, semantic cache (GPTCache, Redis + embeddings) retorna respostas de queries semanticamente próximas sem chamar o modelo ou fazer retrieval. Em 2026, essa é uma camada padrão antes do RAG em sistemas de alto tráfego — reduz custo em 60-80% para padrões de query repetitivos.
 
-**Self-querying RAG**
-Uma evolução: o modelo gera a query de retrieval em vez de usar a query do usuário literalmente. "Qual a última versão do produto?" → o modelo gera `{filter: {date: {$gte: "2026-01-01"}}, query: "product version release"}`. Ferramentas como LangChain SelfQueryRetriever implementam isso com metadados estruturados nos documentos.
+**Self-querying RAG** Uma evolução: o modelo gera a query de retrieval em vez de usar a query do usuário literalmente. "Qual a última versão do produto?" → o modelo gera `{filter: {date: {$gte: "2026-01-01"}}, query: "product version release"}`. Ferramentas como LangChain SelfQueryRetriever implementam isso com metadados estruturados nos documentos.
 
 ---
 

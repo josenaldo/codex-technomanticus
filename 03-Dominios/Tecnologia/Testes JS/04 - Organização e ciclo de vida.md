@@ -80,9 +80,7 @@ describe('Carrinho', () => {
 ```
 
 > [!warning] Compartilhar estado mutável entre testes (usar `beforeAll` onde devia ser `beforeEach`)
-> **O que acontece:** um teste passa sozinho mas falha quando roda depois de outro, ou a suíte só passa numa certa ordem. Muda a ordem (ou roda em paralelo) e quebra.
-> **Por quê:** um objeto criado uma vez (`beforeAll`, ou fora dos hooks) e **mutado** pelos testes vaza estado de um para o outro. O segundo teste herda a bagunça do primeiro — acoplamento por estado compartilhado, a raiz de muitos flaky (ver [[03-Dominios/Engenharia/Testes/11 - Testes flaky|Engenharia/Testes 11]]).
-> **Como evitar:** o default é **`beforeEach`**, que dá a cada teste um estado **fresco**. Reserve `beforeAll` para setup **caro e imutável** (que os testes só leem, nunca mutam). Testes devem ser independentes e rodar em qualquer ordem — princípio "Independent" do F.I.R.S.T.
+> **O que acontece:** um teste passa sozinho mas falha quando roda depois de outro, ou a suíte só passa numa certa ordem. Muda a ordem (ou roda em paralelo) e quebra. **Por quê:** um objeto criado uma vez (`beforeAll`, ou fora dos hooks) e **mutado** pelos testes vaza estado de um para o outro. O segundo teste herda a bagunça do primeiro — acoplamento por estado compartilhado, a raiz de muitos flaky (ver [[03-Dominios/Engenharia/Testes/11 - Testes flaky|Engenharia/Testes 11]]). **Como evitar:** o default é **`beforeEach`**, que dá a cada teste um estado **fresco**. Reserve `beforeAll` para setup **caro e imutável** (que os testes só leem, nunca mutam). Testes devem ser independentes e rodar em qualquer ordem — princípio "Independent" do F.I.R.S.T.
 
 > [!question]- Se cada teste precisa de estado fresco, `beforeEach` não é lento por recriar tudo toda vez?
 > Raramente importa, e a segurança compensa. Recriar um objeto ou resetar um mock é barato — microssegundos. O que é caro (subir um banco em container, iniciar um servidor) você põe em `beforeAll` **e trata como somente-leitura**: os testes se conectam, mas não mutam o recurso compartilhado (ou limpam o que sujaram no `afterEach`). A regra: **estado barato e mutável → `beforeEach`; recurso caro e imutável → `beforeAll`**. Otimizar recriando menos, ao custo de compartilhar estado mutável, é trocar velocidade por flaky — mau negócio.
@@ -114,9 +112,7 @@ test.todo('validar CPF');  // aparece como pendente no relatório
 `.only` é ótimo para focar num teste durante o debug — **mas é uma armadilha se esquecido**:
 
 > [!warning] Esquecer um `.only` no commit
-> **O que acontece:** você usa `test.only` para focar, comita, e no CI **só aquele teste roda** — todos os outros são silenciosamente pulados, dando um "verde" enganoso.
-> **Por quê:** `.only` restringe a execução àquele(s) teste(s) no arquivo; o CI passa porque o único que rodou passou, mascarando regressões em tudo o mais.
-> **Como evitar:** configure o Vitest com `--allowOnly=false` na CI (ou um lint/hook que barra `.only`), fazendo o build **falhar** se houver um `.only` esquecido. Trate `.only` como ferramenta de debug local, nunca commitável.
+> **O que acontece:** você usa `test.only` para focar, comita, e no CI **só aquele teste roda** — todos os outros são silenciosamente pulados, dando um "verde" enganoso. **Por quê:** `.only` restringe a execução àquele(s) teste(s) no arquivo; o CI passa porque o único que rodou passou, mascarando regressões em tudo o mais. **Como evitar:** configure o Vitest com `--allowOnly=false` na CI (ou um lint/hook que barra `.only`), fazendo o build **falhar** se houver um `.only` esquecido. Trate `.only` como ferramenta de debug local, nunca commitável.
 
 **Organização e ciclo de vida em uma frase:** `describe` agrupa e escopa hooks; `beforeEach`/`afterEach` (por teste) e `beforeAll`/`afterAll` (por bloco) compartilham setup — preferindo `beforeEach` para estado fresco e evitar acoplamento; `test.each` roda uma tabela de casos sem duplicação; e `.only` é debug local que nunca deve chegar à CI.
 

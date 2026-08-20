@@ -418,19 +418,13 @@ Com o vocabulário de rota estabelecido, vale fechar o círculo do bug de abertu
 ## Armadilhas comuns
 
 > [!warning] Ambiguidade de rota entre segmento estático e dinâmico
-> **O que acontece:** duas rotas quase idênticas — uma com segmento fixo (`/tarefas/proximas`) e outra com path param (`/tarefas/{tarefa_id}`) — são declaradas na ordem errada, e a rota dinâmica "engole" a requisição destinada à estática.
-> **Por quê:** os três frameworks resolvem rotas na ordem de declaração (Flask/FastAPI) ou na ordem do `urlpatterns` (Django) — se `/tarefas/{tarefa_id}` for declarada antes de `/tarefas/proximas`, uma requisição a `/tarefas/proximas` bate primeiro no path param (`tarefa_id = "proximas"`), e só falha no handler quando tenta converter `"proximas"` para `int` (ou nem falha, se o path param for `str`).
-> **Como evitar:** declarar rotas estáticas mais específicas **antes** das dinâmicas mais genéricas — é uma convenção universal nos três frameworks, não um detalhe de implementação de um só.
+> **O que acontece:** duas rotas quase idênticas — uma com segmento fixo (`/tarefas/proximas`) e outra com path param (`/tarefas/{tarefa_id}`) — são declaradas na ordem errada, e a rota dinâmica "engole" a requisição destinada à estática. **Por quê:** os três frameworks resolvem rotas na ordem de declaração (Flask/FastAPI) ou na ordem do `urlpatterns` (Django) — se `/tarefas/{tarefa_id}` for declarada antes de `/tarefas/proximas`, uma requisição a `/tarefas/proximas` bate primeiro no path param (`tarefa_id = "proximas"`), e só falha no handler quando tenta converter `"proximas"` para `int` (ou nem falha, se o path param for `str`). **Como evitar:** declarar rotas estáticas mais específicas **antes** das dinâmicas mais genéricas — é uma convenção universal nos três frameworks, não um detalhe de implementação de um só.
 
 > [!warning] CBV sem `.as_view()` no `urls.py`
-> **O que acontece:** registrar uma classe diretamente em `path("tarefas/", TarefaListView)`, sem chamar `.as_view()`, produz um erro na inicialização (a classe não é *callable* da forma que o dispatcher do Django espera).
-> **Por quê:** `.as_view()` é o que converte a classe numa função de dispatch compatível com o mecanismo de roteamento — sem ela, o Django recebe a classe crua, não uma função handler.
-> **Como evitar:** toda CBV registrada em `urlpatterns` passa por `.as_view()` — é fácil esquecer vindo de FBV, onde a função é passada diretamente sem chamada nenhuma.
+> **O que acontece:** registrar uma classe diretamente em `path("tarefas/", TarefaListView)`, sem chamar `.as_view()`, produz um erro na inicialização (a classe não é *callable* da forma que o dispatcher do Django espera). **Por quê:** `.as_view()` é o que converte a classe numa função de dispatch compatível com o mecanismo de roteamento — sem ela, o Django recebe a classe crua, não uma função handler. **Como evitar:** toda CBV registrada em `urlpatterns` passa por `.as_view()` — é fácil esquecer vindo de FBV, onde a função é passada diretamente sem chamada nenhuma.
 
 > [!warning] Query param obrigatório no FastAPI por engano
-> **O que acontece:** um parâmetro pensado como opcional (`limite: int`) é declarado **sem** valor-default, e toda requisição que não passa `?limite=...` recebe `422` inesperado.
-> **Por quê:** no FastAPI, ausência de valor-default na assinatura é o que marca um parâmetro como obrigatório — não existe uma anotação separada tipo `required=True`; o default (ou a ausência dele) *é* o contrato.
-> **Como evitar:** todo query param pensado como opcional recebe um valor-default explícito (`= 20`, `= None`) na assinatura do handler — revisar a assinatura como se fosse a documentação da API, porque, via OpenAPI, ela literalmente é.
+> **O que acontece:** um parâmetro pensado como opcional (`limite: int`) é declarado **sem** valor-default, e toda requisição que não passa `?limite=...` recebe `422` inesperado. **Por quê:** no FastAPI, ausência de valor-default na assinatura é o que marca um parâmetro como obrigatório — não existe uma anotação separada tipo `required=True`; o default (ou a ausência dele) *é* o contrato. **Como evitar:** todo query param pensado como opcional recebe um valor-default explícito (`= 20`, `= None`) na assinatura do handler — revisar a assinatura como se fosse a documentação da API, porque, via OpenAPI, ela literalmente é.
 
 ## Em entrevista
 

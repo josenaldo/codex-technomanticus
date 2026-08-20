@@ -27,15 +27,12 @@ Ele sabe *como* fazer — mas não tem acesso ao que precisa para *fazer de fato
 
 Agora imagine o inverso: um dev com acesso total ao banco, ao GitHub, ao browser — mas sem nenhum processo. Ele cria issues no formato errado, faz queries que não seguem as convenções do projeto, e ignora o checklist de deploy.
 
-Skills sem MCP = processo sem acesso.
-MCP sem skills = acesso sem processo.
+Skills sem MCP = processo sem acesso. MCP sem skills = acesso sem processo.
 
 **A composição entrega o especialista completo**: processo correto + acesso autônomo + contexto do projeto.
 
 > [!question] Como saber o que falta?
-> Se o agente está pedindo para você copiar e colar dados de um sistema externo, está faltando MCP.
-> Se o agente está tomando decisões que violam as convenções do projeto, está faltando uma skill de domínio.
-> Se o agente está executando os passos errados, está faltando uma skill de processo.
+> Se o agente está pedindo para você copiar e colar dados de um sistema externo, está faltando MCP. Se o agente está tomando decisões que violam as convenções do projeto, está faltando uma skill de domínio. Se o agente está executando os passos errados, está faltando uma skill de processo.
 
 ## Os três componentes de um agente especializado
 
@@ -226,10 +223,7 @@ Use `describe_table` do `postgres-staging` (não do `postgres-dev`) para confirm
 
 Use `create_issue` do GitHub com o template de deploy:
 ```
-[DEPLOY] {versão} → staging — {data}
-PRs: #{lista}
-Migrations: {sim/não, quais}
-Resultado: {sucesso/falha}
+[DEPLOY] {versão} → staging — {data} PRs: #{lista} Migrations: {sim/não, quais} Resultado: {sucesso/falha}
 ```
 ```
 
@@ -339,8 +333,7 @@ MCP necessário: postgres-prod-ro (read-only), github
 
 ### Feature nova
 ```bash
-/arquitetura-projeto
-/tdd
+/arquitetura-projeto /tdd
 # Descreva a feature ou referencie o número da issue
 ```
 MCP necessário: postgres-dev, github

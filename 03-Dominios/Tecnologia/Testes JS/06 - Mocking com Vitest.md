@@ -98,9 +98,7 @@ vi.mock('./mat', async (importActual) => {
 ```
 
 > [!warning] Usar uma variável externa na factory do `vi.mock` (hoisting)
-> **O que acontece:** você define `const fake = vi.fn()` e usa dentro de `vi.mock('./x', () => ({ f: fake }))` — e recebe `ReferenceError: Cannot access 'fake' before initialization`.
-> **Por quê:** o Vitest **iça (hoists)** as chamadas `vi.mock` para o **topo do arquivo**, antes dos imports e das declarações. Na hora que a factory roda, `fake` ainda não existe.
-> **Como evitar:** declare a variável dentro de **`vi.hoisted`**, que é içado junto: `const { fake } = vi.hoisted(() => ({ fake: vi.fn() }))`. Aí ela existe quando a factory do mock roda.
+> **O que acontece:** você define `const fake = vi.fn()` e usa dentro de `vi.mock('./x', () => ({ f: fake }))` — e recebe `ReferenceError: Cannot access 'fake' before initialization`. **Por quê:** o Vitest **iça (hoists)** as chamadas `vi.mock` para o **topo do arquivo**, antes dos imports e das declarações. Na hora que a factory roda, `fake` ainda não existe. **Como evitar:** declare a variável dentro de **`vi.hoisted`**, que é içado junto: `const { fake } = vi.hoisted(() => ({ fake: vi.fn() }))`. Aí ela existe quando a factory do mock roda.
 
 ## A disciplina: resetar entre testes
 

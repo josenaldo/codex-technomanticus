@@ -12,9 +12,7 @@ tags:
 
 Diagnóstico migrado de guia/roadmap - ia.md (30/06). Cada entrada tem estado de enriquecimento, score, classificação de custo e plano de execução acionável.
 
-**Galho:** `03-Dominios/Tecnologia/IA/Ferramentas de IA`
-**Diagnóstico:** 2026-06-28 (migrado 2026-07-01)
-**Última execução:** 2026-07-01 — **galho concluído (5/5)**. Onda 1: Claude · Codex · Comparativo. Onda 2: Gemini · GitHub Copilot. Todas: E1 TL;DR + E3 ASCII→Mermaid + dedup armadilhas. Preços/modelos/URLs intocados (caducidade fora do escopo mecânico — revisar à parte).
+**Galho:** `03-Dominios/Tecnologia/IA/Ferramentas de IA` **Diagnóstico:** 2026-06-28 (migrado 2026-07-01) **Última execução:** 2026-07-01 — **galho concluído (5/5)**. Onda 1: Claude · Codex · Comparativo. Onda 2: Gemini · GitHub Copilot. Todas: E1 TL;DR + E3 ASCII→Mermaid + dedup armadilhas. Preços/modelos/URLs intocados (caducidade fora do escopo mecânico — revisar à parte).
 
 ## Régua de análise
 
@@ -27,8 +25,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | LINKS | L1 Wikilink cross-galho · L2 Referência externa (URL) |
 | MÍDIA | M1 Vídeo/podcast embutido |
 
-**Esquema de `fase:` detectado:** COM fase (Iniciado) — notas-referência por ferramenta, não trilha sequencial; piso OK (626–910 linhas)
-**Piso de linhas:** aplicável — Iniciado ≥300 (todas as notas excedem largamente)
+**Esquema de `fase:` detectado:** COM fase (Iniciado) — notas-referência por ferramenta, não trilha sequencial; piso OK (626–910 linhas) **Piso de linhas:** aplicável — Iniciado ≥300 (todas as notas excedem largamente)
 
 ## Tabela-resumo
 

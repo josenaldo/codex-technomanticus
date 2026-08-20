@@ -61,19 +61,13 @@ Um fractional que vinha usando contratos genéricos decide, ao fechar seu quarto
 ## Armadilhas comuns
 
 > [!warning] Contrato sem cláusula de rescisão clara
-> **O que acontece:** o contrato não define aviso prévio mínimo, e uma das partes encerra o engajamento sem nenhum tempo de transição pra outra.
-> **Por quê:** sem essa cláusula, não há base contratual pra reivindicar aviso — o encerramento abrupto é tecnicamente permitido.
-> **Como evitar:** incluir aviso prévio explícito (7-30 dias, dependendo do porte do engajamento) em todo contrato, independente de quão informal a relação pareça no início.
+> **O que acontece:** o contrato não define aviso prévio mínimo, e uma das partes encerra o engajamento sem nenhum tempo de transição pra outra. **Por quê:** sem essa cláusula, não há base contratual pra reivindicar aviso — o encerramento abrupto é tecnicamente permitido. **Como evitar:** incluir aviso prévio explícito (7-30 dias, dependendo do porte do engajamento) em todo contrato, independente de quão informal a relação pareça no início.
 
 > [!warning] Status de contractor não declarado explicitamente
-> **O que acontece:** o contrato não menciona claramente que a relação é de prestação de serviço independente, não de emprego.
-> **Por quê:** ambiguidade nesse ponto abre espaço pra reclassificação — em alguns contextos, uma relação de fato muito próxima de vínculo empregatício (horário fixo, exclusividade, subordinação direta) pode ser questionada juridicamente, independente do nome dado ao contrato.
-> **Como evitar:** declarar explicitamente o status de contractor independente e manter a relação de fato consistente com esse status (evitar exclusividade total, horário fixo obrigatório, subordinação direta que se pareça com vínculo CLT).
+> **O que acontece:** o contrato não menciona claramente que a relação é de prestação de serviço independente, não de emprego. **Por quê:** ambiguidade nesse ponto abre espaço pra reclassificação — em alguns contextos, uma relação de fato muito próxima de vínculo empregatício (horário fixo, exclusividade, subordinação direta) pode ser questionada juridicamente, independente do nome dado ao contrato. **Como evitar:** declarar explicitamente o status de contractor independente e manter a relação de fato consistente com esse status (evitar exclusividade total, horário fixo obrigatório, subordinação direta que se pareça com vínculo CLT).
 
 > [!warning] Usar template genérico sem adaptação jurisdicional
-> **O que acontece:** o profissional reutiliza um template encontrado online, escrito pra um par de países específico (ex: EUA-EUA), sem ajustar pra realidade Brasil-exterior.
-> **Por quê:** um template pensado pra outro par de jurisdições pode ignorar exigências locais relevantes (ex: cláusulas de proteção de dados específicas de GDPR se o cliente for europeu, ou exigências de documentação de exportação de serviço no Brasil).
-> **Como evitar:** revisar o template com um advogado familiarizado com contratos cross-border Brasil-exterior antes de usá-lo em contratos de peso relevante, mesmo que o custo pareça desnecessário no primeiro contrato.
+> **O que acontece:** o profissional reutiliza um template encontrado online, escrito pra um par de países específico (ex: EUA-EUA), sem ajustar pra realidade Brasil-exterior. **Por quê:** um template pensado pra outro par de jurisdições pode ignorar exigências locais relevantes (ex: cláusulas de proteção de dados específicas de GDPR se o cliente for europeu, ou exigências de documentação de exportação de serviço no Brasil). **Como evitar:** revisar o template com um advogado familiarizado com contratos cross-border Brasil-exterior antes de usá-lo em contratos de peso relevante, mesmo que o custo pareça desnecessário no primeiro contrato.
 
 ## Como explicar em inglês
 

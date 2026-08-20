@@ -23,13 +23,7 @@ aliases:
 # Panorama da arquitetura de eventos
 
 > [!abstract] TL;DR
-> "Arquitetura orientada a eventos" não nomeia **uma** coisa: nomeia pelo menos quatro, que Fowler
-> separou em **Event Notification**, **Event-Carried State Transfer**, **Event Sourcing** e **CQRS**.
-> Duas pessoas dizendo "somos event-driven" podem estar descrevendo sistemas com propriedades opostas.
-> Esta família organiza os quatro por uma pergunta só — **o que o evento carrega, e a quem isso
-> amarra** —, porque é aí que mora a decisão de verdade. Um evento é um **fato ocorrido**, no passado,
-> sem destinatário nomeado: quem o publica **não sabe quem reage**. Essa é a fonte de todo o ganho
-> (desacoplamento) e de todo o custo (o fluxo deixa de ser legível num lugar só).
+> "Arquitetura orientada a eventos" não nomeia **uma** coisa: nomeia pelo menos quatro, que Fowler separou em **Event Notification**, **Event-Carried State Transfer**, **Event Sourcing** e **CQRS**. Duas pessoas dizendo "somos event-driven" podem estar descrevendo sistemas com propriedades opostas. Esta família organiza os quatro por uma pergunta só — **o que o evento carrega, e a quem isso amarra** —, porque é aí que mora a decisão de verdade. Um evento é um **fato ocorrido**, no passado, sem destinatário nomeado: quem o publica **não sabe quem reage**. Essa é a fonte de todo o ganho (desacoplamento) e de todo o custo (o fluxo deixa de ser legível num lugar só).
 
 ## Duas equipes, a mesma palavra, sistemas opostos
 
@@ -121,19 +115,13 @@ Cada nota é autocontida, com **Armadilhas** reforçada sobre *quando não usar*
 ## Armadilhas comuns
 
 > [!warning] "Event-driven" como se fosse uma coisa só
-> **O que acontece:** o time decide "adotar arquitetura de eventos" sem escolher o estilo. Metade publica eventos magros, metade publica gordos, e os consumidores lidam com dois contratos implícitos e incompatíveis.
-> **Por quê:** o termo cobre quatro padrões com propriedades diferentes, e a decisão parece já tomada quando se escolhe o broker — que é a parte que menos importa aqui.
-> **Como evitar:** decida e **documente o estilo por fluxo**, com a pergunta concreta: *este evento carrega o estado, ou o consumidor volta e pergunta?* A escolha do Kafka ou do RabbitMQ não responde isso.
+> **O que acontece:** o time decide "adotar arquitetura de eventos" sem escolher o estilo. Metade publica eventos magros, metade publica gordos, e os consumidores lidam com dois contratos implícitos e incompatíveis. **Por quê:** o termo cobre quatro padrões com propriedades diferentes, e a decisão parece já tomada quando se escolhe o broker — que é a parte que menos importa aqui. **Como evitar:** decida e **documente o estilo por fluxo**, com a pergunta concreta: *este evento carrega o estado, ou o consumidor volta e pergunta?* A escolha do Kafka ou do RabbitMQ não responde isso.
 
 > [!warning] Comando disfarçado de evento
-> **O que acontece:** publica-se `EnviarEmailDeConfirmação` num tópico. Um dia dois consumidores se inscrevem, e o cliente recebe dois e-mails. Ou ninguém se inscreve, e o e-mail simplesmente não sai — sem erro em lugar nenhum.
-> **Por quê:** o nome imperativo denuncia que o produtor **sabe** o que deve acontecer e quem deve fazer. Isso é um comando, e comando quer um destinatário, não um tópico.
-> **Como evitar:** teste do nome. Está no passado e descreve um fato (`PedidoConfirmado`)? É evento. Está no imperativo e pede uma ação (`EnviarEmail`)? É comando — use fila dirigida, com um consumidor.
+> **O que acontece:** publica-se `EnviarEmailDeConfirmação` num tópico. Um dia dois consumidores se inscrevem, e o cliente recebe dois e-mails. Ou ninguém se inscreve, e o e-mail simplesmente não sai — sem erro em lugar nenhum. **Por quê:** o nome imperativo denuncia que o produtor **sabe** o que deve acontecer e quem deve fazer. Isso é um comando, e comando quer um destinatário, não um tópico. **Como evitar:** teste do nome. Está no passado e descreve um fato (`PedidoConfirmado`)? É evento. Está no imperativo e pede uma ação (`EnviarEmail`)? É comando — use fila dirigida, com um consumidor.
 
 > [!warning] Perder a legibilidade do fluxo e não repor nada
-> **O que acontece:** seis meses depois, ninguém consegue responder "o que acontece quando um pedido é confirmado?" sem varrer vários repositórios — e um efeito colateral importante fica escondido num consumidor que ninguém lembra que existe.
-> **Por quê:** o desacoplamento **compra** exatamente isso: o produtor não conhece os consumidores. A perda de legibilidade não é efeito colateral, é o preço.
-> **Como evitar:** reponha a legibilidade por outro meio — **rastreamento distribuído** com id de correlação propagado, catálogo de eventos com produtores e consumidores registrados, e um [[08 - Process Manager|Process Manager]] onde o fluxo for de negócio e precisar ser auditável.
+> **O que acontece:** seis meses depois, ninguém consegue responder "o que acontece quando um pedido é confirmado?" sem varrer vários repositórios — e um efeito colateral importante fica escondido num consumidor que ninguém lembra que existe. **Por quê:** o desacoplamento **compra** exatamente isso: o produtor não conhece os consumidores. A perda de legibilidade não é efeito colateral, é o preço. **Como evitar:** reponha a legibilidade por outro meio — **rastreamento distribuído** com id de correlação propagado, catálogo de eventos com produtores e consumidores registrados, e um [[08 - Process Manager|Process Manager]] onde o fluxo for de negócio e precisar ser auditável.
 
 ## Como explicar em inglês
 

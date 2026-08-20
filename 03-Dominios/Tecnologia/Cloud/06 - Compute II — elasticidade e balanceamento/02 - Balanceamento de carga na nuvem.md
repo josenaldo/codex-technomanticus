@@ -53,8 +53,7 @@ Vale nomear, sem se aprofundar, que a AWS mantém ainda dois outros tipos sob o 
 > [!tip] Assista: AWS Load Balancers | ALB vs NLB vs GWLB | Detailed Comparison
 > **Canal:** Abhishek.Veeramalla | **Duração:** ~32min | **Idioma:** EN
 >
-> Compara os três tipos com exemplos de decisão de arquitetura, reforçando exatamente a distinção camada 7 (o balanceador lê a requisição) vs. camada 4 (o balanceador só encaminha pacotes) que esta seção acabou de estabelecer, e ainda cobre o Gateway Load Balancer que a nota só nomeia de passagem.
-> Trecho de destaque [23:02]: *"application load balancer acts on layer 7 whereas the network load balancer basically acts [on layer 4]"*
+> Compara os três tipos com exemplos de decisão de arquitetura, reforçando exatamente a distinção camada 7 (o balanceador lê a requisição) vs. camada 4 (o balanceador só encaminha pacotes) que esta seção acabou de estabelecer, e ainda cobre o Gateway Load Balancer que a nota só nomeia de passagem. Trecho de destaque [23:02]: *"application load balancer acts on layer 7 whereas the network load balancer basically acts [on layer 4]"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=bCS9m5RVPyo)
 

@@ -127,8 +127,7 @@ Isso não é a sintaxe de nenhum produto específico — é a forma de um guardr
 > [!tip] Assista: AWS re:Invent 2022 - AWS Well-Architected Framework security pillar: Cloud security @ scale (SUP309)
 > **Canal:** AWS Events (oficial) | **Duração:** ~48min | **Idioma:** EN
 >
-> Um especialista da AWS percorre os sete princípios de design com foco em como aplicá-los em escala — inclui a citação do CTO Werner Vogels que resume o princípio 5 melhor do que qualquer definição formal, e detalha por que criptografia em trânsito não admite exceção, mesmo em rede "privada".
-> Trecho de destaque [18:15]: *"dance like no one is watching, but encrypt like everyone is"*.
+> Um especialista da AWS percorre os sete princípios de design com foco em como aplicá-los em escala — inclui a citação do CTO Werner Vogels que resume o princípio 5 melhor do que qualquer definição formal, e detalha por que criptografia em trânsito não admite exceção, mesmo em rede "privada". Trecho de destaque [18:15]: *"dance like no one is watching, but encrypt like everyone is"*.
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=nMxqziAibKk)
 

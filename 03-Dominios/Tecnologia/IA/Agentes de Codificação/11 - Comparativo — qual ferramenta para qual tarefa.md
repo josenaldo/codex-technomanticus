@@ -184,17 +184,13 @@ Essas táticas são a ponta do iceberg — o galho [[Economia de Tokens]] cobre 
 
 Este comparativo não é uma receita — é um framework. O contexto sempre vence a tabela. Antes de escolher uma ferramenta, responda estas quatro perguntas:
 
-**1. Qual é a tarefa específica?**
-Não "codar" — mas "refatorar 15 arquivos para substituir axios por fetch" ou "debugar memory leak em Node.js em produção". Quanto mais específico, mais fácil é apontar a ferramenta certa.
+**1. Qual é a tarefa específica?** Não "codar" — mas "refatorar 15 arquivos para substituir axios por fetch" ou "debugar memory leak em Node.js em produção". Quanto mais específico, mais fácil é apontar a ferramenta certa.
 
-**2. Qual é a restrição mais dura?**
-Custo? Privacidade? IDE? Modelo específico? Identifique o *hard constraint* primeiro e elimine ferramentas que não passam nele.
+**2. Qual é a restrição mais dura?** Custo? Privacidade? IDE? Modelo específico? Identifique o *hard constraint* primeiro e elimine ferramentas que não passam nele.
 
-**3. Qual é a tolerância para interação humana?**
-Algumas tasks você quer supervisionar cada passo (migrations críticas → Aider). Outras você quer delegar e revisar o resultado (gerar testes → Copilot Agents). Isso define o eixo autonomia/controle.
+**3. Qual é a tolerância para interação humana?** Algumas tasks você quer supervisionar cada passo (migrations críticas → Aider). Outras você quer delegar e revisar o resultado (gerar testes → Copilot Agents). Isso define o eixo autonomia/controle.
 
-**4. Você já tem uma ferramenta que faz 80% do trabalho?**
-Se sim, pergunte se vale o custo de onboarding de uma ferramenta nova para ganhar os 20% restantes. Muitas vezes não vale.
+**4. Você já tem uma ferramenta que faz 80% do trabalho?** Se sim, pergunte se vale o custo de onboarding de uma ferramenta nova para ganhar os 20% restantes. Muitas vezes não vale.
 
 Depois dessas quatro perguntas, consulte as tabelas. Elas organizam o *acervo*, mas não substituem o julgamento.
 

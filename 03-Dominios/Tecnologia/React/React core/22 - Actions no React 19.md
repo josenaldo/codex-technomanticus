@@ -514,24 +514,16 @@ export function CommentSection({ initialComments }: { initialComments: Comment[]
 ## Armadilhas comuns
 
 > [!warning] `useFormStatus` chamado no mesmo componente do `<form>`
-> **O que acontece:** `pending` é sempre `false`, o botão nunca fica desabilitado durante o submit.
-> **Por quê:** `useFormStatus` lê o status do form ascendente na árvore. No componente que renderiza o próprio `<form>`, não há form pai — então retorna o estado padrão (`pending: false`).
-> **Como evitar:** Mova o botão (ou qualquer elemento que use `useFormStatus`) para um componente filho separado, renderizado dentro do `<form>`.
+> **O que acontece:** `pending` é sempre `false`, o botão nunca fica desabilitado durante o submit. **Por quê:** `useFormStatus` lê o status do form ascendente na árvore. No componente que renderiza o próprio `<form>`, não há form pai — então retorna o estado padrão (`pending: false`). **Como evitar:** Mova o botão (ou qualquer elemento que use `useFormStatus`) para um componente filho separado, renderizado dentro do `<form>`.
 
 > [!warning] `useOptimistic` sem reconciliar com o estado real do servidor
-> **O que acontece:** A UI mostra o estado otimista permanentemente (ou mostra dados errados), porque o estado real retornado pela action não inclui os campos que o servidor adicionou (como `id`, `createdAt`, `slug`).
-> **Por quê:** Quando a action termina, o estado retornado por ela substitui o otimista. Se o retorno da action não incluir todos os campos necessários, o item aparece incompleto ou some da lista.
-> **Como evitar:** A action deve retornar o estado **completo e definitivo** — incluindo os campos gerados pelo servidor. Nunca retorne apenas um diff.
+> **O que acontece:** A UI mostra o estado otimista permanentemente (ou mostra dados errados), porque o estado real retornado pela action não inclui os campos que o servidor adicionou (como `id`, `createdAt`, `slug`). **Por quê:** Quando a action termina, o estado retornado por ela substitui o otimista. Se o retorno da action não incluir todos os campos necessários, o item aparece incompleto ou some da lista. **Como evitar:** A action deve retornar o estado **completo e definitivo** — incluindo os campos gerados pelo servidor. Nunca retorne apenas um diff.
 
 > [!warning] Esquecer tratamento de erro dentro da action
-> **O que acontece:** Se a função async lançar uma exceção não capturada, o React propaga o erro para o Error Boundary mais próximo. A UI pode quebrar completamente e o `isPending` fica `true` para sempre.
-> **Por quê:** Diferente de um `onSubmit` convencional, não há try/catch implícito em volta da action. O React captura erros de rendering, mas não de async functions em Actions da mesma forma.
-> **Como evitar:** Sempre envolva o corpo da action em `try/catch`. Retorne o estado com `error` no caso de falha — não relance erros, a menos que queira que o Error Boundary os capture intencionalmente.
+> **O que acontece:** Se a função async lançar uma exceção não capturada, o React propaga o erro para o Error Boundary mais próximo. A UI pode quebrar completamente e o `isPending` fica `true` para sempre. **Por quê:** Diferente de um `onSubmit` convencional, não há try/catch implícito em volta da action. O React captura erros de rendering, mas não de async functions em Actions da mesma forma. **Como evitar:** Sempre envolva o corpo da action em `try/catch`. Retorne o estado com `error` no caso de falha — não relance erros, a menos que queira que o Error Boundary os capture intencionalmente.
 
 > [!warning] Disparar `addOptimisticTodo` fora de uma transição
-> **O que acontece:** A atualização otimista reverte antes da action terminar, causando um "piscar" na UI.
-> **Por quê:** `useOptimistic` exige estar dentro de uma transição ativa. Fora dela, o React trata a atualização como definitiva e a reverte imediatamente quando percebe que não há transição pendente.
-> **Como evitar:** Chame `addOptimisticTodo` dentro da mesma função async que chama `formAction` — ou use `startTransition` explicitamente. Quando você usa `<form action={handleFn}>`, a transição já está ativa durante a execução de `handleFn`.
+> **O que acontece:** A atualização otimista reverte antes da action terminar, causando um "piscar" na UI. **Por quê:** `useOptimistic` exige estar dentro de uma transição ativa. Fora dela, o React trata a atualização como definitiva e a reverte imediatamente quando percebe que não há transição pendente. **Como evitar:** Chame `addOptimisticTodo` dentro da mesma função async que chama `formAction` — ou use `startTransition` explicitamente. Quando você usa `<form action={handleFn}>`, a transição já está ativa durante a execução de `handleFn`.
 
 ---
 

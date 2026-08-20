@@ -356,17 +356,13 @@ O semver e o git history tornam o rollback trivial. Sem versioning, "voltar para
 
 ## Estado da arte — junho de 2026
 
-**Skills como tooling de primeira classe**
-Em 2026, Claude Code adicionou interface para gerenciar skills — listar, ativar, testar, ver analytics de uso. Skills deixaram de ser arquivos markdown em diretório e viraram artefatos gerenciados com versão, teste e métricas de uso (quantas vezes foi carregada, com que accuracy). O conceito de "skill store" por projeto/empresa está emergindo.
+**Skills como tooling de primeira classe** Em 2026, Claude Code adicionou interface para gerenciar skills — listar, ativar, testar, ver analytics de uso. Skills deixaram de ser arquivos markdown em diretório e viraram artefatos gerenciados com versão, teste e métricas de uso (quantas vezes foi carregada, com que accuracy). O conceito de "skill store" por projeto/empresa está emergindo.
 
-**Marketplace crescendo**
-Agentskills.io e skill.sh reportam crescimento de 10x em skills publicadas em 2025-2026. O padrão convergiu o suficiente para que skills escritas para Claude Code funcionem com pequenas adaptações em Cursor e Copilot. A portabilidade cross-tool é o driver principal de adoção.
+**Marketplace crescendo** Agentskills.io e skill.sh reportam crescimento de 10x em skills publicadas em 2025-2026. O padrão convergiu o suficiente para que skills escritas para Claude Code funcionem com pequenas adaptações em Cursor e Copilot. A portabilidade cross-tool é o driver principal de adoção.
 
-**Skills com ferramentas**
-Skills evoluíram de "só instruções" para "instruções + ferramentas". Em 2026, uma skill pode declarar no frontmatter quais MCP servers ou tools ela precisa — e o client provisiona automaticamente quando a skill é ativada. Uma skill `database-migration` pode declarar dependência no server Postgres do MCP e o agente já tem acesso ao DB quando a skill é carregada.
+**Skills com ferramentas** Skills evoluíram de "só instruções" para "instruções + ferramentas". Em 2026, uma skill pode declarar no frontmatter quais MCP servers ou tools ela precisa — e o client provisiona automaticamente quando a skill é ativada. Uma skill `database-migration` pode declarar dependência no server Postgres do MCP e o agente já tem acesso ao DB quando a skill é carregada.
 
-**Governance de skills como compliance**
-Em empresas reguladas (saúde, fintech), skills viraram artefatos de compliance — auditados, aprovados por security team, e versionados com evidência de teste. A mudança de "prompt no chat" para "skill versionada" é parte do processo de responsável AI governance.
+**Governance de skills como compliance** Em empresas reguladas (saúde, fintech), skills viraram artefatos de compliance — auditados, aprovados por security team, e versionados com evidência de teste. A mudança de "prompt no chat" para "skill versionada" é parte do processo de responsável AI governance.
 
 ---
 

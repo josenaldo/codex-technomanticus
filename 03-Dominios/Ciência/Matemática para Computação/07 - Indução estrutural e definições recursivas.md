@@ -171,11 +171,9 @@ Chega de filosofia. Três provas de verdade, com todos os casos.
 
 Convenções: uma folha tem altura 0; um nó tem altura `1 + max(altura(esq), altura(dir))`. `nos(Folha) = 1`; `nos(No(e,d)) = 1 + nos(e) + nos(d)`.
 
-**Caso base — `t = Folha`.**
-nos(Folha) = 1. E 2^(0+1) − 1 = 2 − 1 = 1. Então 1 ≤ 1. ✓
+**Caso base — `t = Folha`.** nos(Folha) = 1. E 2^(0+1) − 1 = 2 − 1 = 1. Então 1 ≤ 1. ✓
 
-**Passo — `t = No(e, d)`.**
-**Hipótese estrutural:** nos(e) ≤ 2^(altura(e)+1) − 1 e nos(d) ≤ 2^(altura(d)+1) − 1.
+**Passo — `t = No(e, d)`.** **Hipótese estrutural:** nos(e) ≤ 2^(altura(e)+1) − 1 e nos(d) ≤ 2^(altura(d)+1) − 1.
 
 Seja h = altura(t) = 1 + max(altura(e), altura(d)). Logo altura(e) ≤ h − 1 e altura(d) ≤ h − 1.
 
@@ -232,8 +230,7 @@ length([]) + length(b) = 0 + length(b) = length(b)   [def. length]
 
 Os dois lados batem em `length(b)`. ✓
 
-**Passo — `a = x :: l`.**
-**Hipótese estrutural:** length(append(l, b)) = length(l) + length(b).
+**Passo — `a = x :: l`.** **Hipótese estrutural:** length(append(l, b)) = length(l) + length(b).
 
 Lado esquerdo:
 
@@ -273,8 +270,7 @@ reverse(reverse([])) = reverse([]) = []   [def. reverse, duas vezes]
 
 E `l = []`. ✓
 
-**Passo — `l = x :: l'`.**
-**Hipótese estrutural:** reverse(reverse(l')) = l'.
+**Passo — `l = x :: l'`.** **Hipótese estrutural:** reverse(reverse(l')) = l'.
 
 ```
 reverse(reverse(x :: l'))
@@ -374,14 +370,7 @@ E mesmo quando você não escreve a prova formal, *pensar* na estrutura "base + 
 
 Indução estrutural raramente aparece com esse nome numa entrevista de engenharia, mas o *raciocínio* aparece o tempo todo: ao argumentar que uma função sobre árvore está correta, ao justificar terminação de uma recursão, ao explicar por que um pattern match precisa ser exaustivo. Saber nomear a técnica — e esboçar "caso base, depois passo por construtor" — sinaliza maturidade de fundamentos. Se te pedirem para *provar* algo sobre uma estrutura recursiva, não comece a manipular: declare a indução, separe os casos e ataque um por um.
 
-*"A recursive (or inductive) definition has base cases plus construction rules, and defines the smallest set closed under those rules."*
-*"Structural induction generalizes mathematical induction from the naturals to any inductively defined structure."*
-*"You prove the base cases, then prove that each constructor preserves the property, assuming it holds on the sub-parts."*
-*"That assumption on the sub-parts is the structural induction hypothesis."*
-*"The same recursive shape describes the data, the recursive function over it, and the proof — that's why structural induction is the proof technique of computer science."*
-*"Exhaustive pattern matching is structural induction in code: one branch per constructor, just like one case per proof."*
-*"A recursion terminates when some measure strictly decreases at each call down to a base case — that's well-founded recursion."*
-*"Whether an arbitrary recursion terminates is undecidable in general — that's the halting problem — so total languages only allow structurally decreasing recursion."*
+*"A recursive (or inductive) definition has base cases plus construction rules, and defines the smallest set closed under those rules."* *"Structural induction generalizes mathematical induction from the naturals to any inductively defined structure."* *"You prove the base cases, then prove that each constructor preserves the property, assuming it holds on the sub-parts."* *"That assumption on the sub-parts is the structural induction hypothesis."* *"The same recursive shape describes the data, the recursive function over it, and the proof — that's why structural induction is the proof technique of computer science."* *"Exhaustive pattern matching is structural induction in code: one branch per constructor, just like one case per proof."* *"A recursion terminates when some measure strictly decreases at each call down to a base case — that's well-founded recursion."* *"Whether an arbitrary recursion terminates is undecidable in general — that's the halting problem — so total languages only allow structurally decreasing recursion."*
 
 | Português | English |
 | --- | --- |

@@ -162,8 +162,7 @@ function Contador({ count }: { count: number }) {
 > [!warning] Nunca leia nem escreva em `ref.current` durante o render
 > O corpo da função componente é o render. Lá dentro, `ref.current` pode ter qualquer valor (especialmente `null` antes da montagem). Ler refs no render quebra a idempotência que React exige — dois renders iguais devem produzir o mesmo resultado.
 >
-> **Correto:** ler/escrever em `useEffect`, `useLayoutEffect`, ou handlers de evento.
-> **Errado:** `const valor = ref.current` no topo da função componente.
+> **Correto:** ler/escrever em `useEffect`, `useLayoutEffect`, ou handlers de evento. **Errado:** `const valor = ref.current` no topo da função componente.
 
 ---
 
@@ -491,24 +490,16 @@ Aqui usamos dois refs: `canvasRef` aponta para o DOM, `chartRef` guarda a instâ
 ## Armadilhas comuns
 
 > [!warning] Ler `ref.current` durante o render
-> **O que acontece:** `ref.current` retorna `null` na primeira renderização e pode ter valor stale nas subsequentes. O resultado fica inconsistente e difícil de depurar.
-> **Por quê:** O React popula `ref.current` depois do commit (após o render). Durante o render, o DOM ainda não foi atualizado.
-> **Como evitar:** Acesse `ref.current` apenas dentro de `useEffect`, `useLayoutEffect`, ou handlers de evento — nunca no corpo da função de render.
+> **O que acontece:** `ref.current` retorna `null` na primeira renderização e pode ter valor stale nas subsequentes. O resultado fica inconsistente e difícil de depurar. **Por quê:** O React popula `ref.current` depois do commit (após o render). Durante o render, o DOM ainda não foi atualizado. **Como evitar:** Acesse `ref.current` apenas dentro de `useEffect`, `useLayoutEffect`, ou handlers de evento — nunca no corpo da função de render.
 
 > [!warning] Usar `ref` onde deveria ser `state`
-> **O que acontece:** Você muda `ref.current` mas a tela não atualiza. O valor está correto na memória, mas o usuário não vê a mudança.
-> **Por quê:** `ref.current` muda silenciosamente — React não agenda um re-render.
-> **Como evitar:** Pergunta de diagnóstico: "Se eu mudar esse valor, a interface precisa atualizar?" Se sim, use `useState` ou `useReducer`. Refs são para efeitos colaterais e imperativos.
+> **O que acontece:** Você muda `ref.current` mas a tela não atualiza. O valor está correto na memória, mas o usuário não vê a mudança. **Por quê:** `ref.current` muda silenciosamente — React não agenda um re-render. **Como evitar:** Pergunta de diagnóstico: "Se eu mudar esse valor, a interface precisa atualizar?" Se sim, use `useState` ou `useReducer`. Refs são para efeitos colaterais e imperativos.
 
 > [!warning] Esquecer o null check em `ref.current`
-> **O que acontece:** `TypeError: Cannot read properties of null (reading 'focus')` no console.
-> **Por quê:** Entre o render e o commit, e na desmontagem, `ref.current` é `null`. Também ocorre em renderização condicional — se o elemento é removido do DOM, a ref é zerada.
-> **Como evitar:** Sempre use optional chaining: `ref.current?.focus()`. O TypeScript detecta isso automaticamente quando o tipo é `HTMLElement | null`.
+> **O que acontece:** `TypeError: Cannot read properties of null (reading 'focus')` no console. **Por quê:** Entre o render e o commit, e na desmontagem, `ref.current` é `null`. Também ocorre em renderização condicional — se o elemento é removido do DOM, a ref é zerada. **Como evitar:** Sempre use optional chaining: `ref.current?.focus()`. O TypeScript detecta isso automaticamente quando o tipo é `HTMLElement | null`.
 
 > [!warning] Callback ref inline recriada a cada render
-> **O que acontece:** React detecta uma "nova" função ref a cada render, chama a ref anterior com `null` e a nova com o nó. Isso pode causar flickers, re-montagens desnecessárias ou loops infinitos se o callback tem efeitos colaterais.
-> **Por quê:** Funções inline são recriadas a cada chamada da função componente.
-> **Como evitar:** Extraia callback refs para `useCallback` com dependências corretas, ou declare-as fora do componente se não fecharem sobre estado.
+> **O que acontece:** React detecta uma "nova" função ref a cada render, chama a ref anterior com `null` e a nova com o nó. Isso pode causar flickers, re-montagens desnecessárias ou loops infinitos se o callback tem efeitos colaterais. **Por quê:** Funções inline são recriadas a cada chamada da função componente. **Como evitar:** Extraia callback refs para `useCallback` com dependências corretas, ou declare-as fora do componente se não fecharem sobre estado.
 
 ---
 

@@ -89,11 +89,7 @@ Se qualquer um desses verificações falhar, o onboarding deve ser adiado até q
 > > Vou seguir convenções genéricas de JavaScript, já que não encontrei
 > > guia de estilo específico deste repositório...
 > ```
-> Esse é o sintoma exato do Time A da seção anterior: o comando roda, não trava — mas devolve
-> genérico porque o CLAUDE.md nunca existiu. Numa sessão de onboarding ao vivo, isso acontece
-> na frente do time inteiro, e a primeira impressão vira "a ferramenta não é tão boa assim".
-> O defeito nunca foi a ferramenta — foi rodar o checklist da seção anterior depois da sessão,
-> não antes.
+> Esse é o sintoma exato do Time A da seção anterior: o comando roda, não trava — mas devolve genérico porque o CLAUDE.md nunca existiu. Numa sessão de onboarding ao vivo, isso acontece na frente do time inteiro, e a primeira impressão vira "a ferramenta não é tão boa assim". O defeito nunca foi a ferramenta — foi rodar o checklist da seção anterior depois da sessão, não antes.
 
 ## Sessão de onboarding (1 hora)
 
@@ -108,24 +104,19 @@ flowchart LR
     S5["10 min\nQ&A e feedback\ncanal de suporte"]
 ```
 
-**Parte 1 — Contexto (10 min)**
-O que é Claude Code e quando faz sentido usar. Ênfase: não é substituto de pensamento. É alavanca para tarefas repetitivas, exploratórias, e com contexto documentado.
+**Parte 1 — Contexto (10 min)** O que é Claude Code e quando faz sentido usar. Ênfase: não é substituto de pensamento. É alavanca para tarefas repetitivas, exploratórias, e com contexto documentado.
 
-**Parte 2 — Demo real (10 min)**
-Mostrar uma sessão completa usando skills e MCP do próprio projeto. Não demonstre com projeto genérico — use o repositório real. O time precisa ver o agente entendendo as convenções do projeto, não apenas respondendo sobre JavaScript genérico.
+**Parte 2 — Demo real (10 min)** Mostrar uma sessão completa usando skills e MCP do próprio projeto. Não demonstre com projeto genérico — use o repositório real. O time precisa ver o agente entendendo as convenções do projeto, não apenas respondendo sobre JavaScript genérico.
 
-**Parte 3 — Hands-on (15 min)**
-Cada dev configura a própria máquina:
+**Parte 3 — Hands-on (15 min)** Cada dev configura a própria máquina:
 - `npm install -g @anthropic-ai/claude-code`
 - `export ANTHROPIC_API_KEY=...` (receber key do tech lead)
 - Clone do repo (`.claude/` vem com o clone)
 - Testar com uma tarefa simples
 
-**Parte 4 — Convenções (15 min)**
-Walkthrough do CLAUDE.md, skills disponíveis, e política de permissões. Esta é a parte mais importante — sem ela, os 45 minutos anteriores são parcialmente desperdiçados.
+**Parte 4 — Convenções (15 min)** Walkthrough do CLAUDE.md, skills disponíveis, e política de permissões. Esta é a parte mais importante — sem ela, os 45 minutos anteriores são parcialmente desperdiçados.
 
-**Parte 5 — Q&A e suporte (10 min)**
-Canal para dúvidas, como reportar problemas com skills, quando trazer feedback à revisão.
+**Parte 5 — Q&A e suporte (10 min)** Canal para dúvidas, como reportar problemas com skills, quando trazer feedback à revisão.
 
 ## Documento de onboarding
 
@@ -142,8 +133,7 @@ Crie um documento de referência — `docs/claude-code/onboarding.md` — que no
 
 ## Verificar que está funcionando
 ```bash
-claude --version          # mostra a versão
-claude -p "Olá"           # resposta rápida de teste
+claude --version          # mostra a versão claude -p "Olá"           # resposta rápida de teste
 ```
 
 ## Workflows que o time usa

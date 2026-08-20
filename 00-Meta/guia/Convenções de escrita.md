@@ -105,8 +105,7 @@ Convenções:
 
 ## Registro de escrita: Técnica Feynman
 
-O registro autoral do Codex segue a **Técnica Feynman**: escrever como quem ensina, não como quem
-cataloga. O teste: *"se você não consegue explicar de forma simples, você não entendeu bem o suficiente."*
+O registro autoral do Codex segue a **Técnica Feynman**: escrever como quem ensina, não como quem cataloga. O teste: *"se você não consegue explicar de forma simples, você não entendeu bem o suficiente."*
 
 Regras de registro — aplicam-se a todo conteúdo de domínio, em especial às notas de trilha:
 
@@ -120,9 +119,7 @@ Regras de registro — aplicam-se a todo conteúdo de domínio, em especial às 
 | **Resumo em 1 linha** | Ao fim da seção principal: "X em uma frase: ..." |
 | **Anti-padrão** | Prosa enciclopédica neutra — tecnicamente correta, mas que não antecipa a dúvida do leitor |
 
-O Registro Feynman é o eixo das skills `/escrever-nota` e `/enriquecer-nota`. O critério de auditoria
-vive na constraint-skill `/verificar-nota` (item P2: "mecanismo explicado"). Referência canônica de
-como fica bem aplicado: nota `03 - A janela de contexto.md` do galho Anatomia dos LLMs.
+O Registro Feynman é o eixo das skills `/escrever-nota` e `/enriquecer-nota`. O critério de auditoria vive na constraint-skill `/verificar-nota` (item P2: "mecanismo explicado"). Referência canônica de como fica bem aplicado: nota `03 - A janela de contexto.md` do galho Anatomia dos LLMs.
 
 ## Notas de trilha como capítulo de livro
 
@@ -163,9 +160,7 @@ Atomicidade (uma ideia por nota) e leitura-de-livro parecem brigar, mas a conven
 
 ### 15 práticas estruturais
 
-Estas práticas emergem da evolução de 4 galhos do vault (Org. de Computadores → Segurança Conceitual
-→ Compiladores e Linguagens → TypeScript). Cada galho adicionou uma camada nova; o padrão atual
-é a soma de todas. São auditadas pela constraint-skill `/verificar-nota`.
+Estas práticas emergem da evolução de 4 galhos do vault (Org. de Computadores → Segurança Conceitual → Compiladores e Linguagens → TypeScript). Cada galho adicionou uma camada nova; o padrão atual é a soma de todas. São auditadas pela constraint-skill `/verificar-nota`.
 
 **Abertura e TL;DR**
 
@@ -257,34 +252,19 @@ Higiene:        /verificar-wikilinks
 
 ### Por que não um template fixo?
 
-Templates fixos impõem a mesma estrutura para todos os temas — uma nota sobre álgebra de tipos
-tem necessidades radicalmente diferentes de uma sobre protocolo de rede. A solução adotada é
-**núcleo mínimo + menu de seções opcionais**: o núcleo garante coerência mínima; o menu permite
-que cada tema escolha as seções pertinentes. A constraint-skill `/verificar-nota` audita o
-resultado sem ter imposto o caminho.
+Templates fixos impõem a mesma estrutura para todos os temas — uma nota sobre álgebra de tipos tem necessidades radicalmente diferentes de uma sobre protocolo de rede. A solução adotada é **núcleo mínimo + menu de seções opcionais**: o núcleo garante coerência mínima; o menu permite que cada tema escolha as seções pertinentes. A constraint-skill `/verificar-nota` audita o resultado sem ter imposto o caminho.
 
 ### Por que Modo A e Modo B no `/enriquecer-nota`?
 
-O enriquecimento incremental (Modo A) parte da premissa de que a estrutura já existe — adiciona
-profundidade, lacunas e novidade. Mas notas antigas do vault (~74 linhas, sem diagrama, sem seção
-de inglês) têm um **problema estrutural**, não de conteúdo. Para elas, enriquecer conteúdo sem
-antes construir o esqueleto seria como pintar uma casa sem paredes. O Modo B diagnostica isso via
-`/verificar-nota` e reconstrói as seções ausentes antes de enriquecer.
+O enriquecimento incremental (Modo A) parte da premissa de que a estrutura já existe — adiciona profundidade, lacunas e novidade. Mas notas antigas do vault (~74 linhas, sem diagrama, sem seção de inglês) têm um **problema estrutural**, não de conteúdo. Para elas, enriquecer conteúdo sem antes construir o esqueleto seria como pintar uma casa sem paredes. O Modo B diagnostica isso via `/verificar-nota` e reconstrói as seções ausentes antes de enriquecer.
 
 ### Por que o Registro Feynman está explícito nas skills?
 
-Sem uma linguagem de registro explícita, o conteúdo gerado tende ao modo enciclopédico: correto,
-mas que não antecipa a dúvida do leitor. O Registro Feynman (problema-primeiro, analogia antes
-da técnica, mecanismo explicado) é o antídoto — e precisa estar **nomeado** nas skills para que
-possa ser verificado e exigido, não apenas aspirado.
+Sem uma linguagem de registro explícita, o conteúdo gerado tende ao modo enciclopédico: correto, mas que não antecipa a dúvida do leitor. O Registro Feynman (problema-primeiro, analogia antes da técnica, mecanismo explicado) é o antídoto — e precisa estar **nomeado** nas skills para que possa ser verificado e exigido, não apenas aspirado.
 
 ### Por que mídia tem skill própria?
 
-A análise de vídeo/podcast exige um fluxo distinto do conteúdo textual: download de legendas,
-análise de relevância (score 0-10), decisão editorial sobre trecho âncora. Separar em
-`/adicionar-midia` deixa o `/enriquecer-nota` focado em texto e delega a operação de mídia a
-uma skill especializada — que pode ser invocada diretamente quando o usuário só quer embutir um
-vídeo sem enriquecer o restante.
+A análise de vídeo/podcast exige um fluxo distinto do conteúdo textual: download de legendas, análise de relevância (score 0-10), decisão editorial sobre trecho âncora. Separar em `/adicionar-midia` deixa o `/enriquecer-nota` focado em texto e delega a operação de mídia a uma skill especializada — que pode ser invocada diretamente quando o usuário só quer embutir um vídeo sem enriquecer o restante.
 
 ## Veja também
 

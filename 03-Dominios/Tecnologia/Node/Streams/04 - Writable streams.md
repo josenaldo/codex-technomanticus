@@ -491,9 +491,7 @@ O padrão `Promise.all(writes)` garante que o callback de `_write` só é chamad
 ## Armadilhas comuns
 
 > [!warning] 1. Ignorar o boolean de `.write()` — vazamento de memória silencioso
-> **O que acontece:** O buffer interno da Writable cresce sem limite. Em desenvolvimento com volumes pequenos, parece funcionar. Em produção com alto throughput, o processo degrada e potencialmente trava.
-> **Por quê:** `.write()` retorna `false` quando o buffer atinge `highWaterMark`, mas não lança erro nem para o chamador. A Writable continua aceitando dados — é responsabilidade do chamador verificar e pausar.
-> **Como evitar:** Sempre verifique o retorno de `.write()`. Se `false`, aguarde `'drain'` antes de continuar. Em loops, use o padrão `while + once('drain', next)` ou, para código moderno, `pipeline()` que cuida disso automaticamente.
+> **O que acontece:** O buffer interno da Writable cresce sem limite. Em desenvolvimento com volumes pequenos, parece funcionar. Em produção com alto throughput, o processo degrada e potencialmente trava. **Por quê:** `.write()` retorna `false` quando o buffer atinge `highWaterMark`, mas não lança erro nem para o chamador. A Writable continua aceitando dados — é responsabilidade do chamador verificar e pausar. **Como evitar:** Sempre verifique o retorno de `.write()`. Se `false`, aguarde `'drain'` antes de continuar. Em loops, use o padrão `while + once('drain', next)` ou, para código moderno, `pipeline()` que cuida disso automaticamente.
 >
 > ```javascript
 > // ERRADO: ignora backpressure — buffer cresce indefinidamente
@@ -511,9 +509,7 @@ O padrão `Promise.all(writes)` garante que o callback de `_write` só é chamad
 > ```
 
 > [!warning] 2. Esquecer `.end()` — `'finish'` nunca dispara
-> **O que acontece:** Qualquer consumidor esperando o evento `'finish'` (para confirmar persistência ou fechar recursos dependentes) fica bloqueado indefinidamente.
-> **Por quê:** `'finish'` só é emitido após `.end()` ser chamado e todos os dados serem entregues ao sistema subjacente. Sem `.end()`, a Writable fica em estado aberto.
-> **Como evitar:** Sempre feche o stream com `.end()` quando terminar de escrever. Em pipelines, `pipeline()` chama `.end()` automaticamente no stream destino.
+> **O que acontece:** Qualquer consumidor esperando o evento `'finish'` (para confirmar persistência ou fechar recursos dependentes) fica bloqueado indefinidamente. **Por quê:** `'finish'` só é emitido após `.end()` ser chamado e todos os dados serem entregues ao sistema subjacente. Sem `.end()`, a Writable fica em estado aberto. **Como evitar:** Sempre feche o stream com `.end()` quando terminar de escrever. Em pipelines, `pipeline()` chama `.end()` automaticamente no stream destino.
 >
 > ```javascript
 > // ERRADO — 'finish' nunca é emitido
@@ -530,9 +526,7 @@ O padrão `Promise.all(writes)` garante que o callback de `_write` só é chamad
 > ```
 
 > [!warning] 3. `cork()` sem `uncork()` correspondente — buffer cresce sem flush
-> **O que acontece:** Dados acumulam no buffer interno indefinidamente, nunca chegando ao destino. O comportamento parece um travamento silencioso.
-> **Por quê:** `cork()` é contado — cada chamada incrementa `writableCorked`. O flush só acontece quando o contador volta a zero. Um `cork()` sem `uncork()` deixa o contador em 1 permanentemente.
-> **Como evitar:** Sempre parear cada `cork()` com um `uncork()`. Use `process.nextTick(() => ws.uncork())` para garantir que todos os `.write()` síncronos do tick atual sejam incluídos no batch antes do flush.
+> **O que acontece:** Dados acumulam no buffer interno indefinidamente, nunca chegando ao destino. O comportamento parece um travamento silencioso. **Por quê:** `cork()` é contado — cada chamada incrementa `writableCorked`. O flush só acontece quando o contador volta a zero. Um `cork()` sem `uncork()` deixa o contador em 1 permanentemente. **Como evitar:** Sempre parear cada `cork()` com um `uncork()`. Use `process.nextTick(() => ws.uncork())` para garantir que todos os `.write()` síncronos do tick atual sejam incluídos no batch antes do flush.
 >
 > ```javascript
 > // ERRADO — cork sem uncork, buffer nunca descarrega
@@ -548,9 +542,7 @@ O padrão `Promise.all(writes)` garante que o callback de `_write` só é chamad
 > ```
 
 > [!warning] 4. `_write` com operação síncrona pesada — bloqueia o event loop
-> **O que acontece:** A thread JavaScript fica ocupada durante a operação síncrona, impedindo que qualquer outra requisição seja processada. O servidor congela.
-> **Por quê:** `_write` é chamado dentro do event loop. Qualquer operação síncrona custosa dentro dele bloqueia todas as demais operações enquanto não termina.
-> **Como evitar:** Use APIs assíncronas dentro de `_write`. Se a operação for CPU-intensiva e não puder ser tornada assíncrona, isole-a em um Worker Thread via `worker_threads`.
+> **O que acontece:** A thread JavaScript fica ocupada durante a operação síncrona, impedindo que qualquer outra requisição seja processada. O servidor congela. **Por quê:** `_write` é chamado dentro do event loop. Qualquer operação síncrona custosa dentro dele bloqueia todas as demais operações enquanto não termina. **Como evitar:** Use APIs assíncronas dentro de `_write`. Se a operação for CPU-intensiva e não puder ser tornada assíncrona, isole-a em um Worker Thread via `worker_threads`.
 >
 > ```javascript
 > // ERRADO — bloqueia o event loop para cada chunk
@@ -567,9 +559,7 @@ O padrão `Promise.all(writes)` garante que o callback de `_write` só é chamad
 > ```
 
 > [!warning] 5. Não tratar `'error'` — derruba o processo
-> **O que acontece:** Qualquer erro de I/O na Writable (disco cheio, permissão negada, socket fechado) derruba o processo inteiro via `uncaughtException`.
-> **Por quê:** Streams herdam de `EventEmitter`. O comportamento padrão de `EventEmitter` para `'error'` sem listener é lançar a exceção — Node não tem como saber que você pretendia ignorá-la.
-> **Como evitar:** Sempre registre `ws.on('error', handler)` em qualquer Writable que você instanciar diretamente. Ou use `pipeline()` de `node:stream/promises`, que captura e propaga erros de todos os estágios automaticamente.
+> **O que acontece:** Qualquer erro de I/O na Writable (disco cheio, permissão negada, socket fechado) derruba o processo inteiro via `uncaughtException`. **Por quê:** Streams herdam de `EventEmitter`. O comportamento padrão de `EventEmitter` para `'error'` sem listener é lançar a exceção — Node não tem como saber que você pretendia ignorá-la. **Como evitar:** Sempre registre `ws.on('error', handler)` em qualquer Writable que você instanciar diretamente. Ou use `pipeline()` de `node:stream/promises`, que captura e propaga erros de todos os estágios automaticamente.
 
 ---
 
@@ -581,17 +571,13 @@ O padrão `Promise.all(writes)` garante que o callback de `_write` só é chamad
 
 ### Perguntas frequentes e respostas diretas
 
-**"O que acontece se você ignorar o retorno de `.write()`?"**
-O buffer interno cresce sem limite, consumindo memória indefinidamente. Em produção com alto throughput, o processo vai degradar e potencialmente derrubar.
+**"O que acontece se você ignorar o retorno de `.write()`?"** O buffer interno cresce sem limite, consumindo memória indefinidamente. Em produção com alto throughput, o processo vai degradar e potencialmente derrubar.
 
-**"Qual a diferença entre `'finish'` e `'close'`?"**
-`'finish'` dispara quando todos os dados foram entregues ao sistema subjacente (SO/rede). `'close'` dispara quando o stream em si e seus recursos (file descriptor, socket) foram fechados. `'finish'` sempre vem antes de `'close'`.
+**"Qual a diferença entre `'finish'` e `'close'`?"** `'finish'` dispara quando todos os dados foram entregues ao sistema subjacente (SO/rede). `'close'` dispara quando o stream em si e seus recursos (file descriptor, socket) foram fechados. `'finish'` sempre vem antes de `'close'`.
 
-**"Quando você usaria `_writev` em vez de `_write`?"**
-Quando o destino suporta operações em lote — bulk inserts em banco, HTTP com batching, protocolos que agregam mensagens. `_writev` recebe um array de chunks acumulados pelo `cork()` e permite uma única chamada ao destino em vez de N chamadas individuais.
+**"Quando você usaria `_writev` em vez de `_write`?"** Quando o destino suporta operações em lote — bulk inserts em banco, HTTP com batching, protocolos que agregam mensagens. `_writev` recebe um array de chunks acumulados pelo `cork()` e permite uma única chamada ao destino em vez de N chamadas individuais.
 
-**"Como `pipeline()` resolve backpressure automaticamente?"**
-`pipeline()` conecta Readable e Writable e monitora o retorno de cada `.write()`. Quando retorna `false`, faz `.pause()` na Readable de origem e espera `'drain'` na Writable antes de fazer `.resume()`. Isso elimina o padrão manual `while + once('drain')`.
+**"Como `pipeline()` resolve backpressure automaticamente?"** `pipeline()` conecta Readable e Writable e monitora o retorno de cada `.write()`. Quando retorna `false`, faz `.pause()` na Readable de origem e espera `'drain'` na Writable antes de fazer `.resume()`. Isso elimina o padrão manual `while + once('drain')`.
 
 ### Vocabulário PT-BR ↔ EN
 

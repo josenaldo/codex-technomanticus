@@ -19,8 +19,7 @@ aliases:
 # O que é mensageria e arquitetura orientada a eventos
 
 > [!abstract] TL;DR
-> Mensageria é, antes de tudo, **desacoplamento** — temporal e espacial — e não uma técnica de "ir mais rápido". Em vez de um serviço chamar o outro diretamente, ele publica uma mensagem em um intermediário (o *broker*) e segue sua vida; quem se interessa consome quando puder.
-> Este galho é a **camada de aplicação Java/Spring** que se assenta sobre a infra Kafka já documentada no vault. Aqui falamos de eventos, comandos, producers e consumers; os internals do broker (partições, offsets) ficam na trilha de infra, que linkamos.
+> Mensageria é, antes de tudo, **desacoplamento** — temporal e espacial — e não uma técnica de "ir mais rápido". Em vez de um serviço chamar o outro diretamente, ele publica uma mensagem em um intermediário (o *broker*) e segue sua vida; quem se interessa consome quando puder. Este galho é a **camada de aplicação Java/Spring** que se assenta sobre a infra Kafka já documentada no vault. Aqui falamos de eventos, comandos, producers e consumers; os internals do broker (partições, offsets) ficam na trilha de infra, que linkamos.
 
 ## O que é
 

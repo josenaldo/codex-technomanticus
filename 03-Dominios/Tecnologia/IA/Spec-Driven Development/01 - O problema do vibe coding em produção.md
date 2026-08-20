@@ -159,8 +159,7 @@ O ganho líquido existe — mas está longe da promessa de 10x. E a erosão é c
 > - [ ] Tempo de onboarding de novos devs aumentou, não diminuiu
 > - [ ] Bugs surgem em partes do sistema que "ninguém tocou"
 >
-> **4-5 marcadas** → você está em vibe coding territory e o débito está se acumulando.
-> **6+ marcadas** → crise iminente. Precisa de intervenção metodológica agora.
+> **4-5 marcadas** → você está em vibe coding territory e o débito está se acumulando. **6+ marcadas** → crise iminente. Precisa de intervenção metodológica agora.
 
 ## O problema cultural que amplifica tudo
 

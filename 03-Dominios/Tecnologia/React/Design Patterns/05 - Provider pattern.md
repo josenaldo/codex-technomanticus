@@ -364,24 +364,16 @@ function App() {
 ## Armadilhas comuns
 
 > [!warning] Value objeto inline recria em cada render
-> **O que acontece:** todo consumidor do contexto re-renderiza mesmo quando o estado não mudou.
-> **Por quê:** `{ theme, toggleTheme }` é um novo objeto por referência a cada render do Provider. O React compara o value do Context por referência (`===`), não por valor.
-> **Como evitar:** `const value = useMemo(() => ({ theme, toggleTheme }), [theme])` — ou use o split `StateContext`/`DispatchContext`, que elimina o problema para o dispatch.
+> **O que acontece:** todo consumidor do contexto re-renderiza mesmo quando o estado não mudou. **Por quê:** `{ theme, toggleTheme }` é um novo objeto por referência a cada render do Provider. O React compara o value do Context por referência (`===`), não por valor. **Como evitar:** `const value = useMemo(() => ({ theme, toggleTheme }), [theme])` — ou use o split `StateContext`/`DispatchContext`, que elimina o problema para o dispatch.
 
 > [!warning] useX sem guard de Provider ausente
-> **O que acontece:** o hook retorna `undefined` silenciosamente. O erro acontece mais tarde, em outro componente, com uma mensagem ininteligível como "Cannot read properties of undefined".
-> **Por quê:** sem o guard `if (!ctx) throw new Error(...)`, o `undefined` vaza para o consumidor.
-> **Como evitar:** sempre inicialize o contexto com `undefined` (não com um valor padrão falso) e adicione o guard no custom hook. A mensagem de erro aponta exatamente onde o Provider está faltando.
+> **O que acontece:** o hook retorna `undefined` silenciosamente. O erro acontece mais tarde, em outro componente, com uma mensagem ininteligível como "Cannot read properties of undefined". **Por quê:** sem o guard `if (!ctx) throw new Error(...)`, o `undefined` vaza para o consumidor. **Como evitar:** sempre inicialize o contexto com `undefined` (não com um valor padrão falso) e adicione o guard no custom hook. A mensagem de erro aponta exatamente onde o Provider está faltando.
 
 > [!warning] Provider único gigante (God Context)
-> **O que acontece:** um único `AppContext` com tema, usuário, carrinho, notificações e preferências. Qualquer mudança — mesmo num campo não relacionado — re-renderiza todos os consumidores.
-> **Por quê:** o Context propaga para todos os consumidores registrados, independente de qual campo mudou.
-> **Como evitar:** um Provider por domínio coeso (`AuthContext`, `ThemeContext`, `CartContext`). Se o estado de um domínio crescer muito, considere uma lib externa (Zustand, Jotai) que tem granularidade de subscription.
+> **O que acontece:** um único `AppContext` com tema, usuário, carrinho, notificações e preferências. Qualquer mudança — mesmo num campo não relacionado — re-renderiza todos os consumidores. **Por quê:** o Context propaga para todos os consumidores registrados, independente de qual campo mudou. **Como evitar:** um Provider por domínio coeso (`AuthContext`, `ThemeContext`, `CartContext`). Se o estado de um domínio crescer muito, considere uma lib externa (Zustand, Jotai) que tem granularidade de subscription.
 
 > [!warning] Inicializar contexto com valor padrão "falso" oculta uso incorreto
-> **O que acontece:** `createContext({ theme: 'light', toggleTheme: () => {} })` parece seguro, mas o `toggleTheme` padrão não faz nada — um componente fora do Provider funciona silenciosamente de forma errada.
-> **Por quê:** o valor padrão do `createContext` é usado quando não há Provider acima na árvore. Funções no-op mascaram o bug.
-> **Como evitar:** use `createContext<ThemeContextValue | undefined>(undefined)` + guard no hook. Falhar ruidosamente em desenvolvimento é melhor que falhar silenciosamente em produção.
+> **O que acontece:** `createContext({ theme: 'light', toggleTheme: () => {} })` parece seguro, mas o `toggleTheme` padrão não faz nada — um componente fora do Provider funciona silenciosamente de forma errada. **Por quê:** o valor padrão do `createContext` é usado quando não há Provider acima na árvore. Funções no-op mascaram o bug. **Como evitar:** use `createContext<ThemeContextValue | undefined>(undefined)` + guard no hook. Falhar ruidosamente em desenvolvimento é melhor que falhar silenciosamente em produção.
 
 ## Como explicar em inglês
 

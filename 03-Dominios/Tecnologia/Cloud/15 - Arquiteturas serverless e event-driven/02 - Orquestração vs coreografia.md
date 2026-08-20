@@ -178,8 +178,7 @@ O padrão saga não pertence a orquestração nem a coreografia — ele pode ser
 > [!tip] Assista: The SAGA Design Pattern Explained in 6 MINUTES | Orchestration vs Choreography
 > **Canal:** CodeOpinion | **Duração:** ~6min | **Idioma:** EN
 >
-> Um resumo rápido e denso do mesmo dilema desta nota, com foco no padrão saga: por que a coreografia fica difícil de auditar quando a saga cresce, e por que a orquestração centraliza justamente a lógica de compensação que a coreografia espalha entre serviços.
-> Trecho de destaque [04:35]: *"we can implement orchestration where the execution flow control is centralized — a service is responsible for the invocation of all..."*
+> Um resumo rápido e denso do mesmo dilema desta nota, com foco no padrão saga: por que a coreografia fica difícil de auditar quando a saga cresce, e por que a orquestração centraliza justamente a lógica de compensação que a coreografia espalha entre serviços. Trecho de destaque [04:35]: *"we can implement orchestration where the execution flow control is centralized — a service is responsible for the invocation of all..."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=hkQhqDmriKA)
 

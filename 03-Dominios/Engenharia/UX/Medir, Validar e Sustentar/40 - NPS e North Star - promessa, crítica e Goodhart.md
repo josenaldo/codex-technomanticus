@@ -94,24 +94,16 @@ Um cliente pede para "melhorar a UX" de um produto e aponta, como evidência do 
 ## Armadilhas comuns
 
 > [!warning] NPS como religião — reportar o número sem nunca questionar o que ele explica
-> **O que acontece:** toda reunião de status inclui o NPS como item fixo de pauta, comemorado ou lamentado, sem nunca se perguntar o que exatamente está por trás da variação.
-> **Por quê:** o número é fácil de acompanhar e virou hábito institucional — parar para questionar sua validade parece "complicar" uma métrica que todo mundo já entende.
-> **Como evitar:** sempre acompanhe variação de NPS com os comentários qualitativos que normalmente vêm junto da coleta, e pergunte "isso controla alguma decisão específica" antes de reagir ao número isolado.
+> **O que acontece:** toda reunião de status inclui o NPS como item fixo de pauta, comemorado ou lamentado, sem nunca se perguntar o que exatamente está por trás da variação. **Por quê:** o número é fácil de acompanhar e virou hábito institucional — parar para questionar sua validade parece "complicar" uma métrica que todo mundo já entende. **Como evitar:** sempre acompanhe variação de NPS com os comentários qualitativos que normalmente vêm junto da coleta, e pergunte "isso controla alguma decisão específica" antes de reagir ao número isolado.
 
 > [!warning] Otimizar o local e perder o global
-> **O que acontece:** um time otimiza agressivamente uma métrica de UX isolada (por exemplo, tempo até primeira ação) sem monitorar se isso está degradando outra métrica correlata (qualidade da primeira ação, taxa de erro subsequente).
-> **Por quê:** métricas isoladas são mais fáceis de mover e de reportar como "progresso" do que sistemas de métricas correlacionadas — mas produto real é multidimensional, e otimizar uma dimensão sozinha pode custar outra.
-> **Como evitar:** sempre monitore pelo menos uma métrica de contrapeso junto de qualquer métrica-alvo escolhida, como no Cenário 2 (churn ao lado de minutos consumidos).
+> **O que acontece:** um time otimiza agressivamente uma métrica de UX isolada (por exemplo, tempo até primeira ação) sem monitorar se isso está degradando outra métrica correlata (qualidade da primeira ação, taxa de erro subsequente). **Por quê:** métricas isoladas são mais fáceis de mover e de reportar como "progresso" do que sistemas de métricas correlacionadas — mas produto real é multidimensional, e otimizar uma dimensão sozinha pode custar outra. **Como evitar:** sempre monitore pelo menos uma métrica de contrapeso junto de qualquer métrica-alvo escolhida, como no Cenário 2 (churn ao lado de minutos consumidos).
 
 > [!warning] Tratar A/B como substituto de pensar sobre a métrica certa
-> **O que acontece:** um time roda teste após teste otimizando uma métrica de curto prazo (cliques, conversão imediata) porque é a que está instrumentada e fácil de testar, sem parar para perguntar se é a métrica certa para o objetivo de negócio.
-> **Por quê:** a métrica disponível vira a métrica importante por conveniência de medição, não porque foi escolhida deliberadamente — o mesmo problema estrutural do "instrumentar tudo antes de nomear o Goal" da [[03-Dominios/Engenharia/UX/Medir, Validar e Sustentar/38 - HEART e Goals-Signals-Metrics|nota 38]].
-> **Como evitar:** nomeie a métrica certa (via GSM) antes de rodar qualquer teste que a otimize — ver também [[03-Dominios/Engenharia/UX/Medir, Validar e Sustentar/42 - Quando A-B não se aplica|nota 42]] para os limites do A/B em si.
+> **O que acontece:** um time roda teste após teste otimizando uma métrica de curto prazo (cliques, conversão imediata) porque é a que está instrumentada e fácil de testar, sem parar para perguntar se é a métrica certa para o objetivo de negócio. **Por quê:** a métrica disponível vira a métrica importante por conveniência de medição, não porque foi escolhida deliberadamente — o mesmo problema estrutural do "instrumentar tudo antes de nomear o Goal" da [[03-Dominios/Engenharia/UX/Medir, Validar e Sustentar/38 - HEART e Goals-Signals-Metrics|nota 38]]. **Como evitar:** nomeie a métrica certa (via GSM) antes de rodar qualquer teste que a otimize — ver também [[03-Dominios/Engenharia/UX/Medir, Validar e Sustentar/42 - Quando A-B não se aplica|nota 42]] para os limites do A/B em si.
 
 > [!warning] Confundir métrica de negócio (AARRR) com métrica de experiência (HEART)
-> **O que acontece:** o pedido "melhora a UX" chega apontando uma métrica de funil de negócio (conversão, churn) como se fosse automaticamente sintoma de problema de interface.
-> **Por quê:** as duas famílias de métrica se influenciam e às vezes se movem juntas, então é fácil tratá-las como a mesma coisa — mas a causa raiz de uma queda de conversão pode estar em preço, posicionamento ou timing, não em UX.
-> **Como evitar:** antes de tocar em interface, investigue em qual estágio do funil AARRR o problema está concentrado e se ele de fato corresponde a uma tarefa (Task Success) ou percepção (Happiness) mal resolvida — como no Cenário 3.
+> **O que acontece:** o pedido "melhora a UX" chega apontando uma métrica de funil de negócio (conversão, churn) como se fosse automaticamente sintoma de problema de interface. **Por quê:** as duas famílias de métrica se influenciam e às vezes se movem juntas, então é fácil tratá-las como a mesma coisa — mas a causa raiz de uma queda de conversão pode estar em preço, posicionamento ou timing, não em UX. **Como evitar:** antes de tocar em interface, investigue em qual estágio do funil AARRR o problema está concentrado e se ele de fato corresponde a uma tarefa (Task Success) ou percepção (Happiness) mal resolvida — como no Cenário 3.
 
 ## Como explicar em inglês
 

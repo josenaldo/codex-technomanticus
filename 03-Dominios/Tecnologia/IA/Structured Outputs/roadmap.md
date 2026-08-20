@@ -12,9 +12,7 @@ tags:
 
 Diagnóstico migrado de guia/roadmap - ia.md (30/06). Cada entrada tem estado de enriquecimento, score, classificação de custo e plano de execução acionável.
 
-**Galho:** `03-Dominios/Tecnologia/IA/Structured Outputs`
-**Diagnóstico:** 2026-06-28 (migrado 2026-07-01)
-**Última execução:** 2026-07-02 (galho concluído — 7 ✅ + 1 ➖)
+**Galho:** `03-Dominios/Tecnologia/IA/Structured Outputs` **Diagnóstico:** 2026-06-28 (migrado 2026-07-01) **Última execução:** 2026-07-02 (galho concluído — 7 ✅ + 1 ➖)
 
 ## Régua de análise
 
@@ -27,8 +25,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | LINKS | L1 Wikilink cross-galho · L2 Referência externa (URL) |
 | MÍDIA | M1 Vídeo/podcast embutido |
 
-**Esquema de `fase:` detectado:** COM fase (Iniciado)
-**Piso de linhas:** aplicável — Iniciado ≥300
+**Esquema de `fase:` detectado:** COM fase (Iniciado) **Piso de linhas:** aplicável — Iniciado ≥300
 
 ## Tabela-resumo
 

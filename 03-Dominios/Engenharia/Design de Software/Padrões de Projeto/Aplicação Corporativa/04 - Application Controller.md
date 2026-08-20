@@ -23,13 +23,7 @@ aliases:
 # Application Controller
 
 > [!abstract] TL;DR
-> Um controlador de requisição sabe tratar **uma** requisição; ele não sabe onde ela cai dentro de uma
-> jornada. Quando o fluxo é rico — wizard, checkout, aprovação em etapas — a lógica de "de onde vim,
-> para onde vou" se espalha em `if` pelos controladores, e ninguém consegue enunciar as regras de
-> navegação sem ler o sistema inteiro. O **Application Controller** extrai esse fluxo para um lugar só:
-> uma **máquina de estados da aplicação**, separada de quem trata HTTP. Aparece quando o fluxo é rico e
-> **some quando é CRUD** — aplicá-lo sem fluxo é indireção pura. **A ressurreição** é a mesma ideia
-> promovida a serviço: Step Functions, Durable Functions, Temporal, XState.
+> Um controlador de requisição sabe tratar **uma** requisição; ele não sabe onde ela cai dentro de uma jornada. Quando o fluxo é rico — wizard, checkout, aprovação em etapas — a lógica de "de onde vim, para onde vou" se espalha em `if` pelos controladores, e ninguém consegue enunciar as regras de navegação sem ler o sistema inteiro. O **Application Controller** extrai esse fluxo para um lugar só: uma **máquina de estados da aplicação**, separada de quem trata HTTP. Aparece quando o fluxo é rico e **some quando é CRUD** — aplicá-lo sem fluxo é indireção pura. **A ressurreição** é a mesma ideia promovida a serviço: Step Functions, Durable Functions, Temporal, XState.
 
 ## A tela 3 que às vezes some
 
@@ -109,19 +103,13 @@ O Application Controller como camada de apresentação praticamente desapareceu 
 ## Armadilhas comuns
 
 > [!warning] Aplicar em CRUD
-> **O que acontece:** um sistema de cadastro ganha camada de navegação, com nomes lógicos e mapeamento configurável, para fluxos que são sempre "salvou → volta pra lista".
-> **Por quê:** o padrão parece "mais arquitetural", e a indireção é confundida com desacoplamento.
-> **Como evitar:** sem ramificação, não há grafo — e sem grafo, a camada só acrescenta um salto entre você e a resposta. Um `redirect` explícito é mais legível.
+> **O que acontece:** um sistema de cadastro ganha camada de navegação, com nomes lógicos e mapeamento configurável, para fluxos que são sempre "salvou → volta pra lista". **Por quê:** o padrão parece "mais arquitetural", e a indireção é confundida com desacoplamento. **Como evitar:** sem ramificação, não há grafo — e sem grafo, a camada só acrescenta um salto entre você e a resposta. Um `redirect` explícito é mais legível.
 
 > [!warning] Fluxo espalhado em `if` pelos controladores
-> **O que acontece:** o oposto — a regra de navegação existe em três ou quatro cópias, e o bug aparece no caminho que só uma delas conhece (voltar, retomar, expirar).
-> **Por quê:** cada `if` foi adicionado no lugar onde o problema apareceu, nunca no lugar onde a decisão pertence.
-> **Como evitar:** o sintoma diagnóstico é precisar ler mais de um arquivo para responder "quando a tela 3 aparece?". Quando isso acontece, o grafo já existe — só não está escrito.
+> **O que acontece:** o oposto — a regra de navegação existe em três ou quatro cópias, e o bug aparece no caminho que só uma delas conhece (voltar, retomar, expirar). **Por quê:** cada `if` foi adicionado no lugar onde o problema apareceu, nunca no lugar onde a decisão pertence. **Como evitar:** o sintoma diagnóstico é precisar ler mais de um arquivo para responder "quando a tela 3 aparece?". Quando isso acontece, o grafo já existe — só não está escrito.
 
 > [!warning] Confundir fluxo de aplicação com regra de negócio
-> **O que acontece:** a máquina de estados começa a decidir sobre o domínio ("se o limite for excedido, negue o contrato"), e a lógica de negócio se muda para a camada de navegação.
-> **Por quê:** o Application Controller é o único lugar que enxerga a jornada inteira, então toda decisão que depende de contexto amplo parece caber ali.
-> **Como evitar:** ele decide **qual tela vem depois**; o domínio decide **se algo é permitido**. Teste: se o mesmo negócio fosse vendido por API, sem telas, essa regra teria de continuar existindo? Se sim, ela é de domínio.
+> **O que acontece:** a máquina de estados começa a decidir sobre o domínio ("se o limite for excedido, negue o contrato"), e a lógica de negócio se muda para a camada de navegação. **Por quê:** o Application Controller é o único lugar que enxerga a jornada inteira, então toda decisão que depende de contexto amplo parece caber ali. **Como evitar:** ele decide **qual tela vem depois**; o domínio decide **se algo é permitido**. Teste: se o mesmo negócio fosse vendido por API, sem telas, essa regra teria de continuar existindo? Se sim, ela é de domínio.
 
 ## Como explicar em inglês
 

@@ -104,8 +104,7 @@ helper(5); // TypeError: helper is not a function
 
 Para projetos pequenos, dava para gerenciar. Mas conforme as aplicações cresceram — especialmente com a popularização do Ajax a partir de 2005 e o início das SPAs — o modelo quebrou. Você não podia dividir código em módulos isolados porque o JavaScript simplesmente não tinha o conceito de módulo.
 
-**O que essa geração resolveu:** nada — era o estado inicial, sem tooling algum.
-**A dor que criou:** escopo global compartilhado, dependências implícitas, sem isolamento, sem gerenciamento automático de ordem.
+**O que essa geração resolveu:** nada — era o estado inicial, sem tooling algum. **A dor que criou:** escopo global compartilhado, dependências implícitas, sem isolamento, sem gerenciamento automático de ordem.
 
 ---
 
@@ -156,8 +155,7 @@ E tinha outro problema emergente: **performance de carregamento**. Em 2010, uma 
 
 A resposta foi a **concatenação e minificação manual**: alguém (ou um script shell) juntava todos os arquivos JS num único arquivo e depois rodava uma ferramenta como YUI Compressor ou Google Closure Compiler para remover espaços, encurtar nomes de variáveis e reduzir o tamanho. Funcionava, mas era um processo manual, propenso a erros, sem automação confiável.
 
-**O que essa geração resolveu:** redução parcial da poluição global, início da noção de "módulo manual".
-**A dor que criou:** dependências ainda implícitas, concatenação manual frágil, zero verificação automática.
+**O que essa geração resolveu:** redução parcial da poluição global, início da noção de "módulo manual". **A dor que criou:** dependências ainda implícitas, concatenação manual frágil, zero verificação automática.
 
 ---
 
@@ -231,8 +229,7 @@ flowchart LR
 > [!warning] O problema do UMD
 > O wrapper UMD que funcionava nos dois ambientes era tão feio que poucos o escreviam à mão — você gerava automaticamente. Era uma gambiarra sobre uma gambiarra. O problema real era que o JavaScript não tinha um sistema de módulos nativo; tudo que existia eram convenções aplicadas sobre a linguagem.
 
-**O que essa geração resolveu:** módulos reais com escopo isolado e dependências explícitas; carregamento assíncrono no browser (AMD).
-**A dor que criou:** guerra de padrões CJS vs AMD, sintaxe verbosa, dois mundos incompatíveis, zero suporte nativo no browser.
+**O que essa geração resolveu:** módulos reais com escopo isolado e dependências explícitas; carregamento assíncrono no browser (AMD). **A dor que criou:** guerra de padrões CJS vs AMD, sintaxe verbosa, dois mundos incompatíveis, zero suporte nativo no browser.
 
 ---
 
@@ -310,8 +307,7 @@ Se `app.js` fazia `require('./utils')`, o task runner não sabia disso. Você po
 > [!tip] Task runner vs. bundler — a distinção fundamental
 > Um task runner (Grunt, Gulp) é um orquestrador de tarefas arbitrárias: "compile Sass, minifique JS, copie imagens, rode testes". Ele não sabe nada sobre a estrutura interna do JavaScript. Um bundler (webpack, Rollup, esbuild) entende o *grafo de módulos*: sabe que `app.js` importa `utils.js` que importa `lodash`. Essa diferença é o salto conceitual mais importante desta geração para a próxima.
 
-**O que essa geração resolveu:** automação de build; pipelines de transformação repetíveis e versionáveis.
-**A dor que criou:** sem entendimento do grafo de dependências; concatenação burra; os dois paradigmas (configuração vs. código) tinham trade-offs; e ainda não resolvia o problema do browser com CommonJS.
+**O que essa geração resolveu:** automação de build; pipelines de transformação repetíveis e versionáveis. **A dor que criou:** sem entendimento do grafo de dependências; concatenação burra; os dois paradigmas (configuração vs. código) tinham trade-offs; e ainda não resolvia o problema do browser com CommonJS.
 
 ---
 
@@ -423,8 +419,7 @@ O Rollup virou o bundler de escolha para bibliotecas (React, Vue, Svelte e quase
 
 Em 2017, o **Parcel** tentou uma abordagem radical: **zero configuração**. Aponte o Parcel para seu `index.html`, e ele descobria o grafo sozinho, sem configuração explícita. Era impressionante para projetos pequenos e para demos rápidos. Mas para projetos maiores, a falta de controle fino revelou suas limitações.
 
-**O que essa geração resolveu:** grafo real de dependências; bundling de assets heterogêneos; tree-shaking; hot module replacement; code splitting.
-**A dor que criou:** configuração complexa; lentidão crescente conforme projetos cresciam; webpack exigia reescrever o grafo inteiro a cada mudança.
+**O que essa geração resolveu:** grafo real de dependências; bundling de assets heterogêneos; tree-shaking; hot module replacement; code splitting. **A dor que criou:** configuração complexa; lentidão crescente conforme projetos cresciam; webpack exigia reescrever o grafo inteiro a cada mudança.
 
 ---
 
@@ -478,8 +473,7 @@ esbuild src/index.tsx \
 
 O segredo do esbuild era combinar Go (compilado, tipado, paralelo) com decisões de design intencionalmente simples: sem plugins complexos, sem suporte a todos os edge cases, sem compatibilidade retroativa com o ecossistema webpack. Era um recomeço do zero priorizando velocidade.
 
-**O que essa geração resolveu:** velocidade de desenvolvimento dramáticamente superior; ESM nativo em dev sem rebuild de bundle; arquitetura que separava dev (velocidade) de prod (qualidade).
-**A dor que criou:** Vite usava Rollup para produção (JavaScript, mais lento); inconsistência possível entre comportamento dev (esbuild) e prod (Rollup); ecossistema ainda fragmentado entre Vite e webpack.
+**O que essa geração resolveu:** velocidade de desenvolvimento dramáticamente superior; ESM nativo em dev sem rebuild de bundle; arquitetura que separava dev (velocidade) de prod (qualidade). **A dor que criou:** Vite usava Rollup para produção (JavaScript, mais lento); inconsistência possível entre comportamento dev (esbuild) e prod (Rollup); ecossistema ainda fragmentado entre Vite e webpack.
 
 ---
 
@@ -582,8 +576,7 @@ flowchart TB
 > [!tip] O mapa do ecossistema em 2026
 > O ecossistema está se consolidando em dois eixos: **VoidZero** (Vite + Rolldown + oxc, agnóstico de framework, a escolha padrão para Vue/React sem Next.js) e **Vercel/Turbopack** (Next.js como plataforma principal). Webpack segue com 35 milhões de downloads semanais — não está morto, mas está na manutenção estendida. Rollup ainda é o padrão para publicar bibliotecas no npm, com migração gradual para Rolldown.
 
-**O que essa geração resolveu:** gargalo de velocidade em projetos grandes; builds que eram minutos viraram segundos; toolchain unificado em vez de composição frágil de ferramentas JS.
-**A dor que criou (ainda em aberto):** fragmentação (Vite vs Next.js/Turbopack); migração de configurações webpack complexas; APIs em estabilização; Rolldown ainda em adoção.
+**O que essa geração resolveu:** gargalo de velocidade em projetos grandes; builds que eram minutos viraram segundos; toolchain unificado em vez de composição frágil de ferramentas JS. **A dor que criou (ainda em aberto):** fragmentação (Vite vs Next.js/Turbopack); migração de configurações webpack complexas; APIs em estabilização; Rolldown ainda em adoção.
 
 ---
 

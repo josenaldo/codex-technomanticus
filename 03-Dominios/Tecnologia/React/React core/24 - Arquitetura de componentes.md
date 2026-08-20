@@ -14,31 +14,17 @@ publish: true
 ---
 
 > [!abstract] TL;DR
-> Arquitetura de componentes é a disciplina de decidir **onde o estado mora, o que cada componente
-> faz e como as peças se encaixam** — antes que o caos do crescimento tome conta. O princípio
-> central é composição sobre configuração: componentes pequenos, responsabilidade única, estado
-> colocado o mais perto possível de quem o usa. A divisão clássica presentacional/container evoluiu
-> com hooks, mas o espírito persiste: separar *o que renderizar* de *de onde vêm os dados*. Barrel
-> files parecem convenientes mas inflam bundle e destroem HMR; estrutura feature-based escala onde
-> layer-based quebra. Padrões avançados (compound, render props, HOC) vivem no galho React Design
-> Patterns (futuro).
+> Arquitetura de componentes é a disciplina de decidir **onde o estado mora, o que cada componente faz e como as peças se encaixam** — antes que o caos do crescimento tome conta. O princípio central é composição sobre configuração: componentes pequenos, responsabilidade única, estado colocado o mais perto possível de quem o usa. A divisão clássica presentacional/container evoluiu com hooks, mas o espírito persiste: separar *o que renderizar* de *de onde vêm os dados*. Barrel files parecem convenientes mas inflam bundle e destroem HMR; estrutura feature-based escala onde layer-based quebra. Padrões avançados (compound, render props, HOC) vivem no galho React Design Patterns (futuro).
 
 ---
 
 ## O problema começa cedo
 
-Você está na reunião de planejamento do sprint 12. Alguém abre o arquivo `UserDashboard.tsx` para
-mostrar uma estimativa. São 847 linhas. O componente busca os dados do usuário, trata o estado de
-loading, filtra permissões por role, renderiza três seções diferentes e ainda cuida do formulário de
-edição inline. Cada vez que alguém toca em qualquer coisa, o arquivo inteiro tem que ser relido
-mentalmente do zero.
+Você está na reunião de planejamento do sprint 12. Alguém abre o arquivo `UserDashboard.tsx` para mostrar uma estimativa. São 847 linhas. O componente busca os dados do usuário, trata o estado de loading, filtra permissões por role, renderiza três seções diferentes e ainda cuida do formulário de edição inline. Cada vez que alguém toca em qualquer coisa, o arquivo inteiro tem que ser relido mentalmente do zero.
 
-Esse componente tem um nome técnico: **God Component**. E o problema não é o tamanho — é a
-ausência de fronteiras claras. Sem fronteiras, o estado vaza para onde não deveria, os efeitos
-colaterais se acumulam e os bugs se escondem nos cantos.
+Esse componente tem um nome técnico: **God Component**. E o problema não é o tamanho — é a ausência de fronteiras claras. Sem fronteiras, o estado vaza para onde não deveria, os efeitos colaterais se acumulam e os bugs se escondem nos cantos.
 
-Arquitetura de componentes é o mapa que você desenha antes (ou que você reconstrói depois) para
-responder a três perguntas:
+Arquitetura de componentes é o mapa que você desenha antes (ou que você reconstrói depois) para responder a três perguntas:
 
 1. **Onde vive o estado?** (e quem tem permissão de mudá-lo)
 2. **O que cada componente faz?** (e o que ele deliberadamente *não* faz)
@@ -52,8 +38,7 @@ Essas perguntas não têm resposta única — mas têm padrões testados em prod
 
 O princípio mais importante da arquitetura React não é um padrão específico; é uma forma de pensar.
 
-**Configuração** significa criar um componente que aceita uma prop para cada variação possível de
-comportamento:
+**Configuração** significa criar um componente que aceita uma prop para cada variação possível de comportamento:
 
 ```tsx
 // ❌ Configuração: o componente cresce junto com cada novo caso
@@ -69,8 +54,7 @@ comportamento:
 />
 ```
 
-Depois de oito sprints, esse componente tem quarenta props, metade condicionais entre si, e ninguém
-sabe o que acontece quando `showHeader={false}` e `headerTitle` estão presentes ao mesmo tempo.
+Depois de oito sprints, esse componente tem quarenta props, metade condicionais entre si, e ninguém sabe o que acontece quando `showHeader={false}` e `headerTitle` estão presentes ao mesmo tempo.
 
 **Composição** resolve isso deixando o *chamador* montar a estrutura:
 
@@ -87,21 +71,15 @@ sabe o que acontece quando `showHeader={false}` e `headerTitle` estão presentes
 </Card>
 ```
 
-O componente `Card` não sabe o que há dentro de `Card.Header`. Ele só garante estrutura e estilo.
-Quem sabe o que colocar é o consumidor. Esse é o padrão Compound Component — que vive em detalhes
-no galho React Design Patterns (futuro).
+O componente `Card` não sabe o que há dentro de `Card.Header`. Ele só garante estrutura e estilo. Quem sabe o que colocar é o consumidor. Esse é o padrão Compound Component — que vive em detalhes no galho React Design Patterns (futuro).
 
-A composição se aplica em todos os níveis: em vez de passar dezenas de props para baixo (prop
-drilling), você passa o próprio componente como children ou como slot. A seção sobre prop drilling
-versus composição aprofunda isso adiante.
+A composição se aplica em todos os níveis: em vez de passar dezenas de props para baixo (prop drilling), você passa o próprio componente como children ou como slot. A seção sobre prop drilling versus composição aprofunda isso adiante.
 
 ---
 
 ## Onde o estado mora — colocation primeiro
 
-Pense no estado como uma conta bancária: colocar o dinheiro no banco central quando você só precisa
-de troco para o café da manhã é burocracia desnecessária. Estado global tem custo — cognitivo,
-de performance, de acoplamento.
+Pense no estado como uma conta bancária: colocar o dinheiro no banco central quando você só precisa de troco para o café da manhã é burocracia desnecessária. Estado global tem custo — cognitivo, de performance, de acoplamento.
 
 A regra é simples: **estado deve morar o mais perto possível de quem o usa**.
 
@@ -131,28 +109,20 @@ Nessa árvore:
 - `searchQuery` e `page` de `UserList` só importam para `UserList` e seus filhos — ficam lá.
 - `AuthContext` precisa estar disponível em qualquer lugar da app — sobe para `App`.
 
-**Quando levantar o estado?** Quando dois componentes *irmãos* precisam ler ou mudar o mesmo valor.
-Levanta para o ancestral comum mais próximo — não mais alto que isso.
+**Quando levantar o estado?** Quando dois componentes *irmãos* precisam ler ou mudar o mesmo valor. Levanta para o ancestral comum mais próximo — não mais alto que isso.
 
 > [!question]- Por que não colocar tudo no estado global logo?
-> Porque estado global cria acoplamento invisível. Quando `UserList` lê de um store global, ela
-> depende de qualquer parte da app que escreva naquele store. Bugs viram enigmas. Re-renders se
-> espalham. A árvore de Suspense perde granularidade. Comece colocado, eleve quando necessário.
+> Porque estado global cria acoplamento invisível. Quando `UserList` lê de um store global, ela depende de qualquer parte da app que escreva naquele store. Bugs viram enigmas. Re-renders se espalham. A árvore de Suspense perde granularidade. Comece colocado, eleve quando necessário.
 
-A nota [[15 - Estado - local, elevado e externo]] aprofunda as regras de quando usar `useState`,
-quando elevar e quando usar contexto ou store externo.
+A nota [[15 - Estado - local, elevado e externo]] aprofunda as regras de quando usar `useState`, quando elevar e quando usar contexto ou store externo.
 
 ---
 
 ## Componentes presentacionais vs. containers — e por que os hooks mudaram a conversa
 
-Em 2015, Dan Abramov descreveu a divisão: **componentes presentacionais** (burros) só renderizam
-UI baseada em props; **componentes container** (espertos) buscam dados, gerenciam estado, conectam
-à store.
+Em 2015, Dan Abramov descreveu a divisão: **componentes presentacionais** (burros) só renderizam UI baseada em props; **componentes container** (espertos) buscam dados, gerenciam estado, conectam à store.
 
-O problema dessa divisão rígida era estrutural: containers eram HOCs (Higher-Order Components) ou
-classes que envolviam os presentacionais, criando uma hierarquia desnecessária. O debugging era um
-pesadelo de wrapper stacks.
+O problema dessa divisão rígida era estrutural: containers eram HOCs (Higher-Order Components) ou classes que envolviam os presentacionais, criando uma hierarquia desnecessária. O debugging era um pesadelo de wrapper stacks.
 
 Com hooks, o *espírito* da divisão persiste, mas a *implementação* mudou:
 
@@ -202,9 +172,7 @@ export function UserList({ users, loading }: { users: User[]; loading: boolean }
 A separação real hoje é entre **lógica de negócio/dados** (custom hook) e **renderização** (componente puro). O container como componente extra virou opcional — muitas vezes é apenas o hook.
 
 > [!info] Dan Abramov sobre o próprio padrão
-> Em 2019, Abramov atualizou o post original dizendo que não recomendaria mais a divisão da forma
-> original. Hooks alcançaram o mesmo objetivo com menos indireção. O princípio (separar dados de
-> renderização) continua válido; o mecanismo (HOC/classe container) ficou para trás.
+> Em 2019, Abramov atualizou o post original dizendo que não recomendaria mais a divisão da forma original. Hooks alcançaram o mesmo objetivo com menos indireção. O princípio (separar dados de renderização) continua válido; o mecanismo (HOC/classe container) ficou para trás.
 
 ---
 
@@ -220,9 +188,7 @@ A decisão de extrair é guiada por *sinais*, não por métricas arbitrárias de
 | Um bloco tem lógica condicional complexa que ofusca o resto | Extrai em componente com nome semântico |
 | O componente fica difícil de ler (>150 linhas de JSX denso) | Extrai por seção semântica |
 
-O contrário também importa: **não extrair prematuramente**. Um componente com 80 linhas coesas é
-melhor que cinco componentes de 15 linhas com nomes vagos e props passadas de um para outro sem
-propósito.
+O contrário também importa: **não extrair prematuramente**. Um componente com 80 linhas coesas é melhor que cinco componentes de 15 linhas com nomes vagos e props passadas de um para outro sem propósito.
 
 ```tsx
 // ❌ Abstração prematura — nomes sem semântica real
@@ -246,8 +212,7 @@ function BillingHistoryTable({ invoices }: { invoices: Invoice[] }) { ... }
 
 ## Props vs. composição — como evitar prop drilling
 
-Prop drilling é quando você passa a mesma prop por três ou mais camadas de componentes que não a
-usam — só a repassam para baixo.
+Prop drilling é quando você passa a mesma prop por três ou mais camadas de componentes que não a usam — só a repassam para baixo.
 
 ```tsx
 // ❌ Prop drilling: intermediários não usam user, só repassam
@@ -260,8 +225,7 @@ usam — só a repassam para baixo.
 
 Há duas saídas, com perfis diferentes:
 
-**1. Composição com children/slots** — ideal quando os intermediários não precisam do dado de
-jeito nenhum:
+**1. Composição com children/slots** — ideal quando os intermediários não precisam do dado de jeito nenhum:
 
 ```tsx
 // ✅ Composição: Page não precisa saber de user
@@ -299,18 +263,15 @@ function UserMenu() {
 }
 ```
 
-A composição resolve o drilling sem adicionar estado global. Use Context quando a composição não
-for viável (ex: dados de autenticação que qualquer componente pode precisar sem avisar).
+A composição resolve o drilling sem adicionar estado global. Use Context quando a composição não for viável (ex: dados de autenticação que qualquer componente pode precisar sem avisar).
 
-A nota [[08 - Renderização condicional e composição]] cobre o padrão de children e render slots em
-mais profundidade.
+A nota [[08 - Renderização condicional e composição]] cobre o padrão de children e render slots em mais profundidade.
 
 ---
 
 ## Estrutura de pastas — feature-based vs. layer-based
 
-A escolha da estrutura de pastas parece cosmética, mas tem impacto real em como equipes navegam e
-como o código escala.
+A escolha da estrutura de pastas parece cosmética, mas tem impacto real em como equipes navegam e como o código escala.
 
 ### Layer-based (por tipo de arquivo)
 
@@ -329,8 +290,7 @@ src/
     invoiceService.ts
 ```
 
-Funciona para apps pequenas. Quebra quando a base cresce: para entender uma feature, você abre
-quatro pastas diferentes. Um refactor de "Users" toca arquivos espalhados por todo o projeto.
+Funciona para apps pequenas. Quebra quando a base cresce: para entender uma feature, você abre quatro pastas diferentes. Um refactor de "Users" toca arquivos espalhados por todo o projeto.
 
 ### Feature-based (por domínio de negócio)
 
@@ -362,11 +322,9 @@ src/
       useDebounce.ts
 ```
 
-**Cada feature é uma ilha.** O código que muda junto fica junto. Um refactor de "auth" não toca
-"dashboard". Onboarding de novos devs é por feature, não por tipo.
+**Cada feature é uma ilha.** O código que muda junto fica junto. Um refactor de "auth" não toca "dashboard". Onboarding de novos devs é por feature, não por tipo.
 
-Essa é a estrutura recomendada pelo Bulletproof React (alan2207/bulletproof-react) e adotada por
-equipes que escalam além de ~5 features simultâneas.
+Essa é a estrutura recomendada pelo Bulletproof React (alan2207/bulletproof-react) e adotada por equipes que escalam além de ~5 features simultâneas.
 
 ```mermaid
 %%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
@@ -388,9 +346,7 @@ graph LR
     style B4 fill:#F5A623,color:#fff
 ```
 
-**Regra de ouro da feature-based:** componentes dentro de uma feature podem se importar livremente.
-Componentes de features diferentes só se comunicam via `shared/` ou pela API pública do `index.ts`.
-Nunca `import { X } from '../auth/components/LoginForm'` de dentro de `dashboard/`.
+**Regra de ouro da feature-based:** componentes dentro de uma feature podem se importar livremente. Componentes de features diferentes só se comunicam via `shared/` ou pela API pública do `index.ts`. Nunca `import { X } from '../auth/components/LoginForm'` de dentro de `dashboard/`.
 
 ---
 
@@ -408,16 +364,11 @@ export * from './DataGrid';
 // ... 40 mais
 ```
 
-A conveniência é real: `import { Button, Modal } from '@/components'` é mais limpo que paths
-profundos. O custo também é real.
+A conveniência é real: `import { Button, Modal } from '@/components'` é mais limpo que paths profundos. O custo também é real.
 
-**O problema com bundlers:** quando você importa `Button` de um barrel que re-exporta 50 componentes,
-o bundler tem que processar os 50 para confirmar que só `Button` é usado. Tree-shaking fica mais
-difícil de fazer com confiança. O resultado são bundles maiores e HMR mais lento.
+**O problema com bundlers:** quando você importa `Button` de um barrel que re-exporta 50 componentes, o bundler tem que processar os 50 para confirmar que só `Button` é usado. Tree-shaking fica mais difícil de fazer com confiança. O resultado são bundles maiores e HMR mais lento.
 
-**Números reais:** a Capchase eliminou barrel files e teve build 5x mais rápido. O Next.js reporta
-15-70% de melhoria no dev boot quando configurado com `optimizePackageImports` para contornar
-barrels de bibliotecas externas.
+**Números reais:** a Capchase eliminou barrel files e teve build 5x mais rápido. O Next.js reporta 15-70% de melhoria no dev boot quando configurado com `optimizePackageImports` para contornar barrels de bibliotecas externas.
 
 **O que fazer:**
 - Barrel `index.ts` na raiz de uma *feature* (exports públicos da feature) — aceitável e útil
@@ -443,12 +394,9 @@ export * from './api/authApi';    // nunca deveria ser público
 
 ## Boundary de responsabilidade — um componente, uma razão para mudar
 
-O princípio da responsabilidade única (SRP) aplicado a componentes React tem uma formulação
-prática: **um componente deve ter uma razão para mudar**.
+O princípio da responsabilidade única (SRP) aplicado a componentes React tem uma formulação prática: **um componente deve ter uma razão para mudar**.
 
-`UserDashboard` com 847 linhas tem pelo menos cinco razões para mudar: design da seção de métricas,
-lógica de permissão, comportamento do formulário de edição, estrutura de dados da API, estado de
-loading global. Qualquer mudança em qualquer uma dessas razões toca o mesmo arquivo.
+`UserDashboard` com 847 linhas tem pelo menos cinco razões para mudar: design da seção de métricas, lógica de permissão, comportamento do formulário de edição, estrutura de dados da API, estado de loading global. Qualquer mudança em qualquer uma dessas razões toca o mesmo arquivo.
 
 A refatoração correta não é dividir por tamanho — é dividir por razão de mudança:
 
@@ -474,17 +422,13 @@ function UserDashboard() {
 }
 ```
 
-`UserDashboard` agora tem uma razão para mudar: a estrutura geral do dashboard. `UserMetricsPanel`
-muda quando as métricas mudam. `PermissionGate` muda quando a lógica de autorização muda. Cada
-componente é testável isoladamente.
+`UserDashboard` agora tem uma razão para mudar: a estrutura geral do dashboard. `UserMetricsPanel` muda quando as métricas mudam. `PermissionGate` muda quando a lógica de autorização muda. Cada componente é testável isoladamente.
 
 ---
 
 ## Árvore de Suspense e Error Boundaries — pensar em camadas de falha
 
-Um erro comum é tratar Suspense e Error Boundaries como detalhes de implementação para adicionar
-depois. Na arquitetura, eles são **camadas de contrato**: definem onde o loading e o erro param de
-se propagar.
+Um erro comum é tratar Suspense e Error Boundaries como detalhes de implementação para adicionar depois. Na arquitetura, eles são **camadas de contrato**: definem onde o loading e o erro param de se propagar.
 
 ```mermaid
 %%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
@@ -503,19 +447,15 @@ graph TD
     style E fill:#4A90D9,color:#fff
 ```
 
-**Princípio:** coloque Error Boundaries e Suspense onde você quer que o fallback pare. Um único
-`<ErrorBoundary>` na raiz da app significa que qualquer erro em qualquer componente derruba a app
-inteira. Error Boundaries em torno de features individuais isolam falhas.
+**Princípio:** coloque Error Boundaries e Suspense onde você quer que o fallback pare. Um único `<ErrorBoundary>` na raiz da app significa que qualquer erro em qualquer componente derruba a app inteira. Error Boundaries em torno de features individuais isolam falhas.
 
 **Decisão arquitetural:** para cada feature assíncrona, decida:
 - Qual é o fallback de loading aceitável? (skeleton local vs. spinner global)
 - Se essa feature falhar, o resto da app pode continuar?
 
-Se sim, a feature precisa do próprio `<ErrorBoundary>`. Se o rest da app depende dos dados dela
-para funcionar, o boundary sobe na árvore.
+Se sim, a feature precisa do próprio `<ErrorBoundary>`. Se o rest da app depende dos dados dela para funcionar, o boundary sobe na árvore.
 
-As notas [[18 - Error boundaries]] e [[19 - Suspense e data fetching no cliente]] cobrem a
-implementação em detalhe.
+As notas [[18 - Error boundaries]] e [[19 - Suspense e data fetching no cliente]] cobrem a implementação em detalhe.
 
 ---
 
@@ -523,11 +463,9 @@ implementação em detalhe.
 
 ### Cenário 1 — Refatorando o God Component
 
-**Antes:** `OrderPage.tsx` com 620 linhas que busca pedido, gerencia estado de edição inline,
-renderiza header, itens, totais e painel de status, e lida com submit de atualização.
+**Antes:** `OrderPage.tsx` com 620 linhas que busca pedido, gerencia estado de edição inline, renderiza header, itens, totais e painel de status, e lida com submit de atualização.
 
-**Diagnóstico:** seis responsabilidades num arquivo. Bugs de re-render afetando header quando
-o formulário muda. Impossível testar a lógica de totais sem montar a página inteira.
+**Diagnóstico:** seis responsabilidades num arquivo. Bugs de re-render afetando header quando o formulário muda. Impossível testar a lógica de totais sem montar a página inteira.
 
 **Depois:**
 
@@ -560,15 +498,13 @@ export function OrderPage({ orderId }: { orderId: string }) {
 }
 ```
 
-**Resultado:** cada componente é testável de forma independente. `OrderTotals` é uma função pura.
-`useOrderEdit` pode ser testado com `renderHook`.
+**Resultado:** cada componente é testável de forma independente. `OrderTotals` é uma função pura. `useOrderEdit` pode ser testado com `renderHook`.
 
 ---
 
 ### Cenário 2 — Escolhendo a estrutura quando a app cresce
 
-**Contexto:** app começou layer-based. Agora tem 8 features, 3 devs e merges conflitando toda
-semana porque `components/` virou um cemitério de 80 arquivos.
+**Contexto:** app começou layer-based. Agora tem 8 features, 3 devs e merges conflitando toda semana porque `components/` virou um cemitério de 80 arquivos.
 
 **Migração gradual** (não precisa ser big bang):
 
@@ -578,47 +514,23 @@ semana porque `components/` virou um cemitério de 80 arquivos.
 4. Deixar `components/` antigo no lugar; marcar como legado; não crescer mais
 5. Em 2-3 meses, `components/` está vazio o suficiente para deletar
 
-Nenhuma refatoração big bang. Nenhum sprint inteiro de "reorganização". A estrutura nova cresce
-junto com o trabalho normal.
+Nenhuma refatoração big bang. Nenhum sprint inteiro de "reorganização". A estrutura nova cresce junto com o trabalho normal.
 
 ---
 
 ## Armadilhas comuns
 
 > [!warning] Estado global para tudo
-> **O que acontece:** toda decisão de estado vai para Zustand/Redux/Jotai, mesmo estados de UI
-> puramente locais (modal aberto, tab ativa, valor de input). A store cresce sem controle.
-> **Por quê:** parece seguro colocar no global "por garantia". Na prática cria dependências
-> invisíveis e re-renders desnecessários em componentes não relacionados.
-> **Como evitar:** regra simples — estado começa local (`useState`). Sobe quando dois componentes
-> irmãos precisam do mesmo valor. Vai para store apenas quando precisar persistir, ser compartilhado
-> entre features distantes, ou precisar de ações complexas (undo, otimistic updates).
+> **O que acontece:** toda decisão de estado vai para Zustand/Redux/Jotai, mesmo estados de UI puramente locais (modal aberto, tab ativa, valor de input). A store cresce sem controle. **Por quê:** parece seguro colocar no global "por garantia". Na prática cria dependências invisíveis e re-renders desnecessários em componentes não relacionados. **Como evitar:** regra simples — estado começa local (`useState`). Sobe quando dois componentes irmãos precisam do mesmo valor. Vai para store apenas quando precisar persistir, ser compartilhado entre features distantes, ou precisar de ações complexas (undo, otimistic updates).
 
 > [!warning] Abstração prematura — componentes sem semântica
-> **O que acontece:** ao primeiro sinal de repetição, você extrai `<Wrapper>`, `<Container>`,
-> `<Section>` e `<Box>` genéricos. Daqui a dois meses, você tem uma hierarquia de seis componentes
-> sem nomes que dizem nada.
-> **Por quê:** a regra "DRY a todo custo" aplicada sem contexto. Dois componentes com JSX similar
-> mas razões de mudança diferentes deveriam ser componentes separados — a duplicação é acidental,
-> não essencial.
-> **Como evitar:** só extrai quando o componente tem um nome que descreve *o que ele representa no
-> domínio* (não "como ele funciona"). `<UserPermissionBadge>` é bom. `<StyledBox variant="pill">`
-> provavelmente não deveria existir.
+> **O que acontece:** ao primeiro sinal de repetição, você extrai `<Wrapper>`, `<Container>`, `<Section>` e `<Box>` genéricos. Daqui a dois meses, você tem uma hierarquia de seis componentes sem nomes que dizem nada. **Por quê:** a regra "DRY a todo custo" aplicada sem contexto. Dois componentes com JSX similar mas razões de mudança diferentes deveriam ser componentes separados — a duplicação é acidental, não essencial. **Como evitar:** só extrai quando o componente tem um nome que descreve *o que ele representa no domínio* (não "como ele funciona"). `<UserPermissionBadge>` é bom. `<StyledBox variant="pill">` provavelmente não deveria existir.
 
 > [!warning] Barrel file que infla bundle
-> **O que acontece:** `export * from './components'` em toda pasta. O bundler importa 60
-> componentes para usar um. Bundle cresce, HMR fica lento, cold start do dev server dobra.
-> **Por quê:** a conveniência de imports curtos mascarou o custo até alguém rodar o bundle
-> analyzer.
-> **Como evitar:** barrel files só na raiz de features (exports públicos). Imports dentro da
-> mesma feature são diretos: `import { Button } from './Button'`, não via barrel.
+> **O que acontece:** `export * from './components'` em toda pasta. O bundler importa 60 componentes para usar um. Bundle cresce, HMR fica lento, cold start do dev server dobra. **Por quê:** a conveniência de imports curtos mascarou o custo até alguém rodar o bundle analyzer. **Como evitar:** barrel files só na raiz de features (exports públicos). Imports dentro da mesma feature são diretos: `import { Button } from './Button'`, não via barrel.
 
 > [!warning] Prop drilling ignorado até virar crise
-> **O que acontece:** uma prop passa por 5 componentes intermediários que não a usam. Qualquer
-> mudança no tipo dessa prop exige tocar em 5 arquivos.
-> **Por quê:** é mais fácil "adicionar uma prop" do que refatorar para composição ou context agora.
-> **Como evitar:** ao segundo nível de drilling (prop passa por componente que não usa ela),
-> avaliar composição com `children` ou Context. Não esperar o quinto nível.
+> **O que acontece:** uma prop passa por 5 componentes intermediários que não a usam. Qualquer mudança no tipo dessa prop exige tocar em 5 arquivos. **Por quê:** é mais fácil "adicionar uma prop" do que refatorar para composição ou context agora. **Como evitar:** ao segundo nível de drilling (prop passa por componente que não usa ela), avaliar composição com `children` ou Context. Não esperar o quinto nível.
 
 ---
 
@@ -646,9 +558,7 @@ In a React codebase, component architecture is about drawing clear responsibilit
 
 ## O que vem a seguir
 
-A arquitetura define onde o estado mora e como os componentes se organizam. O próximo nível é
-entender *como* o React decide o que re-renderizar quando esse estado muda — e onde a performance
-entra na equação.
+A arquitetura define onde o estado mora e como os componentes se organizam. O próximo nível é entender *como* o React decide o que re-renderizar quando esse estado muda — e onde a performance entra na equação.
 
 - [[17 - Performance no React]] — memoização, colocation como otimização e quando o React Compiler muda o jogo
 - [[15 - Estado - local, elevado e externo]] — as regras de quando elevar e quando ir para store externa

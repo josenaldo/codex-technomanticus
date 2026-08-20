@@ -542,24 +542,16 @@ Estado local ao `CheckoutPage` — não precisa ser global. Quando o usuário sa
 ## Armadilhas comuns
 
 > [!warning] Tudo no estado global por padrão
-> **O que acontece:** A store Zustand ou Redux acumula estado de UI efêmero — tooltips abertos, animações ativas, estado de hover. O DevTools fica impossível de navegar e cada interação dispara re-renders em componentes não relacionados.
-> **Por quê:** É mais fácil no curto prazo "jogar tudo no store" do que decidir onde cada estado pertence.
-> **Como evitar:** Aplique a árvore de decisão. Estado que morre quando o componente desmonta é local. Se está no store, deve ter vida útil que sobrevive ao componente.
+> **O que acontece:** A store Zustand ou Redux acumula estado de UI efêmero — tooltips abertos, animações ativas, estado de hover. O DevTools fica impossível de navegar e cada interação dispara re-renders em componentes não relacionados. **Por quê:** É mais fácil no curto prazo "jogar tudo no store" do que decidir onde cada estado pertence. **Como evitar:** Aplique a árvore de decisão. Estado que morre quando o componente desmonta é local. Se está no store, deve ter vida útil que sobrevive ao componente.
 
 > [!warning] Servidor state em useState + useEffect
-> **O que acontece:** `loading`, `error` e `data` são gerenciados manualmente. Bugs sutis surgem: dados stale após mutação, race conditions quando o usuário navega rápido, ausência de cache que causa waterfalls de requisições.
-> **Por quê:** O padrão `useEffect` para fetch foi o único disponível por anos e ainda é ensinado em muitos tutoriais desatualizados.
-> **Como evitar:** Qualquer dado que vem de uma API é estado de servidor. Use TanStack Query ou SWR. O código fica menor e os bugs somem.
+> **O que acontece:** `loading`, `error` e `data` são gerenciados manualmente. Bugs sutis surgem: dados stale após mutação, race conditions quando o usuário navega rápido, ausência de cache que causa waterfalls de requisições. **Por quê:** O padrão `useEffect` para fetch foi o único disponível por anos e ainda é ensinado em muitos tutoriais desatualizados. **Como evitar:** Qualquer dado que vem de uma API é estado de servidor. Use TanStack Query ou SWR. O código fica menor e os bugs somem.
 
 > [!warning] Prop drilling vs Context excessivo
-> **O que acontece:** Prop drilling com três níveis vira seis níveis, e a solução imediata é "botar tudo no Context". O Context cresce, qualquer mudança re-renderiza metade da árvore, e a performance despenca.
-> **Por quê:** Context é visto como a solução para prop drilling, mas ignora o custo de performance e de acoplamento.
-> **Como evitar:** Antes de usar Context, considere composition com `children`. Antes de usar Context para estado frequente, use Zustand com seletores. Context é ideal para estado raro.
+> **O que acontece:** Prop drilling com três níveis vira seis níveis, e a solução imediata é "botar tudo no Context". O Context cresce, qualquer mudança re-renderiza metade da árvore, e a performance despenca. **Por quê:** Context é visto como a solução para prop drilling, mas ignora o custo de performance e de acoplamento. **Como evitar:** Antes de usar Context, considere composition com `children`. Antes de usar Context para estado frequente, use Zustand com seletores. Context é ideal para estado raro.
 
 > [!warning] Duplicar estado de servidor em estado de cliente
-> **O que acontece:** Você usa TanStack Query para buscar o produto e também guarda `product` em um `useState` para "facilitar". Agora há duas fontes da verdade que podem divergir.
-> **Por quê:** Instinto de "ter o dado disponível localmente".
-> **Como evitar:** O cache do TanStack Query já é o estado. Leia direto de `useQuery`. Só copie para estado local se precisar editar localmente antes de salvar (formulário de edição).
+> **O que acontece:** Você usa TanStack Query para buscar o produto e também guarda `product` em um `useState` para "facilitar". Agora há duas fontes da verdade que podem divergir. **Por quê:** Instinto de "ter o dado disponível localmente". **Como evitar:** O cache do TanStack Query já é o estado. Leia direto de `useQuery`. Só copie para estado local se precisar editar localmente antes de salvar (formulário de edição).
 
 ---
 

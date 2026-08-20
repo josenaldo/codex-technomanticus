@@ -24,19 +24,10 @@ aliases:
 # Idempotent Consumer (Inbox)
 
 > [!abstract] TL;DR
-> A entrega real é **pelo menos uma vez** — logo, a mensagem **vai** chegar duplicada, e isso não é
-> exceção: é operação normal. O consumidor precisa que processar duas vezes tenha o efeito de uma. A
-> estratégia mais geral é o **inbox**: registrar o identificador da mensagem **na mesma transação** do
-> efeito, de modo que reprocessar seja detectado e descartado. A parte difícil, e a razão desta nota
-> existir separada do dedup de canal, é que **o efeito nem sempre cabe numa transação**: cobrar um
-> cartão, enviar um e-mail e chamar um parceiro não têm rollback — e é aí que a idempotência precisa
-> atravessar a fronteira, via **chave de idempotência**.
+> A entrega real é **pelo menos uma vez** — logo, a mensagem **vai** chegar duplicada, e isso não é exceção: é operação normal. O consumidor precisa que processar duas vezes tenha o efeito de uma. A estratégia mais geral é o **inbox**: registrar o identificador da mensagem **na mesma transação** do efeito, de modo que reprocessar seja detectado e descartado. A parte difícil, e a razão desta nota existir separada do dedup de canal, é que **o efeito nem sempre cabe numa transação**: cobrar um cartão, enviar um e-mail e chamar um parceiro não têm rollback — e é aí que a idempotência precisa atravessar a fronteira, via **chave de idempotência**.
 
 > [!info] O recorte desta nota
-> A deduplicação no nível do **canal** — dedup por id de mensagem na mensageria — é
-> [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Integração Empresarial (EIP)/12 - Idempotent Receiver|EIP-12]].
-> Aqui o foco é a **idempotência do efeito de negócio**: gravar duas vezes é um problema técnico com
-> solução conhecida; **cobrar duas vezes é outro problema**, e ele não se resolve no canal.
+> A deduplicação no nível do **canal** — dedup por id de mensagem na mensageria — é [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Integração Empresarial (EIP)/12 - Idempotent Receiver|EIP-12]]. Aqui o foco é a **idempotência do efeito de negócio**: gravar duas vezes é um problema técnico com solução conhecida; **cobrar duas vezes é outro problema**, e ele não se resolve no canal.
 
 ## O cliente cobrado duas vezes
 
@@ -97,19 +88,13 @@ Isso muda a garantia de lugar: em vez de você evitar chamar duas vezes — o qu
 ## Armadilhas comuns
 
 > [!warning] Deduplicar só o que está no banco
-> **O que acontece:** o consumidor tem inbox impecável para gravações e nenhuma proteção para a cobrança e o e-mail. O reprocessamento produz o efeito visível ao cliente exatamente onde não havia defesa.
-> **Por quê:** a proteção foi construída onde era fácil (transação local), não onde importava.
-> **Como evitar:** inventarie os efeitos **externos** de cada consumidor e trate cada um: chave de idempotência no parceiro quando houver, registro de intenção e reconciliação quando não houver.
+> **O que acontece:** o consumidor tem inbox impecável para gravações e nenhuma proteção para a cobrança e o e-mail. O reprocessamento produz o efeito visível ao cliente exatamente onde não havia defesa. **Por quê:** a proteção foi construída onde era fácil (transação local), não onde importava. **Como evitar:** inventarie os efeitos **externos** de cada consumidor e trate cada um: chave de idempotência no parceiro quando houver, registro de intenção e reconciliação quando não houver.
 
 > [!warning] Dedup em memória
-> **O que acontece:** o conjunto de ids processados vive na memória do processo. Um reinício ou um segundo pod fazem tudo passar de novo — e o bug some quando se tenta reproduzir com uma instância só.
-> **Por quê:** funciona no teste local, onde há um processo e nada reinicia.
-> **Como evitar:** o registro precisa ser **compartilhado e durável** (a mesma base do efeito, idealmente, para caber na mesma transação). Cache distribuído serve, mas perde a atomicidade com o efeito — o que reintroduz a janela de falha.
+> **O que acontece:** o conjunto de ids processados vive na memória do processo. Um reinício ou um segundo pod fazem tudo passar de novo — e o bug some quando se tenta reproduzir com uma instância só. **Por quê:** funciona no teste local, onde há um processo e nada reinicia. **Como evitar:** o registro precisa ser **compartilhado e durável** (a mesma base do efeito, idealmente, para caber na mesma transação). Cache distribuído serve, mas perde a atomicidade com o efeito — o que reintroduz a janela de falha.
 
 > [!warning] Idempotência que não cobre a ordem
-> **O que acontece:** dois eventos **diferentes** da mesma entidade chegam trocados. Cada um passa pelo dedup (ids distintos, corretamente), e a réplica fica com o estado antigo por cima do novo.
-> **Por quê:** idempotência e ordenação são problemas **distintos**, e resolver um dá a sensação de ter resolvido os dois.
-> **Como evitar:** idempotência protege contra repetição; contra desordem, use **versão no payload** e descarte o mais antigo, como na [[04 - Event-Carried State Transfer|nota 04]]. Sistemas de produção precisam das duas defesas.
+> **O que acontece:** dois eventos **diferentes** da mesma entidade chegam trocados. Cada um passa pelo dedup (ids distintos, corretamente), e a réplica fica com o estado antigo por cima do novo. **Por quê:** idempotência e ordenação são problemas **distintos**, e resolver um dá a sensação de ter resolvido os dois. **Como evitar:** idempotência protege contra repetição; contra desordem, use **versão no payload** e descarte o mais antigo, como na [[04 - Event-Carried State Transfer|nota 04]]. Sistemas de produção precisam das duas defesas.
 
 ## Como explicar em inglês
 

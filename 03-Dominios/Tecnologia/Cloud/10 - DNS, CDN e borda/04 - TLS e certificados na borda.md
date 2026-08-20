@@ -71,8 +71,7 @@ Essa é a peça que torna viável hospedar múltiplos domínios de clientes dife
 > [!tip] Assista: Server Name Indication (SNI) (Explained by Example)
 > **Canal:** PracticalNetworking-style deep dive | **Duração:** ~36min | **Idioma:** EN
 >
-> Monta o cenário do "prédio com uma recepcionista só" na prática, com um servidor real hospedando múltiplos certificados no mesmo IP, mostrando o handshake antes e depois do SNI entrar em cena.
-> Trecho de destaque [00:03]: *"server name indication or SNI for short is a TLS extension that allows the client to specify which host[s] it wants to connect [to] during the TLS handshake."*
+> Monta o cenário do "prédio com uma recepcionista só" na prática, com um servidor real hospedando múltiplos certificados no mesmo IP, mostrando o handshake antes e depois do SNI entrar em cena. Trecho de destaque [00:03]: *"server name indication or SNI for short is a TLS extension that allows the client to specify which host[s] it wants to connect [to] during the TLS handshake."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=t0zlO5-NWFU)
 
@@ -177,8 +176,7 @@ A partir daí, o ACM detecta o registro sozinho — geralmente em minutos, mas a
 > [!tip] Assista: Aprenda Domínios, DNS e HTTP: Tutorial Completo na AWS com Route 53, ACM, CloudFront
 > **Canal:** (tutorial em português) | **Duração:** ~36min | **Idioma:** PT-BR
 >
-> Mostra, no console, o exato momento de pedir um certificado gratuito ao ACM para um domínio — o mesmo fluxo desta seção, só que clicando em vez de rodar CLI.
-> Trecho de destaque [28:53]: *"precisar configurar aqui um certificado SSL para esse nosso domínio, então..."*
+> Mostra, no console, o exato momento de pedir um certificado gratuito ao ACM para um domínio — o mesmo fluxo desta seção, só que clicando em vez de rodar CLI. Trecho de destaque [28:53]: *"precisar configurar aqui um certificado SSL para esse nosso domínio, então..."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Os1AJhS2qvk)
 

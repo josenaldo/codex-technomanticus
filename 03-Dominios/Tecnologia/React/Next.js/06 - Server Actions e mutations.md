@@ -286,8 +286,7 @@ export function SubmitButton({ label }: { label: string }) {
 > [!tip] Assista: Next.js Forms Are Different Now (Server Actions, useActionState, Form Component)
 > **Canal:** ByteGrad | **Duração:** ~14min | **Idioma:** EN
 >
-> O vídeo constrói ao vivo a progressão de form HTML puro → Server Action → `useActionState`, deixando visível o que a nota descreve em prosa: a mudança obrigatória na assinatura da ação (o `prevState` que vira primeiro parâmetro), como o hook devolve loading state, error state e a `action` pronta para o form, e a demo de progressive enhancement funcionando sem JavaScript no browser.
-> Trecho de destaque [4:06]: *"The one tricky thing with this Hook is that if you use a Server Action your signature of your function actually changes — this is going to be the previous state, so basically what you returned from the function previously."*
+> O vídeo constrói ao vivo a progressão de form HTML puro → Server Action → `useActionState`, deixando visível o que a nota descreve em prosa: a mudança obrigatória na assinatura da ação (o `prevState` que vira primeiro parâmetro), como o hook devolve loading state, error state e a `action` pronta para o form, e a demo de progressive enhancement funcionando sem JavaScript no browser. Trecho de destaque [4:06]: *"The one tricky thing with this Hook is that if you use a Server Action your signature of your function actually changes — this is going to be the previous state, so basically what you returned from the function previously."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=DK7WqcL9Qq4)
 
@@ -307,19 +306,13 @@ Em **Client Components**, o Next enfileira as submissões se o JS ainda não car
 A maior categoria de erro em Server Actions é tratar a função como "código interno" quando ela é, na prática, um endpoint HTTP público.
 
 > [!warning] Server Action = endpoint público (armadilha central de segurança)
-> **O que acontece:** uma ação que faz `db.deletePost(id)` sem verificar quem está chamando pode ser invocada por qualquer um via `fetch` com o payload correto — mesmo que o botão "Excluir" não apareça na UI para aquele usuário.
-> **Por quê:** o Next gera um ID opaco para cada ação, mas IDs podem ser descobertos inspecionando o bundle. Esconder o botão na UI não protege a ação no servidor.
-> **Como evitar:** **sempre** verificar autenticação e autorização dentro da Server Action, independente de o usuário "conseguir chegar" ao formulário. Trate cada ação como um endpoint de API que qualquer cliente pode chamar.
+> **O que acontece:** uma ação que faz `db.deletePost(id)` sem verificar quem está chamando pode ser invocada por qualquer um via `fetch` com o payload correto — mesmo que o botão "Excluir" não apareça na UI para aquele usuário. **Por quê:** o Next gera um ID opaco para cada ação, mas IDs podem ser descobertos inspecionando o bundle. Esconder o botão na UI não protege a ação no servidor. **Como evitar:** **sempre** verificar autenticação e autorização dentro da Server Action, independente de o usuário "conseguir chegar" ao formulário. Trate cada ação como um endpoint de API que qualquer cliente pode chamar.
 
 > [!warning] Nunca confiar no `FormData` sem validação de schema
-> **O que acontece:** `formData.get('role')` pode retornar `"admin"` — qualquer string que o cliente quiser enviar.
-> **Por quê:** campos hidden, campos injetados via DevTools, requisições diretas via `curl` — tudo chega como `FormData`. O cliente controla o payload inteiro.
-> **Como evitar:** use Zod (ou similar) para validar **todo** dado vindo do `FormData` antes de qualquer leitura do banco. Nunca use `as string` sem checar o valor.
+> **O que acontece:** `formData.get('role')` pode retornar `"admin"` — qualquer string que o cliente quiser enviar. **Por quê:** campos hidden, campos injetados via DevTools, requisições diretas via `curl` — tudo chega como `FormData`. O cliente controla o payload inteiro. **Como evitar:** use Zod (ou similar) para validar **todo** dado vindo do `FormData` antes de qualquer leitura do banco. Nunca use `as string` sem checar o valor.
 
 > [!warning] `redirect()` dentro de `try/catch` engole o redirect
-> **O que acontece:** você envolve a mutação em `try/catch` para capturar erros do banco. O `redirect()` lança uma exceção interna — o `catch` genérico a captura junto e o redirect nunca acontece.
-> **Por quê:** `redirect()` usa exceção como mecanismo de controle de fluxo no Next/React.
-> **Como evitar:** coloque o `redirect()` **fora** do bloco `try/catch`, depois que a mutação passou com sucesso.
+> **O que acontece:** você envolve a mutação em `try/catch` para capturar erros do banco. O `redirect()` lança uma exceção interna — o `catch` genérico a captura junto e o redirect nunca acontece. **Por quê:** `redirect()` usa exceção como mecanismo de controle de fluxo no Next/React. **Como evitar:** coloque o `redirect()` **fora** do bloco `try/catch`, depois que a mutação passou com sucesso.
 
 ```typescript
 // ✗ ERRADO — redirect nunca executa

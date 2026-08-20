@@ -90,8 +90,7 @@ De novo, isto é ilustração do princípio — "a falha pode ser simulada por c
 > [!tip] Assista: AWS re:Invent 2022 - Building confidence through chaos engineering on AWS (ARC307)
 > **Canal:** AWS Events (oficial) | **Duração:** ~55min | **Idioma:** EN
 >
-> Detalha como organizar um Game Day de verdade — os papéis envolvidos (incluindo um "chaos champion" que defende o experimento dentro da empresa), como escolher o que testar, e como definir de antemão um critério claro de sucesso antes de rodar o experimento em produção. Mostra, na prática, o que separa "testar procedimento de recuperação" de só torcer para que ele funcione.
-> Trecho de destaque [24:25]: *"the various people that we want in the Game Day, like the chaos champion that will advocate the Game Day throughout the company"*.
+> Detalha como organizar um Game Day de verdade — os papéis envolvidos (incluindo um "chaos champion" que defende o experimento dentro da empresa), como escolher o que testar, e como definir de antemão um critério claro de sucesso antes de rodar o experimento em produção. Mostra, na prática, o que separa "testar procedimento de recuperação" de só torcer para que ele funcione. Trecho de destaque [24:25]: *"the various people that we want in the Game Day, like the chaos champion that will advocate the Game Day throughout the company"*.
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=tm5GEePP1PY)
 

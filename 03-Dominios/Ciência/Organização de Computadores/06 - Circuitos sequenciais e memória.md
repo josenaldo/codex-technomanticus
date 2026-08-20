@@ -107,8 +107,7 @@ Por que funciona? Quando S=1 e R=0: a NOR 1 vê S=1, logo sua saída Q=0. A NOR 
 
 O SR latch tem o problema do estado proibido. O **D latch** elimina isso com uma única entrada de dado (D) e uma entrada de habilitação (Enable/WE).
 
-Quando Enable=1: Q segue D imediatamente (transparente).
-Quando Enable=0: Q congela no último valor capturado.
+Quando Enable=1: Q segue D imediatamente (transparente). Quando Enable=0: Q congela no último valor capturado.
 
 ```mermaid
 graph LR

@@ -380,24 +380,16 @@ Sem a closure sobre `timer`, cada chamada criaria um timer independente e a fun�
 ## Armadilhas comuns
 
 > [!warning] Closure captura referência, não valor
-> **O que acontece:** Você espera que a função "lembre" um valor, mas ela lembra o binding — e o binding pode mudar.
-> **Por quê:** `let x = 1; const fn = () => x; x = 2; fn(); // 2` — a closure não tirou uma fotografia de `x`, ela guarda o endereço de memória onde `x` vive.
-> **Como evitar:** Se precisar capturar um snapshot, passe como argumento ou use uma variável local imutável: `const snapshot = x; const fn = () => snapshot;`
+> **O que acontece:** Você espera que a função "lembre" um valor, mas ela lembra o binding — e o binding pode mudar. **Por quê:** `let x = 1; const fn = () => x; x = 2; fn(); // 2` — a closure não tirou uma fotografia de `x`, ela guarda o endereço de memória onde `x` vive. **Como evitar:** Se precisar capturar um snapshot, passe como argumento ou use uma variável local imutável: `const snapshot = x; const fn = () => snapshot;`
 
 > [!warning] `for` + `var` + callbacks assíncronos
-> **O que acontece:** Todos os callbacks imprimem o mesmo valor (o final do loop), não o esperado por iteração.
-> **Por quê:** `var` tem escopo de função, então todas as iterações compartilham o mesmo binding.
-> **Como evitar:** Use `let` (preferido em código moderno), IIFE por iteração, ou `.bind()`. Nunca use `var` em código novo.
+> **O que acontece:** Todos os callbacks imprimem o mesmo valor (o final do loop), não o esperado por iteração. **Por quê:** `var` tem escopo de função, então todas as iterações compartilham o mesmo binding. **Como evitar:** Use `let` (preferido em código moderno), IIFE por iteração, ou `.bind()`. Nunca use `var` em código novo.
 
 > [!warning] Closures e vazamento de memória
-> **O que acontece:** Um objeto grande fica preso na memória mais tempo do que deveria.
-> **Por quê:** Enquanto uma closure referencia o Lexical Environment, **todos** os bindings daquele ambiente ficam vivos — não só os que a closure usa explicitamente. Se o ambiente contém uma referência a um DOM node removido ou um array grande, eles não serão coletados.
-> **Como evitar:** Ao terminar de usar uma closure de longa duração, atribua `null` à variável que a referencia: `contador = null;`. Para `EventListener`, sempre remova com `removeEventListener`. Ver nota sobre Memory management (nota 21).
+> **O que acontece:** Um objeto grande fica preso na memória mais tempo do que deveria. **Por quê:** Enquanto uma closure referencia o Lexical Environment, **todos** os bindings daquele ambiente ficam vivos — não só os que a closure usa explicitamente. Se o ambiente contém uma referência a um DOM node removido ou um array grande, eles não serão coletados. **Como evitar:** Ao terminar de usar uma closure de longa duração, atribua `null` à variável que a referencia: `contador = null;`. Para `EventListener`, sempre remova com `removeEventListener`. Ver nota sobre Memory management (nota 21).
 
 > [!warning] Closures não são mágica — têm custo
-> **O que acontece:** Em loops muito apertados, criar closures por iteração pode gerar pressão de alocação.
-> **Por quê:** Cada closure cria um novo objeto de ambiente. Em JavaScript moderno, engines como V8 otimizam closures de forma agressiva (escape analysis, stack allocation), mas o custo existe em casos extremos.
-> **Como evitar:** Em código de performance crítica (tight loops, rendering), prefira passar estado por argumento em vez de capturar por closure. Meça antes de otimizar.
+> **O que acontece:** Em loops muito apertados, criar closures por iteração pode gerar pressão de alocação. **Por quê:** Cada closure cria um novo objeto de ambiente. Em JavaScript moderno, engines como V8 otimizam closures de forma agressiva (escape analysis, stack allocation), mas o custo existe em casos extremos. **Como evitar:** Em código de performance crítica (tight loops, rendering), prefira passar estado por argumento em vez de capturar por closure. Meça antes de otimizar.
 
 > [!warning] `using` + closure: recurso descartado ainda capturado
 > **O que acontece:** O keyword `using` (Explicit Resource Management, TC39 Stage 4 — disponível no Chrome 127+, Node.js recente e Deno) garante que `Symbol.dispose()` seja chamado ao sair do bloco. A armadilha: retornar uma closure que captura um recurso `using` faz com que a closure continue viva apontando para um objeto **já descartado**.
@@ -410,8 +402,7 @@ Sem a closure sobre `timer`, cada chamada criaria um timer independente e a fun�
 > const fn = criarHandler(); // fn() vai falhar — resource foi disposed
 > ```
 >
-> **Por quê:** O `Symbol.dispose()` é chamado quando `criarHandler` encerra, mas a closure retornada mantém o `[[Environment]]` vivo — com o objeto em estado inválido. Diferente de `null`, o ponteiro existe; o objeto, não.
-> **Como evitar:** Nunca retorne closures que capturam objetos `using` além do escopo do bloco que os declarou. Se precisar do resultado, extraia-o antes de retornar: `const result = resource.read(); return () => result;`
+> **Por quê:** O `Symbol.dispose()` é chamado quando `criarHandler` encerra, mas a closure retornada mantém o `[[Environment]]` vivo — com o objeto em estado inválido. Diferente de `null`, o ponteiro existe; o objeto, não. **Como evitar:** Nunca retorne closures que capturam objetos `using` além do escopo do bloco que os declarou. Se precisar do resultado, extraia-o antes de retornar: `const result = resource.read(); return () => result;`
 
 > [!info] V8 e a localização física do contexto de closure
 > O V8 aplica **escape analysis** para decidir onde alocar o contexto léxico de uma closure. Se a engine prova que a closure **não escapa** da função que a criou (não é retornada, não é passada para outro contexto), ela pode manter o contexto na stack — custo zero de GC. Quando a closure **escapa** (o caso mais comum: callbacks, event listeners, módulos), o contexto vai para o heap e fica sob gestão do garbage collector. Isso explica por que closures de longa duração e closures em cadeias de callbacks de streaming custam mais do que parecem: cada contexto é um objeto heap distinto com referências que o GC precisa rastrear. Ver também: [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/03 - Call stack, heap e queues|Node · Call stack, heap e queues]].

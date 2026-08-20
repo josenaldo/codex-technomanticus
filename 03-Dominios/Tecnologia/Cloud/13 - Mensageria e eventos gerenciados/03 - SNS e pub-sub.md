@@ -72,8 +72,7 @@ Esse combo — **SNS pra distribuir, SQS pra amortecer e durar** — é tão com
 > [!tip] Assista: AWS SNS Fanout Demo
 > **Canal:** Matthew Eddy | **Duração:** ~8min | **Idioma:** EN
 >
-> Uma demo curta e direta no console: um tópico SNS publicando pra Lambda como assinante, mostrando na prática como um único `publish` vira invocação automática do outro lado — o mecanismo de push que esta nota descreve, visto rodando de verdade.
-> Trecho de destaque [0:11]: *"the fanout architecture is a way for SNS to send messages to multiple sources — these sources can be things like Amazon SQS, Kinesis, Lambda, HTTP endpoints and more"*
+> Uma demo curta e direta no console: um tópico SNS publicando pra Lambda como assinante, mostrando na prática como um único `publish` vira invocação automática do outro lado — o mecanismo de push que esta nota descreve, visto rodando de verdade. Trecho de destaque [0:11]: *"the fanout architecture is a way for SNS to send messages to multiple sources — these sources can be things like Amazon SQS, Kinesis, Lambda, HTTP endpoints and more"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Gx27nUL7gn4)
 

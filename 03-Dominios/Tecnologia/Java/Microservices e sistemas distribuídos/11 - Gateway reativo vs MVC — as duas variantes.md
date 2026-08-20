@@ -22,8 +22,7 @@ aliases:
 > O Spring Cloud Gateway hoje tem **duas variantes vivas** do servidor — você escolhe uma na hora de declarar o *starter*:
 > - **Reativa** — `spring-cloud-starter-gateway-server-webflux`. Roda sobre **WebFlux/Netty**, modelo **não-bloqueante**. É o gateway **original**, o que a maioria dos tutoriais ainda assume.
 > - **MVC** — `spring-cloud-starter-gateway-server-webmvc`. Roda sobre o **stack servlet** (bloqueante). É a variante **mais nova**, para quem **não quer** carregar o modelo reativo só por causa do gateway.
-> - Os dois *starters* foram **renomeados** no trem **2025.x**: o reativo era `spring-cloud-starter-gateway` e o MVC era `spring-cloud-starter-gateway-mvc`. Usar o nome antigo é a armadilha número um.
-> Regra de bolso: **time já reativo → WebFlux; time servlet/MVC sem fluência reativa → WebMVC.** O modelo reativo em si (Netty, *backpressure*) é assunto do **Galho 11** — aqui você só escolhe a variante.
+> - Os dois *starters* foram **renomeados** no trem **2025.x**: o reativo era `spring-cloud-starter-gateway` e o MVC era `spring-cloud-starter-gateway-mvc`. Usar o nome antigo é a armadilha número um. Regra de bolso: **time já reativo → WebFlux; time servlet/MVC sem fluência reativa → WebMVC.** O modelo reativo em si (Netty, *backpressure*) é assunto do **Galho 11** — aqui você só escolhe a variante.
 
 ## O que é
 

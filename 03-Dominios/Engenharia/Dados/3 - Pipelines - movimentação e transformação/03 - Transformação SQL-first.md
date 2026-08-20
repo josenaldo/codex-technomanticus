@@ -44,9 +44,7 @@ Num time sem disciplina de transformação, isso normalmente acontece de um dest
 O problema comum aos três: **a lógica de negócio que define "o que é uma venda válida" ou "como calcular receita líquida" mora espalhada, sem versão, sem teste e sem documentação**. Seis meses depois, alguém precisa mudar uma regra — digamos, passar a excluir pedidos cancelados do cálculo de receita — e a pergunta "quais tabelas e dashboards dependem dessa lógica?" não tem resposta confiável. Ninguém sabe o **lineage** (a linha de origem: de onde um número vem, por quais transformações ele passou). A mudança sai, quebra um dashboard que ninguém lembrava que existia, e o time de dados passa a ser visto como frágil — não porque o SQL estivesse errado, mas porque **a disciplina em volta do SQL** nunca existiu.
 
 > [!warning] "Funciona, então está documentado o suficiente"
-> **O que acontece:** uma stored procedure ou um script de transformação roda direito por meses, e ninguém sente falta de documentação — até o dia em que precisa mudar algo.
-> **Por quê:** "funcionar" e "ser seguro de mudar" são propriedades diferentes. Sem saber que outras tabelas e dashboards dependem de um modelo, qualquer alteração vira aposta — você só descobre o efeito colateral depois que o dashboard errado já foi visto por alguém.
-> **Como evitar:** tratar o lineage como produto do próprio código de transformação, não como artefato manual à parte. Se o grafo de dependência não é gerado automaticamente a partir de como os modelos se referenciam, ele vai ficar desatualizado — é questão de tempo.
+> **O que acontece:** uma stored procedure ou um script de transformação roda direito por meses, e ninguém sente falta de documentação — até o dia em que precisa mudar algo. **Por quê:** "funcionar" e "ser seguro de mudar" são propriedades diferentes. Sem saber que outras tabelas e dashboards dependem de um modelo, qualquer alteração vira aposta — você só descobre o efeito colateral depois que o dashboard errado já foi visto por alguém. **Como evitar:** tratar o lineage como produto do próprio código de transformação, não como artefato manual à parte. Se o grafo de dependência não é gerado automaticamente a partir de como os modelos se referenciam, ele vai ficar desatualizado — é questão de tempo.
 
 Para fixar o contraste antes de entrar no paradigma que resolve isso:
 
@@ -75,8 +73,7 @@ O modelo mental, hoje associado a ferramentas como dbt e SQLMesh mas **não excl
 > - **Fivetran e dbt Labs completaram uma fusão total em junho de 2026** (anunciada em outubro de 2025), unindo a ferramenta líder de ingestão (EL) gerenciada com a ferramenta líder de transformação sob uma mesma empresa — consolidação explícita ao redor da narrativa de "infraestrutura de dados confiável para agentes de IA"[^fivetran-dbt]. dbt Core permanece open source sob licença Apache 2.0.
 > - **dbt Fusion**, o motor de nova geração escrito em Rust (com entendimento nativo de SQL através de múltiplos dialetos de warehouse), promete análise estática do projeto inteiro e ganhos de performance de parsing/compilação relatados em até 30x sobre o dbt Core clássico — feedback mais rápido em CI e erros descobertos antes de rodar a query de verdade[^dbt-fusion].
 > - **SQLMesh** (Tobiko) se consolidou como alternativa credível ao dbt, partindo de uma premissa diferente: entender a *semântica* do SQL (não só o texto), o que habilita recursos como detecção automática de mudanças "breaking" entre versões de um modelo.
-> - A **semantic layer** (adiante nesta nota) amadureceu de recurso experimental para componente esperado de qualquer projeto de BI que leve governança de métricas a sério.
-> Nada disso muda o modelo mental descrito aqui — só acelera a engine por baixo e consolida quem é dono de qual pedaço do ecossistema. Verifique o estado das ferramentas antes de decidir entre elas; esta nota ensina o paradigma, não uma ferramenta.
+> - A **semantic layer** (adiante nesta nota) amadureceu de recurso experimental para componente esperado de qualquer projeto de BI que leve governança de métricas a sério. Nada disso muda o modelo mental descrito aqui — só acelera a engine por baixo e consolida quem é dono de qual pedaço do ecossistema. Verifique o estado das ferramentas antes de decidir entre elas; esta nota ensina o paradigma, não uma ferramenta.
 
 ## Os pilares do paradigma SQL-first
 
@@ -287,6 +284,4 @@ Modelos transformados, testados e documentados ainda precisam **rodar** — na o
 - dbt Labs — [*dbt Fusion engine*](https://docs.getdbt.com/docs/fusion) e [*About Fusion*](https://docs.getdbt.com/docs/fusion/about-fusion) — documentação do motor de nova geração em Rust, com análise estática e ganhos de performance de parsing/compilação. (WebSearch, 2026-07)
 - Reis, Joe & Housley, Matt — *Fundamentals of Data Engineering: Plan and Build Robust Data Systems*, O'Reilly, 2022 — enquadramento do ciclo de vida e da fronteira entre data engineering e analytics engineering, referenciado na nota 01 desta trilha.
 
-[^dbt-ae]: dbt Labs, *What is analytics engineering?*.
-[^fivetran-dbt]: Fivetran, *Fivetran + dbt Labs Complete Merger to Create the Data Infrastructure for Trusted AI Agents*, junho de 2026.
-[^dbt-fusion]: dbt Labs, documentação do dbt Fusion engine, docs.getdbt.com/docs/fusion.
+[^dbt-ae]: dbt Labs, *What is analytics engineering?*. [^fivetran-dbt]: Fivetran, *Fivetran + dbt Labs Complete Merger to Create the Data Infrastructure for Trusted AI Agents*, junho de 2026. [^dbt-fusion]: dbt Labs, documentação do dbt Fusion engine, docs.getdbt.com/docs/fusion.

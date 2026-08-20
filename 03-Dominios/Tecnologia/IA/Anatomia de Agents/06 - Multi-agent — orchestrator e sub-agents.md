@@ -144,11 +144,9 @@ Múltiplos agents conversam entre si até chegar a consenso. Mais experimental; 
 
 > [!warning] Não passe histórico bruto
 >
-> Padrão errado: orchestrator passa histórico inteiro para sub-agent.
-> Resultado: sub-agent vê demais, contexto inflado, decisões erradas.
+> Padrão errado: orchestrator passa histórico inteiro para sub-agent. Resultado: sub-agent vê demais, contexto inflado, decisões erradas.
 >
-> Padrão certo: orchestrator passa **resumo + intent + dados estruturados**.
-> Sub-agent recebe contexto enxuto, foca na sub-tarefa.
+> Padrão certo: orchestrator passa **resumo + intent + dados estruturados**. Sub-agent recebe contexto enxuto, foca na sub-tarefa.
 
 ```python
 # Errado

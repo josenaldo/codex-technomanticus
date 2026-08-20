@@ -142,9 +142,7 @@ onLCP((metric) => {
 Isso é ouro para diagnóstico: em vez de "o LCP do mobile está ruim", seu dashboard mostra "o LCP do mobile está ruim **e o elemento é `img.hero-banner`**". Você acabou de pular direto para a causa — que é justamente o assunto dos Galhos 2 e 3.
 
 > [!warning] Coletar sem rotular
-> **O que acontece:** você junta milhões de métricas, mas só consegue dizer "o INP médio do site é X" — a mesma coisa que o CrUX já dava, só que com mais trabalho.
-> **Por quê:** o valor do RUM próprio está nos **rótulos** (rota, versão de deploy, país, dispositivo, experimento). Sem eles, você não consegue segmentar nem achar o culpado.
-> **Como evitar:** anexe dimensões ao enviar (`location.pathname`, um `BUILD_ID`, o país do CDN, o braço do A/B). É isso que transforma "estamos lentos" em "a rota `/checkout` no deploy `abc123` regrediu o INP no Android".
+> **O que acontece:** você junta milhões de métricas, mas só consegue dizer "o INP médio do site é X" — a mesma coisa que o CrUX já dava, só que com mais trabalho. **Por quê:** o valor do RUM próprio está nos **rótulos** (rota, versão de deploy, país, dispositivo, experimento). Sem eles, você não consegue segmentar nem achar o culpado. **Como evitar:** anexe dimensões ao enviar (`location.pathname`, um `BUILD_ID`, o país do CDN, o braço do A/B). É isso que transforma "estamos lentos" em "a rota `/checkout` no deploy `abc123` regrediu o INP no Android".
 
 **Instrumentar RUM em uma frase:** a lib `web-vitals` mede cada CWV corretamente e já classifica o `rating`; você bufferiza os valores e despacha o lote com `sendBeacon` no `visibilitychange → hidden` (porque INP e CLS só ficam finais no fim da visita), rotulando cada envio para poder segmentar e diagnosticar.
 

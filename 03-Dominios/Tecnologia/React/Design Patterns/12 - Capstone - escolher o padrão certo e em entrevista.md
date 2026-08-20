@@ -432,34 +432,22 @@ Você define o tipo do Context, tipifica o hook de acesso com um guard que lanç
 ## Armadilhas comuns
 
 > [!warning] Props booleanas em vez de composição
-> **O que acontece:** O componente acumula `isLarge`, `isPrimary`, `hasIcon`, `isDisabled`, `isLoading` — e combinações inválidas se tornam possíveis (`<Button isLarge isSmall />`).
-> **Por quê:** É mais rápido adicionar uma prop do que redesenhar a API, então o componente cresce incrementalmente.
-> **Como evitar:** Use variants via `variant="primary" | "secondary"`, size via `size="sm" | "md" | "lg"`, e componentes especializados (`<IconButton>`) em vez de booleanos. Se a combinação não fizer sentido visualmente, provavelmente é um componente diferente.
+> **O que acontece:** O componente acumula `isLarge`, `isPrimary`, `hasIcon`, `isDisabled`, `isLoading` — e combinações inválidas se tornam possíveis (`<Button isLarge isSmall />`). **Por quê:** É mais rápido adicionar uma prop do que redesenhar a API, então o componente cresce incrementalmente. **Como evitar:** Use variants via `variant="primary" | "secondary"`, size via `size="sm" | "md" | "lg"`, e componentes especializados (`<IconButton>`) em vez de booleanos. Se a combinação não fizer sentido visualmente, provavelmente é um componente diferente.
 
 > [!warning] Usar Context para estado local
-> **O que acontece:** Um modal tem seu estado de abertura (`isOpen`) num Context global. Toda a árvore re-renderiza quando o modal abre.
-> **Por quê:** Context parece a solução natural para "compartilhar estado", mesmo quando o estado é puramente local ao componente.
-> **Como evitar:** Estado local (`useState`) fica no componente ou no hook do componente. Context é para estado que realmente precisa ser acessado em partes distantes da árvore. Se apenas o componente pai e os filhos diretos precisam do estado, elevação de estado é suficiente.
+> **O que acontece:** Um modal tem seu estado de abertura (`isOpen`) num Context global. Toda a árvore re-renderiza quando o modal abre. **Por quê:** Context parece a solução natural para "compartilhar estado", mesmo quando o estado é puramente local ao componente. **Como evitar:** Estado local (`useState`) fica no componente ou no hook do componente. Context é para estado que realmente precisa ser acessado em partes distantes da árvore. Se apenas o componente pai e os filhos diretos precisam do estado, elevação de estado é suficiente.
 
 > [!warning] Aplicar compound components onde props simples bastam
-> **O que acontece:** Um `<Avatar>` que aceita `src` e `alt` é reescrito como `<Avatar><Avatar.Image src={src} alt={alt} /><Avatar.Fallback>{initials}</Avatar.Fallback></Avatar>` — uma API verbosa para um componente simples.
-> **Por quê:** O padrão é elegante; o desenvolvedor quer usá-lo em todo lugar.
-> **Como evitar:** Compound components justificam-se quando há ≥2 subcomponentes com estado compartilhado implícito e quando a API declarativa realmente agrega legibilidade. Para componentes com 1–3 props, props simples são melhores.
+> **O que acontece:** Um `<Avatar>` que aceita `src` e `alt` é reescrito como `<Avatar><Avatar.Image src={src} alt={alt} /><Avatar.Fallback>{initials}</Avatar.Fallback></Avatar>` — uma API verbosa para um componente simples. **Por quê:** O padrão é elegante; o desenvolvedor quer usá-lo em todo lugar. **Como evitar:** Compound components justificam-se quando há ≥2 subcomponentes com estado compartilhado implícito e quando a API declarativa realmente agrega legibilidade. Para componentes com 1–3 props, props simples são melhores.
 
 > [!warning] HOC que não encaminha ref (forwardRef esquecido)
-> **O que acontece:** `withAuth(Input)` não funciona com `ref` — o ref aponta para o wrapper, não para o `<input>` DOM.
-> **Por quê:** HOCs envolvem o componente mas não propagam refs automaticamente em componentes de função.
-> **Como evitar:** Sempre use `React.forwardRef` no componente interno e propague o ref explicitamente. Com hooks, esse problema desaparece — o hook não cria nó de componente.
+> **O que acontece:** `withAuth(Input)` não funciona com `ref` — o ref aponta para o wrapper, não para o `<input>` DOM. **Por quê:** HOCs envolvem o componente mas não propagam refs automaticamente em componentes de função. **Como evitar:** Sempre use `React.forwardRef` no componente interno e propague o ref explicitamente. Com hooks, esse problema desaparece — o hook não cria nó de componente.
 
 > [!warning] Render props aninhados sem extração para hook
-> **O que acontece:** `<Mouse render={({ x, y }) => <KeyboardTracker render={({ key }) => <Theme render={({ theme }) => <Component x={x} y={y} pressedKey={key} theme={theme} />} />} />} />` — pirâmide de callbacks.
-> **Por quê:** Cada render prop resolve um problema, mas compor vários cria callback hell.
-> **Como evitar:** Extraia cada render prop para um custom hook (`useMouse`, `useKeyboard`, `useTheme`) e componha no corpo do componente. Se você precisa expor IoC ao consumidor, use um único render prop no nível mais externo ou compound components.
+> **O que acontece:** `<Mouse render={({ x, y }) => <KeyboardTracker render={({ key }) => <Theme render={({ theme }) => <Component x={x} y={y} pressedKey={key} theme={theme} />} />} />} />` — pirâmide de callbacks. **Por quê:** Cada render prop resolve um problema, mas compor vários cria callback hell. **Como evitar:** Extraia cada render prop para um custom hook (`useMouse`, `useKeyboard`, `useTheme`) e componha no corpo do componente. Se você precisa expor IoC ao consumidor, use um único render prop no nível mais externo ou compound components.
 
 > [!warning] Ignorar memoização em Contexts de alta frequência
-> **O que acontece:** Um `<MouseProvider>` que atualiza `{x, y}` 60x/s re-renderiza todos os consumidores a cada frame — incluindo componentes que só precisam de `x`.
-> **Por quê:** `useContext` subscreve todo o valor, não partes dele.
-> **Como evitar:** Separe Contexts por preocupação e frequência de atualização. Use `useMemo` no valor. Para seletores granulares, considere `zustand`, `jotai` ou `use-context-selector`.
+> **O que acontece:** Um `<MouseProvider>` que atualiza `{x, y}` 60x/s re-renderiza todos os consumidores a cada frame — incluindo componentes que só precisam de `x`. **Por quê:** `useContext` subscreve todo o valor, não partes dele. **Como evitar:** Separe Contexts por preocupação e frequência de atualização. Use `useMemo` no valor. Para seletores granulares, considere `zustand`, `jotai` ou `use-context-selector`.
 
 ## Onde o galho se conecta
 

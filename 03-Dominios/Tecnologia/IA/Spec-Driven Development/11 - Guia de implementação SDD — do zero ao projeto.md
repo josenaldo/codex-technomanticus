@@ -360,11 +360,9 @@ jobs:
 
 A maior dificuldade de spec-anchored não é o setup — é manter a spec em sincronia quando o código muda. Dois padrões que funcionam:
 
-**Pattern 1: Spec-first em bugfixes**
-Antes de corrigir um bug, cheque se a spec o descreve. Se o bug é um comportamento não descrito na spec, adicione à spec (como AC negativo) antes de corrigir.
+**Pattern 1: Spec-first em bugfixes** Antes de corrigir um bug, cheque se a spec o descreve. Se o bug é um comportamento não descrito na spec, adicione à spec (como AC negativo) antes de corrigir.
 
-**Pattern 2: Spec review em retrospectiva**
-A cada sprint, revisão de 15 min: "Quais specs ficaram stale neste sprint?" Atualiza as que ficaram para trás.
+**Pattern 2: Spec review em retrospectiva** A cada sprint, revisão de 15 min: "Quais specs ficaram stale neste sprint?" Atualiza as que ficaram para trás.
 
 ## Semanas 9-12 — Maturidade
 

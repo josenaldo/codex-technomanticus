@@ -16,9 +16,7 @@ tags:
 # Armadilhas de configuração — o que dá errado e como evitar
 
 > [!abstract] TL;DR
-> Os erros de configuração mais comuns do Claude Code se dividem em três categorias: permissões erradas (agente para a cada passo ou faz coisas perigosas sem perguntar), CLAUDE.md ineficaz (contexto ausente, desatualizado ou diluído em ruído) e segurança (secrets vazando pro git).
-> Cada armadilha catalogada aqui segue o mesmo padrão de diagnóstico — sintoma observável, causa mecânica, fix concreto — porque comportamento errado do agente quase nunca é aleatório: é sempre reflexo de uma configuração ausente ou mal calibrada em algum lugar da pilha.
-> As doze armadilhas abaixo cobrem os casos reais mais recorrentes, do allow list vazio (agente trava em tudo) ao secret commitado por engano (rotação é o único fix que conta de verdade); a seção "Casos práticos" reconstrói dois desses incidentes com a sequência completa de sintoma → decisão errada → correção.
+> Os erros de configuração mais comuns do Claude Code se dividem em três categorias: permissões erradas (agente para a cada passo ou faz coisas perigosas sem perguntar), CLAUDE.md ineficaz (contexto ausente, desatualizado ou diluído em ruído) e segurança (secrets vazando pro git). Cada armadilha catalogada aqui segue o mesmo padrão de diagnóstico — sintoma observável, causa mecânica, fix concreto — porque comportamento errado do agente quase nunca é aleatório: é sempre reflexo de uma configuração ausente ou mal calibrada em algum lugar da pilha. As doze armadilhas abaixo cobrem os casos reais mais recorrentes, do allow list vazio (agente trava em tudo) ao secret commitado por engano (rotação é o único fix que conta de verdade); a seção "Casos práticos" reconstrói dois desses incidentes com a sequência completa de sintoma → decisão errada → correção.
 
 ---
 
@@ -262,8 +260,7 @@ flowchart TD
 > [!tip] Assista: Permissions, settings.json, and plan mode: making one Claude Code session safe
 > **Canal:** Tyler Renelle | **Duração:** ~26min | **Idioma:** EN
 >
-> Complementa as Armadilhas 1-5 explicando o mecanismo por trás delas: permission rules não sobrescrevem entre camadas, elas se **fundem** (allow/deny/ask de todos os arquivos são concatenados e deduplicados), e quando um allow e um deny colidem, o deny sempre vence — mesmo que venha de uma camada "mais fraca" na hierarquia geral de settings.
-> Trecho de destaque [6:05]: *"If you write a deny rule, that's a wall the program enforces no matter what the model decides."*
+> Complementa as Armadilhas 1-5 explicando o mecanismo por trás delas: permission rules não sobrescrevem entre camadas, elas se **fundem** (allow/deny/ask de todos os arquivos são concatenados e deduplicados), e quando um allow e um deny colidem, o deny sempre vence — mesmo que venha de uma camada "mais fraca" na hierarquia geral de settings. Trecho de destaque [6:05]: *"If you write a deny rule, that's a wall the program enforces no matter what the model decides."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=CT9xynq7WZM)
 

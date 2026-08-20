@@ -279,8 +279,7 @@ A soma desses custos é a **dívida técnica** do projeto, expressa em tempo (ex
 Em cima disso, o SonarQube calcula o **Technical Debt Ratio**:
 
 > [!info] A conta do *debt ratio*
-> `debt ratio = custo de remediação ÷ (custo de desenvolver o código do zero)`
-> O denominador é estimado como *custo de desenvolver uma linha × número de linhas* — com o custo por linha configurável (padrão histórico: **30 minutos/linha** no SonarQube). É uma razão entre "quanto custa consertar" e "quanto custou construir".
+> `debt ratio = custo de remediação ÷ (custo de desenvolver o código do zero)` O denominador é estimado como *custo de desenvolver uma linha × número de linhas* — com o custo por linha configurável (padrão histórico: **30 minutos/linha** no SonarQube). É uma razão entre "quanto custa consertar" e "quanto custou construir".
 
 Um exemplo torna a fórmula tangível.
 
@@ -474,8 +473,7 @@ A próxima nota trata da dívida que ninguém consegue medir e que, quando cobra
 ## Referências
 
 > [!tip] Assista — Debt Metaphor
-> **Ward Cunningham** · 5min · [Debt Metaphor](https://www.youtube.com/watch?v=pqeJFYwnkjE)
-> Cunningham explicando, em cinco minutos, o que quis dizer com a metáfora que criou — e corrigindo o mal-entendido mais comum: dívida técnica nunca significou "escrever código ruim de propósito". É a leitura que sustenta o argumento do "a mess is not a technical debt".
+> **Ward Cunningham** · 5min · [Debt Metaphor](https://www.youtube.com/watch?v=pqeJFYwnkjE) Cunningham explicando, em cinco minutos, o que quis dizer com a metáfora que criou — e corrigindo o mal-entendido mais comum: dívida técnica nunca significou "escrever código ruim de propósito". É a leitura que sustenta o argumento do "a mess is not a technical debt".
 
 - **Ward Cunningham** — *The WyCash Portfolio Management System* (relatório de experiência, OOPSLA 1992). A cunhagem da metáfora: *"Shipping first time code is like going into debt... Every minute spent on not-quite-right code counts as interest on that debt."* [c2.com/doc/oopsla92.html](https://c2.com/doc/oopsla92.html)
 - **Ward Cunningham** — *Debt Metaphor* (vídeo, 2009). A correção do mal-entendido: a dívida é *"writing code to reflect your current understanding of a problem even if that understanding is partial"*, e a metáfora *"depends upon you writing code that is clean enough to be able to refactor as you come to understand your problem"*; mais o *"borrowing money thinking that you never had to pay it back"*. Transcrição em [cmdev.com/papers/debt-metaphor](https://cmdev.com/papers/debt-metaphor/).

@@ -195,19 +195,13 @@ Essa última linha é a mais importante do nível até aqui: **force push não "
 ## Armadilhas comuns
 
 > [!warning] Editar arquivos dentro de `.git/` na mão
-> **O que acontece:** dá certo, até o dia em que não dá — refs empacotadas, `reflog` incoerente, estado inconsistente.
-> **Por quê:** o Git mantém invariantes (reflog, packed-refs, index) que os comandos atualizam juntos.
-> **Como evitar:** inspecione à vontade (`cat` é inofensivo), mas escreva sempre por comando — `git update-ref`, `git symbolic-ref`, `git branch -f`.
+> **O que acontece:** dá certo, até o dia em que não dá — refs empacotadas, `reflog` incoerente, estado inconsistente. **Por quê:** o Git mantém invariantes (reflog, packed-refs, index) que os comandos atualizam juntos. **Como evitar:** inspecione à vontade (`cat` é inofensivo), mas escreva sempre por comando — `git update-ref`, `git symbolic-ref`, `git branch -f`.
 
 > [!warning] `git branch -f main <hash>` com o ramo em uso
-> **O que acontece:** você move a ref à força e o repositório fica com a árvore de trabalho descasada do que a ref diz.
-> **Por quê:** mover a ref não atualiza os arquivos; `reset` faz as duas coisas de forma coordenada.
-> **Como evitar:** para reposicionar o ramo em que você está, use `git reset --hard <hash>` (com todos os cuidados da nota 22), não `branch -f`.
+> **O que acontece:** você move a ref à força e o repositório fica com a árvore de trabalho descasada do que a ref diz. **Por quê:** mover a ref não atualiza os arquivos; `reset` faz as duas coisas de forma coordenada. **Como evitar:** para reposicionar o ramo em que você está, use `git reset --hard <hash>` (com todos os cuidados da nota 22), não `branch -f`.
 
 > [!warning] Confundir `origin/main` com `main`
-> **O que acontece:** a pessoa faz `git merge origin/main` esperando que o servidor tenha sido consultado, e integra uma versão antiga.
-> **Por quê:** `origin/main` é a fotografia da última sincronização, não o servidor.
-> **Como evitar:** `git fetch` antes. E lembre que `origin/main` é uma ref **somente leitura** do seu lado: você nunca commita nela.
+> **O que acontece:** a pessoa faz `git merge origin/main` esperando que o servidor tenha sido consultado, e integra uma versão antiga. **Por quê:** `origin/main` é a fotografia da última sincronização, não o servidor. **Como evitar:** `git fetch` antes. E lembre que `origin/main` é uma ref **somente leitura** do seu lado: você nunca commita nela.
 
 ---
 

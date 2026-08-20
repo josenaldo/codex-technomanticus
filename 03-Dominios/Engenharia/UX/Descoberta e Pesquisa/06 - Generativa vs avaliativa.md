@@ -91,19 +91,13 @@ Uma equipe redesenha o fluxo de cadastro de um produto B2B e roda um teste de us
 ## Armadilhas comuns
 
 > [!warning] Chamar de "pesquisa" só o passo avaliativo
-> **O que acontece:** o time diz "já fizemos pesquisa" referindo-se só a um teste de usabilidade num protótipo já pronto — a etapa generativa nunca existiu, mas a palavra "pesquisa" faz parecer que existiu.
-> **Por quê:** avaliativa é mais visível e mais fácil de agendar — precisa de um artefato concreto para mostrar. Generativa é mais abstrata e mais fácil de pular sob pressão de prazo.
-> **Como evitar:** ao ouvir "já validamos com usuário", pergunte de volta: "validamos que a solução funciona, ou validamos que o problema é esse?". São perguntas diferentes.
+> **O que acontece:** o time diz "já fizemos pesquisa" referindo-se só a um teste de usabilidade num protótipo já pronto — a etapa generativa nunca existiu, mas a palavra "pesquisa" faz parecer que existiu. **Por quê:** avaliativa é mais visível e mais fácil de agendar — precisa de um artefato concreto para mostrar. Generativa é mais abstrata e mais fácil de pular sob pressão de prazo. **Como evitar:** ao ouvir "já validamos com usuário", pergunte de volta: "validamos que a solução funciona, ou validamos que o problema é esse?". São perguntas diferentes.
 
 > [!warning] Pesquisa teatral — validar depois de já ter decidido
-> **O que acontece:** a decisão de o que construir já foi tomada (às vezes por convicção pessoal, às vezes porque o cliente já aprovou o wireframe); a "pesquisa" que acontece depois só busca confirmação, não descoberta.
-> **Por quê:** perguntas fechadas feitas depois da decisão ("você gostou do dashboard?") tendem a receber resposta cortês, não informação nova — o mesmo viés de confirmação que a [[03-Dominios/Engenharia/UX/Descoberta e Pesquisa/07 - Entrevista de descoberta - as regras do Mom Test|nota 07]] ataca diretamente.
-> **Como evitar:** se a pergunta que você está fazendo só pode confirmar ou negar uma decisão já tomada, ela é avaliativa disfarçada de generativa. Pesquisa generativa de verdade é feita *antes* de haver algo para defender.
+> **O que acontece:** a decisão de o que construir já foi tomada (às vezes por convicção pessoal, às vezes porque o cliente já aprovou o wireframe); a "pesquisa" que acontece depois só busca confirmação, não descoberta. **Por quê:** perguntas fechadas feitas depois da decisão ("você gostou do dashboard?") tendem a receber resposta cortês, não informação nova — o mesmo viés de confirmação que a [[03-Dominios/Engenharia/UX/Descoberta e Pesquisa/07 - Entrevista de descoberta - as regras do Mom Test|nota 07]] ataca diretamente. **Como evitar:** se a pergunta que você está fazendo só pode confirmar ou negar uma decisão já tomada, ela é avaliativa disfarçada de generativa. Pesquisa generativa de verdade é feita *antes* de haver algo para defender.
 
 > [!warning] Confundir "testar com usuário" com "entender o usuário"
-> **O que acontece:** o time trata qualquer sessão com usuário real — seja qual for o objetivo — como intercambiável, achando que "já fizemos pesquisa com gente de verdade" cobre tanto a pergunta "o que fazer" quanto "isso funciona".
-> **Por quê:** as duas perguntas exigem roteiros, momentos e tipos de análise diferentes; misturar as duas numa sessão só produz respostas rasas para as duas.
-> **Como evitar:** antes de agendar qualquer sessão com usuário, escreva explicitamente se o objetivo é generativo ou avaliativo — isso muda o roteiro inteiro (comparar com o roteiro de entrevista da nota 07 e o de teste guerrilha da nota 13).
+> **O que acontece:** o time trata qualquer sessão com usuário real — seja qual for o objetivo — como intercambiável, achando que "já fizemos pesquisa com gente de verdade" cobre tanto a pergunta "o que fazer" quanto "isso funciona". **Por quê:** as duas perguntas exigem roteiros, momentos e tipos de análise diferentes; misturar as duas numa sessão só produz respostas rasas para as duas. **Como evitar:** antes de agendar qualquer sessão com usuário, escreva explicitamente se o objetivo é generativo ou avaliativo — isso muda o roteiro inteiro (comparar com o roteiro de entrevista da nota 07 e o de teste guerrilha da nota 13).
 
 ## Como explicar em inglês
 

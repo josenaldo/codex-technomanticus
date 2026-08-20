@@ -150,24 +150,16 @@ Atualização de kernel só passa a valer depois do reinício. Uma máquina "atu
 ## Armadilhas comuns
 
 > [!warning] `sudo pip install` (ou `sudo npm install -g`) em servidor
-> **O que acontece:** cedo ou tarde, uma ferramenta do sistema quebra, e o erro não aponta para o que você fez.
-> **Por quê:** os arquivos escritos ocupam caminhos gerenciados pelo pacote do sistema, e as duas metades passam a discordar.
-> **Como evitar:** ambiente virtual por projeto; `pipx` para ferramentas globais de CLI; e, para Node, gerenciador de versão em vez de instalação global como root.
+> **O que acontece:** cedo ou tarde, uma ferramenta do sistema quebra, e o erro não aponta para o que você fez. **Por quê:** os arquivos escritos ocupam caminhos gerenciados pelo pacote do sistema, e as duas metades passam a discordar. **Como evitar:** ambiente virtual por projeto; `pipx` para ferramentas globais de CLI; e, para Node, gerenciador de versão em vez de instalação global como root.
 
 > [!warning] Misturar repositórios de versões diferentes da distribuição
-> **O que acontece:** um pacote de outra versão puxa uma biblioteca base mais nova, e o sistema fica num estado que o gerenciador não consegue mais resolver.
-> **Por quê:** as versões da distribuição são conjuntos testados juntos; misturá-los quebra as premissas.
-> **Como evitar:** um repositório de terceiro específico é aceitável; misturar as bases (o "Frankendebian") não. Quando precisar de versão nova de uma coisa só, prefira pacote universal ou container.
+> **O que acontece:** um pacote de outra versão puxa uma biblioteca base mais nova, e o sistema fica num estado que o gerenciador não consegue mais resolver. **Por quê:** as versões da distribuição são conjuntos testados juntos; misturá-los quebra as premissas. **Como evitar:** um repositório de terceiro específico é aceitável; misturar as bases (o "Frankendebian") não. Quando precisar de versão nova de uma coisa só, prefira pacote universal ou container.
 
 > [!warning] Instalar do site e não deixar rastro
-> **O que acontece:** o binário da abertura desta nota.
-> **Por quê:** ninguém registrou origem, versão e forma de atualizar.
-> **Como evitar:** se for inevitável, escreva onde a equipe olha: o que é, de onde veio, qual versão, como atualizar. Três linhas resolvem — e a ausência delas custa horas de alguém, depois.
+> **O que acontece:** o binário da abertura desta nota. **Por quê:** ninguém registrou origem, versão e forma de atualizar. **Como evitar:** se for inevitável, escreva onde a equipe olha: o que é, de onde veio, qual versão, como atualizar. Três linhas resolvem — e a ausência delas custa horas de alguém, depois.
 
 > [!warning] Compilar da fonte sem plano de remoção
-> **O que acontece:** `make install` espalha arquivos por vários diretórios e não há `make uninstall` confiável.
-> **Por quê:** a instalação não é rastreada.
-> **Como evitar:** use `checkinstall` (que empacota o resultado) ou compile dentro de um container e leve só o artefato — a técnica de multi-estágio do galho de Docker.
+> **O que acontece:** `make install` espalha arquivos por vários diretórios e não há `make uninstall` confiável. **Por quê:** a instalação não é rastreada. **Como evitar:** use `checkinstall` (que empacota o resultado) ou compile dentro de um container e leve só o artefato — a técnica de multi-estágio do galho de Docker.
 
 ---
 

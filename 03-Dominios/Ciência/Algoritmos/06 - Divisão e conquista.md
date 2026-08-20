@@ -361,6 +361,4 @@ Perguntas que o entrevistador pode disparar:
 
 ---
 
-**Anterior:** [[05 - Recorrências e o Teorema Mestre]] · **Próxima:** [[07 - Ordenação]]
-**Base:** [[04 - Recursão]] · **Contraste:** [[10 - Programação dinâmica]] (subproblemas sobrepostos), [[08 - Busca]] (busca binária = D&C de 1 subproblema)
-**MOC:** [[03-Dominios/Ciência/Algoritmos/index|Algoritmos]]
+**Anterior:** [[05 - Recorrências e o Teorema Mestre]] · **Próxima:** [[07 - Ordenação]] **Base:** [[04 - Recursão]] · **Contraste:** [[10 - Programação dinâmica]] (subproblemas sobrepostos), [[08 - Busca]] (busca binária = D&C de 1 subproblema) **MOC:** [[03-Dominios/Ciência/Algoritmos/index|Algoritmos]]

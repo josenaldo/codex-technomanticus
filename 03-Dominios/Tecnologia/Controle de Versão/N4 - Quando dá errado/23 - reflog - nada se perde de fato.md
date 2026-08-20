@@ -127,9 +127,7 @@ Ele varre o banco procurando objetos inalcançáveis e escreve o que encontra em
 Não é bonito, mas já salvou muita gente que fez `git add` e depois um `reset --hard`.
 
 > [!warning] O `reflog` é local e privado
-> **O que acontece:** a pessoa espera recuperar, num clone novo, um commit que existia na máquina antiga.
-> **Por quê:** o reflog vive em `.git/logs/` e **não é transferido** por `clone`, `fetch` ou `push`. Cada cópia tem o seu, refletindo apenas o que aconteceu ali.
-> **Consequência prática:** se o único lugar onde um commit existia era uma máquina que você formatou, ele acabou. E, do outro lado, isso é uma boa notícia: seus experimentos e resets não vazam para o repositório de ninguém.
+> **O que acontece:** a pessoa espera recuperar, num clone novo, um commit que existia na máquina antiga. **Por quê:** o reflog vive em `.git/logs/` e **não é transferido** por `clone`, `fetch` ou `push`. Cada cópia tem o seu, refletindo apenas o que aconteceu ali. **Consequência prática:** se o único lugar onde um commit existia era uma máquina que você formatou, ele acabou. E, do outro lado, isso é uma boa notícia: seus experimentos e resets não vazam para o repositório de ninguém.
 
 ---
 
@@ -158,19 +156,13 @@ E o inverso: **nunca rode `git gc --prune=now` ou `git reflog expire --expire=no
 ## Armadilhas comuns
 
 > [!warning] Procurar no `git log` o que só o `reflog` vê
-> **O que acontece:** a pessoa conclui que perdeu o trabalho porque `git log --all` não mostra nada.
-> **Por quê:** o `log`, mesmo com `--all`, percorre o que é alcançável **por refs**. Órfão não aparece.
-> **Como evitar:** o reflog é o primeiro lugar a olhar, não o último. Antes de qualquer conclusão dramática: `git reflog`.
+> **O que acontece:** a pessoa conclui que perdeu o trabalho porque `git log --all` não mostra nada. **Por quê:** o `log`, mesmo com `--all`, percorre o que é alcançável **por refs**. Órfão não aparece. **Como evitar:** o reflog é o primeiro lugar a olhar, não o último. Antes de qualquer conclusão dramática: `git reflog`.
 
 > [!warning] Rodar `reset --hard` de novo no meio do resgate
-> **O que acontece:** durante a recuperação, a pessoa dá mais um `--hard` e perde o que tinha acabado de achar.
-> **Por quê:** pânico + comando destrutivo.
-> **Como evitar:** no resgate, use **só** comandos que acrescentam: `git switch -c salvamento <hash>`, `git branch backup <hash>`, `git tag socorro <hash>`. Criar ponteiros é grátis e nunca destrói nada. Só depois de conferir é que se move o ramo real.
+> **O que acontece:** durante a recuperação, a pessoa dá mais um `--hard` e perde o que tinha acabado de achar. **Por quê:** pânico + comando destrutivo. **Como evitar:** no resgate, use **só** comandos que acrescentam: `git switch -c salvamento <hash>`, `git branch backup <hash>`, `git tag socorro <hash>`. Criar ponteiros é grátis e nunca destrói nada. Só depois de conferir é que se move o ramo real.
 
 > [!warning] Confiar no reflog para história compartilhada
-> **O que acontece:** alguém dá `push --force`, apaga trabalho no servidor, e assume que "o reflog resolve".
-> **Por quê:** o reflog que importa seria o **do servidor**, ao qual você não tem acesso. Plataformas mantêm algo equivalente internamente, mas recuperar depende de suporte.
-> **Como evitar:** quem tinha o trabalho localmente ainda o tem — peça a essa pessoa que empurre de volta. É quase sempre a via mais rápida, e é a razão de a nota 11 tratar `--force` como interdição.
+> **O que acontece:** alguém dá `push --force`, apaga trabalho no servidor, e assume que "o reflog resolve". **Por quê:** o reflog que importa seria o **do servidor**, ao qual você não tem acesso. Plataformas mantêm algo equivalente internamente, mas recuperar depende de suporte. **Como evitar:** quem tinha o trabalho localmente ainda o tem — peça a essa pessoa que empurre de volta. É quase sempre a via mais rápida, e é a razão de a nota 11 tratar `--force` como interdição.
 
 ---
 

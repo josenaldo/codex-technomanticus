@@ -30,7 +30,7 @@ publish: false
 
 ## Citações
 
-> 
+>
 
 ## Meu comentário
 

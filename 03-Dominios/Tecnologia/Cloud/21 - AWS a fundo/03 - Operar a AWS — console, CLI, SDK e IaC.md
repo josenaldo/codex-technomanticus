@@ -163,8 +163,7 @@ Isso é o mesmo padrão de **assumir role** que o galho [[03-Dominios/Tecnologia
 > [!tip] Assista: AWS CLI com Single Sign-On: O Passo a Passo que Todo Dev/DevOps Precisa Saber
 > **Canal:** Carlos Biagolini | **Duração:** ~34min | **Idioma:** PT-BR
 >
-> Passo a passo prático de configurar `aws configure sso` de ponta a ponta, com o argumento de segurança que esta nota só resume: por que revogar acesso via Identity Center é instantâneo, enquanto uma access key estática de um ex-colaborador continua válida até alguém lembrar de apagá-la manualmente.
-> Trecho de destaque [00:49]: *"Ele tem chaves de acesso... em algum momento a pessoa é desligada da empresa. Se você utilizar o access key ID... essa pessoa vai continuar tendo acesso àquela máquina, àquela conta, a não ser que você vá lá e remova o usuário — no caso do SSO [a revogação é automática]."*
+> Passo a passo prático de configurar `aws configure sso` de ponta a ponta, com o argumento de segurança que esta nota só resume: por que revogar acesso via Identity Center é instantâneo, enquanto uma access key estática de um ex-colaborador continua válida até alguém lembrar de apagá-la manualmente. Trecho de destaque [00:49]: *"Ele tem chaves de acesso... em algum momento a pessoa é desligada da empresa. Se você utilizar o access key ID... essa pessoa vai continuar tendo acesso àquela máquina, àquela conta, a não ser que você vá lá e remova o usuário — no caso do SSO [a revogação é automática]."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Ytr5B8sfbFk)
 
@@ -256,8 +255,7 @@ Onde cada um brilha:
 > [!tip] Assista: Terraform, AWS CloudFormation, CDK ou Crossplane?
 > **Canal:** Douglas Mugnos | **Duração:** ~13min | **Idioma:** PT-BR
 >
-> Compara as mesmas três ferramentas desta nota e ainda entra em Crossplane/ACK como alternativas emergentes — o detalhe que mais acrescenta é confirmar, sem rodeio, que o CDK não é um motor de execução próprio: ele compila para CloudFormation por baixo, exatamente como esta nota descreve.
-> Trecho de destaque [02:03]: *"Ele basicamente usa o CDK, usa CloudFormation por trás dos panos. E quando você executa um código, você abre [o console CloudFormation e vê o stack sendo criado]."*
+> Compara as mesmas três ferramentas desta nota e ainda entra em Crossplane/ACK como alternativas emergentes — o detalhe que mais acrescenta é confirmar, sem rodeio, que o CDK não é um motor de execução próprio: ele compila para CloudFormation por baixo, exatamente como esta nota descreve. Trecho de destaque [02:03]: *"Ele basicamente usa o CDK, usa CloudFormation por trás dos panos. E quando você executa um código, você abre [o console CloudFormation e vê o stack sendo criado]."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=agciBgF61-U)
 

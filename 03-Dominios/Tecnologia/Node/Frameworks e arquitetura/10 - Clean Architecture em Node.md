@@ -473,63 +473,41 @@ Teste simples é sinal de boundary saudável.
 ## Armadilhas comuns
 
 > [!warning] Entity importando ORM ou decorator de framework
-> **O que acontece:** entity não pode ser instanciada sem container ou banco configurado; testes exigem setup pesado.
-> **Por quê:** conveniência de ORM (TypeORM `@Entity`, Prisma client, Mongoose schema) faz entity virar VO de infraestrutura.
-> **Como evitar:** entities são classes TypeScript puras; adapters de repository fazem o mapeamento entre entity e formato do ORM.
+> **O que acontece:** entity não pode ser instanciada sem container ou banco configurado; testes exigem setup pesado. **Por quê:** conveniência de ORM (TypeORM `@Entity`, Prisma client, Mongoose schema) faz entity virar VO de infraestrutura. **Como evitar:** entities são classes TypeScript puras; adapters de repository fazem o mapeamento entre entity e formato do ORM.
 
 > [!warning] Use case recebendo `Request` ou `Response` do framework HTTP
-> **O que acontece:** use case acoplado ao framework; trocar Express exige reescrever use cases.
-> **Por quê:** controller passou o objeto HTTP inteiro ao use case em vez de extrair o que é necessário.
-> **Como evitar:** controller extrai `{ name, email }` do request e passa apenas o que o use case precisa; use case nunca recebe objetos HTTP.
+> **O que acontece:** use case acoplado ao framework; trocar Express exige reescrever use cases. **Por quê:** controller passou o objeto HTTP inteiro ao use case em vez de extrair o que é necessário. **Como evitar:** controller extrai `{ name, email }` do request e passa apenas o que o use case precisa; use case nunca recebe objetos HTTP.
 
 > [!warning] Aplicar Clean em CRUD trivial sem domínio
-> **O que acontece:** três vezes mais código, zero benefício — sem regra de negócio, não há o que proteger.
-> **Por quê:** padrão arquitetural aplicado por cargo de trabalho ou obediência a um tech lead, não por necessidade.
-> **Como evitar:** avalie se há regra de negócio rica, múltiplos adapters ou teste de use case valioso antes de adotar Clean.
+> **O que acontece:** três vezes mais código, zero benefício — sem regra de negócio, não há o que proteger. **Por quê:** padrão arquitetural aplicado por cargo de trabalho ou obediência a um tech lead, não por necessidade. **Como evitar:** avalie se há regra de negócio rica, múltiplos adapters ou teste de use case valioso antes de adotar Clean.
 
 > [!warning] Adapter virando god class com múltiplas responsabilidades
-> **O que acontece:** repositório implementa busca, auditoria, cache e notificação — um único arquivo de 800 linhas.
-> **Por quê:** "adapter" virou sinônimo de "tudo que não é domain"; sem bounded context, qualquer coisa vai para lá.
-> **Como evitar:** separe adapters por responsabilidade; `UserRepositoryPg`, `UserCacheRedis`, `UserAuditLogger` são adapters separados.
+> **O que acontece:** repositório implementa busca, auditoria, cache e notificação — um único arquivo de 800 linhas. **Por quê:** "adapter" virou sinônimo de "tudo que não é domain"; sem bounded context, qualquer coisa vai para lá. **Como evitar:** separe adapters por responsabilidade; `UserRepositoryPg`, `UserCacheRedis`, `UserAuditLogger` são adapters separados.
 
 > [!warning] Sem composition root claro: dependências espalhadas
-> **O que acontece:** difícil rastrear quem instancia quem; testes precisam de mocks em lugares inesperados.
-> **Por quê:** ausência de ponto único de wiring — cada módulo instancia suas próprias dependências.
-> **Como evitar:** tenha um composition root explícito (ou container de DI claro como [[11 - DI - manual vs container]]); nada se auto-instancia.
+> **O que acontece:** difícil rastrear quem instancia quem; testes precisam de mocks em lugares inesperados. **Por quê:** ausência de ponto único de wiring — cada módulo instancia suas próprias dependências. **Como evitar:** tenha um composition root explícito (ou container de DI claro como [[11 - DI - manual vs container]]); nada se auto-instancia.
 
 > [!warning] Chamar qualquer pasta de `domain/` sem regra de negócio real
-> **O que acontece:** pasta `domain/` vira dumping ground para entidades anêmicas e helpers.
-> **Por quê:** nome da pasta foi adotado sem clareza sobre o que pertence ao domínio.
-> **Como evitar:** domínio contém regra de negócio com comportamento; se o objeto não tem método de negócio, é DTO, não entity.
+> **O que acontece:** pasta `domain/` vira dumping ground para entidades anêmicas e helpers. **Por quê:** nome da pasta foi adotado sem clareza sobre o que pertence ao domínio. **Como evitar:** domínio contém regra de negócio com comportamento; se o objeto não tem método de negócio, é DTO, não entity.
 
 > [!warning] Colocar validação HTTP dentro da entity
-> **O que acontece:** entity conhece formato de request; trocar API exige mudar domínio.
-> **Por quê:** confusão entre validação de boundary (formato externo) e invariante de domínio (regra de negócio).
-> **Como evitar:** validation de schema de entrada vai no controller/adapter via [[09 - Validation com schema]]; entity valida invariantes de negócio.
+> **O que acontece:** entity conhece formato de request; trocar API exige mudar domínio. **Por quê:** confusão entre validação de boundary (formato externo) e invariante de domínio (regra de negócio). **Como evitar:** validation de schema de entrada vai no controller/adapter via [[09 - Validation com schema]]; entity valida invariantes de negócio.
 
 > [!warning] Testar use case subindo Nest/Express inteiro
-> **O que acontece:** teste lento, frágil e com muitas dependências; refactor de infra quebra testes de domínio.
-> **Por quê:** use case acoplado a framework, ou teste usa SuperTest em vez de invocar use case diretamente.
-> **Como evitar:** use case deve ser testável com `new UseCaseClass(new InMemoryRepository())`; integração vai em teste separado.
+> **O que acontece:** teste lento, frágil e com muitas dependências; refactor de infra quebra testes de domínio. **Por quê:** use case acoplado a framework, ou teste usa SuperTest em vez de invocar use case diretamente. **Como evitar:** use case deve ser testável com `new UseCaseClass(new InMemoryRepository())`; integração vai em teste separado.
 
 > [!warning] Mapper ausente: formato de banco vira formato de API
-> **O que acontece:** mudança de coluna de banco altera response da API; mudança de API exige migração de banco.
-> **Por quê:** sem mapper/presenter, repositório retorna linha do banco direto ao controller, que passa para o cliente.
-> **Como evitar:** presenters transformam entity para formato de resposta; mappers transformam linha de DB para entity; são adapters separados.
+> **O que acontece:** mudança de coluna de banco altera response da API; mudança de API exige migração de banco. **Por quê:** sem mapper/presenter, repositório retorna linha do banco direto ao controller, que passa para o cliente. **Como evitar:** presenters transformam entity para formato de resposta; mappers transformam linha de DB para entity; são adapters separados.
 
 ## Perguntas de entrevista
 
-**Qual é a dependency rule?**
-Dependências de código apontam para dentro. Camadas internas não conhecem frameworks, banco ou UI.
+**Qual é a dependency rule?** Dependências de código apontam para dentro. Camadas internas não conhecem frameworks, banco ou UI.
 
-**Como Clean aparece em Node?**
-Domínio puro, use cases dependentes de ports, adapters para HTTP/DB e composition root no startup/framework.
+**Como Clean aparece em Node?** Domínio puro, use cases dependentes de ports, adapters para HTTP/DB e composition root no startup/framework.
 
-**Quando Clean é exagero?**
-Quando o app é CRUD simples, sem regra de domínio rica e sem múltiplos adapters relevantes.
+**Quando Clean é exagero?** Quando o app é CRUD simples, sem regra de domínio rica e sem múltiplos adapters relevantes.
 
-**NestJS garante Clean Architecture?**
-Não. Ele ajuda com DI e módulos, mas você ainda pode acoplar use case a framework ou ORM.
+**NestJS garante Clean Architecture?** Não. Ele ajuda com DI e módulos, mas você ainda pode acoplar use case a framework ou ORM.
 
 ## Em entrevista
 

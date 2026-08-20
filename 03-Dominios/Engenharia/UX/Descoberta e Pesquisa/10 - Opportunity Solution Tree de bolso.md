@@ -93,19 +93,13 @@ Um engenheiro fractional está animado para construir um chatbot de suporte inte
 ## Armadilhas comuns
 
 > [!warning] Pular direto de outcome para solução, sem passar pelas oportunidades
-> **O que acontece:** o engenheiro escreve o outcome no topo e já desce direto para "vou construir X", sem nomear qual dor real, ouvida em entrevista, X resolve.
-> **Por quê:** ir direto à solução é mais rápido e mais confortável — parece progresso imediato — enquanto nomear oportunidades exige lembrar e organizar o que a entrevista revelou, trabalho que parece "menos produtivo".
-> **Como evitar:** trate qualquer solução sem oportunidade-mãe na árvore como suspeita — pergunte "que dor real, de qual entrevista, essa solução resolve?" antes de aceitar o nó.
+> **O que acontece:** o engenheiro escreve o outcome no topo e já desce direto para "vou construir X", sem nomear qual dor real, ouvida em entrevista, X resolve. **Por quê:** ir direto à solução é mais rápido e mais confortável — parece progresso imediato — enquanto nomear oportunidades exige lembrar e organizar o que a entrevista revelou, trabalho que parece "menos produtivo". **Como evitar:** trate qualquer solução sem oportunidade-mãe na árvore como suspeita — pergunte "que dor real, de qual entrevista, essa solução resolve?" antes de aceitar o nó.
 
 > [!warning] Inventar oportunidades sem base em entrevista real
-> **O que acontece:** a árvore é preenchida com oportunidades que "fazem sentido" na cabeça do engenheiro, mas que ninguém de fato mencionou numa conversa real.
-> **Por quê:** é tentador preencher a árvore rápido com suposições plausíveis — parece completa, mas não é rastreável a nenhum dado.
-> **Como evitar:** cada nó de oportunidade deveria ter uma citação ou paráfrase de uma entrevista real ao lado. Se você não consegue apontar de onde veio, é hipótese, não oportunidade — trate como proto-persona (ver [[03-Dominios/Engenharia/UX/Descoberta e Pesquisa/12 - Proto-persona vs persona de verdade|nota 12]]).
+> **O que acontece:** a árvore é preenchida com oportunidades que "fazem sentido" na cabeça do engenheiro, mas que ninguém de fato mencionou numa conversa real. **Por quê:** é tentador preencher a árvore rápido com suposições plausíveis — parece completa, mas não é rastreável a nenhum dado. **Como evitar:** cada nó de oportunidade deveria ter uma citação ou paráfrase de uma entrevista real ao lado. Se você não consegue apontar de onde veio, é hipótese, não oportunidade — trate como proto-persona (ver [[03-Dominios/Engenharia/UX/Descoberta e Pesquisa/12 - Proto-persona vs persona de verdade|nota 12]]).
 
 > [!warning] Tratar a árvore como documento definitivo, nunca revisitado
-> **O que acontece:** a OST é montada uma vez no início do projeto e nunca mais atualizada, mesmo quando entrevistas novas revelam oportunidades diferentes.
-> **Por quê:** sem a cadência semanal do modelo original, é fácil esquecer que a árvore deveria ser um artefato vivo, mesmo que revisado esporadicamente.
-> **Como evitar:** trate cada conversa nova com cliente/usuário como gatilho para reabrir a árvore por 5 minutos e perguntar "isso muda ou adiciona algum nó?".
+> **O que acontece:** a OST é montada uma vez no início do projeto e nunca mais atualizada, mesmo quando entrevistas novas revelam oportunidades diferentes. **Por quê:** sem a cadência semanal do modelo original, é fácil esquecer que a árvore deveria ser um artefato vivo, mesmo que revisado esporadicamente. **Como evitar:** trate cada conversa nova com cliente/usuário como gatilho para reabrir a árvore por 5 minutos e perguntar "isso muda ou adiciona algum nó?".
 
 ## Como explicar em inglês
 

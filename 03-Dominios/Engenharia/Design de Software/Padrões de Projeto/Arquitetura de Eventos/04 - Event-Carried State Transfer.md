@@ -23,12 +23,7 @@ aliases:
 # Event-Carried State Transfer
 
 > [!abstract] TL;DR
-> O evento **gordo**: carrega o estado de que o consumidor precisa, para que ele **não volte a
-> perguntar**. Resolve de uma vez os três custos da notificação magra — some a chamada de volta, some a
-> dependência de disponibilidade, e o consumidor passa a ver o estado **do momento do fato**, não o de
-> agora. Em troca, cada consumidor mantém uma **réplica local** eventualmente desatualizada, e o payload
-> vira **contrato público** que você não pode mudar sozinho. Este é o outro extremo do eixo dorsal da
-> família — e a escolha entre ele e a notificação é a decisão de acoplamento mais consequente aqui.
+> O evento **gordo**: carrega o estado de que o consumidor precisa, para que ele **não volte a perguntar**. Resolve de uma vez os três custos da notificação magra — some a chamada de volta, some a dependência de disponibilidade, e o consumidor passa a ver o estado **do momento do fato**, não o de agora. Em troca, cada consumidor mantém uma **réplica local** eventualmente desatualizada, e o payload vira **contrato público** que você não pode mudar sozinho. Este é o outro extremo do eixo dorsal da família — e a escolha entre ele e a notificação é a decisão de acoplamento mais consequente aqui.
 
 ## O produtor caiu às três da manhã e nada parou
 
@@ -107,19 +102,13 @@ Não há vencedor: há duas moedas. Notificação paga em **disponibilidade e la
 ## Armadilhas comuns
 
 > [!warning] Aplicar estado fora de ordem
-> **O que acontece:** dois eventos do mesmo pedido chegam trocados (retry, partições diferentes, reprocessamento). A réplica local fica com o estado **antigo** sobrescrevendo o novo, e diverge em silêncio — ninguém detecta, porque não há erro.
-> **Por quê:** ordem global não é garantida na prática, e a chegada fora de sequência é normal, não excepcional.
-> **Como evitar:** **versão ou timestamp lógico no payload**, e a regra de aplicar apenas se for mais recente que o registrado (descartando o resto). Onde a ordem for essencial, particione pela chave da entidade, garantindo ordem por chave em vez de global.
+> **O que acontece:** dois eventos do mesmo pedido chegam trocados (retry, partições diferentes, reprocessamento). A réplica local fica com o estado **antigo** sobrescrevendo o novo, e diverge em silêncio — ninguém detecta, porque não há erro. **Por quê:** ordem global não é garantida na prática, e a chegada fora de sequência é normal, não excepcional. **Como evitar:** **versão ou timestamp lógico no payload**, e a regra de aplicar apenas se for mais recente que o registrado (descartando o resto). Onde a ordem for essencial, particione pela chave da entidade, garantindo ordem por chave em vez de global.
 
 > [!warning] Payload que cresce até virar o modelo inteiro
-> **O que acontece:** cada novo consumidor pede mais um campo, e o evento chega a dezenas de KB carregando dados que quase ninguém usa — com custo de broker, retenção e, no caso de dados pessoais, exposição desnecessária.
-> **Por quê:** acrescentar um campo é sempre mais fácil que negociar; e como não há dono do payload, ele cresce por acúmulo.
-> **Como evitar:** o evento carrega **o que descreve o fato**, não o estado completo da entidade. Consumidor com necessidade muito particular pode voltar a perguntar — misturar os dois estilos por consumidor é legítimo. E dado sensível fora do evento, sempre que possível.
+> **O que acontece:** cada novo consumidor pede mais um campo, e o evento chega a dezenas de KB carregando dados que quase ninguém usa — com custo de broker, retenção e, no caso de dados pessoais, exposição desnecessária. **Por quê:** acrescentar um campo é sempre mais fácil que negociar; e como não há dono do payload, ele cresce por acúmulo. **Como evitar:** o evento carrega **o que descreve o fato**, não o estado completo da entidade. Consumidor com necessidade muito particular pode voltar a perguntar — misturar os dois estilos por consumidor é legítimo. E dado sensível fora do evento, sempre que possível.
 
 > [!warning] Réplica local sem política de reconciliação
-> **O que acontece:** um evento se perde por um bug de consumidor, e a réplica fica errada **para sempre** — nada no sistema compara com a origem, e o erro só aparece quando um cliente reclama.
-> **Por quê:** o modelo assume que a réplica é construída incrementalmente e nunca verificada. Um único evento perdido é permanente.
-> **Como evitar:** tenha um caminho de **reconstrução** — reprocessar o log desde o início, ou uma varredura periódica que compara com a origem e corrige. Se a réplica não pode ser reconstruída, ela virou uma fonte da verdade paralela sem querer.
+> **O que acontece:** um evento se perde por um bug de consumidor, e a réplica fica errada **para sempre** — nada no sistema compara com a origem, e o erro só aparece quando um cliente reclama. **Por quê:** o modelo assume que a réplica é construída incrementalmente e nunca verificada. Um único evento perdido é permanente. **Como evitar:** tenha um caminho de **reconstrução** — reprocessar o log desde o início, ou uma varredura periódica que compara com a origem e corrige. Se a réplica não pode ser reconstruída, ela virou uma fonte da verdade paralela sem querer.
 
 ## Como explicar em inglês
 

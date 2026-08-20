@@ -21,25 +21,10 @@ aliases:
 # Compiladores e Linguagens
 
 > [!abstract] TL;DR
-> Um compilador não é mágica — é uma **série de traduções**, e cada uma é uma estrutura de dados que você pode
-> desenhar. O texto vira uma stream de **tokens** (análise léxica), os tokens viram uma **árvore** (parsing),
-> a árvore ganha **significado** e tipos (análise semântica), o significado vira uma **representação
-> intermediária** otimizável, e a IR vira **código de máquina**. Este galho é a *engenharia* desse pipeline:
-> como você constrói um scanner a partir de regex, um parser à mão (recursive descent) ou por tabela (LR), um
-> type-checker, um otimizador (dataflow + SSA), um gerador de código com alocação de registradores — e o que
-> acontece em runtime (stack frames, garbage collection, JIT). O fio: a teoria (autômatos, gramáticas) é a
-> *ferramenta*; o assunto é a *construção do tradutor*. Por que recursive descent domina a indústria, por que
-> SSA facilita otimização, por que o JIT pode bater o AOT, e por que você não pode confiar nem no compilador
-> que compilou seu compilador.
+> Um compilador não é mágica — é uma **série de traduções**, e cada uma é uma estrutura de dados que você pode desenhar. O texto vira uma stream de **tokens** (análise léxica), os tokens viram uma **árvore** (parsing), a árvore ganha **significado** e tipos (análise semântica), o significado vira uma **representação intermediária** otimizável, e a IR vira **código de máquina**. Este galho é a *engenharia* desse pipeline: como você constrói um scanner a partir de regex, um parser à mão (recursive descent) ou por tabela (LR), um type-checker, um otimizador (dataflow + SSA), um gerador de código com alocação de registradores — e o que acontece em runtime (stack frames, garbage collection, JIT). O fio: a teoria (autômatos, gramáticas) é a *ferramenta*; o assunto é a *construção do tradutor*. Por que recursive descent domina a indústria, por que SSA facilita otimização, por que o JIT pode bater o AOT, e por que você não pode confiar nem no compilador que compilou seu compilador.
 
 ## Sobre este galho
-Onde **Teoria da Computação** pergunta *que linguagens são reconhecíveis, e por qual máquina abstrata*,
-Compiladores e Linguagens pergunta *como eu construo, na prática, a máquina que lê uma linguagem real e a
-traduz em algo que roda*. A teoria prova que uma linguagem é reconhecível; este galho **constrói o
-reconhecedor** — e depois o otimizador, o gerador de código e o runtime. É a ponte entre o código que você
-escreve e os elétrons que correm no silício: o andar conceitual que torna inteligível por que o build é lento,
-por que aquela mensagem de erro apareceu, e o que um transpiler, um linter ou um Language Server realmente
-fazem por baixo.
+Onde **Teoria da Computação** pergunta *que linguagens são reconhecíveis, e por qual máquina abstrata*, Compiladores e Linguagens pergunta *como eu construo, na prática, a máquina que lê uma linguagem real e a traduz em algo que roda*. A teoria prova que uma linguagem é reconhecível; este galho **constrói o reconhecedor** — e depois o otimizador, o gerador de código e o runtime. É a ponte entre o código que você escreve e os elétrons que correm no silício: o andar conceitual que torna inteligível por que o build é lento, por que aquela mensagem de erro apareceu, e o que um transpiler, um linter ou um Language Server realmente fazem por baixo.
 
 **Fronteiras (linka, não duplica):**
 - **A teoria de autômatos e linguagens formais** (DFA/NFA, regex como objeto formal, CFG, pumping lemma) → [[03-Dominios/Ciência/Teoria da Computação/index|Teoria da Computação]]. Aqui é o **aplicado**: construir um scanner a partir de regex, um parser a partir de uma gramática.
@@ -49,10 +34,7 @@ fazem por baixo.
 - **"Trusting Trust" como confiança sob adversário** → [[03-Dominios/Engenharia/Segurança/17 - Confiança transitiva e Trusting Trust|Segurança Conceitual]]. Aqui é o **mecanismo do compilador** que se auto-infecta.
 - **Usar uma toolchain específica** (configurar LLVM, escrever um plugin de Babel) → prática, fora deste galho. Aqui é a **teoria** da construção; LLVM/V8/HotSpot/yacc entram como ilustração nomeada.
 
-**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista" com
-frases prontas em inglês e vocabulário técnico PT→EN. (Compilação × interpretação, o que é uma AST, como um
-parser funciona e o que é garbage collection caem com frequência real; o resto é a cultura que separa quem
-*usa* uma linguagem de quem *entende* como ela é construída — e que torna você muito melhor a debugar.)
+**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista" com frases prontas em inglês e vocabulário técnico PT→EN. (Compilação × interpretação, o que é uma AST, como um parser funciona e o que é garbage collection caem com frequência real; o resto é a cultura que separa quem *usa* uma linguagem de quem *entende* como ela é construída — e que torna você muito melhor a debugar.)
 
 ## Iniciado — o panorama e o front-end
 1. [[01 - O que é um compilador e o pipeline de tradução]] — front-end × middle × back-end, as fases, fonte → executável, por que separar.

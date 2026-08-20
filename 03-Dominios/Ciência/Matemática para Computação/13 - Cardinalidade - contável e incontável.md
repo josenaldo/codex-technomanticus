@@ -379,15 +379,7 @@ Cardinalidade aparece em entrevistas de duas formas: a pergunta de "matemática 
 
 Um aviso de calibragem: em entrevista de produto ou backend, ninguém vai te pedir a diagonalização no quadro branco. O valor prático é **reconhecer a fronteira** — saber, quando alguém propõe "vamos testar todas as combinações" ou "vamos fazer um hash sem colisão para qualquer input", que a cardinalidade já decretou aquilo impossível, e explicar *por quê* em uma frase. É menos sobre exibir a prova e mais sobre ter a régua na cabeça. Quem entende contável × incontável para de prometer o impossível.
 
-*"Two sets have the same cardinality when there's a bijection between them — that's the only definition that survives infinity."*
-*"The naturals, integers, and rationals are all countable; you can enumerate each one with a bijection to ℕ."*
-*"The rationals are countable via the diagonal enumeration of the grid of fractions — density doesn't increase cardinality."*
-*"The reals are uncountable, and Cantor's diagonal argument proves it: assume a complete list, then build a number differing from the n-th entry in its n-th digit."*
-*"That constructed number can't be anywhere in the list, which contradicts completeness — so no enumeration of the reals exists."*
-*"Cantor's theorem generalizes this: the power set is always strictly larger than the set, so there's no largest infinity."*
-*"There are only countably many programs — each is a finite string — but uncountably many functions, so most functions have no program."*
-*"That's a counting proof that uncomputable problems exist, before exhibiting a single concrete example like the halting problem."*
-*"Floats aren't the reals: there are finitely many IEEE 754 doubles but uncountably many reals, so most reals aren't representable."*
+*"Two sets have the same cardinality when there's a bijection between them — that's the only definition that survives infinity."* *"The naturals, integers, and rationals are all countable; you can enumerate each one with a bijection to ℕ."* *"The rationals are countable via the diagonal enumeration of the grid of fractions — density doesn't increase cardinality."* *"The reals are uncountable, and Cantor's diagonal argument proves it: assume a complete list, then build a number differing from the n-th entry in its n-th digit."* *"That constructed number can't be anywhere in the list, which contradicts completeness — so no enumeration of the reals exists."* *"Cantor's theorem generalizes this: the power set is always strictly larger than the set, so there's no largest infinity."* *"There are only countably many programs — each is a finite string — but uncountably many functions, so most functions have no program."* *"That's a counting proof that uncomputable problems exist, before exhibiting a single concrete example like the halting problem."* *"Floats aren't the reals: there are finitely many IEEE 754 doubles but uncountably many reals, so most reals aren't representable."*
 
 | Português | English |
 |-----------|---------|

@@ -27,8 +27,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | LINKS | L1 Wikilink cross-galho · L2 Referência externa (URL) |
 | MÍDIA | M1 Vídeo/podcast embutido |
 
-**Esquema de `fase:` detectado:** COM fase (Iniciado)
-**Piso de linhas:** aplicável — Iniciado ≥300 · Adepto ≥400 · Magus ≥500 (decisão do usuário, 2026-08-01)
+**Esquema de `fase:` detectado:** COM fase (Iniciado) **Piso de linhas:** aplicável — Iniciado ≥300 · Adepto ≥400 · Magus ≥500 (decisão do usuário, 2026-08-01)
 
 ## Tabela-resumo
 

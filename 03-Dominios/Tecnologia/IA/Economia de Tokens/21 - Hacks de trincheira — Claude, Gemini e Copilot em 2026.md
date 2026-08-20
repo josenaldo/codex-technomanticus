@@ -348,17 +348,13 @@ Por que as três coisas juntas? O RTK comprime a saída das ferramentas (reduz i
 
 ## Casos práticos
 
-**Caso 1 — RTK hook ausente detectado em auditoria:**
-Em uma auditoria de uso pessoal de 32 dias com 47.2M tokens, 23.908 comandos Bash foram executados mas só 65 (0.3%) passaram pelo RTK. O hook estava configurado no settings global mas ausente nos settings do projeto principal. Economia perdida estimada: 2.1M tokens. Fix: 5 minutos para adicionar o hook ao settings do projeto. Ver [[22 - Caso real — Auditoria de 47M tokens em maio 2026]].
+**Caso 1 — RTK hook ausente detectado em auditoria:** Em uma auditoria de uso pessoal de 32 dias com 47.2M tokens, 23.908 comandos Bash foram executados mas só 65 (0.3%) passaram pelo RTK. O hook estava configurado no settings global mas ausente nos settings do projeto principal. Economia perdida estimada: 2.1M tokens. Fix: 5 minutos para adicionar o hook ao settings do projeto. Ver [[22 - Caso real — Auditoria de 47M tokens em maio 2026]].
 
-**Caso 2 — effortLevel xhigh em settings global:**
-Um dev tinha `"effortLevel": "xhigh"` configurado para ter melhor qualidade em sessões difíceis. Mas o override se aplicava a todas as sessões — incluindo geração de testes, documentação JSDoc, e fix de import. Após remover, thinking tokens caíram 42% no mês seguinte. O modelo passou a usar thinking pesado só quando a task exigia, e qualidade em tasks complexas se manteve.
+**Caso 2 — effortLevel xhigh em settings global:** Um dev tinha `"effortLevel": "xhigh"` configurado para ter melhor qualidade em sessões difíceis. Mas o override se aplicava a todas as sessões — incluindo geração de testes, documentação JSDoc, e fix de import. Após remover, thinking tokens caíram 42% no mês seguinte. O modelo passou a usar thinking pesado só quando a task exigia, e qualidade em tasks complexas se manteve.
 
-**Caso 3 — Gemini cache persistente para análise de monorepo:**
-Time com monorepo de 800K tokens de codebase (Java + TypeScript + Python) pagava $15/sessão de análise no Gemini Pro. Após implementar cache de 24h com TTL de 8h, o custo de análise caiu para $1.20/sessão (escrita do cache) + $0.08 por query adicional. Para 10 queries/dia: de $150 para $1.20 + $0.80 = $2. Redução de 99%.
+**Caso 3 — Gemini cache persistente para análise de monorepo:** Time com monorepo de 800K tokens de codebase (Java + TypeScript + Python) pagava $15/sessão de análise no Gemini Pro. Após implementar cache de 24h com TTL de 8h, o custo de análise caiu para $1.20/sessão (escrita do cache) + $0.08 por query adicional. Para 10 queries/dia: de $150 para $1.20 + $0.80 = $2. Redução de 99%.
 
-**Caso 4 — Plan Mode evitando agent em loop:**
-Dev ativou Agent Mode no Copilot para refatorar módulo de autenticação sem especificar o plano. O agente entrou em loop tentando resolver um tipo circular, fazendo e desfazendo a mesma mudança 12 vezes. Custo: 180K tokens em 8 minutos. Depois do incidente: Plan Mode obrigatório (regra no `.copilot-instructions.md` do projeto) antes de qualquer agent session. Custo de plan mode: 2-4K tokens.
+**Caso 4 — Plan Mode evitando agent em loop:** Dev ativou Agent Mode no Copilot para refatorar módulo de autenticação sem especificar o plano. O agente entrou em loop tentando resolver um tipo circular, fazendo e desfazendo a mesma mudança 12 vezes. Custo: 180K tokens em 8 minutos. Depois do incidente: Plan Mode obrigatório (regra no `.copilot-instructions.md` do projeto) antes de qualquer agent session. Custo de plan mode: 2-4K tokens.
 
 ## Checklist
 

@@ -178,9 +178,7 @@ print(c is d)     # False (na maioria dos casos) — cada um é um objeto NOVO
 ```
 
 > [!warning] `is` para comparar `int` funciona "por acidente" dentro de -5..256, e falha fora dela
-> **O que acontece:** código que usa `is` para comparar inteiros passa em testes com valores pequenos e falha silenciosamente com valores maiores — como no bug de abertura desta nota.
-> **Por quê:** `is` compara **identidade de objeto** (o mesmo endereço de memória), não valor. Dentro do small int cache, dois `int` "iguais" *são*, de fato, o mesmo objeto — então `is` e `==` coincidem por acaso. Fora do cache, cada literal ou resultado de operação geralmente aloca um objeto novo (embora o compilador de bytecode também faça alguma deduplicação de constantes dentro do mesmo escopo/módulo via *constant folding* — o que torna o comportamento ainda menos previsível de se confiar).
-> **Como evitar:** usar `==` para comparar **valores** (o caso quase universal), e reservar `is` estritamente para comparar **identidade** — o padrão canônico é `is None`, `is True`/`is False` (singletons genuínos, sempre seguros com `is`), nunca números ou strings arbitrários.
+> **O que acontece:** código que usa `is` para comparar inteiros passa em testes com valores pequenos e falha silenciosamente com valores maiores — como no bug de abertura desta nota. **Por quê:** `is` compara **identidade de objeto** (o mesmo endereço de memória), não valor. Dentro do small int cache, dois `int` "iguais" *são*, de fato, o mesmo objeto — então `is` e `==` coincidem por acaso. Fora do cache, cada literal ou resultado de operação geralmente aloca um objeto novo (embora o compilador de bytecode também faça alguma deduplicação de constantes dentro do mesmo escopo/módulo via *constant folding* — o que torna o comportamento ainda menos previsível de se confiar). **Como evitar:** usar `==` para comparar **valores** (o caso quase universal), e reservar `is` estritamente para comparar **identidade** — o padrão canônico é `is None`, `is True`/`is False` (singletons genuínos, sempre seguros com `is`), nunca números ou strings arbitrários.
 
 ```mermaid
 flowchart TB
@@ -320,19 +318,13 @@ Perguntas previsíveis sobre este tópico:
 ## Armadilhas comuns
 
 > [!warning] Usar `is` para comparar strings ou inteiros "porque parece mais rápido"
-> **O que acontece:** código passa em testes locais (valores pequenos, literais idênticos no mesmo módulo) e falha silenciosamente em produção com dados reais.
-> **Por quê:** `is` compara identidade de objeto, que só coincide com igualdade de valor dentro dos caches do CPython (small ints -5..256, strings interned) — um detalhe de implementação, não uma garantia da linguagem.
-> **Como evitar:** `==` sempre para comparação de valor. `is` só para `None`, `True`/`False`, e sentinelas explicitamente criadas para esse fim (`_MISSING = object()`).
+> **O que acontece:** código passa em testes locais (valores pequenos, literais idênticos no mesmo módulo) e falha silenciosamente em produção com dados reais. **Por quê:** `is` compara identidade de objeto, que só coincide com igualdade de valor dentro dos caches do CPython (small ints -5..256, strings interned) — um detalhe de implementação, não uma garantia da linguagem. **Como evitar:** `==` sempre para comparação de valor. `is` só para `None`, `True`/`False`, e sentinelas explicitamente criadas para esse fim (`_MISSING = object()`).
 
 > [!warning] Achar que `sys.getsizeof(lista)` mede o tamanho total da estrutura
-> **O que acontece:** subestimar drasticamente o consumo de memória de coleções de objetos "pesados" (listas de listas, dicts de instâncias).
-> **Por quê:** `sys.getsizeof()` retorna só o peso do objeto container — o array de ponteiros, no caso de uma lista — não o que cada ponteiro referencia.
-> **Como evitar:** somar `sys.getsizeof()` recursivamente sobre a estrutura, ou usar uma ferramenta dedicada como `pympler.asizeof`.
+> **O que acontece:** subestimar drasticamente o consumo de memória de coleções de objetos "pesados" (listas de listas, dicts de instâncias). **Por quê:** `sys.getsizeof()` retorna só o peso do objeto container — o array de ponteiros, no caso de uma lista — não o que cada ponteiro referencia. **Como evitar:** somar `sys.getsizeof()` recursivamente sobre a estrutura, ou usar uma ferramenta dedicada como `pympler.asizeof`.
 
 > [!warning] Confiar no intervalo exato do small int cache (-5 a 256) como parte da linguagem
-> **O que acontece:** código que depende de `is` funcionar até um valor específico quebra ao trocar de interpretador (PyPy) ou, em teoria, entre versões do CPython.
-> **Por quê:** o intervalo é um detalhe de implementação do CPython, documentado no código-fonte (`Objects/longobject.c`), não na especificação da linguagem.
-> **Como evitar:** nunca depender de `is` para valor — o cache existe para otimizar memória internamente, não como uma API pública para o desenvolvedor explorar.
+> **O que acontece:** código que depende de `is` funcionar até um valor específico quebra ao trocar de interpretador (PyPy) ou, em teoria, entre versões do CPython. **Por quê:** o intervalo é um detalhe de implementação do CPython, documentado no código-fonte (`Objects/longobject.c`), não na especificação da linguagem. **Como evitar:** nunca depender de `is` para valor — o cache existe para otimizar memória internamente, não como uma API pública para o desenvolvedor explorar.
 
 ## O que vem a seguir
 

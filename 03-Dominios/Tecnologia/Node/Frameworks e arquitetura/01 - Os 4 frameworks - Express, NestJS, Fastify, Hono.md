@@ -286,58 +286,38 @@ Com o panorama dos quatro modelos mapeado, o próximo passo é mergulhar em cada
 ## Armadilhas comuns
 
 > [!warning] Escolher por hype, não por fit
-> **O que acontece:** Time adota NestJS em projeto pequeno porque "todo mundo usa".
-> **Por quê:** Sem domínio complexo, DI e módulos viram cerimônia sem retorno.
-> **Como evitar:** Pergunte qual complexidade enterprise existe *agora*, não no futuro hipotético.
+> **O que acontece:** Time adota NestJS em projeto pequeno porque "todo mundo usa". **Por quê:** Sem domínio complexo, DI e módulos viram cerimônia sem retorno. **Como evitar:** Pergunte qual complexidade enterprise existe *agora*, não no futuro hipotético.
 
 > [!warning] Migrar framework no meio do projeto
-> **O que acontece:** Reescrita de adapter HTTP durante desenvolvimento ativo gera regressões.
-> **Por quê:** Mudança de framework exige adaptar testes, middleware, error handling e estrutura de pastas simultaneamente.
-> **Como evitar:** Decida antes de escrever a primeira rota. Se precisar migrar, faça por feature e com strangler fig pattern.
+> **O que acontece:** Reescrita de adapter HTTP durante desenvolvimento ativo gera regressões. **Por quê:** Mudança de framework exige adaptar testes, middleware, error handling e estrutura de pastas simultaneamente. **Como evitar:** Decida antes de escrever a primeira rota. Se precisar migrar, faça por feature e com strangler fig pattern.
 
 > [!warning] Comparar performance por benchmark sintético
-> **O que acontece:** Decision é tomada por "Fastify é X% mais rápido que Express em hello-world".
-> **Por quê:** Benchmark sintético não inclui DB, rede, payload real, auth, cache e observability.
-> **Como evitar:** Peça benchmark do caso real antes de usar performance como argumento principal.
+> **O que acontece:** Decision é tomada por "Fastify é X% mais rápido que Express em hello-world". **Por quê:** Benchmark sintético não inclui DB, rede, payload real, auth, cache e observability. **Como evitar:** Peça benchmark do caso real antes de usar performance como argumento principal.
 
 > [!warning] Achar que NestJS é só "Express com decorators"
-> **O que acontece:** Dev usa NestJS mas contorna módulos e DI, criando acoplamento pior que Express puro.
-> **Por quê:** O modelo de módulos e lifecycle é diferente de Express; ignorar isso cria dois frameworks em um.
-> **Como evitar:** Ou use NestJS pelo modelo completo, ou use Express/Fastify sem DI container.
+> **O que acontece:** Dev usa NestJS mas contorna módulos e DI, criando acoplamento pior que Express puro. **Por quê:** O modelo de módulos e lifecycle é diferente de Express; ignorar isso cria dois frameworks em um. **Como evitar:** Ou use NestJS pelo modelo completo, ou use Express/Fastify sem DI container.
 
 > [!warning] Confundir framework com arquitetura
-> **O que acontece:** Express vira massa acoplada; NestJS não garante Clean Architecture.
-> **Por quê:** Framework entrega estrutura HTTP, não fronteiras de domínio.
-> **Como evitar:** Defina explicitamente onde fica regra de negócio, independente do framework escolhido.
+> **O que acontece:** Express vira massa acoplada; NestJS não garante Clean Architecture. **Por quê:** Framework entrega estrutura HTTP, não fronteiras de domínio. **Como evitar:** Defina explicitamente onde fica regra de negócio, independente do framework escolhido.
 
 > [!warning] Ignorar deploy target
-> **O que acontece:** Código Express/NestJS é implantado em Cloudflare Workers e falha por falta de APIs Node.
-> **Por quê:** Edge, container e Lambda têm constraints diferentes de filesystem, memória e CPU.
-> **Como evitar:** Defina o runtime antes do framework. Hono e Web Standards para edge; Express/NestJS/Fastify para Node container.
+> **O que acontece:** Código Express/NestJS é implantado em Cloudflare Workers e falha por falta de APIs Node. **Por quê:** Edge, container e Lambda têm constraints diferentes de filesystem, memória e CPU. **Como evitar:** Defina o runtime antes do framework. Hono e Web Standards para edge; Express/NestJS/Fastify para Node container.
 
 > [!warning] Escolher Fastify por performance e validar manualmente no controller
-> **O que acontece:** Rota Fastify sem schema — o principal diferencial do framework fica inutilizado.
-> **Por quê:** Fastify só otimiza serialização quando há response schema declarado; sem ele vira Express com API diferente.
-> **Como evitar:** Schema obrigatório em todas as rotas que recebem ou retornam dados estruturados.
+> **O que acontece:** Rota Fastify sem schema — o principal diferencial do framework fica inutilizado. **Por quê:** Fastify só otimiza serialização quando há response schema declarado; sem ele vira Express com API diferente. **Como evitar:** Schema obrigatório em todas as rotas que recebem ou retornam dados estruturados.
 
 > [!warning] Escolher Hono por hype sem verificar bibliotecas do runtime alvo
-> **O que acontece:** App usa Hono mas depende de libs de auth, storage ou crypto que não existem no edge target.
-> **Por quê:** Multi-runtime não é automático — cada biblioteca precisa ser auditada por compatibilidade.
-> **Como evitar:** Antes de adotar Hono, liste as dependências críticas e verifique se rodam no runtime alvo.
+> **O que acontece:** App usa Hono mas depende de libs de auth, storage ou crypto que não existem no edge target. **Por quê:** Multi-runtime não é automático — cada biblioteca precisa ser auditada por compatibilidade. **Como evitar:** Antes de adotar Hono, liste as dependências críticas e verifique se rodam no runtime alvo.
 
 ## Perguntas de entrevista
 
-**Como você escolheria entre Express e Fastify?**
-Se o time precisa de simplicidade e ecossistema máximo, Express é baseline. Se contrato, validation e serialization são centrais, Fastify entrega mais estrutura sem virar framework enterprise.
+**Como você escolheria entre Express e Fastify?** Se o time precisa de simplicidade e ecossistema máximo, Express é baseline. Se contrato, validation e serialization são centrais, Fastify entrega mais estrutura sem virar framework enterprise.
 
-**Quando NestJS é overkill?**
-Quando o app é pequeno, tem poucas dependências, domínio raso e time pequeno. Nessa situação, DI manual e Express/Fastify podem ser mais claros.
+**Quando NestJS é overkill?** Quando o app é pequeno, tem poucas dependências, domínio raso e time pequeno. Nessa situação, DI manual e Express/Fastify podem ser mais claros.
 
-**Quando Hono entra na conversa?**
-Quando o deploy é edge ou multi-runtime. Hono não é "Express menor"; é um modelo baseado em Web Standards.
+**Quando Hono entra na conversa?** Quando o deploy é edge ou multi-runtime. Hono não é "Express menor"; é um modelo baseado em Web Standards.
 
-**Qual erro você espera de um candidato junior?**
-Responder "NestJS é melhor" ou "Fastify é mais rápido" sem falar de problema, time, domínio e deploy target.
+**Qual erro você espera de um candidato junior?** Responder "NestJS é melhor" ou "Fastify é mais rápido" sem falar de problema, time, domínio e deploy target.
 
 ## Em entrevista
 

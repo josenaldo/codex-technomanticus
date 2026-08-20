@@ -172,9 +172,7 @@ Nenhuma nota vazou. Nenhum estado misturado.
 | Hash composta | Quando não há ID mas há combinação única | `key={\`${user.email}-${role}\`}` |
 
 > [!warning] Key gerada com `Math.random()` — destruição de performance
-> **O que acontece:** cada render gera uma key diferente para cada item. React nunca reconhece o mesmo componente entre renders.
-> **Por quê:** o reconciliation interpreta "key mudou" como "componente antigo sumiu, novo apareceu" — então desmonta e remonta tudo a cada render.
-> **Como evitar:** gere o identificador **uma vez**, quando o dado é criado, e armazene-o junto ao dado.
+> **O que acontece:** cada render gera uma key diferente para cada item. React nunca reconhece o mesmo componente entre renders. **Por quê:** o reconciliation interpreta "key mudou" como "componente antigo sumiu, novo apareceu" — então desmonta e remonta tudo a cada render. **Como evitar:** gere o identificador **uma vez**, quando o dado é criado, e armazene-o junto ao dado.
 
 ```tsx
 // ❌ Nunca faça isso
@@ -304,24 +302,16 @@ Quando `clienteId` muda de `'cliente-a'` para `'cliente-b'`:
 ## Armadilhas comuns
 
 > [!warning] Usar o índice do array como key em listas dinâmicas
-> **O que acontece:** ao adicionar, remover ou reordenar itens, o estado de componentes filhos "vaza" para o item errado — inputs mostram conteúdo trocado, checkboxes marcam o item errado.
-> **Por quê:** React identifica componentes pela key; se a key é o índice e os índices mudam, React pensa que o "mesmo componente" mudou de dados — e preserva o estado antigo no lugar errado.
-> **Como evitar:** sempre use um ID estável do dado (`item.id`, UUID gerado na criação). Índice como key só é seguro em listas **100% estáticas** que nunca mudam de ordem nem recebem inserções/remoções.
+> **O que acontece:** ao adicionar, remover ou reordenar itens, o estado de componentes filhos "vaza" para o item errado — inputs mostram conteúdo trocado, checkboxes marcam o item errado. **Por quê:** React identifica componentes pela key; se a key é o índice e os índices mudam, React pensa que o "mesmo componente" mudou de dados — e preserva o estado antigo no lugar errado. **Como evitar:** sempre use um ID estável do dado (`item.id`, UUID gerado na criação). Índice como key só é seguro em listas **100% estáticas** que nunca mudam de ordem nem recebem inserções/remoções.
 
 > [!warning] Keys não únicas dentro do mesmo array
-> **O que acontece:** React emite aviso no console; comportamento de reconciliation torna-se imprevisível — dois itens com a mesma key podem ter estado misturado.
-> **Por quê:** React usa key como identificador único no contexto do array; duplicatas quebram a bijection entre key e instância.
-> **Como evitar:** garanta que o campo usado como key seja único entre os itens daquele array. Em casos de dados externos, verifique antes de renderizar.
+> **O que acontece:** React emite aviso no console; comportamento de reconciliation torna-se imprevisível — dois itens com a mesma key podem ter estado misturado. **Por quê:** React usa key como identificador único no contexto do array; duplicatas quebram a bijection entre key e instância. **Como evitar:** garanta que o campo usado como key seja único entre os itens daquele array. Em casos de dados externos, verifique antes de renderizar.
 
 > [!warning] Gerar key com `Math.random()` ou `Date.now()` no render
-> **O que acontece:** a cada render, todas as keys mudam. React desmonta e remonta **todos** os itens da lista — performance péssima e animações/transições quebram.
-> **Por quê:** o reconciliation interpreta "key diferente" como "componente diferente" — não há reaproveitamento.
-> **Como evitar:** gere identificadores únicos **uma vez**, quando o item é criado, e armazene como campo no objeto. Nunca calcule dentro do `.map()`.
+> **O que acontece:** a cada render, todas as keys mudam. React desmonta e remonta **todos** os itens da lista — performance péssima e animações/transições quebram. **Por quê:** o reconciliation interpreta "key diferente" como "componente diferente" — não há reaproveitamento. **Como evitar:** gere identificadores únicos **uma vez**, quando o item é criado, e armazene como campo no objeto. Nunca calcule dentro do `.map()`.
 
 > [!warning] Esquecer key em Fragment quando há múltiplos elementos por item
-> **O que acontece:** aviso no console `"Each child in a list should have a unique 'key' prop"` — e sem key, o comportamento de reconciliation para esses fragmentos usa índice implícito.
-> **Por quê:** `<>...</>` não aceita props. Sem key explícita, React não consegue identificar o bloco.
-> **Como evitar:** use `<Fragment key={item.id}>` (importando `Fragment` do React) sempre que renderizar múltiplos elementos por item de lista.
+> **O que acontece:** aviso no console `"Each child in a list should have a unique 'key' prop"` — e sem key, o comportamento de reconciliation para esses fragmentos usa índice implícito. **Por quê:** `<>...</>` não aceita props. Sem key explícita, React não consegue identificar o bloco. **Como evitar:** use `<Fragment key={item.id}>` (importando `Fragment` do React) sempre que renderizar múltiplos elementos por item de lista.
 
 ---
 

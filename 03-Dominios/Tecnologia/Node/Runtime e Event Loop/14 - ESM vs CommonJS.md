@@ -312,24 +312,16 @@ Solução: a biblioteca foi publicada apenas como CJS (removendo o campo `"impor
 ## Armadilhas comuns
 
 > [!warning] Omitir extensão em imports ESM
-> **O que acontece:** `import { soma } from './math'` (sem `.js`) lança `ERR_MODULE_NOT_FOUND`.
-> **Por quê:** CJS resolve automaticamente `.js`, `.json`, `/index.js`. ESM segue a spec do browser — o specifier deve ser exato.
-> **Como evitar:** Sempre use extensão explícita: `import { soma } from './math.js'`. Bundlers resolvem sem extensão, mas o Node raw não.
+> **O que acontece:** `import { soma } from './math'` (sem `.js`) lança `ERR_MODULE_NOT_FOUND`. **Por quê:** CJS resolve automaticamente `.js`, `.json`, `/index.js`. ESM segue a spec do browser — o specifier deve ser exato. **Como evitar:** Sempre use extensão explícita: `import { soma } from './math.js'`. Bundlers resolvem sem extensão, mas o Node raw não.
 
 > [!warning] `require()` de pacote ESM-only
-> **O que acontece:** `require('chalk')` com chalk v5+ lança `ERR_REQUIRE_ESM`.
-> **Por quê:** Módulos ESM não expõem uma interface síncrona compatível com `require()`.
-> **Como evitar:** Use a versão anterior CJS do pacote, migre o arquivo para `.mjs`, ou use `import()` dinâmico dentro de uma função `async`.
+> **O que acontece:** `require('chalk')` com chalk v5+ lança `ERR_REQUIRE_ESM`. **Por quê:** Módulos ESM não expõem uma interface síncrona compatível com `require()`. **Como evitar:** Use a versão anterior CJS do pacote, migre o arquivo para `.mjs`, ou use `import()` dinâmico dentro de uma função `async`.
 
 > [!warning] Dual package hazard com singletons e estado global
-> **O que acontece:** Uma biblioteca com cache/singleton é carregada duas vezes no mesmo processo — estado não é compartilhado entre as duas instâncias.
-> **Por quê:** O mesmo pacote foi resolvido pelas duas entradas do campo `exports` (CJS e ESM), gerando dois módulos distintos.
-> **Como evitar:** Para pacotes com estado, publique só como CJS ou só como ESM. Documente o risco se precisar do dual format.
+> **O que acontece:** Uma biblioteca com cache/singleton é carregada duas vezes no mesmo processo — estado não é compartilhado entre as duas instâncias. **Por quê:** O mesmo pacote foi resolvido pelas duas entradas do campo `exports` (CJS e ESM), gerando dois módulos distintos. **Como evitar:** Para pacotes com estado, publique só como CJS ou só como ESM. Documente o risco se precisar do dual format.
 
 > [!warning] `module.exports` tardio no IIFE async de CJS
-> **O que acontece:** Importadores síncronos recebem `{}` (objeto vazio) porque o IIFE ainda não resolveu.
-> **Por quê:** `require()` é síncrono — captura o valor de `module.exports` no momento da chamada, antes do IIFE concluir.
-> **Como evitar:** Nunca atribua `module.exports` dentro de uma função assíncrona se o módulo for consumido de forma síncrona. Use lazy getters ou migre para ESM com top-level await.
+> **O que acontece:** Importadores síncronos recebem `{}` (objeto vazio) porque o IIFE ainda não resolveu. **Por quê:** `require()` é síncrono — captura o valor de `module.exports` no momento da chamada, antes do IIFE concluir. **Como evitar:** Nunca atribua `module.exports` dentro de uma função assíncrona se o módulo for consumido de forma síncrona. Use lazy getters ou migre para ESM com top-level await.
 
 ## Como explicar em inglês
 

@@ -55,8 +55,7 @@ bat verifica se `stdout` é um terminal interativo (`isatty(1)`). O resultado de
 - **Em terminal:** `--color=auto` → colorido; `--paging=auto` → pagina se output > tela.
 - **Em pipe/arquivo:** plain text, sem escape sequences, sem pager — equivale a `cat`.
 
-Para forçar cores em pipe (ex.: passar para outro programa que entende ANSI): `--color=always`.
-Para desabilitar pager mantendo cores: `--paging=never`.
+Para forçar cores em pipe (ex.: passar para outro programa que entende ANSI): `--color=always`. Para desabilitar pager mantendo cores: `--paging=never`.
 
 ### Integração com MANPAGER
 

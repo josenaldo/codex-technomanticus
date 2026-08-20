@@ -73,8 +73,7 @@ Essa é a virada central desta nota, e vale reformular de um jeito difícil de e
 > [!tip] Assista: Zero Trust Explained for Beginners!
 > **Canal:** howtonetwork | **Duração:** ~18min | **Idioma:** EN
 >
-> O vídeo nomeia, de fora do contexto de nuvem, a mesma virada que esta seção acabou de descrever: segurança para de ser "onde você está" e passa a ser "quem você prova ser, a cada chamada" — o pano de fundo conceitual que explica por que os dois portões da nuvem não têm atalho.
-> Trecho de destaque [00:46]: *"It shifts the focus from perimeter based security to robust identity verification"*
+> O vídeo nomeia, de fora do contexto de nuvem, a mesma virada que esta seção acabou de descrever: segurança para de ser "onde você está" e passa a ser "quem você prova ser, a cada chamada" — o pano de fundo conceitual que explica por que os dois portões da nuvem não têm atalho. Trecho de destaque [00:46]: *"It shifts the focus from perimeter based security to robust identity verification"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=tolxnxGshWk)
 

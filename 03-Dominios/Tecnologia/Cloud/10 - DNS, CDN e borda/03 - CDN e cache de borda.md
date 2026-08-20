@@ -167,8 +167,7 @@ Vale nomear também que nem invalidação nem TTL curto são instantâneos na pr
 > [!tip] Assista: Amazon CloudFront Caching Explained | TTL, Cache Control, Invalidation
 > **Canal:** SAA-C03 Module 7.7 | **Duração:** ~37min | **Idioma:** EN
 >
-> Cobre cache behaviors, os três níveis de TTL (min/max/default) e invalidação com o mesmo nível de detalhe desta nota, mas em vídeo — bom para quem prefere ver o console e as regras sendo montadas passo a passo.
-> Trecho de destaque [19:37]: *"cache invalidation is the process of manually telling CloudFront to remove specific cache[d] object[s] from all edge locations before their TTL expires"*
+> Cobre cache behaviors, os três níveis de TTL (min/max/default) e invalidação com o mesmo nível de detalhe desta nota, mas em vídeo — bom para quem prefere ver o console e as regras sendo montadas passo a passo. Trecho de destaque [19:37]: *"cache invalidation is the process of manually telling CloudFront to remove specific cache[d] object[s] from all edge locations before their TTL expires"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=bokPShSe8sw)
 

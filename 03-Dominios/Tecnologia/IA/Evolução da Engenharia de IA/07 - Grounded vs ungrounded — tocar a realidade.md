@@ -97,8 +97,7 @@ A terceira âncora é o julgamento humano, mas não qualquer julgamento humano �
 
 A distinção importa porque é fácil errar exatamente esse ponto, e a próxima seção — a parte de ceticismo desta nota — dedica um `[!warning]` inteiro a essa armadilha. Por ora, a versão positiva: quando um humano avalia uma saída de um sistema com critério que não veio do próprio sistema — não foi treinado a partir das preferências do modelo, não foi calibrado para concordar com o judge automatizado, não está sendo pressionado por métricas internas do time que constrói o produto — esse julgamento carrega algo que nenhuma combinação de nós internos consegue reproduzir: uma noção de "melhor" que se origina fora do circuito. É o mesmo papel, em forma diferente, que ANCHOR e FROZEN cumprem: uma referência que o sistema não pode fabricar sozinho.
 
-![[evolucao-eng-grounded-vs-ungrounded.png]]
-*Carlos E. Perez (@IntuitMachine) — o grafo A–H, consistente e verificado por nada, contra o mesmo tipo de sistema com três cordas descendo até a linha de HARD REALITY: ANCHOR, FROZEN, HUMAN.*
+![[evolucao-eng-grounded-vs-ungrounded.png]] *Carlos E. Perez (@IntuitMachine) — o grafo A–H, consistente e verificado por nada, contra o mesmo tipo de sistema com três cordas descendo até a linha de HARD REALITY: ANCHOR, FROZEN, HUMAN.*
 
 ### A regra
 
@@ -235,8 +234,7 @@ The real split was never loops versus graphs — it's grounded versus ungrounded
 > [!tip] Assista: What Makes Agency Actually Work?
 > **Canal:** Intuition Machine (Carlos E. Perez) | **Duração:** ~22min | **Idioma:** EN (legendas PT auto)
 >
-> Quase uma narração do argumento desta nota, pelo mesmo autor dos ensaios que a fundamentam: agência efetiva se assenta em contato direto com a realidade, antes de qualquer otimização. É "grounded" dito com outras palavras.
-> Trecho de destaque [00:02]: *"the foundation of all effective agency is being touched by reality before you do anything"*
+> Quase uma narração do argumento desta nota, pelo mesmo autor dos ensaios que a fundamentam: agência efetiva se assenta em contato direto com a realidade, antes de qualquer otimização. É "grounded" dito com outras palavras. Trecho de destaque [00:02]: *"the foundation of all effective agency is being touched by reality before you do anything"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=53Y3SYR5vTU)
 

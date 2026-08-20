@@ -69,8 +69,7 @@ Vale notar o que esse número mede e o que ele não mede. "Participação de mer
 > [!tip] Assista: AWS vs Azure vs GCP - Which One Should You Choose?
 > **Canal:** Tech With Soleyman | **Duração:** ~13min | **Idioma:** EN
 >
-> O vídeo cita percentuais de mercado diferentes dos desta nota (32%/23%/10%, de outra fonte e período) — o que, por si só, ilustra o alerta de caducidade acima: a ordem de grandeza (AWS lidera com folga, Azure em segundo, Google mais novo e menor) se mantém entre fontes; o dígito exato, não.
-> Trecho de destaque [01:48]: *"the cloud computing market is booming and expected to reach a 2,432 billion market by 2030. AWS, Azure and GCP are the three big players in this market and collectively they hold 64% of the total market share"*
+> O vídeo cita percentuais de mercado diferentes dos desta nota (32%/23%/10%, de outra fonte e período) — o que, por si só, ilustra o alerta de caducidade acima: a ordem de grandeza (AWS lidera com folga, Azure em segundo, Google mais novo e menor) se mantém entre fontes; o dígito exato, não. Trecho de destaque [01:48]: *"the cloud computing market is booming and expected to reach a 2,432 billion market by 2030. AWS, Azure and GCP are the three big players in this market and collectively they hold 64% of the total market share"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=A1lIxZ0AZEE)
 

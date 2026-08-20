@@ -164,7 +164,7 @@ Aqui o jogo é diferente das outras notas: **nenhuma das quatro stdlibs traz uma
 > [!abstract] A decisão que atravessa as quatro linguagens
 > - **Filhos como array** (`TrieNode[26]`): índice direto (`filho[c - 'a']`), acesso O(1) sem hash, ótimo de cache. Mas **fixa o alfabeto** (26 minúsculas) e reserva 26 slots por nó mesmo que use 2 → desperdício em tries esparsas.
 > - **Filhos como map/dict**: aceita **qualquer alfabeto** (Unicode, bytes), aloca só os filhos que existem (economiza em nós esparsos). Mas paga o custo de hash por acesso e perde localidade de cache.
-> 
+>
 > Essa é a alavanca real de projeto — velocidade vs memória vs tamanho do alfabeto — e é **idêntica** em Java, TS, Python e Go.
 
 ```mermaid
@@ -385,9 +385,9 @@ A trie aparece em duas formas: como **resposta de pattern** ("autocomplete / bus
 
 > [!quote] How to explain it in English
 > "A trie is a tree where each edge is a character, so the **path** from the root spells out a prefix. The key property is that lookups, inserts and deletes are **O(L)** — proportional to the length of the key, *not* to the number of keys stored. That's what makes it shine for autocomplete: I walk the typed prefix in O(L), then collect the subtree below it.
-> 
+>
 > I'd reach for a trie over a hash map specifically when I need **prefix queries**, **ordered traversal**, or **longest-prefix matching** — none of which a hash map gives you, because hashing destroys the structure of the key. The cost is **space**: tries have many sparse nodes and poor cache locality.
-> 
+>
 > The core design decision is how to store a node's children: a **fixed-size array** — say `TrieNode[26]` — is fast and cache-friendly but locks you to one alphabet and wastes memory; a **map** handles any alphabet and only allocates the children that exist, but pays hashing cost. In production you usually want a **compressed trie — a radix tree, also called a Patricia trie** — which collapses single-child chains into a single edge. That's what IP routing tables use for longest-prefix match, and what Redis uses internally for its streams."
 
 > [!tip] Frases úteis

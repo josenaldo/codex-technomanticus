@@ -134,11 +134,9 @@ O teste de diagnóstico rápido: **copie a instrução que deveria estar sendo s
 
 Context rot não é só problema de qualidade — é custo direto. Três formas de pensar no impacto econômico:
 
-**Custo de retrabalho**
-Cada iteração extra causada por rot (o modelo errou porque não "viu" o contexto correto, você reprocessa, ele erra de novo) é tokens pagos duas vezes. Em um agente que roda 100 iterações e rot causa 20% de retrabalho, você paga efetivamente 120 iterações para um resultado que deveria custar 80.
+**Custo de retrabalho** Cada iteração extra causada por rot (o modelo errou porque não "viu" o contexto correto, você reprocessa, ele erra de novo) é tokens pagos duas vezes. Em um agente que roda 100 iterações e rot causa 20% de retrabalho, você paga efetivamente 120 iterações para um resultado que deveria custar 80.
 
-**Custo de contexto crescente vs. compactação**
-Considere dois designs: (A) contexto acumula sem compactação — cada iteração lê o histórico completo; (B) compactação a cada 10 iterações mantém o contexto ativo em ~20K tokens. Para uma sessão de 50 iterações com 2K tokens por iteração de histórico acumulado:
+**Custo de contexto crescente vs. compactação** Considere dois designs: (A) contexto acumula sem compactação — cada iteração lê o histórico completo; (B) compactação a cada 10 iterações mantém o contexto ativo em ~20K tokens. Para uma sessão de 50 iterações com 2K tokens por iteração de histórico acumulado:
 
 | Design | Tokens totais lidos | Custo relativo |
 |---|---|---|
@@ -147,8 +145,7 @@ Considere dois designs: (A) contexto acumula sem compactação — cada iteraç�
 
 O design B custa **60% menos** — e ainda produz respostas de qualidade superior por rot reduzido. Compactação não é só técnica; é estratégia de custo.
 
-**Custo de incidente**
-Para sistemas onde rot causa erros silenciosos (recomendação errada, código com bug sutil, análise incorreta), o custo não é de tokens — é de consequência. Um agente de suporte que "esquece" um constraint da conversa pode prometer algo que a empresa não pode entregar. Nesses casos, qualquer investimento em mitigação de rot tem ROI imediato.
+**Custo de incidente** Para sistemas onde rot causa erros silenciosos (recomendação errada, código com bug sutil, análise incorreta), o custo não é de tokens — é de consequência. Um agente de suporte que "esquece" um constraint da conversa pode prometer algo que a empresa não pode entregar. Nesses casos, qualquer investimento em mitigação de rot tem ROI imediato.
 
 ---
 
@@ -156,17 +153,13 @@ Para sistemas onde rot causa erros silenciosos (recomendação errada, código c
 
 Quatro técnicas de medição, da mais simples à mais robusta:
 
-**1. Benchmark NIAH adaptado**
-Needle-in-a-haystack com seus próprios dados, em diferentes tamanhos de contexto. Teste: consegue recuperar um fato específico quando ele está em contextos de 10K, 50K, 100K, 200K tokens?
+**1. Benchmark NIAH adaptado** Needle-in-a-haystack com seus próprios dados, em diferentes tamanhos de contexto. Teste: consegue recuperar um fato específico quando ele está em contextos de 10K, 50K, 100K, 200K tokens?
 
-**2. Eval com posição variável**
-Coloque o "needle" (informação que será perguntada) em início, meio e fim do contexto. Compare a acurácia nos três casos. Se o meio performa pior, você confirmou lost-in-the-middle.
+**2. Eval com posição variável** Coloque o "needle" (informação que será perguntada) em início, meio e fim do contexto. Compare a acurácia nos três casos. Se o meio performa pior, você confirmou lost-in-the-middle.
 
-**3. Distractor injection**
-Adicione documentos similares mas irrelevantes antes da resposta correta. Mede se o modelo ainda acerta com 5, 10, 20 distractors semanticamente próximos.
+**3. Distractor injection** Adicione documentos similares mas irrelevantes antes da resposta correta. Mede se o modelo ainda acerta com 5, 10, 20 distractors semanticamente próximos.
 
-**4. Curva de qualidade vs. tokens**
-Em produção, plotar accuracy (ou avaliação humana de qualidade) contra o tamanho do contexto ao longo do tempo. Queda progressiva é context rot em ação.
+**4. Curva de qualidade vs. tokens** Em produção, plotar accuracy (ou avaliação humana de qualidade) contra o tamanho do contexto ao longo do tempo. Queda progressiva é context rot em ação.
 
 ---
 
@@ -185,8 +178,7 @@ Em produção, plotar accuracy (ou avaliação humana de qualidade) contra o tam
 
 Quatro princípios que, se internalizados, evitam 80% dos incidentes de context rot antes de escrever uma linha de código:
 
-**1. Informação crítica vive nas bordas**
-A curva em U é uma restrição física da atenção. Trabalhe com ela, não contra ela. Qualquer informação que precisa ser seguida com alta fidelidade (instruções, constraints, objetivos) deve estar no início do system prompt ou re-injetada imediatamente antes da query. Documentos de referência? Chunk deles de forma que só o trecho relevante vá para o contexto, não o documento inteiro.
+**1. Informação crítica vive nas bordas** A curva em U é uma restrição física da atenção. Trabalhe com ela, não contra ela. Qualquer informação que precisa ser seguida com alta fidelidade (instruções, constraints, objetivos) deve estar no início do system prompt ou re-injetada imediatamente antes da query. Documentos de referência? Chunk deles de forma que só o trecho relevante vá para o contexto, não o documento inteiro.
 
 > [!tip] O corolário operacional: a ordem se inverte em documento longo
 > A curva em U tem uma consequência prática que quase ninguém aplica, porque contraria o hábito. **Prompt normal** — instrução primeiro, dado por último. **Documento longo** (acima de ~10 mil tokens) — **documento primeiro, pergunta no fim**.
@@ -195,14 +187,11 @@ A curva em U é uma restrição física da atenção. Trabalhe com ela, não con
 >
 > O mesmo raciocínio explica o conserto de dez segundos para a conversa longa que "começou a ignorar" a regra do início: em vez de reescrever o system prompt, **repita a regra crítica na última mensagem**. Não é gambiarra; é como agentes de produção são construídos.
 
-**2. Context budget é recurso escasso, não espaço livre**
-Tratar a janela de contexto como "espaço disponível" é o mesmo erro de tratar RAM como "espaço livre" — ambos degradam conforme enchem. Context budget é recurso a ser alocado com intenção: cada tool definition, cada chunk de RAG, cada turno de histórico compete pela atenção do modelo. Cada adição deve justificar seu custo de atenção.
+**2. Context budget é recurso escasso, não espaço livre** Tratar a janela de contexto como "espaço disponível" é o mesmo erro de tratar RAM como "espaço livre" — ambos degradam conforme enchem. Context budget é recurso a ser alocado com intenção: cada tool definition, cada chunk de RAG, cada turno de histórico compete pela atenção do modelo. Cada adição deve justificar seu custo de atenção.
 
-**3. Compactação é operação de negócio, não otimização técnica**
-Em sistemas com agentes autônomos de longa duração, a política de compactação — quando compactar, o quê preservar, o quê descartar — determina a qualidade das decisões do agente ao longo do tempo. Não é detalhe de implementação. Deve ser desenhada por quem entende do domínio: o que neste histórico um agente experiente precisaria lembrar para amanhã?
+**3. Compactação é operação de negócio, não otimização técnica** Em sistemas com agentes autônomos de longa duração, a política de compactação — quando compactar, o quê preservar, o quê descartar — determina a qualidade das decisões do agente ao longo do tempo. Não é detalhe de implementação. Deve ser desenhada por quem entende do domínio: o que neste histórico um agente experiente precisaria lembrar para amanhã?
 
-**4. Medir antes de otimizar**
-Não é possível gerenciar o que não se mede. Um NIAH adaptado ao seu domínio específico, executado regularmente, é a diferença entre "o modelo parece estar errando mais ultimamente" e "nossa qualidade de recuperação caiu 12% nas últimas 3 semanas quando o contexto passa de 40K tokens". O segundo leva a uma solução; o primeiro leva a reuniões.
+**4. Medir antes de otimizar** Não é possível gerenciar o que não se mede. Um NIAH adaptado ao seu domínio específico, executado regularmente, é a diferença entre "o modelo parece estar errando mais ultimamente" e "nossa qualidade de recuperação caiu 12% nas últimas 3 semanas quando o contexto passa de 40K tokens". O segundo leva a uma solução; o primeiro leva a reuniões.
 
 ---
 
@@ -217,20 +206,15 @@ Esse número é importante porque context rot era tratado como problema teórico
 
 ## Estado da arte — junho de 2026
 
-**Compactação automática virou produto**
-Claude Code implementa "context compaction" nativo: quando a janela está ~80% cheia, um modelo auxiliar sumariza o histórico antigo e injeta o resumo no início. Isso resolve o rot de sessões longas sem intervenção manual. A Anthropic publicou que a compactação reduz incidentes de rot em ~60% para tarefas com agentes autônomos de longa duração.
+**Compactação automática virou produto** Claude Code implementa "context compaction" nativo: quando a janela está ~80% cheia, um modelo auxiliar sumariza o histórico antigo e injeta o resumo no início. Isso resolve o rot de sessões longas sem intervenção manual. A Anthropic publicou que a compactação reduz incidentes de rot em ~60% para tarefas com agentes autônomos de longa duração.
 
-**Modelos com "atenção seletiva"**
-Arquiteturas como Mamba (state-space models) e variantes de attention esparsa atacam o problema da atenção quadrática. Em junho de 2026, ainda não superaram transformers em tarefas complexas, mas mostram desempenho mais estável em contextos longos — a curva de degradação é menos íngreme do que em transformers puros. Google DeepMind reportou que Gemini 2.5 Flash com suas extensões de atenção mantém performance ~15% acima de transformer padrão em contextos de 500K-1M tokens.
+**Modelos com "atenção seletiva"** Arquiteturas como Mamba (state-space models) e variantes de attention esparsa atacam o problema da atenção quadrática. Em junho de 2026, ainda não superaram transformers em tarefas complexas, mas mostram desempenho mais estável em contextos longos — a curva de degradação é menos íngreme do que em transformers puros. Google DeepMind reportou que Gemini 2.5 Flash com suas extensões de atenção mantém performance ~15% acima de transformer padrão em contextos de 500K-1M tokens.
 
-**Memória externa como padrão arquitetural**
-Em vez de tentar caber tudo na janela, sistemas maduros usam memória externa (vector stores, grafos de conhecimento) e recuperam apenas o relevante just-in-time. Esse padrão — descrito em [[06 - Dynamic retrieval beyond RAG]] — efetivamente contorna o rot ao manter o contexto ativo pequeno. Em junho de 2026, esse já é o padrão de facto para aplicações enterprise: pipelines que injetam 5-10 chunks relevantes em vez de 50.
+**Memória externa como padrão arquitetural** Em vez de tentar caber tudo na janela, sistemas maduros usam memória externa (vector stores, grafos de conhecimento) e recuperam apenas o relevante just-in-time. Esse padrão — descrito em [[06 - Dynamic retrieval beyond RAG]] — efetivamente contorna o rot ao manter o contexto ativo pequeno. Em junho de 2026, esse já é o padrão de facto para aplicações enterprise: pipelines que injetam 5-10 chunks relevantes em vez de 50.
 
-**Métricas de rot em observabilidade**
-Ferramentas como LangSmith, Weave (W&B) e Braintrust passaram a oferecer métricas de "context quality" — estimativas de quanto do contexto está sendo efetivamente usado pelo modelo vs. sendo "desperdiçado". Isso permite detecção proativa de rot antes que vire incidente. A métrica-chave emergente é a **context utilization rate**: razão entre os tokens que influenciam a resposta final (aferido por attribution) e os tokens totais no contexto.
+**Métricas de rot em observabilidade** Ferramentas como LangSmith, Weave (W&B) e Braintrust passaram a oferecer métricas de "context quality" — estimativas de quanto do contexto está sendo efetivamente usado pelo modelo vs. sendo "desperdiçado". Isso permite detecção proativa de rot antes que vire incidente. A métrica-chave emergente é a **context utilization rate**: razão entre os tokens que influenciam a resposta final (aferido por attribution) e os tokens totais no contexto.
 
-**Janelas de 1M-2M como mudança de paradigma parcial**
-Gemini 2.5 Pro com 2M tokens de janela deslocou o debate: para muitos casos de uso (análise de uma codebase inteira, ingestão de um livro, repositório histórico de conversas), o rot é menos urgente porque o pico de uso nunca chega perto do limiar de degradação severa. Mas para agentes autônomos que rodam por horas com histórico crescente, o problema permanece — independente do tamanho da janela.
+**Janelas de 1M-2M como mudança de paradigma parcial** Gemini 2.5 Pro com 2M tokens de janela deslocou o debate: para muitos casos de uso (análise de uma codebase inteira, ingestão de um livro, repositório histórico de conversas), o rot é menos urgente porque o pico de uso nunca chega perto do limiar de degradação severa. Mas para agentes autônomos que rodam por horas com histórico crescente, o problema permanece — independente do tamanho da janela.
 
 ---
 

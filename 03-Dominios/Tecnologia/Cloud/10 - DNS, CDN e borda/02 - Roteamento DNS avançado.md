@@ -202,8 +202,7 @@ sequenceDiagram
 > [!tip] Assista: Route 53 Routing Policies Explained: Simple, Weighted, Latency & Failover
 > **Canal:** AWS Networking | **Duração:** ~6min | **Idioma:** EN
 >
-> Um resumo rápido e direto das quatro políticas — útil para fixar a diferença de propósito entre elas antes de decidir qual usar em cada cenário desta nota.
-> Trecho de destaque [04:07]: *"Failover routing policy is designed for high availability and disaster recovery scenarios. It creates an active passive setup where you designate one resource as primary and another as secondary."*
+> Um resumo rápido e direto das quatro políticas — útil para fixar a diferença de propósito entre elas antes de decidir qual usar em cada cenário desta nota. Trecho de destaque [04:07]: *"Failover routing policy is designed for high availability and disaster recovery scenarios. It creates an active passive setup where you designate one resource as primary and another as secondary."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=jXgIRPjXv3Y)
 

@@ -71,8 +71,7 @@ graph TB
 A maioria esmagadora dos arquivos não passa da primeira comparação. É por isso que `git status` responde em milissegundos onde uma varredura completa levaria dezenas de segundos.
 
 > [!question]- Isso explica aquele momento em que o Git "acha" que tudo mudou?
-> Sim. Se algo altera a data de modificação de todos os arquivos sem alterar o conteúdo — restaurar um backup, extrair um zip, uma ferramenta que reescreve arquivos, um `touch` em massa —, o cache do index deixa de bater. O Git então lê cada arquivo, descobre que o hash é o mesmo, conclui "inalterado" e atualiza os metadados. Resultado: um `git status` lento naquela primeira vez, e rápido depois.
-> É também o motivo de um sintoma clássico: mudar de sistema de arquivos ou de máquina e ver um primeiro `status` demorado sem nada realmente modificado.
+> Sim. Se algo altera a data de modificação de todos os arquivos sem alterar o conteúdo — restaurar um backup, extrair um zip, uma ferramenta que reescreve arquivos, um `touch` em massa —, o cache do index deixa de bater. O Git então lê cada arquivo, descobre que o hash é o mesmo, conclui "inalterado" e atualiza os metadados. Resultado: um `git status` lento naquela primeira vez, e rápido depois. É também o motivo de um sintoma clássico: mudar de sistema de arquivos ou de máquina e ver um primeiro `status` demorado sem nada realmente modificado.
 
 ---
 
@@ -130,19 +129,13 @@ Sem a área de preparação, isso seria impossível — e é o melhor argumento 
 ## Armadilhas comuns
 
 > [!warning] `git rm --cached` não é `git rm`
-> **O que acontece:** a pessoa quer parar de versionar um arquivo e roda `git rm`, apagando-o do disco.
-> **Por quê:** `rm` remove do index **e** do disco; `rm --cached` remove só do index.
-> **Como lembrar:** `--cached` significa "só no index" — é o mesmo sentido em `git diff --cached`. Foi exatamente o comando da nota 06 para o PDF já versionado.
+> **O que acontece:** a pessoa quer parar de versionar um arquivo e roda `git rm`, apagando-o do disco. **Por quê:** `rm` remove do index **e** do disco; `rm --cached` remove só do index. **Como lembrar:** `--cached` significa "só no index" — é o mesmo sentido em `git diff --cached`. Foi exatamente o comando da nota 06 para o PDF já versionado.
 
 > [!warning] Preparar, editar de novo, e commitar sem reparar
-> **O que acontece:** você faz `add`, continua editando, commita — e o commit contém a versão de quando você deu `add`, não a que está na tela.
-> **Por quê:** o commit é feito **a partir do index**, e o index congelou o conteúdo no momento do `add`.
-> **Como evitar:** `git diff` (index × disco) antes de commitar mostra exatamente o que ficou de fora. É o hábito que a nota 04 recomendou, agora com o motivo.
+> **O que acontece:** você faz `add`, continua editando, commita — e o commit contém a versão de quando você deu `add`, não a que está na tela. **Por quê:** o commit é feito **a partir do index**, e o index congelou o conteúdo no momento do `add`. **Como evitar:** `git diff` (index × disco) antes de commitar mostra exatamente o que ficou de fora. É o hábito que a nota 04 recomendou, agora com o motivo.
 
 > [!warning] Apagar `.git/index` achando que é grave
-> **O que acontece:** o arquivo some ou corrompe, e o repositório parece quebrado.
-> **Por quê:** o index é **derivado** — pode ser reconstruído a partir do `HEAD`.
-> **Como resolver:** `git reset` (sem argumento) o reconstrói a partir do `HEAD`. Você perde apenas o que estava preparado e ainda não commitado, não o histórico. É o arquivo mais descartável de `.git/`.
+> **O que acontece:** o arquivo some ou corrompe, e o repositório parece quebrado. **Por quê:** o index é **derivado** — pode ser reconstruído a partir do `HEAD`. **Como resolver:** `git reset` (sem argumento) o reconstrói a partir do `HEAD`. Você perde apenas o que estava preparado e ainda não commitado, não o histórico. É o arquivo mais descartável de `.git/`.
 
 ---
 

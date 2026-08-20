@@ -199,17 +199,13 @@ O monitoramento dessas métricas em produção é o que distingue um sistema que
 
 ## Estado da arte — junho de 2026
 
-**Memória nativa nos providers**
-Em 2026, Anthropic e Google anunciaram roadmaps para memória nativa nos modelos — sem precisar de ferramentas externas como Mem0 ou Zep para casos simples. Claude.ai já implementou a "Memory feature" que persiste fatos entre conversas. Para APIs, a tendência é um campo `memory_context` nativo na chamada.
+**Memória nativa nos providers** Em 2026, Anthropic e Google anunciaram roadmaps para memória nativa nos modelos — sem precisar de ferramentas externas como Mem0 ou Zep para casos simples. Claude.ai já implementou a "Memory feature" que persiste fatos entre conversas. Para APIs, a tendência é um campo `memory_context` nativo na chamada.
 
-**Grafos de conhecimento como camada persistente**
-A limitação do vector store puro (que encontra items similares mas não entende relações entre eles) levou à adoção de grafos de conhecimento como camada persistente para domínios ricos em entidades. Mem0 e Graphlit adotaram arquiteturas híbridas (vector + graph) em 2025. Um grafo sabe que "João é gerente de Maria" e "Maria trabalha no projeto X" — um vector store não.
+**Grafos de conhecimento como camada persistente** A limitação do vector store puro (que encontra items similares mas não entende relações entre eles) levou à adoção de grafos de conhecimento como camada persistente para domínios ricos em entidades. Mem0 e Graphlit adotaram arquiteturas híbridas (vector + graph) em 2025. Um grafo sabe que "João é gerente de Maria" e "Maria trabalha no projeto X" — um vector store não.
 
-**Compactação automática da camada temporal**
-Claude Code implementou compactação automática da working memory em 2025. Quando a sessão atinge ~80% da janela, um modelo auxiliar sumariza o histórico antigo e injeta o resumo no início. Isso efetivamente gerencia a camada temporal sem intervenção manual — o que antes era tarefa do engenheiro de contexto.
+**Compactação automática da camada temporal** Claude Code implementou compactação automática da working memory em 2025. Quando a sessão atinge ~80% da janela, um modelo auxiliar sumariza o histórico antigo e injeta o resumo no início. Isso efetivamente gerencia a camada temporal sem intervenção manual — o que antes era tarefa do engenheiro de contexto.
 
-**TTL como primitiva de negócio**
-Em sistemas de produção maduros em 2026, TTL (time-to-live) na memória persistente deixou de ser detalhe técnico e virou requisito de negócio — especialmente em domínios regulados (saúde, financeiro). "Memorias com expiração auditável" virou feature de produto.
+**TTL como primitiva de negócio** Em sistemas de produção maduros em 2026, TTL (time-to-live) na memória persistente deixou de ser detalhe técnico e virou requisito de negócio — especialmente em domínios regulados (saúde, financeiro). "Memorias com expiração auditável" virou feature de produto.
 
 ---
 

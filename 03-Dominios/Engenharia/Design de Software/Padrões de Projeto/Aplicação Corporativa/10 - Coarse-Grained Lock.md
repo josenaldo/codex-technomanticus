@@ -24,13 +24,7 @@ aliases:
 # Coarse-Grained Lock
 
 > [!abstract] TL;DR
-> O lock da nota anterior protege **um registro**. Mas o que o usuário edita quase nunca é um registro:
-> é um **conjunto** — o pedido com seus itens, a apólice com suas coberturas. Travar cada parte
-> isoladamente deixa passar a inconsistência que só existe **entre** elas: dois usuários passam nos
-> seus locks individuais e o resultado combinado é inválido. O **Coarse-Grained Lock** usa **um lock
-> para o grupo inteiro** — tipicamente a versão da raiz, incrementada quando qualquer parte muda. É o
-> único padrão do roster **sem ressurreição limpa**: ele não voltou com outro nome, foi **absorvido**
-> pelo conceito de agregado do DDD, que resolve o mesmo problema por modelagem em vez de mecanismo.
+> O lock da nota anterior protege **um registro**. Mas o que o usuário edita quase nunca é um registro: é um **conjunto** — o pedido com seus itens, a apólice com suas coberturas. Travar cada parte isoladamente deixa passar a inconsistência que só existe **entre** elas: dois usuários passam nos seus locks individuais e o resultado combinado é inválido. O **Coarse-Grained Lock** usa **um lock para o grupo inteiro** — tipicamente a versão da raiz, incrementada quando qualquer parte muda. É o único padrão do roster **sem ressurreição limpa**: ele não voltou com outro nome, foi **absorvido** pelo conceito de agregado do DDD, que resolve o mesmo problema por modelagem em vez de mecanismo.
 
 ## Dois salvamentos válidos, um estado inválido
 
@@ -98,19 +92,13 @@ E é por isso que ele desapareceu do vocabulário: quando o agregado é bem esco
 ## Armadilhas comuns
 
 > [!warning] Granularidade grossa demais
-> **O que acontece:** o lock é colocado no cliente, não no pedido. Dois atendentes trabalhando em pedidos **diferentes** do mesmo cliente conflitam, e o sistema fica lento e irritante sem motivo aparente.
-> **Por quê:** "se agrupar protege, agrupar mais protege mais" — mas cada ampliação da fronteira aumenta a contenção sem acrescentar invariante nenhuma.
-> **Como evitar:** a fronteira é definida pela **invariante**, não pela hierarquia de dados. Se nenhuma regra liga dois pedidos do mesmo cliente, eles não pertencem ao mesmo lock — ainda que o modelo relacional os ligue por chave estrangeira.
+> **O que acontece:** o lock é colocado no cliente, não no pedido. Dois atendentes trabalhando em pedidos **diferentes** do mesmo cliente conflitam, e o sistema fica lento e irritante sem motivo aparente. **Por quê:** "se agrupar protege, agrupar mais protege mais" — mas cada ampliação da fronteira aumenta a contenção sem acrescentar invariante nenhuma. **Como evitar:** a fronteira é definida pela **invariante**, não pela hierarquia de dados. Se nenhuma regra liga dois pedidos do mesmo cliente, eles não pertencem ao mesmo lock — ainda que o modelo relacional os ligue por chave estrangeira.
 
 > [!warning] Confundir a fronteira do lock com a fronteira da tela
-> **O que acontece:** o lock cobre exatamente o que a tela de edição mostra. Vem uma tela nova, que mostra um recorte diferente, e o lock passa a proteger o conjunto errado.
-> **Por quê:** a tela é o que está à vista quando o mecanismo é implementado, então parece o critério natural.
-> **Como evitar:** a fronteira pertence ao **domínio** — é onde as invariantes valem — e telas são recortes de apresentação sobre ela. Telas mudam com frequência; agregados, muito pouco.
+> **O que acontece:** o lock cobre exatamente o que a tela de edição mostra. Vem uma tela nova, que mostra um recorte diferente, e o lock passa a proteger o conjunto errado. **Por quê:** a tela é o que está à vista quando o mecanismo é implementado, então parece o critério natural. **Como evitar:** a fronteira pertence ao **domínio** — é onde as invariantes valem — e telas são recortes de apresentação sobre ela. Telas mudam com frequência; agregados, muito pouco.
 
 > [!warning] Aplicar sem invariante entre as partes
-> **O que acontece:** o sistema trava o pedido inteiro para editar um campo de um item que nenhuma regra relaciona ao resto. A contenção é real; a proteção é imaginária.
-> **Por quê:** o padrão é aplicado por analogia estrutural ("é pai e filho, então é um grupo") em vez de por regra.
-> **Como evitar:** exija a invariante em uma frase — "o desconto depende do total dos itens". Sem essa frase, o lock por registro basta, e é mais barato.
+> **O que acontece:** o sistema trava o pedido inteiro para editar um campo de um item que nenhuma regra relaciona ao resto. A contenção é real; a proteção é imaginária. **Por quê:** o padrão é aplicado por analogia estrutural ("é pai e filho, então é um grupo") em vez de por regra. **Como evitar:** exija a invariante em uma frase — "o desconto depende do total dos itens". Sem essa frase, o lock por registro basta, e é mais barato.
 
 ## Como explicar em inglês
 

@@ -283,11 +283,9 @@ Ver [[07 - Iteration patterns — keep, change, do-not]].
 ## Fontes
 
 - **@hooeem** — *Become an AI Engineer*, cap #8. Origem do framing "8 dimensões" e template Constraints/Do-not/If-cannot.
-- **Anthropic** — [Provide system prompts with detailed instructions](https://docs.anthropic.com/)
-  (caminho exato da página a confirmar; domínio oficial).
+- **Anthropic** — [Provide system prompts with detailed instructions](https://docs.anthropic.com/) (caminho exato da página a confirmar; domínio oficial).
 - **OpenAI** — [Prompt engineering guide](https://platform.openai.com/docs/guides/prompt-engineering), seção "Specify the steps".
-- **Anthropic** — [Building safer LLM systems](https://docs.anthropic.com/)
-  (caminho exato da página a confirmar; domínio oficial). Distinção constraint vs guardrail.
+- **Anthropic** — [Building safer LLM systems](https://docs.anthropic.com/) (caminho exato da página a confirmar; domínio oficial). Distinção constraint vs guardrail.
 
 ## Veja também
 

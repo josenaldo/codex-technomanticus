@@ -107,8 +107,7 @@ A diferença entre "ter SBOM" e "ter um programa de supply chain" está justamen
 > Cruzar dependências contra bases de CVE é necessário, mas tem um ponto cego estrutural: **só pega o que já tem CVE atribuída**. Não pega:
 > - **Typosquatting** — pacote `reqeusts` (com o erro de digitação) imitando `requests`; é um pacote _novo_ e malicioso, sem CVE.
 > - **Dependency confusion** — atacante publica em um repositório público um pacote com o **mesmo nome** de um pacote interno seu, e o resolver baixa o do atacante por ter versão "maior".
-> - **Backdoor recém-plantado** — comprometimento de uma lib legítima (vide o caso `xz/liblzma` de 2024): entre o plantio e a divulgação, **não há CVE para o scanner cruzar**.
-> É por isso que o SBOM (saber exatamente o que você tem) e a proveniência (saber de onde veio) cobrem o que o scan de CVE não alcança.
+> - **Backdoor recém-plantado** — comprometimento de uma lib legítima (vide o caso `xz/liblzma` de 2024): entre o plantio e a divulgação, **não há CVE para o scanner cruzar**. É por isso que o SBOM (saber exatamente o que você tem) e a proveniência (saber de onde veio) cobrem o que o scan de CVE não alcança.
 
 ## Na prática
 

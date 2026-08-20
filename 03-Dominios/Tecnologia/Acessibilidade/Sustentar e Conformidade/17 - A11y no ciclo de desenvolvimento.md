@@ -62,9 +62,7 @@ Duas decisões de ofício ao montar o gate:
 - **O gate pega só a metade automatizável.** O CI barra regressões mecânicas (nota 13) — não substitui a passada manual (nota 15). Ele é a rede que impede a dívida *óbvia* de voltar; o julgamento humano continua nos fluxos críticos.
 
 > [!warning] A11y como épico separado no backlog
-> **O que acontece:** a acessibilidade vira um épico "Melhorias de A11y" no backlog, sempre despriorizado frente a features. A dívida cresce entre as raras vezes em que o épico sobe.
-> **Por quê:** tratada como trabalho *à parte*, a11y compete com feature — e perde sempre. É o reflexo-checklist da nota 01 em escala de time: acessibilidade empurrada para "depois".
-> **Como evitar:** a11y não é um épico; é uma **propriedade de cada tarefa**, como não ter bug e ter teste. Entra na Definition of Done (a seguir), não numa fila separada.
+> **O que acontece:** a acessibilidade vira um épico "Melhorias de A11y" no backlog, sempre despriorizado frente a features. A dívida cresce entre as raras vezes em que o épico sobe. **Por quê:** tratada como trabalho *à parte*, a11y compete com feature — e perde sempre. É o reflexo-checklist da nota 01 em escala de time: acessibilidade empurrada para "depois". **Como evitar:** a11y não é um épico; é uma **propriedade de cada tarefa**, como não ter bug e ter teste. Entra na Definition of Done (a seguir), não numa fila separada.
 
 ## Mecanismo 3: a11y na Definition of Done
 
@@ -94,19 +92,13 @@ O ponto não é criar burocracia — é tornar a a11y **parte do que significa t
 ## Armadilhas comuns
 
 > [!warning] Exigir zero-violações num legado trava tudo
-> **O que acontece:** o time ativa o gate de CI em modo estrito — qualquer violação de acessibilidade reprova o build — num produto que já tem centenas delas acumuladas. Todo PR passa a falhar, inclusive os que não tocam em nada relacionado a a11y.
-> **Por quê:** o gate não distingue dívida herdada de dívida nova; ele só vê "violação existe: sim/não". Sem baseline, o critério é impossível de cumprir e o time aprende a ignorar o gate (ou a desativá-lo) — o pior desfecho possível.
-> **Como evitar:** sempre fixar um baseline antes de ligar o modo bloqueante (ver Cenário 2). O gate deve travar **regressões**, não exigir perfeição instantânea.
+> **O que acontece:** o time ativa o gate de CI em modo estrito — qualquer violação de acessibilidade reprova o build — num produto que já tem centenas delas acumuladas. Todo PR passa a falhar, inclusive os que não tocam em nada relacionado a a11y. **Por quê:** o gate não distingue dívida herdada de dívida nova; ele só vê "violação existe: sim/não". Sem baseline, o critério é impossível de cumprir e o time aprende a ignorar o gate (ou a desativá-lo) — o pior desfecho possível. **Como evitar:** sempre fixar um baseline antes de ligar o modo bloqueante (ver Cenário 2). O gate deve travar **regressões**, não exigir perfeição instantânea.
 
 > [!warning] Achar que o CI dispensa a passada manual
-> **O que acontece:** o time vê o pipeline verde — "o axe não achou nada" — e conclui que a tela está acessível, pulando a passada de teclado (nota 15) e a checagem de nome acessível/contrato APG (SG2).
-> **Por quê:** ferramentas automatizadas como o axe cobrem uma fração conhecida das falhas — as mecânicas e sintáticas (nota 13). Ordem de tabulação ilógica, foco perdido num fluxo complexo, texto alternativo que existe mas não faz sentido: nada disso é pego por uma varredura automática, porque exige julgamento humano sobre a experiência.
-> **Como evitar:** tratar o gate de CI como piso, não teto. Verde no CI é pré-requisito para revisão manual, não substituto dela — os dois mecanismos (nota 15) continuam necessários.
+> **O que acontece:** o time vê o pipeline verde — "o axe não achou nada" — e conclui que a tela está acessível, pulando a passada de teclado (nota 15) e a checagem de nome acessível/contrato APG (SG2). **Por quê:** ferramentas automatizadas como o axe cobrem uma fração conhecida das falhas — as mecânicas e sintáticas (nota 13). Ordem de tabulação ilógica, foco perdido num fluxo complexo, texto alternativo que existe mas não faz sentido: nada disso é pego por uma varredura automática, porque exige julgamento humano sobre a experiência. **Como evitar:** tratar o gate de CI como piso, não teto. Verde no CI é pré-requisito para revisão manual, não substituto dela — os dois mecanismos (nota 15) continuam necessários.
 
 > [!warning] Depender de um único especialista gargalo
-> **O que acontece:** a organização contrata ou designa uma pessoa como "responsável pela acessibilidade" e passa a rotear toda dúvida, revisão e decisão de a11y por ela. O time para de desenvolver o próprio julgamento porque "isso é problema do especialista".
-> **Por quê:** uma pessoa não escala para revisar cada PR de um time (ou de uma organização) inteiro. O especialista vira fila, a fila vira atraso, e o atraso vira pressão para pular a revisão — a acessibilidade regride exatamente onde deveria ser mais forte.
-> **Como evitar:** distribuir o básico (a passada de teclado, o contraste, a DoD) para todo o time, e reservar o especialista — o *a11y champion* — para o avançado: curar o design system, definir o baseline, treinar, arbitrar os casos difíceis (ver a resposta ao `[!question]` acima).
+> **O que acontece:** a organização contrata ou designa uma pessoa como "responsável pela acessibilidade" e passa a rotear toda dúvida, revisão e decisão de a11y por ela. O time para de desenvolver o próprio julgamento porque "isso é problema do especialista". **Por quê:** uma pessoa não escala para revisar cada PR de um time (ou de uma organização) inteiro. O especialista vira fila, a fila vira atraso, e o atraso vira pressão para pular a revisão — a acessibilidade regride exatamente onde deveria ser mais forte. **Como evitar:** distribuir o básico (a passada de teclado, o contraste, a DoD) para todo o time, e reservar o especialista — o *a11y champion* — para o avançado: curar o design system, definir o baseline, treinar, arbitrar os casos difíceis (ver a resposta ao `[!question]` acima).
 
 ## Como explicar em inglês
 

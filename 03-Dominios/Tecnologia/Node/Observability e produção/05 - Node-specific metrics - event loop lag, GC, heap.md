@@ -23,10 +23,7 @@ aliases:
 # Node-specific metrics: event loop lag, GC e heap
 
 > [!abstract] TL;DR
-> Node.js tem métricas que não existem em outras runtimes: atraso do event loop, coleta de lixo do V8 e gestão de heap — sinais vitais exclusivos do modelo single-threaded.
-> Um event loop bloqueado por mais de 100 ms degrada o p99 de latência de toda a aplicação; acima de 500 ms, o sistema está efetivamente indisponível para requisições novas.
-> Pressão de GC se manifesta como picos de latência intermitentes — `major GC` frequente é sinal de que o heap está cheio e o V8 está lutando para recuperar memória.
-> O trio `nodejs_eventloop_lag_p99_seconds`, `nodejs_heap_size_used_bytes / nodejs_heap_size_total_bytes` e `nodejs_gc_duration_seconds` deve constar em todo dashboard Node.js de produção.
+> Node.js tem métricas que não existem em outras runtimes: atraso do event loop, coleta de lixo do V8 e gestão de heap — sinais vitais exclusivos do modelo single-threaded. Um event loop bloqueado por mais de 100 ms degrada o p99 de latência de toda a aplicação; acima de 500 ms, o sistema está efetivamente indisponível para requisições novas. Pressão de GC se manifesta como picos de latência intermitentes — `major GC` frequente é sinal de que o heap está cheio e o V8 está lutando para recuperar memória. O trio `nodejs_eventloop_lag_p99_seconds`, `nodejs_heap_size_used_bytes / nodejs_heap_size_total_bytes` e `nodejs_gc_duration_seconds` deve constar em todo dashboard Node.js de produção.
 
 Esta nota faz parte de [[03-Dominios/Tecnologia/Node/Observability e produção/index]] e expande as métricas de runtime expostas por `collectDefaultMetrics()` do [[04 - Métricas com prom-client]]. A nota [[08 - Detecção e diagnóstico de memory leaks]] retoma o tema de heap e GC com ferramentas de diagnóstico mais profundas (heap snapshots, clinic.js).
 
@@ -640,14 +637,11 @@ Event loop lag e GC pressure são os sinais de que algo está errado — mas ide
 
 ## Em entrevista
 
-**What is event loop lag and why does it matter for a Node.js service?**
-Event loop lag is the delay between when a callback or microtask is scheduled and when it actually executes on the single JavaScript thread. In a healthy Node.js process under normal load, this lag is typically under 10 milliseconds; when synchronous CPU-intensive code blocks the event loop, this value can spike to hundreds of milliseconds, causing all pending HTTP requests to queue up and dramatically increasing the p99 latency for every client connected to the service.
+**What is event loop lag and why does it matter for a Node.js service?** Event loop lag is the delay between when a callback or microtask is scheduled and when it actually executes on the single JavaScript thread. In a healthy Node.js process under normal load, this lag is typically under 10 milliseconds; when synchronous CPU-intensive code blocks the event loop, this value can spike to hundreds of milliseconds, causing all pending HTTP requests to queue up and dramatically increasing the p99 latency for every client connected to the service.
 
-**How do you measure event loop lag accurately in production?**
-The correct approach is to use `monitorEventLoopDelay()` from the built-in `node:perf_hooks` module, which uses high-resolution nanosecond timers and returns an `IntervalHistogram` that accumulates samples over time — you call `.enable()` to start sampling, then read `.percentile(99)` to get the p99 in nanoseconds and divide by `1e9` to convert to seconds for Prometheus; using `Date.now()` with `setImmediate` is unreliable because it has only 1ms resolution and the measurement itself adds to the lag being measured.
+**How do you measure event loop lag accurately in production?** The correct approach is to use `monitorEventLoopDelay()` from the built-in `node:perf_hooks` module, which uses high-resolution nanosecond timers and returns an `IntervalHistogram` that accumulates samples over time — you call `.enable()` to start sampling, then read `.percentile(99)` to get the p99 in nanoseconds and divide by `1e9` to convert to seconds for Prometheus; using `Date.now()` with `setImmediate` is unreliable because it has only 1ms resolution and the measurement itself adds to the lag being measured.
 
-**Why is frequent major GC a warning sign rather than normal behavior?**
-A V8 major GC (MarkSweepCompact) performs a full stop-the-world collection of the old generation heap, which can pause JavaScript execution for 50 to 500 milliseconds depending on heap size; if this happens multiple times per minute, it means objects are being promoted from the young generation to the old generation faster than the collector can reclaim them, which is almost always a symptom of a memory leak or an unbounded accumulation pattern — the correct response is to take a heap snapshot and identify what objects are being retained, not to increase `--max-old-space-size` as a workaround.
+**Why is frequent major GC a warning sign rather than normal behavior?** A V8 major GC (MarkSweepCompact) performs a full stop-the-world collection of the old generation heap, which can pause JavaScript execution for 50 to 500 milliseconds depending on heap size; if this happens multiple times per minute, it means objects are being promoted from the young generation to the old generation faster than the collector can reclaim them, which is almost always a symptom of a memory leak or an unbounded accumulation pattern — the correct response is to take a heap snapshot and identify what objects are being retained, not to increase `--max-old-space-size` as a workaround.
 
 ## Vocabulário
 

@@ -62,8 +62,7 @@ export async function POST(request: Request) {
 > [!tip] Assista: Next.js 15 Tutorial – Route Handlers
 > **Canal:** Codevolution | **Duração:** ~5min | **Idioma:** EN
 >
-> Antes de entrar nas APIs, este vídeo coloca o conceito no lugar certo: Route Handlers são basicamente um "Node + Express embutido" no Next.js, sem servidor separado — e como rodam no servidor, suas chaves privadas nunca chegam ao browser. É a fundação de segurança que justifica usá-los para qualquer integração com serviços externos.
-> Trecho de destaque [0:42]: *"route handlers are great when making external API requests as well — since they run server side your sensitive information like private Keys stays secure and never reaches the browser"*
+> Antes de entrar nas APIs, este vídeo coloca o conceito no lugar certo: Route Handlers são basicamente um "Node + Express embutido" no Next.js, sem servidor separado — e como rodam no servidor, suas chaves privadas nunca chegam ao browser. É a fundação de segurança que justifica usá-los para qualquer integração com serviços externos. Trecho de destaque [0:42]: *"route handlers are great when making external API requests as well — since they run server side your sensitive information like private Keys stays secure and never reaches the browser"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=27Uj6BeIDV0)
 

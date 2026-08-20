@@ -55,28 +55,22 @@ Esta nota existe pra encurtar esse ciclo: mapear o que cada modelo faz bem, o qu
 ## Forças e fraquezas por modelo
 
 ### DALL-E 3 (OpenAI)
-**Forte:** segue instruções específicas literalmente — "logo no canto superior direito, texto centralizado no meio, paleta dark mode" funciona melhor que na média. Texto razoável. Integração com ChatGPT facilita iteração conversacional. Edit mode (inpainting) integrado.
-**Fraco:** photorealismo extremo (vence Imagen). Estilo artístico marcante (vence Midjourney). Aspect ratios limitados (1:1, 16:9, 9:16, sem 4:5 nativo em alguns endpoints).
+**Forte:** segue instruções específicas literalmente — "logo no canto superior direito, texto centralizado no meio, paleta dark mode" funciona melhor que na média. Texto razoável. Integração com ChatGPT facilita iteração conversacional. Edit mode (inpainting) integrado. **Fraco:** photorealismo extremo (vence Imagen). Estilo artístico marcante (vence Midjourney). Aspect ratios limitados (1:1, 16:9, 9:16, sem 4:5 nativo em alguns endpoints).
 
 ### Imagen 3 (Google)
-**Forte:** photorealismo e fidelidade fotográfica. Renderização de texto está entre as melhores. Acesso via Vertex AI permite uso enterprise com SLA.
-**Fraco:** estilos artísticos não-fotográficos saem mais genéricos. Filtros de segurança agressivos podem bloquear prompts inofensivos. Disponibilidade regional irregular.
+**Forte:** photorealismo e fidelidade fotográfica. Renderização de texto está entre as melhores. Acesso via Vertex AI permite uso enterprise com SLA. **Fraco:** estilos artísticos não-fotográficos saem mais genéricos. Filtros de segurança agressivos podem bloquear prompts inofensivos. Disponibilidade regional irregular.
 
 ### Midjourney v6.1
-**Forte:** qualidade artística que vira marca registrada. `--sref <url>` e `--cref` permitem consistência de estilo e personagem entre gerações. Comunidade enorme com prompts/estilos compartilháveis. Controle fino (`--ar`, `--stylize`, `--chaos`, `--weird`).
-**Fraco:** API oficial limitada — uso em pipeline automatizado historicamente passou por Discord bots ou terceiros não-oficiais. Texto na imagem é fraco (melhorou em v6 mas ainda atrás de Ideogram). Assinatura mensal, não pay-per-use.
+**Forte:** qualidade artística que vira marca registrada. `--sref <url>` e `--cref` permitem consistência de estilo e personagem entre gerações. Comunidade enorme com prompts/estilos compartilháveis. Controle fino (`--ar`, `--stylize`, `--chaos`, `--weird`). **Fraco:** API oficial limitada — uso em pipeline automatizado historicamente passou por Discord bots ou terceiros não-oficiais. Texto na imagem é fraco (melhorou em v6 mas ainda atrás de Ideogram). Assinatura mensal, não pay-per-use.
 
 ### FLUX.1 [pro/dev/schnell]
-**Forte:** prompt adherence (segue instrução) considerada melhor que MJ em muitos benchmarks. Versão `[dev]` é aberta (non-commercial) e roda em GPU consumer com VRAM razoável. Schnell é a versão rápida (4 steps) pra iteração. Já existe modo edição (FLUX.1 Tools — Fill/Depth/Canny/Redux).
-**Fraco:** estilo artístico distintivo da MJ não está aí. Texto em imagem melhorou mas ainda inferior a Ideogram. Documentação oficial ainda em maturação.
+**Forte:** prompt adherence (segue instrução) considerada melhor que MJ em muitos benchmarks. Versão `[dev]` é aberta (non-commercial) e roda em GPU consumer com VRAM razoável. Schnell é a versão rápida (4 steps) pra iteração. Já existe modo edição (FLUX.1 Tools — Fill/Depth/Canny/Redux). **Fraco:** estilo artístico distintivo da MJ não está aí. Texto em imagem melhorou mas ainda inferior a Ideogram. Documentação oficial ainda em maturação.
 
 ### Stable Diffusion 3.5
-**Forte:** ecossistema. LoRAs pra praticamente qualquer estilo. ControlNet pra controle de pose/edge/depth. IP-Adapter pra reference image. Ferramentas como Automatic1111, ComfyUI, InvokeAI dão controle granular. Comunidade Civitai.
-**Fraco:** qualidade base sem fine-tunes está atrás de FLUX dev. Curva de aprendizado alta (modelos, samplers, schedulers, CFG, LoRAs). Para hosted hands-off, não é o default — vai pra FLUX ou Imagen.
+**Forte:** ecossistema. LoRAs pra praticamente qualquer estilo. ControlNet pra controle de pose/edge/depth. IP-Adapter pra reference image. Ferramentas como Automatic1111, ComfyUI, InvokeAI dão controle granular. Comunidade Civitai. **Fraco:** qualidade base sem fine-tunes está atrás de FLUX dev. Curva de aprendizado alta (modelos, samplers, schedulers, CFG, LoRAs). Para hosted hands-off, não é o default — vai pra FLUX ou Imagen.
 
 ### Ideogram 2
-**Forte:** texto na imagem é o caso de uso. Posters, signs, lettering, infográficos com tipografia legível. Em 2026, ainda lidera essa subcategoria, com Imagen 4 (já lançado em 2025) e FLUX dev encostando.
-**Fraco:** fora do caso "texto na imagem", é mediano. Não é escolha pra hero artístico ou mockup fotorealista.
+**Forte:** texto na imagem é o caso de uso. Posters, signs, lettering, infográficos com tipografia legível. Em 2026, ainda lidera essa subcategoria, com Imagen 4 (já lançado em 2025) e FLUX dev encostando. **Fraco:** fora do caso "texto na imagem", é mediano. Não é escolha pra hero artístico ou mockup fotorealista.
 
 **Quando usar Ideogram vs Imagen 3 pra texto:** Ideogram tem melhor controle tipográfico (fontes específicas, kerning, caixa-alta/baixa) e gera texto mais legível em corpo pequeno. Imagen 3 tem melhor photorealismo ao redor do texto (produto com label, embalagem com nome de marca) mas o texto em si é menos preciso em estilos especiais. Para texto simples e legível em layout limpo → Ideogram. Para texto como elemento de produto fotorealístico → Imagen 3.
 

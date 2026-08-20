@@ -278,8 +278,7 @@ O mesmo padrão funciona com qualquer prop do tipo `React.ReactNode`:
 > [!tip] Assista: Server Components in Client Components?? (React / Next.js)
 > **Canal:** ByteGrad | **Duração:** ~7min | **Idioma:** EN
 >
-> O vídeo demonstra ao vivo o que acontece quando você *importa* um Server Component dentro de um Client Component (ele vira cliente por contágio) e por que o padrão de `children` é a saída correta — incluindo o caso real de um Provider (ThemeProvider) que envolve o app inteiro sem transformar tudo em componente de cliente.
-> Trecho de destaque [4:14]: *"If you want to have a server component in a client component, you have to use this children pattern."*
+> O vídeo demonstra ao vivo o que acontece quando você *importa* um Server Component dentro de um Client Component (ele vira cliente por contágio) e por que o padrão de `children` é a saída correta — incluindo o caso real de um Provider (ThemeProvider) que envolve o app inteiro sem transformar tudo em componente de cliente. Trecho de destaque [4:14]: *"If you want to have a server component in a client component, you have to use this children pattern."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=9YuHTGAAyu0)
 
@@ -450,24 +449,16 @@ export default async function PedidosPage() {
 ## Armadilhas comuns
 
 > [!warning] Vazar segredos no bundle do cliente
-> **O que acontece:** variável de ambiente acessível só no servidor (ex.: `DATABASE_URL`, `API_SECRET`) vira parte do bundle e é exposta no browser.
-> **Por quê:** Client Components rodam no browser — qualquer coisa que eles importam ou usam é enviada ao cliente.
-> **Como evitar:** acesse variáveis secretas apenas em Server Components. No cliente, use apenas `NEXT_PUBLIC_*` — e entenda que esse prefixo significa que o valor é publicamente visível.
+> **O que acontece:** variável de ambiente acessível só no servidor (ex.: `DATABASE_URL`, `API_SECRET`) vira parte do bundle e é exposta no browser. **Por quê:** Client Components rodam no browser — qualquer coisa que eles importam ou usam é enviada ao cliente. **Como evitar:** acesse variáveis secretas apenas em Server Components. No cliente, use apenas `NEXT_PUBLIC_*` — e entenda que esse prefixo significa que o valor é publicamente visível.
 
 > [!warning] Colocar `'use client'` no topo da hierarquia sem necessidade
-> **O que acontece:** um arquivo de layout ou componente raiz recebe `'use client'` por conveniência, e aí toda a subárvore vira cliente — eliminando todos os benefícios de bundle zero.
-> **Por quê:** a contaminação desce a árvore de módulos a partir do ponto onde `'use client'` está.
-> **Como evitar:** coloque `'use client'` no componente mais profundo que precisa de interatividade, não no pai. Regra de ouro: o boundary deve ser o mais folha possível na árvore.
+> **O que acontece:** um arquivo de layout ou componente raiz recebe `'use client'` por conveniência, e aí toda a subárvore vira cliente — eliminando todos os benefícios de bundle zero. **Por quê:** a contaminação desce a árvore de módulos a partir do ponto onde `'use client'` está. **Como evitar:** coloque `'use client'` no componente mais profundo que precisa de interatividade, não no pai. Regra de ouro: o boundary deve ser o mais folha possível na árvore.
 
 > [!warning] Tentar importar Server Components dentro de Client Components
-> **O que acontece:** o componente servidor importado perde todas as capacidades de servidor (acesso ao banco, bundle zero, `async/await` no corpo).
-> **Por quê:** ao ser importado por um módulo cliente, o Next o inclui no bundle do cliente e o trata como Client Component.
-> **Como evitar:** use o padrão de `children`/props para passar Server Components para dentro de Client Components — nunca importe diretamente.
+> **O que acontece:** o componente servidor importado perde todas as capacidades de servidor (acesso ao banco, bundle zero, `async/await` no corpo). **Por quê:** ao ser importado por um módulo cliente, o Next o inclui no bundle do cliente e o trata como Client Component. **Como evitar:** use o padrão de `children`/props para passar Server Components para dentro de Client Components — nunca importe diretamente.
 
 > [!warning] Passar funções JavaScript como props de Server para Client
-> **O que acontece:** erro em runtime — *"Functions cannot be passed directly to Client Components"*.
-> **Por quê:** funções não são serializáveis pelo RSC Payload.
-> **Como evitar:** passe apenas dados (strings, numbers, arrays, objects plain). Se precisar passar comportamento, use Server Actions (`'use server'`) — elas são transformadas em referências RPC serializáveis.
+> **O que acontece:** erro em runtime — *"Functions cannot be passed directly to Client Components"*. **Por quê:** funções não são serializáveis pelo RSC Payload. **Como evitar:** passe apenas dados (strings, numbers, arrays, objects plain). Se precisar passar comportamento, use Server Actions (`'use server'`) — elas são transformadas em referências RPC serializáveis.
 
 ---
 

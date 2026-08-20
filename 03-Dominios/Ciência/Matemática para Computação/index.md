@@ -21,19 +21,10 @@ aliases:
 # Matemática para Computação
 
 > [!abstract] TL;DR
-> A matemática **discreta** é o ferramental que a Ciência da Computação usa o tempo todo sem parar pra
-> ensinar: a **lógica** que sustenta toda condição e invariante, as **provas** (com a indução, que é a
-> corretude da recursão escrita em matemática), os **conjuntos/funções/relações** que modelam dados, a
-> **combinatória** que conta o espaço de estados, a **teoria dos números** por trás de hashing e
-> criptografia, os **grafos** como objeto matemático, e a **probabilidade** que faz o Bloom filter e o
-> quicksort randomizado funcionarem. Este galho é a **dona** dessas ferramentas — os outros galhos as usam
-> e linkam de volta pra cá.
+> A matemática **discreta** é o ferramental que a Ciência da Computação usa o tempo todo sem parar pra ensinar: a **lógica** que sustenta toda condição e invariante, as **provas** (com a indução, que é a corretude da recursão escrita em matemática), os **conjuntos/funções/relações** que modelam dados, a **combinatória** que conta o espaço de estados, a **teoria dos números** por trás de hashing e criptografia, os **grafos** como objeto matemático, e a **probabilidade** que faz o Bloom filter e o quicksort randomizado funcionarem. Este galho é a **dona** dessas ferramentas — os outros galhos as usam e linkam de volta pra cá.
 
 ## Sobre este galho
-Se a [[03-Dominios/Ciência/Teoria da Computação/index|Teoria da Computação]] é a *teoria sobre os
-limites do computável*, a Matemática para Computação é a **caixa de ferramentas** que torna essa teoria (e
-quase todo o resto da CC) escrevível. Aqui mora o discreto — o mundo de estados, passos e estruturas
-contáveis em que o software vive —, em oposição ao contínuo do cálculo.
+Se a [[03-Dominios/Ciência/Teoria da Computação/index|Teoria da Computação]] é a *teoria sobre os limites do computável*, a Matemática para Computação é a **caixa de ferramentas** que torna essa teoria (e quase todo o resto da CC) escrevível. Aqui mora o discreto — o mundo de estados, passos e estruturas contáveis em que o software vive —, em oposição ao contínuo do cálculo.
 
 **Fronteiras (linka, não duplica):**
 - **Análise assintótica (Big-O), recorrências e Teorema Mestre** → [[03-Dominios/Ciência/Algoritmos/index|Algoritmos]]. Aqui (nota 08) mora a **base** matemática: logaritmos, somatórios, crescimento e a resolução geral de recorrências.
@@ -42,9 +33,7 @@ contáveis em que o software vive —, em oposição ao contínuo do cálculo.
 - **Criptografia, hashing e segurança aplicados** → futuro galho de Segurança Conceitual. Aqui (notas 14–15) é a **teoria dos números** (Euclides, modular, Fermat/Euler); RSA aparece só em prosa.
 - **Lógica digital e circuitos** → futuro galho de Organização de Computadores. Aqui a lógica é tratada pelo ângulo **matemático** (tabelas-verdade, prova), não de hardware.
 
-**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista"
-com frases prontas em inglês e vocabulário técnico PT→EN. (O tema cai *raramente* em entrevista, mas a
-indução, o Big-O/logaritmos, a probabilidade de hashing e os grafos aparecem o tempo todo na prática.)
+**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista" com frases prontas em inglês e vocabulário técnico PT→EN. (O tema cai *raramente* em entrevista, mas a indução, o Big-O/logaritmos, a probabilidade de hashing e os grafos aparecem o tempo todo na prática.)
 
 ## Iniciado — a linguagem da prova (lógica e conjuntos)
 1. [[01 - O que é matemática para computação]] — discreto × contínuo; por que a CS é matemática discreta; o mapa do galho; matemática (ferramenta) × teoria da computação (limites).

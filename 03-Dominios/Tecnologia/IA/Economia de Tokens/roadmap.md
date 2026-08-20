@@ -27,8 +27,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | LINKS | L1 Wikilink cross-galho · L2 Referência externa (URL) |
 | MÍDIA | M1 Vídeo/podcast embutido |
 
-**Esquema de `fase:` detectado:** MISTO (01-04 sem `fase:`, 05-22 = Adepto)
-**Piso de linhas:** aplicável às notas com `fase:` (Adepto ≥400). Notas 01-04 sem `fase:` = gap de núcleo a fechar.
+**Esquema de `fase:` detectado:** MISTO (01-04 sem `fase:`, 05-22 = Adepto) **Piso de linhas:** aplicável às notas com `fase:` (Adepto ≥400). Notas 01-04 sem `fase:` = gap de núcleo a fechar.
 
 ## Tabela-resumo
 

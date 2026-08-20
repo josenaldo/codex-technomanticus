@@ -615,8 +615,7 @@ syft dir:node_modules -o cyclonedx-json=sbom-deps.json
 ```
 
 > [!info] Por que SBOM está virando requisito em 2025–2026
-> O Executive Order 14028 dos EUA (2021) exige SBOMs de todos os fornecedores de software do governo federal americano. A EU Cyber Resilience Act (CRA), que entra em vigor progressivamente até 2027, vai impor requisitos similares para produtos digitais no mercado europeu. Para times que vendem software para clientes enterprise ou governamentais, gerar SBOM está deixando de ser "good practice" e virando requisito contratual.
-> Fonte: [CISA SBOM Resources](https://www.cisa.gov/sbom) e [EU CRA overview, 2024](https://digital-strategy.ec.europa.eu/en/policies/cyber-resilience-act)
+> O Executive Order 14028 dos EUA (2021) exige SBOMs de todos os fornecedores de software do governo federal americano. A EU Cyber Resilience Act (CRA), que entra em vigor progressivamente até 2027, vai impor requisitos similares para produtos digitais no mercado europeu. Para times que vendem software para clientes enterprise ou governamentais, gerar SBOM está deixando de ser "good practice" e virando requisito contratual. Fonte: [CISA SBOM Resources](https://www.cisa.gov/sbom) e [EU CRA overview, 2024](https://digital-strategy.ec.europa.eu/en/policies/cyber-resilience-act)
 
 ### Content addressing: o que garante que o artefato é o que deveria ser
 

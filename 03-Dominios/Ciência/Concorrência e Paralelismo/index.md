@@ -23,29 +23,20 @@ aliases:
 # Concorrência e Paralelismo
 
 > [!abstract] TL;DR
-> Galho de Ciência da Computação sobre como o software faz **mais de uma coisa ao mesmo tempo** — e por que isso é
-> tão difícil de acertar. Aqui ficam os **problemas universais** (race conditions, deadlock, atomicidade/
-> visibilidade/ordenação), as **primitivas de coordenação** (locks, semáforos, atômicos, STM) e, o coração
-> do galho, os **cinco modelos de concorrência** (memória compartilhada, CSP, atores, event loop, dados),
-> cada um com a linguagem que o levou mais longe. Tudo **stack-agnóstico**: a mecânica Java vive no galho
-> Java, aqui mora a teoria. Interview-critical.
+> Galho de Ciência da Computação sobre como o software faz **mais de uma coisa ao mesmo tempo** — e por que isso é tão difícil de acertar. Aqui ficam os **problemas universais** (race conditions, deadlock, atomicidade/ visibilidade/ordenação), as **primitivas de coordenação** (locks, semáforos, atômicos, STM) e, o coração do galho, os **cinco modelos de concorrência** (memória compartilhada, CSP, atores, event loop, dados), cada um com a linguagem que o levou mais longe. Tudo **stack-agnóstico**: a mecânica Java vive no galho Java, aqui mora a teoria. Interview-critical.
 
 ## Sobre este galho
 
-Concorrência é o tema onde mais se erra em produção e onde o senior se separa do júnior em entrevista. Este
-galho é o **andar conceitual**: os conceitos que sobrevivem à troca de linguagem, e a comparação honesta
-entre os modelos que as linguagens escolheram.
+Concorrência é o tema onde mais se erra em produção e onde o senior se separa do júnior em entrevista. Este galho é o **andar conceitual**: os conceitos que sobrevivem à troca de linguagem, e a comparação honesta entre os modelos que as linguagens escolheram.
 
 **Fronteiras (linka, não duplica):**
-- **Concorrência Java específica** (java.util.concurrent, `synchronized`, locks, Loom/virtual threads,
-  structured concurrency) → [[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência (Java)]] e [[Java Concurrency]].
+- **Concorrência Java específica** (java.util.concurrent, `synchronized`, locks, Loom/virtual threads, structured concurrency) → [[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência (Java)]] e [[Java Concurrency]].
 - **Imutabilidade como arma contra concorrência** → [[08 - Imutabilidade e estado]] (galho Paradigmas).
 - **Isolamento, MVCC e locking de banco** → [[Banco de Dados]] (a nota de STM cruza, não duplica).
 - **Assincronia e o modelo reativo** → [[12 - Programação reativa e dataflow]] (Paradigmas) e [[Programação Reativa]] (Java).
 - **Processos, threads e scheduling no SO** → futuro galho de Sistemas Operacionais (mencionado em prosa).
 
-**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista"
-com frases prontas em inglês e vocabulário técnico PT→EN.
+**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista" com frases prontas em inglês e vocabulário técnico PT→EN.
 
 ## Iniciado — o terreno e os perigos universais
 

@@ -553,29 +553,19 @@ A biblioteca `lit-html` (usada pelo framework Lit) usa exatamente esse padrão p
 ## Armadilhas comuns
 
 > [!warning] `length` mente para emojis
-> **O que acontece:** `"😀".length` retorna `2`, não `1`. Qualquer lógica de "máximo N caracteres" que usa `length` diretamente vai permitir metade dos caracteres se o usuário digitar emojis.
-> **Por quê:** `length` conta code units UTF-16. Emojis e caracteres fora do Plano Básico Multilíngue usam dois code units (surrogate pair).
-> **Como evitar:** Para contar caracteres visíveis (grafemas), use `Intl.Segmenter` com `granularity: "grapheme"`. Para iteração segura com code points, use `for...of` ou spread `[...str]` — ambos respeitam pares surrogate.
+> **O que acontece:** `"😀".length` retorna `2`, não `1`. Qualquer lógica de "máximo N caracteres" que usa `length` diretamente vai permitir metade dos caracteres se o usuário digitar emojis. **Por quê:** `length` conta code units UTF-16. Emojis e caracteres fora do Plano Básico Multilíngue usam dois code units (surrogate pair). **Como evitar:** Para contar caracteres visíveis (grafemas), use `Intl.Segmenter` com `granularity: "grapheme"`. Para iteração segura com code points, use `for...of` ou spread `[...str]` — ambos respeitam pares surrogate.
 
 > [!warning] `replace` com string substitui só a primeira ocorrência
-> **O que acontece:** `"a-b-c".replace("-", "_")` retorna `"a_b-c"`, não `"a_b_c"`. O segundo e terceiro `-` permanecem.
-> **Por quê:** `replace` com string como primeiro argumento é definido pela spec como "substituir a primeira ocorrência". Isso não é um bug — é o comportamento documentado.
-> **Como evitar:** Use `replaceAll("-", "_")` (ES2021) ou `replace(/-/g, "_")` com regex e flag `g`.
+> **O que acontece:** `"a-b-c".replace("-", "_")` retorna `"a_b-c"`, não `"a_b_c"`. O segundo e terceiro `-` permanecem. **Por quê:** `replace` com string como primeiro argumento é definido pela spec como "substituir a primeira ocorrência". Isso não é um bug — é o comportamento documentado. **Como evitar:** Use `replaceAll("-", "_")` (ES2021) ou `replace(/-/g, "_")` com regex e flag `g`.
 
 > [!warning] Regex sem flag `g` em `match` retorna objeto, não array
-> **O que acontece:** `"abc abc".match(/abc/)` retorna um objeto com detalhes do *primeiro* match. `"abc abc".match(/abc/g)` retorna `["abc", "abc"]`. Comportamentos completamente diferentes com a mesma regex.
-> **Por quê:** Sem `g`, `match` delega para `RegExp.prototype.exec`, que retorna o objeto completo do primeiro resultado (incluindo índice e grupos). Com `g`, retorna array simples de strings.
-> **Como evitar:** Se precisar de todos os matches *com* detalhes de grupos, use `matchAll` (que exige `g`). Se precisar só dos textos, use `match` com `g`. Nunca misture.
+> **O que acontece:** `"abc abc".match(/abc/)` retorna um objeto com detalhes do *primeiro* match. `"abc abc".match(/abc/g)` retorna `["abc", "abc"]`. Comportamentos completamente diferentes com a mesma regex. **Por quê:** Sem `g`, `match` delega para `RegExp.prototype.exec`, que retorna o objeto completo do primeiro resultado (incluindo índice e grupos). Com `g`, retorna array simples de strings. **Como evitar:** Se precisar de todos os matches *com* detalhes de grupos, use `matchAll` (que exige `g`). Se precisar só dos textos, use `match` com `g`. Nunca misture.
 
 > [!warning] Backtracking catastrófico pode travar o navegador
-> **O que acontece:** Uma regex como `/^(\d+)*$/` testada contra `"12345678901234567890z"` pode demorar segundos — ou travar o processo indefinidamente.
-> **Por quê:** O motor de regex tenta *todas as combinações possíveis* de como o padrão pode corresponder à string. Com quantificadores aninhados (`(\d+)*`), o número de combinações cresce exponencialmente.
-> **Como evitar:** Evite quantificadores dentro de quantificadores. Para entrada de usuário, prefira padrões simples e concretos (ex: `/^\d{11}$/` para CPF sem formatação). Se precisar de padrões complexos, teste com ferramentas como regex101.com para identificar backtracking antes de ir para produção.
+> **O que acontece:** Uma regex como `/^(\d+)*$/` testada contra `"12345678901234567890z"` pode demorar segundos — ou travar o processo indefinidamente. **Por quê:** O motor de regex tenta *todas as combinações possíveis* de como o padrão pode corresponder à string. Com quantificadores aninhados (`(\d+)*`), o número de combinações cresce exponencialmente. **Como evitar:** Evite quantificadores dentro de quantificadores. Para entrada de usuário, prefira padrões simples e concretos (ex: `/^\d{11}$/` para CPF sem formatação). Se precisar de padrões complexos, teste com ferramentas como regex101.com para identificar backtracking antes de ir para produção.
 
 > [!warning] `new RegExp()` com caracteres especiais não escapados
-> **O que acontece:** `new RegExp(str)` onde `str` contém `.`, `+`, `*` etc. vai tratar esses caracteres como metacaracteres da regex, não como literais.
-> **Por quê:** A string passada ao construtor é interpretada como padrão regex, não como texto literal.
-> **Como evitar:** Se a string é entrada do usuário e deve ser buscada literalmente, escape os metacaracteres: `str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")`. A proposta `RegExp.escape()` está no TC39 Stage 2 e deve resolver isso nativamente no futuro.
+> **O que acontece:** `new RegExp(str)` onde `str` contém `.`, `+`, `*` etc. vai tratar esses caracteres como metacaracteres da regex, não como literais. **Por quê:** A string passada ao construtor é interpretada como padrão regex, não como texto literal. **Como evitar:** Se a string é entrada do usuário e deve ser buscada literalmente, escape os metacaracteres: `str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")`. A proposta `RegExp.escape()` está no TC39 Stage 2 e deve resolver isso nativamente no futuro.
 
 ---
 

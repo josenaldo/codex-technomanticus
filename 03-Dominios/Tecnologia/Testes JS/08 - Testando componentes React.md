@@ -73,9 +73,7 @@ await user.keyboard('{Enter}');
 `userEvent` é mais fiel porque um clique real não é só um evento `click` — é uma cascata (mousedown, focus, mouseup, click) que seu componente pode depender. `fireEvent` pula isso e pode passar num teste que falharia com um usuário de verdade.
 
 > [!warning] Esquecer o `await` no `userEvent`
-> **O que acontece:** você faz `user.click(botao)` sem `await`, e a asserção seguinte falha porque a UI ainda não atualizou — ou o teste vira flaky.
-> **Por quê:** desde a v14, os métodos do `userEvent` são **assíncronos** (retornam promise), para simular a interação de forma realista incluindo atualizações de estado. Sem `await`, você afirma antes da UI reagir.
-> **Como evitar:** **sempre** `await` os métodos do `userEvent` (e por isso o teste é `async`). Também não esqueça o `userEvent.setup()` no início — a API v14 exige.
+> **O que acontece:** você faz `user.click(botao)` sem `await`, e a asserção seguinte falha porque a UI ainda não atualizou — ou o teste vira flaky. **Por quê:** desde a v14, os métodos do `userEvent` são **assíncronos** (retornam promise), para simular a interação de forma realista incluindo atualizações de estado. Sem `await`, você afirma antes da UI reagir. **Como evitar:** **sempre** `await` os métodos do `userEvent` (e por isso o teste é `async`). Também não esqueça o `userEvent.setup()` no início — a API v14 exige.
 
 ## UI assíncrona: `findBy` e `waitFor`
 

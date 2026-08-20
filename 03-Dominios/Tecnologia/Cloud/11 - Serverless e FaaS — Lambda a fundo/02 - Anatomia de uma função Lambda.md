@@ -104,8 +104,7 @@ def handler(event, context):
 > [!tip] Assista: AWS Lambda explicado: O que é e como funciona
 > **Canal:** AWS Developers LATAM | **Duração:** ~10min | **Idioma:** PT-BR
 >
-> A mesma dupla `event`/`context` explicada com outra analogia: o vídeo nomeia o handler como "o ponto de entrada" e reforça a distinção — `event` carrega o que disparou a chamada, `context` carrega informação sobre a própria execução (nome da função, id, tempo até timeout).
-> Trecho de destaque [01:34]: *"O event traz a informação do evento que chamou a função. Já o context contém informações gerais sobre execução, como nome da função, ID da execução e tempo até timeout."*
+> A mesma dupla `event`/`context` explicada com outra analogia: o vídeo nomeia o handler como "o ponto de entrada" e reforça a distinção — `event` carrega o que disparou a chamada, `context` carrega informação sobre a própria execução (nome da função, id, tempo até timeout). Trecho de destaque [01:34]: *"O event traz a informação do evento que chamou a função. Já o context contém informações gerais sobre execução, como nome da função, ID da execução e tempo até timeout."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=n31cF3iFCUs)
 
@@ -238,8 +237,7 @@ flowchart TD
 > [!tip] Assista: Lambda Layers | Theory and Demo with Code
 > **Canal:** Cloud With Raj | **Duração:** ~11min | **Idioma:** EN
 >
-> Complementa a teoria com uma demo ao vivo: cria uma layer, publica uma versão, anexa a uma função e mostra o conteúdo aparecendo em `/opt` — útil pra quem quer ver o ciclo completo antes de tentar na própria conta.
-> Trecho de destaque [02:03]: *"lambda layers so what is lambda layer, layer can be code libraries custom [runtimes] or other dependencies you can upload"*
+> Complementa a teoria com uma demo ao vivo: cria uma layer, publica uma versão, anexa a uma função e mostra o conteúdo aparecendo em `/opt` — útil pra quem quer ver o ciclo completo antes de tentar na própria conta. Trecho de destaque [02:03]: *"lambda layers so what is lambda layer, layer can be code libraries custom [runtimes] or other dependencies you can upload"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=stovPJCVXcw)
 

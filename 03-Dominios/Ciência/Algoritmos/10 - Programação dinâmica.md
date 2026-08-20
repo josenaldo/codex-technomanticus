@@ -291,9 +291,7 @@ Este problema é o **argumento de existência da DP** contra greedy. A intuiçã
 *"Você tem `n` itens, cada um com peso `w` e valor `v`, e uma mochila de capacidade `W`. Maximize o valor total sem ultrapassar `W`. Cada item está disponível **uma só vez** (0 ou 1)."*
 
 - **Estado:** `dp[i][w]` = melhor valor usando **apenas os primeiros `i` itens** com capacidade `w`.
-- **Transição (a decisão de incluir/não-incluir):**
-  `dp[i][w] = max(dp[i-1][w], dp[i-1][w - peso[i]] + valor[i])`
-  — o primeiro termo é **não incluir** o item `i` (herda a melhor solução sem ele); o segundo é **incluir** (abre espaço `peso[i]` e soma `valor[i]`), válido só se `peso[i] ≤ w`.
+- **Transição (a decisão de incluir/não-incluir):** `dp[i][w] = max(dp[i-1][w], dp[i-1][w - peso[i]] + valor[i])` — o primeiro termo é **não incluir** o item `i` (herda a melhor solução sem ele); o segundo é **incluir** (abre espaço `peso[i]` e soma `valor[i]`), válido só se `peso[i] ≤ w`.
 - **Caso base:** `dp[0][w] = 0` para todo `w` (zero itens, valor zero).
 - **Resposta:** `dp[n][W]`. **Tempo:** O(n × W); **espaço** otimizável para O(W).
 

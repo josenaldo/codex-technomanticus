@@ -23,18 +23,10 @@ aliases:
 # CQRS
 
 > [!abstract] TL;DR
-> **Separar o modelo de escrita do modelo de leitura** — dois modelos para os mesmos dados, cada um
-> desenhado para o que faz. Nasce de um desconforto real: o modelo que garante invariantes na escrita
-> costuma ser péssimo para consultar, e o que serve bem à tela costuma ser plano e desnormalizado.
-> Casa naturalmente com Event Sourcing (as projeções **são** o lado de leitura), o que fez muita gente
-> tratar os dois como um pacote — não são. E é o padrão sobre o qual seus próprios autores mais
-> escreveram advertências: **é cirúrgico, não estrutural**. Aplicado ao sistema inteiro, é o erro que
-> Greg Young passou anos tentando desfazer. Esta nota **fecha a família**.
+> **Separar o modelo de escrita do modelo de leitura** — dois modelos para os mesmos dados, cada um desenhado para o que faz. Nasce de um desconforto real: o modelo que garante invariantes na escrita costuma ser péssimo para consultar, e o que serve bem à tela costuma ser plano e desnormalizado. Casa naturalmente com Event Sourcing (as projeções **são** o lado de leitura), o que fez muita gente tratar os dois como um pacote — não são. E é o padrão sobre o qual seus próprios autores mais escreveram advertências: **é cirúrgico, não estrutural**. Aplicado ao sistema inteiro, é o erro que Greg Young passou anos tentando desfazer. Esta nota **fecha a família**.
 
 > [!info] O recorte desta nota
-> Aqui o CQRS como **decisão de acoplamento** e critério de aplicação. Separação de cargas, réplicas de
-> leitura e números estão em
-> [[03-Dominios/Engenharia/Arquitetura/System Design/3 - Padrões recorrentes/02 - CQRS sob a ótica de system design|System Design 3-02]].
+> Aqui o CQRS como **decisão de acoplamento** e critério de aplicação. Separação de cargas, réplicas de leitura e números estão em [[03-Dominios/Engenharia/Arquitetura/System Design/3 - Padrões recorrentes/02 - CQRS sob a ótica de system design|System Design 3-02]].
 
 ## Um modelo servindo a dois senhores
 
@@ -82,19 +74,13 @@ O âmbar é onde mora o custo real: a sincronização. Assim que os dois lados e
 ## Armadilhas comuns
 
 > [!warning] CQRS no sistema inteiro
-> **O que acontece:** cada caso de uso ganha comando, manipulador, modelo de leitura e projeção. Um CRUD de cadastro passa a exigir seis arquivos, e a produtividade cai sem contrapartida.
-> **Por quê:** o padrão é apresentado como estilo arquitetural, e aplicá-lo em parte parece incoerência. É o contrário: **coerência aqui é aplicar onde há assimetria**.
-> **Como evitar:** aplique onde os dois usos **divergem de verdade** — leitura e escrita com formatos ou cargas muito diferentes. Onde a tela é o espelho do agregado, um modelo só é a resposta certa. É o que os próprios autores do padrão passaram anos repetindo.
+> **O que acontece:** cada caso de uso ganha comando, manipulador, modelo de leitura e projeção. Um CRUD de cadastro passa a exigir seis arquivos, e a produtividade cai sem contrapartida. **Por quê:** o padrão é apresentado como estilo arquitetural, e aplicá-lo em parte parece incoerência. É o contrário: **coerência aqui é aplicar onde há assimetria**. **Como evitar:** aplique onde os dois usos **divergem de verdade** — leitura e escrita com formatos ou cargas muito diferentes. Onde a tela é o espelho do agregado, um modelo só é a resposta certa. É o que os próprios autores do padrão passaram anos repetindo.
 
 > [!warning] Consistência eventual não comunicada à interface
-> **O que acontece:** o usuário salva, é redirecionado, não vê a alteração e salva de novo. Duplicatas, chamados de suporte, e a percepção de que o sistema é instável.
-> **Por quê:** a defasagem é tratada como detalhe interno de infraestrutura, e a interface é construída como se a escrita fosse imediatamente visível.
-> **Como evitar:** decida explicitamente a estratégia — ler a própria escrita direto do lado de escrita, atualização otimista na tela, ou sinalizar processamento. A defasagem é do **produto**, não só da arquitetura.
+> **O que acontece:** o usuário salva, é redirecionado, não vê a alteração e salva de novo. Duplicatas, chamados de suporte, e a percepção de que o sistema é instável. **Por quê:** a defasagem é tratada como detalhe interno de infraestrutura, e a interface é construída como se a escrita fosse imediatamente visível. **Como evitar:** decida explicitamente a estratégia — ler a própria escrita direto do lado de escrita, atualização otimista na tela, ou sinalizar processamento. A defasagem é do **produto**, não só da arquitetura.
 
 > [!warning] Dois modelos mantidos à mão
-> **O que acontece:** alguém "atualiza os dois lados" no código do comando. Um caminho novo esquece de atualizar a leitura, e os modelos divergem em silêncio — sem erro, sem alerta, descoberto por reclamação.
-> **Por quê:** parece mais simples que montar uma projeção, e funciona nos dois primeiros casos de uso.
-> **Como evitar:** o lado de leitura deve ser **derivado**, nunca escrito à mão — por eventos, CDC ou *view*. E precisa ser **reconstruível**: se você não consegue apagar o modelo de leitura e regerá-lo, ele virou uma segunda fonte da verdade sem querer.
+> **O que acontece:** alguém "atualiza os dois lados" no código do comando. Um caminho novo esquece de atualizar a leitura, e os modelos divergem em silêncio — sem erro, sem alerta, descoberto por reclamação. **Por quê:** parece mais simples que montar uma projeção, e funciona nos dois primeiros casos de uso. **Como evitar:** o lado de leitura deve ser **derivado**, nunca escrito à mão — por eventos, CDC ou *view*. E precisa ser **reconstruível**: se você não consegue apagar o modelo de leitura e regerá-lo, ele virou uma segunda fonte da verdade sem querer.
 
 ---
 

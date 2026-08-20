@@ -193,17 +193,13 @@ Os três critérios formam um triângulo de maturidade: possível ter uma pipeli
 
 ## Estado da arte — junho de 2026
 
-**Pipelines como código declarativo**
-Frameworks como Haystack 2.0 e LangGraph tratam a pipeline como grafo declarativo — você define nós (fontes, transformações, seleções) e arestas (dependências), e o framework cuida de execução, cache e observabilidade. Isso resolve o problema de "pipeline ad-hoc" de uma vez.
+**Pipelines como código declarativo** Frameworks como Haystack 2.0 e LangGraph tratam a pipeline como grafo declarativo — você define nós (fontes, transformações, seleções) e arestas (dependências), e o framework cuida de execução, cache e observabilidade. Isso resolve o problema de "pipeline ad-hoc" de uma vez.
 
-**Prompt caching como primitiva de pipeline**
-Anthropic, OpenAI e Google formalizaram o prompt caching: tokens que repetem exatamente entre chamadas custam 90% menos. Pipelines bem projetadas em 2026 explicitamente organizam o contexto para maximizar o cache hit — system prompt e tool definitions estáveis antes de qualquer conteúdo dinâmico.
+**Prompt caching como primitiva de pipeline** Anthropic, OpenAI e Google formalizaram o prompt caching: tokens que repetem exatamente entre chamadas custam 90% menos. Pipelines bem projetadas em 2026 explicitamente organizam o contexto para maximizar o cache hit — system prompt e tool definitions estáveis antes de qualquer conteúdo dinâmico.
 
-**MCP como protocolo padrão para fontes JIT**
-O Model Context Protocol (Anthropic, 2024) tornou-se o padrão de facto para integração de ferramentas e fontes dinâmicas. Em junho de 2026, a maioria dos frameworks suporta MCP — o que significa que fontes JIT (bancos de dados, APIs, sistemas de arquivos) plugam na pipeline via protocolo padronizado, não via integração custom.
+**MCP como protocolo padrão para fontes JIT** O Model Context Protocol (Anthropic, 2024) tornou-se o padrão de facto para integração de ferramentas e fontes dinâmicas. Em junho de 2026, a maioria dos frameworks suporta MCP — o que significa que fontes JIT (bancos de dados, APIs, sistemas de arquivos) plugam na pipeline via protocolo padronizado, não via integração custom.
 
-**Pipelines de custo variável**
-Sistemas sofisticados agora ajustam dinamicamente o custo do contexto baseado na complexidade da query. Query simples → pipeline leve (sem retrieval, histórico compactado). Query complexa → pipeline completa. Isso reduz custo médio em 40-60% mantendo qualidade nas queries que importam.
+**Pipelines de custo variável** Sistemas sofisticados agora ajustam dinamicamente o custo do contexto baseado na complexidade da query. Query simples → pipeline leve (sem retrieval, histórico compactado). Query complexa → pipeline completa. Isso reduz custo médio em 40-60% mantendo qualidade nas queries que importam.
 
 ---
 
@@ -255,11 +251,9 @@ Solução: namespacing estrito. Cada agente tem sua seção do contexto global. 
 
 A regra mais simples e de maior impacto no design de qualquer pipeline: **coloque o conteúdo estável no início, o dinâmico no fim**. Por dois motivos que se reforçam:
 
-**Motivo 1 — Prompt caching**
-Providers como Anthropic e OpenAI implementam caching de prefix: se os primeiros N tokens de uma chamada são idênticos à chamada anterior, eles custam 90% menos. System prompts, tool definitions e instruções fixas — se chegarem ao início da janela — são automaticamente cacheados entre chamadas. Uma pipeline que coloca o system prompt no início e a query dinâmica no fim reduz custo total em 40-70% sem mudar nada na qualidade.
+**Motivo 1 — Prompt caching** Providers como Anthropic e OpenAI implementam caching de prefix: se os primeiros N tokens de uma chamada são idênticos à chamada anterior, eles custam 90% menos. System prompts, tool definitions e instruções fixas — se chegarem ao início da janela — são automaticamente cacheados entre chamadas. Uma pipeline que coloca o system prompt no início e a query dinâmica no fim reduz custo total em 40-70% sem mudar nada na qualidade.
 
-**Motivo 2 — Atenção em U**
-Como vimos em [[03 - Context rot e atenção diluída]], a atenção do transformer é mais forte no início e no fim da janela. Informação estável no início é lida com alta atenção em toda chamada — exatamente o comportamento desejado para instruções que devem sempre ser seguidas. A query dinâmica do usuário, que precisa ser entendida com precisão, vai no fim — também alta atenção.
+**Motivo 2 — Atenção em U** Como vimos em [[03 - Context rot e atenção diluída]], a atenção do transformer é mais forte no início e no fim da janela. Informação estável no início é lida com alta atenção em toda chamada — exatamente o comportamento desejado para instruções que devem sempre ser seguidas. A query dinâmica do usuário, que precisa ser entendida com precisão, vai no fim — também alta atenção.
 
 O "meio" da janela — onde a atenção é mais fraca — é reservado para o que pode tolerar mais ruído: histórico de conversa, chunks de retrieval, exemplos few-shot. Não é que essas informações são menos importantes; é que elas são resilientes a leituras parciais, ao contrário de instruções precisas ou da query atual.
 
@@ -341,14 +335,11 @@ O "meio" da janela — onde a atenção é mais fraca — é reservado para o qu
 
 Pipeline não testada é uma aposta. Três níveis de teste que toda pipeline de produção deveria ter:
 
-**Nível 1 — Testes unitários de componente**
-Cada fonte testada isoladamente: "dado esta query, o retrieval retorna os chunks certos?" "dado este histórico, a compactação preserva as decisões críticas?" Esses testes são baratos (não chamam o modelo) e detectam regressões rapidamente.
+**Nível 1 — Testes unitários de componente** Cada fonte testada isoladamente: "dado esta query, o retrieval retorna os chunks certos?" "dado este histórico, a compactação preserva as decisões críticas?" Esses testes são baratos (não chamam o modelo) e detectam regressões rapidamente.
 
-**Nível 2 — Testes de integração de pipeline**
-A pipeline completa testada com inputs gold: "para esta query de suporte, o contexto montado inclui X mas não Y?" "o tamanho total do contexto fica abaixo do budget?" Ainda sem avaliar qualidade do modelo — avalia qualidade da pipeline.
+**Nível 2 — Testes de integração de pipeline** A pipeline completa testada com inputs gold: "para esta query de suporte, o contexto montado inclui X mas não Y?" "o tamanho total do contexto fica abaixo do budget?" Ainda sem avaliar qualidade do modelo — avalia qualidade da pipeline.
 
-**Nível 3 — Evals de qualidade end-to-end**
-Pipeline + modelo testados juntos contra um conjunto de casos com respostas esperadas. Esse nível detecta o efeito da pipeline na qualidade final — a única métrica que realmente importa para o usuário. Ferramentas como Braintrust e LangSmith automatizam esse ciclo, permitindo comparar "pipeline A vs. pipeline B" em um conjunto de casos gold com um clique.
+**Nível 3 — Evals de qualidade end-to-end** Pipeline + modelo testados juntos contra um conjunto de casos com respostas esperadas. Esse nível detecta o efeito da pipeline na qualidade final — a única métrica que realmente importa para o usuário. Ferramentas como Braintrust e LangSmith automatizam esse ciclo, permitindo comparar "pipeline A vs. pipeline B" em um conjunto de casos gold com um clique.
 
 O ciclo de maturidade prático:
 1. Construa a pipeline → produção sem testes (aceitável no início, perigoso depois)

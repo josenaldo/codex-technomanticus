@@ -30,8 +30,7 @@ A pergunta natural é: por que não resolver isso com um Load Balancer, que a es
 > [!tip] Assista: O que é API Gateway?
 > **Canal:** Full Cycle | **Duração:** ~6min | **Idioma:** PT-BR
 >
-> Explicação curta e direta do mesmo problema que abre esta nota: com dezenas (ou centenas) de microsserviços, o cliente não tem como saber o endereço de cada um, nem como padronizar autenticação e formato de resposta entre eles.
-> Trecho de destaque [01:55]: *"pensa que você pode ter até 300 microsserviços, como que você vai saber o endereço de cada microsserviço? Você vai separar por IP, por subdomínio... o outro ponto importante também é como que você vai fazer a autenticação de todos esses microsserviços."*
+> Explicação curta e direta do mesmo problema que abre esta nota: com dezenas (ou centenas) de microsserviços, o cliente não tem como saber o endereço de cada um, nem como padronizar autenticação e formato de resposta entre eles. Trecho de destaque [01:55]: *"pensa que você pode ter até 300 microsserviços, como que você vai saber o endereço de cada microsserviço? Você vai separar por IP, por subdomínio... o outro ponto importante também é como que você vai fazer a autenticação de todos esses microsserviços."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=2YNelyDZBDM)
 
@@ -82,8 +81,7 @@ Uma forma de fixar a hierarquia: a borda de rede pergunta "de onde vem essa requ
 > [!tip] Assista: Entenda API Gateway DO ZERO
 > **Canal:** Full Cycle | **Duração:** ~43min | **Idioma:** PT-BR
 >
-> Vídeo longo e didático que dedica um trecho a desmontar exatamente essa confusão: um API Gateway é, por baixo, um proxy reverso "vitaminado" (com regras de roteamento, auth e throttling embutidas) — não uma categoria totalmente à parte do proxy reverso que você já conhece via nginx.
-> Trecho de destaque [08:54]: *"é como se ela fosse um proxy... na realidade proxy é uma das coisas que uma API Gateway ela é... uma API Gateway por ela como se fosse também um proxy reverso, tanto que a maioria das soluções que você encontra por aí hoje você vai ver que utilizam nginx, que nada mais é do que um sistema de proxy reverso."*
+> Vídeo longo e didático que dedica um trecho a desmontar exatamente essa confusão: um API Gateway é, por baixo, um proxy reverso "vitaminado" (com regras de roteamento, auth e throttling embutidas) — não uma categoria totalmente à parte do proxy reverso que você já conhece via nginx. Trecho de destaque [08:54]: *"é como se ela fosse um proxy... na realidade proxy é uma das coisas que uma API Gateway ela é... uma API Gateway por ela como se fosse também um proxy reverso, tanto que a maioria das soluções que você encontra por aí hoje você vai ver que utilizam nginx, que nada mais é do que um sistema de proxy reverso."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=crMkXkLIGX8)
 

@@ -21,13 +21,7 @@ aliases:
 # A anatomia do funil internacional
 
 > [!abstract] TL;DR
-> Um processo remoto internacional tem entre quatro e sete etapas, conduzidas por **pessoas diferentes,
-> com poderes diferentes e critérios diferentes** — e o erro mais comum é tratar todas como "a
-> entrevista". O recrutador filtra por requisitos e faixa salarial; o hiring manager decide se te quer no
-> time; o painel técnico verifica profundidade; a etapa cultural checa como você opera com outros; e a
-> rodada executiva costuma ser sobre risco e fechamento. A mesma história precisa de **versões de
-> tamanhos diferentes** conforme a etapa, e a pergunta útil antes de cada conversa é sempre a mesma:
-> *o que esta etapa decide?*
+> Um processo remoto internacional tem entre quatro e sete etapas, conduzidas por **pessoas diferentes, com poderes diferentes e critérios diferentes** — e o erro mais comum é tratar todas como "a entrevista". O recrutador filtra por requisitos e faixa salarial; o hiring manager decide se te quer no time; o painel técnico verifica profundidade; a etapa cultural checa como você opera com outros; e a rodada executiva costuma ser sobre risco e fechamento. A mesma história precisa de **versões de tamanhos diferentes** conforme a etapa, e a pergunta útil antes de cada conversa é sempre a mesma: *o que esta etapa decide?*
 
 ## Quatro conversas, quatro conversas diferentes
 
@@ -97,19 +91,13 @@ Preparar uma história é, portanto, preparar **cinco versões dela** — o que 
 ## Armadilhas comuns
 
 > [!warning] Tratar a triagem como conversa informal
-> **O que acontece:** o candidato relaxa com o recrutador "porque não é técnico", responde a expectativa salarial de improviso e ancora abaixo do que a vaga pagaria — ou é eliminado por dizer um número fora da faixa sem saber qual era.
-> **Por quê:** a etapa parece burocrática. Mas é a única em que um número dito em cinco segundos vale, às vezes, dezenas de milhares por ano.
-> **Como evitar:** trate a triagem como a etapa mais irreversível. Pesquise a faixa antes, e prefira devolver a pergunta ("qual a faixa prevista para a posição?") antes de dar um número.
+> **O que acontece:** o candidato relaxa com o recrutador "porque não é técnico", responde a expectativa salarial de improviso e ancora abaixo do que a vaga pagaria — ou é eliminado por dizer um número fora da faixa sem saber qual era. **Por quê:** a etapa parece burocrática. Mas é a única em que um número dito em cinco segundos vale, às vezes, dezenas de milhares por ano. **Como evitar:** trate a triagem como a etapa mais irreversível. Pesquise a faixa antes, e prefira devolver a pergunta ("qual a faixa prevista para a posição?") antes de dar um número.
 
 > [!warning] Ignorar quem conduz a etapa
-> **O que acontece:** resposta cheia de jargão para um par de produto; resposta superficial para um staff engineer que queria profundidade. Nos dois casos a avaliação é a mesma: não calibra a comunicação.
-> **Por quê:** o candidato prepara conteúdo, não audiência — e o convite raramente diz o cargo de quem vai entrevistar.
-> **Como evitar:** pergunte antecipadamente **quem** participa de cada etapa e qual o cargo. Com o nome em mãos, uma olhada no perfil público resolve o calibre da conversa.
+> **O que acontece:** resposta cheia de jargão para um par de produto; resposta superficial para um staff engineer que queria profundidade. Nos dois casos a avaliação é a mesma: não calibra a comunicação. **Por quê:** o candidato prepara conteúdo, não audiência — e o convite raramente diz o cargo de quem vai entrevistar. **Como evitar:** pergunte antecipadamente **quem** participa de cada etapa e qual o cargo. Com o nome em mãos, uma olhada no perfil público resolve o calibre da conversa.
 
 > [!warning] Chegar sem perguntas
-> **O que acontece:** ao fim da conversa, "alguma pergunta?" recebe um "não, ficou tudo claro". É registrado como baixo interesse — e, num sênior, como falta de critério para avaliar onde vai trabalhar.
-> **Por quê:** o candidato pensa a entrevista como exame, e no exame não se pergunta.
-> **Como evitar:** leve duas ou três perguntas **por etapa**, calibradas para quem está do outro lado — técnicas para engenheiros, de prioridade e processo para o gestor, de estratégia para o executivo. O assunto tem nota própria: [[13 - A entrevista reversa]].
+> **O que acontece:** ao fim da conversa, "alguma pergunta?" recebe um "não, ficou tudo claro". É registrado como baixo interesse — e, num sênior, como falta de critério para avaliar onde vai trabalhar. **Por quê:** o candidato pensa a entrevista como exame, e no exame não se pergunta. **Como evitar:** leve duas ou três perguntas **por etapa**, calibradas para quem está do outro lado — técnicas para engenheiros, de prioridade e processo para o gestor, de estratégia para o executivo. O assunto tem nota própria: [[13 - A entrevista reversa]].
 
 ## Como soa em inglês
 

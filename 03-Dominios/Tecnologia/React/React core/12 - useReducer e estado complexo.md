@@ -459,24 +459,16 @@ const [cart, dispatch] = useImmerReducer(
 ## Armadilhas comuns
 
 > [!warning] Mutar o state diretamente
-> **O que acontece:** o estado muda, mas o React não detecta a mudança e o componente não re-renderiza.
-> **Por quê:** React compara referências de objetos. Se você muta `state.items.push(item)`, a referência do array continua a mesma — React acha que nada mudou.
-> **Como evitar:** sempre retorne um novo objeto/array: `{ ...state, items: [...state.items, item] }`. Se o padrão spread ficar impraticável, adote Immer.
+> **O que acontece:** o estado muda, mas o React não detecta a mudança e o componente não re-renderiza. **Por quê:** React compara referências de objetos. Se você muta `state.items.push(item)`, a referência do array continua a mesma — React acha que nada mudou. **Como evitar:** sempre retorne um novo objeto/array: `{ ...state, items: [...state.items, item] }`. Se o padrão spread ficar impraticável, adote Immer.
 
 > [!warning] Efeitos colaterais dentro do reducer
-> **O que acontece:** comportamentos inesperados, chamadas duplicadas de API, bugs difíceis de reproduzir (especialmente no React StrictMode que invoca o reducer duas vezes em dev).
-> **Por quê:** reducers puros precisam ser idempotentes. O React pode chamar o reducer mais de uma vez para reconciliar.
-> **Como evitar:** reducers só calculam o próximo estado. Efeitos colaterais vão em `useEffect`, event handlers ou middleware.
+> **O que acontece:** comportamentos inesperados, chamadas duplicadas de API, bugs difíceis de reproduzir (especialmente no React StrictMode que invoca o reducer duas vezes em dev). **Por quê:** reducers puros precisam ser idempotentes. O React pode chamar o reducer mais de uma vez para reconciliar. **Como evitar:** reducers só calculam o próximo estado. Efeitos colaterais vão em `useEffect`, event handlers ou middleware.
 
 > [!warning] Action sem type discriminado ("any action")
-> **O que acontece:** você perde o narrowing do TypeScript — `action.payload` pode ser `undefined` no runtime mesmo com tipo declarado.
-> **Por quê:** `{ type: string; payload?: any }` é uma union de uma só variante. O compilador não sabe qual `case` corresponde a qual formato.
-> **Como evitar:** declare a union de actions explicitamente com cada variante tipada. Veja a seção "Tipando com discriminated unions" acima.
+> **O que acontece:** você perde o narrowing do TypeScript — `action.payload` pode ser `undefined` no runtime mesmo com tipo declarado. **Por quê:** `{ type: string; payload?: any }` é uma union de uma só variante. O compilador não sabe qual `case` corresponde a qual formato. **Como evitar:** declare a union de actions explicitamente com cada variante tipada. Veja a seção "Tipando com discriminated unions" acima.
 
 > [!warning] Despachar em loops ou dentro do próprio reducer
-> **O que acontece:** loop infinito de renders ou stack overflow.
-> **Por quê:** `dispatch` dispara um re-render; se for chamado dentro de um `useEffect` sem dependências corretas, o ciclo nunca para.
-> **Como evitar:** despachar só em event handlers, em `useEffect` com dependências estáveis, ou em respostas assíncronas (após `await`). Nunca dentro do corpo do reducer.
+> **O que acontece:** loop infinito de renders ou stack overflow. **Por quê:** `dispatch` dispara um re-render; se for chamado dentro de um `useEffect` sem dependências corretas, o ciclo nunca para. **Como evitar:** despachar só em event handlers, em `useEffect` com dependências estáveis, ou em respostas assíncronas (após `await`). Nunca dentro do corpo do reducer.
 
 ## Casos práticos
 

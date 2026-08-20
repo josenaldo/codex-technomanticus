@@ -151,8 +151,7 @@ Exemplos: research assistant, coding agent (Claude Code, Cursor), debugging agen
 
 > *"Esse problema requer que o LLM decida o próximo step em runtime, ou eu consigo escrever a ordem dos steps em código?"*
 
-Se você consegue escrever em código → workflow.
-Se não consegue → talvez agent.
+Se você consegue escrever em código → workflow. Se não consegue → talvez agent.
 
 ## Como explicar em inglês
 

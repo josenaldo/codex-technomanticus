@@ -90,19 +90,13 @@ O que exige time, orçamento ou estrutura: **um processo formal de revisão de d
 ## Armadilhas comuns
 
 > [!warning] DoD com UX que ninguém verifica
-> **O que acontece:** o time adiciona itens de UX à Definition of Done num documento, mas ninguém checa de fato se cada tarefa cumpre esses itens antes de fechar — o checklist vira decorativo.
-> **Por quê:** um critério de "pronto" que não é verificado por ninguém não é diferente de não ter critério nenhum; a DoD só funciona quando alguém — o próprio autor, o revisor, ou um gate automatizado — de fato confere cada item antes do merge.
-> **Como evitar:** amarre cada item de UX da DoD a uma verificação concreta: automatizada quando possível (o gate de CI), manual e nomeada quando não (o checklist de code review do Cenário 2).
+> **O que acontece:** o time adiciona itens de UX à Definition of Done num documento, mas ninguém checa de fato se cada tarefa cumpre esses itens antes de fechar — o checklist vira decorativo. **Por quê:** um critério de "pronto" que não é verificado por ninguém não é diferente de não ter critério nenhum; a DoD só funciona quando alguém — o próprio autor, o revisor, ou um gate automatizado — de fato confere cada item antes do merge. **Como evitar:** amarre cada item de UX da DoD a uma verificação concreta: automatizada quando possível (o gate de CI), manual e nomeada quando não (o checklist de code review do Cenário 2).
 
 > [!warning] Achar que o gate de CI dispensa julgamento humano
-> **O que acontece:** o time vê o pipeline verde — snapshot igual, lint de token passando — e conclui que a tela está pronta, sem revisar se a mensagem de erro faz sentido ou se o fluxo é coerente.
-> **Por quê:** testes automatizados pegam regressão *mecânica* (uma cor mudou, um pixel se moveu) — não pegam se o conteúdo escrito ajuda alguém a se recuperar de um erro, porque isso exige julgamento sobre significado, não comparação de pixel. É o mesmo teto que a nota 17 de a11y já nomeou para a automação de acessibilidade.
-> **Como evitar:** trate o gate automatizado como piso, não teto — ele libera tempo do revisor humano para focar no que a máquina não vê (o Cenário 2 é exatamente esse julgamento).
+> **O que acontece:** o time vê o pipeline verde — snapshot igual, lint de token passando — e conclui que a tela está pronta, sem revisar se a mensagem de erro faz sentido ou se o fluxo é coerente. **Por quê:** testes automatizados pegam regressão *mecânica* (uma cor mudou, um pixel se moveu) — não pegam se o conteúdo escrito ajuda alguém a se recuperar de um erro, porque isso exige julgamento sobre significado, não comparação de pixel. É o mesmo teto que a nota 17 de a11y já nomeou para a automação de acessibilidade. **Como evitar:** trate o gate automatizado como piso, não teto — ele libera tempo do revisor humano para focar no que a máquina não vê (o Cenário 2 é exatamente esse julgamento).
 
 > [!warning] Tratar UX como épico separado, sempre despriorizado
-> **O que acontece:** "melhorias de UX" vira um card no backlog que nunca sobe de prioridade frente a features novas — o mesmo padrão que a nota 17 de a11y descreve para acessibilidade tratada como trabalho à parte.
-> **Por quê:** trabalho isolado num épico compete diretamente com feature nova e perde sempre, porque o custo de adiar não aparece imediatamente — só aparece meses depois, como o ticket de suporte ou o usuário que desiste silenciosamente.
-> **Como evitar:** UX não é épico, é propriedade de cada tarefa — entra na Definition of Done de cada história, não numa fila separada que nunca sobe.
+> **O que acontece:** "melhorias de UX" vira um card no backlog que nunca sobe de prioridade frente a features novas — o mesmo padrão que a nota 17 de a11y descreve para acessibilidade tratada como trabalho à parte. **Por quê:** trabalho isolado num épico compete diretamente com feature nova e perde sempre, porque o custo de adiar não aparece imediatamente — só aparece meses depois, como o ticket de suporte ou o usuário que desiste silenciosamente. **Como evitar:** UX não é épico, é propriedade de cada tarefa — entra na Definition of Done de cada história, não numa fila separada que nunca sobe.
 
 ## Como explicar em inglês
 

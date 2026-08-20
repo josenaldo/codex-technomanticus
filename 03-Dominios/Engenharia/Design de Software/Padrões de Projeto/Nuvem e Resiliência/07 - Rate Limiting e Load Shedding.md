@@ -24,19 +24,10 @@ aliases:
 # Rate Limiting e Load Shedding
 
 > [!abstract] TL;DR
-> Os dois modos de **dizer não na entrada**, e a diferença entre eles é o critério. **Rate limiting**
-> recusa por **cota**: você tem N por minuto, é um contrato conhecido de antemão, e a recusa é justa e
-> previsível. **Load shedding** recusa por **pressão**: o sistema está no limite **agora**, e descarta o
-> que puder para continuar servindo o resto. O primeiro protege contra abuso e vizinho barulhento; o
-> segundo é o que impede o colapso total quando a carga legítima excede a capacidade. Servir 80% bem é
-> melhor que servir 100% mal — e essa frase é o padrão inteiro.
+> Os dois modos de **dizer não na entrada**, e a diferença entre eles é o critério. **Rate limiting** recusa por **cota**: você tem N por minuto, é um contrato conhecido de antemão, e a recusa é justa e previsível. **Load shedding** recusa por **pressão**: o sistema está no limite **agora**, e descarta o que puder para continuar servindo o resto. O primeiro protege contra abuso e vizinho barulhento; o segundo é o que impede o colapso total quando a carga legítima excede a capacidade. Servir 80% bem é melhor que servir 100% mal — e essa frase é o padrão inteiro.
 
 > [!info] O recorte desta nota
-> Aqui os dois padrões como decisão e o que sacrificam. **Algoritmos e escala** em
-> [[03-Dominios/Engenharia/Arquitetura/System Design/3 - Padrões recorrentes/04 - Rate Limiting|System Design 3-04]];
-> **limite como contrato de API** (headers, 429, negociação com o cliente) em
-> [[03-Dominios/Engenharia/Comunicação entre Sistemas/3 - Confiabilidade do contrato/04 - Rate limiting como contrato|Comunicação 3-04]];
-> **quotas no gateway gerenciado** em [[03-Dominios/Tecnologia/Cloud/14 - API Gateway e edge de aplicação/03 - Throttling, quotas e caching|Cloud 14-03]].
+> Aqui os dois padrões como decisão e o que sacrificam. **Algoritmos e escala** em [[03-Dominios/Engenharia/Arquitetura/System Design/3 - Padrões recorrentes/04 - Rate Limiting|System Design 3-04]]; **limite como contrato de API** (headers, 429, negociação com o cliente) em [[03-Dominios/Engenharia/Comunicação entre Sistemas/3 - Confiabilidade do contrato/04 - Rate limiting como contrato|Comunicação 3-04]]; **quotas no gateway gerenciado** em [[03-Dominios/Tecnologia/Cloud/14 - API Gateway e edge de aplicação/03 - Throttling, quotas e caching|Cloud 14-03]].
 
 ## Servir 80% bem é melhor que servir 100% mal
 
@@ -84,19 +75,13 @@ A distinção prática mais útil: um cliente bem comportado **nunca** deveria s
 ## Armadilhas comuns
 
 > [!warning] Rejeitar sem dizer quando voltar
-> **O que acontece:** a resposta é um `429` seco. O cliente, sem informação, retenta imediatamente — e agora você tem **mais** carga vinda exatamente de quem você acabou de recusar.
-> **Por quê:** implementou-se a recusa, que é a parte que protege o servidor, sem a parte que orienta o cliente.
-> **Como evitar:** `429` com `Retry-After`, e headers informando limite, restante e janela. Uma recusa que orienta o cliente reduz a carga; uma que não orienta a aumenta. O contrato completo está em [[03-Dominios/Engenharia/Comunicação entre Sistemas/3 - Confiabilidade do contrato/04 - Rate limiting como contrato|Comunicação 3-04]].
+> **O que acontece:** a resposta é um `429` seco. O cliente, sem informação, retenta imediatamente — e agora você tem **mais** carga vinda exatamente de quem você acabou de recusar. **Por quê:** implementou-se a recusa, que é a parte que protege o servidor, sem a parte que orienta o cliente. **Como evitar:** `429` com `Retry-After`, e headers informando limite, restante e janela. Uma recusa que orienta o cliente reduz a carga; uma que não orienta a aumenta. O contrato completo está em [[03-Dominios/Engenharia/Comunicação entre Sistemas/3 - Confiabilidade do contrato/04 - Rate limiting como contrato|Comunicação 3-04]].
 
 > [!warning] Limitar pela chave errada
-> **O que acontece:** o limite é por IP, e um cliente corporativo inteiro atrás de um NAT compartilha uma cota — usuários legítimos se bloqueiam mutuamente. Ou o serviço está atrás de proxy e **todas** as requisições parecem vir do mesmo IP, o que ou bloqueia todo mundo ou não limita ninguém.
-> **Por quê:** o IP é a chave mais fácil de obter e a que menos corresponde a "quem é o cliente".
-> **Como evitar:** limite por **identidade** (chave de API, conta, tenant) sempre que houver. Onde só houver IP, use o cabeçalho de encaminhamento correto e valide que ele é confiável na sua topologia.
+> **O que acontece:** o limite é por IP, e um cliente corporativo inteiro atrás de um NAT compartilha uma cota — usuários legítimos se bloqueiam mutuamente. Ou o serviço está atrás de proxy e **todas** as requisições parecem vir do mesmo IP, o que ou bloqueia todo mundo ou não limita ninguém. **Por quê:** o IP é a chave mais fácil de obter e a que menos corresponde a "quem é o cliente". **Como evitar:** limite por **identidade** (chave de API, conta, tenant) sempre que houver. Onde só houver IP, use o cabeçalho de encaminhamento correto e valide que ele é confiável na sua topologia.
 
 > [!warning] Shedding que derruba o que não podia cair
-> **O que acontece:** o descarte é uniforme e atinge o *health check* — a plataforma conclui que a instância está morta e a reinicia, reduzindo a capacidade **durante** a sobrecarga. Ou atinge o webhook de confirmação de pagamento, e o dinheiro fica em limbo.
-> **Por quê:** o shedding foi implementado como percentual sobre o total, sem noção de prioridade.
-> **Como evitar:** classes de prioridade explícitas, com uma lista curta do que **nunca** é descartado — health check, autenticação, e as operações críticas de negócio. Shedding sem prioridade é sorteio, e o sorteio vai eventualmente tirar o número errado.
+> **O que acontece:** o descarte é uniforme e atinge o *health check* — a plataforma conclui que a instância está morta e a reinicia, reduzindo a capacidade **durante** a sobrecarga. Ou atinge o webhook de confirmação de pagamento, e o dinheiro fica em limbo. **Por quê:** o shedding foi implementado como percentual sobre o total, sem noção de prioridade. **Como evitar:** classes de prioridade explícitas, com uma lista curta do que **nunca** é descartado — health check, autenticação, e as operações críticas de negócio. Shedding sem prioridade é sorteio, e o sorteio vai eventualmente tirar o número errado.
 
 ## Como explicar em inglês
 

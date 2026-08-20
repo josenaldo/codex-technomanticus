@@ -177,24 +177,16 @@ Três desfechos possíveis, e cada um pede uma coisa diferente:
 ## Armadilhas comuns
 
 > [!warning] Matar o pai esperando que os filhos morram
-> **O que acontece:** o pai sai, os filhos continuam — agora adotados pelo PID 1, órfãos de supervisão.
-> **Por quê:** sinal vai para quem você endereçou. Não há propagação automática pela árvore.
-> **Como evitar:** sinalize o **grupo** com `kill -TERM -<PGID>` (o hífen antes do número), ou deixe a supervisão para o `systemd`, que encerra a unidade inteira por padrão — inclusive processos que a aplicação criou.
+> **O que acontece:** o pai sai, os filhos continuam — agora adotados pelo PID 1, órfãos de supervisão. **Por quê:** sinal vai para quem você endereçou. Não há propagação automática pela árvore. **Como evitar:** sinalize o **grupo** com `kill -TERM -<PGID>` (o hífen antes do número), ou deixe a supervisão para o `systemd`, que encerra a unidade inteira por padrão — inclusive processos que a aplicação criou.
 
 > [!warning] Caçar zumbi com `kill`
-> **O que acontece:** nada, e a conclusão errada é de que o sistema está travado.
-> **Por quê:** zumbi já terminou; não há processo para receber sinal.
-> **Como evitar:** aja sobre o pai. E, se for em container, a causa raiz costuma ser a aplicação rodando como PID 1 sem cumprir o dever de coletar — resolvido com um init mínimo (`--init` no Docker).
+> **O que acontece:** nada, e a conclusão errada é de que o sistema está travado. **Por quê:** zumbi já terminou; não há processo para receber sinal. **Como evitar:** aja sobre o pai. E, se for em container, a causa raiz costuma ser a aplicação rodando como PID 1 sem cumprir o dever de coletar — resolvido com um init mínimo (`--init` no Docker).
 
 > [!warning] `pkill -f` com padrão largo
-> **O que acontece:** o padrão casa com mais do que você imaginava — inclusive com o seu próprio comando, ou com o editor que está com o arquivo aberto.
-> **Por quê:** `-f` compara contra a linha de comando inteira.
-> **Como evitar:** `pgrep -af` primeiro, sempre. Ler a lista custa três segundos.
+> **O que acontece:** o padrão casa com mais do que você imaginava — inclusive com o seu próprio comando, ou com o editor que está com o arquivo aberto. **Por quê:** `-f` compara contra a linha de comando inteira. **Como evitar:** `pgrep -af` primeiro, sempre. Ler a lista custa três segundos.
 
 > [!warning] Confundir prioridade com limite
-> **O que acontece:** `nice` é usado esperando limitar consumo, e o processo continua consumindo tudo quando a máquina está ociosa.
-> **Por quê:** `nice` altera **prioridade relativa** na disputa por CPU; ele não impõe teto.
-> **Como evitar:** teto é cgroup, não prioridade — assunto da nota 14.
+> **O que acontece:** `nice` é usado esperando limitar consumo, e o processo continua consumindo tudo quando a máquina está ociosa. **Por quê:** `nice` altera **prioridade relativa** na disputa por CPU; ele não impõe teto. **Como evitar:** teto é cgroup, não prioridade — assunto da nota 14.
 
 ---
 

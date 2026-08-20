@@ -21,13 +21,7 @@ aliases:
 # DAO (Data Access Object)
 
 > [!abstract] TL;DR
-> O **DAO (Data Access Object)** é uma **interface** que abstrai e encapsula o acesso a uma fonte de
-> dados, separando a lógica de negócio da mecânica de persistência. Seu código de negócio chama
-> `userDao.findById(id)` sem saber se por baixo há Oracle, um arquivo ou um web service. Nasceu nos
-> **J2EE Core Patterns** e é **onipresente em legado enterprise Java** — é o padrão de acesso a dados
-> que você mais vai encontrar num sistema antigo. A pergunta de entrevista que ele sempre traz é
-> **DAO × Repository**. E a armadilha que domina hoje: um DAO **anêmico** que só repassa chamadas para
-> o Spring Data — uma camada inútil sobre o que já é uma abstração.
+> O **DAO (Data Access Object)** é uma **interface** que abstrai e encapsula o acesso a uma fonte de dados, separando a lógica de negócio da mecânica de persistência. Seu código de negócio chama `userDao.findById(id)` sem saber se por baixo há Oracle, um arquivo ou um web service. Nasceu nos **J2EE Core Patterns** e é **onipresente em legado enterprise Java** — é o padrão de acesso a dados que você mais vai encontrar num sistema antigo. A pergunta de entrevista que ele sempre traz é **DAO × Repository**. E a armadilha que domina hoje: um DAO **anêmico** que só repassa chamadas para o Spring Data — uma camada inútil sobre o que já é uma abstração.
 
 ## Esconder de onde os dados vêm
 
@@ -75,19 +69,13 @@ Ele ainda se justifica quando: você precisa de uma **abstração estável** sob
 ## Armadilhas comuns
 
 > [!warning] O DAO anêmico que só repassa para o ORM
-> **O que acontece:** escreve-se `UserDaoImpl` cujos métodos apenas chamam `userRepository.findById(id)` do Spring Data — uma camada que não acrescenta nada.
-> **Por quê:** o Spring Data `JpaRepository` **já é** a abstração de acesso a dados. Um DAO por cima só repassa, adicionando um arquivo, uma interface e uma indireção sem conter decisão nenhuma — a mesma "camada por padrão" que a nota 01 alerta.
-> **Como evitar:** em stack Spring moderno, use o repositório diretamente; ele é o seu DAO. Só introduza um DAO próprio se ele **contiver** algo (unificar fontes, esconder um mecanismo exótico, uma fronteira de domínio real).
+> **O que acontece:** escreve-se `UserDaoImpl` cujos métodos apenas chamam `userRepository.findById(id)` do Spring Data — uma camada que não acrescenta nada. **Por quê:** o Spring Data `JpaRepository` **já é** a abstração de acesso a dados. Um DAO por cima só repassa, adicionando um arquivo, uma interface e uma indireção sem conter decisão nenhuma — a mesma "camada por padrão" que a nota 01 alerta. **Como evitar:** em stack Spring moderno, use o repositório diretamente; ele é o seu DAO. Só introduza um DAO próprio se ele **contiver** algo (unificar fontes, esconder um mecanismo exótico, uma fronteira de domínio real).
 
 > [!warning] O DAO que vaza detalhes da fonte
-> **O que acontece:** a interface do DAO expõe tipos do JPA, exceções específicas do driver, ou objetos de resultado do SQL — e o vazamento contamina quem chama.
-> **Por quê:** a razão de existir do DAO é **esconder** o mecanismo. Se a interface fala a língua da fonte (entidades gerenciadas, `SQLException`, cursores), o acoplamento que ele deveria eliminar reaparece.
-> **Como evitar:** a interface do DAO fala a língua do **domínio** (recebe/retorna objetos de negócio ou DTOs); traduz exceções da fonte para exceções próprias. Nada do mecanismo cruza a interface.
+> **O que acontece:** a interface do DAO expõe tipos do JPA, exceções específicas do driver, ou objetos de resultado do SQL — e o vazamento contamina quem chama. **Por quê:** a razão de existir do DAO é **esconder** o mecanismo. Se a interface fala a língua da fonte (entidades gerenciadas, `SQLException`, cursores), o acoplamento que ele deveria eliminar reaparece. **Como evitar:** a interface do DAO fala a língua do **domínio** (recebe/retorna objetos de negócio ou DTOs); traduz exceções da fonte para exceções próprias. Nada do mecanismo cruza a interface.
 
 > [!warning] A God interface de DAO
-> **O que acontece:** um único DAO acumula dezenas de métodos (`findByNameAndStatusAndDateBetween...`), virando uma interface gigante e instável.
-> **Por quê:** empilhar consultas específicas na interface do DAO a faz crescer sem limite e acopla o consumidor a métodos que ele não usa (fere o ISP).
-> **Como evitar:** mantenha o DAO focado; para consultas complexas e componíveis, prefira um [[13 - Query Object]] ou Specifications, em vez de mais um método na interface.
+> **O que acontece:** um único DAO acumula dezenas de métodos (`findByNameAndStatusAndDateBetween...`), virando uma interface gigante e instável. **Por quê:** empilhar consultas específicas na interface do DAO a faz crescer sem limite e acopla o consumidor a métodos que ele não usa (fere o ISP). **Como evitar:** mantenha o DAO focado; para consultas complexas e componíveis, prefira um [[13 - Query Object]] ou Specifications, em vez de mais um método na interface.
 
 ## Como explicar em inglês
 

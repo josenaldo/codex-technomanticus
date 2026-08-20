@@ -16,22 +16,13 @@ publish: true
 # Cópia, serialização e imutabilidade
 
 > [!abstract] TL;DR
-> Em JavaScript, atribuir um objeto a outra variável copia a **referência**, não o valor — qualquer
-> mutação reflete nos dois lados. Cópia rasa (`spread`, `Object.assign`) resolve o nível superficial
-> mas deixa objetos aninhados compartilhados. `structuredClone()` é hoje a solução nativa para
-> cópia profunda, suportando `Map`, `Set`, `Date`, referências circulares — mas rejeitando funções e
-> nós DOM. `JSON.parse(JSON.stringify())` é alternativa simples, porém perde tipos (`Date` vira
-> string, `undefined` some, `BigInt` lança erro). `Object.freeze()` congela apenas o nível
-> superficial — objetos aninhados continuam mutáveis. Imutabilidade profunda real exige ou uma
-> função `deepFreeze` recursiva ou uma biblioteca como Immer, que usa *structural sharing* para
-> evitar cópias desnecessárias.
+> Em JavaScript, atribuir um objeto a outra variável copia a **referência**, não o valor — qualquer mutação reflete nos dois lados. Cópia rasa (`spread`, `Object.assign`) resolve o nível superficial mas deixa objetos aninhados compartilhados. `structuredClone()` é hoje a solução nativa para cópia profunda, suportando `Map`, `Set`, `Date`, referências circulares — mas rejeitando funções e nós DOM. `JSON.parse(JSON.stringify())` é alternativa simples, porém perde tipos (`Date` vira string, `undefined` some, `BigInt` lança erro). `Object.freeze()` congela apenas o nível superficial — objetos aninhados continuam mutáveis. Imutabilidade profunda real exige ou uma função `deepFreeze` recursiva ou uma biblioteca como Immer, que usa *structural sharing* para evitar cópias desnecessárias.
 
 ---
 
 ## O bug que assombra todo desenvolvedor JavaScript
 
-Imagine que você tem um carrinho de compras em um estado global e precisa preparar um "carrinho de
-prévia" para o usuário revisar antes de confirmar. A solução parece óbvia:
+Imagine que você tem um carrinho de compras em um estado global e precisa preparar um "carrinho de prévia" para o usuário revisar antes de confirmar. A solução parece óbvia:
 
 ```js
 const cart = { items: [{ id: 1, qty: 2 }], discount: 0.1 };
@@ -42,10 +33,7 @@ preview.items[0].qty = 5;     // ajuste para prévia
 console.log(cart.items[0].qty); // → 5  🚨 O carrinho original foi mutado!
 ```
 
-O `spread` copiou a referência do array `items`, não o array em si. Quando `preview.items[0].qty`
-mudou, você mudou o **mesmo objeto** que `cart.items[0]` aponta. Esse é o bug de mutação
-compartilhada — silencioso, difícil de rastrear, e a causa de horas perdidas em debugging de
-estado.
+O `spread` copiou a referência do array `items`, não o array em si. Quando `preview.items[0].qty` mudou, você mudou o **mesmo objeto** que `cart.items[0]` aponta. Esse é o bug de mutação compartilhada — silencioso, difícil de rastrear, e a causa de horas perdidas em debugging de estado.
 
 Para entender por quê isso acontece, precisamos voltar ao modelo de memória do JavaScript.
 
@@ -53,12 +41,9 @@ Para entender por quê isso acontece, precisamos voltar ao modelo de memória do
 
 ## Valor vs. referência — o recap que salva vidas
 
-Tipos primitivos (`number`, `string`, `boolean`, `null`, `undefined`, `symbol`, `BigInt`) são
-passados **por valor**: a variável guarda o dado diretamente na pilha (*stack*). Atribuir um
-primitivo a outra variável cria uma cópia independente.
+Tipos primitivos (`number`, `string`, `boolean`, `null`, `undefined`, `symbol`, `BigInt`) são passados **por valor**: a variável guarda o dado diretamente na pilha (*stack*). Atribuir um primitivo a outra variável cria uma cópia independente.
 
-Objetos, arrays e funções vivem no *heap* e são passados **por referência**: a variável guarda um
-ponteiro para o endereço de memória. Copiar a variável copia o ponteiro, não o dado.
+Objetos, arrays e funções vivem no *heap* e são passados **por referência**: a variável guarda um ponteiro para o endereço de memória. Copiar a variável copia o ponteiro, não o dado.
 
 ```js
 // Primitivo: cópia independente
@@ -74,19 +59,16 @@ obj2.x = 99;
 console.log(obj1.x); // → 99  ⚠️ mesmo objeto
 ```
 
-O detalhe importante para objetos aninhados é que cada nível da estrutura é um objeto separado no
-heap, com seu próprio endereço. Copiar o nível de cima não copia os níveis de baixo.
+O detalhe importante para objetos aninhados é que cada nível da estrutura é um objeto separado no heap, com seu próprio endereço. Copiar o nível de cima não copia os níveis de baixo.
 
 > [!info] Mais sobre objetos e sua estrutura interna
-> A mecânica de propriedades, descritores e prototype chain está em [[07 - Objetos]].
-> Arrays como objetos especiais em [[08 - Arrays e métodos]].
+> A mecânica de propriedades, descritores e prototype chain está em [[07 - Objetos]]. Arrays como objetos especiais em [[08 - Arrays e métodos]].
 
 ---
 
 ## Cópia rasa: o que funciona, o que falha
 
-Cópia rasa (*shallow copy*) cria um novo objeto no topo, mas **mantém referências** para todos os
-valores que são objetos.
+Cópia rasa (*shallow copy*) cria um novo objeto no topo, mas **mantém referências** para todos os valores que são objetos.
 
 ### As três formas canônicas
 
@@ -104,9 +86,7 @@ const arr = [1, [2, 3], 4];
 const arrCopy = arr.slice();
 ```
 
-Todas as três fazem a **mesma coisa**: copiam as propriedades do nível superficial. Para
-propriedades cujo valor é um primitivo, a cópia é independente. Para propriedades cujo valor é um
-objeto, a referência é compartilhada.
+Todas as três fazem a **mesma coisa**: copiam as propriedades do nível superficial. Para propriedades cujo valor é um primitivo, a cópia é independente. Para propriedades cujo valor é um objeto, a referência é compartilhada.
 
 ```js
 copy1.a = 99;             // ✓ não afeta original
@@ -147,10 +127,7 @@ O nível amarelo (aninhado) é compartilhado — qualquer mutação lá reflete 
 > - **Fireship** — [*JavaScript Immutability*](https://www.youtube.com/watch?v=7PolyDM9Ias) — visão geral rápida de imutabilidade, `freeze` vs bibliotecas (8 min)
 > - **Theo - t3.gg** — [*Deep Clone in JavaScript - Stop Doing It Wrong*](https://www.youtube.com/watch?v=bW5G_5kZh5s) — compara `structuredClone`, JSON e lodash cloneDeep com benchmarks (14 min)
 
-Introduzida no Node.js 17 (2021) e disponível em todos os browsers modernos desde 2022
-(Chrome 98+, Firefox 94+, Safari 15.4+), `structuredClone()` usa o [Structured Clone
-Algorithm](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm)
-para percorrer recursivamente toda a estrutura e criar cópias independentes em cada nível.
+Introduzida no Node.js 17 (2021) e disponível em todos os browsers modernos desde 2022 (Chrome 98+, Firefox 94+, Safari 15.4+), `structuredClone()` usa o [Structured Clone Algorithm](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm) para percorrer recursivamente toda a estrutura e criar cópias independentes em cada nível.
 
 ```js
 const original = {
@@ -205,16 +182,11 @@ console.log(clone.self === clone); // → true  ✓
 ```
 
 > [!question]- Por que funções não podem ser clonadas?
-> Funções em JavaScript contêm referências ao seu escopo léxico (closure). Serializar isso
-> fielmente implicaria copiar todo o contexto de variáveis capturadas — um problema equivalente
-> a serializar estado de execução. O algoritmo structured clone, por design, opera sobre dados,
-> não sobre comportamento. Para transferir comportamento, use código-fonte (string) ou
-> reconstrução manual.
+> Funções em JavaScript contêm referências ao seu escopo léxico (closure). Serializar isso fielmente implicaria copiar todo o contexto de variáveis capturadas — um problema equivalente a serializar estado de execução. O algoritmo structured clone, por design, opera sobre dados, não sobre comportamento. Para transferir comportamento, use código-fonte (string) ou reconstrução manual.
 
 ### `JSON.parse(JSON.stringify())` — legado ainda útil
 
-A abordagem clássica serializa o objeto em uma string JSON e desserializa de volta. Funciona para
-estruturas simples de dados puros, mas cobra um preço alto em tipos.
+A abordagem clássica serializa o objeto em uma string JSON e desserializa de volta. Funciona para estruturas simples de dados puros, mas cobra um preço alto em tipos.
 
 ```js
 const obj = {
@@ -249,9 +221,7 @@ const clone = JSON.parse(JSON.stringify(obj));
 | Referência circular | `TypeError` |
 | Prototype personalizado | Vira `Object` puro |
 
-**Quando usar mesmo assim:** estruturas simples de dados puros (strings, numbers, booleans, objetos
-planos, arrays de primitivos) onde você controla o formato. É rápido e sem dependências. Para tudo
-que envolva tipos ricos, prefira `structuredClone`.
+**Quando usar mesmo assim:** estruturas simples de dados puros (strings, numbers, booleans, objetos planos, arrays de primitivos) onde você controla o formato. É rápido e sem dependências. Para tudo que envolva tipos ricos, prefira `structuredClone`.
 
 **`replacer` e `reviver` — cirurgia de precisão**
 
@@ -274,9 +244,7 @@ const restored = JSON.parse(serialized, reviver);
 // restored.date → Date válida  ✓
 ```
 
-O par `replacer`/`reviver` é a forma de ensinar ao JSON como tratar tipos personalizados —
-essencialmente um protocolo de serialização manual. Funciona bem para casos previsíveis, mas exige
-manutenção quando o schema evolui.
+O par `replacer`/`reviver` é a forma de ensinar ao JSON como tratar tipos personalizados — essencialmente um protocolo de serialização manual. Funciona bem para casos previsíveis, mas exige manutenção quando o schema evolui.
 
 ---
 
@@ -309,8 +277,7 @@ flowchart TD
 
 ## Imutabilidade: congelar objetos em JavaScript
 
-Às vezes não queremos clonar — queremos **garantir que um objeto não seja mutado** depois de
-criado. JavaScript oferece três níveis de congelamento, do mais restritivo ao mais permissivo.
+Às vezes não queremos clonar — queremos **garantir que um objeto não seja mutado** depois de criado. JavaScript oferece três níveis de congelamento, do mais restritivo ao mais permissivo.
 
 ### Os três níveis
 
@@ -355,8 +322,7 @@ config.db = "outro";   // ❌ bloqueado pelo freeze
 config.db.host = "evil.com"; // ✓ funciona! O objeto aninhado não está frozen
 ```
 
-`Object.freeze` congela apenas o objeto diretamente referenciado. Objetos aninhados continuam
-completamente mutáveis.
+`Object.freeze` congela apenas o objeto diretamente referenciado. Objetos aninhados continuam completamente mutáveis.
 
 ### `deepFreeze` — implementação recursiva
 
@@ -392,9 +358,7 @@ console.log(config.db.host); // → "localhost"  ✓
 ```
 
 > [!question]- Por que `Object.freeze` não faz deep por padrão?
-> Performance e design. Um objeto pode ter estruturas muito profundas ou circulares. Congelar
-> recursivamente por padrão causaria custos inesperados e problemas com ciclos. A linguagem expõe o
-> mecanismo primitivo; você compõe o comportamento de que precisa.
+> Performance e design. Um objeto pode ter estruturas muito profundas ou circulares. Congelar recursivamente por padrão causaria custos inesperados e problemas com ciclos. A linguagem expõe o mecanismo primitivo; você compõe o comportamento de que precisa.
 
 ---
 
@@ -402,8 +366,7 @@ console.log(config.db.host); // → "localhost"  ✓
 
 ### Padrão imutável sem congelamento
 
-Em muitos sistemas (Redux, React state), imutabilidade é uma **convenção de código** — nunca mute,
-sempre retorne um novo objeto:
+Em muitos sistemas (Redux, React state), imutabilidade é uma **convenção de código** — nunca mute, sempre retorne um novo objeto:
 
 ```js
 // ❌ mutação — partido em pedaços de código grande
@@ -437,9 +400,7 @@ function updateQty(cart, itemId, qty) {
 
 ### Structural sharing — o princípio por trás das bibliotecas
 
-Copiar a estrutura inteira a cada mudança é caro para estruturas grandes. **Structural sharing**
-(compartilhamento estrutural) resolve isso: apenas o caminho até o nó mutado é copiado; o restante
-da árvore é compartilhado entre versão nova e antiga.
+Copiar a estrutura inteira a cada mudança é caro para estruturas grandes. **Structural sharing** (compartilhamento estrutural) resolve isso: apenas o caminho até o nó mutado é copiado; o restante da árvore é compartilhado entre versão nova e antiga.
 
 ```
 Estado anterior:        Estado novo (qty do item[0] mudou):
@@ -451,9 +412,7 @@ Estado anterior:        Estado novo (qty do item[0] mudou):
       I1  I2                 I1' I2      ← I1' novo, I2 compartilhado
 ```
 
-Isso é o que bibliotecas como **Immer** e **Immutable.js** implementam internamente. No caso do
-Immer, a API é especialmente ergonômica — você escreve código como se estivesse mutando, e o Immer
-produz uma nova estrutura imutável:
+Isso é o que bibliotecas como **Immer** e **Immutable.js** implementam internamente. No caso do Immer, a API é especialmente ergonômica — você escreve código como se estivesse mutando, e o Immer produz uma nova estrutura imutável:
 
 ```js
 import { produce } from "immer";
@@ -467,20 +426,10 @@ console.log(nextCart.items[0].qty); // → 5  (novo)
 ```
 
 > [!info] Records & Tuples — proposta retirada; o que veio depois
-> A proposta TC39 de Records & Tuples (primitivos imutáveis com comparação por valor, `#{ a: 1 }`)
-> foi **retirada em abril de 2025** (issue #394) após não conseguir consenso no comitê para
-> adicionar novos primitivos à linguagem — a principal objeção foi o custo de semântica nova de
-> valor para objetos. Em 2026, a área permanece sem substituto oficial em estágio avançado.
-> As alternativas práticas: **Immer** (`produce`) para estado imutável por convenção; **Immutable.js**
-> para coleções persistentes com structural sharing; TypeScript com `Readonly<T>` e `as const`
-> para garantia estática (sem custo em runtime). A proposta **Value Objects** (exploratória, 2025)
-> busca um caminho mais conservador, mas ainda em fase de discussão.
+> A proposta TC39 de Records & Tuples (primitivos imutáveis com comparação por valor, `#{ a: 1 }`) foi **retirada em abril de 2025** (issue #394) após não conseguir consenso no comitê para adicionar novos primitivos à linguagem — a principal objeção foi o custo de semântica nova de valor para objetos. Em 2026, a área permanece sem substituto oficial em estágio avançado. As alternativas práticas: **Immer** (`produce`) para estado imutável por convenção; **Immutable.js** para coleções persistentes com structural sharing; TypeScript com `Readonly<T>` e `as const` para garantia estática (sem custo em runtime). A proposta **Value Objects** (exploratória, 2025) busca um caminho mais conservador, mas ainda em fase de discussão.
 
 > [!info] `structuredClone` — suporte em 2026
-> Em junho de 2026, `structuredClone` é Baseline Widely Available: suportado em todos os
-> ambientes relevantes (Chrome 98+, Firefox 94+, Safari 15.4+, Node.js 17+, Deno 1.14+, Bun 0.1+).
-> Não há razão para usar `JSON.parse(JSON.stringify())` em código novo, exceto quando a serialização
-> para string JSON é o objetivo em si (ex: persistência, transporte HTTP).
+> Em junho de 2026, `structuredClone` é Baseline Widely Available: suportado em todos os ambientes relevantes (Chrome 98+, Firefox 94+, Safari 15.4+, Node.js 17+, Deno 1.14+, Bun 0.1+). Não há razão para usar `JSON.parse(JSON.stringify())` em código novo, exceto quando a serialização para string JSON é o objetivo em si (ex: persistência, transporte HTTP).
 
 ---
 
@@ -495,8 +444,7 @@ console.log(a === b); // → false  (objetos diferentes no heap)
 console.log(a === a); // → true   (mesma referência)
 ```
 
-Para comparação estrutural (valor a valor), você precisa de uma função dedicada. A implementação
-ingênua para casos simples:
+Para comparação estrutural (valor a valor), você precisa de uma função dedicada. A implementação ingênua para casos simples:
 
 ```js
 function shallowEqual(a, b) {
@@ -508,10 +456,7 @@ function shallowEqual(a, b) {
 }
 ```
 
-Para comparação profunda, o padrão em produção é `JSON.stringify` (com a ressalva de ordem de
-chaves) ou bibliotecas como Lodash `_.isEqual`. Em React, `shallowEqual` é suficiente para a
-maioria dos casos de `memo`/`PureComponent` porque o estado costuma ser imutável por convenção —
-se o objeto mudou, é um objeto novo.
+Para comparação profunda, o padrão em produção é `JSON.stringify` (com a ressalva de ordem de chaves) ou bibliotecas como Lodash `_.isEqual`. Em React, `shallowEqual` é suficiente para a maioria dos casos de `memo`/`PureComponent` porque o estado costuma ser imutável por convenção — se o objeto mudou, é um objeto novo.
 
 ---
 
@@ -540,13 +485,11 @@ console.log(formState.user.address.city);          // → "SP"  ✓
 console.log(formState.files[0].metadata.get("size")); // → 2048  ✓
 ```
 
-Por que não usar JSON aqui? O campo `metadata` é um `Map`. `JSON.stringify` o transformaria em
-`{}`, destruindo os dados.
+Por que não usar JSON aqui? O campo `metadata` é um `Map`. `JSON.stringify` o transformaria em `{}`, destruindo os dados.
 
 ### Cenário 2: objeto de configuração imutável em módulo
 
-Configurações de aplicação são candidatas naturais a `deepFreeze`: definidas uma vez, nunca devem
-ser acidentalmente alteradas em runtime.
+Configurações de aplicação são candidatas naturais a `deepFreeze`: definidas uma vez, nunca devem ser acidentalmente alteradas em runtime.
 
 ```js
 // config.js
@@ -579,11 +522,7 @@ CONFIG.api.retry.maxAttempts = 99; // TypeError em strict mode ✓ (deepFreeze a
 ```
 
 > [!question]- E se o objeto de config tiver um `Date` ou `RegExp`?
-> `Object.freeze` funciona com qualquer objeto — não há restrições de tipo. `Date` congelada não
-> pode ter suas propriedades internas alteradas, mas `setFullYear()` e similares modificam o estado
-> interno do objeto pelo mecanismo nativo, não via propriedades JS — então o freeze **não bloqueia
-> mutações de `Date` pelo seus métodos**. Para configs, evite objetos mutáveis internamente como
-> `Date`; prefira strings ISO ou timestamps Unix.
+> `Object.freeze` funciona com qualquer objeto — não há restrições de tipo. `Date` congelada não pode ter suas propriedades internas alteradas, mas `setFullYear()` e similares modificam o estado interno do objeto pelo mecanismo nativo, não via propriedades JS — então o freeze **não bloqueia mutações de `Date` pelo seus métodos**. Para configs, evite objetos mutáveis internamente como `Date`; prefira strings ISO ou timestamps Unix.
 
 ---
 
@@ -629,9 +568,7 @@ When asked in a technical interview:
 
 ## O que vem a seguir
 
-Agora que entendemos como copiar e proteger dados em memória, o próximo passo natural é entender
-o que acontece *com* essa memória ao longo do tempo: como o motor JavaScript aloca, gerencia e
-libera objetos, e o que pode causar vazamentos de memória em aplicações de longa duração.
+Agora que entendemos como copiar e proteger dados em memória, o próximo passo natural é entender o que acontece *com* essa memória ao longo do tempo: como o motor JavaScript aloca, gerencia e libera objetos, e o que pode causar vazamentos de memória em aplicações de longa duração.
 
 - [[21 - Memory management]] — garbage collection, referências fracas, WeakMap/WeakRef e como evitar memory leaks
 - [[07 - Objetos]] — modelo de propriedades, descritores, prototype chain — a base sobre a qual cópia e freeze operam

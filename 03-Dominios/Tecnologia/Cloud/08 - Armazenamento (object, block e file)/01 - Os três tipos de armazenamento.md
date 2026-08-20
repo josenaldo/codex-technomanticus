@@ -90,8 +90,7 @@ flowchart LR
 > [!tip] Assista: Difference between File Storage, Object Storage & Block Storage
 > **Canal:** MGDecodes | **Duração:** ~7min | **Idioma:** EN
 >
-> Vídeo curto que percorre os três tipos na mesma ordem desta nota — bloco, arquivo, objeto — reforçando com outra analogia por que cada um exige um "contrato de acesso" diferente. Bom para revisar rápido antes de seguir pra nota 02.
-> Trecho de destaque [3:48]: *"object storage stores data as objects with metadata and global unique [id]"*
+> Vídeo curto que percorre os três tipos na mesma ordem desta nota — bloco, arquivo, objeto — reforçando com outra analogia por que cada um exige um "contrato de acesso" diferente. Bom para revisar rápido antes de seguir pra nota 02. Trecho de destaque [3:48]: *"object storage stores data as objects with metadata and global unique [id]"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=hKWWGvC5_uo)
 

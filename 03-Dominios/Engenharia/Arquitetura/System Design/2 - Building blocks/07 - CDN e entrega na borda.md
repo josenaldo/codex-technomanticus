@@ -82,9 +82,7 @@ A diferença de escala importa. Um cache de aplicação errando 20% das vezes ba
 Isso muda o cálculo de prioridade: numa CDN, um hit ratio de 85% não é "razoavelmente bom" — pode ser o gargalo inteiro da experiência internacional do produto, porque os 15% de miss pagam o pior caso (round-trip intercontinental) exatamente nos usuários mais distantes do origin, que já são os mais penalizados pela física.
 
 > [!warning] Origin sobrecarregado por hit ratio baixo na borda
-> **O que acontece:** o hit ratio da CDN cai (conteúdo pouco cacheável, TTLs curtos demais, muitas variações de URL/headers fragmentando o cache), e uma fração grande do tráfego global passa a bater direto no origin — inclusive vindo de PoPs distantes, cada miss custando o RTT completo até lá.
-> **Por quê:** o origin foi dimensionado assumindo que a CDN absorveria a maior parte da carga; quando o hit ratio despenca, ele recebe tráfego muito acima do planejado, geograficamente concentrado nos horários de pico de cada fuso.
-> **Como evitar:** monitorar hit ratio por PoP (não só o agregado global — um PoP específico pode estar sofrendo evictions ou servindo conteúdo pouco cacheável), normalizar as chaves de cache (ignorar query strings irrelevantes, normalizar headers `Vary`), e usar **origin shield** — uma camada intermediária entre os PoPs e o origin que consolida múltiplos misses concorrentes numa única requisição ao origin, evitando que N PoPs, cada um com sua própria chave de cache, multipliquem a carga no pior momento.
+> **O que acontece:** o hit ratio da CDN cai (conteúdo pouco cacheável, TTLs curtos demais, muitas variações de URL/headers fragmentando o cache), e uma fração grande do tráfego global passa a bater direto no origin — inclusive vindo de PoPs distantes, cada miss custando o RTT completo até lá. **Por quê:** o origin foi dimensionado assumindo que a CDN absorveria a maior parte da carga; quando o hit ratio despenca, ele recebe tráfego muito acima do planejado, geograficamente concentrado nos horários de pico de cada fuso. **Como evitar:** monitorar hit ratio por PoP (não só o agregado global — um PoP específico pode estar sofrendo evictions ou servindo conteúdo pouco cacheável), normalizar as chaves de cache (ignorar query strings irrelevantes, normalizar headers `Vary`), e usar **origin shield** — uma camada intermediária entre os PoPs e o origin que consolida múltiplos misses concorrentes numa única requisição ao origin, evitando que N PoPs, cada um com sua própria chave de cache, multipliquem a carga no pior momento.
 
 ## Conteúdo estático vs dinâmico
 
@@ -211,9 +209,7 @@ sequenceDiagram
 ```
 
 > [!warning] Certificado errado ou mal configurado na borda
-> **O que acontece:** o time configura a CDN com um certificado que não cobre o domínio exato sendo servido (falta um SAN, ou o wildcard não cobre um subdomínio específico), e usuários passam a ver avisos de certificado inválido — mesmo que o origin esteja perfeitamente configurado.
-> **Por quê:** como o TLS termina na borda, é o certificado *da CDN* que o navegador valida, não o do origin. Um mismatch entre os dois é invisível em testes que batem direto no origin (bypassando a CDN) e só aparece em produção.
-> **Como evitar:** gerenciar o certificado como parte da configuração da CDN, não do origin — a maioria dos provedores (Cloudflare, CloudFront com ACM) automatiza a emissão e renovação, mas exige que todo domínio e subdomínio servido esteja explicitamente coberto.
+> **O que acontece:** o time configura a CDN com um certificado que não cobre o domínio exato sendo servido (falta um SAN, ou o wildcard não cobre um subdomínio específico), e usuários passam a ver avisos de certificado inválido — mesmo que o origin esteja perfeitamente configurado. **Por quê:** como o TLS termina na borda, é o certificado *da CDN* que o navegador valida, não o do origin. Um mismatch entre os dois é invisível em testes que batem direto no origin (bypassando a CDN) e só aparece em produção. **Como evitar:** gerenciar o certificado como parte da configuração da CDN, não do origin — a maioria dos provedores (Cloudflare, CloudFront com ACM) automatiza a emissão e renovação, mas exige que todo domínio e subdomínio servido esteja explicitamente coberto.
 
 ## Absorção de picos e DDoS na borda
 
@@ -277,14 +273,10 @@ A segunda resposta amarra push/pull, TTL, e a estratégia de invalidação a req
 ## Armadilhas comuns
 
 > [!warning] Tratar CDN como resolvendo consistência
-> **O que acontece:** o candidato propõe CDN para um dado que precisa de consistência forte, sem reconhecer que está introduzindo staleness.
-> **Por quê:** CDN é ensinada como "sempre bom para performance", e o candidato esquece que ela é, no fundo, mais uma camada de cache — com o mesmo trade-off staleness-vs-frescor de qualquer cache.
-> **Como evitar:** aplique a mesma pergunta da [[02 - Caching|nota de Caching]]: "esse dado tolera alguma janela de desatualização?" Se a resposta é não, CDN — como qualquer cache — é a ferramenta errada para *esse* dado específico, mesmo que sirva bem o resto do sistema.
+> **O que acontece:** o candidato propõe CDN para um dado que precisa de consistência forte, sem reconhecer que está introduzindo staleness. **Por quê:** CDN é ensinada como "sempre bom para performance", e o candidato esquece que ela é, no fundo, mais uma camada de cache — com o mesmo trade-off staleness-vs-frescor de qualquer cache. **Como evitar:** aplique a mesma pergunta da [[02 - Caching|nota de Caching]]: "esse dado tolera alguma janela de desatualização?" Se a resposta é não, CDN — como qualquer cache — é a ferramenta errada para *esse* dado específico, mesmo que sirva bem o resto do sistema.
 
 > [!warning] Esquecer o custo do primeiro miss em pull CDN
-> **O que acontece:** o candidato descreve pull CDN como "sempre rápido", ignorando que o primeiro pedido em cada PoP paga o RTT completo até o origin.
-> **Por quê:** o caminho feliz (cache já quente) é o que vem à mente primeiro; o cold start por PoP é menos intuitivo.
-> **Como evitar:** para conteúdo com pico previsível (lançamento agendado, evento ao vivo), mencione push CDN ou pré-aquecimento (uma requisição sintética disparada antes do tráfego real, para forçar o hit desde o primeiro usuário real) como mitigação — o mesmo espírito do cache warming da nota de Caching, aplicado à borda.
+> **O que acontece:** o candidato descreve pull CDN como "sempre rápido", ignorando que o primeiro pedido em cada PoP paga o RTT completo até o origin. **Por quê:** o caminho feliz (cache já quente) é o que vem à mente primeiro; o cold start por PoP é menos intuitivo. **Como evitar:** para conteúdo com pico previsível (lançamento agendado, evento ao vivo), mencione push CDN ou pré-aquecimento (uma requisição sintética disparada antes do tráfego real, para forçar o hit desde o primeiro usuário real) como mitigação — o mesmo espírito do cache warming da nota de Caching, aplicado à borda.
 
 ## Em entrevista
 
@@ -357,7 +349,4 @@ O próximo sub-galho muda de lente: em vez de "que peça resolve que problema t�
 - **MDN Web Docs** — [*Content delivery network (CDN)*](https://developer.mozilla.org/en-US/docs/Glossary/CDN) — definição de referência e vocabulário compartilhado do ecossistema web.
 - **Donne Martin** — [*System Design Primer* — seção CDN](https://github.com/donnemartin/system-design-primer#content-delivery-network) — push vs pull CDN como vocabulário padrão de entrevista.
 
-[^1]: AWS, *Amazon CloudFront: Delivering millisecond performance to global audiences*, 2025 — 750+ PoPs e 1.140+ embedded PoPs em ISPs.
-[^2]: Fastly, *Is purging still the hardest problem in computer science?* — propagação via bimodal multicast, ~5ms de início, a maioria dos PoPs completando em ~150ms, quase todos abaixo de 250ms.
-[^3]: Cloudflare, *Instant Purge: invalidating cached content in under 150ms*.
-[^4]: AWS, *Amazon CloudFront now supports TLS 1.3 for origin connections*, novembro de 2025.
+[^1]: AWS, *Amazon CloudFront: Delivering millisecond performance to global audiences*, 2025 — 750+ PoPs e 1.140+ embedded PoPs em ISPs. [^2]: Fastly, *Is purging still the hardest problem in computer science?* — propagação via bimodal multicast, ~5ms de início, a maioria dos PoPs completando em ~150ms, quase todos abaixo de 250ms. [^3]: Cloudflare, *Instant Purge: invalidating cached content in under 150ms*. [^4]: AWS, *Amazon CloudFront now supports TLS 1.3 for origin connections*, novembro de 2025.

@@ -63,8 +63,7 @@ vim.api.nvim_create_autocmd("FocusLost", {
 
 ### vim-zellij-navigator
 
-**Repo:** https://github.com/hiasr/vim-zellij-navigator
-**Versão atual verificada:** v0.3.0 (julho/2025). Versão mínima do Zellij: v0.42.2.
+**Repo:** https://github.com/hiasr/vim-zellij-navigator **Versão atual verificada:** v0.3.0 (julho/2025). Versão mínima do Zellij: v0.42.2.
 
 vim-zellij-navigator é um bridge bidirecional que unifica navegação entre splits do Neovim e panes do Zellij. A lógica é: ao pressionar `Ctrl-h/j/k/l`, o plugin detecta se o cursor está na borda do split do Neovim; se sim, "atravessa" para o pane Zellij vizinho na mesma direção. Funciona nos dois sentidos — do Zellij para o Neovim também.
 

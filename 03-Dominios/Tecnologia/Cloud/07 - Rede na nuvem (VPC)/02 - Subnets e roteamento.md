@@ -121,8 +121,7 @@ Repare que a única diferença estrutural entre as duas tabelas é o alvo da seg
 > [!tip] Assista: Como criar VPCs e Subnets na AWS
 > **Canal:** Fabricio Veronez | **Duração:** ~62min | **Idioma:** PT-BR
 >
-> Um passo a passo prático de criação de subnets públicas e privadas e das route tables associadas a cada uma — vale a pena assistir o trecho da associação de subrede pra ver, na tela real do console, o exato mecanismo que esta nota descreve em tabela.
-> Trecho de destaque [42:57]: *"Como essa tabela de rota, ela vai apontar pra internet, eu vou colocar ela associada só à minha rede pública. Se eu colocar ela na minha rede privada, já era. Minha rede privada vai virar rede pública, porque ela vai ter acesso à internet."*
+> Um passo a passo prático de criação de subnets públicas e privadas e das route tables associadas a cada uma — vale a pena assistir o trecho da associação de subrede pra ver, na tela real do console, o exato mecanismo que esta nota descreve em tabela. Trecho de destaque [42:57]: *"Como essa tabela de rota, ela vai apontar pra internet, eu vou colocar ela associada só à minha rede pública. Se eu colocar ela na minha rede privada, já era. Minha rede privada vai virar rede pública, porque ela vai ter acesso à internet."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=HtHuPAz3B7I)
 

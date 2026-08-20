@@ -244,8 +244,7 @@ Em sistemas monolíticos, a autorização fica dentro do mesmo processo — o pe
 API Gateway → [JWT verificado] → Serviço A → [repassa JWT no header] → Serviço B
 ```
 
-Vantagens: stateless, escala horizontal, sem ponto central de falha.
-Riscos: JWTs não podem ser revogados antes do vencimento (`exp`). Mitigação: `exp` curto (minutos) + refresh tokens; ou manter uma blocklist de tokens revogados (voltando a ser stateful).
+Vantagens: stateless, escala horizontal, sem ponto central de falha. Riscos: JWTs não podem ser revogados antes do vencimento (`exp`). Mitigação: `exp` curto (minutos) + refresh tokens; ou manter uma blocklist de tokens revogados (voltando a ser stateful).
 
 **Token forwarding vs. token exchange**: simplesmente repassar o token do usuário para serviços internos (token forwarding) tem problema de *audience*: um token emitido para o Serviço A não deveria ser aceito pelo Serviço B. **OAuth2 Token Exchange** (RFC 8693) formaliza a troca: o Serviço A apresenta seu token + o token do usuário ao servidor de autorização e recebe um novo token com `aud` correto para o Serviço B.
 

@@ -67,9 +67,7 @@ Isso conecta diretamente aos conceitos do Galho 1:
 Então toda a estratégia deste galho decorre de uma única meta: **manter a main thread livre**. Ou você faz menos trabalho (tarefas menores, menos JavaScript), ou faz o trabalho em outro lugar (Workers), ou o faz na hora certa (ceder a thread, adiar o não-urgente). Cada nota seguinte é uma variação dessa ideia.
 
 > [!warning] Achar que "o computador é rápido, então JS pesado não importa"
-> **O que acontece:** o dev testa num desktop potente, a interação parece instantânea, e ele conclui que a tarefa de 200 ms "não é problema".
-> **Por quê:** a main thread é **uma só** independentemente do número de núcleos, e o celular mediano do usuário tem uma CPU muito mais lenta — a mesma tarefa que leva 200 ms no seu desktop pode levar 800 ms no aparelho dele. Núcleos sobrando não aceleram uma thread única.
-> **Como evitar:** meça sempre com **CPU throttling** (o DevTools simula 4×/6× mais lento) e olhe o INP de **campo** no p75 (ver Galho 1). A responsividade se prova no aparelho fraco, não no seu.
+> **O que acontece:** o dev testa num desktop potente, a interação parece instantânea, e ele conclui que a tarefa de 200 ms "não é problema". **Por quê:** a main thread é **uma só** independentemente do número de núcleos, e o celular mediano do usuário tem uma CPU muito mais lenta — a mesma tarefa que leva 200 ms no seu desktop pode levar 800 ms no aparelho dele. Núcleos sobrando não aceleram uma thread única. **Como evitar:** meça sempre com **CPU throttling** (o DevTools simula 4×/6× mais lento) e olhe o INP de **campo** no p75 (ver Galho 1). A responsividade se prova no aparelho fraco, não no seu.
 
 **A thread principal em uma frase:** o browser executa JavaScript, layout, paint e eventos numa única thread que roda uma tarefa por vez até o fim, então qualquer JavaScript que a segure trava a interação inteira — e otimizar runtime é, na essência, manter essa thread livre.
 

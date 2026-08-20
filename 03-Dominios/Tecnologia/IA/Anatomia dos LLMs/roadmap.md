@@ -27,8 +27,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | LINKS | L1 Wikilink cross-galho · L2 Referência externa (URL) |
 | MÍDIA | M1 Vídeo/podcast embutido |
 
-**Esquema de fase detectado:** SEM fase (sequência) — galho organizado por Blocos, decisão do spec `00-Meta/specs/2026-06-20-galho-anatomia-llms-reformulacao-plan.md`. Ausência de `fase:` NÃO é gap aqui.
-**Piso de linhas:** N/A
+**Esquema de fase detectado:** SEM fase (sequência) — galho organizado por Blocos, decisão do spec `00-Meta/specs/2026-06-20-galho-anatomia-llms-reformulacao-plan.md`. Ausência de `fase:` NÃO é gap aqui. **Piso de linhas:** N/A
 
 ## Tabela-resumo
 

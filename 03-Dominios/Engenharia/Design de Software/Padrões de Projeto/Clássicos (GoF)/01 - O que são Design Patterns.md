@@ -19,13 +19,7 @@ aliases:
 # O que são Design Patterns
 
 > [!abstract] TL;DR
-> Um **design pattern** é uma solução catalogada para um problema de projeto que se repete — e,
-> antes de tudo, é **vocabulário compartilhado**. Dizer "aqui cabe um Strategy" comunica em três
-> palavras o que levaria um parágrafo. Os 23 padrões clássicos vêm do *Gang of Four* (1994) e se
-> dividem em três famílias: **criacionais** (como objetos nascem), **estruturais** (como se compõem)
-> e **comportamentais** (como interagem). A chave para um sênior não é decorá-los: é **reconhecer**
-> quando um resolve um problema real, implementá-lo de forma idiomática — e saber **quando a
-> linguagem já resolveu por você**, tornando o padrão desnecessário.
+> Um **design pattern** é uma solução catalogada para um problema de projeto que se repete — e, antes de tudo, é **vocabulário compartilhado**. Dizer "aqui cabe um Strategy" comunica em três palavras o que levaria um parágrafo. Os 23 padrões clássicos vêm do *Gang of Four* (1994) e se dividem em três famílias: **criacionais** (como objetos nascem), **estruturais** (como se compõem) e **comportamentais** (como interagem). A chave para um sênior não é decorá-los: é **reconhecer** quando um resolve um problema real, implementá-lo de forma idiomática — e saber **quando a linguagem já resolveu por você**, tornando o padrão desnecessário.
 
 ## Dois desenvolvedores, o mesmo desenho
 
@@ -171,19 +165,13 @@ O que **não** cabe em nenhuma delas: a forma **macro** do sistema (fronteiras d
 ## Armadilhas comuns
 
 > [!warning] Tratar o catálogo como checklist
-> **O que acontece:** o dev novo descobre padrões e sai aplicando-os em código que não pedia nenhum — cada `if` vira Strategy, cada classe vira Singleton.
-> **Por quê:** confunde-se *conhecer* o padrão com *precisar* dele. O padrão é uma resposta; sem a pergunta certa (o problema recorrente), ele só adiciona indireção.
-> **Como evitar:** parta sempre do **problema**, nunca do padrão. Se você não consegue nomear a dor concreta que o padrão alivia, não use o padrão.
+> **O que acontece:** o dev novo descobre padrões e sai aplicando-os em código que não pedia nenhum — cada `if` vira Strategy, cada classe vira Singleton. **Por quê:** confunde-se *conhecer* o padrão com *precisar* dele. O padrão é uma resposta; sem a pergunta certa (o problema recorrente), ele só adiciona indireção. **Como evitar:** parta sempre do **problema**, nunca do padrão. Se você não consegue nomear a dor concreta que o padrão alivia, não use o padrão.
 
 > [!warning] Confundir padrão de projeto com arquitetura
-> **O que acontece:** alguém diz "nossa arquitetura é baseada em Strategy". Isso não descreve arquitetura nenhuma.
-> **Por quê:** design patterns (GoF) operam no nível **micro/meso** — classes e objetos. Arquitetura opera no nível **macro** — módulos, serviços, fronteiras. São escalas diferentes.
-> **Como evitar:** reserve "padrão" para o nível de classe; a forma macro do sistema vive em [[03-Dominios/Engenharia/Arquitetura/index|Arquitetura]]. (Padrões de camada intermediária — persistência, integração, eventos — têm suas próprias famílias neste galho-pai.)
+> **O que acontece:** alguém diz "nossa arquitetura é baseada em Strategy". Isso não descreve arquitetura nenhuma. **Por quê:** design patterns (GoF) operam no nível **micro/meso** — classes e objetos. Arquitetura opera no nível **macro** — módulos, serviços, fronteiras. São escalas diferentes. **Como evitar:** reserve "padrão" para o nível de classe; a forma macro do sistema vive em [[03-Dominios/Engenharia/Arquitetura/index|Arquitetura]]. (Padrões de camada intermediária — persistência, integração, eventos — têm suas próprias famílias neste galho-pai.)
 
 > [!warning] Achar que o framework te dispensa de entender o padrão
-> **O que acontece:** o dev usa `@Transactional`, `@Cacheable`, `JpaRepository` por anos sem saber que são Proxy e Repository — até um bug de proxy (transação que não abre numa chamada interna) virar um mistério de horas.
-> **Por quê:** o framework **esconde** a implementação, não a **existência** do padrão. Quando o comportamento foge do esperado, quem não reconhece o padrão por baixo não tem modelo mental para depurar — vira "mágica que quebrou".
-> **Como evitar:** o oposto de reimplementar não é ignorar; é **reconhecer**. Saiba qual padrão o framework aplicou e por quê. É exatamente a habilidade que a nota [[22 - Reconhecer GoF nos frameworks]] treina.
+> **O que acontece:** o dev usa `@Transactional`, `@Cacheable`, `JpaRepository` por anos sem saber que são Proxy e Repository — até um bug de proxy (transação que não abre numa chamada interna) virar um mistério de horas. **Por quê:** o framework **esconde** a implementação, não a **existência** do padrão. Quando o comportamento foge do esperado, quem não reconhece o padrão por baixo não tem modelo mental para depurar — vira "mágica que quebrou". **Como evitar:** o oposto de reimplementar não é ignorar; é **reconhecer**. Saiba qual padrão o framework aplicou e por quê. É exatamente a habilidade que a nota [[22 - Reconhecer GoF nos frameworks]] treina.
 
 ## Como explicar em inglês
 

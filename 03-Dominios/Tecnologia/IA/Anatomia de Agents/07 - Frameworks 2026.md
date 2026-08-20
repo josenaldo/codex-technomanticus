@@ -229,8 +229,7 @@ graph TB
 
 > *"O pain de manter framework excede o pain de manter código próprio?"*
 
-Se sim → use framework.
-Se não → comece sem.
+Se sim → use framework. Se não → comece sem.
 
 ```mermaid
 xychart-beta

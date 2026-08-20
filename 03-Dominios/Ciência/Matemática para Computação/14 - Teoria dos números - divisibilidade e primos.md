@@ -71,8 +71,7 @@ Nem todo b é divisível por a. Quando não é, sobra um resto. E esse fato simp
 
 > [!note] Teorema da divisão
 > Dados inteiros b e a, com a > 0, existem **únicos** inteiros q (quociente) e r (resto) tais que:
-> $$b = q \cdot a + r, \quad 0 \le r < a$$
-> O resto r é sempre não-negativo e estritamente menor que o divisor a.
+> $$b = q \cdot a + r, \quad 0 \le r < a$$ O resto r é sempre não-negativo e estritamente menor que o divisor a.
 
 A condição 0 ≤ r < a é o pulo do gato. Ela amarra q e r de forma única. Sem ela, você teria infinitas formas de escrever b (poderia somar a num lado e subtrair no outro). Com ela, só existe uma.
 
@@ -207,8 +206,7 @@ Via fatoração, há uma simetria linda:
 > - gcd(48, 18) = 2¹·3¹ = 6 (menores expoentes: 2 entra com 1, 3 entra com 1)
 > - lcm(48, 18) = 2⁴·3² = 144 (maiores expoentes)
 >
-> E a identidade de ouro: **gcd(a,b) · lcm(a,b) = a · b**.
-> Confira: 6 · 144 = 864 = 48 · 18. ✓
+> E a identidade de ouro: **gcd(a,b) · lcm(a,b) = a · b**. Confira: 6 · 144 = 864 = 48 · 18. ✓
 
 Essa identidade significa que, calculado o gcd, o lcm sai de graça: lcm(a,b) = (a·b) / gcd(a,b).
 
@@ -217,8 +215,7 @@ Essa identidade significa que, calculado o gcd, o lcm sai de graça: lcm(a,b) = 
 Fatorar é caro (mais sobre isso na cripto). Felizmente, pra achar o gcd você **não** precisa fatorar. Euclides descobriu um atalho há 2300 anos que ninguém superou.
 
 > [!important] A recorrência de Euclides
-> $$\gcd(a, b) = \gcd(b, \; a \bmod b)$$
-> Repita até o segundo argumento virar 0. Aí o primeiro é o gcd.
+> $$\gcd(a, b) = \gcd(b, \; a \bmod b)$$ Repita até o segundo argumento virar 0. Aí o primeiro é o gcd.
 > $$\gcd(a, 0) = a$$
 
 Por que funciona? Porque qualquer divisor comum de a e b também divide o resto a mod b (de novo: combinação linear). Então o conjunto de divisores comuns não muda quando trocamos a por a mod b — e os números encolhem rápido.
@@ -263,8 +260,7 @@ Em termos práticos: mesmo pra números de centenas de dígitos (como no RSA), o
 Tem mais. O **algoritmo de Euclides estendido** não só calcula gcd(a, b) — ele encontra coeficientes inteiros x e y que satisfazem:
 
 > [!important] Identidade de Bézout
-> $$a \cdot x + b \cdot y = \gcd(a, b)$$
-> Sempre existem inteiros x, y que escrevem o gcd como combinação linear de a e b.
+> $$a \cdot x + b \cdot y = \gcd(a, b)$$ Sempre existem inteiros x, y que escrevem o gcd como combinação linear de a e b.
 
 > [!example] Bézout para gcd(48, 18) = 6
 > Subindo de volta pelas divisões:

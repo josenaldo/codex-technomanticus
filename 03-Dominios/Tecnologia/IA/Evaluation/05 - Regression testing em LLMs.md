@@ -141,8 +141,7 @@ chat: 0.75          # tom + conteúdo
 code: passes_tests  # binário funcional
 ```
 
-Threshold alto demais → não detecta regressão real.
-Threshold baixo demais → ruído permanente, todos os PRs sinalizam "regressão".
+Threshold alto demais → não detecta regressão real. Threshold baixo demais → ruído permanente, todos os PRs sinalizam "regressão".
 
 ## Quando rebless (atualizar) o snapshot
 

@@ -220,8 +220,7 @@ A escolha "DSPy ou não" em 2026 é típica de adoção de tecnologia em transi�
 - Weaviate, Qdrant, Pinecone: retrieval DSPy via `dspy.Retrieve` 
 - MLflow / Weights & Biases: experimentos de compilação logados pra comparação
 
-**Custo real de compilação:**
-Compilar com `BootstrapFewShot` em dataset de 50 exemplos + modelo Sonnet ≈ ~100-200 chamadas de API, custo estimado $2-10 dependendo do modelo e tamanho dos exemplos. `MIPRO` com bayesian search pode ser 5-10x isso. Compensa calcular o custo de compilação antes de incluir num pipeline frequente.
+**Custo real de compilação:** Compilar com `BootstrapFewShot` em dataset de 50 exemplos + modelo Sonnet ≈ ~100-200 chamadas de API, custo estimado $2-10 dependendo do modelo e tamanho dos exemplos. `MIPRO` com bayesian search pode ser 5-10x isso. Compensa calcular o custo de compilação antes de incluir num pipeline frequente.
 
 ## Anti-padrões
 

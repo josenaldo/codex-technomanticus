@@ -174,8 +174,7 @@ A distinção com Agent Mode regular é operacional: Agent Mode é para tarefas 
 > [!tip] Assista: Cursor 2.0 — 5 coisas que você não sabia que ele faz
 > **Canal:** Fireship (Code Report) | **Duração:** ~7min | **Idioma:** EN
 >
-> O vídeo demonstra na prática o que a teoria descreve: git worktrees como mecanismo real de isolamento entre agentes paralelos — cada Background Agent trabalha em sua própria cópia do repositório sem conflitar com o workspace principal. O trecho sobre Composer também esclarece por que o modelo proprietário do Cursor consegue ser mais rápido que Claude e GPT-4 para tarefas de edição multi-arquivo (ao custo de qualidade ligeiramente inferior em tarefas complexas de UI).
-> Trecho de destaque [2:19]: *"A git work tree is basically just a local copy of your code that won't conflict with your main Git workspace. But what that enables is working with multiple agents simultaneously on the same task."*
+> O vídeo demonstra na prática o que a teoria descreve: git worktrees como mecanismo real de isolamento entre agentes paralelos — cada Background Agent trabalha em sua própria cópia do repositório sem conflitar com o workspace principal. O trecho sobre Composer também esclarece por que o modelo proprietário do Cursor consegue ser mais rápido que Claude e GPT-4 para tarefas de edição multi-arquivo (ao custo de qualidade ligeiramente inferior em tarefas complexas de UI). Trecho de destaque [2:19]: *"A git work tree is basically just a local copy of your code that won't conflict with your main Git workspace. But what that enables is working with multiple agents simultaneously on the same task."*
 >
 > 🎬 [Assistir no YouTube](https://youtube.com/watch?v=HIp8sFB2GGw)
 

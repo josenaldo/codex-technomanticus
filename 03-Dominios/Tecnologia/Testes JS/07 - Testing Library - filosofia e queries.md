@@ -69,9 +69,7 @@ const item = await screen.findByText('Pedido #42');
 ```
 
 > [!warning] Usar `getBy` para checar ausência
-> **O que acontece:** você escreve `expect(screen.getByText('Erro')).toBeNull()` e o teste quebra com "Unable to find an element" **antes** de chegar na asserção.
-> **Por quê:** `getBy` **lança** quando não acha — então ele nunca retorna `null` para você comparar; ele explode primeiro. `getBy` é para o que existe.
-> **Como evitar:** para afirmar ausência, use **`queryBy`** (que retorna `null`): `expect(screen.queryByText('Erro')).not.toBeInTheDocument()`. Regra: `getBy`/`findBy` para presença, `queryBy` para ausência.
+> **O que acontece:** você escreve `expect(screen.getByText('Erro')).toBeNull()` e o teste quebra com "Unable to find an element" **antes** de chegar na asserção. **Por quê:** `getBy` **lança** quando não acha — então ele nunca retorna `null` para você comparar; ele explode primeiro. `getBy` é para o que existe. **Como evitar:** para afirmar ausência, use **`queryBy`** (que retorna `null`): `expect(screen.queryByText('Erro')).not.toBeInTheDocument()`. Regra: `getBy`/`findBy` para presença, `queryBy` para ausência.
 
 ## A prioridade das queries
 

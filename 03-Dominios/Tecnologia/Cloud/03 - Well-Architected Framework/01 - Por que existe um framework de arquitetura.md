@@ -59,8 +59,7 @@ Esse histórico importa porque explica uma decisão de design que, de outra form
 > [!tip] Assista: AWS re:Invent 2024 - Are you well-architected? (TNC206)
 > **Canal:** AWS Events | **Duração:** ~47min | **Idioma:** EN
 >
-> Uma facilitadora oficial da AWS conta a mesma origem que esta nota descreve — a prática nascida em 2012 entre os Solutions Architects — e depois passa boa parte da talk mostrando, na prática, por que a review usa perguntas abertas em vez de itens binários: "não queremos te dizer qual deve ser sua arquitetura, é seu sistema, você o conhece melhor".
-> Trecho de destaque [14:14]: *"it really is meant as not an audit"*
+> Uma facilitadora oficial da AWS conta a mesma origem que esta nota descreve — a prática nascida em 2012 entre os Solutions Architects — e depois passa boa parte da talk mostrando, na prática, por que a review usa perguntas abertas em vez de itens binários: "não queremos te dizer qual deve ser sua arquitetura, é seu sistema, você o conhece melhor". Trecho de destaque [14:14]: *"it really is meant as not an audit"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=jtjEWlGkwjQ)
 
@@ -103,8 +102,7 @@ O contexto que muda a resposta certa não é só temporal — também é o tipo 
 > [!tip] Assista: What is the AWS Well-Architected Framework? (and why you need to learn about it)
 > **Canal:** Tech With Lucy | **Duração:** ~9min | **Idioma:** EN
 >
-> Um vídeo patrocinado pela própria AWS, mas curto e direto no ponto que esta seção defende: o framework não entrega uma lista fechada de "faça isso, não faça aquilo" — entrega um roteiro de perguntas construído sobre anos de experiência real de arquitetos que já bateram a cabeça nos mesmos problemas.
-> Trecho de destaque [01:29]: *"this framework doesn't just provide you with a list of do's and don'ts"*
+> Um vídeo patrocinado pela própria AWS, mas curto e direto no ponto que esta seção defende: o framework não entrega uma lista fechada de "faça isso, não faça aquilo" — entrega um roteiro de perguntas construído sobre anos de experiência real de arquitetos que já bateram a cabeça nos mesmos problemas. Trecho de destaque [01:29]: *"this framework doesn't just provide you with a list of do's and don'ts"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=MpDJ6TCWKjk)
 

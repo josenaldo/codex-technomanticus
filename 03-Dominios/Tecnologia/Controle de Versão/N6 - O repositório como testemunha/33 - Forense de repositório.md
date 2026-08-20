@@ -115,19 +115,13 @@ O fluxo típico do `code-maat` é exportar o log num formato específico e rodar
 Esta seção importa tanto quanto as anteriores, porque métricas de repositório são fáceis de usar mal.
 
 > [!warning] Contagem de commits não mede produtividade
-> **O que acontece:** `git shortlog -sn` vira ranking de esforço em conversa de avaliação.
-> **Por quê:** commits têm tamanhos e naturezas incomparáveis. Quem faz revisão, mentoria, investigação e design aparece pouco — e frequentemente é quem mais contribui.
-> **Como usar direito:** os números respondem "onde está o conhecimento" e "onde está a atividade". Nunca "quem trabalha mais". Usar assim, além de injusto, corrompe os dados: as pessoas passam a otimizar a métrica.
+> **O que acontece:** `git shortlog -sn` vira ranking de esforço em conversa de avaliação. **Por quê:** commits têm tamanhos e naturezas incomparáveis. Quem faz revisão, mentoria, investigação e design aparece pouco — e frequentemente é quem mais contribui. **Como usar direito:** os números respondem "onde está o conhecimento" e "onde está a atividade". Nunca "quem trabalha mais". Usar assim, além de injusto, corrompe os dados: as pessoas passam a otimizar a métrica.
 
 > [!warning] Hotspot não é sinônimo de código ruim
-> **O que acontece:** o arquivo mais alterado é marcado para refatoração imediata.
-> **Por quê:** alguns arquivos mudam muito por razão legítima — um arquivo de rotas cresce quando o produto cresce; um catálogo de configuração muda a cada funcionalidade.
-> **Como interpretar:** hotspot é **onde olhar primeiro**, não um veredito. A leitura do código continua sendo necessária; os dados apenas dizem por onde começar.
+> **O que acontece:** o arquivo mais alterado é marcado para refatoração imediata. **Por quê:** alguns arquivos mudam muito por razão legítima — um arquivo de rotas cresce quando o produto cresce; um catálogo de configuração muda a cada funcionalidade. **Como interpretar:** hotspot é **onde olhar primeiro**, não um veredito. A leitura do código continua sendo necessária; os dados apenas dizem por onde começar.
 
 > [!warning] A história pode mentir sobre autoria
-> **O que acontece:** um commit de migração (nota 29) ou uma reformatação em massa (nota 31) distorce todas as contagens.
-> **Por quê:** eles tocam milhares de arquivos de uma vez.
-> **Como evitar:** identifique e exclua esses commits das análises — pelo mesmo raciocínio do `.git-blame-ignore-revs`. Antes de tirar conclusão, olhe os commits maiores: `git log --shortstat --oneline | sort -k5 -rn | head`.
+> **O que acontece:** um commit de migração (nota 29) ou uma reformatação em massa (nota 31) distorce todas as contagens. **Por quê:** eles tocam milhares de arquivos de uma vez. **Como evitar:** identifique e exclua esses commits das análises — pelo mesmo raciocínio do `.git-blame-ignore-revs`. Antes de tirar conclusão, olhe os commits maiores: `git log --shortstat --oneline | sort -k5 -rn | head`.
 
 ---
 

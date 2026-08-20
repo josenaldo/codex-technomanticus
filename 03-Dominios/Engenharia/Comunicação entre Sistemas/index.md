@@ -15,17 +15,11 @@ aliases:
 # Comunicação entre Sistemas
 
 > [!abstract] TL;DR
-> A camada de aplicação acima do fio — como sistemas conversam: APIs (REST, GraphQL, gRPC),
-> mensageria assíncrona, contratos, idempotência e versionamento. Trilha comparativa e decisória
-> (4 sub-galhos + capstone, 23 notas): não é tutorial de implementação — isso vive nos domínios
-> de tecnologia (Java, Node, Python, Go).
+> A camada de aplicação acima do fio — como sistemas conversam: APIs (REST, GraphQL, gRPC), mensageria assíncrona, contratos, idempotência e versionamento. Trilha comparativa e decisória (4 sub-galhos + capstone, 23 notas): não é tutorial de implementação — isso vive nos domínios de tecnologia (Java, Node, Python, Go).
 
 ## Sobre este domínio
 
-Sobre o transporte (TCP/HTTP/DNS, que vive em [[03-Dominios/Ciência/Redes e Protocolos/index|Redes e Protocolos]])
-mora a camada de *contrato*: como desenhar uma API, escolher entre síncrono e assíncrono, versionar sem
-quebrar consumidores, garantir entrega e idempotência. Disciplina neutra de stack — cada tecnologia
-implementa e linka pra cá.
+Sobre o transporte (TCP/HTTP/DNS, que vive em [[03-Dominios/Ciência/Redes e Protocolos/index|Redes e Protocolos]]) mora a camada de *contrato*: como desenhar uma API, escolher entre síncrono e assíncrono, versionar sem quebrar consumidores, garantir entrega e idempotência. Disciplina neutra de stack — cada tecnologia implementa e linka pra cá.
 
 ## Sub-galhos
 

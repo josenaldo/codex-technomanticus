@@ -16,11 +16,7 @@ tags:
 # Relações
 
 > [!abstract] TL;DR
-> Uma **relação** é só um conjunto de pares ordenados — nada mais místico que isso. R ⊆ A×B diz quais elementos "se conversam".
-> Quando a relação fala de um conjunto consigo mesmo (R ⊆ A×A), ela ganha **propriedades**: reflexiva, simétrica, antissimétrica, transitiva. A combinação dessas propriedades dá nome a duas estruturas que você usa todo dia sem perceber.
-> **Equivalência** (reflexiva + simétrica + transitiva) particiona o conjunto em classes — é o que seu `equals` deveria sempre ser.
-> **Ordem parcial** (reflexiva + antissimétrica + transitiva) organiza o conjunto numa hierarquia — é o que seu `Comparable` e sua ordenação topológica precisam respeitar.
-> Quebre uma dessas propriedades e o `HashSet` perde elementos, o `sort` entra em loop e o build não resolve a ordem dos módulos.
+> Uma **relação** é só um conjunto de pares ordenados — nada mais místico que isso. R ⊆ A×B diz quais elementos "se conversam". Quando a relação fala de um conjunto consigo mesmo (R ⊆ A×A), ela ganha **propriedades**: reflexiva, simétrica, antissimétrica, transitiva. A combinação dessas propriedades dá nome a duas estruturas que você usa todo dia sem perceber. **Equivalência** (reflexiva + simétrica + transitiva) particiona o conjunto em classes — é o que seu `equals` deveria sempre ser. **Ordem parcial** (reflexiva + antissimétrica + transitiva) organiza o conjunto numa hierarquia — é o que seu `Comparable` e sua ordenação topológica precisam respeitar. Quebre uma dessas propriedades e o `HashSet` perde elementos, o `sort` entra em loop e o build não resolve a ordem dos módulos.
 
 ---
 
@@ -28,16 +24,12 @@ tags:
 
 Esqueça por um segundo a palavra "relação" e pense em uma pergunta de sim/não entre dois elementos.
 
-"3 é menor que 5?" Sim.
-"7 divide 12?" Não.
-"João é irmão de Maria?" Talvez.
+"3 é menor que 5?" Sim. "7 divide 12?" Não. "João é irmão de Maria?" Talvez.
 
 Uma **relação binária** é exatamente isso: uma regra que, dado um par (a, b), responde sim ou não. E como toda regra de sim/não pode ser representada pelo **conjunto dos pares que dizem sim**, a definição formal é desconcertantemente simples.
 
 > [!info] Definição
-> Dados conjuntos A e B, uma **relação binária** R de A em B é qualquer subconjunto do produto cartesiano:
-> R ⊆ A×B
-> Quando A = B, dizemos que R é uma relação **em A**: R ⊆ A×A.
+> Dados conjuntos A e B, uma **relação binária** R de A em B é qualquer subconjunto do produto cartesiano: R ⊆ A×B Quando A = B, dizemos que R é uma relação **em A**: R ⊆ A×A.
 
 O produto cartesiano A×B é o saco com **todos** os pares possíveis. A relação é o subconjunto que você escolhe ficar. Por isso relação é, literalmente, conjunto — tudo que você sabe de [[04 - Teoria dos conjuntos]] vale aqui: união de relações, interseção, complemento, vazia, total.
 
@@ -367,15 +359,7 @@ Pacotes (npm, Maven), serviços (ordem de startup), planilhas (recálculo de cé
 
 Relações aparecem disfarçadas: "por que seu `equals` deve ser transitivo?", "o que acontece se o comparador for inconsistente?", "como o build detecta dependência circular?". O entrevistador raramente diz "relação de equivalência" — ele espera que **você** nomeie a estrutura. Mostre que enxerga a matemática por trás do contrato de API: isso sinaliza senioridade. Saiba diferenciar ordem parcial de total (a palavra-chave é *incomparável*), conecte ciclo a falha de antissimetria, e amarre equivalência a particionamento. Se conseguir dizer "ordenação topológica é estender uma ordem parcial a uma extensão linear", você ganhou a questão.
 
-*"A relation is just a set of ordered pairs — `R ⊆ A×A` when it's on a single set."*
-*"An equivalence relation is reflexive, symmetric and transitive; it partitions the set into disjoint classes."*
-*"That's exactly the `equals` contract — break transitivity and your `HashSet` silently misbehaves."*
-*"A partial order is reflexive, antisymmetric and transitive; a total order also makes every pair comparable."*
-*"In a partial order some elements are incomparable, which is what lets work happen in parallel."*
-*"Topological sort extends a partial order on a DAG into a linear extension — a total order that respects every dependency."*
-*"A cycle breaks antisymmetry, so no topological order exists — that's your 'circular dependency' error."*
-*"The transitive closure of a graph is its reachability relation; Warshall's algorithm computes it on the boolean matrix."*
-*"A function is a special relation — total and deterministic: every input maps to exactly one output."*
+*"A relation is just a set of ordered pairs — `R ⊆ A×A` when it's on a single set."* *"An equivalence relation is reflexive, symmetric and transitive; it partitions the set into disjoint classes."* *"That's exactly the `equals` contract — break transitivity and your `HashSet` silently misbehaves."* *"A partial order is reflexive, antisymmetric and transitive; a total order also makes every pair comparable."* *"In a partial order some elements are incomparable, which is what lets work happen in parallel."* *"Topological sort extends a partial order on a DAG into a linear extension — a total order that respects every dependency."* *"A cycle breaks antisymmetry, so no topological order exists — that's your 'circular dependency' error."* *"The transitive closure of a graph is its reachability relation; Warshall's algorithm computes it on the boolean matrix."* *"A function is a special relation — total and deterministic: every input maps to exactly one output."*
 
 | Português | English |
 |---|---|

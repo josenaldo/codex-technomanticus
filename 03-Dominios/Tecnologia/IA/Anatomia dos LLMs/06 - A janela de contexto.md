@@ -101,9 +101,9 @@ O gargalo aqui é o **[[Dicionário de IA#KV cache|KV cache]]**: estrutura na VR
 
 > [!info] Por que cresce linearmente?
 > Cada token novo adiciona um par K/V ao cache. Mil tokens, mil pares. Dois mil tokens, dois mil pares. Cresce em linha reta com o contexto — diferente do prefill, que era quadrático. Isso é importante: o cache em si não explode, ele cresce de forma comportada.
-> 
+>
 > Agora o pulo do gato: o gargalo mudou de lugar. No prefill, o gargalo era compute — fazer as contas da atenção quadrática. No decode, o gargalo não é mais conta, é movimentação de dados. Para gerar cada token, a GPU precisa ler o KV cache inteiro da VRAM. Todo ele. A cada token.
-> 
+>
 > Por que isso é o problema. A GPU tem uma quantidade absurda de poder de cálculo (compute), mas a velocidade com que ela lê dados da memória — a memory bandwidth, banda de memória — é limitada. No decode você está gerando um token de cada vez, então tem pouca conta para fazer, mas precisa varrer o cache todo da memória a cada passo. A GPU fica ociosa esperando os dados chegarem da VRAM em vez de estar calculando. É como ter um chef rapidíssimo, mas que precisa atravessar o depósito inteiro para pegar cada ingrediente — o gargalo não é a velocidade dele cortando, é a caminhada até a despensa.
 
 E tem mais: cada novo token que você gera precisa de operações de atenção também, mas agora contra o cache que já existe. Então não é exatamente linear, mas é muito mais barato que o prefill porque você já tem o cache pronto. O verdadeiro gargalo é que a latência fica alta — demora muito tempo gerando token por token, mesmo que cada token individualmente seja rápido. É por isso que modelos rápidos como o 4o mini conseguem ser tão eficientes: eles otimizam essa fase de decode pesadamente.
@@ -199,10 +199,10 @@ A **Chroma Research (2025)** foi além. Testando **18 modelos frontier**, eles m
 E tem uma nuance importante sobre quando cada padrão domina:
 
 > [!example] Posição × ocupação da janela
-> 
+>
 > - **Contexto < 50% cheio** → vale o **padrão em U** (início e fim bons, meio ruim).
 > - **Contexto > 50% cheio** → o **[[Dicionário de IA#recency bias|recency bias]]** assume o controle: o modelo passa a favorecer fortemente o **final**, depois o meio, e tende a **ignorar o início**.
-> 
+>
 > Ou seja: à medida que você enche a janela, o "início privilegiado" do padrão em U vai perdendo força. O que era uma vantagem (informação no começo) vira ponto cego.
 
 #### Por que o **[[Dicionário de IA#recency bias|recency bias]]** acontece?
@@ -270,7 +270,7 @@ Até aqui falamos de _um_ contexto grande. Em **agentes**, o problema é dinâmi
 
 > [!danger] A bola de neve 
 > Uma sessão de **50 turns** pode facilmente ultrapassar **200k tokens** de contexto acumulado. E aqui dois problemas se somam:
-> 
+>
 > 1. **Custo de processamento** — lembre-se que o prefill cresce de forma quadrática com o tamanho do contexto. Contexto maior a cada turn = custo crescendo de forma acelerada.
 > 2. **Context rot** — quanto maior o acúmulo, mais o modelo sofre da degradação descrita acima. O agente fica literalmente mais "burro" no turn 50 do que estava no turn 5, mesmo tendo _mais_ informação.
 
@@ -304,7 +304,7 @@ mindmap
 ---
 
 > [!summary] Resumo em uma linha de cada conceito
-> 
+>
 > - **Lost in the middle** → posição importa: meio do contexto é ponto cego.
 > - **Recency bias** → quando a janela passa de ~50%, o modelo favorece o fim e abandona o início.
 > - **Context rot** → tamanho importa: degrada antes do limite anunciado.

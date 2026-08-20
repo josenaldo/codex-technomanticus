@@ -143,8 +143,7 @@ A tabela-mestra resume cada lacuna numa frase. Vale abrir um pouco mais cada uma
 > [!tip] Assista: Which Type of Elastic Load Balancer Should I Use?
 > **Canal:** Digital Cloud Training | **Duração:** ~6min | **Idioma:** EN
 >
-> Fecha exatamente esta lacuna: percorre ALB (camada 7, roteamento por path/host/query string), NLB (camada 4, latência ultra-baixa, TLS offloading) e GWLB, na mesma lente de "qual usar em qual cenário de prova" que o exame cobra.
-> Trecho de destaque [01:48]: *"the NLB is really good for when you need ultra high performance and extremely low latency (...) so if you see exam questions asking for a very low latency load balancer it's likely to be the NLB"*
+> Fecha exatamente esta lacuna: percorre ALB (camada 7, roteamento por path/host/query string), NLB (camada 4, latência ultra-baixa, TLS offloading) e GWLB, na mesma lente de "qual usar em qual cenário de prova" que o exame cobra. Trecho de destaque [01:48]: *"the NLB is really good for when you need ultra high performance and extremely low latency (...) so if you see exam questions asking for a very low latency load balancer it's likely to be the NLB"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=VFwLffElIgc)
 
@@ -157,8 +156,7 @@ A tabela-mestra resume cada lacuna numa frase. Vale abrir um pouco mais cada uma
 > [!tip] Assista: Amazon SQS vs Kinesis: Choosing the Right AWS messaging service
 > **Canal:** Cloud Explained | **Duração:** ~31min | **Idioma:** EN
 >
-> Compara os três lado a lado (event router vs event store) e nomeia o fan-out como o caso de uso clássico do SNS — a mesma distinção que esta nota pede pra fechar a lacuna. Vale assistir em trechos, não é preciso ver os 31 minutos inteiros.
-> Trecho de destaque [03:14]: *"the most famous use case is fan out event so that is the SNS (...) you send one event, there will be subscribers to that particular event and they can receive this"*
+> Compara os três lado a lado (event router vs event store) e nomeia o fan-out como o caso de uso clássico do SNS — a mesma distinção que esta nota pede pra fechar a lacuna. Vale assistir em trechos, não é preciso ver os 31 minutos inteiros. Trecho de destaque [03:14]: *"the most famous use case is fan out event so that is the SNS (...) you send one event, there will be subscribers to that particular event and they can receive this"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=VAQucLAAR8g)
 

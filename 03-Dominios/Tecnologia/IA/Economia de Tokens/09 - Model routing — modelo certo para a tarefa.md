@@ -352,17 +352,13 @@ def run_agent_with_routing(task: str) -> dict:
 
 ## Casos práticos
 
-**Caso 1 — Plataforma de coding assistente com 50k requests/dia:**
-Antes do routing: tudo Sonnet → $450/dia. Após implementar classifier (Haiku) que rodeia 55% para Haiku e 5% para Opus: $92/dia (80% de economia). Taxa de retry aumentou 2% — offset pelo ganho de custo.
+**Caso 1 — Plataforma de coding assistente com 50k requests/dia:** Antes do routing: tudo Sonnet → $450/dia. Após implementar classifier (Haiku) que rodeia 55% para Haiku e 5% para Opus: $92/dia (80% de economia). Taxa de retry aumentou 2% — offset pelo ganho de custo.
 
-**Caso 2 — Pipeline de análise de documentos:**
-Um pipeline analisava 10.000 documentos/dia com Sonnet para classificação inicial + extração de metadados. Após mover classificação inicial para Haiku (task determinística com categorias fixas): custo caiu de $60/dia para $12/dia. Qualidade idêntica (task estruturada onde Haiku é suficiente).
+**Caso 2 — Pipeline de análise de documentos:** Um pipeline analisava 10.000 documentos/dia com Sonnet para classificação inicial + extração de metadados. Após mover classificação inicial para Haiku (task determinística com categorias fixas): custo caiu de $60/dia para $12/dia. Qualidade idêntica (task estruturada onde Haiku é suficiente).
 
-**Caso 3 — Agente de code review com routing por complexidade:**
-Reviews de PRs com <50 linhas alteradas: Haiku. PRs com 50-300 linhas: Sonnet. PRs com >300 linhas ou em módulos críticos: Opus. Resultado: custo por review caiu de $0.08 (tudo Sonnet) para $0.022 médio. Time percebeu diferença de qualidade apenas nos PRs classificados errado (falsa simplicidade).
+**Caso 3 — Agente de code review com routing por complexidade:** Reviews de PRs com <50 linhas alteradas: Haiku. PRs com 50-300 linhas: Sonnet. PRs com >300 linhas ou em módulos críticos: Opus. Resultado: custo por review caiu de $0.08 (tudo Sonnet) para $0.022 médio. Time percebeu diferença de qualidade apenas nos PRs classificados errado (falsa simplicidade).
 
-**Caso 4 — Chatbot de suporte técnico:**
-O chatbot usava Sonnet para todas as mensagens. Análise mostrou que 60% das mensagens eram perguntas com resposta na FAQ (classificação de intent + busca). Após mover essa classificação para Haiku + RAG: custo/sessão caiu 55%, e o time passou a usar Sonnet apenas para casos que realmente exigiam raciocínio.
+**Caso 4 — Chatbot de suporte técnico:** O chatbot usava Sonnet para todas as mensagens. Análise mostrou que 60% das mensagens eram perguntas com resposta na FAQ (classificação de intent + busca). Após mover essa classificação para Haiku + RAG: custo/sessão caiu 55%, e o time passou a usar Sonnet apenas para casos que realmente exigiam raciocínio.
 
 ## Checklist
 

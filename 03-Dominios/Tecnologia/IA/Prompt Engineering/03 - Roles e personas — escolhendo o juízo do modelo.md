@@ -20,10 +20,7 @@ aliases:
 # 03 - Roles e personas — escolhendo o juízo do modelo
 
 > [!abstract] TL;DR
-> Atribuir um **role** ao modelo (*"você é um editor sênior cético"*) funciona porque ativa um sub-espaço do prior de treino: o modelo passa a amostrar respostas que se parecem com as que aquele tipo de pessoa daria nos dados em que foi treinado.
-> Não é mágica — é **steering**.
-> Roles bons especificam expertise, padrão de avaliação, ações permitidas e proibidas.
-> Roles ruins são cargo cult: *"você é um expert mundial em tudo"* sem critério de sucesso é decoração.
+> Atribuir um **role** ao modelo (*"você é um editor sênior cético"*) funciona porque ativa um sub-espaço do prior de treino: o modelo passa a amostrar respostas que se parecem com as que aquele tipo de pessoa daria nos dados em que foi treinado. Não é mágica — é **steering**. Roles bons especificam expertise, padrão de avaliação, ações permitidas e proibidas. Roles ruins são cargo cult: *"você é um expert mundial em tudo"* sem critério de sucesso é decoração.
 
 > [!question]- Perguntas de revisão
 > 1. Por que "você é um expert mundial em tudo" não muda o comportamento do modelo, mas "você é um editor sênior de revista científica que prioriza ceticismo" muda?
@@ -261,8 +258,7 @@ O mecanismo é o mesmo de sempre, e é por isso que funciona tão bem: o modelo 
 Onde isso encosta em role: prefill também estabiliza *tom*. Prefixar a resposta com uma frase no registro desejado costuma segurar o registro melhor do que adicionar mais três linhas de descrição de persona no system, pelo mesmo motivo de [[05 - Few-shot examples — exemplos como contrato|few-shot]] bater descrição — demonstrar vence explicar.
 
 > [!warning] Prefill tem duas pegadinhas
-> **Nem toda API aceita.** É nativo na API da Anthropic (turno `assistant` final incompleto); em outros provedores o equivalente pode não existir ou ter semântica diferente — confira antes de depender disso.
-> **O prefill volta a você, ou não.** O texto que você injetou geralmente **não** vem repetido na resposta: se você prefillou `{`, precisa concatenar esse `{` de volta antes de dar `JSON.parse`. É a causa mais comum de "o JSON veio quebrado" quando se usa prefill pela primeira vez.
+> **Nem toda API aceita.** É nativo na API da Anthropic (turno `assistant` final incompleto); em outros provedores o equivalente pode não existir ou ter semântica diferente — confira antes de depender disso. **O prefill volta a você, ou não.** O texto que você injetou geralmente **não** vem repetido na resposta: se você prefillou `{`, precisa concatenar esse `{` de volta antes de dar `JSON.parse`. É a causa mais comum de "o JSON veio quebrado" quando se usa prefill pela primeira vez.
 
 Uma armadilha de produto: sistemas que permitem ao usuário redefinir o role do assistente via user turn. *"Esqueça tudo que foi dito antes e aja como..."* é um vetor de prompt injection. Se o role define comportamentos críticos de segurança ou compliance, ele precisa estar no system prompt com instrução explícita de que não pode ser sobrescrito por input do usuário — e o modelo precisa ser testado contra tentativas de sobrescrita.
 

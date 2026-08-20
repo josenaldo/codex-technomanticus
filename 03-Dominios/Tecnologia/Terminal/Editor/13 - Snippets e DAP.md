@@ -41,20 +41,15 @@ O engine padrão do LazyVim é o **LuaSnip**, que suporta dois formatos de defin
 
 #### Anatomia de um snippet
 
-**Trigger**
-Texto curto que dispara a expansão. Exemplo: digitar `func` e pressionar `<Tab>` expande para `function foo() {}`. O trigger é definido na spec do snippet como `prefix` (JSON) ou primeiro argumento de `s()` (Lua).
+**Trigger** Texto curto que dispara a expansão. Exemplo: digitar `func` e pressionar `<Tab>` expande para `function foo() {}`. O trigger é definido na spec do snippet como `prefix` (JSON) ou primeiro argumento de `s()` (Lua).
 
-**Tabstops**
-Posições de cursor numeradas: `$1`, `$2`, `$0`. Ao expandir, o cursor vai para `$1`; cada `<Tab>` avança ao próximo número; `$0` é o ponto final. Sem `$0`, o cursor para no último `$N` declarado.
+**Tabstops** Posições de cursor numeradas: `$1`, `$2`, `$0`. Ao expandir, o cursor vai para `$1`; cada `<Tab>` avança ao próximo número; `$0` é o ponto final. Sem `$0`, o cursor para no último `$N` declarado.
 
-**Placeholders**
-Texto default dentro de um tabstop: `${1:name}` apresenta `name` já selecionado — basta digitar para substituir. Útil para sinalizar o que vai naquele campo sem obrigar a digitar do zero.
+**Placeholders** Texto default dentro de um tabstop: `${1:name}` apresenta `name` já selecionado — basta digitar para substituir. Útil para sinalizar o que vai naquele campo sem obrigar a digitar do zero.
 
-**Choice**
-`${1|a,b,c|}` abre um menu de escolha com as opções listadas. Em LuaSnip: nó `choice_node` com lista de nós. Navegar entre choices: `<C-l>` (próxima) e `<C-h>` (anterior) — keymaps configuráveis.
+**Choice** `${1|a,b,c|}` abre um menu de escolha com as opções listadas. Em LuaSnip: nó `choice_node` com lista de nós. Navegar entre choices: `<C-l>` (próxima) e `<C-h>` (anterior) — keymaps configuráveis.
 
-**Transformations (LuaSnip, Lua-side)**
-Tabstop derivado de outro via função Lua. Exemplo clássico: dado o nome de uma função em `$1`, gerar automaticamente o nome do teste em `$2` com `"test_" .. tabstop_value`. Suportado apenas na API Lua do LuaSnip — não tem equivalente direto em JSON.
+**Transformations (LuaSnip, Lua-side)** Tabstop derivado de outro via função Lua. Exemplo clássico: dado o nome de uma função em `$1`, gerar automaticamente o nome do teste em `$2` com `"test_" .. tabstop_value`. Suportado apenas na API Lua do LuaSnip — não tem equivalente direto em JSON.
 
 #### Tipos de nós na API Lua do LuaSnip
 

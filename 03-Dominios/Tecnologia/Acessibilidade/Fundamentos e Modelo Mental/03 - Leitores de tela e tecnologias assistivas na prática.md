@@ -98,19 +98,13 @@ Um time desenvolve testando apenas VoiceOver no Mac e entrega. Em produção, us
 ## Armadilhas comuns
 
 > [!warning] Presumir que o leitor de tela lê a página de cima a baixo
-> **O que acontece:** o time projeta assumindo leitura linear e não fornece estrutura de salto (cabeçalhos, landmarks), tornando a página exaustiva de navegar.
-> **Por quê:** usuários experientes escaneiam por saltos estruturais, não ouvem tudo. Sem estrutura, os saltos não têm em que se apoiar.
-> **Como evitar:** forneça hierarquia de cabeçalhos, landmarks (`<nav>`/`<main>`) e listas semânticas — os "atalhos" que o leitor de tela usa para escanear.
+> **O que acontece:** o time projeta assumindo leitura linear e não fornece estrutura de salto (cabeçalhos, landmarks), tornando a página exaustiva de navegar. **Por quê:** usuários experientes escaneiam por saltos estruturais, não ouvem tudo. Sem estrutura, os saltos não têm em que se apoiar. **Como evitar:** forneça hierarquia de cabeçalhos, landmarks (`<nav>`/`<main>`) e listas semânticas — os "atalhos" que o leitor de tela usa para escanear.
 
 > [!warning] Pular níveis de cabeçalho por tamanho de fonte
-> **O que acontece:** um `<h1>` é seguido por um `<h3>` porque "o `<h3>` tinha o tamanho visual certo", furando o sumário.
-> **Por quê:** nível de cabeçalho é *semântica* (a hierarquia), não *tamanho* (problema do CSS). Um degrau faltando confunde quem navega por `H`.
-> **Como evitar:** escolha o nível pela hierarquia lógica e ajuste o tamanho com CSS. Nunca use o número do heading para controlar aparência.
+> **O que acontece:** um `<h1>` é seguido por um `<h3>` porque "o `<h3>` tinha o tamanho visual certo", furando o sumário. **Por quê:** nível de cabeçalho é *semântica* (a hierarquia), não *tamanho* (problema do CSS). Um degrau faltando confunde quem navega por `H`. **Como evitar:** escolha o nível pela hierarquia lógica e ajuste o tamanho com CSS. Nunca use o número do heading para controlar aparência.
 
 > [!warning] Testar com um único leitor de tela
-> **O que acontece:** o produto funciona no leitor testado e quebra nos outros — sobretudo em widgets ARIA, onde o comportamento diverge mais.
-> **Por quê:** JAWS, NVDA e VoiceOver se comportam diferente, e a maioria dos usuários usa mais de um. Um só leitor não representa a base.
-> **Como evitar:** teste ao menos com NVDA+Chrome (maior fatia no Windows) e VoiceOver no iOS (cobre o mobile, quase universal).
+> **O que acontece:** o produto funciona no leitor testado e quebra nos outros — sobretudo em widgets ARIA, onde o comportamento diverge mais. **Por quê:** JAWS, NVDA e VoiceOver se comportam diferente, e a maioria dos usuários usa mais de um. Um só leitor não representa a base. **Como evitar:** teste ao menos com NVDA+Chrome (maior fatia no Windows) e VoiceOver no iOS (cobre o mobile, quase universal).
 
 ## Como explicar em inglês
 

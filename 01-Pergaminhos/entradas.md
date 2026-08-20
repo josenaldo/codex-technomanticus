@@ -1,10 +1,5 @@
 <https://github.com/shanraisshan/claude-code-best-practice>
-<https://charliehills.substack.com/p/claude-code-beginner-advanced?triedRedirect=true>
-[CLAUDE CODE FULL COURSE 4 HOURS: Build & Sell (2026)](https://www.youtube.com/watch?v=QoQBzR1NIqI)
-[Context Lens](https://github.com/TiagoSchr/context-lens)
-[12-Factor Agents - Principles for building reliable LLM applications](https://github.com/humanlayer/12-factor-agents/)
-[Building effective agents](https://www.anthropic.com/engineering/building-effective-agents#agents)
-[No Vibes Allowed: Solving Hard Problems in Complex Codebases – Dex Horthy, HumanLayer](https://www.youtube.com/watch?v=rmvDxxNubIg)
+<https://charliehills.substack.com/p/claude-code-beginner-advanced?triedRedirect=true> [CLAUDE CODE FULL COURSE 4 HOURS: Build & Sell (2026)](https://www.youtube.com/watch?v=QoQBzR1NIqI) [Context Lens](https://github.com/TiagoSchr/context-lens) [12-Factor Agents - Principles for building reliable LLM applications](https://github.com/humanlayer/12-factor-agents/) [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents#agents) [No Vibes Allowed: Solving Hard Problems in Complex Codebases – Dex Horthy, HumanLayer](https://www.youtube.com/watch?v=rmvDxxNubIg)
 <https://www.humanlayer.dev/>
 <https://github.com/affaan-m/everything-claude-code>
 <https://www.youtube.com/watch?v=WLZqPonSrK0>
@@ -12,25 +7,15 @@
 <https://addyosmani.com/blog/agentic-engineering/>
 <https://addyosmani.com/blog/factory-model/?ref=dailydev>
 <https://www.infoq.com/articles/spec-driven-development/?ref=dailydev>
-<https://www.youtube.com/playlist?list=PLucm8g_ezqNoAkYKXN_zWupyH6hQCAwxY>
-[Project Loom: Understand the new Java concurrency model](https://www.infoworld.com/article/2334607/project-loom-understand-the-new-java-concurrency-model.html)
-[Project Valhalla: A look inside Java’s epic refactor](https://www.infoworld.com/article/2337986/project-valhalla-a-look-inside-javas-epic-refactor.html)
-[How to speak](https://www.youtube.com/watch?v=Unzc731iCUY)
+<https://www.youtube.com/playlist?list=PLucm8g_ezqNoAkYKXN_zWupyH6hQCAwxY> [Project Loom: Understand the new Java concurrency model](https://www.infoworld.com/article/2334607/project-loom-understand-the-new-java-concurrency-model.html) [Project Valhalla: A look inside Java’s epic refactor](https://www.infoworld.com/article/2337986/project-valhalla-a-look-inside-javas-epic-refactor.html) [How to speak](https://www.youtube.com/watch?v=Unzc731iCUY)
 <https://x.com/heyrimsha/status/2037145631987556748>
 <https://github.com/karanpratapsingh/system-design>
 <https://github.com/donnemartin/system-design-primer>
 <https://www.systemdesignbutsimple.com/p/free-resources>
-<https://github.com/ByteByteGoHq/system-design-101/tree/main>
-[Hard truths about building in the AI era | Keith Rabois (Khosla Ventures)](https://www.lennysnewsletter.com/p/hard-truths-about-building-in-the-ai-era?utm_source=podcast-email&publication_id=10845&post_id=193008881&utm_campaign=email-play-on-substack&utm_content=listen_now_button&r=1ktqd9&triedRedirect=true)
-https://x.com/rodrigofm/status/2052050954908729850
-https://x.com/NainsiDwiv50980/status/2051232384436347178
-https://sergiopereira.substack.com/p/why-remote-teams-are-set-to-win-in?utm_source=substack&utm_medium=email
-https://sergiopereira.substack.com/p/ai-made-it-cheaper-to-build-software
-https://arxiv.org/abs/2506.08872
+<https://github.com/ByteByteGoHq/system-design-101/tree/main> [Hard truths about building in the AI era | Keith Rabois (Khosla Ventures)](https://www.lennysnewsletter.com/p/hard-truths-about-building-in-the-ai-era?utm_source=podcast-email&publication_id=10845&post_id=193008881&utm_campaign=email-play-on-substack&utm_content=listen_now_button&r=1ktqd9&triedRedirect=true) https://x.com/rodrigofm/status/2052050954908729850 https://x.com/NainsiDwiv50980/status/2051232384436347178 https://sergiopereira.substack.com/p/why-remote-teams-are-set-to-win-in?utm_source=substack&utm_medium=email https://sergiopereira.substack.com/p/ai-made-it-cheaper-to-build-software https://arxiv.org/abs/2506.08872
 # Notion + Obsidian
 
-[Stop Notion. Here's Why Obsidian is the BEST Note-Taking app in 2026 - Article](https://x.com/noahvnct/status/2032508457278980359)
-[Stop Notion. Here's Why Obsidian is the BEST Note-Taking app in 2026](https://www.youtube.com/watch?v=eGUOs7uqWYs)
+[Stop Notion. Here's Why Obsidian is the BEST Note-Taking app in 2026 - Article](https://x.com/noahvnct/status/2032508457278980359) [Stop Notion. Here's Why Obsidian is the BEST Note-Taking app in 2026](https://www.youtube.com/watch?v=eGUOs7uqWYs)
 
 # 10 GitHub Repositories for AI Engineers
 
@@ -85,8 +70,7 @@ https://arxiv.org/abs/2506.08872
 <https://github.com/wendeus0/LLM-knowledge-base>
 <https://github.com/forrestchang/andrej-karpathy-skills>
 <https://github.com/safishamsi/graphify>
-<https://gist.github.com/rohitg00/2067ab416f7bbe447c1977edaaa681e2>
-https://github.com/W3SS/headroom
+<https://gist.github.com/rohitg00/2067ab416f7bbe447c1977edaaa681e2> https://github.com/W3SS/headroom
 
 # Stanford CS230: Deep Learning I Autumn 2025
 
@@ -115,20 +99,6 @@ https://github.com/W3SS/headroom
 <https://blog.modelcontextprotocol.io/posts/2026-01-26-mcp-apps/>
 <https://workos.com/blog/2026-01-27-mcp-apps>
 # AI Tools
-https://zed.dev/
-https://thoughtminds.ai/blog/mastering-google-antigravity-and-claude-code
-https://www.augmentcode.com/tools/google-antigravity-vs-claude-code
-https://www.youtube.com/watch?v=Lk50aQMA_dk
-https://github.com/nexu-io/open-design
-https://forgecode.dev/
-https://github.com/VectifyAI/OpenKB
-https://github.com/shanraisshan/claude-code-best-practice
-https://github.com/FlorianBruniaux/claude-code-ultimate-guide
-https://github.com/shareAI-lab/learn-claude-code
+https://zed.dev/ https://thoughtminds.ai/blog/mastering-google-antigravity-and-claude-code https://www.augmentcode.com/tools/google-antigravity-vs-claude-code https://www.youtube.com/watch?v=Lk50aQMA_dk https://github.com/nexu-io/open-design https://forgecode.dev/ https://github.com/VectifyAI/OpenKB https://github.com/shanraisshan/claude-code-best-practice https://github.com/FlorianBruniaux/claude-code-ultimate-guide https://github.com/shareAI-lab/learn-claude-code
 
-Git Learning
-https://learngitbranching.js.org/
-https://webutility.io/git-simulator-online
-https://gitmastery.me/
-https://gitlearn.io/
-https://devops-daily.com/games/git-concepts-simulator?ref=dailydev
+Git Learning https://learngitbranching.js.org/ https://webutility.io/git-simulator-online https://gitmastery.me/ https://gitlearn.io/ https://devops-daily.com/games/git-concepts-simulator?ref=dailydev

@@ -118,8 +118,7 @@ Edge location não substitui region — ela complementa. A aplicação em si, co
 > [!tip] Assista: AWS Regions & Availability Zones Explained
 > **Canal:** CodeLucky | **Duração:** ~6min | **Idioma:** EN
 >
-> Um resumo direto que amarra os três níveis geográficos desta nota com números concretos e atualizados — mais de 33 regions, 105+ AZs e a malha de edge locations — reforçando por que cada camada existe e quando ela entra na decisão de onde colocar um recurso.
-> Trecho de destaque [01:31]: *"AWS maintains over 600 edge locations for content delivery"*
+> Um resumo direto que amarra os três níveis geográficos desta nota com números concretos e atualizados — mais de 33 regions, 105+ AZs e a malha de edge locations — reforçando por que cada camada existe e quando ela entra na decisão de onde colocar um recurso. Trecho de destaque [01:31]: *"AWS maintains over 600 edge locations for content delivery"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=rSYPGrlH8Qc)
 

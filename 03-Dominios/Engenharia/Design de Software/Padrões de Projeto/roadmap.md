@@ -56,21 +56,13 @@ Sequência escolhida (valor pro ofício de legado primeiro, maior sobreposição
 > Capturados agora para **evitar drift** na tarefa longa. São provisórios — cada família ganha roadmap-folha detalhado (fases, escopo por nota, custo) quando for a vez dela.
 
 ### Família 2 — Acesso a Dados (15) — **CORTE FECHADO 2026-07-28**, ver [[Padrões de Projeto/Acesso a Dados/roadmap|roadmap-folha]]
-Iniciado: 01 Panorama · 02 Transaction Script · 03 Domain Model · 04 Table Module (Service Layer como seção) · 05 DAO · 06 Active Record.
-Adepto: 07 Gateways (Row/Table Data Gateway + Record Set) · 08 Data Mapper · 09 Repository · 10 Unit of Work · 11 Identity Map · 12 Lazy Load · 13 Query Object.
-Magus: 14 agregado + single-table (DynamoDB) · 15 polyglot persistence + materialized views.
-**Lente adaptada:** cross-ORM (AR=Rails/Django/Eloquent; Data Mapper=Hibernate/SQLAlchemy/Doctrine; Repository=Spring Data), não cross-linguagem pura. Eixo dorsal: **Active Record × Data Mapper**.
-**Movidos p/ fora:** Cache-Aside · sharding · read-replicas → família 6 (Nuvem e Resiliência) / Cloud (não são acesso a dados).
+Iniciado: 01 Panorama · 02 Transaction Script · 03 Domain Model · 04 Table Module (Service Layer como seção) · 05 DAO · 06 Active Record. Adepto: 07 Gateways (Row/Table Data Gateway + Record Set) · 08 Data Mapper · 09 Repository · 10 Unit of Work · 11 Identity Map · 12 Lazy Load · 13 Query Object. Magus: 14 agregado + single-table (DynamoDB) · 15 polyglot persistence + materialized views. **Lente adaptada:** cross-ORM (AR=Rails/Django/Eloquent; Data Mapper=Hibernate/SQLAlchemy/Doctrine; Repository=Spring Data), não cross-linguagem pura. Eixo dorsal: **Active Record × Data Mapper**. **Movidos p/ fora:** Cache-Aside · sharding · read-replicas → família 6 (Nuvem e Resiliência) / Cloud (não são acesso a dados).
 
 ### Família 3 — Integração Empresarial / EIP (~14)
 Subset curado dos 65 de Hohpe & Woolf: **Message Channel** · **Message** · **Pipes and Filters** · roteamento (**Content-Based Router**, **Message Filter**, **Recipient List**, **Splitter**, **Aggregator**, **Resequencer**) · **Message Translator/Normalizer** · **Canonical Data Model** · endpoints (**Polling vs Event-Driven Consumer**, **Competing Consumers**, **Idempotent Receiver**) · **Guaranteed Delivery** · **Dead Letter Channel** · **Message Bus vs Broker**. Alto valor legado (ESBs, MOM, Camel/MuleSoft).
 
 ### Família 4 — Aplicação Corporativa / PoEAA não-dados (~14)
-Apresentação web: **MVC** · **Page Controller** · **Front Controller** · **Application Controller** · **Template View** · **Transform View** · **Two-Step View**.
-Distribuição: **Remote Facade** · **DTO** · **Service Layer**.
-Concorrência offline: **Optimistic Offline Lock** · **Pessimistic Offline Lock** · **Coarse-Grained Lock**.
-Session state: **Client/Server/Database Session State**.
-Base: **Gateway** · **Mapper** · **Layer Supertype** · **Separated Interface** · **Registry** · **Value Object** · **Money** · **Special Case** · **Plugin** · **Service Stub**.
+Apresentação web: **MVC** · **Page Controller** · **Front Controller** · **Application Controller** · **Template View** · **Transform View** · **Two-Step View**. Distribuição: **Remote Facade** · **DTO** · **Service Layer**. Concorrência offline: **Optimistic Offline Lock** · **Pessimistic Offline Lock** · **Coarse-Grained Lock**. Session state: **Client/Server/Database Session State**. Base: **Gateway** · **Mapper** · **Layer Supertype** · **Separated Interface** · **Registry** · **Value Object** · **Money** · **Special Case** · **Plugin** · **Service Stub**.
 
 ### Família 5 — Arquitetura de Eventos (~10)
 **Event Notification** · **Event-Carried State Transfer** · **Event Sourcing** · **CQRS** · **Saga** (choreography vs orchestration) · **Process Manager** · **Outbox** · **Idempotent Consumer / Inbox** · **Domain Events** · **Event Collaboration**.

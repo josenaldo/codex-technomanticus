@@ -95,8 +95,7 @@ Repare que `api` e `email-worker` apontam pro **mesmo repositório**, mudando s�
 > [!tip] Assista: Building Production-Ready Apps With App Platform, DigitalOcean's Reimagined PaaS
 > **Canal:** DigitalOcean | **Duração:** ~21min | **Idioma:** EN
 >
-> Vídeo oficial da DigitalOcean mostrando a mesma peça central desta seção — os components — em uso real no painel: como adicionar um novo component vindo do GitHub, misturar múltiplas fontes num único app, e escalar sem tocar em infraestrutura.
-> Trecho de destaque [02:19]: *"we have various components available within that platform to make it easy for you to grow and adapt and scale"*
+> Vídeo oficial da DigitalOcean mostrando a mesma peça central desta seção — os components — em uso real no painel: como adicionar um novo component vindo do GitHub, misturar múltiplas fontes num único app, e escalar sem tocar em infraestrutura. Trecho de destaque [02:19]: *"we have various components available within that platform to make it easy for you to grow and adapt and scale"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=ekn4nxH49mQ)
 

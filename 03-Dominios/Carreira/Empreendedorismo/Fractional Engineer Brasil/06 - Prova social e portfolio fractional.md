@@ -62,19 +62,13 @@ Ao fechar um contrato, um fractional CTO negocia explicitamente com o cliente, j
 ## Armadilhas comuns
 
 > [!warning] Esperar o primeiro cliente pra começar a construir prova social
-> **O que acontece:** o profissional decide "vou postar no LinkedIn quando tiver um case pra mostrar" — e nunca começa, porque o primeiro cliente exige justamente essa prova que ele está adiando construir.
-> **Por quê:** presença pública e ativos de confiança (conteúdo, auditorias gratuitas) não dependem de já ter cliente fractional — dependem da experiência prévia full-time, que a maioria de quem migra já tem de sobra (ver [[03 - Quando contratar e quando virar fractional]]).
-> **Como evitar:** começar a publicar e a construir ativos de confiança antes de fechar o primeiro retainer, usando experiências do cargo full-time anterior como base legítima de case study.
+> **O que acontece:** o profissional decide "vou postar no LinkedIn quando tiver um case pra mostrar" — e nunca começa, porque o primeiro cliente exige justamente essa prova que ele está adiando construir. **Por quê:** presença pública e ativos de confiança (conteúdo, auditorias gratuitas) não dependem de já ter cliente fractional — dependem da experiência prévia full-time, que a maioria de quem migra já tem de sobra (ver [[03 - Quando contratar e quando virar fractional]]). **Como evitar:** começar a publicar e a construir ativos de confiança antes de fechar o primeiro retainer, usando experiências do cargo full-time anterior como base legítima de case study.
 
 > [!warning] Case study genérico demais pra ser útil
-> **O que acontece:** o case study descreve o resultado em termos vagos ("melhorei a arquitetura", "ajudei o time a entregar mais rápido") sem número comparável.
-> **Por quê:** sem métrica de antes/depois, o cliente não consegue avaliar se o resultado é relevante pro problema dele — vira propaganda, não evidência.
-> **Como evitar:** sempre incluir ao menos um número comparável (tempo, custo, taxa, volume) mesmo que aproximado — "reduziu de ~3 dias para menos de 1" é mais forte que "reduziu significativamente".
+> **O que acontece:** o case study descreve o resultado em termos vagos ("melhorei a arquitetura", "ajudei o time a entregar mais rápido") sem número comparável. **Por quê:** sem métrica de antes/depois, o cliente não consegue avaliar se o resultado é relevante pro problema dele — vira propaganda, não evidência. **Como evitar:** sempre incluir ao menos um número comparável (tempo, custo, taxa, volume) mesmo que aproximado — "reduziu de ~3 dias para menos de 1" é mais forte que "reduziu significativamente".
 
 > [!warning] Confundir volume de conteúdo com consistência de nicho
-> **O que acontece:** o profissional publica bastante, mas sobre temas dispersos — hoje sobre gestão de time, amanhã sobre uma ferramenta nova, depois sobre carreira em geral.
-> **Por quê:** presença pública só constrói reconhecimento de nicho (ver [[04 - Definindo seu nicho e especialidade]]) quando é consistente em torno de um tema — dispersão dilui a associação "essa pessoa resolve esse problema específico".
-> **Como evitar:** manter o conteúdo público ancorado no nicho declarado, mesmo que isso signifique publicar com menos frequência.
+> **O que acontece:** o profissional publica bastante, mas sobre temas dispersos — hoje sobre gestão de time, amanhã sobre uma ferramenta nova, depois sobre carreira em geral. **Por quê:** presença pública só constrói reconhecimento de nicho (ver [[04 - Definindo seu nicho e especialidade]]) quando é consistente em torno de um tema — dispersão dilui a associação "essa pessoa resolve esse problema específico". **Como evitar:** manter o conteúdo público ancorado no nicho declarado, mesmo que isso signifique publicar com menos frequência.
 
 ## Como explicar em inglês
 

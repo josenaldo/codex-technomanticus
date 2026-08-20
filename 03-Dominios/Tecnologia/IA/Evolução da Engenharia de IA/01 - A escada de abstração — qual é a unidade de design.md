@@ -236,17 +236,13 @@ As próximas sete notas descem a escada, uma camada de cada vez, e terminam olha
 
 O critério "qual é a unidade de design" só é útil se vira hábito, não uma frase bonita numa nota de abertura. Da próxima vez que um nome novo aparecer no seu feed reivindicando ser "a próxima camada de engenharia de IA", faça estas quatro perguntas, nesta ordem:
 
-**1. O que exatamente eu projeto de propósito nessa disciplina, que eu não projetava antes?**
-Se a resposta for vaga ("uma abordagem melhor", "um jeito mais eficiente"), desconfie. Se a resposta for concreta e nomeável — "eu agora projeto o critério de parada de um ciclo" ou "eu agora projeto o contrato entre dois agentes" —, há uma unidade de design real por trás.
+**1. O que exatamente eu projeto de propósito nessa disciplina, que eu não projetava antes?** Se a resposta for vaga ("uma abordagem melhor", "um jeito mais eficiente"), desconfie. Se a resposta for concreta e nomeável — "eu agora projeto o critério de parada de um ciclo" ou "eu agora projeto o contrato entre dois agentes" —, há uma unidade de design real por trás.
 
-**2. Essa unidade contém a unidade da camada anterior, ou ela é a mesma coisa com nome novo?**
-Um flow contém prompts dentro de si — ele não substitui o prompt, ele o orquestra. Se o "novo" conceito não contém nem orquestra o antigo, e só o redescreve com outro vocabulário, é rebranding, não escada.
+**2. Essa unidade contém a unidade da camada anterior, ou ela é a mesma coisa com nome novo?** Um flow contém prompts dentro de si — ele não substitui o prompt, ele o orquestra. Se o "novo" conceito não contém nem orquestra o antigo, e só o redescreve com outro vocabulário, é rebranding, não escada.
 
-**3. Existe um artefato que essa disciplina te ensina a versionar e depurar isoladamente?**
-Prompt engineering te dá o prompt como artefato versionável (você faz diff de duas versões de um prompt). Loop engineering te dá o critério de parada e a métrica como artefatos (você faz diff de duas versões de "quando este loop para"). Se não há um artefato novo e isolável, a camada não trouxe nada estrutural — só um nome.
+**3. Existe um artefato que essa disciplina te ensina a versionar e depurar isoladamente?** Prompt engineering te dá o prompt como artefato versionável (você faz diff de duas versões de um prompt). Loop engineering te dá o critério de parada e a métrica como artefatos (você faz diff de duas versões de "quando este loop para"). Se não há um artefato novo e isolável, a camada não trouxe nada estrutural — só um nome.
 
-**4. Quem está defendendo isso tem um sistema em produção, ou só um thread?**
-Não é argumento de autoridade — é heurística de custo. Alguém que já rodou a ideia em produção pagou o preço de descobrir onde ela quebra. Um thread viral ainda não pagou esse preço. Isso não invalida a ideia nova automaticamente, mas muda o quanto de confiança emprestar a ela hoje.
+**4. Quem está defendendo isso tem um sistema em produção, ou só um thread?** Não é argumento de autoridade — é heurística de custo. Alguém que já rodou a ideia em produção pagou o preço de descobrir onde ela quebra. Um thread viral ainda não pagou esse preço. Isso não invalida a ideia nova automaticamente, mas muda o quanto de confiança emprestar a ela hoje.
 
 Nenhuma dessas perguntas exige que você concorde com a nomenclatura da comunidade. Você pode achar "harness engineering" um nome ruim para uma ideia real (muita gente acha), e ainda assim reconhecer que a ideia por trás — versionar o ambiente executável do agente como artefato de primeira classe — é genuína e distinta de context engineering. O nome é folclore; a unidade de design é o teste.
 
@@ -361,8 +357,7 @@ If you're explaining this in an interview: every one of these "engineering" laye
 > [!tip] Assista: Andrej Karpathy — Software Is Changing (Again)
 > **Canal:** Y Combinator | **Duração:** ~40min | **Idioma:** EN (legendas PT auto)
 >
-> Karpathy conta a evolução do software em três eras — 1.0 (código à mão), 2.0 (redes neurais treinadas), 3.0 (LLM programado em linguagem natural). É uma escada diferente da desta nota, mas move o mesmo instinto: cada era não apaga a anterior, empilha sobre ela.
-> Trecho de destaque [10:15]: *"the LLM is a … operating system … the context windows are kind of like the [memory]"*
+> Karpathy conta a evolução do software em três eras — 1.0 (código à mão), 2.0 (redes neurais treinadas), 3.0 (LLM programado em linguagem natural). É uma escada diferente da desta nota, mas move o mesmo instinto: cada era não apaga a anterior, empilha sobre ela. Trecho de destaque [10:15]: *"the LLM is a … operating system … the context windows are kind of like the [memory]"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=LCEmiRjPEtQ)
 

@@ -438,24 +438,16 @@ function Dashboard() {
 ## Armadilhas comuns
 
 > [!warning] Usar transition para updates urgentes
-> **O que acontece:** o update atrasa visualmente — o usuário clica num botão e a UI demora para responder.
-> **Por quê:** transitions têm prioridade baixa. Updates urgentes (clicks, inputs, feedback imediato) devem sempre usar `setState` direto, sem `startTransition`.
-> **Como evitar:** só use transition quando o trabalho pesado é a *consequência* de um input urgente — nunca para o input em si. Regra: o que o usuário tocou diretamente → urgente. O que muda em resposta → pode ser transition.
+> **O que acontece:** o update atrasa visualmente — o usuário clica num botão e a UI demora para responder. **Por quê:** transitions têm prioridade baixa. Updates urgentes (clicks, inputs, feedback imediato) devem sempre usar `setState` direto, sem `startTransition`. **Como evitar:** só use transition quando o trabalho pesado é a *consequência* de um input urgente — nunca para o input em si. Regra: o que o usuário tocou diretamente → urgente. O que muda em resposta → pode ser transition.
 
 > [!warning] Esperar que `useTransition` funcione como debounce
-> **O que acontece:** o dev adiciona `useTransition` esperando reduzir chamadas de rede, mas o número de fetches não muda.
-> **Por quê:** transitions controlam **renderização**, não execução de efeitos ou funções. Um fetch dentro de `startTransition` ainda dispara a cada keystroke — apenas o render associado tem prioridade reduzida.
-> **Como evitar:** para reduzir fetches, use debounce ou throttle. Transitions e debounce resolvem problemas diferentes e se complementam.
+> **O que acontece:** o dev adiciona `useTransition` esperando reduzir chamadas de rede, mas o número de fetches não muda. **Por quê:** transitions controlam **renderização**, não execução de efeitos ou funções. Um fetch dentro de `startTransition` ainda dispara a cada keystroke — apenas o render associado tem prioridade reduzida. **Como evitar:** para reduzir fetches, use debounce ou throttle. Transitions e debounce resolvem problemas diferentes e se complementam.
 
 > [!warning] `useDeferredValue` sem `useMemo` no consumidor
-> **O que acontece:** `useDeferredValue` não traz nenhum benefício — a renderização pesada acontece a cada render, mesmo que `deferredValue` não tenha mudado.
-> **Por quê:** `useDeferredValue` só faz sentido se a computação pesada for memoizada com base no valor deferido. Sem `useMemo`, React re-executa o cálculo toda vez mesmo que `deferredQuery === previousDeferredQuery`.
-> **Como evitar:** sempre combine `useDeferredValue` com `useMemo` (ou `React.memo` no componente filho) usando o `deferredValue` como dependência.
+> **O que acontece:** `useDeferredValue` não traz nenhum benefício — a renderização pesada acontece a cada render, mesmo que `deferredValue` não tenha mudado. **Por quê:** `useDeferredValue` só faz sentido se a computação pesada for memoizada com base no valor deferido. Sem `useMemo`, React re-executa o cálculo toda vez mesmo que `deferredQuery === previousDeferredQuery`. **Como evitar:** sempre combine `useDeferredValue` com `useMemo` (ou `React.memo` no componente filho) usando o `deferredValue` como dependência.
 
 > [!warning] Colocar `startTransition` fora do event handler
-> **O que acontece:** `Warning: Can't perform a React state update on a component that is already updating.`
-> **Por quê:** `startTransition` precisa ser chamado de forma síncrona dentro de um event handler ou de outro lifecycle do React. Chamá-lo dentro de um `setTimeout` ou callback assíncrono break o contexto de scheduling.
-> **Como evitar:** se precisar de delay real antes de iniciar a transition, use `setTimeout` externamente e chame `startTransition` dentro do callback — mas questione se não é um caso de debounce mesmo.
+> **O que acontece:** `Warning: Can't perform a React state update on a component that is already updating.` **Por quê:** `startTransition` precisa ser chamado de forma síncrona dentro de um event handler ou de outro lifecycle do React. Chamá-lo dentro de um `setTimeout` ou callback assíncrono break o contexto de scheduling. **Como evitar:** se precisar de delay real antes de iniciar a transition, use `setTimeout` externamente e chame `startTransition` dentro do callback — mas questione se não é um caso de debounce mesmo.
 
 ---
 

@@ -311,8 +311,7 @@ Code is the rare domain where reality checks the work for you, every time you hi
 > [!tip] Assista: What Makes Agency Actually Work?
 > **Canal:** Intuition Machine (Carlos E. Perez) | **Duração:** ~22min | **Idioma:** EN (legendas PT auto)
 >
-> O vídeo que esta nota cita nas Fontes, em movimento: por que agência precisa de um "chão" externo — o mesmo papel que o compilador cumpre de graça em código, e que o loop tem de fabricar onde ele falta.
-> Trecho de destaque [00:02]: *"the foundation of all effective agency is being touched by reality before you do anything"*
+> O vídeo que esta nota cita nas Fontes, em movimento: por que agência precisa de um "chão" externo — o mesmo papel que o compilador cumpre de graça em código, e que o loop tem de fabricar onde ele falta. Trecho de destaque [00:02]: *"the foundation of all effective agency is being touched by reality before you do anything"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=53Y3SYR5vTU)
 

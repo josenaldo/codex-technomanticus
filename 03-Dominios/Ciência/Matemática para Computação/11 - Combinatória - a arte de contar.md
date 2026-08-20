@@ -74,10 +74,7 @@ total = n₁ + n₂ + … + nₖ
 > Aqui as categorias *não se combinam*: você não pega ônibus E trem na mesma viagem. São alternativas, então somam.
 
 > [!tip] O teste de uma frase
-> Pergunte-se: as escolhas acontecem **"E depois"** (uma após a outra, na mesma execução) ou **"OU"** (uma alternativa exclui as outras)?
-> "E depois" → **multiplica** (produto).
-> "OU" → **soma** (soma).
-> Confundir os dois é o erro nº 1 de quem está começando.
+> Pergunte-se: as escolhas acontecem **"E depois"** (uma após a outra, na mesma execução) ou **"OU"** (uma alternativa exclui as outras)? "E depois" → **multiplica** (produto). "OU" → **soma** (soma). Confundir os dois é o erro nº 1 de quem está começando.
 
 ### Bijeção: contar A contando um B equivalente
 
@@ -155,8 +152,7 @@ n × n × … × n  (k vezes) = nᵏ
 ```
 
 > [!example] Senha numérica
-> Um PIN de 4 dígitos (0–9, repetição permitida): 10⁴ = **10.000** PINs.
-> Uma senha de 8 caracteres do conjunto {a–z, A–Z, 0–9}: 62⁸ ≈ **2,18 × 10¹⁴**.
+> Um PIN de 4 dígitos (0–9, repetição permitida): 10⁴ = **10.000** PINs. Uma senha de 8 caracteres do conjunto {a–z, A–Z, 0–9}: 62⁸ ≈ **2,18 × 10¹⁴**.
 
 Guarde nᵏ — é a fórmula do espaço de senhas, e do espaço de strings em geral.
 
@@ -208,9 +204,7 @@ Por que C(n,k) também se chama **coeficiente binomial**? Porque ele aparece, li
 ```
 
 > [!example] Expandindo (a + b)³
-> (a + b)³ = C(3,0)·b³ + C(3,1)·a·b² + C(3,2)·a²·b + C(3,3)·a³
-> = 1·b³ + 3·a·b² + 3·a²·b + 1·a³
-> = a³ + 3a²b + 3ab² + b³.
+> (a + b)³ = C(3,0)·b³ + C(3,1)·a·b² + C(3,2)·a²·b + C(3,3)·a³ = 1·b³ + 3·a·b² + 3·a²·b + 1·a³ = a³ + 3a²b + 3ab² + b³.
 >
 > Os coeficientes 1, 3, 3, 1 são exatamente C(3,0), C(3,1), C(3,2), C(3,3).
 
@@ -379,15 +373,7 @@ Quando você sabe contar os resultados, sabe atribuir probabilidades (favorávei
 
 Combinatória aparece em entrevistas de duas formas: direta ("quantos jeitos de…") e disfarçada (estimar o tamanho de um espaço de busca antes de propor um algoritmo). O reflexo de ouro é fazer **duas perguntas** antes de qualquer fórmula: a ordem importa? a repetição é permitida? Isso te coloca numa das quatro células da tabela mestre instantaneamente. E quando alguém sugere força bruta, demonstrar que você sabe que o espaço é 2ⁿ ou n! — e portanto inviável — sinaliza maturidade de design.
 
-*The first question I ask any counting problem is whether order matters and whether repetition is allowed.*
-*If order matters, it's a permutation; if it doesn't, it's a combination, and I divide out the k! orderings.*
-*The product rule applies when choices happen in sequence; the sum rule when they're mutually exclusive alternatives.*
-*A set of n elements has 2ⁿ subsets, which is why brute-forcing over all subsets blows up fast.*
-*Before I propose a brute-force solution, I estimate the size of the search space — n! routes or 2ⁿ subsets often rules it out.*
-*Pascal's identity reflects a simple case split: does this specific element go in the selection or not?*
-*The number of monotonic paths through an m by n grid is C(m+n, n), which doubles as a dynamic-programming sanity check.*
-*A password space of n symbols and k positions is n to the k, and that's exactly what a brute-force attacker faces.*
-*Combinatorics is really just careful multiplication and addition — the hard part is choosing which one applies.*
+*The first question I ask any counting problem is whether order matters and whether repetition is allowed.* *If order matters, it's a permutation; if it doesn't, it's a combination, and I divide out the k! orderings.* *The product rule applies when choices happen in sequence; the sum rule when they're mutually exclusive alternatives.* *A set of n elements has 2ⁿ subsets, which is why brute-forcing over all subsets blows up fast.* *Before I propose a brute-force solution, I estimate the size of the search space — n! routes or 2ⁿ subsets often rules it out.* *Pascal's identity reflects a simple case split: does this specific element go in the selection or not?* *The number of monotonic paths through an m by n grid is C(m+n, n), which doubles as a dynamic-programming sanity check.* *A password space of n symbols and k positions is n to the k, and that's exactly what a brute-force attacker faces.* *Combinatorics is really just careful multiplication and addition — the hard part is choosing which one applies.*
 
 | Português | English |
 |---|---|

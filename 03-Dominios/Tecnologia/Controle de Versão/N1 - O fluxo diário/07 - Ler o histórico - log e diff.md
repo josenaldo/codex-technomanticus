@@ -65,9 +65,7 @@ git shortlog -sn
 ```
 
 > [!warning] Contagem de commits não é medida de contribuição
-> **O que acontece:** alguém usa o `shortlog` para argumentar quem trabalhou mais no grupo.
-> **Por quê:** commits têm tamanhos completamente diferentes. Quem commita a cada parágrafo aparece com o triplo de quem commita a cada seção, fazendo o mesmo trabalho.
-> **Como usar direito:** o `shortlog` serve para ver **quem tocou no quê**, não para ranquear. Para trabalho em grupo, ele é ótimo respondendo "quem mexeu na metodologia?" — não "quem se esforçou mais?".
+> **O que acontece:** alguém usa o `shortlog` para argumentar quem trabalhou mais no grupo. **Por quê:** commits têm tamanhos completamente diferentes. Quem commita a cada parágrafo aparece com o triplo de quem commita a cada seção, fazendo o mesmo trabalho. **Como usar direito:** o `shortlog` serve para ver **quem tocou no quê**, não para ranquear. Para trabalho em grupo, ele é ótimo respondendo "quem mexeu na metodologia?" — não "quem se esforçou mais?".
 
 ---
 
@@ -136,8 +134,7 @@ diff --git a/capitulo-1.tex b/capitulo-1.tex
 Repare que o Git não sabe que você "reescreveu uma frase": ele vê uma linha removida e três adicionadas. Substituição, para ele, é remoção seguida de adição.
 
 > [!question]- Por que o diff fica ilegível quando eu escrevo texto corrido?
-> Porque o Git compara **linha a linha**, e num parágrafo de texto corrido o parágrafo inteiro costuma ser uma única linha imensa. Mudar uma vírgula marca a linha inteira como alterada, e você perde a granularidade.
-> Duas soluções, ambas úteis. A primeira é escrever **uma frase por linha** no arquivo-fonte (LaTeX e Markdown ignoram a quebra ao renderizar, então a saída não muda) — isso transforma o diff em algo verdadeiramente legível. A segunda é pedir comparação por palavra:
+> Porque o Git compara **linha a linha**, e num parágrafo de texto corrido o parágrafo inteiro costuma ser uma única linha imensa. Mudar uma vírgula marca a linha inteira como alterada, e você perde a granularidade. Duas soluções, ambas úteis. A primeira é escrever **uma frase por linha** no arquivo-fonte (LaTeX e Markdown ignoram a quebra ao renderizar, então a saída não muda) — isso transforma o diff em algo verdadeiramente legível. A segunda é pedir comparação por palavra:
 > ```bash
 > git diff --word-diff
 > ```
@@ -158,19 +155,13 @@ Sem o `--follow`, o histórico para no ponto em que o arquivo passou a se chamar
 ## Armadilhas comuns
 
 > [!warning] Diff de arquivo binário não diz nada
-> **O que acontece:** você pede o diff de um `.docx`, `.pdf` ou imagem e recebe `Binary files a/... and b/... differ`.
-> **Por quê:** já vimos na nota 01 — o Git compara texto, e esses formatos não são texto.
-> **Como conviver:** o histórico continua útil (você sabe *quando* mudou e pode recuperar qualquer versão), você só não tem o "o quê" automático. É o argumento mais forte a favor de escrever em `.tex`, `.md` ou `.qmd`.
+> **O que acontece:** você pede o diff de um `.docx`, `.pdf` ou imagem e recebe `Binary files a/... and b/... differ`. **Por quê:** já vimos na nota 01 — o Git compara texto, e esses formatos não são texto. **Como conviver:** o histórico continua útil (você sabe *quando* mudou e pode recuperar qualquer versão), você só não tem o "o quê" automático. É o argumento mais forte a favor de escrever em `.tex`, `.md` ou `.qmd`.
 
 > [!warning] O histórico só é tão bom quanto as mensagens
-> **O que acontece:** você filtra por período, encontra o commit certo, e a mensagem diz "att".
-> **Por quê:** o Git registra o que você escreveu. Ele não inventa contexto.
-> **Como evitar:** é aqui que a disciplina da nota 03 se paga. Mensagem ruim não incomoda no dia em que você escreve; incomoda seis meses depois, exatamente quando você mais precisa.
+> **O que acontece:** você filtra por período, encontra o commit certo, e a mensagem diz "att". **Por quê:** o Git registra o que você escreveu. Ele não inventa contexto. **Como evitar:** é aqui que a disciplina da nota 03 se paga. Mensagem ruim não incomoda no dia em que você escreve; incomoda seis meses depois, exatamente quando você mais precisa.
 
 > [!warning] `git log` abre um paginador e parece travar
-> **O que acontece:** a saída ocupa a tela, aparece um `:` no rodapé e o teclado não responde ao normal.
-> **Por quê:** o Git usa um paginador (`less`) para saídas longas.
-> **Como sair:** tecle `q`. Use as setas ou `espaço` para rolar, e `/palavra` para buscar dentro da saída. Se preferir sem paginador, `git --no-pager log --oneline -10`.
+> **O que acontece:** a saída ocupa a tela, aparece um `:` no rodapé e o teclado não responde ao normal. **Por quê:** o Git usa um paginador (`less`) para saídas longas. **Como sair:** tecle `q`. Use as setas ou `espaço` para rolar, e `/palavra` para buscar dentro da saída. Se preferir sem paginador, `git --no-pager log --oneline -10`.
 
 ---
 

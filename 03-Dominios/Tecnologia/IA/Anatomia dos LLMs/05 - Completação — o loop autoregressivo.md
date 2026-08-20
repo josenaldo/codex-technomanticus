@@ -63,8 +63,7 @@ Depois que o texto passa por [[02 - Tokens e tokenização|tokenização]], [[03
 1. **Projeção para o vocabulário.** Esse vetor final é multiplicado por uma matriz de saída (a *unembedding*, muitas vezes amarrada à própria tabela de embedding). O resultado é um vetor com **um número por token do vocabulário** — tipicamente dezenas de milhares de valores. Cada número é um **logit**: a pontuação crua de "quão provável é que este seja o próximo token".
 
 2. **Softmax → distribuição.** Logits não somam 1 e podem ser negativos. O **softmax** os transforma numa distribuição de probabilidade legítima (tudo entre 0 e 1, somando 1):
-   $$\text{softmax}(x_i) = \frac{e^{x_i}}{\sum_j e^{x_j}}$$
-   É exatamente o **mesmo softmax** que a [[04 - Atenção e o mecanismo transformer|atenção]] usa para normalizar scores — só que agora aplicado **sobre o vocabulário**, não sobre posições. (A nota 04 tem o callout que destrincha softmax vs. argmax.)
+   $$\text{softmax}(x_i) = \frac{e^{x_i}}{\sum_j e^{x_j}}$$ É exatamente o **mesmo softmax** que a [[04 - Atenção e o mecanismo transformer|atenção]] usa para normalizar scores — só que agora aplicado **sobre o vocabulário**, não sobre posições. (A nota 04 tem o callout que destrincha softmax vs. argmax.)
 
 3. **Amostragem.** Da distribuição, escolhe-se *um* token. Como escolher é uma decisão de estratégia — a próxima seção.
 

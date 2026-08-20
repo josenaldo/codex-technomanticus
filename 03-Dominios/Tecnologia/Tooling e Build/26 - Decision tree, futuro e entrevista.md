@@ -538,24 +538,16 @@ flowchart LR
 ## 10. Armadilhas de entrevista consolidadas
 
 > [!warning] "Vite é mais rápido porque usa ESM"
-> **O que acontece:** resposta incompleta que parece correta.
-> **Por quê:** ESM nativo explica a velocidade no **dev server** — o browser faz os imports, não há bundle. No **build de produção**, o Vite usa Rolldown e faz bundle sim — ESM nativo em produção seria ineficiente (muitas requisições HTTP). Saber os dois modos é o que distingue quem entende de quem repete.
-> **Como evitar:** sempre distinguir dev server (ESM nativo) de build de produção (Rolldown/bundle).
+> **O que acontece:** resposta incompleta que parece correta. **Por quê:** ESM nativo explica a velocidade no **dev server** — o browser faz os imports, não há bundle. No **build de produção**, o Vite usa Rolldown e faz bundle sim — ESM nativo em produção seria ineficiente (muitas requisições HTTP). Saber os dois modos é o que distingue quem entende de quem repete. **Como evitar:** sempre distinguir dev server (ESM nativo) de build de produção (Rolldown/bundle).
 
 > [!warning] "Usar sempre pnpm porque é mais rápido"
-> **O que acontece:** recomendação correta mas por motivo superficial.
-> **Por quê:** a vantagem real do pnpm em monorepos não é velocidade — é o isolamento. pnpm impede phantom dependencies estruturalmente. npm flat permite que você use uma lib sem declarar ela, e o bug aparece meses depois numa máquina limpa.
-> **Como evitar:** ao recomendar pnpm, mencionar isolamento de dependências como motivo principal.
+> **O que acontece:** recomendação correta mas por motivo superficial. **Por quê:** a vantagem real do pnpm em monorepos não é velocidade — é o isolamento. pnpm impede phantom dependencies estruturalmente. npm flat permite que você use uma lib sem declarar ela, e o bug aparece meses depois numa máquina limpa. **Como evitar:** ao recomendar pnpm, mencionar isolamento de dependências como motivo principal.
 
 > [!warning] "Tree-shaking remove código morto"
-> **O que acontece:** definição correta mas incompleta.
-> **Por quê:** tree-shaking é análise estática do grafo de **ESM exports/imports**. Requer que a lib seja marcada com `"sideEffects": false` no package.json. E requer ESM — CommonJS é opaco para análise estática. Muitas libs que parecem tree-shakeable não são porque distribuem CJS.
-> **Como evitar:** sempre mencionar os três requisitos: ESM, sideEffects false, e que o bundler precisa de análise estática.
+> **O que acontece:** definição correta mas incompleta. **Por quê:** tree-shaking é análise estática do grafo de **ESM exports/imports**. Requer que a lib seja marcada com `"sideEffects": false` no package.json. E requer ESM — CommonJS é opaco para análise estática. Muitas libs que parecem tree-shakeable não são porque distribuem CJS. **Como evitar:** sempre mencionar os três requisitos: ESM, sideEffects false, e que o bundler precisa de análise estática.
 
 > [!warning] "Não preciso saber webpack — uso Vite"
-> **O que acontece:** pode surgir em vagas que mencionam manutenção de legado ou Module Federation.
-> **Por quê:** Vite é a escolha certa para projetos novos. Mas entender webpack — entry, loaders, plugins, Module Federation — ainda aparece em entrevistas de empresas com código legado. E Module Federation v2 tem casos de uso genuínos para micro-frontends que Vite ainda não cobre com a mesma maturidade.
-> **Como evitar:** ter o "quando webpack faz sentido" preparado: MF em produção, legado, migração via Rspack.
+> **O que acontece:** pode surgir em vagas que mencionam manutenção de legado ou Module Federation. **Por quê:** Vite é a escolha certa para projetos novos. Mas entender webpack — entry, loaders, plugins, Module Federation — ainda aparece em entrevistas de empresas com código legado. E Module Federation v2 tem casos de uso genuínos para micro-frontends que Vite ainda não cobre com a mesma maturidade. **Como evitar:** ter o "quando webpack faz sentido" preparado: MF em produção, legado, migração via Rspack.
 
 ---
 
@@ -643,8 +635,7 @@ flowchart TD
 > Para uma SPA, o A/B test de bundler requer roteamento na borda — não existe nativamente. O mecanismo: dois deploys separados coexistem (ex.: `/dist-webpack/` e `/dist-vite/`), e um proxy ou CDN rule decide qual `index.html` servir com base em um cookie ou percentual de tráfego. As opções mais comuns:
 > - **Cloudflare Workers**: um Worker intercepta a requisição e redireciona baseado em cookie ou random hash — zero infraestrutura nova se você já usa Cloudflare.
 > - **CDN split testing**: Vercel, Netlify e Cloudflare Pages têm split testing nativo via painel — dois branches, cada um com seu build.
-> - **Reverse proxy**: nginx ou Caddy com `split_clients` por porcentagem de IP hash.
-> O monitoramento é o ponto crítico: error rate no Sentry/DataDog por `build_variant` cookie. Se o Vite build tiver mais erros JS não capturados, você vê o delta antes de afetar 100% dos usuários.
+> - **Reverse proxy**: nginx ou Caddy com `split_clients` por porcentagem de IP hash. O monitoramento é o ponto crítico: error rate no Sentry/DataDog por `build_variant` cookie. Se o Vite build tiver mais erros JS não capturados, você vê o delta antes de afetar 100% dos usuários.
 
 **O que frequentemente quebra na migração:**
 - **`require()` dinâmico** — Vite ESM não suporta `require()` em runtime; precisa converter para `import()` dinâmico ou usar `createRequire`.
@@ -767,11 +758,9 @@ A nota da árvore de decisão (seção 2) menciona Module Federation; aqui o det
 | Runtime | webpack runtime | Runtime unificado cross-bundler |
 | Maturidade | Produção (anos) | Estável desde abr/2026 |
 
-**Quando a resposta é ainda webpack + MF1:**
-Equipes com MF1 em produção por anos, com comportamento documentado e testado. Migrar para MF2 é válido, mas o risco de regressão em produção às vezes não justifica. Rspack + MF2 é o caminho de menor risco: drop-in API, build muito mais rápido.
+**Quando a resposta é ainda webpack + MF1:** Equipes com MF1 em produção por anos, com comportamento documentado e testado. Migrar para MF2 é válido, mas o risco de regressão em produção às vezes não justifica. Rspack + MF2 é o caminho de menor risco: drop-in API, build muito mais rápido.
 
-**Quando é MF2 novo projeto:**
-Sempre. MF2 é tecnicamente superior em todos os aspectos e funciona cross-bundler.
+**Quando é MF2 novo projeto:** Sempre. MF2 é tecnicamente superior em todos os aspectos e funciona cross-bundler.
 
 Fonte: [InfoQ — Module Federation 2.0 Reaches Stable Release](https://www.infoq.com/news/2026/04/module-federation-2-stable/).
 

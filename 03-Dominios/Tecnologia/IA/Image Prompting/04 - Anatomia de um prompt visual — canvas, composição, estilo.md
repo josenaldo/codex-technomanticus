@@ -20,10 +20,7 @@ aliases:
 # 04 - Anatomia de um prompt visual — canvas, composição, estilo
 
 > [!abstract] TL;DR
-> Todo prompt visual eficaz tem quatro camadas: **canvas** (formato, aspect ratio, resolução), **composição** (hierarquia, focal point, espaço negativo), **estilo** (linguagem visual, paleta, mood) e **texto** (palavras embutidas, posição, hierarquia).
-> Cada camada tem vocabulário próprio que os modelos reconhecem.
-> A regra do default: quando você escreve sem cobrir as quatro, o modelo escolhe default genérico; quando cobre todas, converge rápido.
-> Esta nota dá o vocabulário preciso por camada, com exemplo de prompt completo dissecado em cada uma.
+> Todo prompt visual eficaz tem quatro camadas: **canvas** (formato, aspect ratio, resolução), **composição** (hierarquia, focal point, espaço negativo), **estilo** (linguagem visual, paleta, mood) e **texto** (palavras embutidas, posição, hierarquia). Cada camada tem vocabulário próprio que os modelos reconhecem. A regra do default: quando você escreve sem cobrir as quatro, o modelo escolhe default genérico; quando cobre todas, converge rápido. Esta nota dá o vocabulário preciso por camada, com exemplo de prompt completo dissecado em cada uma.
 
 > [!question]- Qual é a ordem certa de escrever as quatro camadas? E se eu não souber o estilo que quero?
 > A ordem mais produtiva é Canvas → Composição → Estilo → Texto: cada camada depende da anterior (você não define composição sem saber o canvas; o texto é a camada mais dependente do estilo). Se não souber o estilo: comece com um estilo "âncora" genérico (`flat illustration`) e itere só a camada de estilo enquanto congela as outras três. Mudar tudo ao mesmo tempo faz com que você não saiba o que causou o resultado. Quando travar, volte ao deliverable (nota 02): o estilo deve servir ao entregável, não ao gosto pessoal. Um hero tech-blog pede `flat-isometric corporate-modern`; um post de redes sociais pode pedir `bold graphic`, `pop art`; uma capa de ebook pode pedir `editorial photography`. O deliverable resolve o estilo 80% das vezes.
@@ -186,14 +183,10 @@ A camada mais difícil em 2026 — modelos ainda erram. Ideogram, Imagen 3 (e Im
 
 ### Como pedir texto
 
-1. **Cite as palavras exatas entre aspas no prompt.**
-   > `the text "AI Summit 2026" at the top in bold sans-serif`
-2. **Indique posição.**
-   > `top center, occupying ~15% of height`
-3. **Indique hierarquia (se múltiplo).**
-   > `main title large; subtitle 50% size; tagline at bottom 30%`
-4. **Indique intenção tipográfica (não exige fonte específica).**
-   > `bold sans-serif, modern, geometric` ou `serif, classical, editorial` ou `handwritten script, casual`
+1. **Cite as palavras exatas entre aspas no prompt.** > `the text "AI Summit 2026" at the top in bold sans-serif`
+2. **Indique posição.** > `top center, occupying ~15% of height`
+3. **Indique hierarquia (se múltiplo).** > `main title large; subtitle 50% size; tagline at bottom 30%`
+4. **Indique intenção tipográfica (não exige fonte específica).** > `bold sans-serif, modern, geometric` ou `serif, classical, editorial` ou `handwritten script, casual`
 
 ### O limite atual
 

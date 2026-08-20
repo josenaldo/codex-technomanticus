@@ -108,8 +108,7 @@ A solução é separar dois conceitos:
 - **Commit (retire)** é sempre **em ordem**.
 
 > [!tip] A regra de ouro
-> **Execute desordenado, commita ordenado.**
-> Essa regra garante que o estado arquitetural visível (o que o SO, o debugger, o handler de exceção veem) é sempre coerente com a ordem do programa.
+> **Execute desordenado, commita ordenado.** Essa regra garante que o estado arquitetural visível (o que o SO, o debugger, o handler de exceção veem) é sempre coerente com a ordem do programa.
 
 ---
 
@@ -380,15 +379,7 @@ Superescalar e OoO aparecem em entrevistas de sistemas, performance engineering 
 
 Diga que o pipeline clássico tem teto CPI=1; superescalar quebra esse teto com issue width > 1; OoO execution resolve o problema de instruções que travam o pipeline ao executar as independentes adiantadas; o ROB garante commit em ordem para manter semântica correta e exceções precisas; renomeação de registradores elimina dependências falsas WAR e WAW; e os limites do ILP foram um dos motivos do multicore.
 
-*The classic pipeline has a ceiling of CPI = 1; superscalar breaks that ceiling by issuing multiple instructions per cycle.*
-*Out-of-order execution lets the CPU execute ready instructions before stalled ones, hiding latency.*
-*The Reorder Buffer is the mechanism that allows OoO execution while committing results in program order.*
-*Register renaming maps architectural registers to a larger pool of physical registers.*
-*WAR and WAW are false dependencies — they are eliminated by renaming; only true RAW dependencies remain.*
-*The instruction window defines how many in-flight instructions the CPU can track and schedule simultaneously.*
-*Latency-bound code has long RAW chains; throughput-bound code has independent operations that the CPU can overlap.*
-*Memory-level parallelism is the CPU's ability to have multiple cache-miss loads in flight simultaneously.*
-*ILP has diminishing returns in real code — this is why multi-core became the dominant scaling strategy.*
+*The classic pipeline has a ceiling of CPI = 1; superscalar breaks that ceiling by issuing multiple instructions per cycle.* *Out-of-order execution lets the CPU execute ready instructions before stalled ones, hiding latency.* *The Reorder Buffer is the mechanism that allows OoO execution while committing results in program order.* *Register renaming maps architectural registers to a larger pool of physical registers.* *WAR and WAW are false dependencies — they are eliminated by renaming; only true RAW dependencies remain.* *The instruction window defines how many in-flight instructions the CPU can track and schedule simultaneously.* *Latency-bound code has long RAW chains; throughput-bound code has independent operations that the CPU can overlap.* *Memory-level parallelism is the CPU's ability to have multiple cache-miss loads in flight simultaneously.* *ILP has diminishing returns in real code — this is why multi-core became the dominant scaling strategy.*
 
 | Português | English |
 |-----------|---------|

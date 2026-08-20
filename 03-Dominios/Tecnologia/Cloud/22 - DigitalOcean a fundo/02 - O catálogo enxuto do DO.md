@@ -23,8 +23,7 @@ A tese desta nota é literal: você consegue segurar o catálogo inteiro do DO n
 > [!tip] Assista: Top 50+ AWS Services Explained in 10 Minutes
 > **Canal:** Fireship | **Duração:** ~12min | **Idioma:** EN
 >
-> Um voo rasante pelo catálogo da AWS — S3, EC2, Lambda, e dezenas de serviços que se sobrepõem em função. Serve de contraponto direto pra esta nota: veja a AWS categoria por categoria e sinta o "custo cognitivo" que o catálogo enxuto do DO elimina.
-> Trecho de destaque [00:11]: *"today it offers a mind-numbing 200 and something services"*
+> Um voo rasante pelo catálogo da AWS — S3, EC2, Lambda, e dezenas de serviços que se sobrepõem em função. Serve de contraponto direto pra esta nota: veja a AWS categoria por categoria e sinta o "custo cognitivo" que o catálogo enxuto do DO elimina. Trecho de destaque [00:11]: *"today it offers a mind-numbing 200 and something services"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=JIbIYCM48to)
 

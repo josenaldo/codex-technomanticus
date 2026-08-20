@@ -98,8 +98,7 @@ O harness gerencia o loop inteiro — o modelo recebe apenas a mensagem montada 
  > [!tip] Assista: Cline + VS Code Changed How I Code Forever
 > **Canal:** Mervin Praison | **Duração:** ~6min | **Idioma:** EN
 >
-> Demo rápido do Cline em ação: instalação, configuração com Claude e com Ollama (modelos locais), e criação de uma aplicação completa com um único prompt. O vídeo mostra na prática como o harness opera — Cline criando arquivos, editando código, abrindo o browser para testar — tudo com aprovação do dev a cada passo. Útil para ver a diferença de qualidade entre modelos potentes (Claude/GPT-4o) e modelos locais pequenos (8B) na mesma ferramenta.
-> Trecho de destaque [0:01]: *"Cline, autonomous coding agent right in your IDE, capable of creating, editing files, executing commands, using the browser, and more with your permission every step of the way."*
+> Demo rápido do Cline em ação: instalação, configuração com Claude e com Ollama (modelos locais), e criação de uma aplicação completa com um único prompt. O vídeo mostra na prática como o harness opera — Cline criando arquivos, editando código, abrindo o browser para testar — tudo com aprovação do dev a cada passo. Útil para ver a diferença de qualidade entre modelos potentes (Claude/GPT-4o) e modelos locais pequenos (8B) na mesma ferramenta. Trecho de destaque [0:01]: *"Cline, autonomous coding agent right in your IDE, capable of creating, editing files, executing commands, using the browser, and more with your permission every step of the way."*
 >
 > 🎬 [Assistir no YouTube](https://youtube.com/watch?v=KjqQC4AnJ1I)
 

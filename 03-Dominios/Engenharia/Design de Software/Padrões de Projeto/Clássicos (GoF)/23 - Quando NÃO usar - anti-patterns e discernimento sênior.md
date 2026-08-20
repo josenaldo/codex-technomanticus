@@ -20,14 +20,7 @@ aliases:
 # Quando NÃO usar: anti-patterns e discernimento sênior
 
 > [!abstract] TL;DR
-> Esta é a nota que fecha o catálogo — e a mais importante para o sênior. Todas as anteriores
-> ensinaram *quando usar* cada padrão; aqui consolidamos o que quase ninguém debate: **quando não
-> usar nenhum**. O maior erro com padrões não é escolher o errado — é aplicar um onde **código
-> direto** resolveria. A regra de ouro atravessa todo o catálogo: **parta do problema, nunca do
-> padrão**; e a frase que resume o discernimento é *"abstração prematura é tão ruim quanto abstração
-> nenhuma"*. Reunimos aqui os anti-patterns (pattern mania, Golden Hammer, abstração prematura,
-> Singleton para tudo, reimplementar o framework, confundir padrão com arquitetura) e o vocabulário
-> de entrevista para falar de padrões como quem tem julgamento, não como quem decorou 23 nomes.
+> Esta é a nota que fecha o catálogo — e a mais importante para o sênior. Todas as anteriores ensinaram *quando usar* cada padrão; aqui consolidamos o que quase ninguém debate: **quando não usar nenhum**. O maior erro com padrões não é escolher o errado — é aplicar um onde **código direto** resolveria. A regra de ouro atravessa todo o catálogo: **parta do problema, nunca do padrão**; e a frase que resume o discernimento é *"abstração prematura é tão ruim quanto abstração nenhuma"*. Reunimos aqui os anti-patterns (pattern mania, Golden Hammer, abstração prematura, Singleton para tudo, reimplementar o framework, confundir padrão com arquitetura) e o vocabulário de entrevista para falar de padrões como quem tem julgamento, não como quem decorou 23 nomes.
 
 ## O erro que o catálogo inteiro tenta evitar
 
@@ -58,29 +51,19 @@ Repare quantos caminhos levam a **não usar padrão nenhum**. Esse é o ponto: o
 ## Os anti-patterns (consolidados)
 
 > [!warning] Pattern mania / overuse
-> **O que acontece:** aplicar padrões onde código direto resolveria — um `if/else` claro vira um Strategy, uma função vira um Command, uma classe vira um Singleton.
-> **Por quê:** confunde-se *conhecer* o padrão com *precisar* dele. Cada padrão adiciona indireção; sem um problema que a justifique, você só afastou o leitor do código que faz o trabalho.
-> **Como evitar:** parta do problema. Se não consegue nomear a dor concreta que o padrão alivia, não use o padrão. Um `if/else` legível vence uma abstração cerimoniosa.
+> **O que acontece:** aplicar padrões onde código direto resolveria — um `if/else` claro vira um Strategy, uma função vira um Command, uma classe vira um Singleton. **Por quê:** confunde-se *conhecer* o padrão com *precisar* dele. Cada padrão adiciona indireção; sem um problema que a justifique, você só afastou o leitor do código que faz o trabalho. **Como evitar:** parta do problema. Se não consegue nomear a dor concreta que o padrão alivia, não use o padrão. Um `if/else` legível vence uma abstração cerimoniosa.
 
 > [!warning] Abstração prematura
-> **O que acontece:** cria-se a interface e a hierarquia "para o caso de um dia precisar" — o Strategy com uma implementação, a Factory para um tipo, o Abstract Factory para uma família.
-> **Por quê:** você paga o custo da abstração (mais arquivos, mais indireção, mais cognição) **antes** de ter o benefício (variação real). E adivinhar o futuro raramente acerta a forma certa da abstração.
-> **Como evitar:** espere a **segunda** implementação. *"Premature abstraction is as bad as no abstraction."* Adicione o padrão quando o segundo caso concreto aparecer, não antes — refatorar para o padrão é barato; desfazer a abstração errada, caro.
+> **O que acontece:** cria-se a interface e a hierarquia "para o caso de um dia precisar" — o Strategy com uma implementação, a Factory para um tipo, o Abstract Factory para uma família. **Por quê:** você paga o custo da abstração (mais arquivos, mais indireção, mais cognição) **antes** de ter o benefício (variação real). E adivinhar o futuro raramente acerta a forma certa da abstração. **Como evitar:** espere a **segunda** implementação. *"Premature abstraction is as bad as no abstraction."* Adicione o padrão quando o segundo caso concreto aparecer, não antes — refatorar para o padrão é barato; desfazer a abstração errada, caro.
 
 > [!warning] Golden Hammer (o martelo de ouro)
-> **O que acontece:** "quando você só tem um martelo, tudo parece prego" — aplicar o mesmo padrão preferido em todo problema, porque é o que você domina.
-> **Por quê:** familiaridade não é adequação. O padrão que resolveu bem o último problema pode ser desajeitado no próximo, e a insistência esconde soluções mais simples.
-> **Como evitar:** deixe o problema escolher a ferramenta, não o contrário. Se você usa o mesmo padrão em tudo, desconfie.
+> **O que acontece:** "quando você só tem um martelo, tudo parece prego" — aplicar o mesmo padrão preferido em todo problema, porque é o que você domina. **Por quê:** familiaridade não é adequação. O padrão que resolveu bem o último problema pode ser desajeitado no próximo, e a insistência esconde soluções mais simples. **Como evitar:** deixe o problema escolher a ferramenta, não o contrário. Se você usa o mesmo padrão em tudo, desconfie.
 
 > [!warning] Singleton mutável / Singleton para tudo
-> **O que acontece:** classes utilitárias viram Singletons "para não instanciar"; estado compartilhado mutável vira global disfarçado.
-> **Por quê:** Singleton mutável é estado global — difícil de testar, fonte de bugs de concorrência, dependências escondidas (ver [[02 - Singleton]]).
-> **Como evitar:** sem estado → funções estáticas/de módulo. Com estado compartilhado → bean de escopo singleton gerido pelo container (DI). "Singleton artesanal" quase nunca é a resposta.
+> **O que acontece:** classes utilitárias viram Singletons "para não instanciar"; estado compartilhado mutável vira global disfarçado. **Por quê:** Singleton mutável é estado global — difícil de testar, fonte de bugs de concorrência, dependências escondidas (ver [[02 - Singleton]]). **Como evitar:** sem estado → funções estáticas/de módulo. Com estado compartilhado → bean de escopo singleton gerido pelo container (DI). "Singleton artesanal" quase nunca é a resposta.
 
 > [!warning] Reimplementar o que o framework já faz / confundir padrão com arquitetura
-> **O que acontece:** escrever o próprio container de DI, event bus ou proxy; ou dizer "nossa arquitetura é baseada em Strategy".
-> **Por quê:** o framework já implementa esses padrões, testados e integrados (ver [[22 - Reconhecer GoF nos frameworks]]). E padrões operam no nível de **classe** — não descrevem a forma **macro** do sistema, que é [[03-Dominios/Engenharia/Arquitetura/index|Arquitetura]].
-> **Como evitar:** use o que o framework dá; reserve "padrão" para o nível de objeto e "arquitetura" para módulos/serviços.
+> **O que acontece:** escrever o próprio container de DI, event bus ou proxy; ou dizer "nossa arquitetura é baseada em Strategy". **Por quê:** o framework já implementa esses padrões, testados e integrados (ver [[22 - Reconhecer GoF nos frameworks]]). E padrões operam no nível de **classe** — não descrevem a forma **macro** do sistema, que é [[03-Dominios/Engenharia/Arquitetura/index|Arquitetura]]. **Como evitar:** use o que o framework dá; reserve "padrão" para o nível de objeto e "arquitetura" para módulos/serviços.
 
 ## O discernimento em uma frase
 

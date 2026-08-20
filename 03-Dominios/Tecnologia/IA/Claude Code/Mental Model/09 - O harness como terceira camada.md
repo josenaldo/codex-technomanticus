@@ -198,11 +198,9 @@ Sem ownership, "good setups stay tribal" — cada dev evolui o próprio harness 
 
 O playbook foi escrito para orgs com milhares de devs, mas os princípios modulam. Observando o padrão de um dev senior solo com projeto multi-repo:
 
-**Hub-and-spoke, não simétrico:**
-Harness denso no repo que concentra complexidade arquitetural (muitas skills, hooks de validação, subagents read-only, MCP para banco de dados), mínimo nos outros (CLAUDE.md curto). O ROI de skills detalhadas é proporcional à frequência de mudança no domínio.
+**Hub-and-spoke, não simétrico:** Harness denso no repo que concentra complexidade arquitetural (muitas skills, hooks de validação, subagents read-only, MCP para banco de dados), mínimo nos outros (CLAUDE.md curto). O ROI de skills detalhadas é proporcional à frequência de mudança no domínio.
 
-**DRI = a mesma pessoa:**
-Não há "agent manager" nem time. Vantagem: zero overhead de coordenação. Custo: vulnerabilidade a bus factor 1 e ausência de revisão externa do harness.
+**DRI = a mesma pessoa:** Não há "agent manager" nem time. Vantagem: zero overhead de coordenação. Custo: vulnerabilidade a bus factor 1 e ausência de revisão externa do harness.
 
 **ROI por componente em escala individual:**
 
@@ -314,11 +312,9 @@ Para quem opera Claude Code: ao comparar dois setups, fixe o harness antes de at
 
 Duas situações reais mostram o mesmo princípio — harness proporcional ao contexto — puxado em direções opostas.
 
-**Cenário 1 — Harness em codebase grande (monorepo com 40+ módulos).**
-Um monorepo de e-commerce cresceu de 3 para 40 módulos em dois anos. O CLAUDE.md raiz tinha 800 linhas — todo o histórico de decisões arquiteturais acumulado, nunca podado. Resultado: cada sessão carregava contexto irrelevante para a tarefa em mãos (um dev mexendo em `payments/` recebia instruções sobre `notifications/` que nunca usaria). A correção seguiu o Padrão 1 desta nota: CLAUDE.md raiz reduzido a gotchas críticos + ponteiros, com um `CLAUDE.md` por módulo carregando só as convenções daquele subdiretório. Tempo de "aquecimento" da sessão (perguntas de convenção antes da primeira edição útil) caiu de ~6 perguntas para ~1. A lição não é "harness grande é ruim" — é que harness em escala precisa de **escopo hierárquico**, não de um arquivo único inflando sem limite.
+**Cenário 1 — Harness em codebase grande (monorepo com 40+ módulos).** Um monorepo de e-commerce cresceu de 3 para 40 módulos em dois anos. O CLAUDE.md raiz tinha 800 linhas — todo o histórico de decisões arquiteturais acumulado, nunca podado. Resultado: cada sessão carregava contexto irrelevante para a tarefa em mãos (um dev mexendo em `payments/` recebia instruções sobre `notifications/` que nunca usaria). A correção seguiu o Padrão 1 desta nota: CLAUDE.md raiz reduzido a gotchas críticos + ponteiros, com um `CLAUDE.md` por módulo carregando só as convenções daquele subdiretório. Tempo de "aquecimento" da sessão (perguntas de convenção antes da primeira edição útil) caiu de ~6 perguntas para ~1. A lição não é "harness grande é ruim" — é que harness em escala precisa de **escopo hierárquico**, não de um arquivo único inflando sem limite.
 
-**Cenário 2 — Harness em time distribuído (8 devs, 3 fusos horários).**
-Um time distribuído sem ownership claro do harness (Padrão 3) viu cada dev configurar hooks e skills próprios em `.claude/` local, nunca comitados. Um dev na Ásia criava skills de revisão de segurança; um dev na Europa criava hooks de guardrail para migrations — nenhum dos dois sabia que o outro tinha resolvido um problema adjacente. Depois de três meses, havia 4 versões incompatíveis de "como revisar um PR" espalhadas em máquinas individuais. A correção: nomear um DRI que centralizasse os artefatos do harness em `.claude/` versionado no repo, com PR review para mudanças de hook/skill — o mesmo rigor aplicado a código de produção. O ganho não foi só consistência técnica; foi *aprendizado compartilhado* — um hook que um dev descobriu que precisava passou a beneficiar os outros sete no mesmo commit.
+**Cenário 2 — Harness em time distribuído (8 devs, 3 fusos horários).** Um time distribuído sem ownership claro do harness (Padrão 3) viu cada dev configurar hooks e skills próprios em `.claude/` local, nunca comitados. Um dev na Ásia criava skills de revisão de segurança; um dev na Europa criava hooks de guardrail para migrations — nenhum dos dois sabia que o outro tinha resolvido um problema adjacente. Depois de três meses, havia 4 versões incompatíveis de "como revisar um PR" espalhadas em máquinas individuais. A correção: nomear um DRI que centralizasse os artefatos do harness em `.claude/` versionado no repo, com PR review para mudanças de hook/skill — o mesmo rigor aplicado a código de produção. O ganho não foi só consistência técnica; foi *aprendizado compartilhado* — um hook que um dev descobriu que precisava passou a beneficiar os outros sete no mesmo commit.
 
 Os dois casos convergem no mesmo diagnóstico: harness mal-dimensionado (grande demais e centralizado, ou disperso demais e não-compartilhado) desperdiça o ganho que o harness deveria entregar.
 
@@ -377,8 +373,7 @@ Os dois casos convergem no mesmo diagnóstico: harness mal-dimensionado (grande 
 > [!tip] Assista: Anthropic Just Dropped a Masterclass on Building Agent Harnesses (for Large Codebases)
 > **Canal:** (criador independente, cobertura do post da Anthropic) | **Duração:** ~30min | **Idioma:** EN
 >
-> Pega o mesmo post da Anthropic que ancora esta nota — "How Claude Code works in large codebases" — e constrói uma codebase de demonstração aplicando cada estratégia na prática: hooks de guardrail, CLAUDE.md hierárquico, subagents de exploração. É a versão "mão na massa" do que aqui fica em prosa e tabela.
-> Trecho de destaque [11:00]: *"most teams think of hooks as scripts that prevent Claude from doing something wrong... a tool use hook to stop Claude from editing in certain directories."*
+> Pega o mesmo post da Anthropic que ancora esta nota — "How Claude Code works in large codebases" — e constrói uma codebase de demonstração aplicando cada estratégia na prática: hooks de guardrail, CLAUDE.md hierárquico, subagents de exploração. É a versão "mão na massa" do que aqui fica em prosa e tabela. Trecho de destaque [11:00]: *"most teams think of hooks as scripts that prevent Claude from doing something wrong... a tool use hook to stop Claude from editing in certain directories."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=efRIrLXoOVA)
 

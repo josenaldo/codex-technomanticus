@@ -27,8 +27,7 @@ Agora imagine que, antes de ele sentar, você deixou sobre a mesa um documento: 
 Skills são exatamente esse documento. Elas ensinam o [[Dicionário de IA#Claude Code|Claude Code]] a seguir *seu* processo, no *seu* projeto, com as *suas* regras — antes que ele comece qualquer trabalho.
 
 > [!question] Pergunta de aquecimento
-> Se você pode dar instruções no chat, por que criar um arquivo separado?
-> Resposta: porque instrução no chat some com o contexto. A skill é versionada, invocável pelo nome, compartilhável com o time, e evolui junto com o código.
+> Se você pode dar instruções no chat, por que criar um arquivo separado? Resposta: porque instrução no chat some com o contexto. A skill é versionada, invocável pelo nome, compartilhável com o time, e evolui junto com o código.
 
 ## O que é uma skill, mecanicamente
 

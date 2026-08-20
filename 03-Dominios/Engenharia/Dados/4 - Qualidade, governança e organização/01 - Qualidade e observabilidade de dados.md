@@ -39,9 +39,7 @@ Só que, três meses depois, alguém da diretoria comercial nota algo estranho: 
 Nenhum log gritou. Nenhum alerta disparou. O pipeline "funcionou" em todo sentido que uma orquestração tradicional consegue verificar — e ainda assim entregou um número errado para uma decisão de negócio, por três meses seguidos.
 
 > [!warning] "O pipeline rodou sem erro" não é o mesmo que "o dado está certo"
-> **O que acontece:** a equipe de dados monitora status de execução (sucesso/falha, duração, uso de recursos) e considera isso suficiente para confiar no resultado.
-> **Por quê:** falhas de *processo* (exceção, timeout, job travado) e falhas de *conteúdo* (schema mudou, uma categoria some, volume caiu pela metade) são categorias completamente diferentes de problema. Um pipeline bem escrito lida bem com dado ausente ou nulo sem lançar exceção — o que é ótimo para resiliência de processo e péssimo para detectar corrupção silenciosa de conteúdo, porque o processo "trata" o problema em vez de expô-lo.
-> **Como evitar:** monitorar o pipeline como processo é necessário, mas não suficiente. É preciso monitorar o **dado que sai do outro lado** — o que esta nota cobre a partir daqui.
+> **O que acontece:** a equipe de dados monitora status de execução (sucesso/falha, duração, uso de recursos) e considera isso suficiente para confiar no resultado. **Por quê:** falhas de *processo* (exceção, timeout, job travado) e falhas de *conteúdo* (schema mudou, uma categoria some, volume caiu pela metade) são categorias completamente diferentes de problema. Um pipeline bem escrito lida bem com dado ausente ou nulo sem lançar exceção — o que é ótimo para resiliência de processo e péssimo para detectar corrupção silenciosa de conteúdo, porque o processo "trata" o problema em vez de expô-lo. **Como evitar:** monitorar o pipeline como processo é necessário, mas não suficiente. É preciso monitorar o **dado que sai do outro lado** — o que esta nota cobre a partir daqui.
 
 Esse é o ponto de partida da nota: qualidade e observabilidade de dados existem porque o tipo de falha mais caro em um sistema de dados não é o que quebra visivelmente — é o que degrada em silêncio.
 
@@ -205,7 +203,4 @@ Estabelecemos as dimensões de qualidade, os testes que verificam o que já se p
 - Great Expectations — [*Great Expectations documentation*](https://docs.greatexpectations.io/) — biblioteca de referência para expressar e validar expectativas sobre datasets.
 - Monte Carlo Data — [*What Is Data Observability? 5 Key Pillars To Know*](https://www.montecarlodata.com/blog-what-is-data-observability/) — formulação de referência dos cinco pilares no contexto de produto, complementar ao livro de Moses et al.
 
-[^reis]: Reis & Housley, *Fundamentals of Data Engineering*, O'Reilly, 2022.
-[^moses]: Moses, Levin & Sirico, *Data Quality Fundamentals*, O'Reilly, 2022; Monte Carlo Data, *What Is Data Observability? 5 Key Pillars To Know*.
-[^contracts]: Ver [[02 - Data contracts e schema evolution]], próxima nota desta trilha.
-[^lineage]: Ver [[03 - Governança, catálogo e lineage]], nota 03 desta trilha.
+[^reis]: Reis & Housley, *Fundamentals of Data Engineering*, O'Reilly, 2022. [^moses]: Moses, Levin & Sirico, *Data Quality Fundamentals*, O'Reilly, 2022; Monte Carlo Data, *What Is Data Observability? 5 Key Pillars To Know*. [^contracts]: Ver [[02 - Data contracts e schema evolution]], próxima nota desta trilha. [^lineage]: Ver [[03 - Governança, catálogo e lineage]], nota 03 desta trilha.

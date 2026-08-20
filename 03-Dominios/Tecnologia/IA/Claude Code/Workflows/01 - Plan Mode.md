@@ -170,8 +170,7 @@ Um plano sem suposições nem perguntas em tarefas complexas é um sinal de aler
 
 Um endpoint `/api/users` retorna `full_name`. A nova versão da API precisa de `display_name`. A coluna existe em 3 tabelas e é referenciada em 7 arquivos de service.
 
-**Sem Plan Mode:**
-O agente começa a editar os services. Na metade, você percebe que ele está renomeando a coluna nas migrations de forma destrutiva (DROP COLUMN + ADD COLUMN) em vez de usar um `ALTER TABLE ... RENAME`. Você já tem 4 arquivos modificados e uma migration inválida.
+**Sem Plan Mode:** O agente começa a editar os services. Na metade, você percebe que ele está renomeando a coluna nas migrations de forma destrutiva (DROP COLUMN + ADD COLUMN) em vez de usar um `ALTER TABLE ... RENAME`. Você já tem 4 arquivos modificados e uma migration inválida.
 
 **Com Plan Mode:**
 ```
@@ -256,8 +255,7 @@ você:   "Aprovado."
 Cada rodada de correção é barata (só texto). Cada rodada de correção *depois da execução* é cara (git diff, revert, debug, re-execução). A assimetria de custo justifica o ciclo.
 
 > [!info] Quantas rodadas são normais?
-> Para tarefas simples: 0-1 correções. Para tarefas complexas ou sensíveis: 2-4 é razoável.
-> Se você está na 5ª rodada, o problema geralmente é o prompt — não o Plan Mode.
+> Para tarefas simples: 0-1 correções. Para tarefas complexas ou sensíveis: 2-4 é razoável. Se você está na 5ª rodada, o problema geralmente é o prompt — não o Plan Mode.
 
 ## Plan Mode vs. prompt detalhado
 

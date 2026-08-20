@@ -17,9 +17,7 @@ aliases:
 # Por que build tools existem
 
 > [!abstract] TL;DR
-> Um **build tool** (Maven, Gradle) é um **gestor de build + dependências**: ele resolve o grafo de dependências (incluindo transitivas), automatiza o ciclo de vida (compilar, testar, empacotar) e produz um artefato reprodutível — coisas que `javac` + `jar` na mão não fazem em escala.
-> Regra prática: build tool **não é compilador**; ele orquestra o `javac` e tudo ao redor. O bytecode que sai é o mesmo.
-> Importa porque, em qualquer projeto Java real, é o build tool que define o que é "buildável", o que entra no classpath e o que o CI consegue reproduzir. Sem ele, o projeto não escala além de um punhado de classes.
+> Um **build tool** (Maven, Gradle) é um **gestor de build + dependências**: ele resolve o grafo de dependências (incluindo transitivas), automatiza o ciclo de vida (compilar, testar, empacotar) e produz um artefato reprodutível — coisas que `javac` + `jar` na mão não fazem em escala. Regra prática: build tool **não é compilador**; ele orquestra o `javac` e tudo ao redor. O bytecode que sai é o mesmo. Importa porque, em qualquer projeto Java real, é o build tool que define o que é "buildável", o que entra no classpath e o que o CI consegue reproduzir. Sem ele, o projeto não escala além de um punhado de classes.
 
 ## O que é
 

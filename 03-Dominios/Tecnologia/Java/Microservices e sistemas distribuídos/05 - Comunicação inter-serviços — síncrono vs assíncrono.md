@@ -21,8 +21,7 @@ aliases:
 > [!abstract] TL;DR
 > Quando você quebra um monolito em serviços, a chamada de método que antes acontecia *dentro do processo* vira uma chamada *pela rede*. E a rede falha, atrasa e some. A pergunta central de toda arquitetura de microsserviços é: **esse serviço deveria esperar a resposta do outro (síncrono) ou apenas avisar que algo aconteceu e seguir em frente (assíncrono)?**
 > - **Síncrono** (REST, `@HttpExchange`/Feign, gRPC): request/response, simples de raciocinar, mas cria **acoplamento temporal** — se o serviço de baixo cai, o de cima cai junto (falha em cascata).
-> - **Assíncrono** (eventos/mensageria): o emissor publica e não espera; **desacopla**, é resiliente, mas paga o preço da **consistência eventual**.
-> Não existe "o melhor" — existe o **eixo de decisão**. Você escolhe por caso de uso.
+> - **Assíncrono** (eventos/mensageria): o emissor publica e não espera; **desacopla**, é resiliente, mas paga o preço da **consistência eventual**. Não existe "o melhor" — existe o **eixo de decisão**. Você escolhe por caso de uso.
 
 ## O que é
 
@@ -64,8 +63,7 @@ A armadilha é o **acoplamento temporal** (*temporal coupling*): A e B precisam 
 No modelo assíncrono, o serviço **A** **não chama** o serviço **B**. Em vez disso, A **publica um evento** ("Pedido foi criado") num broker de mensagens (Kafka, RabbitMQ) e **segue em frente imediatamente**, sem esperar ninguém. Quem se interessar pelo evento — B, C, ou um serviço que nem existe ainda — **consome** quando puder.
 
 > [!info] A inversão fundamental
-> No síncrono, A *sabe* quem é B e *manda* B fazer algo ("cobre esse cartão, agora, e me diga se deu certo").
-> No assíncrono, A apenas *anuncia um fato* ("este pedido foi criado") e **não sabe nem se importa** quem vai reagir. O conhecimento sobre "quem faz o quê" sai do emissor.
+> No síncrono, A *sabe* quem é B e *manda* B fazer algo ("cobre esse cartão, agora, e me diga se deu certo"). No assíncrono, A apenas *anuncia um fato* ("este pedido foi criado") e **não sabe nem se importa** quem vai reagir. O conhecimento sobre "quem faz o quê" sai do emissor.
 
 A vantagem é o **desacoplamento temporal**: B pode estar fora do ar quando o evento é publicado. A mensagem fica no broker, esperando. Quando B volta, ele processa a fila acumulada. A nunca soube que B estava offline, e nunca parou por isso. Fowler resume a receita: *"make your calls asynchronous"* como forma de gerenciar o downtime.
 

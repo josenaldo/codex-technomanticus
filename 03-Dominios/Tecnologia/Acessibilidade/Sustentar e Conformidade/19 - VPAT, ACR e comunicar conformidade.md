@@ -43,9 +43,7 @@ O coração do VPAT — e o que o torna confiável — é a escala de conformida
 - **Not Applicable** — o critério não se aplica ao produto (ex.: um critério de vídeo num produto sem mídia).
 
 > [!warning] "Supports" em tudo para fechar a venda
-> **O que acontece:** o time preenche o VPAT marcando "Supports" em critérios que o produto não cumpre, para não perder o negócio. O comprador integra o produto, descobre as falhas em uso (ou numa auditoria), e agora há um documento assinado que **afirmava conformidade falsa**.
-> **Por quê:** o VPAT é um documento com peso **contratual e de responsabilidade**. Uma declaração falsa não é otimismo — é exposição legal, quebra de contrato e dano de reputação, muito pior que um "Partially Supports" honesto.
-> **Como evitar:** um VPAT honesto com "Partially Supports" bem explicados (o que falha, o impacto, o plano de correção) é **mais forte** que um "Supports" mentiroso — mostra que você conhece seu produto e leva a11y a sério. Compradores maduros preferem transparência a perfeição de fachada. Preencha com base na auditoria real do SG3, não no que você gostaria que fosse verdade.
+> **O que acontece:** o time preenche o VPAT marcando "Supports" em critérios que o produto não cumpre, para não perder o negócio. O comprador integra o produto, descobre as falhas em uso (ou numa auditoria), e agora há um documento assinado que **afirmava conformidade falsa**. **Por quê:** o VPAT é um documento com peso **contratual e de responsabilidade**. Uma declaração falsa não é otimismo — é exposição legal, quebra de contrato e dano de reputação, muito pior que um "Partially Supports" honesto. **Como evitar:** um VPAT honesto com "Partially Supports" bem explicados (o que falha, o impacto, o plano de correção) é **mais forte** que um "Supports" mentiroso — mostra que você conhece seu produto e leva a11y a sério. Compradores maduros preferem transparência a perfeição de fachada. Preencha com base na auditoria real do SG3, não no que você gostaria que fosse verdade.
 
 ## Do VPAT ao ACR
 
@@ -95,19 +93,13 @@ Uma pessoa que usa leitor de tela trava num fluxo de pagamento. Em vez de simple
 ## Armadilhas comuns
 
 > [!warning] Marcar "Supports" em tudo para fechar a venda
-> **O que acontece:** o time preenche o VPAT afirmando conformidade que o produto não tem; o comprador descobre em uso ou numa auditoria, e há um documento assinado com declaração falsa.
-> **Por quê:** o VPAT/ACR tem peso contratual e de responsabilidade. Uma afirmação falsa é exposição legal e dano de reputação — muito pior que um "Partially Supports" honesto.
-> **Como evitar:** preencha com base na auditoria real do SG3. "Partially Supports" bem explicado é mais forte que "Supports" mentiroso; compradores maduros preferem transparência a perfeição de fachada.
+> **O que acontece:** o time preenche o VPAT afirmando conformidade que o produto não tem; o comprador descobre em uso ou numa auditoria, e há um documento assinado com declaração falsa. **Por quê:** o VPAT/ACR tem peso contratual e de responsabilidade. Uma afirmação falsa é exposição legal e dano de reputação — muito pior que um "Partially Supports" honesto. **Como evitar:** preencha com base na auditoria real do SG3. "Partially Supports" bem explicado é mais forte que "Supports" mentiroso; compradores maduros preferem transparência a perfeição de fachada.
 
 > [!warning] Confundir VPAT (template) com ACR (preenchido)
-> **O que acontece:** o time promete "temos um VPAT" mas entrega o formulário em branco, ou chama de ACR algo que nunca foi preenchido com dados reais do produto.
-> **Por quê:** VPAT é o template vazio; ACR é o VPAT preenchido, assinado e datado — o entregável. O comprador precisa do segundo, não do primeiro.
-> **Como evitar:** o entregável é sempre o ACR: produto + versão, método de avaliação, régua WCAG usada, e cada critério classificado com base em auditoria real.
+> **O que acontece:** o time promete "temos um VPAT" mas entrega o formulário em branco, ou chama de ACR algo que nunca foi preenchido com dados reais do produto. **Por quê:** VPAT é o template vazio; ACR é o VPAT preenchido, assinado e datado — o entregável. O comprador precisa do segundo, não do primeiro. **Como evitar:** o entregável é sempre o ACR: produto + versão, método de avaliação, régua WCAG usada, e cada critério classificado com base em auditoria real.
 
 > [!warning] Accessibility statement sem canal de contato
-> **O que acontece:** a declaração de acessibilidade lista compromissos e conformidade, mas não diz como o usuário reporta uma barreira que encontrou.
-> **Por quê:** para o usuário com deficiência, o item mais valioso do statement é a saída — um jeito de pedir ajuda quando algo não funciona. Sem ele, o statement é só marketing.
-> **Como evitar:** inclua sempre um canal de contato acessível (e-mail/formulário), a data da última avaliação e os problemas conhecidos com plano.
+> **O que acontece:** a declaração de acessibilidade lista compromissos e conformidade, mas não diz como o usuário reporta uma barreira que encontrou. **Por quê:** para o usuário com deficiência, o item mais valioso do statement é a saída — um jeito de pedir ajuda quando algo não funciona. Sem ele, o statement é só marketing. **Como evitar:** inclua sempre um canal de contato acessível (e-mail/formulário), a data da última avaliação e os problemas conhecidos com plano.
 
 ## Como explicar em inglês
 

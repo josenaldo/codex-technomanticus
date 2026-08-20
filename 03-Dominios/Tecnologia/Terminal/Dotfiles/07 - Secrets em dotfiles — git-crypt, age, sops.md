@@ -86,8 +86,7 @@ git clone git@github.com:alice/dotfiles.git
 git-crypt unlock   # usa GPG key local automaticamente
 ```
 
-**Prós:** workflow git normal após unlock; transparente; integra com CI via symmetric key; AES-256.
-**Contras:** GPG é complicado (geração de key, keyring, web of trust); não revoga acesso após grant; não encripta nomes de arquivo nem mensagens de commit.
+**Prós:** workflow git normal após unlock; transparente; integra com CI via symmetric key; AES-256. **Contras:** GPG é complicado (geração de key, keyring, web of trust); não revoga acesso após grant; não encripta nomes de arquivo nem mensagens de commit.
 
 Repositório: https://github.com/AGWA/git-crypt
 
@@ -129,8 +128,7 @@ age --decrypt -i ~/.age/key.txt secret.age > secret.txt
 age --decrypt -i ~/.ssh/id_ed25519 secret.age > secret.txt
 ```
 
-**Prós:** API simples; ssh-key based (zero nova infra); rápido; sem state externo.
-**Contras:** não integra automaticamente com git (você encripta manualmente antes de commitar); não há partial encryption de YAML/JSON.
+**Prós:** API simples; ssh-key based (zero nova infra); rápido; sem state externo. **Contras:** não integra automaticamente com git (você encripta manualmente antes de commitar); não há partial encryption de YAML/JSON.
 
 > [!tip] Privacidade com ssh keys
 > Usar SSH public keys como recipient embute um identificador no ciphertext (permite rastrear pra qual key foi cifrado). Para máxima privacidade, use chaves nativas `age1...`.
@@ -192,8 +190,7 @@ Extrair valor individual sem decriptar o arquivo inteiro:
 sops -d secrets/config.yaml | yq '.database.password'
 ```
 
-**Prós:** estrutura YAML/JSON preservada (diff legível); partial encryption; multi-backend (KMS pra equipes); CNCF-backed.
-**Contras:** setup mais complexo; requer `SOPS_AGE_KEY_FILE` no ambiente; metadados sops visíveis no arquivo.
+**Prós:** estrutura YAML/JSON preservada (diff legível); partial encryption; multi-backend (KMS pra equipes); CNCF-backed. **Contras:** setup mais complexo; requer `SOPS_AGE_KEY_FILE` no ambiente; metadados sops visíveis no arquivo.
 
 Repositório: https://github.com/getsops/sops
 
@@ -426,43 +423,23 @@ sops -d ~/dotfiles/secrets/config.yaml | yq '.api_key'
 
 ## Armadilhas
 
-**Commitar plaintext UMA vez = history comprometido para sempre**
-**Causa:** setup de git-crypt não foi feito antes de adicionar o arquivo, ou o arquivo ficou fora do padrão de `.gitattributes`.
-**Sintoma:** `git log -p -- secrets/api.env` mostra o valor em plaintext em algum commit anterior.
-**Como detectar:** `git log --all -p -- <arquivo>` mostra o histórico completo. Ferramentas como `gitleaks` e `trufflehog` auditam todo o histórico automaticamente.
-**Solução:** **rotacionar o secret imediatamente** (assumir que está vazado independentemente de o repo ser público ou privado). Depois: `git filter-repo --invert-paths --path secrets/api.env` (ou BFG Repo Cleaner) + force-push + notificar colaboradores pra reclonarem.
+**Commitar plaintext UMA vez = history comprometido para sempre** **Causa:** setup de git-crypt não foi feito antes de adicionar o arquivo, ou o arquivo ficou fora do padrão de `.gitattributes`. **Sintoma:** `git log -p -- secrets/api.env` mostra o valor em plaintext em algum commit anterior. **Como detectar:** `git log --all -p -- <arquivo>` mostra o histórico completo. Ferramentas como `gitleaks` e `trufflehog` auditam todo o histórico automaticamente. **Solução:** **rotacionar o secret imediatamente** (assumir que está vazado independentemente de o repo ser público ou privado). Depois: `git filter-repo --invert-paths --path secrets/api.env` (ou BFG Repo Cleaner) + force-push + notificar colaboradores pra reclonarem.
 
 ---
 
-**git-crypt GPG key perdida = repo permanentemente bloqueado**
-**Causa:** a GPG private key foi perdida (disco formatado, key expirada sem backup) e não há outro GPG user adicionado ao repo.
-**Sintoma:** `git-crypt unlock` falha em qualquer máquina: "no secret key available".
-**Como detectar:** ao tentar unlock em máquina nova.
-**Solução preventiva:** (1) adicionar múltiplos GPG users (`git-crypt add-gpg-user` com keys de backup); (2) fazer backup da GPG key via `gpg --export-secret-keys` pra mídia offline ou YubiKey; (3) usar `git-crypt export-key` pra gerar symmetric key e armazenar em gerenciador de senhas.
+**git-crypt GPG key perdida = repo permanentemente bloqueado** **Causa:** a GPG private key foi perdida (disco formatado, key expirada sem backup) e não há outro GPG user adicionado ao repo. **Sintoma:** `git-crypt unlock` falha em qualquer máquina: "no secret key available". **Como detectar:** ao tentar unlock em máquina nova. **Solução preventiva:** (1) adicionar múltiplos GPG users (`git-crypt add-gpg-user` com keys de backup); (2) fazer backup da GPG key via `gpg --export-secret-keys` pra mídia offline ou YubiKey; (3) usar `git-crypt export-key` pra gerar symmetric key e armazenar em gerenciador de senhas.
 
 ---
 
-**age `key.txt` commitado por engano no repo**
-**Causa:** `age-keygen -o ~/.age/key.txt` foi rodado dentro de uma pasta que é working tree de um repo, seguido de `git add .` inadvertente.
-**Sintoma:** `git log --all -- '**/*.txt'` mostra a private key no histórico.
-**Como detectar:** `git log --all -p -- ~/.age/key.txt` ou auditar com gitleaks.
-**Solução:** revogar/regenerar o key pair; todos os arquivos encriptados com a key comprometida precisam ser reencriptados com a nova key. Limpar histórico com `git filter-repo`.
+**age `key.txt` commitado por engano no repo** **Causa:** `age-keygen -o ~/.age/key.txt` foi rodado dentro de uma pasta que é working tree de um repo, seguido de `git add .` inadvertente. **Sintoma:** `git log --all -- '**/*.txt'` mostra a private key no histórico. **Como detectar:** `git log --all -p -- ~/.age/key.txt` ou auditar com gitleaks. **Solução:** revogar/regenerar o key pair; todos os arquivos encriptados com a key comprometida precisam ser reencriptados com a nova key. Limpar histórico com `git filter-repo`.
 
 ---
 
-**sops falha "no age recipients" sem `SOPS_AGE_KEY_FILE`**
-**Causa:** a variável de ambiente `SOPS_AGE_KEY_FILE` não está setada na sessão atual — sops não encontra a identity pra decriptar.
-**Sintoma:** `sops -d secrets/config.yaml` falha com "Failed to get the data key required to decrypt the SOPS file" ou "no age recipients available".
-**Como detectar:** `echo $SOPS_AGE_KEY_FILE` retorna vazio.
-**Solução:** adicionar `export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"` ao `~/.zshrc` (ou `~/.zprofile` pra garantir em sessões non-interactive). Verificar com `sops --version` e `age --version` que ambos estão instalados.
+**sops falha "no age recipients" sem `SOPS_AGE_KEY_FILE`** **Causa:** a variável de ambiente `SOPS_AGE_KEY_FILE` não está setada na sessão atual — sops não encontra a identity pra decriptar. **Sintoma:** `sops -d secrets/config.yaml` falha com "Failed to get the data key required to decrypt the SOPS file" ou "no age recipients available". **Como detectar:** `echo $SOPS_AGE_KEY_FILE` retorna vazio. **Solução:** adicionar `export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"` ao `~/.zshrc` (ou `~/.zprofile` pra garantir em sessões non-interactive). Verificar com `sops --version` e `age --version` que ambos estão instalados.
 
 ---
 
-**chezmoi `--encrypt` falha sem `encryption =` no `chezmoi.toml`**
-**Causa:** `chezmoi add --encrypt ~/.ssh/secret` sem ter configurado o método de encryption em `~/.config/chezmoi/chezmoi.toml`.
-**Sintoma:** erro "no encryption method configured" ao rodar `chezmoi add --encrypt`.
-**Como detectar:** `chezmoi cat-config` — o bloco `[age]` ou `[gpg]` estará ausente.
-**Solução:** configurar antes:
+**chezmoi `--encrypt` falha sem `encryption =` no `chezmoi.toml`** **Causa:** `chezmoi add --encrypt ~/.ssh/secret` sem ter configurado o método de encryption em `~/.config/chezmoi/chezmoi.toml`. **Sintoma:** erro "no encryption method configured" ao rodar `chezmoi add --encrypt`. **Como detectar:** `chezmoi cat-config` — o bloco `[age]` ou `[gpg]` estará ausente. **Solução:** configurar antes:
 ```toml
 # ~/.config/chezmoi/chezmoi.toml
 encryption = "age"
@@ -473,11 +450,7 @@ encryption = "age"
 
 ---
 
-**git-crypt não encripta nomes de arquivo nem metadata**
-**Causa:** git-crypt só cifra conteúdo de files — os paths, nomes, commit messages e timestamps permanecem plaintext no repo.
-**Sintoma:** `git log --name-only` revela que existe um arquivo chamado `secrets/stripe_prod_key.env` mesmo sem poder ler seu conteúdo.
-**Como detectar:** navegar o histórico sem fazer unlock.
-**Solução:** usar nomes de arquivo opacos (ex: `secrets/payments.env` em vez de `secrets/stripe_prod_key.env`) e commit messages sem mencionar valores ou providers específicos.
+**git-crypt não encripta nomes de arquivo nem metadata** **Causa:** git-crypt só cifra conteúdo de files — os paths, nomes, commit messages e timestamps permanecem plaintext no repo. **Sintoma:** `git log --name-only` revela que existe um arquivo chamado `secrets/stripe_prod_key.env` mesmo sem poder ler seu conteúdo. **Como detectar:** navegar o histórico sem fazer unlock. **Solução:** usar nomes de arquivo opacos (ex: `secrets/payments.env` em vez de `secrets/stripe_prod_key.env`) e commit messages sem mencionar valores ou providers específicos.
 
 ## Em inglês
 

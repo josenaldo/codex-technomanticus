@@ -40,8 +40,7 @@ Um papel tem duas peças de política anexadas a ele, e é essencial não confun
 > [!tip] Assista: AWS AssumeRole Explained | IAM Roles, STS & Temporary Credentials Demo
 > **Canal:** Anything Cloud | **Duração:** ~13min | **Idioma:** EN
 >
-> O vídeo desenha lado a lado as duas peças que este trecho acabou de separar — permission policy e trust policy — e mostra, no console, como a trust policy é o pedaço que decide quem pode chamar `AssumeRole` antes mesmo de a permission policy importar.
-> Trecho de destaque [01:07]: *"And trust policy defines who can use this role"*
+> O vídeo desenha lado a lado as duas peças que este trecho acabou de separar — permission policy e trust policy — e mostra, no console, como a trust policy é o pedaço que decide quem pode chamar `AssumeRole` antes mesmo de a permission policy importar. Trecho de destaque [01:07]: *"And trust policy defines who can use this role"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=xNYPZxd_m4M)
 

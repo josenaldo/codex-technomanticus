@@ -163,8 +163,7 @@ cloud-init analyze dump
 > [!tip] Assista: What is EC2 user data and cloud-init? Explained with Demo
 > **Canal:** AWS Tutorials | **Duração:** ~21min | **Idioma:** EN
 >
-> Demonstração ao vivo do caminho completo que o user data percorre — do parâmetro passado no `run-instances` até o cloud-init recebendo a instrução via serviço de metadados —, o que ajuda a visualizar em vídeo o que o diagrama de sequência da nota descreve em texto.
-> Trecho de destaque [04:00]: *"the script is executed by Cloud init; the user data script is passed to the cloud init service as ec2 metadata; Cloud init then processes the commands"*
+> Demonstração ao vivo do caminho completo que o user data percorre — do parâmetro passado no `run-instances` até o cloud-init recebendo a instrução via serviço de metadados —, o que ajuda a visualizar em vídeo o que o diagrama de sequência da nota descreve em texto. Trecho de destaque [04:00]: *"the script is executed by Cloud init; the user data script is passed to the cloud init service as ec2 metadata; Cloud init then processes the commands"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=PNNIB0YXvNQ)
 

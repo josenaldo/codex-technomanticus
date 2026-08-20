@@ -22,13 +22,7 @@ aliases:
 # STAR e suas variantes
 
 > [!abstract] TL;DR
-> STAR — **Situation, Task, Action, Result** — é a estrutura padrão para responder pergunta
-> comportamental, e quase todo mundo a conhece. O que quase ninguém respeita é o **time-box**: a
-> proporção saudável é 10% / 10% / **60%** / 20%, com alvo de dois minutos. A Action é o coração porque
-> é onde o julgamento aparece; contextualizar demais é o erro mais comum, e ele consome justamente o
-> tempo da parte que decide. Para histórias de fracasso, a variante obrigatória é **STAR-L**, com
-> *Learning* — sem ele, o relato é confissão sem conclusão. E há um detalhe de linguagem que muda a
-> percepção mais do que parece: dizer **"eu"** onde você realmente agiu.
+> STAR — **Situation, Task, Action, Result** — é a estrutura padrão para responder pergunta comportamental, e quase todo mundo a conhece. O que quase ninguém respeita é o **time-box**: a proporção saudável é 10% / 10% / **60%** / 20%, com alvo de dois minutos. A Action é o coração porque é onde o julgamento aparece; contextualizar demais é o erro mais comum, e ele consome justamente o tempo da parte que decide. Para histórias de fracasso, a variante obrigatória é **STAR-L**, com *Learning* — sem ele, o relato é confissão sem conclusão. E há um detalhe de linguagem que muda a percepção mais do que parece: dizer **"eu"** onde você realmente agiu.
 
 ## Noventa segundos de contexto e trinta de execução
 
@@ -103,19 +97,13 @@ Dois detalhes pequenos com efeito grande na percepção.
 ## Armadilhas comuns
 
 > [!warning] Situation que consome a resposta
-> **O que acontece:** noventa segundos de contexto e trinta de execução — o cenário da abertura desta nota. A parte que decide fica sem tempo.
-> **Por quê:** contexto é a parte confortável: é narrativa, não exige avaliar as próprias escolhas, e dá sensação de estar sendo completo.
-> **Como evitar:** cronometre uma vez, de verdade. A Situation cabe em duas ou três frases: qual era o problema **de negócio** e por que ele importava. O resto do cenário, se for necessário, virá por pergunta.
+> **O que acontece:** noventa segundos de contexto e trinta de execução — o cenário da abertura desta nota. A parte que decide fica sem tempo. **Por quê:** contexto é a parte confortável: é narrativa, não exige avaliar as próprias escolhas, e dá sensação de estar sendo completo. **Como evitar:** cronometre uma vez, de verdade. A Situation cabe em duas ou três frases: qual era o problema **de negócio** e por que ele importava. O resto do cenário, se for necessário, virá por pergunta.
 
 > [!warning] Action sem o "porquê"
-> **O que acontece:** a resposta lista o que foi feito — "criei o serviço, configurei a fila, escrevi os testes" — e não menciona nenhuma decisão. Vira relatório de tarefas.
-> **Por quê:** o "o quê" é factual e fácil de lembrar; o "porquê" exige reconstruir o raciocínio e assumir uma escolha.
-> **Como evitar:** para cada ação principal, acrescente a alternativa descartada e o critério. "Optei por fila em vez de chamada síncrona porque o pico era irregular e a operação tolerava atraso" mostra julgamento em uma frase.
+> **O que acontece:** a resposta lista o que foi feito — "criei o serviço, configurei a fila, escrevi os testes" — e não menciona nenhuma decisão. Vira relatório de tarefas. **Por quê:** o "o quê" é factual e fácil de lembrar; o "porquê" exige reconstruir o raciocínio e assumir uma escolha. **Como evitar:** para cada ação principal, acrescente a alternativa descartada e o critério. "Optei por fila em vez de chamada síncrona porque o pico era irregular e a operação tolerava atraso" mostra julgamento em uma frase.
 
 > [!warning] Não ter história de fracasso preparada
-> **O que acontece:** a pergunta vem — e vem, em processo sênior — e o candidato improvisa um fracasso pequeno ou disfarçado ("sou perfeccionista demais"). Registra-se ausência de autocrítica, que é pior que o fracasso original.
-> **Por quê:** preparar histórias de sucesso é agradável; preparar as de fracasso exige revisitar erro real.
-> **Como evitar:** tenha ao menos duas, em **STAR-L**, com uma decisão sua que se mostrou errada — não circunstância externa, não erro de outra pessoa. O Learning é o que transforma o relato em ponto positivo.
+> **O que acontece:** a pergunta vem — e vem, em processo sênior — e o candidato improvisa um fracasso pequeno ou disfarçado ("sou perfeccionista demais"). Registra-se ausência de autocrítica, que é pior que o fracasso original. **Por quê:** preparar histórias de sucesso é agradável; preparar as de fracasso exige revisitar erro real. **Como evitar:** tenha ao menos duas, em **STAR-L**, com uma decisão sua que se mostrou errada — não circunstância externa, não erro de outra pessoa. O Learning é o que transforma o relato em ponto positivo.
 
 ## Como soa em inglês
 

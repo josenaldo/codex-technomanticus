@@ -74,9 +74,7 @@ O galho inteiro se destila em poucos princípios, que são o que você leva para
 6. **Cobertura é bússola, não meta** (nota 12). Detector de buracos, não selo; branches importam, mutation testing prova.
 
 > [!warning] Copiar a distribuição de testes de outro projeto
-> **O que acontece:** o time impõe "70% unit, 20% integração, 10% E2E" porque leu num artigo, e acaba com unit demais (mockando tudo, falsa confiança) ou E2E demais (suíte lenta e flaky).
-> **Por quê:** a distribuição ótima depende do **tipo de app** — uma lib de utilidades é quase toda unit; um app de UI pesa em integração (troféu); um sistema com muitos fluxos críticos precisa de mais E2E. Número emprestado ignora o seu contexto.
-> **Como evitar:** decida a alocação pela **natureza do código e do risco**: lógica pura → unit; comportamento de UI → integração; fluxo crítico de negócio → E2E; e tudo sobre a base estática do TypeScript. Deixe o formato **emergir** do que dá confiança por custo no *seu* app.
+> **O que acontece:** o time impõe "70% unit, 20% integração, 10% E2E" porque leu num artigo, e acaba com unit demais (mockando tudo, falsa confiança) ou E2E demais (suíte lenta e flaky). **Por quê:** a distribuição ótima depende do **tipo de app** — uma lib de utilidades é quase toda unit; um app de UI pesa em integração (troféu); um sistema com muitos fluxos críticos precisa de mais E2E. Número emprestado ignora o seu contexto. **Como evitar:** decida a alocação pela **natureza do código e do risco**: lógica pura → unit; comportamento de UI → integração; fluxo crítico de negócio → E2E; e tudo sobre a base estática do TypeScript. Deixe o formato **emergir** do que dá confiança por custo no *seu* app.
 
 **A estratégia de testes JS em uma frase:** combine os níveis no formato do troféu para apps de UI — estático (TS/lint) de graça, unit (Vitest) para lógica pura, a maior fatia em integração (Testing Library + MSW) pelo melhor ROI, e poucos E2E (Playwright) nos caminhos críticos —, sempre testando comportamento, preferindo o nível mais barato que dá confiança suficiente, e rodando tudo na CI de forma determinística.
 

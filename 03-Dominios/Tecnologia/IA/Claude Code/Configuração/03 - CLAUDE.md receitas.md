@@ -16,9 +16,7 @@ tags:
 # CLAUDE.md — receitas para Node, Python, Go, Java, monorepos
 
 > [!abstract] TL;DR
-> Templates prontos de CLAUDE.md para os stacks mais comuns, com exemplos preenchidos (não apenas placeholders). Copie, adapte, teste uma sessão, e corrija o que o agente interpretar errado. Um CLAUDE.md com 80% de preenchimento é infinitamente melhor que nenhum.
-> A escolha certa não é "qual template" e sim "qual seção vai mudar a decisão do agente na próxima sessão real" — normalmente Stack (versões) e Restrições (o que NÃO fazer), não Arquitetura (o agente já lê o código-fonte).
-> Receita ruim não é a que falta seção — é a que mantém placeholders genéricos tipo "[Adicionar restrições específicas do projeto]"; isso equivale a não ter CLAUDE.md nenhum, só que com uma falsa sensação de cobertura.
+> Templates prontos de CLAUDE.md para os stacks mais comuns, com exemplos preenchidos (não apenas placeholders). Copie, adapte, teste uma sessão, e corrija o que o agente interpretar errado. Um CLAUDE.md com 80% de preenchimento é infinitamente melhor que nenhum. A escolha certa não é "qual template" e sim "qual seção vai mudar a decisão do agente na próxima sessão real" — normalmente Stack (versões) e Restrições (o que NÃO fazer), não Arquitetura (o agente já lê o código-fonte). Receita ruim não é a que falta seção — é a que mantém placeholders genéricos tipo "[Adicionar restrições específicas do projeto]"; isso equivale a não ter CLAUDE.md nenhum, só que com uma falsa sensação de cobertura.
 
 ---
 
@@ -428,19 +426,11 @@ FastAPI + PostgreSQL. Uso interno (time de data, ~20 usuários). Sem SLA crític
 
 ## Casos práticos
 
-Templates são o ponto de partida; o que separa um CLAUDE.md útil de um decorativo é o que acontece
-depois que o agente erra pela primeira vez. Dois casos reais dos exemplos preenchidos acima.
+Templates são o ponto de partida; o que separa um CLAUDE.md útil de um decorativo é o que acontece depois que o agente erra pela primeira vez. Dois casos reais dos exemplos preenchidos acima.
 
 ### Caso 1 — PayHub: a restrição que faltava custou uma sessão inteira
 
-O exemplo preenchido da Receita 1 já tem "NUNCA logue dados de cartão ou CVV" na seção Restrições.
-Isso não nasceu no template — nasceu depois de um incidente: numa sessão anterior, o agente recebeu
-a tarefa "adicionar log de debug no fluxo de checkout para investigar um bug de duplicidade de
-cobrança" e, sem essa restrição explícita, logou o payload inteiro da requisição — incluindo os
-últimos 4 dígitos do cartão e o token de autorização — porque isso era, tecnicamente, "debug útil".
-Nenhuma regra genérica de bom senso ("não exponha dados sensíveis") barra isso: o agente não sabe
-que aquele campo específico é PCI-DSS até alguém dizer. A correção não foi reescrever o CLAUDE.md
-inteiro — foi adicionar uma linha em Restrições e testar de novo a mesma tarefa:
+O exemplo preenchido da Receita 1 já tem "NUNCA logue dados de cartão ou CVV" na seção Restrições. Isso não nasceu no template — nasceu depois de um incidente: numa sessão anterior, o agente recebeu a tarefa "adicionar log de debug no fluxo de checkout para investigar um bug de duplicidade de cobrança" e, sem essa restrição explícita, logou o payload inteiro da requisição — incluindo os últimos 4 dígitos do cartão e o token de autorização — porque isso era, tecnicamente, "debug útil". Nenhuma regra genérica de bom senso ("não exponha dados sensíveis") barra isso: o agente não sabe que aquele campo específico é PCI-DSS até alguém dizer. A correção não foi reescrever o CLAUDE.md inteiro — foi adicionar uma linha em Restrições e testar de novo a mesma tarefa:
 
 ```markdown
 ## Restrições
@@ -455,21 +445,11 @@ inteiro — foi adicionar uma linha em Restrições e testar de novo a mesma tar
   campos permitidos (ex: `orderId`, `status`) — nunca logue o objeto de requisição inteiro
 ```
 
-A versão "antes" existia no CLAUDE.md do PayHub havia semanas e não preveniu nada — ela é
-indistinguível de não ter restrição nenhuma, porque não diz *qual* dado é sensível nem *onde* o
-erro tende a acontecer (debug ad-hoc, não o fluxo principal já revisado).
+A versão "antes" existia no CLAUDE.md do PayHub havia semanas e não preveniu nada — ela é indistinguível de não ter restrição nenhuma, porque não diz *qual* dado é sensível nem *onde* o erro tende a acontecer (debug ad-hoc, não o fluxo principal já revisado).
 
 ### Caso 2 — Analytica: por que "Sem SLA crítico" na primeira linha muda o comportamento
 
-O exemplo da Receita 2 declara logo na seção Projeto: "Uso interno (time de data, ~20 usuários).
-Sem SLA crítico." Isso parece cosmético, mas resolve um problema recorrente em times de dados: sem
-esse contexto, o agente tende a tratar toda API como se fosse produção de alto tráfego — sugerindo
-cache agressivo, connection pooling elaborado, rate limiting, retry com backoff exponencial — para
-um serviço que 20 pessoas usam esporadicamente. O time da Analytica descobriu isso quando pediu "um
-endpoint novo de agregação" e recebeu de volta uma proposta com circuit breaker e métricas
-Prometheus para um dashboard interno. A frase "Sem SLA crítico" calibra a escala da solução antes
-mesmo de a tarefa começar — é o inverso da restrição do PayHub: aqui o objetivo é o agente *não*
-over-engenheirar.
+O exemplo da Receita 2 declara logo na seção Projeto: "Uso interno (time de data, ~20 usuários). Sem SLA crítico." Isso parece cosmético, mas resolve um problema recorrente em times de dados: sem esse contexto, o agente tende a tratar toda API como se fosse produção de alto tráfego — sugerindo cache agressivo, connection pooling elaborado, rate limiting, retry com backoff exponencial — para um serviço que 20 pessoas usam esporadicamente. O time da Analytica descobriu isso quando pediu "um endpoint novo de agregação" e recebeu de volta uma proposta com circuit breaker e métricas Prometheus para um dashboard interno. A frase "Sem SLA crítico" calibra a escala da solução antes mesmo de a tarefa começar — é o inverso da restrição do PayHub: aqui o objetivo é o agente *não* over-engenheirar.
 
 ---
 
@@ -508,27 +488,13 @@ over-engenheirar.
 
 ## O que vem a seguir
 
-Copiar e preencher a receita resolve o problema do dia zero — mas o que você acabou de escrever
-segue princípios que valem a pena entender antes de mexer de novo no arquivo. Se ainda não ficou
-claro *por que* certas seções (Stack com versões, Restrições específicas) pesam mais que outras
-(Arquitetura, que o agente já infere lendo o código), vale voltar para
-[[03-Dominios/Tecnologia/IA/Claude Code/Configuração/02 - CLAUDE.md anatomia|02 - CLAUDE.md anatomia]]
-antes de continuar adaptando.
+Copiar e preencher a receita resolve o problema do dia zero — mas o que você acabou de escrever segue princípios que valem a pena entender antes de mexer de novo no arquivo. Se ainda não ficou claro *por que* certas seções (Stack com versões, Restrições específicas) pesam mais que outras (Arquitetura, que o agente já infere lendo o código), vale voltar para [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/02 - CLAUDE.md anatomia|02 - CLAUDE.md anatomia]] antes de continuar adaptando.
 
-O Caso 2 (Analytica) acima mostrou o agente calibrando a escala da solução pelo contexto do
-CLAUDE.md — isso é uma instância de um mecanismo maior, coberto em
-[[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/08 - Como o agente decide|08 - Como o agente decide]]:
-entender esse mecanismo ajuda a prever *quais* frases no CLAUDE.md realmente mudam o comportamento
-do agente, em vez de adicionar texto por instinto.
+O Caso 2 (Analytica) acima mostrou o agente calibrando a escala da solução pelo contexto do CLAUDE.md — isso é uma instância de um mecanismo maior, coberto em [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/08 - Como o agente decide|08 - Como o agente decide]]: entender esse mecanismo ajuda a prever *quais* frases no CLAUDE.md realmente mudam o comportamento do agente, em vez de adicionar texto por instinto.
 
-CLAUDE.md é só uma das superfícies de configuração — quando a receita não for suficiente (você
-precisa de permissões automáticas, hooks, ou comportamento que não é "contexto" e sim "regra
-executada pelo harness"), a próxima parada é
-[[03-Dominios/Tecnologia/IA/Claude Code/Configuração/04 - settings.json|04 - settings.json]].
+CLAUDE.md é só uma das superfícies de configuração — quando a receita não for suficiente (você precisa de permissões automáticas, hooks, ou comportamento que não é "contexto" e sim "regra executada pelo harness"), a próxima parada é [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/04 - settings.json|04 - settings.json]].
 
-Para navegar o galho inteiro, o
-[[03-Dominios/Tecnologia/IA/Claude Code/Configuração/index|índice de Configuração]] mantém a
-sequência de notas em ordem.
+Para navegar o galho inteiro, o [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/index|índice de Configuração]] mantém a sequência de notas em ordem.
 
 ---
 

@@ -70,8 +70,7 @@ Variante de `INC_APPEND_HISTORY` que só escreve após o comando terminar, permi
 
 ### Comandos de history
 
-**`history`**
-Lista os últimos comandos da sessão com número sequencial. Por default mostra os últimos 16 eventos (número varia por implementação).
+**`history`** Lista os últimos comandos da sessão com número sequencial. Por default mostra os últimos 16 eventos (número varia por implementação).
 
 ```zsh
 history          # últimos eventos
@@ -81,8 +80,7 @@ history -i       # com timestamps (requer EXTENDED_HISTORY)
 history -t '%F %T'  # timestamps em formato legível
 ```
 
-**`fc -l`**
-`fc` (fix command) com flag `-l` lista entradas do history com intervalo configurável.
+**`fc -l`** `fc` (fix command) com flag `-l` lista entradas do history com intervalo configurável.
 
 ```zsh
 fc -l            # últimos 16 eventos
@@ -92,8 +90,7 @@ fc -l -10 -1     # últimos 10 (índices negativos = contagem regressiva)
 fc -l -t '%F %T' # com timestamps formatados
 ```
 
-**`fc` sem flags (editar)**
-Abre o último comando no editor definido em `$EDITOR` (ou `$FCEDIT`, ou `vi` como fallback). Ao salvar e fechar o editor, o Zsh executa o conteúdo editado. Poderoso para re-executar comandos longos com ajustes.
+**`fc` sem flags (editar)** Abre o último comando no editor definido em `$EDITOR` (ou `$FCEDIT`, ou `vi` como fallback). Ao salvar e fechar o editor, o Zsh executa o conteúdo editado. Poderoso para re-executar comandos longos com ajustes.
 
 ```zsh
 fc               # edita e executa o último comando
@@ -101,8 +98,7 @@ fc -e nvim       # força o editor (sobrepõe $EDITOR)
 fc -e nvim 42    # edita o evento de número 42
 ```
 
-**`fc <string>`**
-Re-executa o comando mais recente que **começa com** a string (sem abrir editor). Comportamento equivalente ao `!str` do history expansion — prefixo, não substring. Para busca por conteúdo (contém), use `!?str?`.
+**`fc <string>`** Re-executa o comando mais recente que **começa com** a string (sem abrir editor). Comportamento equivalente ao `!str` do history expansion — prefixo, não substring. Para busca por conteúdo (contém), use `!?str?`.
 
 ```zsh
 fc git           # re-executa o último comando que começa com "git"
@@ -251,37 +247,25 @@ fc -l -20 -1              # os últimos 20 comandos numerados
 
 ### 1. `HISTSIZE` menor que `SAVEHIST`
 
-**Causa:** configurar `HISTSIZE=1000` e `SAVEHIST=50000`.
-**Sintoma:** ao fechar o shell, apenas 1000 entradas são gravadas no `HISTFILE`, apagando as mais antigas além desse limite — mesmo que o arquivo tivesse mais.
-**Detectar:** `echo $HISTSIZE $SAVEHIST` — se `HISTSIZE < SAVEHIST`, há problema.
-**Solução:** sempre manter `HISTSIZE >= SAVEHIST`. O valor razoável hoje é 50000 para ambos (arquivos de history modernos são minúsculos em disco).
+**Causa:** configurar `HISTSIZE=1000` e `SAVEHIST=50000`. **Sintoma:** ao fechar o shell, apenas 1000 entradas são gravadas no `HISTFILE`, apagando as mais antigas além desse limite — mesmo que o arquivo tivesse mais. **Detectar:** `echo $HISTSIZE $SAVEHIST` — se `HISTSIZE < SAVEHIST`, há problema. **Solução:** sempre manter `HISTSIZE >= SAVEHIST`. O valor razoável hoje é 50000 para ambos (arquivos de history modernos são minúsculos em disco).
 
 ---
 
 ### 2. `SHARE_HISTORY` + edição manual do `HISTFILE`
 
-**Causa:** editar `~/.zsh_history` manualmente (ex: para remover um comando com credencial) enquanto outra sessão Zsh está aberta e usando `SHARE_HISTORY`.
-**Sintoma:** ao fechar a sessão ativa, ela reescreve o `HISTFILE` a partir do seu estado em memória, sobrescrevendo as edições manuais.
-**Detectar:** comparar o arquivo depois de fechar a sessão com o que você editou.
-**Solução:** fechar todas as sessões Zsh antes de editar manualmente. Ou usar `fc -R ~/.zsh_history` para recarregar o arquivo na sessão ativa após editar.
+**Causa:** editar `~/.zsh_history` manualmente (ex: para remover um comando com credencial) enquanto outra sessão Zsh está aberta e usando `SHARE_HISTORY`. **Sintoma:** ao fechar a sessão ativa, ela reescreve o `HISTFILE` a partir do seu estado em memória, sobrescrevendo as edições manuais. **Detectar:** comparar o arquivo depois de fechar a sessão com o que você editou. **Solução:** fechar todas as sessões Zsh antes de editar manualmente. Ou usar `fc -R ~/.zsh_history` para recarregar o arquivo na sessão ativa após editar.
 
 ---
 
 ### 3. `HIST_VERIFY` ausente + `!!` em comando destrutivo
 
-**Causa:** não ter `HIST_VERIFY` ativo e executar `sudo !!` após um `rm -rf ~/tmp/pasta`.
-**Sintoma:** `sudo rm -rf ~/tmp/pasta` executa direto, sem confirmação adicional.
-**Detectar:** testar `!!` num prompt seguro — se executar imediatamente sem recarregar a linha, `HIST_VERIFY` não está ativo.
-**Solução:** adicionar `setopt HIST_VERIFY` ao `~/.zshrc`. Com ele, `!!` carrega a linha expandida no prompt; só executa ao pressionar `Enter` uma segunda vez.
+**Causa:** não ter `HIST_VERIFY` ativo e executar `sudo !!` após um `rm -rf ~/tmp/pasta`. **Sintoma:** `sudo rm -rf ~/tmp/pasta` executa direto, sem confirmação adicional. **Detectar:** testar `!!` num prompt seguro — se executar imediatamente sem recarregar a linha, `HIST_VERIFY` não está ativo. **Solução:** adicionar `setopt HIST_VERIFY` ao `~/.zshrc`. Com ele, `!!` carrega a linha expandida no prompt; só executa ao pressionar `Enter` uma segunda vez.
 
 ---
 
 ### 4. Atuin sobrescrevendo `Ctrl-R` sem clareza
 
-**Causa:** instalar atuin (ferramenta de history sincronizado e pesquisável) em um shell que já tem `history-substring-search` ou outro plugin bindando `Ctrl-R`.
-**Sintoma:** `Ctrl-R` abre a TUI do atuin em vez do search nativo, ou — pior — nenhum dos dois funciona porque os widgets do ZLE se sobrescrevem silenciosamente.
-**Detectar:** `bindkey | grep '^"\\C-r"'` mostra qual widget está bindado para `Ctrl-R`.
-**Solução:** escolher apenas uma ferramenta de search de history por vez. Atuin registra seu widget via shell hook de inicialização; desabilitar com `ATUIN_NOBIND=true` no `~/.zshrc` antes do `eval "$(atuin init zsh)"` permite carregar o atuin sem bindar o `Ctrl-R`.
+**Causa:** instalar atuin (ferramenta de history sincronizado e pesquisável) em um shell que já tem `history-substring-search` ou outro plugin bindando `Ctrl-R`. **Sintoma:** `Ctrl-R` abre a TUI do atuin em vez do search nativo, ou — pior — nenhum dos dois funciona porque os widgets do ZLE se sobrescrevem silenciosamente. **Detectar:** `bindkey | grep '^"\\C-r"'` mostra qual widget está bindado para `Ctrl-R`. **Solução:** escolher apenas uma ferramenta de search de history por vez. Atuin registra seu widget via shell hook de inicialização; desabilitar com `ATUIN_NOBIND=true` no `~/.zshrc` antes do `eval "$(atuin init zsh)"` permite carregar o atuin sem bindar o `Ctrl-R`.
 
 ---
 

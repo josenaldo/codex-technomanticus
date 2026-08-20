@@ -25,20 +25,10 @@ aliases:
 # Anti-Corruption Layer + Strangler Fig
 
 > [!abstract] TL;DR
-> O par de padrões para **conviver com o legado enquanto ele morre**. A **Anti-Corruption Layer** é uma
-> camada de tradução na fronteira: o modelo do sistema antigo — com seus códigos numéricos, campos
-> reaproveitados e regras esquisitas — **não atravessa** para o novo. O **Strangler Fig** substitui por
-> incremento: um roteador na frente desvia funcionalidade por funcionalidade para o sistema novo, até
-> que o antigo fique sem nada para fazer e possa ser desligado. Entram numa família de resiliência
-> porque ambos protegem **contra outro sistema** — e porque a alternativa (a reescrita de uma vez) é a
-> forma mais confiável de derrubar um negócio.
+> O par de padrões para **conviver com o legado enquanto ele morre**. A **Anti-Corruption Layer** é uma camada de tradução na fronteira: o modelo do sistema antigo — com seus códigos numéricos, campos reaproveitados e regras esquisitas — **não atravessa** para o novo. O **Strangler Fig** substitui por incremento: um roteador na frente desvia funcionalidade por funcionalidade para o sistema novo, até que o antigo fique sem nada para fazer e possa ser desligado. Entram numa família de resiliência porque ambos protegem **contra outro sistema** — e porque a alternativa (a reescrita de uma vez) é a forma mais confiável de derrubar um negócio.
 
 > [!info] O recorte desta nota
-> Esta é a nota com a fronteira mais estreita da família: aqui a **entrada de catálogo** — o que cada
-> padrão é, o que sacrifica, quando não usar. O **método de migração**, com o passo a passo de quem
-> assume um sistema legado, tem casa própria e muito mais profunda em
-> [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/18 - Strangler Fig|Arqueologia 18]] e
-> [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/19 - Branch by Abstraction e Anti-Corruption Layer|Arqueologia 19]].
+> Esta é a nota com a fronteira mais estreita da família: aqui a **entrada de catálogo** — o que cada padrão é, o que sacrifica, quando não usar. O **método de migração**, com o passo a passo de quem assume um sistema legado, tem casa própria e muito mais profunda em [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/18 - Strangler Fig|Arqueologia 18]] e [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/19 - Branch by Abstraction e Anti-Corruption Layer|Arqueologia 19]].
 
 ## O sistema novo que virou o velho em seis meses
 
@@ -89,19 +79,13 @@ E o sacrifício que costuma ser mal calculado: **o esforço de manter a paridade
 ## Armadilhas comuns
 
 > [!warning] O estrangulamento que nunca termina
-> **O que acontece:** as funcionalidades fáceis migram nos primeiros meses; as difíceis — as com regras obscuras e sem ninguém que as entenda — ficam. Cinco anos depois, os dois sistemas seguem vivos, e o "temporário" virou arquitetura permanente, com o dobro do custo operacional.
-> **Por quê:** o padrão remove a pressão de terminar, que é justamente a sua virtude: como cada passo entrega valor, adiar o próximo nunca dói **hoje**.
-> **Como evitar:** trate o **desligamento** como o objetivo, não a migração. Ordene as fatias com as difíceis cedo o bastante para descobrir surpresas, defina data-alvo para desativar o legado, e monitore a proporção de tráfego ainda no antigo como métrica de projeto.
+> **O que acontece:** as funcionalidades fáceis migram nos primeiros meses; as difíceis — as com regras obscuras e sem ninguém que as entenda — ficam. Cinco anos depois, os dois sistemas seguem vivos, e o "temporário" virou arquitetura permanente, com o dobro do custo operacional. **Por quê:** o padrão remove a pressão de terminar, que é justamente a sua virtude: como cada passo entrega valor, adiar o próximo nunca dói **hoje**. **Como evitar:** trate o **desligamento** como o objetivo, não a migração. Ordene as fatias com as difíceis cedo o bastante para descobrir surpresas, defina data-alvo para desativar o legado, e monitore a proporção de tráfego ainda no antigo como métrica de projeto.
 
 > [!warning] ACL que vaza o modelo antigo
-> **O que acontece:** por conveniência, a camada devolve estruturas parecidas com as do legado — "só este campo, porque é mais fácil". Aos poucos, o vocabulário antigo atravessa, e a ACL vira uma camada de repasse com nomes trocados.
-> **Por quê:** traduzir de verdade dá trabalho, e cada exceção individual parece inofensiva.
-> **Como evitar:** teste do vocabulário — **nenhum tipo ou termo do legado deve aparecer na assinatura de nada do lado novo**. Se `TIPO_PED` aparece fora da ACL, ela já vazou.
+> **O que acontece:** por conveniência, a camada devolve estruturas parecidas com as do legado — "só este campo, porque é mais fácil". Aos poucos, o vocabulário antigo atravessa, e a ACL vira uma camada de repasse com nomes trocados. **Por quê:** traduzir de verdade dá trabalho, e cada exceção individual parece inofensiva. **Como evitar:** teste do vocabulário — **nenhum tipo ou termo do legado deve aparecer na assinatura de nada do lado novo**. Se `TIPO_PED` aparece fora da ACL, ela já vazou.
 
 > [!warning] Desligar o legado sem saber quem ainda o chama
-> **O que acontece:** todo o tráfego conhecido foi migrado, o sistema antigo é desligado — e quebra um relatório noturno, uma integração de parceiro ou um job que lia direto do banco antigo, por um caminho que não passava pelo roteador.
-> **Por quê:** o roteador só enxerga o que passa por ele. Acessos diretos ao banco, jobs agendados e integrações antigas são invisíveis para ele.
-> **Como evitar:** antes de desligar, **instrumente o legado inteiro** — inclusive acesso direto ao banco — e observe por um ciclo completo de negócio (que inclui fechamento mensal e anual). Depois desligue em etapas reversíveis, começando por recusar em vez de remover.
+> **O que acontece:** todo o tráfego conhecido foi migrado, o sistema antigo é desligado — e quebra um relatório noturno, uma integração de parceiro ou um job que lia direto do banco antigo, por um caminho que não passava pelo roteador. **Por quê:** o roteador só enxerga o que passa por ele. Acessos diretos ao banco, jobs agendados e integrações antigas são invisíveis para ele. **Como evitar:** antes de desligar, **instrumente o legado inteiro** — inclusive acesso direto ao banco — e observe por um ciclo completo de negócio (que inclui fechamento mensal e anual). Depois desligue em etapas reversíveis, começando por recusar em vez de remover.
 
 ## Como explicar em inglês
 

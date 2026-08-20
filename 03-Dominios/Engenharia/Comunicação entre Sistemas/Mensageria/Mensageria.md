@@ -667,8 +667,7 @@ Um request que começa em HTTP → vira evento → processado por múltiplos con
 
 ## Na prática (da minha experiência)
 
-> **Muvz — migração de monolito para microserviços com Kafka:**
-> Na Muvz, liderei a adoção de Kafka como event broker para comunicação entre 5 microserviços Spring Boot. A decisão por Kafka (vs RabbitMQ) foi baseada em três requisitos: **replay de eventos** (novos consumers poderiam processar histórico), **múltiplos consumers independentes** (consumer groups), e **alto throughput** (esperávamos crescimento significativo). Construí proof-of-concepts validando o setup, configurei o cluster em Kubernetes junto com o DevOps, e implementei as integrações event-driven entre os serviços — incluindo um microserviço de email com logging e auditoria completos.
+> **Muvz — migração de monolito para microserviços com Kafka:** Na Muvz, liderei a adoção de Kafka como event broker para comunicação entre 5 microserviços Spring Boot. A decisão por Kafka (vs RabbitMQ) foi baseada em três requisitos: **replay de eventos** (novos consumers poderiam processar histórico), **múltiplos consumers independentes** (consumer groups), e **alto throughput** (esperávamos crescimento significativo). Construí proof-of-concepts validando o setup, configurei o cluster em Kubernetes junto com o DevOps, e implementei as integrações event-driven entre os serviços — incluindo um microserviço de email com logging e auditoria completos.
 >
 > **Lições aprendidas:**
 >
@@ -682,8 +681,7 @@ Um request que começa em HTTP → vira evento → processado por múltiplos con
 >
 > **5. Observability first.** Lag monitoring via Burrow → Prometheus → Grafana foi essencial. Um consumer com lag crescente era detectado em minutos, não horas depois quando usuários reclamavam.
 >
-> **MedEspecialista — decisão consciente por Kafka (mesmo com RabbitMQ disponível):**
-> No MedEspecialista, quando precisei escolher o broker, considerei seriamente RabbitMQ (mais simples de operar). Mas escolhi Kafka por um motivo: antecipei que a fonte de verdade de eventos de negócio (consultas, pagamentos, mudanças de estado) valia como log auditável e replayável. Quando implementamos o módulo de analytics meses depois, ele processou todo o histórico do Kafka — impossível em RabbitMQ.
+> **MedEspecialista — decisão consciente por Kafka (mesmo com RabbitMQ disponível):** No MedEspecialista, quando precisei escolher o broker, considerei seriamente RabbitMQ (mais simples de operar). Mas escolhi Kafka por um motivo: antecipei que a fonte de verdade de eventos de negócio (consultas, pagamentos, mudanças de estado) valia como log auditável e replayável. Quando implementamos o módulo de analytics meses depois, ele processou todo o histórico do Kafka — impossível em RabbitMQ.
 >
 > **A lição principal:** escolha o broker pelo seu caso de uso, não pela moda. Kafka não é "o broker melhor" — é o broker certo quando você precisa de log imutável, replay, e consumer groups independentes. Para um job queue de processamento de imagens, RabbitMQ ou BullMQ seriam escolhas mais apropriadas.
 

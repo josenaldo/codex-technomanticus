@@ -15,9 +15,7 @@ tags:
 # Anatomia de um bom teste
 
 > [!abstract] Resumo em uma linha
-> Um bom teste arruma o cenário, executa uma ação e verifica um comportamento (AAA), tem nome que conta o que e quando, falha por uma única razão e obedece ao F.I.R.S.T — Fast, Independent, Repeatable, Self-validating, Timely.
-> Essas cinco propriedades não são um checklist de estilo: cada uma existe porque resolve um jeito específico de teste te trair — teste lento que você para de rodar, teste acoplado que quebra em cascata, teste flaky que mente, teste mudo que não te diz o que quebrou.
-> A anatomia é a mesma em qualquer linguagem — JUnit, pytest, Jest — porque o problema que ela resolve (confiar no build vermelho) também é o mesmo em qualquer stack.
+> Um bom teste arruma o cenário, executa uma ação e verifica um comportamento (AAA), tem nome que conta o que e quando, falha por uma única razão e obedece ao F.I.R.S.T — Fast, Independent, Repeatable, Self-validating, Timely. Essas cinco propriedades não são um checklist de estilo: cada uma existe porque resolve um jeito específico de teste te trair — teste lento que você para de rodar, teste acoplado que quebra em cascata, teste flaky que mente, teste mudo que não te diz o que quebrou. A anatomia é a mesma em qualquer linguagem — JUnit, pytest, Jest — porque o problema que ela resolve (confiar no build vermelho) também é o mesmo em qualquer stack.
 
 Escrever teste é fácil. Escrever um bom teste é outra coisa.
 
@@ -287,8 +285,7 @@ A good test is structured as **Arrange-Act-Assert** — set up the scenario, per
 > [!tip] Assista: Cleaner unit testing with the Arrange Act Assert pattern
 > **Canal:** PyCon UK 2016 | **Duração:** ~26min | **Idioma:** EN
 >
-> A talk inteira é dedicada só ao AAA, com o mesmo cuidado desta nota mas do lado da convenção de nomes — o palestrante defende escrever o nome (ou docstring) do teste como uma frase afirmativa no formato "X given Y does Z", e reforça a regra de não deixar linha em branco nem assertion escondida dentro do bloco Arrange. É o mesmo esqueleto, olhado pela lente de quem revisa PR de teste todo dia.
-> Trecho de destaque [7:03]: *"I believe that actually every doc string in a test should have a positive statement (...) what I recommend is that we say X given Y does Z."*
+> A talk inteira é dedicada só ao AAA, com o mesmo cuidado desta nota mas do lado da convenção de nomes — o palestrante defende escrever o nome (ou docstring) do teste como uma frase afirmativa no formato "X given Y does Z", e reforça a regra de não deixar linha em branco nem assertion escondida dentro do bloco Arrange. É o mesmo esqueleto, olhado pela lente de quem revisa PR de teste todo dia. Trecho de destaque [7:03]: *"I believe that actually every doc string in a test should have a positive statement (...) what I recommend is that we say X given Y does Z."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=GGw5T1mw9vU)
 

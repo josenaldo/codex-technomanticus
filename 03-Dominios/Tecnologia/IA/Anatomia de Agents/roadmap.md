@@ -27,8 +27,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | LINKS | L1 Wikilink cross-galho · L2 Referência externa (URL) |
 | MÍDIA | M1 Vídeo/podcast embutido |
 
-**Esquema de `fase:` detectado:** SEM fase (sequência)
-**Piso de linhas:** N/A (sem fase)
+**Esquema de `fase:` detectado:** SEM fase (sequência) **Piso de linhas:** N/A (sem fase)
 
 ## Tabela-resumo
 

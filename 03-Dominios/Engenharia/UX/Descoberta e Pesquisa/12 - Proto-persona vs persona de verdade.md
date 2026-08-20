@@ -86,19 +86,13 @@ Um fractional engineer monta uma proto-persona em 45 minutos com o cliente antes
 ## Armadilhas comuns
 
 > [!warning] Chamar proto-persona de "persona validada" sem qualificação
-> **O que acontece:** um documento nascido de suposição de workshop circula nas reuniões seguintes como "a persona do produto", sem menção de que nunca foi testada contra entrevista real.
-> **Por quê:** o formato visual de uma persona (nome, foto, citação, objetivos) é o mesmo esteja ela baseada em suposição ou em pesquisa — o documento não carrega a proveniência da informação por si só.
-> **Como evitar:** etiquete explicitamente, no próprio documento, se é "proto-persona (hipótese, não testada)" ou "persona confirmada em N entrevistas" — a etiqueta é o que preserva a proveniência quando o documento circula sem contexto.
+> **O que acontece:** um documento nascido de suposição de workshop circula nas reuniões seguintes como "a persona do produto", sem menção de que nunca foi testada contra entrevista real. **Por quê:** o formato visual de uma persona (nome, foto, citação, objetivos) é o mesmo esteja ela baseada em suposição ou em pesquisa — o documento não carrega a proveniência da informação por si só. **Como evitar:** etiquete explicitamente, no próprio documento, se é "proto-persona (hipótese, não testada)" ou "persona confirmada em N entrevistas" — a etiqueta é o que preserva a proveniência quando o documento circula sem contexto.
 
 > [!warning] Nunca testar a proto-persona depois de criada
-> **O que acontece:** o workshop de 1h acontece, a proto-persona nasce, e nunca mais é confrontada com uma entrevista real ao longo do projeto inteiro.
-> **Por quê:** o workshop parece "trabalho feito" — ele produziu um artefato visível — e não há gatilho natural para revisitar e testar a suposição depois.
-> **Como evitar:** trate a criação da proto-persona como o início de um processo, não o fim — agende explicitamente a primeira entrevista de teste dela como próximo passo, não como "se der tempo".
+> **O que acontece:** o workshop de 1h acontece, a proto-persona nasce, e nunca mais é confrontada com uma entrevista real ao longo do projeto inteiro. **Por quê:** o workshop parece "trabalho feito" — ele produziu um artefato visível — e não há gatilho natural para revisitar e testar a suposição depois. **Como evitar:** trate a criação da proto-persona como o início de um processo, não o fim — agende explicitamente a primeira entrevista de teste dela como próximo passo, não como "se der tempo".
 
 > [!warning] Tratar 1 usuário atípico como refutação (ou confirmação) definitiva
-> **O que acontece:** uma única entrevista que contradiz (ou confirma) a proto-persona é tratada como prova definitiva, na direção que for.
-> **Por quê:** é a mesma armadilha de amostra pequena da [[03-Dominios/Engenharia/UX/Descoberta e Pesquisa/07 - Entrevista de descoberta - as regras do Mom Test|nota 07]] — uma pessoa pode ser exceção legítima, não representativa do padrão.
-> **Como evitar:** trate cada entrevista como um voto, não como veredito — depois de 3-5 entrevistas convergentes (ou divergentes), aí sim é sinal confiável o suficiente para revisar a proto-persona.
+> **O que acontece:** uma única entrevista que contradiz (ou confirma) a proto-persona é tratada como prova definitiva, na direção que for. **Por quê:** é a mesma armadilha de amostra pequena da [[03-Dominios/Engenharia/UX/Descoberta e Pesquisa/07 - Entrevista de descoberta - as regras do Mom Test|nota 07]] — uma pessoa pode ser exceção legítima, não representativa do padrão. **Como evitar:** trate cada entrevista como um voto, não como veredito — depois de 3-5 entrevistas convergentes (ou divergentes), aí sim é sinal confiável o suficiente para revisar a proto-persona.
 
 ## Como explicar em inglês
 

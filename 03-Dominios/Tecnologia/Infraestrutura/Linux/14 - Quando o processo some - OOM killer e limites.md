@@ -66,8 +66,7 @@ cat /proc/<pid>/oom_score_adj    # o ajuste: -1000 a +1000
 `oom_score_adj` é o ajuste que você controla. `-1000` torna o processo praticamente imune; valores positivos o tornam vítima preferencial. É o mecanismo que o kubelet usa para materializar as classes de QoS — assunto que o galho de Kubernetes trata na [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/17 - O kubelet e o nó|nota 17]], pelo lado do orquestrador. Aqui está o mecanismo da máquina; lá, quem o configura.
 
 > [!warning] O maior consumidor costuma morrer — e nem sempre é o culpado
-> A pontuação favorece matar quem usa mais memória, porque é o que resolve o problema com uma morte só. Mas o processo que **causou** a exaustão pode ser outro — um job que alocou rápido e terminou, deixando a máquina no limite. O banco de dados morre porque é o maior, não porque é o responsável.
-> Por isso a investigação não termina na linha do `dmesg`: ela começa ali. A pergunta seguinte é o que mais mudou no consumo naquele período.
+> A pontuação favorece matar quem usa mais memória, porque é o que resolve o problema com uma morte só. Mas o processo que **causou** a exaustão pode ser outro — um job que alocou rápido e terminou, deixando a máquina no limite. O banco de dados morre porque é o maior, não porque é o responsável. Por isso a investigação não termina na linha do `dmesg`: ela começa ali. A pergunta seguinte é o que mais mudou no consumo naquele período.
 
 ---
 
@@ -201,24 +200,16 @@ Confundir as duas é o erro clássico: subir a memória da máquina faz o gráfi
 ## Armadilhas comuns
 
 > [!warning] Procurar a causa no log da aplicação
-> **O que acontece:** horas lendo o log do serviço, que termina no meio de uma operação normal.
-> **Por quê:** `SIGKILL` não é entregue ao processo; não há nada a registrar.
-> **Como evitar:** ao ver término sem erro, vá direto ao log do **kernel** — `journalctl -k` ou `dmesg -T`. E confira o código de saída: 137 fecha o diagnóstico.
+> **O que acontece:** horas lendo o log do serviço, que termina no meio de uma operação normal. **Por quê:** `SIGKILL` não é entregue ao processo; não há nada a registrar. **Como evitar:** ao ver término sem erro, vá direto ao log do **kernel** — `journalctl -k` ou `dmesg -T`. E confira o código de saída: 137 fecha o diagnóstico.
 
 > [!warning] Aumentar o limite sem descobrir por que ele foi atingido
-> **O que acontece:** o problema volta, mais tarde e maior.
-> **Por quê:** vazamento não tem teto que resolva.
-> **Como evitar:** acompanhe a tendência — descritores ou memória que sobem e nunca descem indicam vazamento. Limite é contenção; a correção é na aplicação.
+> **O que acontece:** o problema volta, mais tarde e maior. **Por quê:** vazamento não tem teto que resolva. **Como evitar:** acompanhe a tendência — descritores ou memória que sobem e nunca descem indicam vazamento. Limite é contenção; a correção é na aplicação.
 
 > [!warning] Desligar o swap achando que evita OOM
-> **O que acontece:** o OOM passa a acontecer **antes** e de forma mais abrupta.
-> **Por quê:** swap não causa OOM; ele adia, dando ao kernel margem para descartar páginas frias. Sem ele, a exaustão chega mais cedo.
-> **Como evitar:** o problema do swap é *thrashing* — troca contínua, visível em `si`/`so` na nota 13 —, não a existência dele. Em servidor, um swap modesto costuma ajudar; o que precisa de ajuste é `vm.swappiness`, não a remoção.
+> **O que acontece:** o OOM passa a acontecer **antes** e de forma mais abrupta. **Por quê:** swap não causa OOM; ele adia, dando ao kernel margem para descartar páginas frias. Sem ele, a exaustão chega mais cedo. **Como evitar:** o problema do swap é *thrashing* — troca contínua, visível em `si`/`so` na nota 13 —, não a existência dele. Em servidor, um swap modesto costuma ajudar; o que precisa de ajuste é `vm.swappiness`, não a remoção.
 
 > [!warning] Deixar serviços sem teto de memória
-> **O que acontece:** um serviço com defeito derruba a máquina e leva junto todos os outros.
-> **Por quê:** sem `MemoryMax`, o único limite é a memória física, e a escolha da vítima é do kernel.
-> **Como evitar:** `MemoryMax` por unidade. É o equivalente, no host, de declarar `limits` num Pod — mesmo mecanismo de cgroup, decidido em outro lugar.
+> **O que acontece:** um serviço com defeito derruba a máquina e leva junto todos os outros. **Por quê:** sem `MemoryMax`, o único limite é a memória física, e a escolha da vítima é do kernel. **Como evitar:** `MemoryMax` por unidade. É o equivalente, no host, de declarar `limits` num Pod — mesmo mecanismo de cgroup, decidido em outro lugar.
 
 ---
 

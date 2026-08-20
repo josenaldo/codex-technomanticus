@@ -200,16 +200,10 @@ detect_dead_code(entry_points=["main.ts", "routes/*.ts"]) → {
 
 ### Detecção de dependências circulares
 
-Grafos direcionados podem ter ciclos: `A` chama `B`, `B` chama `C`, `C` chama `A` de volta.
-Ciclos entre módulos são um cheiro de arquitetura — não impedem o código de rodar, mas tornam
-impossível entender ou testar `A` isoladamente sem também carregar `B` e `C`.
+Grafos direcionados podem ter ciclos: `A` chama `B`, `B` chama `C`, `C` chama `A` de volta. Ciclos entre módulos são um cheiro de arquitetura — não impedem o código de rodar, mas tornam impossível entender ou testar `A` isoladamente sem também carregar `B` e `C`.
 
 > [!question]- Por que um ciclo de dependência é um problema, se o código funciona?
-> Porque quebra a composicionalidade: para revisar `A`, o agente (ou o dev) precisa ler `B` e
-> `C` também, e vice-versa — não existe "unidade menor" que se possa entender sozinha. Em
-> refactoring, ciclos também bloqueiam extração de módulos: não dá pra mover `A` para um pacote
-> separado sem levar `B` e `C` junto. E em builds incrementais, um ciclo entre arquivos força
-> recompilar/re-parsear o grupo inteiro a cada mudança em qualquer um deles.
+> Porque quebra a composicionalidade: para revisar `A`, o agente (ou o dev) precisa ler `B` e `C` também, e vice-versa — não existe "unidade menor" que se possa entender sozinha. Em refactoring, ciclos também bloqueiam extração de módulos: não dá pra mover `A` para um pacote separado sem levar `B` e `C` junto. E em builds incrementais, um ciclo entre arquivos força recompilar/re-parsear o grupo inteiro a cada mudança em qualquer um deles.
 
 ```
 find_cycles() → {
@@ -218,15 +212,10 @@ find_cycles() → {
 }
 ```
 
-Algoritmo: Tarjan's strongly connected components (SCC) — O(V+E), roda sobre o grafo já
-construído sem custo adicional de parsing. Cada componente fortemente conexo (SCC) com mais de
-um nó é, por definição, um ciclo: todo par de nós dentro do componente consegue alcançar o
-outro seguindo arestas `calls`/`imports`.
+Algoritmo: Tarjan's strongly connected components (SCC) — O(V+E), roda sobre o grafo já construído sem custo adicional de parsing. Cada componente fortemente conexo (SCC) com mais de um nó é, por definição, um ciclo: todo par de nós dentro do componente consegue alcançar o outro seguindo arestas `calls`/`imports`.
 
 > [!summary] Ciclos não aparecem em "quem chama quem" isolado — só emergem ao percorrer o grafo
-> inteiro. É a análise mais barata do conjunto (SCC é linear no tamanho do grafo) e uma das que
-> mais expõe débito arquitetural escondido, porque ninguém enxerga um ciclo de 4 saltos lendo
-> arquivo por arquivo.
+> inteiro. É a análise mais barata do conjunto (SCC é linear no tamanho do grafo) e uma das que mais expõe débito arquitetural escondido, porque ninguém enxerga um ciclo de 4 saltos lendo arquivo por arquivo.
 
 ## Casos práticos
 
@@ -248,8 +237,7 @@ Agente: "Vou revisar os 4 callers complexos e os 13 sem teste,
  AdminController.getUserDetails, ReportService.byUser."
 ```
 
-Sem knowledge graph: o agente leria 18 arquivos para entender o impacto.
-Com knowledge graph: lê 17 funções específicas, identificadas por relevância.
+Sem knowledge graph: o agente leria 18 arquivos para entender o impacto. Com knowledge graph: lê 17 funções específicas, identificadas por relevância.
 
 ---
 

@@ -25,13 +25,7 @@ aliases:
 # MVC — o padrão mais mal-entendido
 
 > [!abstract] TL;DR
-> **MVC não é um padrão: são pelo menos três**, e as pessoas numa mesma reunião normalmente estão falando
-> de dois deles ao mesmo tempo. O **MVC original** (Reenskaug, Xerox PARC, 1979) é uma arquitetura de
-> **GUI desktop** cujo coração é a **sincronização por observação**: a view observa o model e se
-> redesenha quando ele muda. O **MVC web** (Struts, Rails, Spring MVC) **não tem observer** — o ciclo
-> requisição/resposta o dispensa — e por isso é, na prática, outro padrão com o mesmo nome. E o "Model"
-> é o termo mais ambíguo do vocabulário de software: ora entidade, ora camada inteira. **A ressurreição
-> é a volta do observer** — pelo estado reativo do frontend, não pelo servidor.
+> **MVC não é um padrão: são pelo menos três**, e as pessoas numa mesma reunião normalmente estão falando de dois deles ao mesmo tempo. O **MVC original** (Reenskaug, Xerox PARC, 1979) é uma arquitetura de **GUI desktop** cujo coração é a **sincronização por observação**: a view observa o model e se redesenha quando ele muda. O **MVC web** (Struts, Rails, Spring MVC) **não tem observer** — o ciclo requisição/resposta o dispensa — e por isso é, na prática, outro padrão com o mesmo nome. E o "Model" é o termo mais ambíguo do vocabulário de software: ora entidade, ora camada inteira. **A ressurreição é a volta do observer** — pelo estado reativo do frontend, não pelo servidor.
 
 ## A reunião em que ninguém está errado
 
@@ -121,19 +115,13 @@ O MVC não morreu, então a ressurreição aqui não é do padrão inteiro: é *
 ## Armadilhas comuns
 
 > [!warning] Achar que usar um framework MVC já dá separação de responsabilidades
-> **O que acontece:** o projeto tem as pastas `models/`, `views/` e `controllers/`, e mesmo assim a regra de negócio está espalhada entre controladores gordos e templates com `if` de política comercial.
-> **Por quê:** o framework impõe a **estrutura de diretórios**, não a alocação de responsabilidade. Ele não tem como saber que aquele `if` é regra de negócio.
-> **Como evitar:** julgue pela pergunta "esta regra sobreviveria se trocássemos HTTP por uma CLI?". Se sim, ela não pertence ao controlador nem à view — independentemente da pasta em que está.
+> **O que acontece:** o projeto tem as pastas `models/`, `views/` e `controllers/`, e mesmo assim a regra de negócio está espalhada entre controladores gordos e templates com `if` de política comercial. **Por quê:** o framework impõe a **estrutura de diretórios**, não a alocação de responsabilidade. Ele não tem como saber que aquele `if` é regra de negócio. **Como evitar:** julgue pela pergunta "esta regra sobreviveria se trocássemos HTTP por uma CLI?". Se sim, ela não pertence ao controlador nem à view — independentemente da pasta em que está.
 
 > [!warning] Controlador gordo (*fat controller*)
-> **O que acontece:** o controlador acumula validação, cálculo, orquestração de transação e formatação; cresce para centenas de linhas e só é testável subindo o framework inteiro.
-> **Por quê:** é o caminho de menor resistência — o controlador é o único ponto onde tudo já está à mão (requisição, sessão, repositórios). Toda regra nova cabe ali sem criar arquivo.
-> **Como evitar:** o controlador deve **traduzir e delegar**: converter HTTP em chamada de domínio e o resultado em resposta. Se ele decide algo de negócio, esse algo pertence ao domínio — ou a um *Service Layer*, cuja nota canônica é [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Acesso a Dados/04 - Table Module|Acesso a Dados/04]].
+> **O que acontece:** o controlador acumula validação, cálculo, orquestração de transação e formatação; cresce para centenas de linhas e só é testável subindo o framework inteiro. **Por quê:** é o caminho de menor resistência — o controlador é o único ponto onde tudo já está à mão (requisição, sessão, repositórios). Toda regra nova cabe ali sem criar arquivo. **Como evitar:** o controlador deve **traduzir e delegar**: converter HTTP em chamada de domínio e o resultado em resposta. Se ele decide algo de negócio, esse algo pertence ao domínio — ou a um *Service Layer*, cuja nota canônica é [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Acesso a Dados/04 - Table Module|Acesso a Dados/04]].
 
 > [!warning] Discutir "MVC de verdade" sem fixar a acepção
-> **O que acontece:** duas pessoas passam meia hora discordando e descobrem no fim que concordavam — uma falava do MVC de 1979, a outra do MVC do Rails.
-> **Por quê:** o termo cobre três padrões e três sentidos de "model". Sem desambiguar, o debate é sobre palavras.
-> **Como evitar:** abra a discussão com a pergunta mecânica: **"neste sistema, quem sincroniza a tela com o estado?"** Ela é respondível, distingue as acepções na hora, e vai direto ao que importa.
+> **O que acontece:** duas pessoas passam meia hora discordando e descobrem no fim que concordavam — uma falava do MVC de 1979, a outra do MVC do Rails. **Por quê:** o termo cobre três padrões e três sentidos de "model". Sem desambiguar, o debate é sobre palavras. **Como evitar:** abra a discussão com a pergunta mecânica: **"neste sistema, quem sincroniza a tela com o estado?"** Ela é respondível, distingue as acepções na hora, e vai direto ao que importa.
 
 ## Como explicar em inglês
 

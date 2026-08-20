@@ -104,8 +104,7 @@ Output OBRIGATÓRIO em formato:
 
 ```python
 # Section 1: Type definitions (Pydantic models)
-class TransferRequest(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+class TransferRequest(BaseModel): model_config = ConfigDict(extra="forbid")
     # ...
 
 # Section 2: Validation logic (pure functions)

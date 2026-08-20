@@ -115,8 +115,7 @@ After=postgresql.service
 ```
 
 > [!warning] "Iniciado" não é "pronto"
-> Mesmo com `After=`, o `systemd` só garante que a unidade anterior **chegou ao estado ativo** — não que a aplicação lá dentro terminou de subir e já aceita conexão. Para um banco, "ativo" pode significar "o processo existe", com a porta ainda fechada.
-> É exatamente o mesmo problema que o `depends_on` do Compose tem, e a solução também é a mesma: ou a unidade declara `Type=notify` e a aplicação avisa quando de fato está pronta, ou a sua aplicação tem que **tolerar o banco indisponível e tentar de novo**. A segunda é mais robusta, porque vale também quando o banco cai depois de tudo já estar no ar.
+> Mesmo com `After=`, o `systemd` só garante que a unidade anterior **chegou ao estado ativo** — não que a aplicação lá dentro terminou de subir e já aceita conexão. Para um banco, "ativo" pode significar "o processo existe", com a porta ainda fechada. É exatamente o mesmo problema que o `depends_on` do Compose tem, e a solução também é a mesma: ou a unidade declara `Type=notify` e a aplicação avisa quando de fato está pronta, ou a sua aplicação tem que **tolerar o banco indisponível e tentar de novo**. A segunda é mais robusta, porque vale também quando o banco cai depois de tudo já estar no ar.
 
 Para ver o grafo resolvido, em vez de deduzi-lo do arquivo:
 
@@ -163,24 +162,16 @@ Duas distinções que economizam tempo:
 ## Armadilhas comuns
 
 > [!warning] Editar o arquivo do pacote em `/usr/lib/systemd/system/`
-> **O que acontece:** funciona, e some na próxima atualização do pacote.
-> **Por quê:** aquele diretório pertence ao gerenciador de pacotes.
-> **Como evitar:** `systemctl edit <unidade>` para sobrepor apenas o que muda, ou copie a unidade para `/etc/systemd/system/` se for substituir por inteiro. Confira o resultado com `systemctl cat`.
+> **O que acontece:** funciona, e some na próxima atualização do pacote. **Por quê:** aquele diretório pertence ao gerenciador de pacotes. **Como evitar:** `systemctl edit <unidade>` para sobrepor apenas o que muda, ou copie a unidade para `/etc/systemd/system/` se for substituir por inteiro. Confira o resultado com `systemctl cat`.
 
 > [!warning] Editar a unidade e esquecer o `daemon-reload`
-> **O que acontece:** o `restart` roda sem erro e o comportamento não muda.
-> **Por quê:** o `systemd` está usando a definição que carregou antes.
-> **Como evitar:** `daemon-reload` sempre depois de mexer em arquivo de unidade. O `status` avisa com uma linha sobre a unidade ter mudado no disco — vale ler.
+> **O que acontece:** o `restart` roda sem erro e o comportamento não muda. **Por quê:** o `systemd` está usando a definição que carregou antes. **Como evitar:** `daemon-reload` sempre depois de mexer em arquivo de unidade. O `status` avisa com uma linha sobre a unidade ter mudado no disco — vale ler.
 
 > [!warning] Usar `Requires=` sem `After=`
-> **O que acontece:** falha intermitente no boot, e só no boot: às vezes sobe, às vezes não.
-> **Por quê:** dependência não impõe ordem, e o resultado passa a depender de quem ficou pronto primeiro.
-> **Como evitar:** declare as duas. E lembre que nem `After=` garante *prontidão* — a aplicação precisa tolerar a indisponibilidade.
+> **O que acontece:** falha intermitente no boot, e só no boot: às vezes sobe, às vezes não. **Por quê:** dependência não impõe ordem, e o resultado passa a depender de quem ficou pronto primeiro. **Como evitar:** declare as duas. E lembre que nem `After=` garante *prontidão* — a aplicação precisa tolerar a indisponibilidade.
 
 > [!warning] `enable` sem `start` (e vice-versa)
-> **O que acontece:** o serviço não sobe agora, ou não volta depois do reboot.
-> **Por quê:** são verbos independentes.
-> **Como evitar:** `enable --now` quando você quer as duas coisas, que é o caso quase sempre. E confirme com `is-active` e `is-enabled`.
+> **O que acontece:** o serviço não sobe agora, ou não volta depois do reboot. **Por quê:** são verbos independentes. **Como evitar:** `enable --now` quando você quer as duas coisas, que é o caso quase sempre. E confirme com `is-active` e `is-enabled`.
 
 ---
 

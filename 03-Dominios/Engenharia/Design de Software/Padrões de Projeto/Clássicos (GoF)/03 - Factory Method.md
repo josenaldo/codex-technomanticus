@@ -21,13 +21,7 @@ aliases:
 # Factory Method
 
 > [!abstract] TL;DR
-> O **Factory Method** encapsula a decisão de **qual classe concreta instanciar** atrás de uma
-> interface, para que o resto do código dependa da abstração e não do `new` de um tipo específico.
-> Resolve o problema do "`new EmailNotification()` espalhado por toda parte" — quando surge um novo
-> tipo, você muda **um** lugar, não vinte. Na nossa lente cross-linguagem, é um caso claro de
-> encolhimento: onde há **função de primeira classe**, a "fábrica" muitas vezes é só uma **função**
-> ou um **dicionário** de construtores. A armadilha número um: criar uma fábrica que só embrulha um
-> único construtor — cerimônia pura.
+> O **Factory Method** encapsula a decisão de **qual classe concreta instanciar** atrás de uma interface, para que o resto do código dependa da abstração e não do `new` de um tipo específico. Resolve o problema do "`new EmailNotification()` espalhado por toda parte" — quando surge um novo tipo, você muda **um** lugar, não vinte. Na nossa lente cross-linguagem, é um caso claro de encolhimento: onde há **função de primeira classe**, a "fábrica" muitas vezes é só uma **função** ou um **dicionário** de construtores. A armadilha número um: criar uma fábrica que só embrulha um único construtor — cerimônia pura.
 
 ## O `new` que se multiplica
 
@@ -135,19 +129,13 @@ Isso é a fábrica **respeitando o Aberto-Fechado** ([[03 - OCP - Aberto-Fechado
 ## Armadilhas comuns
 
 > [!warning] Fábrica que só embrulha um construtor
-> **O que acontece:** cria-se uma `UserFactory.create()` que faz apenas `return new User(...)`, sem nenhuma decisão nem lógica de criação.
-> **Por quê:** o valor do Factory Method está em **encapsular uma escolha** (qual tipo) ou **lógica de criação complexa**. Sem escolha nem complexidade, a fábrica é uma camada de indireção que só afasta o leitor do `new` real.
-> **Como evitar:** só introduza a fábrica quando há **mais de um** tipo possível, ou construção com validação/montagem não-trivial. Um construtor direto é mais honesto.
+> **O que acontece:** cria-se uma `UserFactory.create()` que faz apenas `return new User(...)`, sem nenhuma decisão nem lógica de criação. **Por quê:** o valor do Factory Method está em **encapsular uma escolha** (qual tipo) ou **lógica de criação complexa**. Sem escolha nem complexidade, a fábrica é uma camada de indireção que só afasta o leitor do `new` real. **Como evitar:** só introduza a fábrica quando há **mais de um** tipo possível, ou construção com validação/montagem não-trivial. Um construtor direto é mais honesto.
 
 > [!warning] O `switch` que precisa ser editado a cada novo tipo
-> **O que acontece:** toda vez que surge um tipo novo, você abre a fábrica e acrescenta mais um `case`. A "centralização" só mudou o lugar do problema.
-> **Por quê:** um `switch` fechado sobre tipos viola o Aberto-Fechado — o código de despacho **muda** a cada extensão. Em escala, vira um ponto de conflito e de bugs de "esqueci de adicionar o case".
-> **Como evitar:** troque o `switch` por um **registro** (mapa nome→construtor) que os próprios tipos populam, ou deixe o container de DI montar o mapa. A extensão passa a ser *adicionar*, nunca *editar*.
+> **O que acontece:** toda vez que surge um tipo novo, você abre a fábrica e acrescenta mais um `case`. A "centralização" só mudou o lugar do problema. **Por quê:** um `switch` fechado sobre tipos viola o Aberto-Fechado — o código de despacho **muda** a cada extensão. Em escala, vira um ponto de conflito e de bugs de "esqueci de adicionar o case". **Como evitar:** troque o `switch` por um **registro** (mapa nome→construtor) que os próprios tipos populam, ou deixe o container de DI montar o mapa. A extensão passa a ser *adicionar*, nunca *editar*.
 
 > [!warning] Confundir com Abstract Factory (over-engineering)
-> **O que acontece:** para criar um único tipo de objeto, alguém monta uma hierarquia de "fábrica de fábricas".
-> **Por quê:** Abstract Factory serve para criar **famílias** de objetos que variam juntas (ver próxima nota). Aplicá-lo a um objeto só é cerimônia sem retorno — YAGNI.
-> **Como evitar:** precisa de **um** objeto cuja classe varia? Factory Method / função. Precisa de **um conjunto** de objetos que mudam em bloco? Aí sim Abstract Factory.
+> **O que acontece:** para criar um único tipo de objeto, alguém monta uma hierarquia de "fábrica de fábricas". **Por quê:** Abstract Factory serve para criar **famílias** de objetos que variam juntas (ver próxima nota). Aplicá-lo a um objeto só é cerimônia sem retorno — YAGNI. **Como evitar:** precisa de **um** objeto cuja classe varia? Factory Method / função. Precisa de **um conjunto** de objetos que mudam em bloco? Aí sim Abstract Factory.
 
 ## Como explicar em inglês
 

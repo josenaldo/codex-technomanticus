@@ -516,9 +516,7 @@ O `isPending` escurece levemente o container enquanto os dados chegam. O skeleto
 ## Armadilhas comuns
 
 > [!warning] Criar a promise dentro do componente
-> **O que acontece:** o componente entra em loop infinito — render → `use(promise)` → suspende → resolve → novo render → nova promise → suspende para sempre.
-> **Por quê:** cada render cria uma nova promise, então nunca há uma promise "já resolvida" do render anterior. O React não consegue usar o resultado cacheado.
-> **Como evitar:** crie a promise fora do componente (no módulo, no loader da rota, ou passando como prop estável). Com TanStack Query, o `queryKey` resolve isso automaticamente.
+> **O que acontece:** o componente entra em loop infinito — render → `use(promise)` → suspende → resolve → novo render → nova promise → suspende para sempre. **Por quê:** cada render cria uma nova promise, então nunca há uma promise "já resolvida" do render anterior. O React não consegue usar o resultado cacheado. **Como evitar:** crie a promise fora do componente (no módulo, no loader da rota, ou passando como prop estável). Com TanStack Query, o `queryKey` resolve isso automaticamente.
 >
 > ```tsx
 > // ERRADO — nova promise em cada render
@@ -536,14 +534,10 @@ O `isPending` escurece levemente o container enquanto os dados chegam. O skeleto
 > ```
 
 > [!warning] Suspense sem Error Boundary em produção
-> **O que acontece:** quando a promise rejeita, o erro sobe sem tratamento. Em dev, React exibe um overlay. Em prod, o componente desmonta silenciosamente ou a tela fica em branco.
-> **Por quê:** `use()` lança o erro para o Error Boundary mais próximo — se não houver nenhum, o erro propaga até o root.
-> **Como evitar:** sempre envolva `<Suspense>` com `<ErrorBoundary>`. Trate como par inseparável. Use `react-error-boundary` para ter `fallbackRender` tipado.
+> **O que acontece:** quando a promise rejeita, o erro sobe sem tratamento. Em dev, React exibe um overlay. Em prod, o componente desmonta silenciosamente ou a tela fica em branco. **Por quê:** `use()` lança o erro para o Error Boundary mais próximo — se não houver nenhum, o erro propaga até o root. **Como evitar:** sempre envolva `<Suspense>` com `<ErrorBoundary>`. Trate como par inseparável. Use `react-error-boundary` para ter `fallbackRender` tipado.
 
 > [!warning] Waterfall de fetch com Suspense aninhado
-> **O que acontece:** componentes aninhados que cada um faz seu próprio fetch criam um waterfall: Parent suspende → resolve → renderiza Child → Child suspende. O tempo total é a soma das latências.
-> **Por quê:** o filho só começa seu fetch quando o pai terminou de renderizar.
-> **Como evitar:** inicie todos os fetches no nível mais alto possível (loader da rota, componente pai, ou `prefetchQuery` do TanStack Query) antes de renderizar os filhos. Ou use `Promise.all` para paralelizar explicitamente.
+> **O que acontece:** componentes aninhados que cada um faz seu próprio fetch criam um waterfall: Parent suspende → resolve → renderiza Child → Child suspende. O tempo total é a soma das latências. **Por quê:** o filho só começa seu fetch quando o pai terminou de renderizar. **Como evitar:** inicie todos os fetches no nível mais alto possível (loader da rota, componente pai, ou `prefetchQuery` do TanStack Query) antes de renderizar os filhos. Ou use `Promise.all` para paralelizar explicitamente.
 >
 > ```tsx
 > // Waterfall (evitar)
@@ -563,14 +557,10 @@ O `isPending` escurece levemente o container enquanto os dados chegam. O skeleto
 > ```
 
 > [!warning] Usar Suspense para loading state de mutations
-> **O que acontece:** o desenvolvedor coloca um `<Suspense>` em torno de um form de submit ou botão de delete, esperando que o Suspense exiba o fallback enquanto a mutation processa.
-> **Por quê:** Suspense é projetado para **leitura de dados**, não para mutations. Mutations são imperativas; Suspense é para dados declarativos de leitura.
-> **Como evitar:** para mutations, use `isPending` de `useTransition`, ou o estado de pending de `useMutation` (TanStack Query). Reserve Suspense para fetches de dados que alimentam a UI.
+> **O que acontece:** o desenvolvedor coloca um `<Suspense>` em torno de um form de submit ou botão de delete, esperando que o Suspense exiba o fallback enquanto a mutation processa. **Por quê:** Suspense é projetado para **leitura de dados**, não para mutations. Mutations são imperativas; Suspense é para dados declarativos de leitura. **Como evitar:** para mutations, use `isPending` de `useTransition`, ou o estado de pending de `useMutation` (TanStack Query). Reserve Suspense para fetches de dados que alimentam a UI.
 
 > [!warning] Granularidade excessiva de Suspense boundaries
-> **O que acontece:** cada componente pequeno tem seu próprio `<Suspense>`, gerando dezenas de skeletons que aparecem e desaparecem de forma descoordenada — a "UI do Chumbinho".
-> **Por quê:** Suspense granular demais sem coordenação visual resulta em layout shift e experiência fragmentada.
-> **Como evitar:** agrupe componentes que semanticamente "pertencem à mesma tela" em um único Suspense. Use granularidade apenas onde as latências são significativamente diferentes ou onde a seção pode genuinamente ser útil antes das outras.
+> **O que acontece:** cada componente pequeno tem seu próprio `<Suspense>`, gerando dezenas de skeletons que aparecem e desaparecem de forma descoordenada — a "UI do Chumbinho". **Por quê:** Suspense granular demais sem coordenação visual resulta em layout shift e experiência fragmentada. **Como evitar:** agrupe componentes que semanticamente "pertencem à mesma tela" em um único Suspense. Use granularidade apenas onde as latências são significativamente diferentes ou onde a seção pode genuinamente ser útil antes das outras.
 
 ---
 

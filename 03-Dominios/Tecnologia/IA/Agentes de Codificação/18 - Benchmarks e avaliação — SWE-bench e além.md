@@ -157,8 +157,7 @@ O SWE-bench não é o único benchmark. Dependendo do que você precisa medir:
 > [!tip] Assista: SWE-bench — Measuring Language Models on Real-World GitHub Issues
 > **Canal:** Princeton NLP | **Duração:** ~18min | **Idioma:** EN
 >
-> Os autores explicam as decisões de design: por que issues reais do GitHub em vez de problemas sintéticos, como a curadoria humana mudou o Verified set, e o que os números *não* capturam sobre qualidade de engenharia.
-> Trecho de destaque [11:42]: *"The agent needs to understand not just the bug report, but the implicit conventions of the codebase — the style, the architecture, what a 'good fix' looks like for this project."*
+> Os autores explicam as decisões de design: por que issues reais do GitHub em vez de problemas sintéticos, como a curadoria humana mudou o Verified set, e o que os números *não* capturam sobre qualidade de engenharia. Trecho de destaque [11:42]: *"The agent needs to understand not just the bug report, but the implicit conventions of the codebase — the style, the architecture, what a 'good fix' looks like for this project."*
 >
 > 🎬 https://www.youtube.com/watch?v=jiarYJJ7hJc
 
@@ -262,11 +261,9 @@ O benchmark que realmente importa é o que você constrói com o seu código. O 
 | Qualidade do código gerado | Dívida técnica criada |
 | Falsos positivos (parece certo, mas não é) | Confiabilidade |
 
-**Passo 4 — Documente o processo, não só o resultado**
-Registre qual versão do modelo foi testada, qual configuração de scaffold, e as condições do teste. Sem isso, você não consegue comparar a avaliação de daqui a 3 meses com a atual — e vai voltar à estaca zero.
+**Passo 4 — Documente o processo, não só o resultado** Registre qual versão do modelo foi testada, qual configuração de scaffold, e as condições do teste. Sem isso, você não consegue comparar a avaliação de daqui a 3 meses com a atual — e vai voltar à estaca zero.
 
-**Passo 5 — Refaça após 3 meses**
-Modelos melhoram rápido. O agente que perdeu sua avaliação hoje pode vencer na próxima rodada. Uma suite de avaliação que você roda trimestralmente é mais valiosa do que um benchmark público que você leu uma vez.
+**Passo 5 — Refaça após 3 meses** Modelos melhoram rápido. O agente que perdeu sua avaliação hoje pode vencer na próxima rodada. Uma suite de avaliação que você roda trimestralmente é mais valiosa do que um benchmark público que você leu uma vez.
 
 **Exemplo de scorecard de avaliação interna:**
 

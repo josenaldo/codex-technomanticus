@@ -390,24 +390,16 @@ A regra prática: se você está na **terceira prop booleana** para controlar a 
 ## Armadilhas comuns
 
 > [!warning] Explosão de props booleanas
-> **O que acontece:** o componente acumula `showHeader`, `showFooter`, `hasAvatar`, `isHighlighted` — cada booleana resolveu um caso mas criou rigidez. Seis meses depois, o componente tem 20 props e ninguém sabe o que é possível renderizar sem ler o código.
-> **Por quê:** cada prop booleana é uma válvula que o author controla. O consumidor só pode escolher entre as válvulas existentes.
-> **Como evitar:** identificar as regiões do componente e expô-las como slots (`ReactNode`). O consumidor monta o que quer em cada região, sem precisar do autor para cada variante nova.
+> **O que acontece:** o componente acumula `showHeader`, `showFooter`, `hasAvatar`, `isHighlighted` — cada booleana resolveu um caso mas criou rigidez. Seis meses depois, o componente tem 20 props e ninguém sabe o que é possível renderizar sem ler o código. **Por quê:** cada prop booleana é uma válvula que o author controla. O consumidor só pode escolher entre as válvulas existentes. **Como evitar:** identificar as regiões do componente e expô-las como slots (`ReactNode`). O consumidor monta o que quer em cada região, sem precisar do autor para cada variante nova.
 
 > [!warning] Herança em vez de composição
-> **O que acontece:** ao invés de usar `children`, o desenvolvedor cria `SpecialCard extends Card` (em class components) ou recria o interior do `Card` copiando JSX. O resultado é duas implementações que divergem com o tempo.
-> **Por quê:** herança de componentes em React não existe como padrão — React recomenda explicitamente composição no lugar de herança desde os primeiros docs.
-> **Como evitar:** use `specialization` via composição: o `ErrorCard` renderiza um `Card` com slots preenchidos, não uma subclasse. Isso é o padrão descrito nos docs como "containment + specialization".
+> **O que acontece:** ao invés de usar `children`, o desenvolvedor cria `SpecialCard extends Card` (em class components) ou recria o interior do `Card` copiando JSX. O resultado é duas implementações que divergem com o tempo. **Por quê:** herança de componentes em React não existe como padrão — React recomenda explicitamente composição no lugar de herança desde os primeiros docs. **Como evitar:** use `specialization` via composição: o `ErrorCard` renderiza um `Card` com slots preenchidos, não uma subclasse. Isso é o padrão descrito nos docs como "containment + specialization".
 
 > [!warning] Slot obrigatório sem fallback visível
-> **O que acontece:** um slot é tipado como `React.ReactNode` (não opcional), mas o consumidor passa `undefined` ou se esquece do slot. O componente renderiza silenciosamente sem aquela região — o layout quebra sem erro.
-> **Por quê:** `ReactNode` inclui `undefined`, então TypeScript não reclama mesmo que o slot seja "obrigatório".
-> **Como evitar:** se o slot for estruturalmente necessário, use um fallback visual (`{header ?? <DefaultHeader />}`) ou adicione validação em runtime via `PropTypes` (projetos legados) ou `if (!header) throw new Error(...)` (em desenvolvimento). Em TypeScript, remover `undefined` do tipo força o consumidor a passar algo: `header: Exclude<React.ReactNode, undefined>` — embora verbose, sinaliza a intenção.
+> **O que acontece:** um slot é tipado como `React.ReactNode` (não opcional), mas o consumidor passa `undefined` ou se esquece do slot. O componente renderiza silenciosamente sem aquela região — o layout quebra sem erro. **Por quê:** `ReactNode` inclui `undefined`, então TypeScript não reclama mesmo que o slot seja "obrigatório". **Como evitar:** se o slot for estruturalmente necessário, use um fallback visual (`{header ?? <DefaultHeader />}`) ou adicione validação em runtime via `PropTypes` (projetos legados) ou `if (!header) throw new Error(...)` (em desenvolvimento). Em TypeScript, remover `undefined` do tipo força o consumidor a passar algo: `header: Exclude<React.ReactNode, undefined>` — embora verbose, sinaliza a intenção.
 
 > [!warning] Passar JSX pesado como prop sem memoização
-> **O que acontece:** um slot como `sidebar={<HeavySidebarComponent data={bigArray} />}` é recriado a cada render do pai, mesmo que `bigArray` não tenha mudado.
-> **Por quê:** JSX é só `React.createElement(...)` — uma chamada de função. O elemento é um objeto novo a cada execução, mesmo que o conteúdo seja idêntico.
-> **Como evitar:** se o slot contiver componentes pesados ou depender de dados estáveis, extraia para variável fora do JSX inline ou use `useMemo`. Mas não over-optimize: se o componente filho for leve ou usar `React.memo`, o overhead é negligenciável.
+> **O que acontece:** um slot como `sidebar={<HeavySidebarComponent data={bigArray} />}` é recriado a cada render do pai, mesmo que `bigArray` não tenha mudado. **Por quê:** JSX é só `React.createElement(...)` — uma chamada de função. O elemento é um objeto novo a cada execução, mesmo que o conteúdo seja idêntico. **Como evitar:** se o slot contiver componentes pesados ou depender de dados estáveis, extraia para variável fora do JSX inline ou use `useMemo`. Mas não over-optimize: se o componente filho for leve ou usar `React.memo`, o overhead é negligenciável.
 
 ## Como explicar em inglês
 

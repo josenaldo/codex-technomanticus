@@ -94,8 +94,7 @@ $ git cat-file -p 9d2f1ae4
 É literalmente texto. Um commit é um arquivinho com cinco campos, e um tree é uma listinha de entradas. Não há nada de mágico escondido — e ver isso costuma ser o momento em que o Git deixa de parecer sobrenatural.
 
 > [!question]- Onde isso fica no disco?
-> Em `.git/objects/`. Cada objeto vira um arquivo comprimido cujo caminho são os dois primeiros caracteres do hash como pasta e o resto como nome — `.git/objects/a3/f1c9d...`. São os chamados objetos *soltos*.
-> Com o tempo, o Git empacota milhares deles em arquivos `.pack`, aplicando compressão entre objetos parecidos (aí sim guardando diferenças, como otimização de armazenamento — o que **não** contradiz o modelo: conceitualmente cada objeto continua completo, e o `git gc` faz esse empacotamento nos bastidores).
+> Em `.git/objects/`. Cada objeto vira um arquivo comprimido cujo caminho são os dois primeiros caracteres do hash como pasta e o resto como nome — `.git/objects/a3/f1c9d...`. São os chamados objetos *soltos*. Com o tempo, o Git empacota milhares deles em arquivos `.pack`, aplicando compressão entre objetos parecidos (aí sim guardando diferenças, como otimização de armazenamento — o que **não** contradiz o modelo: conceitualmente cada objeto continua completo, e o `git gc` faz esse empacotamento nos bastidores).
 
 ---
 
@@ -127,9 +126,7 @@ Isso significa que o identificador de um commit não é um número de série: é
 É por isso que o Git detecta corrupção de disco (`git fsck` recalcula e compara) e por isso que assinar um único commit ou tag atesta tudo o que está atrás dele.
 
 > [!info] SHA-1, colisões e SHA-256
-> O Git nasceu usando **SHA-1**, que hoje é considerado quebrado para uso criptográfico — em 2017 o ataque *SHAttered* produziu duas entradas diferentes com o mesmo hash.
-> Duas ressalvas importam. Primeira: o Git incorporou desde a versão 2.13 uma **detecção de colisão** (a implementação `sha1dc`), que rejeita conteúdos construídos com esse tipo de ataque. Segunda: a segurança do Git nunca dependeu só do hash — ela depende também de quem tem acesso de escrita ao repositório.
-> Existe suporte a repositórios em **SHA-256** desde o Git 2.29, mas a adoção é baixa porque a interoperabilidade entre repositórios dos dois formatos ainda não está completa, e as plataformas de hospedagem seguem majoritariamente em SHA-1. Na prática: você vai trabalhar com SHA-1 e está tudo bem.
+> O Git nasceu usando **SHA-1**, que hoje é considerado quebrado para uso criptográfico — em 2017 o ataque *SHAttered* produziu duas entradas diferentes com o mesmo hash. Duas ressalvas importam. Primeira: o Git incorporou desde a versão 2.13 uma **detecção de colisão** (a implementação `sha1dc`), que rejeita conteúdos construídos com esse tipo de ataque. Segunda: a segurança do Git nunca dependeu só do hash — ela depende também de quem tem acesso de escrita ao repositório. Existe suporte a repositórios em **SHA-256** desde o Git 2.29, mas a adoção é baixa porque a interoperabilidade entre repositórios dos dois formatos ainda não está completa, e as plataformas de hospedagem seguem majoritariamente em SHA-1. Na prática: você vai trabalhar com SHA-1 e está tudo bem.
 
 ---
 
@@ -150,19 +147,13 @@ Agora várias regras deixam de ser arbitrárias:
 ## Armadilhas comuns
 
 > [!warning] Achar que o hash é aleatório ou sequencial
-> **O que acontece:** a pessoa tenta "ordenar por hash" ou supõe que um hash maior é mais recente.
-> **Por quê:** ele parece um número arbitrário.
-> **Como pensar:** o hash não tem ordem nem tempo — é uma função do conteúdo. Cronologia vem dos **pais** do commit (nota 18), nunca do valor do hash.
+> **O que acontece:** a pessoa tenta "ordenar por hash" ou supõe que um hash maior é mais recente. **Por quê:** ele parece um número arbitrário. **Como pensar:** o hash não tem ordem nem tempo — é uma função do conteúdo. Cronologia vem dos **pais** do commit (nota 18), nunca do valor do hash.
 
 > [!warning] Commitar arquivo grande "só uma vez"
-> **O que acontece:** alguém commita um arquivo de 300 MB, percebe o erro e o remove no commit seguinte. O repositório continua com 300 MB para sempre, e todo mundo que clonar vai baixar isso.
-> **Por quê:** o blob foi criado e continua alcançável pelo commit antigo, que continua no histórico.
-> **Como evitar:** `.gitignore` (nota 06) e atenção antes de commitar. Remover de verdade exige reescrever o histórico — mesma família de operação da nota 25.
+> **O que acontece:** alguém commita um arquivo de 300 MB, percebe o erro e o remove no commit seguinte. O repositório continua com 300 MB para sempre, e todo mundo que clonar vai baixar isso. **Por quê:** o blob foi criado e continua alcançável pelo commit antigo, que continua no histórico. **Como evitar:** `.gitignore` (nota 06) e atenção antes de commitar. Remover de verdade exige reescrever o histórico — mesma família de operação da nota 25.
 
 > [!warning] Confundir "endereçado por conteúdo" com "sem duplicação nenhuma"
-> **O que acontece:** espera-se que trocar uma linha num arquivo de 10 MB custe alguns bytes.
-> **Por quê:** conceitualmente, o Git cria um **blob novo e completo**.
-> **Na prática:** o empacotamento (`git gc`) aplica compressão de diferenças entre objetos parecidos, então o custo real em disco costuma ser pequeno **para texto**. Para binário, que não comprime bem entre versões, o custo é real — e é a raiz do problema de repositório inchado.
+> **O que acontece:** espera-se que trocar uma linha num arquivo de 10 MB custe alguns bytes. **Por quê:** conceitualmente, o Git cria um **blob novo e completo**. **Na prática:** o empacotamento (`git gc`) aplica compressão de diferenças entre objetos parecidos, então o custo real em disco costuma ser pequeno **para texto**. Para binário, que não comprime bem entre versões, o custo é real — e é a raiz do problema de repositório inchado.
 
 ---
 

@@ -97,11 +97,9 @@ Historicamente era a solução canônica para aproveitar todos os cores em deplo
 
 O mecanismo que permite múltiplos processos escutarem a mesma porta depende do SO:
 
-**Linux (padrão — `SCHED_RR`):**
-O Node adota uma estratégia própria de round-robin sobre o file descriptor compartilhado. O primary aceita a conexão e a distribui para um worker disponível. Isso evita o problema clássico de `SO_REUSEPORT` no Linux onde alguns workers ficam sobrecarregados enquanto outros ficam ociosos — a distribuição desigual chegava a 70%+ das conexões indo para apenas 2 de 8 workers.
+**Linux (padrão — `SCHED_RR`):** O Node adota uma estratégia própria de round-robin sobre o file descriptor compartilhado. O primary aceita a conexão e a distribui para um worker disponível. Isso evita o problema clássico de `SO_REUSEPORT` no Linux onde alguns workers ficam sobrecarregados enquanto outros ficam ociosos — a distribuição desigual chegava a 70%+ das conexões indo para apenas 2 de 8 workers.
 
-**Windows:**
-O kernel distribui via IOCP (I/O Completion Ports), que é o mecanismo nativo do Windows para I/O assíncrono de alta performance.
+**Windows:** O kernel distribui via IOCP (I/O Completion Ports), que é o mecanismo nativo do Windows para I/O assíncrono de alta performance.
 
 Você pode alterar a política explicitamente:
 

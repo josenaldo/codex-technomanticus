@@ -17,16 +17,14 @@ aliases:
 
 > Glossário do domínio Java: termos de linguagem, plataforma e ecossistema. Semeado com o Galho 1 — Linguagem e sintaxe moderna; cresce a cada galho incorporado.
 
-<!--
-Como usar este glossário:
+<!-- Como usar este glossário:
 
 - Cada verbete é um `###` dentro de uma `##` temática (seção alfabética).
 - Verbetes em ordem alfabética dentro de cada seção; ordenação case-insensitive, sem considerar acento.
 - Linkar de outra nota: wikilink para este arquivo com âncora `#` + nome do termo.
 - Customizar o texto exibido: adicionar o pipe `|` após a âncora, seguido do texto.
 - A skill /verbete adiciona termos automaticamente em ordem alfabética.
-- Cada verbete tem (i) 1-3 frases de definição em PT-BR e (ii) "Veja também:" com wikilinks para a(s) nota(s) que aprofundam.
--->
+- Cada verbete tem (i) 1-3 frases de definição em PT-BR e (ii) "Veja também:" com wikilinks para a(s) nota(s) que aprofundam. -->
 
 ## A
 

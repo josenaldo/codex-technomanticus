@@ -127,13 +127,9 @@ graph LR
 
 ### Quando usar Graph RAG
 
-✅ Domínio com entidades e relações claras (legal, medical, scientific, business intelligence)
-✅ Queries comparativas ou agregativas
-✅ Dataset ≥1000 documentos com riqueza relacional
+✅ Domínio com entidades e relações claras (legal, medical, scientific, business intelligence) ✅ Queries comparativas ou agregativas ✅ Dataset ≥1000 documentos com riqueza relacional
 
-❌ Texto livre sem entidades (literatura, opiniões)
-❌ Dataset pequeno (overhead não compensa)
-❌ Time sem expertise em knowledge graphs
+❌ Texto livre sem entidades (literatura, opiniões) ❌ Dataset pequeno (overhead não compensa) ❌ Time sem expertise em knowledge graphs
 
 ### Tools
 
@@ -173,13 +169,9 @@ answer = agent.run(query, max_steps=10)
 
 ### Quando usar
 
-✅ Queries variadas (alguns simples, outros complexos)
-✅ Resultados podem ser refinados iterativamente
-✅ Time tem expertise com agents ([[Anatomia de Agents]])
+✅ Queries variadas (alguns simples, outros complexos) ✅ Resultados podem ser refinados iterativamente ✅ Time tem expertise com agents ([[Anatomia de Agents]])
 
-❌ Queries sempre similares (pipeline fixo é mais barato)
-❌ Latência crítica
-❌ Compliance exige resposta determinística
+❌ Queries sempre similares (pipeline fixo é mais barato) ❌ Latência crítica ❌ Compliance exige resposta determinística
 
 Detalhes em [[Context Engineering|06 - Dynamic retrieval beyond RAG]].
 
@@ -198,15 +190,9 @@ graph TD
 
 ### Quando usar
 
-✅ PDFs longos com estrutura real (financeiro, jurídico, regulatório, acadêmico, manuais técnicos)
-✅ Citação por página/seção importa
-✅ Similaridade vetorial traz trechos parecidos mas não decisivos
-✅ Corpus controlado onde operar uma árvore por documento é aceitável
+✅ PDFs longos com estrutura real (financeiro, jurídico, regulatório, acadêmico, manuais técnicos) ✅ Citação por página/seção importa ✅ Similaridade vetorial traz trechos parecidos mas não decisivos ✅ Corpus controlado onde operar uma árvore por documento é aceitável
 
-❌ Corpus enorme de snippets curtos
-❌ Conteúdo sem hierarquia
-❌ Latência crítica
-❌ Quando o problema é memória conversacional, não retrieval documental
+❌ Corpus enorme de snippets curtos ❌ Conteúdo sem hierarquia ❌ Latência crítica ❌ Quando o problema é memória conversacional, não retrieval documental
 
 Detalhes em [[13 - PageIndex — RAG vectorless por árvore de documentos]].
 

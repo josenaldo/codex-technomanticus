@@ -214,8 +214,7 @@ Mais de dois mil anos depois, ainda é a prova favorita de muita gente.
 > [!danger] Teorema: existem infinitos números primos
 > **Prova (por contradição).**
 > 1. **Assuma o oposto**: suponha que existe um número *finito* de primos. Então podemos listar todos: `p₁, p₂, …, pₙ`. Essa é a lista completa, não falta nenhum.
-> 2. Construa um número novo multiplicando todos e somando 1:
->    `N = (p₁ · p₂ · … · pₙ) + 1`.
+> 2. Construa um número novo multiplicando todos e somando 1: `N = (p₁ · p₂ · … · pₙ) + 1`.
 > 3. `N` é maior que qualquer primo da lista, então `N` não está na lista — pela suposição, `N` não é primo.
 > 4. Se `N` não é primo, ele tem algum divisor primo. Esse divisor está na lista (a lista é completa). Chame-o `pᵢ`.
 > 5. Então `pᵢ ∣ N`. Mas `pᵢ` também divide o produto `p₁ · … · pₙ` (ele é um dos fatores).
@@ -318,8 +317,7 @@ Aqui só registramos: ela é a técnica que prova o "para todo n" sem precisar t
 Saber provar é metade. A outra metade é farejar prova *falsa*.
 
 > [!failure] Afirmar o consequente
-> De `p → q` e do fato de `q` ser verdade, concluir `p`. Inválido.
-> "Se chove, a rua molha. A rua está molhada. Logo choveu." — não: lavaram a calçada. Confundir uma implicação com sua recíproca é a raiz dessa falácia.
+> De `p → q` e do fato de `q` ser verdade, concluir `p`. Inválido. "Se chove, a rua molha. A rua está molhada. Logo choveu." — não: lavaram a calçada. Confundir uma implicação com sua recíproca é a raiz dessa falácia.
 
 > [!failure] Generalizar de exemplos
 > "Funcionou pra n = 1, 2, 3… logo vale sempre." É exatamente o erro de `n² + n + 41`. Exemplos *sugerem*, não *provam*. Só servem como prova quando há um princípio (indução) por trás.
@@ -391,15 +389,7 @@ Leitura da tabela: prova é a única coluna com alcance verdadeiramente universa
 
 Técnicas de prova aparecem em entrevistas de duas formas: explicitamente, num problema de matemática discreta ("prove que…"), e implicitamente, quando o entrevistador pergunta "por que esse algoritmo está correto?" ou "esse loop sempre termina?". Saber nomear a técnica que você está usando — "vou provar por contradição", "aqui um contraexemplo basta" — sinaliza rigor. E quando pedirem pra você *quebrar* uma solução, lembre: você está caçando um contraexemplo, que é o mesmo que um edge case.
 
-*A proof is a chain of valid implications from axioms and definitions to the conclusion.*
-*In a direct proof, you assume the hypothesis and derive the conclusion step by step.*
-*Proof by contraposition works because `p → q` is logically equivalent to `¬q → ¬p`.*
-*In a proof by contradiction, you assume the opposite and derive an absurdity.*
-*A single counterexample is enough to refute a universal claim.*
-*To prove an "if and only if", you must prove both directions separately.*
-*Testing shows the presence of bugs, never their absence.*
-*Looking for a counterexample is the same skill as finding the edge case that breaks the code.*
-*An assertion or invariant is a small theorem about the program's state.*
+*A proof is a chain of valid implications from axioms and definitions to the conclusion.* *In a direct proof, you assume the hypothesis and derive the conclusion step by step.* *Proof by contraposition works because `p → q` is logically equivalent to `¬q → ¬p`.* *In a proof by contradiction, you assume the opposite and derive an absurdity.* *A single counterexample is enough to refute a universal claim.* *To prove an "if and only if", you must prove both directions separately.* *Testing shows the presence of bugs, never their absence.* *Looking for a counterexample is the same skill as finding the edge case that breaks the code.* *An assertion or invariant is a small theorem about the program's state.*
 
 | Português | English |
 |-----------|---------|

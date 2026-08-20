@@ -357,24 +357,16 @@ Sem `use()`, seria necessário chamar `useContext(AdminContext)` antes do `if (r
 ## Armadilhas comuns
 
 > [!warning] Criar Promise dentro do componente que chama `use()` — loop infinito
-> **O que acontece:** o componente entra em loop infinito de suspensão — o spinner não desaparece nunca, ou o componente fica re-renderizando rapidamente sem exibir dados.
-> **Por quê:** cada render cria uma Promise nova; `use()` suspende; quando a Promise resolve, um novo render começa com uma nova Promise; o ciclo reinicia indefinidamente.
-> **Como evitar:** a Promise deve ser criada fora do componente consumidor — em um Server Component (passa como prop), em `useMemo` (estabiliza por dependência), ou via `cache()` do React (deduplicação por argumento).
+> **O que acontece:** o componente entra em loop infinito de suspensão — o spinner não desaparece nunca, ou o componente fica re-renderizando rapidamente sem exibir dados. **Por quê:** cada render cria uma Promise nova; `use()` suspende; quando a Promise resolve, um novo render começa com uma nova Promise; o ciclo reinicia indefinidamente. **Como evitar:** a Promise deve ser criada fora do componente consumidor — em um Server Component (passa como prop), em `useMemo` (estabiliza por dependência), ou via `cache()` do React (deduplicação por argumento).
 
 > [!warning] Usar `use(promise)` sem Suspense boundary
-> **O que acontece:** React lança um erro em produção e um warning em desenvolvimento — "A component suspended while rendering but no fallback UI was specified in a parent Suspense boundary."
-> **Por quê:** quando `use()` suspende, precisa de um Suspense boundary para exibir o fallback. Sem ele, o erro sobe até o root e a tela fica em branco.
-> **Como evitar:** sempre envolva componentes que usam `use(promise)` com `<Suspense fallback={...}>`. O Suspense não precisa ser direto pai — pode estar vários níveis acima na árvore.
+> **O que acontece:** React lança um erro em produção e um warning em desenvolvimento — "A component suspended while rendering but no fallback UI was specified in a parent Suspense boundary." **Por quê:** quando `use()` suspende, precisa de um Suspense boundary para exibir o fallback. Sem ele, o erro sobe até o root e a tela fica em branco. **Como evitar:** sempre envolva componentes que usam `use(promise)` com `<Suspense fallback={...}>`. O Suspense não precisa ser direto pai — pode estar vários níveis acima na árvore.
 
 > [!warning] Achar que `use()` substitui toda lógica de data fetching no cliente
-> **O que acontece:** o desenvolvedor remove `TanStack Query` ou SWR achando que `use()` é equivalente — e descobre que não há cache automático, invalidação, revalidação no foco, deduplicação de requests ou polling.
-> **Por quê:** `use()` é uma primitiva de baixo nível para ler uma Promise durante o render. Bibliotecas como TanStack Query são camadas de alto nível com estratégias de cache, stale-while-revalidate, retry e muito mais. São complementares, não concorrentes.
-> **Como evitar:** use `use()` para integrar com o padrão Server Component → Client Component, onde a Promise vem do servidor. Para data fetching 100% no cliente com cache, continue com TanStack Query ou SWR.
+> **O que acontece:** o desenvolvedor remove `TanStack Query` ou SWR achando que `use()` é equivalente — e descobre que não há cache automático, invalidação, revalidação no foco, deduplicação de requests ou polling. **Por quê:** `use()` é uma primitiva de baixo nível para ler uma Promise durante o render. Bibliotecas como TanStack Query são camadas de alto nível com estratégias de cache, stale-while-revalidate, retry e muito mais. São complementares, não concorrentes. **Como evitar:** use `use()` para integrar com o padrão Server Component → Client Component, onde a Promise vem do servidor. Para data fetching 100% no cliente com cache, continue com TanStack Query ou SWR.
 
 > [!warning] Esquecer o Error Boundary ao usar `use(promise)`
-> **O que acontece:** se a Promise rejeitar e não houver Error Boundary, o erro vai virar uma tela branca ou propagar de forma incontrolada.
-> **Por quê:** `use()` re-lança erros de Promise rejeita para o Error Boundary mais próximo — mas se não existir um, o erro sobe para o root.
-> **Como evitar:** sempre combine `<Suspense>` com `<ErrorBoundary>` ao usar `use(promise)`. O padrão canônico é: `<ErrorBoundary fallback={...}><Suspense fallback={...}><ComponenteComUse /></Suspense></ErrorBoundary>`.
+> **O que acontece:** se a Promise rejeitar e não houver Error Boundary, o erro vai virar uma tela branca ou propagar de forma incontrolada. **Por quê:** `use()` re-lança erros de Promise rejeita para o Error Boundary mais próximo — mas se não existir um, o erro sobe para o root. **Como evitar:** sempre combine `<Suspense>` com `<ErrorBoundary>` ao usar `use(promise)`. O padrão canônico é: `<ErrorBoundary fallback={...}><Suspense fallback={...}><ComponenteComUse /></Suspense></ErrorBoundary>`.
 
 ---
 

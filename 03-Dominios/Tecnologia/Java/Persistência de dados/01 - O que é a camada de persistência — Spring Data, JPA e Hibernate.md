@@ -21,8 +21,7 @@ aliases:
 # O que é a camada de persistência — Spring Data, JPA e Hibernate
 
 > [!abstract] TL;DR
-> A persistência num backend Spring não é uma coisa só — é uma **pilha de camadas**. O **Spring Data JPA** elimina o boilerplate de repositório sobre a **spec JPA (Jakarta Persistence)**, que é só um contrato (Galho 7); o **Hibernate** é quem de fato implementa esse contrato e fala JDBC com o banco.
-> Esta nota é a **assinatura da tripla fronteira**: o `@Transactional` que abre a transação roda sobre o proxy AOP (Galho 8), e a borda HTTP devolve **DTO** (Galho 9) — nunca a entidade gerenciada. Aqui a gente operacionaliza e linka; a spec e o AOP são re-explicados nos seus galhos.
+> A persistência num backend Spring não é uma coisa só — é uma **pilha de camadas**. O **Spring Data JPA** elimina o boilerplate de repositório sobre a **spec JPA (Jakarta Persistence)**, que é só um contrato (Galho 7); o **Hibernate** é quem de fato implementa esse contrato e fala JDBC com o banco. Esta nota é a **assinatura da tripla fronteira**: o `@Transactional` que abre a transação roda sobre o proxy AOP (Galho 8), e a borda HTTP devolve **DTO** (Galho 9) — nunca a entidade gerenciada. Aqui a gente operacionaliza e linka; a spec e o AOP são re-explicados nos seus galhos.
 
 ## O que é
 

@@ -94,9 +94,7 @@ Essa é a promessa central deste domínio, e ela se repete em cada nota das 48 q
 A coluna da esquerda não é "UX de segunda categoria" — é UX real, dimensionada para uma pessoa e um prazo curto. A coluna da direita não desaparece do domínio: ela aparece nomeada, para que você reconheça o limite em vez de tentar recriar, sozinho e mal, o que uma equipe de pesquisa faria com meses e orçamento.
 
 > [!warning] Confundir "praticável sozinho" com "opcional"
-> **O que acontece:** o engenheiro pula a entrevista de descoberta ou o teste com 5 usuários porque "não dá tempo", e parte direto para a tela — exatamente o erro do cenário de abertura.
-> **Por quê:** a coluna da esquerda da tabela acima tem custo baixo (horas, não semanas) e não exige ninguém além de você. Pular essas etapas não economiza tempo de verdade — só adia o custo de descobrir que construiu a coisa errada, e esse custo adiado é sempre maior.
-> **Como evitar:** trate a entrevista de descoberta e o teste guerrilha como parte do "construir", não como luxo de quem tem tempo sobrando. Ver [[03-Dominios/Engenharia/UX/Descoberta e Pesquisa/index|SG2 — Descoberta e Pesquisa]].
+> **O que acontece:** o engenheiro pula a entrevista de descoberta ou o teste com 5 usuários porque "não dá tempo", e parte direto para a tela — exatamente o erro do cenário de abertura. **Por quê:** a coluna da esquerda da tabela acima tem custo baixo (horas, não semanas) e não exige ninguém além de você. Pular essas etapas não economiza tempo de verdade — só adia o custo de descobrir que construiu a coisa errada, e esse custo adiado é sempre maior. **Como evitar:** trate a entrevista de descoberta e o teste guerrilha como parte do "construir", não como luxo de quem tem tempo sobrando. Ver [[03-Dominios/Engenharia/UX/Descoberta e Pesquisa/index|SG2 — Descoberta e Pesquisa]].
 
 ## Cliente ≠ usuário, e a escala de um
 
@@ -142,19 +140,13 @@ Um engenheiro solo, sob pressão de prazo, cria uma proto-persona baseada em sup
 ## Armadilhas comuns
 
 > [!warning] Tratar "UX" como sinônimo de "UI"
-> **O que acontece:** o time (ou o cliente) usa "fazer o UX" para dizer "deixar bonito", e a conversa inteira sobre o produto vira uma conversa sobre cor e layout.
-> **Por quê:** a tela é a parte visível do trabalho, então é a que todo mundo enxerga e nomeia primeiro. As outras cinco disciplinas — pesquisa, arquitetura de informação, interação, content design, medição — ficam invisíveis mesmo quando fazem toda a diferença no resultado.
-> **Como evitar:** ao ouvir "cuida do UX disso", pergunte de volta "já sabemos quem vai usar e por quê?" antes de abrir o Figma. Isso reposiciona a conversa da tela para a decisão que a antecede.
+> **O que acontece:** o time (ou o cliente) usa "fazer o UX" para dizer "deixar bonito", e a conversa inteira sobre o produto vira uma conversa sobre cor e layout. **Por quê:** a tela é a parte visível do trabalho, então é a que todo mundo enxerga e nomeia primeiro. As outras cinco disciplinas — pesquisa, arquitetura de informação, interação, content design, medição — ficam invisíveis mesmo quando fazem toda a diferença no resultado. **Como evitar:** ao ouvir "cuida do UX disso", pergunte de volta "já sabemos quem vai usar e por quê?" antes de abrir o Figma. Isso reposiciona a conversa da tela para a decisão que a antecede.
 
 > [!warning] Otimizar para quem aprova, não para quem usa
-> **O que acontece:** o produto agrada nas reuniões de aprovação e falha na adoção real, como no Cenário 1 acima.
-> **Por quê:** em B2B/consultoria, quem decide o orçamento raramente é quem opera o sistema todo dia. Feedback do cliente durante o projeto é fácil de coletar e tentador de tratar como "a voz do usuário" — mas é a voz de quem paga, não de quem usa.
-> **Como evitar:** trate aprovação do cliente e validação com usuário real como dois checkpoints diferentes, nunca um substituindo o outro. Ver [[03-Dominios/Engenharia/UX/Descoberta e Pesquisa/index|SG2]].
+> **O que acontece:** o produto agrada nas reuniões de aprovação e falha na adoção real, como no Cenário 1 acima. **Por quê:** em B2B/consultoria, quem decide o orçamento raramente é quem opera o sistema todo dia. Feedback do cliente durante o projeto é fácil de coletar e tentador de tratar como "a voz do usuário" — mas é a voz de quem paga, não de quem usa. **Como evitar:** trate aprovação do cliente e validação com usuário real como dois checkpoints diferentes, nunca um substituindo o outro. Ver [[03-Dominios/Engenharia/UX/Descoberta e Pesquisa/index|SG2]].
 
 > [!warning] Fingir que a coluna da direita cabe numa pessoa só
-> **O que acontece:** o engenheiro tenta reproduzir sozinho, em uma tarde, o que normalmente exige um time de pesquisa com semanas — por exemplo, "validar" uma persona com três conversas informais e tratá-la como pesquisa qualitativa rigorosa.
-> **Por quê:** o resultado *parece* pesquisa (tem entrevistado, tem anotação, tem conclusão), mas carrega o viés de amostra pequena e de quem já tinha uma hipótese favorita antes de começar. A falsa confiança é pior do que reconhecer a lacuna.
-> **Como evitar:** nomeie o método pelo que ele realmente é — "proto-persona baseada em 3 conversas", não "persona validada" — e reserve a validação formal para quando o risco da decisão justificar buscar apoio externo. Ver a seção "Quando chamar um especialista" acima.
+> **O que acontece:** o engenheiro tenta reproduzir sozinho, em uma tarde, o que normalmente exige um time de pesquisa com semanas — por exemplo, "validar" uma persona com três conversas informais e tratá-la como pesquisa qualitativa rigorosa. **Por quê:** o resultado *parece* pesquisa (tem entrevistado, tem anotação, tem conclusão), mas carrega o viés de amostra pequena e de quem já tinha uma hipótese favorita antes de começar. A falsa confiança é pior do que reconhecer a lacuna. **Como evitar:** nomeie o método pelo que ele realmente é — "proto-persona baseada em 3 conversas", não "persona validada" — e reserve a validação formal para quando o risco da decisão justificar buscar apoio externo. Ver a seção "Quando chamar um especialista" acima.
 
 ## Como explicar em inglês
 

@@ -209,20 +209,15 @@ Consulte `:LazyExtras` ou `https://www.lazyvim.org/extras` para a lista completa
 
 Quando um override não funciona ou o comportamento é inesperado:
 
-**`:Lazy profile` (ou `P` na TUI):**
-Lista plugins ordenados por tempo de carregamento. Útil para ver se um plugin está sendo carregado quando não deveria.
+**`:Lazy profile` (ou `P` na TUI):** Lista plugins ordenados por tempo de carregamento. Útil para ver se um plugin está sendo carregado quando não deveria.
 
-**`:Lazy log <plugin>` (ou `L` na TUI):**
-Mostra o changelog/log de um plugin específico.
+**`:Lazy log <plugin>` (ou `L` na TUI):** Mostra o changelog/log de um plugin específico.
 
-**`:checkhealth`:**
-Diagnóstico completo. Muitos plugins implementam healthchecks que reportam dependências ausentes ou configs inválidas.
+**`:checkhealth`:** Diagnóstico completo. Muitos plugins implementam healthchecks que reportam dependências ausentes ou configs inválidas.
 
-**`:LazyExtras`:**
-Mostra quais Extras estão habilitados. Útil para confirmar que um Extra foi ativado corretamente.
+**`:LazyExtras`:** Mostra quais Extras estão habilitados. Útil para confirmar que um Extra foi ativado corretamente.
 
-**`:Lazy` → plugin → `Enter`:**
-Mostra o spec completo e mergeado de um plugin — todas as fontes (LazyVim + seus overrides). Indispensável para entender o que está sendo aplicado.
+**`:Lazy` → plugin → `Enter`:** Mostra o spec completo e mergeado de um plugin — todas as fontes (LazyVim + seus overrides). Indispensável para entender o que está sendo aplicado.
 
 ---
 

@@ -19,9 +19,7 @@ Roadmap do galho `03-Dominios/Carreira/Entrevistas`. **Construção nova** (2026
 Este galho é **conhecimento geral sobre o processo de entrevista técnica sênior** — o que vale para qualquer candidato. Ele é `publish: true` e vive num repositório público.
 
 > [!danger] O que NUNCA entra neste galho
-> **Nenhum dado pessoal do autor.** Nome de empregador, métrica interna de projeto, história própria, resposta própria, currículo, vaga específica, nome de mentoria ou de colegas. Nem em exemplo, nem em citação ilustrativa.
-> **Motivo prático:** as notas antigas deste galho traziam nome de empregador atual e métricas internas dele num repositório **público** — exposição que ninguém escolheu conscientemente. A reforma existe também para desfazer isso.
-> **Exemplos nas notas** devem ser **genéricos e claramente fictícios** ("uma fintech de 40 pessoas", "um time que herdou um monólito"), nunca casos reais reconhecíveis.
+> **Nenhum dado pessoal do autor.** Nome de empregador, métrica interna de projeto, história própria, resposta própria, currículo, vaga específica, nome de mentoria ou de colegas. Nem em exemplo, nem em citação ilustrativa. **Motivo prático:** as notas antigas deste galho traziam nome de empregador atual e métricas internas dele num repositório **público** — exposição que ninguém escolheu conscientemente. A reforma existe também para desfazer isso. **Exemplos nas notas** devem ser **genéricos e claramente fictícios** ("uma fintech de 40 pessoas", "um time que herdou um monólito"), nunca casos reais reconhecíveis.
 
 > [!warning] Material de terceiros
 > Mentorias pagas, cursos e transcrições de terceiros **não podem ser republicados nem parafraseados de perto** aqui — é repositório público, e a questão é de direito autoral, não só de privacidade. Escrever a partir de fontes citáveis (livros, artigos, documentação pública), sempre.

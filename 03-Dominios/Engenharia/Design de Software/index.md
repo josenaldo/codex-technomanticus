@@ -14,17 +14,11 @@ aliases:
 # Design de Software
 
 > [!abstract] TL;DR
-> A disciplina de *projetar código bem* — o craft de organizar objetos, responsabilidades e
-> dependências pra que o software resista à mudança. Reúne orientação a objetos como prática,
-> os princípios SOLID e os design patterns. É o nível meso/micro do design; a forma macro do
-> sistema vive em [[03-Dominios/Engenharia/Arquitetura/index|Arquitetura]].
+> A disciplina de *projetar código bem* — o craft de organizar objetos, responsabilidades e dependências pra que o software resista à mudança. Reúne orientação a objetos como prática, os princípios SOLID e os design patterns. É o nível meso/micro do design; a forma macro do sistema vive em [[03-Dominios/Engenharia/Arquitetura/index|Arquitetura]].
 
 ## Sobre este domínio
 
-Onde a [[03-Dominios/Ciência/Paradigmas/index|teoria de paradigmas]] explica *o que é* OO, aqui está
-*como usá-lo bem*: encapsulamento na prática, composição sobre herança, acoplamento e coesão, os cinco
-princípios SOLID e o catálogo de padrões. A fronteira: a teoria do paradigma fica em Ciência; o craft
-de aplicá-lo fica aqui (são reforço mútuo, linkam — não duplicam).
+Onde a [[03-Dominios/Ciência/Paradigmas/index|teoria de paradigmas]] explica *o que é* OO, aqui está *como usá-lo bem*: encapsulamento na prática, composição sobre herança, acoplamento e coesão, os cinco princípios SOLID e o catálogo de padrões. A fronteira: a teoria do paradigma fica em Ciência; o craft de aplicá-lo fica aqui (são reforço mútuo, linkam — não duplicam).
 
 ## Galhos
 

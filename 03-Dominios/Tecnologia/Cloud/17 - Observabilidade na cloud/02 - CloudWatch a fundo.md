@@ -217,8 +217,7 @@ A ação típica é publicar num tópico **SNS**, que por sua vez distribui pra 
 > [!tip] Assista: Amazon CloudWatch — Comprehensive Monitoring
 > **Canal:** Notas de Arquitetura em Nuvem | **Duração:** ~7min | **Idioma:** PT-BR
 >
-> Mostra o fluxo completo métrica → dashboard → alarme na prática, complementando esta seção com a visão de "cockpit" que amarra os três mecanismos que a nota acabou de descrever separadamente.
-> Trecho de destaque [01:56]: *"entram os dashboards. Eles são a resposta. Os dashboards pegam essas métricas e montam uma visão única, fácil [de entender]"*
+> Mostra o fluxo completo métrica → dashboard → alarme na prática, complementando esta seção com a visão de "cockpit" que amarra os três mecanismos que a nota acabou de descrever separadamente. Trecho de destaque [01:56]: *"entram os dashboards. Eles são a resposta. Os dashboards pegam essas métricas e montam uma visão única, fácil [de entender]"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Y3RRhisk3J0)
 
@@ -254,8 +253,7 @@ Um exemplo de ordem de grandeza ajuda a tornar isso concreto. Imagine um sistema
 > [!tip] Assista: AWS CloudWatch — Cost Control
 > **Canal:** Notas de Arquitetura em Nuvem | **Duração:** ~6min | **Idioma:** PT-BR
 >
-> Reforça exatamente o ângulo desta seção: como identificar qual log group ou qual métrica está inflando a fatura, cruzando dados de custo do CloudWatch com os recursos que os geraram — a pergunta prática de "quem é o culpado" antes que o valor apareça só na fatura.
-> Trecho de destaque [02:49]: *"exatamente qual log group ou qual métrica tá custando mais"*
+> Reforça exatamente o ângulo desta seção: como identificar qual log group ou qual métrica está inflando a fatura, cruzando dados de custo do CloudWatch com os recursos que os geraram — a pergunta prática de "quem é o culpado" antes que o valor apareça só na fatura. Trecho de destaque [02:49]: *"exatamente qual log group ou qual métrica tá custando mais"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=rCffTTDZ1FI)
 

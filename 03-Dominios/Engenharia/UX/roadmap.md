@@ -17,14 +17,7 @@ Roadmap do domínio `03-Dominios/Engenharia/UX` (raiz de domínio / galho-pai). 
 **Nível:** raiz de domínio (contém sub-galhos).
 
 > [!info] Política de M1 obrigatório (2026-07-28, Task 11)
-> A partir de 2026-07-28, **M1 (mídia verificada — vídeo ou podcast) é obrigatória em toda
-> nota deste domínio**, alinhando ao padrão de `Tecnologia/Acessibilidade` (21/21 notas com
-> vídeo). Isso sobrepõe qualquer isenção de M1 por `fase:` usada em diagnósticos anteriores
-> (`/diagnosticar-galho`, `/verificar-nota`) — **uma nota sem mídia verificada não fecha**.
-> Retrofit aplicado às 14 notas de SG1 e SG2 já escritas: 13/14 receberam mídia; a nota 06
-> (Descoberta e Pesquisa) ficou sem mídia por buraco honesto — nenhum vídeo/podcast
-> verificável e pertinente foi encontrado. Ver os roadmaps de SG1 e SG2 e
-> `03-Dominios/Engenharia/UX/index.md` para o texto da regra.
+> A partir de 2026-07-28, **M1 (mídia verificada — vídeo ou podcast) é obrigatória em toda nota deste domínio**, alinhando ao padrão de `Tecnologia/Acessibilidade` (21/21 notas com vídeo). Isso sobrepõe qualquer isenção de M1 por `fase:` usada em diagnósticos anteriores (`/diagnosticar-galho`, `/verificar-nota`) — **uma nota sem mídia verificada não fecha**. Retrofit aplicado às 14 notas de SG1 e SG2 já escritas: 13/14 receberam mídia; a nota 06 (Descoberta e Pesquisa) ficou sem mídia por buraco honesto — nenhum vídeo/podcast verificável e pertinente foi encontrado. Ver os roadmaps de SG1 e SG2 e `03-Dominios/Engenharia/UX/index.md` para o texto da regra.
 
 **Legenda de estado:** ✅ completo (escrito + enriquecido) · 🔶 em construção · 📋 desenhado, não iniciado · ⬜ só esboçado no design · `%` = notas escritas / total.
 

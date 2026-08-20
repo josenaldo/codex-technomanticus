@@ -311,5 +311,4 @@ Vocabulário PT → EN:
 
 ---
 
-**Anterior:** [[03 - Análise amortizada]] · **Próxima:** [[05 - Recorrências e o Teorema Mestre]]
-**MOC:** [[03-Dominios/Ciência/Algoritmos/index|Algoritmos]]
+**Anterior:** [[03 - Análise amortizada]] · **Próxima:** [[05 - Recorrências e o Teorema Mestre]] **MOC:** [[03-Dominios/Ciência/Algoritmos/index|Algoritmos]]

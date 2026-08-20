@@ -73,8 +73,7 @@ Se o processamento pode variar bastante (por exemplo, uma chamada a uma API exte
 > [!tip] Assista: What is Amazon SQS Visibility Timeout? Easy Explanation
 > **Canal:** Ram N Java | **Duração:** ~7min | **Idioma:** EN
 >
-> Um passo a passo curto no console da AWS, com a mesma analogia do guichê de atendimento que esta nota usa — útil se você quer ver o timer do visibility timeout contando de verdade, mensagem por mensagem.
-> Trecho de destaque [5:27]: *"the visibility timeout is a timer that hides message from others while someone is working on it — if they finish in time the message is marked as done, if not the message becomes available again for someone else to pick it up"*
+> Um passo a passo curto no console da AWS, com a mesma analogia do guichê de atendimento que esta nota usa — útil se você quer ver o timer do visibility timeout contando de verdade, mensagem por mensagem. Trecho de destaque [5:27]: *"the visibility timeout is a timer that hides message from others while someone is working on it — if they finish in time the message is marked as done, if not the message becomes available again for someone else to pick it up"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Ca1SfIIFS4Y)
 
@@ -113,8 +112,7 @@ Já numa fila `transicoes-pedido` — "pedido criado" → "pagamento aprovado" �
 > [!tip] Assista: AWS SQS Standard and FIFO Queue Intro
 > **Canal:** Funnel Garden | **Duração:** ~20min | **Idioma:** EN
 >
-> Demonstração lado a lado no console: o mesmo lote de mensagens processado numa fila standard (fora de ordem) e depois numa fila `.fifo` (ordem garantida) — vê o contraste acontecer na tela em vez de só ler sobre ele.
-> Trecho de destaque [3:26]: *"messages are guaranteed to be in order to be consumed in order in the way that [they were sent]"*
+> Demonstração lado a lado no console: o mesmo lote de mensagens processado numa fila standard (fora de ordem) e depois numa fila `.fifo` (ordem garantida) — vê o contraste acontecer na tela em vez de só ler sobre ele. Trecho de destaque [3:26]: *"messages are guaranteed to be in order to be consumed in order in the way that [they were sent]"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=jI7vAF2jiWQ)
 

@@ -110,8 +110,7 @@ Leitura do diagrama: a base `Análise estática` é o piso de graça. Subindo, `
 O troféu é o modelo natural para quem trabalha com [[Testes em JavaScript]] — frontend React + TypeScript + Testing Library. Não porque a pirâmide "esteja errada", mas porque **o risco mora em outro lugar**: muito do que quebraria em unit no backend, no frontend já é pego pelo compilador ou só aparece na colaboração.
 
 > [!tip] Vídeo — The Testing Trophy 🏆 An in depth look (Kent C. Dodds, 35min)
-> O próprio autor do troféu explica, com legenda disponível, de onde veio a forma, por que ela difere da pirâmide clássica e como aplicá-la na prática em frontend React. Bom complemento em vídeo pro texto desta seção.
-> [youtube.com/watch?v=RHKkEiQ58N0](https://www.youtube.com/watch?v=RHKkEiQ58N0)
+> O próprio autor do troféu explica, com legenda disponível, de onde veio a forma, por que ela difere da pirâmide clássica e como aplicá-la na prática em frontend React. Bom complemento em vídeo pro texto desta seção. [youtube.com/watch?v=RHKkEiQ58N0](https://www.youtube.com/watch?v=RHKkEiQ58N0)
 
 > [!note] Pirâmide × Troféu não é guerra
 > São o mesmo princípio — "concentre testes onde o risco é alto e o custo é baixo" — aplicado a sistemas com perfis de risco diferentes. Backend rico em lógica de domínio puxa pra base de unit. Frontend rico em interação e tipagem puxa pra base estática e ao miolo de integração. Escolher o modelo é diagnosticar o sistema, não torcer por um time.

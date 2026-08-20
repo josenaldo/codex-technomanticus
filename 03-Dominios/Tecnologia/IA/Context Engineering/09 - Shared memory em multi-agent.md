@@ -250,17 +250,13 @@ Decompor sem esse diagnóstico prévio tende a criar fronteiras artificiais. E c
 
 ## Estado da arte — junho de 2026
 
-**Swarm patterns como mainstream**
-Em 2025-2026, o padrão "orquestrador + sub-agentes especializados" passou de experimental para mainstream. Claude Code, Cursor, Devin e sistemas similares usam multi-agent internamente — o usuário não vê, mas um agente de pesquisa, um agente de codificação e um agente de revisão colaboram em cada tarefa complexa.
+**Swarm patterns como mainstream** Em 2025-2026, o padrão "orquestrador + sub-agentes especializados" passou de experimental para mainstream. Claude Code, Cursor, Devin e sistemas similares usam multi-agent internamente — o usuário não vê, mas um agente de pesquisa, um agente de codificação e um agente de revisão colaboram em cada tarefa complexa.
 
-**Anthropic Agents SDK como referência de harness**
-O Anthropic Agents SDK (2025-2026) popularizou o padrão de harness engineering para sistemas multi-agent: shared state durável via arquivos + git, progress tracking por agente, e compactação de contexto coordenada entre agentes. A abordagem prioriza legibilidade e debugabilidade sobre sofisticação técnica.
+**Anthropic Agents SDK como referência de harness** O Anthropic Agents SDK (2025-2026) popularizou o padrão de harness engineering para sistemas multi-agent: shared state durável via arquivos + git, progress tracking por agente, e compactação de contexto coordenada entre agentes. A abordagem prioriza legibilidade e debugabilidade sobre sofisticação técnica.
 
-**Roteamento inteligente de handoffs**
-Sistemas maduros em 2026 implementam roteamento dinâmico: o orquestrador decide qual sub-agente acionar baseado no conteúdo da task, não apenas numa sequência fixa. Isso requer embeddings de task description e busca por similaridade contra um registry de sub-agentes com suas capacidades descritas.
+**Roteamento inteligente de handoffs** Sistemas maduros em 2026 implementam roteamento dinâmico: o orquestrador decide qual sub-agente acionar baseado no conteúdo da task, não apenas numa sequência fixa. Isso requer embeddings de task description e busca por similaridade contra um registry de sub-agentes com suas capacidades descritas.
 
-**Memória compartilhada com controle de acesso**
-Uma evolução de 2025-2026: shared memory com RBAC por agente. O agente de pesquisa pode escrever findings mas não pode escrever no estado de billing. O agente de billing pode ler findings mas não pode reescrever a query original. Controle de acesso em nível de campo no estado compartilhado virou prática recomendada em sistemas com dados sensíveis.
+**Memória compartilhada com controle de acesso** Uma evolução de 2025-2026: shared memory com RBAC por agente. O agente de pesquisa pode escrever findings mas não pode escrever no estado de billing. O agente de billing pode ler findings mas não pode reescrever a query original. Controle de acesso em nível de campo no estado compartilhado virou prática recomendada em sistemas com dados sensíveis.
 
 ---
 

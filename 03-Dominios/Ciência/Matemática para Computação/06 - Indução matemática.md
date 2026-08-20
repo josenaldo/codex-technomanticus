@@ -393,14 +393,7 @@ Há um terceiro uso, e é importante não confundi-lo com os anteriores: **resol
 
 Indução aparece em entrevistas de duas formas: direta ("prove que esta fórmula vale pra todo n") e disfarçada — quando pedem pra você **argumentar a corretude** de uma solução recursiva ou justificar por que um laço termina e está certo. Saber dizer "o invariante deste laço é tal, vale na inicialização, é mantido a cada iteração, e no término me dá o resultado" sinaliza maturidade de engenharia, não só de prova. Não esqueça de mencionar a **base** em voz alta — entrevistadores reparam quando você pula. E se o passo depender de mais de um caso anterior, diga "isto pede indução forte" antes de assumir os casos.
 
-*"To prove this for all n, I'll use induction: a base case and an inductive step."*
-*"The induction hypothesis assumes the property holds for k, and I use it to prove k plus one."*
-*"This needs strong induction, since the step depends on several earlier cases, not just the previous one."*
-*"The whole thing rests on the well-ordering principle: every non-empty subset of the naturals has a least element."*
-*"I'll prove correctness by induction on the size of the input — the recursive calls are my induction hypothesis."*
-*"My loop invariant is that total holds the sum of the prefix processed so far."*
-*"Initialization, maintenance, and termination map exactly onto base case, inductive step, and conclusion."*
-*"The classic trap is forgetting the base case, or a step that quietly fails at the smallest value, like the all-horses-same-color paradox."*
+*"To prove this for all n, I'll use induction: a base case and an inductive step."* *"The induction hypothesis assumes the property holds for k, and I use it to prove k plus one."* *"This needs strong induction, since the step depends on several earlier cases, not just the previous one."* *"The whole thing rests on the well-ordering principle: every non-empty subset of the naturals has a least element."* *"I'll prove correctness by induction on the size of the input — the recursive calls are my induction hypothesis."* *"My loop invariant is that total holds the sum of the prefix processed so far."* *"Initialization, maintenance, and termination map exactly onto base case, inductive step, and conclusion."* *"The classic trap is forgetting the base case, or a step that quietly fails at the smallest value, like the all-horses-same-color paradox."*
 
 | Português | English |
 |---|---|

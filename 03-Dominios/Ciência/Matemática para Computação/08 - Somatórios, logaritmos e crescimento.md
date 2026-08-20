@@ -16,8 +16,7 @@ tags:
 # Somatórios, logaritmos e crescimento
 
 > [!abstract] TL;DR
-> Toda análise de algoritmo desemboca em três ferramentas: **somar** (Σ), **dividir pela metade** (log) e **comparar quem cresce mais rápido**. Um loop é um somatório. Uma árvore balanceada é um logaritmo. Uma recorrência é um somatório disfarçado de recursão.
-> Esta nota é a **base matemática** que a análise de complexidade *defere*. Aqui você aprende a fechar a conta; em [[03-Dominios/Ciência/Algoritmos/02 - Análise de complexidade - Big-O]] você aprende a jogar fora os detalhes. As séries fechadas (∑i = n(n+1)/2, geométrica, harmônica) são o vocabulário. Logaritmo é o que sobra quando você divide por 2 até não dar mais. E a hierarquia 1 ≺ log n ≺ n ≺ n log n ≺ n² ≺ 2ⁿ ≺ n! é o ranking que decide se seu código roda em milissegundos ou na próxima era geológica.
+> Toda análise de algoritmo desemboca em três ferramentas: **somar** (Σ), **dividir pela metade** (log) e **comparar quem cresce mais rápido**. Um loop é um somatório. Uma árvore balanceada é um logaritmo. Uma recorrência é um somatório disfarçado de recursão. Esta nota é a **base matemática** que a análise de complexidade *defere*. Aqui você aprende a fechar a conta; em [[03-Dominios/Ciência/Algoritmos/02 - Análise de complexidade - Big-O]] você aprende a jogar fora os detalhes. As séries fechadas (∑i = n(n+1)/2, geométrica, harmônica) são o vocabulário. Logaritmo é o que sobra quando você divide por 2 até não dar mais. E a hierarquia 1 ≺ log n ≺ n ≺ n log n ≺ n² ≺ 2ⁿ ≺ n! é o ranking que decide se seu código roda em milissegundos ou na próxima era geológica.
 
 ---
 
@@ -204,8 +203,7 @@ O 1,4427 é uma constante. Em [[03-Dominios/Ciência/Algoritmos/02 - Análise de
 > [!warning] lg vs ln vs log — não confunda
 > - **lg n** = log₂ n (base 2). Convenção de CS. CLRS usa essa.
 > - **ln n** = log_e n (base e ≈ 2,718). Logaritmo *natural*. Aparece em cálculo, na harmônica, em probabilidade.
-> - **log n** = ambíguo. Matemáticos: base 10. CS: geralmente base 2 ou "tanto faz" (porque é assintótico).
-> Em análise de complexidade, a ambiguidade é *de propósito* — a base não importa. Mas quando você está somando uma harmônica e aparece ln n, aí a base **e** é específica e literal. Saiba qual chapéu está usando.
+> - **log n** = ambíguo. Matemáticos: base 10. CS: geralmente base 2 ou "tanto faz" (porque é assintótico). Em análise de complexidade, a ambiguidade é *de propósito* — a base não importa. Mas quando você está somando uma harmônica e aparece ln n, aí a base **e** é específica e literal. Saiba qual chapéu está usando.
 
 ### Por que o log aparece tanto em CS
 

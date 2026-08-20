@@ -147,8 +147,7 @@ Repare que o fluxo checa **deny antes de allow**. Isso não é um detalhe de imp
 > [!tip] Assista: AWS re:Inforce 2022 — AWS Identity and Access Management (IAM) deep dive (IAM301)
 > **Canal:** AWS Events | **Duração:** ~58min | **Idioma:** EN
 >
-> A talk oficial da AWS caminha pela mesma árvore de decisão desta seção, statement por statement, até chegar exatamente na regra que fecha este parágrafo: um `Deny` numa única declaração aplicável já basta pra decidir o resultado, não importa quantos `Allow` concorram com ele.
-> Trecho de destaque [32:12]: *"you know the statement's gonna be denied, because anytime we hit a deny, it's over"*
+> A talk oficial da AWS caminha pela mesma árvore de decisão desta seção, statement por statement, até chegar exatamente na regra que fecha este parágrafo: um `Deny` numa única declaração aplicável já basta pra decidir o resultado, não importa quantos `Allow` concorram com ele. Trecho de destaque [32:12]: *"you know the statement's gonna be denied, because anytime we hit a deny, it's over"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=YMj33ToS8cI)
 

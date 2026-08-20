@@ -41,8 +41,7 @@ O preço afeta três coisas simultaneamente:
 
 ### Por que cobrar desde o dia 1
 
-O argumento contra: "Vou dar grátis para ganhar usuários, depois cobro."
-O problema: usuários gratuitos não são clientes. Não pagaram, não se comprometeram, e quando você começar a cobrar, a maioria sai. Pior: durante o período grátis, você otimizou o produto para um público que nunca vai pagar — e não para o público que pagaria.
+O argumento contra: "Vou dar grátis para ganhar usuários, depois cobro." O problema: usuários gratuitos não são clientes. Não pagaram, não se comprometeram, e quando você começar a cobrar, a maioria sai. Pior: durante o período grátis, você otimizou o produto para um público que nunca vai pagar — e não para o público que pagaria.
 
 Cobrar desde o dia 1 significa:
 - Todo feedback vem de quem **paga** — relevância máxima

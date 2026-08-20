@@ -73,17 +73,13 @@ A linguagem de conjuntos e operações que você está usando aqui (subconjunto,
 
 Linguagens são conjuntos, então herdam as operações de conjuntos — mais algumas próprias de strings. Sejam L₁ = {a, ab} e L₂ = {b, c}.
 
-**União** (L₁ ∪ L₂). Todas as palavras de uma ou de outra.
-L₁ ∪ L₂ = {a, ab, b, c}.
+**União** (L₁ ∪ L₂). Todas as palavras de uma ou de outra. L₁ ∪ L₂ = {a, ab, b, c}.
 
-**Interseção** (L₁ ∩ L₂). Só as palavras em ambas.
-Com os exemplos acima, L₁ ∩ L₂ = ∅ (não há palavra comum).
+**Interseção** (L₁ ∩ L₂). Só as palavras em ambas. Com os exemplos acima, L₁ ∩ L₂ = ∅ (não há palavra comum).
 
 **Complemento** (L̄ ou Σ\* − L). Todas as palavras de Σ\* que **não** estão em L. É "tudo o que sobra". Se L são "binários que terminam em 0", L̄ são os que terminam em 1 (mais ε).
 
-**Concatenação** (L₁ · L₂, ou só L₁L₂). Cole cada palavra de L₁ na frente de cada palavra de L₂.
-L₁L₂ = {ab, ac, abb, abc}.
-(Pegue `a` e `ab` de L₁; cole `b` e `c` de L₂; combine todos.) A concatenação **não é comutativa**: L₁L₂ ≠ L₂L₁ em geral.
+**Concatenação** (L₁ · L₂, ou só L₁L₂). Cole cada palavra de L₁ na frente de cada palavra de L₂. L₁L₂ = {ab, ac, abb, abc}. (Pegue `a` e `ab` de L₁; cole `b` e `c` de L₂; combine todos.) A concatenação **não é comutativa**: L₁L₂ ≠ L₂L₁ em geral.
 
 **Estrela de Kleene** (L\*). Concatene L com si mesma zero ou mais vezes. Formalmente, L\* = {ε} ∪ L ∪ LL ∪ LLL ∪ ... Ela sempre inclui ε (a concatenação "zero vezes"). Se L = {a}, então L\* = {ε, a, aa, aaa, ...}.
 

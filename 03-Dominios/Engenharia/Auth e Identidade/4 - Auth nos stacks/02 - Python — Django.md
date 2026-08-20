@@ -102,9 +102,7 @@ AUTH_USER_MODEL = "users.User"
 ```
 
 > [!warning] Nunca importar `django.contrib.auth.models.User` diretamente
-> **O que acontece:** um app referencia `from django.contrib.auth.models import User` em vez de `settings.AUTH_USER_MODEL` (em `models.py`, para `ForeignKey`) ou `get_user_model()` (em qualquer outro lugar — views, forms, testes).
-> **Por quê:** se `AUTH_USER_MODEL` aponta para `users.User`, o import direto do `User` embutido aponta para uma tabela **diferente** — o app quebra silenciosamente, ou pior, cria relações contra o modelo errado.
-> **Como evitar:** regra simples e sem exceção — `models.py` usa a string `"users.User"` ou `settings.AUTH_USER_MODEL` (evita import circular); todo o resto do código usa `django.contrib.auth.get_user_model()`.
+> **O que acontece:** um app referencia `from django.contrib.auth.models import User` em vez de `settings.AUTH_USER_MODEL` (em `models.py`, para `ForeignKey`) ou `get_user_model()` (em qualquer outro lugar — views, forms, testes). **Por quê:** se `AUTH_USER_MODEL` aponta para `users.User`, o import direto do `User` embutido aponta para uma tabela **diferente** — o app quebra silenciosamente, ou pior, cria relações contra o modelo errado. **Como evitar:** regra simples e sem exceção — `models.py` usa a string `"users.User"` ou `settings.AUTH_USER_MODEL` (evita import circular); todo o resto do código usa `django.contrib.auth.get_user_model()`.
 
 ### Se você já esqueceu
 
@@ -279,9 +277,7 @@ HEADLESS_CLIENTS = ["app", "browser"]  # limita os tipos de cliente aceitos
 Com `HEADLESS_ONLY = True`, as rotas tradicionais de template (`/accounts/login/`, etc.) somem, e o allauth passa a responder em `/_allauth/{client}/v1/...` com JSON — o front-end (SPA ou app) implementa suas próprias telas, mas toda a lógica de negócio de conta continua no allauth, testada e mantida por uma comunidade grande, em vez de reimplementada à mão.
 
 > [!warning] Configurar allauth sem decidir a estratégia de token da API primeiro
-> **O que acontece:** o time configura `HEADLESS_ONLY` e o provider OIDC, mas não decide se as chamadas subsequentes à API vão usar sessão, um token próprio do allauth (via `Token Strategy`), ou SimpleJWT — e acaba com dois mecanismos de auth concorrentes e inconsistentes.
-> **Por quê:** o allauth headless resolve o *fluxo de conta* (login, cadastro, MFA) — ele não substitui a decisão de *como a API vai autenticar as próximas requisições* depois que a conta existe. Por padrão ele reaproveita a própria estratégia de sessão/token do allauth, mas isso precisa ser uma decisão explícita, documentada, não um acidente de configuração.
-> **Como evitar:** decidir a estratégia de token da API primeiro (SimpleJWT próprio, ou emissão de sessão) e configurar o allauth para alimentar essa decisão, não o contrário.
+> **O que acontece:** o time configura `HEADLESS_ONLY` e o provider OIDC, mas não decide se as chamadas subsequentes à API vão usar sessão, um token próprio do allauth (via `Token Strategy`), ou SimpleJWT — e acaba com dois mecanismos de auth concorrentes e inconsistentes. **Por quê:** o allauth headless resolve o *fluxo de conta* (login, cadastro, MFA) — ele não substitui a decisão de *como a API vai autenticar as próximas requisições* depois que a conta existe. Por padrão ele reaproveita a própria estratégia de sessão/token do allauth, mas isso precisa ser uma decisão explícita, documentada, não um acidente de configuração. **Como evitar:** decidir a estratégia de token da API primeiro (SimpleJWT próprio, ou emissão de sessão) e configurar o allauth para alimentar essa decisão, não o contrário.
 
 ## RBAC nativo: Group e Permission
 
@@ -324,26 +320,18 @@ async def alogin_view(request):
 ```
 
 > [!warning] Chamar código síncrono de auth dentro de uma view async sem `sync_to_async`
-> **O que acontece:** uma view `async def` chama `request.user` diretamente antes de o middleware ter resolvido o usuário de forma assíncrona, ou invoca uma função sync de `contrib.auth` sem envolver com `sync_to_async(..., thread_sensitive=True)`.
-> **Por quê:** partes do stack ainda dependem de estado thread-local (a conexão de banco, o objeto `request`); chamar isso do event loop assíncrono sem a ponte correta lança `SynchronousOnlyOperation`.
-> **Como evitar:** usar as variantes `a*` (`aauthenticate`, `alogin`, `alogout`) disponíveis desde Django 5.2 sempre que a view for assíncrona, e `sync_to_async(thread_sensitive=True)` para qualquer código de terceiros ainda síncrono que precise tocar `request.user`.
+> **O que acontece:** uma view `async def` chama `request.user` diretamente antes de o middleware ter resolvido o usuário de forma assíncrona, ou invoca uma função sync de `contrib.auth` sem envolver com `sync_to_async(..., thread_sensitive=True)`. **Por quê:** partes do stack ainda dependem de estado thread-local (a conexão de banco, o objeto `request`); chamar isso do event loop assíncrono sem a ponte correta lança `SynchronousOnlyOperation`. **Como evitar:** usar as variantes `a*` (`aauthenticate`, `alogin`, `alogout`) disponíveis desde Django 5.2 sempre que a view for assíncrona, e `sync_to_async(thread_sensitive=True)` para qualquer código de terceiros ainda síncrono que precise tocar `request.user`.
 
 ## Armadilhas do stack
 
 > [!warning] Adiar a decisão do custom User model
-> **O que acontece:** o projeto começa com o `User` padrão "porque é mais rápido", e meses depois precisa de um campo extra, ou de trocar o campo de login para e-mail — e o banco já tem milhares de linhas.
-> **Por quê:** `AUTH_USER_MODEL` é referenciado por chave estrangeira em todo o framework; trocá-lo depois de migrar é uma operação manual, arriscada, sem suporte oficial do Django.
-> **Como evitar:** todo projeto novo cria `users.User(AbstractUser)` no primeiro commit, mesmo sem campos extras planejados — o custo de manter é zero.
+> **O que acontece:** o projeto começa com o `User` padrão "porque é mais rápido", e meses depois precisa de um campo extra, ou de trocar o campo de login para e-mail — e o banco já tem milhares de linhas. **Por quê:** `AUTH_USER_MODEL` é referenciado por chave estrangeira em todo o framework; trocá-lo depois de migrar é uma operação manual, arriscada, sem suporte oficial do Django. **Como evitar:** todo projeto novo cria `users.User(AbstractUser)` no primeiro commit, mesmo sem campos extras planejados — o custo de manter é zero.
 
 > [!warning] Misturar SessionAuthentication e SimpleJWT sem decidir CSRF explicitamente
-> **O que acontece:** uma API usa `SessionAuthentication` (porque o mesmo domínio já tem cookies de sessão do painel admin) mas não configura o envio do token CSRF em chamadas AJAX de escrita (POST/PUT/DELETE), e o cliente recebe 403 de forma intermitente e confusa.
-> **Por quê:** DRF desabilita o enforcement de CSRF para `APIView` por padrão em várias configurações comuns, mas `SessionAuthentication` especificamente reimpõe a checagem — é fácil ter um ambiente de desenvolvimento que "funciona" (CSRF desabilitado ou ignorado) e produção que falha.
-> **Como evitar:** se o cliente é first-party e compartilha domínio, usar sessão com CSRF configurado corretamente desde o ambiente de dev; se o cliente é uma SPA/mobile separado, preferir token (SimpleJWT ou validação OIDC) e não tentar fazer sessão funcionar entre origens diferentes.
+> **O que acontece:** uma API usa `SessionAuthentication` (porque o mesmo domínio já tem cookies de sessão do painel admin) mas não configura o envio do token CSRF em chamadas AJAX de escrita (POST/PUT/DELETE), e o cliente recebe 403 de forma intermitente e confusa. **Por quê:** DRF desabilita o enforcement de CSRF para `APIView` por padrão em várias configurações comuns, mas `SessionAuthentication` especificamente reimpõe a checagem — é fácil ter um ambiente de desenvolvimento que "funciona" (CSRF desabilitado ou ignorado) e produção que falha. **Como evitar:** se o cliente é first-party e compartilha domínio, usar sessão com CSRF configurado corretamente desde o ambiente de dev; se o cliente é uma SPA/mobile separado, preferir token (SimpleJWT ou validação OIDC) e não tentar fazer sessão funcionar entre origens diferentes.
 
 > [!warning] Configurar django-allauth sem decidir headless vs template-based primeiro
-> **O que acontece:** o time mistura páginas renderizadas pelo allauth com chamadas de API para o mesmo fluxo de conta, criando dois caminhos de autenticação parcialmente redundantes.
-> **Por quê:** `HEADLESS_ONLY` é uma decisão de arquitetura, não um detalhe de configuração — ela determina se o allauth é dono da UI ou só do backend de conta.
-> **Como evitar:** decidir no início do projeto se o frontend é server-rendered (allauth clássico, com templates) ou uma SPA/app separado (allauth headless) — raramente os dois modos coexistem bem no mesmo fluxo de login.
+> **O que acontece:** o time mistura páginas renderizadas pelo allauth com chamadas de API para o mesmo fluxo de conta, criando dois caminhos de autenticação parcialmente redundantes. **Por quê:** `HEADLESS_ONLY` é uma decisão de arquitetura, não um detalhe de configuração — ela determina se o allauth é dono da UI ou só do backend de conta. **Como evitar:** decidir no início do projeto se o frontend é server-rendered (allauth clássico, com templates) ou uma SPA/app separado (allauth headless) — raramente os dois modos coexistem bem no mesmo fluxo de login.
 
 ## Em entrevista
 

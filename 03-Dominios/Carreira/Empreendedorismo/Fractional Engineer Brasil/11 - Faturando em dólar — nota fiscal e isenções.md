@@ -62,19 +62,13 @@ Um fractional que vinha tratando a receita internacional como receita nacional c
 ## Armadilhas comuns
 
 > [!warning] Emitir nota fiscal comum em vez de nota de exportação
-> **O que acontece:** o sistema de emissão de nota fiscal do município não distingue automaticamente cliente nacional de estrangeiro, e a nota sai no formato padrão, sem sinalizar exportação de serviço.
-> **Por quê:** sem o enquadramento correto na nota, a Receita Federal e a prefeitura não têm como identificar que aquela receita deveria ser isenta — o sistema simplesmente cobra como se fosse operação nacional.
-> **Como evitar:** confirmar com o contador, antes da primeira fatura internacional, como o sistema de nota fiscal do seu município trata exportação de serviço — alguns exigem campo específico, outros exigem CNAE e natureza de operação particulares.
+> **O que acontece:** o sistema de emissão de nota fiscal do município não distingue automaticamente cliente nacional de estrangeiro, e a nota sai no formato padrão, sem sinalizar exportação de serviço. **Por quê:** sem o enquadramento correto na nota, a Receita Federal e a prefeitura não têm como identificar que aquela receita deveria ser isenta — o sistema simplesmente cobra como se fosse operação nacional. **Como evitar:** confirmar com o contador, antes da primeira fatura internacional, como o sistema de nota fiscal do seu município trata exportação de serviço — alguns exigem campo específico, outros exigem CNAE e natureza de operação particulares.
 
 > [!warning] Não guardar comprovante de câmbio
-> **O que acontece:** o pagamento chega via Wise ou Payoneer e o fractional só olha o saldo — sem baixar ou arquivar o comprovante formal da operação cambial.
-> **Por quê:** sem esse comprovante, o requisito de "ingresso de divisas" fica sem prova documental caso a Receita questione a isenção depois.
-> **Como evitar:** arquivar sistematicamente o comprovante de cada conversão cambial (mesmo que a plataforma de pagamento gere isso automaticamente, garantir que o contador tenha acesso ou cópia).
+> **O que acontece:** o pagamento chega via Wise ou Payoneer e o fractional só olha o saldo — sem baixar ou arquivar o comprovante formal da operação cambial. **Por quê:** sem esse comprovante, o requisito de "ingresso de divisas" fica sem prova documental caso a Receita questione a isenção depois. **Como evitar:** arquivar sistematicamente o comprovante de cada conversão cambial (mesmo que a plataforma de pagamento gere isso automaticamente, garantir que o contador tenha acesso ou cópia).
 
 > [!warning] Assumir que toda receita em dólar é automaticamente isenta
-> **O que acontece:** o fractional assume que, por receber em dólar, está automaticamente livre de PIS/COFINS/ISS, sem verificar se o resultado do serviço realmente é usufruído no exterior.
-> **Por quê:** um cliente pode pagar em dólar mas ter operação e usufruto do resultado no Brasil (ex: uma empresa brasileira com conta em dólar no exterior) — nesse caso a isenção de ISS pode não se aplicar, mesmo com a moeda estrangeira.
-> **Como evitar:** confirmar com o contador, caso a caso, se o cliente específico se enquadra nos dois requisitos (residência no exterior + resultado usufruído fora), em vez de assumir isenção automática pela moeda de pagamento.
+> **O que acontece:** o fractional assume que, por receber em dólar, está automaticamente livre de PIS/COFINS/ISS, sem verificar se o resultado do serviço realmente é usufruído no exterior. **Por quê:** um cliente pode pagar em dólar mas ter operação e usufruto do resultado no Brasil (ex: uma empresa brasileira com conta em dólar no exterior) — nesse caso a isenção de ISS pode não se aplicar, mesmo com a moeda estrangeira. **Como evitar:** confirmar com o contador, caso a caso, se o cliente específico se enquadra nos dois requisitos (residência no exterior + resultado usufruído fora), em vez de assumir isenção automática pela moeda de pagamento.
 
 ## Como explicar em inglês
 

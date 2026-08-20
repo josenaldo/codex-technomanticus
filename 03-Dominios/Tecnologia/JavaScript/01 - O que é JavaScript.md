@@ -203,24 +203,16 @@ Todos eles compartilham o **núcleo da linguagem** (ECMAScript), mas cada ambien
 ## Armadilhas comuns
 
 > [!warning] "JavaScript é Java simplifado"
-> **O que acontece:** iniciantes assumem que as duas linguagens são relacionadas ou que conhecer uma transfere automaticamente para a outra.
-> **Por quê:** o nome foi estratégia de marketing da Netscape em 1995 para aproveitar a popularidade do Java. A relação entre as linguagens é praticamente nenhuma — herança, tipos, compilação e modelo de execução são completamente diferentes.
-> **Como evitar:** tratar JavaScript como uma linguagem independente. A única coisa que compartilham com Java é parte do nome.
+> **O que acontece:** iniciantes assumem que as duas linguagens são relacionadas ou que conhecer uma transfere automaticamente para a outra. **Por quê:** o nome foi estratégia de marketing da Netscape em 1995 para aproveitar a popularidade do Java. A relação entre as linguagens é praticamente nenhuma — herança, tipos, compilação e modelo de execução são completamente diferentes. **Como evitar:** tratar JavaScript como uma linguagem independente. A única coisa que compartilham com Java é parte do nome.
 
 > [!warning] "JavaScript não compila, só interpreta"
-> **O que acontece:** o desenvolvedor subestima a sofisticação das engines e supõe que JS será sempre lento para tarefas computacionais intensas.
-> **Por quê:** o rótulo "linguagem interpretada" ficou colado na linguagem desde os anos 90, mas não reflete a realidade das engines modernas com JIT multi-tier.
-> **Como evitar:** lembrar que V8 (e demais engines) compilam código quente para código de máquina nativo. JS pode ser muito rápido — o gargalo costuma ser I/O ou algoritmos ruins, não a linguagem em si.
+> **O que acontece:** o desenvolvedor subestima a sofisticação das engines e supõe que JS será sempre lento para tarefas computacionais intensas. **Por quê:** o rótulo "linguagem interpretada" ficou colado na linguagem desde os anos 90, mas não reflete a realidade das engines modernas com JIT multi-tier. **Como evitar:** lembrar que V8 (e demais engines) compilam código quente para código de máquina nativo. JS pode ser muito rápido — o gargalo costuma ser I/O ou algoritmos ruins, não a linguagem em si.
 
 > [!warning] "Single-thread significa que JS não pode fazer nada em paralelo"
-> **O que acontece:** o desenvolvedor evita operações assíncronas ou acha que uma requisição HTTP necessariamente trava o programa.
-> **Por quê:** single-thread descreve a thread JS, mas o runtime (browser ou Node) usa outras threads para I/O, timers e operações do sistema operacional.
-> **Como evitar:** entender o event loop: a thread JS não bloqueia — ela delega, espera na fila e retoma. É concorrência cooperativa, não paralelismo de memória compartilhada.
+> **O que acontece:** o desenvolvedor evita operações assíncronas ou acha que uma requisição HTTP necessariamente trava o programa. **Por quê:** single-thread descreve a thread JS, mas o runtime (browser ou Node) usa outras threads para I/O, timers e operações do sistema operacional. **Como evitar:** entender o event loop: a thread JS não bloqueia — ela delega, espera na fila e retoma. É concorrência cooperativa, não paralelismo de memória compartilhada.
 
 > [!warning] "ECMAScript 6 é a versão mais nova"
-> **O que acontece:** documentação desatualizada e tutoriais antigos fixam "ES6" como referência, levando iniciantes a achar que a linguagem parou de evoluir em 2015.
-> **Por quê:** ES2015 (ES6) foi uma atualização massiva que atraiu muita atenção. Desde então, atualizações anuais menores não geraram o mesmo buzz.
-> **Como evitar:** saber que o TC39 publica uma nova edição todo junho. Em 2026, a spec vigente é ES2025 (16ª edição), e ES2026 está em draft.
+> **O que acontece:** documentação desatualizada e tutoriais antigos fixam "ES6" como referência, levando iniciantes a achar que a linguagem parou de evoluir em 2015. **Por quê:** ES2015 (ES6) foi uma atualização massiva que atraiu muita atenção. Desde então, atualizações anuais menores não geraram o mesmo buzz. **Como evitar:** saber que o TC39 publica uma nova edição todo junho. Em 2026, a spec vigente é ES2025 (16ª edição), e ES2026 está em draft.
 
 ---
 
@@ -380,8 +372,7 @@ Agora que você entende o que é JavaScript, de onde vem, e o que a engine faz c
 ---
 
 > [!tip] Vídeo: como o V8 realmente executa seu código
-> **[How Does JavaScript Work? The V8 Engine, Ignition, Sparkplug and TurboFan](https://www.youtube.com/watch?v=pzMj_r8jFdk)** (~30 min, legendas disponíveis)
-> Walkthrough visual do pipeline completo do V8 — desde o parse do texto até o TurboFan gerar código de máquina — usando os mesmos termos e conceitos desta nota (Ignition, Sparkplug, Maglev, TurboFan). Bom para fixar o modelo mental antes de ir para [[03-Dominios/Tecnologia/JavaScript/19 - Modelo de execução a fundo|Modelo de execução a fundo]].
+> **[How Does JavaScript Work? The V8 Engine, Ignition, Sparkplug and TurboFan](https://www.youtube.com/watch?v=pzMj_r8jFdk)** (~30 min, legendas disponíveis) Walkthrough visual do pipeline completo do V8 — desde o parse do texto até o TurboFan gerar código de máquina — usando os mesmos termos e conceitos desta nota (Ignition, Sparkplug, Maglev, TurboFan). Bom para fixar o modelo mental antes de ir para [[03-Dominios/Tecnologia/JavaScript/19 - Modelo de execução a fundo|Modelo de execução a fundo]].
 
 ---
 

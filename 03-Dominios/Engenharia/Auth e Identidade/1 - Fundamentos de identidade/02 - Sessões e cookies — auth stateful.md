@@ -163,9 +163,7 @@ A causa raiz é sempre a mesma: **o servidor tratou o session ID como contínuo 
 A correção, segundo a [OWASP Session Fixation Protection](https://owasp.org/www-community/controls/Session_Fixation_Protection), é uma regra simples e não-negociável: **regenerar o session ID em todo login e em toda mudança de nível de privilégio** (ex.: usuário vira admin, ou reautentica para uma ação sensível). Praticamente todo framework tem o método pronto — `session_regenerate_id(true)` em PHP, `Session.Abandon()` em ASP.NET, invalidar e recriar o `HttpSession` em Java. A segunda metade da defesa é nunca aceitar session ID vindo de query string ou campo de formulário — só de cookie, que o navegador controla de forma mais restrita.
 
 > [!warning] Session fixation via ID na URL
-> **O que acontece:** o app aceita `?sessionid=xyz` na URL como alternativa ao cookie — geralmente "para funcionar sem cookies habilitados" ou para debugging.
-> **Por quê:** um session ID na URL é trivialmente injetável — basta mandar o link para a vítima, ou ele vaza em logs de proxy, histórico do navegador, header `Referer`.
-> **Como evitar:** aceitar session ID **somente** via cookie. Se o app precisa funcionar sem cookies (raro em 2026), essa é uma decisão de produto que merece revisão de segurança dedicada, não um fallback silencioso.
+> **O que acontece:** o app aceita `?sessionid=xyz` na URL como alternativa ao cookie — geralmente "para funcionar sem cookies habilitados" ou para debugging. **Por quê:** um session ID na URL é trivialmente injetável — basta mandar o link para a vítima, ou ele vaza em logs de proxy, histórico do navegador, header `Referer`. **Como evitar:** aceitar session ID **somente** via cookie. Se o app precisa funcionar sem cookies (raro em 2026), essa é uma decisão de produto que merece revisão de segurança dedicada, não um fallback silencioso.
 
 ## Ciclo de vida: quanto tempo uma sessão deve viver
 
@@ -272,24 +270,16 @@ E, do lado do servidor, o registro `9f8e7d6c5b4a3928` é apagado da store — n�
 ## Armadilhas comuns
 
 > [!warning] Cookie de sessão sem `HttpOnly`
-> **O que acontece:** o time expõe o cookie de sessão a JavaScript "para o front-end conseguir ler o usuário logado" — geralmente para popular um estado de UI sem round-trip ao servidor.
-> **Por quê:** qualquer XSS na página, mesmo pontual, agora consegue ler `document.cookie` e exfiltrar o session ID inteiro para um servidor do atacante — que passa a poder personificar o usuário sem nunca ter visto senha alguma.
-> **Como evitar:** o cookie de sessão nunca leva dado de UI. Se o front precisa saber "quem está logado", isso vem de um endpoint autenticado (`GET /me`) que lê o cookie `HttpOnly` no servidor e devolve só o que o front precisa — nunca expondo o próprio identificador de sessão ao JavaScript.
+> **O que acontece:** o time expõe o cookie de sessão a JavaScript "para o front-end conseguir ler o usuário logado" — geralmente para popular um estado de UI sem round-trip ao servidor. **Por quê:** qualquer XSS na página, mesmo pontual, agora consegue ler `document.cookie` e exfiltrar o session ID inteiro para um servidor do atacante — que passa a poder personificar o usuário sem nunca ter visto senha alguma. **Como evitar:** o cookie de sessão nunca leva dado de UI. Se o front precisa saber "quem está logado", isso vem de um endpoint autenticado (`GET /me`) que lê o cookie `HttpOnly` no servidor e devolve só o que o front precisa — nunca expondo o próprio identificador de sessão ao JavaScript.
 
 > [!warning] `SameSite=None` configurado sem entender a implicação
-> **O que acontece:** um erro de CORS ou um cookie que "não estava sendo enviado" é resolvido trocando `SameSite=Lax` por `SameSite=None` — porque "resolveu o bug" — sem revisar por que o cookie precisava viajar cross-site em primeiro lugar.
-> **Por quê:** `SameSite=None` desliga a única barreira nativa contra CSRF que o navegador oferece de graça. Se a aplicação não tinha, antes disso, um token anti-CSRF robusto, ela acabou de reabrir a porta inteira.
-> **Como evitar:** `SameSite=None` só é legítimo quando o cookie *precisa* ser third-party por design (ex.: widget embutido em outro domínio) — e, nesse caso, ele tem que vir acompanhado de proteção CSRF explícita, nunca sozinho.
+> **O que acontece:** um erro de CORS ou um cookie que "não estava sendo enviado" é resolvido trocando `SameSite=Lax` por `SameSite=None` — porque "resolveu o bug" — sem revisar por que o cookie precisava viajar cross-site em primeiro lugar. **Por quê:** `SameSite=None` desliga a única barreira nativa contra CSRF que o navegador oferece de graça. Se a aplicação não tinha, antes disso, um token anti-CSRF robusto, ela acabou de reabrir a porta inteira. **Como evitar:** `SameSite=None` só é legítimo quando o cookie *precisa* ser third-party por design (ex.: widget embutido em outro domínio) — e, nesse caso, ele tem que vir acompanhado de proteção CSRF explícita, nunca sozinho.
 
 > [!warning] Sessão fixation por reaproveitar o ID pré-login
-> **O que acontece:** o framework (ou um código customizado de sessão) cria o session ID na primeira visita — mesmo antes do login — e simplesmente promove esse mesmo ID depois que a credencial é validada, sem regenerar nada.
-> **Por quê:** qualquer ID que existia antes da autenticação pode, em teoria, já ser conhecido por um atacante (plantado via link, XSS, ou até só adivinhado se a entropia for baixa) — e esse atacante herda a sessão autenticada sem nunca ver a senha.
-> **Como evitar:** todo framework sério de sessão expõe um método de "regenerar ID mantendo os dados" (`session_regenerate_id`, `cycleKey`, `Session.Migrate`) — chamar esse método é o primeiro passo do handler de login, sempre, sem exceção, e também em toda elevação de privilégio (ex.: virar admin dentro da mesma sessão).
+> **O que acontece:** o framework (ou um código customizado de sessão) cria o session ID na primeira visita — mesmo antes do login — e simplesmente promove esse mesmo ID depois que a credencial é validada, sem regenerar nada. **Por quê:** qualquer ID que existia antes da autenticação pode, em teoria, já ser conhecido por um atacante (plantado via link, XSS, ou até só adivinhado se a entropia for baixa) — e esse atacante herda a sessão autenticada sem nunca ver a senha. **Como evitar:** todo framework sério de sessão expõe um método de "regenerar ID mantendo os dados" (`session_regenerate_id`, `cycleKey`, `Session.Migrate`) — chamar esse método é o primeiro passo do handler de login, sempre, sem exceção, e também em toda elevação de privilégio (ex.: virar admin dentro da mesma sessão).
 
 > [!warning] Timeout só no cliente, nunca validado no servidor
-> **O que acontece:** o front-end desloga o usuário depois de X minutos de inatividade — via JavaScript, um timer que limpa o estado local — mas o servidor nunca checa, ele próprio, se a sessão passou do prazo.
-> **Por quê:** um cliente malicioso ou modificado (ou simplesmente o DevTools) ignora esse timer sem esforço; o cookie continua válido para sempre, porque o servidor nunca impôs limite algum na store.
-> **Como evitar:** todo timeout — idle e absolute — precisa ser um campo checado na consulta à store (`expira_em < agora() → rejeitar`), nunca uma lógica que depende do cliente cooperar.
+> **O que acontece:** o front-end desloga o usuário depois de X minutos de inatividade — via JavaScript, um timer que limpa o estado local — mas o servidor nunca checa, ele próprio, se a sessão passou do prazo. **Por quê:** um cliente malicioso ou modificado (ou simplesmente o DevTools) ignora esse timer sem esforço; o cookie continua válido para sempre, porque o servidor nunca impôs limite algum na store. **Como evitar:** todo timeout — idle e absolute — precisa ser um campo checado na consulta à store (`expira_em < agora() → rejeitar`), nunca uma lógica que depende do cliente cooperar.
 
 ## Em entrevista
 

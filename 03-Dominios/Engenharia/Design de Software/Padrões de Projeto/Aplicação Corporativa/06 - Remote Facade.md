@@ -25,12 +25,7 @@ aliases:
 # Remote Facade
 
 > [!abstract] TL;DR
-> Um objeto bem projetado tem métodos **finos** — muitos, pequenos, expressivos. Essa é a granularidade
-> certa **dentro** de um processo, e a errada atravessando a rede, onde cada chamada custa milissegundos
-> em vez de nanossegundos. O **Remote Facade** é uma interface **grossa** que fica na fronteira: uma
-> chamada, muitos dados, uma viagem. Ele **não tem lógica de negócio** — só agrega e traduz. É a
-> aplicação direta da Primeira Lei da Distribuição de Objetos de Fowler: *não distribua seus objetos*.
-> **A ressurreição** tem nome que você usa toda semana: **BFF** — Backend for Frontend.
+> Um objeto bem projetado tem métodos **finos** — muitos, pequenos, expressivos. Essa é a granularidade certa **dentro** de um processo, e a errada atravessando a rede, onde cada chamada custa milissegundos em vez de nanossegundos. O **Remote Facade** é uma interface **grossa** que fica na fronteira: uma chamada, muitos dados, uma viagem. Ele **não tem lógica de negócio** — só agrega e traduz. É a aplicação direta da Primeira Lei da Distribuição de Objetos de Fowler: *não distribua seus objetos*. **A ressurreição** tem nome que você usa toda semana: **BFF** — Backend for Frontend.
 
 ## A tela que demora oito segundos
 
@@ -108,19 +103,13 @@ O motivo do retorno é que **o problema voltou em escala maior**. Em 2002 a fron
 ## Armadilhas comuns
 
 > [!warning] Aplicar in-process
-> **O que acontece:** cria-se uma "fachada" com métodos grossos entre camadas do mesmo processo, e o código passa a montar objetos gordos para atravessar uma fronteira que não existe.
-> **Por quê:** o padrão é lembrado como "boa prática de camadas", desligado da razão que o motiva.
-> **Como evitar:** o Remote Facade paga por **latência de rede**. Sem chamada remota, ele é indireção pura — e provavelmente arrasta DTOs desnecessários junto, que é a armadilha da próxima nota.
+> **O que acontece:** cria-se uma "fachada" com métodos grossos entre camadas do mesmo processo, e o código passa a montar objetos gordos para atravessar uma fronteira que não existe. **Por quê:** o padrão é lembrado como "boa prática de camadas", desligado da razão que o motiva. **Como evitar:** o Remote Facade paga por **latência de rede**. Sem chamada remota, ele é indireção pura — e provavelmente arrasta DTOs desnecessários junto, que é a armadilha da próxima nota.
 
 > [!warning] God service — a fachada que ganha lógica
-> **O que acontece:** a fachada começa agregando, depois valida "porque já está aqui", depois decide, e vira uma classe de duas mil linhas que o time inteiro edita — com a regra de negócio agora fora do domínio.
-> **Por quê:** ela é o único ponto que vê a requisição inteira, então toda regra transversal parece caber ali. É a mesma dinâmica do *God dispatcher* da nota 03.
-> **Como evitar:** teste mecânico — se você remover a fronteira remota, a fachada deveria poder sumir sem perda de regra. Se algo se perde, esse algo estava no lugar errado.
+> **O que acontece:** a fachada começa agregando, depois valida "porque já está aqui", depois decide, e vira uma classe de duas mil linhas que o time inteiro edita — com a regra de negócio agora fora do domínio. **Por quê:** ela é o único ponto que vê a requisição inteira, então toda regra transversal parece caber ali. É a mesma dinâmica do *God dispatcher* da nota 03. **Como evitar:** teste mecânico — se você remover a fronteira remota, a fachada deveria poder sumir sem perda de regra. Se algo se perde, esse algo estava no lugar errado.
 
 > [!warning] Uma fachada genérica para todos os clientes
-> **O que acontece:** um único serviço de agregação atende web, mobile e parceiros. Cada cliente precisa de campos diferentes, então a resposta cresce para conter a união de tudo — e o app móvel baixa três vezes mais dados do que usa, numa rede onde isso custa caro.
-> **Por quê:** parece reúso; é acoplamento. Um consumidor não pode evoluir a resposta sem afetar os outros.
-> **Como evitar:** é exatamente por isso que o BFF é **por tipo de cliente**. Duplicar a agregação é mais barato que acoplar consumidores com necessidades divergentes.
+> **O que acontece:** um único serviço de agregação atende web, mobile e parceiros. Cada cliente precisa de campos diferentes, então a resposta cresce para conter a união de tudo — e o app móvel baixa três vezes mais dados do que usa, numa rede onde isso custa caro. **Por quê:** parece reúso; é acoplamento. Um consumidor não pode evoluir a resposta sem afetar os outros. **Como evitar:** é exatamente por isso que o BFF é **por tipo de cliente**. Duplicar a agregação é mais barato que acoplar consumidores com necessidades divergentes.
 
 ## Como explicar em inglês
 

@@ -82,8 +82,7 @@ A DigitalOcean aposta no oposto: **a restrição bem escolhida é, ela mesma, um
 > [!tip] Assista: Interview With DigitalOcean
 > **Canal:** TFiR | **Duração:** ~21min | **Idioma:** EN
 >
-> Nessa entrevista, um executivo da própria DigitalOcean explica a curadoria não como limitação técnica, mas como decisão deliberada de foco: a empresa escolhe conscientemente NÃO perseguir contratos enterprise multimilionários pra manter o catálogo enxuto e alinhado às necessidades reais de startups e SMBs.
-> Trecho de destaque [07:40]: *"this allows us to stay focused and build those limited set of products but curate them to the needs of specific customers that we're trying to serve"*
+> Nessa entrevista, um executivo da própria DigitalOcean explica a curadoria não como limitação técnica, mas como decisão deliberada de foco: a empresa escolhe conscientemente NÃO perseguir contratos enterprise multimilionários pra manter o catálogo enxuto e alinhado às necessidades reais de startups e SMBs. Trecho de destaque [07:40]: *"this allows us to stay focused and build those limited set of products but curate them to the needs of specific customers that we're trying to serve"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=t_2tz52vXIA)
 

@@ -390,8 +390,7 @@ A próxima nota abre o cofre: [[09 - As três dívidas do software]].
 ## Referências
 
 > [!tip] Assista — Monoliths vs. Microservices Is Missing the Point — Start with Team Cognitive Load
-> **IT Revolution** · 33min · [Monoliths vs. Microservices Is Missing the Point — Start with Team Cognitive Load](https://www.youtube.com/watch?v=haejb5rzKsM)
-> Team Topologies aplicando carga cognitiva à escala do time, que é a seção final desta nota. O argumento central — a fronteira certa é a que cabe na cabeça de um time — mostra que carga cognitiva não é só uma questão de legibilidade de código.
+> **IT Revolution** · 33min · [Monoliths vs. Microservices Is Missing the Point — Start with Team Cognitive Load](https://www.youtube.com/watch?v=haejb5rzKsM) Team Topologies aplicando carga cognitiva à escala do time, que é a seção final desta nota. O argumento central — a fronteira certa é a que cabe na cabeça de um time — mostra que carga cognitiva não é só uma questão de legibilidade de código.
 
 - **George A. Miller** — *The Magical Number Seven, Plus or Minus Two* (1956), origem da estimativa "7 ± 2" itens em memória de curto prazo. Confirmado; o próprio Miller tratava o número como recurso retórico.
 - **Nelson Cowan** — *The Magical Number 4 in Short-Term Memory: A Reconsideration of Mental Storage Capacity* (Behavioral and Brain Sciences, 2001). Refinamento moderno: controlado o ensaio e o apoio da LTM, a capacidade da memória de trabalho fica em ~4 chunks (faixa de 3 a 5), não 7. Confirmado por busca contra o paper e panoramas (Cambridge, ResearchGate).

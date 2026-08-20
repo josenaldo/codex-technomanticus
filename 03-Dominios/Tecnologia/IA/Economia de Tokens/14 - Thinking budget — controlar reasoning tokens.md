@@ -293,17 +293,13 @@ O CoT explícito usa tokens de output (não thinking), é transparente (você l�
 
 ## Casos práticos
 
-**Caso 1 — Agente de debugging com thinking irrestrito:**
-Um agente de debugging ativou extended thinking em todas as chamadas com Opus. Custo por sessão de debugging: $15-40. Após análise, 70% das chamadas eram para leitura de arquivos e busca — tasks que não precisam de thinking. Após limitar thinking apenas a chamadas de diagnóstico de bug (tipo de task identificado pelo orquestrador): custo por sessão: $3-8. Redução de 78%.
+**Caso 1 — Agente de debugging com thinking irrestrito:** Um agente de debugging ativou extended thinking em todas as chamadas com Opus. Custo por sessão de debugging: $15-40. Após análise, 70% das chamadas eram para leitura de arquivos e busca — tasks que não precisam de thinking. Após limitar thinking apenas a chamadas de diagnóstico de bug (tipo de task identificado pelo orquestrador): custo por sessão: $3-8. Redução de 78%.
 
-**Caso 2 — Calibração de budget por complexidade:**
-Um time começou com budget uniforme de 20k tokens para todas as chamadas com thinking. Análise de 1.000 chamadas revelou: 40% usavam <3.000 tokens (budget excessivo), 55% usavam 3.000-18.000 (calibrado), 5% atingiam o limite de 20k (budget insuficiente). Após segmentar em 3 tiers (5k/15k/30k) por complexidade detectada: custo de thinking -35% sem degradação de qualidade.
+**Caso 2 — Calibração de budget por complexidade:** Um time começou com budget uniforme de 20k tokens para todas as chamadas com thinking. Análise de 1.000 chamadas revelou: 40% usavam <3.000 tokens (budget excessivo), 55% usavam 3.000-18.000 (calibrado), 5% atingiam o limite de 20k (budget insuficiente). Após segmentar em 3 tiers (5k/15k/30k) por complexidade detectada: custo de thinking -35% sem degradação de qualidade.
 
-**Caso 3 — Chain-of-Thought como alternativa ao thinking:**
-Um sistema de análise de trade-offs de arquitetura usava Opus + thinking (budget 30k). Custo: $2.50/análise. Após testar Sonnet + CoT explícito no prompt ("analise em 3 etapas: contexto, trade-offs, recomendação"): custo de $0.25/análise, qualidade similar em 85% dos casos. Para os 15% mais complexos, manteve Opus + thinking.
+**Caso 3 — Chain-of-Thought como alternativa ao thinking:** Um sistema de análise de trade-offs de arquitetura usava Opus + thinking (budget 30k). Custo: $2.50/análise. Após testar Sonnet + CoT explícito no prompt ("analise em 3 etapas: contexto, trade-offs, recomendação"): custo de $0.25/análise, qualidade similar em 85% dos casos. Para os 15% mais complexos, manteve Opus + thinking.
 
-**Caso 4 — Thinking em Sonnet vs Opus:**
-Após extended thinking ser disponibilizado no Sonnet (2026), o time migrou 60% dos casos de Opus + thinking para Sonnet + thinking. Custo de thinking: de $75/MTok para $15/MTok (5x redução). Qualidade comparable em análises de código; diferença percebida apenas em arquitetura de sistema muito complexa.
+**Caso 4 — Thinking em Sonnet vs Opus:** Após extended thinking ser disponibilizado no Sonnet (2026), o time migrou 60% dos casos de Opus + thinking para Sonnet + thinking. Custo de thinking: de $75/MTok para $15/MTok (5x redução). Qualidade comparable em análises de código; diferença percebida apenas em arquitetura de sistema muito complexa.
 
 ## Quando o thinking budget é insuficiente
 

@@ -360,17 +360,13 @@ def stream_with_limit(prompt: str, char_limit: int = 500) -> str:
 
 ## Casos práticos
 
-**Caso 1 — Agente de code review:**
-Um agente de code review gerava reviews com explicações longas, contexto histórico e sugestões de refactoring não pedidas. Custo médio: $0.08/PR. Após adicionar instruções de formato ("ISSUE: [1 linha] / FIX: [código específico] / SKIP se trivial"): custo caiu para $0.018/PR — 78% de redução. Qualidade dos reviews melhorou porque o modelo parou de "encher linguiça" e focou nos issues reais.
+**Caso 1 — Agente de code review:** Um agente de code review gerava reviews com explicações longas, contexto histórico e sugestões de refactoring não pedidas. Custo médio: $0.08/PR. Após adicionar instruções de formato ("ISSUE: [1 linha] / FIX: [código específico] / SKIP se trivial"): custo caiu para $0.018/PR — 78% de redução. Qualidade dos reviews melhorou porque o modelo parou de "encher linguiça" e focou nos issues reais.
 
-**Caso 2 — Chatbot de suporte:**
-Um chatbot de suporte técnico gerava respostas de 400-600 palavras para perguntas simples. Após few-shot com exemplos de respostas concisas (3-5 linhas) + instrução de não reformular a pergunta: output médio caiu de 450 tokens para 120 tokens. NPS do suporte aumentou (usuários preferem respostas diretas).
+**Caso 2 — Chatbot de suporte:** Um chatbot de suporte técnico gerava respostas de 400-600 palavras para perguntas simples. Após few-shot com exemplos de respostas concisas (3-5 linhas) + instrução de não reformular a pergunta: output médio caiu de 450 tokens para 120 tokens. NPS do suporte aumentou (usuários preferem respostas diretas).
 
-**Caso 3 — Pipeline de análise de logs:**
-Um pipeline analisava 1.000 logs/hora com Sonnet. Cada análise gerava 800 tokens de prosa. Após migrar para JSON output (4 campos: categoria, severidade, componente, ação): 80 tokens por análise. Custo: $12/hora → $1.20/hora. Processamento 10x mais rápido (menos tokens a gerar).
+**Caso 3 — Pipeline de análise de logs:** Um pipeline analisava 1.000 logs/hora com Sonnet. Cada análise gerava 800 tokens de prosa. Após migrar para JSON output (4 campos: categoria, severidade, componente, ação): 80 tokens por análise. Custo: $12/hora → $1.20/hora. Processamento 10x mais rápido (menos tokens a gerar).
 
-**Caso 4 — Geração de documentação:**
-Um gerador de docs produzia docstrings com seções extensas de exemplos não pedidos. Após calibrar `max_tokens=400` e adicionar template específico: output médio de 1.200 → 350 tokens. Docstrings mais focadas e mais rápidas de ler.
+**Caso 4 — Geração de documentação:** Um gerador de docs produzia docstrings com seções extensas de exemplos não pedidos. Após calibrar `max_tokens=400` e adicionar template específico: output médio de 1.200 → 350 tokens. Docstrings mais focadas e mais rápidas de ler.
 
 ## Checklist
 

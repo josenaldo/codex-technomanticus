@@ -24,13 +24,7 @@ aliases:
 # DTO — e por que virou pejorativo
 
 > [!abstract] TL;DR
-> Um **Data Transfer Object** é um objeto burro que carrega dados **através de uma fronteira de
-> processo**, para que uma chamada remota leve tudo de uma vez. Essa cláusula — *através de uma
-> fronteira de processo* — é a razão inteira do padrão, e é a primeira coisa que se perde ao repeti-lo.
-> Hoje o DTO é provavelmente o padrão **mais aplicado sem motivo** do catálogo: `PedidoDTO` entre duas
-> camadas do mesmo processo, mais um mapeador, mais uma classe para manter. Mas ele **não é um
-> anti-padrão** — na fronteira certa, ele resolve três problemas reais que o objeto de domínio não
-> resolve. A nota separa os dois usos.
+> Um **Data Transfer Object** é um objeto burro que carrega dados **através de uma fronteira de processo**, para que uma chamada remota leve tudo de uma vez. Essa cláusula — *através de uma fronteira de processo* — é a razão inteira do padrão, e é a primeira coisa que se perde ao repeti-lo. Hoje o DTO é provavelmente o padrão **mais aplicado sem motivo** do catálogo: `PedidoDTO` entre duas camadas do mesmo processo, mais um mapeador, mais uma classe para manter. Mas ele **não é um anti-padrão** — na fronteira certa, ele resolve três problemas reais que o objeto de domínio não resolve. A nota separa os dois usos.
 
 ## "Falta o DTO aqui"
 
@@ -114,19 +108,13 @@ Repare que os quatro são sobre **fronteira** — de processo, de contrato ou de
 ## Armadilhas comuns
 
 > [!warning] DTO sem fronteira
-> **O que acontece:** `PedidoDTO` entre o serviço e o controlador do mesmo processo, com um mapeador. Adicionar um campo custa três arquivos, e ninguém sabe dizer o que o DTO protege.
-> **Por quê:** o padrão é lembrado como regra de camadas, desligado da fronteira de processo que o motiva.
-> **Como evitar:** exija o motivo em uma frase — "este DTO existe porque \_\_\_". Fronteira de rede, contrato público estável, campo sensível ou entrada controlada são respostas válidas. "É o padrão do projeto" não é.
+> **O que acontece:** `PedidoDTO` entre o serviço e o controlador do mesmo processo, com um mapeador. Adicionar um campo custa três arquivos, e ninguém sabe dizer o que o DTO protege. **Por quê:** o padrão é lembrado como regra de camadas, desligado da fronteira de processo que o motiva. **Como evitar:** exija o motivo em uma frase — "este DTO existe porque \_\_\_". Fronteira de rede, contrato público estável, campo sensível ou entrada controlada são respostas válidas. "É o padrão do projeto" não é.
 
 > [!warning] Explosão de mapeadores
-> **O que acontece:** entidade → DTO → response → view model, com MapStruct ou ModelMapper no meio. Um campo esquecido no mapeamento vira `null` em produção, sem erro de compilação e sem falha de teste.
-> **Por quê:** cada camada foi adicionada por um bom argumento local; a soma nunca foi avaliada.
-> **Como evitar:** conte os saltos. Mais de um mapeamento entre o domínio e a saída precisa de justificativa forte. E prefira mapeamento **verificado em compilação ou por teste de contrato** ao mapeamento reflexivo por nome, que falha em silêncio.
+> **O que acontece:** entidade → DTO → response → view model, com MapStruct ou ModelMapper no meio. Um campo esquecido no mapeamento vira `null` em produção, sem erro de compilação e sem falha de teste. **Por quê:** cada camada foi adicionada por um bom argumento local; a soma nunca foi avaliada. **Como evitar:** conte os saltos. Mais de um mapeamento entre o domínio e a saída precisa de justificativa forte. E prefira mapeamento **verificado em compilação ou por teste de contrato** ao mapeamento reflexivo por nome, que falha em silêncio.
 
 > [!warning] Deixar o DTO ganhar lógica
-> **O que acontece:** o DTO ganha um `calcularTotal()` "porque é conveniente". A regra passa a existir em dois lugares — no domínio e no objeto de transporte — e as duas versões divergem.
-> **Por quê:** ele está sempre à mão no ponto onde o dado é usado.
-> **Como evitar:** DTO é dado, não comportamento. Se a regra precisa existir dos dois lados de uma fronteira, isso é um problema de **contrato compartilhado**, e replicá-la à mão é a pior das soluções possíveis.
+> **O que acontece:** o DTO ganha um `calcularTotal()` "porque é conveniente". A regra passa a existir em dois lugares — no domínio e no objeto de transporte — e as duas versões divergem. **Por quê:** ele está sempre à mão no ponto onde o dado é usado. **Como evitar:** DTO é dado, não comportamento. Se a regra precisa existir dos dois lados de uma fronteira, isso é um problema de **contrato compartilhado**, e replicá-la à mão é a pior das soluções possíveis.
 
 ## Como explicar em inglês
 

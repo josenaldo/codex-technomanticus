@@ -86,19 +86,13 @@ O que exige estrutura ou apoio externo: **uma opinião jurídica formal sobre se
 ## Armadilhas comuns
 
 > [!warning] "Só estou implementando o que pediram"
-> **O que acontece:** o engenheiro constrói exatamente o que o cliente ou PM especificou, sem registrar objeção, achando que a responsabilidade é inteiramente de quem pediu.
-> **Por quê:** é exatamente a defesa que os processos da FTC desmontaram — no acordo final do caso Amazon (set/2025), a agência nomeou dois executivos pessoalmente (Neil Lindsay e Jamil Ghani) e usou comunicação interna como prova de que a decisão foi consciente em toda a cadeia, não só na liderança. Quem escreve o código participa da cadeia de decisão, mesmo sem assinar o pedido.
-> **Como evitar:** documente por escrito, antes de implementar, a recomendação contrária e a decisão final — o Cenário 1 mostra como isso fica concreto na prática.
+> **O que acontece:** o engenheiro constrói exatamente o que o cliente ou PM especificou, sem registrar objeção, achando que a responsabilidade é inteiramente de quem pediu. **Por quê:** é exatamente a defesa que os processos da FTC desmontaram — no acordo final do caso Amazon (set/2025), a agência nomeou dois executivos pessoalmente (Neil Lindsay e Jamil Ghani) e usou comunicação interna como prova de que a decisão foi consciente em toda a cadeia, não só na liderança. Quem escreve o código participa da cadeia de decisão, mesmo sem assinar o pedido. **Como evitar:** documente por escrito, antes de implementar, a recomendação contrária e a decisão final — o Cenário 1 mostra como isso fica concreto na prática.
 
 > [!warning] Confundir fricção legítima com dark pattern
-> **O que acontece:** o time trata qualquer fricção adicionada a um fluxo como suspeita, incluindo confirmação genuína de ações destrutivas — ou, no sentido oposto, justifica fricção de retenção chamando-a de "proteção ao usuário".
-> **Por quê:** os dois fenômenos parecem tecnicamente idênticos (ambos são "um passo a mais antes de confirmar"); a diferença está inteiramente em *para quem* a fricção protege, não na fricção em si.
-> **Como evitar:** aplique o teste da nota 23: a ação é destrutiva/arriscada para quem usa, ou é só saída/recusa? Fricção sobre a primeira protege; fricção sobre a segunda manipula.
+> **O que acontece:** o time trata qualquer fricção adicionada a um fluxo como suspeita, incluindo confirmação genuína de ações destrutivas — ou, no sentido oposto, justifica fricção de retenção chamando-a de "proteção ao usuário". **Por quê:** os dois fenômenos parecem tecnicamente idênticos (ambos são "um passo a mais antes de confirmar"); a diferença está inteiramente em *para quem* a fricção protege, não na fricção em si. **Como evitar:** aplique o teste da nota 23: a ação é destrutiva/arriscada para quem usa, ou é só saída/recusa? Fricção sobre a primeira protege; fricção sobre a segunda manipula.
 
 > [!warning] Achar que o Digital Fairness Act já resolve o problema
-> **O que acontece:** alguém cita o DFA como se já fosse lei em vigor para justificar não agir agora ("quando a lei entrar valendo, a gente ajusta").
-> **Por quê:** o DFA ainda é proposta não formalizada, com vigência estimada só para 2028-2030 mesmo no cenário mais otimista; o DSA, que **já está em vigor** desde 2024 com o mesmo tipo de proibição, é o risco real e imediato — adiar para o DFA é adiar para uma lei que talvez nem chegue no texto atualmente discutido.
-> **Como evitar:** trate o Art. 25 do DSA (em vigor) como a régua atual; trate o DFA como sinal de que a régua vai ficar mais rígida, não como desculpa para esperar.
+> **O que acontece:** alguém cita o DFA como se já fosse lei em vigor para justificar não agir agora ("quando a lei entrar valendo, a gente ajusta"). **Por quê:** o DFA ainda é proposta não formalizada, com vigência estimada só para 2028-2030 mesmo no cenário mais otimista; o DSA, que **já está em vigor** desde 2024 com o mesmo tipo de proibição, é o risco real e imediato — adiar para o DFA é adiar para uma lei que talvez nem chegue no texto atualmente discutido. **Como evitar:** trate o Art. 25 do DSA (em vigor) como a régua atual; trate o DFA como sinal de que a régua vai ficar mais rígida, não como desculpa para esperar.
 
 ## Como explicar em inglês
 
@@ -131,14 +125,8 @@ Reconhecer o risco não impede que ele reapareça no próximo projeto — para i
 - **Federal Trade Commission** — [*FTC Finalizes Order Requiring Epic Games to Pay $245 Million*](https://www.ftc.gov/news-events/news/press-releases/2023/03/ftc-finalizes-order-requiring-fortnite-maker-epic-games-pay-245-million-tricking-users-making) — o caso Epic Games.
 
 > [!info] Nota de método sobre a contagem de executivos nomeados
-> O número de executivos nomeados pessoalmente no acordo final da Amazon (dois — Neil
-> Lindsay e Jamil Ghani) foi confirmado por **fontes secundárias convergentes** (cobertura
-> jornalística e réplica do texto do consent order), não por leitura direta do documento
-> oficial da FTC: a tentativa de abrir o press release/consent order em `ftc.gov` retornou
-> erro 403 nesta verificação. Isso é distinto da queixa original de 2023, que nomeava um
-> terceiro executivo (Russell Grandinetti) — não confirmado como parte do acordo final de
-> 2025. Se você tiver acesso direto ao documento da FTC, vale reconferir antes de citar o
-> número em contexto formal.
+> O número de executivos nomeados pessoalmente no acordo final da Amazon (dois — Neil Lindsay e Jamil Ghani) foi confirmado por **fontes secundárias convergentes** (cobertura jornalística e réplica do texto do consent order), não por leitura direta do documento oficial da FTC: a tentativa de abrir o press release/consent order em `ftc.gov` retornou erro 403 nesta verificação. Isso é distinto da queixa original de 2023, que nomeava um terceiro executivo (Russell Grandinetti) — não confirmado como parte do acordo final de
+> 2025. Se você tiver acesso direto ao documento da FTC, vale reconferir antes de citar o número em contexto formal.
 
 > [!tip] Assista: Amazon's $2.5 Billion Subscription Trick — Amazon Prime FTC Settlement Explained
 > **Canal:** The Hidden Engine | **Duração:** ~7min33 | **Idioma:** EN

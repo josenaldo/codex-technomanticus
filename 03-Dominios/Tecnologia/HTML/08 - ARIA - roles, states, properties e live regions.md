@@ -23,8 +23,7 @@ publish: true
 
 ## O primeiro princípio do ARIA
 
-> *No ARIA is better than bad ARIA.*
-> — WAI-ARIA Authoring Practices Guide
+> *No ARIA is better than bad ARIA.* — WAI-ARIA Authoring Practices Guide
 
 HTML semântico nativo tem comportamento correto embutido: `<button>` é focável, ativável por teclado, anunciado como "botão" pelo leitor de tela. Quando você adiciona `role="button"` a um `<div>`, precisa replicar todo esse comportamento manualmente — e provavelmente vai errar alguma coisa.
 

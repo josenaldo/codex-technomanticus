@@ -24,18 +24,10 @@ aliases:
 # Health Endpoint Monitoring
 
 > [!abstract] TL;DR
-> O serviço expõe um endpoint que declara sua saúde, e a **plataforma age** sobre a resposta: tira do
-> balanceador, reinicia, alerta. É o padrão que faz todos os outros funcionarem — sem ele, ninguém sabe
-> quem está mal. E é o mais fácil de implementar errado de um jeito **catastrófico**, porque a decisão
-> central não é técnica e sim semântica: *o que exatamente essa checagem está declarando?* A distinção
-> que evita a maior parte dos desastres é **liveness** (estou vivo? falha ⇒ **reiniciar**) × **readiness**
-> (posso receber tráfego agora? falha ⇒ **tirar de rotação**). Confundi-las é como um health check
-> profundo derruba a frota inteira quando o banco pisca.
+> O serviço expõe um endpoint que declara sua saúde, e a **plataforma age** sobre a resposta: tira do balanceador, reinicia, alerta. É o padrão que faz todos os outros funcionarem — sem ele, ninguém sabe quem está mal. E é o mais fácil de implementar errado de um jeito **catastrófico**, porque a decisão central não é técnica e sim semântica: *o que exatamente essa checagem está declarando?* A distinção que evita a maior parte dos desastres é **liveness** (estou vivo? falha ⇒ **reiniciar**) × **readiness** (posso receber tráfego agora? falha ⇒ **tirar de rotação**). Confundi-las é como um health check profundo derruba a frota inteira quando o banco pisca.
 
 > [!info] O recorte desta nota
-> Aqui o padrão como decisão de design e seu sacrifício. **Probes do Kubernetes na prática** em
-> [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/02 - O contrato de produção do Kubernetes|Operação 3-02]];
-> **HA e continuidade na nuvem** em [[03-Dominios/Tecnologia/Cloud/20 - Resiliência e continuidade/index|Cloud 20]].
+> Aqui o padrão como decisão de design e seu sacrifício. **Probes do Kubernetes na prática** em [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/02 - O contrato de produção do Kubernetes|Operação 3-02]]; **HA e continuidade na nuvem** em [[03-Dominios/Tecnologia/Cloud/20 - Resiliência e continuidade/index|Cloud 20]].
 
 ## O banco piscou e a frota inteira reiniciou
 
@@ -87,19 +79,13 @@ Não há como ter os dois na mesma resposta, e é por isso que a separação em 
 ## Armadilhas comuns
 
 > [!warning] Liveness checando dependências
-> **O que acontece:** o banco pisca e a frota inteira é reiniciada. A recuperação vira uma avalanche de instâncias frias contra uma dependência que acabou de voltar, e o incidente se multiplica.
-> **Por quê:** "saúde" é interpretado como "consigo fazer meu trabalho", que é a definição de readiness, não de liveness.
-> **Como evitar:** liveness responde **apenas** sobre o processo. Pergunta-teste antes de incluir qualquer verificação: *reiniciar este processo resolveria isso?* Se não, não pertence ao liveness.
+> **O que acontece:** o banco pisca e a frota inteira é reiniciada. A recuperação vira uma avalanche de instâncias frias contra uma dependência que acabou de voltar, e o incidente se multiplica. **Por quê:** "saúde" é interpretado como "consigo fazer meu trabalho", que é a definição de readiness, não de liveness. **Como evitar:** liveness responde **apenas** sobre o processo. Pergunta-teste antes de incluir qualquer verificação: *reiniciar este processo resolveria isso?* Se não, não pertence ao liveness.
 
 > [!warning] Health check que sempre responde 200
-> **O que acontece:** o endpoint devolve `OK` sem verificar nada. A instância está com o pool esgotado e continua recebendo tráfego, porque declarou saúde perfeita.
-> **Por quê:** é o oposto da armadilha anterior e nasce dela — depois de um incidente causado por check profundo, o time esvazia o check em vez de corrigir a semântica.
-> **Como evitar:** o readiness deve refletir a **capacidade real de atender**: pool disponível, filas internas, aquecimento concluído. Raso não significa vazio.
+> **O que acontece:** o endpoint devolve `OK` sem verificar nada. A instância está com o pool esgotado e continua recebendo tráfego, porque declarou saúde perfeita. **Por quê:** é o oposto da armadilha anterior e nasce dela — depois de um incidente causado por check profundo, o time esvazia o check em vez de corrigir a semântica. **Como evitar:** o readiness deve refletir a **capacidade real de atender**: pool disponível, filas internas, aquecimento concluído. Raso não significa vazio.
 
 > [!warning] Readiness sem aquecimento
-> **O que acontece:** a instância declara-se pronta assim que o processo sobe, recebe tráfego imediatamente e responde mal — cache frio, JIT não aquecido, conexões não abertas. Numa implantação contínua, cada instância nova causa um pico de latência.
-> **Por quê:** "processo iniciado" é confundido com "pronto para carga de produção".
-> **Como evitar:** só declare pronta depois do aquecimento — conexões abertas, cache essencial populado. Combine com implantação gradual, para que uma instância nova receba tráfego progressivamente.
+> **O que acontece:** a instância declara-se pronta assim que o processo sobe, recebe tráfego imediatamente e responde mal — cache frio, JIT não aquecido, conexões não abertas. Numa implantação contínua, cada instância nova causa um pico de latência. **Por quê:** "processo iniciado" é confundido com "pronto para carga de produção". **Como evitar:** só declare pronta depois do aquecimento — conexões abertas, cache essencial populado. Combine com implantação gradual, para que uma instância nova receba tráfego progressivamente.
 
 ## Como explicar em inglês
 

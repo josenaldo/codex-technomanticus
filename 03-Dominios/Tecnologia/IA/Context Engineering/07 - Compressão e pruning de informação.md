@@ -235,17 +235,13 @@ Onde compaction acaba — na borda da janela — começa o **harness engineering
 
 ## Estado da arte — junho de 2026
 
-**Compactação como primitiva de produto**
-Em 2025-2026, Claude Code, Cursor, Devin e outros coding agents implementaram compactação automática como feature de produto — não como configuração avançada. O usuário não precisa saber quando compactar; o sistema decide. Isso democratizou sessões longas de agentes que antes quebravam silenciosamente por rot.
+**Compactação como primitiva de produto** Em 2025-2026, Claude Code, Cursor, Devin e outros coding agents implementaram compactação automática como feature de produto — não como configuração avançada. O usuário não precisa saber quando compactar; o sistema decide. Isso democratizou sessões longas de agentes que antes quebravam silenciosamente por rot.
 
-**Compactação seletiva por tipo de conteúdo**
-Sistemas sofisticados em 2026 usam políticas de compactação diferenciadas por tipo de conteúdo: código-fonte é compactado para assinaturas de funções; conversação é sumarizada; decisões arquiteturais são preservadas literalmente. Um único algoritmo de sumarização aplicado uniformemente é inferior a políticas por tipo.
+**Compactação seletiva por tipo de conteúdo** Sistemas sofisticados em 2026 usam políticas de compactação diferenciadas por tipo de conteúdo: código-fonte é compactado para assinaturas de funções; conversação é sumarizada; decisões arquiteturais são preservadas literalmente. Um único algoritmo de sumarização aplicado uniformemente é inferior a políticas por tipo.
 
-**Compactação com verificação de qualidade**
-Sistemas maduros em 2026 verificam a qualidade da compactação antes de continuar: executam um conjunto de perguntas-gold sobre o resumo ("o agente ainda sabe qual era o objetivo principal?", "o agente ainda sabe qual arquivo está editando?") e rejeitam compactações que falham. Isso evita o problema de compactações que parecem pequenas mas perderam informação crítica.
+**Compactação com verificação de qualidade** Sistemas maduros em 2026 verificam a qualidade da compactação antes de continuar: executam um conjunto de perguntas-gold sobre o resumo ("o agente ainda sabe qual era o objetivo principal?", "o agente ainda sabe qual arquivo está editando?") e rejeitam compactações que falham. Isso evita o problema de compactações que parecem pequenas mas perderam informação crítica.
 
-**Modelos auxiliares pequenos para compactação**
-Uma tendência emergente: usar um modelo menor e mais barato (Haiku, flash) para fazer a sumarização de compactação, reservando o modelo principal para a tarefa. Reduz o custo de compactação em 80% mantendo qualidade suficiente para a maioria dos casos.
+**Modelos auxiliares pequenos para compactação** Uma tendência emergente: usar um modelo menor e mais barato (Haiku, flash) para fazer a sumarização de compactação, reservando o modelo principal para a tarefa. Reduz o custo de compactação em 80% mantendo qualidade suficiente para a maioria dos casos.
 
 ---
 

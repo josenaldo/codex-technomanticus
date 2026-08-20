@@ -54,15 +54,13 @@ Connect oferece:
 
 ### Source vs sink connectors
 
-**Source connectors** leem de um sistema externo e publicam em tópico(s) Kafka.
-Exemplos canônicos:
+**Source connectors** leem de um sistema externo e publicam em tópico(s) Kafka. Exemplos canônicos:
 
 - Debezium MySQL/PostgreSQL Source: captura o binlog e emite eventos de mudança de linha.
 - File Source: lê arquivos de log ou CSV e publica linha a linha.
 - JDBC Source: faz polling de tabelas com coluna de timestamp ou incremento.
 
-**Sink connectors** consomem de tópico(s) Kafka e escrevem em sistema externo.
-Exemplos canônicos:
+**Sink connectors** consomem de tópico(s) Kafka e escrevem em sistema externo. Exemplos canônicos:
 
 - Elasticsearch Sink: indexa documentos a partir de eventos.
 - S3 Sink: grava arquivos Avro/Parquet/JSON no bucket para data lake.

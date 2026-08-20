@@ -407,24 +407,16 @@ O ponto importante do `except`: **só** re-tentar quando o erro é especificamen
 ## Armadilhas comuns
 
 > [!warning] Assumir `session.commit()` isolado como transação atômica multi-passo
-> **O que acontece:** duas ou mais operações relacionadas (débito + crédito, criação de pedido + itens) são commitadas em chamadas separadas de `session.commit()`, sem um `session.begin()` envolvendo as duas — se a segunda falhar, a primeira já é permanente.
-> **Por quê:** cada `commit()` finaliza a transação atual e implicitamente inicia uma nova (autobegin) — não existe atomicidade entre dois commits distintos, só dentro de um único bloco transacional.
-> **Como evitar:** delimitar `with session.begin():` (ou o equivalente `transaction.atomic()` do Django) em volta de todo o conjunto de operações que precisa ser tudo-ou-nada.
+> **O que acontece:** duas ou mais operações relacionadas (débito + crédito, criação de pedido + itens) são commitadas em chamadas separadas de `session.commit()`, sem um `session.begin()` envolvendo as duas — se a segunda falhar, a primeira já é permanente. **Por quê:** cada `commit()` finaliza a transação atual e implicitamente inicia uma nova (autobegin) — não existe atomicidade entre dois commits distintos, só dentro de um único bloco transacional. **Como evitar:** delimitar `with session.begin():` (ou o equivalente `transaction.atomic()` do Django) em volta de todo o conjunto de operações que precisa ser tudo-ou-nada.
 
 > [!warning] Testar isolation level contra SQLite e generalizar o resultado
-> **O que acontece:** um teste automatizado roda contra SQLite em memória, não reproduz nenhuma anomalia de concorrência, e a equipe conclui erroneamente que o código está correto sob concorrência real.
-> **Por quê:** SQLite serializa escritas por padrão — a maioria das condições de corrida entre transações simplesmente não existe nesse banco, porque só uma transação de escrita roda por vez.
-> **Como evitar:** testar cenários de isolation/deadlock contra o banco real de produção (PostgreSQL via `testcontainers` ou instância de teste dedicada), nunca só contra SQLite.
+> **O que acontece:** um teste automatizado roda contra SQLite em memória, não reproduz nenhuma anomalia de concorrência, e a equipe conclui erroneamente que o código está correto sob concorrência real. **Por quê:** SQLite serializa escritas por padrão — a maioria das condições de corrida entre transações simplesmente não existe nesse banco, porque só uma transação de escrita roda por vez. **Como evitar:** testar cenários de isolation/deadlock contra o banco real de produção (PostgreSQL via `testcontainers` ou instância de teste dedicada), nunca só contra SQLite.
 
 > [!warning] Re-tentar qualquer `OperationalError` como se fosse deadlock
-> **O que acontece:** um `except OperationalError` genérico re-tenta a operação inteira sem checar a mensagem específica — mascarando erros reais (conexão perdida, timeout, banco fora do ar) atrás de retries silenciosos que não vão resolver o problema real.
-> **Por quê:** `OperationalError` é uma categoria ampla no SQLAlchemy — deadlock é só um dos motivos possíveis, e cada um pede uma resposta diferente.
-> **Como evitar:** checar a mensagem/código de erro especificamente por "deadlock detected" (ou o código de erro do driver específico, ex. `psycopg.errors.DeadlockDetected`) antes de decidir re-tentar.
+> **O que acontece:** um `except OperationalError` genérico re-tenta a operação inteira sem checar a mensagem específica — mascarando erros reais (conexão perdida, timeout, banco fora do ar) atrás de retries silenciosos que não vão resolver o problema real. **Por quê:** `OperationalError` é uma categoria ampla no SQLAlchemy — deadlock é só um dos motivos possíveis, e cada um pede uma resposta diferente. **Como evitar:** checar a mensagem/código de erro especificamente por "deadlock detected" (ou o código de erro do driver específico, ex. `psycopg.errors.DeadlockDetected`) antes de decidir re-tentar.
 
 > [!warning] Confiar em `REPEATABLE READ` do PostgreSQL como se fosse garantia do padrão SQL
-> **O que acontece:** código que depende de `REPEATABLE READ` prevenir phantom read funciona em PostgreSQL mas quebra ao migrar para outro banco (ou ao trocar de driver/config) que segue estritamente o mínimo exigido pelo padrão SQL para esse nível.
-> **Por quê:** o padrão SQL só garante ausência de phantom read a partir de `SERIALIZABLE`; o comportamento mais forte de `REPEATABLE READ` no PostgreSQL é uma característica da implementação (snapshot isolation), não uma garantia portável.
-> **Como evitar:** se o código realmente não pode tolerar phantom read em nenhuma circunstância, usar `SERIALIZABLE` explicitamente, documentando a decisão — não depender de um detalhe de implementação específico de um banco.
+> **O que acontece:** código que depende de `REPEATABLE READ` prevenir phantom read funciona em PostgreSQL mas quebra ao migrar para outro banco (ou ao trocar de driver/config) que segue estritamente o mínimo exigido pelo padrão SQL para esse nível. **Por quê:** o padrão SQL só garante ausência de phantom read a partir de `SERIALIZABLE`; o comportamento mais forte de `REPEATABLE READ` no PostgreSQL é uma característica da implementação (snapshot isolation), não uma garantia portável. **Como evitar:** se o código realmente não pode tolerar phantom read em nenhuma circunstância, usar `SERIALIZABLE` explicitamente, documentando a decisão — não depender de um detalhe de implementação específico de um banco.
 
 ## Em entrevista
 

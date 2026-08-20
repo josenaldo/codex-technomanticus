@@ -18,52 +18,23 @@ aliases:
 # Arqueologia e Restauração de Software
 
 > [!abstract] TL;DR
-> Galho de Engenharia. O ofício de **assumir e trabalhar com sistemas que você não
-> escreveu** — do primeiro contato até ser o dono confiante. Escavar (arqueologia: entender
-> o código, o histórico e a organização) e intervir sem destruir o sítio (restauração:
-> trocar o que apodreceu por partes funcionais, sem perder o que tem valor). A espinha:
-> *como um consultor sênior assume um sistema legado, o compreende, decide seu destino e o
-> restaura com segurança?*
+> Galho de Engenharia. O ofício de **assumir e trabalhar com sistemas que você não escreveu** — do primeiro contato até ser o dono confiante. Escavar (arqueologia: entender o código, o histórico e a organização) e intervir sem destruir o sítio (restauração: trocar o que apodreceu por partes funcionais, sem perder o que tem valor). A espinha: *como um consultor sênior assume um sistema legado, o compreende, decide seu destino e o restaura com segurança?*
 
 ## A tese
 
-O que se restaura nunca foi o código — foi a **teoria do sistema**. Seguindo Naur
-([[03-Dominios/Engenharia/Complexidade de Software/04 - O programa como teoria|O programa como teoria]]),
-o valor real de um software é a teoria viva na cabeça de quem o construiu: o *porquê* de
-cada decisão. Legado é o que sobra quando essa teoria se perde. Restaurar é **recuperar a
-teoria** e reencarná-la — às vezes remendando uma viga podre, às vezes trocando um módulo
-inteiro, e no limite reescrevendo o corpo do zero para que o conceito reviva num corpo novo.
-Até o rewrite total é restauração: o código muda, a ideia continua.
+O que se restaura nunca foi o código — foi a **teoria do sistema**. Seguindo Naur ([[03-Dominios/Engenharia/Complexidade de Software/04 - O programa como teoria|O programa como teoria]]), o valor real de um software é a teoria viva na cabeça de quem o construiu: o *porquê* de cada decisão. Legado é o que sobra quando essa teoria se perde. Restaurar é **recuperar a teoria** e reencarná-la — às vezes remendando uma viga podre, às vezes trocando um módulo inteiro, e no limite reescrevendo o corpo do zero para que o conceito reviva num corpo novo. Até o rewrite total é restauração: o código muda, a ideia continua.
 
-Por isso o galho recusa o reflexo do *"kill it with fire"* (Bellotti): destruir é fácil e
-quase sempre erra. O default é **restaurar por incrementos seguros**; aposentar ou reescrever
-é uma decisão deliberada, nunca um impulso.
+Por isso o galho recusa o reflexo do *"kill it with fire"* (Bellotti): destruir é fácil e quase sempre erra. O default é **restaurar por incrementos seguros**; aposentar ou reescrever é uma decisão deliberada, nunca um impulso.
 
 ## Sobre este galho
 
-Escrito da cadeira do **consultor** — alguém paraquedado *de fora* em codebases que ninguém
-explica (due diligence de aquisição, herança de cliente, resgate de emergência), não do
-onboarding interno tranquilo. Vai do primeiro contato (não se afogar, construir o mapa
-mental) à escavação técnica (engenharia reversa, forense de `git`, rede de testes, seams),
-à restauração estratégica (Strangler Fig, migração de dados, deploy seguro) e à camada
-humana e política que decide se o trabalho vive ou morre (os R's da modernização, vender a
-mudança, conhecimento tribal, compliance).
+Escrito da cadeira do **consultor** — alguém paraquedado *de fora* em codebases que ninguém explica (due diligence de aquisição, herança de cliente, resgate de emergência), não do onboarding interno tranquilo. Vai do primeiro contato (não se afogar, construir o mapa mental) à escavação técnica (engenharia reversa, forense de `git`, rede de testes, seams), à restauração estratégica (Strangler Fig, migração de dados, deploy seguro) e à camada humana e política que decide se o trabalho vive ou morre (os R's da modernização, vender a mudança, conhecimento tribal, compliance).
 
 **Não cobre (linka):**
-- *Por que* o software apodrece — entropia, dívida técnica, Naur, Conway: é pré-requisito em
-  [[03-Dominios/Engenharia/Complexidade de Software/index|Complexidade de Software]]. Aqui a gente
-  **assume o diagnóstico e age** sobre ele.
-- As técnicas de teste em geral (pirâmide, TDD, mocking): base em
-  [[03-Dominios/Engenharia/Testes/index|Testes]]. Aqui usamos o subconjunto que serve de rede de
-  segurança para código sem testes (characterization, approval).
-- SRE, SLO/SLI, observabilidade e resposta a incidentes como disciplina: moram em
-  [[03-Dominios/Engenharia/Operação/index|Operação]]. Aqui os pegamos emprestados **sob a lente do
-  legado** — instrumentar e apagar incêndio num sistema que você ainda não entende.
-- O **instrumental de `git`** — as flags de `blame` que sobrevivem a refatoração, pickaxe (`log -S`/`-G`),
-  `bisect` automatizado, os comandos que produzem hotspots e acoplamento temporal, e o que esses dados
-  *não* dizem: mora em [[03-Dominios/Tecnologia/Controle de Versão/N6 - O repositório como testemunha/index|Controle de Versão — N6, O repositório como testemunha]].
-  Aqui está o **método** (que perguntas fazer, como priorizar, como conversar com o cliente); lá está o
-  **instrumento**. As notas 07, 09 e 28 deste galho linkam as contrapartes diretas.
+- *Por que* o software apodrece — entropia, dívida técnica, Naur, Conway: é pré-requisito em [[03-Dominios/Engenharia/Complexidade de Software/index|Complexidade de Software]]. Aqui a gente **assume o diagnóstico e age** sobre ele.
+- As técnicas de teste em geral (pirâmide, TDD, mocking): base em [[03-Dominios/Engenharia/Testes/index|Testes]]. Aqui usamos o subconjunto que serve de rede de segurança para código sem testes (characterization, approval).
+- SRE, SLO/SLI, observabilidade e resposta a incidentes como disciplina: moram em [[03-Dominios/Engenharia/Operação/index|Operação]]. Aqui os pegamos emprestados **sob a lente do legado** — instrumentar e apagar incêndio num sistema que você ainda não entende.
+- O **instrumental de `git`** — as flags de `blame` que sobrevivem a refatoração, pickaxe (`log -S`/`-G`), `bisect` automatizado, os comandos que produzem hotspots e acoplamento temporal, e o que esses dados *não* dizem: mora em [[03-Dominios/Tecnologia/Controle de Versão/N6 - O repositório como testemunha/index|Controle de Versão — N6, O repositório como testemunha]]. Aqui está o **método** (que perguntas fazer, como priorizar, como conversar com o cliente); lá está o **instrumento**. As notas 07, 09 e 28 deste galho linkam as contrapartes diretas.
 
 ## Iniciado — o primeiro contato: entender antes de tocar
 

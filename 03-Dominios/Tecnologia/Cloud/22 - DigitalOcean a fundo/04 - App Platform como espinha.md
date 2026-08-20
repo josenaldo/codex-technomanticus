@@ -196,8 +196,7 @@ O Elastic Beanstalk (mais antigo, ainda ativo) é a outra tentativa da AWS nesse
 > [!tip] Assista: A Heroku Alternative - DigitalOcean App Platform
 > **Canal:** DigitalOcean | **Duração:** ~16min | **Idioma:** EN
 >
-> Vídeo oficial do próprio DO nomeando a comparação que esta nota faz na cara: App Platform como sucessor espiritual do Heroku, mostrando na prática o fluxo de migrar um app Heroku pro App Platform sem reescrever a arquitetura.
-> Trecho de destaque [01:48]: *"deploy and migrate our existing Heroku apps to digital ocean's app platform"*
+> Vídeo oficial do próprio DO nomeando a comparação que esta nota faz na cara: App Platform como sucessor espiritual do Heroku, mostrando na prática o fluxo de migrar um app Heroku pro App Platform sem reescrever a arquitetura. Trecho de destaque [01:48]: *"deploy and migrate our existing Heroku apps to digital ocean's app platform"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=NPRT8LfAQ90)
 

@@ -65,9 +65,7 @@ As defesas:
 > Nos dois, em camadas — é defesa em profundidade. O **Lighthouse CI** (notas 01–02) pega regressões **antes do merge**, no lab, de forma reproduzível: barato e preventivo, mas cego para o mundo real. O **RUM** pega o que passou pelo CI e só se manifesta em produção — um dispositivo específico, uma região, uma interação que o lab não exercitou, um script de terceiros que mudou do lado deles. O CI é o portão na entrada; o monitoramento de RUM é o alarme dentro de casa. Uma regressão que o CI não pegou (porque o lab não a reproduz) é exatamente o caso de uso do alerta de RUM.
 
 > [!warning] Alertar em qualquer variação da métrica
-> **O que acontece:** o time configura alerta para "qualquer piora do LCP", recebe dezenas de disparos por dia, e em uma semana criou uma regra de e-mail para arquivá-los. Quando vem a regressão real, ninguém vê.
-> **Por quê:** o RUM oscila naturalmente; alertar sem limiar de significância transforma o sinal em ruído constante — a clássica fadiga de alarme.
-> **Como evitar:** alerte só sobre pioras **significativas** (limiar de ação calibrado, volume/janela mínimos) e **acionáveis** (correlacionadas a um deploy ou segmento). Menos alertas, cada um confiável, é infinitamente melhor que muitos ignorados.
+> **O que acontece:** o time configura alerta para "qualquer piora do LCP", recebe dezenas de disparos por dia, e em uma semana criou uma regra de e-mail para arquivá-los. Quando vem a regressão real, ninguém vê. **Por quê:** o RUM oscila naturalmente; alertar sem limiar de significância transforma o sinal em ruído constante — a clássica fadiga de alarme. **Como evitar:** alerte só sobre pioras **significativas** (limiar de ação calibrado, volume/janela mínimos) e **acionáveis** (correlacionadas a um deploy ou segmento). Menos alertas, cada um confiável, é infinitamente melhor que muitos ignorados.
 
 **Detecção de regressão em uma frase:** compare automaticamente o p75 (não a média) contra uma linha de base e o deploy anterior, alerte só sobre pioras significativas e acionáveis para evitar fadiga de alarme, e trate CI (previne no lab) e RUM (alerta em produção) como camadas complementares.
 

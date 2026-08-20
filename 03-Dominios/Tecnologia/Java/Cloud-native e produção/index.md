@@ -22,9 +22,7 @@ aliases:
 # Cloud-native e produção
 
 > [!abstract] TL;DR
-> Este galho fecha o ciclo: pega o `jar` que os galhos anteriores produziram e o leva **a produção, num cluster** — empacotamento em imagem (Dockerfile, Buildpacks, Jib), a JVM ciente do container, GraalVM Native Image, o contrato com o Kubernetes (probes, config, graceful shutdown), a observabilidade de operação (métricas, traces, logs), profiling sob carga e o pipeline de CI/CD.
-> A tese que atravessa tudo: **"production-ready" não é uma feature que se liga, é uma sequência de contratos** — com o build, com a JVM, com o orquestrador, com o coletor de observabilidade. Cada nota é uma estação dessa linha de montagem.
-> São **22 notas em 3 fases** (Iniciado, Adepto, Magus).
+> Este galho fecha o ciclo: pega o `jar` que os galhos anteriores produziram e o leva **a produção, num cluster** — empacotamento em imagem (Dockerfile, Buildpacks, Jib), a JVM ciente do container, GraalVM Native Image, o contrato com o Kubernetes (probes, config, graceful shutdown), a observabilidade de operação (métricas, traces, logs), profiling sob carga e o pipeline de CI/CD. A tese que atravessa tudo: **"production-ready" não é uma feature que se liga, é uma sequência de contratos** — com o build, com a JVM, com o orquestrador, com o coletor de observabilidade. Cada nota é uma estação dessa linha de montagem. São **22 notas em 3 fases** (Iniciado, Adepto, Magus).
 
 ## Sobre este galho
 

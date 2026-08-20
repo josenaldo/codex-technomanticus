@@ -312,17 +312,13 @@ result2 = calculate_breakeven(
 
 ## Casos práticos
 
-**Caso 1 — Dev solo migrando de Max para API:**
-Dev com Max $100/mês analisou seu uso real (ccusage): 80% do uso era Sonnet, só 20% Opus. Custo equivalente na API: ~$45/mês. Migrou para API com spending limit de $120/mês e kill switch de sessão. Economizou $55/mês sem degradação de qualidade.
+**Caso 1 — Dev solo migrando de Max para API:** Dev com Max $100/mês analisou seu uso real (ccusage): 80% do uso era Sonnet, só 20% Opus. Custo equivalente na API: ~$45/mês. Migrou para API com spending limit de $120/mês e kill switch de sessão. Economizou $55/mês sem degradação de qualidade.
 
-**Caso 2 — Time de 5 devs com planos individuais vs API centralizada:**
-Time com 5 planos Pro ($20 × 5 = $100/mês) sofria de uso desigual — 2 devs usavam 80% da capacidade, 3 usavam 20%. Migraram para API centralizada com API key por dev e spending limit individual de $30/dev/mês. Total: $80-120/mês (variável), com controle granular e sem limites de capacidade para os heavy users.
+**Caso 2 — Time de 5 devs com planos individuais vs API centralizada:** Time com 5 planos Pro ($20 × 5 = $100/mês) sofria de uso desigual — 2 devs usavam 80% da capacidade, 3 usavam 20%. Migraram para API centralizada com API key por dev e spending limit individual de $30/dev/mês. Total: $80-120/mês (variável), com controle granular e sem limites de capacidade para os heavy users.
 
-**Caso 3 — Produto B2C: por que API é obrigatório:**
-Startup com 1.000 usuários não poderia usar plano flat-rate — o custo por usuário precisava ser rastreado, o routing por tipo de task era essencial (Haiku para triagem, Sonnet para análise), e o custo precisava escalar com o receita. API com routing resultou em $0.08/usuário/mês vs. impraticável com plano flat.
+**Caso 3 — Produto B2C: por que API é obrigatório:** Startup com 1.000 usuários não poderia usar plano flat-rate — o custo por usuário precisava ser rastreado, o routing por tipo de task era essencial (Haiku para triagem, Sonnet para análise), e o custo precisava escalar com o receita. API com routing resultou em $0.08/usuário/mês vs. impraticável com plano flat.
 
-**Caso 4 — Enterprise para compliance:**
-Empresa de healthtech com requisitos HIPAA precisava de: data residency (dados não saem da região), audit logs completos, SLA de 99.9%, e controle de quais modelos são usados. Nenhum plano de consumidor atendia — Enterprise foi o único caminho, com custo 3x maior que API mas com compliance e suporte garantidos.
+**Caso 4 — Enterprise para compliance:** Empresa de healthtech com requisitos HIPAA precisava de: data residency (dados não saem da região), audit logs completos, SLA de 99.9%, e controle de quais modelos são usados. Nenhum plano de consumidor atendia — Enterprise foi o único caminho, com custo 3x maior que API mas com compliance e suporte garantidos.
 
 **Caso 5 — Time de 8 devs decidindo entre 8 planos Max e API centralizada:**
 

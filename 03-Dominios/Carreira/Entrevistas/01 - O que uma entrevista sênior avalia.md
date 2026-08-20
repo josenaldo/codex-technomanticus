@@ -20,12 +20,7 @@ aliases:
 # O que uma entrevista sênior avalia
 
 > [!abstract] TL;DR
-> Numa entrevista júnior, a pergunta de fundo é **"você sabe?"**. Numa sênior, ela muda para **"você
-> decide bem, e o que acontece com as pessoas em volta quando você decide?"** — e essa troca explica por
-> que candidatos tecnicamente excelentes são reprovados sem entender o motivo. Todo o processo é uma
-> tentativa de extrair **sinal** sobre julgamento, escopo de impacto e colaboração, usando perguntas que
-> quase nunca dizem literalmente o que estão medindo. Este galho parte daí: entender o critério vale
-> mais que decorar respostas, porque o critério sobrevive à pergunta que você não previu.
+> Numa entrevista júnior, a pergunta de fundo é **"você sabe?"**. Numa sênior, ela muda para **"você decide bem, e o que acontece com as pessoas em volta quando você decide?"** — e essa troca explica por que candidatos tecnicamente excelentes são reprovados sem entender o motivo. Todo o processo é uma tentativa de extrair **sinal** sobre julgamento, escopo de impacto e colaboração, usando perguntas que quase nunca dizem literalmente o que estão medindo. Este galho parte daí: entender o critério vale mais que decorar respostas, porque o critério sobrevive à pergunta que você não previu.
 
 ## O candidato que acertou tudo e foi reprovado
 
@@ -96,19 +91,13 @@ Este galho é sobre **o processo, o comportamental, a comunicação e a negocia�
 ## Armadilhas comuns
 
 > [!warning] Preparar-se só no eixo técnico
-> **O que acontece:** semanas resolvendo exercícios de algoritmo e revisando arquitetura, zero tempo estruturando histórias — e a reprovação vem na etapa comportamental ou no painel com o hiring manager.
-> **Por quê:** é o eixo em que o candidato sênior já é forte, então praticar dá sensação de progresso. E o eixo comportamental parece "conversa", algo que não se estuda.
-> **Como evitar:** distribua o tempo pelo funil real. Se metade das etapas não é técnica, metade da preparação não deveria ser.
+> **O que acontece:** semanas resolvendo exercícios de algoritmo e revisando arquitetura, zero tempo estruturando histórias — e a reprovação vem na etapa comportamental ou no painel com o hiring manager. **Por quê:** é o eixo em que o candidato sênior já é forte, então praticar dá sensação de progresso. E o eixo comportamental parece "conversa", algo que não se estuda. **Como evitar:** distribua o tempo pelo funil real. Se metade das etapas não é técnica, metade da preparação não deveria ser.
 
 > [!warning] Responder à pergunta literal
-> **O que acontece:** "conte sobre um fracasso" recebe um relato de fracasso alheio, ou um humblebrag ("trabalhei demais"). O entrevistador não obtém o sinal que buscava e anota ausência de autocrítica.
-> **Por quê:** ninguém disse ao candidato o que a pergunta mede, e o instinto é proteger a imagem.
-> **Como evitar:** antes de responder, pergunte-se **o que isto quer descobrir sobre mim**. Pergunta de fracasso mede se você consegue olhar para o próprio erro sem terceirizar — a resposta precisa conter uma decisão sua que se mostrou errada.
+> **O que acontece:** "conte sobre um fracasso" recebe um relato de fracasso alheio, ou um humblebrag ("trabalhei demais"). O entrevistador não obtém o sinal que buscava e anota ausência de autocrítica. **Por quê:** ninguém disse ao candidato o que a pergunta mede, e o instinto é proteger a imagem. **Como evitar:** antes de responder, pergunte-se **o que isto quer descobrir sobre mim**. Pergunta de fracasso mede se você consegue olhar para o próprio erro sem terceirizar — a resposta precisa conter uma decisão sua que se mostrou errada.
 
 > [!warning] Confundir segurança com rigidez
-> **O que acontece:** o candidato defende cada escolha com convicção total, rejeita sugestões do entrevistador e "ganha" todas as discussões. Recebe a avaliação de difícil de trabalhar.
-> **Por quê:** em contexto de avaliação, parece que ceder é perder pontos. É o contrário: uma boa parte do painel existe para observar como você reage a uma ideia diferente da sua.
-> **Como evitar:** trate a sugestão como dado novo — considere em voz alta, diga o que ela melhora e sob que condição você mudaria de posição. **Mudar de ideia com bom motivo é sinal positivo**, não fraqueza.
+> **O que acontece:** o candidato defende cada escolha com convicção total, rejeita sugestões do entrevistador e "ganha" todas as discussões. Recebe a avaliação de difícil de trabalhar. **Por quê:** em contexto de avaliação, parece que ceder é perder pontos. É o contrário: uma boa parte do painel existe para observar como você reage a uma ideia diferente da sua. **Como evitar:** trate a sugestão como dado novo — considere em voz alta, diga o que ela melhora e sob que condição você mudaria de posição. **Mudar de ideia com bom motivo é sinal positivo**, não fraqueza.
 
 ## Como soa em inglês
 

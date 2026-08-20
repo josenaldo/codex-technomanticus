@@ -12,9 +12,7 @@ tags:
 
 Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas dos galhos) e as **notas soltas** logo abaixo de `IA/`. Cada galho tem o próprio `roadmap.md` mapeando suas notas (e, se for galho-pai, seus sub-galhos).
 
-**Domínio:** `03-Dominios/Tecnologia/IA`
-**Nível:** raiz (contém galhos)
-**Rastreio multi-nível:** raiz → galho → (sub-galho) → nota. Cada nível mapeia só o nível imediatamente abaixo.
+**Domínio:** `03-Dominios/Tecnologia/IA` **Nível:** raiz (contém galhos) **Rastreio multi-nível:** raiz → galho → (sub-galho) → nota. Cada nível mapeia só o nível imediatamente abaixo.
 
 > [!note] Auditoria de reconciliação — 2026-07-03. Cruzamento de contagem de notas, mapeamento entrada-do-roadmap↔arquivo e git (último commit de nota por galho) confirmou que **os 21 roadmaps de galho estão estruturalmente atuais**. O medo anterior ("vários ⬜ já foram enriquecidos por commits posteriores") **não se materializou**: nenhuma nota de galho pendente foi alterada após o diagnóstico de 30/06 — só os 3 galhos já ✅ (Ferramentas 01/07, Evaluation e Structured Outputs 02/07) tiveram commits posteriores. Os estados ⬜/✅ abaixo são fiéis. Banner falso de Anatomia dos LLMs corrigido nesta data. Nenhum galho exige re-diagnóstico.
 

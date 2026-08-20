@@ -20,13 +20,10 @@ aliases:
 # Observabilidade de operação — o panorama e os 3 seams
 
 > [!abstract] TL;DR
-> **Observabilidade** é a capacidade de inferir o que acontece *dentro* de um sistema a partir do que ele *emite*. Ela se sustenta sobre **três pilares**: **métricas** (números agregados ao longo do tempo), **logs** (eventos discretos e datados) e **traces** (o caminho de uma requisição atravessando serviços).
-> Esta nota é o **mapa** do galho. O assunto "observabilidade" cruza a trilha Java em **três costuras** (*seams*) distintas, e confundi-las é a fonte número um de retrabalho:
+> **Observabilidade** é a capacidade de inferir o que acontece *dentro* de um sistema a partir do que ele *emite*. Ela se sustenta sobre **três pilares**: **métricas** (números agregados ao longo do tempo), **logs** (eventos discretos e datados) e **traces** (o caminho de uma requisição atravessando serviços). Esta nota é o **mapa** do galho. O assunto "observabilidade" cruza a trilha Java em **três costuras** (*seams*) distintas, e confundi-las é a fonte número um de retrabalho:
 > - **G3 (JVM)** — olhar *para dentro da JVM* (JFR, JMC, heap, GC). Isso é diagnóstico de runtime, não de operação de cluster.
 > - **G16 (Microservices)** — *correlacionar* um trace **no código** (Micrometer Tracing, propagar o `traceId`).
-> - **G17 (este galho)** — **operar** o stack de observabilidade no cluster: Prometheus/Grafana, OTel Collector, sampling, logs estruturados.
-> O **Spring Boot Actuator** é a **ponte** que liga seu app às ferramentas — ele *expõe* `/actuator/prometheus`, `/actuator/health`, `/actuator/metrics`. O *mecanismo* do Actuator é tema do **G8**; aqui ele é só a tomada na parede.
-> Esta nota **emoldura**. As notas 14–18 detalham cada parte.
+> - **G17 (este galho)** — **operar** o stack de observabilidade no cluster: Prometheus/Grafana, OTel Collector, sampling, logs estruturados. O **Spring Boot Actuator** é a **ponte** que liga seu app às ferramentas — ele *expõe* `/actuator/prometheus`, `/actuator/health`, `/actuator/metrics`. O *mecanismo* do Actuator é tema do **G8**; aqui ele é só a tomada na parede. Esta nota **emoldura**. As notas 14–18 detalham cada parte.
 
 ## O que é
 

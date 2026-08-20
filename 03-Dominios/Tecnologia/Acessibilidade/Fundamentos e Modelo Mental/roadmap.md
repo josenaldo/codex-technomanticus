@@ -10,13 +10,9 @@ tags:
 
 # Roadmap — Fundamentos e Modelo Mental
 
-Diagnóstico nota a nota. Cada entrada tem estado de enriquecimento, score, classificação
-de custo e plano de execução acionável. Gerado por `/diagnosticar-galho` (inline — notas
-recém-escritas, já em contexto; sem fan-out de subagentes).
+Diagnóstico nota a nota. Cada entrada tem estado de enriquecimento, score, classificação de custo e plano de execução acionável. Gerado por `/diagnosticar-galho` (inline — notas recém-escritas, já em contexto; sem fan-out de subagentes).
 
-**Galho:** `03-Dominios/Tecnologia/Acessibilidade/Fundamentos e Modelo Mental`
-**Diagnóstico:** 2026-07-28
-**Última execução:** 2026-07-28 — **enriquecimento COMPLETO (5/5 ✅)**
+**Galho:** `03-Dominios/Tecnologia/Acessibilidade/Fundamentos e Modelo Mental` **Diagnóstico:** 2026-07-28 **Última execução:** 2026-07-28 — **enriquecimento COMPLETO (5/5 ✅)**
 
 ## Régua de análise
 
@@ -29,8 +25,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | LINKS | L1 Wikilink cross-galho · L2 Referência externa (URL) |
 | MÍDIA | M1 Vídeo/podcast embutido |
 
-**Esquema de `fase:` detectado:** COM fase (Iniciado)
-**Piso de linhas:** aplicável — Iniciado ≥300 (todas passam em conteúdo real; ver Estado)
+**Esquema de `fase:` detectado:** COM fase (Iniciado) **Piso de linhas:** aplicável — Iniciado ≥300 (todas passam em conteúdo real; ver Estado)
 
 ## Tabela-resumo
 

@@ -28,9 +28,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 | LINKS | L1 Wikilink cross-galho · L2 Referência externa (URL) |
 | MÍDIA | M1 Vídeo/podcast embutido |
 
-**Esquema de `fase:` detectado:** COM fase (Iniciado 1-7 / Adepto 8-16 / Magus 17-28).
-**Piso de linhas:** aplicável em tese (Iniciado ≥300 / Adepto ≥400 / Magus ≥500) — **mas ISENTO na prática**: o galho segue o [[feedback_padrao_capitulo_livro|padrão capítulo-de-livro]], que substitui o piso. T1 aparece como ✗ nas notas curtas mas é aceito; não inflar.
-**P1 (código-com-falha):** N/A na maioria — são notas conceituais de método/ofício, não de código executável.
+**Esquema de `fase:` detectado:** COM fase (Iniciado 1-7 / Adepto 8-16 / Magus 17-28). **Piso de linhas:** aplicável em tese (Iniciado ≥300 / Adepto ≥400 / Magus ≥500) — **mas ISENTO na prática**: o galho segue o [[feedback_padrao_capitulo_livro|padrão capítulo-de-livro]], que substitui o piso. T1 aparece como ✗ nas notas curtas mas é aceito; não inflar. **P1 (código-com-falha):** N/A na maioria — são notas conceituais de método/ofício, não de código executável.
 
 ## Tabela-resumo (escrita)
 
@@ -57,8 +55,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 
 ## Notas
 
-<!-- Escrita: ⬜ não escrita · 🔄 rascunho · ✅ (data). Enriquecimento: ⬜ · ➖ n/a · ✅.
-     Custo do que falta: [mecânico] barato/sem pesquisa · [substantivo] pesquisa/redação. -->
+<!-- Escrita: ⬜ não escrita · 🔄 rascunho · ✅ (data). Enriquecimento: ⬜ · ➖ n/a · ✅. Custo do que falta: [mecânico] barato/sem pesquisa · [substantivo] pesquisa/redação. -->
 
 ### Iniciado (1-7) — COMPLETA ✅
 

@@ -21,20 +21,10 @@ aliases:
 # Segurança Conceitual
 
 > [!abstract] TL;DR
-> Segurança não é um recurso que você instala — é uma **propriedade emergente que você projeta** sob a hipótese
-> de que existe um adversário inteligente tentando quebrar o seu sistema. Este galho é o *mindset adversarial*
-> (modelar ameaças, pensar como atacante), as **primitivas criptográficas como ideias** (hash, cifra simétrica e
-> assimétrica, troca de chaves, assinatura, PKI) e os **modelos de confiança e controle de acesso** (autenticação
-> ≠ autorização, zero trust, "Trusting Trust"). O fio condutor: criptografia não é o assunto — é uma ferramenta;
-> o assunto é **confiança sob adversário**. Por que MD5 morreu, por que reusar nonce quebra tudo, por que não se
-> deve "rolar a própria cripto", e por que o elo mais fraco quase sempre é humano.
+> Segurança não é um recurso que você instala — é uma **propriedade emergente que você projeta** sob a hipótese de que existe um adversário inteligente tentando quebrar o seu sistema. Este galho é o *mindset adversarial* (modelar ameaças, pensar como atacante), as **primitivas criptográficas como ideias** (hash, cifra simétrica e assimétrica, troca de chaves, assinatura, PKI) e os **modelos de confiança e controle de acesso** (autenticação ≠ autorização, zero trust, "Trusting Trust"). O fio condutor: criptografia não é o assunto — é uma ferramenta; o assunto é **confiança sob adversário**. Por que MD5 morreu, por que reusar nonce quebra tudo, por que não se deve "rolar a própria cripto", e por que o elo mais fraco quase sempre é humano.
 
 ## Sobre este galho
-Onde os outros galhos da Ciência da Computação perguntam *como a máquina funciona*, Segurança Conceitual pergunta *o que
-acontece quando alguém inteligente tenta quebrá-la de propósito*. É a teoria atemporal — os conceitos que
-sobrevivem à próxima biblioteca e ao próximo CVE: o triângulo CIA, os princípios de Saltzer & Schroeder, a ideia
-de chave pública, a cadeia de confiança. Não é appsec aplicado (hardening, WAF, scanners) nem operação de
-segurança — é o andar conceitual que torna tudo isso inteligível.
+Onde os outros galhos da Ciência da Computação perguntam *como a máquina funciona*, Segurança Conceitual pergunta *o que acontece quando alguém inteligente tenta quebrá-la de propósito*. É a teoria atemporal — os conceitos que sobrevivem à próxima biblioteca e ao próximo CVE: o triângulo CIA, os princípios de Saltzer & Schroeder, a ideia de chave pública, a cadeia de confiança. Não é appsec aplicado (hardening, WAF, scanners) nem operação de segurança — é o andar conceitual que torna tudo isso inteligível.
 
 **Fronteiras (linka, não duplica):**
 - **A matemática do RSA/Diffie-Hellman** (teoria dos números, aritmética modular) → [[03-Dominios/Ciência/Matemática para Computação/index|Matemática para Computação]]. Aqui é o **uso aplicado**: a chave pública como caixa-preta, o problema difícil como alicerce.
@@ -43,10 +33,7 @@ segurança — é o andar conceitual que torna tudo isso inteligível.
 - **Permissões de SO, isolamento, sandbox** → [[03-Dominios/Ciência/Sistemas Operacionais/index|Sistemas Operacionais]] (a implementação). Aqui é o **modelo** de controle de acesso (DAC/MAC/RBAC/ABAC).
 - **Operar segurança** (WAF, scanners, incident response, hardening) → prática/Infraestrutura, fora deste galho. Aqui é a **teoria**.
 
-**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista" com
-frases prontas em inglês e vocabulário técnico PT→EN. (Autenticação × autorização, hashing de senha, simétrico ×
-assimétrico e "o que é um threat model" caem com frequência real; o resto é a cultura que separa quem *usa* uma
-biblioteca de quem *entende* por que ela existe.)
+**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista" com frases prontas em inglês e vocabulário técnico PT→EN. (Autenticação × autorização, hashing de senha, simétrico × assimétrico e "o que é um threat model" caem com frequência real; o resto é a cultura que separa quem *usa* uma biblioteca de quem *entende* por que ela existe.)
 
 ## Iniciado — o mindset e os fundamentos
 1. [[01 - O que é segurança conceitual]] — CIA + AAA, o modelo adversarial, superfície de ataque, o elo mais fraco.

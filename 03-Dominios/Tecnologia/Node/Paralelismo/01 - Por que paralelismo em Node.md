@@ -308,19 +308,13 @@ Os 8-12 segundos de parsing continuam existindo — mas agora ocorrem em outra t
 ## Armadilhas comuns
 
 > [!warning] Paralelizar sem medir
-> **O que acontece:** Worker Threads são adicionadas como primeira resposta a "a API está lenta", sem antes identificar a causa do bottleneck.
-> **Por quê:** Worker Threads adicionam complexidade real — thread management, serialização via `postMessage`, tratamento de erros em contextos separados. Se o bottleneck for I/O (query lenta, paginação ausente, dependência externa), Worker Thread não ajuda e pode piorar a latência por overhead de coordenação.
-> **Como evitar:** A sequência correta é sempre: medir event loop lag → identificar o tipo de bottleneck → selecionar a solução mínima. Ferramentas de diagnóstico em [[10 - Bloqueio do event loop - sintomas e causas]].
+> **O que acontece:** Worker Threads são adicionadas como primeira resposta a "a API está lenta", sem antes identificar a causa do bottleneck. **Por quê:** Worker Threads adicionam complexidade real — thread management, serialização via `postMessage`, tratamento de erros em contextos separados. Se o bottleneck for I/O (query lenta, paginação ausente, dependência externa), Worker Thread não ajuda e pode piorar a latência por overhead de coordenação. **Como evitar:** A sequência correta é sempre: medir event loop lag → identificar o tipo de bottleneck → selecionar a solução mínima. Ferramentas de diagnóstico em [[10 - Bloqueio do event loop - sintomas e causas]].
 
 > [!warning] Confundir CPU-bound com I/O-bound
-> **O que acontece:** Um handler faz `await db.query()` e depois processa resultados em memória. O dev assume que o banco está lento e tenta otimizar a query.
-> **Por quê:** O event loop lag pode disparar *depois* que a query retorna — apontando para CPU-bound no processamento em memória, não para I/O lento. Paralelizar I/O via Worker Threads é tipicamente pior que `async/await` puro: há overhead de serialização entre threads, e o I/O vai para o kernel de qualquer forma.
-> **Como evitar:** Medir separadamente a latência da query e o tempo de processamento pós-query. Se o lag começa após o `await db.query()`, o bottleneck é CPU — e Worker Thread é a candidata, não otimização de query.
+> **O que acontece:** Um handler faz `await db.query()` e depois processa resultados em memória. O dev assume que o banco está lento e tenta otimizar a query. **Por quê:** O event loop lag pode disparar *depois* que a query retorna — apontando para CPU-bound no processamento em memória, não para I/O lento. Paralelizar I/O via Worker Threads é tipicamente pior que `async/await` puro: há overhead de serialização entre threads, e o I/O vai para o kernel de qualquer forma. **Como evitar:** Medir separadamente a latência da query e o tempo de processamento pós-query. Se o lag começa após o `await db.query()`, o bottleneck é CPU — e Worker Thread é a candidata, não otimização de query.
 
 > [!warning] UV_THREADPOOL_SIZE não resolve todo CPU-bound
-> **O que acontece:** `UV_THREADPOOL_SIZE` é aumentado esperando-se que código JavaScript pesado seja acelerado — mas a latência não muda.
-> **Por quê:** `UV_THREADPOOL_SIZE` controla apenas o pool de threads *nativas* de libuv, usado por `crypto.pbkdf2`, `fs.promises.*`, `dns.lookup`, `zlib` async. Código JavaScript síncrono próprio — loops, parsers customizados, algoritmos de cálculo — roda na thread JS, não no pool de libuv. `UV_THREADPOOL_SIZE=100` não tem efeito sobre esse código.
-> **Como evitar:** Distinguir se o trabalho pesado é uma API Node que usa o pool de libuv (→ `UV_THREADPOOL_SIZE` pode ajudar) ou JavaScript puro síncrono (→ precisa de Worker Thread para sair da thread JS principal).
+> **O que acontece:** `UV_THREADPOOL_SIZE` é aumentado esperando-se que código JavaScript pesado seja acelerado — mas a latência não muda. **Por quê:** `UV_THREADPOOL_SIZE` controla apenas o pool de threads *nativas* de libuv, usado por `crypto.pbkdf2`, `fs.promises.*`, `dns.lookup`, `zlib` async. Código JavaScript síncrono próprio — loops, parsers customizados, algoritmos de cálculo — roda na thread JS, não no pool de libuv. `UV_THREADPOOL_SIZE=100` não tem efeito sobre esse código. **Como evitar:** Distinguir se o trabalho pesado é uma API Node que usa o pool de libuv (→ `UV_THREADPOOL_SIZE` pode ajudar) ou JavaScript puro síncrono (→ precisa de Worker Thread para sair da thread JS principal).
 
 ---
 
@@ -348,14 +342,11 @@ Os 8-12 segundos de parsing continuam existindo — mas agora ocorrem em outra t
 
 ### Perguntas frequentes em entrevista
 
-**"Por que Node não cria uma thread por request como Java/Go?"**
-Por design deliberado: threads têm custo fixo de memória e o context switching tem overhead. Para workloads I/O-bound (a maioria dos servidores web), um único event loop com I/O assíncrono escala com menos recursos. O custo é que workloads CPU-bound precisam de tratamento explícito — o que exige mais conhecimento do runtime mas resulta em sistemas mais previsíveis.
+**"Por que Node não cria uma thread por request como Java/Go?"** Por design deliberado: threads têm custo fixo de memória e o context switching tem overhead. Para workloads I/O-bound (a maioria dos servidores web), um único event loop com I/O assíncrono escala com menos recursos. O custo é que workloads CPU-bound precisam de tratamento explícito — o que exige mais conhecimento do runtime mas resulta em sistemas mais previsíveis.
 
-**"Quando você escolheria Worker Threads vs Cluster?"**
-Worker Threads para CPU-bound dentro de um processo: processamento de imagem, hashing, computação pesada que precisa de resultado para devolver ao handler. Cluster para escalar um servidor HTTP para usar múltiplos cores: réplicas do processo inteiro, cada uma com seu event loop, o SO distribuindo conexões TCP entre elas. São soluções para problemas diferentes.
+**"Quando você escolheria Worker Threads vs Cluster?"** Worker Threads para CPU-bound dentro de um processo: processamento de imagem, hashing, computação pesada que precisa de resultado para devolver ao handler. Cluster para escalar um servidor HTTP para usar múltiplos cores: réplicas do processo inteiro, cada uma com seu event loop, o SO distribuindo conexões TCP entre elas. São soluções para problemas diferentes.
 
-**"Async/await não resolve CPU-bound?"**
-Não. `async/await` é açúcar sintático sobre Promises — gerencia quando a thread JS espera por I/O. Código síncrono dentro de um handler `async` ainda roda na thread JS e ainda bloqueia o event loop. A distinção completa está em [[09 - async-await - o que é, o que não é]].
+**"Async/await não resolve CPU-bound?"** Não. `async/await` é açúcar sintático sobre Promises — gerencia quando a thread JS espera por I/O. Código síncrono dentro de um handler `async` ainda roda na thread JS e ainda bloqueia o event loop. A distinção completa está em [[09 - async-await - o que é, o que não é]].
 
 ---
 

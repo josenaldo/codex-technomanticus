@@ -16,10 +16,7 @@ tags:
 # Sequelize - queries e associações
 
 > [!abstract] TL;DR
-> O Sequelize v7 é o ORM mais antigo do ecossistema Node.js — battle-tested desde 2011 e com suporte TypeScript melhorado na versão 7 via decorators embutidos em `@sequelize/core/decorators-legacy` e tipos nativos.
-> O modelo de definição usa classes que estendem `Model` (API nativa) ou decorators embutidos via `@sequelize/core/decorators-legacy`; associações são declaradas com `HasMany`, `BelongsTo`, `HasOne` e `BelongsToMany`.
-> Eager loading com `include` é a solução para evitar N+1 queries — passar `required: false` controla se o join é LEFT ou INNER, e aninhar `include` em mais de 3 níveis é sinal de problema de modelagem.
-> Em 2026, o Sequelize ainda é relevante para projetos legacy e equipes que já dominam sua API, mas Prisma e Drizzle são preferidos para projetos novos pela DX superior e melhor type safety.
+> O Sequelize v7 é o ORM mais antigo do ecossistema Node.js — battle-tested desde 2011 e com suporte TypeScript melhorado na versão 7 via decorators embutidos em `@sequelize/core/decorators-legacy` e tipos nativos. O modelo de definição usa classes que estendem `Model` (API nativa) ou decorators embutidos via `@sequelize/core/decorators-legacy`; associações são declaradas com `HasMany`, `BelongsTo`, `HasOne` e `BelongsToMany`. Eager loading com `include` é a solução para evitar N+1 queries — passar `required: false` controla se o join é LEFT ou INNER, e aninhar `include` em mais de 3 níveis é sinal de problema de modelagem. Em 2026, o Sequelize ainda é relevante para projetos legacy e equipes que já dominam sua API, mas Prisma e Drizzle são preferidos para projetos novos pela DX superior e melhor type safety.
 
 ## Ciclo de vida de um Model Sequelize
 
@@ -556,9 +553,7 @@ User.beforeDestroy(async (user) => {
 | Salvar | `beforeSave` | `afterSave` |
 
 > [!warning] Hooks e transações
-> Sempre propague a `options.transaction` para operações dentro de hooks.
-> Se o hook criar um registro sem a transação, a operação não participa do rollback
-> e você terá dados inconsistentes no banco mesmo após falha.
+> Sempre propague a `options.transaction` para operações dentro de hooks. Se o hook criar um registro sem a transação, a operação não participa do rollback e você terá dados inconsistentes no banco mesmo após falha.
 
 ---
 
@@ -794,8 +789,7 @@ await User.truncate(); // deixa claro que é para limpar tudo
 ```
 
 > [!danger] Proteção contra `destroy()` acidental
-> Configure `sequelize.define` com `{ paranoid: true }` para soft delete automático
-> (adiciona `deletedAt` em vez de deletar fisicamente). Veja a armadilha 5.
+> Configure `sequelize.define` com `{ paranoid: true }` para soft delete automático (adiciona `deletedAt` em vez de deletar fisicamente). Veja a armadilha 5.
 
 > [!warning] Armadilha 4 — `Op.like` com padrão `%text%` em produção causando full scan
 > Usar `Op.like` com o padrão iniciando por `%` (como `%searchTerm%`) impede o uso de índice B-tree porque o banco não sabe por qual caractere a string começa. Em tabelas com milhões de registros, isso força um full table scan a cada busca — uma das causas mais comuns de lentidão silenciosa em APIs com busca textual no Sequelize.
@@ -853,17 +847,13 @@ const users = await User.findAll({
 
 ## Em entrevista
 
-**When to use Sequelize vs alternatives:**
-Sequelize is the right choice when maintaining a legacy codebase that already uses it — migrating to Prisma or Drizzle carries a real cost in model rewrites, migrations, and team retraining that rarely pays off for stable code. For new projects in 2026, I would default to Prisma for its superior DX and auto-generated type safety, or Drizzle if the team has strong SQL knowledge and needs edge runtime support or minimal runtime overhead.
+**When to use Sequelize vs alternatives:** Sequelize is the right choice when maintaining a legacy codebase that already uses it — migrating to Prisma or Drizzle carries a real cost in model rewrites, migrations, and team retraining that rarely pays off for stable code. For new projects in 2026, I would default to Prisma for its superior DX and auto-generated type safety, or Drizzle if the team has strong SQL knowledge and needs edge runtime support or minimal runtime overhead.
 
-**Eager loading to avoid N+1:**
-The most common N+1 pattern in Sequelize is fetching a list of records and then calling association methods (like `getAuthor()`) inside a loop, which fires one query per iteration. The fix is to use `include` in the original `findAll` call so the ORM joins the data in a single query (or at most two optimized queries with `separate: true`). In code review, any loop over Sequelize instances that accesses an association is a N+1 red flag.
+**Eager loading to avoid N+1:** The most common N+1 pattern in Sequelize is fetching a list of records and then calling association methods (like `getAuthor()`) inside a loop, which fires one query per iteration. The fix is to use `include` in the original `findAll` call so the ORM joins the data in a single query (or at most two optimized queries with `separate: true`). In code review, any loop over Sequelize instances that accesses an association is a N+1 red flag.
 
-**The `required` option in `include`:**
-One subtle but critical behavior is that adding a `where` clause inside `include` implicitly generates an INNER JOIN, filtering out parent records with no matching children. This surprises developers who expect a LEFT JOIN by default. The explicit `required: false` should always be set when the intent is to optionally load associations — treating it as optional instead of letting the ORM decide keeps the behavior explicit and reviewable.
+**The `required` option in `include`:** One subtle but critical behavior is that adding a `where` clause inside `include` implicitly generates an INNER JOIN, filtering out parent records with no matching children. This surprises developers who expect a LEFT JOIN by default. The explicit `required: false` should always be set when the intent is to optionally load associations — treating it as optional instead of letting the ORM decide keeps the behavior explicit and reviewable.
 
-**Migrations strategy:**
-In production, I never use `sequelize.sync({ force: true })` or even `{ alter: true }` — those are development tools only. The correct approach is Sequelize CLI migrations: each schema change is a versioned migration file committed to git, reviewed in PRs, and applied in a controlled deployment step. Migration files are immutable once merged to main; fixes go in new migration files.
+**Migrations strategy:** In production, I never use `sequelize.sync({ force: true })` or even `{ alter: true }` — those are development tools only. The correct approach is Sequelize CLI migrations: each schema change is a versioned migration file committed to git, reviewed in PRs, and applied in a controlled deployment step. Migration files are immutable once merged to main; fixes go in new migration files.
 
 ---
 

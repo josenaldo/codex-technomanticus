@@ -109,19 +109,13 @@ Um time transforma cabeçalhos em abas com `<h2 role="tab">`. Resultado na árvo
 ## Armadilhas comuns
 
 > [!warning] Presumir que "está na tela" significa "está na árvore"
-> **O que acontece:** informação transmitida só visualmente (uma cor de status, uma borda de erro, uma posição hierárquica) não chega ao leitor de tela.
-> **Por quê:** a árvore de acessibilidade só carrega o que é *estrutura*, não *aparência*. CSS não entra na árvore.
-> **Como evitar:** toda informação essencial precisa existir como estrutura (texto, role, estado ARIA), não apenas como estilo visual.
+> **O que acontece:** informação transmitida só visualmente (uma cor de status, uma borda de erro, uma posição hierárquica) não chega ao leitor de tela. **Por quê:** a árvore de acessibilidade só carrega o que é *estrutura*, não *aparência*. CSS não entra na árvore. **Como evitar:** toda informação essencial precisa existir como estrutura (texto, role, estado ARIA), não apenas como estilo visual.
 
 > [!warning] `aria-hidden="true"` num elemento focável
-> **O que acontece:** você esconde da árvore um elemento que ainda recebe foco por teclado; o usuário tabula para um "buraco negro" que o leitor de tela não anuncia.
-> **Por quê:** `aria-hidden` remove o nó da árvore, mas não do tab order — as duas coisas ficam dessincronizadas.
-> **Como evitar:** nunca use `aria-hidden` em algo focável. Esconda o ícone decorativo (não-focável), não o controle.
+> **O que acontece:** você esconde da árvore um elemento que ainda recebe foco por teclado; o usuário tabula para um "buraco negro" que o leitor de tela não anuncia. **Por quê:** `aria-hidden` remove o nó da árvore, mas não do tab order — as duas coisas ficam dessincronizadas. **Como evitar:** nunca use `aria-hidden` em algo focável. Esconda o ícone decorativo (não-focável), não o controle.
 
 > [!warning] Confiar no `title` como nome acessível
-> **O que acontece:** um botão de ícone usa só `title="Excluir"` esperando que vire o nome — mas o `title` está no fim da cascata e tem suporte irregular entre leitores de tela.
-> **Por quê:** o algoritmo de cálculo do nome prioriza `aria-labelledby`, `aria-label` e conteúdo antes do `title`; muitos leitores nem o anunciam.
-> **Como evitar:** use `aria-label` (ou texto visível) para o nome; reserve o `title` para dicas complementares, nunca como rótulo principal.
+> **O que acontece:** um botão de ícone usa só `title="Excluir"` esperando que vire o nome — mas o `title` está no fim da cascata e tem suporte irregular entre leitores de tela. **Por quê:** o algoritmo de cálculo do nome prioriza `aria-labelledby`, `aria-label` e conteúdo antes do `title`; muitos leitores nem o anunciam. **Como evitar:** use `aria-label` (ou texto visível) para o nome; reserve o `title` para dicas complementares, nunca como rótulo principal.
 
 ## Como explicar em inglês
 

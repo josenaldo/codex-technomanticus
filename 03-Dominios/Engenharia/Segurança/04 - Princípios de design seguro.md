@@ -139,8 +139,7 @@ Este é o princípio mais contra-intuitivo dos oito. O instinto de "se o atacant
 
 Aqui Saltzer & Schroeder convergem com Auguste Kerckhoffs, que em 1883 enunciou na monografia "La cryptographie militaire":
 
-> "Il faut qu'il n'exige pas le secret, et qu'il puisse sans inconvénient tomber entre les mains de l'ennemi."
-> ("Um sistema criptográfico não deve exigir sigilo, e deve poder cair nas mãos do inimigo sem causar inconvenientes.")
+> "Il faut qu'il n'exige pas le secret, et qu'il puisse sans inconvénient tomber entre les mains de l'ennemi." ("Um sistema criptográfico não deve exigir sigilo, e deve poder cair nas mãos do inimigo sem causar inconvenientes.")
 
 A versão moderna — popularizada por Claude Shannon em 1949 — é a **máxima de Shannon**:
 

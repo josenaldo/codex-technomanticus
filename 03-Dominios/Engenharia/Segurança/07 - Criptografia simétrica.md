@@ -246,8 +246,7 @@ As duas opções recomendadas em 2026:
 | **AES-256-GCM** | AES-CTR + GHASH em GF(2^128) | 96 bits | 128 bits | Padrão geral; CPU com AES-NI; TLS 1.3 |
 | **ChaCha20-Poly1305** | ChaCha20 + Poly1305 | 96 bits | 128 bits | CPU sem AES-NI; mobile/IoT; resistência a timing por construção |
 
-**Como GCM funciona internamente:**
-GCM = CTR (para confidencialidade) + GHASH (para autenticidade). O GHASH é uma função de autenticação baseada em aritmética no campo de Galois GF(2^128): ela computa um polinômio sobre os blocos de ciphertext e os *associated data*, avaliado em uma chave de autenticação H derivada do nonce. O resultado é cifrado com AES para produzir a *authentication tag* de 128 bits.
+**Como GCM funciona internamente:** GCM = CTR (para confidencialidade) + GHASH (para autenticidade). O GHASH é uma função de autenticação baseada em aritmética no campo de Galois GF(2^128): ela computa um polinômio sobre os blocos de ciphertext e os *associated data*, avaliado em uma chave de autenticação H derivada do nonce. O resultado é cifrado com AES para produzir a *authentication tag* de 128 bits.
 
 **O que são os Associated Data (AAD)?** São metadados que você quer **autenticar mas não cifrar**. Exemplos: header de um pacote de rede (endereço IP de origem/destino, número de sequência), ID de sessão em banco de dados, versão de protocolo. O AEAD garante que se o AAD for modificado, a tag de autenticação falhará — mesmo que o ciphertext esteja intacto.
 

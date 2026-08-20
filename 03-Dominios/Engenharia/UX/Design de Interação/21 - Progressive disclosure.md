@@ -69,19 +69,13 @@ Uma ferramenta de API management esconde "rate limit customizado" atrás de "op�
 ## Armadilhas comuns
 
 > [!warning] "Mostrar mais" que leva a uma seção vazia ou quebrada
-> **O que acontece:** o usuário clica em "opções avançadas" e encontra um placeholder, um erro de carregamento, ou campos que não fazem nada quando preenchidos.
-> **Por quê:** seções avançadas costumam ser as últimas a ganhar atenção de QA, porque a maioria dos usuários (e dos testadores manuais) nunca chega até elas — o bug fica invisível até alguém realmente precisar da funcionalidade escondida.
-> **Como evitar:** trate o conteúdo atrás de qualquer disclosure com o mesmo rigor de teste do caminho principal; se não está pronto, omita o gatilho de disclosure inteiro em vez de publicá-lo quebrado.
+> **O que acontece:** o usuário clica em "opções avançadas" e encontra um placeholder, um erro de carregamento, ou campos que não fazem nada quando preenchidos. **Por quê:** seções avançadas costumam ser as últimas a ganhar atenção de QA, porque a maioria dos usuários (e dos testadores manuais) nunca chega até elas — o bug fica invisível até alguém realmente precisar da funcionalidade escondida. **Como evitar:** trate o conteúdo atrás de qualquer disclosure com o mesmo rigor de teste do caminho principal; se não está pronto, omita o gatilho de disclosure inteiro em vez de publicá-lo quebrado.
 
 > [!warning] Esconder campos obrigatórios atrás do disclosure
-> **O que acontece:** um campo que é obrigatório para completar a tarefa fica escondido atrás de "mais opções", e o usuário só descobre isso ao tentar submeter e receber um erro de validação sem contexto.
-> **Por quê:** quem decide o que vai atrás do disclosure às vezes prioriza "o que é raramente preenchido" sem checar separadamente "o que é obrigatório" — as duas coisas não são a mesma pergunta.
-> **Como evitar:** nunca esconda um campo obrigatório atrás de disclosure opcional; se um campo é obrigatório, ele pertence à camada visível, ainda que seja usado por poucos casos de uso distintos.
+> **O que acontece:** um campo que é obrigatório para completar a tarefa fica escondido atrás de "mais opções", e o usuário só descobre isso ao tentar submeter e receber um erro de validação sem contexto. **Por quê:** quem decide o que vai atrás do disclosure às vezes prioriza "o que é raramente preenchido" sem checar separadamente "o que é obrigatório" — as duas coisas não são a mesma pergunta. **Como evitar:** nunca esconda um campo obrigatório atrás de disclosure opcional; se um campo é obrigatório, ele pertence à camada visível, ainda que seja usado por poucos casos de uso distintos.
 
 > [!warning] Usar disclosure como desculpa para não simplificar de verdade
-> **O que acontece:** um formulário com 40 campos vira um formulário com 5 visíveis e 35 escondidos, mas os 35 continuam sendo, na prática, tão necessários quanto antes — só adiados, não eliminados.
-> **Por quê:** disclosure é mais fácil de implementar do que repensar se todos os 40 campos realmente precisam existir na feature — vira um jeito de esconder complexidade em vez de reduzi-la de verdade.
-> **Como evitar:** antes de decidir o que vai atrás do "mostrar mais", pergunte se cada campo realmente precisa existir. Disclosure organiza a complexidade que sobrar depois desse corte — não substitui o corte.
+> **O que acontece:** um formulário com 40 campos vira um formulário com 5 visíveis e 35 escondidos, mas os 35 continuam sendo, na prática, tão necessários quanto antes — só adiados, não eliminados. **Por quê:** disclosure é mais fácil de implementar do que repensar se todos os 40 campos realmente precisam existir na feature — vira um jeito de esconder complexidade em vez de reduzi-la de verdade. **Como evitar:** antes de decidir o que vai atrás do "mostrar mais", pergunte se cada campo realmente precisa existir. Disclosure organiza a complexidade que sobrar depois desse corte — não substitui o corte.
 
 ## Como explicar em inglês
 

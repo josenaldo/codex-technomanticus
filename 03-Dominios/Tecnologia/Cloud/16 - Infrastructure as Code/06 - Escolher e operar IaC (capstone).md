@@ -58,8 +58,7 @@ A segunda pergunta, dentro de cada ramo, é **declarativo estático versus lingu
 > [!tip] Assista: Terraform, AWS CloudFormation, CDK ou Crossplane?
 > **Canal:** Douglas Mugnos | **Duração:** ~13min | **Idioma:** PT-BR
 >
-> Um comparativo em português que passeia pelas mesmas quatro ferramentas do quadro acima (e ainda soma o Crossplane), discutindo curva de aprendizado, portabilidade e o quanto cada uma exige do time — a mesma pergunta estrutural que a árvore de decisão desta nota resolve, mas contada por quem já bateu cabeça com as quatro em produção.
-> Trecho de destaque [00:15]: *"É muito assunto para escrever aqui em um vídeo curto"* — abrindo a comparação Terraform / CloudFormation / CDK / Crossplane.
+> Um comparativo em português que passeia pelas mesmas quatro ferramentas do quadro acima (e ainda soma o Crossplane), discutindo curva de aprendizado, portabilidade e o quanto cada uma exige do time — a mesma pergunta estrutural que a árvore de decisão desta nota resolve, mas contada por quem já bateu cabeça com as quatro em produção. Trecho de destaque [00:15]: *"É muito assunto para escrever aqui em um vídeo curto"* — abrindo a comparação Terraform / CloudFormation / CDK / Crossplane.
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=agciBgF61-U)
 
@@ -80,8 +79,7 @@ A linha que mais separa as duas famílias é "State": Terraform e Pulumi trazem 
 > [!tip] Assista: AWS re:Invent 2024 — How to choose between AWS CloudFormation, Terraform, and AWS CDK (DEV309)
 > **Canal:** AWS Events | **Duração:** ~50min | **Idioma:** EN
 >
-> A palestra oficial da AWS sobre exatamente essa decisão — vale pelo contexto histórico (CloudFormation em 2011, Terraform logo depois, CDK em 2018) e por comparar os "níveis" de abstração (L1/L2/L3) nas três ferramentas lado a lado, não só dentro do CDK como a nota 04 fez.
-> Trecho de destaque [03:36]: *"Which kind of infrastructure as code tool... how can I choose the right one?"*
+> A palestra oficial da AWS sobre exatamente essa decisão — vale pelo contexto histórico (CloudFormation em 2011, Terraform logo depois, CDK em 2018) e por comparar os "níveis" de abstração (L1/L2/L3) nas três ferramentas lado a lado, não só dentro do CDK como a nota 04 fez. Trecho de destaque [03:36]: *"Which kind of infrastructure as code tool... how can I choose the right one?"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=g37AVQM0eug)
 

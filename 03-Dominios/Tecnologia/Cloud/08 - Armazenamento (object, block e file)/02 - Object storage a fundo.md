@@ -82,8 +82,7 @@ https://minha-empresa-fotos-a1b2c3d4.s3.us-east-1.amazonaws.com/fotos/2026/praia
 > [!tip] Assista: Understand Key Concepts in Amazon S3 in 5 minutes (Buckets, Objects, Keys and Regions)
 > **Canal:** Code Java | **Duração:** ~6min | **Idioma:** EN
 >
-> Vídeo curto que amarra visualmente bucket, chave e região no console — útil pra fixar que "cada objeto tem exatamente uma chave" antes de seguir pra durabilidade.
-> Trecho de destaque [0:40]: *"a key is the unique identifier for objects within a bucket"*
+> Vídeo curto que amarra visualmente bucket, chave e região no console — útil pra fixar que "cada objeto tem exatamente uma chave" antes de seguir pra durabilidade. Trecho de destaque [0:40]: *"a key is the unique identifier for objects within a bucket"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=9AIXjHF5irs)
 
@@ -242,8 +241,7 @@ Um detalhe que costuma surpreender quem inspeciona o `ETag` de um objeto esperan
 > [!tip] Assista: How Multi-Part Upload Works in S3 (AWS Tutorial)
 > **Canal:** CloudWolf AWS | **Duração:** ~2min | **Idioma:** EN
 >
-> Vídeo direto ao ponto sobre o mecanismo de dividir um upload em até 10.000 partes paralelas, com retry por parte — complementa a mecânica que o diagrama de sequência acima já mostrou.
-> Trecho de destaque [1:24]: *"different parts up to 10,000 little parts and upload them separately"*
+> Vídeo direto ao ponto sobre o mecanismo de dividir um upload em até 10.000 partes paralelas, com retry por parte — complementa a mecânica que o diagrama de sequência acima já mostrou. Trecho de destaque [1:24]: *"different parts up to 10,000 little parts and upload them separately"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=_xMG-cODLXY)
 

@@ -428,8 +428,7 @@ Ver [[05 - Abstração - a ferramenta central]].
 ## Referências
 
 > [!tip] Assista — Peter Naur — Programming as Theory Building
-> **Computer Science Off Course** · 41min · [Peter Naur — Programming as Theory Building](https://www.youtube.com/watch?v=sLj3mvhFRiQ)
-> Leitura e discussão do ensaio de 1985 que fundamenta esta nota. Útil especialmente para o ponto mais escorregadio: o sentido de "teoria" em Ryle, que não é hipótese científica e sim capacidade de explicar, responder e estender.
+> **Computer Science Off Course** · 41min · [Peter Naur — Programming as Theory Building](https://www.youtube.com/watch?v=sLj3mvhFRiQ) Leitura e discussão do ensaio de 1985 que fundamenta esta nota. Útil especialmente para o ponto mais escorregadio: o sentido de "teoria" em Ryle, que não é hipótese científica e sim capacidade de explicar, responder e estender.
 
 - **Peter Naur** — *Programming as Theory Building* (1985). *Microprocessing and Microprogramming*, vol. 15, pp. 253–261. Reimpresso em *Computing: A Human Activity* (ACM Press, 1992). O exemplo dos grupos A/B (o compilador) é o "Case 1" do ensaio. [PDF (gwern.net)](https://gwern.net/doc/cs/algorithm/1985-naur.pdf) · [PDF (UW-Madison)](https://pages.cs.wisc.edu/~remzi/Naur.pdf) · [texto (gist)](https://gist.github.com/onlurking/fc5c81d18cfce9ff81bc968a7f342fb1)
 - **Gilbert Ryle** — *The Concept of Mind* (1949), cap. 2 "Knowing How and Knowing That" — a distinção *knowing-that* × *knowing-how* e o argumento da regressão contra a *intellectualist legend*. Ver também [SEP — Ryle on Knowing-How](https://plato.stanford.edu/entries/ryle/knowing-how.html).

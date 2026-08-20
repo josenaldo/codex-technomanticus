@@ -17,9 +17,7 @@ tags:
 # Testar comportamento, não implementação
 
 > [!abstract] Resumo em uma linha
-> Um bom teste verifica o resultado observável do código, não os passos internos que o produziram — por isso ele sobrevive à refatoração. A regra de ouro: se uma refatoração que preserva comportamento quebra um teste, o teste está errado, não o código.
-> Há duas formas de escrever a asserção — **state-based** (pergunta se o estado/retorno ficou certo) e **interaction-based** (pergunta se os colaboradores certos foram chamados) — e a primeira tolera refatoração, a segunda fica refém dela.
-> Na prática, isso empurra você para preferir **fake sobre mock**: uma implementação real e simplificada (como um `InMemoryUserRepository` com `HashMap`) dá verificação de estado de graça, sem o acoplamento às chamadas que um mock cobra.
+> Um bom teste verifica o resultado observável do código, não os passos internos que o produziram — por isso ele sobrevive à refatoração. A regra de ouro: se uma refatoração que preserva comportamento quebra um teste, o teste está errado, não o código. Há duas formas de escrever a asserção — **state-based** (pergunta se o estado/retorno ficou certo) e **interaction-based** (pergunta se os colaboradores certos foram chamados) — e a primeira tolera refatoração, a segunda fica refém dela. Na prática, isso empurra você para preferir **fake sobre mock**: uma implementação real e simplificada (como um `InMemoryUserRepository` com `HashMap`) dá verificação de estado de graça, sem o acoplamento às chamadas que um mock cobra.
 
 Imagine que você precisa avaliar um cozinheiro. Há dois jeitos. O primeiro: você prova o prato. Está no ponto? Tempero certo? Apresentação boa? O segundo: você fica atrás dele com uma prancheta anotando cada movimento de faca — "cortou a cebola em 0,8 cm, depois pegou a frigideira com a mão esquerda, depois...".
 

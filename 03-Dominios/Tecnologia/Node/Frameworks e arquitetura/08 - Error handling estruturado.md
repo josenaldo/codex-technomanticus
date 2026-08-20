@@ -433,63 +433,41 @@ Inclua `Retry-After` quando fizer sentido. Não diga ao cliente "ECONNRESET from
 ## Armadilhas comuns
 
 > [!warning] Stack trace em produção: vazamento de informação
-> **O que acontece:** cliente recebe stack trace com paths internos, nomes de dependências e às vezes dados sensíveis de contexto.
-> **Por quê:** error middleware sem sanitização retorna `err.stack` diretamente na response.
-> **Como evitar:** sempre sanitize response para 5xx com mensagem genérica; mantenha stack nos logs internos com correlation ID.
+> **O que acontece:** cliente recebe stack trace com paths internos, nomes de dependências e às vezes dados sensíveis de contexto. **Por quê:** error middleware sem sanitização retorna `err.stack` diretamente na response. **Como evitar:** sempre sanitize response para 5xx com mensagem genérica; mantenha stack nos logs internos com correlation ID.
 
 > [!warning] Express error middleware com 3 argumentos
-> **O que acontece:** o middleware nunca é invocado para erros; a request fica sem resposta ou recebe 500 genérico do Express.
-> **Por quê:** Express detecta error middleware pela aridade da função (`.length === 4`); com 3 args, é tratado como middleware normal.
-> **Como evitar:** declare sempre `(err: unknown, req: Request, res: Response, next: NextFunction)`, mesmo que `next` não seja usado.
+> **O que acontece:** o middleware nunca é invocado para erros; a request fica sem resposta ou recebe 500 genérico do Express. **Por quê:** Express detecta error middleware pela aridade da função (`.length === 4`); com 3 args, é tratado como middleware normal. **Como evitar:** declare sempre `(err: unknown, req: Request, res: Response, next: NextFunction)`, mesmo que `next` não seja usado.
 
 > [!warning] Taxonomy quebrada: 500 para validation, 400 para DB down
-> **O que acontece:** cliente recebe status errado; automações e logs ficam confusos sobre quem errou.
-> **Por quê:** sem taxonomy explícita, código usa o primeiro status que vem à mente ou um 500 genérico para tudo.
-> **Como evitar:** implemente taxonomy como classes tipadas; nunca use `res.status()` diretamente nos handlers para erros.
+> **O que acontece:** cliente recebe status errado; automações e logs ficam confusos sobre quem errou. **Por quê:** sem taxonomy explícita, código usa o primeiro status que vem à mente ou um 500 genérico para tudo. **Como evitar:** implemente taxonomy como classes tipadas; nunca use `res.status()` diretamente nos handlers para erros.
 
 > [!warning] Express 4: handler async sem wrapper, rejeição silenciosa
-> **O que acontece:** `Promise` rejeitada não chega ao error middleware global; request fica pendurada ou o processo emite `unhandledRejection`.
-> **Por quê:** Express 4 não captura promises rejeitadas automaticamente; exige que `next(err)` seja chamado.
-> **Como evitar:** use `express-async-handler` ou wrapper próprio; ou atualize para Express 5 que captura async nativamente.
+> **O que acontece:** `Promise` rejeitada não chega ao error middleware global; request fica pendurada ou o processo emite `unhandledRejection`. **Por quê:** Express 4 não captura promises rejeitadas automaticamente; exige que `next(err)` seja chamado. **Como evitar:** use `express-async-handler` ou wrapper próprio; ou atualize para Express 5 que captura async nativamente.
 
 > [!warning] `detail` com mensagem interna de banco
-> **O que acontece:** response vaza schema, nome de coluna, constraint name ou query SQL para o cliente.
-> **Por quê:** erro de ORM/driver é propagado diretamente para o campo `detail` do Problem Details.
-> **Como evitar:** intercepte erros de infraestrutura e mapeie para mensagens de domínio antes de construir a response.
+> **O que acontece:** response vaza schema, nome de coluna, constraint name ou query SQL para o cliente. **Por quê:** erro de ORM/driver é propagado diretamente para o campo `detail` do Problem Details. **Como evitar:** intercepte erros de infraestrutura e mapeie para mensagens de domínio antes de construir a response.
 
 > [!warning] Responder erro diferente em cada endpoint
-> **O que acontece:** cada rota retorna formato diferente; cliente precisa de lógica de parsing específica por endpoint.
-> **Por quê:** falta de handler global e ausência de classes de erro compartilhadas entre rotas.
-> **Como evitar:** handler global único; endpoints só lançam exceções tipadas, nunca chamam `res.status()` para erros.
+> **O que acontece:** cada rota retorna formato diferente; cliente precisa de lógica de parsing específica por endpoint. **Por quê:** falta de handler global e ausência de classes de erro compartilhadas entre rotas. **Como evitar:** handler global único; endpoints só lançam exceções tipadas, nunca chamam `res.status()` para erros.
 
 > [!warning] Logar só `err.message` perde stack e cause
-> **O que acontece:** debugging é cego; não há como rastrear onde o erro se originou ou qual dependência falhou.
-> **Por quê:** `logger.error(err.message)` descarta stack trace e eventuais `err.cause` encadeados.
-> **Como evitar:** logue o objeto `err` completo: `logger.error({ err }, "message")` — Pino e Winston serializam stack automaticamente.
+> **O que acontece:** debugging é cego; não há como rastrear onde o erro se originou ou qual dependência falhou. **Por quê:** `logger.error(err.message)` descarta stack trace e eventuais `err.cause` encadeados. **Como evitar:** logue o objeto `err` completo: `logger.error({ err }, "message")` — Pino e Winston serializam stack automaticamente.
 
 > [!warning] Converter erro desconhecido em 200 com `{ success: false }`
-> **O que acontece:** monitoramento não detecta falhas; alertas não disparam; métricas de erro ficam zeradas.
-> **Por quê:** padrão herdado de épocas sem observability — desenvolvedor tenta evitar que status 5xx dispare alerta.
-> **Como evitar:** retorne status HTTP correto; use Problem Details; configure alertas em 5xx, não em campo de resposta.
+> **O que acontece:** monitoramento não detecta falhas; alertas não disparam; métricas de erro ficam zeradas. **Por quê:** padrão herdado de épocas sem observability — desenvolvedor tenta evitar que status 5xx dispare alerta. **Como evitar:** retorne status HTTP correto; use Problem Details; configure alertas em 5xx, não em campo de resposta.
 
 > [!warning] Não diferenciar erro retryable de permanente
-> **O que acontece:** cliente tenta retry em erro 400 (que nunca vai mudar) e não tenta em 503 (que poderia resolver).
-> **Por quê:** taxonomy não separa erros transitórios de permanentes; todos viram 500 ou 400.
-> **Como evitar:** use 503 + `Retry-After` para falhas transitórias; use 409/422 para estados que exigem ação do cliente antes de retry.
+> **O que acontece:** cliente tenta retry em erro 400 (que nunca vai mudar) e não tenta em 503 (que poderia resolver). **Por quê:** taxonomy não separa erros transitórios de permanentes; todos viram 500 ou 400. **Como evitar:** use 503 + `Retry-After` para falhas transitórias; use 409/422 para estados que exigem ação do cliente antes de retry.
 
 ## Perguntas de entrevista
 
-**O que é Problem Details?**
-Um formato padrão para erros HTTP estruturados com media type `application/problem+json` e campos como `type`, `title`, `status`, `detail`, `instance`.
+**O que é Problem Details?** Um formato padrão para erros HTTP estruturados com media type `application/problem+json` e campos como `type`, `title`, `status`, `detail`, `instance`.
 
-**Por que não expor stack trace?**
-Porque stack revela detalhes internos, paths, dependências e às vezes dados sensíveis. Stack pertence ao log, não à resposta.
+**Por que não expor stack trace?** Porque stack revela detalhes internos, paths, dependências e às vezes dados sensíveis. Stack pertence ao log, não à resposta.
 
-**Como tratar erro de validação?**
-Como erro 4xx com detalhes parseáveis por campo, sem transformar em 500.
+**Como tratar erro de validação?** Como erro 4xx com detalhes parseáveis por campo, sem transformar em 500.
 
-**Como lidar com erro depois de iniciar streaming?**
-Não tente trocar para JSON. Faça cleanup, logue, encerre/delegue conforme o framework.
+**Como lidar com erro depois de iniciar streaming?** Não tente trocar para JSON. Faça cleanup, logue, encerre/delegue conforme o framework.
 
 ## Em entrevista
 

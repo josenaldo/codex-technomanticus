@@ -466,24 +466,16 @@ Rodar este arquivo contra um alvo de teste real — por exemplo, um servidor loc
 ## Armadilhas comuns
 
 > [!warning] Recriar `ClientSession` dentro do loop de disparo, um `async with` por URL
-> **O que acontece:** cada requisição paga handshake TCP+TLS do zero, e sob volume alto o programa esgota portas locais efêmeras ou aciona o warning `Unclosed client session` do `aiohttp`.
-> **Por quê:** a sessão é o objeto que possui o connection pool — recriá-la descarta esse pool a cada chamada, exatamente o bug de abertura da [[03 - aiohttp cliente — ClientSession, connection pooling e requisições concorrentes|nota 03]].
-> **Como evitar:** uma única `ClientSession`, criada no início de `rodar()` e guardada como atributo de instância, reaproveitada por todas as tasks.
+> **O que acontece:** cada requisição paga handshake TCP+TLS do zero, e sob volume alto o programa esgota portas locais efêmeras ou aciona o warning `Unclosed client session` do `aiohttp`. **Por quê:** a sessão é o objeto que possui o connection pool — recriá-la descarta esse pool a cada chamada, exatamente o bug de abertura da [[03 - aiohttp cliente — ClientSession, connection pooling e requisições concorrentes|nota 03]]. **Como evitar:** uma única `ClientSession`, criada no início de `rodar()` e guardada como atributo de instância, reaproveitada por todas as tasks.
 
 > [!warning] Disparar todas as tasks com `asyncio.gather()` sem `Semaphore`
-> **O que acontece:** milhares de requisições concorrentes simultâneas — o alvo remoto começa a devolver `429`/`503` ou derruba conexões, e o processo local pode esgotar file descriptors.
-> **Por quê:** `create_task()` não tem noção nenhuma de quanto o alvo aguenta; sem um limitador explícito, "concorrente" vira "tudo de uma vez", o bug de abertura da [[06 - Back-pressure — Semaphore, Queue com maxsize e buffering|nota 06]].
-> **Como evitar:** `asyncio.Semaphore(N)` dentro de cada task, com `N` calibrado empiricamente contra o alvo real — nunca um número arbitrário copiado de outro projeto.
+> **O que acontece:** milhares de requisições concorrentes simultâneas — o alvo remoto começa a devolver `429`/`503` ou derruba conexões, e o processo local pode esgotar file descriptors. **Por quê:** `create_task()` não tem noção nenhuma de quanto o alvo aguenta; sem um limitador explícito, "concorrente" vira "tudo de uma vez", o bug de abertura da [[06 - Back-pressure — Semaphore, Queue com maxsize e buffering|nota 06]]. **Como evitar:** `asyncio.Semaphore(N)` dentro de cada task, com `N` calibrado empiricamente contra o alvo real — nunca um número arbitrário copiado de outro projeto.
 
 > [!warning] Loop de disparo sem nenhum `await` entre as tasks, impedindo o shutdown de agir a tempo
-> **O que acontece:** um `SIGINT` no meio do disparo de centenas de URLs só é percebido depois que todas já foram criadas — o shutdown "gracioso" não impede nenhum disparo novo, só a fase seguinte.
-> **Por quê:** o event loop só processa o callback do signal handler quando algum `await` cede o controle de volta a ele; um `for` síncrono sem `await` no meio nunca dá essa chance.
-> **Como evitar:** um `await asyncio.sleep(0)` (ou qualquer ponto de cessão real) entre cada `create_task()` no loop de disparo.
+> **O que acontece:** um `SIGINT` no meio do disparo de centenas de URLs só é percebido depois que todas já foram criadas — o shutdown "gracioso" não impede nenhum disparo novo, só a fase seguinte. **Por quê:** o event loop só processa o callback do signal handler quando algum `await` cede o controle de volta a ele; um `for` síncrono sem `await` no meio nunca dá essa chance. **Como evitar:** um `await asyncio.sleep(0)` (ou qualquer ponto de cessão real) entre cada `create_task()` no loop de disparo.
 
 > [!warning] Cancelar tasks em andamento sem timeout, ou sem tentar drená-las primeiro
-> **O que acontece:** ou o processo fica pendurado indefinidamente esperando uma task que nunca termina sozinha, ou — no extremo oposto — cancela tudo imediatamente e perde resultados que estavam a milissegundos de terminar.
-> **Por quê:** requisições em andamento não são instantâneas; um shutdown que não dá nenhuma chance de conclusão natural desperdiça trabalho que já estava quase pronto, e um shutdown sem timeout nenhum não é "gracioso", é simplesmente lento.
-> **Como evitar:** `asyncio.wait(tasks, timeout=...)` primeiro, cancelamento explícito só nas que sobrarem — o padrão exato da [[07 - Padrões de produção com asyncio — supervisão de tasks, graceful shutdown, circuit breaker|nota 07]].
+> **O que acontece:** ou o processo fica pendurado indefinidamente esperando uma task que nunca termina sozinha, ou — no extremo oposto — cancela tudo imediatamente e perde resultados que estavam a milissegundos de terminar. **Por quê:** requisições em andamento não são instantâneas; um shutdown que não dá nenhuma chance de conclusão natural desperdiça trabalho que já estava quase pronto, e um shutdown sem timeout nenhum não é "gracioso", é simplesmente lento. **Como evitar:** `asyncio.wait(tasks, timeout=...)` primeiro, cancelamento explícito só nas que sobrarem — o padrão exato da [[07 - Padrões de produção com asyncio — supervisão de tasks, graceful shutdown, circuit breaker|nota 07]].
 
 ## Em entrevista
 

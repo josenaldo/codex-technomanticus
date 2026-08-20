@@ -16,10 +16,7 @@ tags:
 # Funções
 
 > [!abstract] TL;DR
-> Uma **função** f: A→B é uma regra que pega cada elemento do **domínio** A e devolve **exatamente um** elemento do **contradomínio** B. Nem mais, nem menos: um, e só um.
-> Os três adjetivos que importam: **injetora** (não repete saída), **sobrejetora** (cobre todo o contradomínio), **bijetora** (as duas coisas — e só ela tem **inversa**).
-> Função é uma [[10 - Relações|relação]] especial: total e funcional. A **bijeção** é a régua que define "mesmo tamanho" em [[13 - Cardinalidade - contável e incontável|cardinalidade]].
-> No código isso vira ouro: **hash não pode ser injetora** (colisão é forçada pela casa dos pombos), **dict é função parcial**, **idempotência** é f∘f = f, e **função pura** é literalmente a função matemática — sem efeito colateral.
+> Uma **função** f: A→B é uma regra que pega cada elemento do **domínio** A e devolve **exatamente um** elemento do **contradomínio** B. Nem mais, nem menos: um, e só um. Os três adjetivos que importam: **injetora** (não repete saída), **sobrejetora** (cobre todo o contradomínio), **bijetora** (as duas coisas — e só ela tem **inversa**). Função é uma [[10 - Relações|relação]] especial: total e funcional. A **bijeção** é a régua que define "mesmo tamanho" em [[13 - Cardinalidade - contável e incontável|cardinalidade]]. No código isso vira ouro: **hash não pode ser injetora** (colisão é forçada pela casa dos pombos), **dict é função parcial**, **idempotência** é f∘f = f, e **função pura** é literalmente a função matemática — sem efeito colateral.
 
 ---
 
@@ -361,15 +358,7 @@ Serialização/desserialização é a versão prática e imperfeita disso. Quand
 
 Funções aparecem em entrevista por dois caminhos: direto ("o que é uma função injetora?") e indireto, escondido em hash tables, idempotência de API e desenho de sistemas. O truque é traduzir o conceito matemático pro impacto prático na hora — não recitar a definição, mas conectar "domínio grande, contradomínio pequeno" a "logo, colisões são inevitáveis, logo preciso de chaining". Saber *por que* a inversa exige bijeção e *por que* a casa dos pombos força colisão te diferencia de quem só decorou.
 
-*A function maps each input from the domain to exactly one output in the codomain.*
-*A function is injective when distinct inputs always produce distinct outputs.*
-*It's surjective when every element of the codomain is actually hit; bijective means both.*
-*A function has an inverse if and only if it's a bijection — no ambiguity, no gaps.*
-*Composition isn't commutative: g after f is generally different from f after g.*
-*A hash function can't be injective because the domain is larger than the codomain.*
-*By the pigeonhole principle, collisions are mathematically guaranteed, not a bug.*
-*An operation is idempotent when applying it twice equals applying it once.*
-*A pure function is the real mathematical function — same input, same output, no side effects.*
+*A function maps each input from the domain to exactly one output in the codomain.* *A function is injective when distinct inputs always produce distinct outputs.* *It's surjective when every element of the codomain is actually hit; bijective means both.* *A function has an inverse if and only if it's a bijection — no ambiguity, no gaps.* *Composition isn't commutative: g after f is generally different from f after g.* *A hash function can't be injective because the domain is larger than the codomain.* *By the pigeonhole principle, collisions are mathematically guaranteed, not a bug.* *An operation is idempotent when applying it twice equals applying it once.* *A pure function is the real mathematical function — same input, same output, no side effects.*
 
 | Português | English |
 |---|---|

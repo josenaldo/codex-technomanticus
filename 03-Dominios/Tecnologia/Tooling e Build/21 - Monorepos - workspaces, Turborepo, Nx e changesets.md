@@ -865,17 +865,13 @@ Discutido os três problemas centrais que o monorepo resolve:
 
 ### Quando monorepo faz sentido
 
-**1. Código fortemente acoplado por design**
-`@empresa/ui`, `@empresa/design-tokens` e `@empresa/app` não são projetos independentes. São partes de um produto. Fronteira artificial = atrito artificial.
+**1. Código fortemente acoplado por design** `@empresa/ui`, `@empresa/design-tokens` e `@empresa/app` não são projetos independentes. São partes de um produto. Fronteira artificial = atrito artificial.
 
-**2. Refactors atômicos cross-package**
-Renomear uma API em `utils` e atualizar todos os consumidores em um único PR, com um único CI verde, é muito mais seguro do que coordenar PRs em três repos.
+**2. Refactors atômicos cross-package** Renomear uma API em `utils` e atualizar todos os consumidores em um único PR, com um único CI verde, é muito mais seguro do que coordenar PRs em três repos.
 
-**3. Compartilhar config de qualidade**
-`tsconfig.base.json`, `.eslintrc.js`, `prettier.config.js` na raiz. Todos os pacotes herdam. Drift de configuração torna-se opt-in, não a norma.
+**3. Compartilhar config de qualidade** `tsconfig.base.json`, `.eslintrc.js`, `prettier.config.js` na raiz. Todos os pacotes herdam. Drift de configuração torna-se opt-in, não a norma.
 
-**4. Visibilidade do impacto**
-Quando você muda `utils`, o CI mostra quais testes de `ui` e `app` quebraram. Em polyrepo, você descobre no próximo release.
+**4. Visibilidade do impacto** Quando você muda `utils`, o CI mostra quais testes de `ui` e `app` quebraram. Em polyrepo, você descobre no próximo release.
 
 ### Quando NÃO usar monorepo
 

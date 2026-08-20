@@ -17,18 +17,11 @@ aliases:
 # Engenharia
 
 > [!abstract] TL;DR
-> Camada do *como construir e operar bem* — disciplinas neutras de stack. O que vale aqui
-> independe de linguagem: como desenhar, comunicar, testar, proteger e operar sistemas. A
-> teoria mora aqui; a implementação concreta vive nos domínios de [[03-Dominios/Tecnologia/index|Tecnologia]].
+> Camada do *como construir e operar bem* — disciplinas neutras de stack. O que vale aqui independe de linguagem: como desenhar, comunicar, testar, proteger e operar sistemas. A teoria mora aqui; a implementação concreta vive nos domínios de [[03-Dominios/Tecnologia/index|Tecnologia]].
 
 ## Sobre esta camada
 
-Engenharia é o andar entre a [[03-Dominios/Ciência/index|Ciência da Computação]] (o *porquê* atemporal)
-e a [[03-Dominios/Tecnologia/index|Tecnologia]] (o *como em X*). São as disciplinas de craft que a
-indústria construiu: arquitetura, design, testes, segurança, comunicação entre sistemas, dados e
-operação. A regra de ouro: **a fundamentação fica aqui; cada tecnologia linka pra cá e cuida das suas
-particularidades** (ex.: os princípios de RBAC ficam em [[03-Dominios/Engenharia/Segurança/index|Segurança]];
-*como implementar RBAC no Spring* fica no galho de Spring).
+Engenharia é o andar entre a [[03-Dominios/Ciência/index|Ciência da Computação]] (o *porquê* atemporal) e a [[03-Dominios/Tecnologia/index|Tecnologia]] (o *como em X*). São as disciplinas de craft que a indústria construiu: arquitetura, design, testes, segurança, comunicação entre sistemas, dados e operação. A regra de ouro: **a fundamentação fica aqui; cada tecnologia linka pra cá e cuida das suas particularidades** (ex.: os princípios de RBAC ficam em [[03-Dominios/Engenharia/Segurança/index|Segurança]]; *como implementar RBAC no Spring* fica no galho de Spring).
 
 ## Domínios
 

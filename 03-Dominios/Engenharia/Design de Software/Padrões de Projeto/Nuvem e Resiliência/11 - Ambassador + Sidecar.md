@@ -23,19 +23,10 @@ aliases:
 # Ambassador + Sidecar
 
 > [!abstract] TL;DR
-> Todos os padrões anteriores vivem **no seu código** — o que significa implementá-los, testá-los e
-> mantê-los em cada linguagem, em cada serviço. O **Sidecar** move capacidades auxiliares para um
-> processo acompanhante, no mesmo host ou pod; o **Ambassador** é o sidecar especializado em intermediar
-> as chamadas de **saída**, aplicando timeout, retry, circuit breaker e mTLS por fora da aplicação. É o
-> modelo do *service mesh*, e o argumento mais forte a favor dele não é elegância: é **legado e
-> poliglota** — dá resiliência a serviços que ninguém pode recompilar. O sacrifício é um salto de rede,
-> mais consumo por pod, e a resiliência saindo do alcance de quem escreve o código.
+> Todos os padrões anteriores vivem **no seu código** — o que significa implementá-los, testá-los e mantê-los em cada linguagem, em cada serviço. O **Sidecar** move capacidades auxiliares para um processo acompanhante, no mesmo host ou pod; o **Ambassador** é o sidecar especializado em intermediar as chamadas de **saída**, aplicando timeout, retry, circuit breaker e mTLS por fora da aplicação. É o modelo do *service mesh*, e o argumento mais forte a favor dele não é elegância: é **legado e poliglota** — dá resiliência a serviços que ninguém pode recompilar. O sacrifício é um salto de rede, mais consumo por pod, e a resiliência saindo do alcance de quem escreve o código.
 
 > [!info] O recorte desta nota
-> Aqui os dois padrões e o que custam. A discussão **"onde a resiliência mora: no código ou no mesh"**,
-> com a experiência de operar isso, está em
-> [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/06 - Resiliência operacional|Operação 3-06]];
-> **rede e borda em produção** em [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/05 - Rede e borda em produção|Operação 3-05]].
+> Aqui os dois padrões e o que custam. A discussão **"onde a resiliência mora: no código ou no mesh"**, com a experiência de operar isso, está em [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/06 - Resiliência operacional|Operação 3-06]]; **rede e borda em produção** em [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/05 - Rede e borda em produção|Operação 3-05]].
 
 ## Quatro linguagens, a mesma biblioteca que não existe
 
@@ -85,19 +76,13 @@ Um *service mesh* é essa ideia industrializada: um ambassador em cada pod (o *d
 ## Armadilhas comuns
 
 > [!warning] Retry no mesh e na aplicação
-> **O que acontece:** o mesh está configurado com 3 tentativas e a aplicação também. Cada chamada vira até 9 no destino, e sob incidente a amplificação é multiplicativa — o cenário da [[03 - Retry|nota 03]], agora com uma camada que ninguém lembra que existe.
-> **Por quê:** as duas configurações vivem em lugares diferentes, mantidas por pessoas diferentes; o time de aplicação frequentemente não sabe o que o mesh já faz.
-> **Como evitar:** decida **uma** camada para retry e desligue explicitamente na outra. Documente a política de resiliência como um conjunto único, e trate a soma como parte da revisão quando qualquer lado mudar.
+> **O que acontece:** o mesh está configurado com 3 tentativas e a aplicação também. Cada chamada vira até 9 no destino, e sob incidente a amplificação é multiplicativa — o cenário da [[03 - Retry|nota 03]], agora com uma camada que ninguém lembra que existe. **Por quê:** as duas configurações vivem em lugares diferentes, mantidas por pessoas diferentes; o time de aplicação frequentemente não sabe o que o mesh já faz. **Como evitar:** decida **uma** camada para retry e desligue explicitamente na outra. Documente a política de resiliência como um conjunto único, e trate a soma como parte da revisão quando qualquer lado mudar.
 
 > [!warning] Adotar mesh pelo que ele promete, não pelo que se usa
-> **O que acontece:** o mesh é adotado por mTLS e observabilidade, traz consigo uma superfície enorme de funcionalidades, e o time passa a gastar tempo operando a própria malha — inclusive depurando incidentes causados por ela.
-> **Por quê:** a lista de capacidades é sedutora e a adoção parece tudo-ou-nada.
-> **Como evitar:** enuncie **quais três capacidades** justificam a adoção e meça se elas estão sendo usadas. Se o motivo real é só mTLS entre serviços, há caminhos bem mais baratos. Numa plataforma pequena e monolíngue, uma biblioteca compartilhada resolve com uma fração da complexidade.
+> **O que acontece:** o mesh é adotado por mTLS e observabilidade, traz consigo uma superfície enorme de funcionalidades, e o time passa a gastar tempo operando a própria malha — inclusive depurando incidentes causados por ela. **Por quê:** a lista de capacidades é sedutora e a adoção parece tudo-ou-nada. **Como evitar:** enuncie **quais três capacidades** justificam a adoção e meça se elas estão sendo usadas. Se o motivo real é só mTLS entre serviços, há caminhos bem mais baratos. Numa plataforma pequena e monolíngue, uma biblioteca compartilhada resolve com uma fração da complexidade.
 
 > [!warning] Ordem de ciclo de vida entre app e sidecar
-> **O que acontece:** no encerramento, o sidecar morre antes da aplicação — que perde a rede no meio das requisições em voo. Ou, no arranque, a aplicação começa a chamar antes de o proxy estar pronto, e as primeiras chamadas falham a cada implantação.
-> **Por quê:** são processos independentes no mesmo pod; sem configuração explícita, a ordem não é garantida.
-> **Como evitar:** use os mecanismos de ordenação da plataforma (contêineres de inicialização, *hooks* de parada, sidecars nativos) e teste **implantação e encerramento**, não só o estado estável — é onde essa classe de bug vive.
+> **O que acontece:** no encerramento, o sidecar morre antes da aplicação — que perde a rede no meio das requisições em voo. Ou, no arranque, a aplicação começa a chamar antes de o proxy estar pronto, e as primeiras chamadas falham a cada implantação. **Por quê:** são processos independentes no mesmo pod; sem configuração explícita, a ordem não é garantida. **Como evitar:** use os mecanismos de ordenação da plataforma (contêineres de inicialização, *hooks* de parada, sidecars nativos) e teste **implantação e encerramento**, não só o estado estável — é onde essa classe de bug vive.
 
 ## Como explicar em inglês
 

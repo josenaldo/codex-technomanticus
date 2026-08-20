@@ -93,9 +93,7 @@ git bisect run ./testa.sh
 Você sai para almoçar e volta com o commit culpado. O código de saída **125** é a peça especial: ele significa "este commit não pode ser avaliado" — build quebrada por motivo alheio, dependência indisponível — e faz o Git pular aquele ponto em vez de contaminar o resultado.
 
 > [!warning] O script precisa estar fora do repositório
-> **O que acontece:** você escreve `testa.sh`, commita, e durante o bisect o script desaparece — porque nos commits antigos ele não existe.
-> **Por quê:** o bisect faz checkout de cada commit, substituindo a árvore de trabalho.
-> **Como evitar:** guarde o script **fora** do repositório (`/tmp/testa.sh`) e chame pelo caminho absoluto. Mesmo cuidado para dados de teste.
+> **O que acontece:** você escreve `testa.sh`, commita, e durante o bisect o script desaparece — porque nos commits antigos ele não existe. **Por quê:** o bisect faz checkout de cada commit, substituindo a árvore de trabalho. **Como evitar:** guarde o script **fora** do repositório (`/tmp/testa.sh`) e chame pelo caminho absoluto. Mesmo cuidado para dados de teste.
 
 ---
 
@@ -156,19 +154,13 @@ A terceira linha é o argumento mais forte a favor da disciplina de manter todo 
 ## Armadilhas comuns
 
 > [!warning] Responder errado no meio da sessão
-> **O que acontece:** um teste instável (*flaky*) devolve o resultado errado, e o bisect converge para um commit inocente.
-> **Por quê:** a busca binária confia em cada resposta; um erro elimina a metade errada.
-> **Como evitar:** confirme a reprodução antes de começar — teste o commit "ruim" e o "bom" manualmente. Se o problema é intermitente, rode o teste várias vezes por commit no script. E, na dúvida, salve `git bisect log` para poder replicar.
+> **O que acontece:** um teste instável (*flaky*) devolve o resultado errado, e o bisect converge para um commit inocente. **Por quê:** a busca binária confia em cada resposta; um erro elimina a metade errada. **Como evitar:** confirme a reprodução antes de começar — teste o commit "ruim" e o "bom" manualmente. Se o problema é intermitente, rode o teste várias vezes por commit no script. E, na dúvida, salve `git bisect log` para poder replicar.
 
 > [!warning] Esquecer o `git bisect reset`
-> **O que acontece:** você sai da sessão e continua trabalhando em `detached HEAD`, num commit antigo. Commits feitos ali ficam órfãos.
-> **Por quê:** o bisect deixa o repositório num estado especial até ser encerrado.
-> **Como evitar:** `git status` avisa que há um bisect em andamento. Encerre sempre. E se já commitou por engano: `reflog` (nota 23).
+> **O que acontece:** você sai da sessão e continua trabalhando em `detached HEAD`, num commit antigo. Commits feitos ali ficam órfãos. **Por quê:** o bisect deixa o repositório num estado especial até ser encerrado. **Como evitar:** `git status` avisa que há um bisect em andamento. Encerre sempre. E se já commitou por engano: `reflog` (nota 23).
 
 > [!warning] Bisecar mudança de comportamento causada por dados ou ambiente
-> **O que acontece:** a busca converge para um commit que não tem nada a ver.
-> **Por quê:** a causa não estava no código — era uma migração de banco, uma versão de dependência resolvida na hora da instalação, uma configuração de ambiente.
-> **Como evitar:** fixe o ambiente no script (versões travadas, banco recriado do zero a cada passo). Se não for possível, aceite que o bisect vai indicar "quando", não "o quê" — o que já orienta a investigação.
+> **O que acontece:** a busca converge para um commit que não tem nada a ver. **Por quê:** a causa não estava no código — era uma migração de banco, uma versão de dependência resolvida na hora da instalação, uma configuração de ambiente. **Como evitar:** fixe o ambiente no script (versões travadas, banco recriado do zero a cada passo). Se não for possível, aceite que o bisect vai indicar "quando", não "o quê" — o que já orienta a investigação.
 
 ---
 

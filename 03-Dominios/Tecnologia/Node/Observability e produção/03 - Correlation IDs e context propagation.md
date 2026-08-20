@@ -22,10 +22,7 @@ aliases:
 # Correlation IDs e context propagation
 
 > [!abstract] TL;DR
-> Um **correlation ID** é um identificador único gerado no início de cada requisição e carregado por todos os logs, métricas e traces produzidos durante aquele ciclo de vida — sem ele, logs de 200 requisições concorrentes se misturam e rastrear um bug vira arqueologia.
-> `AsyncLocalStorage` (estável no Node 16+, módulo `node:async_hooks`) é o mecanismo nativo para propagar contexto de forma transparente por toda a cadeia assíncrona sem passar o ID como parâmetro em cada função.
-> O padrão moderno é gerar o ID no middleware de entrada (ou reutilizar o `traceId` do header W3C `traceparent`), armazená-lo no `AsyncLocalStorage` e lê-lo em serializers do pino e em spans do OpenTelemetry.
-> Em microsserviços, o ID deve ser encaminhado nos headers das chamadas HTTP de saída (`x-request-id` ou `traceparent`) para que o serviço downstream possa continuar o mesmo "fio" de observabilidade.
+> Um **correlation ID** é um identificador único gerado no início de cada requisição e carregado por todos os logs, métricas e traces produzidos durante aquele ciclo de vida — sem ele, logs de 200 requisições concorrentes se misturam e rastrear um bug vira arqueologia. `AsyncLocalStorage` (estável no Node 16+, módulo `node:async_hooks`) é o mecanismo nativo para propagar contexto de forma transparente por toda a cadeia assíncrona sem passar o ID como parâmetro em cada função. O padrão moderno é gerar o ID no middleware de entrada (ou reutilizar o `traceId` do header W3C `traceparent`), armazená-lo no `AsyncLocalStorage` e lê-lo em serializers do pino e em spans do OpenTelemetry. Em microsserviços, o ID deve ser encaminhado nos headers das chamadas HTTP de saída (`x-request-id` ou `traceparent`) para que o serviço downstream possa continuar o mesmo "fio" de observabilidade.
 
 Esta nota aprofunda a correlação entre os três pilares apresentados em [[02 - Logging estruturado com pino]] e faz parte do galho [[03-Dominios/Tecnologia/Node/Observability e produção/index]]. A integração completa com spans é detalhada em [[06 - Tracing distribuído com OpenTelemetry]].
 
@@ -566,9 +563,7 @@ Com esse padrão, o log do `estoque-service` terá o mesmo `requestId` que o log
 ## Armadilhas comuns
 
 > [!warning] Gerar o ID após código assíncrono
-> **O que acontece:** Qualquer código executado antes do `asyncLocalStorage.run()` chama `getStore()` e recebe `undefined` — o contexto não existe ainda. Logs emitidos nesses pontos ficam sem `requestId`.
-> **Por quê:** `AsyncLocalStorage` propaga o contexto apenas para chains que nascem *dentro* do `run()`. Código que já estava em execução antes do `run()` não é afetado retroativamente.
-> **Como evitar:** O `asyncLocalStorage.run()` deve ser o primeiro passo do middleware — antes de qualquer `await`, autenticação ou leitura de body.
+> **O que acontece:** Qualquer código executado antes do `asyncLocalStorage.run()` chama `getStore()` e recebe `undefined` — o contexto não existe ainda. Logs emitidos nesses pontos ficam sem `requestId`. **Por quê:** `AsyncLocalStorage` propaga o contexto apenas para chains que nascem *dentro* do `run()`. Código que já estava em execução antes do `run()` não é afetado retroativamente. **Como evitar:** O `asyncLocalStorage.run()` deve ser o primeiro passo do middleware — antes de qualquer `await`, autenticação ou leitura de body.
 
 ```typescript
 // ERRADO — o run() começa depois do primeiro await
@@ -586,24 +581,16 @@ app.use((req, res, next) => {
 ```
 
 > [!warning] Não propagar o ID nos headers de saída
-> **O que acontece:** O serviço downstream gera um novo `requestId`, quebrando o "fio" de observabilidade. Uma query `requestId:abc123` no Datadog retorna logs apenas do serviço A — os do serviço B não aparecem porque têm outro ID.
-> **Por quê:** `AsyncLocalStorage` é local ao processo. Para cruzar a fronteira do processo, o ID precisa viajar explicitamente no header HTTP de cada chamada de saída.
-> **Como evitar:** Crie um wrapper sobre `fetch`/`axios`/`got` que lê `getRequestId()` do store e injeta automaticamente o header `x-request-id` em todas as chamadas de saída.
+> **O que acontece:** O serviço downstream gera um novo `requestId`, quebrando o "fio" de observabilidade. Uma query `requestId:abc123` no Datadog retorna logs apenas do serviço A — os do serviço B não aparecem porque têm outro ID. **Por quê:** `AsyncLocalStorage` é local ao processo. Para cruzar a fronteira do processo, o ID precisa viajar explicitamente no header HTTP de cada chamada de saída. **Como evitar:** Crie um wrapper sobre `fetch`/`axios`/`got` que lê `getRequestId()` do store e injeta automaticamente o header `x-request-id` em todas as chamadas de saída.
 
 > [!warning] Usar `cls-hooked` ou `domain` em vez de `AsyncLocalStorage`
-> **O que acontece:** Comportamentos imprevisíveis com Promises modernas — contexto vazando entre requisições, IDs trocados, ou context `undefined` em pontos onde deveria existir.
-> **Por quê:** `domain` está marcado como depreciado desde Node 4 e não funciona corretamente com a maquinaria de async hooks moderna. `cls-hooked` é construído sobre `domain` e herda todos esses problemas.
-> **Como evitar:** Use `AsyncLocalStorage` de `node:async_hooks` — é a API oficial, mantida pela equipe do Node, estável desde Node 16, e sem dependências externas.
+> **O que acontece:** Comportamentos imprevisíveis com Promises modernas — contexto vazando entre requisições, IDs trocados, ou context `undefined` em pontos onde deveria existir. **Por quê:** `domain` está marcado como depreciado desde Node 4 e não funciona corretamente com a maquinaria de async hooks moderna. `cls-hooked` é construído sobre `domain` e herda todos esses problemas. **Como evitar:** Use `AsyncLocalStorage` de `node:async_hooks` — é a API oficial, mantida pela equipe do Node, estável desde Node 16, e sem dependências externas.
 
 > [!warning] Confundir `requestId` com `traceId` (W3C traceparent)
-> **O que acontece:** Você mantém dois IDs separados — um no seu app (`x-request-id`) e um no sistema de tracing (`traceId` do span OTel) — e não consegue navegar de um log para o span correspondente ou vice-versa.
-> **Por quê:** `requestId` (header `x-request-id`) é um identificador interno do app, formato livre. `traceId` é parte do header W3C `traceparent` (128 bits / 32 hex chars), padronizado entre Jaeger, Zipkin, Datadog. São conceitos relacionados mas por default têm valores distintos.
-> **Como evitar:** Use o `traceId` do OpenTelemetry como `requestId` do app — extraia-o do header `traceparent` de entrada ou do span ativo criado pelo OTel. Assim um único ID funciona tanto nos logs quanto nas ferramentas de tracing.
+> **O que acontece:** Você mantém dois IDs separados — um no seu app (`x-request-id`) e um no sistema de tracing (`traceId` do span OTel) — e não consegue navegar de um log para o span correspondente ou vice-versa. **Por quê:** `requestId` (header `x-request-id`) é um identificador interno do app, formato livre. `traceId` é parte do header W3C `traceparent` (128 bits / 32 hex chars), padronizado entre Jaeger, Zipkin, Datadog. São conceitos relacionados mas por default têm valores distintos. **Como evitar:** Use o `traceId` do OpenTelemetry como `requestId` do app — extraia-o do header `traceparent` de entrada ou do span ativo criado pelo OTel. Assim um único ID funciona tanto nos logs quanto nas ferramentas de tracing.
 
 > [!warning] Modificar o store diretamente pode causar vazamento entre branches
-> **O que acontece:** A modificação de um campo do store em um branch assíncrono é visível em todos os outros branches que compartilham o mesmo objeto — pois `getStore()` retorna uma referência, não uma cópia.
-> **Por quê:** `AsyncLocalStorage` copia a *referência* ao objeto de contexto para cada branch, não o objeto em si. Mutações são compartilhadas por todos que apontam para o mesmo objeto.
-> **Como evitar:** Para criar sub-contextos isolados, use `asyncLocalStorage.run({ ...getStore(), userId: '42' }, callback)` — cria um novo objeto com os campos do pai mais os novos, sem afetar o contexto original.
+> **O que acontece:** A modificação de um campo do store em um branch assíncrono é visível em todos os outros branches que compartilham o mesmo objeto — pois `getStore()` retorna uma referência, não uma cópia. **Por quê:** `AsyncLocalStorage` copia a *referência* ao objeto de contexto para cada branch, não o objeto em si. Mutações são compartilhadas por todos que apontam para o mesmo objeto. **Como evitar:** Para criar sub-contextos isolados, use `asyncLocalStorage.run({ ...getStore(), userId: '42' }, callback)` — cria um novo objeto com os campos do pai mais os novos, sem afetar o contexto original.
 
 ---
 
@@ -618,14 +605,11 @@ Com os correlation IDs propagando automaticamente por `AsyncLocalStorage`, o pr�
 
 ## Em entrevista
 
-**What is a correlation ID and why is it important?**
-A correlation ID is a unique identifier, typically a UUID or a W3C trace ID, that is generated at the entry point of a request and attached to every log entry, metric label, and trace span produced during that request's lifecycle. Without it, in a high-concurrency Node.js server, log entries from hundreds of concurrent requests are interleaved in the same output stream, making it impossible to isolate the sequence of events that led to a specific error.
+**What is a correlation ID and why is it important?** A correlation ID is a unique identifier, typically a UUID or a W3C trace ID, that is generated at the entry point of a request and attached to every log entry, metric label, and trace span produced during that request's lifecycle. Without it, in a high-concurrency Node.js server, log entries from hundreds of concurrent requests are interleaved in the same output stream, making it impossible to isolate the sequence of events that led to a specific error.
 
-**Why is AsyncLocalStorage the modern approach for context propagation in Node.js?**
-`AsyncLocalStorage`, available natively in `node:async_hooks` since Node 16, provides a per-async-chain storage that is automatically inherited by all child Promises, callbacks, and async operations that are spawned within an `asyncLocalStorage.run()` call. This means the correlation ID can be stored once at the request boundary and read anywhere downstream — in service functions, database clients, logger serializers — without passing it as a function parameter, which would pollute every function signature in the codebase. Older approaches like `domain` or the `cls-hooked` library are deprecated and should not be used.
+**Why is AsyncLocalStorage the modern approach for context propagation in Node.js?** `AsyncLocalStorage`, available natively in `node:async_hooks` since Node 16, provides a per-async-chain storage that is automatically inherited by all child Promises, callbacks, and async operations that are spawned within an `asyncLocalStorage.run()` call. This means the correlation ID can be stored once at the request boundary and read anywhere downstream — in service functions, database clients, logger serializers — without passing it as a function parameter, which would pollute every function signature in the codebase. Older approaches like `domain` or the `cls-hooked` library are deprecated and should not be used.
 
-**How do you propagate context across microservice boundaries?**
-When service A makes an outgoing HTTP call to service B, it must include the correlation ID in the request headers — typically as `x-request-id` for internal convention, or as `traceparent` if following the W3C TraceContext standard. Service B's request middleware then extracts the incoming ID instead of generating a new one, stores it in its own `AsyncLocalStorage`, and continues producing logs and spans with the same ID. This creates a unified thread of observability across all services involved in a single business operation, which can then be queried by a single `requestId` in a log aggregation tool like Datadog or Loki.
+**How do you propagate context across microservice boundaries?** When service A makes an outgoing HTTP call to service B, it must include the correlation ID in the request headers — typically as `x-request-id` for internal convention, or as `traceparent` if following the W3C TraceContext standard. Service B's request middleware then extracts the incoming ID instead of generating a new one, stores it in its own `AsyncLocalStorage`, and continues producing logs and spans with the same ID. This creates a unified thread of observability across all services involved in a single business operation, which can then be queried by a single `requestId` in a log aggregation tool like Datadog or Loki.
 
 ---
 

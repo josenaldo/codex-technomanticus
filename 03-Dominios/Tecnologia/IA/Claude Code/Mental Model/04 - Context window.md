@@ -62,17 +62,13 @@ Componentes e seus tamanhos típicos:
 
 ## O que mais consome contexto
 
-**Leituras de arquivo sem range**
-`Read("src/huge-service.ts")` num arquivo de 2.000 linhas pode adicionar 40k+ tokens de uma vez. Um único arquivo grande pode consumir 20% da janela disponível.
+**Leituras de arquivo sem range** `Read("src/huge-service.ts")` num arquivo de 2.000 linhas pode adicionar 40k+ tokens de uma vez. Um único arquivo grande pode consumir 20% da janela disponível.
 
-**Bash com output verboso**
-Instalar pacotes, compilar, rodar testes com saída detalhada — o stdout completo vai para o contexto. `npm ci` em um projeto com muitas dependências pode gerar 5.000+ linhas de output.
+**Bash com output verboso** Instalar pacotes, compilar, rodar testes com saída detalhada — o stdout completo vai para o contexto. `npm ci` em um projeto com muitas dependências pode gerar 5.000+ linhas de output.
 
-**Grep com muitos resultados**
-`Grep("import", "src/")` num projeto grande retorna centenas de linhas. O Grep retorna *todos* os matches — sem filtro, pode ser ruído caro.
+**Grep com muitos resultados** `Grep("import", "src/")` num projeto grande retorna centenas de linhas. O Grep retorna *todos* os matches — sem filtro, pode ser ruído caro.
 
-**Sessões longas de debugging**
-Uma sessão com 40 tool calls, onde cada erro gerou uma tentativa de correção, pode facilmente acumular 150k+ tokens — mais de 75% da janela disponível.
+**Sessões longas de debugging** Uma sessão com 40 tool calls, onde cada erro gerou uma tentativa de correção, pode facilmente acumular 150k+ tokens — mais de 75% da janela disponível.
 
 ```mermaid
 xychart-beta

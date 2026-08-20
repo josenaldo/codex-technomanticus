@@ -51,9 +51,7 @@ E há alternativas equivalentes — **GitLab**, **Bitbucket**, **Codeberg**, ou 
 4. **Escolha entre público e privado.** Leia a próxima seção antes de decidir.
 
 > [!warning] Público significa público para o mundo inteiro, para sempre
-> **O que acontece:** um repositório público pode ser lido, baixado e copiado por qualquer pessoa — e por robôs, que indexam repositórios continuamente. Se você subir algo por engano e apagar dez minutos depois, presuma que já foi copiado.
-> **Por quê:** não há como retirar da circulação o que foi publicado; e mesmo dentro do seu próprio repositório, apagar um arquivo num commit novo **não o remove do histórico** — ele continua acessível nos commits anteriores.
-> **Como evitar:** em caso de dúvida, **comece privado**. Você pode tornar público depois com dois cliques; o contrário não existe. Isso vale especialmente para: tese ainda não defendida, dados de pesquisa com informação de participantes, material sob embargo editorial, e qualquer arquivo com senha ou chave de acesso.
+> **O que acontece:** um repositório público pode ser lido, baixado e copiado por qualquer pessoa — e por robôs, que indexam repositórios continuamente. Se você subir algo por engano e apagar dez minutos depois, presuma que já foi copiado. **Por quê:** não há como retirar da circulação o que foi publicado; e mesmo dentro do seu próprio repositório, apagar um arquivo num commit novo **não o remove do histórico** — ele continua acessível nos commits anteriores. **Como evitar:** em caso de dúvida, **comece privado**. Você pode tornar público depois com dois cliques; o contrário não existe. Isso vale especialmente para: tese ainda não defendida, dados de pesquisa com informação de participantes, material sob embargo editorial, e qualquer arquivo com senha ou chave de acesso.
 
 Para trabalho acadêmico, uma régua simples: **privado enquanto está em construção; público quando (e se) for publicado.**
 
@@ -93,9 +91,7 @@ Repare que as três caixas dizem a mesma coisa: **repositório completo**. Isso 
 Ao rodar o primeiro `git push`, o Git vai querer saber quem você é perante o GitHub. E aqui há uma pegadinha histórica:
 
 > [!warning] Sua senha do GitHub não funciona no `git push`
-> **O que acontece:** você digita usuário e senha e recebe um erro de autenticação, mesmo com a senha certa.
-> **Por quê:** o GitHub desativou autenticação por senha para operações de Git em **agosto de 2021**, por segurança. A senha continua valendo para entrar no site — só não para o `push`.
-> **Como resolver:** escolha um dos caminhos abaixo.
+> **O que acontece:** você digita usuário e senha e recebe um erro de autenticação, mesmo com a senha certa. **Por quê:** o GitHub desativou autenticação por senha para operações de Git em **agosto de 2021**, por segurança. A senha continua valendo para entrar no site — só não para o `push`. **Como resolver:** escolha um dos caminhos abaixo.
 
 **Caminho 1 — deixe uma ferramenta cuidar disso (mais simples).** No Windows, o instalador do Git já inclui o *Git Credential Manager*: o primeiro `push` abre uma janela do navegador, você autoriza, e nunca mais pensa no assunto. No macOS e Linux, instalar o [GitHub CLI](https://cli.github.com) e rodar `gh auth login` resolve do mesmo jeito.
 
@@ -152,19 +148,13 @@ Para um projeto acadêmico, três parágrafos bastam: o que é este trabalho, qu
 ## Armadilhas comuns
 
 > [!warning] Arquivos grandes travam o envio
-> **O que acontece:** o `push` falha com uma reclamação sobre tamanho de arquivo.
-> **Por quê:** o GitHub avisa acima de 50 MB e **bloqueia arquivos acima de 100 MB**. Bases de dados brutas, vídeos e imagens de microscopia estouram isso com facilidade.
-> **Como evitar:** não versione dados brutos pesados — versione o script que os processa e guarde os dados em um repositório de dados apropriado (Zenodo, OSF, Figshare, ou o servidor da instituição). Existe uma extensão para arquivos grandes (Git LFS), mas ela é assunto de um nível bem avançado.
+> **O que acontece:** o `push` falha com uma reclamação sobre tamanho de arquivo. **Por quê:** o GitHub avisa acima de 50 MB e **bloqueia arquivos acima de 100 MB**. Bases de dados brutas, vídeos e imagens de microscopia estouram isso com facilidade. **Como evitar:** não versione dados brutos pesados — versione o script que os processa e guarde os dados em um repositório de dados apropriado (Zenodo, OSF, Figshare, ou o servidor da instituição). Existe uma extensão para arquivos grandes (Git LFS), mas ela é assunto de um nível bem avançado.
 
 > [!warning] Commitar segredo em repositório público
-> **O que acontece:** uma senha, uma chave de API ou um arquivo de configuração com credenciais vai junto no commit.
-> **Por quê:** o `git add .` não distingue conteúdo, e robôs varrem repositórios públicos procurando exatamente isso — em minutos, não em dias.
-> **Como evitar:** se acontecer, **troque a credencial imediatamente** — apagar o arquivo não basta, porque o histórico guarda tudo. A remoção do histórico é possível, mas trabalhosa, e tem nota própria num nível avançado. Prevenção: repositório privado por padrão e, mais adiante, `.gitignore`.
+> **O que acontece:** uma senha, uma chave de API ou um arquivo de configuração com credenciais vai junto no commit. **Por quê:** o `git add .` não distingue conteúdo, e robôs varrem repositórios públicos procurando exatamente isso — em minutos, não em dias. **Como evitar:** se acontecer, **troque a credencial imediatamente** — apagar o arquivo não basta, porque o histórico guarda tudo. A remoção do histórico é possível, mas trabalhosa, e tem nota própria num nível avançado. Prevenção: repositório privado por padrão e, mais adiante, `.gitignore`.
 
 > [!warning] Achar que commit é backup
-> **O que acontece:** meses de commits impecáveis, zero `push`. O HD falha e leva tudo.
-> **Por quê:** commit grava no seu disco. Só o `push` copia para outro lugar.
-> **Como evitar:** o hábito do fim do dia. Se quiser garantia extra, nada impede ter **dois remotos** (GitHub e GitLab, por exemplo) — o Git aceita quantos você quiser, e enviar para ambos é literalmente outro `git push`.
+> **O que acontece:** meses de commits impecáveis, zero `push`. O HD falha e leva tudo. **Por quê:** commit grava no seu disco. Só o `push` copia para outro lugar. **Como evitar:** o hábito do fim do dia. Se quiser garantia extra, nada impede ter **dois remotos** (GitHub e GitLab, por exemplo) — o Git aceita quantos você quiser, e enviar para ambos é literalmente outro `git push`.
 
 ---
 

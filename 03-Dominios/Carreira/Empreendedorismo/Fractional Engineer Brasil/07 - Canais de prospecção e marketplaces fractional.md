@@ -65,19 +65,13 @@ Uma fractional CFO sem rede forte no mercado americano (acabou de migrar de um s
 ## Armadilhas comuns
 
 > [!warning] Ignorar os termos de conversão pra full-time
-> **O que acontece:** o fractional fecha cliente via marketplace, o engajamento evolui bem, e o cliente propõe contratá-lo full-time — mas a plataforma cobra uma taxa alta de conversão, criando atrito na negociação.
-> **Por quê:** marketplaces monetizam em cima da relação continuada; perder o cliente pra full-time direto reduz a receita futura da plataforma, e os termos costumam refletir isso.
-> **Como evitar:** ler a cláusula de conversão antes de aceitar o marketplace, e discutir com o cliente, se a conversa de full-time surgir, quem absorve essa taxa.
+> **O que acontece:** o fractional fecha cliente via marketplace, o engajamento evolui bem, e o cliente propõe contratá-lo full-time — mas a plataforma cobra uma taxa alta de conversão, criando atrito na negociação. **Por quê:** marketplaces monetizam em cima da relação continuada; perder o cliente pra full-time direto reduz a receita futura da plataforma, e os termos costumam refletir isso. **Como evitar:** ler a cláusula de conversão antes de aceitar o marketplace, e discutir com o cliente, se a conversa de full-time surgir, quem absorve essa taxa.
 
 > [!warning] Tratar LinkedIn como vitrine de currículo, não como canal de conteúdo
-> **O que acontece:** o perfil descreve cargos e responsabilidades passadas, mas nunca publica nada — não gera nenhum lead inbound.
-> **Por quê:** presença passiva (só o perfil preenchido) não ativa reconhecimento de nicho; é a publicação consistente que constrói a associação "esse é o problema que essa pessoa resolve" (ver [[04 - Definindo seu nicho e especialidade]]).
-> **Como evitar:** tratar o perfil como ponto de partida, não destino — a geração de lead vem do conteúdo publicado nele, não do perfil parado.
+> **O que acontece:** o perfil descreve cargos e responsabilidades passadas, mas nunca publica nada — não gera nenhum lead inbound. **Por quê:** presença passiva (só o perfil preenchido) não ativa reconhecimento de nicho; é a publicação consistente que constrói a associação "esse é o problema que essa pessoa resolve" (ver [[04 - Definindo seu nicho e especialidade]]). **Como evitar:** tratar o perfil como ponto de partida, não destino — a geração de lead vem do conteúdo publicado nele, não do perfil parado.
 
 > [!warning] Não diversificar canais até a rede secar de verdade
-> **O que acontece:** o fractional só começa a investir em marketplace ou conteúdo quando a fila de indicações já esvaziou, criando um hiato de receita entre um canal e outro amadurecer.
-> **Por quê:** conteúdo próprio, especialmente, leva meses pra gerar retorno consistente — começar tarde demais significa ficar sem receita nova durante a maturação.
-> **Como evitar:** iniciar o segundo e o terceiro canal em paralelo desde o primeiro cliente fechado, não depois que o primeiro canal parar de gerar.
+> **O que acontece:** o fractional só começa a investir em marketplace ou conteúdo quando a fila de indicações já esvaziou, criando um hiato de receita entre um canal e outro amadurecer. **Por quê:** conteúdo próprio, especialmente, leva meses pra gerar retorno consistente — começar tarde demais significa ficar sem receita nova durante a maturação. **Como evitar:** iniciar o segundo e o terceiro canal em paralelo desde o primeiro cliente fechado, não depois que o primeiro canal parar de gerar.
 
 ## Como explicar em inglês
 

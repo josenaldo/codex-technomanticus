@@ -16,54 +16,35 @@ tags:
 # Pensar como adversário
 
 > [!abstract] TL;DR
-> Segurança começa com uma pergunta simples e desconfortável: *quem quer me prejudicar e o que farão?*
-> Modelagem de ameaças (threat modeling) é o processo formal de responder isso **antes** de escrever código.
-> STRIDE dá vocabulário para nomear o que pode dar errado; árvores de ataque tornam o raciocínio do adversário
-> explícito e auditável; trust boundaries revelam onde validação é obrigatória, não opcional; e o princípio
-> "assume breach" exige que o design funcione mesmo quando um perímetro já foi violado. Pensar como adversário
-> não é paranoia — é engenharia.
+> Segurança começa com uma pergunta simples e desconfortável: *quem quer me prejudicar e o que farão?* Modelagem de ameaças (threat modeling) é o processo formal de responder isso **antes** de escrever código. STRIDE dá vocabulário para nomear o que pode dar errado; árvores de ataque tornam o raciocínio do adversário explícito e auditável; trust boundaries revelam onde validação é obrigatória, não opcional; e o princípio "assume breach" exige que o design funcione mesmo quando um perímetro já foi violado. Pensar como adversário não é paranoia — é engenharia.
 
 ---
 
 ## O problema com "segurança depois"
 
-Imagine que você projetou uma casa e, só depois de construída, chamou alguém para "adicionar segurança". A pessoa
-instala uma fechadura na porta da frente — mas a janela dos fundos continua aberta, o encanamento passa por baixo
-da calçada e qualquer vizinho com uma pá consegue acesso ao porão. Esse é o modelo clássico de segurança como
-*camada adicional tardia*: tecnicamente presente, operacionalmente inútil.
+Imagine que você projetou uma casa e, só depois de construída, chamou alguém para "adicionar segurança". A pessoa instala uma fechadura na porta da frente — mas a janela dos fundos continua aberta, o encanamento passa por baixo da calçada e qualquer vizinho com uma pá consegue acesso ao porão. Esse é o modelo clássico de segurança como *camada adicional tardia*: tecnicamente presente, operacionalmente inútil.
 
 A alternativa é projetar a casa já presumindo que adversários existem. Isso é threat modeling.
 
 > [!question] Por que fazer isso cedo?
-> Consertar uma vulnerabilidade de design custa ordens de magnitude mais do que consertá-la no papel.
-> O modelo de ameaças pertence à fase de arquitetura, não ao pentest de pré-produção.
+> Consertar uma vulnerabilidade de design custa ordens de magnitude mais do que consertá-la no papel. O modelo de ameaças pertence à fase de arquitetura, não ao pentest de pré-produção.
 
-O ponto de partida de qualquer threat modeling é enumerar **ativos** — o que tem valor e, portanto, atrai
-adversários: dados pessoais, tokens de autenticação, código-fonte proprietário, disponibilidade do serviço,
-reputação da marca. Sem saber o que você protege, é impossível saber contra o quê proteger.
+O ponto de partida de qualquer threat modeling é enumerar **ativos** — o que tem valor e, portanto, atrai adversários: dados pessoais, tokens de autenticação, código-fonte proprietário, disponibilidade do serviço, reputação da marca. Sem saber o que você protege, é impossível saber contra o quê proteger.
 
-Um segundo conceito estruturante é a **superfície de ataque**: o conjunto de todos os pontos de entrada e
-saída que um adversário pode explorar. APIs públicas, endpoints de upload, campos de formulário, conexões de
-terceiros, dependências de código — tudo que recebe input externo faz parte da superfície. A regra prática:
-superfície de ataque menor é sempre melhor. Desabilitar o que não é necessário é uma forma de defesa que
-não exige patches futuros.
+Um segundo conceito estruturante é a **superfície de ataque**: o conjunto de todos os pontos de entrada e saída que um adversário pode explorar. APIs públicas, endpoints de upload, campos de formulário, conexões de terceiros, dependências de código — tudo que recebe input externo faz parte da superfície. A regra prática: superfície de ataque menor é sempre melhor. Desabilitar o que não é necessário é uma forma de defesa que não exige patches futuros.
 
 ---
 
 ## As quatro perguntas de Shostack
 
-Adam Shostack, que liderou threat modeling na Microsoft e depois escreveu o livro de referência da área, propôs
-um framework deceptivamente simples. Toda sessão de modelagem de ameaças responde quatro perguntas:
+Adam Shostack, que liderou threat modeling na Microsoft e depois escreveu o livro de referência da área, propôs um framework deceptivamente simples. Toda sessão de modelagem de ameaças responde quatro perguntas:
 
-1. **O que estamos construindo?** — Um diagrama, um mapa do sistema. Sem esse mapa, não há como raciocinar sobre
-   ameaças. Você precisa ver quem fala com quem, que dados trafegam, onde ficam armazenados.
-2. **O que pode dar errado?** — A parte criativa e técnica. É aqui que frameworks como STRIDE entram para
-   estruturar o pensamento.
+1. **O que estamos construindo?** — Um diagrama, um mapa do sistema. Sem esse mapa, não há como raciocinar sobre ameaças. Você precisa ver quem fala com quem, que dados trafegam, onde ficam armazenados.
+2. **O que pode dar errado?** — A parte criativa e técnica. É aqui que frameworks como STRIDE entram para estruturar o pensamento.
 3. **O que vamos fazer a respeito?** — Para cada ameaça identificada: aceitar, mitigar, transferir ou eliminar.
 4. **Fizemos um bom trabalho?** — Revisão: cobrimos as ameaças relevantes? As mitigações fazem sentido?
 
-A quarta pergunta é a mais ignorada — e a mais honesta. A modelagem de ameaças não é um exercício de caixa-de-
-seleção; é um ciclo.
+A quarta pergunta é a mais ignorada — e a mais honesta. A modelagem de ameaças não é um exercício de caixa-de- seleção; é um ciclo.
 
 ```mermaid
 flowchart TD
@@ -76,15 +57,13 @@ flowchart TD
 ```
 
 > [!info] Leitura do diagrama
-> O processo é cíclico: cada iteração (sprint, mudança de arquitetura, novo componente) reinicia o ciclo.
-> A seta de Q4 → Q1 é intencional — threat modeling não é "feito uma vez e arquivado".
+> O processo é cíclico: cada iteração (sprint, mudança de arquitetura, novo componente) reinicia o ciclo. A seta de Q4 → Q1 é intencional — threat modeling não é "feito uma vez e arquivado".
 
 ---
 
 ## STRIDE: dar nome ao que pode dar errado
 
-STRIDE foi criado na Microsoft em 1999 por Loren Kohnfelder e Praerit Garg como um mnemônico para os seis tipos
-de ameaças que afetam qualquer sistema. Cada letra mapeia para uma propriedade de segurança que ela viola:
+STRIDE foi criado na Microsoft em 1999 por Loren Kohnfelder e Praerit Garg como um mnemônico para os seis tipos de ameaças que afetam qualquer sistema. Cada letra mapeia para uma propriedade de segurança que ela viola:
 
 | Ameaça STRIDE | O que é | Propriedade violada |
 |---|---|---|
@@ -95,8 +74,7 @@ de ameaças que afetam qualquer sistema. Cada letra mapeia para uma propriedade 
 | **D**enial of Service | Tornar o sistema indisponível para usuários legítimos | Disponibilidade |
 | **E**levation of Privilege | Obter permissões além do que foi concedido | Autorização |
 
-Perceba que STRIDE cobre o triângulo CIA (Confidencialidade, Integridade, Disponibilidade) e estende com
-Autenticação, Não-repúdio e Autorização — o que às vezes se chama de CIA+AAA.
+Perceba que STRIDE cobre o triângulo CIA (Confidencialidade, Integridade, Disponibilidade) e estende com Autenticação, Não-repúdio e Autorização — o que às vezes se chama de CIA+AAA.
 
 ```mermaid
 flowchart LR
@@ -127,9 +105,7 @@ flowchart LR
 ```
 
 > [!info] Leitura do diagrama
-> Cada ameaça STRIDE viola exatamente uma propriedade de segurança. O mapeamento não é acidental — serve como
-> checklist: se você está modelando um componente, percorra as seis letras e pergunte "como este elemento pode
-> ser *spoofado*? *tamperado*?" etc. O STRIDE funciona melhor aplicado sobre cada elemento de um DFD.
+> Cada ameaça STRIDE viola exatamente uma propriedade de segurança. O mapeamento não é acidental — serve como checklist: se você está modelando um componente, percorra as seis letras e pergunte "como este elemento pode ser *spoofado*? *tamperado*?" etc. O STRIDE funciona melhor aplicado sobre cada elemento de um DFD.
 
 > [!example] Aplicando STRIDE a um formulário de login
 > - **S** (Spoofing): atacante usa credenciais roubadas ou força bruta para se passar por outro usuário.
@@ -149,12 +125,10 @@ Um Data Flow Diagram (DFD) é um mapa do sistema com quatro elementos:
 - **Entidades externas** (retângulos): usuários, sistemas terceiros, navegadores.
 - **Fluxos de dados** (setas): o que trafega entre os elementos acima.
 
-A adição chave para threat modeling é a **trust boundary** (fronteira de confiança): uma linha que separa regiões
-com diferentes níveis de privilégio ou controle. Dados que cruzam essa linha são suspeitos por definição.
+A adição chave para threat modeling é a **trust boundary** (fronteira de confiança): uma linha que separa regiões com diferentes níveis de privilégio ou controle. Dados que cruzam essa linha são suspeitos por definição.
 
 > [!warning] Regra de ouro das trust boundaries
-> Tudo que cruza uma fronteira de confiança é hostil até prova em contrário. Não importa se veio de outro
-> serviço interno — se ele pode ser comprometido, seus dados também podem ser adulterados.
+> Tudo que cruza uma fronteira de confiança é hostil até prova em contrário. Não importa se veio de outro serviço interno — se ele pode ser comprometido, seus dados também podem ser adulterados.
 
 ```mermaid
 flowchart TD
@@ -174,30 +148,23 @@ flowchart TD
 ```
 
 > [!info] Leitura do diagrama
-> As linhas tracejadas representam as trust boundaries. Qualquer seta que as cruza exige validação explícita:
-> sanitização de input (Internet → DMZ), queries parametrizadas (DMZ → BD), verificação de assinatura (JWT),
-> etc. As setas *dentro* de uma mesma zona ainda merecem atenção, mas o risco de cruzamento de fronteira é maior.
+> As linhas tracejadas representam as trust boundaries. Qualquer seta que as cruza exige validação explícita: sanitização de input (Internet → DMZ), queries parametrizadas (DMZ → BD), verificação de assinatura (JWT), etc. As setas *dentro* de uma mesma zona ainda merecem atenção, mas o risco de cruzamento de fronteira é maior.
 
 ---
 
 ## Árvores de ataque: raciocinar como o atacante
 
-Bruce Schneier formalizou as *attack trees* em 1999 no Dr. Dobb's Journal. A ideia é simples e poderosa:
-modelar o objetivo do atacante como a raiz de uma árvore, e as formas de alcançá-lo como galhos.
+Bruce Schneier formalizou as *attack trees* em 1999 no Dr. Dobb's Journal. A ideia é simples e poderosa: modelar o objetivo do atacante como a raiz de uma árvore, e as formas de alcançá-lo como galhos.
 
 - **Nó OR**: o atacante consegue atingir o nó-pai se atingir *qualquer* filho. (Caminhos alternativos.)
 - **Nó AND**: o atacante só consegue atingir o nó-pai se atingir *todos* os filhos. (Requisitos cumulativos.)
-- **Folhas**: ações concretas e elementares. Atribui-se a elas custo, probabilidade, nível de habilidade
-  necessário — e depois se sintetiza esses atributos para cima na árvore.
+- **Folhas**: ações concretas e elementares. Atribui-se a elas custo, probabilidade, nível de habilidade necessário — e depois se sintetiza esses atributos para cima na árvore.
 
 A síntese de atributos funciona de baixo para cima:
 - Para nó **OR**: custo do pai = **mínimo** dos custos dos filhos (o atacante escolhe o caminho mais barato).
 - Para nó **AND**: custo do pai = **soma** dos custos dos filhos (todos precisam ser satisfeitos).
 
-Isso transforma a árvore em um instrumento analítico: dado um orçamento de ataque hipotético, você consegue
-determinar quais caminhos são economicamente viáveis para diferentes perfis de adversário. Um script kiddie
-com custo ≤ $100 de ferramentas encontra um subconjunto de folhas acessíveis; um APT com orçamento de milhões
-tem acesso a quase todos. A árvore torna esse raciocínio explícito e comparável.
+Isso transforma a árvore em um instrumento analítico: dado um orçamento de ataque hipotético, você consegue determinar quais caminhos são economicamente viáveis para diferentes perfis de adversário. Um script kiddie com custo ≤ $100 de ferramentas encontra um subconjunto de folhas acessíveis; um APT com orçamento de milhões tem acesso a quase todos. A árvore torna esse raciocínio explícito e comparável.
 
 Exemplo: "Ler o e-mail da vítima" como objetivo raiz.
 
@@ -224,22 +191,16 @@ flowchart TD
 ```
 
 > [!info] Leitura do diagrama
-> Nós marcados como **OR**: o atacante escolhe o caminho de menor resistência — o mais barato, o mais provável.
-> Nós **AND** (como "Comprometer provedor"): exigem que *todas* as sub-condições sejam satisfeitas, o que os torna
-> intrinsecamente mais difíceis. Isso é um insight de defesa: a árvore revela quais folhas são os "pontos
-> de corte" — basta defender uma delas para tornar aquele caminho infactível.
+> Nós marcados como **OR**: o atacante escolhe o caminho de menor resistência — o mais barato, o mais provável. Nós **AND** (como "Comprometer provedor"): exigem que *todas* as sub-condições sejam satisfeitas, o que os torna intrinsecamente mais difíceis. Isso é um insight de defesa: a árvore revela quais folhas são os "pontos de corte" — basta defender uma delas para tornar aquele caminho infactível.
 
 > [!tip] Por que árvores de ataque importam em design
-> Elas tornam explícito o raciocínio do adversário. Em vez de perguntar "o que protegemos?", você pergunta
-> "quais caminhos o atacante tem?". A mitigação mais eficiente é a que corta o maior número de caminhos —
-> não necessariamente a mais cara.
+> Elas tornam explícito o raciocínio do adversário. Em vez de perguntar "o que protegemos?", você pergunta "quais caminhos o atacante tem?". A mitigação mais eficiente é a que corta o maior número de caminhos — não necessariamente a mais cara.
 
 ---
 
 ## Outros frameworks de threat modeling
 
-STRIDE não é o único jogo em cidade. Em entrevistas e no campo, você vai encontrar referências a outros
-frameworks. Saber compará-los demonstra maturidade técnica:
+STRIDE não é o único jogo em cidade. Em entrevistas e no campo, você vai encontrar referências a outros frameworks. Saber compará-los demonstra maturidade técnica:
 
 | Framework | Origem | Foco | Quando usar |
 |---|---|---|---|
@@ -249,19 +210,16 @@ frameworks. Saber compará-los demonstra maturidade técnica:
 | **Attack Trees** | Schneier, 1999 | Raciocínio adversarial estruturado | Complemento a qualquer framework; ótimo para casos específicos de alto risco |
 | **MITRE ATT&CK** | MITRE, 2013 | Táticas e técnicas de atacantes reais (TTPs) | SOC, red team, análise pós-incidente — mais operacional que de design |
 
-A escolha não é exclusiva. Na prática, equipes maduras combinam: DFD + STRIDE para o processo de design,
-LINDDUN para a dimensão de privacidade, e ATT&CK para mapear ameaças a componentes específicos de infra.
+A escolha não é exclusiva. Na prática, equipes maduras combinam: DFD + STRIDE para o processo de design, LINDDUN para a dimensão de privacidade, e ATT&CK para mapear ameaças a componentes específicos de infra.
 
 > [!tip] O que mencionar em entrevista sobre frameworks
-> "I default to STRIDE over a DFD because it's systematic and the mapping to security properties makes
-> it easy to reason about countermeasures. For privacy-sensitive systems I'd layer LINDDUN on top."
+> "I default to STRIDE over a DFD because it's systematic and the mapping to security properties makes it easy to reason about countermeasures. For privacy-sensitive systems I'd layer LINDDUN on top."
 
 ---
 
 ## Tipos de adversário: contra quem você se defende?
 
-Não existe "seguro". Existe "seguro contra X com custo Y em contexto Z". O modelo de ameaça depende
-diretamente do adversário que você está modelando.
+Não existe "seguro". Existe "seguro contra X com custo Y em contexto Z". O modelo de ameaça depende diretamente do adversário que você está modelando.
 
 | Tipo de adversário | Capacidade técnica | Motivação | Exemplo de ataque |
 |---|---|---|---|
@@ -272,38 +230,26 @@ diretamente do adversário que você está modelando.
 | APT / Estado-nação | Muito alta — zero-days, paciência | Espionagem, sabotagem, geopolítica | Stuxnet, SolarWinds supply-chain |
 
 > [!warning] O erro mais comum de threat modeling
-> Modelar ameaças como se o adversário fosse sempre um APT estatal, ou modelar como se fosse sempre um
-> script kiddie. A pergunta correta é: *dada a atratividade dos meus ativos, quem provavelmente vai tentar
-> atacar?* Um CRUD interno de RH tem perfil de ameaça diferente de uma exchange de criptomoedas.
+> Modelar ameaças como se o adversário fosse sempre um APT estatal, ou modelar como se fosse sempre um script kiddie. A pergunta correta é: *dada a atratividade dos meus ativos, quem provavelmente vai tentar atacar?* Um CRUD interno de RH tem perfil de ameaça diferente de uma exchange de criptomoedas.
 
-A resposta a essa pergunta determina onde você investe: MFA simples barra 99% dos scripts kiddies e dos
-criminosos oportunistas. Contra APT, você precisa de isolamento, detecção de anomalias, segmentação de rede
-e — inevitavelmente — assume breach.
+A resposta a essa pergunta determina onde você investe: MFA simples barra 99% dos scripts kiddies e dos criminosos oportunistas. Contra APT, você precisa de isolamento, detecção de anomalias, segmentação de rede e — inevitavelmente — assume breach.
 
 ---
 
 ## "Assume breach": projetar para o dia depois da invasão
 
-*Assume breach* é a hipótese de design que presume que um adversário já está dentro do sistema. É a resposta
-pragmática ao fato de que nenhuma defesa perimetral é perfeita.
+*Assume breach* é a hipótese de design que presume que um adversário já está dentro do sistema. É a resposta pragmática ao fato de que nenhuma defesa perimetral é perfeita.
 
 A consequência prática: **o design não pode depender de nenhum perímetro ser inviolável**. Isso leva a:
 
-- **Menor privilégio** em cada componente: se um microsserviço for comprometido, ele não deve conseguir acesso
-  ao banco de dados de outro domínio.
+- **Menor privilégio** em cada componente: se um microsserviço for comprometido, ele não deve conseguir acesso ao banco de dados de outro domínio.
 - **Segmentação de rede**: east-west traffic (interno) é tão suspeito quanto north-south (externo).
-- **Monitoração e detecção**: se a pergunta for "como detecto o intruso?", você está no assume breach. Se a
-  pergunta for "como impedir que ele entre?", você ainda está no modelo de perímetro.
+- **Monitoração e detecção**: se a pergunta for "como detecto o intruso?", você está no assume breach. Se a pergunta for "como impedir que ele entre?", você ainda está no modelo de perímetro.
 - **Blast radius mínimo**: um comprometimento deve ter consequências limitadas, não cascata irrestrita.
 
-Assume breach é o alicerce filosófico do Zero Trust — que a nota [[19 - Zero trust e defesa em profundidade]]
-desenvolve em detalhe.
+Assume breach é o alicerce filosófico do Zero Trust — que a nota [[19 - Zero trust e defesa em profundidade]] desenvolve em detalhe.
 
-Um exemplo canônico do que acontece quando assume breach *não* é adotado: o ataque à Target em 2013. O
-invasor entrou pela rede de um fornecedor de HVAC (sistema de climatização) que tinha acesso à rede de TI da
-varejista. Uma vez dentro, moveu-se lateralmente sem obstáculos — porque o design presumia que quem estava
-"dentro" era confiável. O resultado: 40 milhões de números de cartão comprometidos. O perímetro falhou na
-primeira barreira; não havia segunda.
+Um exemplo canônico do que acontece quando assume breach *não* é adotado: o ataque à Target em 2013. O invasor entrou pela rede de um fornecedor de HVAC (sistema de climatização) que tinha acesso à rede de TI da varejista. Uma vez dentro, moveu-se lateralmente sem obstáculos — porque o design presumia que quem estava "dentro" era confiável. O resultado: 40 milhões de números de cartão comprometidos. O perímetro falhou na primeira barreira; não havia segunda.
 
 > [!example] Três perguntas de assume breach para seu sistema
 > 1. Se um microsserviço qualquer for comprometido, quais dados ele consegue ler ou modificar?
@@ -316,9 +262,7 @@ primeira barreira; não havia segunda.
 
 ## Cyber Kill Chain: como um ataque se desdobra
 
-A Cyber Kill Chain é um modelo criado pela Lockheed Martin em 2011 que descreve as sete fases de um ataque
-bem-sucedido. A ideia central (inspirada no conceito militar de "kill chain"): um atacante precisa completar
-*todas* as fases; o defensor precisa interceptá-lo em *qualquer uma*.
+A Cyber Kill Chain é um modelo criado pela Lockheed Martin em 2011 que descreve as sete fases de um ataque bem-sucedido. A ideia central (inspirada no conceito militar de "kill chain"): um atacante precisa completar *todas* as fases; o defensor precisa interceptá-lo em *qualquer uma*.
 
 ```mermaid
 flowchart LR
@@ -334,14 +278,9 @@ flowchart LR
 ```
 
 > [!info] Leitura do diagrama
-> O fluxo é linear e sequencial: cada fase é pré-requisito da próxima. **Defender em múltiplas fases** é mais
-> robusto do que defender em uma só: se o anti-spam não captura o phishing (fase 3), o EDR pode detectar a
-> execução do payload (fase 4); se não, o SIEM pode detectar o beaconing de C2 (fase 6). Cada camada
-> "compra tempo" para resposta — defense in depth tem fundamento no kill chain.
+> O fluxo é linear e sequencial: cada fase é pré-requisito da próxima. **Defender em múltiplas fases** é mais robusto do que defender em uma só: se o anti-spam não captura o phishing (fase 3), o EDR pode detectar a execução do payload (fase 4); se não, o SIEM pode detectar o beaconing de C2 (fase 6). Cada camada "compra tempo" para resposta — defense in depth tem fundamento no kill chain.
 
-Algumas críticas válidas ao modelo: é excessivamente focado em ataques externos lineares e não representa bem
-ataques internos, pivot lateral complexo ou campanhas prolongadas de APT. Para esses casos, o framework
-MITRE ATT&CK é mais granular — mas o kill chain continua sendo o mapa conceitual de referência.
+Algumas críticas válidas ao modelo: é excessivamente focado em ataques externos lineares e não representa bem ataques internos, pivot lateral complexo ou campanhas prolongadas de APT. Para esses casos, o framework MITRE ATT&CK é mais granular — mas o kill chain continua sendo o mapa conceitual de referência.
 
 O poder prático do kill chain para engenheiros de software está em mapear **contramedidas por fase**:
 
@@ -355,9 +294,7 @@ O poder prático do kill chain para engenheiros de software está em mapear **co
 | Actions | Criptografia em repouso; DLP; logs de acesso a dados sensíveis; backups offline |
 
 > [!note] Onde engenheiros de software têm mais alavancagem
-> As fases Delivery e Exploitation são onde código de produto tem o maior impacto defensivo: validação de
-> input, updates de dependências e uso de APIs seguras por padrão cortam mais caminhos do que qualquer
-> ferramenta de segurança instalada depois.
+> As fases Delivery e Exploitation são onde código de produto tem o maior impacto defensivo: validação de input, updates de dependências e uso de APIs seguras por padrão cortam mais caminhos do que qualquer ferramenta de segurança instalada depois.
 
 ---
 
@@ -365,8 +302,7 @@ O poder prático do kill chain para engenheiros de software está em mapear **co
 
 Combine tudo o que aprendemos. Sistema: endpoint `POST /login` com usuário/senha, que retorna um JWT.
 
-**Passo 1 — O que estamos construindo?** Entidade externa (navegador) envia credenciais via HTTPS para processo
-web, que valida contra BD de usuários e retorna token de sessão.
+**Passo 1 — O que estamos construindo?** Entidade externa (navegador) envia credenciais via HTTPS para processo web, que valida contra BD de usuários e retorna token de sessão.
 
 **Trust boundaries identificadas:** Internet ↔ servidor web; servidor web ↔ banco de dados.
 
@@ -392,8 +328,7 @@ web, que valida contra BD de usuários e retorna token de sessão.
 - Ameaça 7: bcrypt/argon2 com salt único. Eliminar (armazenar hash, nunca senha).
 - Ameaça 9: assinar o JWT com chave privada (RS256/ES256) e validar assinatura + claims no servidor. Mitigar.
 
-**Passo 4 — Fizemos um bom trabalho?** Revisamos as nove ameaças identificadas. Cobertura parece razoável.
-Revisão com outro engenheiro, depois do sprint.
+**Passo 4 — Fizemos um bom trabalho?** Revisamos as nove ameaças identificadas. Cobertura parece razoável. Revisão com outro engenheiro, depois do sprint.
 
 ---
 
@@ -411,9 +346,7 @@ Revisão com outro engenheiro, depois do sprint.
 
 ## Em entrevista
 
-Threat modeling é um tema recorrente em entrevistas de engenharia de plataforma, segurança e sistemas
-distribuídos. O entrevistador quer saber se você pensa proativamente sobre adversários, não apenas
-reativamente sobre bugs. Frases úteis:
+Threat modeling é um tema recorrente em entrevistas de engenharia de plataforma, segurança e sistemas distribuídos. O entrevistador quer saber se você pensa proativamente sobre adversários, não apenas reativamente sobre bugs. Frases úteis:
 
 - *"My first step would be to draw a data flow diagram and identify the trust boundaries — any data crossing them needs explicit validation."*
 - *"I'd apply STRIDE to each component: spoofing, tampering, repudiation, information disclosure, denial of service, elevation of privilege."*

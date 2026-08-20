@@ -351,29 +351,19 @@ HOC em uma frase: uma função que embrulha um componente em outro para injetar 
 ## Armadilhas comuns
 
 > [!warning] Colisão silenciosa de nomes de props
-> **O que acontece:** o HOC injeta uma prop chamada `theme`; o componente original também tem uma prop `theme`. O HOC sobrescreve o valor sem aviso, o componente renderiza com dado errado.
-> **Por quê:** o spread `{...props, theme: injectedTheme}` sobrescreve qualquer `theme` já em `props`.
-> **Como evitar:** prefixe props injetadas com o nome do HOC (`auth_user`, `withAuth_user`) ou escolha nomes muito específicos que dificilmente colidem (`currentUser` em vez de `user`). Documente as props injetadas no tipo `WithXProps`.
+> **O que acontece:** o HOC injeta uma prop chamada `theme`; o componente original também tem uma prop `theme`. O HOC sobrescreve o valor sem aviso, o componente renderiza com dado errado. **Por quê:** o spread `{...props, theme: injectedTheme}` sobrescreve qualquer `theme` já em `props`. **Como evitar:** prefixe props injetadas com o nome do HOC (`auth_user`, `withAuth_user`) ou escolha nomes muito específicos que dificilmente colidem (`currentUser` em vez de `user`). Documente as props injetadas no tipo `WithXProps`.
 
 > [!warning] Ref perdida sem forwardRef
-> **O que acontece:** você passa um `ref` para `ProtectedDashboard`; a ref aponta para o wrapper do HOC, nunca chega ao elemento interno.
-> **Por quê:** `ref` não é uma prop comum — o React intercepta e não a inclui no objeto `props`.
-> **Como evitar:** sempre envolva o HOC com `React.forwardRef` quando o componente pode precisar de ref. Em React 19+, `ref` virou prop normal — mas libs que compila para React 18 ainda precisam de `forwardRef`.
+> **O que acontece:** você passa um `ref` para `ProtectedDashboard`; a ref aponta para o wrapper do HOC, nunca chega ao elemento interno. **Por quê:** `ref` não é uma prop comum — o React intercepta e não a inclui no objeto `props`. **Como evitar:** sempre envolva o HOC com `React.forwardRef` quando o componente pode precisar de ref. Em React 19+, `ref` virou prop normal — mas libs que compila para React 18 ainda precisam de `forwardRef`.
 
 > [!warning] Wrapper hell — composição de múltiplos HOCs
-> **O que acontece:** quatro HOCs empilhados criam quatro componentes extras na árvore. O DevTools mostra `withRouter > withTheme > withAuth > withLogging > Dashboard`. Cada re-render percorre todas as camadas.
-> **Por quê:** cada HOC retorna um novo componente React — a árvore de renderização reflete cada nível.
-> **Como evitar:** limite HOCs a casos onde hooks não resolvem. Se precisar de múltiplos HOCs, compose com `compose` do lodash/Redux ou pipeline manual; a árvore ainda terá N wrappers, mas o código de consumo fica legível. Prefira refatorar para hooks sempre que possível.
+> **O que acontece:** quatro HOCs empilhados criam quatro componentes extras na árvore. O DevTools mostra `withRouter > withTheme > withAuth > withLogging > Dashboard`. Cada re-render percorre todas as camadas. **Por quê:** cada HOC retorna um novo componente React — a árvore de renderização reflete cada nível. **Como evitar:** limite HOCs a casos onde hooks não resolvem. Se precisar de múltiplos HOCs, compose com `compose` do lodash/Redux ou pipeline manual; a árvore ainda terá N wrappers, mas o código de consumo fica legível. Prefira refatorar para hooks sempre que possível.
 
 > [!warning] Criar HOC quando hook resolve — complexidade desnecessária
-> **O que acontece:** você escreve `withData(Component)` que injeta dados buscados — mas o componente é um componente de função que já pode chamar `useData()` diretamente.
-> **Por quê:** HOC adiciona uma camada de indireção que não acrescenta nada se o componente pode usar hooks.
-> **Como evitar:** antes de escrever um HOC, pergunte: "o componente pode chamar um hook diretamente?" Se sim, escreva o hook. HOC só quando o componente não pode ser modificado (class component, componente de terceiro) ou quando a lib exige HOC.
+> **O que acontece:** você escreve `withData(Component)` que injeta dados buscados — mas o componente é um componente de função que já pode chamar `useData()` diretamente. **Por quê:** HOC adiciona uma camada de indireção que não acrescenta nada se o componente pode usar hooks. **Como evitar:** antes de escrever um HOC, pergunte: "o componente pode chamar um hook diretamente?" Se sim, escreva o hook. HOC só quando o componente não pode ser modificado (class component, componente de terceiro) ou quando a lib exige HOC.
 
 > [!warning] Não içar estáticos com hoistNonReactStatics
-> **O que acontece:** `Dashboard.getServerSideProps` existe no original; `withAuth(Dashboard).getServerSideProps` é `undefined`. O servidor não executa o data fetching.
-> **Por quê:** o wrapper criado pelo HOC é um componente novo — ele não herda automaticamente estáticos do original.
-> **Como evitar:** use `hoistNonReactStatics(Wrapper, WrappedComponent)` antes de retornar o wrapper, ou copie manualmente os estáticos necessários.
+> **O que acontece:** `Dashboard.getServerSideProps` existe no original; `withAuth(Dashboard).getServerSideProps` é `undefined`. O servidor não executa o data fetching. **Por quê:** o wrapper criado pelo HOC é um componente novo — ele não herda automaticamente estáticos do original. **Como evitar:** use `hoistNonReactStatics(Wrapper, WrappedComponent)` antes de retornar o wrapper, ou copie manualmente os estáticos necessários.
 
 ## Como explicar em inglês
 

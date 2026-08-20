@@ -22,13 +22,7 @@ aliases:
 # Currículo e LinkedIn como artefatos de triagem
 
 > [!abstract] TL;DR
-> Currículo não é autobiografia: é um **artefato funcional** com um único objetivo — passar por um filtro
-> e gerar uma conversa. Quem lê tem dezenas de candidaturas e dá a cada uma uma varredura de segundos,
-> muitas vezes depois de um sistema já ter filtrado por palavra-chave. Isso muda tudo: a unidade que
-> importa é a **linha de bullet**, e a fórmula que funciona é *verbo de ação + o que foi feito + resultado
-> mensurável*. A construção mais fraca do gênero — e a mais comum — é **"responsável por"**, porque
-> descreve atribuição em vez de realização. O LinkedIn cumpre função diferente: é onde recrutador
-> **procura ativamente**, então ele responde a busca, não a leitura.
+> Currículo não é autobiografia: é um **artefato funcional** com um único objetivo — passar por um filtro e gerar uma conversa. Quem lê tem dezenas de candidaturas e dá a cada uma uma varredura de segundos, muitas vezes depois de um sistema já ter filtrado por palavra-chave. Isso muda tudo: a unidade que importa é a **linha de bullet**, e a fórmula que funciona é *verbo de ação + o que foi feito + resultado mensurável*. A construção mais fraca do gênero — e a mais comum — é **"responsável por"**, porque descreve atribuição em vez de realização. O LinkedIn cumpre função diferente: é onde recrutador **procura ativamente**, então ele responde a busca, não a leitura.
 
 ## Sete segundos e uma varredura
 
@@ -78,19 +72,13 @@ graph LR
 ## Armadilhas comuns
 
 > [!warning] Listar atribuições em vez de realizações
-> **O que acontece:** o currículo descreve o cargo — "responsável por desenvolvimento e manutenção de aplicações" — e poderia pertencer a qualquer pessoa naquele cargo, em qualquer empresa.
-> **Por quê:** é assim que descrições de vaga são escritas, então o formato parece o correto para descrever trabalho.
-> **Como evitar:** teste linha a linha — *outra pessoa no mesmo cargo poderia escrever isto?* Se sim, a linha descreve o cargo, não você. Reescreva começando por verbo no passado e terminando em resultado.
+> **O que acontece:** o currículo descreve o cargo — "responsável por desenvolvimento e manutenção de aplicações" — e poderia pertencer a qualquer pessoa naquele cargo, em qualquer empresa. **Por quê:** é assim que descrições de vaga são escritas, então o formato parece o correto para descrever trabalho. **Como evitar:** teste linha a linha — *outra pessoa no mesmo cargo poderia escrever isto?* Se sim, a linha descreve o cargo, não você. Reescreva começando por verbo no passado e terminando em resultado.
 
 > [!warning] Formato que quebra na triagem automática
-> **O que acontece:** duas colunas, ícones e gráficos de proficiência viram texto embaralhado no processamento. O candidato é descartado por um filtro que nunca leu o conteúdo de verdade.
-> **Por quê:** o design foi pensado para impressionar um humano, e o primeiro leitor não é humano.
-> **Como evitar:** coluna única, cabeçalhos textuais, sem conteúdo essencial dentro de imagem ou tabela. Vale o teste de copiar o texto do PDF e colar num editor: se sair ilegível, o filtro leu ilegível.
+> **O que acontece:** duas colunas, ícones e gráficos de proficiência viram texto embaralhado no processamento. O candidato é descartado por um filtro que nunca leu o conteúdo de verdade. **Por quê:** o design foi pensado para impressionar um humano, e o primeiro leitor não é humano. **Como evitar:** coluna única, cabeçalhos textuais, sem conteúdo essencial dentro de imagem ou tabela. Vale o teste de copiar o texto do PDF e colar num editor: se sair ilegível, o filtro leu ilegível.
 
 > [!warning] Perfil que não bate com o currículo
-> **O que acontece:** cargos e datas divergem entre os dois. O recrutador nota, e a leitura de uma inconsistência trivial é desproporcional — passa a sensação de descuido ou de omissão deliberada.
-> **Por quê:** o LinkedIn costuma ser atualizado em outro momento, com menos cuidado, e ninguém revisa os dois lado a lado.
-> **Como evitar:** trate os dois como **uma fonte** com duas apresentações. Ao atualizar um, revise o outro no mesmo dia — especialmente datas, títulos e nomes de empresa.
+> **O que acontece:** cargos e datas divergem entre os dois. O recrutador nota, e a leitura de uma inconsistência trivial é desproporcional — passa a sensação de descuido ou de omissão deliberada. **Por quê:** o LinkedIn costuma ser atualizado em outro momento, com menos cuidado, e ninguém revisa os dois lado a lado. **Como evitar:** trate os dois como **uma fonte** com duas apresentações. Ao atualizar um, revise o outro no mesmo dia — especialmente datas, títulos e nomes de empresa.
 
 ## Como soa em inglês
 

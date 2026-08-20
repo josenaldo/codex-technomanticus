@@ -19,12 +19,7 @@ aliases:
 # A taxonomia das perguntas comportamentais
 
 > [!abstract] TL;DR
-> Parecem infinitas e não são: as perguntas comportamentais se organizam em **sete famílias**, e cada
-> família mede uma coisa específica que a pergunta não diz. A de conflito não quer o conflito — quer ver
-> **como você fala de quem discordou de você**. A de fracasso não quer o fracasso — quer ver se você
-> consegue olhar para o próprio erro sem terceirizar. Reconhecer a família em dois segundos vale mais
-> que ter cinquenta respostas prontas, porque as variações de enunciado são infinitas e as famílias são
-> sete. E a mesma história costuma servir a várias, com **ênfase diferente**.
+> Parecem infinitas e não são: as perguntas comportamentais se organizam em **sete famílias**, e cada família mede uma coisa específica que a pergunta não diz. A de conflito não quer o conflito — quer ver **como você fala de quem discordou de você**. A de fracasso não quer o fracasso — quer ver se você consegue olhar para o próprio erro sem terceirizar. Reconhecer a família em dois segundos vale mais que ter cinquenta respostas prontas, porque as variações de enunciado são infinitas e as famílias são sete. E a mesma história costuma servir a várias, com **ênfase diferente**.
 
 ## Cinquenta perguntas, sete respostas
 
@@ -81,19 +76,13 @@ Vale preparar as duas primeiras para cada história do repertório: são as mais
 ## Armadilhas comuns
 
 > [!warning] História sem uma decisão sua dentro
-> **O que acontece:** o relato descreve um projeto bem-sucedido em que o candidato participou, mas não fica claro o que **ele** decidiu. O entrevistador anota que não conseguiu isolar a contribuição.
-> **Por quê:** projetos são coletivos, e a memória guarda o resultado do time melhor que a própria escolha.
-> **Como evitar:** toda história do repertório precisa passar no teste — *qual foi a decisão que eu tomei, e qual era a alternativa?* Se não houver resposta, a história serve de contexto, não de resposta comportamental.
+> **O que acontece:** o relato descreve um projeto bem-sucedido em que o candidato participou, mas não fica claro o que **ele** decidiu. O entrevistador anota que não conseguiu isolar a contribuição. **Por quê:** projetos são coletivos, e a memória guarda o resultado do time melhor que a própria escolha. **Como evitar:** toda história do repertório precisa passar no teste — *qual foi a decisão que eu tomei, e qual era a alternativa?* Se não houver resposta, a história serve de contexto, não de resposta comportamental.
 
 > [!warning] Culpar terceiros, mesmo quando é verdade
-> **O que acontece:** a explicação do fracasso é factualmente correta — o requisito mudou, o fornecedor atrasou — e ainda assim registra mal, porque o entrevistador não obtém autocrítica nenhuma.
-> **Por quê:** o candidato está explicando causa; a pergunta pedia responsabilidade.
-> **Como evitar:** reconheça a circunstância em uma frase e mova o foco para **sua** parte: o que você poderia ter antecipado, verificado ou comunicado antes. Sempre há uma, e encontrá-la é o que a pergunta mede.
+> **O que acontece:** a explicação do fracasso é factualmente correta — o requisito mudou, o fornecedor atrasou — e ainda assim registra mal, porque o entrevistador não obtém autocrítica nenhuma. **Por quê:** o candidato está explicando causa; a pergunta pedia responsabilidade. **Como evitar:** reconheça a circunstância em uma frase e mova o foco para **sua** parte: o que você poderia ter antecipado, verificado ou comunicado antes. Sempre há uma, e encontrá-la é o que a pergunta mede.
 
 > [!warning] Responder com hipótese em vez de história
-> **O que acontece:** "eu normalmente faço assim..." ou "o que eu faria seria...". A pergunta pedia um caso concreto e recebeu política pessoal.
-> **Por quê:** generalizar é mais seguro — não expõe detalhe que possa ser questionado.
-> **Como evitar:** perceba o enunciado. "Conte sobre uma vez" pede **um** evento, com quando, onde e quem. Se a memória não traz nenhum, é sinal de que falta repertório para aquela família — problema de preparação, não de resposta.
+> **O que acontece:** "eu normalmente faço assim..." ou "o que eu faria seria...". A pergunta pedia um caso concreto e recebeu política pessoal. **Por quê:** generalizar é mais seguro — não expõe detalhe que possa ser questionado. **Como evitar:** perceba o enunciado. "Conte sobre uma vez" pede **um** evento, com quando, onde e quem. Se a memória não traz nenhum, é sinal de que falta repertório para aquela família — problema de preparação, não de resposta.
 
 ## Como soa em inglês
 

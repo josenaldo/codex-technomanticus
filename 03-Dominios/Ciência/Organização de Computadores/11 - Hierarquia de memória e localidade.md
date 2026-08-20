@@ -41,9 +41,7 @@ Hoje, dependendo do nível de cache vs. memória principal vs. disco, o gap pode
 O gargalo de von Neumann que você viu em [[07 - Arquitetura de von Neumann e o ciclo de instrução]] não é só sobre o barramento único de dados/instrução — é também sobre esse abismo crescente de velocidade entre "quem processa" e "quem armazena".
 
 > [!question] Por que a RAM é tão lenta comparada ao cache?
-> Cache L1 usa **SRAM** (Static RAM): 6 transistores por bit, flip-flops que mantêm o estado enquanto houver energia. Rápida, mas cara e grande por bit.
-> RAM principal usa **DRAM** (Dynamic RAM): 1 capacitor + 1 transistor por bit. Densa e barata, mas precisa ser recarregada periodicamente (refresh), e a leitura envolve carregar linhas/colunas e amplificadores de sentido — um processo inerentemente mais lento.
-> Fazer 32 GB de SRAM custaria milhares de dólares e geraria calor insuportável. A física nos obriga à pirâmide.
+> Cache L1 usa **SRAM** (Static RAM): 6 transistores por bit, flip-flops que mantêm o estado enquanto houver energia. Rápida, mas cara e grande por bit. RAM principal usa **DRAM** (Dynamic RAM): 1 capacitor + 1 transistor por bit. Densa e barata, mas precisa ser recarregada periodicamente (refresh), e a leitura envolve carregar linhas/colunas e amplificadores de sentido — um processo inerentemente mais lento. Fazer 32 GB de SRAM custaria milhares de dólares e geraria calor insuportável. A física nos obriga à pirâmide.
 
 A solução que a indústria convergiu nas últimas décadas é engenhosa: em vez de tentar tornar a memória principal tão rápida quanto a CPU, cria-se uma **hierarquia** de memórias. Cada nível é um compromisso diferente entre velocidade, capacidade e custo.
 
@@ -368,16 +366,7 @@ Em contextos técnicos internacionais, conhecer a hierarquia de memória e seus 
 
 Quando perguntado sobre desempenho de um sistema, referencie a hierarquia para mostrar raciocínio estruturado: "O gargalo é provavelmente acesso a disco — podemos mover páginas quentes para RAM com um buffer pool, reduzindo latência de ~5 ms para ~100 ns, ou seja, ~50.000× mais rápido por acesso."
 
-*Memory wall — the growing gap between CPU speed and DRAM access latency, coined by Wulf and McKee (1994).*
-*Cache hierarchy — the multi-level structure (registers, L1, L2, L3, RAM, SSD, disk) that bridges the speed gap.*
-*Cache hit — when the requested data is found in a given cache level without going to a slower level.*
-*Cache miss — when data is not found and must be fetched from the next (slower) level.*
-*Temporal locality — recently accessed data tends to be accessed again soon; exploited by keeping data in cache across iterations.*
-*Spatial locality — data near recently accessed addresses tends to be accessed soon; exploited by cache line prefetching.*
-*Cache line — the minimum unit of data transferred between cache levels, typically 64 bytes.*
-*Pointer chasing — sequential accesses through linked data structures that defeat spatial locality.*
-*Array of Structs (AoS) vs. Struct of Arrays (SoA) — memory layout trade-off with direct cache utilization implications.*
-*Hardware prefetcher — a CPU unit that predicts and pre-loads cache lines before they are explicitly requested.*
+*Memory wall — the growing gap between CPU speed and DRAM access latency, coined by Wulf and McKee (1994).* *Cache hierarchy — the multi-level structure (registers, L1, L2, L3, RAM, SSD, disk) that bridges the speed gap.* *Cache hit — when the requested data is found in a given cache level without going to a slower level.* *Cache miss — when data is not found and must be fetched from the next (slower) level.* *Temporal locality — recently accessed data tends to be accessed again soon; exploited by keeping data in cache across iterations.* *Spatial locality — data near recently accessed addresses tends to be accessed soon; exploited by cache line prefetching.* *Cache line — the minimum unit of data transferred between cache levels, typically 64 bytes.* *Pointer chasing — sequential accesses through linked data structures that defeat spatial locality.* *Array of Structs (AoS) vs. Struct of Arrays (SoA) — memory layout trade-off with direct cache utilization implications.* *Hardware prefetcher — a CPU unit that predicts and pre-loads cache lines before they are explicitly requested.*
 
 | Termo PT                          | Termo EN                          |
 |-----------------------------------|-----------------------------------|

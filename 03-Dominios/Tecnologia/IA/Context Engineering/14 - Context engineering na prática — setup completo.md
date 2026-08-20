@@ -439,17 +439,13 @@ O resultado é um sistema que escala sem aumentar custo de forma linear — porq
 
 ## Estado da arte — junho de 2026
 
-**AGENTS.md como padrão de mercado**
-A spec `AGENTS.md` sob a Linux Foundation está em adoção rápida — a maioria das ferramentas de AI coding (Claude Code, Cursor, Aider, Copilot) suporta ou está implementando suporte nativo em 2026. Times que adotam `AGENTS.md` em vez de arquivos tool-específicos ganham portabilidade entre ferramentas.
+**AGENTS.md como padrão de mercado** A spec `AGENTS.md` sob a Linux Foundation está em adoção rápida — a maioria das ferramentas de AI coding (Claude Code, Cursor, Aider, Copilot) suporta ou está implementando suporte nativo em 2026. Times que adotam `AGENTS.md` em vez de arquivos tool-específicos ganham portabilidade entre ferramentas.
 
-**Context engineering teams em empresas grandes**
-Em 2025-2026, grandes empresas como Shopify, Stripe e Linear formalizaram "context engineering" como responsabilidade de um time dedicado — não dos devs individuais. Esses times são responsáveis por manter `AGENTS.md`, skills, e medir context quality (→ [[13 - Entropia e qualidade de contexto]]) como KPI de produto.
+**Context engineering teams em empresas grandes** Em 2025-2026, grandes empresas como Shopify, Stripe e Linear formalizaram "context engineering" como responsabilidade de um time dedicado — não dos devs individuais. Esses times são responsáveis por manter `AGENTS.md`, skills, e medir context quality (→ [[13 - Entropia e qualidade de contexto]]) como KPI de produto.
 
-**MCP como infraestrutura padrão**
-O Model Context Protocol deixou de ser experimental em 2026 — virou infraestrutura. Times de plataforma mantêm MCP servers como APIs internas, e os agentes os consomem sem configuração adicional por projeto. A expectativa é que, até 2027, JIT retrieval via MCP seja o padrão dominante substituindo pipelines de RAG offline.
+**MCP como infraestrutura padrão** O Model Context Protocol deixou de ser experimental em 2026 — virou infraestrutura. Times de plataforma mantêm MCP servers como APIs internas, e os agentes os consomem sem configuração adicional por projeto. A expectativa é que, até 2027, JIT retrieval via MCP seja o padrão dominante substituindo pipelines de RAG offline.
 
-**Skills como tooling de primeira classe**
-Ferramentas como Claude Code adicionaram UI para gerenciar skills — listar, ativar, testar. Não é mais só um arquivo markdown num diretório; é um artefato gerenciado com versão, teste e analytics de uso (quantas vezes foi carregada, com que accuracy).
+**Skills como tooling de primeira classe** Ferramentas como Claude Code adicionaram UI para gerenciar skills — listar, ativar, testar. Não é mais só um arquivo markdown num diretório; é um artefato gerenciado com versão, teste e analytics de uso (quantas vezes foi carregada, com que accuracy).
 
 ---
 

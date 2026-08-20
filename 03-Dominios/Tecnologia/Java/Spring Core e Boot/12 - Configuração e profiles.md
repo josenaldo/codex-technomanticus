@@ -220,20 +220,15 @@ java -jar order-service.jar
 
 ## Armadilhas
 
-**1. Segredo hardcoded em `application.yml`**
-Colocar senhas, tokens ou chaves de API diretamente no arquivo commitado no repositório expõe credenciais em todo o histórico git. Sempre use referência a variável de ambiente (`${DB_PASSWORD}`) ou integre com um cofre de segredos.
+**1. Segredo hardcoded em `application.yml`** Colocar senhas, tokens ou chaves de API diretamente no arquivo commitado no repositório expõe credenciais em todo o histórico git. Sempre use referência a variável de ambiente (`${DB_PASSWORD}`) ou integre com um cofre de segredos.
 
-**2. `@Value` espalhado onde cabia binding tipado**
-Quando um serviço tem cinco ou mais `@Value("${order.*}")` em campos diferentes, a manutenção se torna caótica: não há validação centralizada, o IDE não autocompleta, e testes unitários precisam mockar cada propriedade manualmente. Agrupe em um `@ConfigurationProperties`.
+**2. `@Value` espalhado onde cabia binding tipado** Quando um serviço tem cinco ou mais `@Value("${order.*}")` em campos diferentes, a manutenção se torna caótica: não há validação centralizada, o IDE não autocompleta, e testes unitários precisam mockar cada propriedade manualmente. Agrupe em um `@ConfigurationProperties`.
 
-**3. Relaxed binding mal-entendido: `max-retries` ↔ `maxRetries`**
-Desenvolvedores frequentemente esperam que `@Value("${order.maxRetries}")` leia `order.max-retries` do YAML por relaxed binding — mas `@Value` **não faz isso**. A forma canônica no arquivo deve bater exatamente com o nome na annotation. Relaxed binding é exclusivo de `@ConfigurationProperties`.
+**3. Relaxed binding mal-entendido: `max-retries` ↔ `maxRetries`** Desenvolvedores frequentemente esperam que `@Value("${order.maxRetries}")` leia `order.max-retries` do YAML por relaxed binding — mas `@Value` **não faz isso**. A forma canônica no arquivo deve bater exatamente com o nome na annotation. Relaxed binding é exclusivo de `@ConfigurationProperties`.
 
-**4. `@Profile` na classe errada com `@EnableConfigurationProperties`**
-Quando se usa `@EnableConfigurationProperties(MyProps.class)`, colocar `@Profile("prod")` na classe `MyProps` não funciona; o profile deve estar na classe `@Configuration` que registra o bean.
+**4. `@Profile` na classe errada com `@EnableConfigurationProperties`** Quando se usa `@EnableConfigurationProperties(MyProps.class)`, colocar `@Profile("prod")` na classe `MyProps` não funciona; o profile deve estar na classe `@Configuration` que registra o bean.
 
-**5. `@PropertySource` com YAML**
-A annotation `@PropertySource` **não suporta arquivos `.yml`**. Para carregar um YAML customizado, use `spring.config.import` ou o mecanismo padrão de `application-{profile}.yml`.
+**5. `@PropertySource` com YAML** A annotation `@PropertySource` **não suporta arquivos `.yml`**. Para carregar um YAML customizado, use `spring.config.import` ou o mecanismo padrão de `application-{profile}.yml`.
 
 ## Em entrevista
 

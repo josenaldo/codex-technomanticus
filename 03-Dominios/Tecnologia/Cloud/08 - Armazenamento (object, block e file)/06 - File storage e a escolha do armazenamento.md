@@ -94,8 +94,7 @@ O security group do mount target, referenciado no passo 2, é a mesma disciplina
 > [!tip] Assista: AWS EFS Tutorial for Beginners — NFS, Multi-AZ, Mount Targets, Storage Classes
 > **Canal:** Cloud Journey | **Duração:** ~7min | **Idioma:** EN
 >
-> Visão geral rápida que passeia pelos mesmos quatro pilares desta seção — protocolo NFS, replicação multi-AZ, um mount target por subnet, e as storage classes do EFS — reforçando a regra "um mount target por AZ" que o diagrama acima já ilustrou.
-> Trecho de destaque [1:54]: *"So best practice one mount target per [subnet]"*
+> Visão geral rápida que passeia pelos mesmos quatro pilares desta seção — protocolo NFS, replicação multi-AZ, um mount target por subnet, e as storage classes do EFS — reforçando a regra "um mount target por AZ" que o diagrama acima já ilustrou. Trecho de destaque [1:54]: *"So best practice one mount target per [subnet]"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=whtpgiWG7Wc)
 
@@ -224,8 +223,7 @@ Nenhum dos dois substitui o EFS no caso comum; eles existem porque "filesystem d
 > [!tip] Assista: AWS EFS Explained — Setup, Mount Targets & Backup with AWS Backup
 > **Canal:** DheerajTechInsight | **Duração:** ~23min | **Idioma:** EN
 >
-> Passo a passo hands-on de criar um EFS, montá-lo via cliente NFS numa instância, e sobretudo configurar o security group correto (regra NFS na porta certa, vinda só do SG das instâncias autorizadas) — o mesmo ponto de disciplina de segurança que a nota reforça no comando de verificação acima. Vale assistir antes de comparar com o NFS auto-operado da DigitalOcean logo abaixo.
-> Trecho de destaque [2:00]: *"It uses the NFS protocol for mounting"*
+> Passo a passo hands-on de criar um EFS, montá-lo via cliente NFS numa instância, e sobretudo configurar o security group correto (regra NFS na porta certa, vinda só do SG das instâncias autorizadas) — o mesmo ponto de disciplina de segurança que a nota reforça no comando de verificação acima. Vale assistir antes de comparar com o NFS auto-operado da DigitalOcean logo abaixo. Trecho de destaque [2:00]: *"It uses the NFS protocol for mounting"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=aAOC6oS445s)
 

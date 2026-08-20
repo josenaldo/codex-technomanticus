@@ -16,56 +16,32 @@ publish: true
 # State reducer e prop getters
 
 > [!abstract] TL;DR
-> **State reducer** expõe o reducer interno de um hook para que o consumidor intercepte e customize
-> transições de estado — inversão de controle máxima sem que a biblioteca precise prever cada caso
-> de uso. **Prop getters** expõem funções (`getToggleButtonProps`, `getItemProps`) que retornam
-> um objeto de props prontas para espalhar no JSX do consumidor, compondo handlers internos e
-> externos automaticamente. Juntos, formam o núcleo de hooks headless robustos (downshift, Radix,
-> React Aria): o hook controla o comportamento; o consumidor controla a estrutura e pode sobrescrever
-> qualquer transição de estado. O preço é complexidade de API — aplicar em componentes simples é
-> over-engineering deliberado.
+> **State reducer** expõe o reducer interno de um hook para que o consumidor intercepte e customize transições de estado — inversão de controle máxima sem que a biblioteca precise prever cada caso de uso. **Prop getters** expõem funções (`getToggleButtonProps`, `getItemProps`) que retornam um objeto de props prontas para espalhar no JSX do consumidor, compondo handlers internos e externos automaticamente. Juntos, formam o núcleo de hooks headless robustos (downshift, Radix, React Aria): o hook controla o comportamento; o consumidor controla a estrutura e pode sobrescrever qualquer transição de estado. O preço é complexidade de API — aplicar em componentes simples é over-engineering deliberado.
 
 ---
 
 ## O problema que justifica tudo isso
 
-Imagine que você está construindo um hook `useSelect` para um design system interno. Ele precisa
-lidar com abertura/fechamento do menu, navegação por teclado, seleção de item e acessibilidade
-WAI-ARIA. Você escreve tudo, testa, lança.
+Imagine que você está construindo um hook `useSelect` para um design system interno. Ele precisa lidar com abertura/fechamento do menu, navegação por teclado, seleção de item e acessibilidade WAI-ARIA. Você escreve tudo, testa, lança.
 
-Dois dias depois chega o primeiro pedido: "Preciso que o menu não feche ao selecionar um item —
-quero multi-seleção". Uma semana depois: "Preciso que, quando o usuário pressiona Escape, o menu
-não feche se houver input ativo dentro dele". Depois: "Preciso que itens desabilitados não sejam
-selecionáveis via teclado".
+Dois dias depois chega o primeiro pedido: "Preciso que o menu não feche ao selecionar um item — quero multi-seleção". Uma semana depois: "Preciso que, quando o usuário pressiona Escape, o menu não feche se houver input ativo dentro dele". Depois: "Preciso que itens desabilitados não sejam selecionáveis via teclado".
 
-Cada pedido te força a adicionar uma prop: `closeOnSelect`, `keepOpenOnEscape`, `disabledItems`.
-Em seis meses você tem vinte props booleanas e condicionais entrelaçadas no reducer interno. A API
-está explodindo — e você ainda não previu todos os casos de uso futuros.
+Cada pedido te força a adicionar uma prop: `closeOnSelect`, `keepOpenOnEscape`, `disabledItems`. Em seis meses você tem vinte props booleanas e condicionais entrelaçadas no reducer interno. A API está explodindo — e você ainda não previu todos os casos de uso futuros.
 
-**O estado reducer pattern** resolve isso de forma elegante: em vez de adicionar uma prop para
-cada variação, você expõe o próprio reducer interno ao consumidor. Ele intercepta qualquer
-transição de estado e decide o que acontece. Você não precisa prever nada — o consumidor tem
-o volante.
+**O estado reducer pattern** resolve isso de forma elegante: em vez de adicionar uma prop para cada variação, você expõe o próprio reducer interno ao consumidor. Ele intercepta qualquer transição de estado e decide o que acontece. Você não precisa prever nada — o consumidor tem o volante.
 
 ---
 
 ## Inversão de controle: a analogia do volante
 
-Um motorista de aplicativo (a biblioteca) segue rotas padronizadas. Se você quiser dar uma parada
-intermediária, você precisa pedir ao motorista — e ele decide se aceita. Isso é controle normal:
-a biblioteca decide o comportamento.
+Um motorista de aplicativo (a biblioteca) segue rotas padronizadas. Se você quiser dar uma parada intermediária, você precisa pedir ao motorista — e ele decide se aceita. Isso é controle normal: a biblioteca decide o comportamento.
 
-Agora imagine que você aluga o carro (o hook) e dirige você mesmo. O carro ainda tem o GPS, os
-freios ABS, o controle de tração — toda a mecânica está lá. Mas você decide a rota. Se quiser
-dar a parada intermediária, não precisa perguntar a ninguém.
+Agora imagine que você aluga o carro (o hook) e dirige você mesmo. O carro ainda tem o GPS, os freios ABS, o controle de tração — toda a mecânica está lá. Mas você decide a rota. Se quiser dar a parada intermediária, não precisa perguntar a ninguém.
 
-State reducer = você aluga o carro. A biblioteca fornece a mecânica (estado, ações, reducer
-padrão), mas você pode substituir ou estender o reducer para mudar o que acontece em cada ação.
+State reducer = você aluga o carro. A biblioteca fornece a mecânica (estado, ações, reducer padrão), mas você pode substituir ou estender o reducer para mudar o que acontece em cada ação.
 
 > [!question]- Mas isso não é perigoso? O consumidor pode quebrar tudo.
-> Sim — e é intencional. O state reducer é uma ferramenta para **power users** e composição de
-> bibliotecas, não para uso casual. O hook sempre fornece um `defaultReducer` que o consumidor
-> pode chamar para preservar o comportamento padrão e só interceptar o que precisa mudar.
+> Sim — e é intencional. O state reducer é uma ferramenta para **power users** e composição de bibliotecas, não para uso casual. O hook sempre fornece um `defaultReducer` que o consumidor pode chamar para preservar o comportamento padrão e só interceptar o que precisa mudar.
 
 ---
 
@@ -73,9 +49,7 @@ padrão), mas você pode substituir ou estender o reducer para mudar o que acont
 
 ### O mecanismo
 
-O hook aceita um parâmetro opcional `stateReducer`. Internamente, em vez de usar seu próprio
-reducer diretamente, usa uma função `dispatch` que passa a ação para o `stateReducer` do
-consumidor antes de aplicar qualquer mudança de estado.
+O hook aceita um parâmetro opcional `stateReducer`. Internamente, em vez de usar seu próprio reducer diretamente, usa uma função `dispatch` que passa a ação para o `stateReducer` do consumidor antes de aplicar qualquer mudança de estado.
 
 ```
 ação disparada → stateReducer(state, action) → novo estado
@@ -84,8 +58,7 @@ ação disparada → stateReducer(state, action) → novo estado
               (pode chamar defaultReducer para comportamento padrão)
 ```
 
-O contrato é simples: `stateReducer(state, action) => nextState`. O consumidor recebe o estado
-atual e a ação, e retorna o próximo estado — seja o padrão, seja algo completamente diferente.
+O contrato é simples: `stateReducer(state, action) => nextState`. O consumidor recebe o estado atual e a ação, e retorna o próximo estado — seja o padrão, seja algo completamente diferente.
 
 ### Implementação: `useToggle` com state reducer
 
@@ -177,8 +150,7 @@ function App() {
 }
 ```
 
-O consumidor chama `defaultToggleReducer` para o comportamento padrão e intercepta só o que
-precisa. Isso é composição, não substituição total.
+O consumidor chama `defaultToggleReducer` para o comportamento padrão e intercepta só o que precisa. Isso é composição, não substituição total.
 
 ---
 
@@ -212,20 +184,13 @@ sequenceDiagram
 
 ### O problema específico
 
-Você expôs seu hook headless `useSelect`. O consumidor precisa colocar `role="listbox"`,
-`aria-expanded`, `aria-activedescendant`, `onKeyDown` (para navegação por teclado), `onClick`
-(para fechar ao clicar fora), e uma dúzia de outros atributos nos elementos certos. Se você listar
-isso em docs, ele vai esquecer metade, implementar errada a outra metade, e quebrar a
-acessibilidade.
+Você expôs seu hook headless `useSelect`. O consumidor precisa colocar `role="listbox"`, `aria-expanded`, `aria-activedescendant`, `onKeyDown` (para navegação por teclado), `onClick` (para fechar ao clicar fora), e uma dúzia de outros atributos nos elementos certos. Se você listar isso em docs, ele vai esquecer metade, implementar errada a outra metade, e quebrar a acessibilidade.
 
-Prop getters resolvem isso: em vez de documentar cada atributo, o hook expõe funções que retornam
-o objeto completo de props. O consumidor só precisa fazer `{...getMenuProps()}` no elemento certo.
+Prop getters resolvem isso: em vez de documentar cada atributo, o hook expõe funções que retornam o objeto completo de props. O consumidor só precisa fazer `{...getMenuProps()}` no elemento certo.
 
 ### O mecanismo: composição de handlers
 
-A parte mais importante não é retornar props — é **compor handlers**. Se o consumidor passa
-`onClick` para `getMenuProps({ onClick: myHandler })`, o resultado deve chamar tanto `myHandler`
-quanto o handler interno do hook.
+A parte mais importante não é retornar props — é **compor handlers**. Se o consumidor passa `onClick` para `getMenuProps({ onClick: myHandler })`, o resultado deve chamar tanto `myHandler` quanto o handler interno do hook.
 
 ```tsx
 // utilitário de composição de handlers (reusável em qualquer prop getter)
@@ -440,9 +405,7 @@ function ColorSelect() {
 }
 ```
 
-O consumidor não sabe (nem precisa saber) que existe `aria-expanded`, `role="listbox"` ou
-navegação por teclado. O hook cuida disso. O consumidor controla 100% da marcação HTML e da
-aparência visual.
+O consumidor não sabe (nem precisa saber) que existe `aria-expanded`, `role="listbox"` ou navegação por teclado. O hook cuida disso. O consumidor controla 100% da marcação HTML e da aparência visual.
 
 ---
 
@@ -469,15 +432,12 @@ graph TD
 
 ## Relação com headless components
 
-State reducer e prop getters são os dois alicerces dos **headless hooks** modernos. O padrão
-headless separa comportamento de marcação; os dois padrões são a implementação concreta disso:
+State reducer e prop getters são os dois alicerces dos **headless hooks** modernos. O padrão headless separa comportamento de marcação; os dois padrões são a implementação concreta disso:
 
 - **Prop getters** são o contrato de "como você aplica meu comportamento na sua marcação".
 - **State reducer** é o contrato de "como você customiza meu comportamento interno".
 
-Bibliotecas maduras como downshift, Radix UI (primitives), React Aria (Adobe) e TanStack Table
-usam exatamente essa combinação. A nota [[11 - Headless components e headless hooks]] (ainda não
-escrita neste galho) aprofunda o modelo conceitual; esta nota foca na mecânica de implementação.
+Bibliotecas maduras como downshift, Radix UI (primitives), React Aria (Adobe) e TanStack Table usam exatamente essa combinação. A nota [[11 - Headless components e headless hooks]] (ainda não escrita neste galho) aprofunda o modelo conceitual; esta nota foca na mecânica de implementação.
 
 ---
 
@@ -493,63 +453,31 @@ escrita neste galho) aprofunda o modelo conceitual; esta nota foca na mecânica 
 | **Testabilidade** | Fácil: passa um stateReducer de teste e verifica o fluxo | Moderada: testar composição de handlers requer event simulation |
 
 > [!info] Relação com downshift
-> O downshift foi o laboratório onde Kent C. Dodds refinou ambos os padrões. O `useSelect` do
-> downshift exporta `getToggleButtonProps`, `getMenuProps`, `getItemProps`, `getLabelProps` e
-> aceita um `stateReducer` — exatamente a arquitetura descrita aqui. Estudar o downshift é
-> estudar esses padrões em produção real.
+> O downshift foi o laboratório onde Kent C. Dodds refinou ambos os padrões. O `useSelect` do downshift exporta `getToggleButtonProps`, `getMenuProps`, `getItemProps`, `getLabelProps` e aceita um `stateReducer` — exatamente a arquitetura descrita aqui. Estudar o downshift é estudar esses padrões em produção real.
 
 ---
 
 ## Armadilhas comuns
 
 > [!warning] Prop getter sobrescreve o handler do consumidor
-> **O que acontece:** o consumidor passa `onClick` para o getter, mas o próprio getter também
-> define `onClick` — se a desestruturação do retorno usar spread simples, o handler do consumidor
-> ou o interno vence, não os dois.
-> **Por quê:** propriedades duplicadas em um objeto JS: a última vence. Se o getter fizer
-> `{ ...extraProps, onClick: internalHandler }`, o consumidor perde seu handler.
-> **Como evitar:** sempre usar `callAll` (ou equivalente) para compor handlers. A regra é:
-> getters nunca sobrescrevem — eles compõem.
+> **O que acontece:** o consumidor passa `onClick` para o getter, mas o próprio getter também define `onClick` — se a desestruturação do retorno usar spread simples, o handler do consumidor ou o interno vence, não os dois. **Por quê:** propriedades duplicadas em um objeto JS: a última vence. Se o getter fizer `{ ...extraProps, onClick: internalHandler }`, o consumidor perde seu handler. **Como evitar:** sempre usar `callAll` (ou equivalente) para compor handlers. A regra é: getters nunca sobrescrevem — eles compõem.
 
 > [!warning] `stateReducer` impuro (efeitos colaterais dentro do reducer)
-> **O que acontece:** o consumidor coloca um `fetch`, `setState` de outro contexto ou uma chamada
-> de API dentro do `stateReducer`. O React pode chamar reducers mais de uma vez em Strict Mode
-> (double-invocation) e em concurrent features.
-> **Por quê:** reducers devem ser funções puras — mesma entrada sempre produz mesma saída, sem
-> efeitos colaterais. O contrato do `useReducer` do React exige isso.
-> **Como evitar:** `stateReducer` deve ser pura. Efeitos colaterais ficam no `useEffect` ou em
-> callbacks (`onStateChange`, `onSelectedItemChange`) que o hook chama após a transição.
+> **O que acontece:** o consumidor coloca um `fetch`, `setState` de outro contexto ou uma chamada de API dentro do `stateReducer`. O React pode chamar reducers mais de uma vez em Strict Mode (double-invocation) e em concurrent features. **Por quê:** reducers devem ser funções puras — mesma entrada sempre produz mesma saída, sem efeitos colaterais. O contrato do `useReducer` do React exige isso. **Como evitar:** `stateReducer` deve ser pura. Efeitos colaterais ficam no `useEffect` ou em callbacks (`onStateChange`, `onSelectedItemChange`) que o hook chama após a transição.
 
 > [!warning] Aplicar state reducer em componentes simples
-> **O que acontece:** um componente com 3 estados e 2 transições recebe uma API de `stateReducer`
-> que ninguém usa, mas que aumenta o contrato público do hook permanentemente.
-> **Por quê:** API pública é difícil de remover depois. Se você adiciona `stateReducer` hoje
-> "por garantia", amanhã terá consumidores dependendo dele.
-> **Como evitar:** só adicionar `stateReducer` quando você tiver um caso de uso concreto de
-> personalização que não pode ser resolvido com props simples. O padrão brilha em bibliotecas
-> de design system, não em componentes de feature de produto.
+> **O que acontece:** um componente com 3 estados e 2 transições recebe uma API de `stateReducer` que ninguém usa, mas que aumenta o contrato público do hook permanentemente. **Por quê:** API pública é difícil de remover depois. Se você adiciona `stateReducer` hoje "por garantia", amanhã terá consumidores dependendo dele. **Como evitar:** só adicionar `stateReducer` quando você tiver um caso de uso concreto de personalização que não pode ser resolvido com props simples. O padrão brilha em bibliotecas de design system, não em componentes de feature de produto.
 
 > [!warning] Esquecer de exportar `actionTypes` e `defaultReducer`
-> **O que acontece:** o consumidor quer implementar um `stateReducer`, mas não sabe quais
-> action types existem ou não tem acesso ao `defaultReducer` para chamar o comportamento padrão.
-> Ele termina reimplementando a lógica interna do hook — o oposto da intenção.
-> **Por quê:** sem os types e o default reducer exportados, o consumidor fica cego.
-> **Como evitar:** sempre exportar junto com o hook: `defaultToggleReducer`,
-> `ToggleActionTypes` (ou um enum), e os tipos TypeScript de estado e ação.
+> **O que acontece:** o consumidor quer implementar um `stateReducer`, mas não sabe quais action types existem ou não tem acesso ao `defaultReducer` para chamar o comportamento padrão. Ele termina reimplementando a lógica interna do hook — o oposto da intenção. **Por quê:** sem os types e o default reducer exportados, o consumidor fica cego. **Como evitar:** sempre exportar junto com o hook: `defaultToggleReducer`, `ToggleActionTypes` (ou um enum), e os tipos TypeScript de estado e ação.
 
 ---
 
 ## Como explicar em inglês
 
-The state reducer pattern is an inversion-of-control mechanism where a hook exposes its internal
-reducer to the consumer, letting them intercept and override any state transition without the
-library having to predict every use case upfront. Prop getters are functions returned by the hook
-that produce ready-to-spread props — including composed event handlers and accessibility
-attributes — so the consumer can control the markup while the hook guarantees the behavior.
+The state reducer pattern is an inversion-of-control mechanism where a hook exposes its internal reducer to the consumer, letting them intercept and override any state transition without the library having to predict every use case upfront. Prop getters are functions returned by the hook that produce ready-to-spread props — including composed event handlers and accessibility attributes — so the consumer can control the markup while the hook guarantees the behavior.
 
-Together, these two patterns are the foundation of headless component libraries like downshift,
-Radix UI primitives, and React Aria: the hook owns the behavior contract; the consumer owns the
-structure and can customize any internal transition via the state reducer.
+Together, these two patterns are the foundation of headless component libraries like downshift, Radix UI primitives, and React Aria: the hook owns the behavior contract; the consumer owns the structure and can customize any internal transition via the state reducer.
 
 | PT | EN |
 |----|----|
@@ -568,10 +496,7 @@ structure and can customize any internal transition via the state reducer.
 
 ## O que vem a seguir
 
-State reducer e prop getters são os mecanismos internos que tornam possível o conceito mais
-amplo de headless components: separar completamente comportamento de renderização. Entender
-esses dois padrões na implementação é o pré-requisito para criar (e não só usar) bibliotecas
-headless de produção.
+State reducer e prop getters são os mecanismos internos que tornam possível o conceito mais amplo de headless components: separar completamente comportamento de renderização. Entender esses dois padrões na implementação é o pré-requisito para criar (e não só usar) bibliotecas headless de produção.
 
 - [[11 - Headless components e headless hooks]] — como organizar um hook headless completo, testes de comportamento e estratégias de publicação (nota ainda não escrita neste galho)
 - [[03-Dominios/Tecnologia/React/React core/12 - useReducer e estado complexo|React core 12 — useReducer e estado complexo]] — o mecanismo base que o state reducer estende
@@ -593,5 +518,4 @@ headless de produção.
 
 ---
 
-*State reducer e prop getters em uma frase: o hook doa o comportamento, o consumidor doa a
-estrutura — e o state reducer devolve ao consumidor o controle até das decisões internas do hook.*
+*State reducer e prop getters em uma frase: o hook doa o comportamento, o consumidor doa a estrutura — e o state reducer devolve ao consumidor o controle até das decisões internas do hook.*

@@ -165,24 +165,16 @@ O que esse percurso ilustra é o valor da ordem: sem ela, seria fácil olhar o l
 ## Armadilhas comuns
 
 > [!warning] Ler o load como utilização de CPU
-> **O que acontece:** conclui-se falta de CPU, escala-se a máquina, e o problema continua — porque era disco ou rede.
-> **Por quê:** em Linux, `D` entra na conta.
-> **Como evitar:** load é gatilho de investigação. Quem responde "é CPU?" é `vmstat`/`mpstat`, olhando `us`, `sy`, `wa` e a fila.
+> **O que acontece:** conclui-se falta de CPU, escala-se a máquina, e o problema continua — porque era disco ou rede. **Por quê:** em Linux, `D` entra na conta. **Como evitar:** load é gatilho de investigação. Quem responde "é CPU?" é `vmstat`/`mpstat`, olhando `us`, `sy`, `wa` e a fila.
 
 > [!warning] Confiar na primeira amostra
-> **O que acontece:** `vmstat` ou `iostat` sem intervalo, e os números parecem estranhos ou baixos demais.
-> **Por quê:** a **primeira linha é a média desde o boot**, não o instante atual. Numa máquina com 42 dias no ar, ela dilui qualquer coisa.
-> **Como evitar:** sempre com intervalo (`vmstat 1 5`) e **descarte a primeira linha**. Vale para `iostat`, `mpstat` e `sar`.
+> **O que acontece:** `vmstat` ou `iostat` sem intervalo, e os números parecem estranhos ou baixos demais. **Por quê:** a **primeira linha é a média desde o boot**, não o instante atual. Numa máquina com 42 dias no ar, ela dilui qualquer coisa. **Como evitar:** sempre com intervalo (`vmstat 1 5`) e **descarte a primeira linha**. Vale para `iostat`, `mpstat` e `sar`.
 
 > [!warning] Diagnosticar sem saber o que é normal
-> **O que acontece:** um número parece alto, e não há com o que comparar.
-> **Por quê:** falta linha de base.
-> **Como evitar:** olhar as mesmas métricas quando **não** há incidente, e guardar. Isso é observabilidade como disciplina, e mora em [[03-Dominios/Engenharia/Operação/index|Engenharia/Operação]] — aqui está o instrumento, lá a prática de manter histórico.
+> **O que acontece:** um número parece alto, e não há com o que comparar. **Por quê:** falta linha de base. **Como evitar:** olhar as mesmas métricas quando **não** há incidente, e guardar. Isso é observabilidade como disciplina, e mora em [[03-Dominios/Engenharia/Operação/index|Engenharia/Operação]] — aqui está o instrumento, lá a prática de manter histórico.
 
 > [!warning] Investigar direto na máquina errada
-> **O que acontece:** o sintoma aparece na API, e a causa está no banco, no armazenamento ou na rede.
-> **Por quê:** lentidão se propaga por dependência.
-> **Como evitar:** o `dmesg` e os processos em `D` costumam apontar para fora rapidamente. Se a máquina está esperando, pergunte **esperando o quê**.
+> **O que acontece:** o sintoma aparece na API, e a causa está no banco, no armazenamento ou na rede. **Por quê:** lentidão se propaga por dependência. **Como evitar:** o `dmesg` e os processos em `D` costumam apontar para fora rapidamente. Se a máquina está esperando, pergunte **esperando o quê**.
 
 ---
 

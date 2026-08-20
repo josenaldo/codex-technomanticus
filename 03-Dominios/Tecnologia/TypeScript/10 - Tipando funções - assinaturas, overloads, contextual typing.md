@@ -650,11 +650,9 @@ The **bivariance** trap: TypeScript historically checks callback types bivariant
 
 ## Armadilhas comuns
 
-**1. Chamar a implementação com union quando só overloads são expostos.**
-A assinatura de implementação é invisível para quem chama. Se você tem `f(string): A` e `f(number): B`, `f(string | number)` é um erro — nenhuma das assinaturas aceita a union. Você precisa fazer o narrowing antes de chamar, ou adicionar um terceiro overload explícito.
+**1. Chamar a implementação com union quando só overloads são expostos.** A assinatura de implementação é invisível para quem chama. Se você tem `f(string): A` e `f(number): B`, `f(string | number)` é um erro — nenhuma das assinaturas aceita a union. Você precisa fazer o narrowing antes de chamar, ou adicionar um terceiro overload explícito.
 
-**2. Colocar o overload mais amplo primeiro.**
-O TS percorre os overloads em ordem. Se o primeiro aceita `any`, todos os chamadas batem nele e os outros ficam inacessíveis. Sempre ordene do mais específico para o mais amplo.
+**2. Colocar o overload mais amplo primeiro.** O TS percorre os overloads em ordem. Se o primeiro aceita `any`, todos os chamadas batem nele e os outros ficam inacessíveis. Sempre ordene do mais específico para o mais amplo.
 
 ```ts
 // Errado — o primeiro overload engole tudo:
@@ -663,17 +661,13 @@ function parse(s: string): number;
 // Nunca chegará no segundo overload
 ```
 
-**3. Confundir `void` com "sem efeito".**
-Uma callback tipada como `() => void` pode retornar valores — o TS aceita isso. Se você precisa garantir que a callback *não* retorna nada (raro), use `() => undefined`.
+**3. Confundir `void` com "sem efeito".** Uma callback tipada como `() => void` pode retornar valores — o TS aceita isso. Se você precisa garantir que a callback *não* retorna nada (raro), use `() => undefined`.
 
-**4. Perder o contextual typing ao extrair callbacks.**
-Quando você escreve `const fn = (x) => x * 2` e depois passa para `arr.map(fn)`, o `x` já foi resolvido como `any` no momento da declaração. Anote o parâmetro explicitamente ou informe o tipo da variável.
+**4. Perder o contextual typing ao extrair callbacks.** Quando você escreve `const fn = (x) => x * 2` e depois passa para `arr.map(fn)`, o `x` já foi resolvido como `any` no momento da declaração. Anote o parâmetro explicitamente ou informe o tipo da variável.
 
-**5. Ignorar `this` e quebrar em runtime.**
-Extrair um método de classe e chamá-lo diretamente perde o `this`. Anotar `this` no parâmetro faz o TS detectar isso em compile time — mas só se você usar a anotação.
+**5. Ignorar `this` e quebrar em runtime.** Extrair um método de classe e chamá-lo diretamente perde o `this`. Anotar `this` no parâmetro faz o TS detectar isso em compile time — mas só se você usar a anotação.
 
-**6. Bivariância em callbacks críticos.**
-Se sua callback recebe um tipo mais específico do que o esperado pela função de ordem superior, o TS pode aceitar em compile time mas explodir em runtime. Ative `strict: true` e prefira notação arrow de tipo.
+**6. Bivariância em callbacks críticos.** Se sua callback recebe um tipo mais específico do que o esperado pela função de ordem superior, o TS pode aceitar em compile time mas explodir em runtime. Ative `strict: true` e prefira notação arrow de tipo.
 
 ---
 

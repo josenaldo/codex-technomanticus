@@ -257,10 +257,7 @@ async def query_data(request, query: str):
 
 ## Quando NÃO usar MCP em produção
 
-❌ **Latência ultra-crítica (<50ms total)** — overhead do protocol
-❌ **Aplicação consumer high-volume** — onerosa em escala alta
-❌ **Domínio com requisitos específicos não cobertos pela spec**
-❌ **Time muito pequeno sem capacity para manter servers**
+❌ **Latência ultra-crítica (<50ms total)** — overhead do protocol ❌ **Aplicação consumer high-volume** — onerosa em escala alta ❌ **Domínio com requisitos específicos não cobertos pela spec** ❌ **Time muito pequeno sem capacity para manter servers**
 
 ## Lições aprendidas (2025-2026)
 

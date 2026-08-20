@@ -685,8 +685,7 @@ await queue.obliterate({ force: true });
 
 ## Na prática (da minha experiência)
 
-> **MedEspecialista — BullMQ para processamento assíncrono:**
-> No MedEspecialista, uso BullMQ no backend Node.js para várias tarefas assíncronas:
+> **MedEspecialista — BullMQ para processamento assíncrono:** No MedEspecialista, uso BullMQ no backend Node.js para várias tarefas assíncronas:
 >
 > **1. Envio de emails e SMS:** quando uma consulta é confirmada, a API publica um job na fila `notifications` e responde ao cliente imediatamente. Um worker separado processa a fila, com rate limit de 50 msgs/s para respeitar o provedor (SendGrid). Retries com exponential backoff (5 tentativas), e jobs falhados ficam 7 dias para investigação.
 >

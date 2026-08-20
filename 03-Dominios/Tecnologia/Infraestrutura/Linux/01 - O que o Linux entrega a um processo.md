@@ -149,24 +149,16 @@ Cada item do contrato vira uma nota, e a ordem do galho é a ordem em que eles c
 ## Armadilhas comuns
 
 > [!warning] Confundir o ambiente do seu shell com o ambiente do processo
-> **O que acontece:** você roda `echo $DATABASE_URL`, vê o valor certo, e a aplicação continua reclamando que a variável está vazia.
-> **Por quê:** o processo recebeu uma **cópia** do ambiente no instante em que foi criado. Exportar depois não alcança quem já está rodando, e um serviço iniciado pelo `systemd` nunca viu o seu shell.
-> **Como evitar:** confira no processo, não no shell — `cat /proc/<pid>/environ | tr '\0' '\n'`. É a fonte da verdade.
+> **O que acontece:** você roda `echo $DATABASE_URL`, vê o valor certo, e a aplicação continua reclamando que a variável está vazia. **Por quê:** o processo recebeu uma **cópia** do ambiente no instante em que foi criado. Exportar depois não alcança quem já está rodando, e um serviço iniciado pelo `systemd` nunca viu o seu shell. **Como evitar:** confira no processo, não no shell — `cat /proc/<pid>/environ | tr '\0' '\n'`. É a fonte da verdade.
 
 > [!warning] Supor que o diretório de trabalho é onde o binário está
-> **O que acontece:** caminhos relativos funcionam em teste e falham em produção.
-> **Por quê:** o diretório de trabalho é herdado de quem iniciou o processo e não tem relação com a localização do executável.
-> **Como evitar:** em serviço, declare o diretório explicitamente; em código, prefira caminho absoluto ou derive-o da localização do próprio binário.
+> **O que acontece:** caminhos relativos funcionam em teste e falham em produção. **Por quê:** o diretório de trabalho é herdado de quem iniciou o processo e não tem relação com a localização do executável. **Como evitar:** em serviço, declare o diretório explicitamente; em código, prefira caminho absoluto ou derive-o da localização do próprio binário.
 
 > [!warning] Tratar PID como identificador estável
-> **O que acontece:** um script guarda o PID, e mais tarde encerra o processo errado.
-> **Por quê:** PIDs são reciclados. O número que era da sua aplicação pode, minutos depois, pertencer a outra coisa.
-> **Como evitar:** deixe a supervisão para quem tem estado — `systemd` sabe qual PID é o serviço. Para scripts, confira o `exe` ou o `cmdline` antes de enviar sinal.
+> **O que acontece:** um script guarda o PID, e mais tarde encerra o processo errado. **Por quê:** PIDs são reciclados. O número que era da sua aplicação pode, minutos depois, pertencer a outra coisa. **Como evitar:** deixe a supervisão para quem tem estado — `systemd` sabe qual PID é o serviço. Para scripts, confira o `exe` ou o `cmdline` antes de enviar sinal.
 
 > [!warning] Achar que `/proc` é documentação
-> **O que acontece:** a pessoa evita `/proc` por parecer coisa de kernel hacker e volta a adivinhar.
-> **Por quê:** o nome assusta.
-> **Como evitar:** `/proc` é a interface pública do kernel para quem administra a máquina. É onde `ps`, `top` e `lsof` buscam tudo o que mostram — e ler direto costuma ser mais rápido do que procurar a flag certa.
+> **O que acontece:** a pessoa evita `/proc` por parecer coisa de kernel hacker e volta a adivinhar. **Por quê:** o nome assusta. **Como evitar:** `/proc` é a interface pública do kernel para quem administra a máquina. É onde `ps`, `top` e `lsof` buscam tudo o que mostram — e ler direto costuma ser mais rápido do que procurar a flag certa.
 
 ---
 

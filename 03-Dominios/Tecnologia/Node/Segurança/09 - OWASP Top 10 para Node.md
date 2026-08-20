@@ -18,10 +18,7 @@ aliases:
 # OWASP Top 10 para Node
 
 > [!abstract] TL;DR
-> O OWASP Top 10 é a lista das 10 classes de vulnerabilidade mais críticas em aplicações web, publicada pela Open Web Application Security Project com base em dados reais de exploração.
-> Em Node.js, as categorias mais frequentes incluem BOLA/IDOR (A01), injeção NoSQL e SSTI (A03), misconfiguration de Express em produção (A05), e SSRF via `fetch` com URL de usuário (A10).
-> A defesa efetiva combina validação de input com Zod, ownership checks em toda rota de dados, `npm ci` no CI/CD, `bcrypt` para senhas, tokens criptograficamente seguros, e error handlers que ocultam stack traces em produção.
-> Conhecer todos os 10 itens com exemplos Node.js é requisito de entrevistas sênior de segurança.
+> O OWASP Top 10 é a lista das 10 classes de vulnerabilidade mais críticas em aplicações web, publicada pela Open Web Application Security Project com base em dados reais de exploração. Em Node.js, as categorias mais frequentes incluem BOLA/IDOR (A01), injeção NoSQL e SSTI (A03), misconfiguration de Express em produção (A05), e SSRF via `fetch` com URL de usuário (A10). A defesa efetiva combina validação de input com Zod, ownership checks em toda rota de dados, `npm ci` no CI/CD, `bcrypt` para senhas, tokens criptograficamente seguros, e error handlers que ocultam stack traces em produção. Conhecer todos os 10 itens com exemplos Node.js é requisito de entrevistas sênior de segurança.
 
 ## O que é
 
@@ -66,16 +63,14 @@ flowchart LR
     style A10 fill:#D0021B,color:#fff
 ```
 
-O mapa acima agrupa as 10 categorias por natureza de risco: **Acesso** (quem pode ver o quê), **Dados** (proteção de informação em repouso e em trânsito), **Injeção e Integridade** (dados de usuário alterando lógica interna), e **Infraestrutura** (configuração, dependências e serviços de retaguarda). As categorias em vermelho têm maior impacto direto; as em âmbar são riscos de design e configuração; as em azul são falhas de visibilidade.
-Note que as categorias não são independentes: um A05 Misconfiguration (NODE_ENV=development em produção expondo stack traces) pode revelar detalhes internos que facilitam um A03 Injection. Mitigar A02 Crypto Failures (bcrypt em vez de MD5) reduz o impacto de um eventual A09 Logging Failure. Pense no Top 10 como camadas sobrepostas, não como itens de uma checklist sequencial.
+O mapa acima agrupa as 10 categorias por natureza de risco: **Acesso** (quem pode ver o quê), **Dados** (proteção de informação em repouso e em trânsito), **Injeção e Integridade** (dados de usuário alterando lógica interna), e **Infraestrutura** (configuração, dependências e serviços de retaguarda). As categorias em vermelho têm maior impacto direto; as em âmbar são riscos de design e configuração; as em azul são falhas de visibilidade. Note que as categorias não são independentes: um A05 Misconfiguration (NODE_ENV=development em produção expondo stack traces) pode revelar detalhes internos que facilitam um A03 Injection. Mitigar A02 Crypto Failures (bcrypt em vez de MD5) reduz o impacto de um eventual A09 Logging Failure. Pense no Top 10 como camadas sobrepostas, não como itens de uma checklist sequencial.
 
 ### A01 — Broken Access Control
 
 **O problema**: a aplicação não verifica se o usuário autenticado tem permissão de acessar o recurso específico que solicita. Em REST APIs, o padrão mais comum é BOLA (Broken Object Level Authorization), também chamado de IDOR (Insecure Direct Object Reference): o endpoint `/api/orders/:id` retorna o pedido sem verificar se pertence ao usuário logado — qualquer usuário autenticado pode trocar o ID na URL e ler pedidos alheios.
 
 > [!warning] BOLA em REST API Node.js
-> Sem ownership check, qualquer usuário autenticado pode enumerar IDs e ler dados de outros usuários.
-> Fix: sempre busque o objeto e verifique `object.userId === req.user.id` antes de retornar. Middleware de autenticação não é suficiente — ele não tem o objeto em mãos.
+> Sem ownership check, qualquer usuário autenticado pode enumerar IDs e ler dados de outros usuários. Fix: sempre busque o objeto e verifique `object.userId === req.user.id` antes de retornar. Middleware de autenticação não é suficiente — ele não tem o objeto em mãos.
 
 ```typescript
 import express from 'express'
@@ -135,8 +130,7 @@ Mitigações: `bcrypt` ou `argon2` para senhas; variáveis de ambiente via `dote
 - **SSTI (Server-Side Template Injection)**: input de usuário renderizado diretamente em engines como Handlebars ou EJS sem escape
 
 > [!warning] NoSQL Injection no MongoDB
-> `$where` executa JavaScript no servidor MongoDB. Input não sanitizado pode retornar todos os documentos ou causar DoS.
-> Fix: nunca use `$where`. Use operadores seguros do MongoDB e valide todo input com Zod antes da query.
+> `$where` executa JavaScript no servidor MongoDB. Input não sanitizado pode retornar todos os documentos ou causar DoS. Fix: nunca use `$where`. Use operadores seguros do MongoDB e valide todo input com Zod antes da query.
 
 ```typescript
 import { z } from 'zod'
@@ -334,8 +328,7 @@ Mitigações: `pino` ou `winston` com redação de campos sensíveis; logar todo
 **O problema**: o servidor faz uma requisição HTTP para uma URL fornecida pelo usuário, sem validar o destino. O atacante pode fornecer `http://169.254.169.254/latest/meta-data/` (endpoint de metadados da AWS, acessível apenas de dentro da instância) e obter as credenciais IAM da aplicação. Ou pode usar a aplicação para fazer port scan na rede interna.
 
 > [!warning] SSRF via fetch com URL de usuário
-> Qualquer `fetch(req.body.url)` sem validação é um vetor de SSRF. Em AWS, a URL `http://169.254.169.254/latest/meta-data/iam/security-credentials/` retorna as credenciais IAM da instância EC2.
-> Fix: allowlist de hosts aprovados + enforcement de HTTPS + bloqueio de ranges IP privados antes do fetch.
+> Qualquer `fetch(req.body.url)` sem validação é um vetor de SSRF. Em AWS, a URL `http://169.254.169.254/latest/meta-data/iam/security-credentials/` retorna as credenciais IAM da instância EC2. Fix: allowlist de hosts aprovados + enforcement de HTTPS + bloqueio de ranges IP privados antes do fetch.
 
 ```typescript
 import { URL } from 'node:url'

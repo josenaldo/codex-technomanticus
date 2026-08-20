@@ -142,8 +142,7 @@ Essa telemetria também cumpre um segundo papel, menos falado mas igualmente imp
 > [!tip] Assista: [AWS] O que é Computação em Nuvem (Cloud Computing)? Entenda agora!
 > **Canal:** Ka Solution Oficial | **Duração:** ~23min | **Idioma:** PT-BR
 >
-> O vídeo amarra as mesmas peças desta seção — self-service, elasticidade, capex virando opex — mas com um exemplo de varejo (Black Friday) que mostra a elasticidade bidirecional (sobe e desce) acontecendo na prática, não só na definição.
-> Trecho de destaque [11:02]: *"que que você vai trazer para a gente agilidade elasticidade economia de custo e uma implantação rápida"*
+> O vídeo amarra as mesmas peças desta seção — self-service, elasticidade, capex virando opex — mas com um exemplo de varejo (Black Friday) que mostra a elasticidade bidirecional (sobe e desce) acontecendo na prática, não só na definição. Trecho de destaque [11:02]: *"que que você vai trazer para a gente agilidade elasticidade economia de custo e uma implantação rápida"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=hyttXdfae9w)
 
@@ -261,8 +260,7 @@ O ponto de reparar não é decorar a sintaxe — é que, nos dois casos, você d
 > [!tip] Assista: Computação em nuvem - O que é cloud computing
 > **Canal:** Dias de Dev | **Duração:** ~13min | **Idioma:** PT-BR
 >
-> Um dev mostra a escalabilidade automática e o load balancer acontecendo de verdade num provedor — o mesmo self-service e elasticidade que esta nota descreve em prosa, só que como decisão técnica concreta ("quando o processamento bate 70%, cria um novo servidor").
-> Trecho de destaque [06:44]: *"você vai ter funcionalidades como por exemplo escalabilidade automática (...) sem o meu processamento bater em 70% cria um novo servidor automaticamente"*
+> Um dev mostra a escalabilidade automática e o load balancer acontecendo de verdade num provedor — o mesmo self-service e elasticidade que esta nota descreve em prosa, só que como decisão técnica concreta ("quando o processamento bate 70%, cria um novo servidor"). Trecho de destaque [06:44]: *"você vai ter funcionalidades como por exemplo escalabilidade automática (...) sem o meu processamento bater em 70% cria um novo servidor automaticamente"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=eSrIV6BQ7Fs)
 

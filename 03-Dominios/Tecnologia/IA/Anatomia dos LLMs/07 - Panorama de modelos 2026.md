@@ -80,8 +80,7 @@ graph TD
 | GPT-4.1 | Mid-tier | 1M | ~$2.00 | ~$8.00 | Equilíbrio custo-qualidade |
 | GPT-4.1 Nano | Budget | 1M | ~$0.10 | ~$0.40 | Autocomplete, tarefas simples |
 
-**Forças:** Ecossistema maduro, integração enterprise, GPT Store, Batch API com 50% de desconto.
-**Fraquezas:** Pricing premium, menos transparente sobre arquitetura.
+**Forças:** Ecossistema maduro, integração enterprise, GPT Store, Batch API com 50% de desconto. **Fraquezas:** Pricing premium, menos transparente sobre arquitetura.
 
 ### Anthropic
 
@@ -91,8 +90,7 @@ graph TD
 | Claude Sonnet 4.6 | Mid-tier | 200k | $3.00 | $15.00 | Codificação diária, agents |
 | Claude Haiku 4.5 | Budget | 200k | $1.00 | $5.00 | Rápido, tarefas simples |
 
-**Forças:** Melhor reasoning para código, Claude Code (terminal agent), [[Dicionário de IA#Prompt caching|prompt caching]] maduro, 128k output tokens no Opus.
-**Fraquezas:** Mais caro token por token, menos modelos no lineup.
+**Forças:** Melhor reasoning para código, Claude Code (terminal agent), [[Dicionário de IA#Prompt caching|prompt caching]] maduro, 128k output tokens no Opus. **Fraquezas:** Mais caro token por token, menos modelos no lineup.
 
 ### Google DeepMind
 
@@ -102,8 +100,7 @@ graph TD
 | Gemini 3 Flash | Mid-tier | 1M | ~$0.50 | ~$3.00 | Custo-benefício, velocidade |
 | Gemini 2.5 Flash-Lite | Budget | 1M | ~$0.10 | ~$0.40 | Classificação, extração |
 
-**Forças:** Contexto mais longo (2M experimental), multimodal nativo (áudio, vídeo, imagem), integração GCP, preço competitivo.
-**Fraquezas:** Menos consistente em coding puro que Claude, ecossistema de tools menos maduro.
+**Forças:** Contexto mais longo (2M experimental), multimodal nativo (áudio, vídeo, imagem), integração GCP, preço competitivo. **Fraquezas:** Menos consistente em coding puro que Claude, ecossistema de tools menos maduro.
 
 ### Open-Weight (ver detalhes em [[08 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM]])
 

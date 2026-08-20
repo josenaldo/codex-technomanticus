@@ -101,9 +101,7 @@ Nem todo recurso do mesmo tipo tem a mesma importância. O browser aplica priori
 | `fetchpriority` | Reordena uma requisição | ajuste | subir a imagem-LCP, descer o secundário |
 
 > [!warning] Preload em excesso ("preload de tudo")
-> **O que acontece:** o time adiciona `preload` a dez recursos "para garantir", e o LCP *piora*.
-> **Por quê:** preload é prioridade alta. Se tudo é alta prioridade, **nada** é — os preloads competem entre si e com o CSS/HTML críticos, roubando banda da imagem-LCP que de fato importa. Priorizar tudo é não priorizar.
-> **Como evitar:** preload é cirúrgico. Pré-carregue **1–2 recursos** genuinamente críticos e tarde-descobertos (tipicamente a fonte da dobra e a imagem-LCP). Meça o antes/depois; se não melhorou, remova.
+> **O que acontece:** o time adiciona `preload` a dez recursos "para garantir", e o LCP *piora*. **Por quê:** preload é prioridade alta. Se tudo é alta prioridade, **nada** é — os preloads competem entre si e com o CSS/HTML críticos, roubando banda da imagem-LCP que de fato importa. Priorizar tudo é não priorizar. **Como evitar:** preload é cirúrgico. Pré-carregue **1–2 recursos** genuinamente críticos e tarde-descobertos (tipicamente a fonte da dobra e a imagem-LCP). Meça o antes/depois; se não melhorou, remova.
 
 **Resource hints em uma frase:** eles encurtam a cascata de descoberta do browser — `preconnect` abre conexões cedo, `preload` baixa o crítico escondido, `prefetch` adianta a próxima página e `fetchpriority` reordena — sendo o combo "imagem-LCP descoberta cedo + `fetchpriority=high`" o de maior retorno.
 

@@ -103,9 +103,7 @@ Rodar `vitest` (via `npm test`) entra em **modo watch**: ele roda os testes e **
 Para CI e scripts, use **`vitest run`**: roda a suíte uma vez e sai com código 0 (passou) ou 1 (falhou). Confundir os dois é a causa nº 1 de "meu CI trava para sempre".
 
 > [!warning] Rodar `vitest` (watch) no CI
-> **O que acontece:** o pipeline de CI fica "pendurado" indefinidamente e estoura o timeout, mesmo com todos os testes passando.
-> **Por quê:** `vitest` sem `run` entra em modo watch e **nunca sai** — ele espera por mudanças de arquivo que nunca virão no CI.
-> **Como evitar:** use **`vitest run`** em qualquer ambiente não-interativo (CI, hooks de git, scripts). Deixe o `vitest` watch só para o `npm test` local, ou nomeie os scripts explicitamente (`test` = watch, `test:run`/`test:ci` = `vitest run`).
+> **O que acontece:** o pipeline de CI fica "pendurado" indefinidamente e estoura o timeout, mesmo com todos os testes passando. **Por quê:** `vitest` sem `run` entra em modo watch e **nunca sai** — ele espera por mudanças de arquivo que nunca virão no CI. **Como evitar:** use **`vitest run`** em qualquer ambiente não-interativo (CI, hooks de git, scripts). Deixe o `vitest` watch só para o `npm test` local, ou nomeie os scripts explicitamente (`test` = watch, `test:run`/`test:ci` = `vitest run`).
 
 > [!question]- Preciso de `vitest.config` separado ou uso o `vite.config`?
 > Se você já tem um `vite.config`, pode adicionar a chave `test` **nele mesmo** — o Vitest a lê. Só precisa do `/// <reference types="vitest/config" />` (ou importar `defineConfig` de `'vitest/config'`) para o TypeScript aceitar a chave `test`. Um `vitest.config.ts` separado só faz sentido quando você quer config de teste divergente da de build. Para a maioria, **um arquivo só** é o caminho — é justamente a vantagem de o Vitest herdar o Vite. Projetos sem Vite (uma lib Node pura) usam um `vitest.config.ts` mínimo, e ainda assim ganham ESM/TS sem Babel.

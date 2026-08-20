@@ -114,9 +114,7 @@ Bandwidth de leitura ≈ 600 bytes × 17.000 ≈ 10,2 MB/s
 10 MB/s é trivial para qualquer infraestrutura moderna — não motiva CDN por si só. Mas se a resposta fosse uma imagem de 2 MB em vez de 600 bytes, o mesmo QPS geraria **34 GB/s** — aí sim CDN e otimização de payload entram na conversa. O número, de novo, é o que decide, não a intuição.
 
 > [!warning] Chutar o tamanho do registro sem justificar
-> **O que acontece:** o candidato diz "vou assumir 1 KB por registro" sem explicar de onde tirou o número.
-> **Por quê:** parece arbitrário — e é, se não for decomposto. O entrevistador não está testando se você acertou o byte exato; está testando se você sabe *decompor* um registro nos seus campos.
-> **Como evitar:** sempre decomponha: "o registro tem um ID (8 bytes), a URL (~500 bytes), timestamp (8 bytes) e um contador de cliques (4 bytes) — total ~520 bytes, arredondo para 600". Isso transforma um chute em uma estimativa auditável.
+> **O que acontece:** o candidato diz "vou assumir 1 KB por registro" sem explicar de onde tirou o número. **Por quê:** parece arbitrário — e é, se não for decomposto. O entrevistador não está testando se você acertou o byte exato; está testando se você sabe *decompor* um registro nos seus campos. **Como evitar:** sempre decomponha: "o registro tem um ID (8 bytes), a URL (~500 bytes), timestamp (8 bytes) e um contador de cliques (4 bytes) — total ~520 bytes, arredondo para 600". Isso transforma um chute em uma estimativa auditável.
 
 ## Powers of two: a tabela para fazer conta de cabeça
 
@@ -193,9 +191,7 @@ graph LR
 > Não os valores exatos — a *estrutura* dela. O que importa memorizar é a hierarquia: L1/L2 cache (nanosegundos) → RAM (dezenas a centenas de nanosegundos) → SSD (microssegundos a poucos milissegundos) → disco rígido (dezenas de milissegundos) → rede cross-region (centenas de milissegundos). Cada salto na hierarquia é aproximadamente **1000x mais lento** que o anterior. Se você souber essa progressão de "ordens de 1000x", consegue reconstruir qualquer argumento de latência na hora, mesmo sem lembrar se SSD é 150μs ou 200μs exatos.
 
 > [!warning] Ignorar a latência de rede e focar só no disco
-> **O que acontece:** o candidato justifica cache citando só "disco é lento", mas esquece que num sistema distribuído a maior parte da latência de ponta a ponta costuma vir de **rede** (chamadas entre serviços, round trips cross-region), não do disco local.
-> **Por quê:** a tabela de latência é fácil de lembrar pela metade (cache vs disco) e esquecer a outra metade (rede local vs rede cross-region, que também varia em ordens de grandeza).
-> **Como evitar:** ao estimar latência de ponta a ponta, some os componentes: latência de rede entre serviços + latência de acesso a dado + processamento. Se o sistema atravessa regiões, a rede sozinha pode consumir a maior parte do orçamento de latência (~50-150ms cross-region) — cache local não resolve isso, replicação geográfica ou CDN sim.
+> **O que acontece:** o candidato justifica cache citando só "disco é lento", mas esquece que num sistema distribuído a maior parte da latência de ponta a ponta costuma vir de **rede** (chamadas entre serviços, round trips cross-region), não do disco local. **Por quê:** a tabela de latência é fácil de lembrar pela metade (cache vs disco) e esquecer a outra metade (rede local vs rede cross-region, que também varia em ordens de grandeza). **Como evitar:** ao estimar latência de ponta a ponta, some os componentes: latência de rede entre serviços + latência de acesso a dado + processamento. Se o sistema atravessa regiões, a rede sozinha pode consumir a maior parte do orçamento de latência (~50-150ms cross-region) — cache local não resolve isso, replicação geográfica ou CDN sim.
 
 ## Exemplo trabalhado: estimando um encurtador de URL do zero
 
@@ -246,9 +242,7 @@ Conclusão parcial: "9,3 MB/s é trivial — não justifica CDN por volume de ba
 Note a estrutura da fala: cada número leva a uma frase de decisão. É esse encadeamento — número → decisão — que a rubrica de "profundidade técnica" e "design da solução" está observando.
 
 > [!warning] Fazer a estimativa e não usá-la
-> **O que acontece:** o candidato calcula QPS e storage corretamente, anuncia os números... e depois desenha a arquitetura sem nunca mais mencioná-los.
-> **Por quê:** tratar a estimativa como um "ritual obrigatório" a cumprir, em vez de uma ferramenta de decisão. Isso é quase pior que pular a estimativa — mostra que você sabe calcular, mas não sabe *usar*.
-> **Como evitar:** toda vez que estimar um número, feche o raciocínio com uma frase de decisão explícita: "e por isso eu vou fazer X". Se um número não muda nenhuma decisão, ele não precisava ser calculado.
+> **O que acontece:** o candidato calcula QPS e storage corretamente, anuncia os números... e depois desenha a arquitetura sem nunca mais mencioná-los. **Por quê:** tratar a estimativa como um "ritual obrigatório" a cumprir, em vez de uma ferramenta de decisão. Isso é quase pior que pular a estimativa — mostra que você sabe calcular, mas não sabe *usar*. **Como evitar:** toda vez que estimar um número, feche o raciocínio com uma frase de decisão explícita: "e por isso eu vou fazer X". Se um número não muda nenhuma decisão, ele não precisava ser calculado.
 
 ## Como explicar em inglês
 

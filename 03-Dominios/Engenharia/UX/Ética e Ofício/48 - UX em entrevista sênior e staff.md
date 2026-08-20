@@ -108,19 +108,13 @@ O que genuinamente se beneficia de apoio externo: **um mock interview real, com 
 ## Armadilhas comuns
 
 > [!warning] Decorar vocabulário sem entender o mecanismo
-> **O que acontece:** o candidato cita "heurística 3 de Nielsen" ou "lei de Fitts" no lugar errado, ou não consegue explicar por que aquele princípio se aplica à pergunta feita.
-> **Por quê:** citar o nome certo no contexto errado é pior do que não citar nada — sinaliza flashcard decorado, não modelo mental internalizado. É o mesmo erro que a nota-irmã de a11y em entrevista nomeia para critérios WCAG citados sem mecanismo.
-> **Como evitar:** treine explicar o *efeito* do princípio antes do nome — se você não consegue dizer por que a lei de Hick se aplica a um menu específico, não a cite só porque soa bem.
+> **O que acontece:** o candidato cita "heurística 3 de Nielsen" ou "lei de Fitts" no lugar errado, ou não consegue explicar por que aquele princípio se aplica à pergunta feita. **Por quê:** citar o nome certo no contexto errado é pior do que não citar nada — sinaliza flashcard decorado, não modelo mental internalizado. É o mesmo erro que a nota-irmã de a11y em entrevista nomeia para critérios WCAG citados sem mecanismo. **Como evitar:** treine explicar o *efeito* do princípio antes do nome — se você não consegue dizer por que a lei de Hick se aplica a um menu específico, não a cite só porque soa bem.
 
 > [!warning] Contar "eu era o trio inteiro" como desculpa, não como evidência
-> **O que acontece:** o candidato menciona ter feito tudo sozinho em tom de justificativa ou lamento ("infelizmente não tinha designer"), em vez de nomear as decisões concretas tomadas em cada papel.
-> **Por quê:** o mesmo fato, contado em tom de limitação, soa como resultado de restrição de recursos; contado com as decisões nomeadas, soa como amplitude de responsabilidade — a diferença está inteiramente na narrativa, não no que de fato aconteceu.
-> **Como evitar:** sempre que mencionar ter sido o trio inteiro, siga imediatamente com um exemplo concreto de decisão tomada em cada um dos três papéis (o Cenário 1 mostra a estrutura).
+> **O que acontece:** o candidato menciona ter feito tudo sozinho em tom de justificativa ou lamento ("infelizmente não tinha designer"), em vez de nomear as decisões concretas tomadas em cada papel. **Por quê:** o mesmo fato, contado em tom de limitação, soa como resultado de restrição de recursos; contado com as decisões nomeadas, soa como amplitude de responsabilidade — a diferença está inteiramente na narrativa, não no que de fato aconteceu. **Como evitar:** sempre que mencionar ter sido o trio inteiro, siga imediatamente com um exemplo concreto de decisão tomada em cada um dos três papéis (o Cenário 1 mostra a estrutura).
 
 > [!warning] Responder pergunta de framework como se ele nunca quebrasse
-> **O que acontece:** perguntado sobre A/B testing, JTBD, ou qualquer outro framework do domínio, o candidato descreve só o caso ideal de uso, sem mencionar quando ele não se aplica.
-> **Por quê:** frameworks sem limite nomeado soam como algo decorado de um curso, não como ferramenta que você já usou e testou contra a realidade — a pesquisa deste sub-galho identifica exatamente essa lacuna como o que separa quem decorou de quem aplicou.
-> **Como evitar:** para cada framework que você cita, tenha pronta a frase "e não uso quando X" — o Cenário 3 mostra essa estrutura aplicada ao A/B testing.
+> **O que acontece:** perguntado sobre A/B testing, JTBD, ou qualquer outro framework do domínio, o candidato descreve só o caso ideal de uso, sem mencionar quando ele não se aplica. **Por quê:** frameworks sem limite nomeado soam como algo decorado de um curso, não como ferramenta que você já usou e testou contra a realidade — a pesquisa deste sub-galho identifica exatamente essa lacuna como o que separa quem decorou de quem aplicou. **Como evitar:** para cada framework que você cita, tenha pronta a frase "e não uso quando X" — o Cenário 3 mostra essa estrutura aplicada ao A/B testing.
 
 ## Como explicar em inglês
 

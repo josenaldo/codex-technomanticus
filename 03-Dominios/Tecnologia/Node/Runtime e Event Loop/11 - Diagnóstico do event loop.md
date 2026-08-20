@@ -390,8 +390,7 @@ npx autocannon -c 150 -d 60 http://localhost:3000/api/relatorio
 # Encerrar o servidor → clinic gera report.html
 ```
 
-**Passo 3 — ler o diagnóstico:**
-O relatório mostrou: `"I/O operations in your thread pool are taking too long"`. Não era CPU — era pool saturado.
+**Passo 3 — ler o diagnóstico:** O relatório mostrou: `"I/O operations in your thread pool are taking too long"`. Não era CPU — era pool saturado.
 
 **Causa identificada:** o novo endpoint `/api/relatorio` fazia 12 leituras de arquivo por request (config + templates + dados). Com 150 conexões concorrentes, o pool de 4 threads ficava permanentemente saturado.
 
@@ -466,8 +465,7 @@ Uma boa resposta também menciona o que *não* fazer: não assumir que latência
 
 **Perguntas comuns:**
 
-**"O que é um flame chart e como você lê um?"**
-Flame chart é a visualização de CPU profile com tempo no eixo horizontal e pilha de chamadas no eixo vertical. Cada barra representa uma função; largura = tempo de CPU consumido. Funções largas no topo da pilha são os gargalos reais. Funções estreitas em camadas inferiores são overhead de infraestrutura (V8 runtime, Node internals). O objetivo é encontrar a função de *código da aplicação* mais larga no topo — essa é onde o tempo está sendo gasto.
+**"O que é um flame chart e como você lê um?"** Flame chart é a visualização de CPU profile com tempo no eixo horizontal e pilha de chamadas no eixo vertical. Cada barra representa uma função; largura = tempo de CPU consumido. Funções largas no topo da pilha são os gargalos reais. Funções estreitas em camadas inferiores são overhead de infraestrutura (V8 runtime, Node internals). O objetivo é encontrar a função de *código da aplicação* mais larga no topo — essa é onde o tempo está sendo gasto.
 
 ---
 

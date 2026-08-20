@@ -70,31 +70,21 @@ Um engenheiro planeja construir uma feature de "sketch para código" usando o re
 ## Armadilhas comuns
 
 > [!warning] Escolher pela estética, não pelo caso de uso
-> **O que acontece:** alguém escolhe entre Excalidraw e tldraw baseado em qual "parece mais bonito" ou é mais familiar, sem considerar se o objetivo é desenhar avulso ou construir infraestrutura de produto.
-> **Por quê:** os dois têm estética visual próxima o suficiente (canvas infinito, formas simples) para a diferença de propósito passar despercebida até o momento em que a funcionalidade que falta (multiplayer, por exemplo) já é necessária e cara de adicionar depois.
-> **Como evitar:** aplicar a pergunta do diagrama Mermaid desta nota antes de escolher — "eu quero desenhar, ou construir um produto que tem canvas dentro dele" — e tratar a resposta como decisão arquitetural, não estética.
+> **O que acontece:** alguém escolhe entre Excalidraw e tldraw baseado em qual "parece mais bonito" ou é mais familiar, sem considerar se o objetivo é desenhar avulso ou construir infraestrutura de produto. **Por quê:** os dois têm estética visual próxima o suficiente (canvas infinito, formas simples) para a diferença de propósito passar despercebida até o momento em que a funcionalidade que falta (multiplayer, por exemplo) já é necessária e cara de adicionar depois. **Como evitar:** aplicar a pergunta do diagrama Mermaid desta nota antes de escolher — "eu quero desenhar, ou construir um produto que tem canvas dentro dele" — e tratar a resposta como decisão arquitetural, não estética.
 
 > [!warning] Tratar um SDK de infraestrutura como ferramenta descartável
-> **O que acontece:** o engenheiro usa tldraw para um rascunho rápido e descartável, pagando o custo de configuração de um SDK completo para uma tarefa que Excalidraw resolveria em segundos.
-> **Por quê:** a familiaridade com uma ferramenta ("já uso tldraw no meu produto") tenta virar hábito de usar a mesma ferramenta para tudo, mesmo quando o caso de uso não pede a complexidade extra.
-> **Como evitar:** manter as duas ferramentas disponíveis conscientemente, e escolher pela tarefa, não pelo hábito — o custo de abrir uma segunda ferramenta é sempre menor do que o custo de over-engineering um rabisco de dez minutos.
+> **O que acontece:** o engenheiro usa tldraw para um rascunho rápido e descartável, pagando o custo de configuração de um SDK completo para uma tarefa que Excalidraw resolveria em segundos. **Por quê:** a familiaridade com uma ferramenta ("já uso tldraw no meu produto") tenta virar hábito de usar a mesma ferramenta para tudo, mesmo quando o caso de uso não pede a complexidade extra. **Como evitar:** manter as duas ferramentas disponíveis conscientemente, e escolher pela tarefa, não pelo hábito — o custo de abrir uma segunda ferramenta é sempre menor do que o custo de over-engineering um rabisco de dez minutos.
 
 > [!warning] Assumir que um projeto satélite popular continua mantido
-> **O que acontece:** um projeto de destaque (como o Make Real) é referenciado meses ou anos depois de sua última atualização, como se ainda estivesse ativo, como no Cenário 3.
-> **Por quê:** popularidade passada não garante manutenção contínua — projetos demonstrativos de recursos experimentais são frequentemente arquivados assim que cumprem o propósito de gerar atenção para o SDK principal.
-> **Como evitar:** checar a data do último commit e o status do repositório (`archived: true` no GitHub é visível no topo da página) antes de basear qualquer decisão de produção nele.
+> **O que acontece:** um projeto de destaque (como o Make Real) é referenciado meses ou anos depois de sua última atualização, como se ainda estivesse ativo, como no Cenário 3. **Por quê:** popularidade passada não garante manutenção contínua — projetos demonstrativos de recursos experimentais são frequentemente arquivados assim que cumprem o propósito de gerar atenção para o SDK principal. **Como evitar:** checar a data do último commit e o status do repositório (`archived: true` no GitHub é visível no topo da página) antes de basear qualquer decisão de produção nele.
 
 > [!tip] Assista: Excalidraw, my favorite whiteboard / tech diagram app
-> **Canal:** Christian Lempa | **Duração:** ~14min25s | **Idioma:** EN (legenda automática)
-> Demonstração prática do Excalidraw como ferramenta standalone, cobrindo as integrações com VS Code, Obsidian e Notion citadas nesta nota — relevante especificamente para quem trabalha dentro de um vault Obsidian, como é o caso deste próprio documento.
-> Trecho de destaque [0:39]: *"it is also integrated in many other tools... you can also use it in note-taking and project management tools like Obsidian and Notion"* — confirma a integração relevante para este vault.
+> **Canal:** Christian Lempa | **Duração:** ~14min25s | **Idioma:** EN (legenda automática) Demonstração prática do Excalidraw como ferramenta standalone, cobrindo as integrações com VS Code, Obsidian e Notion citadas nesta nota — relevante especificamente para quem trabalha dentro de um vault Obsidian, como é o caso deste próprio documento. Trecho de destaque [0:39]: *"it is also integrated in many other tools... you can also use it in note-taking and project management tools like Obsidian and Notion"* — confirma a integração relevante para este vault.
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Gv9MezPAchI)
 
 > [!tip] Assista: tldraw sync — multiplayer whiteboards in React
-> **Canal:** tldraw (oficial) | **Duração:** ~2min38s | **Idioma:** EN (legenda automática)
-> Demonstração oficial, feita por um engenheiro de produto do próprio tldraw, mostrando a diferença central desta nota na prática: poucas linhas de código para ir de "canvas isolado" a "canvas multiplayer sincronizado entre dispositivos" — exatamente a capacidade de infraestrutura que separa tldraw de Excalidraw.
-> Trecho de destaque [1:59]: *"now you can see that we actually have a collaborative experience working here — we've got cursors, the contents of the document is synchronized between the two windows"*.
+> **Canal:** tldraw (oficial) | **Duração:** ~2min38s | **Idioma:** EN (legenda automática) Demonstração oficial, feita por um engenheiro de produto do próprio tldraw, mostrando a diferença central desta nota na prática: poucas linhas de código para ir de "canvas isolado" a "canvas multiplayer sincronizado entre dispositivos" — exatamente a capacidade de infraestrutura que separa tldraw de Excalidraw. Trecho de destaque [1:59]: *"now you can see that we actually have a collaborative experience working here — we've got cursors, the contents of the document is synchronized between the two windows"*.
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=COw7Wm9HS-g)
 

@@ -49,16 +49,14 @@ Um exercício concreto ajuda a fixar o fluxo. Imagine que a fatura veio US$ 4.20
 > [!tip] Assista: AWS Cost Optimisation Series: Cost Explorer
 > **Canal:** Amazon Web Services (oficial) | **Duração:** ~3min | **Idioma:** EN
 >
-> Demo curta e direto ao ponto do console oficial, incluindo os relatórios de cobertura de Reserved Instances que ficam dentro do próprio Cost Explorer — útil pra ver na tela o mesmo forecast que o texto descreve.
-> Trecho de destaque [00:24]: *"cost Explorer RI reports you can use"*
+> Demo curta e direto ao ponto do console oficial, incluindo os relatórios de cobertura de Reserved Instances que ficam dentro do próprio Cost Explorer — útil pra ver na tela o mesmo forecast que o texto descreve. Trecho de destaque [00:24]: *"cost Explorer RI reports you can use"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=oE8TNKGmc40)
 
 > [!tip] Assista: AWS Cost Explorer — Analyze & Forecast Cloud Spending
 > **Canal:** CodeLucky | **Duração:** ~4min | **Idioma:** EN
 >
-> Foca no motor de forecast (machine learning sobre o histórico) e amarra isso diretamente ao planejamento de budget e às cost allocation tags — a ponte exata entre esta seção e a próxima.
-> Trecho de destaque [03:08]: *"cost allocation tags to enable granular"*
+> Foca no motor de forecast (machine learning sobre o histórico) e amarra isso diretamente ao planejamento de budget e às cost allocation tags — a ponte exata entre esta seção e a próxima. Trecho de destaque [03:08]: *"cost allocation tags to enable granular"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=M43YkRC8taU)
 

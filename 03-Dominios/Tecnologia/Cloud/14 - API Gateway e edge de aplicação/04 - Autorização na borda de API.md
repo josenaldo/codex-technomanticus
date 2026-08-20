@@ -95,8 +95,7 @@ O contrato é simples e rígido: o API Gateway invoca sua função Lambda passan
 > [!tip] Assista: Secure your API Gateway with Lambda Authorizer
 > **Canal:** Be A Better Dev | **Duração:** ~25min | **Idioma:** EN
 >
-> Passo a passo no console do fluxo que o diagrama abaixo descreve: o cliente manda um token, o authorizer o inspeciona e devolve `Allow` ou `Deny`, e é essa decisão — não uma verificação feita pelo backend — que decide se a requisição segue adiante.
-> Trecho de destaque [01:11]: *"the first thing that's going to happen is that user is going to call an API [...] and we want to provide an authorization token [...] it's going to first go to an authorization token handler, and this is just called our authorizer."*
+> Passo a passo no console do fluxo que o diagrama abaixo descreve: o cliente manda um token, o authorizer o inspeciona e devolve `Allow` ou `Deny`, e é essa decisão — não uma verificação feita pelo backend — que decide se a requisição segue adiante. Trecho de destaque [01:11]: *"the first thing that's going to happen is that user is going to call an API [...] and we want to provide an authorization token [...] it's going to first go to an authorization token handler, and this is just called our authorizer."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=al5I9v5Y-kA)
 
@@ -242,8 +241,7 @@ Por baixo, o mecanismo é exatamente o que um Lambda authorizer bem escrito fari
 > [!tip] Assista: Use JWT Authorizers with Amazon Cognito and API Gateway
 > **Canal:** Focus Otter | **Duração:** ~14min | **Idioma:** EN
 >
-> Configura no console exatamente esse par `Issuer`/`Audience` — usando um Cognito user pool como issuer — e mostra o momento em que você escolhe entre "JWT" e "Lambda" como tipo de authorizer, deixando concreta a fronteira entre os dois mecanismos.
-> Trecho de destaque [09:58]: *"it is with JWT — you can also do it with Lambda, which is cool, but JWT is really cool [...] the issuer, this is going to be the URL for our Cognito user pool."*
+> Configura no console exatamente esse par `Issuer`/`Audience` — usando um Cognito user pool como issuer — e mostra o momento em que você escolhe entre "JWT" e "Lambda" como tipo de authorizer, deixando concreta a fronteira entre os dois mecanismos. Trecho de destaque [09:58]: *"it is with JWT — you can also do it with Lambda, which is cool, but JWT is really cool [...] the issuer, this is going to be the URL for our Cognito user pool."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=o7OHogUcRmI)
 

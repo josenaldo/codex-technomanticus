@@ -54,8 +54,7 @@ A ordem importa: package manager → deps → clone → apply. Inverter quebra o
 
 ### Propriedades essenciais
 
-**Idempotente:**
-Rodar o script 2x não quebra a máquina. Cada etapa verifica o estado atual antes de agir.
+**Idempotente:** Rodar o script 2x não quebra a máquina. Cada etapa verifica o estado atual antes de agir.
 
 ```bash
 # Mau — falha se bat já está instalado (dependendo de versão/estado)
@@ -71,8 +70,7 @@ fi
 brew bundle --file=Brewfile
 ```
 
-**Modular:**
-Cada etapa é uma função independente. Facilita re-rodar só a parte que falhou.
+**Modular:** Cada etapa é uma função independente. Facilita re-rodar só a parte que falhou.
 
 ```bash
 install_brew() { ... }
@@ -86,8 +84,7 @@ clone_dotfiles
 apply_dotfiles
 ```
 
-**Logged:**
-Toda saída vai pro log pra diagnóstico posterior.
+**Logged:** Toda saída vai pro log pra diagnóstico posterior.
 
 ```bash
 set -x
@@ -95,8 +92,7 @@ exec > >(tee -a bootstrap.log)
 exec 2>&1
 ```
 
-**Falha rápida:**
-Qualquer erro aborta o script imediatamente — sem continuar silenciosamente com estado inválido.
+**Falha rápida:** Qualquer erro aborta o script imediatamente — sem continuar silenciosamente com estado inválido.
 
 ```bash
 set -euo pipefail
@@ -107,11 +103,9 @@ set -euo pipefail
 
 ### Estratégias de orchestration
 
-**Script shell direto:**
-A abordagem mais simples. Pro: sem dependências externas, qualquer shell executa. Con: cresce difícil de manter conforme o número de etapas aumenta; sem grafo de dependências.
+**Script shell direto:** A abordagem mais simples. Pro: sem dependências externas, qualquer shell executa. Con: cresce difícil de manter conforme o número de etapas aumenta; sem grafo de dependências.
 
-**Brewfile (macOS + Linux brew):**
-Arquivo declarativo que descreve todos os pacotes Homebrew. Idempotente nativo — `brew bundle` só instala o que falta.
+**Brewfile (macOS + Linux brew):** Arquivo declarativo que descreve todos os pacotes Homebrew. Idempotente nativo — `brew bundle` só instala o que falta.
 
 ```ruby
 # Brewfile
@@ -131,8 +125,7 @@ cask "raycast"
 
 Run: `brew bundle --file=Brewfile`. Para gerar o Brewfile a partir dos pacotes instalados: `brew bundle dump --force`.
 
-**justfile (just):**
-`just` é um command runner que resolve dependências entre "recipes". Cada recipe é uma etapa.
+**justfile (just):** `just` é um command runner que resolve dependências entre "recipes". Cada recipe é uma etapa.
 
 ```just
 default:
@@ -157,11 +150,9 @@ apply-dotfiles:
 
 Pro: grafo de dependências entre recipes; `just install-deps` reexecuta só uma etapa. Con: `just` precisa estar instalado antes — bootstrapping problem (resolver com script mínimo que instala just).
 
-**Makefile:**
-Mesma ideia do justfile, mas com `make`. Desvantagem: tabs obrigatórias (fricção) e semântica pra build de files (não pra tasks).
+**Makefile:** Mesma ideia do justfile, mas com `make`. Desvantagem: tabs obrigatórias (fricção) e semântica pra build de files (não pra tasks).
 
-**chezmoi `run_once_*.sh` scripts:**
-chezmoi executa scripts com prefixo `run_once_` exatamente uma vez por máquina (controle via hash em state). Ideal pra instalar deps que são pré-requisito do apply.
+**chezmoi `run_once_*.sh` scripts:** chezmoi executa scripts com prefixo `run_once_` exatamente uma vez por máquina (controle via hash em state). Ideal pra instalar deps que são pré-requisito do apply.
 
 ```bash
 # ~/.local/share/chezmoi/run_once_install-deps.sh.tmpl
@@ -174,8 +165,7 @@ sudo apt update && sudo apt install -y git neovim zsh
 {{ end }}
 ```
 
-**Ansible:**
-Overkill pra single-machine; bom pra fleet (≥5 máquinas similares). Curva de aprendizado alta. Para dev solo no terminal, bootstrap em shell + Brewfile resolve sem overhead.
+**Ansible:** Overkill pra single-machine; bom pra fleet (≥5 máquinas similares). Curva de aprendizado alta. Para dev solo no terminal, bootstrap em shell + Brewfile resolve sem overhead.
 
 ### Cross-OS bootstrap — exemplo end-to-end
 
@@ -303,51 +293,27 @@ Manter logs habilitados (`set -x`, `tee bootstrap.log`) facilita identificar ond
 
 ## Armadilhas
 
-**Bootstrap destrutivo em máquina já configurada**
-**Causa:** comandos como `rm`, `mv`, `chsh` sem verificação de estado atual executam em cima de config existente.
-**Sintoma:** shell config anterior sobrescrito; symlinks de stow criados em cima de arquivos reais (stow falha com "already exists").
-**Como detectar:** ler o script inteiro antes de rodar pela primeira vez; testar em VM.
-**Solução:** verificações explícitas antes de cada operação destrutiva — `[[ -d ]]`, `[[ -f ]]`, `[[ -L ]]`; backup com timestamp (`cp ~/.zshrc ~/.zshrc.bak.$(date +%Y%m%d)`).
+**Bootstrap destrutivo em máquina já configurada** **Causa:** comandos como `rm`, `mv`, `chsh` sem verificação de estado atual executam em cima de config existente. **Sintoma:** shell config anterior sobrescrito; symlinks de stow criados em cima de arquivos reais (stow falha com "already exists"). **Como detectar:** ler o script inteiro antes de rodar pela primeira vez; testar em VM. **Solução:** verificações explícitas antes de cada operação destrutiva — `[[ -d ]]`, `[[ -f ]]`, `[[ -L ]]`; backup com timestamp (`cp ~/.zshrc ~/.zshrc.bak.$(date +%Y%m%d)`).
 
 ---
 
-**`brew install` sem `Brewfile` cresce desorganizado**
-**Causa:** ao instalar pacotes ad-hoc com `brew install X` ao longo do tempo, o bootstrap não rastreia o que é intencional.
-**Sintoma:** máquina nova não tem a mesma lista de ferramentas; sync entre máquinas inconsistente.
-**Como detectar:** `brew leaves` mostra top-level installs; comparar com o que está no Brewfile.
-**Solução:** centralizar todas as deps em `Brewfile` versionado no repo de dotfiles; `brew bundle dump --force` regenera o Brewfile a partir do estado atual.
+**`brew install` sem `Brewfile` cresce desorganizado** **Causa:** ao instalar pacotes ad-hoc com `brew install X` ao longo do tempo, o bootstrap não rastreia o que é intencional. **Sintoma:** máquina nova não tem a mesma lista de ferramentas; sync entre máquinas inconsistente. **Como detectar:** `brew leaves` mostra top-level installs; comparar com o que está no Brewfile. **Solução:** centralizar todas as deps em `Brewfile` versionado no repo de dotfiles; `brew bundle dump --force` regenera o Brewfile a partir do estado atual.
 
 ---
 
-**Script falha silenciosa sem `set -e`**
-**Causa:** sem `set -e` (ou `set -euo pipefail`), um comando que falha no meio do script não aborta — a execução continua com estado inválido.
-**Sintoma:** bootstrap "completou" com sucesso aparente mas etapas críticas falharam silenciosamente (clone não aconteceu, apply não rodou).
-**Como detectar:** ler os logs; verificar se os arquivos/ferramentas esperados existem após o script.
-**Solução:** sempre `set -euo pipefail` na segunda linha do script (após o shebang); adicionar `log()` antes de cada etapa para output rastreável.
+**Script falha silenciosa sem `set -e`** **Causa:** sem `set -e` (ou `set -euo pipefail`), um comando que falha no meio do script não aborta — a execução continua com estado inválido. **Sintoma:** bootstrap "completou" com sucesso aparente mas etapas críticas falharam silenciosamente (clone não aconteceu, apply não rodou). **Como detectar:** ler os logs; verificar se os arquivos/ferramentas esperados existem após o script. **Solução:** sempre `set -euo pipefail` na segunda linha do script (após o shebang); adicionar `log()` antes de cada etapa para output rastreável.
 
 ---
 
-**`chsh` sem zsh em `/etc/shells` falha**
-**Causa:** `chsh` só permite setar um shell que está listado em `/etc/shells`. Em sistemas Linux onde zsh foi instalado manualmente (não via apt), o path não está na lista.
-**Sintoma:** `chsh: /home/alice/.local/bin/zsh is not listed in /etc/shells`.
-**Como detectar:** ler a mensagem de erro; `cat /etc/shells` confirma ausência.
-**Solução:** antes do `chsh`, verificar e adicionar: `grep -q "$(which zsh)" /etc/shells || echo "$(which zsh)" | sudo tee -a /etc/shells`.
+**`chsh` sem zsh em `/etc/shells` falha** **Causa:** `chsh` só permite setar um shell que está listado em `/etc/shells`. Em sistemas Linux onde zsh foi instalado manualmente (não via apt), o path não está na lista. **Sintoma:** `chsh: /home/alice/.local/bin/zsh is not listed in /etc/shells`. **Como detectar:** ler a mensagem de erro; `cat /etc/shells` confirma ausência. **Solução:** antes do `chsh`, verificar e adicionar: `grep -q "$(which zsh)" /etc/shells || echo "$(which zsh)" | sudo tee -a /etc/shells`.
 
 ---
 
-**Bootstrap clona dotfiles e aplica antes das dependências instaladas**
-**Causa:** ordem das etapas errada — clone/apply antes de instalar as ferramentas que o apply precisa (`stow`, `chezmoi`).
-**Sintoma:** `stow` not found ao tentar `stow zsh nvim`; ou `.zshrc` faz `source` de plugins que ainda não existem.
-**Como detectar:** ler o erro de "command not found" no log.
-**Solução:** ordem canônica obrigatória: package manager → deps → clone dotfiles → apply. Documentar a ordem no comentário do script.
+**Bootstrap clona dotfiles e aplica antes das dependências instaladas** **Causa:** ordem das etapas errada — clone/apply antes de instalar as ferramentas que o apply precisa (`stow`, `chezmoi`). **Sintoma:** `stow` not found ao tentar `stow zsh nvim`; ou `.zshrc` faz `source` de plugins que ainda não existem. **Como detectar:** ler o erro de "command not found" no log. **Solução:** ordem canônica obrigatória: package manager → deps → clone dotfiles → apply. Documentar a ordem no comentário do script.
 
 ---
 
-**Homebrew `install.sh` muda de URL/comportamento sem aviso**
-**Causa:** o script de instalação do Homebrew é baixado de URL remota em tempo de execução — não é versionado junto com o bootstrap.
-**Sintoma:** `curl` retorna 404 ou o script mudou de comportamento e falha; ou requer interação (prompt) que quebra automação.
-**Como detectar:** rodar com `set -x` mostra a URL e a resposta do curl.
-**Solução:** checar a URL canônica na documentação do Homebrew antes de usar; adicionar `|| true` + verificação manual apenas pra Homebrew (caso já instalado via PATH diferente).
+**Homebrew `install.sh` muda de URL/comportamento sem aviso** **Causa:** o script de instalação do Homebrew é baixado de URL remota em tempo de execução — não é versionado junto com o bootstrap. **Sintoma:** `curl` retorna 404 ou o script mudou de comportamento e falha; ou requer interação (prompt) que quebra automação. **Como detectar:** rodar com `set -x` mostra a URL e a resposta do curl. **Solução:** checar a URL canônica na documentação do Homebrew antes de usar; adicionar `|| true` + verificação manual apenas pra Homebrew (caso já instalado via PATH diferente).
 
 ## Em inglês
 

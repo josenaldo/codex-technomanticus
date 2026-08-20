@@ -248,8 +248,7 @@ Leitura do diagrama: o gateway na frente roteia cada requisição — o que já 
 Toda essa disciplina pode soar como grandes projetos. Não é. O modo dominante de combater a entropia é minúsculo e constante, capturado numa regra que **Robert C. Martin** (Uncle Bob) adaptou pra *Clean Code* (2008) a partir do lema escoteiro:
 
 > [!quote] A regra do escoteiro (Boy Scout Rule)
-> *"Deixe o acampamento mais limpo do que você o encontrou."*
-> Aplicada ao código: toda vez que você toca num arquivo, deixe-o **um pouquinho melhor** do que estava — renomeie uma variável obscura, extraia uma função, apague um comentário mentiroso.
+> *"Deixe o acampamento mais limpo do que você o encontrou."* Aplicada ao código: toda vez que você toca num arquivo, deixe-o **um pouquinho melhor** do que estava — renomeie uma variável obscura, extraia uma função, apague um comentário mentiroso.
 
 A potência da regra está na escala.
 
@@ -329,8 +328,7 @@ A próxima nota, [[15 - Pensamento sistêmico]], dá esse instrumental: feedback
 ## Referências
 
 > [!tip] Assista — Working Effectively with Legacy Code — Michael Feathers & Christian Clausen (GOTO 2023)
-> **GOTO Conferences** · 46min · [Working Effectively with Legacy Code — Michael Feathers & Christian Clausen (GOTO 2023)](https://www.youtube.com/watch?v=P_6eDL1aqtA)
-> Feathers revisitando, décadas depois, a definição que esta nota cita — legado é código sem testes, porque é código que você teme mudar. A conversa mostra o que ele manteria e o que reformularia hoje.
+> **GOTO Conferences** · 46min · [Working Effectively with Legacy Code — Michael Feathers & Christian Clausen (GOTO 2023)](https://www.youtube.com/watch?v=P_6eDL1aqtA) Feathers revisitando, décadas depois, a definição que esta nota cita — legado é código sem testes, porque é código que você teme mudar. A conversa mostra o que ele manteria e o que reformularia hoje.
 
 - **Michael C. Feathers** — *Working Effectively with Legacy Code* (Prentice Hall, 2004). A definição: *"To me, legacy code is simply code without tests."* As técnicas centrais: *seams* e *characterization tests*. *"Code without tests is bad code [...] With tests, we can change the behavior of our code quickly and verifiably."*
 - **Kent Beck** — Tweet de 25/09/2012: *"for each desired change, make the change easy (warning: this may be hard), then make the easy change."* ([x.com/KentBeck/status/250733358307500032](https://x.com/KentBeck/status/250733358307500032)). Também associado a *"make it work, make it right, make it fast"* (popularizado por Beck; formulação anterior atribuída a Brian Kernighan, ~1983).

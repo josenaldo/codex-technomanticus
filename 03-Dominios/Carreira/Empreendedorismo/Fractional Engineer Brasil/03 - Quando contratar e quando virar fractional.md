@@ -66,19 +66,13 @@ Um Engineering Manager com 10 anos de carreira, os últimos 4 como Head of Engin
 ## Armadilhas comuns
 
 > [!warning] Empresa contratando fractional por status, não por necessidade
-> **O que acontece:** empresa muito cedo (3-5 pessoas, sem complexidade técnica real) contrata um fractional CTO porque "parece profissional".
-> **Por quê:** sem decisões de peso pra revisar, o fractional vira custo sem retorno proporcional — o dinheiro renderia mais investido em mais um engenheiro sênior full-stack.
-> **Como evitar:** antes de contratar, listar decisões concretas dos últimos 3 meses que teriam se beneficiado de revisão sênior; se a lista estiver vazia, ainda não é a hora.
+> **O que acontece:** empresa muito cedo (3-5 pessoas, sem complexidade técnica real) contrata um fractional CTO porque "parece profissional". **Por quê:** sem decisões de peso pra revisar, o fractional vira custo sem retorno proporcional — o dinheiro renderia mais investido em mais um engenheiro sênior full-stack. **Como evitar:** antes de contratar, listar decisões concretas dos últimos 3 meses que teriam se beneficiado de revisão sênior; se a lista estiver vazia, ainda não é a hora.
 
 > [!warning] Profissional virando fractional sem colchão financeiro
-> **O que acontece:** alguém sai do emprego full-time e tenta virar fractional imediatamente, sem reserva — aceita o primeiro cliente que aparece, com preço baixo, só pra ter caixa.
-> **Por quê:** precificar sob pressão financeira tende a ancorar baixo (ver [[05 - Precificação — retainer, hourly e project-based]]), e esse preço vira referência difícil de subir depois com o mesmo cliente.
-> **Como evitar:** construir pelo menos 4-6 meses de reserva antes da transição, ou manter um vínculo parcial (freelance, ou um cliente fractional único enquanto ainda empregado, se o contrato permitir) até ter 2+ clientes recorrentes.
+> **O que acontece:** alguém sai do emprego full-time e tenta virar fractional imediatamente, sem reserva — aceita o primeiro cliente que aparece, com preço baixo, só pra ter caixa. **Por quê:** precificar sob pressão financeira tende a ancorar baixo (ver [[05 - Precificação — retainer, hourly e project-based]]), e esse preço vira referência difícil de subir depois com o mesmo cliente. **Como evitar:** construir pelo menos 4-6 meses de reserva antes da transição, ou manter um vínculo parcial (freelance, ou um cliente fractional único enquanto ainda empregado, se o contrato permitir) até ter 2+ clientes recorrentes.
 
 > [!warning] Empresa esperando demais para trocar por full-time
-> **O que acontece:** o time já passou de 15-20 pessoas, coordenação diária virou gargalo, mas a empresa mantém o fractional por comodidade (menor custo, sem processo seletivo).
-> **Por quê:** o fractional, honesto, não consegue mais dar a presença diária que o estágio atual da empresa exige — decisões urgentes esperam a próxima janela, e isso trava o time.
-> **Como evitar:** revisar o engajamento a cada 3-6 meses perguntando explicitamente "esse formato ainda serve pro tamanho atual do time?" — o próprio fractional deveria levantar essa bandeira quando notar o sinal.
+> **O que acontece:** o time já passou de 15-20 pessoas, coordenação diária virou gargalo, mas a empresa mantém o fractional por comodidade (menor custo, sem processo seletivo). **Por quê:** o fractional, honesto, não consegue mais dar a presença diária que o estágio atual da empresa exige — decisões urgentes esperam a próxima janela, e isso trava o time. **Como evitar:** revisar o engajamento a cada 3-6 meses perguntando explicitamente "esse formato ainda serve pro tamanho atual do time?" — o próprio fractional deveria levantar essa bandeira quando notar o sinal.
 
 ## Como explicar em inglês
 

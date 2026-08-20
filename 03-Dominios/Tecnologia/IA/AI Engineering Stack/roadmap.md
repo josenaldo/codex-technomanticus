@@ -27,8 +27,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | LINKS | L1 Wikilink cross-galho · L2 Referência externa (URL) |
 | MÍDIA | M1 Vídeo/podcast embutido |
 
-**Esquema de `fase:` detectado:** COM fase (Iniciado 01–12, Adepto 13)
-**Piso de linhas:** aplicável — Iniciado ≥300; Adepto ≥400
+**Esquema de `fase:` detectado:** COM fase (Iniciado 01–12, Adepto 13) **Piso de linhas:** aplicável — Iniciado ≥300; Adepto ≥400
 
 ## Tabela-resumo
 

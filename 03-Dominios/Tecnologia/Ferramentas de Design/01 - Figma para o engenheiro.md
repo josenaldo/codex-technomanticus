@@ -78,24 +78,16 @@ Um frame no Figma tem auto layout configurado com `gap: 16px` e `padding: 24px`,
 ## Armadilhas comuns
 
 > [!warning] Confundir "parece bonito" com "está ligado ao sistema"
-> **O que acontece:** o engenheiro julga a fidelidade da implementação só pela comparação visual lado a lado com o Figma, sem checar se os valores usados são tokens ou números soltos.
-> **Por quê:** visualmente, um hex copiado e uma variable resolvida produzem exatamente o mesmo pixel no momento da implementação — a diferença só aparece quando o token muda depois, e nesse ponto o dano (dessincronia) já está feito.
-> **Como evitar:** sempre inspecionar no Dev Mode, nunca no modo de design; o Dev Mode é o único lugar que expõe se um valor é nomeado ou solto.
+> **O que acontece:** o engenheiro julga a fidelidade da implementação só pela comparação visual lado a lado com o Figma, sem checar se os valores usados são tokens ou números soltos. **Por quê:** visualmente, um hex copiado e uma variable resolvida produzem exatamente o mesmo pixel no momento da implementação — a diferença só aparece quando o token muda depois, e nesse ponto o dano (dessincronia) já está feito. **Como evitar:** sempre inspecionar no Dev Mode, nunca no modo de design; o Dev Mode é o único lugar que expõe se um valor é nomeado ou solto.
 
 > [!warning] Editar o arquivo do designer sem entender a estrutura por baixo
-> **O que acontece:** o engenheiro, tentando "ajudar", arrasta um elemento para fora de um auto layout frame ou desconecta a instância de um componente para "ajustar rapidinho" — e isso quebra a estrutura que o design system depende para funcionar em outros lugares do arquivo.
-> **Por quê:** o Figma permite edições locais que rompem silenciosamente o vínculo com o componente-mãe (`detach instance`); depois de desconectada, essa instância para de receber atualizações da biblioteca, e ninguém percebe até o próximo ajuste de design não se propagar.
-> **Como evitar:** tratar o arquivo do designer como território alheio — questionar em vez de editar; se um ajuste é necessário, pedir para quem é dono do arquivo, ou fazer a mudança no lado do código sem tocar no Figma.
+> **O que acontece:** o engenheiro, tentando "ajudar", arrasta um elemento para fora de um auto layout frame ou desconecta a instância de um componente para "ajustar rapidinho" — e isso quebra a estrutura que o design system depende para funcionar em outros lugares do arquivo. **Por quê:** o Figma permite edições locais que rompem silenciosamente o vínculo com o componente-mãe (`detach instance`); depois de desconectada, essa instância para de receber atualizações da biblioteca, e ninguém percebe até o próximo ajuste de design não se propagar. **Como evitar:** tratar o arquivo do designer como território alheio — questionar em vez de editar; se um ajuste é necessário, pedir para quem é dono do arquivo, ou fazer a mudança no lado do código sem tocar no Figma.
 
 > [!warning] Tratar toda semelhança visual como coincidência
-> **O que acontece:** dois elementos parecidos no Figma viram duas implementações de código não relacionadas, como no Cenário 2.
-> **Por quê:** sem checar o nome do componente-mãe no Dev Mode, não há como distinguir "semelhança por acaso" de "mesma peça, prop diferente" — e a segunda é, de longe, mais comum num design system maduro.
-> **Como evitar:** antes de implementar dois elementos parecidos separadamente, confirmar no painel do Dev Mode se compartilham o mesmo componente-base.
+> **O que acontece:** dois elementos parecidos no Figma viram duas implementações de código não relacionadas, como no Cenário 2. **Por quê:** sem checar o nome do componente-mãe no Dev Mode, não há como distinguir "semelhança por acaso" de "mesma peça, prop diferente" — e a segunda é, de longe, mais comum num design system maduro. **Como evitar:** antes de implementar dois elementos parecidos separadamente, confirmar no painel do Dev Mode se compartilham o mesmo componente-base.
 
 > [!tip] Assista: Figma tutorial — Collaboration and handoff in Dev Mode
-> **Canal:** Figma (oficial) | **Duração:** ~6min32s | **Idioma:** EN (legenda automática)
-> O vídeo segue uma designer e um desenvolvedor colaborando através de uma mudança real de handoff — e captura exatamente o erro do Cenário 1 desta nota: o desenvolvedor abre o painel de propriedades e vê um valor hex onde esperava uma variable nomeada, reconhece que é "incomum" e sinaliza para a designer corrigir antes de implementar. É o comportamento correto em ação, não só descrito.
-> Trecho de destaque [3:38]: *"it's showing me a hex value for the background color — that's unusual, usually I see things like color-dark-gray and color-warm-gray."*
+> **Canal:** Figma (oficial) | **Duração:** ~6min32s | **Idioma:** EN (legenda automática) O vídeo segue uma designer e um desenvolvedor colaborando através de uma mudança real de handoff — e captura exatamente o erro do Cenário 1 desta nota: o desenvolvedor abre o painel de propriedades e vê um valor hex onde esperava uma variable nomeada, reconhece que é "incomum" e sinaliza para a designer corrigir antes de implementar. É o comportamento correto em ação, não só descrito. Trecho de destaque [3:38]: *"it's showing me a hex value for the background color — that's unusual, usually I see things like color-dark-gray and color-warm-gray."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=xCJsRuH7v9w)
 

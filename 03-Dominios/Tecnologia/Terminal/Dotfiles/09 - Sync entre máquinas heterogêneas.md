@@ -413,51 +413,27 @@ Para um workflow mais organizado em branches per-host, manter as mudanças work-
 
 ## Armadilhas
 
-**Branches divergem demais — work nunca é mergeado**
-**Causa:** trabalho contínuo em main sem fazer merge periódico em work; a branch work envelhece.
-**Sintoma:** `git merge main` na branch work gera conflito grande e assustador.
-**Como detectar:** `git log work..main --oneline` mostra quantos commits main está à frente de work. Se passar de 20, a dívida é alta.
-**Solução:** disciplinar merge regular (1x por semana); configurar lembrete no calendário. Alternativa: trocar para estratégia 2 (conditional includes) se a diferença entre máquinas for pequena.
+**Branches divergem demais — work nunca é mergeado** **Causa:** trabalho contínuo em main sem fazer merge periódico em work; a branch work envelhece. **Sintoma:** `git merge main` na branch work gera conflito grande e assustador. **Como detectar:** `git log work..main --oneline` mostra quantos commits main está à frente de work. Se passar de 20, a dívida é alta. **Solução:** disciplinar merge regular (1x por semana); configurar lembrete no calendário. Alternativa: trocar para estratégia 2 (conditional includes) se a diferença entre máquinas for pequena.
 
 ---
 
-**`hostname -s` retorna valor diferente em macOS vs Linux**
-**Causa:** macOS às vezes retorna hostname com sufixo `.local` ou `.lan` dependendo da configuração de rede; Linux retorna o nome curto puro.
-**Sintoma:** o arquivo `host-work-laptop.zsh` não é sourceiado em macOS porque `hostname -s` retorna `work-laptop.local` em vez de `work-laptop`.
-**Como detectar:** rodar `hostname` e `hostname -s` na máquina afetada; comparar com o nome esperado do arquivo.
-**Solução:** `hostname -s` remove sufixo na maioria dos casos; para macOS consistente, usar `scutil --get LocalHostName`. Ou normalizar no zshrc: `HOSTNAME_SHORT=${$(hostname -s)%%.*}` (remove tudo após o primeiro ponto).
+**`hostname -s` retorna valor diferente em macOS vs Linux** **Causa:** macOS às vezes retorna hostname com sufixo `.local` ou `.lan` dependendo da configuração de rede; Linux retorna o nome curto puro. **Sintoma:** o arquivo `host-work-laptop.zsh` não é sourceiado em macOS porque `hostname -s` retorna `work-laptop.local` em vez de `work-laptop`. **Como detectar:** rodar `hostname` e `hostname -s` na máquina afetada; comparar com o nome esperado do arquivo. **Solução:** `hostname -s` remove sufixo na maioria dos casos; para macOS consistente, usar `scutil --get LocalHostName`. Ou normalizar no zshrc: `HOSTNAME_SHORT=${$(hostname -s)%%.*}` (remove tudo após o primeiro ponto).
 
 ---
 
-**`includeIf "gitdir:~/work/"` não inclui — trailing slash ausente**
-**Causa:** git exige trailing slash no `gitdir:` para match recursivo. Sem ela, só faz match no diretório exato `~/work`, não em `~/work/foo/`.
-**Sintoma:** a config de work não é aplicada em repos dentro de `~/work/algum-repo/`; `git config user.email` retorna o email base.
-**Como detectar:** `git config --show-origin --get user.email` dentro do repo work — se mostrar `~/.gitconfig` como origem, o include não foi ativado.
-**Solução:** sempre incluir trailing slash: `"gitdir:~/work/"` (não `"gitdir:~/work"`). Confirmar com `git config --show-origin --get user.email` que a origem correta é mostrada.
+**`includeIf "gitdir:~/work/"` não inclui — trailing slash ausente** **Causa:** git exige trailing slash no `gitdir:` para match recursivo. Sem ela, só faz match no diretório exato `~/work`, não em `~/work/foo/`. **Sintoma:** a config de work não é aplicada em repos dentro de `~/work/algum-repo/`; `git config user.email` retorna o email base. **Como detectar:** `git config --show-origin --get user.email` dentro do repo work — se mostrar `~/.gitconfig` como origem, o include não foi ativado. **Solução:** sempre incluir trailing slash: `"gitdir:~/work/"` (não `"gitdir:~/work"`). Confirmar com `git config --show-origin --get user.email` que a origem correta é mostrada.
 
 ---
 
-**Files host-specific commitados acidentalmente com secrets em plaintext**
-**Causa:** ao criar `host-work-laptop.zsh` com `export AWS_SECRET_KEY=...` e commitar sem encryption, o secret vai pro repo.
-**Sintoma:** secret em plaintext visível em `git log -p`; vaza para qualquer clone do repo.
-**Como detectar:** `git log --all -p -- "zsh/.config/zsh/host-work-laptop.zsh"` — qualquer valor sensível visível é vazamento.
-**Solução:** arquivos com secrets devem usar encryption (git-crypt ou age via chezmoi) ou ser adicionados ao `.gitignore` e mantidos apenas localmente. Decidir conscientemente: versionar (com encryption) ou ignorar. Rotacionar qualquer secret já exposto imediatamente.
+**Files host-specific commitados acidentalmente com secrets em plaintext** **Causa:** ao criar `host-work-laptop.zsh` com `export AWS_SECRET_KEY=...` e commitar sem encryption, o secret vai pro repo. **Sintoma:** secret em plaintext visível em `git log -p`; vaza para qualquer clone do repo. **Como detectar:** `git log --all -p -- "zsh/.config/zsh/host-work-laptop.zsh"` — qualquer valor sensível visível é vazamento. **Solução:** arquivos com secrets devem usar encryption (git-crypt ou age via chezmoi) ou ser adicionados ao `.gitignore` e mantidos apenas localmente. Decidir conscientemente: versionar (com encryption) ou ignorar. Rotacionar qualquer secret já exposto imediatamente.
 
 ---
 
-**chezmoi hostname template não funciona em containers (hostname genérico)**
-**Causa:** containers Docker têm hostname gerado aleatoriamente (`abc123def456`), nunca igual ao nome configurado no template.
-**Sintoma:** o bloco `if eq .chezmoi.hostname "work-laptop"` nunca executa em container; a config cai sempre no else.
-**Como detectar:** `chezmoi data | grep hostname` dentro do container mostra o hostname gerado.
-**Solução:** em containers, preferir outras variáveis de distinção: `chezmoi.username`, variável de ambiente custom (`MACHINE_TYPE=work`), ou setar `--hostname` no `chezmoi init`. Outra opção: usar `promptString` no `.chezmoi.toml.tmpl` para capturar interativamente o tipo de máquina no primeiro apply.
+**chezmoi hostname template não funciona em containers (hostname genérico)** **Causa:** containers Docker têm hostname gerado aleatoriamente (`abc123def456`), nunca igual ao nome configurado no template. **Sintoma:** o bloco `if eq .chezmoi.hostname "work-laptop"` nunca executa em container; a config cai sempre no else. **Como detectar:** `chezmoi data | grep hostname` dentro do container mostra o hostname gerado. **Solução:** em containers, preferir outras variáveis de distinção: `chezmoi.username`, variável de ambiente custom (`MACHINE_TYPE=work`), ou setar `--hostname` no `chezmoi init`. Outra opção: usar `promptString` no `.chezmoi.toml.tmpl` para capturar interativamente o tipo de máquina no primeiro apply.
 
 ---
 
-**git ssh usa chave errada — Match exec ignora arquivo inexistente**
-**Causa:** no ssh_config, `Match exec "[ -f ~/.ssh/work_ed25519 ]"` retorna false se o arquivo não existir — o Match silenciosamente não se aplica, e a config volta pro default.
-**Sintoma:** push para GitHub work usa a chave pessoal; commit aparece sob o usuário pessoal.
-**Como detectar:** `ssh -v git@github.com 2>&1 | grep "identity file"` — mostra qual chave está sendo tentada.
-**Solução:** verificar que o arquivo referenciado em `Match exec` existe antes de depender do comportamento. Usar `ssh-add -l` para listar chaves carregadas no agent. Em bootstrap, incluir a criação/cópia da chave work como pré-requisito explícito.
+**git ssh usa chave errada — Match exec ignora arquivo inexistente** **Causa:** no ssh_config, `Match exec "[ -f ~/.ssh/work_ed25519 ]"` retorna false se o arquivo não existir — o Match silenciosamente não se aplica, e a config volta pro default. **Sintoma:** push para GitHub work usa a chave pessoal; commit aparece sob o usuário pessoal. **Como detectar:** `ssh -v git@github.com 2>&1 | grep "identity file"` — mostra qual chave está sendo tentada. **Solução:** verificar que o arquivo referenciado em `Match exec` existe antes de depender do comportamento. Usar `ssh-add -l` para listar chaves carregadas no agent. Em bootstrap, incluir a criação/cópia da chave work como pré-requisito explícito.
 
 ## Em inglês
 

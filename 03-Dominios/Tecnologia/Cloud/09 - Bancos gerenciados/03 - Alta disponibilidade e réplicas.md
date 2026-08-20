@@ -95,8 +95,7 @@ A documentação da AWS CLI é explícita sobre a restrição: "você não pode 
 > [!tip] Assista: Multi-AZ vs Read Replicas | Amazon RDS Tutorial for Beginners
 > **Canal:** BeSA Cloud Academy | **Duração:** ~7min | **Idioma:** EN
 >
-> Um desenho ao vivo, VPC por VPC, da mesma distinção que esta seção acabou de formalizar: Multi-AZ como réplica síncrona que só existe para assumir a escrita, versus read replica assíncrona que existe para tirar carga de leitura da primária.
-> Trecho de destaque [01:29]: *"they would have a syn replication means whatever data I am writing in [primary] it would also be available on [standby] (...) that's what we mean by a synchronous replication"*
+> Um desenho ao vivo, VPC por VPC, da mesma distinção que esta seção acabou de formalizar: Multi-AZ como réplica síncrona que só existe para assumir a escrita, versus read replica assíncrona que existe para tirar carga de leitura da primária. Trecho de destaque [01:29]: *"they would have a syn replication means whatever data I am writing in [primary] it would also be available on [standby] (...) that's what we mean by a synchronous replication"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=fW_prKJR79Y)
 

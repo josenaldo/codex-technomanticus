@@ -362,9 +362,7 @@ function PostsPage() {
 ## Armadilhas comuns
 
 > [!warning] Função inline quebrando `React.memo`
-> **O que acontece:** você passa uma arrow function como `children` ou `render` diretamente no JSX. A cada re-render do componente pai, uma **nova referência de função** é criada. Se o componente com render prop usa `React.memo`, ele re-renderiza mesmo assim, porque a prop mudou.
-> **Por quê:** `React.memo` compara props por referência (`===`). Funções definidas inline têm nova referência a cada render.
-> **Como evitar:** extraia a função para fora do JSX usando `useCallback`, ou use um componente intermediário para isolar o estado que causa o re-render.
+> **O que acontece:** você passa uma arrow function como `children` ou `render` diretamente no JSX. A cada re-render do componente pai, uma **nova referência de função** é criada. Se o componente com render prop usa `React.memo`, ele re-renderiza mesmo assim, porque a prop mudou. **Por quê:** `React.memo` compara props por referência (`===`). Funções definidas inline têm nova referência a cada render. **Como evitar:** extraia a função para fora do JSX usando `useCallback`, ou use um componente intermediário para isolar o estado que causa o re-render.
 > ```tsx
 > // ❌ Nova referência a cada render
 > <Toggle>{({ isOn }) => <Panel open={isOn} />}</Toggle>
@@ -378,14 +376,10 @@ function PostsPage() {
 > ```
 
 > [!warning] Pirâmide de aninhamento não diagnosticada
-> **O que acontece:** o código começa com um render prop, funciona, mais comportamentos são adicionados com mais render props aninhados. Depois de três sprints, você tem cinco níveis de indentação e um arquivo de 300 linhas para um componente "simples".
-> **Por quê:** render props são fáceis de compor **localmente** mas escalam mal **em quantidade**. A pirâmide cresce naturalmente quando não há um critério de parada.
-> **Como evitar:** ao adicionar o segundo render prop aninhado, questione se os casos internos (os que só compartilham estado) poderiam virar hooks. Mantenha render props apenas para os que precisam controlar JSX.
+> **O que acontece:** o código começa com um render prop, funciona, mais comportamentos são adicionados com mais render props aninhados. Depois de três sprints, você tem cinco níveis de indentação e um arquivo de 300 linhas para um componente "simples". **Por quê:** render props são fáceis de compor **localmente** mas escalam mal **em quantidade**. A pirâmide cresce naturalmente quando não há um critério de parada. **Como evitar:** ao adicionar o segundo render prop aninhado, questione se os casos internos (os que só compartilham estado) poderiam virar hooks. Mantenha render props apenas para os que precisam controlar JSX.
 
 > [!warning] Usar render prop quando um hook resolveria — e pagar o custo de nada
-> **O que acontece:** você cria um componente `<Toggle>` com render prop para reusar lógica de toggle. Funciona. Depois, a equipe usa ele em 15 lugares. Depois, uma otimização de performance precisa de `React.memo` em lugares críticos e aí descobre que as funções inline nos render props invalidam o memo em toda a árvore.
-> **Por quê:** o render prop foi escolhido por familiaridade com o padrão, não por necessidade. Ele adicionou um nível à árvore de componentes sem nenhum benefício que um `useToggle()` não oferecesse.
-> **Como evitar:** antes de criar um componente com render prop para reuso de lógica, pergunte: "este componente precisa possuir JSX, ou só estado?" Se a resposta for "só estado", crie um hook. O componente pode continuar existindo como conveniência de apresentação, mas a lógica fica no hook.
+> **O que acontece:** você cria um componente `<Toggle>` com render prop para reusar lógica de toggle. Funciona. Depois, a equipe usa ele em 15 lugares. Depois, uma otimização de performance precisa de `React.memo` em lugares críticos e aí descobre que as funções inline nos render props invalidam o memo em toda a árvore. **Por quê:** o render prop foi escolhido por familiaridade com o padrão, não por necessidade. Ele adicionou um nível à árvore de componentes sem nenhum benefício que um `useToggle()` não oferecesse. **Como evitar:** antes de criar um componente com render prop para reuso de lógica, pergunte: "este componente precisa possuir JSX, ou só estado?" Se a resposta for "só estado", crie um hook. O componente pode continuar existindo como conveniência de apresentação, mas a lógica fica no hook.
 
 ---
 

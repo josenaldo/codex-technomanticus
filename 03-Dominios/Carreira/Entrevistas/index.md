@@ -19,18 +19,11 @@ aliases:
 # Entrevistas
 
 > [!abstract] TL;DR
-> O processo de entrevista técnica **sênior** — o funil, os formatos de resposta, a comunicação e a
-> negociação. A lente do galho é uma pergunta: **o que esta etapa está realmente avaliando?** Porque
-> quase nenhuma pergunta mede o que ela literalmente diz. "Fale sobre você" não pede biografia, mede
-> edição; "conte um conflito" não pede o conflito, mede como você fala de quem discordou de você quando
-> ele não está na sala. Entender o critério vale mais que decorar respostas — o critério cobre também a
-> pergunta que você não previu.
+> O processo de entrevista técnica **sênior** — o funil, os formatos de resposta, a comunicação e a negociação. A lente do galho é uma pergunta: **o que esta etapa está realmente avaliando?** Porque quase nenhuma pergunta mede o que ela literalmente diz. "Fale sobre você" não pede biografia, mede edição; "conte um conflito" não pede o conflito, mede como você fala de quem discordou de você quando ele não está na sala. Entender o critério vale mais que decorar respostas — o critério cobre também a pergunta que você não previu.
 
 ## Sobre este galho
 
-Catálogo de **teoria geral**: vale para qualquer candidato, com exemplos sempre genéricos. Cobre o
-processo, o comportamental, a comunicação e a negociação — e **não** cobre conteúdo técnico, que tem
-casa própria:
+Catálogo de **teoria geral**: vale para qualquer candidato, com exemplos sempre genéricos. Cobre o processo, o comportamental, a comunicação e a negociação — e **não** cobre conteúdo técnico, que tem casa própria:
 
 | Você quer | Vá para |
 | --- | --- |
@@ -62,9 +55,7 @@ casa própria:
 14. [[14 - Negociação de oferta (capstone)]] — **fecha o galho**: ancoragem, BATNA, o pacote completo e o mapa das 14 notas por etapa.
 
 > [!tip] Atalho: por onde começar
-> A [[14 - Negociação de oferta (capstone)|nota 14]] termina com um **mapa por momento** — o que ler antes
-> de aplicar, na preparação, na triagem, no comportamental, no técnico e na oferta. Se um processo já
-> começou, entre por ali.
+> A [[14 - Negociação de oferta (capstone)|nota 14]] termina com um **mapa por momento** — o que ler antes de aplicar, na preparação, na triagem, no comportamental, no técnico e na oferta. Se um processo já começou, entre por ali.
 
 ## Todas as notas
 

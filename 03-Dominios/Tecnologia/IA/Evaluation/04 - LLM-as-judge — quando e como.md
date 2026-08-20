@@ -179,8 +179,7 @@ Citação direta do paper G-Eval (Liu et al., 2023): *"forcing the model to gene
 
 ### Pairwise em vez de absoluto
 
-Score absoluto: "essa resposta é 4 de 5?"
-Pairwise: "A é melhor que B, B é melhor que A, ou empate?"
+Score absoluto: "essa resposta é 4 de 5?" Pairwise: "A é melhor que B, B é melhor que A, ou empate?"
 
 Por que pairwise é mais robusto:
 

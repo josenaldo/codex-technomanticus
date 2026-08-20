@@ -609,29 +609,19 @@ console.log(restaurado.get("tags")); // Set {"js", "ts"}
 ## Armadilhas comuns
 
 > [!warning] Comparar objetos por valor no Map/Set
-> **O que acontece:** `mapa.get({id: 1})` retorna `undefined` mesmo que você tenha feito `mapa.set({id: 1}, "dado")` antes.
-> **Por quê:** Map e Set usam identidade de referência para objetos. `{id: 1}` e `{id: 1}` são dois objetos diferentes na memória — SameValueZero retorna `false` para eles.
-> **Como evitar:** Use primitivos como chaves quando quiser comparação por valor. Para chaves compostas, serialize para string (`JSON.stringify({id: 1})`) ou use uma biblioteca de estruturas imutáveis que forneça igualdade por valor.
+> **O que acontece:** `mapa.get({id: 1})` retorna `undefined` mesmo que você tenha feito `mapa.set({id: 1}, "dado")` antes. **Por quê:** Map e Set usam identidade de referência para objetos. `{id: 1}` e `{id: 1}` são dois objetos diferentes na memória — SameValueZero retorna `false` para eles. **Como evitar:** Use primitivos como chaves quando quiser comparação por valor. Para chaves compostas, serialize para string (`JSON.stringify({id: 1})`) ou use uma biblioteca de estruturas imutáveis que forneça igualdade por valor.
 
 > [!warning] Tentar guardar primitivos no WeakMap/WeakSet
-> **O que acontece:** `weakMap.set("chave", valor)` lança `TypeError: Invalid value used as weak map key`.
-> **Por quê:** A semântica de chave fraca pressupõe que a chave é um objeto com identidade de referência rastreável pelo GC. Primitivos são imutáveis e não têm identidade rastreável — não há "destruição" de uma string para o GC notificar.
-> **Como evitar:** Use apenas objetos (incluindo funções, arrays, instâncias de classe) como chaves de `WeakMap`/valores de `WeakSet`. Para primitivos, use `Map`/`Set`.
+> **O que acontece:** `weakMap.set("chave", valor)` lança `TypeError: Invalid value used as weak map key`. **Por quê:** A semântica de chave fraca pressupõe que a chave é um objeto com identidade de referência rastreável pelo GC. Primitivos são imutáveis e não têm identidade rastreável — não há "destruição" de uma string para o GC notificar. **Como evitar:** Use apenas objetos (incluindo funções, arrays, instâncias de classe) como chaves de `WeakMap`/valores de `WeakSet`. Para primitivos, use `Map`/`Set`.
 
 > [!warning] Assumir que WeakMap é só "Map mais leve"
-> **O que acontece:** Código que depende de `.size`, iteração ou `Object.keys()` em um `WeakMap` quebra — essas APIs simplesmente não existem.
-> **Por quê:** Não é uma questão de performance — é um design intencional que garante a não-observabilidade do estado do GC. `WeakMap` não é um `Map` com features removidas; é uma estrutura com semântica fundamentalmente diferente.
-> **Como evitar:** Entenda o uso antes de escolher: WeakMap é para ciclo de vida atrelado, não para dicionários comuns. Se precisar de `.size` ou iteração, use `Map`.
+> **O que acontece:** Código que depende de `.size`, iteração ou `Object.keys()` em um `WeakMap` quebra — essas APIs simplesmente não existem. **Por quê:** Não é uma questão de performance — é um design intencional que garante a não-observabilidade do estado do GC. `WeakMap` não é um `Map` com features removidas; é uma estrutura com semântica fundamentalmente diferente. **Como evitar:** Entenda o uso antes de escolher: WeakMap é para ciclo de vida atrelado, não para dicionários comuns. Se precisar de `.size` ou iteração, use `Map`.
 
 > [!warning] Usar Set para deduplicar objetos por conteúdo
-> **O que acontece:** `new Set([{x:1}, {x:1}])` retorna um Set com dois elementos, não um.
-> **Por quê:** Mesma razão do aviso anterior — objetos são comparados por referência.
-> **Como evitar:** Para deduplicar objetos por conteúdo, serialize para string antes: `new Set(arr.map(JSON.stringify))` — e desserialize depois se necessário. Para estruturas complexas, considere uma chave composta (ex.: `obj.id`).
+> **O que acontece:** `new Set([{x:1}, {x:1}])` retorna um Set com dois elementos, não um. **Por quê:** Mesma razão do aviso anterior — objetos são comparados por referência. **Como evitar:** Para deduplicar objetos por conteúdo, serialize para string antes: `new Set(arr.map(JSON.stringify))` — e desserialize depois se necessário. Para estruturas complexas, considere uma chave composta (ex.: `obj.id`).
 
 > [!warning] Esquecer que Map.groupBy e Set methods são ES2024/2025
-> **O que acontece:** `TypeError: a.union is not a function` em ambientes com Node.js antigo (< 22) ou browsers não atualizados.
-> **Por quê:** `Set.prototype.union/intersection/difference` são ES2025; `Map.groupBy` é ES2024. V8 implementou Set methods no Chrome 122 / Node 22; Safari 17 também suporta.
-> **Como evitar:** Verifique o target de compilação do seu projeto. Para Node < 22 ou ambientes legados, use polyfill do `core-js`. Para TypeScript, garanta `lib: ["ES2025"]` no tsconfig.
+> **O que acontece:** `TypeError: a.union is not a function` em ambientes com Node.js antigo (< 22) ou browsers não atualizados. **Por quê:** `Set.prototype.union/intersection/difference` são ES2025; `Map.groupBy` é ES2024. V8 implementou Set methods no Chrome 122 / Node 22; Safari 17 também suporta. **Como evitar:** Verifique o target de compilação do seu projeto. Para Node < 22 ou ambientes legados, use polyfill do `core-js`. Para TypeScript, garanta `lib: ["ES2025"]` no tsconfig.
 
 ---
 

@@ -293,21 +293,17 @@ Os números são estimativas para um perfil de uso moderado de um time de 3-5 de
 
 ## Casos práticos
 
-**Caso 1 — Time de 5 devs com redução de 73%:**
-Time aplicou as Fases 1-2 ao longo de 3 sprints. Partindo de $1.200/mês: prompt caching (-45%, $660), context pruning (-18%, $541), model routing (-22%, $422), compactação de histórico (-17%, $350). Total em 3 meses: -71%. Tempo de implementação: ~30h de engenharia.
+**Caso 1 — Time de 5 devs com redução de 73%:** Time aplicou as Fases 1-2 ao longo de 3 sprints. Partindo de $1.200/mês: prompt caching (-45%, $660), context pruning (-18%, $541), model routing (-22%, $422), compactação de histórico (-17%, $350). Total em 3 meses: -71%. Tempo de implementação: ~30h de engenharia.
 
-**Caso 2 — Dev solo com playbook mínimo:**
-Dev solo com $150/mês de uso: adotou só Fase 1 (prompts caching + .claudeignore + max_tokens calibrado). Resultado em 2 semanas: $85/mês. Redução de 43% em 4h de trabalho. Concluiu que Fases 2 e 3 não compensavam o esforço para o volume dele.
+**Caso 2 — Dev solo com playbook mínimo:** Dev solo com $150/mês de uso: adotou só Fase 1 (prompts caching + .claudeignore + max_tokens calibrado). Resultado em 2 semanas: $85/mês. Redução de 43% em 4h de trabalho. Concluiu que Fases 2 e 3 não compensavam o esforço para o volume dele.
 
-**Caso 3 — Produto B2C com otimização em produção:**
-Startup com LLM em produto: aplicou Fases 0-3 ao longo de 2 meses. De $8.000/mês para $2.100/mês (-74%). O maior impacto foi na Fase 3 (semantic caching para perguntas frequentes de usuários), que sozinha reduziu 35% — diferente do padrão de ferramentas de dev onde caching de prompt tem maior impacto.
+**Caso 3 — Produto B2C com otimização em produção:** Startup com LLM em produto: aplicou Fases 0-3 ao longo de 2 meses. De $8.000/mês para $2.100/mês (-74%). O maior impacto foi na Fase 3 (semantic caching para perguntas frequentes de usuários), que sozinha reduziu 35% — diferente do padrão de ferramentas de dev onde caching de prompt tem maior impacto.
 
 *Por que a exceção faz sentido:* prompt caching (Fase 1) economiza quando o **mesmo prefixo estático** se repete entre chamadas — o system prompt de um agente de codificação, por exemplo. Semantic caching (Fase 3) economiza quando a **mesma pergunta em palavras diferentes** se repete entre usuários distintos — "como cancelo minha assinatura?" e "quero parar de pagar, como faço?" são semanticamente idênticas mas não compartilham prefixo algum. Um produto B2C com milhares de usuários fazendo variações da mesma dúvida tem muito mais desse segundo padrão do que do primeiro; um agente de codificação rodado por um único dev tem o oposto. A pergunta que decide qual técnica prioritizar não é "qual é mais avançada", mas "meu tráfego repete o *prefixo* ou repete a *intenção*?".
 
 Esse é o motivo pelo qual a tabela de "Quick reference" desta nota separa prompt caching (sintoma: cache hit rate baixo) de semantic caching (sintoma: mesma query cara repetida) — são a mesma ideia (evitar recomputar o que já foi computado), aplicada em duas camadas diferentes da pilha.
 
-**Caso 4 — ROI de implementação das fases:**
-Time calculou o custo de implementação de cada fase antes de executar:
+**Caso 4 — ROI de implementação das fases:** Time calculou o custo de implementação de cada fase antes de executar:
 - Fase 0 (monitoramento): 4h de setup, $0 incremental — executar imediatamente
 - Fase 1 (quick wins): 8h total, payback em 2 semanas — executar agora
 - Fase 2 (estrutural): 20h total, payback em 1 mês — executar no próximo sprint

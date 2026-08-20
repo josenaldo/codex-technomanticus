@@ -327,17 +327,13 @@ Documentação assim cria responsabilidade, permite comparar tendências mês a 
 
 ## Casos práticos
 
-**Caso 1 — Auditoria encontrando tool verbosa em agente de CI:**
-Auditoria mensal filtrou top 1% das sessões mais caras. A sessão mais cara ($18 em uma única execução de CI) tinha um turno com 45K input tokens. Drill-down: o agente chamou `git diff HEAD~100` sem limitar o número de commits — o diff de 3 semanas de desenvolvimento inteiro entrou no contexto. Fix: `git diff HEAD~5` como default, com opção explícita para ranges maiores. Redução: 70% no custo médio de sessões de CI.
+**Caso 1 — Auditoria encontrando tool verbosa em agente de CI:** Auditoria mensal filtrou top 1% das sessões mais caras. A sessão mais cara ($18 em uma única execução de CI) tinha um turno com 45K input tokens. Drill-down: o agente chamou `git diff HEAD~100` sem limitar o número de commits — o diff de 3 semanas de desenvolvimento inteiro entrou no contexto. Fix: `git diff HEAD~5` como default, com opção explícita para ranges maiores. Redução: 70% no custo médio de sessões de CI.
 
-**Caso 2 — Cache hit rate de 12% descoberto em auditoria:**
-Um time relatou custo crescente mês a mês sem mudança de volume. Auditoria revelou cache hit rate de 12% (esperado: >70%). Causa: o system prompt era reconstituído em cada chamada com um timestamp `f"Current date: {datetime.now()}"` — o timestamp mudava a cada request, invalidando o cache. Fix: remover o timestamp do system prompt (ou mover para a primeira mensagem do usuário). Cache hit rate subiu para 78%. Redução de custo: 45%.
+**Caso 2 — Cache hit rate de 12% descoberto em auditoria:** Um time relatou custo crescente mês a mês sem mudança de volume. Auditoria revelou cache hit rate de 12% (esperado: >70%). Causa: o system prompt era reconstituído em cada chamada com um timestamp `f"Current date: {datetime.now()}"` — o timestamp mudava a cada request, invalidando o cache. Fix: remover o timestamp do system prompt (ou mover para a primeira mensagem do usuário). Cache hit rate subiu para 78%. Redução de custo: 45%.
 
-**Caso 3 — Distribuição de modelo revelando routing errado:**
-Auditoria de distribuição de modelo por tipo de task revelou que 30% das chamadas de "autocomplete" usavam Opus (routing errôneo). Causa: um bug no classifier que identificava autocomplete como "análise de código complexa" quando o arquivo tinha mais de 500 linhas. Fix: corrigir o classifier + adicionar teste unitário. Redução: $200/mês para um time de 5 devs.
+**Caso 3 — Distribuição de modelo revelando routing errado:** Auditoria de distribuição de modelo por tipo de task revelou que 30% das chamadas de "autocomplete" usavam Opus (routing errôneo). Causa: um bug no classifier que identificava autocomplete como "análise de código complexa" quando o arquivo tinha mais de 500 linhas. Fix: corrigir o classifier + adicionar teste unitário. Redução: $200/mês para um time de 5 devs.
 
-**Caso 4 — Auditoria automatizada com Helicone:**
-Um time de 3 devs implementou auditoria automatizada — um script Python roda toda segunda-feira, filtra top 10 sessões da semana, classifica por padrão e envia resumo no Slack. O humano lê o resumo em 5 minutos e decide se algum fix é urgente. Tempo de auditoria: 5 min/semana vs. 1h antes. Nenhum incidente de custo nas 12 semanas seguintes.
+**Caso 4 — Auditoria automatizada com Helicone:** Um time de 3 devs implementou auditoria automatizada — um script Python roda toda segunda-feira, filtra top 10 sessões da semana, classifica por padrão e envia resumo no Slack. O humano lê o resumo em 5 minutos e decide se algum fix é urgente. Tempo de auditoria: 5 min/semana vs. 1h antes. Nenhum incidente de custo nas 12 semanas seguintes.
 
 ## Checklist
 

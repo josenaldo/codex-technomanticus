@@ -52,8 +52,7 @@ Cada linha da tabela acima já nasce em duas zonas de disponibilidade — não p
 > [!tip] Assista: How to Build a 3 Tier AWS Network VPC from Scratch
 > **Canal:** AOS Note | **Duração:** ~23min | **Idioma:** EN
 >
-> A mesma arquitetura de referência desta nota, construída do zero no console: subnet pública para NAT gateway/load balancer, subnet privada para os servidores de aplicação, subnet privada de dados para o banco — duplicadas em duas zonas de disponibilidade, exatamente a aritmética "três camadas × duas AZs" que a nota formaliza acima.
-> Trecho de destaque [00:13]: *"in a 3-tier VPC reference architecture your infrastructure is divided into three tiers: on the first tier we have the public subnets (...) on the second tier we have our private subnets (...) that is going to hold our web servers (...) on the third tier we have another private subnet and this subnet will hold our database."*
+> A mesma arquitetura de referência desta nota, construída do zero no console: subnet pública para NAT gateway/load balancer, subnet privada para os servidores de aplicação, subnet privada de dados para o banco — duplicadas em duas zonas de disponibilidade, exatamente a aritmética "três camadas × duas AZs" que a nota formaliza acima. Trecho de destaque [00:13]: *"in a 3-tier VPC reference architecture your infrastructure is divided into three tiers: on the first tier we have the public subnets (...) on the second tier we have our private subnets (...) that is going to hold our web servers (...) on the third tier we have another private subnet and this subnet will hold our database."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=RyCsssF5gOo)
 
@@ -199,8 +198,7 @@ A diferença central, e ela importa porque ataca exatamente o ponto cego que uma
 > [!tip] Assista: AWS re:Invent 2024 — Design Well-Architected Networks on AWS (NET202)
 > **Canal:** AWS Events | **Duração:** ~60min | **Idioma:** EN
 >
-> Um Principal Solutions Architect da AWS nomeia explicitamente a mesma dupla desta seção — security groups como firewall stateful de instância e NACLs como firewall stateless de subnet — como uma "abordagem em camadas" de segurança de rede, o mesmo raciocínio de defesa em profundidade que amarra esta nota inteira.
-> Trecho de destaque [31:21]: *"let's take a look at network security on AWS and I want you to think about it as a layered approach (...) security groups are distributed stateful firewall which is present on most of the network interfaces, network ACLs in contrast are a stateless firewall between your subnets."*
+> Um Principal Solutions Architect da AWS nomeia explicitamente a mesma dupla desta seção — security groups como firewall stateful de instância e NACLs como firewall stateless de subnet — como uma "abordagem em camadas" de segurança de rede, o mesmo raciocínio de defesa em profundidade que amarra esta nota inteira. Trecho de destaque [31:21]: *"let's take a look at network security on AWS and I want you to think about it as a layered approach (...) security groups are distributed stateful firewall which is present on most of the network interfaces, network ACLs in contrast are a stateless firewall between your subnets."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Pd5p-fzwsLA)
 

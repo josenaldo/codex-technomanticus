@@ -52,9 +52,7 @@ Isso muda o que "escopo do projeto" significa: acesso a 3-5 conversas com usuár
 - "O escopo inclui uma rodada de teste com 5 usuários reais antes do lançamento — isso está no cronograma que combinamos?"
 
 > [!warning] Aceitar "eu represento bem o time" como substituto de acesso real
-> **O que acontece:** o cliente diz "pode confiar, eu conheço bem o time, fala comigo que eu te digo o que eles precisam" — e o projeto inteiro roda sem nenhuma conversa direta com quem opera.
-> **Por quê:** mesmo um gestor bem-intencionado e próximo do time reporta a própria interpretação do problema, filtrada pela posição dele — ele não sente a fricção do formulário de seis cliques porque nunca precisou preenchê-lo sob pressão de prazo, igual ao usuário real sente.
-> **Como evitar:** trate "eu represento o time" educadamente como um sinal, não como substituto — "ótimo, isso me dá contexto; ainda assim preciso de 15 minutos diretos com 2-3 pessoas do time para confirmar antes de fechar o fluxo".
+> **O que acontece:** o cliente diz "pode confiar, eu conheço bem o time, fala comigo que eu te digo o que eles precisam" — e o projeto inteiro roda sem nenhuma conversa direta com quem opera. **Por quê:** mesmo um gestor bem-intencionado e próximo do time reporta a própria interpretação do problema, filtrada pela posição dele — ele não sente a fricção do formulário de seis cliques porque nunca precisou preenchê-lo sob pressão de prazo, igual ao usuário real sente. **Como evitar:** trate "eu represento o time" educadamente como um sinal, não como substituto — "ótimo, isso me dá contexto; ainda assim preciso de 15 minutos diretos com 2-3 pessoas do time para confirmar antes de fechar o fluxo".
 
 > [!tip] Buyer vs. end user não muda o método, muda a negociação de acesso
 > Teresa Torres e Petra Wille discutem por que a distinção entre quem compra e quem opera o produto em B2B não exige um método de pesquisa diferente — exige negociar acesso ao usuário real desde o início — [Product Discovery: B2B vs. B2C](https://www.producttalk.org/product-discovery-b2b-vs-b2c-all-things-product-podcast-with-teresa-torres-petra-wille/) (All Things Product Podcast).
@@ -87,19 +85,13 @@ Uma consultoria entrega um dashboard de métricas para um cliente B2B. O cliente
 ## Armadilhas comuns
 
 > [!warning] Confundir "cliente satisfeito" com "produto adotado"
-> **O que acontece:** o projeto é declarado sucesso internamente — o cliente pagou, aprovou, elogiou — enquanto o uso real do produto pelas pessoas que deveriam usá-lo é baixo ou nulo.
-> **Por quê:** satisfação de quem aprova mede a experiência da reunião de aprovação, não a experiência de uso diário; são métricas diferentes que costumam ser tratadas como a mesma.
-> **Como evitar:** defina, junto com o cliente, uma métrica de adoção real (uso semanal ativo, taxa de conclusão de tarefa) separada da aprovação do contrato — e revise-a depois do lançamento, não só antes.
+> **O que acontece:** o projeto é declarado sucesso internamente — o cliente pagou, aprovou, elogiou — enquanto o uso real do produto pelas pessoas que deveriam usá-lo é baixo ou nulo. **Por quê:** satisfação de quem aprova mede a experiência da reunião de aprovação, não a experiência de uso diário; são métricas diferentes que costumam ser tratadas como a mesma. **Como evitar:** defina, junto com o cliente, uma métrica de adoção real (uso semanal ativo, taxa de conclusão de tarefa) separada da aprovação do contrato — e revise-a depois do lançamento, não só antes.
 
 > [!warning] Não pedir acesso ao usuário por medo de parecer que está "atrasando" o projeto
-> **O que acontece:** o engenheiro evita pedir tempo com usuários reais porque teme que o cliente interprete isso como falta de confiança ou atraso desnecessário no cronograma.
-> **Por quê:** o custo de pedir acesso (algumas horas, geralmente no início) parece visível e imediato; o custo de não pedir (retrabalho depois do lançamento) é invisível até acontecer.
-> **Como evitar:** posicione o pedido como parte do processo profissional, não como desconfiança: "isso faz parte de como eu garanto que o que construo vai ser usado — é rápido e evita retrabalho depois."
+> **O que acontece:** o engenheiro evita pedir tempo com usuários reais porque teme que o cliente interprete isso como falta de confiança ou atraso desnecessário no cronograma. **Por quê:** o custo de pedir acesso (algumas horas, geralmente no início) parece visível e imediato; o custo de não pedir (retrabalho depois do lançamento) é invisível até acontecer. **Como evitar:** posicione o pedido como parte do processo profissional, não como desconfiança: "isso faz parte de como eu garanto que o que construo vai ser usado — é rápido e evita retrabalho depois."
 
 > [!warning] Tratar o feedback do cliente durante o projeto como "a voz do usuário"
-> **O que acontece:** o cliente comenta sobre a interface durante as reuniões de status, e esse feedback é incorporado como se fosse validação de usuário.
-> **Por quê:** o cliente está reagindo como quem aprova um investimento, não como quem vai operar o sistema sob pressão de prazo real — os dois papéis reagem a coisas diferentes.
-> **Como evitar:** trate aprovação do cliente e validação com usuário real como dois checkpoints distintos e nomeados, nunca um substituindo o outro — o mesmo princípio já nomeado na [[03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental/01 - UX não é tela - o ofício e seus limites|nota 01]].
+> **O que acontece:** o cliente comenta sobre a interface durante as reuniões de status, e esse feedback é incorporado como se fosse validação de usuário. **Por quê:** o cliente está reagindo como quem aprova um investimento, não como quem vai operar o sistema sob pressão de prazo real — os dois papéis reagem a coisas diferentes. **Como evitar:** trate aprovação do cliente e validação com usuário real como dois checkpoints distintos e nomeados, nunca um substituindo o outro — o mesmo princípio já nomeado na [[03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental/01 - UX não é tela - o ofício e seus limites|nota 01]].
 
 ## Como explicar em inglês
 

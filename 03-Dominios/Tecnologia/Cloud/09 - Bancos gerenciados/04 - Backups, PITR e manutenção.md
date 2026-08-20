@@ -122,8 +122,7 @@ A janela real de restauração tem dois limites que vale checar antes de promete
 > [!tip] Assista: How to Restore SQL Server RDS Database to Point-in-time
 > **Canal:** Redincs Technology | **Duração:** ~3min | **Idioma:** EN
 >
-> Curto e direto ao ponto: confirma, com o console na tela, exatamente o mecanismo que esta seção acabou de descrever — os transaction logs sobem para o S3 a cada cinco minutos, e o restore sempre cria uma instância nova, nunca sobrescreve a original. O exemplo usa SQL Server, mas a mecânica de PITR é a mesma para qualquer engine do RDS.
-> Trecho de destaque [00:43]: *"what RDS does is that it uploads these logs to S3 every 5 minutes"*
+> Curto e direto ao ponto: confirma, com o console na tela, exatamente o mecanismo que esta seção acabou de descrever — os transaction logs sobem para o S3 a cada cinco minutos, e o restore sempre cria uma instância nova, nunca sobrescreve a original. O exemplo usa SQL Server, mas a mecânica de PITR é a mesma para qualquer engine do RDS. Trecho de destaque [00:43]: *"what RDS does is that it uploads these logs to S3 every 5 minutes"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=cwzvvCCCZ_Q)
 

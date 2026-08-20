@@ -394,8 +394,7 @@ A implicação prática: um pentest que só testa a camada de protocolo (ex.: sc
 > 1. **Protocolo**: MITM força negociação para DHE\_EXPORT (512 bits).
 > 2. **Matemática fraca**: primos de 512 bits são vulneráveis ao Number Field Sieve.
 > 3. **Pré-computação offline**: o NFS é executado previamente para os primos mais comuns (1024/512-bit Diffie-Hellman).
-> 4. **Resultado**: o atacante decifra a sessão em tempo real depois de minutos de pré-computação. O AES que cifrou os dados está intacto — o que quebrou foi a troca de chave forçada para fraqueza.
-> Este exemplo mostra que ataques de protocolo (layer 4) abrem caminho para fraqueza matemática que não seria explorável em condições normais.
+> 4. **Resultado**: o atacante decifra a sessão em tempo real depois de minutos de pré-computação. O AES que cifrou os dados está intacto — o que quebrou foi a troca de chave forçada para fraqueza. Este exemplo mostra que ataques de protocolo (layer 4) abrem caminho para fraqueza matemática que não seria explorável em condições normais.
 
 ---
 

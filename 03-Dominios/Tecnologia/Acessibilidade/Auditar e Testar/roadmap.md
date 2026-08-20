@@ -10,12 +10,9 @@ tags:
 
 # Roadmap — Auditar e Testar
 
-Diagnóstico + execução do enriquecimento. Gerado por `/diagnosticar-galho` (inline).
-Enriquecimento via subagentes ≤3 concorrentes.
+Diagnóstico + execução do enriquecimento. Gerado por `/diagnosticar-galho` (inline). Enriquecimento via subagentes ≤3 concorrentes.
 
-**Galho:** `03-Dominios/Tecnologia/Acessibilidade/Auditar e Testar`
-**Diagnóstico:** 2026-07-28
-**Última execução:** 2026-07-28 — **enriquecimento COMPLETO (4/4 ✅)**
+**Galho:** `03-Dominios/Tecnologia/Acessibilidade/Auditar e Testar` **Diagnóstico:** 2026-07-28 **Última execução:** 2026-07-28 — **enriquecimento COMPLETO (4/4 ✅)**
 
 ## Régua
 

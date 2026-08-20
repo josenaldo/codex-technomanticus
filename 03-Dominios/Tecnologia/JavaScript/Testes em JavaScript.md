@@ -1212,14 +1212,11 @@ export default defineConfig({
 
 > **Stack de testes no MedEspecialista:**
 >
-> **1. Vitest + React Testing Library + MSW:**
-> Stack default para frontend. Vitest roda em ~3s para ~800 testes, Jest demorava 20s. Watch mode instantâneo graças ao HMR do Vite. MSW mocka toda a API, testes não dependem de backend rodando.
+> **1. Vitest + React Testing Library + MSW:** Stack default para frontend. Vitest roda em ~3s para ~800 testes, Jest demorava 20s. Watch mode instantâneo graças ao HMR do Vite. MSW mocka toda a API, testes não dependem de backend rodando.
 >
-> **2. Playwright para E2E:**
-> Migrei do Cypress há um ano. Multi-browser (Chromium, Firefox, WebKit), paralelização nativa, trace viewer incrível. Debugging de falhas ficou 10x mais fácil.
+> **2. Playwright para E2E:** Migrei do Cypress há um ano. Multi-browser (Chromium, Firefox, WebKit), paralelização nativa, trace viewer incrível. Debugging de falhas ficou 10x mais fácil.
 >
-> **3. MSW também em dev:**
-> Frontend consegue rodar standalone com MSW servindo dados fake. Um desenvolvedor do frontend não precisa ter o backend Spring Boot rodando. Onboarding de novos devs ficou trivial.
+> **3. MSW também em dev:** Frontend consegue rodar standalone com MSW servindo dados fake. Um desenvolvedor do frontend não precisa ter o backend Spring Boot rodando. Onboarding de novos devs ficou trivial.
 >
 > **4. Fixtures compartilhadas via factories:**
 >
@@ -1236,11 +1233,9 @@ export default defineConfig({
 >
 > Cada teste cria os objetos que precisa, sem depender de fixtures compartilhadas.
 >
-> **5. `data-testid` só em último caso:**
-> 95% dos queries usam role, label ou text. `data-testid` é fallback para casos onde não há semântica natural.
+> **5. `data-testid` só em último caso:** 95% dos queries usam role, label ou text. `data-testid` é fallback para casos onde não há semântica natural.
 >
-> **6. Visual regression via Chromatic:**
-> Componentes em Storybook, snapshots visuais em cada PR. Pega regressões de CSS invisíveis em code review.
+> **6. Visual regression via Chromatic:** Componentes em Storybook, snapshots visuais em cada PR. Pega regressões de CSS invisíveis em code review.
 >
 > **Incidente memorável — race condition em teste:**
 >

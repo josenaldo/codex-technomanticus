@@ -86,8 +86,7 @@ Segundo a documentação oficial: "When you first create a security group, it ha
 > [!tip] Assista: Master AWS Security — Security Groups & NACLs Deep Dive
 > **Canal:** DheerajTechInsight | **Duração:** ~23min | **Idioma:** EN
 >
-> Cobre exatamente a dupla stateful/allow-only do SG contra a dupla stateless/allow-e-deny da NACL, com o mesmo exemplo mental desta nota — três instâncias na mesma subnet reagindo diferente a um SG (por instância) versus igual a uma NACL (por subnet inteira).
-> Trecho de destaque [02:11]: *"security groups are stateful which means if you allow inbound traffic say an HTTP request on port 80 the response traffic is automatically allowed back out even if you haven't written an explicit outbound rule (...) security group only allows traffic, they don't have any deny rules."*
+> Cobre exatamente a dupla stateful/allow-only do SG contra a dupla stateless/allow-e-deny da NACL, com o mesmo exemplo mental desta nota — três instâncias na mesma subnet reagindo diferente a um SG (por instância) versus igual a uma NACL (por subnet inteira). Trecho de destaque [02:11]: *"security groups are stateful which means if you allow inbound traffic say an HTTP request on port 80 the response traffic is automatically allowed back out even if you haven't written an explicit outbound rule (...) security group only allows traffic, they don't have any deny rules."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=eAFu5RxruhY)
 

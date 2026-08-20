@@ -20,10 +20,7 @@ tags:
 # Panorama de ORMs
 
 > [!abstract] TL;DR
-> Em 2026, o ecossistema Node.js tem 4 ORMs com posicionamentos bem distintos: **Sequelize** é battle-tested, surgiu na era callback e ainda domina em projetos legacy com v7 trazendo melhor suporte TypeScript; **Prisma v6** é schema-first com DX excepcional, type safety gerado automaticamente e suporte a edge runtimes com Prisma Accelerate GA; **TypeORM** usa decorators estilo JPA/Hibernate e é o favorito de devs vindos do Java/C#, com integração nativa ao NestJS; **Drizzle** é o queridinho de 2024–2025 — SQL-first, zero runtime overhead, type-safe e excelente para edge runtimes (Cloudflare Workers, Vercel Edge).
-> A escolha não é sobre "melhor ORM", é sobre fit: Prisma para DX e projetos novos, Drizzle para edge ou equipes com domínio de SQL, TypeORM para NestJS enterprise, Sequelize para manutenção de código legado.
-> O risco maior é escolher por popularidade e não por requisito: cada ORM tem trade-offs reais de performance, transparência de queries e compatibilidade com runtime.
-> Armadilha clássica de entrevista: `synchronize: true` no TypeORM em produção pode dropar colunas com dados; raw queries no Prisma não têm type safety automático — sempre valide o retorno.
+> Em 2026, o ecossistema Node.js tem 4 ORMs com posicionamentos bem distintos: **Sequelize** é battle-tested, surgiu na era callback e ainda domina em projetos legacy com v7 trazendo melhor suporte TypeScript; **Prisma v6** é schema-first com DX excepcional, type safety gerado automaticamente e suporte a edge runtimes com Prisma Accelerate GA; **TypeORM** usa decorators estilo JPA/Hibernate e é o favorito de devs vindos do Java/C#, com integração nativa ao NestJS; **Drizzle** é o queridinho de 2024–2025 — SQL-first, zero runtime overhead, type-safe e excelente para edge runtimes (Cloudflare Workers, Vercel Edge). A escolha não é sobre "melhor ORM", é sobre fit: Prisma para DX e projetos novos, Drizzle para edge ou equipes com domínio de SQL, TypeORM para NestJS enterprise, Sequelize para manutenção de código legado. O risco maior é escolher por popularidade e não por requisito: cada ORM tem trade-offs reais de performance, transparência de queries e compatibilidade com runtime. Armadilha clássica de entrevista: `synchronize: true` no TypeORM em produção pode dropar colunas com dados; raw queries no Prisma não têm type safety automático — sempre valide o retorno.
 
 ## Mapa do ecossistema
 
@@ -118,11 +115,7 @@ A tabela abaixo compara os 4 principais ORMs do ecossistema Node.js em 2026 nos 
 | **Suporte a MySQL** | Sim | Sim | Sim | Sim |
 
 > [!note] Prisma v6 e serverless
-> O Prisma v6 usa um query engine baseado em WASM que roda in-process
-> (sem sidecar binário separado). Em ambientes serverless, o gargalo é a
-> inicialização do WASM + setup do connection pool a cada cold start.
-> O Prisma Accelerate mitiga isso com connection pooling externo e cache
-> de queries, mas é um serviço pago.
+> O Prisma v6 usa um query engine baseado em WASM que roda in-process (sem sidecar binário separado). Em ambientes serverless, o gargalo é a inicialização do WASM + setup do connection pool a cada cold start. O Prisma Accelerate mitiga isso com connection pooling externo e cache de queries, mas é um serviço pago.
 
 ---
 

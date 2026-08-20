@@ -512,24 +512,16 @@ O input é atualizado imediatamente; o grid espera o frame disponível.
 ## Armadilhas comuns
 
 > [!warning] Otimizar sem medir
-> **O que acontece:** você adiciona `useMemo` e `React.memo` em 30 componentes e a performance não melhora — ou até piora.
-> **Por quê:** `React.memo` tem custo: comparação shallow de props a cada render. Em componentes que recebem objetos/arrays novos a cada vez (criados inline), o `memo` nunca impede o re-render e você paga o custo da comparação de graça.
-> **Como evitar:** Profiler primeiro. Meça `actualDuration` antes e depois de cada otimização. Memoize apenas onde o ganho supera o custo da comparação.
+> **O que acontece:** você adiciona `useMemo` e `React.memo` em 30 componentes e a performance não melhora — ou até piora. **Por quê:** `React.memo` tem custo: comparação shallow de props a cada render. Em componentes que recebem objetos/arrays novos a cada vez (criados inline), o `memo` nunca impede o re-render e você paga o custo da comparação de graça. **Como evitar:** Profiler primeiro. Meça `actualDuration` antes e depois de cada otimização. Memoize apenas onde o ganho supera o custo da comparação.
 
 > [!warning] Memoizar tudo "por garantia"
-> **O que acontece:** o código fica cheio de `useCallback` e `useMemo` em funções e valores triviais (`() => setCount(c + 1)`, `[1, 2, 3]`).
-> **Por quê:** memoização de valores baratos adiciona overhead de closure e comparação de deps sem benefício real. Também esconde o problema real, que é a estrutura do componente.
-> **Como evitar:** `useCallback` faz sentido quando a referência da função é passada para um filho memoizado (`React.memo`). `useMemo` faz sentido quando o cálculo é genuinamente caro (>1ms). Para o resto, confie no React Compiler.
+> **O que acontece:** o código fica cheio de `useCallback` e `useMemo` em funções e valores triviais (`() => setCount(c + 1)`, `[1, 2, 3]`). **Por quê:** memoização de valores baratos adiciona overhead de closure e comparação de deps sem benefício real. Também esconde o problema real, que é a estrutura do componente. **Como evitar:** `useCallback` faz sentido quando a referência da função é passada para um filho memoizado (`React.memo`). `useMemo` faz sentido quando o cálculo é genuinamente caro (>1ms). Para o resto, confie no React Compiler.
 
 > [!warning] Virtualizar listas pequenas
-> **O que acontece:** você adiciona TanStack Virtual a uma lista de 50 itens e o código fica mais complexo sem ganho visível.
-> **Por quê:** virtualização tem overhead de setup (cálculo de posições, refs de scroll). Para listas pequenas, o custo supera o benefício.
-> **Como evitar:** virtualização começa a valer a partir de ~200–300 itens. Para menos que isso, considere apenas `React.memo` nos itens.
+> **O que acontece:** você adiciona TanStack Virtual a uma lista de 50 itens e o código fica mais complexo sem ganho visível. **Por quê:** virtualização tem overhead de setup (cálculo de posições, refs de scroll). Para listas pequenas, o custo supera o benefício. **Como evitar:** virtualização começa a valer a partir de ~200–300 itens. Para menos que isso, considere apenas `React.memo` nos itens.
 
 > [!warning] Context para estado de UI de alta frequência
-> **O que acontece:** você coloca `mousePosition`, `scrollY` ou `inputValue` em um Context. Toda a árvore de consumidores re-renderiza a cada movimento do mouse.
-> **Por quê:** Context não tem granularidade: qualquer mudança no value dispara re-render em todos os consumidores, mesmo que eles só usem uma pequena parte do objeto.
-> **Como evitar:** Context serve para estado que muda raramente (theme, locale, usuário). Estado de UI de alta frequência fica no componente local, ou usa uma biblioteca de estado com seletores (Zustand, Jotai) que evita re-renders desnecessários.
+> **O que acontece:** você coloca `mousePosition`, `scrollY` ou `inputValue` em um Context. Toda a árvore de consumidores re-renderiza a cada movimento do mouse. **Por quê:** Context não tem granularidade: qualquer mudança no value dispara re-render em todos os consumidores, mesmo que eles só usem uma pequena parte do objeto. **Como evitar:** Context serve para estado que muda raramente (theme, locale, usuário). Estado de UI de alta frequência fica no componente local, ou usa uma biblioteca de estado com seletores (Zustand, Jotai) que evita re-renders desnecessários.
 
 ---
 

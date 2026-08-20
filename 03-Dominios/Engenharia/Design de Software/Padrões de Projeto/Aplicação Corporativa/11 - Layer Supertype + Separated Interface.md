@@ -24,13 +24,7 @@ aliases:
 # Layer Supertype + Separated Interface
 
 > [!abstract] TL;DR
-> Dois padrões-base que você já usa sem os nomear — e cujos destinos foram **opostos**. **Layer
-> Supertype** é a classe-base de uma camada, que carrega o que todos os seus objetos têm em comum
-> (`AbstractEntity`, `BaseController`); ele **caiu** com a virada de herança para composição, e sua
-> versão degenerada é a lixeira de utilitários. **Separated Interface** declara a interface num
-> módulo diferente da implementação, invertendo a direção da dependência; ele **subiu** — é a mecânica
-> exata da arquitetura **hexagonal**, e reconhecer isso desmistifica boa parte da conversa sobre Ports
-> & Adapters.
+> Dois padrões-base que você já usa sem os nomear — e cujos destinos foram **opostos**. **Layer Supertype** é a classe-base de uma camada, que carrega o que todos os seus objetos têm em comum (`AbstractEntity`, `BaseController`); ele **caiu** com a virada de herança para composição, e sua versão degenerada é a lixeira de utilitários. **Separated Interface** declara a interface num módulo diferente da implementação, invertendo a direção da dependência; ele **subiu** — é a mecânica exata da arquitetura **hexagonal**, e reconhecer isso desmistifica boa parte da conversa sobre Ports & Adapters.
 
 ## Duas classes que contam histórias opostas
 
@@ -102,19 +96,13 @@ Ele **não desapareceu** — `AbstractEntity` com `id` e igualdade continua defe
 ## Armadilhas comuns
 
 > [!warning] Layer Supertype como lixeira de utilitários
-> **O que acontece:** a superclasse acumula métodos que servem a algumas subclasses, cresce sem limite, e acaba puxando dependências de infraestrutura — tornando impossível instanciar uma entidade num teste sem subir a aplicação.
-> **Por quê:** é o ponto de menor resistência do sistema: acrescentar ali entrega a todos sem editar nada.
-> **Como evitar:** o critério de admissão é **"isto é verdade sobre todo membro desta camada, por definição?"**. Identidade e igualdade passam; formatação e auditoria não. Comportamento que serve a *algumas* subclasses quer composição, não herança.
+> **O que acontece:** a superclasse acumula métodos que servem a algumas subclasses, cresce sem limite, e acaba puxando dependências de infraestrutura — tornando impossível instanciar uma entidade num teste sem subir a aplicação. **Por quê:** é o ponto de menor resistência do sistema: acrescentar ali entrega a todos sem editar nada. **Como evitar:** o critério de admissão é **"isto é verdade sobre todo membro desta camada, por definição?"**. Identidade e igualdade passam; formatação e auditoria não. Comportamento que serve a *algumas* subclasses quer composição, não herança.
 
 > [!warning] Separated Interface com uma implementação só e sem teste
-> **O que acontece:** cada serviço tem sua interface e sua única implementação, com o mesmo nome mais `Impl`. A navegação no código passa a exigir dois saltos e ninguém nunca troca nada.
-> **Por quê:** o padrão é aplicado como regra de estilo, sem a pergunta sobre o que ele deveria estar comprando.
-> **Como evitar:** a inversão paga por uma de três coisas — **troca real** de implementação, **teste isolado** com dublê, ou **fronteira de módulo** que você quer impedir de ser atravessada. Nenhuma das três? A classe concreta basta. (Ter só uma implementação **em produção** é normal; ter só uma no total, incluindo testes, é o sinal.)
+> **O que acontece:** cada serviço tem sua interface e sua única implementação, com o mesmo nome mais `Impl`. A navegação no código passa a exigir dois saltos e ninguém nunca troca nada. **Por quê:** o padrão é aplicado como regra de estilo, sem a pergunta sobre o que ele deveria estar comprando. **Como evitar:** a inversão paga por uma de três coisas — **troca real** de implementação, **teste isolado** com dublê, ou **fronteira de módulo** que você quer impedir de ser atravessada. Nenhuma das três? A classe concreta basta. (Ter só uma implementação **em produção** é normal; ter só uma no total, incluindo testes, é o sinal.)
 
 > [!warning] Interface declarada do lado errado
-> **O que acontece:** a interface fica no módulo de infraestrutura junto da implementação. O grafo de dependências não muda, e o time acredita ter aplicado o padrão.
-> **Por quê:** parece natural guardar a interface junto de quem a implementa — é onde ela é "usada", no sentido errado da palavra.
-> **Como evitar:** verifique a **direção da seta**, não a existência da interface. O teste definitivo: o módulo de domínio compila sem o módulo de infraestrutura no *classpath*? Se não, não houve inversão.
+> **O que acontece:** a interface fica no módulo de infraestrutura junto da implementação. O grafo de dependências não muda, e o time acredita ter aplicado o padrão. **Por quê:** parece natural guardar a interface junto de quem a implementa — é onde ela é "usada", no sentido errado da palavra. **Como evitar:** verifique a **direção da seta**, não a existência da interface. O teste definitivo: o módulo de domínio compila sem o módulo de infraestrutura no *classpath*? Se não, não houve inversão.
 
 ## Como explicar em inglês
 

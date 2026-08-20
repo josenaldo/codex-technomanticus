@@ -70,8 +70,7 @@ A forma mais direta de ver o espectro é olhar, camada por camada da pilha de in
 | Dados da aplicação | **Você** | **Você** | **Você** | **Você** | **Você** | **Você**† |
 | Código / lógica da aplicação | **Você** | **Você** | **Você** | **Você** | **Você** | Provedor |
 
-\* Em CaaS totalmente gerenciado (Fargate, App Platform), o provedor cuida do SO-host; você não escolhe nem faz patch dele — mas ainda escolhe a imagem-base *dentro* do container, o que é uma forma diferente (e mais estreita) de controle sobre o SO do que ter uma VM inteira.
-† Em SaaS, os dados que *você* insere no aplicativo continuam sendo seus (e sua responsabilidade de proteger, no sentido de quem tem acesso) — mas você não controla como o provedor os processa, armazena ou estrutura internamente.
+\* Em CaaS totalmente gerenciado (Fargate, App Platform), o provedor cuida do SO-host; você não escolhe nem faz patch dele — mas ainda escolhe a imagem-base *dentro* do container, o que é uma forma diferente (e mais estreita) de controle sobre o SO do que ter uma VM inteira. † Em SaaS, os dados que *você* insere no aplicativo continuam sendo seus (e sua responsabilidade de proteger, no sentido de quem tem acesso) — mas você não controla como o provedor os processa, armazena ou estrutura internamente.
 
 ```mermaid
 flowchart TB
@@ -100,8 +99,7 @@ O padrão que a tabela revela é o mesmo em toda linha: **cada camada nova empur
 > [!tip] Assista: Introdução à Computação em Nuvem - IaaS, PaaS, SaaS
 > **Canal:** hcode | **Duração:** ~12min | **Idioma:** PT-BR
 >
-> O vídeo torna concreto o risco que "Servidores (hardware)" vira "Provedor" na tabela acima — o cenário do servidor físico numa sala que pode pegar fogo ou alagar, sem backup, é exatamente o tipo de responsabilidade que sai do seu radar ao subir para IaaS.
-> Trecho de destaque [08:46]: *"então no iaas infraestrutura como serviço eu não me preocupo com o hardware, os cloud providers eles vão cuidar do hardware para mim"*
+> O vídeo torna concreto o risco que "Servidores (hardware)" vira "Provedor" na tabela acima — o cenário do servidor físico numa sala que pode pegar fogo ou alagar, sem backup, é exatamente o tipo de responsabilidade que sai do seu radar ao subir para IaaS. Trecho de destaque [08:46]: *"então no iaas infraestrutura como serviço eu não me preocupo com o hardware, os cloud providers eles vão cuidar do hardware para mim"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=I_bP06BSbPY)
 
@@ -129,8 +127,7 @@ Onde a analogia quebra, e vale nomear com honestidade: comida não tem *concorr�
 > [!tip] Assista: IaaS, PaaS, SaaS, CaaS, FaaS Explained in 7 minutes
 > **Canal:** Connected Cookie | **Duração:** ~8min | **Idioma:** EN
 >
-> A mesma ideia de "quem cozinha o quê" desta nota, só que com cookies em vez de jantar: um chef (Matthew) oferece ingredientes prontos, biscoitos prontos ou a experiência completa — e o vídeo mapeia isso, degrau por degrau, para IaaS/PaaS/SaaS.
-> Trecho de destaque [02:55]: *"infrastructure as a service corresponds to the infrastructure part of the cloud (...) the client takes care of installing configuring and updating the OS middlewares and applications"*
+> A mesma ideia de "quem cozinha o quê" desta nota, só que com cookies em vez de jantar: um chef (Matthew) oferece ingredientes prontos, biscoitos prontos ou a experiência completa — e o vídeo mapeia isso, degrau por degrau, para IaaS/PaaS/SaaS. Trecho de destaque [02:55]: *"infrastructure as a service corresponds to the infrastructure part of the cloud (...) the client takes care of installing configuring and updating the OS middlewares and applications"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=M--5UlkNAl0)
 

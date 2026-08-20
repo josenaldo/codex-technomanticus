@@ -138,9 +138,7 @@ A aplicação escreve **só no cache**, que confirma imediatamente — e propaga
 Um exemplo concreto ajuda a fixar quando write-back vale o risco: o contador de visualizações de um vídeo. Se 10.000 pessoas assistem o mesmo vídeo por segundo, escrever `UPDATE views = views + 1` no banco 10.000 vezes por segundo — cada uma uma transação isolada — sobrecarrega o banco por um dado que, honestamente, ninguém nota se estiver 30 segundos desatualizado. Write-back deixa o contador incrementar em memória no Redis (`INCR views:video_id`, uma operação atômica e barata) e um processo em background persiste o valor agregado no banco a cada alguns segundos, ou a cada N incrementos. Perder alguns segundos de contagem se o Redis cair é um custo aceitável; pagar 10.000 transações de banco por segundo por um número que ninguém precisa ver em tempo real não é.
 
 > [!warning] Confundir write-through com write-back na entrevista
-> **O que acontece:** o candidato usa os termos como sinônimos, ou inverte qual é síncrono.
-> **Por quê:** os nomes soam parecidos e ambos "escrevem através do cache".
-> **Como evitar:** ancore na palavra que muda tudo — write-**through** é síncrono (a escrita atravessa o cache até o banco antes de responder); write-**back** é assíncrono (o cache responde e o banco é atualizado depois, "nas costas" da resposta). Se a pergunta for "o que acontece se o cache cair logo após a escrita?", a resposta certa distingue os dois: write-through não perde nada (já está no banco); write-back pode perder o que ainda não foi propagado.
+> **O que acontece:** o candidato usa os termos como sinônimos, ou inverte qual é síncrono. **Por quê:** os nomes soam parecidos e ambos "escrevem através do cache". **Como evitar:** ancore na palavra que muda tudo — write-**through** é síncrono (a escrita atravessa o cache até o banco antes de responder); write-**back** é assíncrono (o cache responde e o banco é atualizado depois, "nas costas" da resposta). Se a pergunta for "o que acontece se o cache cair logo após a escrita?", a resposta certa distingue os dois: write-through não perde nada (já está no banco); write-back pode perder o que ainda não foi propagado.
 
 | Padrão | Quem fala com o banco | Quando | Risco principal | Caso de uso típico |
 |---|---|---|---|---|
@@ -237,9 +235,7 @@ sequenceDiagram
 ```
 
 > [!warning] Cache stampede em uma chave "hot"
-> **O que acontece:** uma chave muito acessada expira; centenas ou milhares de requests concorrentes dão miss ao mesmo tempo e atacam o banco simultaneamente com a mesma query cara.
-> **Por quê:** o TTL trata todo acesso pós-expiração como independente — nada coordena as requests entre si para evitar trabalho duplicado.
-> **Como evitar:** as quatro técnicas abaixo, isoladas ou combinadas.
+> **O que acontece:** uma chave muito acessada expira; centenas ou milhares de requests concorrentes dão miss ao mesmo tempo e atacam o banco simultaneamente com a mesma query cara. **Por quê:** o TTL trata todo acesso pós-expiração como independente — nada coordena as requests entre si para evitar trabalho duplicado. **Como evitar:** as quatro técnicas abaixo, isoladas ou combinadas.
 
 **Locking / mutex (single-flight).** A primeira request que dá miss adquire um lock (por exemplo `SET lock:chave token NX PX 5000` no Redis — `NX` só seta se não existir, `PX` dá um TTL ao próprio lock para não travar para sempre se o processo cair). Só ela recalcula e repovoa o cache; as demais esperam brevemente e leem o valor já pronto, ou servem uma versão stale enquanto aguardam. Garante **exatamente uma** recomputação por chave expirada, ao custo de uma pequena espera para o restante do enxame.
 
@@ -344,14 +340,10 @@ A segunda resposta usa exatamente os mesmos componentes — Redis, cache-aside, 
 ## Armadilhas comuns
 
 > [!warning] Cachear sem TTL
-> **O que acontece:** o candidato configura o cache-aside, mas esquece de mencionar expiração — a chave fica válida "para sempre" até ser invalidada manualmente.
-> **Por quê:** parece mais simples não pensar em expiração, e no caminho feliz (invalidação sempre disparada corretamente) funciona.
-> **Como evitar:** todo cache merece um TTL como rede de segurança, mesmo que a invalidação explícita seja o mecanismo primário. Se a invalidação falhar silenciosamente — um bug, uma mensagem perdida — o TTL é o que evita que o dado fique errado indefinidamente.
+> **O que acontece:** o candidato configura o cache-aside, mas esquece de mencionar expiração — a chave fica válida "para sempre" até ser invalidada manualmente. **Por quê:** parece mais simples não pensar em expiração, e no caminho feliz (invalidação sempre disparada corretamente) funciona. **Como evitar:** todo cache merece um TTL como rede de segurança, mesmo que a invalidação explícita seja o mecanismo primário. Se a invalidação falhar silenciosamente — um bug, uma mensagem perdida — o TTL é o que evita que o dado fique errado indefinidamente.
 
 > [!warning] Tratar hit ratio como só uma métrica de dashboard
-> **O que acontece:** o candidato menciona "eu monitoraria o hit ratio" sem conectar isso a uma ação concreta.
-> **Por quê:** cita a métrica porque sabe que ela existe, sem mostrar que entende o que ela informa.
-> **Como evitar:** amarre a métrica a uma decisão: "se o hit ratio cair abaixo de 80%, é sinal de TTL curto demais ou de o cache estar sofrendo evictions prematuras por falta de memória — nesse caso eu aumentaria o `maxmemory` ou revisaria a granularidade das chaves". A métrica sozinha não pontua; a ação que ela dispara, sim.
+> **O que acontece:** o candidato menciona "eu monitoraria o hit ratio" sem conectar isso a uma ação concreta. **Por quê:** cita a métrica porque sabe que ela existe, sem mostrar que entende o que ela informa. **Como evitar:** amarre a métrica a uma decisão: "se o hit ratio cair abaixo de 80%, é sinal de TTL curto demais ou de o cache estar sofrendo evictions prematuras por falta de memória — nesse caso eu aumentaria o `maxmemory` ou revisaria a granularidade das chaves". A métrica sozinha não pontua; a ação que ela dispara, sim.
 
 ## Em entrevista
 

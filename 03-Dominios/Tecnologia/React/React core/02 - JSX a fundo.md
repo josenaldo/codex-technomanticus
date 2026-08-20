@@ -474,24 +474,16 @@ function Botao({ label, icone, children }: BotaoProps) {
 ## Armadilhas comuns
 
 > [!warning] A armadilha do `0 &&`
-> **O que acontece:** `{count && <Componente />}` renderiza o texto `"0"` na tela quando `count` é zero.
-> **Por quê:** `0 && qualquerCoisa` avalia para `0` — um valor numérico que o React exibe como texto. Apenas `false`, `null`, `undefined` e `true` são silenciosamente ignorados pelo renderer.
-> **Como evitar:** Use comparação explícita: `{count > 0 && <Componente />}` ou converta para boolean: `{!!count && <Componente />}`. Ternário é sempre seguro: `{count > 0 ? <Componente /> : null}`.
+> **O que acontece:** `{count && <Componente />}` renderiza o texto `"0"` na tela quando `count` é zero. **Por quê:** `0 && qualquerCoisa` avalia para `0` — um valor numérico que o React exibe como texto. Apenas `false`, `null`, `undefined` e `true` são silenciosamente ignorados pelo renderer. **Como evitar:** Use comparação explícita: `{count > 0 && <Componente />}` ou converta para boolean: `{!!count && <Componente />}`. Ternário é sempre seguro: `{count > 0 ? <Componente /> : null}`.
 
 > [!warning] Ausência de `key` em listas
-> **O que acontece:** React exibe um aviso no console. Em casos com estado interno nos itens (inputs, animações), o conteúdo de um item pode "vazar" para outro quando a lista é reordenada.
-> **Por quê:** O React usa `key` para associar o estado e o DOM de cada elemento ao item correto entre re-renderizações. Sem ela, ele faz suposições pela posição — que ficam erradas quando a ordem muda.
-> **Como evitar:** Sempre passe `key` com um ID estável e único dentro da lista. Evite usar o índice do array em listas que podem mudar de ordem.
+> **O que acontece:** React exibe um aviso no console. Em casos com estado interno nos itens (inputs, animações), o conteúdo de um item pode "vazar" para outro quando a lista é reordenada. **Por quê:** O React usa `key` para associar o estado e o DOM de cada elemento ao item correto entre re-renderizações. Sem ela, ele faz suposições pela posição — que ficam erradas quando a ordem muda. **Como evitar:** Sempre passe `key` com um ID estável e único dentro da lista. Evite usar o índice do array em listas que podem mudar de ordem.
 
 > [!warning] Objeto como child do JSX
-> **O que acontece:** `{minhaVariavel}` onde `minhaVariavel` é um objeto JavaScript gera o erro: *"Objects are not valid as a React child"*.
-> **Por quê:** O React sabe renderizar strings, números e elementos JSX — mas não sabe como transformar um objeto `{}` em algo visível na tela.
-> **Como evitar:** Extraia o valor específico que quer exibir: `{usuario.nome}` em vez de `{usuario}`. Se precisar inspecionar o objeto, use `{JSON.stringify(objeto)}` (só para debug).
+> **O que acontece:** `{minhaVariavel}` onde `minhaVariavel` é um objeto JavaScript gera o erro: *"Objects are not valid as a React child"*. **Por quê:** O React sabe renderizar strings, números e elementos JSX — mas não sabe como transformar um objeto `{}` em algo visível na tela. **Como evitar:** Extraia o valor específico que quer exibir: `{usuario.nome}` em vez de `{usuario}`. Se precisar inspecionar o objeto, use `{JSON.stringify(objeto)}` (só para debug).
 
 > [!warning] `<>` sem suporte a `key`
-> **O que acontece:** Usar a sintaxe curta `<>...</>` com `key` gera erro de compilação.
-> **Por quê:** A sintaxe curta não aceita nenhuma prop — é literalmente `<Fragment>` sem atributos.
-> **Como evitar:** Ao mapear listas onde cada item precisa de Fragment + key, use `<Fragment key={...}>` explicitamente: `import { Fragment } from 'react'`.
+> **O que acontece:** Usar a sintaxe curta `<>...</>` com `key` gera erro de compilação. **Por quê:** A sintaxe curta não aceita nenhuma prop — é literalmente `<Fragment>` sem atributos. **Como evitar:** Ao mapear listas onde cada item precisa de Fragment + key, use `<Fragment key={...}>` explicitamente: `import { Fragment } from 'react'`.
 
 ---
 

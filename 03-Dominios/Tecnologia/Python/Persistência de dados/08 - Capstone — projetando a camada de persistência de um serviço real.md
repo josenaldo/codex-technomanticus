@@ -545,24 +545,16 @@ Rodar este sistema contra um banco de teste real — popular `clientes`/`produto
 ## Armadilhas comuns
 
 > [!warning] Modelar `relationship()` só em uma direção
-> **O que acontece:** `Pedido.itens` funciona, mas não existe forma direta de, a partir de um `ItemPedido`, navegar de volta ao `Pedido` sem uma query manual — código que precisa dos dois sentidos duplica lógica de busca.
-> **Por quê:** `relationship()` não é automaticamente bidirecional; cada direção precisa da sua própria declaração, ligadas por `back_populates`.
-> **Como evitar:** declarar `relationship(back_populates=...)` nos dois lados de toda relação que o código vai navegar em ambas as direções — o padrão que a [[02 - SQLAlchemy ORM — Session, mapped classes e relationships|nota 02]] estabeleceu.
+> **O que acontece:** `Pedido.itens` funciona, mas não existe forma direta de, a partir de um `ItemPedido`, navegar de volta ao `Pedido` sem uma query manual — código que precisa dos dois sentidos duplica lógica de busca. **Por quê:** `relationship()` não é automaticamente bidirecional; cada direção precisa da sua própria declaração, ligadas por `back_populates`. **Como evitar:** declarar `relationship(back_populates=...)` nos dois lados de toda relação que o código vai navegar em ambas as direções — o padrão que a [[02 - SQLAlchemy ORM — Session, mapped classes e relationships|nota 02]] estabeleceu.
 
 > [!warning] Confiar cegamente no `--autogenerate` para renomes de coluna
-> **O que acontece:** renomear uma coluna no modelo Python e rodar `--autogenerate` gera um `DROP COLUMN` + `ADD COLUMN` — perda silenciosa de dados em produção, o bug de abertura exato da [[03 - Migrations com Alembic — versionamento de schema|nota 03]].
-> **Por quê:** o autogenerate detecta diffs por reflection estrutural (nomes de coluna, tipos), não por intenção — ele não sabe que "a coluna X virou Y" é um rename, só vê "X sumiu, Y apareceu".
-> **Como evitar:** revisar toda migration gerada antes de rodar `upgrade`; renomes usam `op.alter_column(new_column_name=...)` manual, nunca o autogenerate cru.
+> **O que acontece:** renomear uma coluna no modelo Python e rodar `--autogenerate` gera um `DROP COLUMN` + `ADD COLUMN` — perda silenciosa de dados em produção, o bug de abertura exato da [[03 - Migrations com Alembic — versionamento de schema|nota 03]]. **Por quê:** o autogenerate detecta diffs por reflection estrutural (nomes de coluna, tipos), não por intenção — ele não sabe que "a coluna X virou Y" é um rename, só vê "X sumiu, Y apareceu". **Como evitar:** revisar toda migration gerada antes de rodar `upgrade`; renomes usam `op.alter_column(new_column_name=...)` manual, nunca o autogenerate cru.
 
 > [!warning] Esquecer `selectinload()` em um nível aninhado de relação
-> **O que acontece:** `selectinload(Pedido.itens)` sozinho resolve o N+1 dos itens, mas cada item ainda dispara uma query lazy para `item.produto` — o N+1 se move um nível mais fundo, sem desaparecer.
-> **Por quê:** `selectinload()` (como `joinedload()`) só carrega antecipadamente a relação nomeada explicitamente; relações aninhadas exigem encadeamento explícito.
-> **Como evitar:** `selectinload(Pedido.itens).selectinload(ItemPedido.produto)` — a mesma sintaxe encadeada que a [[05 - N+1 e eager loading — joinedload-selectinload vs select_related-prefetch_related|nota 05]] descreveu para relações aninhadas.
+> **O que acontece:** `selectinload(Pedido.itens)` sozinho resolve o N+1 dos itens, mas cada item ainda dispara uma query lazy para `item.produto` — o N+1 se move um nível mais fundo, sem desaparecer. **Por quê:** `selectinload()` (como `joinedload()`) só carrega antecipadamente a relação nomeada explicitamente; relações aninhadas exigem encadeamento explícito. **Como evitar:** `selectinload(Pedido.itens).selectinload(ItemPedido.produto)` — a mesma sintaxe encadeada que a [[05 - N+1 e eager loading — joinedload-selectinload vs select_related-prefetch_related|nota 05]] descreveu para relações aninhadas.
 
 > [!warning] Decrementar estoque sem `SELECT FOR UPDATE` nem isolation level explícito
-> **O que acontece:** duas transações concorrentes leem o mesmo `estoque` desatualizado, ambas decidem que há saldo suficiente, ambas decrementam — o produto vende mais unidades do que existiam.
-> **Por quê:** sob `READ COMMITTED` (default do PostgreSQL), cada `SELECT` dentro da transação enxerga o valor commitado mais recente no momento daquele `SELECT` específico, não um snapshot fixo do início da transação — duas leituras concorrentes antes de qualquer `UPDATE` podem ver o mesmo valor.
-> **Como evitar:** `REPEATABLE READ` (ou mais forte) combinado com `SELECT ... FOR UPDATE` explícito na linha que vai ser decrementada — o padrão que a [[06 - Transações e isolamento — ACID na prática, isolation levels, deadlocks de aplicação|nota 06]] recomendou para invariantes de estoque/financeiras.
+> **O que acontece:** duas transações concorrentes leem o mesmo `estoque` desatualizado, ambas decidem que há saldo suficiente, ambas decrementam — o produto vende mais unidades do que existiam. **Por quê:** sob `READ COMMITTED` (default do PostgreSQL), cada `SELECT` dentro da transação enxerga o valor commitado mais recente no momento daquele `SELECT` específico, não um snapshot fixo do início da transação — duas leituras concorrentes antes de qualquer `UPDATE` podem ver o mesmo valor. **Como evitar:** `REPEATABLE READ` (ou mais forte) combinado com `SELECT ... FOR UPDATE` explícito na linha que vai ser decrementada — o padrão que a [[06 - Transações e isolamento — ACID na prática, isolation levels, deadlocks de aplicação|nota 06]] recomendou para invariantes de estoque/financeiras.
 
 ## Em entrevista
 

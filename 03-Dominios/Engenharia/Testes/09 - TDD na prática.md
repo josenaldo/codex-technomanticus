@@ -16,9 +16,7 @@ tags:
 # TDD na prática
 
 > [!abstract] Resumo
-> TDD é um GPS para terreno desconhecido: você liga o GPS quando dirige por uma cidade estranha à noite, não quando vai do sofá até a cozinha — a mesma lógica separa quando teste-primeiro paga dividendos de quando só adiciona cerimônia.
-> A heurística que decide isso não é gosto pessoal: ligue o GPS quando o **design está incerto** ou a **lógica é complexa** (regras, ramos, exceções); dirija no automático — test-after — quando o caminho já é óbvio, declarativo ou descartável.
-> A prática madura trata isso como leitura de contexto, não como dogma: nem Kent Beck, o criador do TDD, reivindica que ele seja universal — e quem o trata como religião está sendo mais fundamentalista que o próprio Beck.
+> TDD é um GPS para terreno desconhecido: você liga o GPS quando dirige por uma cidade estranha à noite, não quando vai do sofá até a cozinha — a mesma lógica separa quando teste-primeiro paga dividendos de quando só adiciona cerimônia. A heurística que decide isso não é gosto pessoal: ligue o GPS quando o **design está incerto** ou a **lógica é complexa** (regras, ramos, exceções); dirija no automático — test-after — quando o caminho já é óbvio, declarativo ou descartável. A prática madura trata isso como leitura de contexto, não como dogma: nem Kent Beck, o criador do TDD, reivindica que ele seja universal — e quem o trata como religião está sendo mais fundamentalista que o próprio Beck.
 
 A mecânica do ciclo — vermelho, verde, refatorar — está em [[08 - TDD - o ciclo Red-Green-Refactor]]. Esta nota não repete o "como". Ela ataca a pergunta que separa o praticante do fanático: **quando** ligar o GPS, e quando guardá-lo no bolso.
 

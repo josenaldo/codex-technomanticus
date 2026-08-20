@@ -221,55 +221,37 @@ dotfiles -c status.showUntrackedFiles=normal status
 
 ### (1) `git status` direto em `$HOME` lista milhares de arquivos
 
-**Causa:** `git status` padrão em `$HOME` não usa o alias `dotfiles` — ignora a configuração de `showUntrackedFiles no` do repo bare.
-**Sintoma:** terminal trava ou imprime scroll infinito de arquivos não rastreados ao rodar `git status` no home.
-**Como detectar:** rodar `git status` diretamente em `$HOME` (sem alias).
-**Solução:** nunca usar `git` diretamente no home para dotfiles — sempre o alias `dotfiles`. O git "normal" no home não tem contexto do repo bare.
+**Causa:** `git status` padrão em `$HOME` não usa o alias `dotfiles` — ignora a configuração de `showUntrackedFiles no` do repo bare. **Sintoma:** terminal trava ou imprime scroll infinito de arquivos não rastreados ao rodar `git status` no home. **Como detectar:** rodar `git status` diretamente em `$HOME` (sem alias). **Solução:** nunca usar `git` diretamente no home para dotfiles — sempre o alias `dotfiles`. O git "normal" no home não tem contexto do repo bare.
 
 ---
 
 ### (2) `dotfiles status` esconde arquivos novos que deveriam ser versionados
 
-**Causa:** `status.showUntrackedFiles no` é global para o alias — oculta tudo que não está rastreado, incluindo arquivos que você esqueceu de adicionar.
-**Sintoma:** cria `~/.config/nvim/plugin.lua`, esquece de rastrear, descobre meses depois.
-**Como detectar:** `dotfiles -c status.showUntrackedFiles=normal status` lista todos os untracked temporariamente.
-**Solução:** hábito de checar untracked periodicamente; ou criar alias `dotfiles-all` com `showUntrackedFiles=normal`.
+**Causa:** `status.showUntrackedFiles no` é global para o alias — oculta tudo que não está rastreado, incluindo arquivos que você esqueceu de adicionar. **Sintoma:** cria `~/.config/nvim/plugin.lua`, esquece de rastrear, descobre meses depois. **Como detectar:** `dotfiles -c status.showUntrackedFiles=normal status` lista todos os untracked temporariamente. **Solução:** hábito de checar untracked periodicamente; ou criar alias `dotfiles-all` com `showUntrackedFiles=normal`.
 
 ---
 
 ### (3) Checkout em máquina nova falha por arquivo pré-existente
 
-**Causa:** git se recusa a sobrescrever arquivos do home que já existem e divergem do repo — comportamento de segurança padrão.
-**Sintoma:** mensagem `error: The following untracked working tree files would be overwritten by checkout`.
-**Como detectar:** a própria mensagem de erro lista os arquivos conflitantes.
-**Solução:** fazer backup dos arquivos existentes antes do checkout (`mv ~/.zshrc ~/.dotfiles-backup/`) e depois `dotfiles checkout`. Ou `dotfiles checkout -f` se souber que pode descartar as versões locais.
+**Causa:** git se recusa a sobrescrever arquivos do home que já existem e divergem do repo — comportamento de segurança padrão. **Sintoma:** mensagem `error: The following untracked working tree files would be overwritten by checkout`. **Como detectar:** a própria mensagem de erro lista os arquivos conflitantes. **Solução:** fazer backup dos arquivos existentes antes do checkout (`mv ~/.zshrc ~/.dotfiles-backup/`) e depois `dotfiles checkout`. Ou `dotfiles checkout -f` se souber que pode descartar as versões locais.
 
 ---
 
 ### (4) Whitelist `.gitignore` com ordem errada silencia arquivos
 
-**Causa:** no gitignore, `!arquivo` dentro de uma pasta ignorada só funciona se a pasta pai foi explicitamente liberada antes. O git não libera children de diretórios ignorados implicitamente.
-**Sintoma:** `dotfiles add ~/.config/nvim/init.lua` não adiciona o arquivo — parece sumir.
-**Como detectar:** `dotfiles check-ignore -v ~/.config/nvim/init.lua` mostra qual regra no `.gitignore` está bloqueando o path e em qual linha.
-**Solução:** sempre liberar parents antes de children: primeiro `!.config/`, depois `!.config/nvim/`, depois `!.config/nvim/init.lua`. A ordem no arquivo importa.
+**Causa:** no gitignore, `!arquivo` dentro de uma pasta ignorada só funciona se a pasta pai foi explicitamente liberada antes. O git não libera children de diretórios ignorados implicitamente. **Sintoma:** `dotfiles add ~/.config/nvim/init.lua` não adiciona o arquivo — parece sumir. **Como detectar:** `dotfiles check-ignore -v ~/.config/nvim/init.lua` mostra qual regra no `.gitignore` está bloqueando o path e em qual linha. **Solução:** sempre liberar parents antes de children: primeiro `!.config/`, depois `!.config/nvim/`, depois `!.config/nvim/init.lua`. A ordem no arquivo importa.
 
 ---
 
 ### (5) Bare repo (`$HOME/.dotfiles/`) rastreado por engano em outro repo
 
-**Causa:** se você tem outro repo git cobrindo `$HOME` (ex: uma tentativa anterior com outra ferramenta), ele pode enxergar `~/.dotfiles/` como diretório não rastreado e oferecer adicioná-lo.
-**Sintoma:** `git status` em outro repo mostra `~/.dotfiles/` como untracked.
-**Como detectar:** `git status` no repo B lista `.dotfiles/` como novo diretório.
-**Solução:** adicionar `.dotfiles/` ao `.gitignore` do repo B.
+**Causa:** se você tem outro repo git cobrindo `$HOME` (ex: uma tentativa anterior com outra ferramenta), ele pode enxergar `~/.dotfiles/` como diretório não rastreado e oferecer adicioná-lo. **Sintoma:** `git status` em outro repo mostra `~/.dotfiles/` como untracked. **Como detectar:** `git status` no repo B lista `.dotfiles/` como novo diretório. **Solução:** adicionar `.dotfiles/` ao `.gitignore` do repo B.
 
 ---
 
 ### (6) Alias não persiste após reinicialização
 
-**Causa:** o alias foi criado só na sessão atual, sem ser salvo no `~/.zshrc`.
-**Sintoma:** `dotfiles: command not found` ao abrir novo terminal.
-**Como detectar:** abrir novo terminal e rodar `dotfiles status`.
-**Solução:** garantir que a linha `alias dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'` esteja salva no `~/.zshrc` (ou `~/.bashrc`).
+**Causa:** o alias foi criado só na sessão atual, sem ser salvo no `~/.zshrc`. **Sintoma:** `dotfiles: command not found` ao abrir novo terminal. **Como detectar:** abrir novo terminal e rodar `dotfiles status`. **Solução:** garantir que a linha `alias dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'` esteja salva no `~/.zshrc` (ou `~/.bashrc`).
 
 ## Em inglês
 

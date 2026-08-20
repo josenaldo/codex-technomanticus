@@ -119,8 +119,7 @@ A própria documentação de "edge to edge routing" reforça o mesmo princípio 
 > [!tip] Assista: AWS VPC Peering — Avoid Network Design Pitfalls (Transitive Routing Explained)
 > **Canal:** Network Ninja | **Duração:** ~11min | **Idioma:** EN
 >
-> Um diálogo curto que dramatiza exatamente essa armadilha — VPC A pareada com B e com C, sem que B e C consigam se falar através de A — e mostra a leitura da tabela de rotas confirmando que não existe entrada nenhuma apontando de B para C.
-> Trecho de destaque [01:21]: *"here's the critical part that AWS documents explicitly: VPC peering connections are non-transitive. That means if you have VPC A peered with VPC B and VPC B peered with VPC C, there is no automatic routing path from VPC A to VPC C through VPC B."*
+> Um diálogo curto que dramatiza exatamente essa armadilha — VPC A pareada com B e com C, sem que B e C consigam se falar através de A — e mostra a leitura da tabela de rotas confirmando que não existe entrada nenhuma apontando de B para C. Trecho de destaque [01:21]: *"here's the critical part that AWS documents explicitly: VPC peering connections are non-transitive. That means if you have VPC A peered with VPC B and VPC B peered with VPC C, there is no automatic routing path from VPC A to VPC C through VPC B."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=5CHAEnJVOsw)
 
@@ -206,8 +205,7 @@ Diferente de peering, onde o próprio dono da VPC precisa criar a rota estática
 > [!tip] Assista: Transit Gateway Explained
 > **Canal:** AWS Bites | **Duração:** ~19min | **Idioma:** EN
 >
-> Nomeia explicitamente o conceito de "rede transitiva" que esta nota descreve — tráfego de uma VPC atravessando uma segunda até chegar numa terceira — e explica por que peering nunca resolveu isso e o Transit Gateway resolve de origem.
-> Trecho de destaque [04:08]: *"what we mean by a transitive network is that where traffic in 1 VPC is going beyond a second VPC to a third VPC, so going through to autonomous networks (...) before Transit Gateway it was possible to implement transitive connections by creating a gateway with a [hub VPC]."*
+> Nomeia explicitamente o conceito de "rede transitiva" que esta nota descreve — tráfego de uma VPC atravessando uma segunda até chegar numa terceira — e explica por que peering nunca resolveu isso e o Transit Gateway resolve de origem. Trecho de destaque [04:08]: *"what we mean by a transitive network is that where traffic in 1 VPC is going beyond a second VPC to a third VPC, so going through to autonomous networks (...) before Transit Gateway it was possible to implement transitive connections by creating a gateway with a [hub VPC]."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=ltlVFnYDq64)
 

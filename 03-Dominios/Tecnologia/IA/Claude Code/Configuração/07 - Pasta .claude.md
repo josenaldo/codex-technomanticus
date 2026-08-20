@@ -317,8 +317,7 @@ Para a maioria dos casos de uso, `commands/` é suficiente e infinitamente mais 
 > [!tip] Assista: Anatomy of the .claude/ Folder — The Secret to 10x Claude Code
 > **Canal:** Daniel Novoreta | **Duração:** ~18min | **Idioma:** EN
 >
-> Percorre a mesma anatomia desta nota (CLAUDE.md, settings.json, settings.local.json, commands/) e acrescenta dois ângulos que vale complementar aqui: a distinção entre a `.claude/` do projeto e a `.claude/` global no `$HOME` lado a lado, e a hierarquia de precedência de permissões — políticas de organização vencem o `settings.json` do projeto, que vence o `settings.local.json` pessoal.
-> Trecho de destaque [15:19]: *"The allow list — those are commands that run without Claude asking for confirmation [...] the deny list, that's the hard block for Claude [...] anything that's not in either list, Claude will ask you before proceeding."*
+> Percorre a mesma anatomia desta nota (CLAUDE.md, settings.json, settings.local.json, commands/) e acrescenta dois ângulos que vale complementar aqui: a distinção entre a `.claude/` do projeto e a `.claude/` global no `$HOME` lado a lado, e a hierarquia de precedência de permissões — políticas de organização vencem o `settings.json` do projeto, que vence o `settings.local.json` pessoal. Trecho de destaque [15:19]: *"The allow list — those are commands that run without Claude asking for confirmation [...] the deny list, that's the hard block for Claude [...] anything that's not in either list, Claude will ask you before proceeding."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=rX6DLHlaOhU)
 

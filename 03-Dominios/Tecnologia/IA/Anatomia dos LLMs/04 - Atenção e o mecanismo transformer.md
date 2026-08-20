@@ -65,25 +65,25 @@ A atenção não é um detalhe técnico — ela explica diretamente o comportame
 ![[04 - Atenção e o mecanismo transformer-image-01.jpg]]
 
 >[!info]- 💸 Por que dobrar o contexto quadruplica o custo?
-> 
+>
 > O custo computacional e de memória não cresce de forma direta (linear), mas sim de forma **quadrática (\(O(N^2)\))**.
-> 
+>
 > #### 1. A Matriz de Atenção Quadrática
-> 
+>
 > Para que o modelo entenda o significado de uma palavra, ele precisa compará-la com **todas as outras palavras** já ditas no texto.
-> 
+>
 > - Se o contexto tem **1.000 tokens**, o modelo faz 1.000 × 1.000 = **1 milhão de conexões**.
 > - Se o contexto sobe para **100.000 tokens**, o modelo precisa processar 100.000 × 100.000 = **10 bilhões de conexões** apenas para manter a atenção.
-> 
+>
 > #### 2. O Gargalo do KV Cache (Memória RAM da GPU)
-> 
+>
 > Durante a geração de texto (loop autorregressivo), o modelo precisa guardar os cálculos anteriores em um "bloco de notas temporário" chamado **KV Cache**.
-> 
+>
 > - Esse cache consome gigabytes de memória **VRAM** ultrarrápida das placas de vídeo (como as H100 ou B200).
 > - Quanto maior o contexto, menos espaço sobra na memória para processar requisições de outros usuários ao mesmo tempo, reduzindo a eficiência do servidor.
-> 
+>
 > #### 3. Latência de Inicialização (Prefill)
-> 
+>
 > Antes de começar a escrever a primeira palavra da resposta, a GPU precisa ler e processar todo o seu prompt gigante de uma só vez. Isso exige picos massivos de processamento energético e poder computacional, gerando custos operacionais altíssimos para as empresas de IA.
 
 ## A intuição: "quem é relevante pra mim?"
@@ -332,9 +332,7 @@ Cada camada combina:
 3. **Residual connections + layer norm** — estabilizam o treinamento em redes profundas, dando ao gradiente um "atalho" para fluir até as primeiras camadas.
 
 > [!warning] O diagrama acima é *post-norm* — e quase nenhum LLM moderno usa isso
-> O paper original normaliza **depois** de somar o resíduo (*post-norm*, o "Add & Normalize" do diagrama). Parece detalhe de ordem, mas em redes profundas o post-norm trava: gradientes explodem ou somem, e o treino só converge com *warm-up* cuidadoso de learning rate — num teste de 29 camadas, o post-norm sequer convergiu.
-> Praticamente todos os LLMs modernos (GPT-3, Llama, PaLM) inverteram para **pre-norm**: normalizar *antes* do sub-layer, deixando a conexão residual como um "atalho limpo" para o gradiente. O preço é uma leve perda de fidelidade representacional, mas a estabilidade compensa.
-> De brinde, a norma deixou de ser LayerNorm e virou **RMSNorm**: só reescala (não centraliza nem aprende *bias*), o que corta um parâmetro por camada e sai mais barato. É o padrão da família Llama em diante.
+> O paper original normaliza **depois** de somar o resíduo (*post-norm*, o "Add & Normalize" do diagrama). Parece detalhe de ordem, mas em redes profundas o post-norm trava: gradientes explodem ou somem, e o treino só converge com *warm-up* cuidadoso de learning rate — num teste de 29 camadas, o post-norm sequer convergiu. Praticamente todos os LLMs modernos (GPT-3, Llama, PaLM) inverteram para **pre-norm**: normalizar *antes* do sub-layer, deixando a conexão residual como um "atalho limpo" para o gradiente. O preço é uma leve perda de fidelidade representacional, mas a estabilidade compensa. De brinde, a norma deixou de ser LayerNorm e virou **RMSNorm**: só reescala (não centraliza nem aprende *bias*), o que corta um parâmetro por camada e sai mais barato. É o padrão da família Llama em diante.
 
 ## A Feed-Forward Network — onde mora o conhecimento
 
@@ -343,7 +341,7 @@ A atenção recebe toda a atenção (trocadilho intencional), mas ~⅔ dos [[Dic
 Ela é deceptivamente simples — roda em cada token de forma independente:
 
 > [!warning] Fórmula FFN
-> 
+>
 > $$\text{FFN}(x) = W_{down} \cdot \text{ativação}(W_{up} \cdot x)$$
 
 Termo a termo, onde `x` é o vetor do token que entra na camada:

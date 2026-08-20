@@ -21,13 +21,7 @@ aliases:
 # Command
 
 > [!abstract] TL;DR
-> O **Command** encapsula uma **requisição como um objeto** — transformando "faça X" em um dado que se
-> pode guardar, passar adiante, **enfileirar**, **registrar em log** e **desfazer**. É a base de
-> undo/redo em editores, de filas de tarefas (a tarefa *é* um comando serializado) e do lado
-> *command* do CQRS. Na lente cross-linguagem, o caso simples **colapsa para uma closure** (uma
-> função que carrega seu contexto) em Python/TS/Go e até em Java com lambda; o objeto Command completo
-> se justifica quando você precisa de **undo** ou de **serializar** a ação. A armadilha principal:
-> montar a cerimônia de Command para uma ação trivial que um método direto resolveria.
+> O **Command** encapsula uma **requisição como um objeto** — transformando "faça X" em um dado que se pode guardar, passar adiante, **enfileirar**, **registrar em log** e **desfazer**. É a base de undo/redo em editores, de filas de tarefas (a tarefa *é* um comando serializado) e do lado *command* do CQRS. Na lente cross-linguagem, o caso simples **colapsa para uma closure** (uma função que carrega seu contexto) em Python/TS/Go e até em Java com lambda; o objeto Command completo se justifica quando você precisa de **undo** ou de **serializar** a ação. A armadilha principal: montar a cerimônia de Command para uma ação trivial que um método direto resolveria.
 
 ## Quando "uma ação" precisa virar dado
 
@@ -93,19 +87,13 @@ O objeto Command completo (com `undo`, metadados, serialização) reaparece quan
 ## Armadilhas comuns
 
 > [!warning] Cerimônia de Command onde um método basta
-> **O que acontece:** cria-se uma classe Command (invoker, receiver, interface) para uma ação que é executada **imediatamente e uma vez**, sem fila, sem undo, sem log.
-> **Por quê:** o Command se paga pela **indireção temporal** (executar depois) ou pela **reversibilidade** (undo). Sem nenhuma das duas, é uma classe a mais entre o chamador e a ação — indireção pura.
-> **Como evitar:** precisa só executar agora? Chame o método (ou passe uma lambda). Introduza o Command quando surgir enfileirar, desfazer, logar ou serializar.
+> **O que acontece:** cria-se uma classe Command (invoker, receiver, interface) para uma ação que é executada **imediatamente e uma vez**, sem fila, sem undo, sem log. **Por quê:** o Command se paga pela **indireção temporal** (executar depois) ou pela **reversibilidade** (undo). Sem nenhuma das duas, é uma classe a mais entre o chamador e a ação — indireção pura. **Como evitar:** precisa só executar agora? Chame o método (ou passe uma lambda). Introduza o Command quando surgir enfileirar, desfazer, logar ou serializar.
 
 > [!warning] `undo` que não reverte de verdade
-> **O que acontece:** o `undo()` assume que basta fazer "o inverso", mas não capturou **estado suficiente** — desfazer um "apagar" sem ter guardado o que foi apagado, ou desfazer sobre um estado que já mudou por outra via.
-> **Por quê:** reverter exige memória: o comando precisa guardar, no `execute`, o que for necessário para restaurar (o *Memento* costuma andar junto aqui). "O inverso" nem sempre é bem definido.
-> **Como evitar:** capture no `execute()` tudo que o `undo()` precisará (valores anteriores). Para estado complexo, combine com [[21 - Padrões raros (Bridge, Flyweight, Memento, Interpreter)|Memento]] (snapshot). Teste a sequência execute→undo→execute.
+> **O que acontece:** o `undo()` assume que basta fazer "o inverso", mas não capturou **estado suficiente** — desfazer um "apagar" sem ter guardado o que foi apagado, ou desfazer sobre um estado que já mudou por outra via. **Por quê:** reverter exige memória: o comando precisa guardar, no `execute`, o que for necessário para restaurar (o *Memento* costuma andar junto aqui). "O inverso" nem sempre é bem definido. **Como evitar:** capture no `execute()` tudo que o `undo()` precisará (valores anteriores). Para estado complexo, combine com [[21 - Padrões raros (Bridge, Flyweight, Memento, Interpreter)|Memento]] (snapshot). Teste a sequência execute→undo→execute.
 
 > [!warning] Confundir Command com Strategy
-> **O que acontece:** trata-se como sinônimos porque ambos são interfaces de (quase) um método.
-> **Por quê:** a **intenção** difere. Strategy encapsula **como** fazer algo (um algoritmo intercambiável, que você escolhe). Command encapsula **o que** fazer (uma requisição concreta, que você guarda/enfileira/desfaz). Mesma forma, propósitos diferentes.
-> **Como evitar:** pergunte *"estou trocando o algoritmo de uma operação (Strategy) ou reificando uma ação para adiar/desfazer/transportar (Command)?"*.
+> **O que acontece:** trata-se como sinônimos porque ambos são interfaces de (quase) um método. **Por quê:** a **intenção** difere. Strategy encapsula **como** fazer algo (um algoritmo intercambiável, que você escolhe). Command encapsula **o que** fazer (uma requisição concreta, que você guarda/enfileira/desfaz). Mesma forma, propósitos diferentes. **Como evitar:** pergunte *"estou trocando o algoritmo de uma operação (Strategy) ou reificando uma ação para adiar/desfazer/transportar (Command)?"*.
 
 ## Como explicar em inglês
 

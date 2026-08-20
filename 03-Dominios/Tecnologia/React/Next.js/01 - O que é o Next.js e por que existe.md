@@ -279,8 +279,7 @@ A diferença em relação ao **Pages Router** (pasta `pages/`) não é apenas de
 > [!tip] Assista: Next.js App Router: Routing, Data Fetching, Caching
 > **Canal:** Vercel | **Duração:** ~14min | **Idioma:** EN
 >
-> Lee Robinson (VP de Developer Experience da Vercel) demonstra ao vivo a mudança de paradigma do App Router: por que componentes são Server Components por padrão, como o roteamento por sistema de arquivos funciona na prática e como o `async/await` direto no componente substitui `getStaticProps`/`getServerSideProps`. É o "por que existe o App Router" em código — complemento perfeito para a teoria desta nota.
-> Trecho de destaque [1:45]: *"By default, all pages and layouts inside of the app router are React server components by default. This means that your code only runs on the server — it's not sending any additional JavaScript to the client side."*
+> Lee Robinson (VP de Developer Experience da Vercel) demonstra ao vivo a mudança de paradigma do App Router: por que componentes são Server Components por padrão, como o roteamento por sistema de arquivos funciona na prática e como o `async/await` direto no componente substitui `getStaticProps`/`getServerSideProps`. É o "por que existe o App Router" em código — complemento perfeito para a teoria desta nota. Trecho de destaque [1:45]: *"By default, all pages and layouts inside of the app router are React server components by default. This means that your code only runs on the server — it's not sending any additional JavaScript to the client side."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=gSSsZReIFRk)
 

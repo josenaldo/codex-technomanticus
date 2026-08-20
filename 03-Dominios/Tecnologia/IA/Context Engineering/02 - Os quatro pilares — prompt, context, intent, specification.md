@@ -185,8 +185,7 @@ graph LR
 
 A maioria dos times está em algum ponto entre mês 3 e mês 6 em 2026. Organizações como Stripe, Linear e Shopify — que começaram a escalar AI em 2023-2024 — já chegaram à camada 4. A diferença de confiabilidade é visível nos relatos públicos de engenharia dessas empresas.
 
-**Por que a progressão é sequencial:**
-Você não pode ter specification engineering sem intent engineering — você não sabe o que testar se não sabe o que o agente deve fazer. Você não pode ter intent engineering sem context engineering — você não consegue codificar intent se o agente não tem contexto estável. A hierarquia é lógica, não apenas conveniente.
+**Por que a progressão é sequencial:** Você não pode ter specification engineering sem intent engineering — você não sabe o que testar se não sabe o que o agente deve fazer. Você não pode ter intent engineering sem context engineering — você não consegue codificar intent se o agente não tem contexto estável. A hierarquia é lógica, não apenas conveniente.
 
 Analogia com desenvolvimento de software: você não escreve testes de integração antes de ter a arquitetura definida. Você não define a arquitetura antes de entender os requisitos. A sequência dos quatro pilares segue a mesma lógica — cada camada precisa da anterior para ser construída com fundação sólida.
 

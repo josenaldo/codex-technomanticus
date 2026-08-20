@@ -311,23 +311,17 @@ DH (Diffie-Hellman) é a forma original de troca de chaves assimétrica — os d
 
 A teoria é elegante; a prática tem armadilhas que afetam código de produção. As mais importantes:
 
-**1. Nonce/IV reutilizado em ECDSA**
-ECDSA exige um número aleatório `k` único por assinatura. Se o mesmo `k` for usado duas vezes com chaves privadas diferentes mas mesma curva, a chave privada pode ser recuperada algebricamente. Foi assim que o PlayStation 3 teve sua chave privada exposta em 2010. Solução: usar EdDSA (Ed25519) que deriva o nonce deterministicamente do hash da mensagem, eliminando a dependência de aleatoriedade por assinatura.
+**1. Nonce/IV reutilizado em ECDSA** ECDSA exige um número aleatório `k` único por assinatura. Se o mesmo `k` for usado duas vezes com chaves privadas diferentes mas mesma curva, a chave privada pode ser recuperada algebricamente. Foi assim que o PlayStation 3 teve sua chave privada exposta em 2010. Solução: usar EdDSA (Ed25519) que deriva o nonce deterministicamente do hash da mensagem, eliminando a dependência de aleatoriedade por assinatura.
 
-**2. Ataques de canal lateral em RSA**
-A operação de decifração RSA tem tempo de execução que varia com o valor da chave privada. Um adversário que pode medir o tempo de centenas de operações pode inferir bits da chave. Solução: implementações com *constant-time blinding* — o OpenSSL faz isso por padrão; nunca implemente RSA do zero.
+**2. Ataques de canal lateral em RSA** A operação de decifração RSA tem tempo de execução que varia com o valor da chave privada. Um adversário que pode medir o tempo de centenas de operações pode inferir bits da chave. Solução: implementações com *constant-time blinding* — o OpenSSL faz isso por padrão; nunca implemente RSA do zero.
 
-**3. Padding oracle no RSA PKCS#1 v1.5**
-O ataque de Bleichenbacher (1998) permite decifrar mensagens RSA adaptivamente, consultando um servidor que revela se o padding PKCS#1 v1.5 é válido. Afetou SSL 3.0/TLS 1.0/1.1 historicamente (ROBOT attack, 2017). Solução: usar OAEP (PKCS#1 v2.x) para cifração e PSS para assinatura.
+**3. Padding oracle no RSA PKCS#1 v1.5** O ataque de Bleichenbacher (1998) permite decifrar mensagens RSA adaptivamente, consultando um servidor que revela se o padding PKCS#1 v1.5 é válido. Afetou SSL 3.0/TLS 1.0/1.1 historicamente (ROBOT attack, 2017). Solução: usar OAEP (PKCS#1 v2.x) para cifração e PSS para assinatura.
 
-**4. Geração de chaves com entropia insuficiente**
-Se o CSRNG não tem entropia suficiente no momento da geração (ex.: máquina virtual que acabou de iniciar, dispositivo embarcado sem hardware RNG), duas entidades podem gerar chaves com o mesmo primo `p`, e o MDC das chaves pública revela ambas as privadas. Casos reais documentados por Heninger et al. (2012) afetaram roteadores e dispositivos embarcados.
+**4. Geração de chaves com entropia insuficiente** Se o CSRNG não tem entropia suficiente no momento da geração (ex.: máquina virtual que acabou de iniciar, dispositivo embarcado sem hardware RNG), duas entidades podem gerar chaves com o mesmo primo `p`, e o MDC das chaves pública revela ambas as privadas. Casos reais documentados por Heninger et al. (2012) afetaram roteadores e dispositivos embarcados.
 
-**5. Confundir verificação de assinatura com autenticação completa**
-Verificar que uma assinatura é válida para uma chave pública não prova que a chave pública pertence a quem você pensa. Você precisa de um mecanismo adicional para vincular a chave pública a uma identidade — um certificado assinado por uma CA, um TOFU (trust on first use) explicitamente aceito, ou um canal de verificação fora de banda (ex.: comparar fingerprints por voz, como o Signal faz com "safety numbers"). Omitir esse passo é o MITM que PKI existe para resolver.
+**5. Confundir verificação de assinatura com autenticação completa** Verificar que uma assinatura é válida para uma chave pública não prova que a chave pública pertence a quem você pensa. Você precisa de um mecanismo adicional para vincular a chave pública a uma identidade — um certificado assinado por uma CA, um TOFU (trust on first use) explicitamente aceito, ou um canal de verificação fora de banda (ex.: comparar fingerprints por voz, como o Signal faz com "safety numbers"). Omitir esse passo é o MITM que PKI existe para resolver.
 
-**6. Reutilizar chaves para propósitos diferentes**
-Usar o mesmo par de chaves RSA para cifração e assinatura, ou para múltiplos contextos, aumenta a superfície de ataque. Comprometer a chave em um contexto compromete tudo. Prática recomendada: chaves separadas por propósito e por sistema. Chaves de assinatura de código ≠ chaves de TLS ≠ chaves de e-mail.
+**6. Reutilizar chaves para propósitos diferentes** Usar o mesmo par de chaves RSA para cifração e assinatura, ou para múltiplos contextos, aumenta a superfície de ataque. Comprometer a chave em um contexto compromete tudo. Prática recomendada: chaves separadas por propósito e por sistema. Chaves de assinatura de código ≠ chaves de TLS ≠ chaves de e-mail.
 
 > [!danger] Regra de ouro
 > Nunca implemente primitivas criptográficas do zero. Use bibliotecas auditadas (libsodium, Bouncy Castle, OpenSSL, BoringSSL). Se você está escolhendo algoritmos manualmente em vez de usar APIs de alto nível, há boa chance de estar construindo uma vulnerabilidade.

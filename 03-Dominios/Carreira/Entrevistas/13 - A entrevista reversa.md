@@ -19,12 +19,7 @@ aliases:
 # A entrevista reversa
 
 > [!abstract] TL;DR
-> "Você tem alguma pergunta?" não é formalidade de encerramento: é **avaliada**, e é a única parte do
-> processo que você controla inteiramente. Suas perguntas revelam o que você considera importante num
-> trabalho — o que é, em si, um sinal de senioridade. E há o segundo uso, que a maioria dos candidatos
-> desperdiça: essa é a sua janela para descobrir **se você quer o emprego**. Perguntas sobre release,
-> incidente, dívida técnica e priorização produzem respostas que denunciam disfunção organizacional com
-> bastante precisão — desde que você saiba ler o que vem, inclusive o silêncio.
+> "Você tem alguma pergunta?" não é formalidade de encerramento: é **avaliada**, e é a única parte do processo que você controla inteiramente. Suas perguntas revelam o que você considera importante num trabalho — o que é, em si, um sinal de senioridade. E há o segundo uso, que a maioria dos candidatos desperdiça: essa é a sua janela para descobrir **se você quer o emprego**. Perguntas sobre release, incidente, dívida técnica e priorização produzem respostas que denunciam disfunção organizacional com bastante precisão — desde que você saiba ler o que vem, inclusive o silêncio.
 
 ## As duas perguntas que ninguém faz
 
@@ -100,19 +95,13 @@ Regra prática: **duas ou três por etapa**, e evite repetir a mesma pessoa a pe
 ## Armadilhas comuns
 
 > [!warning] Perguntar o que está no site
-> **O que acontece:** "o que a empresa faz?" ou "quais são os valores de vocês?". Não custa pontos diretamente, mas gasta o espaço e sinaliza que você não pesquisou.
-> **Por quê:** são perguntas seguras — não expõem opinião nem arriscam constranger.
-> **Como evitar:** pergunte o que **não** é publicável: como se decide, o que deu errado, o que o entrevistador mudaria. Informação pública você lê antes.
+> **O que acontece:** "o que a empresa faz?" ou "quais são os valores de vocês?". Não custa pontos diretamente, mas gasta o espaço e sinaliza que você não pesquisou. **Por quê:** são perguntas seguras — não expõem opinião nem arriscam constranger. **Como evitar:** pergunte o que **não** é publicável: como se decide, o que deu errado, o que o entrevistador mudaria. Informação pública você lê antes.
 
 > [!warning] Perguntar sobre remuneração e benefícios na hora errada
-> **O que acontece:** a pergunta surge no meio do painel técnico e desloca a conversa; o entrevistador engenheiro nem tem a informação.
-> **Por quê:** é uma dúvida legítima e urgente para o candidato, e a oportunidade parece boa.
-> **Como evitar:** faixa e modalidade são assunto do **recrutador**, cedo; detalhe de pacote é assunto da **oferta**. Nas etapas técnicas, pergunte sobre trabalho. Isso não é timidez — é [[14 - Negociação de oferta (capstone)|estratégia de negociação]].
+> **O que acontece:** a pergunta surge no meio do painel técnico e desloca a conversa; o entrevistador engenheiro nem tem a informação. **Por quê:** é uma dúvida legítima e urgente para o candidato, e a oportunidade parece boa. **Como evitar:** faixa e modalidade são assunto do **recrutador**, cedo; detalhe de pacote é assunto da **oferta**. Nas etapas técnicas, pergunte sobre trabalho. Isso não é timidez — é [[14 - Negociação de oferta (capstone)|estratégia de negociação]].
 
 > [!warning] Fazer as perguntas e não usar as respostas
-> **O que acontece:** o candidato pergunta bem, ouve sinais claros de disfunção — deploy manual mensal, on-call sem compensação, nenhuma mudança após incidente — e aceita a oferta sem incorporar nada disso à decisão.
-> **Por quê:** depois de semanas de processo, existe um custo afundado emocional e a vontade de que dê certo.
-> **Como evitar:** anote as respostas logo após cada etapa, enquanto estão frescas, e releia **antes** de decidir sobre a oferta. As perguntas só valem se as respostas tiverem peso.
+> **O que acontece:** o candidato pergunta bem, ouve sinais claros de disfunção — deploy manual mensal, on-call sem compensação, nenhuma mudança após incidente — e aceita a oferta sem incorporar nada disso à decisão. **Por quê:** depois de semanas de processo, existe um custo afundado emocional e a vontade de que dê certo. **Como evitar:** anote as respostas logo após cada etapa, enquanto estão frescas, e releia **antes** de decidir sobre a oferta. As perguntas só valem se as respostas tiverem peso.
 
 ## Como soa em inglês
 

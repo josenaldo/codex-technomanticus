@@ -76,9 +76,7 @@ graph LR
 ```
 
 > [!warning] DevOps não é "dar acesso de deploy ao dev"
-> **O que acontece:** um time lê sobre DevOps e conclui que a mudança é técnica — dar aos desenvolvedores acesso de produção, automatizar o pipeline, e pronto.
-> **Por quê:** confunde o sintoma (quem aperta o botão de deploy) com a causa (quem *carrega a responsabilidade* pelo resultado). Automação sem a cultura de fluxo/feedback/aprendizado só acelera o jeito antigo de errar.
-> **Como evitar:** a métrica que importa não é "quem tem permissão", é "quando algo quebra às 3h, quem é chamado, e essa pessoa tem contexto e autoridade para consertar?" DevOps é sobre alinhar quem decide com quem sofre a consequência da decisão.
+> **O que acontece:** um time lê sobre DevOps e conclui que a mudança é técnica — dar aos desenvolvedores acesso de produção, automatizar o pipeline, e pronto. **Por quê:** confunde o sintoma (quem aperta o botão de deploy) com a causa (quem *carrega a responsabilidade* pelo resultado). Automação sem a cultura de fluxo/feedback/aprendizado só acelera o jeito antigo de errar. **Como evitar:** a métrica que importa não é "quem tem permissão", é "quando algo quebra às 3h, quem é chamado, e essa pessoa tem contexto e autoridade para consertar?" DevOps é sobre alinhar quem decide com quem sofre a consequência da decisão.
 
 ## SRE: a implementação do Google
 
@@ -97,9 +95,7 @@ O segundo mecanismo, que só será detalhado a fundo no sub-galho 4 desta trilha
 Repare como os dois orçamentos — toil e erro — compartilham a mesma lógica: SRE converte algo que costumava ser julgamento subjetivo ("estamos operando bem?", "podemos arriscar esse deploy?") em um **número com teto explícito**, negociável entre engenharia e produto. É essa tradução de cultura em métrica que faz de SRE, de fato, uma *implementação* de DevOps — não apenas um rótulo alternativo para a mesma coisa.
 
 > [!warning] Confundir "estar ocupado" com "estar operando bem"
-> **O que acontece:** um time de plantão vive apagando incêndio — reinicia serviços, aplica patches manuais, responde ao mesmo alerta todo fim de semana — e interpreta esse volume de atividade como sinal de dedicação.
-> **Por quê:** toil é *invisível como problema* porque parece trabalho real (e é: cada reinício individualmente resolve algo). O que ele esconde é a ausência de investimento em eliminar a causa.
-> **Como evitar:** aplique o teste do livro SRE: a tarefa deixou o sistema permanentemente melhor, ou ele volta ao mesmo estado amanhã? Se voltar, meça quanto do tempo do time é gasto nisso — e trate como um teto orçamentário (o Google usa 50%), não como "é assim que é operar".
+> **O que acontece:** um time de plantão vive apagando incêndio — reinicia serviços, aplica patches manuais, responde ao mesmo alerta todo fim de semana — e interpreta esse volume de atividade como sinal de dedicação. **Por quê:** toil é *invisível como problema* porque parece trabalho real (e é: cada reinício individualmente resolve algo). O que ele esconde é a ausência de investimento em eliminar a causa. **Como evitar:** aplique o teste do livro SRE: a tarefa deixou o sistema permanentemente melhor, ou ele volta ao mesmo estado amanhã? Se voltar, meça quanto do tempo do time é gasto nisso — e trate como um teto orçamentário (o Google usa 50%), não como "é assim que é operar".
 
 > [!question]- Se SRE é "melhor" que DevOps, por que essa trilha não é só sobre SRE?
 > Porque SRE é uma *implementação específica*, não a única, e traz junto decisões organizacionais que nem toda empresa replica (um time dedicado de SREs, um processo formal de error budget, um veto de deploy quando o orçamento zera). Muitas empresas praticam a cultura DevOps — dev e ops integrados, fluxo, feedback — sem montar a estrutura formal de SRE do Google. Esta trilha ensina os **conceitos e práticas** (deploy seguro, observabilidade, confiabilidade, resposta a incidente) que valem nos dois modelos, porque o problema que eles resolvem — manter um sistema vivo em produção — é o mesmo independente do rótulo organizacional que sua empresa usa.
@@ -181,9 +177,7 @@ O salto entre Low e Elite não é incremental — é de ordem de grandeza. O rel
 > São o vocabulário-base — todo engenheiro sênior precisa reconhecê-las. Mas o próprio grupo DORA evoluiu: no relatório de 2025, a pesquisa saiu de quatro tiers fixos (baixo/médio/alto/elite) e passou a descrever sete "arquétipos" de organização a partir de métricas ampliadas, incluindo confiabilidade como dimensão própria. O motivo é que "elite" numa métrica só (ex.: deploys por dia) sem olhar confiabilidade e experiência do time contava uma história incompleta. Isso não invalida as quatro métricas clássicas — continuam o ponto de entrada — mas mostra que medir maturidade operacional é, ela mesma, uma disciplina em evolução.
 
 > [!warning] Otimizar uma métrica DORA isoladamente
-> **O que acontece:** um time decide "melhorar deployment frequency" e passa a fazer micro-deploys automatizados sem gate de qualidade, só para inflar o número.
-> **Por quê:** trata a métrica como meta em si, não como proxy de uma capacidade real (entregar valor com segurança). Goodhart's law: quando uma métrica vira alvo, ela deixa de ser boa métrica.
-> **Como evitar:** as quatro métricas se equilibram em pares — velocidade (frequência, lead time) só é sinal de saúde se acompanhada de estabilidade (change failure rate, MTTR) estável ou melhorando junto. Olhar uma sem a outra é meio do quadro.
+> **O que acontece:** um time decide "melhorar deployment frequency" e passa a fazer micro-deploys automatizados sem gate de qualidade, só para inflar o número. **Por quê:** trata a métrica como meta em si, não como proxy de uma capacidade real (entregar valor com segurança). Goodhart's law: quando uma métrica vira alvo, ela deixa de ser boa métrica. **Como evitar:** as quatro métricas se equilibram em pares — velocidade (frequência, lead time) só é sinal de saúde se acompanhada de estabilidade (change failure rate, MTTR) estável ou melhorando junto. Olhar uma sem a outra é meio do quadro.
 
 ## Um exemplo trabalhado: anatomia de um dia operando
 

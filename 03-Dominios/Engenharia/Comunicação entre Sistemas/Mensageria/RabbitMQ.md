@@ -800,11 +800,9 @@ Comparação lado-a-lado — é a pergunta mais comum em entrevistas sobre mensa
 
 ## Na prática (da minha experiência)
 
-> **Projetos com RabbitMQ — task queues e workflows:**
-> Usei RabbitMQ em projetos onde **task queues com routing complexo** eram a necessidade. A simplicidade conceitual (exchange → binding → queue) é vantagem quando a equipe não quer investir em aprender Kafka, e o fanout exchange resolve pub/sub de forma elegante.
+> **Projetos com RabbitMQ — task queues e workflows:** Usei RabbitMQ em projetos onde **task queues com routing complexo** eram a necessidade. A simplicidade conceitual (exchange → binding → queue) é vantagem quando a equipe não quer investir em aprender Kafka, e o fanout exchange resolve pub/sub de forma elegante.
 >
-> **Decisão de escolha entre RabbitMQ e Kafka:**
-> Em cada projeto, a conversa começa com: "você precisa de replay? múltiplos consumer groups independentes? retention longa?". Se a resposta é sim para qualquer uma, Kafka. Se não, RabbitMQ é mais simples de operar e cobre o caso bem.
+> **Decisão de escolha entre RabbitMQ e Kafka:** Em cada projeto, a conversa começa com: "você precisa de replay? múltiplos consumer groups independentes? retention longa?". Se a resposta é sim para qualquer uma, Kafka. Se não, RabbitMQ é mais simples de operar e cobre o caso bem.
 >
 > **Padrões que sempre uso em produção:**
 >

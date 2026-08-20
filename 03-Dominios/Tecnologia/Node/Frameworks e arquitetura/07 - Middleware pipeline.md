@@ -388,63 +388,41 @@ const price = discountPolicy.apply(order, campaign);
 ## Armadilhas comuns
 
 > [!warning] Express: ordem de `app.use()` é contrato silencioso
-> **O que acontece:** comportamento muda conforme middlewares são registrados fora de ordem — auth depois do router deixa rotas desprotegidas, body parser depois do handler resulta em body `undefined`.
-> **Por quê:** Express processa middlewares na ordem de registro, sem garantias explícitas de fase nomeada.
-> **Como evitar:** documente a ordem canônica; revise `app.use()` em code review como se fosse config de segurança.
+> **O que acontece:** comportamento muda conforme middlewares são registrados fora de ordem — auth depois do router deixa rotas desprotegidas, body parser depois do handler resulta em body `undefined`. **Por quê:** Express processa middlewares na ordem de registro, sem garantias explícitas de fase nomeada. **Como evitar:** documente a ordem canônica; revise `app.use()` em code review como se fosse config de segurança.
 
 > [!warning] Fastify: `onRequest` sem body disponível
-> **O que acontece:** tentar acessar `req.body` no hook `onRequest` retorna `undefined` porque parsing ainda não rodou.
-> **Por quê:** o lifecycle Fastify separa `onRequest` (antes de parsing) de `preHandler` (após parsing e validação).
-> **Como evitar:** use `preHandler` para lógica que precisa do body; `onRequest` só para tracing, IP check e headers iniciais.
+> **O que acontece:** tentar acessar `req.body` no hook `onRequest` retorna `undefined` porque parsing ainda não rodou. **Por quê:** o lifecycle Fastify separa `onRequest` (antes de parsing) de `preHandler` (após parsing e validação). **Como evitar:** use `preHandler` para lógica que precisa do body; `onRequest` só para tracing, IP check e headers iniciais.
 
 > [!warning] NestJS: middleware clássico sem acesso a DI
-> **O que acontece:** tentar injetar serviço no middleware registrado com `app.use()` falha; a instância não está disponível.
-> **Por quê:** middleware clássico em NestJS é próximo do Express puro e não participa do ciclo de DI do container.
-> **Como evitar:** use Guards para auth e Interceptors para logging/transform; reserve middleware clássico para concerns que não precisam de DI.
+> **O que acontece:** tentar injetar serviço no middleware registrado com `app.use()` falha; a instância não está disponível. **Por quê:** middleware clássico em NestJS é próximo do Express puro e não participa do ciclo de DI do container. **Como evitar:** use Guards para auth e Interceptors para logging/transform; reserve middleware clássico para concerns que não precisam de DI.
 
 > [!warning] Hono: `await next()` esquecido paralisa a pipeline
-> **O que acontece:** handler ou middleware seguinte nunca executa; a response fica pendente ou retorna vazia.
-> **Por quê:** Hono usa onion model explícito — o controle passa para o próximo handler apenas com `await next()`.
-> **Como evitar:** todo middleware Hono que não termina a request deve ter `await next()` em ponto deliberado do fluxo.
+> **O que acontece:** handler ou middleware seguinte nunca executa; a response fica pendente ou retorna vazia. **Por quê:** Hono usa onion model explícito — o controle passa para o próximo handler apenas com `await next()`. **Como evitar:** todo middleware Hono que não termina a request deve ter `await next()` em ponto deliberado do fluxo.
 
 > [!warning] Middleware CPU-heavy bloqueia o event loop
-> **O que acontece:** requests ficam enfileiradas enquanto middleware síncrono pesado processa uma de cada vez.
-> **Por quê:** Node.js tem um único thread JS; operação CPU-bound bloqueia o [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index]] para todas as requests.
-> **Como evitar:** mova processamento pesado para worker threads ou serviços externos; mantenha middleware I/O-bound e rápido.
+> **O que acontece:** requests ficam enfileiradas enquanto middleware síncrono pesado processa uma de cada vez. **Por quê:** Node.js tem um único thread JS; operação CPU-bound bloqueia o [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index]] para todas as requests. **Como evitar:** mova processamento pesado para worker threads ou serviços externos; mantenha middleware I/O-bound e rápido.
 
 > [!warning] Logging só no caminho feliz
-> **O que acontece:** erros e conexões abortadas pelo cliente não aparecem nos logs, criando pontos cegos em observability.
-> **Por quê:** sem escutar `close` e `error` na response, o middleware de logging só dispara em finalizações bem-sucedidas.
-> **Como evitar:** em Express, combine `res.on("finish")` com `res.on("close")`; em Fastify, use `onError` + `onResponse`.
+> **O que acontece:** erros e conexões abortadas pelo cliente não aparecem nos logs, criando pontos cegos em observability. **Por quê:** sem escutar `close` e `error` na response, o middleware de logging só dispara em finalizações bem-sucedidas. **Como evitar:** em Express, combine `res.on("finish")` com `res.on("close")`; em Fastify, use `onError` + `onResponse`.
 
 > [!warning] Auth global bloqueando `/health` e `/metrics`
-> **O que acontece:** liveness probe do Kubernetes retorna 401 e o pod é reiniciado em loop.
-> **Por quê:** middleware de auth global sem exceção de rota cobre todos os paths, incluindo os de infraestrutura.
-> **Como evitar:** use routers separados ou condicionais explícitas para rotas públicas antes do middleware de auth.
+> **O que acontece:** liveness probe do Kubernetes retorna 401 e o pod é reiniciado em loop. **Por quê:** middleware de auth global sem exceção de rota cobre todos os paths, incluindo os de infraestrutura. **Como evitar:** use routers separados ou condicionais explícitas para rotas públicas antes do middleware de auth.
 
 > [!warning] Rate limit depois de operação cara
-> **O que acontece:** ataque de DDoS ainda consome CPU, banco e chamadas externas antes de ser bloqueado.
-> **Por quê:** rate limit colocado ao final da pipeline só age depois de todos os outros middlewares processarem a request.
-> **Como evitar:** coloque rate limit antes de authn/authz e qualquer operação de custo variável.
+> **O que acontece:** ataque de DDoS ainda consome CPU, banco e chamadas externas antes de ser bloqueado. **Por quê:** rate limit colocado ao final da pipeline só age depois de todos os outros middlewares processarem a request. **Como evitar:** coloque rate limit antes de authn/authz e qualquer operação de custo variável.
 
 > [!warning] Contexto mutável sem tipagem
-> **O que acontece:** bug aparece longe da origem — um middleware seta propriedade com typo e outro falha silenciosamente ao ler `undefined`.
-> **Por quê:** em Express, `req` é mutável e não tipado por padrão; qualquer middleware pode adicionar qualquer campo.
-> **Como evitar:** declare extensões de `Request` com TypeScript declaration merging; use `req.user: AuthUser` em vez de `req.user: any`.
+> **O que acontece:** bug aparece longe da origem — um middleware seta propriedade com typo e outro falha silenciosamente ao ler `undefined`. **Por quê:** em Express, `req` é mutável e não tipado por padrão; qualquer middleware pode adicionar qualquer campo. **Como evitar:** declare extensões de `Request` com TypeScript declaration merging; use `req.user: AuthUser` em vez de `req.user: any`.
 
 ## Perguntas de entrevista
 
-**Onde colocar logging?**
-Na pipeline, não no controller. O mecanismo muda por framework: Express response events, Fastify `onResponse`, NestJS interceptor, Hono onion.
+**Onde colocar logging?** Na pipeline, não no controller. O mecanismo muda por framework: Express response events, Fastify `onResponse`, NestJS interceptor, Hono onion.
 
-**Qual a diferença entre middleware e interceptor em NestJS?**
-Middleware é mais próximo do Express e roda cedo; interceptor é DI-aware e envolve o handler.
+**Qual a diferença entre middleware e interceptor em NestJS?** Middleware é mais próximo do Express e roda cedo; interceptor é DI-aware e envolve o handler.
 
-**Por que Fastify tem hooks nomeados?**
-Para dar pontos precisos do lifecycle, como `onRequest`, `preValidation`, `preHandler`, `onResponse`.
+**Por que Fastify tem hooks nomeados?** Para dar pontos precisos do lifecycle, como `onRequest`, `preValidation`, `preHandler`, `onResponse`.
 
-**Qual bug comum em Hono/Koa-like?**
-Esquecer `await next()`, impedindo a continuação da pipeline.
+**Qual bug comum em Hono/Koa-like?** Esquecer `await next()`, impedindo a continuação da pipeline.
 
 ## Em entrevista
 

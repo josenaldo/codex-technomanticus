@@ -103,8 +103,7 @@ Na AWS isso é: DLQ em toda fila SQS que alimenta Lambda, destino de falha (`on-
 > [!tip] Assista: Writing scalable Lambda functions - best practices and anti-patterns to consider
 > **Canal:** AWS Developers | **Duração:** ~45min | **Idioma:** EN
 >
-> Aprofunda dois padrões desta nota com detalhe que não cabia aqui: o mecanismo exato de retry assíncrono do Lambda antes de cair no destino de falha/DLQ, e o comportamento de cold start no ciclo de vida do ambiente de execução — a raiz técnica por trás do anti-padrão "ignorar cold start no caminho crítico".
-> Trecho de destaque [28:53]: *"these two retries fail also, then you can send the event to an on-failure destination or a dead letter queue"*
+> Aprofunda dois padrões desta nota com detalhe que não cabia aqui: o mecanismo exato de retry assíncrono do Lambda antes de cair no destino de falha/DLQ, e o comportamento de cold start no ciclo de vida do ambiente de execução — a raiz técnica por trás do anti-padrão "ignorar cold start no caminho crítico". Trecho de destaque [28:53]: *"these two retries fail also, then you can send the event to an on-failure destination or a dead letter queue"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=vdBTJd_pYRI)
 

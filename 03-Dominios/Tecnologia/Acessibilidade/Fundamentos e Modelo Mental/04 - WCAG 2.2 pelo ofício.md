@@ -109,19 +109,13 @@ Ao migrar para a régua 2.2, o time descobre que o menu *sticky* do topo cobre o
 ## Armadilhas comuns
 
 > [!warning] Mirar AAA globalmente
-> **O que acontece:** o time promete "conformidade AAA" e trava, porque vários critérios AAA são incompatíveis com o produto (jargão inevitável, limites de tempo por segurança).
-> **Por quê:** o próprio W3C diz que AAA não é alcançável em todo conteúdo; é meta para *partes* críticas, não alvo global.
-> **Como evitar:** mire **AA** como padrão (é o alvo legal quase universal) e aplique AAA pontualmente onde faz sentido.
+> **O que acontece:** o time promete "conformidade AAA" e trava, porque vários critérios AAA são incompatíveis com o produto (jargão inevitável, limites de tempo por segurança). **Por quê:** o próprio W3C diz que AAA não é alcançável em todo conteúdo; é meta para *partes* críticas, não alvo global. **Como evitar:** mire **AA** como padrão (é o alvo legal quase universal) e aplique AAA pontualmente onde faz sentido.
 
 > [!warning] Confundir nível de conformidade com prioridade de conserto
-> **O que acontece:** o time conserta todos os A antes de qualquer AA, mesmo quando um AA está no checkout e o A está no rodapé.
-> **Por quê:** o nível é um bom *proxy* inicial de severidade, mas o impacto no fluxo é o desempate. Uma falha AA no fluxo de receita dói mais que uma A numa página institucional.
-> **Como evitar:** ordene por nível **e** por criticidade da tela (severidade × onde), não só pelo nível.
+> **O que acontece:** o time conserta todos os A antes de qualquer AA, mesmo quando um AA está no checkout e o A está no rodapé. **Por quê:** o nível é um bom *proxy* inicial de severidade, mas o impacto no fluxo é o desempate. Uma falha AA no fluxo de receita dói mais que uma A numa página institucional. **Como evitar:** ordene por nível **e** por criticidade da tela (severidade × onde), não só pelo nível.
 
 > [!warning] Tratar WCAG como lista de tarefas do fim
-> **O que acontece:** os 86 critérios viram um checklist rodado na véspera do release, gerando milhares de violações impossíveis de conferir a tempo.
-> **Por quê:** critérios como contraste e `alt` são triviais de checar isoladamente mas aparecem aos milhares — a conta só fecha se a decisão entra no momento em que cada elemento é escrito.
-> **Como evitar:** use WCAG como guia de decisão *durante* o código, não como auditoria de fim. Cada critério é um problema humano a evitar, não uma caixa a marcar.
+> **O que acontece:** os 86 critérios viram um checklist rodado na véspera do release, gerando milhares de violações impossíveis de conferir a tempo. **Por quê:** critérios como contraste e `alt` são triviais de checar isoladamente mas aparecem aos milhares — a conta só fecha se a decisão entra no momento em que cada elemento é escrito. **Como evitar:** use WCAG como guia de decisão *durante* o código, não como auditoria de fim. Cada critério é um problema humano a evitar, não uma caixa a marcar.
 
 ## Como explicar em inglês
 

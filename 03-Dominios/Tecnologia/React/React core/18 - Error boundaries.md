@@ -427,24 +427,16 @@ function WidgetComMonitoramento({ widgetNome }: { widgetNome: string }) {
 ## Armadilhas comuns
 
 > [!warning] Boundary não pega erros em event handlers
-> **O que acontece:** você coloca um `<ErrorBoundary>` em volta do componente mas erros no `onClick` ou `onSubmit` não ativam o fallback — aparecem silenciosamente no console ou quebram outro estado.
-> **Por quê:** event handlers não fazem parte do ciclo de render do React. O boundary só intercepta erros que ocorrem durante `render()` ou métodos de ciclo de vida síncronos.
-> **Como evitar:** use `try/catch` no handler ou chame `showBoundary(error)` do hook `useErrorBoundary` para propagar manualmente ao boundary ancestral.
+> **O que acontece:** você coloca um `<ErrorBoundary>` em volta do componente mas erros no `onClick` ou `onSubmit` não ativam o fallback — aparecem silenciosamente no console ou quebram outro estado. **Por quê:** event handlers não fazem parte do ciclo de render do React. O boundary só intercepta erros que ocorrem durante `render()` ou métodos de ciclo de vida síncronos. **Como evitar:** use `try/catch` no handler ou chame `showBoundary(error)` do hook `useErrorBoundary` para propagar manualmente ao boundary ancestral.
 
 > [!warning] Um único boundary no topo da app não isola nada
-> **O que acontece:** erro em qualquer componente filho derruba toda a árvore abaixo do boundary — que é praticamente a app inteira. O usuário vê a tela de fallback genérica sem poder usar nada.
-> **Por quê:** boundary com escopo global é safety net, não isolamento. Ele protege o documento de ficar completamente sem markup, mas não preserva o resto da UI.
-> **Como evitar:** use boundaries por rota e por widget/seção, deixando o global apenas como última linha de defesa.
+> **O que acontece:** erro em qualquer componente filho derruba toda a árvore abaixo do boundary — que é praticamente a app inteira. O usuário vê a tela de fallback genérica sem poder usar nada. **Por quê:** boundary com escopo global é safety net, não isolamento. Ele protege o documento de ficar completamente sem markup, mas não preserva o resto da UI. **Como evitar:** use boundaries por rota e por widget/seção, deixando o global apenas como última linha de defesa.
 
 > [!warning] Esquecer de resetar o boundary após correção
-> **O que acontece:** o usuário tenta novamente — navega para outra rota, muda filtros, atualiza dados — mas o fallback continua exibido porque o boundary ainda está em estado de erro.
-> **Por quê:** o error boundary mantém `hasError: true` no seu state até que seja explicitamente resetado. Mudanças de props filhas não disparam reset automático.
-> **Como evitar:** use `resetKeys={[chaveQueDeveResetar]}` na lib `react-error-boundary` para reset automático quando um valor relevante mudar. Inclua também um botão "Tentar novamente" que chame `resetErrorBoundary`.
+> **O que acontece:** o usuário tenta novamente — navega para outra rota, muda filtros, atualiza dados — mas o fallback continua exibido porque o boundary ainda está em estado de erro. **Por quê:** o error boundary mantém `hasError: true` no seu state até que seja explicitamente resetado. Mudanças de props filhas não disparam reset automático. **Como evitar:** use `resetKeys={[chaveQueDeveResetar]}` na lib `react-error-boundary` para reset automático quando um valor relevante mudar. Inclua também um botão "Tentar novamente" que chame `resetErrorBoundary`.
 
 > [!warning] Não reportar erros capturados como erros de produção
-> **O que acontece:** o boundary exibe o fallback silenciosamente. O time de engenharia não sabe que um widget está falhando para 5% dos usuários.
-> **Por quê:** por padrão, boundaries apenas renderizam o fallback — sem telemetria.
-> **Como evitar:** sempre configure `onError` (por boundary) e `onCaughtError` no `createRoot` para enviar ao Sentry, Datadog, ou serviço equivalente.
+> **O que acontece:** o boundary exibe o fallback silenciosamente. O time de engenharia não sabe que um widget está falhando para 5% dos usuários. **Por quê:** por padrão, boundaries apenas renderizam o fallback — sem telemetria. **Como evitar:** sempre configure `onError` (por boundary) e `onCaughtError` no `createRoot` para enviar ao Sentry, Datadog, ou serviço equivalente.
 
 ---
 

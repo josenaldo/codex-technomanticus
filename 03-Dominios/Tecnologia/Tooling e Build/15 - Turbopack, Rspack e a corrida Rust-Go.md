@@ -75,15 +75,13 @@ Os benchmarks foram contestados (comparavam configurações desfavoráveis para 
 A diferença arquitetural do Turbopack não é simplesmente "é em Rust". É o modelo de execução. O Turbopack usa um sistema chamado **Turbo Engine** — um motor de computação em grafo que rastreia dependências não apenas entre arquivos, mas entre **funções individuais e saídas computadas**.
 
 > [!note] Turbo Engine: memoização como princípio de design
-> O Turbo Engine é inspirado na ideia de **reactive computation** — o mesmo princípio por trás de sistemas como Salsa (usado no rust-analyzer), Adapton e Incremental (Jane Street). A premissa: toda computação é uma função pura `f(inputs) → output`. Se os inputs não mudaram, o output é válido e pode ser reutilizado — sem recomputar. O Turbo Engine aplica isso recursivamente no grafo de módulos: cada nó (arquivo, função, chunk) é uma célula reativa. Quando um input muda, apenas as células que dependem *diretamente* desse input são marcadas como inválidas. As demais permanecem válidas indefinidamente — mesmo entre reinicializações do dev server, desde que o Next.js 16.1+ com persistent cache (File System Cache) esteja habilitado.
-> Fonte: [Turbopack architecture — Vercel blog](https://vercel.com/blog/turbopack-moving-past-webpack) (2022)
+> O Turbo Engine é inspirado na ideia de **reactive computation** — o mesmo princípio por trás de sistemas como Salsa (usado no rust-analyzer), Adapton e Incremental (Jane Street). A premissa: toda computação é uma função pura `f(inputs) → output`. Se os inputs não mudaram, o output é válido e pode ser reutilizado — sem recomputar. O Turbo Engine aplica isso recursivamente no grafo de módulos: cada nó (arquivo, função, chunk) é uma célula reativa. Quando um input muda, apenas as células que dependem *diretamente* desse input são marcadas como inválidas. As demais permanecem válidas indefinidamente — mesmo entre reinicializações do dev server, desde que o Next.js 16.1+ com persistent cache (File System Cache) esteja habilitado. Fonte: [Turbopack architecture — Vercel blog](https://vercel.com/blog/turbopack-moving-past-webpack) (2022)
 
 Pense assim: quando você muda uma linha num arquivo, o webpack 5 precisa reanalisar esse arquivo, qualquer arquivo que o importe, e potencialmente invalidar chunks inteiros. O Turbo Engine rastreia dependências em granularidade mais fina. Se você mudou uma função que só é usada por um componente folha, apenas aquele componente é recomputado — e apenas as partes do bundle que dependem dele.
 
 A resposta é: **on-the-fly, durante a primeira execução**. Não há passagem de análise estática separada antes do build. O Turbo Engine funciona assim: cada operação do bundler é anotada com `#[turbo_tasks::function]` em Rust. Quando uma função é executada pela primeira vez, o engine registra automaticamente cada `Vc` (Value Container — a unidade de valor cacheável) que ela acessa ou aguarda. Esses acessos se tornam as arestas do grafo de dependências. Na primeira execução de um projeto, o grafo é construído progressivamente à medida que o build acontece. Nas execuções subsequentes — ou quando um arquivo muda —, o engine já tem o grafo e sabe exatamente quais nós invalidar sem reprocessar o resto.
 
-Em termos concretos: quando o Turbopack processa `utils.ts` pela primeira vez, ele executa a análise de `calcularDesconto` e `formatarMoeda` e registra quem as acessou. Se `ProductCard.tsx` acessou o nó de `calcularDesconto`, essa aresta existe no grafo. Se você mudar `calcularDesconto` depois, o engine consulta o grafo e invalida exatamente `ProductCard.tsx` — sem reanalizar `utils.ts` inteiro nem consultar `CheckoutSummary.tsx`.
-Fonte: [Inside Turbopack: Building Faster by Building Less — nextjs.org](https://nextjs.org/blog/turbopack-incremental-computation) (2025); [Turbopack incremental computation docs — turbo.build](https://turbo.build/pack/docs/incremental-computation)
+Em termos concretos: quando o Turbopack processa `utils.ts` pela primeira vez, ele executa a análise de `calcularDesconto` e `formatarMoeda` e registra quem as acessou. Se `ProductCard.tsx` acessou o nó de `calcularDesconto`, essa aresta existe no grafo. Se você mudar `calcularDesconto` depois, o engine consulta o grafo e invalida exatamente `ProductCard.tsx` — sem reanalizar `utils.ts` inteiro nem consultar `CheckoutSummary.tsx`. Fonte: [Inside Turbopack: Building Faster by Building Less — nextjs.org](https://nextjs.org/blog/turbopack-incremental-computation) (2025); [Turbopack incremental computation docs — turbo.build](https://turbo.build/pack/docs/incremental-computation)
 
 ```mermaid
 flowchart TB
@@ -297,8 +295,7 @@ A compatibilidade com webpack é de ~85% dos 50 plugins mais baixados. Para o us
 
 A ponte é o **NAPI-RS** — uma biblioteca que compila código Rust como um addon binário para Node.js (um arquivo `.node`). O processo funciona assim: o Rspack compila seu core Rust para um módulo nativo Node.js. Quando você executa `rspack build`, o Node.js carrega esse módulo nativo, repassa a configuração (incluindo seus plugins JS) para o core Rust, e o Rspack orquestra a compilação. Quando um hook de plugin precisa ser chamado (ex: `compiler.hooks.emit`), o core Rust faz uma chamada de volta (callback) para o JS via NAPI-RS — e o plugin JavaScript executa normalmente no V8, com acesso ao objeto `compiler` que o Rspack expõe.
 
-O overhead da travessia Rust↔JS existe, mas é marginal na prática. Plugins JS são chamados em hooks bem definidos (início/fim de fase, processamento de asset), não dentro dos loops críticos de parse/transform onde o Rust opera. O hot path do bundling — parsear arquivos, resolver imports, transformar TypeScript — é 100% Rust, sem cruzar a fronteira JS. Um plugin que registra hooks de compilação e manipula assets cruza a fronteira algumas dezenas de vezes por build, enquanto o Rust processa milhares de módulos sem sair do Rust. O ganho de 5-10x permanece mesmo com plugins JS.
-Fonte: [Plugin Architecture — deepwiki.com/web-infra-dev/rspack](https://deepwiki.com/web-infra-dev/rspack/4.1-compiler-and-compilation); [Implementing webpack in Rust with NAPI-RS — dev.to](https://dev.to/paradeto/implementing-webpack-from-scratch-but-in-rust-3-using-napi-rs-to-create-nodejs-addons-347h)
+O overhead da travessia Rust↔JS existe, mas é marginal na prática. Plugins JS são chamados em hooks bem definidos (início/fim de fase, processamento de asset), não dentro dos loops críticos de parse/transform onde o Rust opera. O hot path do bundling — parsear arquivos, resolver imports, transformar TypeScript — é 100% Rust, sem cruzar a fronteira JS. Um plugin que registra hooks de compilação e manipula assets cruza a fronteira algumas dezenas de vezes por build, enquanto o Rust processa milhares de módulos sem sair do Rust. O ganho de 5-10x permanece mesmo com plugins JS. Fonte: [Plugin Architecture — deepwiki.com/web-infra-dev/rspack](https://deepwiki.com/web-infra-dev/rspack/4.1-compiler-and-compilation); [Implementing webpack in Rust with NAPI-RS — dev.to](https://dev.to/paradeto/implementing-webpack-from-scratch-but-in-rust-3-using-napi-rs-to-create-nodejs-addons-347h)
 
 ---
 
@@ -378,8 +375,7 @@ O Rolldown elimina a inconsistência entre dev e prod que era um ponto fraco his
 
 A separação foi uma decisão pragmática com duas forças em direções opostas. Em **desenvolvimento**, o esbuild era ordens de magnitude mais rápido para pré-bundlar dependências (`node_modules`) e transformar código TypeScript/JSX — ideal para o ciclo de edição-salva-HMR. Em **produção**, o Rollup tinha um ecossistema de plugins maduro e uma API de hooks (`renderChunk`, `generateBundle`, `resolveId`) que o ecossistema inteiro havia adotado. A API de plugins do Vite foi construída *sobre* a API do Rollup — e essa compatibilidade com o ecossistema foi um dos fatores centrais do sucesso do Vite.
 
-O que impedia usar só esbuild ou só Rollup: o esbuild não implementava a API de plugins do Rollup (sistemas incompatíveis), e o Rollup em JavaScript era lento demais para o ciclo de dev. Juntar os dois exigia um motor que fosse rápido como o esbuild *e* implementasse a API do Rollup — o que só foi possível com o Rolldown em Rust. O Rolldown foi projetado desde o início para ser compatível com a API do Rollup e nativo o suficiente para substituir o esbuild no dev. Por isso a unificação só veio com o Vite 8.
-Fonte: [Why does Vite use both Rollup and esbuild? — github.com/vitejs/vite/discussions](https://github.com/vitejs/vite/discussions/7622); [Rolldown and Vite 8: What Changed — certificates.dev](https://certificates.dev/blog/rolldown-and-vite-8-what-changed)
+O que impedia usar só esbuild ou só Rollup: o esbuild não implementava a API de plugins do Rollup (sistemas incompatíveis), e o Rollup em JavaScript era lento demais para o ciclo de dev. Juntar os dois exigia um motor que fosse rápido como o esbuild *e* implementasse a API do Rollup — o que só foi possível com o Rolldown em Rust. O Rolldown foi projetado desde o início para ser compatível com a API do Rollup e nativo o suficiente para substituir o esbuild no dev. Por isso a unificação só veio com o Vite 8. Fonte: [Why does Vite use both Rollup and esbuild? — github.com/vitejs/vite/discussions](https://github.com/vitejs/vite/discussions/7622); [Rolldown and Vite 8: What Changed — certificates.dev](https://certificates.dev/blog/rolldown-and-vite-8-what-changed)
 
 Performance real reportada por empresas que migraram para Vite 8/Rolldown:
 
@@ -494,8 +490,7 @@ O número de plugins disponíveis importa quando você está integrando em um mo
 - **Turbopack**: não suporta Module Federation em junho de 2026. Se você usa MF, Turbopack não é uma opção.
 - **Rolldown/Vite 8**: suporte via plugin `@originjs/vite-plugin-federation` (Rollup-compatible), mas sem a paridade total com webpack MF 2.0.
 
-Se Module Federation é parte do seu stack, Rspack é hoje o único caminho de migração viável que preserva essa funcionalidade.
-Fonte: [Module Federation docs — rspack.dev](https://rspack.dev/guide/features/module-federation) (2026)
+Se Module Federation é parte do seu stack, Rspack é hoje o único caminho de migração viável que preserva essa funcionalidade. Fonte: [Module Federation docs — rspack.dev](https://rspack.dev/guide/features/module-federation) (2026)
 
 ### Custo de debug e observabilidade
 
@@ -756,20 +751,15 @@ There are three main players in the "native bundlers" space as of 2026. **Turbop
 
 ## Armadilhas comuns
 
-**"Turbopack vai substituir webpack para todo mundo."**
-Não em 2026. O Turbopack é um bundler do Next.js. Se seu projeto não usa Next.js, o Turbopack não está disponível para você hoje. A confusão surge porque a Vercel anunciou Turbopack como "webpack successor" — o que é verdade *dentro* do ecossistema Next.js, não para o ecossistema geral.
+**"Turbopack vai substituir webpack para todo mundo."** Não em 2026. O Turbopack é um bundler do Next.js. Se seu projeto não usa Next.js, o Turbopack não está disponível para você hoje. A confusão surge porque a Vercel anunciou Turbopack como "webpack successor" — o que é verdade *dentro* do ecossistema Next.js, não para o ecossistema geral.
 
-**"Rspack é 23x mais rápido que webpack — vou ter uma migração fácil."**
-O número de 23x vem de benchmark controlado (app de referência com configuração equivalente). Em projetos reais com plugins customizados, a speedup é menor (tipicamente 5-10x), e a migração pode exigir substituir plugins incompatíveis. Teste em staging antes de migrar produção.
+**"Rspack é 23x mais rápido que webpack — vou ter uma migração fácil."** O número de 23x vem de benchmark controlado (app de referência com configuração equivalente). Em projetos reais com plugins customizados, a speedup é menor (tipicamente 5-10x), e a migração pode exigir substituir plugins incompatíveis. Teste em staging antes de migrar produção.
 
-**"oxlint substitui ESLint completamente."**
-Ainda não, em junho de 2026. Para regras padrão (ESLint recommended, react, import), o oxlint cobre bem. Para regras customizadas escritas em JS, você continua precisando do ESLint. A abordagem pragmática é usar ambos em pipeline — oxlint primeiro (para os 90% dos erros comuns, muito mais rápido) e ESLint depois (para regras customizadas).
+**"oxlint substitui ESLint completamente."** Ainda não, em junho de 2026. Para regras padrão (ESLint recommended, react, import), o oxlint cobre bem. Para regras customizadas escritas em JS, você continua precisando do ESLint. A abordagem pragmática é usar ambos em pipeline — oxlint primeiro (para os 90% dos erros comuns, muito mais rápido) e ESLint depois (para regras customizadas).
 
-**"Rolldown já é a mesma coisa que Rollup — pode trocar 1:1."**
-Quase. O Rolldown tem API compatível com Rollup, mas alguns edge cases de output ainda divergem (documentados no changelog do Rolldown 1.0). Para a maioria dos projetos e plugins populares, a migração é transparente. Para libs que fazem uso intenso de APIs internas do Rollup, teste antes de assumir paridade.
+**"Rolldown já é a mesma coisa que Rollup — pode trocar 1:1."** Quase. O Rolldown tem API compatível com Rollup, mas alguns edge cases de output ainda divergem (documentados no changelog do Rolldown 1.0). Para a maioria dos projetos e plugins populares, a migração é transparente. Para libs que fazem uso intenso de APIs internas do Rollup, teste antes de assumir paridade.
 
-**"Vite 8 com Rolldown vai ser incompatível com meus plugins Vite."**
-Plugins Vite bem escritos (que seguem a API do hook system do Vite) continuam funcionando em Vite 8. O que pode mudar é o comportamento de plugins que assumem internals do esbuild no dev mode (ex: plugins que usam `esbuildOptions` diretamente). A migração tipicamente exige atualizar esses plugins, não o código do projeto.
+**"Vite 8 com Rolldown vai ser incompatível com meus plugins Vite."** Plugins Vite bem escritos (que seguem a API do hook system do Vite) continuam funcionando em Vite 8. O que pode mudar é o comportamento de plugins que assumem internals do esbuild no dev mode (ex: plugins que usam `esbuildOptions` diretamente). A migração tipicamente exige atualizar esses plugins, não o código do projeto.
 
 ---
 
@@ -808,20 +798,15 @@ Plugins Vite bem escritos (que seguem a API do hook system do Vite) continuam fu
 
 Honestidade é parte do rigor técnico — não só sobre o que já existe, mas sobre o que ainda falta.
 
-**Turbopack standalone: quando?**
-A Vercel mencionou repetidamente que o Turbopack seria uma ferramenta standalone (não apenas para Next.js). Em junho de 2026, ainda não há CLI independente, API pública estável ou documentação de plugins para uso fora do Next.js. Não há data pública confirmada para isso acontecer. O risco é que o Turbopack se torne o "motor de build do Next.js" permanentemente — excelente para o ecossistema Vercel, mas irrelevante para quem usa outro framework.
+**Turbopack standalone: quando?** A Vercel mencionou repetidamente que o Turbopack seria uma ferramenta standalone (não apenas para Next.js). Em junho de 2026, ainda não há CLI independente, API pública estável ou documentação de plugins para uso fora do Next.js. Não há data pública confirmada para isso acontecer. O risco é que o Turbopack se torne o "motor de build do Next.js" permanentemente — excelente para o ecossistema Vercel, mas irrelevante para quem usa outro framework.
 
-**Module Federation no Turbopack: ausência intencional ou gap temporário?**
-A Vercel não comunicou publicamente um roadmap para Module Federation no Turbopack. Para arquiteturas de micro-frontend que dependem de MF, o Turbopack não é uma opção hoje — e não há clareza sobre se isso mudará.
+**Module Federation no Turbopack: ausência intencional ou gap temporário?** A Vercel não comunicou publicamente um roadmap para Module Federation no Turbopack. Para arquiteturas de micro-frontend que dependem de MF, o Turbopack não é uma opção hoje — e não há clareza sobre se isso mudará.
 
-**oxlint e regras customizadas em Rust: barreira de entrada**
-Para times que precisam de regras de lint específicas do domínio (ex: "não use esta função deprecated interna"), o ESLint permite escrever a regra em JavaScript em 30 minutos. No oxlint, isso exige escrever em Rust — barreira significativamente maior. A equipe oxc está trabalhando em uma API de plugins WASM que permitiria regras em linguagens arbitrárias compiladas para WASM, mas em junho de 2026 isso ainda é experimental.
+**oxlint e regras customizadas em Rust: barreira de entrada** Para times que precisam de regras de lint específicas do domínio (ex: "não use esta função deprecated interna"), o ESLint permite escrever a regra em JavaScript em 30 minutos. No oxlint, isso exige escrever em Rust — barreira significativamente maior. A equipe oxc está trabalhando em uma API de plugins WASM que permitiria regras em linguagens arbitrárias compiladas para WASM, mas em junho de 2026 isso ainda é experimental.
 
-**Rolldown e output formats avançados**
-O Rolldown 1.0 tem divergências documentadas do Rollup em edge cases de output: comportamento de `banner`/`footer` em chunks, alguns padrões de `renderChunk`, e interações com plugins que manipulam o grafo de módulos diretamente. Para 95% dos projetos não afeta — mas para bibliotecas que publicam múltiplos formatos (CJS + ESM + UMD com polyfills customizados), vale testar em ambiente isolado antes de migrar.
+**Rolldown e output formats avançados** O Rolldown 1.0 tem divergências documentadas do Rollup em edge cases de output: comportamento de `banner`/`footer` em chunks, alguns padrões de `renderChunk`, e interações com plugins que manipulam o grafo de módulos diretamente. Para 95% dos projetos não afeta — mas para bibliotecas que publicam múltiplos formatos (CJS + ESM + UMD com polyfills customizados), vale testar em ambiente isolado antes de migrar.
 
-**A corrida não acabou**
-O espaço de bundlers nativos em Rust/Go ainda está em movimento rápido. Ferramentas como **Farm** (Rust, compatibilidade parcial com Vite), **Mako** (bytedance interno, focado em Ant Design ecosystem) e o próprio Bun bundler continuam evoluindo. Em 2-3 anos, o quadrante de "universal + maduro" pode ter mais competidores consolidados. Decisões de tooling tomadas hoje para projetos com horizonte de 3-5 anos devem considerar essa volatilidade.
+**A corrida não acabou** O espaço de bundlers nativos em Rust/Go ainda está em movimento rápido. Ferramentas como **Farm** (Rust, compatibilidade parcial com Vite), **Mako** (bytedance interno, focado em Ant Design ecosystem) e o próprio Bun bundler continuam evoluindo. Em 2-3 anos, o quadrante de "universal + maduro" pode ter mais competidores consolidados. Decisões de tooling tomadas hoje para projetos com horizonte de 3-5 anos devem considerar essa volatilidade.
 
 ---
 

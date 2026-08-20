@@ -24,13 +24,7 @@ aliases:
 # Template View × Transform View × Two-Step View
 
 > [!abstract] TL;DR
-> Três formas de transformar dados em tela. **Template View**: um documento de marcação com buracos
-> onde os dados entram (JSP, ERB, Thymeleaf) — natural de ler, e convida lógica para dentro do
-> template. **Transform View**: uma função que percorre os dados e **produz** a marcação (XSLT no livro)
-> — testável e composável, menos parecida com o resultado final. **Two-Step View**: renderiza primeiro
-> para uma **tela lógica** independente de formato, e só depois para HTML — a resposta de 2002 ao
-> "mudar a aparência do sistema inteiro". Aqui está a ressurreição mais surpreendente da família:
-> **React é Transform View**, e a indústria migrou de um para o outro quase sem nomear a mudança.
+> Três formas de transformar dados em tela. **Template View**: um documento de marcação com buracos onde os dados entram (JSP, ERB, Thymeleaf) — natural de ler, e convida lógica para dentro do template. **Transform View**: uma função que percorre os dados e **produz** a marcação (XSLT no livro) — testável e composável, menos parecida com o resultado final. **Two-Step View**: renderiza primeiro para uma **tela lógica** independente de formato, e só depois para HTML — a resposta de 2002 ao "mudar a aparência do sistema inteiro". Aqui está a ressurreição mais surpreendente da família: **React é Transform View**, e a indústria migrou de um para o outro quase sem nomear a mudança.
 
 ## "Precisamos mudar o visual do sistema inteiro"
 
@@ -118,19 +112,13 @@ Um componente React não é um documento com buracos: é uma **função que rece
 ## Armadilhas comuns
 
 > [!warning] Regra de negócio no template
-> **O que acontece:** um `if` de política comercial mora na JSP. Meses depois, alguém procura a regra de desconto no domínio e não a encontra — e implementa uma segunda versão. As duas divergem, e o relatório passa a discordar da tela.
-> **Por quê:** o template tem todos os dados à mão e nenhuma barreira. Cada `if` isolado parece exibição.
-> **Como evitar:** distinga **lógica de exibição** (como mostrar o que já foi decidido — plural, formato, ocultar seção vazia) de **lógica de decisão** (o quê e se). A segunda pertence ao domínio. Teste: se essa regra vale também na API sem tela, ela não é do template.
+> **O que acontece:** um `if` de política comercial mora na JSP. Meses depois, alguém procura a regra de desconto no domínio e não a encontra — e implementa uma segunda versão. As duas divergem, e o relatório passa a discordar da tela. **Por quê:** o template tem todos os dados à mão e nenhuma barreira. Cada `if` isolado parece exibição. **Como evitar:** distinga **lógica de exibição** (como mostrar o que já foi decidido — plural, formato, ocultar seção vazia) de **lógica de decisão** (o quê e se). A segunda pertence ao domínio. Teste: se essa regra vale também na API sem tela, ela não é do template.
 
 > [!warning] Escapar por engano e não por padrão
-> **O que acontece:** uma variável é interpolada sem escape numa tela, e vira XSS armazenado. As outras trezentas e noventa e nove telas escapam corretamente — o que faz a falha ser invisível em revisão.
-> **Por quê:** no Template View clássico, escapar é um **ato** que se pode esquecer, repetido em cada interpolação. A segurança fica proporcional à disciplina, em centenas de pontos.
-> **Como evitar:** prefira mecanismos que escapam **por padrão** e exigem gesto explícito para não escapar (`dangerouslySetInnerHTML`, `<c:out>`, autoescape do Jinja/Twig). Essa inversão do default é um ganho concreto e pouco celebrado do modelo Transform View.
+> **O que acontece:** uma variável é interpolada sem escape numa tela, e vira XSS armazenado. As outras trezentas e noventa e nove telas escapam corretamente — o que faz a falha ser invisível em revisão. **Por quê:** no Template View clássico, escapar é um **ato** que se pode esquecer, repetido em cada interpolação. A segurança fica proporcional à disciplina, em centenas de pontos. **Como evitar:** prefira mecanismos que escapam **por padrão** e exigem gesto explícito para não escapar (`dangerouslySetInnerHTML`, `<c:out>`, autoescape do Jinja/Twig). Essa inversão do default é um ganho concreto e pouco celebrado do modelo Transform View.
 
 > [!warning] Two-Step View sem a necessidade que o justifica
-> **O que acontece:** o time cria uma camada de "tela lógica" com vocabulário próprio para um sistema com uma única aparência. Toda tela nova exige estender o vocabulário, e as que não cabem usam a saída de emergência — até que metade das telas a use e a camada só acrescente uma etapa.
-> **Por quê:** o padrão é atraente por parecer mais abstrato, mas ele paga por uma necessidade específica: **múltiplas aparências ou múltiplos formatos de saída**.
-> **Como evitar:** enuncie a segunda saída antes de construir a camada. Se você não consegue nomear a segunda aparência ou o segundo formato, ainda não é hora.
+> **O que acontece:** o time cria uma camada de "tela lógica" com vocabulário próprio para um sistema com uma única aparência. Toda tela nova exige estender o vocabulário, e as que não cabem usam a saída de emergência — até que metade das telas a use e a camada só acrescente uma etapa. **Por quê:** o padrão é atraente por parecer mais abstrato, mas ele paga por uma necessidade específica: **múltiplas aparências ou múltiplos formatos de saída**. **Como evitar:** enuncie a segunda saída antes de construir a camada. Se você não consegue nomear a segunda aparência ou o segundo formato, ainda não é hora.
 
 ## Como explicar em inglês
 

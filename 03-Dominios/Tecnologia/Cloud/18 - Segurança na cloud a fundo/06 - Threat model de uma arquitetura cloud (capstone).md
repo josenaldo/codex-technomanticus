@@ -120,16 +120,14 @@ STRIDE não substitui a tabela componente-por-componente acima — ele é uma se
 > [!tip] Assista: STRIDE Threat Modeling | Complete Guide to Cybersecurity Threat Analysis
 > **Canal:** Standarity | **Duração:** ~8min | **Idioma:** EN
 >
-> O vídeo percorre as seis categorias do STRIDE uma a uma, com exemplos e mitigações — o mesmo framework que a tabela acima resume em uma linha por categoria, mas aqui com espaço pra cada ameaça respirar.
-> Trecho de destaque [01:04]: *"Tampering involves unauthorized modification of data. This includes modifying data in transit through man-in-the-middle attacks, altering data..."*
+> O vídeo percorre as seis categorias do STRIDE uma a uma, com exemplos e mitigações — o mesmo framework que a tabela acima resume em uma linha por categoria, mas aqui com espaço pra cada ameaça respirar. Trecho de destaque [01:04]: *"Tampering involves unauthorized modification of data. This includes modifying data in transit through man-in-the-middle attacks, altering data..."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=xug3qlP4ZrI)
 
 > [!tip] Assista: What is Threat Modeling? (Threat Modeling Explained)
 > **Canal:** Go Cloud Architects | **Duração:** ~7min | **Idioma:** EN
 >
-> Complementa o anterior situando o STRIDE na origem — um framework da Microsoft — e por que "o que pode dar errado, componente por componente" é uma pergunta estrutural, não um checklist de boas práticas soltas, ecoando a abertura deste capstone sobre segurança como substantivo, não adjetivo.
-> Trecho de destaque [04:06]: *"that was a framework developed by Microsoft and it covers things like spoofing or tampering uh and uh information disclosure denial of service elevation of Privileges"*
+> Complementa o anterior situando o STRIDE na origem — um framework da Microsoft — e por que "o que pode dar errado, componente por componente" é uma pergunta estrutural, não um checklist de boas práticas soltas, ecoando a abertura deste capstone sobre segurança como substantivo, não adjetivo. Trecho de destaque [04:06]: *"that was a framework developed by Microsoft and it covers things like spoofing or tampering uh and uh information disclosure denial of service elevation of Privileges"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=KOq56Iyw8WY)
 

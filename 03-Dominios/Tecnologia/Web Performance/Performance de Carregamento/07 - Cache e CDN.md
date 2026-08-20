@@ -78,9 +78,7 @@ A CDN ataca duas coisas de uma vez:
 CDNs modernas fazem mais — comprimem (nota 06), servem AVIF/WebP sob demanda, terminam TLS na borda e cada vez mais rodam lógica no edge. O `s-maxage` te dá controle separado de por quanto tempo a **CDN** guarda, independente do browser.
 
 > [!warning] Cache eterno em arquivo sem hash
-> **O que acontece:** o time põe `max-age=31536000` no `main.js` (sem hash no nome). Faz um deploy com correção crítica, e usuários continuam com a versão bugada por dias.
-> **Por quê:** a URL não mudou, e o browser foi instruído a não revalidar por um ano. Ele reusa a versão velha em cache sem nem perguntar. Você se pintou num canto.
-> **Como evitar:** cache eterno (`immutable`) **só** para URLs com hash de conteúdo. Qualquer arquivo com nome estável (sem hash) precisa de `no-cache` ou um `max-age` curto. A regra: **URL imutável ↔ conteúdo imutável**.
+> **O que acontece:** o time põe `max-age=31536000` no `main.js` (sem hash no nome). Faz um deploy com correção crítica, e usuários continuam com a versão bugada por dias. **Por quê:** a URL não mudou, e o browser foi instruído a não revalidar por um ano. Ele reusa a versão velha em cache sem nem perguntar. Você se pintou num canto. **Como evitar:** cache eterno (`immutable`) **só** para URLs com hash de conteúdo. Qualquer arquivo com nome estável (sem hash) precisa de `no-cache` ou um `max-age` curto. A regra: **URL imutável ↔ conteúdo imutável**.
 
 > [!question]- Se a CDN guarda meu conteúdo, como forço uma atualização urgente?
 > Duas formas. Se você usa o padrão de **hash no nome**, não precisa forçar nada: o deploy gera URLs novas, e a CDN busca da origem automaticamente na primeira vez que alguém pede a URL nova. Para conteúdo sem hash (como o HTML ou uma imagem de nome fixo), você usa a **purga/invalidação** da CDN — um comando que apaga a cópia em cache em todos os nós, forçando-os a rebuscar da origem. O `stale-while-revalidate` ajuda no meio-termo: serve o velho instantaneamente enquanto busca o novo em background, então o usuário nunca espera.

@@ -291,10 +291,7 @@ Métricas a tracar:
 
 ## Quando NÃO migrar para HTTP+SSE
 
-❌ Single user (stdio basta)
-❌ Server com tools que precisam de fs local (filesystem MCP)
-❌ Latência crítica <50ms (overhead de rede)
-❌ Time pequeno sem ops capability
+❌ Single user (stdio basta) ❌ Server com tools que precisam de fs local (filesystem MCP) ❌ Latência crítica <50ms (overhead de rede) ❌ Time pequeno sem ops capability
 
 ## Custo
 

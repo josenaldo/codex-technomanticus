@@ -95,9 +95,7 @@ Há uma pegadinha que engana quase todo mundo no começo. Os Core Web Vitals **n
 Por que p75 e não a média? Porque a média **esconde a cauda que dói**. Imagine 100 carregamentos: 75 rápidos (1 s) e 25 horríveis (8 s). A média seria ~2,75 s — parece aceitável. Mas 1 em cada 4 usuários esperou 8 segundos. O p75 captura isso: ele pergunta "qual é a experiência dos meus **25% de usuários com pior sorte**?". Se ao menos 75% dos carregamentos são bons, o site é classificado como bom naquela métrica.
 
 > [!warning] Otimizar a média é otimizar quem já está bem
-> **O que acontece:** o time comemora um LCP médio de 2 s, mas os Core Web Vitals continuam "ruins" no relatório do Google.
-> **Por quê:** a média é puxada pelos usuários rápidos (bom hardware, boa rede). O p75 mora na cauda — celulares modestos, redes ruins, cache frio —, e é *essa* a experiência que o Google avalia e que representa uma fatia grande do seu público real.
-> **Como evitar:** sempre olhe percentis (p75, p95), nunca só a média. Priorize melhorar a cauda, não a mediana já saudável. A diferença entre lab e field (próxima nota) é justamente sobre capturar essa realidade.
+> **O que acontece:** o time comemora um LCP médio de 2 s, mas os Core Web Vitals continuam "ruins" no relatório do Google. **Por quê:** a média é puxada pelos usuários rápidos (bom hardware, boa rede). O p75 mora na cauda — celulares modestos, redes ruins, cache frio —, e é *essa* a experiência que o Google avalia e que representa uma fatia grande do seu público real. **Como evitar:** sempre olhe percentis (p75, p95), nunca só a média. Priorize melhorar a cauda, não a mediana já saudável. A diferença entre lab e field (próxima nota) é justamente sobre capturar essa realidade.
 
 **Os três Core Web Vitals em uma frase:** LCP mede se o conteúdo *carregou* rápido, INP se a página *respondeu* rápido e CLS se o layout ficou *estável* — cada um com um limiar de "bom", todos avaliados no percentil 75 dos usuários reais.
 

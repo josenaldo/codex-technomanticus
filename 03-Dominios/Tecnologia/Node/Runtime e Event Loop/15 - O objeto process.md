@@ -331,24 +331,16 @@ Reportar no `stderr` é a convenção Unix: erros vão para stderr, output útil
 ## Armadilhas comuns
 
 > [!warning] `process.exit()` dentro de handler de evento assíncrono
-> **O que acontece:** Callbacks pendentes (queries, writes em disco) são abortados silenciosamente. Dados não são persistidos.
-> **Por quê:** `process.exit()` encerra o event loop imediatamente, sem processar eventos pendentes.
-> **Como evitar:** Feche os recursos explicitamente antes de chamar `process.exit()` — ou use `process.exitCode` e deixe o event loop esvaziar naturalmente.
+> **O que acontece:** Callbacks pendentes (queries, writes em disco) são abortados silenciosamente. Dados não são persistidos. **Por quê:** `process.exit()` encerra o event loop imediatamente, sem processar eventos pendentes. **Como evitar:** Feche os recursos explicitamente antes de chamar `process.exit()` — ou use `process.exitCode` e deixe o event loop esvaziar naturalmente.
 
 > [!warning] Capturar `uncaughtException` sem re-encerrar o processo
-> **O que acontece:** O processo fica vivo em estado inconsistente após um erro não capturado.
-> **Por quê:** `uncaughtException` foi pensado para logging de último recurso, não para recuperação. O estado do heap pode estar corrompido.
-> **Como evitar:** No handler de `uncaughtException`, apenas log + `process.exit(1)`. Nunca tente continuar a execução normal.
+> **O que acontece:** O processo fica vivo em estado inconsistente após um erro não capturado. **Por quê:** `uncaughtException` foi pensado para logging de último recurso, não para recuperação. O estado do heap pode estar corrompido. **Como evitar:** No handler de `uncaughtException`, apenas log + `process.exit(1)`. Nunca tente continuar a execução normal.
 
 > [!warning] `process.env` valores booleanos como strings
-> **O que acontece:** `if (process.env.FEATURE_FLAG)` é `true` para `"false"` — qualquer string não-vazia é truthy.
-> **Por quê:** Todas as variáveis de ambiente são strings. `"false"`, `"0"`, `"no"` são strings truthy.
-> **Como evitar:** Sempre compare explicitamente: `process.env.FEATURE_FLAG === 'true'`.
+> **O que acontece:** `if (process.env.FEATURE_FLAG)` é `true` para `"false"` — qualquer string não-vazia é truthy. **Por quê:** Todas as variáveis de ambiente são strings. `"false"`, `"0"`, `"no"` são strings truthy. **Como evitar:** Sempre compare explicitamente: `process.env.FEATURE_FLAG === 'true'`.
 
 > [!warning] `process.nextTick()` em loop recursivo
-> **O que acontece:** O event loop nunca progride — nenhuma promise resolve, nenhum I/O é processado.
-> **Por quê:** A fila de `nextTick` é drenada completamente antes de qualquer outro trabalho. Callbacks adicionados durante a drenagem também rodam antes de ceder.
-> **Como evitar:** Nunca agende `process.nextTick()` dentro de um callback de `nextTick()` em loop. Use `setImmediate()` para ceder ao event loop entre iterações.
+> **O que acontece:** O event loop nunca progride — nenhuma promise resolve, nenhum I/O é processado. **Por quê:** A fila de `nextTick` é drenada completamente antes de qualquer outro trabalho. Callbacks adicionados durante a drenagem também rodam antes de ceder. **Como evitar:** Nunca agende `process.nextTick()` dentro de um callback de `nextTick()` em loop. Use `setImmediate()` para ceder ao event loop entre iterações.
 
 ## Como explicar em inglês
 

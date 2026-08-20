@@ -520,15 +520,7 @@ A regra: **declare membros do maior para o menor** para minimizar padding.
 
 Quando perguntarem sobre performance ou sobre por que uma solução é lenta, pense em cache antes de pensar em algoritmo. Explique a divisão tag|índice|offset, o custo do miss, e dê o exemplo de matriz linha vs. coluna — isso diferencia candidatos sênior.
 
-*Cache is a small, ultra-fast memory between the CPU and RAM that stores 64-byte blocks called cache lines.*
-*The CPU never fetches a single byte — it always fetches the entire cache line, exploiting spatial locality.*
-*A cache miss occurs when the requested data is not in the cache, forcing a trip to RAM at ≈200 cycle penalty.*
-*AMAT (Average Memory Access Time) = hit time + miss rate × miss penalty.*
-*The three C's of cache misses are compulsory, capacity, and conflict misses.*
-*Row-major traversal of a matrix has stride 1 and near-zero miss rate; column-major has stride N and near-100% miss rate.*
-*Write-back caches use a dirty bit to defer writing to RAM until eviction, reducing bus traffic.*
-*False sharing occurs when two cores write to different variables that share a cache line, causing unnecessary invalidations.*
-*Array of Structs (AoS) wastes bandwidth when processing a single field; Struct of Arrays (SoA) achieves 100% cache line utilization.*
+*Cache is a small, ultra-fast memory between the CPU and RAM that stores 64-byte blocks called cache lines.* *The CPU never fetches a single byte — it always fetches the entire cache line, exploiting spatial locality.* *A cache miss occurs when the requested data is not in the cache, forcing a trip to RAM at ≈200 cycle penalty.* *AMAT (Average Memory Access Time) = hit time + miss rate × miss penalty.* *The three C's of cache misses are compulsory, capacity, and conflict misses.* *Row-major traversal of a matrix has stride 1 and near-zero miss rate; column-major has stride N and near-100% miss rate.* *Write-back caches use a dirty bit to defer writing to RAM until eviction, reducing bus traffic.* *False sharing occurs when two cores write to different variables that share a cache line, causing unnecessary invalidations.* *Array of Structs (AoS) wastes bandwidth when processing a single field; Struct of Arrays (SoA) achieves 100% cache line utilization.*
 
 | Português | English |
 |-----------|---------|

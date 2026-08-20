@@ -25,12 +25,7 @@ aliases:
 # Registry + Plugin + Service Stub
 
 > [!abstract] TL;DR
-> Três padrões-base que respondem à mesma pergunta em momentos diferentes: **quem decide qual
-> implementação será usada?** O **Registry** responde *em tempo de execução* — um objeto global onde
-> se procura o serviço; é o mais útil e o de pior reputação, porque esconde dependências. O **Plugin**
-> responde *em configuração* — a implementação é escolhida no arranque, não na compilação. O **Service
-> Stub** responde *em teste* — substitui o serviço externo por um dublê. Os três ressuscitaram com
-> força, e o terceiro virou uma indústria: MSW, WireMock, LocalStack, Testcontainers.
+> Três padrões-base que respondem à mesma pergunta em momentos diferentes: **quem decide qual implementação será usada?** O **Registry** responde *em tempo de execução* — um objeto global onde se procura o serviço; é o mais útil e o de pior reputação, porque esconde dependências. O **Plugin** responde *em configuração* — a implementação é escolhida no arranque, não na compilação. O **Service Stub** responde *em teste* — substitui o serviço externo por um dublê. Os três ressuscitaram com força, e o terceiro virou uma indústria: MSW, WireMock, LocalStack, Testcontainers.
 
 ## O teste que não roda sozinho
 
@@ -104,19 +99,13 @@ O Testcontainers merece destaque porque responde à principal fraqueza do padrã
 ## Armadilhas comuns
 
 > [!warning] Registry como singleton global que esconde dependências
-> **O que acontece:** classes buscam colaboradores no meio dos métodos. A assinatura não revela nada, o teste exige montar um estado global, e a ordem de execução dos testes passa a importar — o que produz falhas intermitentes difíceis de rastrear.
-> **Por quê:** a busca global é conveniente **para quem escreve** e cara para todo mundo que vier depois. E, sendo estado global mutável, ela vaza entre testes.
-> **Como evitar:** prefira **receber** as dependências pelo construtor. Onde o Registry for inevitável (código legado, pontos estáticos, `main`), concentre o acesso na **borda** — não espalhe `get` pelo domínio.
+> **O que acontece:** classes buscam colaboradores no meio dos métodos. A assinatura não revela nada, o teste exige montar um estado global, e a ordem de execução dos testes passa a importar — o que produz falhas intermitentes difíceis de rastrear. **Por quê:** a busca global é conveniente **para quem escreve** e cara para todo mundo que vier depois. E, sendo estado global mutável, ela vaza entre testes. **Como evitar:** prefira **receber** as dependências pelo construtor. Onde o Registry for inevitável (código legado, pontos estáticos, `main`), concentre o acesso na **borda** — não espalhe `get` pelo domínio.
 
 > [!warning] Plugin sem contrato versionado
-> **O que acontece:** o sistema carrega implementações externas por configuração, e uma mudança na interface quebra plugins de terceiros em produção, com erro de carregamento em vez de erro de compilação.
-> **Por quê:** o ponto do padrão é justamente que a implementação **não é conhecida** em compilação — o que significa que o compilador não pode te proteger.
-> **Como evitar:** ponto de extensão é **contrato público**: versione-o, mantenha compatibilidade, e valide na carga com mensagem clara. Trate quebrar um ponto de extensão como quebrar uma API pública, porque é.
+> **O que acontece:** o sistema carrega implementações externas por configuração, e uma mudança na interface quebra plugins de terceiros em produção, com erro de carregamento em vez de erro de compilação. **Por quê:** o ponto do padrão é justamente que a implementação **não é conhecida** em compilação — o que significa que o compilador não pode te proteger. **Como evitar:** ponto de extensão é **contrato público**: versione-o, mantenha compatibilidade, e valide na carga com mensagem clara. Trate quebrar um ponto de extensão como quebrar uma API pública, porque é.
 
 > [!warning] Stub que diverge do serviço real em silêncio
-> **O que acontece:** a suíte fica verde por meses enquanto a API do parceiro mudou um campo. O erro só aparece em produção — e a confiança nos testes, que era o ponto, some.
-> **Por quê:** o dublê foi escrito uma vez, contra o comportamento daquele momento, e nada o obriga a acompanhar o original.
-> **Como evitar:** três defesas, em ordem de força: subir o **serviço real** em contêiner quando possível; usar **testes de contrato** que verificam o dublê contra o provedor; ou, no mínimo, gerar o stub **a partir do esquema** (OpenAPI, `.proto`) em vez de escrevê-lo à mão.
+> **O que acontece:** a suíte fica verde por meses enquanto a API do parceiro mudou um campo. O erro só aparece em produção — e a confiança nos testes, que era o ponto, some. **Por quê:** o dublê foi escrito uma vez, contra o comportamento daquele momento, e nada o obriga a acompanhar o original. **Como evitar:** três defesas, em ordem de força: subir o **serviço real** em contêiner quando possível; usar **testes de contrato** que verificam o dublê contra o provedor; ou, no mínimo, gerar o stub **a partir do esquema** (OpenAPI, `.proto`) em vez de escrevê-lo à mão.
 
 ## Como explicar em inglês
 

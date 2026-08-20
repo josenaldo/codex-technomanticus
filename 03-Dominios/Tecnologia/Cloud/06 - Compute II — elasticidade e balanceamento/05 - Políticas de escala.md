@@ -56,8 +56,7 @@ flowchart TD
 > [!tip] Assista: AWS Auto Scaling Explained in 10 Minutes — EC2 Scaling, Target Tracking & Auto Healing
 > **Canal:** Cloud Journey | **Duração:** ~8min | **Idioma:** EN
 >
-> Passa rápido pelos mesmos quatro tipos desta tabela — dinâmico (target tracking, step), agendado e a diferença entre eles — como panorama antes de mergulhar em cada um; útil como recapitulação depois de ler a tabela acima.
-> Trecho de destaque [00:48]: *"mean, max, desired, dynamic scaling, target scaling, step scaling, schedule scaling for predictable workloads..."*
+> Passa rápido pelos mesmos quatro tipos desta tabela — dinâmico (target tracking, step), agendado e a diferença entre eles — como panorama antes de mergulhar em cada um; útil como recapitulação depois de ler a tabela acima. Trecho de destaque [00:48]: *"mean, max, desired, dynamic scaling, target scaling, step scaling, schedule scaling for predictable workloads..."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=4twWpVYMqOI)
 

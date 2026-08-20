@@ -308,8 +308,7 @@ E se o que interessa é a manifestação contemporânea disso — dívida cognit
 ## Referências
 
 > [!tip] Assista — Best Simple System for Now — Daniel Terhorst-North (GOTO 2025)
-> **GOTO Conferences** · 44min · [Best Simple System for Now — Daniel Terhorst-North (GOTO 2025)](https://www.youtube.com/watch?v=u4Cv65F9DcY)
-> Sobre decidir quanta complexidade um sistema merece *agora*, que é o julgamento que este capstone exercita. Complementa o diagnóstico com a pergunta seguinte: uma vez nomeada a doença, qual é o sistema mais simples que resolve o problema de hoje?
+> **GOTO Conferences** · 44min · [Best Simple System for Now — Daniel Terhorst-North (GOTO 2025)](https://www.youtube.com/watch?v=u4Cv65F9DcY) Sobre decidir quanta complexidade um sistema merece *agora*, que é o julgamento que este capstone exercita. Complementa o diagnóstico com a pergunta seguinte: uma vez nomeada a doença, qual é o sistema mais simples que resolve o problema de hoje?
 
 - **Frederick P. Brooks Jr.** — *No Silver Bullet: Essence and Accidents of Software Engineering* (1986) e *The Mythical Man-Month* (1975). A distinção essencial/acidental que abre todo diagnóstico. [Texto do ensaio](https://worrydream.com/refs/Brooks_1986_-_No_Silver_Bullet.pdf).
 - **Peter Naur** — *Programming as Theory Building* (1985). A base do argumento de que a teoria perdida, e não o código, é o que torna um sistema difícil. [PDF](https://pages.cs.wisc.edu/~remzi/Naur.pdf).

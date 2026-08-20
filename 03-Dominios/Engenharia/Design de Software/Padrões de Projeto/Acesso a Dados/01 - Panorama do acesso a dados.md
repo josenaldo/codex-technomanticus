@@ -21,15 +21,7 @@ aliases:
 # Panorama do acesso a dados
 
 > [!abstract] TL;DR
-> Esta é a abertura da família **Acesso a Dados** — os padrões que resolvem *como um objeto conversa
-> com o armazenamento*. Todos nascem do mesmo atrito: o **descasamento objeto-relacional** (*impedance
-> mismatch*) — objetos são hierárquicos, têm comportamento e se referenciam por ponteiros; tabelas são
-> planas, só guardam dados e se ligam por chaves estrangeiras. A família se organiza em três grupos:
-> **onde mora a lógica** (Transaction Script, Domain Model, Table Module), **como o objeto fala com a
-> tabela** (DAO, Active Record, Data Mapper, Repository) e a **maquinaria de ORM** (Unit of Work,
-> Identity Map, Lazy Load, Query Object) — e o **NoSQL** remodela tudo no fim. O eixo dorsal é o debate
-> **Active Record × Data Mapper**. A lente deste galho não é a linguagem, é o **ORM**: qual framework
-> encarna qual padrão.
+> Esta é a abertura da família **Acesso a Dados** — os padrões que resolvem *como um objeto conversa com o armazenamento*. Todos nascem do mesmo atrito: o **descasamento objeto-relacional** (*impedance mismatch*) — objetos são hierárquicos, têm comportamento e se referenciam por ponteiros; tabelas são planas, só guardam dados e se ligam por chaves estrangeiras. A família se organiza em três grupos: **onde mora a lógica** (Transaction Script, Domain Model, Table Module), **como o objeto fala com a tabela** (DAO, Active Record, Data Mapper, Repository) e a **maquinaria de ORM** (Unit of Work, Identity Map, Lazy Load, Query Object) — e o **NoSQL** remodela tudo no fim. O eixo dorsal é o debate **Active Record × Data Mapper**. A lente deste galho não é a linguagem, é o **ORM**: qual framework encarna qual padrão.
 
 ## O atrito que gera todos esses padrões
 
@@ -92,19 +84,13 @@ Como a família GoF, esta é de **consulta**: cada nota é autocontida, com o pa
 ## Armadilhas comuns
 
 > [!warning] Escolher Active Record ou Data Mapper por moda, não por caso
-> **O que acontece:** adota-se Data Mapper "porque é mais arquiteturalmente puro" num CRUD simples, ou Active Record num domínio riquíssimo que sofre com o acoplamento ao banco.
-> **Por quê:** os dois servem a casos opostos. Data Mapper paga cerimônia por separação que um CRUD não precisa; Active Record paga acoplamento por produtividade que um domínio complexo não pode arcar.
-> **Como evitar:** deixe a **complexidade do domínio** decidir. CRUD e apps de dados → Active Record. Domínio rico, regras densas, alta testabilidade → Data Mapper. Comece simples e evolua quando doer.
+> **O que acontece:** adota-se Data Mapper "porque é mais arquiteturalmente puro" num CRUD simples, ou Active Record num domínio riquíssimo que sofre com o acoplamento ao banco. **Por quê:** os dois servem a casos opostos. Data Mapper paga cerimônia por separação que um CRUD não precisa; Active Record paga acoplamento por produtividade que um domínio complexo não pode arcar. **Como evitar:** deixe a **complexidade do domínio** decidir. CRUD e apps de dados → Active Record. Domínio rico, regras densas, alta testabilidade → Data Mapper. Comece simples e evolua quando doer.
 
 > [!warning] Achar que o ORM elimina o descasamento
-> **O que acontece:** trata-se o ORM como se objetos e tabelas fossem a mesma coisa, e leva-se um susto com N+1, lazy loading, ou uma entidade "mágica" que dispara SQL ao acessar um getter.
-> **Por quê:** o ORM **esconde** o descasamento, não o elimina — e a abstração vaza justamente nos pontos onde objeto e tabela discordam (associações, carregamento, identidade, transação).
-> **Como evitar:** saiba quais padrões seu ORM implementa (Unit of Work, Identity Map, Lazy Load) e onde eles vazam. O ORM é uma conveniência sobre um problema real, não um apagador dele.
+> **O que acontece:** trata-se o ORM como se objetos e tabelas fossem a mesma coisa, e leva-se um susto com N+1, lazy loading, ou uma entidade "mágica" que dispara SQL ao acessar um getter. **Por quê:** o ORM **esconde** o descasamento, não o elimina — e a abstração vaza justamente nos pontos onde objeto e tabela discordam (associações, carregamento, identidade, transação). **Como evitar:** saiba quais padrões seu ORM implementa (Unit of Work, Identity Map, Lazy Load) e onde eles vazam. O ORM é uma conveniência sobre um problema real, não um apagador dele.
 
 > [!warning] Adicionar camadas de acesso "por padrão"
-> **O que acontece:** empilha-se DAO **sobre** Repository **sobre** o ORM, cada camada só repassando pra próxima, "porque é boa prática ter camadas".
-> **Por quê:** cada camada de acesso deve **conter** algo (uma decisão, uma abstração, uma fronteira). Camadas que só repassam são cerimônia — a mesma abstração prematura que a família GoF combate, aplicada à persistência.
-> **Como evitar:** cada camada precisa justificar sua existência. Spring Data já te dá o Repository sobre o Data Mapper; um DAO anêmico por cima é redundante.
+> **O que acontece:** empilha-se DAO **sobre** Repository **sobre** o ORM, cada camada só repassando pra próxima, "porque é boa prática ter camadas". **Por quê:** cada camada de acesso deve **conter** algo (uma decisão, uma abstração, uma fronteira). Camadas que só repassam são cerimônia — a mesma abstração prematura que a família GoF combate, aplicada à persistência. **Como evitar:** cada camada precisa justificar sua existência. Spring Data já te dá o Repository sobre o Data Mapper; um DAO anêmico por cima é redundante.
 
 ## Como explicar em inglês
 

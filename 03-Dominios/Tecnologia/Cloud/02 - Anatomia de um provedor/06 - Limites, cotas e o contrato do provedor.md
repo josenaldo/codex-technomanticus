@@ -284,8 +284,7 @@ flowchart TD
 > [!tip] Assista: How to Implement Exponential Backoff & Retry Logic
 > **Canal:** SystemDR — Scalable System Design | **Duração:** ~6min | **Idioma:** EN
 >
-> Implementa, em código, exatamente o mecanismo desta seção — inclusive o motivo de adicionar jitter: sem ele, múltiplos clientes recusados ao mesmo tempo voltam a tentar no mesmo instante e recriam a rajada que causou o throttling original.
-> Trecho de destaque [03:29]: *"The solution is jitter addition. We add a small random delay to our calculated backoff, spreading out retries"*
+> Implementa, em código, exatamente o mecanismo desta seção — inclusive o motivo de adicionar jitter: sem ele, múltiplos clientes recusados ao mesmo tempo voltam a tentar no mesmo instante e recriam a rajada que causou o throttling original. Trecho de destaque [03:29]: *"The solution is jitter addition. We add a small random delay to our calculated backoff, spreading out retries"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=zq97PFCftNA)
 

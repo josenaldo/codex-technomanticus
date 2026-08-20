@@ -17,7 +17,7 @@ publish: true
 
 > [!abstract] TL;DR
 > Em JavaScript, erros são objetos da classe `Error` (ou subclasses) lançados com `throw` e capturados com `try/catch/finally`. O bloco `finally` sempre executa — seja qual for o caminho. Erros em código assíncrono exigem `await` dentro de `try/catch` **ou** `.catch()` em Promises; `try/catch` em volta de um callback assíncrono *não* pega o erro. Desde ES2022, `Error.cause` permite encadear erros preservando a causa raiz. `AggregateError` agrupa múltiplas falhas (como as de `Promise.any`). Erros não tratados em Promises travam o processo Node.js (desde v15) — nunca deixe uma Promise flutuando.
-> 
+>
 > Dois gotchas de produção frequentemente ignorados: (1) `Error.cause` é **não-enumerável** por spec — `JSON.stringify(err)` retorna `{}`, silenciando a causa em muitos loggers; (2) handlers **async** em `EventEmitter` criam unhandled rejections invisíveis sem `captureRejections: true`.
 
 ---
@@ -640,9 +640,7 @@ O encadeamento com `cause` aqui é essencial: `RetryExaustedError.cause` aponta 
 ## Armadilhas comuns
 
 > [!warning] Catch que engole o erro silenciosamente
-> **O que acontece:** o programa continua com estado inconsistente, sem log, sem re-throw. Bugs ficam invisíveis em produção.
-> **Por quê:** `catch (err) {}` bloco vazio absorve qualquer exceção.
-> **Como evitar:** sempre logue ou re-lance no `catch`. Regra: se você não sabe o que fazer com o erro, `throw err` de volta.
+> **O que acontece:** o programa continua com estado inconsistente, sem log, sem re-throw. Bugs ficam invisíveis em produção. **Por quê:** `catch (err) {}` bloco vazio absorve qualquer exceção. **Como evitar:** sempre logue ou re-lance no `catch`. Regra: se você não sabe o que fazer com o erro, `throw err` de volta.
 
 ```js
 // ❌
@@ -658,9 +656,7 @@ try {
 ```
 
 > [!warning] `try/catch` em volta de código que chama callback assíncrono
-> **O que acontece:** o erro do callback não é capturado. Em Node.js v15+, processo encerra.
-> **Por quê:** o callback roda em tick futuro, fora do frame do `try`.
-> **Como evitar:** use `async/await` com `await` dentro do `try`, ou `.catch()` na Promise.
+> **O que acontece:** o erro do callback não é capturado. Em Node.js v15+, processo encerra. **Por quê:** o callback roda em tick futuro, fora do frame do `try`. **Como evitar:** use `async/await` com `await` dentro do `try`, ou `.catch()` na Promise.
 
 ```js
 // ❌ try/catch não alcança o erro do setTimeout
@@ -677,14 +673,10 @@ try {
 ```
 
 > [!warning] Lançar string em vez de `Error`
-> **O que acontece:** `err.stack` é `undefined`. Ferramentas de APM não registram o stack trace. `instanceof Error` retorna `false`, quebrando verificações de tipo.
-> **Por quê:** `throw "algo errado"` lança uma string primitiva.
-> **Como evitar:** sempre `throw new Error("mensagem")` — nunca lançar primitivos.
+> **O que acontece:** `err.stack` é `undefined`. Ferramentas de APM não registram o stack trace. `instanceof Error` retorna `false`, quebrando verificações de tipo. **Por quê:** `throw "algo errado"` lança uma string primitiva. **Como evitar:** sempre `throw new Error("mensagem")` — nunca lançar primitivos.
 
 > [!warning] `finally` com `return` sobrescrevendo o valor do `try`
-> **O que acontece:** o valor retornado pelo `try` (ou a exceção do `catch`) é silenciosamente descartado.
-> **Por quê:** `return` em `finally` tem precedência sobre qualquer `return` ou `throw` anterior.
-> **Como evitar:** use `finally` apenas para limpeza (fechar conexões, cancelar timers) — sem `return` explícito.
+> **O que acontece:** o valor retornado pelo `try` (ou a exceção do `catch`) é silenciosamente descartado. **Por quê:** `return` em `finally` tem precedência sobre qualquer `return` ou `throw` anterior. **Como evitar:** use `finally` apenas para limpeza (fechar conexões, cancelar timers) — sem `return` explícito.
 
 ```js
 // ❌ O "try" nunca retorna — finally sobrescreve

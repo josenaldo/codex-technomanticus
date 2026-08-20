@@ -314,32 +314,25 @@ Silêncio na mudança de plan é o vibe coding do Plan: decisão tomada implicit
 ## Anti-patterns
 
 > [!warning] Plan que vira pseudocódigo
-> Invade Implement; engenheiro está escrevendo código antes do código.
-> **Solução:** Parar em componente + interface, não em algoritmo.
+> Invade Implement; engenheiro está escrevendo código antes do código. **Solução:** Parar em componente + interface, não em algoritmo.
 
 > [!warning] Plan sem ADRs (só diagrama)
-> Razões perdidas; a decisão reverte na próxima sessão porque ninguém sabe por que foi tomada.
-> **Solução:** Registrar cada escolha com razão e alternativas rejeitadas.
+> Razões perdidas; a decisão reverte na próxima sessão porque ninguém sabe por que foi tomada. **Solução:** Registrar cada escolha com razão e alternativas rejeitadas.
 
 > [!warning] Tasks de "8h: fazer feature inteira"
-> Ambiguidade escondida = o agente improvisa o que não foi decidido.
-> **Solução:** Quebrar em 4-6 tasks de 2-4h.
+> Ambiguidade escondida = o agente improvisa o que não foi decidido. **Solução:** Quebrar em 4-6 tasks de 2-4h.
 
 > [!warning] Tasks sem acceptance criteria
-> O agente decide quando está "done" de forma subjetiva.
-> **Solução:** AC binário para toda task.
+> O agente decide quando está "done" de forma subjetiva. **Solução:** AC binário para toda task.
 
 > [!warning] Dependências implícitas
-> Uma task quebra porque outra da qual dependia não terminou — e ninguém sabia da dependência.
-> **Solução:** Mapear o DAG explicitamente.
+> Uma task quebra porque outra da qual dependia não terminou — e ninguém sabia da dependência. **Solução:** Mapear o DAG explicitamente.
 
 > [!warning] NFRs sem mapeamento técnico
-> Performance ou segurança viram surpresa em produção porque o NFR nunca virou restrição concreta.
-> **Solução:** Tabela NFR → constraint técnica no plan.
+> Performance ou segurança viram surpresa em produção porque o NFR nunca virou restrição concreta. **Solução:** Tabela NFR → constraint técnica no plan.
 
 > [!warning] Plan muda durante implement sem registro
-> Drift silencioso entre plan e código — a próxima sessão não sabe que algo mudou.
-> **Solução:** Qualquer mudança de plan vira PR de plan.
+> Drift silencioso entre plan e código — a próxima sessão não sabe que algo mudou. **Solução:** Qualquer mudança de plan vira PR de plan.
 
 ## O plan document completo: template canônico
 

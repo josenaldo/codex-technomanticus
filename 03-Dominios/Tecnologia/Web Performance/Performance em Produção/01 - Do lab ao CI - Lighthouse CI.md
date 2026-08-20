@@ -85,9 +85,7 @@ Repare que os limites do `assert` são os mesmos Core Web Vitals do Galho 1 (LCP
 > Sim, e essa distinção continua valendo. O LHCI é **lab** — ele não substitui o RUM/CrUX (que medem o usuário real, ver notas 03–04 deste galho). O papel dele é **prevenção**: um teste reproduzível que roda antes do merge para pegar regressões *na origem*, quando ainda são baratas de corrigir. O lab é perfeito para isso justamente por ser controlado e comparável entre PRs. A divisão de trabalho: **LHCI previne no CI (lab); RUM confirma em produção (campo).** Você precisa dos dois — um barra a regressão, o outro mede a realidade.
 
 > [!warning] Rodar LHCI uma vez por PR e confiar no número absoluto
-> **O que acontece:** o build falha aleatoriamente ("flaky") ou passa uma regressão real, porque o score oscilou entre execuções.
-> **Por quê:** o lab é ruidoso — uma única execução varia com a carga da máquina de CI. Um número absoluto de uma corrida não é confiável.
-> **Como evitar:** use `numberOfRuns: 3` (ou mais) e a mediana; rode num ambiente de CI estável; e, quando possível, prefira assertions **relativas** (comparar com a base da `main`) a limites absolutos, que dão margem ao ruído do runner.
+> **O que acontece:** o build falha aleatoriamente ("flaky") ou passa uma regressão real, porque o score oscilou entre execuções. **Por quê:** o lab é ruidoso — uma única execução varia com a carga da máquina de CI. Um número absoluto de uma corrida não é confiável. **Como evitar:** use `numberOfRuns: 3` (ou mais) e a mediana; rode num ambiente de CI estável; e, quando possível, prefira assertions **relativas** (comparar com a base da `main`) a limites absolutos, que dão margem ao ruído do runner.
 
 **Lighthouse CI em uma frase:** ele roda o Lighthouse automaticamente em cada PR (collect → assert → upload), comparando o resultado com regras que falham o build quando a performance regride — movendo a auditoria do "depois, se alguém lembrar" para "antes do merge, sempre".
 

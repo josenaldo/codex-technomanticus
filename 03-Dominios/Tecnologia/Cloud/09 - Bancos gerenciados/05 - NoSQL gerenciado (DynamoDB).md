@@ -102,8 +102,7 @@ A documentação é explícita sobre a recomendação de design: escolher uma pa
 > [!tip] Assista: DynamoDB Partitions - How they work - AWS Service Deep Dive
 > **Canal:** Complete Coding - Master AWS Serverless | **Duração:** ~9min | **Idioma:** EN
 >
-> Reforça exatamente esse ponto com um exemplo trabalhado — uma tabela de animais de estimação com partition key `animal` (baixa cardinalidade, gera hot partition em "dog"/"cat") redesenhada para `breed` (mais valores distintos, tráfego espalhado) — e nomeia o número concreto por trás do teto de throughput por partição.
-> Trecho de destaque [03:33]: *"we need to make sure that our partition key has a high cardinality, which means that the number of items grouped together doesn't get extremely large"*
+> Reforça exatamente esse ponto com um exemplo trabalhado — uma tabela de animais de estimação com partition key `animal` (baixa cardinalidade, gera hot partition em "dog"/"cat") redesenhada para `breed` (mais valores distintos, tráfego espalhado) — e nomeia o número concreto por trás do teto de throughput por partição. Trecho de destaque [03:33]: *"we need to make sure that our partition key has a high cardinality, which means that the number of items grouped together doesn't get extremely large"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=WoxNmq5-E9o)
 

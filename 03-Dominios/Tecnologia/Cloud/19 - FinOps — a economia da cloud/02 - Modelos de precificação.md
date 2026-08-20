@@ -70,8 +70,7 @@ Isso é o que torna Savings Plans o modelo preferido hoje: você reserva o **gas
 > [!tip] Assista: O que é e como utilizar o Savings Plans na AWS?
 > **Canal:** Iago Ferreira TI - Aprenda Cloud e DevOps do ZERO | **Duração:** ~6min | **Idioma:** PT-BR
 >
-> Mostra na prática o efeito do compromisso de 1 vs 3 anos no desconto — o mesmo trade-off tempo-por-desconto que aparece em toda decisão de Savings Plan, só que com números reais na tela em vez de abstração.
-> Trecho de destaque [00:28]: *"compromisso de 3 anos você tem um desconto maior, se você fazer um de um ano você tem um desconto um pouco menor"*
+> Mostra na prática o efeito do compromisso de 1 vs 3 anos no desconto — o mesmo trade-off tempo-por-desconto que aparece em toda decisão de Savings Plan, só que com números reais na tela em vez de abstração. Trecho de destaque [00:28]: *"compromisso de 3 anos você tem um desconto maior, se você fazer um de um ano você tem um desconto um pouco menor"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=K3q71A1exXE)
 
@@ -105,8 +104,7 @@ graph TD
 > [!tip] Assista: Amazon/AWS EC2 Pricing Simply Explained — On-Demand, Spot, Reserved, Savings Plans
 > **Canal:** Tiny Technical Tutorials | **Duração:** ~9min | **Idioma:** EN
 >
-> Passa pelos quatro modelos em sequência com telas do console, fechando com a comparação direta Reserved vs. Savings Plans — útil pra visualizar de onde vem a flexibilidade extra do Savings Plan que o texto descreve.
-> Trecho de destaque [02:55]: *"the reserved instances versus savings plans"*
+> Passa pelos quatro modelos em sequência com telas do console, fechando com a comparação direta Reserved vs. Savings Plans — útil pra visualizar de onde vem a flexibilidade extra do Savings Plan que o texto descreve. Trecho de destaque [02:55]: *"the reserved instances versus savings plans"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=-t148tYgnJU)
 

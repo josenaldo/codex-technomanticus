@@ -168,8 +168,7 @@ Repare que a última linha da tabela é o único caso que aproxima de um gatilho
 > [!tip] Assista: A Startup's Guide to Application Architecture
 > **Canal:** DigitalOcean | **Duração:** ~26min | **Idioma:** EN
 >
-> Um engenheiro do próprio DO desenha, do zero, uma arquitetura de referência pra um SaaS em estágio inicial — droplets separados, banco SQL, banco NoSQL, camada de dados — usando só peças do catálogo enxuto que este capstone também usa. É o mesmo exercício desta nota, contado por quem constrói a plataforma.
-> Trecho de destaque [18:26]: *"this entire sample architecture can be done on digitalocean"*
+> Um engenheiro do próprio DO desenha, do zero, uma arquitetura de referência pra um SaaS em estágio inicial — droplets separados, banco SQL, banco NoSQL, camada de dados — usando só peças do catálogo enxuto que este capstone também usa. É o mesmo exercício desta nota, contado por quem constrói a plataforma. Trecho de destaque [18:26]: *"this entire sample architecture can be done on digitalocean"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=iyXCqFl_Fpc)
 

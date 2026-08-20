@@ -432,20 +432,16 @@ Esta nota foca na TanStack Table porque ela é a primitiva — a peça que você
 ## Armadilhas comuns
 
 > [!warning]
-> **`columns` sem `useMemo` — a armadilha clássica de performance**
-> Declarar o array de `ColumnDef` dentro do corpo do componente sem `useMemo` faz com que um novo array seja criado a cada render. A TanStack Table detecta a mudança de referência e recalcula toda a estrutura interna. Use sempre `const columns = useMemo<ColumnDef<TData>[]>(() => [...], [])`.
+> **`columns` sem `useMemo` — a armadilha clássica de performance** Declarar o array de `ColumnDef` dentro do corpo do componente sem `useMemo` faz com que um novo array seja criado a cada render. A TanStack Table detecta a mudança de referência e recalcula toda a estrutura interna. Use sempre `const columns = useMemo<ColumnDef<TData>[]>(() => [...], [])`.
 
 > [!warning]
-> **`getRowModel()` vs `getCoreRowModel()` — confundir o row model retornado**
-> `table.getCoreRowModel().rows` retorna as linhas brutas, sem aplicar sorting, filtering nem paginação. `table.getRowModel().rows` retorna as linhas após todos os row models compostos. Se você renderizar o core diretamente, filtros e ordenação simplesmente não aparecem — e o bug é difícil de ver porque os dados ainda aparecem na tela.
+> **`getRowModel()` vs `getCoreRowModel()` — confundir o row model retornado** `table.getCoreRowModel().rows` retorna as linhas brutas, sem aplicar sorting, filtering nem paginação. `table.getRowModel().rows` retorna as linhas após todos os row models compostos. Se você renderizar o core diretamente, filtros e ordenação simplesmente não aparecem — e o bug é difícil de ver porque os dados ainda aparecem na tela.
 
 > [!warning]
-> **`pageIndex` começa em 0, não 1**
-> O estado interno de paginação usa índice base-zero. Exibir `pagination.pageIndex` diretamente mostra "0" quando o usuário está na primeira página. A exibição correta é sempre `pageIndex + 1`. Esse bug aparece em entrevistas e em code reviews com frequência.
+> **`pageIndex` começa em 0, não 1** O estado interno de paginação usa índice base-zero. Exibir `pagination.pageIndex` diretamente mostra "0" quando o usuário está na primeira página. A exibição correta é sempre `pageIndex + 1`. Esse bug aparece em entrevistas e em code reviews com frequência.
 
 > [!warning]
-> **`manualPagination: true` sem `pageCount` correto**
-> No modo server-side, a TanStack Table não sabe quantas páginas existem a menos que você informe via `pageCount`. Deixar `pageCount: -1` (desconhecido) ou informar um valor desatualizado faz com que `getCanNextPage()` retorne resultados errados e o botão de "próxima" apareça quando não há mais dados — ou desapareça cedo demais.
+> **`manualPagination: true` sem `pageCount` correto** No modo server-side, a TanStack Table não sabe quantas páginas existem a menos que você informe via `pageCount`. Deixar `pageCount: -1` (desconhecido) ou informar um valor desatualizado faz com que `getCanNextPage()` retorne resultados errados e o botão de "próxima" apareça quando não há mais dados — ou desapareça cedo demais.
 
 ## Como explicar em inglês
 

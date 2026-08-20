@@ -164,24 +164,16 @@ E é o que mais importa pra você, hoje, escrevendo uma tese:
 Esta seção existe porque quase nenhum tutorial a escreve, e a falta dela gera frustração no primeiro dia. O Git é excelente numa coisa e medíocre em várias outras.
 
 > [!warning] Ele não compara arquivos do Word, Excel ou PowerPoint de forma útil
-> **O que acontece:** você commita duas versões de um `.docx` e pede pra ver a diferença. O Git responde com algo como `Binary files differ` — ou seja: "mudou, não sei dizer onde".
-> **Por quê:** o Git compara texto linha a linha. Um `.docx` não é texto: é um pacote comprimido com XML, imagens e metadados dentro. Mudar uma vírgula reescreve o arquivo inteiro em disco.
-> **Como conviver:** o Git ainda serve — ele guarda cada versão inteira, e você continua podendo voltar a qualquer ponto e ler a mensagem do commit. Você perde só o "ver o que mudou" automático. Se quiser esse recurso, escreva em formato de texto puro: **LaTeX**, **Markdown**, **R Markdown**, **Quarto**. É por isso que a academia técnica usa esses formatos.
+> **O que acontece:** você commita duas versões de um `.docx` e pede pra ver a diferença. O Git responde com algo como `Binary files differ` — ou seja: "mudou, não sei dizer onde". **Por quê:** o Git compara texto linha a linha. Um `.docx` não é texto: é um pacote comprimido com XML, imagens e metadados dentro. Mudar uma vírgula reescreve o arquivo inteiro em disco. **Como conviver:** o Git ainda serve — ele guarda cada versão inteira, e você continua podendo voltar a qualquer ponto e ler a mensagem do commit. Você perde só o "ver o que mudou" automático. Se quiser esse recurso, escreva em formato de texto puro: **LaTeX**, **Markdown**, **R Markdown**, **Quarto**. É por isso que a academia técnica usa esses formatos.
 
 > [!warning] Ele não compara imagens, PDFs, vídeos nem áudio
-> **O que acontece:** mesma limitação, pelo mesmo motivo. Vale também para o PDF final do seu trabalho.
-> **Por quê:** são formatos binários.
-> **Como conviver:** versione a **fonte** (o `.tex`, o `.md`, o script que gera o gráfico), não o produto. O PDF pode ser gerado de novo a partir da fonte; o inverso não é verdade.
+> **O que acontece:** mesma limitação, pelo mesmo motivo. Vale também para o PDF final do seu trabalho. **Por quê:** são formatos binários. **Como conviver:** versione a **fonte** (o `.tex`, o `.md`, o script que gera o gráfico), não o produto. O PDF pode ser gerado de novo a partir da fonte; o inverso não é verdade.
 
 > [!warning] Ele não é backup automático
-> **O que acontece:** a pessoa instala o Git e acha que está protegida. Não está — enquanto você não fizer um commit e não enviar pra um servidor, o histórico existe só no seu disco.
-> **Por quê:** o Git registra o que você mandar registrar, quando mandar. É deliberado, não automático.
-> **Como evitar:** é exatamente por isso que a [[03-Dominios/Tecnologia/Controle de Versão/N0 - Sobrevivência/index|nota 05 deste nível]] trata de colocar o repositório na nuvem. Commit sem cópia remota protege contra *seus* erros, não contra o HD queimar.
+> **O que acontece:** a pessoa instala o Git e acha que está protegida. Não está — enquanto você não fizer um commit e não enviar pra um servidor, o histórico existe só no seu disco. **Por quê:** o Git registra o que você mandar registrar, quando mandar. É deliberado, não automático. **Como evitar:** é exatamente por isso que a [[03-Dominios/Tecnologia/Controle de Versão/N0 - Sobrevivência/index|nota 05 deste nível]] trata de colocar o repositório na nuvem. Commit sem cópia remota protege contra *seus* erros, não contra o HD queimar.
 
 > [!warning] Ele não organiza o que você não organizou
-> **O que acontece:** quem já tinha 40 arquivos soltos passa a ter 40 arquivos soltos com histórico.
-> **Por quê:** o Git versiona a estrutura que existe; ele não opina sobre ela.
-> **Como evitar:** aproveite o começo do projeto pra decidir uma estrutura de pastas simples. O Git ajuda a mantê-la, não a inventá-la.
+> **O que acontece:** quem já tinha 40 arquivos soltos passa a ter 40 arquivos soltos com histórico. **Por quê:** o Git versiona a estrutura que existe; ele não opina sobre ela. **Como evitar:** aproveite o começo do projeto pra decidir uma estrutura de pastas simples. O Git ajuda a mantê-la, não a inventá-la.
 
 E, por fim: o Git **não executa nada**. Ele não compila, não roda, não publica. Ele guarda e recupera. Todo o resto é outra ferramenta.
 
@@ -199,8 +191,7 @@ Não é só código. Serve pra qualquer projeto feito de arquivos que mudam ao l
 - **Configurações e anotações pessoais** — qualquer coisa em texto puro.
 
 > [!example] Um caso concreto de trabalho em grupo
-> Três pessoas escrevem um artigo. Ana mexe na introdução, Bruno nos resultados, Carla na discussão — todos no mesmo dia, cada um na sua máquina, sem combinar nada. No fim do dia, cada um sincroniza. O Git junta as três contribuições **automaticamente**, porque tocaram trechos diferentes. Ninguém sobrescreveu ninguém, e o histórico registra as três autorias separadamente.
-> Se dois deles tivessem editado o **mesmo parágrafo**, o Git não escolheria um vencedor: ele marcaria o trecho e pediria que decidissem. Isso se chama conflito, e é o assunto de uma nota inteira do próximo nível.
+> Três pessoas escrevem um artigo. Ana mexe na introdução, Bruno nos resultados, Carla na discussão — todos no mesmo dia, cada um na sua máquina, sem combinar nada. No fim do dia, cada um sincroniza. O Git junta as três contribuições **automaticamente**, porque tocaram trechos diferentes. Ninguém sobrescreveu ninguém, e o histórico registra as três autorias separadamente. Se dois deles tivessem editado o **mesmo parágrafo**, o Git não escolheria um vencedor: ele marcaria o trecho e pediria que decidissem. Isso se chama conflito, e é o assunto de uma nota inteira do próximo nível.
 
 ---
 

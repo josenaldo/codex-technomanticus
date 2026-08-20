@@ -688,8 +688,7 @@ Para esses casos, `optimizeDeps.include` garante que a dep seja pré-bundlada me
 > The requested module '/node_modules/.pnpm/alguma-lib@1.2.3/node_modules/alguma-lib/index.js'
 > does not provide an export named 'default'
 > ```
-> O motivo: o Vite serve o arquivo CJS diretamente ao browser, mas o browser entende apenas ESM. Um `module.exports = { ... }` não é uma exportação ESM válida — o browser tenta interpretar `module` como identificador de variável e falha. Às vezes o erro é mais genérico ("Failed to fetch module"), mas a causa é a mesma: arquivo CJS sem conversão ESM sendo servido num contexto que exige ESM.
-> O diagnóstico é direto: se o import funciona em build (onde o Rolldown bundla tudo) mas falha em dev, a dep CJS não foi pré-bundlada. Solução: adicionar em `optimizeDeps.include`.
+> O motivo: o Vite serve o arquivo CJS diretamente ao browser, mas o browser entende apenas ESM. Um `module.exports = { ... }` não é uma exportação ESM válida — o browser tenta interpretar `module` como identificador de variável e falha. Às vezes o erro é mais genérico ("Failed to fetch module"), mas a causa é a mesma: arquivo CJS sem conversão ESM sendo servido num contexto que exige ESM. O diagnóstico é direto: se o import funciona em build (onde o Rolldown bundla tudo) mas falha em dev, a dep CJS não foi pré-bundlada. Solução: adicionar em `optimizeDeps.include`.
 
 ```ts
 optimizeDeps: {

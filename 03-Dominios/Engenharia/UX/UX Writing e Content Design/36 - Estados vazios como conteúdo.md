@@ -15,14 +15,7 @@ publish: true
 # Estados vazios como conteúdo
 
 > [!abstract] TL;DR
-> O estado vazio é **oportunidade de orientação e ação**, não ausência de conteúdo — é frequentemente
-> a primeira tela real que um usuário vê, e decide se ele entende o produto. Existem três estados
-> vazios distintos, que pedem conteúdos diferentes: **"sem dados ainda"** (primeiro uso, ensinar e
-> convidar à primeira ação), **"sem resultados"** (busca ou filtro sem retorno, explicar o critério e
-> oferecer como afrouxá-lo) e **"erro"** (já resolvido na nota anterior). Tratar os três com a mesma
-> tela genérica ("Nada aqui") é o erro mais comum. Esta nota cobre o **conteúdo** dentro do estado
-> vazio — a nota 20 (SG4) já cobre o **espaço** de estados de tela e declara essa fronteira; aqui
-> fica só o outro lado dela.
+> O estado vazio é **oportunidade de orientação e ação**, não ausência de conteúdo — é frequentemente a primeira tela real que um usuário vê, e decide se ele entende o produto. Existem três estados vazios distintos, que pedem conteúdos diferentes: **"sem dados ainda"** (primeiro uso, ensinar e convidar à primeira ação), **"sem resultados"** (busca ou filtro sem retorno, explicar o critério e oferecer como afrouxá-lo) e **"erro"** (já resolvido na nota anterior). Tratar os três com a mesma tela genérica ("Nada aqui") é o erro mais comum. Esta nota cobre o **conteúdo** dentro do estado vazio — a nota 20 (SG4) já cobre o **espaço** de estados de tela e declara essa fronteira; aqui fica só o outro lado dela.
 
 Imagine abrir, pela primeira vez, um aplicativo de gestão de tarefas recém-criado. A tela principal, "Minhas Tarefas", mostra apenas um retângulo cinza sem nenhum item dentro, e nenhuma linha de texto explicando por que está vazio nem o que fazer a seguir. Você presume, num primeiro instante de dúvida, que o app está com bug — talvez as tarefas não tenham carregado. Só depois de clicar em alguns menus você descobre, por conta própria, o botão "+" escondido no canto que cria a primeira tarefa. Compare com um segundo cenário: a mesma tela vazia, mas com uma ilustração simples, o texto "Você ainda não tem tarefas. Crie a primeira para começar a organizar seu dia" e um botão "Criar minha primeira tarefa" centralizado. A diferença entre os dois cenários não está em nenhuma linha de código de backend — os dois mostram exatamente o mesmo dado (zero tarefas). A diferença inteira é texto: o segundo cenário tratou a ausência de dados como o primeiro contato real do usuário com o produto; o primeiro tratou o mesmo momento como "nada para renderizar, então não renderiza nada".
 
@@ -78,19 +71,13 @@ Um dashboard de vendas mostra "Nenhuma venda registrada" para um vendedor que na
 ## Armadilhas comuns
 
 > [!warning] Tela vazia sem nenhum texto
-> **O que acontece:** o estado "sem dados ainda" é implementado como ausência total de conteúdo — nenhuma frase, nenhuma chamada para ação, só espaço em branco (Cenário 1).
-> **Por quê:** tecnicamente é o caminho de menor esforço — se não há itens para mapear numa lista, o componente simplesmente não renderiza nada, e ninguém percebeu que "não renderizar nada" também é uma decisão de conteúdo, só que uma decisão ruim tomada por omissão.
-> **Como evitar:** trate a escrita do texto de estado vazio como parte obrigatória do escopo de qualquer feature nova que lista dados — não como polimento posterior.
+> **O que acontece:** o estado "sem dados ainda" é implementado como ausência total de conteúdo — nenhuma frase, nenhuma chamada para ação, só espaço em branco (Cenário 1). **Por quê:** tecnicamente é o caminho de menor esforço — se não há itens para mapear numa lista, o componente simplesmente não renderiza nada, e ninguém percebeu que "não renderizar nada" também é uma decisão de conteúdo, só que uma decisão ruim tomada por omissão. **Como evitar:** trate a escrita do texto de estado vazio como parte obrigatória do escopo de qualquer feature nova que lista dados — não como polimento posterior.
 
 > [!warning] Um único estado vazio genérico para sem-dados e sem-resultados
-> **O que acontece:** a mesma mensagem ("Nenhum item encontrado") aparece tanto quando o usuário genuinamente não tem itens quanto quando a busca ou filtro dele não encontrou nada, como nos Cenários 2 e 3.
-> **Por quê:** os dois casos são visualmente idênticos (zero itens na tela), e é tentador reutilizar o mesmo componente sem distinguir a causa — mas as ações corretas são opostas: no primeiro caso, a ação é "criar"; no segundo, é "ajustar o critério de busca ou filtro".
-> **Como evitar:** trate "sem dados ainda" e "sem resultados" como dois estados distintos no conteúdo (mesmo que compartilhem o mesmo componente visual), cada um com seu próprio texto e sua própria chamada para ação.
+> **O que acontece:** a mesma mensagem ("Nenhum item encontrado") aparece tanto quando o usuário genuinamente não tem itens quanto quando a busca ou filtro dele não encontrou nada, como nos Cenários 2 e 3. **Por quê:** os dois casos são visualmente idênticos (zero itens na tela), e é tentador reutilizar o mesmo componente sem distinguir a causa — mas as ações corretas são opostas: no primeiro caso, a ação é "criar"; no segundo, é "ajustar o critério de busca ou filtro". **Como evitar:** trate "sem dados ainda" e "sem resultados" como dois estados distintos no conteúdo (mesmo que compartilhem o mesmo componente visual), cada um com seu próprio texto e sua própria chamada para ação.
 
 > [!warning] Filtro ativo não mencionado no texto do estado vazio
-> **O que acontece:** quando um filtro está escondendo dados que existem, o texto do estado vazio não menciona esse filtro, deixando o usuário sem saber por que a tela está vazia (Cenário 3).
-> **Por quê:** o texto de estado vazio costuma ser escrito pensando no caso mais comum ("realmente não há dados"), sem considerar que filtros esquecidos de sessões anteriores são uma causa frequente de falso-vazio em produtos com muitos filtros combináveis.
-> **Como evitar:** sempre que houver um filtro ou busca ativa, o texto do estado vazio deve nomeá-lo explicitamente e oferecer uma ação de limpeza — nunca apresentar "zero resultados com filtro ativo" da mesma forma que "zero dados sem filtro nenhum".
+> **O que acontece:** quando um filtro está escondendo dados que existem, o texto do estado vazio não menciona esse filtro, deixando o usuário sem saber por que a tela está vazia (Cenário 3). **Por quê:** o texto de estado vazio costuma ser escrito pensando no caso mais comum ("realmente não há dados"), sem considerar que filtros esquecidos de sessões anteriores são uma causa frequente de falso-vazio em produtos com muitos filtros combináveis. **Como evitar:** sempre que houver um filtro ou busca ativa, o texto do estado vazio deve nomeá-lo explicitamente e oferecer uma ação de limpeza — nunca apresentar "zero resultados com filtro ativo" da mesma forma que "zero dados sem filtro nenhum".
 
 ## Como explicar em inglês
 

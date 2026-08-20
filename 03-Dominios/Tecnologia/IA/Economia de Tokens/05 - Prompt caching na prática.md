@@ -194,20 +194,15 @@ O truque para calcular o break-even de TTL: `tempo_médio_entre_chamadas < TTL /
 
 ## Estado da arte — junho de 2026
 
-**TTL estendido na Anthropic**
-Em 2026, a Anthropic lançou cache de longa duração (beta) com TTL de até 1 hora para projetos de alto volume — antes limitado a 5 minutos. Isso resolve o problema de workflows com espera longa (CI/CD, análises overnight) onde o cache esfriava.
+**TTL estendido na Anthropic** Em 2026, a Anthropic lançou cache de longa duração (beta) com TTL de até 1 hora para projetos de alto volume — antes limitado a 5 minutos. Isso resolve o problema de workflows com espera longa (CI/CD, análises overnight) onde o cache esfriava.
 
-**Caching automático como default**
-OpenAI e Gemini moveram para caching automático de prefixo como comportamento padrão para todos os modelos. Em 2026, a expectativa de mercado é que caching seja transparente — o desenvolvedor não deveria precisar pensar nisso para se beneficiar. Anthropic mantém o modelo explícito para dar mais controle, mas simplificou a API.
+**Caching automático como default** OpenAI e Gemini moveram para caching automático de prefixo como comportamento padrão para todos os modelos. Em 2026, a expectativa de mercado é que caching seja transparente — o desenvolvedor não deveria precisar pensar nisso para se beneficiar. Anthropic mantém o modelo explícito para dar mais controle, mas simplificou a API.
 
-**Prompt caching com ferramentas**
-Tool definitions eram frequentemente reprocessadas a cada chamada porque ficavam no meio do prompt. Em 2026, todos os providers suportam caching de tool definitions de forma nativa — sem workaround de serializar tools como texto no system prompt.
+**Prompt caching com ferramentas** Tool definitions eram frequentemente reprocessadas a cada chamada porque ficavam no meio do prompt. Em 2026, todos os providers suportam caching de tool definitions de forma nativa — sem workaround de serializar tools como texto no system prompt.
 
-**Cache hit rate como SLO**
-Times maduros em 2026 definem cache hit rate como SLO interno — tipicamente ≥70% para sistemas de alto volume. Um hit rate abaixo de 50% é sinal de organização subótima do prompt ou TTL mal configurado. Times que tratam caching como produto (não como feature) monitoram o hit rate em dashboards ao lado de latência e custo por chamada — e disparam alertas quando cai abaixo do threshold configurado.
+**Cache hit rate como SLO** Times maduros em 2026 definem cache hit rate como SLO interno — tipicamente ≥70% para sistemas de alto volume. Um hit rate abaixo de 50% é sinal de organização subótima do prompt ou TTL mal configurado. Times que tratam caching como produto (não como feature) monitoram o hit rate em dashboards ao lado de latência e custo por chamada — e disparam alertas quando cai abaixo do threshold configurado.
 
-**Caching de imagens e documentos**
-Em 2026, a Anthropic passou a suportar caching de blocos de imagem e PDF embutidos no prompt — não só texto. Para sistemas que analisam o mesmo conjunto de diagramas ou documentos visuais a cada sessão, o desconto se aplica da mesma forma: marca o bloco de imagem com `cache_control` e a representação vetorial da imagem é cacheada junto com o texto.
+**Caching de imagens e documentos** Em 2026, a Anthropic passou a suportar caching de blocos de imagem e PDF embutidos no prompt — não só texto. Para sistemas que analisam o mesmo conjunto de diagramas ou documentos visuais a cada sessão, o desconto se aplica da mesma forma: marca o bloco de imagem com `cache_control` e a representação vetorial da imagem é cacheada junto com o texto.
 
 ---
 

@@ -31,8 +31,7 @@ O valor, então, é duplo e precisa ser separado:
 > [!tip] Assista: Is the AWS Solutions Architect Certification ACTUALLY worth it?
 > **Canal:** Tech With Soleyman | **Duração:** ~9min | **Idioma:** EN
 >
-> O autor entrevista candidatos que têm o SAA-C03 mas travam quando pedem pra explicar um projeto real — a mesma advertência desta nota, vinda do lado de quem contrata. Complementa o "vale a pena" com o contraponto de "vale a pena pra quem".
-> Trecho de destaque [05:36]: *"think having this certification can also give you a false sense of expertise. I've interviewed so many candidates who have this certification, but when I asked them to talk me through a project that they've built (...) they freeze."*
+> O autor entrevista candidatos que têm o SAA-C03 mas travam quando pedem pra explicar um projeto real — a mesma advertência desta nota, vinda do lado de quem contrata. Complementa o "vale a pena" com o contraponto de "vale a pena pra quem". Trecho de destaque [05:36]: *"think having this certification can also give you a false sense of expertise. I've interviewed so many candidates who have this certification, but when I asked them to talk me through a project that they've built (...) they freeze."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=xkLuZpmn09s)
 
@@ -80,8 +79,7 @@ Dois pontos dessa tabela merecem nuance, porque a fonte oficial é deliberadamen
 > [!tip] Assista: AWS Solutions Architect Associate (SAA-C03) – Guia Completo da Certificação Mais Procurada
 > **Canal:** Cloud For All | Democratizando Cloud, IA e Tech | **Duração:** ~12min | **Idioma:** PT-BR
 >
-> Confirma em PT-BR o mesmo formato desta nota (130 min, 65 questões, US$150, validade de 3 anos) e reforça por que essa é "uma das certificações que mais vão impactar no salário" — o mesmo argumento de sinalização de carreira desenvolvido acima.
-> Trecho de destaque [01:14]: *"A prova ela tem 130 minutos de duração, 65 questões. O investimento é de 150. A validade é de 3 anos."*
+> Confirma em PT-BR o mesmo formato desta nota (130 min, 65 questões, US$150, validade de 3 anos) e reforça por que essa é "uma das certificações que mais vão impactar no salário" — o mesmo argumento de sinalização de carreira desenvolvido acima. Trecho de destaque [01:14]: *"A prova ela tem 130 minutos de duração, 65 questões. O investimento é de 150. A validade é de 3 anos."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=MNY9IP1hxwo)
 

@@ -28,8 +28,7 @@ Essa é a situação do Claude Code sem MCP. As tools nativas (`Read`, `Write`, 
 MCP resolve isso. Com um MCP server configurado, você coloca um "telefone" na mesa do estagiário — ele disca para o banco de dados, para o GitHub, para qualquer sistema externo. Os dados chegam estruturados, não como texto bruto.
 
 > [!question] Por que isso importa na prática?
-> Sem MCP: "Rode `SELECT * FROM orders WHERE status = 'pending'` e me mostre o output."
-> Com MCP: "Quais são os pedidos pendentes mais antigos?" — o agente consulta o banco diretamente e raciocina sobre os dados.
+> Sem MCP: "Rode `SELECT * FROM orders WHERE status = 'pending'` e me mostre o output." Com MCP: "Quais são os pedidos pendentes mais antigos?" — o agente consulta o banco diretamente e raciocina sobre os dados.
 
 ## O problema que o MCP resolve
 
@@ -209,11 +208,9 @@ Sem o MCP server, o agente pediria ao usuário para rodar a query manualmente e 
 
 O MCP delega a segurança para dois lugares:
 
-**1. O server controla o acesso**
-O server decide quais queries aceita, com quais credenciais se autentica, e quais sistemas acessa. Um server Postgres bem configurado pode limitar as queries a `SELECT` e rejeitar qualquer `DROP`, `DELETE`, ou `UPDATE`.
+**1. O server controla o acesso** O server decide quais queries aceita, com quais credenciais se autentica, e quais sistemas acessa. Um server Postgres bem configurado pode limitar as queries a `SELECT` e rejeitar qualquer `DROP`, `DELETE`, ou `UPDATE`.
 
-**2. O Claude Code controla a aprovação**
-Certas tools MCP pedem aprovação do usuário antes de executar — especialmente as que têm efeitos colaterais. O agente apresenta o que vai fazer e aguarda confirmação.
+**2. O Claude Code controla a aprovação** Certas tools MCP pedem aprovação do usuário antes de executar — especialmente as que têm efeitos colaterais. O agente apresenta o que vai fazer e aguarda confirmação.
 
 ```mermaid
 sequenceDiagram

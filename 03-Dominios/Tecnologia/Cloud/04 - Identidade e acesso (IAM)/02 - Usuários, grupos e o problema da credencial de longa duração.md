@@ -95,8 +95,7 @@ A décima primeira pessoa do time repete só o último comando — `add-user-to-
 > [!tip] Assista: Identidade e Acesso (IAM) na AWS — Usuários, Grupos, Roles, Policies, Identity Providers
 > **Canal:** Douglas Mugnos | **Duração:** ~12min | **Idioma:** PT-BR
 >
-> O vídeo desenha ao vivo, com cores diferentes no quadro, exatamente a virada que este trecho descreve em CLI: o usuário deixa de apontar direto pra política e passa a apontar pro grupo, herdando dali as permissões.
-> Trecho de destaque [06:22]: *"então ele checa aqui ó faço parte de qual o grupo, ah desse grupo quais são as políticas desse grupo, ele pega ali quais são as políticas e ele consegue executar ação"*
+> O vídeo desenha ao vivo, com cores diferentes no quadro, exatamente a virada que este trecho descreve em CLI: o usuário deixa de apontar direto pra política e passa a apontar pro grupo, herdando dali as permissões. Trecho de destaque [06:22]: *"então ele checa aqui ó faço parte de qual o grupo, ah desse grupo quais são as políticas desse grupo, ele pega ali quais são as políticas e ele consegue executar ação"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=o-mPvHEXxOA)
 
@@ -113,8 +112,7 @@ A senha de console e a chave de acesso protegem canais diferentes, mas compartil
 > [!tip] Assista: AWS IAM Users and Groups | Part 1 | AWS IAM Tutorials
 > **Canal:** BeSA Cloud Academy | **Duração:** ~17min | **Idioma:** EN
 >
-> O mesmo vídeo mostra, na prática, a troca de canal de autenticação que esta seção descreve: login por senha no console versus a chave de acesso alfanumérica exigida quando a mesma identidade precisa autenticar chamadas programáticas (CLI, SDK) em vez de uma sessão de navegador.
-> Trecho de destaque [02:48]: *"time I have to provide something else which is called access key and secret access key it's like alpha numeric"*
+> O mesmo vídeo mostra, na prática, a troca de canal de autenticação que esta seção descreve: login por senha no console versus a chave de acesso alfanumérica exigida quando a mesma identidade precisa autenticar chamadas programáticas (CLI, SDK) em vez de uma sessão de navegador. Trecho de destaque [02:48]: *"time I have to provide something else which is called access key and secret access key it's like alpha numeric"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=1leLe7qlkqA)
 

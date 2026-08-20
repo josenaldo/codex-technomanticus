@@ -92,9 +92,7 @@ O FOUT gera CLS porque a fonte de fallback e a final têm **larguras e alturas d
 Com as métricas casadas, o `swap` deixa de pular: o usuário vê o texto cedo (fallback) e a troca não move nada. Frameworks como o `next/font` fazem esse cálculo automaticamente.
 
 > [!warning] `font-display: block` (ou `auto`) em texto crítico
-> **O que acontece:** o título principal fica invisível por até 3 segundos numa conexão lenta, e se esse título é o elemento LCP, o LCP dispara.
-> **Por quê:** `block` (e `auto`, que na maioria dos browsers vira `block`) esconde o texto esperando a fonte. Texto invisível não conta como "pintado" — o LCP espera.
-> **Como evitar:** use `swap` (texto sempre visível) ou `optional` (visível e sem CLS), e reserve `block` para ícones-fonte onde o fallback seria sem sentido.
+> **O que acontece:** o título principal fica invisível por até 3 segundos numa conexão lenta, e se esse título é o elemento LCP, o LCP dispara. **Por quê:** `block` (e `auto`, que na maioria dos browsers vira `block`) esconde o texto esperando a fonte. Texto invisível não conta como "pintado" — o LCP espera. **Como evitar:** use `swap` (texto sempre visível) ou `optional` (visível e sem CLS), e reserve `block` para ícones-fonte onde o fallback seria sem sentido.
 
 > [!question]- `swap` resolve o FOIT mas causa FOUT. `optional` não pula. Por que não usar sempre `optional`?
 > Porque `optional` pode fazer a sua fonte de marca **nunca aparecer** numa visita com rede ruim — o usuário vê o fallback a página toda. Para a identidade visual da marca, isso pode ser inaceitável. A escolha é um trade-off: `optional` prioriza **estabilidade** (zero CLS, LCP ótimo); `swap` prioriza **fidelidade** (a fonte certa aparece, ao custo de um possível pulo). Casar as métricas de fallback (frente 5) é o que te deixa usar `swap` *sem* o pulo — o melhor dos dois mundos, e por isso é a técnica que fecha o assunto.

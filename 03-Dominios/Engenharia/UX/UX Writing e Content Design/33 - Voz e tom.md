@@ -15,13 +15,7 @@ publish: true
 # Voz e tom
 
 > [!abstract] TL;DR
-> **Voz** é a personalidade do produto — não muda entre telas, é a mesma em todo lugar. **Tom** é a
-> voz ajustada ao contexto e ao estado emocional do usuário — o mesmo produto fala diferente numa
-> tela de sucesso e numa tela de erro de pagamento. O erro clássico é confundir os dois: manter a
-> voz "divertida" também no momento em que o usuário acabou de perder dados ou dinheiro. Praticável
-> sozinho: um mini style-guide de **meia página a uma página**, com 3-5 adjetivos de voz e uma
-> tabela "isto sim / isto não" — o valor está nos exemplos contrastantes, não na prosa descritiva de
-> quem a marca "é".
+> **Voz** é a personalidade do produto — não muda entre telas, é a mesma em todo lugar. **Tom** é a voz ajustada ao contexto e ao estado emocional do usuário — o mesmo produto fala diferente numa tela de sucesso e numa tela de erro de pagamento. O erro clássico é confundir os dois: manter a voz "divertida" também no momento em que o usuário acabou de perder dados ou dinheiro. Praticável sozinho: um mini style-guide de **meia página a uma página**, com 3-5 adjetivos de voz e uma tabela "isto sim / isto não" — o valor está nos exemplos contrastantes, não na prosa descritiva de quem a marca "é".
 
 Imagine um app financeiro cuja marca decidiu, num workshop de branding, que a voz do produto seria "divertida, próxima, sem formalidade corporativa". A equipe de copy aplica essa diretriz em todo lugar: o onboarding cumprimenta com "Aí, tudo certo?", o botão de transferência diz "Manda ver!", e a tela de sucesso comemora com um emoji de foguete. Até aqui, funciona — o produto tem personalidade e se diferencia da concorrência bancária tradicional. O problema aparece na tela seguinte: uma transferência falha porque o cartão foi recusado, e a mensagem de erro diz "Ops, deu ruim! 😅 Bora tentar de novo?". O usuário, que estava tentando pagar uma conta atrasada e agora não sabe se o dinheiro saiu da conta ou não, não acha graça nenhuma. A mesma voz que soava simpática na tela de boas-vindas soa desrespeitosa na tela de erro — porque ninguém separou "quem o produto é" (constante) de "como o produto deveria soar agora, dado o que o usuário está sentindo" (variável).
 
@@ -77,19 +71,13 @@ Uma ferramenta de produtividade define sua voz como "espirituosa" logo na landin
 ## Armadilhas comuns
 
 > [!warning] Voz divertida no momento errado
-> **O que acontece:** o tom "engraçadinho" da marca aparece intacto numa tela de erro grave, perda de dados ou falha de pagamento — exatamente os cenários 1 e 3 acima.
-> **Por quê:** quando a voz é definida sem uma regra explícita de variação de tom, a equipe (ou o próprio engenheiro escrevendo a string) aplica a mesma personalidade em toda tela por padrão, porque é o caminho de menor esforço — copiar o registro que já existe em outro lugar do produto.
-> **Como evitar:** no mini style-guide, nomeie explicitamente pelo menos um estado emocional em que o humor é desligado (erro financeiro, perda de dados, cancelamento) — a regra "onde o tom muda" precisa estar escrita, não presumida.
+> **O que acontece:** o tom "engraçadinho" da marca aparece intacto numa tela de erro grave, perda de dados ou falha de pagamento — exatamente os cenários 1 e 3 acima. **Por quê:** quando a voz é definida sem uma regra explícita de variação de tom, a equipe (ou o próprio engenheiro escrevendo a string) aplica a mesma personalidade em toda tela por padrão, porque é o caminho de menor esforço — copiar o registro que já existe em outro lugar do produto. **Como evitar:** no mini style-guide, nomeie explicitamente pelo menos um estado emocional em que o humor é desligado (erro financeiro, perda de dados, cancelamento) — a regra "onde o tom muda" precisa estar escrita, não presumida.
 
 > [!warning] Confundir "ter voz" com "ser genérico e formal"
-> **O que acontece:** por medo de errar o tom, o time reage removendo toda personalidade — toda mensagem vira um texto burocrático e neutro, mesmo em telas de sucesso onde um pouco de calor humano ajudaria.
-> **Por quê:** overcorrection é o reflexo natural depois de um erro de tom visível (como o Cenário 1) — "vamos parar de arriscar" é mais fácil de decidir em grupo do que "vamos definir onde arriscar e onde não".
-> **Como evitar:** trate voz e tom como um espectro com regras, não como ligado/desligado. A voz continua presente mesmo em erro grave — só perde o humor, não a clareza nem a proximidade do vocabulário.
+> **O que acontece:** por medo de errar o tom, o time reage removendo toda personalidade — toda mensagem vira um texto burocrático e neutro, mesmo em telas de sucesso onde um pouco de calor humano ajudaria. **Por quê:** overcorrection é o reflexo natural depois de um erro de tom visível (como o Cenário 1) — "vamos parar de arriscar" é mais fácil de decidir em grupo do que "vamos definir onde arriscar e onde não". **Como evitar:** trate voz e tom como um espectro com regras, não como ligado/desligado. A voz continua presente mesmo em erro grave — só perde o humor, não a clareza nem a proximidade do vocabulário.
 
 > [!warning] Nenhum documento de referência, cada string escrita isoladamente
-> **O que acontece:** como no Cenário 2, cada engenheiro escreve a mensagem que "soa certa" pra ele no momento em que implementa a feature, sem consultar nada — e o produto acumula N vozes diferentes ao longo do tempo.
-> **Por quê:** copy de interface é frequentemente tratada como preenchimento de última hora, não como decisão de produto (ver a armadilha "copy escrita por último", estrutural neste sub-galho) — sem um documento de referência, não existe padrão contra o qual comparar a string nova.
-> **Como evitar:** o mini style-guide de uma página, mesmo informal, funciona como o "linter" da voz do produto — qualquer engenheiro consegue conferir a própria string contra ele antes de dar commit, sem precisar perguntar a ninguém.
+> **O que acontece:** como no Cenário 2, cada engenheiro escreve a mensagem que "soa certa" pra ele no momento em que implementa a feature, sem consultar nada — e o produto acumula N vozes diferentes ao longo do tempo. **Por quê:** copy de interface é frequentemente tratada como preenchimento de última hora, não como decisão de produto (ver a armadilha "copy escrita por último", estrutural neste sub-galho) — sem um documento de referência, não existe padrão contra o qual comparar a string nova. **Como evitar:** o mini style-guide de uma página, mesmo informal, funciona como o "linter" da voz do produto — qualquer engenheiro consegue conferir a própria string contra ele antes de dar commit, sem precisar perguntar a ninguém.
 
 ## Como explicar em inglês
 

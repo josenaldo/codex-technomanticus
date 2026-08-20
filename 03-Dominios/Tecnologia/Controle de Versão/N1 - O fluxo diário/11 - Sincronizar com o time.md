@@ -93,14 +93,10 @@ git push        # agora aceita
 É isso. Não há truque.
 
 > [!warning] Nunca resolva um push recusado com `--force`
-> **O que acontece:** `git push --force` manda o servidor descartar o que ele tem e aceitar a sua versão. O trabalho da outra pessoa **é apagado do servidor** — e se ela ainda não tinha a cópia em outro lugar, é perda real.
-> **Por quê:** o `--force` desliga exatamente a proteção que gerou a mensagem de erro.
-> **Como conviver:** existe uma situação legítima para forçar (quando você reescreveu a própria história de propósito, assunto do nível 4), e nela usa-se `--force-with-lease`, que recusa se alguém tiver publicado algo desde a sua última sincronização. Como regra deste nível: **se você não sabe exatamente por que está forçando, não force.**
+> **O que acontece:** `git push --force` manda o servidor descartar o que ele tem e aceitar a sua versão. O trabalho da outra pessoa **é apagado do servidor** — e se ela ainda não tinha a cópia em outro lugar, é perda real. **Por quê:** o `--force` desliga exatamente a proteção que gerou a mensagem de erro. **Como conviver:** existe uma situação legítima para forçar (quando você reescreveu a própria história de propósito, assunto do nível 4), e nela usa-se `--force-with-lease`, que recusa se alguém tiver publicado algo desde a sua última sincronização. Como regra deste nível: **se você não sabe exatamente por que está forçando, não force.**
 
 > [!warning] `git pull` com trabalho não commitado
-> **O que acontece:** o Git recusa a integração, ou aceita e gera um conflito que se mistura com suas edições pela metade.
-> **Por quê:** ele precisa mexer nos mesmos arquivos que você está editando.
-> **Como evitar:** commite (ou stashe, ou use um worktree — nota 10) antes de dar `pull`. "Pasta limpa antes de sincronizar" é uma regra que economiza muita confusão.
+> **O que acontece:** o Git recusa a integração, ou aceita e gera um conflito que se mistura com suas edições pela metade. **Por quê:** ele precisa mexer nos mesmos arquivos que você está editando. **Como evitar:** commite (ou stashe, ou use um worktree — nota 10) antes de dar `pull`. "Pasta limpa antes de sincronizar" é uma regra que economiza muita confusão.
 
 ---
 

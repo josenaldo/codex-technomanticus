@@ -66,17 +66,13 @@ A combinação é a chave: **quantidade previne cedo e barato; métrica valida o
 ## A regra inegociável: o budget precisa ter dente
 
 > [!warning] Budget que só avisa (`warn`), nunca falha (`error`)
-> **O que acontece:** o pipeline mostra um aviso amarelo quando o budget estoura, mas o merge é liberado. Em poucas semanas, todos ignoram o aviso e a performance apodrece igual a antes.
-> **Por quê:** um budget sem consequência é uma sugestão, e sugestões perdem para prazos. Sem bloqueio, não há política — só decoração.
-> **Como evitar:** configure o gate para **falhar o build / bloquear o merge** (`error`, não `warn`) quando o budget de linha de base estourar. A dor precisa ser sentida **antes** do merge. Reserve `warn` para métricas secundárias ou em rodagem, nunca para o limite que importa.
+> **O que acontece:** o pipeline mostra um aviso amarelo quando o budget estoura, mas o merge é liberado. Em poucas semanas, todos ignoram o aviso e a performance apodrece igual a antes. **Por quê:** um budget sem consequência é uma sugestão, e sugestões perdem para prazos. Sem bloqueio, não há política — só decoração. **Como evitar:** configure o gate para **falhar o build / bloquear o merge** (`error`, não `warn`) quando o budget de linha de base estourar. A dor precisa ser sentida **antes** do merge. Reserve `warn` para métricas secundárias ou em rodagem, nunca para o limite que importa.
 
 > [!question]- Limites absolutos ou relativos à base?
 > Os dois têm lugar. **Absoluto** ("main.js ≤ 170 KB", "LCP ≤ 2500 ms") é um teto de qualidade claro e fácil de comunicar — bom para o budget de quantidade. **Relativo** ("não pode piorar mais de 5% em relação à `main`") pega a *regressão gradual* que um teto absoluto generoso deixaria passar, e é mais robusto ao ruído do lab nas métricas. Na prática: use **absoluto para bytes** (o dev entende "cabe ou não cabe") e considere **relativo para métricas** (compara o PR com a base, absorvendo a variação do runner). O importante é que *algum* dos dois falhe o build.
 
 > [!warning] Só budget de quantidade, sem budget de métrica (ou vice-versa)
-> **O que acontece:** o time trava o tamanho do bundle, mas o LCP piora mesmo assim — ou vigia só o LCP e o bundle incha silenciosamente.
-> **Por quê:** bytes e experiência não são a mesma coisa. Uma imagem hero enorme não aparece no budget de JS; um bundle no limite pode ainda gerar LCP ruim por render-blocking. E uma métrica saudável num PR pode esconder bytes acumulando para o inchaço futuro.
-> **Como evitar:** rode **os dois** no pipeline. Quantidade como early warning barato, métrica como validação do efeito. É a mesma lição da G1 nota 08, agora como configuração de CI.
+> **O que acontece:** o time trava o tamanho do bundle, mas o LCP piora mesmo assim — ou vigia só o LCP e o bundle incha silenciosamente. **Por quê:** bytes e experiência não são a mesma coisa. Uma imagem hero enorme não aparece no budget de JS; um bundle no limite pode ainda gerar LCP ruim por render-blocking. E uma métrica saudável num PR pode esconder bytes acumulando para o inchaço futuro. **Como evitar:** rode **os dois** no pipeline. Quantidade como early warning barato, métrica como validação do efeito. É a mesma lição da G1 nota 08, agora como configuração de CI.
 
 **Budgets no pipeline em uma frase:** operacionalize o budget como gate que falha o build — quantidade (bundle size via size-limit, barato e imediato) para prevenir cedo, e métrica (LCP/INP/CLS via Lighthouse CI) para validar o efeito real — porque um budget sem dente é decoração que a performance ignora até apodrecer.
 

@@ -111,9 +111,7 @@ A mesma pergunta ("projete o Twitter") é feita para um júnior e para um staff.
 | Profundidade | Alto nível consistente | Vai fundo no componente mais difícil, com números |
 
 > [!warning] O erro que reprova sêniores: descrever sem justificar
-> **O que acontece:** o candidato preenche um diagrama competente, mas cada componente aparece sem um "porquê". Cache, banco, fila — tudo presente, nada justificado.
-> **Por quê:** descrever componentes prova que você *já viu* uma arquitetura de referência; não prova que você sabe *escolher* sob restrições. A entrevista mede a segunda coisa.
-> **Como evitar:** para cada caixa que você desenhar, diga em voz alta a alternativa que rejeitou e o trade-off que decidiu. "Cache aqui — alternativa era ler direto do banco, mas a 100:1 de leitura o banco vira gargalo; aceito staleness de segundos, então cache-aside serve."
+> **O que acontece:** o candidato preenche um diagrama competente, mas cada componente aparece sem um "porquê". Cache, banco, fila — tudo presente, nada justificado. **Por quê:** descrever componentes prova que você *já viu* uma arquitetura de referência; não prova que você sabe *escolher* sob restrições. A entrevista mede a segunda coisa. **Como evitar:** para cada caixa que você desenhar, diga em voz alta a alternativa que rejeitou e o trade-off que decidiu. "Cache aqui — alternativa era ler direto do banco, mas a 100:1 de leitura o banco vira gargalo; aceito staleness de segundos, então cache-aside serve."
 
 O corolário prático: numa entrevista sênior, **é bom sinal você falar mais que o entrevistador**. No júnior, espera-se que ele guie. Conforme o nível sobe, a expectativa se inverte — quem lidera a conversa é você. Ficar esperando ser perguntado, num nível sênior, já é um sinal fraco.
 
@@ -223,24 +221,16 @@ Vai acontecer: em algum momento você fica sem saber o próximo passo. Travar n�
 ## Armadilhas comuns
 
 > [!warning] Começar a desenhar antes de clarificar
-> **O que acontece:** o candidato ouve "projete o X" e imediatamente desenha caixas.
-> **Por quê:** ansiedade de "mostrar serviço" e o hábito de coding, onde você ataca o problema direto.
-> **Como evitar:** os primeiros 5 minutos são para *perguntas*, não desenho. Escopo e requisitos vêm antes da primeira caixa — sempre.
+> **O que acontece:** o candidato ouve "projete o X" e imediatamente desenha caixas. **Por quê:** ansiedade de "mostrar serviço" e o hábito de coding, onde você ataca o problema direto. **Como evitar:** os primeiros 5 minutos são para *perguntas*, não desenho. Escopo e requisitos vêm antes da primeira caixa — sempre.
 
 > [!warning] Tratar o feedback do entrevistador como ataque
-> **O que acontece:** o entrevistador aponta uma fraqueza e o candidato fica defensivo ou congela.
-> **Por quê:** interpreta a entrevista como julgamento adversarial, não como colaboração.
-> **Como evitar:** cada cutucada é um convite para pensar junto. "Boa pergunta — deixa eu estimar a carga nesse nó e ver se satura." O entrevistador está testando exatamente como você reage a pressão colaborativa.
+> **O que acontece:** o entrevistador aponta uma fraqueza e o candidato fica defensivo ou congela. **Por quê:** interpreta a entrevista como julgamento adversarial, não como colaboração. **Como evitar:** cada cutucada é um convite para pensar junto. "Boa pergunta — deixa eu estimar a carga nesse nó e ver se satura." O entrevistador está testando exatamente como você reage a pressão colaborativa.
 
 > [!warning] Otimização prematura de escala
-> **O que acontece:** o candidato começa com Kafka, sharding e multi-região para um sistema de 1000 usuários.
-> **Por quê:** confunde "conhecer tecnologias avançadas" com "senioridade".
-> **Como evitar:** projete para os requisitos *declarados*, não para um Google imaginário. Senioridade é também saber quando *não* complicar. Comece simples; escale quando o número justificar.
+> **O que acontece:** o candidato começa com Kafka, sharding e multi-região para um sistema de 1000 usuários. **Por quê:** confunde "conhecer tecnologias avançadas" com "senioridade". **Como evitar:** projete para os requisitos *declarados*, não para um Google imaginário. Senioridade é também saber quando *não* complicar. Comece simples; escale quando o número justificar.
 
 > [!warning] Ficar no alto nível o tempo todo
-> **O que acontece:** o candidato mantém tudo em nível de caixas e setas e nunca desce em nenhum componente.
-> **Por quê:** medo de errar no detalhe, ou não ter profundidade real em nada.
-> **Como evitar:** escolha *você* o componente mais difícil e mergulhe antes que peçam. É onde o eixo "profundidade técnica" é pontuado — e o alto nível sozinho é indistinguível de decorar um diagrama.
+> **O que acontece:** o candidato mantém tudo em nível de caixas e setas e nunca desce em nenhum componente. **Por quê:** medo de errar no detalhe, ou não ter profundidade real em nada. **Como evitar:** escolha *você* o componente mais difícil e mergulhe antes que peçam. É onde o eixo "profundidade técnica" é pontuado — e o alto nível sozinho é indistinguível de decorar um diagrama.
 
 ## Como explicar em inglês
 

@@ -29,8 +29,7 @@ O **Fator R** é o critério que o Simples Nacional usa para decidir, em empresa
 
 A fórmula:
 
-$$
-\text{Fator R} = \frac{\text{Folha de pagamento (12 meses)}}{\text{Receita bruta (12 meses)}}
+$$ \text{Fator R} = \frac{\text{Folha de pagamento (12 meses)}}{\text{Receita bruta (12 meses)}}
 $$
 
 - **≥ 28%** → tributação pelo **Anexo III**
@@ -88,16 +87,14 @@ O Fator R não enxerga o mês isolado — ele acumula. Significa que:
 
 A alíquota da tabela é nominal — o que você efetivamente paga é menor (ou igual) graças à parcela a deduzir:
 
-$$
-\text{Alíquota efetiva} = \frac{\text{RBT12} \times \text{Alíquota nominal} - \text{Valor a deduzir}}{\text{RBT12}}
+$$ \text{Alíquota efetiva} = \frac{\text{RBT12} \times \text{Alíquota nominal} - \text{Valor a deduzir}}{\text{RBT12}}
 $$
 
 Onde **RBT12** é a receita bruta acumulada nos últimos 12 meses.
 
 Exemplo prático para R$ 240k/ano no Anexo III:
 
-$$
-\frac{240.000 \times 0{,}112 - 9.360}{240.000} = \frac{17.520}{240.000} \approx 7{,}30\%
+$$ \frac{240.000 \times 0{,}112 - 9.360}{240.000} = \frac{17.520}{240.000} \approx 7{,}30\%
 $$
 
 ## Cenários comparados — com vs sem Fator R

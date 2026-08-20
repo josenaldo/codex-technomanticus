@@ -276,11 +276,7 @@ O arquivo `~/.claude/audit.log` acumula todas as tool calls de todas as sessões
 
 ## Padrão 4 — Aprovação humana interativa
 
-Para comandos de alto risco, exigir aprovação explícita antes de executar — a decisão de *quando*
-vale a pena pagar esse custo de fricção é a mesma discutida em
-[[03-Dominios/Tecnologia/IA/Agentes de Codificação/17 - Human-in-the-loop — quando (não) confiar|Human-in-the-loop — quando (não) confiar]]:
-nem toda ação merece parar o agente e esperar um humano, mas as de alto risco (deleção, push,
-infraestrutura) geralmente merecem.
+Para comandos de alto risco, exigir aprovação explícita antes de executar — a decisão de *quando* vale a pena pagar esse custo de fricção é a mesma discutida em [[03-Dominios/Tecnologia/IA/Agentes de Codificação/17 - Human-in-the-loop — quando (não) confiar|Human-in-the-loop — quando (não) confiar]]: nem toda ação merece parar o agente e esperar um humano, mas as de alto risco (deleção, push, infraestrutura) geralmente merecem.
 
 ```bash
 #!/bin/bash
@@ -448,9 +444,7 @@ Ordem de execução: `audit-log.sh` → `block-force-push.sh` → `block-sudo.sh
 
 ## Casos práticos
 
-Regra e código isolado convencem em teoria. Na prática, o que separa um hook de brinquedo de um
-hook de produção é ver como ele se comporta dentro do fluxo real de um time — com pressão de prazo,
-pipeline de CI e gente tentando contornar a portaria.
+Regra e código isolado convencem em teoria. Na prática, o que separa um hook de brinquedo de um hook de produção é ver como ele se comporta dentro do fluxo real de um time — com pressão de prazo, pipeline de CI e gente tentando contornar a portaria.
 
 ### Cenário 1 — guardrails PCI-DSS (bloqueio de dados de cartão)
 
@@ -493,14 +487,11 @@ fi
 exit 0
 ```
 
-Configurado para `Edit` e `Write`. O agente jamais consegue persistir dados de cartão em código —
-mesmo que tente, o hook bloqueia antes.
+Configurado para `Edit` e `Write`. O agente jamais consegue persistir dados de cartão em código — mesmo que tente, o hook bloqueia antes.
 
 ### Cenário 2 — bloqueio condicional de `kubectl delete` em cluster de produção
 
-Por que não bastava um `deny` fixo pra `kubectl delete`? Porque o time precisava deletar pods em
-staging o dia inteiro — só o cluster de produção era intocável. Um `deny` categórico teria travado
-o próprio trabalho legítimo; a regra precisava enxergar *qual* cluster estava no contexto atual.
+Por que não bastava um `deny` fixo pra `kubectl delete`? Porque o time precisava deletar pods em staging o dia inteiro — só o cluster de produção era intocável. Um `deny` categórico teria travado o próprio trabalho legítimo; a regra precisava enxergar *qual* cluster estava no contexto atual.
 
 ```bash
 #!/bin/bash
@@ -523,46 +514,25 @@ fi
 exit 0
 ```
 
-O detalhe que separa esse hook de um bloqueio ingênuo: ele não olha só o *comando*, olha o
-*contexto de execução* (`kubectl config current-context`) — a mesma linha de comando é segura em
-staging e perigosa em produção. Isso é o que a lente de "condição verificada" do diagrama de fluxo
-(mais abaixo) realmente significa na prática: a decisão depende do estado do mundo, não só do texto
-do comando.
+O detalhe que separa esse hook de um bloqueio ingênuo: ele não olha só o *comando*, olha o *contexto de execução* (`kubectl config current-context`) — a mesma linha de comando é segura em staging e perigosa em produção. Isso é o que a lente de "condição verificada" do diagrama de fluxo (mais abaixo) realmente significa na prática: a decisão depende do estado do mundo, não só do texto do comando.
 
 > [!summary] Os dois cenários mostram os dois modos do PreToolUse
-> PCI-DSS bloqueia por **conteúdo** (o que está sendo escrito). O cluster de produção bloqueia por
-> **contexto** (onde/quando o comando roda). A maioria dos hooks de produção combina os dois.
+> PCI-DSS bloqueia por **conteúdo** (o que está sendo escrito). O cluster de produção bloqueia por **contexto** (onde/quando o comando roda). A maioria dos hooks de produção combina os dois.
 
 ---
 
 ## Armadilhas comuns
 
-Três formas de escrever um hook que *parece* correto no teste manual e falha justamente quando
-mais importa — em produção, sob carga, ou meses depois de quem o escreveu ter saído do time.
+Três formas de escrever um hook que *parece* correto no teste manual e falha justamente quando mais importa — em produção, sob carga, ou meses depois de quem o escreveu ter saído do time.
 
 > [!warning] Aprovação interativa só funciona em sessão interativa
-> Como visto no Padrão 4: em modo headless (`--print`, CI/CD, MCP server) não há terminal para
-> leitura. O `read < /dev/tty` falha silenciosamente ou bloqueia para sempre — e "bloquear para
-> sempre" aqui não é metáfora, é o hook (e o agente) travados esperando um humano que nunca vai
-> digitar nada naquele pipeline. Detecte o modo (`if [ -t 0 ]`) e caia para bloqueio direto quando
-> não houver TTY.
+> Como visto no Padrão 4: em modo headless (`--print`, CI/CD, MCP server) não há terminal para leitura. O `read < /dev/tty` falha silenciosamente ou bloqueia para sempre — e "bloquear para sempre" aqui não é metáfora, é o hook (e o agente) travados esperando um humano que nunca vai digitar nada naquele pipeline. Detecte o modo (`if [ -t 0 ]`) e caia para bloqueio direto quando não houver TTY.
 
 > [!warning] Hook sem timeout trava o agente indefinidamente
-> O runtime espera o hook terminar antes de liberar (ou não) a tool call. Se o script faz uma
-> chamada de rede que nunca retorna — uma API de terceiros fora do ar, um `curl` sem `--max-time`,
-> um `read` esquecido — o agente fica pendurado esperando um veredito que nunca chega. A pergunta
-> que separa o hook amador do de produção: "o que acontece se a chamada externa deste hook nunca
-> responder?" Sempre defina timeout explícito (`curl --max-time 5`, `timeout 10s ./script.sh`) e
-> decida o *fail mode*: falhar aberto (deixa passar) ou fechado (bloqueia) quando o timeout estoura.
+> O runtime espera o hook terminar antes de liberar (ou não) a tool call. Se o script faz uma chamada de rede que nunca retorna — uma API de terceiros fora do ar, um `curl` sem `--max-time`, um `read` esquecido — o agente fica pendurado esperando um veredito que nunca chega. A pergunta que separa o hook amador do de produção: "o que acontece se a chamada externa deste hook nunca responder?" Sempre defina timeout explícito (`curl --max-time 5`, `timeout 10s ./script.sh`) e decida o *fail mode*: falhar aberto (deixa passar) ou fechado (bloqueia) quando o timeout estoura.
 
 > [!warning] Exit code mal interpretado
-> A tabela de exit codes parece trivial até o script ter um bug silencioso: um `grep` que não
-> encontra padrão retorna exit 1 *mesmo dentro de um script que pretendia dizer "aprovado"* — se
-> esse `grep` for a última linha do arquivo, o exit code dele vaza como o exit code do hook inteiro,
-> e o comando é bloqueado por acidente. Ou o inverso: uma exceção não tratada em Python que retorna
-> exit 0 por padrão do interpretador, aprovando silenciosamente um comando que deveria ter sido
-> barrado. Termine hooks sempre com um `exit 0`/`exit 1` explícito na última linha — nunca deixe o
-> exit code "vazar" do último comando executado dentro do script.
+> A tabela de exit codes parece trivial até o script ter um bug silencioso: um `grep` que não encontra padrão retorna exit 1 *mesmo dentro de um script que pretendia dizer "aprovado"* — se esse `grep` for a última linha do arquivo, o exit code dele vaza como o exit code do hook inteiro, e o comando é bloqueado por acidente. Ou o inverso: uma exceção não tratada em Python que retorna exit 0 por padrão do interpretador, aprovando silenciosamente um comando que deveria ter sido barrado. Termine hooks sempre com um `exit 0`/`exit 1` explícito na última linha — nunca deixe o exit code "vazar" do último comando executado dentro do script.
 
 ---
 
@@ -642,15 +612,9 @@ flowchart TD
 
 ## O que vem a seguir
 
-PreToolUse resolve a pergunta "devo deixar isso acontecer?" — mas responde ela só **antes** da tool
-rodar. Depois que o comando executa, que o arquivo é escrito, que o commit é feito, surge uma
-pergunta diferente: "o que eu faço agora que já aconteceu?" Rodar o linter automaticamente depois de
-um `Edit`, disparar uma notificação depois de um comando demorado, registrar o resultado real (não
-só a intenção) de uma tool call — isso é território do hook seguinte no lifecycle.
+PreToolUse resolve a pergunta "devo deixar isso acontecer?" — mas responde ela só **antes** da tool rodar. Depois que o comando executa, que o arquivo é escrito, que o commit é feito, surge uma pergunta diferente: "o que eu faço agora que já aconteceu?" Rodar o linter automaticamente depois de um `Edit`, disparar uma notificação depois de um comando demorado, registrar o resultado real (não só a intenção) de uma tool call — isso é território do hook seguinte no lifecycle.
 
-Veja [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/03 - PostToolUse|03 - PostToolUse]]
-para a contraparte reativa do PreToolUse: o hook que roda depois da execução, com acesso ao
-resultado real da tool, não apenas à intenção do agente.
+Veja [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/03 - PostToolUse|03 - PostToolUse]] para a contraparte reativa do PreToolUse: o hook que roda depois da execução, com acesso ao resultado real da tool, não apenas à intenção do agente.
 
 ---
 

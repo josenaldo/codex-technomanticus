@@ -151,19 +151,13 @@ A terceira forma é a mais subestimada: ela traz **um arquivo** de um ponto qual
 ## Armadilhas comuns
 
 > [!warning] `git reset --hard` com trabalho não commitado
-> **O que acontece:** o comando resolve o que você queria e leva junto duas horas de edição que ainda não tinham virado commit.
-> **Por quê:** `--hard` sobrescreve o diretório de trabalho, e o que nunca entrou no banco de objetos não tem de onde voltar.
-> **Como evitar:** rode `git status` antes. Se houver qualquer coisa pendente que importe, commite (mesmo que como `wip`) ou `git stash` primeiro. **Exceção importante:** se o trabalho tinha passado por `git add`, o blob existe no banco — veja a nota 23 sobre `fsck --lost-found`.
+> **O que acontece:** o comando resolve o que você queria e leva junto duas horas de edição que ainda não tinham virado commit. **Por quê:** `--hard` sobrescreve o diretório de trabalho, e o que nunca entrou no banco de objetos não tem de onde voltar. **Como evitar:** rode `git status` antes. Se houver qualquer coisa pendente que importe, commite (mesmo que como `wip`) ou `git stash` primeiro. **Exceção importante:** se o trabalho tinha passado por `git add`, o blob existe no banco — veja a nota 23 sobre `fsck --lost-found`.
 
 > [!warning] Reverter um merge e depois querer mergear de novo
-> **O que acontece:** o ramo é revertido, depois corrigido, e o novo merge "não traz nada".
-> **Por quê:** para o Git, aquele ramo já está integrado — o merge original continua no grafo. O revert desfez o *conteúdo*, não a *topologia*.
-> **Como resolver:** reverta o revert (`git revert <hash-do-revert>`) antes de integrar de novo, ou refaça o trabalho num ramo novo. É uma das situações mais confusas do Git, e a documentação oficial do `git revert` a discute explicitamente.
+> **O que acontece:** o ramo é revertido, depois corrigido, e o novo merge "não traz nada". **Por quê:** para o Git, aquele ramo já está integrado — o merge original continua no grafo. O revert desfez o *conteúdo*, não a *topologia*. **Como resolver:** reverta o revert (`git revert <hash-do-revert>`) antes de integrar de novo, ou refaça o trabalho num ramo novo. É uma das situações mais confusas do Git, e a documentação oficial do `git revert` a discute explicitamente.
 
 > [!warning] Usar `reset` num ramo compartilhado "porque foi rápido"
-> **O que acontece:** você reseta, dá `push --force`, e quebra o repositório de todo mundo — incluindo commits alheios que estavam à frente.
-> **Por quê:** você reescreveu a ref do servidor (nota 19).
-> **Como evitar:** a primeira pergunta da árvore existe justamente para isso. Se saiu da sua máquina, `revert`.
+> **O que acontece:** você reseta, dá `push --force`, e quebra o repositório de todo mundo — incluindo commits alheios que estavam à frente. **Por quê:** você reescreveu a ref do servidor (nota 19). **Como evitar:** a primeira pergunta da árvore existe justamente para isso. Se saiu da sua máquina, `revert`.
 
 ---
 

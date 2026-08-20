@@ -370,8 +370,7 @@ Essa é a dívida de intenção, a terceira peça do Triple Debt Model: [[12 - D
 ## Fontes
 
 > [!tip] Assista — Cognitive Debt and the Future of Programming
-> **Vivek Haldar** · 20min · [Cognitive Debt and the Future of Programming](https://www.youtube.com/watch?v=KAySVbJoF0M)
-> Trata da erosão do entendimento como categoria própria, separada da dívida técnica — a distinção que esta nota inteira defende. Útil para ver o argumento formulado por outra voz, sem o vocabulário do Triple Debt Model.
+> **Vivek Haldar** · 20min · [Cognitive Debt and the Future of Programming](https://www.youtube.com/watch?v=KAySVbJoF0M) Trata da erosão do entendimento como categoria própria, separada da dívida técnica — a distinção que esta nota inteira defende. Útil para ver o argumento formulado por outra voz, sem o vocabulário do Triple Debt Model.
 
 - **Margaret-Anne Storey** — *From Technical Debt to Cognitive and Intent Debt: Rethinking Software Health in the Age of AI* (arXiv, 2026). A fonte primária do termo moderno: define dívida cognitiva como "*the erosion of shared understanding across a team*", propriedade de nível de time/projeto. [[02-Glosas/2026-from-technical-debt-to-cognitive-and-intent-debt|Glosa]] · [arXiv:2603.22106](https://arxiv.org/abs/2603.22106).
 - **Margaret-Anne Storey** — *Cognitive debt: The hidden risk in AI-driven software development* (DX / Engineering Enablement, abr. 2026). O artigo original — anterior ao paper acadêmico — que cunha e desenvolve o termo em linguagem de praticante. [Ler no newsletter da DX](https://newsletter.getdx.com/p/cognitive-debt-the-hidden-risk-in).

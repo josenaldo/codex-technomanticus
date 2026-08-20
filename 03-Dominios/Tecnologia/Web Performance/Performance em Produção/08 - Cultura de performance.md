@@ -65,9 +65,7 @@ graph TB
 > Muito — cultura se constrói de baixo para cima também. Um único dev pode: adicionar o budget no CI (o gate protege o time todo automaticamente); fazer a pergunta "quanto isso pesa?" nas revisões de PR (normaliza o hábito); tornar um dashboard visível e compartilhá-lo quando algo melhora; e traduzir um ganho em número de negócio numa retro. Você não precisa de um título para começar a mudar o processo — precisa de **um gate automatizado e um hábito repetido**. A cultura é a soma desses pequenos atos institucionalizados, não um decreto. Frequentemente o "herói" vira facilitador exatamente assim: automatizando o cuidado para que ele não dependa mais de heroísmo.
 
 > [!warning] Depender de heroísmo e sprints pontuais
-> **O que acontece:** o time faz um "mutirão de performance" a cada seis meses, ganha muito, e assiste tudo apodrecer no intervalo, num ciclo eterno de sobe-e-desce.
-> **Por quê:** sprint pontual conserta o *estado*, não o *processo*. Sem gate automático e ownership distribuído, a entropia volta a agir no dia seguinte — cada PR reintroduz peso.
-> **Como evitar:** troque heroísmo por **sistema**. Um budget no CI que falha o build previne mais regressão que dez sprints de mutirão, porque age em *cada* PR, para sempre, sem ninguém precisar lembrar. Automatize o cuidado.
+> **O que acontece:** o time faz um "mutirão de performance" a cada seis meses, ganha muito, e assiste tudo apodrecer no intervalo, num ciclo eterno de sobe-e-desce. **Por quê:** sprint pontual conserta o *estado*, não o *processo*. Sem gate automático e ownership distribuído, a entropia volta a agir no dia seguinte — cada PR reintroduz peso. **Como evitar:** troque heroísmo por **sistema**. Um budget no CI que falha o build previne mais regressão que dez sprints de mutirão, porque age em *cada* PR, para sempre, sem ninguém precisar lembrar. Automatize o cuidado.
 
 ## O domínio inteiro, em uma imagem
 

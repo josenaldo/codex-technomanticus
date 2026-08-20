@@ -143,20 +143,16 @@ Em nenhum dos três a resposta é dogmática. Em todos, **conhecer as specs Jaka
 ## Armadilhas
 
 ### (1) "Jakarta EE morreu"
-A armadilha mais comum, herdada de blogs antigos. A era do app server pesado como padrão único acabou — mas a **plataforma não morreu**: a versão 11 é de **junho de 2025**, a 12 está em desenvolvimento, e as specs fundam o ecossistema inteiro (inclusive o framework dominante e os runtimes cloud-native).
-**Fix:** antes de repetir o meme, **cheque as releases oficiais** (jakarta.ee/release). Datas verificáveis matam o meme.
+A armadilha mais comum, herdada de blogs antigos. A era do app server pesado como padrão único acabou — mas a **plataforma não morreu**: a versão 11 é de **junho de 2025**, a 12 está em desenvolvimento, e as specs fundam o ecossistema inteiro (inclusive o framework dominante e os runtimes cloud-native). **Fix:** antes de repetir o meme, **cheque as releases oficiais** (jakarta.ee/release). Datas verificáveis matam o meme.
 
 ### (2) "O framework substituiu as specs"
-Tratar o framework como se tivesse tornado Jakarta EE obsoleto. Na verdade ele **implementa, consome e abstrai** as specs — CDI, Servlet, JPA e Bean Validation estão lá embaixo. Quem só sabe a API do framework está vendo a embalagem; quem sabe a spec vê o conteúdo.
-**Fix:** use a **tabela da tese** (spec→feature) como mapa. Para cada conveniência do framework, identifique o contrato Jakarta correspondente — e você terá vantagem na próxima dúvida de baixo nível.
+Tratar o framework como se tivesse tornado Jakarta EE obsoleto. Na verdade ele **implementa, consome e abstrai** as specs — CDI, Servlet, JPA e Bean Validation estão lá embaixo. Quem só sabe a API do framework está vendo a embalagem; quem sabe a spec vê o conteúdo. **Fix:** use a **tabela da tese** (spec→feature) como mapa. Para cada conveniência do framework, identifique o contrato Jakarta correspondente — e você terá vantagem na próxima dúvida de baixo nível.
 
 ### (3) Decidir plataforma por ideologia
-Escolher "specs puras porque são mais corretas" ou "framework porque é mais prático" como **identidade**, antes de olhar o requisito. Isso produz arquitetura ruim em ambas as direções: lock-in desnecessário ou reescrita por moda.
-**Fix:** deixe o **contexto decidir** — app server existente, requisito de portabilidade vs ecossistema, restrição cloud-native. O frame de decisão (seção "O que o senior responde") vem antes da preferência.
+Escolher "specs puras porque são mais corretas" ou "framework porque é mais prático" como **identidade**, antes de olhar o requisito. Isso produz arquitetura ruim em ambas as direções: lock-in desnecessário ou reescrita por moda. **Fix:** deixe o **contexto decidir** — app server existente, requisito de portabilidade vs ecossistema, restrição cloud-native. O frame de decisão (seção "O que o senior responde") vem antes da preferência.
 
 ### (4) Citar estatística de adoção de blog
-Afirmar "X% do mercado usa Y" ou "a maioria migrou" com base em post não-fontado. Números de adoção circulam sem metodologia e envelhecem rápido — repeti-los é frágil em entrevista.
-**Fix:** fale em **sinais verificáveis** — releases datadas, specs ativas, runtimes certificados que passaram no TCK. Esses são fatos checáveis; market share de blog não é.
+Afirmar "X% do mercado usa Y" ou "a maioria migrou" com base em post não-fontado. Números de adoção circulam sem metodologia e envelhecem rápido — repeti-los é frágil em entrevista. **Fix:** fale em **sinais verificáveis** — releases datadas, specs ativas, runtimes certificados que passaram no TCK. Esses são fatos checáveis; market share de blog não é.
 
 ## Em entrevista
 

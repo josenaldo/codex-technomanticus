@@ -23,13 +23,9 @@ Você já escreveu `obj && obj.prop && obj.prop.sub` dezenas de vezes. Ou `val !
 Entre ES2020 e ES2025, o TC39 fechou sistematicamente esses gaps. Este tour percorre os recursos por ano, foca no *por que* cada um importa, e aponta onde a trilha aprofunda cada tema.
 
 > [!tip]- Assista: tour em vídeo das features ES2020–2025
-> **JavaScript ES2020-ES2025 — All New Features Explained** · Academind (Maximilian Schwarzmüller) · ~25 min
-> [▶ Assistir no YouTube](https://www.youtube.com/watch?v=c0tMZztzQEs)
-> Percorre optional chaining, nullish coalescing, top-level await, private fields, métodos imutáveis de array e Iterator Helpers com exemplos práticos. Bom como revisão rápida antes de entrevista.
+> **JavaScript ES2020-ES2025 — All New Features Explained** · Academind (Maximilian Schwarzmüller) · ~25 min [▶ Assistir no YouTube](https://www.youtube.com/watch?v=c0tMZztzQEs) Percorre optional chaining, nullish coalescing, top-level await, private fields, métodos imutáveis de array e Iterator Helpers com exemplos práticos. Bom como revisão rápida antes de entrevista.
 >
-> **What's NEW in JavaScript 2024 & 2025** · Fireship · ~8 min
-> [▶ Assistir no YouTube](https://www.youtube.com/watch?v=AoU6E54bDok)
-> Cobertura rápida e densa de ES2024 (groupBy, Promise.withResolvers) e ES2025 (Set methods, Iterator Helpers, Promise.try). Estilo característico Fireship: máxima densidade em mínimo tempo.
+> **What's NEW in JavaScript 2024 & 2025** · Fireship · ~8 min [▶ Assistir no YouTube](https://www.youtube.com/watch?v=AoU6E54bDok) Cobertura rápida e densa de ES2024 (groupBy, Promise.withResolvers) e ES2025 (Set methods, Iterator Helpers, Promise.try). Estilo característico Fireship: máxima densidade em mínimo tempo.
 
 ---
 
@@ -672,34 +668,22 @@ const ultimo = pedidos.at(-1);
 ## Armadilhas comuns
 
 > [!warning] `??` vs `||` com valores falsy legítimos
-> **O que acontece:** `const porta = config.port || 3000` usa 3000 mesmo quando `config.port = 0`.
-> **Por quê:** `||` considera `0`, `''`, `false` e `NaN` como falsy — substitui por padrão quando o valor existe mas é falsy.
-> **Como evitar:** Use `??` quando quiser substituir apenas `null`/`undefined`. Use `||` apenas quando qualquer valor falsy deve ser tratado como ausência.
+> **O que acontece:** `const porta = config.port || 3000` usa 3000 mesmo quando `config.port = 0`. **Por quê:** `||` considera `0`, `''`, `false` e `NaN` como falsy — substitui por padrão quando o valor existe mas é falsy. **Como evitar:** Use `??` quando quiser substituir apenas `null`/`undefined`. Use `||` apenas quando qualquer valor falsy deve ser tratado como ausência.
 
 > [!warning] Optional chaining mascarando erros de typo
-> **O que acontece:** `user?.adress?.city` retorna `undefined` silenciosamente quando `adress` foi escrito errado (deveria ser `address`).
-> **Por quê:** `?.` foi projetado para tratar ausência com graça — não distingue "propriedade que pode não existir" de "propriedade que não deveria existir".
-> **Como evitar:** TypeScript com tipos estritos captura erros de typo em tempo de compilação. Em JS puro, use `?.` com consciência de que silencia *todos* os erros de acesso, inclusive os involuntários.
+> **O que acontece:** `user?.adress?.city` retorna `undefined` silenciosamente quando `adress` foi escrito errado (deveria ser `address`). **Por quê:** `?.` foi projetado para tratar ausência com graça — não distingue "propriedade que pode não existir" de "propriedade que não deveria existir". **Como evitar:** TypeScript com tipos estritos captura erros de typo em tempo de compilação. Em JS puro, use `?.` com consciência de que silencia *todos* os erros de acesso, inclusive os involuntários.
 
 > [!warning] `toSorted`/`toReversed` não existem em ambientes antigos
-> **O que acontece:** `array.toSorted is not a function` em Node < 20 ou browsers sem suporte (lançado em meados de 2023).
-> **Por quê:** ES2023 foi implementado progressivamente — Node 20 (abril 2023) trouxe suporte completo, mas projetos em Node 18 LTS precisam de polyfill.
-> **Como evitar:** Verifique o target do seu projeto. Para Node 18, use `[...arr].sort()` ou adicione polyfill via `core-js`.
+> **O que acontece:** `array.toSorted is not a function` em Node < 20 ou browsers sem suporte (lançado em meados de 2023). **Por quê:** ES2023 foi implementado progressivamente — Node 20 (abril 2023) trouxe suporte completo, mas projetos em Node 18 LTS precisam de polyfill. **Como evitar:** Verifique o target do seu projeto. Para Node 18, use `[...arr].sort()` ou adicione polyfill via `core-js`.
 
 > [!warning] Top-level await paralisa importadores
-> **O que acontece:** Um módulo com `await fetch(url)` no topo bloqueia *todos* os módulos que o importam até a Promise resolver — incluindo o bootstrap da aplicação.
-> **Por quê:** O grafo de módulos ESM é avaliado em ordem topológica; top-level await introduz pontos de suspensão nesse grafo.
-> **Como evitar:** Use top-level await para inicialização que realmente deve ser concluída antes de qualquer uso (conexão BD, config). Evite em módulos utilitários ou em dependências de bibliotecas síncronas.
+> **O que acontece:** Um módulo com `await fetch(url)` no topo bloqueia *todos* os módulos que o importam até a Promise resolver — incluindo o bootstrap da aplicação. **Por quê:** O grafo de módulos ESM é avaliado em ordem topológica; top-level await introduz pontos de suspensão nesse grafo. **Como evitar:** Use top-level await para inicialização que realmente deve ser concluída antes de qualquer uso (conexão BD, config). Evite em módulos utilitários ou em dependências de bibliotecas síncronas.
 
 > [!warning] BigInt não mistura com Number em aritmética
-> **O que acontece:** `1n + 1` lança `TypeError: Cannot mix BigInt and other types`.
-> **Por quê:** Decisão de design deliberada — conversão implícita poderia perder precisão silenciosamente.
-> **Como evitar:** Converta explicitamente: `1n + BigInt(1)` ou `Number(1n) + 1`. Defina nas fronteiras do sistema onde BigInt entra e sai.
+> **O que acontece:** `1n + 1` lança `TypeError: Cannot mix BigInt and other types`. **Por quê:** Decisão de design deliberada — conversão implícita poderia perder precisão silenciosamente. **Como evitar:** Converta explicitamente: `1n + BigInt(1)` ou `Number(1n) + 1`. Defina nas fronteiras do sistema onde BigInt entra e sai.
 
 > [!warning] `Object.groupBy` retorna objeto sem prototype
-> **O que acontece:** O objeto retornado por `Object.groupBy` tem `null` como prototype — métodos como `hasOwnProperty` não estão disponíveis diretamente.
-> **Por quê:** Decisão de segurança — evita colisão de chaves de dados com métodos herdados (ex: uma categoria chamada `"constructor"`).
-> **Como evitar:** Use `Object.hasOwn(grupo, chave)` (ES2022) em vez de `grupo.hasOwnProperty(chave)`.
+> **O que acontece:** O objeto retornado por `Object.groupBy` tem `null` como prototype — métodos como `hasOwnProperty` não estão disponíveis diretamente. **Por quê:** Decisão de segurança — evita colisão de chaves de dados com métodos herdados (ex: uma categoria chamada `"constructor"`). **Como evitar:** Use `Object.hasOwn(grupo, chave)` (ES2022) em vez de `grupo.hasOwnProperty(chave)`.
 
 ---
 

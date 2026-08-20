@@ -99,19 +99,13 @@ Um fractional engineer constrói, por conta própria, uma integração cara e co
 ## Armadilhas comuns
 
 > [!warning] Testar só factibilidade, porque é a dimensão mais confortável
-> **O que acontece:** o engenheiro nomeia e testa exaustivamente se a solução é tecnicamente possível, e nunca chega a nomear premissas de desejabilidade ou viabilidade.
-> **Por quê:** factibilidade é a dimensão em que um engenheiro tem mais confiança de avaliação — parece produtivo testar o que se sabe testar, mesmo que não seja o risco maior.
-> **Como evitar:** force pelo menos uma premissa em cada uma das três categorias antes de escolher o que testar primeiro — se a lista de desejabilidade ou viabilidade está vazia, é sinal de que não foi pensada, não de que não existe.
+> **O que acontece:** o engenheiro nomeia e testa exaustivamente se a solução é tecnicamente possível, e nunca chega a nomear premissas de desejabilidade ou viabilidade. **Por quê:** factibilidade é a dimensão em que um engenheiro tem mais confiança de avaliação — parece produtivo testar o que se sabe testar, mesmo que não seja o risco maior. **Como evitar:** force pelo menos uma premissa em cada uma das três categorias antes de escolher o que testar primeiro — se a lista de desejabilidade ou viabilidade está vazia, é sinal de que não foi pensada, não de que não existe.
 
 > [!warning] Confundir convicção pessoal com evidência
-> **O que acontece:** uma premissa é marcada como "alta evidência" porque o engenheiro tem certeza pessoal dela, sem nenhum dado de entrevista, uso observado ou mercado por trás.
-> **Por quê:** convicção parece evidência de dentro da própria cabeça — é difícil distinguir "eu sei disso" de "eu acredito muito nisso" sem parar para checar a fonte.
-> **Como evitar:** para cada premissa marcada como alta evidência, pergunte "de onde vem essa evidência — que entrevista, que dado, que observação?". Se a resposta é "eu simplesmente sei", reclassifique como baixa evidência.
+> **O que acontece:** uma premissa é marcada como "alta evidência" porque o engenheiro tem certeza pessoal dela, sem nenhum dado de entrevista, uso observado ou mercado por trás. **Por quê:** convicção parece evidência de dentro da própria cabeça — é difícil distinguir "eu sei disso" de "eu acredito muito nisso" sem parar para checar a fonte. **Como evitar:** para cada premissa marcada como alta evidência, pergunte "de onde vem essa evidência — que entrevista, que dado, que observação?". Se a resposta é "eu simplesmente sei", reclassifique como baixa evidência.
 
 > [!warning] Testar o quadrante errado porque é mais fácil
-> **O que acontece:** o time testa premissas do quadrante de baixa importância porque o teste é rápido e satisfatório de completar, deixando o quadrante vermelho (alta importância, baixa evidência) para depois.
-> **Por quê:** completar um teste barato dá sensação de progresso, mesmo que o teste não reduza o risco real do projeto.
-> **Como evitar:** ordene explicitamente a lista de testes pelo quadrante, não pela facilidade — o vermelho sempre primeiro, mesmo que pareça mais difícil de desenhar.
+> **O que acontece:** o time testa premissas do quadrante de baixa importância porque o teste é rápido e satisfatório de completar, deixando o quadrante vermelho (alta importância, baixa evidência) para depois. **Por quê:** completar um teste barato dá sensação de progresso, mesmo que o teste não reduza o risco real do projeto. **Como evitar:** ordene explicitamente a lista de testes pelo quadrante, não pela facilidade — o vermelho sempre primeiro, mesmo que pareça mais difícil de desenhar.
 
 ## Como explicar em inglês
 

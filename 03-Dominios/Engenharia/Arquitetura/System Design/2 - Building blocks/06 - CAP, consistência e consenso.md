@@ -40,9 +40,7 @@ Formulado por Eric Brewer em 2000 e provado formalmente por Seth Gilbert e Nancy
 A leitura popular — "escolha 2 de 3" — sugere que P é uma opção como as outras duas, algo que você pode desligar se quiser CA. Isso é impreciso o suficiente para atrapalhar mais do que ajudar.
 
 > [!warning] "Escolha 2 de 3" é a frase que mais engana em system design
-> **O que acontece:** o candidato diz "eu escolheria CA aqui, quero consistência e disponibilidade" como se fosse uma opção válida de design.
-> **Por quê:** numa rede real — a internet, um data center, até processos na mesma máquina sob GC pause — mensagens **vão** se perder ou atrasar eventualmente. Partição não é uma condição rara que você desliga; é uma propriedade física da rede que você não controla. Um sistema "CA" só existe se você aceitar que, sob partição, ele simplesmente **para de funcionar** por completo (nem responde, nem garante consistência) — o que na prática ninguém quer.
-> **Como evitar:** trate P como dado, não como escolha. A frase certa em entrevista é "**quando** a rede particionar — e ela vai —, esse sistema escolhe C ou A". A pergunta interessante nunca é "você quer P?"; é "sob partição, você recusa a escrita ou aceita e reconcilia depois?".
+> **O que acontece:** o candidato diz "eu escolheria CA aqui, quero consistência e disponibilidade" como se fosse uma opção válida de design. **Por quê:** numa rede real — a internet, um data center, até processos na mesma máquina sob GC pause — mensagens **vão** se perder ou atrasar eventualmente. Partição não é uma condição rara que você desliga; é uma propriedade física da rede que você não controla. Um sistema "CA" só existe se você aceitar que, sob partição, ele simplesmente **para de funcionar** por completo (nem responde, nem garante consistência) — o que na prática ninguém quer. **Como evitar:** trate P como dado, não como escolha. A frase certa em entrevista é "**quando** a rede particionar — e ela vai —, esse sistema escolhe C ou A". A pergunta interessante nunca é "você quer P?"; é "sob partição, você recusa a escrita ou aceita e reconcilia depois?".
 
 Em outras palavras: CAP não é sobre o funcionamento normal do sistema. É sobre o que ele faz **no exato momento em que a rede quebra**. No dia a dia, sem partição, C e A convivem sem drama — é aí que entra o PACELC, adiante.
 
@@ -136,9 +134,7 @@ graph LR
 ```
 
 > [!warning] Tratar "eventual" como sinônimo de "qualquer coisa vale"
-> **O que acontece:** o candidato diz "consistência eventual" e trata isso como uma licença para ignorar qualquer garantia de ordem.
-> **Por quê:** "eventual" sozinho é uma garantia fraca demais para a maioria dos produtos — um usuário que publica um post e não o vê no próprio feed por alguns segundos vai reportar isso como bug, não como trade-off aceitável.
-> **Como evitar:** quando disser "eventual", complemente com a garantia mais fina que o produto realmente precisa: "eventual, mas com read-your-writes" é uma frase de sênior. Ela mostra que você pensou na experiência do usuário durante a janela de propagação, não só na convergência final.
+> **O que acontece:** o candidato diz "consistência eventual" e trata isso como uma licença para ignorar qualquer garantia de ordem. **Por quê:** "eventual" sozinho é uma garantia fraca demais para a maioria dos produtos — um usuário que publica um post e não o vê no próprio feed por alguns segundos vai reportar isso como bug, não como trade-off aceitável. **Como evitar:** quando disser "eventual", complemente com a garantia mais fina que o produto realmente precisa: "eventual, mas com read-your-writes" é uma frase de sênior. Ela mostra que você pensou na experiência do usuário durante a janela de propagação, não só na convergência final.
 
 Onde cada nível costuma aparecer na prática, para ancorar o espectro em exemplos concretos em vez de ficar só na teoria:
 
@@ -244,9 +240,7 @@ graph LR
 O custo do consenso é real e é por isso que ele não é usado em todo lugar: cada decisão exige uma rodada de comunicação com a maioria do cluster (uma forma de quorum), então a latência escala com o número de nós e a distância entre eles. Um cluster Raft de 5 nós espalhados entre continentes paga esse preço a cada commit — por isso consenso costuma proteger *metadado* (quem é líder, qual configuração vale) e não o caminho de dados de alto volume, que usa replicação mais barata (leader-follower assíncrono, visto na nota 03) sempre que a aplicação tolera.
 
 > [!warning] Usar consenso para tudo "porque é mais correto"
-> **O que acontece:** o candidato propõe rodar consenso (Raft/Paxos) para cada escrita de um sistema de alto volume — "assim garanto que tudo está sempre correto".
-> **Por quê:** confunde correção teórica com custo de engenharia zero. Consenso exige uma rodada de quorum por decisão — isso é latência garantida e um teto de throughput baixo comparado a replicação assíncrona simples.
-> **Como evitar:** reserve consenso para **decisões de controle** — eleição de líder de shard, confirmação de configuração, commit de transação distribuída rara — e deixe o caminho de dados de alto volume usar replicação leader-follower comum (nota 03) ou quorum leve (Dynamo-style), que são ordens de magnitude mais baratos. Em entrevista, a frase que sinaliza isso é: "eu não rodaria consenso por escrita aqui — o volume é alto demais; eu uso consenso só para decidir quem é o líder do shard, e deixo a replicação de dados ser assíncrona."
+> **O que acontece:** o candidato propõe rodar consenso (Raft/Paxos) para cada escrita de um sistema de alto volume — "assim garanto que tudo está sempre correto". **Por quê:** confunde correção teórica com custo de engenharia zero. Consenso exige uma rodada de quorum por decisão — isso é latência garantida e um teto de throughput baixo comparado a replicação assíncrona simples. **Como evitar:** reserve consenso para **decisões de controle** — eleição de líder de shard, confirmação de configuração, commit de transação distribuída rara — e deixe o caminho de dados de alto volume usar replicação leader-follower comum (nota 03) ou quorum leve (Dynamo-style), que são ordens de magnitude mais baratos. Em entrevista, a frase que sinaliza isso é: "eu não rodaria consenso por escrita aqui — o volume é alto demais; eu uso consenso só para decidir quem é o líder do shard, e deixo a replicação de dados ser assíncrona."
 
 ### Paxos vs. Raft, em uma tabela
 
@@ -289,14 +283,10 @@ Reconhecer qual dessas famílias está na sua frente — antes de escolher CP ou
 ## Armadilhas comuns
 
 > [!warning] Confundir "eleger um líder" com "resolver consenso"
-> **O que acontece:** o candidato descreve uma eleição de líder simplista — "o nó que perceber a falha primeiro assume" — e trata isso como equivalente a rodar Raft ou Paxos.
-> **Por quê:** essa abordagem ingênua não impede que dois nós, cada um isolado do outro por uma partição, se elejam líder ao mesmo tempo — o clássico *split-brain*. Sem quorum (maioria estrita) e sem número de termo para desempatar líderes de gerações diferentes, "eleição" vira uma corrida sem árbitro.
-> **Como evitar:** amarre a palavra "eleição" a "maioria" sempre que usar as duas: "o novo líder só é confirmado se conseguir votos da maioria dos nós — isso garante que não existam dois líderes válidos ao mesmo tempo, porque duas maiorias de um mesmo conjunto sempre se sobrepõem."
+> **O que acontece:** o candidato descreve uma eleição de líder simplista — "o nó que perceber a falha primeiro assume" — e trata isso como equivalente a rodar Raft ou Paxos. **Por quê:** essa abordagem ingênua não impede que dois nós, cada um isolado do outro por uma partição, se elejam líder ao mesmo tempo — o clássico *split-brain*. Sem quorum (maioria estrita) e sem número de termo para desempatar líderes de gerações diferentes, "eleição" vira uma corrida sem árbitro. **Como evitar:** amarre a palavra "eleição" a "maioria" sempre que usar as duas: "o novo líder só é confirmado se conseguir votos da maioria dos nós — isso garante que não existam dois líderes válidos ao mesmo tempo, porque duas maiorias de um mesmo conjunto sempre se sobrepõem."
 
 > [!warning] Achar que "consistente" é uma propriedade do banco, não do dado
-> **O que acontece:** o candidato declara "esse banco é consistente" como afirmação absoluta sobre a tecnologia escolhida.
-> **Por quê:** a mesma tecnologia (MongoDB, Cassandra, até um Postgres com réplicas) pode ser configurada para consistência forte numa operação e eventual em outra, dado o mesmo cluster rodando ao mesmo tempo — como visto na seção de CP vs AP acima.
-> **Como evitar:** fale sempre em relação ao dado ou à operação: "para o saldo, eu configuro esse cluster para leitura majoritária (forte); para o log de eventos de auditoria, mesma tecnologia, leitura de qualquer réplica (eventual) — porque o custo de errar é diferente nos dois casos."
+> **O que acontece:** o candidato declara "esse banco é consistente" como afirmação absoluta sobre a tecnologia escolhida. **Por quê:** a mesma tecnologia (MongoDB, Cassandra, até um Postgres com réplicas) pode ser configurada para consistência forte numa operação e eventual em outra, dado o mesmo cluster rodando ao mesmo tempo — como visto na seção de CP vs AP acima. **Como evitar:** fale sempre em relação ao dado ou à operação: "para o saldo, eu configuro esse cluster para leitura majoritária (forte); para o log de eventos de auditoria, mesma tecnologia, leitura de qualquer réplica (eventual) — porque o custo de errar é diferente nos dois casos."
 
 ## Checklist rápido para levar pra entrevista
 

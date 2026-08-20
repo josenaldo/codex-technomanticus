@@ -331,63 +331,41 @@ Express idiomático já traz muito, mas não resolve tudo sozinho. Os próximos 
 ## Armadilhas comuns
 
 > [!warning] Express 4 com handler async sem wrapper
-> **O que acontece:** Rejeição de Promise não chega ao error middleware — o processo engole o erro silenciosamente.
-> **Por quê:** Express 4 não wrapa automaticamente Promises; só Express 5 faz isso nativo.
-> **Como evitar:** Use Express 5 ou adicione `asyncHandler` wrapper em todos os handlers async de codebases 4.x.
+> **O que acontece:** Rejeição de Promise não chega ao error middleware — o processo engole o erro silenciosamente. **Por quê:** Express 4 não wrapa automaticamente Promises; só Express 5 faz isso nativo. **Como evitar:** Use Express 5 ou adicione `asyncHandler` wrapper em todos os handlers async de codebases 4.x.
 
 > [!warning] Error middleware com 3 argumentos
-> **O que acontece:** Express não o reconhece como handler de erro — ele vira middleware comum.
-> **Por quê:** Express identifica error handler pela assinatura `(err, req, res, next)` — quatro argumentos são obrigatórios.
-> **Como evitar:** Sempre declare `(err: Error, req: Request, res: Response, next: NextFunction)` com todos os quatro parâmetros, mesmo que `next` não seja chamado.
+> **O que acontece:** Express não o reconhece como handler de erro — ele vira middleware comum. **Por quê:** Express identifica error handler pela assinatura `(err, req, res, next)` — quatro argumentos são obrigatórios. **Como evitar:** Sempre declare `(err: Error, req: Request, res: Response, next: NextFunction)` com todos os quatro parâmetros, mesmo que `next` não seja chamado.
 
 > [!warning] Mutar `req` em middleware sem tipo/documentação
-> **O que acontece:** Handler assume `req.user` mas o middleware que o popula não está montado na rota.
-> **Por quê:** A ordem de montagem é o contrato implícito; sem tipo declarado, TypeScript não ajuda.
-> **Como evitar:** Declare o campo via declaration merging e revise que o middleware está montado antes de qualquer rota que o consuma.
+> **O que acontece:** Handler assume `req.user` mas o middleware que o popula não está montado na rota. **Por quê:** A ordem de montagem é o contrato implícito; sem tipo declarado, TypeScript não ajuda. **Como evitar:** Declare o campo via declaration merging e revise que o middleware está montado antes de qualquer rota que o consuma.
 
 > [!warning] Chamar `res.send()` e depois `next(err)`
-> **O que acontece:** `Cannot set headers after they are sent to the client`.
-> **Por quê:** A resposta já foi enviada; o error middleware não pode sobrescrevê-la.
-> **Como evitar:** Verifique `res.headersSent` antes de chamar `next(err)` e nunca chame `res.send` junto com `next`.
+> **O que acontece:** `Cannot set headers after they are sent to the client`. **Por quê:** A resposta já foi enviada; o error middleware não pode sobrescrevê-la. **Como evitar:** Verifique `res.headersSent` antes de chamar `next(err)` e nunca chame `res.send` junto com `next`.
 
 > [!warning] Registrar error middleware antes das rotas
-> **O que acontece:** O error middleware não captura erros das rotas registradas depois dele.
-> **Por quê:** Express processa middlewares na ordem de registro.
-> **Como evitar:** Sempre registre o error middleware como o último `app.use()`, depois de todos os routers.
+> **O que acontece:** O error middleware não captura erros das rotas registradas depois dele. **Por quê:** Express processa middlewares na ordem de registro. **Como evitar:** Sempre registre o error middleware como o último `app.use()`, depois de todos os routers.
 
 > [!warning] `app.use(auth)` global quebrando rotas públicas
-> **O que acontece:** `/health`, `/metrics` ou callbacks públicos passam por auth pesada e retornam 401.
-> **Por quê:** `app.use()` sem path aplica a todas as rotas.
-> **Como evitar:** Monte auth em routers específicos, não globalmente. Use `unless` pattern ou exclusão explícita.
+> **O que acontece:** `/health`, `/metrics` ou callbacks públicos passam por auth pesada e retornam 401. **Por quê:** `app.use()` sem path aplica a todas as rotas. **Como evitar:** Monte auth em routers específicos, não globalmente. Use `unless` pattern ou exclusão explícita.
 
 > [!warning] Validar em controller depois de chamar service
-> **O que acontece:** Dado inválido atravessa a boundary HTTP e chega ao domínio.
-> **Por quê:** Validation deve acontecer na entrada, antes de qualquer lógica de negócio.
-> **Como evitar:** Validation como middleware antes do handler — nunca dentro do handler ou do service.
+> **O que acontece:** Dado inválido atravessa a boundary HTTP e chega ao domínio. **Por quê:** Validation deve acontecer na entrada, antes de qualquer lógica de negócio. **Como evitar:** Validation como middleware antes do handler — nunca dentro do handler ou do service.
 
 > [!warning] Capturar erro e responder direto em cada rota
-> **O que acontece:** Formato de erro inconsistente por toda a aplicação.
-> **Por quê:** Cada handler formata o erro à sua maneira, perdendo consistência de [[08 - Error handling estruturado]].
-> **Como evitar:** Sempre relance com `next(err)` e deixe o error middleware global formatar a resposta.
+> **O que acontece:** Formato de erro inconsistente por toda a aplicação. **Por quê:** Cada handler formata o erro à sua maneira, perdendo consistência de [[08 - Error handling estruturado]]. **Como evitar:** Sempre relance com `next(err)` e deixe o error middleware global formatar a resposta.
 
 > [!warning] Ignorar `trust proxy` atrás de load balancer
-> **O que acontece:** `req.ip` retorna IP do balanceador, não do cliente real; cookies `secure` podem não ser definidos.
-> **Por quê:** Express confia no IP de origem da conexão, não no `X-Forwarded-For`, sem configuração explícita.
-> **Como evitar:** `app.set("trust proxy", 1)` em ambientes com load balancer ou proxy reverso.
+> **O que acontece:** `req.ip` retorna IP do balanceador, não do cliente real; cookies `secure` podem não ser definidos. **Por quê:** Express confia no IP de origem da conexão, não no `X-Forwarded-For`, sem configuração explícita. **Como evitar:** `app.set("trust proxy", 1)` em ambientes com load balancer ou proxy reverso.
 
 ## Perguntas de entrevista
 
-**O que mudou no Express 5 para async handlers?**
-Handlers e middlewares que retornam Promise chamam `next(value)` automaticamente quando rejeitam ou lançam erro. Em Express 4, wrapper ou `.catch(next)` ainda é necessário.
+**O que mudou no Express 5 para async handlers?** Handlers e middlewares que retornam Promise chamam `next(value)` automaticamente quando rejeitam ou lançam erro. Em Express 4, wrapper ou `.catch(next)` ainda é necessário.
 
-**Por que error middleware tem quatro argumentos?**
-É como Express distingue middleware normal de error handler: `(err, req, res, next)`.
+**Por que error middleware tem quatro argumentos?** É como Express distingue middleware normal de error handler: `(err, req, res, next)`.
 
-**Como você estruturaria Express em app médio?**
-Routers por feature, schemas por boundary, services/use cases fora da camada HTTP, error middleware global e composition root explícito.
+**Como você estruturaria Express em app médio?** Routers por feature, schemas por boundary, services/use cases fora da camada HTTP, error middleware global e composition root explícito.
 
-**Quando você não escolheria Express?**
-Quando o time precisa de convenção forte, DI/lifecycle built-in ou contrato schema-first nativo. Nesses casos, NestJS ou Fastify podem reduzir decisões repetidas.
+**Quando você não escolheria Express?** Quando o time precisa de convenção forte, DI/lifecycle built-in ou contrato schema-first nativo. Nesses casos, NestJS ou Fastify podem reduzir decisões repetidas.
 
 ## Em entrevista
 

@@ -357,8 +357,7 @@ A fragmentação é o problema crônico do heap: muitos blocos pequenos livres q
 > [!danger] Erros clássicos de gerenciamento de heap
 > - **Use-after-free**: acessar `v` depois de `free(v)`. O bloco pode ter sido reatribuído a outro `malloc`. Comportamento indefinido — às vezes silencioso, às vezes explorado por atacantes.
 > - **Double-free**: chamar `free(v)` duas vezes. Corrompe as estruturas internas do alocador.
-> - **Memory leak**: esquecer de chamar `free`. O bloco permanece alocado até o processo terminar.
-> Esses são os erros de *memory safety* que linguagens com GC ou ownership (Rust) eliminam em design. Ver notas de Segurança Conceitual para o ângulo de exploração.
+> - **Memory leak**: esquecer de chamar `free`. O bloco permanece alocado até o processo terminar. Esses são os erros de *memory safety* que linguagens com GC ou ownership (Rust) eliminam em design. Ver notas de Segurança Conceitual para o ângulo de exploração.
 
 ---
 
@@ -448,14 +447,7 @@ O mecanismo pelo qual o OS mapeia essas regiões — páginas, tabelas de págin
 
 Em entrevistas de nível sênior, stack frames aparecem quando a pergunta é "o que acontece quando você chama uma função?" ou "por que recursão pode dar stack overflow?". TCO é um diferencial — poucos candidatos sabem explicar *por que* Scheme a garante e Python não. Escape analysis em Go é favorito em entrevistas de sistemas.
 
-*What is a stack frame and what does it contain?*
-*What is the difference between caller-saved and callee-saved registers?*
-*Why does deep recursion cause a stack overflow?*
-*What is tail call optimization and how does it avoid stack growth?*
-*Why do closures sometimes force variables onto the heap?*
-*What is escape analysis and how does Go use it?*
-*What is the red zone in the System V AMD64 ABI?*
-*Why do languages with first-class closures typically need a garbage collector?*
+*What is a stack frame and what does it contain?* *What is the difference between caller-saved and callee-saved registers?* *Why does deep recursion cause a stack overflow?* *What is tail call optimization and how does it avoid stack growth?* *Why do closures sometimes force variables onto the heap?* *What is escape analysis and how does Go use it?* *What is the red zone in the System V AMD64 ABI?* *Why do languages with first-class closures typically need a garbage collector?*
 
 | Português | English |
 |---|---|

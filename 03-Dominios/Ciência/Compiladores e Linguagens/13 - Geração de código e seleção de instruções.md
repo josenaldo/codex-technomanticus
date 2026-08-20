@@ -418,29 +418,21 @@ O selecionador moderno não é mais um algoritmo de tiling simples: é um sistem
 
 Em entrevistas sênior de sistemas e compiladores, geração de código costuma aparecer como pergunta de design ("como você implementaria um back-end simples?") ou como contexto de otimização ("por que o compilador emitiu essas instruções?"). Demonstrar familiaridade com tiling, calling conventions e os trade-offs CISC × RISC diferencia candidatos.
 
-*What are the three classic phases of a compiler back-end?*
-*Instruction selection, register allocation, and instruction scheduling.*
+*What are the three classic phases of a compiler back-end?* *Instruction selection, register allocation, and instruction scheduling.*
 
-*What is instruction selection tiling?*
-*Covering the IR tree with instruction patterns (tiles) that map to target ISA instructions, minimizing cost.*
+*What is instruction selection tiling?* *Covering the IR tree with instruction patterns (tiles) that map to target ISA instructions, minimizing cost.*
 
-*What is the difference between maximal munch and dynamic programming for tiling?*
-*Maximal munch is a greedy top-down algorithm — simple but potentially suboptimal; dynamic programming guarantees an optimal cover by computing costs bottom-up.*
+*What is the difference between maximal munch and dynamic programming for tiling?* *Maximal munch is a greedy top-down algorithm — simple but potentially suboptimal; dynamic programming guarantees an optimal cover by computing costs bottom-up.*
 
-*What is a BURS system?*
-*A Bottom-Up Rewrite System — it pre-compiles instruction patterns into a finite automaton for fast, near-optimal tiling during compilation.*
+*What is a BURS system?* *A Bottom-Up Rewrite System — it pre-compiles instruction patterns into a finite automaton for fast, near-optimal tiling during compilation.*
 
-*What does a calling convention define?*
-*Which registers carry arguments, which register holds the return value, which registers are caller- vs. callee-saved, and how the stack must be aligned.*
+*What does a calling convention define?* *Which registers carry arguments, which register holds the return value, which registers are caller- vs. callee-saved, and how the stack must be aligned.*
 
-*Why does violating the ABI cause non-deterministic bugs?*
-*Because the optimizer may reuse caller-saved registers assuming the callee won't touch them; if the callee does, the wrong value surfaces far from where it was corrupted.*
+*Why does violating the ABI cause non-deterministic bugs?* *Because the optimizer may reuse caller-saved registers assuming the callee won't touch them; if the callee does, the wrong value surfaces far from where it was corrupted.*
 
-*How does CISC differ from RISC in instruction selection?*
-*CISC has complex instruction tiles (addressing modes, multi-operation instructions); RISC has simple uniform tiles — RISC selection is simpler but emits more instructions, relying on scheduling to recover ILP.*
+*How does CISC differ from RISC in instruction selection?* *CISC has complex instruction tiles (addressing modes, multi-operation instructions); RISC has simple uniform tiles — RISC selection is simpler but emits more instructions, relying on scheduling to recover ILP.*
 
-*What is peephole optimization?*
-*A local post-selection pass that slides a small window over generated instructions, replacing inefficient patterns with better sequences.*
+*What is peephole optimization?* *A local post-selection pass that slides a small window over generated instructions, replacing inefficient patterns with better sequences.*
 
 | Português | English |
 |---|---|

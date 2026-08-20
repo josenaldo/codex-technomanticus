@@ -105,8 +105,7 @@ List<Integer> r = s.limit(5).collect(Collectors.toList()); // [1, 9, 25, 49, 81]
 Lazy não é grátis. Há dois custos reais:
 
 > [!warning] Os dois impostos da avaliação preguiçosa
-> **1. Raciocínio difícil sobre *quando* (e *se*) algo roda.** Com efeitos colaterais, isso é veneno: se um log ou uma escrita em disco está dentro de um thunk que nunca é forçado, o efeito simplesmente não acontece — ou acontece numa ordem que você não previu. Por isso laziness combina com pureza ([[07 - Funções puras e efeitos colaterais]]) e briga com efeitos.
-> **2. Vazamento de espaço (*space leak*).** Thunks ocupam memória. Se você empilha milhões de thunks não-forçados (clássico: somar uma lista gigante de forma preguiçosa), a pilha de receitas adiadas cresce até estourar — mais memória do que se você tivesse computado na hora. A solução em Haskell é forçar a avaliação em pontos estratégicos (anotações de *strictness*).
+> **1. Raciocínio difícil sobre *quando* (e *se*) algo roda.** Com efeitos colaterais, isso é veneno: se um log ou uma escrita em disco está dentro de um thunk que nunca é forçado, o efeito simplesmente não acontece — ou acontece numa ordem que você não previu. Por isso laziness combina com pureza ([[07 - Funções puras e efeitos colaterais]]) e briga com efeitos. **2. Vazamento de espaço (*space leak*).** Thunks ocupam memória. Se você empilha milhões de thunks não-forçados (clássico: somar uma lista gigante de forma preguiçosa), a pilha de receitas adiadas cresce até estourar — mais memória do que se você tivesse computado na hora. A solução em Haskell é forçar a avaliação em pontos estratégicos (anotações de *strictness*).
 
 A lição de design: laziness é uma faca afiada. Ela paga em estruturas infinitas e em pular trabalho desnecessário; cobra em previsibilidade e em memória.
 

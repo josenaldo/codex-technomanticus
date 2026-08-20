@@ -21,15 +21,7 @@ aliases:
 # Visitor
 
 > [!abstract] TL;DR
-> O **Visitor** permite **adicionar operações** a uma hierarquia de objetos **sem modificá-los** —
-> movendo cada operação para uma classe externa (o visitante) que "visita" cada tipo de nó. É a
-> resposta orientada a objetos ao **problema da expressão**: facilita adicionar *operações*, ao custo
-> de dificultar adicionar *tipos*. E é o **caso-ouro da lente deste catálogo**: o Visitor é, em boa
-> parte, um contorno para linguagens **sem *pattern matching***. Onde a linguagem tem **tipos
-> selados** e `switch` exaustivo (Java 21+, Kotlin, Scala, Rust) — ou `type switch` (Go) e
-> `singledispatch`/`match` (Python) — você escreve a operação como uma função que casa sobre o tipo,
-> **sem** a cerimônia de `accept`/`visit` e com **checagem de exaustividade** do compilador de brinde.
-> A armadilha central: montar todo o Visitor onde um `switch` sobre tipo selado seria mais claro.
+> O **Visitor** permite **adicionar operações** a uma hierarquia de objetos **sem modificá-los** — movendo cada operação para uma classe externa (o visitante) que "visita" cada tipo de nó. É a resposta orientada a objetos ao **problema da expressão**: facilita adicionar *operações*, ao custo de dificultar adicionar *tipos*. E é o **caso-ouro da lente deste catálogo**: o Visitor é, em boa parte, um contorno para linguagens **sem *pattern matching***. Onde a linguagem tem **tipos selados** e `switch` exaustivo (Java 21+, Kotlin, Scala, Rust) — ou `type switch` (Go) e `singledispatch`/`match` (Python) — você escreve a operação como uma função que casa sobre o tipo, **sem** a cerimônia de `accept`/`visit` e com **checagem de exaustividade** do compilador de brinde. A armadilha central: montar todo o Visitor onde um `switch` sobre tipo selado seria mais claro.
 
 ## Adicionar uma operação sem editar dez classes
 
@@ -111,19 +103,13 @@ Não é peça de museu total. Ele ainda ganha quando: a linguagem **não** tem *
 ## Armadilhas comuns
 
 > [!warning] Visitor onde sealed + switch é mais claro
-> **O que acontece:** escreve-se a hierarquia `Visitor`/`accept`/`visit` completa numa linguagem que tem *pattern matching* exaustivo (Java 21+, Kotlin, Scala, Rust).
-> **Por quê:** o *switch* sobre tipo selado faz o mesmo com menos código, sem o double dispatch, e **com** checagem de exaustividade — o compilador te avisa se esquecer um caso, coisa que o Visitor não faz.
-> **Como evitar:** na linguagem com sealed types, prefira `switch`/`match` exaustivo. Reserve o Visitor para quando a linguagem não oferece o recurso, ou a hierarquia é aberta a extensão externa.
+> **O que acontece:** escreve-se a hierarquia `Visitor`/`accept`/`visit` completa numa linguagem que tem *pattern matching* exaustivo (Java 21+, Kotlin, Scala, Rust). **Por quê:** o *switch* sobre tipo selado faz o mesmo com menos código, sem o double dispatch, e **com** checagem de exaustividade — o compilador te avisa se esquecer um caso, coisa que o Visitor não faz. **Como evitar:** na linguagem com sealed types, prefira `switch`/`match` exaustivo. Reserve o Visitor para quando a linguagem não oferece o recurso, ou a hierarquia é aberta a extensão externa.
 
 > [!warning] O custo escondido: adicionar um tipo novo dói
-> **O que acontece:** a AST ganha um nó novo (`Divisao`), e agora **todos** os visitantes (`Avaliador`, `Impressor`, `Otimizador`) precisam ganhar um `visit(Divisao)` — uma mudança que se espalha por todas as operações.
-> **Por quê:** é o lado ruim do problema da expressão: o Visitor otimiza para operações estáveis + tipos que crescem, mas paga caro quando os **tipos** mudam. Fácil esquecer um visitante e ter comportamento faltando.
-> **Como evitar:** só adote o Visitor quando os **tipos são estáveis**. Se a hierarquia de tipos cresce com frequência, o Visitor vai te atrapalhar — talvez métodos na classe (ou sealed+switch, que ao menos cobra exaustividade) sirvam melhor.
+> **O que acontece:** a AST ganha um nó novo (`Divisao`), e agora **todos** os visitantes (`Avaliador`, `Impressor`, `Otimizador`) precisam ganhar um `visit(Divisao)` — uma mudança que se espalha por todas as operações. **Por quê:** é o lado ruim do problema da expressão: o Visitor otimiza para operações estáveis + tipos que crescem, mas paga caro quando os **tipos** mudam. Fácil esquecer um visitante e ter comportamento faltando. **Como evitar:** só adote o Visitor quando os **tipos são estáveis**. Se a hierarquia de tipos cresce com frequência, o Visitor vai te atrapalhar — talvez métodos na classe (ou sealed+switch, que ao menos cobra exaustividade) sirvam melhor.
 
 > [!warning] Double dispatch cerimonioso e frágil
-> **O que acontece:** cada classe de nó precisa do seu `accept`, e a sobrecarga de `visit` por tipo é fácil de errar (chamar o `visit` errado, esquecer um `accept`).
-> **Por quê:** o double dispatch manual é *boilerplate* repetitivo e sem rede de segurança do compilador — um `visit` faltando ou uma sobrecarga ambígua passam despercebidos.
-> **Como evitar:** se precisar mesmo do Visitor, gere o *boilerplate* ou use uma classe-base que centralize o `accept`; e, de novo, prefira o *pattern matching* onde existir.
+> **O que acontece:** cada classe de nó precisa do seu `accept`, e a sobrecarga de `visit` por tipo é fácil de errar (chamar o `visit` errado, esquecer um `accept`). **Por quê:** o double dispatch manual é *boilerplate* repetitivo e sem rede de segurança do compilador — um `visit` faltando ou uma sobrecarga ambígua passam despercebidos. **Como evitar:** se precisar mesmo do Visitor, gere o *boilerplate* ou use uma classe-base que centralize o `accept`; e, de novo, prefira o *pattern matching* onde existir.
 
 ## Como explicar em inglês
 

@@ -317,24 +317,16 @@ Na abordagem imperativa, **você** rastreia cada transição. Na abordagem decla
 ## Armadilhas comuns
 
 > [!warning] Confundir React com um framework completo
-> **O que acontece:** Desenvolvedores buscam "como fazer roteamento no React" e ficam confusos ao descobrir que React não tem roteador built-in.
-> **Por quê:** React é deliberadamente uma *biblioteca* focada só em UI — não um framework como Angular (que inclui roteamento, HTTP, formulários, DI). Para roteamento, você adiciona React Router ou usa Next.js.
-> **Como evitar:** Mentalize React como "a camada de UI". Tudo que não é UI (roteamento, fetch, state global) vem de bibliotecas separadas ou de um meta-framework como Next.js.
+> **O que acontece:** Desenvolvedores buscam "como fazer roteamento no React" e ficam confusos ao descobrir que React não tem roteador built-in. **Por quê:** React é deliberadamente uma *biblioteca* focada só em UI — não um framework como Angular (que inclui roteamento, HTTP, formulários, DI). Para roteamento, você adiciona React Router ou usa Next.js. **Como evitar:** Mentalize React como "a camada de UI". Tudo que não é UI (roteamento, fetch, state global) vem de bibliotecas separadas ou de um meta-framework como Next.js.
 
 > [!warning] Achar que Virtual DOM = performance automática
-> **O que acontece:** Desenvolvedores escrevem componentes que re-renderizam desnecessariamente, esperando que o Virtual DOM "resolva" a performance.
-> **Por quê:** O Virtual DOM reduz operações de DOM real, mas não elimina renders desnecessários do JavaScript. Se um componente pai re-renderiza, todos os filhos re-renderizam por padrão — mesmo que suas props não mudaram.
-> **Como evitar:** Entender quando usar `React.memo`, `useMemo` e `useCallback` (ou deixar o React Compiler fazer isso por você em projetos novos). Performance é tópico separado.
+> **O que acontece:** Desenvolvedores escrevem componentes que re-renderizam desnecessariamente, esperando que o Virtual DOM "resolva" a performance. **Por quê:** O Virtual DOM reduz operações de DOM real, mas não elimina renders desnecessários do JavaScript. Se um componente pai re-renderiza, todos os filhos re-renderizam por padrão — mesmo que suas props não mudaram. **Como evitar:** Entender quando usar `React.memo`, `useMemo` e `useCallback` (ou deixar o React Compiler fazer isso por você em projetos novos). Performance é tópico separado.
 
 > [!warning] Tratar o estado como mutável
-> **O que acontece:** `state.items.push(newItem); setState(state)` — o código "funciona" às vezes, falha misteriosamente outras.
-> **Por quê:** React detecta mudanças de estado comparando referências. Mutar o objeto original não cria uma nova referência, então React pode não detectar que algo mudou e não re-renderizar.
-> **Como evitar:** Sempre crie novos objetos/arrays: `setState([...state.items, newItem])`. Estado no React é **imutável por convenção**.
+> **O que acontece:** `state.items.push(newItem); setState(state)` — o código "funciona" às vezes, falha misteriosamente outras. **Por quê:** React detecta mudanças de estado comparando referências. Mutar o objeto original não cria uma nova referência, então React pode não detectar que algo mudou e não re-renderizar. **Como evitar:** Sempre crie novos objetos/arrays: `setState([...state.items, newItem])`. Estado no React é **imutável por convenção**.
 
 > [!warning] Pensar em React como "HTML turbinado"
-> **O que acontece:** Iniciantes focam em JSX como se fosse HTML com superpoderes e ignoram o modelo mental de estado/componentes.
-> **Por quê:** JSX parece HTML. Mas JSX é açúcar sintático sobre chamadas de função JavaScript — cada tag JSX é uma chamada a `React.createElement(...)`. A semelhança com HTML é superficial.
-> **Como evitar:** Leia JSX como "descreve a estrutura", não "gera HTML diretamente". O render para HTML é responsabilidade do `react-dom`, não do JSX em si.
+> **O que acontece:** Iniciantes focam em JSX como se fosse HTML com superpoderes e ignoram o modelo mental de estado/componentes. **Por quê:** JSX parece HTML. Mas JSX é açúcar sintático sobre chamadas de função JavaScript — cada tag JSX é uma chamada a `React.createElement(...)`. A semelhança com HTML é superficial. **Como evitar:** Leia JSX como "descreve a estrutura", não "gera HTML diretamente". O render para HTML é responsabilidade do `react-dom`, não do JSX em si.
 
 ---
 

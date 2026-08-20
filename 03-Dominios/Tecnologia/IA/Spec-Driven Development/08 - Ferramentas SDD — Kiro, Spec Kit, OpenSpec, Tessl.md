@@ -240,8 +240,7 @@ instructions: |
 > Time de 3 engenheiros usando Kiro. Feature complexa de bioinformática.
 > - Semana 1: Spec + Plan com steering científico
 > - Semana 2: Implement com subagent de validação científica
-> - Semana 3: Validate + refinamento
-> Timeline original: 3-4 meses com desenvolvimento tradicional. Resultado: 3 semanas. Redução de 75%.
+> - Semana 3: Validate + refinamento Timeline original: 3-4 meses com desenvolvimento tradicional. Resultado: 3 semanas. Redução de 75%.
 
 ### Quando usar Kiro
 
@@ -265,8 +264,7 @@ A abordagem: você escreve a spec em linguagem formal de Tessl; a plataforma ger
 
 Enquanto Spec Kit e Kiro usam spec como contexto para um agente que escreve código livremente, Tessl usa spec como input para um gerador — mais próximo do modelo OpenAPI Generator ou Protobuf do que de um agente LLM.
 
-Vantagem: drift é impossível por construção (código gerado não pode divergir da spec).
-Custo: domínio precisa ser modelável formalmente; team tem curva de aprendizado maior.
+Vantagem: drift é impossível por construção (código gerado não pode divergir da spec). Custo: domínio precisa ser modelável formalmente; team tem curva de aprendizado maior.
 
 > [!warning] Tessl exige domínio formalmente modelável — nem todo domínio é
 > A promessa de "drift impossível por construção" só se paga se o domínio se deixa descrever em linguagem formal sem perda. CRUD e APIs RESTful modelam bem; regras de negócio ambíguas, fluxos exploratórios ou domínios com muita exceção informal (o tipo de coisa que um humano resolveria "no bom senso") resistem à formalização — e o time acaba gastando a curva de aprendizado íngreme de Tessl para modelar algo que nunca converge limpo. Avalie a modelabilidade do domínio antes de comprar a ferramenta, não depois.

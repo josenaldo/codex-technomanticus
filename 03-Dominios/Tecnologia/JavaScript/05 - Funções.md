@@ -507,29 +507,19 @@ In JavaScript, functions are **first-class citizens** — they can be assigned t
 ## Armadilhas comuns
 
 > [!warning] Chamar uma function expression antes da declaração
-> **O que acontece:** `TypeError: saudar is not a function` (com `var`) ou `ReferenceError` (com `let`/`const`).
-> **Por quê:** Function expressions não são hoisted com o corpo. Com `var`, a variável existe mas vale `undefined`; com `let`/`const`, está na TDZ.
-> **Como evitar:** Sempre declare function expressions antes de chamá-las, ou use function declarations quando precisar de hoisting.
+> **O que acontece:** `TypeError: saudar is not a function` (com `var`) ou `ReferenceError` (com `let`/`const`). **Por quê:** Function expressions não são hoisted com o corpo. Com `var`, a variável existe mas vale `undefined`; com `let`/`const`, está na TDZ. **Como evitar:** Sempre declare function expressions antes de chamá-las, ou use function declarations quando precisar de hoisting.
 
 > [!warning] Arrow function que deveria retornar objeto literal
-> **O que acontece:** `const fn = () => { x: 1 }` retorna `undefined` silenciosamente.
-> **Por quê:** As chaves são interpretadas como bloco de código, não objeto literal; `x: 1` é uma instrução com label `x`, não uma propriedade.
-> **Como evitar:** Envolva o objeto em parênteses: `const fn = () => ({ x: 1 })`.
+> **O que acontece:** `const fn = () => { x: 1 }` retorna `undefined` silenciosamente. **Por quê:** As chaves são interpretadas como bloco de código, não objeto literal; `x: 1` é uma instrução com label `x`, não uma propriedade. **Como evitar:** Envolva o objeto em parênteses: `const fn = () => ({ x: 1 })`.
 
 > [!warning] Usar `arguments` em arrow function
-> **O que acontece:** `arguments` não se refere aos argumentos da arrow — captura o `arguments` do escopo pai (se existir) ou lança `ReferenceError`.
-> **Por quê:** Arrow functions não têm binding próprio para `arguments`, assim como não têm para `this`.
-> **Como evitar:** Use rest parameters (`...args`) em qualquer função onde precise capturar argumentos variádicos.
+> **O que acontece:** `arguments` não se refere aos argumentos da arrow — captura o `arguments` do escopo pai (se existir) ou lança `ReferenceError`. **Por quê:** Arrow functions não têm binding próprio para `arguments`, assim como não têm para `this`. **Como evitar:** Use rest parameters (`...args`) em qualquer função onde precise capturar argumentos variádicos.
 
 > [!warning] Passar `null` esperando acionar o valor default
-> **O que acontece:** `function fn(x = 10) {}` chamada com `fn(null)` recebe `x === null`, não `x === 10`.
-> **Por quê:** Apenas `undefined` (ou ausência do argumento) aciona o default. `null` é um valor explícito válido.
-> **Como evitar:** Se `null` deve ser tratado como "sem valor", adicione verificação explícita: `const valor = x ?? 10`.
+> **O que acontece:** `function fn(x = 10) {}` chamada com `fn(null)` recebe `x === null`, não `x === 10`. **Por quê:** Apenas `undefined` (ou ausência do argumento) aciona o default. `null` é um valor explícito válido. **Como evitar:** Se `null` deve ser tratado como "sem valor", adicione verificação explícita: `const valor = x ?? 10`.
 
 > [!warning] Confundir rest parameter com spread operator
-> **O que acontece:** A sintaxe `...` serve dois propósitos opostos que confundem iniciantes.
-> **Por quê:** `function fn(...args)` — rest (coleta múltiplos valores em um array); `fn(...array)` — spread (expande um array em múltiplos argumentos).
-> **Como evitar:** Regra mnemônica: rest está na **definição** da função (recolhe), spread está na **chamada** (espalha).
+> **O que acontece:** A sintaxe `...` serve dois propósitos opostos que confundem iniciantes. **Por quê:** `function fn(...args)` — rest (coleta múltiplos valores em um array); `fn(...array)` — spread (expande um array em múltiplos argumentos). **Como evitar:** Regra mnemônica: rest está na **definição** da função (recolhe), spread está na **chamada** (espalha).
 
 ---
 

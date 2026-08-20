@@ -39,24 +39,15 @@ Para o pipeline geral do vault, veja [[workflow]]. Para o mapa das zonas, [[Como
 
 ## Escrita e qualidade
 
-Pipeline de criação e verificação de notas de domínio. Três skills formam um ciclo: `/escrever-nota`
-cria com padrão "capítulo de livro"; `/verificar-nota` audita o resultado; `/adicionar-midia` enriquece
-com fontes multimídia. O mesmo ciclo se aplica quando `/enriquecer-nota` ativa o Modo B (elevação
-estrutural de notas antigas).
+Pipeline de criação e verificação de notas de domínio. Três skills formam um ciclo: `/escrever-nota` cria com padrão "capítulo de livro"; `/verificar-nota` audita o resultado; `/adicionar-midia` enriquece com fontes multimídia. O mesmo ciclo se aplica quando `/enriquecer-nota` ativa o Modo B (elevação estrutural de notas antigas).
 
-O eixo intelectual de tudo é a **Técnica Feynman**: escrever como quem ensina, não como quem cataloga.
-Problema-primeiro, analogia antes da técnica, mecanismo explicado (por quê, não só o quê), pergunta
-do leitor antecipada.
+O eixo intelectual de tudo é a **Técnica Feynman**: escrever como quem ensina, não como quem cataloga. Problema-primeiro, analogia antes da técnica, mecanismo explicado (por quê, não só o quê), pergunta do leitor antecipada.
 
 ### `/escrever-nota [path] [instrução]`
 
-Cria nota nova de domínio do zero. **Núcleo mínimo obrigatório** (frontmatter, TL;DR, abertura com
-problema, mecanismo, O que vem a seguir, fontes) + **menu de seções opcionais** escolhido por tema
-(diagramas Mermaid, casos práticos, armadilhas, inglês, código, teoria). Sem template rígido — cada
-tema escolhe o que faz sentido.
+Cria nota nova de domínio do zero. **Núcleo mínimo obrigatório** (frontmatter, TL;DR, abertura com problema, mecanismo, O que vem a seguir, fontes) + **menu de seções opcionais** escolhido por tema (diagramas Mermaid, casos práticos, armadilhas, inglês, código, teoria). Sem template rígido — cada tema escolhe o que faz sentido.
 
-- **Registro Feynman explícito** em cada seção de conteúdo: problema-primeiro, analogia concreta,
-  por quê (não só o quê), pergunta retórica do leitor, resumo em 1 linha.
+- **Registro Feynman explícito** em cada seção de conteúdo: problema-primeiro, analogia concreta, por quê (não só o quê), pergunta retórica do leitor, resumo em 1 linha.
 - **Pesquisa antes de escrever** (3-5 fontes autoritativas por WebSearch).
 - **Confirmação antes de salvar** — mostra rascunho completo.
 - **Invoca `/verificar-nota`** automaticamente ao final como gate de qualidade.
@@ -64,13 +55,11 @@ tema escolhe o que faz sentido.
 
 ### `/verificar-nota [path]`
 
-Constraint-skill: audita a qualidade estrutural de uma nota contra o padrão do vault. **Não edita.**
-Reporta score por seção e sugere qual skill usar para corrigir cada item faltando.
+Constraint-skill: audita a qualidade estrutural de uma nota contra o padrão do vault. **Não edita.** Reporta score por seção e sugere qual skill usar para corrigir cada item faltando.
 
 Cinco seções auditadas:
 
-- **ESTRUTURA** (8 itens): TL;DR denso, abertura com problema, diagrama Mermaid, casos práticos,
-  "O que vem a seguir", seção de inglês, tabela PT↔EN, armadilhas comuns.
+- **ESTRUTURA** (8 itens): TL;DR denso, abertura com problema, diagrama Mermaid, casos práticos, "O que vem a seguir", seção de inglês, tabela PT↔EN, armadilhas comuns.
 - **PROFUNDIDADE** (3 itens): código com falha, mecanismo explicado, teoria subjacente (Magus).
 - **TAMANHO** (1 item por fase): ≥300 linhas (Iniciado), ≥400 (Adepto), ≥500 (Magus).
 - **LINKS** (2 itens): wikilink cross-galho, referência externa.
@@ -78,20 +67,17 @@ Cinco seções auditadas:
 
 Score de aprovação: ≥9/12 ✓. Score crítico: <6/12 → ativa Modo B em `/enriquecer-nota`.
 
-- **Quando usar:** "verificar nota", "auditar qualidade", "gate de qualidade". Roda automaticamente
-  após `/escrever-nota` e na Fase 0 do `/enriquecer-nota`.
+- **Quando usar:** "verificar nota", "auditar qualidade", "gate de qualidade". Roda automaticamente após `/escrever-nota` e na Fase 0 do `/enriquecer-nota`.
 
 ### `/adicionar-midia [path] [instrução]`
 
-Pesquisa vídeos (YouTube) e podcasts (com transcrição disponível), baixa legendas via `uvx yt-dlp`,
-analisa relevância e embute os aprovados como callouts `[!tip]` na nota.
+Pesquisa vídeos (YouTube) e podcasts (com transcrição disponível), baixa legendas via `uvx yt-dlp`, analisa relevância e embute os aprovados como callouts `[!tip]` na nota.
 
 - **Regra de ouro:** nunca embutir sem ter lido a transcrição. Sem legenda = descarta.
 - **Podcasts:** EN apenas, transcrição obrigatória.
 - **Score de relevância** (0-10): alinhamento, profundidade, qualidade pedagógica. Threshold: ≥7.
 - **Máximo 2 mídias por nota** (exceção: capstone >600 linhas → até 3).
-- **Quando usar:** "adicionar vídeo", "embutir vídeo", "buscar vídeo sobre X", "podcast sobre X".
-  Também invocada pela lente Mídia do `/enriquecer-nota`.
+- **Quando usar:** "adicionar vídeo", "embutir vídeo", "buscar vídeo sobre X", "podcast sobre X". Também invocada pela lente Mídia do `/enriquecer-nota`.
 
 ---
 

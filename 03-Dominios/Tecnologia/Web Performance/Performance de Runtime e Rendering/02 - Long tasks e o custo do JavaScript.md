@@ -69,9 +69,7 @@ Decorrem direto da meta "não segurar a main thread" da nota 01:
 3. **Mova para fora.** Trabalho pesado e independente do DOM (parsear um CSV grande, cálculos) pode ir para um **Web Worker**, em outra thread, liberando a main. É a nota 08.
 
 > [!warning] Scripts de terceiros como long tasks invisíveis
-> **O que acontece:** o INP está ruim, mas o JavaScript da sua aplicação parece enxuto — o culpado não aparece no seu código.
-> **Por quê:** tags de analytics, chat, testes A/B, anúncios e widgets de terceiros executam na **sua** main thread e frequentemente geram long tasks que você não escreveu nem controla. Um único script de terceiros mal-comportado pode dominar o INP.
-> **Como evitar:** audite os terceiros no painel Performance (atribuição por script), carregue-os com `async`/`defer` ou sob demanda, e considere isolar os mais pesados. O que você não controla ainda conta no seu INP.
+> **O que acontece:** o INP está ruim, mas o JavaScript da sua aplicação parece enxuto — o culpado não aparece no seu código. **Por quê:** tags de analytics, chat, testes A/B, anúncios e widgets de terceiros executam na **sua** main thread e frequentemente geram long tasks que você não escreveu nem controla. Um único script de terceiros mal-comportado pode dominar o INP. **Como evitar:** audite os terceiros no painel Performance (atribuição por script), carregue-os com `async`/`defer` ou sob demanda, e considere isolar os mais pesados. O que você não controla ainda conta no seu INP.
 
 **Long tasks e o custo do JavaScript em uma frase:** long tasks (>50 ms na main thread) são o que trava a interação, e o JavaScript as gera porque seu custo real é parse+compile+execute na main thread — não o download —, então o remédio é enviar menos JS, quebrar o que sobra e mover o pesado para Workers.
 

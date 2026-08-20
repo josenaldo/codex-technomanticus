@@ -227,17 +227,13 @@ Um dev abre o projeto no Cursor: recebe a regra de `named exports` (Cursor lê `
 
 ## Estado da arte — junho de 2026
 
-**AGENTS.md como padrão de indústria**
-O processo de padronização em torno do AGENTS.md acelerou em 2025-2026. A maioria das ferramentas de AI coding lançou suporte nativo, e a especificação tornou-se o equivalente de `.editorconfig` para agentes — um arquivo que todos os tools leem sem configuração adicional.
+**AGENTS.md como padrão de indústria** O processo de padronização em torno do AGENTS.md acelerou em 2025-2026. A maioria das ferramentas de AI coding lançou suporte nativo, e a especificação tornou-se o equivalente de `.editorconfig` para agentes — um arquivo que todos os tools leem sem configuração adicional.
 
-**Skills como primeiro cidadão em tooling**
-Em 2026, ferramentas como Cursor e Claude Code implementaram suporte a skills como primitiva nativa — não apenas como arquivos markdown, mas com descoberta automática, versionamento e compartilhamento. O diretório `.agent/skills/` tornou-se convensão de facto, e marketplaces de skills começaram a emergir (→ [[16 - Agent skills marketplace e SKILL.md]]).
+**Skills como primeiro cidadão em tooling** Em 2026, ferramentas como Cursor e Claude Code implementaram suporte a skills como primitiva nativa — não apenas como arquivos markdown, mas com descoberta automática, versionamento e compartilhamento. O diretório `.agent/skills/` tornou-se convensão de facto, e marketplaces de skills começaram a emergir (→ [[16 - Agent skills marketplace e SKILL.md]]).
 
-**Instructions geradas por análise de padrões**
-Uma tendência emergente: ferramentas analisam o histórico de correções do desenvolvedor e geram sugestões de novas regras para AGENTS.md. Se o desenvolvedor corrigiu o agente 5 vezes pela mesma convenção, o tool sugere "adicionar isso ao AGENTS.md". Reduz o problema de instructions stale por omissão.
+**Instructions geradas por análise de padrões** Uma tendência emergente: ferramentas analisam o histórico de correções do desenvolvedor e geram sugestões de novas regras para AGENTS.md. Se o desenvolvedor corrigiu o agente 5 vezes pela mesma convenção, o tool sugere "adicionar isso ao AGENTS.md". Reduz o problema de instructions stale por omissão.
 
-**Hierarquia de instructions em monorepos**
-Para monorepos com dezenas de pacotes, a hierarquia de resolução (mais próximo ganha) virou essencial. Em 2026, ferramentas avançadas suportam regras condicionais ("esta regra se aplica apenas a pacotes com `"type": "module"` no package.json"), tornando AGENTS.md mais preciso sem aumentar o tamanho.
+**Hierarquia de instructions em monorepos** Para monorepos com dezenas de pacotes, a hierarquia de resolução (mais próximo ganha) virou essencial. Em 2026, ferramentas avançadas suportam regras condicionais ("esta regra se aplica apenas a pacotes com `"type": "module"` no package.json"), tornando AGENTS.md mais preciso sem aumentar o tamanho.
 
 ---
 

@@ -20,28 +20,17 @@ aliases:
 # Estruturas de Dados
 
 > [!abstract] TL;DR
-> Galho de Ciência da Computação sobre as formas de organizar e armazenar dados — e os trade-offs de
-> tempo, espaço e ordem que cada uma impõe. Interview-critical. Cada estrutura traz uma
-> comparação profunda de implementação em **Java, TypeScript, Python e Go**, mostrando como
-> as particularidades de cada linguagem moldam a estrutura.
+> Galho de Ciência da Computação sobre as formas de organizar e armazenar dados — e os trade-offs de tempo, espaço e ordem que cada uma impõe. Interview-critical. Cada estrutura traz uma comparação profunda de implementação em **Java, TypeScript, Python e Go**, mostrando como as particularidades de cada linguagem moldam a estrutura.
 
 ## Sobre este galho
 
-Cobre as estruturas de dados de ponta a ponta: dos blocos fundamentais (arrays, listas, pilhas,
-filas, tabelas hash) às hierárquicas e relacionais (árvores, heaps, tries, árvores B, grafos) e às
-especializadas (LRU, Bloom filter, skip list, union-find). O eixo é sempre **trade-off**: qual
-estrutura para qual padrão de acesso, e por quê.
+Cobre as estruturas de dados de ponta a ponta: dos blocos fundamentais (arrays, listas, pilhas, filas, tabelas hash) às hierárquicas e relacionais (árvores, heaps, tries, árvores B, grafos) e às especializadas (LRU, Bloom filter, skip list, union-find). O eixo é sempre **trade-off**: qual estrutura para qual padrão de acesso, e por quê.
 
-Cada nota traz uma seção **"Implementações comparadas: Java · TypeScript · Python · Go"** — não só
-o código, mas *como cada stack pensa* a estrutura e como as particularidades da linguagem (a JVM e o
-Collections Framework; a V8 e o array-como-objeto; o CPython e o `dict` compacto; os slices e a
-semântica de valor do Go) influenciam a implementação e o desempenho.
+Cada nota traz uma seção **"Implementações comparadas: Java · TypeScript · Python · Go"** — não só o código, mas *como cada stack pensa* a estrutura e como as particularidades da linguagem (a JVM e o Collections Framework; a V8 e o array-como-objeto; o CPython e o `dict` compacto; os slices e a semântica de valor do Go) influenciam a implementação e o desempenho.
 
-**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção
-"Em entrevista" com frases prontas em inglês e vocabulário técnico.
+**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista" com frases prontas em inglês e vocabulário técnico.
 
-**Não cobre:** a teoria de análise de complexidade (Big-O, recorrências, classes de complexidade) —
-isso vive no galho **Algoritmos**. Aqui a complexidade aparece pontualmente, por estrutura.
+**Não cobre:** a teoria de análise de complexidade (Big-O, recorrências, classes de complexidade) — isso vive no galho **Algoritmos**. Aqui a complexidade aparece pontualmente, por estrutura.
 
 ## Iniciado — estruturas fundamentais
 

@@ -224,24 +224,16 @@ graph TD
 ## Armadilhas comuns
 
 > [!warning] Tratar "logado" como sinônimo de "autorizado"
-> **O que acontece:** um endpoint checa apenas se existe um token válido e, a partir daí, assume que o usuário pode acessar qualquer recurso que a URL ou o payload pedir.
-> **Por quê:** autenticação e autorização são implementadas, mentalmente, como um único gate — "passou pelo middleware de auth, então pode seguir". Mas o middleware típico só resolve a pergunta "quem é você"; a pergunta "você pode ver *este* recurso específico" exige uma checagem separada, por recurso.
-> **Como evitar:** trate toda autorização como *por recurso*, nunca como global. Antes de retornar dados de `orgId`, `userId` ou qualquer identificador na URL/payload, confirme explicitamente que o dono da credencial tem direito sobre *aquele* identificador — não apenas que a credencial é válida.
+> **O que acontece:** um endpoint checa apenas se existe um token válido e, a partir daí, assume que o usuário pode acessar qualquer recurso que a URL ou o payload pedir. **Por quê:** autenticação e autorização são implementadas, mentalmente, como um único gate — "passou pelo middleware de auth, então pode seguir". Mas o middleware típico só resolve a pergunta "quem é você"; a pergunta "você pode ver *este* recurso específico" exige uma checagem separada, por recurso. **Como evitar:** trate toda autorização como *por recurso*, nunca como global. Antes de retornar dados de `orgId`, `userId` ou qualquer identificador na URL/payload, confirme explicitamente que o dono da credencial tem direito sobre *aquele* identificador — não apenas que a credencial é válida.
 
 > [!warning] Contar "dois passos" como MFA sem checar a categoria dos fatores
-> **O que acontece:** um sistema exige senha + pergunta de segurança, ou senha + PIN, e chama isso de "autenticação em duas etapas".
-> **Por quê:** dois fatores da mesma categoria ("something you know" duas vezes) não são independentes — se um vazar, o outro tende a vazar junto, porque ambos vivem no mesmo tipo de segredo memorizável.
-> **Como evitar:** MFA real exige categorias diferentes: senha (know) combinada com um app autenticador, chave FIDO2 ou biometria do dispositivo (have/are). Prefira métodos *phishing-resistant* (FIDO2/WebAuthn) a SMS ou push simples sempre que o risco justificar.
+> **O que acontece:** um sistema exige senha + pergunta de segurança, ou senha + PIN, e chama isso de "autenticação em duas etapas". **Por quê:** dois fatores da mesma categoria ("something you know" duas vezes) não são independentes — se um vazar, o outro tende a vazar junto, porque ambos vivem no mesmo tipo de segredo memorizável. **Como evitar:** MFA real exige categorias diferentes: senha (know) combinada com um app autenticador, chave FIDO2 ou biometria do dispositivo (have/are). Prefira métodos *phishing-resistant* (FIDO2/WebAuthn) a SMS ou push simples sempre que o risco justificar.
 
 > [!warning] Confundir 401 e 403 na resposta da API
-> **O que acontece:** uma API devolve `403 Forbidden` quando o token simplesmente expirou, ou devolve `401 Unauthorized` quando o usuário está autenticado mas não tem permissão para aquele recurso.
-> **Por quê:** os dois códigos parecem intercambiáveis à primeira vista ("deu erro de acesso"), mas carregam semânticas opostas — um pede reautenticação, o outro não resolve nada com reautenticação.
-> **Como evitar:** `401` = "não sei quem você é, autentique-se de novo" (sempre com header `WWW-Authenticate`); `403` = "sei quem você é, e a resposta é não". Clientes (SPAs, apps mobile) devem tratar os dois de formas diferentes — só o `401` deve disparar um fluxo de novo login.
+> **O que acontece:** uma API devolve `403 Forbidden` quando o token simplesmente expirou, ou devolve `401 Unauthorized` quando o usuário está autenticado mas não tem permissão para aquele recurso. **Por quê:** os dois códigos parecem intercambiáveis à primeira vista ("deu erro de acesso"), mas carregam semânticas opostas — um pede reautenticação, o outro não resolve nada com reautenticação. **Como evitar:** `401` = "não sei quem você é, autentique-se de novo" (sempre com header `WWW-Authenticate`); `403` = "sei quem você é, e a resposta é não". Clientes (SPAs, apps mobile) devem tratar os dois de formas diferentes — só o `401` deve disparar um fluxo de novo login.
 
 > [!warning] Deixar accounting como afterthought
-> **O que acontece:** o sistema autentica e autoriza corretamente, mas não registra quem fez o quê — quando um incidente acontece, não há trilha de auditoria para investigar.
-> **Por quê:** accounting é o "terceiro A" e frequentemente o mais negligenciado, porque não bloqueia nenhuma funcionalidade visível ao usuário — só aparece quando já é tarde demais.
-> **Como evitar:** registre eventos de autenticação e autorização (login, falha de login, mudança de permissão, acesso a dado sensível) desde o primeiro dia, não como retrofit pós-incidente. É consulta central no capstone de autorização de API (sub-galho 3).
+> **O que acontece:** o sistema autentica e autoriza corretamente, mas não registra quem fez o quê — quando um incidente acontece, não há trilha de auditoria para investigar. **Por quê:** accounting é o "terceiro A" e frequentemente o mais negligenciado, porque não bloqueia nenhuma funcionalidade visível ao usuário — só aparece quando já é tarde demais. **Como evitar:** registre eventos de autenticação e autorização (login, falha de login, mudança de permissão, acesso a dado sensível) desde o primeiro dia, não como retrofit pós-incidente. É consulta central no capstone de autorização de API (sub-galho 3).
 
 ## Em entrevista
 
@@ -301,14 +293,4 @@ Ficamos no vocabulário: AAA, fatores de autenticação, CIAM vs workforce, e o 
 - **Cisco Duo** — [*MFA fatigue: What it is and how to respond*](https://duo.com/blog/mfa-fatigue-what-is-it-how-to-respond) — mecânica do ataque de push bombing/MFA fatigue; acessado em 2026-07-10.
 - **Yubico** — [*MFA vs 2FA: What actually determines security*](https://www.yubico.com/resources/glossary/mfa-vs-2fa/) — por que fatores da mesma categoria não constituem MFA real; acessado em 2026-07-10.
 
-[^owasp]: OWASP, *A01:2025 Broken Access Control*.
-[^aaa]: Framework AAA — ver Wikipedia, *Authentication, authorization, and accounting*, e TechTarget, *What is Authentication, Authorization and Accounting?*.
-[^401403]: SuperTokens, *Demystifying HTTP Error Codes: 401 vs 403*.
-[^2famfa]: Yubico, *MFA vs 2FA: What actually determines security*.
-[^cisa]: CISA, *Implementing Phishing-Resistant MFA*.
-[^mfafatigue]: Cisco Duo, *MFA fatigue: What it is and how to respond*.
-[^aal]: NIST SP 800-63B / 800-63-4, Authenticator Assurance Levels.
-[^ciam]: FusionAuth, *CIAM vs. IAM*.
-[^perimeter]: Waldo Security, *"Identity Is the New Perimeter"*.
-[^dbir2026]: Verizon, *2026 Data Breach Investigations Report*.
-[^credstuff]: SecureW2, *What Three Threat Reports Reveal About Credential Stuffing and Credential Theft in 2026*.
+[^owasp]: OWASP, *A01:2025 Broken Access Control*. [^aaa]: Framework AAA — ver Wikipedia, *Authentication, authorization, and accounting*, e TechTarget, *What is Authentication, Authorization and Accounting?*. [^401403]: SuperTokens, *Demystifying HTTP Error Codes: 401 vs 403*. [^2famfa]: Yubico, *MFA vs 2FA: What actually determines security*. [^cisa]: CISA, *Implementing Phishing-Resistant MFA*. [^mfafatigue]: Cisco Duo, *MFA fatigue: What it is and how to respond*. [^aal]: NIST SP 800-63B / 800-63-4, Authenticator Assurance Levels. [^ciam]: FusionAuth, *CIAM vs. IAM*. [^perimeter]: Waldo Security, *"Identity Is the New Perimeter"*. [^dbir2026]: Verizon, *2026 Data Breach Investigations Report*. [^credstuff]: SecureW2, *What Three Threat Reports Reveal About Credential Stuffing and Credential Theft in 2026*.

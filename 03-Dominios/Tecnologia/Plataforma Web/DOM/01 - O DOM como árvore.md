@@ -199,8 +199,7 @@ lista.appendChild(document.createElement('li'));
 console.log(items2.length); // ainda 4 — não atualizou
 ```
 
-`getElementsBy*` retorna **HTMLCollection ao vivo** — cuidado ao iterar enquanto modifica.
-`querySelectorAll` retorna **NodeList estática** — mais previsível para iteração.
+`getElementsBy*` retorna **HTMLCollection ao vivo** — cuidado ao iterar enquanto modifica. `querySelectorAll` retorna **NodeList estática** — mais previsível para iteração.
 
 ---
 

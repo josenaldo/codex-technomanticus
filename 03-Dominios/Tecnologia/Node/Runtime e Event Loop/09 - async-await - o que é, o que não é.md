@@ -423,20 +423,15 @@ app.get('/usuario/:id', asyncHandler(async (req, res) => {
 
 ### Perguntas frequentes e respostas diretas
 
-**"Qual a diferença entre `async/await` e Promises?"**
-Nenhuma diferença de comportamento — `async/await` é açúcar sintático. Por baixo, o motor converte para encadeamento de Promises. A diferença é legibilidade: `async/await` elimina `.then()` encadeados e torna o fluxo linear.
+**"Qual a diferença entre `async/await` e Promises?"** Nenhuma diferença de comportamento — `async/await` é açúcar sintático. Por baixo, o motor converte para encadeamento de Promises. A diferença é legibilidade: `async/await` elimina `.then()` encadeados e torna o fluxo linear.
 
-**"Por que usar `Promise.all` em vez de vários `await`s em série?"**
-Operações em série tomam `soma(tempos)`. Operações em paralelo com `Promise.all` tomam `max(tempos)`. Para operações independentes, o paralelo é sempre mais rápido.
+**"Por que usar `Promise.all` em vez de vários `await`s em série?"** Operações em série tomam `soma(tempos)`. Operações em paralelo com `Promise.all` tomam `max(tempos)`. Para operações independentes, o paralelo é sempre mais rápido.
 
-**"O que acontece se uma promise em `Promise.all` rejeitar?"**
-`Promise.all` rejeita imediatamente com o motivo da primeira rejeição. As outras promises continuam rodando, mas seus resultados são ignorados. Se você precisa do resultado de todas — incluindo as falhas — use `Promise.allSettled`.
+**"O que acontece se uma promise em `Promise.all` rejeitar?"** `Promise.all` rejeita imediatamente com o motivo da primeira rejeição. As outras promises continuam rodando, mas seus resultados são ignorados. Se você precisa do resultado de todas — incluindo as falhas — use `Promise.allSettled`.
 
-**"Pode usar `await` fora de uma função `async`?"**
-Sim, em ES Modules (top-level await). Não em CommonJS. Em CommonJS é necessário embrulhar em `(async () => { ... })()`.
+**"Pode usar `await` fora de uma função `async`?"** Sim, em ES Modules (top-level await). Não em CommonJS. Em CommonJS é necessário embrulhar em `(async () => { ... })()`.
 
-**"Como lidar com erros em `async/await`?"**
-`try/catch` dentro da função async captura rejeições de qualquer `await` dentro do bloco. No ponto de chamada, `.catch()` ou `try/catch` em volta do `await` da chamada. Em handlers de frameworks, verificar se o framework captura automaticamente (Fastify/NestJS/Express 5 sim; Express 4 não).
+**"Como lidar com erros em `async/await`?"** `try/catch` dentro da função async captura rejeições de qualquer `await` dentro do bloco. No ponto de chamada, `.catch()` ou `try/catch` em volta do `await` da chamada. Em handlers de frameworks, verificar se o framework captura automaticamente (Fastify/NestJS/Express 5 sim; Express 4 não).
 
 ### Vocabulário técnico
 

@@ -76,9 +76,7 @@ Ele traz **só os commits mais recentes**. Rápido, e quebra tudo o que depende 
 Uso legítimo: pipeline que só precisa compilar o código atual. Fora disso, prefira o clone parcial — ele resolve o mesmo problema de tempo sem amputar a história.
 
 > [!warning] O clone raso do seu pipeline vai te morder
-> **O que acontece:** o build funciona, mas o `git describe` não acha a tag, o changelog automático sai vazio, ou o `blame` numa etapa de análise não enxerga nada.
-> **Por quê:** a maioria dos serviços de CI faz clone raso por padrão — o GitHub Actions, por exemplo, usa profundidade 1.
-> **Como evitar:** peça a história completa quando a etapa precisar dela (`fetch-depth: 0` no `actions/checkout`). Assunto retomado na nota 30.
+> **O que acontece:** o build funciona, mas o `git describe` não acha a tag, o changelog automático sai vazio, ou o `blame` numa etapa de análise não enxerga nada. **Por quê:** a maioria dos serviços de CI faz clone raso por padrão — o GitHub Actions, por exemplo, usa profundidade 1. **Como evitar:** peça a história completa quando a etapa precisar dela (`fetch-depth: 0` no `actions/checkout`). Assunto retomado na nota 30.
 
 ### Sparse-checkout — materialize só o que você usa
 
@@ -133,19 +131,13 @@ Sem essas quatro coisas, um monorepo em crescimento vira exatamente o que as pes
 ## Armadilhas comuns
 
 > [!warning] Migrar para monorepo esperando resolver problema de organização
-> **O que acontece:** juntam-se dez repositórios bagunçados e obtém-se um repositório bagunçado dez vezes maior, agora com CI lenta.
-> **Por quê:** o layout do repositório não muda acoplamento de código nem clareza de fronteira.
-> **Como evitar:** monorepo resolve **coordenação de mudança**, não arquitetura. Se o problema é acoplamento, ele é de design — assunto de [[03-Dominios/Engenharia/Design de Software/index|Design de Software]].
+> **O que acontece:** juntam-se dez repositórios bagunçados e obtém-se um repositório bagunçado dez vezes maior, agora com CI lenta. **Por quê:** o layout do repositório não muda acoplamento de código nem clareza de fronteira. **Como evitar:** monorepo resolve **coordenação de mudança**, não arquitetura. Se o problema é acoplamento, ele é de design — assunto de [[03-Dominios/Engenharia/Design de Software/index|Design de Software]].
 
 > [!warning] `sparse-checkout` sem o modo `cone`
-> **O que acontece:** o desempenho piora em vez de melhorar em repositórios grandes.
-> **Por quê:** o modo antigo, baseado em padrões arbitrários, exige avaliar cada caminho contra cada padrão. O modo `cone` (padrão desde o Git 2.25) restringe a diretórios e é muito mais rápido.
-> **Como evitar:** sempre `--cone`.
+> **O que acontece:** o desempenho piora em vez de melhorar em repositórios grandes. **Por quê:** o modo antigo, baseado em padrões arbitrários, exige avaliar cada caminho contra cada padrão. O modo `cone` (padrão desde o Git 2.25) restringe a diretórios e é muito mais rápido. **Como evitar:** sempre `--cone`.
 
 > [!warning] Achar que apagar arquivo grande resolve o tamanho
-> **O que acontece:** o repositório continua com gigabytes depois da remoção.
-> **Por quê:** o blob continua alcançável pelos commits antigos (nota 17).
-> **Como resolver:** `git filter-repo --strip-blobs-bigger-than 10M`, com todo o custo da nota 25 — ou LFS daqui em diante, aceitando o passado como está.
+> **O que acontece:** o repositório continua com gigabytes depois da remoção. **Por quê:** o blob continua alcançável pelos commits antigos (nota 17). **Como resolver:** `git filter-repo --strip-blobs-bigger-than 10M`, com todo o custo da nota 25 — ou LFS daqui em diante, aceitando o passado como está.
 
 ---
 

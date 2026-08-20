@@ -21,10 +21,7 @@ aliases:
 # 04 - O mega-prompt do Karpathy — anatomia da anti-sycophancy
 
 > [!abstract] TL;DR
-> Em 2025, [[Andrej Karpathy|Karpathy]] circulou um system prompt cirúrgico que ataca sycophancy — o vício do modelo de bajular, hedge-ar e validar prematuramente o usuário.
-> O prompt funciona porque empilha **role expansivo** (expert mundial em tudo), **standards verificáveis** (acurácia como métrica de sucesso), **proibições específicas** que bloqueiam cada caminho de fuga típico do modelo (não elogiar perguntas, não capitular sem evidência, gerar números independentes), e **explicitação de incerteza** (confidence levels).
-> Esta nota traz o prompt na íntegra, anatomiza cláusula por cláusula com tabela de "quando matar", e dá variantes.
-> É o artefato canônico do ofício porque condensa em ~250 palavras tudo que [[03 - Roles e personas — escolhendo o juízo do modelo|role prompting]] e [[06 - Constraints declarativas — boundaries como engenharia|constraints]] tentam ensinar separadamente.
+> Em 2025, [[Andrej Karpathy|Karpathy]] circulou um system prompt cirúrgico que ataca sycophancy — o vício do modelo de bajular, hedge-ar e validar prematuramente o usuário. O prompt funciona porque empilha **role expansivo** (expert mundial em tudo), **standards verificáveis** (acurácia como métrica de sucesso), **proibições específicas** que bloqueiam cada caminho de fuga típico do modelo (não elogiar perguntas, não capitular sem evidência, gerar números independentes), e **explicitação de incerteza** (confidence levels). Esta nota traz o prompt na íntegra, anatomiza cláusula por cláusula com tabela de "quando matar", e dá variantes. É o artefato canônico do ofício porque condensa em ~250 palavras tudo que [[03 - Roles e personas — escolhendo o juízo do modelo|role prompting]] e [[06 - Constraints declarativas — boundaries como engenharia|constraints]] tentam ensinar separadamente.
 
 > [!question]- Perguntas de revisão
 > 1. Por que cada cláusula do prompt do Karpathy precisa das outras? O que acontece se você usa só a central ("never praise my questions")?
@@ -147,18 +144,15 @@ flowchart TD
 
 Pense em como o modelo "procura" um caminho de mínima resistência. Sem o prompt:
 
-> Usuário: "Minha abordagem X deve funcionar, certo?"
-> Modelo: "Absolutamente! X tem várias vantagens como [lista de vantagens que o usuário listou de outra forma]."
+> Usuário: "Minha abordagem X deve funcionar, certo?" Modelo: "Absolutamente! X tem várias vantagens como [lista de vantagens que o usuário listou de outra forma]."
 
 Com só a cláusula central ("nunca valide premissas"):
 
-> Usuário: "Minha abordagem X deve funcionar, certo?"
-> Modelo: "Bem... X tem méritos, mas pode ser que..." [hedge pesado que efetivamente valida sem dizer sim diretamente]
+> Usuário: "Minha abordagem X deve funcionar, certo?" Modelo: "Bem... X tem méritos, mas pode ser que..." [hedge pesado que efetivamente valida sem dizer sim diretamente]
 
 Com o prompt completo (sem caminho de fuga):
 
-> Usuário: "Minha abordagem X deve funcionar, certo?"
-> Modelo: "Não necessariamente. O maior problema com X é [argumento técnico específico]. Você considerou Y como alternativa? [estimativa independente de viabilidade: confiança moderada]"
+> Usuário: "Minha abordagem X deve funcionar, certo?" Modelo: "Não necessariamente. O maior problema com X é [argumento técnico específico]. Você considerou Y como alternativa? [estimativa independente de viabilidade: confiança moderada]"
 
 A diferença entre a segunda e a terceira resposta é o conjunto de cláusulas que bloqueiam hedge, disclaimers, e a tendência de enfraquecimento progressivo da crítica.
 

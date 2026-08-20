@@ -303,8 +303,7 @@ Após 12 semanas:
 
 > *"Estamos gerando código com IA mais rápido E com qualidade igual ou melhor que pré-IA?"*
 
-Se sim → adoção bem-sucedida.
-Se não → ajuste calibração, talvez voltar uma fase.
+Se sim → adoção bem-sucedida. Se não → ajuste calibração, talvez voltar uma fase.
 
 Sem essa pergunta sendo respondida com **dados**, adoção é fé.
 

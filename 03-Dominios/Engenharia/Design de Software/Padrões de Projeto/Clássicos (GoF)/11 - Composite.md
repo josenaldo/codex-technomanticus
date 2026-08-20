@@ -21,14 +21,7 @@ aliases:
 # Composite
 
 > [!abstract] TL;DR
-> O **Composite** compõe objetos em **árvore** para representar hierarquias **parte-todo**, de modo
-> que o cliente trate um item isolado (folha) e um grupo inteiro (composto) **da mesma forma** —
-> sem perguntar "é um ou vários?" a cada nível. É o padrão por trás de sistemas de arquivos
-> (arquivo e pasta), árvores de UI, ASTs e expressões. Na nossa lente cross-linguagem, ele encontra
-> um rival elegante: linguagens com **tipos algébricos** (*sealed*/união) modelam a mesma árvore
-> como um **tipo-soma + recursão**, ao estilo funcional. A tensão de design mais citada do padrão: a
-> escolha entre **transparência** (métodos de filho na interface comum, mesmo sem sentido para
-> folhas) e **segurança** (só no composto, ao custo de o cliente checar tipos).
+> O **Composite** compõe objetos em **árvore** para representar hierarquias **parte-todo**, de modo que o cliente trate um item isolado (folha) e um grupo inteiro (composto) **da mesma forma** — sem perguntar "é um ou vários?" a cada nível. É o padrão por trás de sistemas de arquivos (arquivo e pasta), árvores de UI, ASTs e expressões. Na nossa lente cross-linguagem, ele encontra um rival elegante: linguagens com **tipos algébricos** (*sealed*/união) modelam a mesma árvore como um **tipo-soma + recursão**, ao estilo funcional. A tensão de design mais citada do padrão: a escolha entre **transparência** (métodos de filho na interface comum, mesmo sem sentido para folhas) e **segurança** (só no composto, ao custo de o cliente checar tipos).
 
 ## O tamanho da pasta é a soma dos filhos
 
@@ -95,19 +88,13 @@ const tamanho = (c: Componente): number =>
 ## Armadilhas comuns
 
 > [!warning] Composite onde uma lista simples resolve
-> **O que acontece:** monta-se toda a maquinaria de árvore para uma coleção **plana** (sem aninhamento real), ou para uma hierarquia que nunca terá mais de um nível.
-> **Por quê:** o Composite se paga quando há **recursão parte-todo genuína** (árvore de profundidade arbitrária). Sem aninhamento, é estrutura demais para um `for` que bastaria.
-> **Como evitar:** só use quando existir hierarquia recursiva real (nós que contêm nós). Coleção plana → lista e um laço.
+> **O que acontece:** monta-se toda a maquinaria de árvore para uma coleção **plana** (sem aninhamento real), ou para uma hierarquia que nunca terá mais de um nível. **Por quê:** o Composite se paga quando há **recursão parte-todo genuína** (árvore de profundidade arbitrária). Sem aninhamento, é estrutura demais para um `for` que bastaria. **Como evitar:** só use quando existir hierarquia recursiva real (nós que contêm nós). Coleção plana → lista e um laço.
 
 > [!warning] Transparência vs segurança: o `add()` sem sentido na folha
-> **O que acontece:** para tratar folha e composto igual, coloca-se `add(filho)`/`remove(filho)` na interface comum — mas um arquivo (folha) não tem filhos, então seu `add()` ou não faz nada, ou lança exceção em runtime.
-> **Por quê:** é o *trade-off* clássico do GoF. **Transparência** (métodos de filho na interface comum) dá uniformidade total, ao custo de operações inválidas nas folhas. **Segurança** (métodos de filho só no composto) evita o método inválido, mas força o cliente a checar o tipo antes de adicionar.
-> **Como evitar:** escolha conscientemente. Se o cliente raramente monta a árvore (só a percorre), prefira **segurança** (folha sem `add`). Se montar é comum e uniforme, aceite a **transparência** e documente que `add` na folha é no-op/erro.
+> **O que acontece:** para tratar folha e composto igual, coloca-se `add(filho)`/`remove(filho)` na interface comum — mas um arquivo (folha) não tem filhos, então seu `add()` ou não faz nada, ou lança exceção em runtime. **Por quê:** é o *trade-off* clássico do GoF. **Transparência** (métodos de filho na interface comum) dá uniformidade total, ao custo de operações inválidas nas folhas. **Segurança** (métodos de filho só no composto) evita o método inválido, mas força o cliente a checar o tipo antes de adicionar. **Como evitar:** escolha conscientemente. Se o cliente raramente monta a árvore (só a percorre), prefira **segurança** (folha sem `add`). Se montar é comum e uniforme, aceite a **transparência** e documente que `add` na folha é no-op/erro.
 
 > [!warning] Recursão sem defesa contra ciclos ou profundidade
-> **O que acontece:** a árvore vira um grafo (um nó vira filho de um ancestral) e a recursão entra em laço infinito; ou uma árvore muito profunda estoura a pilha.
-> **Por quê:** as operações do Composite são recursivas e assumem uma árvore **acíclica** e de profundidade razoável. Ciclos ou profundidade extrema quebram essa suposição silenciosamente.
-> **Como evitar:** garanta a invariante de árvore ao montar (sem ciclos); para árvores potencialmente enormes, considere travessia iterativa com pilha explícita em vez de recursão.
+> **O que acontece:** a árvore vira um grafo (um nó vira filho de um ancestral) e a recursão entra em laço infinito; ou uma árvore muito profunda estoura a pilha. **Por quê:** as operações do Composite são recursivas e assumem uma árvore **acíclica** e de profundidade razoável. Ciclos ou profundidade extrema quebram essa suposição silenciosamente. **Como evitar:** garanta a invariante de árvore ao montar (sem ciclos); para árvores potencialmente enormes, considere travessia iterativa com pilha explícita em vez de recursão.
 
 ## Como explicar em inglês
 

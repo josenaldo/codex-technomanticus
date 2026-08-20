@@ -116,8 +116,7 @@ graph TB
     D -->|"Funciona mas<br/>não faz o esperado"| G["☠️ Bug semântico<br/>em produção"]
 ```
 
-**Benigno:** quebra build → você descobre antes de mergir.
-**Perigoso:** silenciosamente passa → produção em fogo.
+**Benigno:** quebra build → você descobre antes de mergir. **Perigoso:** silenciosamente passa → produção em fogo.
 
 ## A camada de validação que pega cada tipo
 

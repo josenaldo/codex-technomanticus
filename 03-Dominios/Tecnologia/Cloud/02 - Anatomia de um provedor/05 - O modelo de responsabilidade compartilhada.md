@@ -53,8 +53,7 @@ A própria AWS confirma isso na letra da documentação, dividindo os serviços 
 > [!tip] Assista: AWS Shared Responsibility Model Explained
 > **Canal:** Go Cloud Architects | **Duração:** ~9min | **Idioma:** EN
 >
-> Percorre a mesma linha "of the cloud" vs. "in the cloud" com exemplos práticos por tipo de serviço (EC2, containers, Lambda), reforçando visualmente por que a fatia do cliente encolhe conforme o serviço fica mais gerenciado — sem nunca chegar a zero.
-> Trecho de destaque [00:53]: *"the cloud provider is responsible for their stuff"*
+> Percorre a mesma linha "of the cloud" vs. "in the cloud" com exemplos práticos por tipo de serviço (EC2, containers, Lambda), reforçando visualmente por que a fatia do cliente encolhe conforme o serviço fica mais gerenciado — sem nunca chegar a zero. Trecho de destaque [00:53]: *"the cloud provider is responsible for their stuff"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=GseJ2wkhrs0)
 

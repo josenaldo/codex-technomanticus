@@ -104,15 +104,12 @@ O TTL nativo do DynamoDB (expiração automática de itens, sem custo de escrita
 > [!tip] Assista: Fix Duplicate Messages with the Idempotent Consumer Pattern
 > **Canal:** Milan Jovanović | **Duração:** ~14min | **Idioma:** EN
 >
-> Mesmo com Azure Service Bus em vez de SQS, o raciocínio é idêntico ao desta nota: exactly-once *delivery* não existe de verdade, então a defesa é exactly-once *processing* no consumer, via checagem de duplicata antes do efeito — o mesmo princípio da escrita condicional no DynamoDB, só que ilustrado com um exemplo de código completo do zero.
-> Trecho de destaque [2:38]: *"exactly once delivery isn't really possible in a real-world system — however, exactly once processing is, and that's what we're going to talk about in this video"*
+> Mesmo com Azure Service Bus em vez de SQS, o raciocínio é idêntico ao desta nota: exactly-once *delivery* não existe de verdade, então a defesa é exactly-once *processing* no consumer, via checagem de duplicata antes do efeito — o mesmo princípio da escrita condicional no DynamoDB, só que ilustrado com um exemplo de código completo do zero. Trecho de destaque [2:38]: *"exactly once delivery isn't really possible in a real-world system — however, exactly once processing is, and that's what we're going to talk about in this video"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=GsZ_ZtlRCBg)
 
 > [!warning] Idempotência no handler Lambda, não fora dele
-> **O que acontece:** um time implementa a checagem de idempotência numa camada de infraestrutura — um decorator, um middleware genérico — sem garantir que a gravação da chave e a execução do efeito de negócio fiquem atomicamente juntas.
-> **Por quê:** se o Lambda processa o evento, gera o efeito (por exemplo, chama uma API de pagamento) e só depois grava a chave de idempotência, existe uma janela real onde uma reentrega — porque o Lambda morreu logo depois do efeito, antes de gravar a chave — dispara o efeito de novo, exatamente o cenário que a idempotência existia para prevenir. A ordem importa: gravar a chave (ou pelo menos reservar a intenção, com um status `em_processamento`) antes ou atomicamente com o efeito, nunca depois.
-> **Como evitar:** usar a escrita condicional como *reserva* da execução antes de disparar o efeito, e não como um registro de auditoria depois do fato — o padrão do exemplo acima faz isso corretamente porque a gravação acontece antes de `efeito_de_negocio()` ser chamado.
+> **O que acontece:** um time implementa a checagem de idempotência numa camada de infraestrutura — um decorator, um middleware genérico — sem garantir que a gravação da chave e a execução do efeito de negócio fiquem atomicamente juntas. **Por quê:** se o Lambda processa o evento, gera o efeito (por exemplo, chama uma API de pagamento) e só depois grava a chave de idempotência, existe uma janela real onde uma reentrega — porque o Lambda morreu logo depois do efeito, antes de gravar a chave — dispara o efeito de novo, exatamente o cenário que a idempotência existia para prevenir. A ordem importa: gravar a chave (ou pelo menos reservar a intenção, com um status `em_processamento`) antes ou atomicamente com o efeito, nunca depois. **Como evitar:** usar a escrita condicional como *reserva* da execução antes de disparar o efeito, e não como um registro de auditoria depois do fato — o padrão do exemplo acima faz isso corretamente porque a gravação acontece antes de `efeito_de_negocio()` ser chamado.
 
 ## Ordenação: quando importa, e o que ela custa
 
@@ -236,19 +233,13 @@ Isso não torna a DO inviável para arquitetura event-driven — Kafka é, ele m
 ## Armadilhas comuns
 
 > [!warning] Idempotência tratada como responsabilidade do broker
-> **O que acontece:** um time assume que, porque o SQS ou o SNS "garantem entrega confiável", a duplicação de mensagens é um evento raro o suficiente para ignorar.
-> **Por quê:** at-least-once **é** a garantia padrão — duplicata acontece em operação normal (rebalanceamento, timeout de ack, retry de rede), não só em cenário de desastre. Um consumer sem idempotência processa a mesma mensagem múltiplas vezes cedo ou tarde, sob volume real.
-> **Como evitar:** toda escrita de efeito colateral relevante (cobrança, envio de email, decremento de estoque) passa por uma checagem de deduplicação atômica antes de executar — o padrão de escrita condicional no DynamoDB desta nota, ou equivalente.
+> **O que acontece:** um time assume que, porque o SQS ou o SNS "garantem entrega confiável", a duplicação de mensagens é um evento raro o suficiente para ignorar. **Por quê:** at-least-once **é** a garantia padrão — duplicata acontece em operação normal (rebalanceamento, timeout de ack, retry de rede), não só em cenário de desastre. Um consumer sem idempotência processa a mesma mensagem múltiplas vezes cedo ou tarde, sob volume real. **Como evitar:** toda escrita de efeito colateral relevante (cobrança, envio de email, decremento de estoque) passa por uma checagem de deduplicação atômica antes de executar — o padrão de escrita condicional no DynamoDB desta nota, ou equivalente.
 
 > [!warning] DLQ sem alarme configurado
-> **O que acontece:** a DLQ existe, tecnicamente configurada, mas ninguém recebe notificação quando mensagens chegam ali — ela só é olhada quando alguém lembra, ou quando um cliente reclama.
-> **Por quê:** uma DLQ sem alarme funciona, na prática, como at-most-once disfarçado de at-least-once: a mensagem não foi perdida tecnicamente (ela existe, sentada na DLQ), mas o efeito de negócio que ela representava nunca aconteceu, e ninguém sabe disso até tarde.
-> **Como evitar:** todo DLQ nesta trilha nasce com um CloudWatch Alarm na métrica de mensagens visíveis, configurado no mesmo PR/deploy que cria a fila — nunca como item de backlog "adicionar depois".
+> **O que acontece:** a DLQ existe, tecnicamente configurada, mas ninguém recebe notificação quando mensagens chegam ali — ela só é olhada quando alguém lembra, ou quando um cliente reclama. **Por quê:** uma DLQ sem alarme funciona, na prática, como at-most-once disfarçado de at-least-once: a mensagem não foi perdida tecnicamente (ela existe, sentada na DLQ), mas o efeito de negócio que ela representava nunca aconteceu, e ninguém sabe disso até tarde. **Como evitar:** todo DLQ nesta trilha nasce com um CloudWatch Alarm na métrica de mensagens visíveis, configurado no mesmo PR/deploy que cria a fila — nunca como item de backlog "adicionar depois".
 
 > [!warning] Ordenação forçada onde não era necessária
-> **O que acontece:** um time usa SQS FIFO ou SNS FIFO em todo o sistema, por reflexo de "ordem é sempre mais seguro", sem avaliar se os eventos em questão de fato compartilham um agregado.
-> **Por quê:** FIFO custa throughput real — e, além disso, limita as opções de integração (SNS FIFO só publica para SQS FIFO, nunca direto para Lambda), forçando uma camada extra que talvez nem fosse necessária se a ordenação não fosse exigida em primeiro lugar.
-> **Como evitar:** aplicar a mesma régua da nota conceitual — ordenação só onde dois eventos descrevem o mesmo agregado — e usar `MessageGroupId` calibrado por entidade de negócio, não uma fila FIFO genérica para tudo.
+> **O que acontece:** um time usa SQS FIFO ou SNS FIFO em todo o sistema, por reflexo de "ordem é sempre mais seguro", sem avaliar se os eventos em questão de fato compartilham um agregado. **Por quê:** FIFO custa throughput real — e, além disso, limita as opções de integração (SNS FIFO só publica para SQS FIFO, nunca direto para Lambda), forçando uma camada extra que talvez nem fosse necessária se a ordenação não fosse exigida em primeiro lugar. **Como evitar:** aplicar a mesma régua da nota conceitual — ordenação só onde dois eventos descrevem o mesmo agregado — e usar `MessageGroupId` calibrado por entidade de negócio, não uma fila FIFO genérica para tudo.
 
 ## Em entrevista
 

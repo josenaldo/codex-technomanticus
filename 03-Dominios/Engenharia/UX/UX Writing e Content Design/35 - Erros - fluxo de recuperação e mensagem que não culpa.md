@@ -15,14 +15,7 @@ publish: true
 # Erros: fluxo de recuperação e mensagem que não culpa
 
 > [!abstract] TL;DR
-> Uma boa mensagem de erro tem três partes, sempre nesta ordem: **o que aconteceu · por que · o
-> que fazer agora.** A regra de tom mais violada é culpar o usuário — "Digite um e-mail válido" é
-> melhor que "Você digitou um e-mail inválido", porque foca na solução, não na falha, e evita que o
-> usuário se sinta repreendido por um sistema. A âncora canônica é a **heurística 9 de Nielsen**
-> (ajudar a reconhecer, diagnosticar e recuperar de erros); esta nota não a reexplica, aprofunda o
-> **conteúdo e o tom** da mensagem. O *fluxo* de recuperação e o desenho do retry pertencem à nota
-> 25 (latência e feedback); o **anúncio a leitor de tela** já está no domínio de Acessibilidade —
-> aqui, linka-se os dois, não se repete nenhum.
+> Uma boa mensagem de erro tem três partes, sempre nesta ordem: **o que aconteceu · por que · o que fazer agora.** A regra de tom mais violada é culpar o usuário — "Digite um e-mail válido" é melhor que "Você digitou um e-mail inválido", porque foca na solução, não na falha, e evita que o usuário se sinta repreendido por um sistema. A âncora canônica é a **heurística 9 de Nielsen** (ajudar a reconhecer, diagnosticar e recuperar de erros); esta nota não a reexplica, aprofunda o **conteúdo e o tom** da mensagem. O *fluxo* de recuperação e o desenho do retry pertencem à nota 25 (latência e feedback); o **anúncio a leitor de tela** já está no domínio de Acessibilidade — aqui, linka-se os dois, não se repete nenhum.
 
 Imagine preencher um formulário de cadastro, clicar em "Enviar" e ver, no topo da tela, uma faixa vermelha genérica: "Algo deu errado, tente novamente". Nenhuma indicação de qual campo, qual regra foi violada, ou se o problema é seu (um campo mal preenchido) ou do sistema (o servidor caiu). Você revisa o formulário inteiro, não encontra nada óbvio, tenta enviar de novo — a mesma mensagem aparece. Na terceira tentativa, você desiste e abandona o cadastro. Três dias depois, uma investigação no time revela que o erro era um CEP com formato inválido, detectado no backend, mas cuja mensagem específica nunca chegou ao frontend — só o "algo deu errado" chegou. O sistema *sabia* exatamente o que estava errado. A mensagem que o usuário recebeu não sabia de nada. É esse abismo entre "o sistema tem a informação" e "o usuário recebeu a informação" que esta nota existe para fechar — e ele se fecha com texto, não com mais lógica de validação.
 
@@ -100,19 +93,13 @@ Uma pergunta reveladora em entrevista sênior/staff: *"como você garante que me
 ## Armadilhas comuns
 
 > [!warning] Mensagem genérica que não distingue causa
-> **O que acontece:** "Algo deu errado, tente novamente" aparece para falha de rede, de permissão e de servidor igualmente, como nos Cenários 1 e 3.
-> **Por quê:** é mais barato de implementar capturar qualquer erro num `catch` único e mostrar uma string fixa do que propagar e traduzir cada tipo de falha — o caminho de menor esforço no código vira o pior caminho para o usuário.
-> **Como evitar:** trate cada categoria de falha (rede, permissão, servidor, validação) como um caso de mensagem própria desde o desenho da feature, não como refinamento posterior.
+> **O que acontece:** "Algo deu errado, tente novamente" aparece para falha de rede, de permissão e de servidor igualmente, como nos Cenários 1 e 3. **Por quê:** é mais barato de implementar capturar qualquer erro num `catch` único e mostrar uma string fixa do que propagar e traduzir cada tipo de falha — o caminho de menor esforço no código vira o pior caminho para o usuário. **Como evitar:** trate cada categoria de falha (rede, permissão, servidor, validação) como um caso de mensagem própria desde o desenho da feature, não como refinamento posterior.
 
 > [!warning] Mensagem que culpa o usuário
-> **O que acontece:** o texto do erro posiciona o usuário como sujeito da falha ("você digitou errado", "sua senha é fraca"), como no Cenário 2.
-> **Por quê:** é a forma mais direta, gramaticalmente, de descrever o que aconteceu — "você fez X" é uma frase mais curta e mais fácil de escrever rápido do que reformular para focar na ação corretiva.
-> **Como evitar:** reescreva toda mensagem de erro tirando o usuário do papel de sujeito da falha e colocando a ação corretiva no centro da frase — "Digite um e-mail válido", não "Você digitou um e-mail inválido".
+> **O que acontece:** o texto do erro posiciona o usuário como sujeito da falha ("você digitou errado", "sua senha é fraca"), como no Cenário 2. **Por quê:** é a forma mais direta, gramaticalmente, de descrever o que aconteceu — "você fez X" é uma frase mais curta e mais fácil de escrever rápido do que reformular para focar na ação corretiva. **Como evitar:** reescreva toda mensagem de erro tirando o usuário do papel de sujeito da falha e colocando a ação corretiva no centro da frase — "Digite um e-mail válido", não "Você digitou um e-mail inválido".
 
 > [!warning] Diagnosticar sem sugerir ação
-> **O que acontece:** a mensagem descreve corretamente o problema técnico, mas para aí — não diz o que o usuário deveria fazer a seguir.
-> **Por quê:** a parte "o que aconteceu" costuma já existir no sistema (é literalmente a mensagem de exceção ou o código de erro), então é tentador mostrá-la como está; a parte "o que fazer agora" exige alguém pensar deliberadamente na experiência do usuário, um passo a mais que fica de fora sob pressão de prazo.
-> **Como evitar:** trate as três perguntas da anatomia de erro como checklist obrigatório antes de considerar uma mensagem pronta — se "o que fazer agora" está vazio, a mensagem não está completa.
+> **O que acontece:** a mensagem descreve corretamente o problema técnico, mas para aí — não diz o que o usuário deveria fazer a seguir. **Por quê:** a parte "o que aconteceu" costuma já existir no sistema (é literalmente a mensagem de exceção ou o código de erro), então é tentador mostrá-la como está; a parte "o que fazer agora" exige alguém pensar deliberadamente na experiência do usuário, um passo a mais que fica de fora sob pressão de prazo. **Como evitar:** trate as três perguntas da anatomia de erro como checklist obrigatório antes de considerar uma mensagem pronta — se "o que fazer agora" está vazio, a mensagem não está completa.
 
 ## Como explicar em inglês
 

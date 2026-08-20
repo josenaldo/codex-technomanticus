@@ -66,19 +66,13 @@ Um fractional CTO que vinha atendendo 4 clientes de porte parecido, sentindo a a
 ## Armadilhas comuns
 
 > [!warning] Deixar a documentação de handover pro último dia
-> **O que acontece:** o offboarding só começa quando o contrato já está formalmente encerrando, sem tempo real pra transferir conhecimento com cuidado.
-> **Por quê:** decisões acumuladas ao longo de meses não cabem numa documentação às pressas — o que não foi registrado ao longo do caminho se perde de verdade.
-> **Como evitar:** reservar as últimas 4 semanas do contrato explicitamente pra handover, formalizado já na cláusula de aviso prévio do contrato original.
+> **O que acontece:** o offboarding só começa quando o contrato já está formalmente encerrando, sem tempo real pra transferir conhecimento com cuidado. **Por quê:** decisões acumuladas ao longo de meses não cabem numa documentação às pressas — o que não foi registrado ao longo do caminho se perde de verdade. **Como evitar:** reservar as últimas 4 semanas do contrato explicitamente pra handover, formalizado já na cláusula de aviso prévio do contrato original.
 
 > [!warning] Aceitar mais um cliente além da capacidade real, "só dessa vez"
-> **O que acontece:** o fractional já está no teto de 3-4 clientes, mas aceita mais um por medo de perder a oportunidade.
-> **Por quê:** isso reintroduz exatamente o problema de context switching descrito em [[16 - Gerenciando múltiplos engagements simultâneos]] — a qualidade entregue a todos os clientes cai, não só ao novo.
-> **Como evitar:** quando a capacidade estiver no limite, considerar os modelos de prática (anchor-plus-portfolio, pod) em vez de simplesmente espremer mais um cliente na agenda atual.
+> **O que acontece:** o fractional já está no teto de 3-4 clientes, mas aceita mais um por medo de perder a oportunidade. **Por quê:** isso reintroduz exatamente o problema de context switching descrito em [[16 - Gerenciando múltiplos engagements simultâneos]] — a qualidade entregue a todos os clientes cai, não só ao novo. **Como evitar:** quando a capacidade estiver no limite, considerar os modelos de prática (anchor-plus-portfolio, pod) em vez de simplesmente espremer mais um cliente na agenda atual.
 
 > [!warning] Encerrar a relação sem pedir o case study ou depoimento
-> **O que acontece:** o engajamento termina bem, mas o fractional não formaliza nada disso como prova social pro próximo ciclo de prospecção.
-> **Por quê:** o momento de encerramento, quando o resultado já está claro e o cliente ainda está satisfeito, é o ponto de maior disposição do cliente pra dar um depoimento ou autorizar um case study — esperar demais depois disso reduz a chance de conseguir.
-> **Como evitar:** incluir o pedido de depoimento/case study como parte natural da conversa de offboarding, não como um favor pedido depois, fora de contexto.
+> **O que acontece:** o engajamento termina bem, mas o fractional não formaliza nada disso como prova social pro próximo ciclo de prospecção. **Por quê:** o momento de encerramento, quando o resultado já está claro e o cliente ainda está satisfeito, é o ponto de maior disposição do cliente pra dar um depoimento ou autorizar um case study — esperar demais depois disso reduz a chance de conseguir. **Como evitar:** incluir o pedido de depoimento/case study como parte natural da conversa de offboarding, não como um favor pedido depois, fora de contexto.
 
 ## Como explicar em inglês
 

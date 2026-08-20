@@ -97,8 +97,7 @@ bwrap \
   -- claude-code
 ```
 
-Com esse profile, uma deny rule burlada na camada de app não vira incidente — o kernel barra a chamada
-antes de ela tocar o filesystem real:
+Com esse profile, uma deny rule burlada na camada de app não vira incidente — o kernel barra a chamada antes de ela tocar o filesystem real:
 
 ```
 $ bwrap --ro-bind / / --bind ./src ./src --tmpfs /tmp --unshare-net --die-with-parent -- \
@@ -106,9 +105,7 @@ $ bwrap --ro-bind / / --bind ./src ./src --tmpfs /tmp --unshare-net --die-with-p
 bash: /etc/passwd: Permission denied
 ```
 
-`/etc/` só está montado `--ro-bind` — mesmo que o agente (ou um bypass tipo CVE-2026-25723) consiga
-escapar do allowlist de comandos, a escrita fora de `./src` esbarra no mount read-only imposto pelo
-kernel, não numa regra que pode ser contornada.
+`/etc/` só está montado `--ro-bind` — mesmo que o agente (ou um bypass tipo CVE-2026-25723) consiga escapar do allowlist de comandos, a escrita fora de `./src` esbarra no mount read-only imposto pelo kernel, não numa regra que pode ser contornada.
 
 ### Layer 3 — Infrastructure-level
 

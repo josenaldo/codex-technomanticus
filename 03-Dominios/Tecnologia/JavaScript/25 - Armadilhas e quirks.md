@@ -633,29 +633,19 @@ const maior2 = nums.reduce((acc, v) => Math.max(acc, v), -Infinity);
 ## Armadilhas comuns
 
 > [!warning] Verificar null com `typeof` e não verificar `=== null`
-> **O que acontece:** `typeof null === "object"` retorna `true`. Código que testa `if (typeof x === "object")` executa para valores `null`, causando `TypeError: Cannot read properties of null`.
-> **Por quê:** Bug histórico de 1995 na implementação de Brendan Eich — `null` tem tag de bits `000`, igual a objetos.
-> **Como evitar:** Sempre use `if (x !== null && typeof x === "object")`. Para testar null especificamente, use `if (x === null)` com identidade estrita.
+> **O que acontece:** `typeof null === "object"` retorna `true`. Código que testa `if (typeof x === "object")` executa para valores `null`, causando `TypeError: Cannot read properties of null`. **Por quê:** Bug histórico de 1995 na implementação de Brendan Eich — `null` tem tag de bits `000`, igual a objetos. **Como evitar:** Sempre use `if (x !== null && typeof x === "object")`. Para testar null especificamente, use `if (x === null)` com identidade estrita.
 
 > [!warning] `sort()` sem comparador em arrays numéricos
-> **O que acontece:** `[10, 9, 2, 100].sort()` retorna `[10, 100, 2, 9]` — ordenação lexicográfica por string.
-> **Por quê:** Sem comparador, `sort()` chama `.toString()` em cada elemento e compara caractere a caractere.
-> **Como evitar:** Sempre passe um comparador: `.sort((a, b) => a - b)` para ordem numérica crescente.
+> **O que acontece:** `[10, 9, 2, 100].sort()` retorna `[10, 100, 2, 9]` — ordenação lexicográfica por string. **Por quê:** Sem comparador, `sort()` chama `.toString()` em cada elemento e compara caractere a caractere. **Como evitar:** Sempre passe um comparador: `.sort((a, b) => a - b)` para ordem numérica crescente.
 
 > [!warning] `NaN` comparado com `===`
-> **O que acontece:** `resultado === NaN` é sempre `false`, mesmo quando `resultado` de fato é `NaN`. A condição nunca é verdadeira — código morto silencioso.
-> **Por quê:** IEEE 754 define que NaN é "não-ordenado" em relação a qualquer valor, inclusive si mesmo.
-> **Como evitar:** Use `Number.isNaN(resultado)` — sem coerção, detecta somente o valor `NaN`.
+> **O que acontece:** `resultado === NaN` é sempre `false`, mesmo quando `resultado` de fato é `NaN`. A condição nunca é verdadeira — código morto silencioso. **Por quê:** IEEE 754 define que NaN é "não-ordenado" em relação a qualquer valor, inclusive si mesmo. **Como evitar:** Use `Number.isNaN(resultado)` — sem coerção, detecta somente o valor `NaN`.
 
 > [!warning] `for...in` em arrays com propriedades extras ou prototype modificado
-> **O que acontece:** Bibliotecas que adicionam métodos ao `Array.prototype` (frameworks antigos, polyfills ingênuos) fazem `for...in` iterar sobre esses métodos.
-> **Por quê:** `for...in` percorre todas as propriedades enumeráveis, incluindo as herdadas via prototype chain.
-> **Como evitar:** Use `for...of`, `forEach`, `map`, `filter` ou `for (let i = 0; i < arr.length; i++)` para arrays.
+> **O que acontece:** Bibliotecas que adicionam métodos ao `Array.prototype` (frameworks antigos, polyfills ingênuos) fazem `for...in` iterar sobre esses métodos. **Por quê:** `for...in` percorre todas as propriedades enumeráveis, incluindo as herdadas via prototype chain. **Como evitar:** Use `for...of`, `forEach`, `map`, `filter` ou `for (let i = 0; i < arr.length; i++)` para arrays.
 
 > [!warning] Aritmética de float para dinheiro
-> **O que acontece:** Calcular preços com `0.1 + 0.2` acumula erros de ponto flutuante. Em sistemas financeiros, centavos podem aparecer ou desaparecer.
-> **Por quê:** IEEE 754 não representa 0.1 exatamente — é uma aproximação binária.
-> **Como evitar:** Trabalhe em inteiros (centavos) ou use bibliotecas como `Decimal.js` / `big.js` para aritmética de precisão arbitrária.
+> **O que acontece:** Calcular preços com `0.1 + 0.2` acumula erros de ponto flutuante. Em sistemas financeiros, centavos podem aparecer ou desaparecer. **Por quê:** IEEE 754 não representa 0.1 exatamente — é uma aproximação binária. **Como evitar:** Trabalhe em inteiros (centavos) ou use bibliotecas como `Decimal.js` / `big.js` para aritmética de precisão arbitrária.
 
 ---
 

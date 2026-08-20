@@ -23,16 +23,10 @@ aliases:
 # Leader Election
 
 > [!abstract] TL;DR
-> Sua aplicação roda em vinte instâncias idênticas — ótimo para disponibilidade e péssimo para tarefas
-> que devem acontecer **uma vez só**: o job noturno, a reconciliação, a compactação. Rodar vinte vezes
-> não é "mais resiliente": é vinte e-mails para o mesmo cliente. O Leader Election elege uma instância
-> como responsável, tipicamente por **lease** — uma reserva com validade que precisa ser renovada, de
-> modo que a morte do líder libera o cargo automaticamente. O sacrifício é indisponibilidade da função
-> durante a reeleição, e o inimigo tem nome: **split-brain**, dois líderes convictos ao mesmo tempo.
+> Sua aplicação roda em vinte instâncias idênticas — ótimo para disponibilidade e péssimo para tarefas que devem acontecer **uma vez só**: o job noturno, a reconciliação, a compactação. Rodar vinte vezes não é "mais resiliente": é vinte e-mails para o mesmo cliente. O Leader Election elege uma instância como responsável, tipicamente por **lease** — uma reserva com validade que precisa ser renovada, de modo que a morte do líder libera o cargo automaticamente. O sacrifício é indisponibilidade da função durante a reeleição, e o inimigo tem nome: **split-brain**, dois líderes convictos ao mesmo tempo.
 
 > [!info] O recorte desta nota
-> Aqui o padrão como decisão e seus riscos. **Consenso, quórum e os algoritmos** (Raft, Paxos) em
-> [[03-Dominios/Engenharia/Arquitetura/System Design/2 - Building blocks/06 - CAP, consistência e consenso|System Design 2-06]].
+> Aqui o padrão como decisão e seus riscos. **Consenso, quórum e os algoritmos** (Raft, Paxos) em [[03-Dominios/Engenharia/Arquitetura/System Design/2 - Building blocks/06 - CAP, consistência e consenso|System Design 2-06]].
 
 ## Vinte e-mails para o mesmo cliente
 
@@ -100,19 +94,13 @@ O ponto que mais surpreende: **isso não é um bug do mecanismo de eleição**. 
 ## Armadilhas comuns
 
 > [!warning] Flag de liderança sem expiração
-> **O que acontece:** o líder morre com a flag marcada. Ninguém assume, e a tarefa simplesmente **para de acontecer** — em silêncio, porque não há erro, só ausência. A descoberta vem dias depois, quando alguém nota que os relatórios pararam.
-> **Por quê:** modelou-se liderança como estado permanente, não como reserva com validade.
-> **Como evitar:** lease com TTL e renovação, sempre. E monitore a **execução da tarefa**, não a saúde do líder: alarme quando o job não roda há mais tempo que o esperado.
+> **O que acontece:** o líder morre com a flag marcada. Ninguém assume, e a tarefa simplesmente **para de acontecer** — em silêncio, porque não há erro, só ausência. A descoberta vem dias depois, quando alguém nota que os relatórios pararam. **Por quê:** modelou-se liderança como estado permanente, não como reserva com validade. **Como evitar:** lease com TTL e renovação, sempre. E monitore a **execução da tarefa**, não a saúde do líder: alarme quando o job não roda há mais tempo que o esperado.
 
 > [!warning] Ignorar o split-brain
-> **O que acontece:** pausa de GC ou partição de rede produzem dois líderes por alguns segundos. Efeitos duplicados, ou pior, escritas concorrentes que corrompem estado.
-> **Por quê:** assume-se que "sou o líder" continua verdadeiro enquanto o processo executa — e nada avisa o líder deposto de que ele foi deposto.
-> **Como evitar:** **fencing token** validado no recurso protegido, e reverificação do lease antes de cada operação com efeito. Onde a operação for idempotente, o dano do split-brain cai muito — mais uma razão para idempotência.
+> **O que acontece:** pausa de GC ou partição de rede produzem dois líderes por alguns segundos. Efeitos duplicados, ou pior, escritas concorrentes que corrompem estado. **Por quê:** assume-se que "sou o líder" continua verdadeiro enquanto o processo executa — e nada avisa o líder deposto de que ele foi deposto. **Como evitar:** **fencing token** validado no recurso protegido, e reverificação do lease antes de cada operação com efeito. Onde a operação for idempotente, o dano do split-brain cai muito — mais uma razão para idempotência.
 
 > [!warning] Implementar do zero
-> **O que acontece:** eleição caseira sobre uma tabela, com bugs sutis que só aparecem sob partição de rede ou relógios divergentes — condições difíceis de reproduzir e raras o bastante para não serem testadas.
-> **Por quê:** o mecanismo **parece** simples: uma linha, um TTL, um `UPDATE` condicional.
-> **Como evitar:** use o que já existe — `Lease` do Kubernetes, etcd, Zookeeper, ou o mecanismo do seu framework. Coordenação distribuída correta é uma das áreas em que a diferença entre "funciona nos meus testes" e "funciona sob partição" é maior.
+> **O que acontece:** eleição caseira sobre uma tabela, com bugs sutis que só aparecem sob partição de rede ou relógios divergentes — condições difíceis de reproduzir e raras o bastante para não serem testadas. **Por quê:** o mecanismo **parece** simples: uma linha, um TTL, um `UPDATE` condicional. **Como evitar:** use o que já existe — `Lease` do Kubernetes, etcd, Zookeeper, ou o mecanismo do seu framework. Coordenação distribuída correta é uma das áreas em que a diferença entre "funciona nos meus testes" e "funciona sob partição" é maior.
 
 ## Como explicar em inglês
 

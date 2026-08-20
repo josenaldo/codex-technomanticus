@@ -42,9 +42,7 @@ graph LR
 O bloco em âmbar é onde você ganha ou perde a entrevista. Trate os primeiros quatro passos como *preparação para chegar bem nele* — não como a entrega principal.
 
 > [!warning] Gastar o tempo todo no diagrama macro
-> **O que acontece:** o candidato refina o diagrama de alto nível cada vez mais, adicionando caixas, e o relógio chega aos 30 minutos sem um único deep dive.
-> **Por quê:** o macro é confortável — parece progresso e não expõe lacunas. O deep dive é desconfortável porque exige conhecer os modos de falha.
-> **Como evitar:** cronometre mentalmente. Aos ~25 minutos, force a transição: "o macro está fechado; deixa eu escolher o componente mais difícil — a geração de código sem colisão — e ir fundo". A transição explícita já é sinal de senioridade.
+> **O que acontece:** o candidato refina o diagrama de alto nível cada vez mais, adicionando caixas, e o relógio chega aos 30 minutos sem um único deep dive. **Por quê:** o macro é confortável — parece progresso e não expõe lacunas. O deep dive é desconfortável porque exige conhecer os modos de falha. **Como evitar:** cronometre mentalmente. Aos ~25 minutos, force a transição: "o macro está fechado; deixa eu escolher o componente mais difícil — a geração de código sem colisão — e ir fundo". A transição explícita já é sinal de senioridade.
 
 **Sinalize a gestão de tempo em voz alta.** "Vou pular o detalhe de autenticação para gastar o tempo no fan-out, que é a parte difícil aqui" — isso, por si só, comunica que você prioriza conscientemente. O entrevistador não está lendo sua mente; ele pontua o que você verbaliza.
 

@@ -392,29 +392,19 @@ O cenário ilustra dois padrões simultâneos: a transição entre binary mode e
 ## Armadilhas comuns
 
 > [!warning] 1. Duplex não é Transform — confusão de canal
-> **O que acontece:** Código implementa um Duplex esperando que `write()` alimente `read()` automaticamente — e fica confuso quando os dados não aparecem no lado de leitura.
-> **Por quê:** Duplex tem dois buffers internos completamente separados; nenhum dado cruza de um lado para o outro por design. Os dois canais são independentes.
-> **Como evitar:** Se você precisa que o que foi escrito apareça transformado na leitura, use Transform — ele conecta os dois lados via `_transform()`. Use Duplex apenas para comunicação bidirecional genuinamente independente (como sockets TCP).
+> **O que acontece:** Código implementa um Duplex esperando que `write()` alimente `read()` automaticamente — e fica confuso quando os dados não aparecem no lado de leitura. **Por quê:** Duplex tem dois buffers internos completamente separados; nenhum dado cruza de um lado para o outro por design. Os dois canais são independentes. **Como evitar:** Se você precisa que o que foi escrito apareça transformado na leitura, use Transform — ele conecta os dois lados via `_transform()`. Use Duplex apenas para comunicação bidirecional genuinamente independente (como sockets TCP).
 
 > [!warning] 2. `Readable.from(array)` não é gratuito para arrays pequenos
-> **O que acontece:** `Readable.from(['a', 'b', 'c'])` cria um stream real com toda a maquinaria de eventos, buffering e backpressure — overhead puro para dados já em memória.
-> **Por quê:** A intenção de `Readable.from()` é converter iteráveis assíncronos (`async function*`) em streams. Para arrays in-memory, é como usar uma fábrica para fazer um parafuso girar.
-> **Como evitar:** Use `Readable.from()` quando precisar conectar um `async function*` (paginação de API, cursor de banco) a um pipeline de streams. Para arrays em memória, use métodos de array diretamente.
+> **O que acontece:** `Readable.from(['a', 'b', 'c'])` cria um stream real com toda a maquinaria de eventos, buffering e backpressure — overhead puro para dados já em memória. **Por quê:** A intenção de `Readable.from()` é converter iteráveis assíncronos (`async function*`) em streams. Para arrays in-memory, é como usar uma fábrica para fazer um parafuso girar. **Como evitar:** Use `Readable.from()` quando precisar conectar um `async function*` (paginação de API, cursor de banco) a um pipeline de streams. Para arrays em memória, use métodos de array diretamente.
 
 > [!warning] 3. Transform não resolve operações com visibilidade global
-> **O que acontece:** Tentativa de implementar `sort`, `median` ou `distinct` em um Transform — o que força acumular todos os chunks em `_transform()` antes de emitir em `_flush()`, derrotando o propósito do stream.
-> **Por quê:** Transform processa chunk a chunk. Operações que precisam ver todos os dados antes de produzir qualquer output precisam de todo o dataset em memória de qualquer forma.
-> **Como evitar:** Para operações com visibilidade global sobre datasets que não cabem em memória, use ordenação externa, banco de dados com índice, ou MapReduce. Se o dataset cabe em memória, buffer + array methods são mais simples e igualmente eficientes.
+> **O que acontece:** Tentativa de implementar `sort`, `median` ou `distinct` em um Transform — o que força acumular todos os chunks em `_transform()` antes de emitir em `_flush()`, derrotando o propósito do stream. **Por quê:** Transform processa chunk a chunk. Operações que precisam ver todos os dados antes de produzir qualquer output precisam de todo o dataset em memória de qualquer forma. **Como evitar:** Para operações com visibilidade global sobre datasets que não cabem em memória, use ordenação externa, banco de dados com índice, ou MapReduce. Se o dataset cabe em memória, buffer + array methods são mais simples e igualmente eficientes.
 
 > [!warning] 4. Não ouvir `'error'` derruba o processo
-> **O que acontece:** Stream emite `'error'` em falha de I/O; sem listener, Node lança como `uncaughtException` e derruba o processo inteiro.
-> **Por quê:** Streams herdam de `EventEmitter`. O comportamento padrão de `EventEmitter` para eventos `'error'` sem listener é lançar a exceção — não silenciar.
-> **Como evitar:** Sempre registre `.on('error', handler)` em todo stream que você instanciar diretamente. Ou use `pipeline()` de `node:stream/promises`, que propaga erros automaticamente e faz cleanup de todos os estágios.
+> **O que acontece:** Stream emite `'error'` em falha de I/O; sem listener, Node lança como `uncaughtException` e derruba o processo inteiro. **Por quê:** Streams herdam de `EventEmitter`. O comportamento padrão de `EventEmitter` para eventos `'error'` sem listener é lançar a exceção — não silenciar. **Como evitar:** Sempre registre `.on('error', handler)` em todo stream que você instanciar diretamente. Ou use `pipeline()` de `node:stream/promises`, que propaga erros automaticamente e faz cleanup de todos os estágios.
 
 > [!warning] 5. Misturar `.pipe()` com `async/await` sem cuidado
-> **O que acontece:** Um stream intermediário falha; `pipe()` não propaga o erro para upstream nem destrói os outros streams — causando vazamento de file descriptors e handles abertos.
-> **Por quê:** `pipe()` foi projetado antes do `async/await` e tem semântica de erro fraca. Ele conecta streams mas não gerencia o ciclo de vida da cadeia em caso de falha.
-> **Como evitar:** Em código novo, use sempre `pipeline()` de `node:stream/promises`. `.pipe()` ainda aparece em exemplos históricos e libs legadas — saiba reconhecê-lo mas não reproduza em código de produção.
+> **O que acontece:** Um stream intermediário falha; `pipe()` não propaga o erro para upstream nem destrói os outros streams — causando vazamento de file descriptors e handles abertos. **Por quê:** `pipe()` foi projetado antes do `async/await` e tem semântica de erro fraca. Ele conecta streams mas não gerencia o ciclo de vida da cadeia em caso de falha. **Como evitar:** Em código novo, use sempre `pipeline()` de `node:stream/promises`. `.pipe()` ainda aparece em exemplos históricos e libs legadas — saiba reconhecê-lo mas não reproduza em código de produção.
 
 ---
 
@@ -489,5 +479,4 @@ Com o mapa dos quatro tipos em mente, o próximo passo é mergulhar na implement
 - [x] Wikilinks para notas adjacentes (01, 03, 04, 05, Node.js)
 - [x] Sem referências a conteúdo do apocrypha
 - [x] Sem fabricação de dados do usuário
-- [x] PT-BR em todo o corpo da nota
-%%
+- [x] PT-BR em todo o corpo da nota %%

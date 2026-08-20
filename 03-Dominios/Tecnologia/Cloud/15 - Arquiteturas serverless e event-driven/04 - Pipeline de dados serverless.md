@@ -204,8 +204,7 @@ Firehose também pode invocar uma Lambda no meio do caminho (antes de gravar no 
 > [!tip] Assista: AWS Kinesis Data Firehose Explained | Destinations, Transformations & Near Real-Time
 > **Canal:** CloudWolf | **Duração:** ~4min | **Idioma:** EN
 >
-> Reforça em formato bem curto e direto o mecanismo exato de buffer size/interval que esta nota detalha, além de mapear os três grupos de destino do Firehose (AWS, HTTP customizado, terceiros como Datadog/Splunk) — o quadro completo por trás do "S3 ou Redshift" que a nota já cobriu.
-> Trecho de destaque [03:12]: *"it will either wait for a batch of 1 megabyte of data before it writes or it'll wait for 60 seconds, whichever comes first"*
+> Reforça em formato bem curto e direto o mecanismo exato de buffer size/interval que esta nota detalha, além de mapear os três grupos de destino do Firehose (AWS, HTTP customizado, terceiros como Datadog/Splunk) — o quadro completo por trás do "S3 ou Redshift" que a nota já cobriu. Trecho de destaque [03:12]: *"it will either wait for a batch of 1 megabyte of data before it writes or it'll wait for 60 seconds, whichever comes first"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=7XOFXob4bFM)
 

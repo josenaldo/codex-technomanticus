@@ -2210,13 +2210,7 @@ module.exports = {
 
 Faça sequencialmente — cada parte depende da anterior.
 
-**Parte 0 → 1 → 2** — React básico
-**Parte 3 → 4** — Node.js + Express + MongoDB + testes + auth
-**Parte 5 → 6 → 7** — React avançado (testing, state management, hooks custom)
-**Parte 8** — GraphQL (opcional se o foco é REST)
-**Parte 9** — TypeScript (**essencial** para 2026)
-**Parte 10** — React Native (opcional, só se for mexer com mobile)
-**Partes 11-13** — CI/CD, Containers, PostgreSQL (em plataformas externas)
+**Parte 0 → 1 → 2** — React básico **Parte 3 → 4** — Node.js + Express + MongoDB + testes + auth **Parte 5 → 6 → 7** — React avançado (testing, state management, hooks custom) **Parte 8** — GraphQL (opcional se o foco é REST) **Parte 9** — TypeScript (**essencial** para 2026) **Parte 10** — React Native (opcional, só se for mexer com mobile) **Partes 11-13** — CI/CD, Containers, PostgreSQL (em plataformas externas)
 
 ## Como estudar efetivamente
 

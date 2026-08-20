@@ -65,10 +65,7 @@ graph TD
 
 ## Long context — quando vence
 
-✅ Corpus pequeno e **estável** (manual, FAQ pequeno)
-✅ Latência <500ms importa (sem round-trip de retrieval)
-✅ Multi-hop reasoning (LLM pode "ver tudo" e juntar)
-✅ Modelo top de gama com prompt caching ([[Economia de Tokens|05 - Prompt caching na prática]])
+✅ Corpus pequeno e **estável** (manual, FAQ pequeno) ✅ Latência <500ms importa (sem round-trip de retrieval) ✅ Multi-hop reasoning (LLM pode "ver tudo" e juntar) ✅ Modelo top de gama com prompt caching ([[Economia de Tokens|05 - Prompt caching na prática]])
 
 > [!example] Caso real
 > SaaS de devops com 50K tokens de docs internas. Joga tudo no prompt + cache. Latência 600ms. Custo $0.03/query (cached). Sem RAG infra para manter.
@@ -79,22 +76,14 @@ graph TD
 
 ## RAG — quando vence
 
-✅ Corpus grande (>200K tokens) ou crescendo
-✅ Atualização frequente (docs mudam toda semana)
-✅ **Citação obrigatória** (compliance, auditabilidade)
-✅ Multi-tenant (cada user tem dados)
-✅ Volume alto (RAG é mais barato por query que long context)
+✅ Corpus grande (>200K tokens) ou crescendo ✅ Atualização frequente (docs mudam toda semana) ✅ **Citação obrigatória** (compliance, auditabilidade) ✅ Multi-tenant (cada user tem dados) ✅ Volume alto (RAG é mais barato por query que long context)
 
 > [!example] Caso real
 > Suporte interno de empresa com 10K artigos. Indexa em pgvector. 1000 queries/dia. Custo $30/mês. Atualizações = re-indexar artigo modificado.
 
 ## Fine-tuning — quando vence
 
-✅ **Tom e estilo** específicos (formal jurídico, conciso técnico, brand voice)
-✅ Vocabulário de domínio que LLM base não tem
-✅ Formato de output rígido (sempre estrutura X)
-✅ Latência crítica + custo (modelo menor + fine-tune > modelo grande + prompt)
-✅ Compliance que exige modelo controlado (não cloud)
+✅ **Tom e estilo** específicos (formal jurídico, conciso técnico, brand voice) ✅ Vocabulário de domínio que LLM base não tem ✅ Formato de output rígido (sempre estrutura X) ✅ Latência crítica + custo (modelo menor + fine-tune > modelo grande + prompt) ✅ Compliance que exige modelo controlado (não cloud)
 
 > [!example] Caso real
 > Empresa legal com 100K pareceres formatados de jeito específico. Fine-tune de Llama 70B com LoRA. Modelo gera no estilo certo sem precisar few-shot gigante.

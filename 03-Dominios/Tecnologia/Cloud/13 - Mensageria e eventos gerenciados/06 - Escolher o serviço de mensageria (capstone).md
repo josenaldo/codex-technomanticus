@@ -64,8 +64,7 @@ Repare que a árvore tem quatro perguntas, não uma — e as três primeiras já
 > [!tip] Assista: AWS SQS vs SNS vs EventBridge - When to Use What?
 > **Canal:** Be A Better Dev | **Duração:** ~22min | **Idioma:** EN
 >
-> Percorre os três serviços com exemplos e fecha com um resumo "quando usar o quê" quase palavra por palavra igual à régua desta nota — fila pra trabalho ponto a ponto com backpressure, tópico pra fan-out de alto throughput, cada um com seu ponto forte nomeado explicitamente.
-> Trecho de destaque [20:57]: *"sqs is great for reliable one-to-one asynchronous communication between microservices... in terms of sns, well, it's great for one-to-many fan out"*
+> Percorre os três serviços com exemplos e fecha com um resumo "quando usar o quê" quase palavra por palavra igual à régua desta nota — fila pra trabalho ponto a ponto com backpressure, tópico pra fan-out de alto throughput, cada um com seu ponto forte nomeado explicitamente. Trecho de destaque [20:57]: *"sqs is great for reliable one-to-one asynchronous communication between microservices... in terms of sns, well, it's great for one-to-many fan out"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=RoKAEzdcr7k)
 
@@ -81,16 +80,14 @@ Num stream, **você** é dono do cursor. O dado fica no stream pelo período de 
 > - Retenção: mínimo 24h, ajustável até 8760h (365 dias) via `IncreaseStreamRetentionPeriod`.
 > - Modo provisionado: cada shard suporta até 1.000 registros/s ou 1 MB/s de escrita, e até 2 MB/s de leitura (ou 2.000 registros/s com enhanced fan-out por consumidor registrado).
 > - Modo on-demand: por padrão 4 MB/s de escrita e 8 MB/s de leitura por stream, escalando automaticamente até 200 MB/s de escrita / 400 MB/s de leitura na maioria das regiões (até 10 GB/s de escrita / 20 GB/s de leitura em regiões selecionadas, sob solicitação).
-> - Tamanho máximo de registro: 10 MiB antes de base64.
-> Fonte: docs.aws.amazon.com/streams/latest/dev/service-sizes-and-limits.html
+> - Tamanho máximo de registro: 10 MiB antes de base64. Fonte: docs.aws.amazon.com/streams/latest/dev/service-sizes-and-limits.html
 
 Isso é o oposto do modelo de fila, e é por isso que "trocar SQS por Kinesis pra aguentar mais volume" é um erro conceitual comum: Kinesis não é "SQS mais rápido", é um serviço pra um problema diferente (múltiplos leitores independentes relendo um log ordenado), não pra distribuir trabalho entre workers concorrentes.
 
 > [!tip] Assista: WHAT IS THE DIFFERENCE? - SQS / SNS / EVENTBRIDGE / KINESIS
 > **Canal:** FooBar Serverless | **Duração:** ~21min | **Idioma:** EN
 >
-> Único vídeo da leva que cobre os quatro serviços desta árvore de decisão num só lugar, incluindo Kinesis como a peça de streaming — reforça exatamente a distinção fila/pub-sub/event-bus/stream que esta nota amarra, com exemplos de quando cada um "brilha".
-> Trecho de destaque [7:24]: *"Kinesis is the last service I want to talk about, and this service is amazing for ingesting into your AWS cloud millions of events... it can process the events in real time"*
+> Único vídeo da leva que cobre os quatro serviços desta árvore de decisão num só lugar, incluindo Kinesis como a peça de streaming — reforça exatamente a distinção fila/pub-sub/event-bus/stream que esta nota amarra, com exemplos de quando cada um "brilha". Trecho de destaque [7:24]: *"Kinesis is the last service I want to talk about, and this service is amazing for ingesting into your AWS cloud millions of events... it can process the events in real time"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Id2IVs1f7S0)
 

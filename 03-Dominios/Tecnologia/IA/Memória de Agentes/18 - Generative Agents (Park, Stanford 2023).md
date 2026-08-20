@@ -185,17 +185,13 @@ xychart-beta
 
 O paper foi concebido como prova de conceito acadêmica, mas suas ideias migraram rapidamente para sistemas de produção. Algumas lições práticas que a comunidade destilou ao longo do tempo pós-publicação:
 
-**1. Scoring de importance não precisa ser LLM call separada.**
-A abordagem original do paper usa uma LLM call dedicada para perguntar ao modelo "em escala de 1-10, qual a importância deste evento?". Em produção, isso é caro. Alternativas viáveis incluem: usar heurísticas baseadas em tipo de evento (mensagem direta = 8, observação de ambiente = 3), delegar ao mesmo LLM que gera a observação (em um único prompt), ou treinar um classificador leve que aproxma o score do LLM maior com uma fração do custo.
+**1. Scoring de importance não precisa ser LLM call separada.** A abordagem original do paper usa uma LLM call dedicada para perguntar ao modelo "em escala de 1-10, qual a importância deste evento?". Em produção, isso é caro. Alternativas viáveis incluem: usar heurísticas baseadas em tipo de evento (mensagem direta = 8, observação de ambiente = 3), delegar ao mesmo LLM que gera a observação (em um único prompt), ou treinar um classificador leve que aproxma o score do LLM maior com uma fração do custo.
 
-**2. Top-N de retrieval é sensível ao N.**
-Os autores usam N=25 como padrão no paper. Em produção, N muito pequeno faz o agent perder contexto relevante; N muito grande polui o prompt com memórias de baixa qualidade e aumenta custo. N adaptativo — baseado no espaço de contexto disponível e na entropy do scoring — é uma melhoria óbvia que o paper não aborda.
+**2. Top-N de retrieval é sensível ao N.** Os autores usam N=25 como padrão no paper. Em produção, N muito pequeno faz o agent perder contexto relevante; N muito grande polui o prompt com memórias de baixa qualidade e aumenta custo. N adaptativo — baseado no espaço de contexto disponível e na entropy do scoring — é uma melhoria óbvia que o paper não aborda.
 
-**3. Memory stream sem TTL acumula indefinidamente.**
-O paper simula 2 dias virtuais. Um chatbot de atendimento com o mesmo design, sem expiração ou consolidação de memórias, acumula meses de histórico. O custo de retrieval cresce com o tamanho do índice de embeddings. A solução usual é alguma forma de **summarization periódica**: agrupar memórias antigas em resumos compactos, substituindo n entradas por 1. É o que o mecanismo de reflexão faz implicitamente, mas sem descartar as memórias originais.
+**3. Memory stream sem TTL acumula indefinidamente.** O paper simula 2 dias virtuais. Um chatbot de atendimento com o mesmo design, sem expiração ou consolidação de memórias, acumula meses de histórico. O custo de retrieval cresce com o tamanho do índice de embeddings. A solução usual é alguma forma de **summarization periódica**: agrupar memórias antigas em resumos compactos, substituindo n entradas por 1. É o que o mecanismo de reflexão faz implicitamente, mas sem descartar as memórias originais.
 
-**4. Re-planning tem custo oculto.**
-Cada re-planning é uma sequência de LLM calls para decompor o novo plano e alinhar com memórias relevantes. Em Smallville, eventos inesperados são raros. Em produção (um agente de calendário, por exemplo), eventos inesperados são o caso normal — re-planning frequente pode dominar o custo operacional.
+**4. Re-planning tem custo oculto.** Cada re-planning é uma sequência de LLM calls para decompor o novo plano e alinhar com memórias relevantes. Em Smallville, eventos inesperados são raros. Em produção (um agente de calendário, por exemplo), eventos inesperados são o caso normal — re-planning frequente pode dominar o custo operacional.
 
 ```mermaid
 graph LR

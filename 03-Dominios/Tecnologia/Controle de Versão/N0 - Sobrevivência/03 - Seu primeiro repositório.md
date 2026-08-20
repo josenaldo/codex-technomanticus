@@ -173,24 +173,16 @@ Não precisa ser bonito nem longo. Precisa dizer **o que mudou e, quando não fo
 ## Armadilhas comuns
 
 > [!warning] `git add .` varre coisa que você não queria
-> **O que acontece:** o ponto significa "tudo nesta pasta e nas subpastas". Você acaba registrando arquivos temporários do LaTeX, backups do Word (`~$arquivo.docx`), PDFs gerados, bases de dados pesadas e — o caso perigoso — arquivos com dados sensíveis.
-> **Por quê:** o Git não julga o conteúdo; ele obedece.
-> **Como evitar:** no começo, prefira listar os arquivos por nome. Quando a pasta ficar grande demais pra isso, a solução é o arquivo `.gitignore`, que é a primeira nota do próximo nível.
+> **O que acontece:** o ponto significa "tudo nesta pasta e nas subpastas". Você acaba registrando arquivos temporários do LaTeX, backups do Word (`~$arquivo.docx`), PDFs gerados, bases de dados pesadas e — o caso perigoso — arquivos com dados sensíveis. **Por quê:** o Git não julga o conteúdo; ele obedece. **Como evitar:** no começo, prefira listar os arquivos por nome. Quando a pasta ficar grande demais pra isso, a solução é o arquivo `.gitignore`, que é a primeira nota do próximo nível.
 
 > [!warning] Editar e achar que está registrado
-> **O que acontece:** você trabalha a semana inteira, salvando no editor a cada parágrafo, e no fim descobre que o histórico não tem nada desde segunda-feira.
-> **Por quê:** `Ctrl+S` fala com o seu editor. `git commit` fala com o Git. São canais independentes.
-> **Como evitar:** crie o hábito de rodar `git status` ao terminar uma sessão de trabalho. Se aparecer qualquer coisa em vermelho, você tem trabalho não registrado.
+> **O que acontece:** você trabalha a semana inteira, salvando no editor a cada parágrafo, e no fim descobre que o histórico não tem nada desde segunda-feira. **Por quê:** `Ctrl+S` fala com o seu editor. `git commit` fala com o Git. São canais independentes. **Como evitar:** crie o hábito de rodar `git status` ao terminar uma sessão de trabalho. Se aparecer qualquer coisa em vermelho, você tem trabalho não registrado.
 
 > [!warning] O commit gigante de fim de semana
-> **O que acontece:** um único commit com 40 arquivos e a mensagem "trabalho do fim de semana". Quando você precisar voltar atrás, vai ter que escolher entre desfazer *tudo* ou *nada*.
-> **Por quê:** a unidade de volta é o commit. Commit grande, volta grosseira.
-> **Como evitar:** commite ao terminar cada pedaço que você consegue descrever numa frase. Vários commits pequenos não custam nada — o Git foi feito pra isso.
+> **O que acontece:** um único commit com 40 arquivos e a mensagem "trabalho do fim de semana". Quando você precisar voltar atrás, vai ter que escolher entre desfazer *tudo* ou *nada*. **Por quê:** a unidade de volta é o commit. Commit grande, volta grosseira. **Como evitar:** commite ao terminar cada pedaço que você consegue descrever numa frase. Vários commits pequenos não custam nada — o Git foi feito pra isso.
 
 > [!warning] Versionar o PDF gerado junto com a fonte
-> **O que acontece:** o repositório engorda rápido e cada commit mostra "o PDF mudou", sem informação útil.
-> **Por quê:** PDF é binário, e é *derivado* — pode ser gerado de novo a partir do `.tex` ou `.md`.
-> **Como evitar:** versione a fonte; deixe o produto de fora (de novo: `.gitignore`, próximo nível). A exceção razoável é a versão final entregue, que às vezes vale guardar como registro.
+> **O que acontece:** o repositório engorda rápido e cada commit mostra "o PDF mudou", sem informação útil. **Por quê:** PDF é binário, e é *derivado* — pode ser gerado de novo a partir do `.tex` ou `.md`. **Como evitar:** versione a fonte; deixe o produto de fora (de novo: `.gitignore`, próximo nível). A exceção razoável é a versão final entregue, que às vezes vale guardar como registro.
 
 ---
 

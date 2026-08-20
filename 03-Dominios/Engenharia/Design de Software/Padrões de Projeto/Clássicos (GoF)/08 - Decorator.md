@@ -21,14 +21,7 @@ aliases:
 # Decorator
 
 > [!abstract] TL;DR
-> O **Decorator** adiciona comportamento a um objeto **envolvendo-o** em outro que implementa a
-> **mesma interface** — de forma composicional e **empilhável em runtime**, sem alterar a classe
-> original nem explodir em subclasses. É o padrão por trás dos *streams* de I/O do Java
-> (`BufferedInputStream(GZIPInputStream(...))`) e dos *middlewares*. Cuidado com uma confusão
-> clássica da nossa lente cross-linguagem: o **`@decorator` de Python/TypeScript é um recurso da
-> linguagem** (decoração de função/classe) que é *primo*, não idêntico, ao Decorator do GoF
-> (envolver objetos). A armadilha campeã: uma pilha profunda de decorators que ninguém consegue
-> depurar — e trocar a interface no meio do caminho (aí já é Adapter).
+> O **Decorator** adiciona comportamento a um objeto **envolvendo-o** em outro que implementa a **mesma interface** — de forma composicional e **empilhável em runtime**, sem alterar a classe original nem explodir em subclasses. É o padrão por trás dos *streams* de I/O do Java (`BufferedInputStream(GZIPInputStream(...))`) e dos *middlewares*. Cuidado com uma confusão clássica da nossa lente cross-linguagem: o **`@decorator` de Python/TypeScript é um recurso da linguagem** (decoração de função/classe) que é *primo*, não idêntico, ao Decorator do GoF (envolver objetos). A armadilha campeã: uma pilha profunda de decorators que ninguém consegue depurar — e trocar a interface no meio do caminho (aí já é Adapter).
 
 ## Adicionar comportamento sem tocar na classe
 
@@ -100,19 +93,13 @@ O trunfo sobre **herança** é o *runtime*: você compõe a pilha quando executa
 ## Armadilhas comuns
 
 > [!warning] Confundir o `@decorator` da linguagem com o Decorator do GoF
-> **O que acontece:** afirma-se que "Python tem o Decorator embutido" e para por aí, sem perceber que o `@` decora funções/classes, não objetos numa interface comum.
-> **Por quê:** são níveis diferentes. O `@` resolve *concern* em função; o padrão GoF resolve *composição empilhável de comportamento sobre a mesma interface de objeto*. Confundi-los leva a usar o `@` onde você precisava de wrappers de objeto (ou vice-versa).
-> **Como evitar:** pergunte se você está decorando **uma função** (use `@`) ou **compondo camadas sobre um objeto de interface X, escolhidas em runtime** (use o padrão, com wrappers).
+> **O que acontece:** afirma-se que "Python tem o Decorator embutido" e para por aí, sem perceber que o `@` decora funções/classes, não objetos numa interface comum. **Por quê:** são níveis diferentes. O `@` resolve *concern* em função; o padrão GoF resolve *composição empilhável de comportamento sobre a mesma interface de objeto*. Confundi-los leva a usar o `@` onde você precisava de wrappers de objeto (ou vice-versa). **Como evitar:** pergunte se você está decorando **uma função** (use `@`) ou **compondo camadas sobre um objeto de interface X, escolhidas em runtime** (use o padrão, com wrappers).
 
 > [!warning] A pilha profunda que ninguém depura
-> **O que acontece:** cinco, seis decorators aninhados; um bug aparece e você não sabe em qual camada, nem em que ordem elas rodam.
-> **Por quê:** cada camada é transparente individualmente, mas a **ordem** importa (comprimir-depois-criptografar ≠ o inverso) e o *stack trace* fica cheio de wrappers parecidos. Transparência demais vira opacidade.
-> **Como evitar:** limite a profundidade; nomeie bem cada decorator; documente a ordem esperada. Se a pilha é fixa e sempre a mesma, talvez uma única classe seja mais honesta.
+> **O que acontece:** cinco, seis decorators aninhados; um bug aparece e você não sabe em qual camada, nem em que ordem elas rodam. **Por quê:** cada camada é transparente individualmente, mas a **ordem** importa (comprimir-depois-criptografar ≠ o inverso) e o *stack trace* fica cheio de wrappers parecidos. Transparência demais vira opacidade. **Como evitar:** limite a profundidade; nomeie bem cada decorator; documente a ordem esperada. Se a pilha é fixa e sempre a mesma, talvez uma única classe seja mais honesta.
 
 > [!warning] O "decorator" que muda a interface
-> **O que acontece:** o wrapper acrescenta métodos novos ou muda assinaturas — o cliente passa a depender do wrapper concreto, não da interface.
-> **Por quê:** o Decorator **preserva a interface** — é isso que torna a pilha transparente e substituível. Se você mudou a interface, o que você fez foi um **Adapter**, não um Decorator.
-> **Como evitar:** mesmo tipo de entrada e saída que o objeto decorado. Mudou a interface? Reclassifique: é [[07 - Adapter]].
+> **O que acontece:** o wrapper acrescenta métodos novos ou muda assinaturas — o cliente passa a depender do wrapper concreto, não da interface. **Por quê:** o Decorator **preserva a interface** — é isso que torna a pilha transparente e substituível. Se você mudou a interface, o que você fez foi um **Adapter**, não um Decorator. **Como evitar:** mesmo tipo de entrada e saída que o objeto decorado. Mudou a interface? Reclassifique: é [[07 - Adapter]].
 
 ## Como explicar em inglês
 

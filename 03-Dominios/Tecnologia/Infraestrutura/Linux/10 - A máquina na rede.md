@@ -196,24 +196,16 @@ Configuração do lado servidor, política de chaves e endurecimento são segura
 ## Armadilhas comuns
 
 > [!warning] Culpar o firewall antes de olhar o endereço de escuta
-> **O que acontece:** horas mexendo em regra, e o problema era `127.0.0.1`.
-> **Por quê:** o sintoma — conexão recusada de fora, funcionando dentro — é idêntico nos dois casos.
-> **Como evitar:** `ss -tlnp` primeiro, sempre. A coluna de endereço local responde antes de qualquer regra.
+> **O que acontece:** horas mexendo em regra, e o problema era `127.0.0.1`. **Por quê:** o sintoma — conexão recusada de fora, funcionando dentro — é idêntico nos dois casos. **Como evitar:** `ss -tlnp` primeiro, sempre. A coluna de endereço local responde antes de qualquer regra.
 
 > [!warning] Editar `/etc/resolv.conf` à mão
-> **O que acontece:** funciona até o próximo boot, renovação de DHCP ou reinício do serviço de rede.
-> **Por quê:** o arquivo é gerado por quem administra a rede na máquina.
-> **Como evitar:** descubra o dono (`ls -l /etc/resolv.conf` costuma mostrar um link para `/run/systemd/resolve/...`) e configure na origem.
+> **O que acontece:** funciona até o próximo boot, renovação de DHCP ou reinício do serviço de rede. **Por quê:** o arquivo é gerado por quem administra a rede na máquina. **Como evitar:** descubra o dono (`ls -l /etc/resolv.conf` costuma mostrar um link para `/run/systemd/resolve/...`) e configure na origem.
 
 > [!warning] Confiar no `dig` para diagnosticar a aplicação
-> **O que acontece:** `dig` responde certo, a aplicação continua sem resolver.
-> **Por quê:** caminhos diferentes — `dig` ignora `/etc/hosts` e `nsswitch.conf`.
-> **Como evitar:** `getent hosts <nome>` é o que reproduz o caminho da aplicação.
+> **O que acontece:** `dig` responde certo, a aplicação continua sem resolver. **Por quê:** caminhos diferentes — `dig` ignora `/etc/hosts` e `nsswitch.conf`. **Como evitar:** `getent hosts <nome>` é o que reproduz o caminho da aplicação.
 
 > [!warning] Usar `netstat` e `ifconfig` por hábito
-> **O que acontece:** "comando não encontrado" no servidor ou no container, no meio de um incidente.
-> **Por quê:** `net-tools` deixou de ser instalado por padrão.
-> **Como evitar:** aprenda `ss` e `ip`. Como atalho de memória: `netstat -tlnp` → `ss -tlnp`; `ifconfig` → `ip addr`; `route -n` → `ip route`.
+> **O que acontece:** "comando não encontrado" no servidor ou no container, no meio de um incidente. **Por quê:** `net-tools` deixou de ser instalado por padrão. **Como evitar:** aprenda `ss` e `ip`. Como atalho de memória: `netstat -tlnp` → `ss -tlnp`; `ifconfig` → `ip addr`; `route -n` → `ip route`.
 
 ---
 

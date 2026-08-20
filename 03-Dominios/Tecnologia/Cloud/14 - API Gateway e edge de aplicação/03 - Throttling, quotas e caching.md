@@ -79,8 +79,7 @@ Isso significa que um cliente "bem comportado" que manda exatamente 5 req/s nunc
 > [!tip] Assista: Como fazer throttling da minha API no Amazon API Gateway? Usage Plan e API Keys
 > **Canal:** Douglas Mugnos | **Duração:** ~7min | **Idioma:** PT-BR
 >
-> Cobre a mesma distinção rate/burst desta nota com outra analogia (o que "cabe correndo" versus "o que roda em paralelo"), e mostra como o usage plan identifica o cliente via header — a peça que a nota detalha a seguir com `x-api-key`.
-> Trecho de destaque [03:00]: *"o rate é o máximo de requests em um... que pode encaminhar em um segundo, já o burst é quantas requests eu tenho rodando em paralelo... uma coisa é quanto você pode inserir naquele segundo, e já o burst é quanto você pode estar rodando em paralelo naquele determinado tempo."*
+> Cobre a mesma distinção rate/burst desta nota com outra analogia (o que "cabe correndo" versus "o que roda em paralelo"), e mostra como o usage plan identifica o cliente via header — a peça que a nota detalha a seguir com `x-api-key`. Trecho de destaque [03:00]: *"o rate é o máximo de requests em um... que pode encaminhar em um segundo, já o burst é quantas requests eu tenho rodando em paralelo... uma coisa é quanto você pode inserir naquele segundo, e já o burst é quanto você pode estar rodando em paralelo naquele determinado tempo."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=mE8S1icgckY)
 

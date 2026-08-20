@@ -467,34 +467,22 @@ Uma gotcha comum: ao usar `JSON.parse`, IDs grandes já chegam como `number` tru
 ## Armadilhas comuns
 
 > [!warning] parseInt sem radix pode surpreender em ambientes legados
-> **O que acontece:** `parseInt("08")` retorna `0` em engines antigas (modo não-estrito, pré-ES5), porque `08` é interpretado como octal inválido.
-> **Por quê:** O padrão ES3 usava o prefixo `0` para indicar octal; dígitos `8` e `9` são inválidos em octal, então o resultado era `0` ou `NaN`.
-> **Como evitar:** Sempre passe o segundo argumento: `parseInt("08", 10)`. Em código moderno (ES5+) o problema não ocorre, mas a prática de passar radix explicitamente é boa higiene de código.
+> **O que acontece:** `parseInt("08")` retorna `0` em engines antigas (modo não-estrito, pré-ES5), porque `08` é interpretado como octal inválido. **Por quê:** O padrão ES3 usava o prefixo `0` para indicar octal; dígitos `8` e `9` são inválidos em octal, então o resultado era `0` ou `NaN`. **Como evitar:** Sempre passe o segundo argumento: `parseInt("08", 10)`. Em código moderno (ES5+) o problema não ocorre, mas a prática de passar radix explicitamente é boa higiene de código.
 
 > [!warning] NaN nunca é igual a si mesmo — nem com ===
-> **O que acontece:** Código que verifica `if (resultado === NaN)` nunca funciona — a condição é sempre `false`.
-> **Por quê:** O padrão IEEE 754 define que NaN não é igual a nada, incluindo ele mesmo. É o único valor no universo JavaScript com essa propriedade.
-> **Como evitar:** Use sempre `Number.isNaN(valor)`. Nunca compare diretamente com `NaN`. Em TypeScript, o linter `strict-nan` pode detectar isso automaticamente.
+> **O que acontece:** Código que verifica `if (resultado === NaN)` nunca funciona — a condição é sempre `false`. **Por quê:** O padrão IEEE 754 define que NaN não é igual a nada, incluindo ele mesmo. É o único valor no universo JavaScript com essa propriedade. **Como evitar:** Use sempre `Number.isNaN(valor)`. Nunca compare diretamente com `NaN`. Em TypeScript, o linter `strict-nan` pode detectar isso automaticamente.
 
 > [!warning] Misturar BigInt e number lança TypeError silencioso em produção
-> **O que acontece:** `5n + 2` lança `TypeError: Cannot mix BigInt and other types`. Se o tipo vier de uma API, o erro pode aparecer muito depois da origem do dado.
-> **Por quê:** O JavaScript não faz coerção automática entre `BigInt` e `number` para evitar perda silenciosa de precisão — o design é intencional.
-> **Como evitar:** Seja explícito na conversão: `5n + BigInt(2)` ou `Number(5n) + 2`. Em TypeScript, o tipo `bigint` é distinto e o compilador pega a mistura em tempo de compilação.
+> **O que acontece:** `5n + 2` lança `TypeError: Cannot mix BigInt and other types`. Se o tipo vier de uma API, o erro pode aparecer muito depois da origem do dado. **Por quê:** O JavaScript não faz coerção automática entre `BigInt` e `number` para evitar perda silenciosa de precisão — o design é intencional. **Como evitar:** Seja explícito na conversão: `5n + BigInt(2)` ou `Number(5n) + 2`. Em TypeScript, o tipo `bigint` é distinto e o compilador pega a mistura em tempo de compilação.
 
 > [!warning] JSON.stringify e os valores especiais
-> **O que acontece:** `JSON.stringify(NaN)` retorna `"null"`; `JSON.stringify(Infinity)` retorna `"null"`; `JSON.stringify(-0)` retorna `"0"`; `JSON.stringify(1n)` lança `TypeError`.
-> **Por quê:** JSON não tem representação para esses valores IEEE 754 especiais. A spec do JSON.stringify converte silenciosamente os inválidos para `null`.
-> **Como evitar:** Sanitize valores numéricos antes de serializar. Se precisar preservar `BigInt`, serialize como string: `{ id: valor.toString() }`.
+> **O que acontece:** `JSON.stringify(NaN)` retorna `"null"`; `JSON.stringify(Infinity)` retorna `"null"`; `JSON.stringify(-0)` retorna `"0"`; `JSON.stringify(1n)` lança `TypeError`. **Por quê:** JSON não tem representação para esses valores IEEE 754 especiais. A spec do JSON.stringify converte silenciosamente os inválidos para `null`. **Como evitar:** Sanitize valores numéricos antes de serializar. Se precisar preservar `BigInt`, serialize como string: `{ id: valor.toString() }`.
 
 > [!warning] Number.toFixed() opera sobre o valor armazenado, não o literal
-> **O que acontece:** `(1.005).toFixed(2)` retorna `"1.00"` em vez de `"1.01"` em todos os engines modernos (V8, SpiderMonkey, JavaScriptCore).
-> **Por quê:** `1.005` não é representável exatamente em float64 — é armazenado como `1.00499999999999989...`. A ECMA-262 §21.1.3.3 especifica que `toFixed` opera sobre o *valor matemático exato do double armazenado*, então vê a terceira casa como `4` e arredonda para baixo. Esse é comportamento normativo, não um bug.
-> **Como evitar:** Use o padrão de notação exponencial para arredondamento confiável: `+(Math.round(+(num + 'e+' + places)) + 'e-' + places)`. Ao usar `decimal.js`, sempre passe o valor como **string**, não como float: `new Decimal('1.005').toFixed(2)` → `"1.01"` ✓; `new Decimal(1.005).toFixed(2)` → pode ser `"1.00"` ✗ (o float já chegou danificado).
+> **O que acontece:** `(1.005).toFixed(2)` retorna `"1.00"` em vez de `"1.01"` em todos os engines modernos (V8, SpiderMonkey, JavaScriptCore). **Por quê:** `1.005` não é representável exatamente em float64 — é armazenado como `1.00499999999999989...`. A ECMA-262 §21.1.3.3 especifica que `toFixed` opera sobre o *valor matemático exato do double armazenado*, então vê a terceira casa como `4` e arredonda para baixo. Esse é comportamento normativo, não um bug. **Como evitar:** Use o padrão de notação exponencial para arredondamento confiável: `+(Math.round(+(num + 'e+' + places)) + 'e-' + places)`. Ao usar `decimal.js`, sempre passe o valor como **string**, não como float: `new Decimal('1.005').toFixed(2)` → `"1.01"` ✓; `new Decimal(1.005).toFixed(2)` → pode ser `"1.00"` ✗ (o float já chegou danificado).
 
 > [!warning] Number("") e Number(null) são 0, não NaN
-> **O que acontece:** `Number("")` retorna `0`; `Number(null)` retorna `0`. Isso pode mascarar ausência de valor como zero válido.
-> **Por quê:** A especificação define que string vazia e `null` convertem para `0` — um legado da era em que JavaScript precisava ser tolerante com formulários HTML.
-> **Como evitar:** Valide o dado antes de converter: `if (valor == null || valor === '') throw new Error('valor ausente')`. Em TypeScript, `strictNullChecks` ajuda a evitar esse caminho.
+> **O que acontece:** `Number("")` retorna `0`; `Number(null)` retorna `0`. Isso pode mascarar ausência de valor como zero válido. **Por quê:** A especificação define que string vazia e `null` convertem para `0` — um legado da era em que JavaScript precisava ser tolerante com formulários HTML. **Como evitar:** Valide o dado antes de converter: `if (valor == null || valor === '') throw new Error('valor ausente')`. Em TypeScript, `strictNullChecks` ajuda a evitar esse caminho.
 
 ---
 

@@ -297,9 +297,7 @@ Causas típicas:
 A cura geral chama-se **fairness** (justiça): garantir que toda thread esperando acabe, mais cedo ou mais tarde, sendo atendida. Filas FIFO, *aging* (envelhecimento — aumentar a prioridade de quem espera há muito tempo) e locks justos são instâncias dessa ideia.
 
 > [!note] Três paralisias, três assinaturas
-> **Deadlock**: ciclo de espera; threads bloqueadas; CPU ociosa; ninguém progride; permanente.
-> **Livelock**: reação mútua simétrica; threads ativas; CPU alta; ninguém progride; permanente até o acaso quebrar.
-> **Starvation**: thread preterida; o sistema progride; uma thread específica não; pode ser temporário ou eterno conforme a (in)justiça do escalonador.
+> **Deadlock**: ciclo de espera; threads bloqueadas; CPU ociosa; ninguém progride; permanente. **Livelock**: reação mútua simétrica; threads ativas; CPU alta; ninguém progride; permanente até o acaso quebrar. **Starvation**: thread preterida; o sistema progride; uma thread específica não; pode ser temporário ou eterno conforme a (in)justiça do escalonador.
 
 ## Inversão de prioridade: a lição de Marte
 

@@ -557,8 +557,7 @@ Ecossistema Kafka vai além de producer/consumer.
 
 Framework para integração com sistemas externos. Conectores prontos para PostgreSQL, MySQL, MongoDB, Elasticsearch, S3, JDBC, REST, Salesforce, e centenas de outros.
 
-**Source connectors** — lêem de sistema externo → publicam no Kafka
-**Sink connectors** — consomem do Kafka → escrevem em sistema externo
+**Source connectors** — lêem de sistema externo → publicam no Kafka **Sink connectors** — consomem do Kafka → escrevem em sistema externo
 
 **CDC com Debezium:** source connector que lê o WAL do PostgreSQL/MySQL e publica mudanças como eventos no Kafka. **É a base do outbox pattern moderno.**
 
@@ -783,8 +782,7 @@ Uma partição com lag crescente indica: consumer lento, erro em uma mensagem, o
 
 ## Na prática (da minha experiência)
 
-> **Muvz — Kafka como espinha dorsal de microserviços:**
-> Liderei a adoção de Kafka para comunicação entre 5 microserviços Spring Boot. Construí proof-of-concepts validando latência, throughput e padrões de consumer group, configurei o cluster em Kubernetes junto com o DevOps (usando Strimzi operator), e implementei as integrações event-driven incluindo um microserviço de email com logging e auditoria completos.
+> **Muvz — Kafka como espinha dorsal de microserviços:** Liderei a adoção de Kafka para comunicação entre 5 microserviços Spring Boot. Construí proof-of-concepts validando latência, throughput e padrões de consumer group, configurei o cluster em Kubernetes junto com o DevOps (usando Strimzi operator), e implementei as integrações event-driven incluindo um microserviço de email com logging e auditoria completos.
 >
 > **Configurações que usamos em produção:**
 > - `replication.factor=3`, `min.insync.replicas=2`, `acks=all` — durabilidade
@@ -798,8 +796,7 @@ Uma partição com lag crescente indica: consumer lento, erro em uma mensagem, o
 >
 > **Incidente marcante:** um consumer ficou com lag crescente mesmo com carga normal. Debug mostrou que `max.poll.records=500` + processamento de 2s por mensagem = `max.poll.interval.ms` de 5min era insuficiente (500 × 2s = 1000s = 16min). Rebalance infinito. Solução: reduzir `max.poll.records` para 50 e otimizar o processamento para 200ms. Lag voltou ao normal.
 >
-> **MedEspecialista — Kafka para replay de eventos:**
-> No MedEspecialista, uso Kafka com retention de 30 dias no tópico principal de eventos de negócio. Quando lancei um novo módulo de analytics meses depois, ele processou todo o histórico. Em RabbitMQ isso seria impossível — as mensagens já teriam sido consumidas e apagadas.
+> **MedEspecialista — Kafka para replay de eventos:** No MedEspecialista, uso Kafka com retention de 30 dias no tópico principal de eventos de negócio. Quando lancei um novo módulo de analytics meses depois, ele processou todo o histórico. Em RabbitMQ isso seria impossível — as mensagens já teriam sido consumidas e apagadas.
 >
 > **Outbox pattern com Debezium** foi a decisão mais importante: zero inconsistência entre PostgreSQL e Kafka. O banco é a fonte de verdade, o Kafka é derivado. Se o Kafka cai, o WAL ainda está lá esperando — quando o Kafka volta, Debezium publica o pendente.
 >

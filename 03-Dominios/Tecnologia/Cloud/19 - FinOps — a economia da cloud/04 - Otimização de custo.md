@@ -99,8 +99,7 @@ Na DigitalOcean, o equivalente não existe como serviço dedicado. Não há um "
 > [!tip] Assista: Right-Sizing Cloud Resources — Match Capacity to Demand & Cut Costs
 > **Canal:** CodeLucky | **Duração:** ~5min | **Idioma:** EN
 >
-> Reforça por que "superdimensionar pra garantir" é o desperdício mais comum e mais invisível: recursos ociosos não aparecem como erro em lugar nenhum, só como dinheiro queimado no fim do mês.
-> Trecho de destaque [00:57]: *"leads to wasted money on idle resources"*
+> Reforça por que "superdimensionar pra garantir" é o desperdício mais comum e mais invisível: recursos ociosos não aparecem como erro em lugar nenhum, só como dinheiro queimado no fim do mês. Trecho de destaque [00:57]: *"leads to wasted money on idle resources"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=It2NcQUnqWs)
 
@@ -159,8 +158,7 @@ Na DigitalOcean, o modelo de data transfer é estruturalmente mais simples e mai
 > [!tip] Assista: AWS Cost Optimization Explained — Cut Your Bill with Free Tier, Right-Sizing & Spot
 > **Canal:** Viaan Cloud | **Duração:** ~9min | **Idioma:** EN
 >
-> Cobre a mesma escada de alavancas desta nota (right-sizing, Reserved/Savings Plans, Spot) e dedica um bloco inteiro a "watch your data transfer out" — o mesmo vilão escondido que o Degrau 4 descreve.
-> Trecho de destaque [06:12]: *"First, data transfer. Moving data (...) out. Work down (...) cost"*
+> Cobre a mesma escada de alavancas desta nota (right-sizing, Reserved/Savings Plans, Spot) e dedica um bloco inteiro a "watch your data transfer out" — o mesmo vilão escondido que o Degrau 4 descreve. Trecho de destaque [06:12]: *"First, data transfer. Moving data (...) out. Work down (...) cost"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=RKKBa9fDxGg)
 

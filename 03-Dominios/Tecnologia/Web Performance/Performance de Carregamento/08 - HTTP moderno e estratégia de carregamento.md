@@ -97,9 +97,7 @@ graph LR
 5. **O resultado:** o LCP que o Galho 1 ensinou a medir, agora no verde.
 
 > [!warning] Aplicar técnicas soltas sem medir o gargalo
-> **O que acontece:** o time aplica *todas* as técnicas deste galho de uma vez, gasta semanas, e o LCP melhora pouco.
-> **Por quê:** carregamento tem **um** gargalo dominante por vez (o TTFB alto, *ou* a imagem gigante, *ou* o JS render-blocking). Otimizar as outras camadas enquanto o gargalo real continua lá dá ganho marginal.
-> **Como evitar:** volte sempre ao ciclo do Galho 1 — **meça, ache o gargalo (Performance panel), ataque-o, valide no campo.** A estratégia acima é o cardápio; o diagnóstico diz qual prato pedir primeiro.
+> **O que acontece:** o time aplica *todas* as técnicas deste galho de uma vez, gasta semanas, e o LCP melhora pouco. **Por quê:** carregamento tem **um** gargalo dominante por vez (o TTFB alto, *ou* a imagem gigante, *ou* o JS render-blocking). Otimizar as outras camadas enquanto o gargalo real continua lá dá ganho marginal. **Como evitar:** volte sempre ao ciclo do Galho 1 — **meça, ache o gargalo (Performance panel), ataque-o, valide no campo.** A estratégia acima é o cardápio; o diagnóstico diz qual prato pedir primeiro.
 
 **HTTP moderno e estratégia de carregamento em uma frase:** rode sobre HTTP/3 (QUIC elimina o head-of-line blocking do TCP) de uma CDN, use Early Hints para o tempo de pensar do servidor, e orquestre critical CSS, defer, preload da imagem-LCP, assets modernos e cache imutável na ordem do Critical Rendering Path — sempre guiado pelo diagnóstico, não pela lista de técnicas.
 

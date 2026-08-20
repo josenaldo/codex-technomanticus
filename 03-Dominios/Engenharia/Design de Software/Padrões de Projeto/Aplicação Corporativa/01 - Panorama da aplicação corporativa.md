@@ -23,13 +23,7 @@ aliases:
 # Panorama da aplicação corporativa
 
 > [!abstract] TL;DR
-> Esta é a abertura da família **Aplicação Corporativa** — a metade **não-dados** do catálogo de Fowler
-> (2002): como a **apresentação web** despacha requisições e monta telas, como a **distribuição**
-> atravessa a fronteira de processo, como a **concorrência offline** protege dados entre requisições, e
-> os **padrões-base** que todo framework embute. É a família mais **datada** das seis — e isso é a
-> matéria-prima, não o defeito. Por isso a lente aqui não é comparar frameworks modernos: é
-> **arqueológica**, no eixo *era × hoje*. Cada nota tem uma seção **A ressurreição**, porque a maioria
-> desses padrões voltou — quase sempre **por causa** da nuvem, que desfez as premissas de 2002.
+> Esta é a abertura da família **Aplicação Corporativa** — a metade **não-dados** do catálogo de Fowler (2002): como a **apresentação web** despacha requisições e monta telas, como a **distribuição** atravessa a fronteira de processo, como a **concorrência offline** protege dados entre requisições, e os **padrões-base** que todo framework embute. É a família mais **datada** das seis — e isso é a matéria-prima, não o defeito. Por isso a lente aqui não é comparar frameworks modernos: é **arqueológica**, no eixo *era × hoje*. Cada nota tem uma seção **A ressurreição**, porque a maioria desses padrões voltou — quase sempre **por causa** da nuvem, que desfez as premissas de 2002.
 
 ## Você acabou de herdar um sistema de 2006
 
@@ -148,19 +142,13 @@ O método arqueológico desta família, na ordem em que compensa aplicar:
 ## Armadilhas comuns
 
 > [!warning] Confundir "datado" com "errado"
-> **O que acontece:** o time decide reescrever tudo porque o sistema "usa padrões antigos", e no meio da reescrita descobre que a `TB_SESSAO` existia para permitir dois servidores, que os DTOs existiam porque havia mesmo uma chamada remota, e que a `AbstractBaseAction` centralizava a auditoria exigida por regulação.
-> **Por quê:** o padrão foi escolhido contra restrições que não estão no código. O código registra a decisão; **não registra o motivo**.
-> **Como evitar:** antes de remover um padrão, reconstrua a restrição que o gerou e verifique se ela ainda vale. Muitas ainda valem — e algumas voltaram a valer.
+> **O que acontece:** o time decide reescrever tudo porque o sistema "usa padrões antigos", e no meio da reescrita descobre que a `TB_SESSAO` existia para permitir dois servidores, que os DTOs existiam porque havia mesmo uma chamada remota, e que a `AbstractBaseAction` centralizava a auditoria exigida por regulação. **Por quê:** o padrão foi escolhido contra restrições que não estão no código. O código registra a decisão; **não registra o motivo**. **Como evitar:** antes de remover um padrão, reconstrua a restrição que o gerou e verifique se ela ainda vale. Muitas ainda valem — e algumas voltaram a valer.
 
 > [!warning] Aplicar o catálogo inteiro num sistema novo
-> **O que acontece:** um projeto pequeno nasce com Front Controller próprio, Application Controller, DTOs entre todas as camadas e Registry global — cerimônia de uma escala que ele não tem.
-> **Por quê:** o catálogo descreve respostas para atritos específicos (rede, concorrência offline, regra arbitrária). Sem o atrito, o padrão é só indireção — e seu framework já implementa metade deles por você.
-> **Como evitar:** trate cada padrão como resposta a uma pergunta. Se você não consegue enunciar a pergunta, não aplique.
+> **O que acontece:** um projeto pequeno nasce com Front Controller próprio, Application Controller, DTOs entre todas as camadas e Registry global — cerimônia de uma escala que ele não tem. **Por quê:** o catálogo descreve respostas para atritos específicos (rede, concorrência offline, regra arbitrária). Sem o atrito, o padrão é só indireção — e seu framework já implementa metade deles por você. **Como evitar:** trate cada padrão como resposta a uma pergunta. Se você não consegue enunciar a pergunta, não aplique.
 
 > [!warning] Pular a camada do meio "só nesta tela"
-> **O que acontece:** uma tela de relatório vai direto da apresentação ao banco, "porque é só uma consulta". Em dois anos há quarenta dessas, e a regra de negócio existe em duas versões divergentes — uma no domínio, outra espalhada nas telas.
-> **Por quê:** o valor do layering vem de ser **exceção-zero**. Uma exceção não custa nada; o que custa é que ela vira precedente e o limite deixa de ser verificável.
-> **Como evitar:** se a consulta direta é legítima (relatórios costumam ser), torne isso um **caminho nomeado e explícito** — uma via de leitura declarada, não uma violação silenciosa. É o mesmo raciocínio que leva ao CQRS.
+> **O que acontece:** uma tela de relatório vai direto da apresentação ao banco, "porque é só uma consulta". Em dois anos há quarenta dessas, e a regra de negócio existe em duas versões divergentes — uma no domínio, outra espalhada nas telas. **Por quê:** o valor do layering vem de ser **exceção-zero**. Uma exceção não custa nada; o que custa é que ela vira precedente e o limite deixa de ser verificável. **Como evitar:** se a consulta direta é legítima (relatórios costumam ser), torne isso um **caminho nomeado e explícito** — uma via de leitura declarada, não uma violação silenciosa. É o mesmo raciocínio que leva ao CQRS.
 
 ## Como explicar em inglês
 

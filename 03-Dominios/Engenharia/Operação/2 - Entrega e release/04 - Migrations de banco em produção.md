@@ -54,9 +54,7 @@ graph TD
 ```
 
 > [!warning] "A migration é rápida, então não tem risco de coexistência"
-> **O que acontece:** o time roda a migration de renomear a coluna, ela termina em 200ms, e assume que o risco passou — afinal foi "rápido".
-> **Por quê:** o risco não é o tempo que a *migration* leva para rodar — é o tempo que o **rollout do deploy** leva para completar. Um `ALTER TABLE RENAME COLUMN` pode ser instantâneo e ainda assim deixar a v1 quebrada por 5, 10, 20 minutos, enquanto o Kubernetes ainda está trocando pods um a um.
-> **Como evitar:** trate a pergunta certa como "quanto tempo as duas versões vão coexistir?", não "quanto tempo a migration leva". Se a resposta for "minutos a mais que zero" — e quase sempre é — a migration precisa ser retrocompatível com a versão antiga durante essa janela inteira.
+> **O que acontece:** o time roda a migration de renomear a coluna, ela termina em 200ms, e assume que o risco passou — afinal foi "rápido". **Por quê:** o risco não é o tempo que a *migration* leva para rodar — é o tempo que o **rollout do deploy** leva para completar. Um `ALTER TABLE RENAME COLUMN` pode ser instantâneo e ainda assim deixar a v1 quebrada por 5, 10, 20 minutos, enquanto o Kubernetes ainda está trocando pods um a um. **Como evitar:** trate a pergunta certa como "quanto tempo as duas versões vão coexistir?", não "quanto tempo a migration leva". Se a resposta for "minutos a mais que zero" — e quase sempre é — a migration precisa ser retrocompatível com a versão antiga durante essa janela inteira.
 
 ## O padrão: expand / migrate / contract (parallel change)
 
@@ -152,9 +150,7 @@ Só chega aqui depois de confirmar, com uma margem de segurança generosa (dias,
 Seis deploys para renomear uma coluna. É deliberadamente mais devagar do que um `ALTER TABLE ... RENAME COLUMN` de uma linha só — e é exatamente essa lentidão que evita o incidente descrito na abertura desta nota.
 
 > [!warning] Pular o dual-write "porque o backfill é rápido"
-> **O que acontece:** o time faz o expand, roda o backfill, e já assume que terminou — sem nunca ter implementado o dual-write do passo 2.
-> **Por quê:** entre o momento em que o backfill começou e o momento em que ele terminou, a aplicação continuou recebendo escritas novas em `nome`. Sem dual-write, todo `INSERT`/`UPDATE` que aconteceu durante essa janela ficou de fora do backfill — silenciosamente, sem erro nenhum, porque a coluna nova simplesmente ficou `NULL` para essas linhas.
-> **Como evitar:** trate dual-write como obrigatório sempre que existir uma janela de escrita concorrente com o backfill — o que é o caso em praticamente qualquer tabela que recebe tráfego de escrita ativo. Rode uma query de reconciliação ao final do backfill (contar `NULL`s remanescentes) antes de declarar a fase de migrate concluída.
+> **O que acontece:** o time faz o expand, roda o backfill, e já assume que terminou — sem nunca ter implementado o dual-write do passo 2. **Por quê:** entre o momento em que o backfill começou e o momento em que ele terminou, a aplicação continuou recebendo escritas novas em `nome`. Sem dual-write, todo `INSERT`/`UPDATE` que aconteceu durante essa janela ficou de fora do backfill — silenciosamente, sem erro nenhum, porque a coluna nova simplesmente ficou `NULL` para essas linhas. **Como evitar:** trate dual-write como obrigatório sempre que existir uma janela de escrita concorrente com o backfill — o que é o caso em praticamente qualquer tabela que recebe tráfego de escrita ativo. Rode uma query de reconciliação ao final do backfill (contar `NULL`s remanescentes) antes de declarar a fase de migrate concluída.
 
 ## Locks: o outro jeito de uma migration derrubar o site
 
@@ -188,9 +184,7 @@ Essa é a razão pela qual a prática amadurecida da indústria migrou de "sempr
 E é exatamente aqui que o padrão expand/contract paga seu custo de disciplina: se você sempre mantém o velho vivo até ter certeza absoluta de que ninguém mais depende dele, o "rollback" da fase de expand é trivial (a coluna nova simplesmente fica sem uso — não há nada de crítico para desfazer). O rollback perigoso só aconteceria na fase de contract — e por definição, a fase de contract só roda depois que a fase mais arriscada (migrate/backfill) já foi validada em produção por dias. Expand/contract não elimina o risco de rollback; ele **empurra o momento irreversível para o mais tarde possível**, depois que a maior parte da incerteza já foi resolvida.
 
 > [!warning] Confiar cegamente no `down()` do framework de migration
-> **O que acontece:** Flyway, Liquibase, Rails ActiveRecord e ferramentas similares oferecem um comando de rollback (`down`), e o time trata isso como uma rede de segurança automática — "se der ruim, a gente roda o rollback e volta ao normal".
-> **Por quê:** o `down()` desfaz o *schema* corretamente na maioria dos casos, mas raramente desfaz os *dados* de forma segura — uma coluna dropada e recriada perde os valores que tinha; um `down` que remove uma tabela nova apaga qualquer dado gravado nela desde o `up`, mesmo que esse dado já tenha sido lido, processado ou replicado para outro sistema.
-> **Como evitar:** escreva `down()` apenas para migrations que são genuinamente reversíveis sem perda (tipicamente, só o `contract` de uma expand/contract bem-feita — porque o velho nunca foi removido até você ter certeza). Para o resto, planeje fix-forward desde o início: o plano B de uma migration arriscada não é "reverter", é "ter o próximo passo pronto para corrigir o que deu errado".
+> **O que acontece:** Flyway, Liquibase, Rails ActiveRecord e ferramentas similares oferecem um comando de rollback (`down`), e o time trata isso como uma rede de segurança automática — "se der ruim, a gente roda o rollback e volta ao normal". **Por quê:** o `down()` desfaz o *schema* corretamente na maioria dos casos, mas raramente desfaz os *dados* de forma segura — uma coluna dropada e recriada perde os valores que tinha; um `down` que remove uma tabela nova apaga qualquer dado gravado nela desde o `up`, mesmo que esse dado já tenha sido lido, processado ou replicado para outro sistema. **Como evitar:** escreva `down()` apenas para migrations que são genuinamente reversíveis sem perda (tipicamente, só o `contract` de uma expand/contract bem-feita — porque o velho nunca foi removido até você ter certeza). Para o resto, planeje fix-forward desde o início: o plano B de uma migration arriscada não é "reverter", é "ter o próximo passo pronto para corrigir o que deu errado".
 
 ## Separar a migration do deploy da aplicação
 

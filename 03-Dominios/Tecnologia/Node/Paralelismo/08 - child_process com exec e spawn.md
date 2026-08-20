@@ -673,17 +673,13 @@ await job.done;
 
 ### Perguntas frequentes em entrevista
 
-**"Qual a diferença entre `exec` e `execFile`?"**
-`exec` usa um shell — permite pipes e redirecionamentos, mas interpreta metacaracteres na string de comando. `execFile` não usa shell por padrão — os argumentos chegam ao processo literalmente, sem interpretação. Isso torna `execFile` seguro para argumentos de origem externa. O output de ambos é bufferizado com limite de 1 MB por padrão.
+**"Qual a diferença entre `exec` e `execFile`?"** `exec` usa um shell — permite pipes e redirecionamentos, mas interpreta metacaracteres na string de comando. `execFile` não usa shell por padrão — os argumentos chegam ao processo literalmente, sem interpretação. Isso torna `execFile` seguro para argumentos de origem externa. O output de ambos é bufferizado com limite de 1 MB por padrão.
 
-**"Quando você usaria `spawn` em vez de `exec`?"**
-Quando o output pode ser maior que 1 MB, quando você precisa processar dados incrementalmente (streaming), ou quando o processo roda por tempo indeterminado — como um servidor ou processo de monitoramento. `spawn` não tem limite de buffer porque não acumula — você consome os dados à medida que chegam.
+**"Quando você usaria `spawn` em vez de `exec`?"** Quando o output pode ser maior que 1 MB, quando você precisa processar dados incrementalmente (streaming), ou quando o processo roda por tempo indeterminado — como um servidor ou processo de monitoramento. `spawn` não tem limite de buffer porque não acumula — você consome os dados à medida que chegam.
 
-**"Como você previne shell injection em Node?"**
-Usando `execFile` ou `spawn` com argumentos como array — nunca concatenando input externo em strings passadas para `exec`. Quando você passa `['grep', [userInput, 'file.txt']]`, o Node passa `userInput` como argumento literal ao `grep`, sem nenhuma interpretação de shell. O metacaractere `;`, `|` ou `$()` no input se torna texto inerte.
+**"Como você previne shell injection em Node?"** Usando `execFile` ou `spawn` com argumentos como array — nunca concatenando input externo em strings passadas para `exec`. Quando você passa `['grep', [userInput, 'file.txt']]`, o Node passa `userInput` como argumento literal ao `grep`, sem nenhuma interpretação de shell. O metacaractere `;`, `|` ou `$()` no input se torna texto inerte.
 
-**"O que acontece quando o output de `exec` excede o `maxBuffer`?"**
-O processo filho é encerrado pelo Node e o callback recebe um erro `ERR_CHILD_PROCESS_STDIO_MAXBUFFER`. O output parcial é descartado. O valor padrão é 1 MB. Para output grande, a solução correta é `spawn` com streaming.
+**"O que acontece quando o output de `exec` excede o `maxBuffer`?"** O processo filho é encerrado pelo Node e o callback recebe um erro `ERR_CHILD_PROCESS_STDIO_MAXBUFFER`. O output parcial é descartado. O valor padrão é 1 MB. Para output grande, a solução correta é `spawn` com streaming.
 
 ---
 

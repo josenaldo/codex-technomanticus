@@ -14,36 +14,31 @@ Aqui vão as expressões que devs que trabalham com times globais realmente usam
 
 Na daily, quando tem um problema bloqueando:
 
-❌ “I have a problem with the integration.”
-✅ “We’re running into some issues with the integration.”
+❌ “I have a problem with the integration.” ✅ “We’re running into some issues with the integration.”
 
 Run into = se deparar com, encontrar um obstáculo, soa muito mais natural que “have a problem.”
 
 Quando você ainda está investigando:
 
-❌ “I am trying to understand the bug.”
-✅ “I’m still trying to figure this out.”
+❌ “I am trying to understand the bug.” ✅ “I’m still trying to figure this out.”
 
 Figure out = entender, descobrir, uma das expressões mais usadas em qualquer conversa técnica.
 
 Quando a tarefa foi mais difícil do que parecia:
 
-❌ “It was difficult but I finished.”
-✅ “It was tricky, but we pulled it off.”
+❌ “It was difficult but I finished.” ✅ “It was tricky, but we pulled it off.”
 
 Pull off = conseguir fazer algo desafiador, transmite competência sem arrogância.
 
 Quando você quer alinhar com o time:
 
-❌ “Does everyone agree?”
-✅ “Are we all on the same page?”
+❌ “Does everyone agree?” ✅ “Are we all on the same page?”
 
 Clássico. Se você ainda não usa essa, começa hoje.
 
 Quando algo precisa ser prioridade:
 
-❌ “This is very important.”
-✅ “This needs to be on our radar.”
+❌ “This is very important.” ✅ “This needs to be on our radar.”
 
 On our radar = no nosso foco, no nosso alcance, soa estratégico, não alarmista.
 

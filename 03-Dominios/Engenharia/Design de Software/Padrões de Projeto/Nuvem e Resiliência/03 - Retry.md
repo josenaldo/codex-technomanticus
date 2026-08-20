@@ -24,19 +24,10 @@ aliases:
 # Retry
 
 > [!abstract] TL;DR
-> Falhas transitórias existem — um pacote perdido, uma instância reiniciando, um pico momentâneo — e
-> repetir resolve boa parte delas de graça. É por isso que o retry é o padrão mais adotado da família.
-> Também é o **único que piora o incidente quando mal configurado**: repetir imediatamente contra um
-> serviço sobrecarregado é acrescentar carga exatamente onde ela já é o problema. As três correções que
-> transformam retry em defesa são **recuo exponencial**, **jitter** e **orçamento** — e todas as três
-> costumam faltar. Antes de qualquer uma: retry exige **idempotência**, senão você não está repetindo,
-> está duplicando.
+> Falhas transitórias existem — um pacote perdido, uma instância reiniciando, um pico momentâneo — e repetir resolve boa parte delas de graça. É por isso que o retry é o padrão mais adotado da família. Também é o **único que piora o incidente quando mal configurado**: repetir imediatamente contra um serviço sobrecarregado é acrescentar carga exatamente onde ela já é o problema. As três correções que transformam retry em defesa são **recuo exponencial**, **jitter** e **orçamento** — e todas as três costumam faltar. Antes de qualquer uma: retry exige **idempotência**, senão você não está repetindo, está duplicando.
 
 > [!info] O recorte desta nota
-> Aqui o retry como decisão de projeto e o que ele sacrifica. **Orçamento de retry na prática, e como
-> observá-lo**, em [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/06 - Resiliência operacional|Operação 3-06]]
-> ("Retry: o orçamento, não só o backoff"). Idempotência do efeito de negócio em
-> [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Arquitetura de Eventos/06 - Idempotent Consumer (Inbox)|família 5, nota 06]].
+> Aqui o retry como decisão de projeto e o que ele sacrifica. **Orçamento de retry na prática, e como observá-lo**, em [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/06 - Resiliência operacional|Operação 3-06]] ("Retry: o orçamento, não só o backoff"). Idempotência do efeito de negócio em [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Arquitetura de Eventos/06 - Idempotent Consumer (Inbox)|família 5, nota 06]].
 
 ## O retry que derrubou o serviço que tentava salvar
 
@@ -100,19 +91,13 @@ A regra prática: **repetir erro de infraestrutura, nunca erro de contrato.** Um
 ## Armadilhas comuns
 
 > [!warning] Retry em cascata (multiplicação por camada)
-> **O que acontece:** cliente, gateway e serviço retentam 3× cada. Uma requisição vira 27 no alvo, exatamente durante o incidente.
-> **Por quê:** cada camada foi configurada por pessoas diferentes, e nenhuma tem visão do total. Localmente, todas parecem prudentes.
-> **Como evitar:** decida em **qual camada** o retry vive — normalmente a mais próxima da falha, ou a borda — e desligue nas outras. Se o mesh já retenta, a aplicação não deve. E propague um marcador de "esta requisição já é uma retentativa" para que camadas superiores não a multipliquem.
+> **O que acontece:** cliente, gateway e serviço retentam 3× cada. Uma requisição vira 27 no alvo, exatamente durante o incidente. **Por quê:** cada camada foi configurada por pessoas diferentes, e nenhuma tem visão do total. Localmente, todas parecem prudentes. **Como evitar:** decida em **qual camada** o retry vive — normalmente a mais próxima da falha, ou a borda — e desligue nas outras. Se o mesh já retenta, a aplicação não deve. E propague um marcador de "esta requisição já é uma retentativa" para que camadas superiores não a multipliquem.
 
 > [!warning] Retry de operação não idempotente
-> **O que acontece:** o timeout dispara depois que o pagamento foi processado, o cliente retenta e o cliente final é cobrado duas vezes.
-> **Por quê:** o timeout diz que **você** não recebeu resposta, não que o outro lado não executou. Os dois casos são indistinguíveis do lado de fora.
-> **Como evitar:** torne a operação idempotente antes de habilitar retry — chave de idempotência na chamada, ou `upsert` por chave de negócio. Retry sem idempotência não é resiliência, é duplicação com passos extras.
+> **O que acontece:** o timeout dispara depois que o pagamento foi processado, o cliente retenta e o cliente final é cobrado duas vezes. **Por quê:** o timeout diz que **você** não recebeu resposta, não que o outro lado não executou. Os dois casos são indistinguíveis do lado de fora. **Como evitar:** torne a operação idempotente antes de habilitar retry — chave de idempotência na chamada, ou `upsert` por chave de negócio. Retry sem idempotência não é resiliência, é duplicação com passos extras.
 
 > [!warning] Retry sem teto e sem orçamento
-> **O que acontece:** "tenta até conseguir". Sob indisponibilidade prolongada, as tentativas acumulam, filas incham, e o cliente é derrubado pela própria pilha de retries pendentes.
-> **Por quê:** parece a atitude correta — desistir soa como render-se —, e o custo só aparece sob falha longa, que é rara e não testada.
-> **Como evitar:** número máximo de tentativas **e** orçamento sobre o tráfego, sempre. E encaminhe a falha final para algo que a trate — [[06 - Fallback e degradação graciosa|fallback]], fila de reprocessamento ou erro honesto ao usuário. Falhar rápido depois de N tentativas é o comportamento certo; é também o que permite ao [[04 - Circuit Breaker|circuit breaker]] fazer o trabalho dele.
+> **O que acontece:** "tenta até conseguir". Sob indisponibilidade prolongada, as tentativas acumulam, filas incham, e o cliente é derrubado pela própria pilha de retries pendentes. **Por quê:** parece a atitude correta — desistir soa como render-se —, e o custo só aparece sob falha longa, que é rara e não testada. **Como evitar:** número máximo de tentativas **e** orçamento sobre o tráfego, sempre. E encaminhe a falha final para algo que a trate — [[06 - Fallback e degradação graciosa|fallback]], fila de reprocessamento ou erro honesto ao usuário. Falhar rápido depois de N tentativas é o comportamento certo; é também o que permite ao [[04 - Circuit Breaker|circuit breaker]] fazer o trabalho dele.
 
 ## Como explicar em inglês
 

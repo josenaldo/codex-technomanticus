@@ -232,17 +232,13 @@ A sequência mostra os dois sentidos: o agente **busca** antes de responder (usa
 
 ## Estado da arte — junho de 2026
 
-**Memória nativa nos provedores**
-Em 2025-2026, Anthropic (Claude.ai) e OpenAI (ChatGPT) lançaram memória nativa nos produtos consumer — o modelo salva automaticamente fatos sobre o usuário e os usa em sessões futuras. Porém, sem exposição via API de modo programático para self-edit. Para developers, continua sendo necessário implementar com Letta, Mem0 ou Zep.
+**Memória nativa nos provedores** Em 2025-2026, Anthropic (Claude.ai) e OpenAI (ChatGPT) lançaram memória nativa nos produtos consumer — o modelo salva automaticamente fatos sobre o usuário e os usa em sessões futuras. Porém, sem exposição via API de modo programático para self-edit. Para developers, continua sendo necessário implementar com Letta, Mem0 ou Zep.
 
-**Graph memory como próximo passo**
-Zep e GraphRAG (Microsoft Research) demonstraram que memória como grafo de entidades e relações supera vetores puros para domínios ricos em relações (ex: "Maria trabalha com João no projeto X que usa Y"). Em 2026, graph + vector hybrid está emergindo como padrão para memórias de longa duração.
+**Graph memory como próximo passo** Zep e GraphRAG (Microsoft Research) demonstraram que memória como grafo de entidades e relações supera vetores puros para domínios ricos em relações (ex: "Maria trabalha com João no projeto X que usa Y"). Em 2026, graph + vector hybrid está emergindo como padrão para memórias de longa duração.
 
-**Memória com TTL como padrão regulatório**
-Em domínios regulados (saúde, finanças), TTL em memória persistente se tornou requisito de compliance em 2025-2026, não apenas boa prática. Fatos sobre usuários têm vida útil definida por política, e o sistema deve garantir expiração automática e auditabilidade.
+**Memória com TTL como padrão regulatório** Em domínios regulados (saúde, finanças), TTL em memória persistente se tornou requisito de compliance em 2025-2026, não apenas boa prática. Fatos sobre usuários têm vida útil definida por política, e o sistema deve garantir expiração automática e auditabilidade.
 
-**Avaliação de qualidade de memória**
-Métricas de "memória útil vs. ruído" estão se tornando standard: hit rate de recall, taxa de memórias obsoletas, e semantic redundancy score. Sistemas maduros fazem garbage collection periódico — agente revisa e podas memórias que contradizem estado atual ou ultrapassaram TTL.
+**Avaliação de qualidade de memória** Métricas de "memória útil vs. ruído" estão se tornando standard: hit rate de recall, taxa de memórias obsoletas, e semantic redundancy score. Sistemas maduros fazem garbage collection periódico — agente revisa e podas memórias que contradizem estado atual ou ultrapassaram TTL.
 
 ---
 

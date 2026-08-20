@@ -18,10 +18,7 @@ aliases:
 # Observability e produção
 
 > [!abstract] TL;DR
-> Galho 5 da trilha Node Senior.
-> Cobre os três pilares de observability (logs, métricas, traces) com ferramentas idiomáticas do ecossistema (pino, prom-client, OpenTelemetry).
-> Diagnóstico avançado de performance e memória (clinic.js, heap snapshots).
-> Patterns de resiliência que toda API precisa conhecer (graceful shutdown, circuit breaker, connection pool tuning). Pré-requisitos: galho 1 (Runtime e Event Loop) e galho 4 (Frameworks e arquitetura).
+> Galho 5 da trilha Node Senior. Cobre os três pilares de observability (logs, métricas, traces) com ferramentas idiomáticas do ecossistema (pino, prom-client, OpenTelemetry). Diagnóstico avançado de performance e memória (clinic.js, heap snapshots). Patterns de resiliência que toda API precisa conhecer (graceful shutdown, circuit breaker, connection pool tuning). Pré-requisitos: galho 1 (Runtime e Event Loop) e galho 4 (Frameworks e arquitetura).
 
 ## Sobre este galho
 

@@ -60,19 +60,13 @@ Numa discovery call, o fractional percebe que o cliente está buscando, na verda
 ## Armadilhas comuns
 
 > [!warning] Começar a trabalhar antes do contrato assinado
-> **O que acontece:** a conversa vai bem, o cliente pede pra "já começar", e o fractional aceita informalmente enquanto o contrato ainda está "sendo revisado" pelos dois lados.
-> **Por quê:** sem contrato assinado, não há proteção formal (nem pra escopo, nem pra pagamento) se algo der errado antes da assinatura — e a pressa de "já começar" tende a empurrar a formalização pra depois indefinidamente.
-> **Como evitar:** tratar assinatura como pré-requisito não-negociável pro início do trabalho, mesmo que isso signifique adiar o começo por alguns dias.
+> **O que acontece:** a conversa vai bem, o cliente pede pra "já começar", e o fractional aceita informalmente enquanto o contrato ainda está "sendo revisado" pelos dois lados. **Por quê:** sem contrato assinado, não há proteção formal (nem pra escopo, nem pra pagamento) se algo der errado antes da assinatura — e a pressa de "já começar" tende a empurrar a formalização pra depois indefinidamente. **Como evitar:** tratar assinatura como pré-requisito não-negociável pro início do trabalho, mesmo que isso signifique adiar o começo por alguns dias.
 
 > [!warning] Proposta genérica reaproveitada sem ajuste
-> **O que acontece:** o fractional usa o mesmo template de proposta pra clientes diferentes, sem refletir a dor específica levantada na discovery call daquele cliente.
-> **Por quê:** proposta genérica sinaliza que a discovery call não gerou entendimento real do problema — o cliente percebe e a confiança cai justamente na etapa que deveria consolidá-la.
-> **Como evitar:** reescrever pelo menos a seção de escopo e justificativa da proposta especificamente pra cada cliente, referenciando o que foi dito na call.
+> **O que acontece:** o fractional usa o mesmo template de proposta pra clientes diferentes, sem refletir a dor específica levantada na discovery call daquele cliente. **Por quê:** proposta genérica sinaliza que a discovery call não gerou entendimento real do problema — o cliente percebe e a confiança cai justamente na etapa que deveria consolidá-la. **Como evitar:** reescrever pelo menos a seção de escopo e justificativa da proposta especificamente pra cada cliente, referenciando o que foi dito na call.
 
 > [!warning] Período de teste sem critério de sucesso definido
-> **O que acontece:** o período de teste termina e ninguém sabe dizer objetivamente se "funcionou" — vira uma decisão subjetiva de última hora.
-> **Por quê:** sem critério combinado antes, tanto cliente quanto fractional avaliam o período de teste retrospectivamente com viés — otimismo de quem já investiu tempo, ou desconfiança de quem estava em dúvida desde o início.
-> **Como evitar:** definir, já na proposta, o que caracteriza sucesso no período de teste (ex: "entrega de um roadmap de arquitetura revisado" ou "3 decisões técnicas documentadas") antes de o período começar.
+> **O que acontece:** o período de teste termina e ninguém sabe dizer objetivamente se "funcionou" — vira uma decisão subjetiva de última hora. **Por quê:** sem critério combinado antes, tanto cliente quanto fractional avaliam o período de teste retrospectivamente com viés — otimismo de quem já investiu tempo, ou desconfiança de quem estava em dúvida desde o início. **Como evitar:** definir, já na proposta, o que caracteriza sucesso no período de teste (ex: "entrega de um roadmap de arquitetura revisado" ou "3 decisões técnicas documentadas") antes de o período começar.
 
 ## Como explicar em inglês
 

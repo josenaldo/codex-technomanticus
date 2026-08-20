@@ -35,8 +35,7 @@ Em 1968, **Melvin Conway** deu uma resposta que ninguém esperava — a diferen�
 A formulação literal, do artigo *How Do Committees Invent?* (Datamation, abril de 1968):
 
 > [!quote] Lei de Conway
-> *"Any organization that designs a system (defined more broadly here than just information systems) will inevitably produce a design whose structure is a copy of the organization's communication structure."*
-> — Melvin E. Conway, *How Do Committees Invent?* (1968)
+> *"Any organization that designs a system (defined more broadly here than just information systems) will inevitably produce a design whose structure is a copy of the organization's communication structure."* — Melvin E. Conway, *How Do Committees Invent?* (1968)
 
 No corpo do artigo, Conway usa um verbo ainda mais forte do que "inevitavelmente produzirá": as organizações são **"constrangidas"** (*constrained*) a copiar sua estrutura de comunicação. A frase exata é *"organizations which design systems […] are constrained to produce designs which are copies of the communication structures of these organizations"*.
 
@@ -451,8 +450,7 @@ Não são três destinos concorrentes; são três momentos do mesmo problema. O 
 ## Referências
 
 > [!tip] Assista — Team Topologies, Cognitive Load & Complex Systems — Matthew Skelton
-> **Modern Software Engineering** · 1h15 · [Team Topologies, Cognitive Load & Complex Systems — Matthew Skelton](https://www.youtube.com/watch?v=vIcp9zDs4EI)
-> Conversa longa com um dos autores de Team Topologies, cobrindo a manobra inversa de Conway na prática. Bom antídoto contra a leitura determinista da lei: aqui ela aparece como ferramenta de desenho organizacional, não como profecia.
+> **Modern Software Engineering** · 1h15 · [Team Topologies, Cognitive Load & Complex Systems — Matthew Skelton](https://www.youtube.com/watch?v=vIcp9zDs4EI) Conversa longa com um dos autores de Team Topologies, cobrindo a manobra inversa de Conway na prática. Bom antídoto contra a leitura determinista da lei: aqui ela aparece como ferramenta de desenho organizacional, não como profecia.
 
 - **Melvin E. Conway** — *How Do Committees Invent?* (*Datamation*, vol. 14, n. 4, abril de 1968, p. 28-31). Origem da Lei de Conway, da homomorfia organização↔sistema, dos três passos da "desintegração" e da frase sobre a "organização ociosa em busca de trabalho". Texto e formulação canônica no site do autor: [melconway.com — Conway's Law](https://www.melconway.com/Home/Conways_Law.html) · [PDF do artigo](https://www.melconway.com/Home/pdf/committees.pdf).
 - **Alan MacCormack, Carliss Y. Baldwin & John Rusnak** — *Exploring the Duality Between Product and Organizational Architectures: A Test of the "Mirroring" Hypothesis* (*Research Policy* 41(8), 2012; HBS Working Paper 08-039). Teste empírico do espelhamento via **custo de propagação**; o caso Mozilla (17,35% → 2,78%) e a comparação com o Linux; conclusão de que organizações fracamente acopladas produzem produtos mais modulares. [PDF (HBS)](https://www.hbs.edu/ris/Publication%20Files/08-039_1861e507-1dc1-4602-85b8-90d71559d85b.pdf).

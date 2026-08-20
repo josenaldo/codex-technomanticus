@@ -269,8 +269,7 @@ flowchart TD
 ## Combinacional × Sequencial: a linha divisória
 
 > [!info] Diferença fundamental
-> **Combinacional**: saída = f(entradas atuais). Sem memória. Sem clock.
-> **Sequencial**: saída = f(entradas atuais, estado atual). Com memória. Clock necessário.
+> **Combinacional**: saída = f(entradas atuais). Sem memória. Sem clock. **Sequencial**: saída = f(entradas atuais, estado atual). Com memória. Clock necessário.
 >
 > Todo circuito útil em um computador usa os dois: combinacional para **computar**, sequencial para **lembrar**. Registradores, flip-flops e memórias são sequenciais — veja [[06 - Circuitos sequenciais e memória]].
 
@@ -295,8 +294,7 @@ Isso conecta diretamente com [[02 - Representação binária de inteiros]]: os b
 > a = a ^ b
 > ```
 >
-> **XOR para paridade** (paridade de um conjunto de bits é XOR de todos — resultado 0 = número par de 1s):
-> Usado em memória ECC, RAID, checksums.
+> **XOR para paridade** (paridade de um conjunto de bits é XOR de todos — resultado 0 = número par de 1s): Usado em memória ECC, RAID, checksums.
 >
 > **XOR em criptografia** (cifra de Vernam / OTP): F ⊕ K = C e C ⊕ K = F. Porta XOR é reversível quando você conhece um dos operandos.
 >
@@ -409,6 +407,4 @@ Frases de efeito em inglês:
 
 ---
 
-*Próxima nota: [[06 - Circuitos sequenciais e memória]] — flip-flops, latches, registradores e o papel do clock.*
-*Nota anterior: [[01 - O que é organização de computadores]]*
-*Contexto de representação binária: [[02 - Representação binária de inteiros]]*
+*Próxima nota: [[06 - Circuitos sequenciais e memória]] — flip-flops, latches, registradores e o papel do clock.* *Nota anterior: [[01 - O que é organização de computadores]]* *Contexto de representação binária: [[02 - Representação binária de inteiros]]*

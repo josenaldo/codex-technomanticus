@@ -20,9 +20,7 @@ aliases:
 # Certificação Java OCP
 
 > [!abstract] TL;DR
-> Galho atípico: não re-ensina a linguagem, é o guia das provas OCP mapeado aos galhos 1-4 (e ao 6). Cobre as duas provas vigentes — Java 21 (1Z0-830) e Java 25 (1Z0-831, esta lançada em 01/mai/2026) — com os 10 domínios oficiais, as pegadinhas clássicas, formato e estratégia.
-> São 17 notas em 3 grupos de certificação: sobre a prova, os domínios do exame, e pegadinhas/estratégia/dia da prova.
-> É o último galho — fecha a trilha de 18.
+> Galho atípico: não re-ensina a linguagem, é o guia das provas OCP mapeado aos galhos 1-4 (e ao 6). Cobre as duas provas vigentes — Java 21 (1Z0-830) e Java 25 (1Z0-831, esta lançada em 01/mai/2026) — com os 10 domínios oficiais, as pegadinhas clássicas, formato e estratégia. São 17 notas em 3 grupos de certificação: sobre a prova, os domínios do exame, e pegadinhas/estratégia/dia da prova. É o último galho — fecha a trilha de 18.
 
 ## Sobre este galho
 

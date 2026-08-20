@@ -20,9 +20,7 @@ aliases:
 # Reactive Streams — a spec das 4 interfaces e o Flow do Java 9
 
 > [!abstract] TL;DR
-> **Reactive Streams** é uma especificação de apenas **4 interfaces** — `Publisher`, `Subscriber`, `Subscription` e `Processor` — que padroniza o fluxo de dados assíncrono com **backpressure** (o consumidor pede; o produtor não empurra à força).
-> A spec foi **absorvida no JDK como `java.util.concurrent.Flow` no Java 9**, com as interfaces aninhadas 1:1 semanticamente equivalentes às originais.
-> Project Reactor, RxJava e Akka Streams são **implementações**; a spec é só o contrato. Você quase nunca a implementa na mão — usa o Reactor.
+> **Reactive Streams** é uma especificação de apenas **4 interfaces** — `Publisher`, `Subscriber`, `Subscription` e `Processor` — que padroniza o fluxo de dados assíncrono com **backpressure** (o consumidor pede; o produtor não empurra à força). A spec foi **absorvida no JDK como `java.util.concurrent.Flow` no Java 9**, com as interfaces aninhadas 1:1 semanticamente equivalentes às originais. Project Reactor, RxJava e Akka Streams são **implementações**; a spec é só o contrato. Você quase nunca a implementa na mão — usa o Reactor.
 
 ## O que é
 

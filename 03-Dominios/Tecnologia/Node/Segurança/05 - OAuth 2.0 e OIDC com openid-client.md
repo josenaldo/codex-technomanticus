@@ -500,20 +500,15 @@ Um serviço de relatórios precisa chamar o serviço de dados financeiros sem us
 ## Armadilhas comuns
 
 > [!warning] Não validar `state` abre CSRF no fluxo OAuth
-> **Ataque:** o atacante cria uma URL de callback com seu próprio authorization code e engana a vítima a clicar nela. O servidor processa o code do atacante, autentica o atacante na conta da vítima — o atacante assume a sessão.
-> **Por que funciona:** sem validar `state`, o servidor aceita qualquer callback sem verificar se o fluxo foi iniciado pelo usuário legítimo.
-> **Fix:** gere `state` criptograficamente aleatório, armazene na sessão antes do redirect, e verifique `params.state === session.state` no callback. `openid-client` faz isso automaticamente quando você passa `state` para `client.callback()`.
+> **Ataque:** o atacante cria uma URL de callback com seu próprio authorization code e engana a vítima a clicar nela. O servidor processa o code do atacante, autentica o atacante na conta da vítima — o atacante assume a sessão. **Por que funciona:** sem validar `state`, o servidor aceita qualquer callback sem verificar se o fluxo foi iniciado pelo usuário legítimo. **Fix:** gere `state` criptograficamente aleatório, armazene na sessão antes do redirect, e verifique `params.state === session.state` no callback. `openid-client` faz isso automaticamente quando você passa `state` para `client.callback()`.
 >
 > A mesma lógica vale para `aud` e `iss` no ID Token: não validar `aud` permite que um token emitido para outra aplicação seja aceito na sua; não validar `iss` permite tokens de issuers maliciosos. `openid-client` valida ambos automaticamente — mas se você decodificar o JWT manualmente com `jwt.decode()`, **você perde toda a validação**.
 
 > [!warning] Open redirect no callback — valide `redirect_uri` estritamente
-> **Ataque:** o atacante manipula o parâmetro `redirect_uri` para apontar para um domínio que controla. O Authorization Server emite o code para o domínio do atacante, que então o usa para obter tokens válidos.
-> **Por que funciona:** Authorization Servers que fazem matching parcial da redirect_uri (ex: permite qualquer URL que comece com `https://app.example.com`) são vulneráveis a payloads como `https://app.example.com.evil.com/callback`.
-> **Fix no AS:** registre URIs exatas (não prefixos) — o RFC 6749 exige matching exato. **Fix no client:** nunca aceite `redirect_uri` dinamicamente de parâmetros do request; use sempre a URI registrada hard-coded ou via variável de ambiente validada no startup. No Express, nunca faça `redirect_uri: req.query.redirect` — isso é um open redirect instantâneo.
+> **Ataque:** o atacante manipula o parâmetro `redirect_uri` para apontar para um domínio que controla. O Authorization Server emite o code para o domínio do atacante, que então o usa para obter tokens válidos. **Por que funciona:** Authorization Servers que fazem matching parcial da redirect_uri (ex: permite qualquer URL que comece com `https://app.example.com`) são vulneráveis a payloads como `https://app.example.com.evil.com/callback`. **Fix no AS:** registre URIs exatas (não prefixos) — o RFC 6749 exige matching exato. **Fix no client:** nunca aceite `redirect_uri` dinamicamente de parâmetros do request; use sempre a URI registrada hard-coded ou via variável de ambiente validada no startup. No Express, nunca faça `redirect_uri: req.query.redirect` — isso é um open redirect instantâneo.
 
 > [!warning] Usar access token como ID Token — confusão de audiência
-> **Problema:** o access token não tem `aud` garantido como o `client_id` da sua aplicação. Um access token pode ser obtido por outra aplicação e apresentado à sua — você não pode distinguir se foi emitido para você.
-> **Regra:** nunca use `access_token` para determinar a identidade do usuário na sua aplicação. Use **sempre** o `id_token` (validado via `tokenSet.claims()`) ou o resultado do endpoint `/userinfo`, verificando que `sub` bate com o `sub` do ID Token.
+> **Problema:** o access token não tem `aud` garantido como o `client_id` da sua aplicação. Um access token pode ser obtido por outra aplicação e apresentado à sua — você não pode distinguir se foi emitido para você. **Regra:** nunca use `access_token` para determinar a identidade do usuário na sua aplicação. Use **sempre** o `id_token` (validado via `tokenSet.claims()`) ou o resultado do endpoint `/userinfo`, verificando que `sub` bate com o `sub` do ID Token.
 
 ## PKCE — geração de code_verifier e code_challenge
 

@@ -759,8 +759,7 @@ Esse padrão é o que ferramentas como Bun, Deno, mise e fnm usam em seus própr
 **Node 25.5 (janeiro 2026):** mudança de maior impacto — eliminação do `postject`. O `--build-sea` passou a ser o único mecanismo suportado. O `postject` ainda funciona como ferramenta externa (o npm package não foi removido), mas a documentação oficial o marcou como legado. A transição para LIEF resolveu um problema histórico: o `postject` usava WebAssembly internamente para manipular binários, o que causava falhas intermitentes em ambientes com políticas de segurança que bloqueavam a execução de WASM em child processes.
 
 > [!info] Fonte: Node.js CHANGELOG v25.5.0
-> A PR #57038 adicionou o `--build-sea` e marcou o fluxo `postject` como legado. A PR anterior #56463 adicionou o LIEF como dependência. Ambas são de Janeiro de 2026.
-> [Node.js v25.5.0 Changelog](https://nodejs.org/en/blog/release/v25.5.0)
+> A PR #57038 adicionou o `--build-sea` e marcou o fluxo `postject` como legado. A PR anterior #56463 adicionou o LIEF como dependência. Ambas são de Janeiro de 2026. [Node.js v25.5.0 Changelog](https://nodejs.org/en/blog/release/v25.5.0)
 
 **Node 24 LTS (out/2025)** é a versão de suporte longo da série 24 — ainda usa `postject` como mecanismo padrão nos docs, pois `--build-sea` chegou no 25.5. Para projetos em produção que usam LTS e querem o novo fluxo, a recomendação prática é: use `postject` em 22/24, use `--build-sea` em 25+.
 

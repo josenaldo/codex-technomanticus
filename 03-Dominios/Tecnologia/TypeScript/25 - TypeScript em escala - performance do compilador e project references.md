@@ -586,8 +586,7 @@ graph LR
     style BUILD fill:#1a472a,color:#fff
 ```
 
-**`tsc` faz type-check.** Emite zero JavaScript. É o guardião da correção de tipos.
-**`esbuild`/`swc` transpila.** Faz zero type-checking. É o guardião da velocidade.
+**`tsc` faz type-check.** Emite zero JavaScript. É o guardião da correção de tipos. **`esbuild`/`swc` transpila.** Faz zero type-checking. É o guardião da velocidade.
 
 O speedup de transpilação é de 10x-100x: `esbuild` transpila um projeto de 500 arquivos em millisegundos, enquanto `tsc --emit` pode levar segundos ou dezenas de segundos. Em desenvolvimento local, você não precisa checar tipos a cada save — você roda `tsc --noEmit` no CI e no pre-commit. O `esbuild` serve o dev server em tempo real.
 

@@ -16,9 +16,7 @@ tags:
 # Testes de integração
 
 > [!abstract] Resumo em uma linha
-> Teste de integração exercita a colaboração entre componentes reais — código, banco, fila, cache juntos — pra pegar bugs de **fiação e cola** que o teste unitário, por construção, nunca enxerga: mapeamento ORM torto, serialização que muda de forma, configuração que nunca sobe.
-> "Integração" não é um ponto — é um **espectro** que vai de *narrow* (seu código + uma dependência real, isolada) até *broad* (várias services reais conversando) e daí até E2E; cada degrau troca velocidade por realismo.
-> O erro mais caro do espectro inteiro é o **drift de ambiente**: testar contra um banco diferente do de produção (H2 no lugar de Postgres, por exemplo) dá verde no teste e vermelho na produção — a suíte inteira vira teatro de confiança.
+> Teste de integração exercita a colaboração entre componentes reais — código, banco, fila, cache juntos — pra pegar bugs de **fiação e cola** que o teste unitário, por construção, nunca enxerga: mapeamento ORM torto, serialização que muda de forma, configuração que nunca sobe. "Integração" não é um ponto — é um **espectro** que vai de *narrow* (seu código + uma dependência real, isolada) até *broad* (várias services reais conversando) e daí até E2E; cada degrau troca velocidade por realismo. O erro mais caro do espectro inteiro é o **drift de ambiente**: testar contra um banco diferente do de produção (H2 no lugar de Postgres, por exemplo) dá verde no teste e vermelho na produção — a suíte inteira vira teatro de confiança.
 
 O [[04 - Testes unitários|teste unitário]] te diz que cada peça funciona sozinha. Mas software não roda como um amontoado de peças isoladas — roda como um sistema, com camadas conversando, mapeamentos traduzindo objetos em SQL, serialização cruzando fronteiras, configuração colando tudo. E é exatamente nessas costuras que mora uma classe inteira de bugs que o unitário, por construção, não vê.
 

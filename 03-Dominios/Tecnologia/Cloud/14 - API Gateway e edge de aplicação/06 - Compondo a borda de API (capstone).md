@@ -201,16 +201,14 @@ flowchart LR
 > [!tip] Assista: "Backends for Frontends": what is it?
 > **Canal:** Software Developer Diaries | **Duração:** ~8min | **Idioma:** EN
 >
-> Desenha o mesmo problema do zero: uma API genérica compartilhada entre web, mobile e TV força cada cliente a puxar (ou sofrer com) dados que não precisa, até quebrar em uma API dedicada por tipo de cliente — a mesma separação `/mobile/*` vs `/admin/*` do diagrama acima.
-> Trecho de destaque [03:24]: *"instead of having a general purpose API, we're going to create separate backends for every use case, or let's say user interface — we're going to call it BFF, which stands for backend for frontends."*
+> Desenha o mesmo problema do zero: uma API genérica compartilhada entre web, mobile e TV força cada cliente a puxar (ou sofrer com) dados que não precisa, até quebrar em uma API dedicada por tipo de cliente — a mesma separação `/mobile/*` vs `/admin/*` do diagrama acima. Trecho de destaque [03:24]: *"instead of having a general purpose API, we're going to create separate backends for every use case, or let's say user interface — we're going to call it BFF, which stands for backend for frontends."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=tmGnpU8xOGE)
 
 > [!tip] Assista: API Composition Pattern in Microservices
 > **Canal:** Arpit Bhayani | **Duração:** ~26min | **Idioma:** EN
 >
-> Detalha o mesmo papel do Lambda orquestrador do código acima — um "composer" no meio que chama vários serviços e junta a resposta — e no restante do vídeo (fora do trecho citado) discute os trade-offs de latência e acoplamento que crescem quando a composição vira multi-nível.
-> Trecho de destaque [04:39]: *"a super simple implementation is API composition — what we do is we put a middleman, a composer sitting in between. The user makes a request to composer, this composer knows what to do [...] would talk to order service, would talk to payment service, would talk to logistics service."*
+> Detalha o mesmo papel do Lambda orquestrador do código acima — um "composer" no meio que chama vários serviços e junta a resposta — e no restante do vídeo (fora do trecho citado) discute os trade-offs de latência e acoplamento que crescem quando a composição vira multi-nível. Trecho de destaque [04:39]: *"a super simple implementation is API composition — what we do is we put a middleman, a composer sitting in between. The user makes a request to composer, this composer knows what to do [...] would talk to order service, would talk to payment service, would talk to logistics service."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=5pYLlYsy6fQ)
 

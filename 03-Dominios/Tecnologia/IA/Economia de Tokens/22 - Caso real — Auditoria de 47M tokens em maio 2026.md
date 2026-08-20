@@ -313,17 +313,13 @@ A categoria de "auditoria de IA" tornou-se um segmento de produto próprio em 20
 
 ## Casos práticos
 
-**Caso 1 — Detecção imediata do hook desligado:**
-Após a auditoria, adicionei `rtk gain` ao meu checklist semanal. Na primeira semana após reativar o hook, o ganho foi de 87% em saída de ferramentas Bash — confirmando a projeção de 2.1M tokens/mês de economia. Mais importante: o tempo de resposta das sessões subiu visivelmente (menos input para processar = latência menor).
+**Caso 1 — Detecção imediata do hook desligado:** Após a auditoria, adicionei `rtk gain` ao meu checklist semanal. Na primeira semana após reativar o hook, o ganho foi de 87% em saída de ferramentas Bash — confirmando a projeção de 2.1M tokens/mês de economia. Mais importante: o tempo de resposta das sessões subiu visivelmente (menos input para processar = latência menor).
 
-**Caso 2 — `/clear` mudando o comportamento de custo:**
-No mês seguinte à auditoria, monitorei explicitamente o custo por sessão (não por dia). Sessões com `/clear` frequente custaram em média $0.18. Sessões sem `/clear` custaram em média $0.67 — 3.7x mais. A distribuição mudou: menos sessões acima de $1.00 (de 23% para 4% do total).
+**Caso 2 — `/clear` mudando o comportamento de custo:** No mês seguinte à auditoria, monitorei explicitamente o custo por sessão (não por dia). Sessões com `/clear` frequente custaram em média $0.18. Sessões sem `/clear` custaram em média $0.67 — 3.7x mais. A distribuição mudou: menos sessões acima de $1.00 (de 23% para 4% do total).
 
-**Caso 3 — Troca de `general-purpose` por `Explore`:**
-Para 15 buscas de código documentadas em uma semana, o custo médio com `general-purpose` era ~$0.08 por busca. Com `Explore`, o custo médio caiu para ~$0.012 — 6.5x mais barato. Para buscas que retornam resultados diretos (localizar uma função, encontrar um arquivo), `Explore` entrega o mesmo resultado.
+**Caso 3 — Troca de `general-purpose` por `Explore`:** Para 15 buscas de código documentadas em uma semana, o custo médio com `general-purpose` era ~$0.08 por busca. Com `Explore`, o custo médio caiu para ~$0.012 — 6.5x mais barato. Para buscas que retornam resultados diretos (localizar uma função, encontrar um arquivo), `Explore` entrega o mesmo resultado.
 
-**Caso 4 — O custo de um loop esquecido:**
-Identificado no logs: uma skill em "dynamic loop mode" estava aguardando em background por 14 horas em vez de 20 minutos (tinha dormido mas o wakeup não foi resolvido corretamente). Cada "acorde" parcial consumiu ~15K tokens de contexto sem produzir output útil. Custo: ~200K tokens desperdiçados. Fix: `TaskStop` nos loops não monitorados antes de fechar o dia.
+**Caso 4 — O custo de um loop esquecido:** Identificado no logs: uma skill em "dynamic loop mode" estava aguardando em background por 14 horas em vez de 20 minutos (tinha dormido mas o wakeup não foi resolvido corretamente). Cada "acorde" parcial consumiu ~15K tokens de contexto sem produzir output útil. Custo: ~200K tokens desperdiçados. Fix: `TaskStop` nos loops não monitorados antes de fechar o dia.
 
 ## Resultados esperados após aplicar os fixes
 

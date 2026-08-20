@@ -223,8 +223,7 @@ Context engineering and harness engineering split one problem into two orthogona
 > [!tip] Assista: Andrej Karpathy — Software Is Changing (Again)
 > **Canal:** Y Combinator | **Duração:** ~40min | **Idioma:** EN (legendas PT auto)
 >
-> A fonte da metáfora que abre esta nota. Karpathy detalha por que o LLM se comporta como um sistema operacional e a janela de contexto como RAM — e por que isso desloca a pergunta de "qual a frase certa" para "qual o ambiente que o agente precisa".
-> Trecho de destaque [10:15]: *"the LLM is a … operating system … the context windows are kind of like the [memory]"*
+> A fonte da metáfora que abre esta nota. Karpathy detalha por que o LLM se comporta como um sistema operacional e a janela de contexto como RAM — e por que isso desloca a pergunta de "qual a frase certa" para "qual o ambiente que o agente precisa". Trecho de destaque [10:15]: *"the LLM is a … operating system … the context windows are kind of like the [memory]"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=LCEmiRjPEtQ)
 

@@ -79,9 +79,7 @@ De N reflows para 1. Mesmo resultado, ordem diferente. Bibliotecas como **FastDO
 > No **painel Performance** do DevTools, ele aparece como blocos roxos de "Layout" repetidos dentro de uma mesma tarefa, muitas vezes marcados com um aviso de **"Forced reflow"** (o Chrome sinaliza forced synchronous layout explicitamente). Se você vê vários reflows numa mesma função, ou o aviso "Forced reflow is a likely performance bottleneck", é thrashing. A pista no código é sempre a mesma: uma **leitura de propriedade geométrica dentro de um loop que também escreve no DOM**. Procure por `offsetWidth`/`getBoundingClientRect`/`scrollTop` em loops.
 
 > [!warning] `getBoundingClientRect()` dentro de um loop de escrita
-> **O que acontece:** um loop que posiciona elementos chamando `getBoundingClientRect()` a cada item fica lento de forma inexplicável.
-> **Por quê:** `getBoundingClientRect()` (como `offsetTop`, `scrollHeight`, `getComputedStyle`) força o layout a estar atualizado — logo, força reflow síncrono se houve escrita antes. Num loop de escrita, é um reflow por item.
-> **Como evitar:** colete todas as medições **antes** do loop de escrita (fase de leitura), guarde em variáveis, e só então aplique as mudanças. Nunca meça e mude o DOM alternadamente.
+> **O que acontece:** um loop que posiciona elementos chamando `getBoundingClientRect()` a cada item fica lento de forma inexplicável. **Por quê:** `getBoundingClientRect()` (como `offsetTop`, `scrollHeight`, `getComputedStyle`) força o layout a estar atualizado — logo, força reflow síncrono se houve escrita antes. Num loop de escrita, é um reflow por item. **Como evitar:** colete todas as medições **antes** do loop de escrita (fase de leitura), guarde em variáveis, e só então aplique as mudanças. Nunca meça e mude o DOM alternadamente.
 
 **Layout thrashing em uma frase:** intercalar leituras de propriedades geométricas com escritas no DOM força o browser a recalcular o layout a cada iteração (forced synchronous layout), e a cura é separar em fases — ler tudo primeiro, escrever tudo depois — trocando N reflows por um só.
 

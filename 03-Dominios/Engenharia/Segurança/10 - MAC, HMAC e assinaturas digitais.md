@@ -400,9 +400,7 @@ Assinar diretamente com RSA sem aplicar hash primeiro (RSA "textbook") é insegu
 
 ## Conexões
 
-**Anterior**: [[09 - Troca de chaves]] — sem troca segura de chave, não há K para MAC nem par de chaves para assinatura.
-**Próxima**: [[11 - PKI e certificados]] — PKI distribui e certifica as chaves públicas que tornam assinaturas verificáveis por estranhos.
-**Cross-links**:
+**Anterior**: [[09 - Troca de chaves]] — sem troca segura de chave, não há K para MAC nem par de chaves para assinatura. **Próxima**: [[11 - PKI e certificados]] — PKI distribui e certifica as chaves públicas que tornam assinaturas verificáveis por estranhos. **Cross-links**:
 - [[06 - Hashing criptográfico]] — fundamento de HMAC; length-extension é propriedade do hash Merkle-Damgård.
 - [[08 - Criptografia assimétrica]] — matemática de RSA, ECDSA, EdDSA; par de chaves é a base do não-repúdio.
 - [[15 - Ataques a sistemas cripto]] — padding oracle, POODLE, length-extension, k-repetition em ECDSA.

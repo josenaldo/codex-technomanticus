@@ -277,8 +277,7 @@ flowchart TD
 > [!tip] Assista: Setting up Claude Code security guardrails
 > **Canal:** NextWork | **Duração:** ~1h09min | **Idioma:** EN
 >
-> Walkthrough completo de ponta a ponta: permission deny rules + hooks + `CLAUDE.md`, incluindo um validator hook que bloqueia categorias de comando perigoso (SQL injection, pipe-to-shell, escrita em `.env`, exclusões destrutivas) via exit code — o mesmo mecanismo que sustenta os scripts desta nota.
-> Trecho de destaque [40:40]: *"patterns like drop table or delete from that can delete or destroy database history"*
+> Walkthrough completo de ponta a ponta: permission deny rules + hooks + `CLAUDE.md`, incluindo um validator hook que bloqueia categorias de comando perigoso (SQL injection, pipe-to-shell, escrita em `.env`, exclusões destrutivas) via exit code — o mesmo mecanismo que sustenta os scripts desta nota. Trecho de destaque [40:40]: *"patterns like drop table or delete from that can delete or destroy database history"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=-Awaa2oUWYY)
 

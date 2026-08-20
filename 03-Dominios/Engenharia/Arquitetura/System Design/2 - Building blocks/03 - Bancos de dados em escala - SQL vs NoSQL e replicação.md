@@ -65,9 +65,7 @@ Esta seção não reabre ACID nem índices — isso mora em [[03-Dominios/Ciênc
 **Grafo** — Neo4j, Amazon Neptune. Quando a pergunta central é sobre **relacionamentos profundos** — "amigos de amigos até 3 graus", recomendação por proximidade de rede. Um relacional consegue simular com joins recursivos, mas degrada rápido; um grafo trata a travessia como operação nativa.
 
 > [!warning] Escolher NoSQL por moda, não por padrão de acesso
-> **O que acontece:** o time migra de Postgres para MongoDB "porque escala melhor", e três meses depois precisa emular joins na aplicação para gerar um relatório financeiro que cruza cinco coleções.
-> **Por quê:** a decisão foi tomada pela reputação do banco ("NoSQL = escala"), não pelo padrão de acesso real da carga de trabalho.
-> **Como evitar:** pergunte primeiro "eu preciso de transações multi-registro e joins ad-hoc?". Se sim, é relacional — ponto. Só considere NoSQL quando o acesso é predominantemente por chave, em volume que um único nó relacional não sustenta, e você já validou que pode tolerar consistência eventual.
+> **O que acontece:** o time migra de Postgres para MongoDB "porque escala melhor", e três meses depois precisa emular joins na aplicação para gerar um relatório financeiro que cruza cinco coleções. **Por quê:** a decisão foi tomada pela reputação do banco ("NoSQL = escala"), não pelo padrão de acesso real da carga de trabalho. **Como evitar:** pergunte primeiro "eu preciso de transações multi-registro e joins ad-hoc?". Se sim, é relacional — ponto. Só considere NoSQL quando o acesso é predominantemente por chave, em volume que um único nó relacional não sustenta, e você já validou que pode tolerar consistência eventual.
 
 A tabela abaixo resume a decisão em cinco perguntas que valem mais do que qualquer benchmark de performance:
 
@@ -192,9 +190,7 @@ Quando o leader recebe uma escrita, ele tem duas formas de confirmá-la ao clien
 Na prática, poucos sistemas rodam 100% síncrono com todos os followers — isso mataria a disponibilidade de escrita a cada follower lento. A configuração comum é **semi-síncrona**: um follower é síncrono (garante ao menos uma cópia durável) e os demais são assíncronos. Se o síncrono cair, outro assume o papel — é exatamente assim que Kleppmann descreve o comportamento adotado por MySQL, PostgreSQL e MongoDB.
 
 > [!warning] Assumir que "replicado" significa "sem risco de perda"
-> **O que acontece:** o time configura replicação assíncrona (o default) e assume que os dados estão seguros porque "tem réplica".
-> **Por quê:** replicação assíncrona só copia o dado *depois* de confirmar a escrita ao cliente — existe uma janela real onde o dado só existe no leader.
-> **Como evitar:** para dados onde perda é inaceitável (transação financeira, por exemplo), configure ao menos um follower síncrono. Para o resto, aceite a janela de risco conscientemente — e diga isso em voz alta na entrevista: "escolho assíncrono aqui porque o custo de latência da síncrona não se paga para este dado".
+> **O que acontece:** o time configura replicação assíncrona (o default) e assume que os dados estão seguros porque "tem réplica". **Por quê:** replicação assíncrona só copia o dado *depois* de confirmar a escrita ao cliente — existe uma janela real onde o dado só existe no leader. **Como evitar:** para dados onde perda é inaceitável (transação financeira, por exemplo), configure ao menos um follower síncrono. Para o resto, aceite a janela de risco conscientemente — e diga isso em voz alta na entrevista: "escolho assíncrono aqui porque o custo de latência da síncrona não se paga para este dado".
 
 ### Lag de replicação: o preço de escalar leitura
 
@@ -287,9 +283,7 @@ graph TD
 Esse é o motivo pelo qual eleição de leader raramente é "o primeiro follower que perceber que o leader sumiu vira leader" — sistemas sérios usam protocolo de consenso (quórum, tipicamente Raft ou Paxos) para garantir que só uma eleição vence, exigindo maioria dos nós concordando antes de declarar um novo leader legítimo. Ferramentas de orquestração como Patroni (para PostgreSQL) implementam exatamente esse papel: monitoram os nós, coordenam a eleição via um serviço de consenso externo (etcd/Consul/ZooKeeper) e fecham o acesso de escrita do leader antigo (fencing) para reduzir a janela de split brain. O mecanismo de quórum em si fica detalhado em [[06 - CAP, consistência e consenso]]; aqui basta reconhecer o sintoma, nomeá-lo, e saber que a defesa é "maioria decide, não o primeiro a notar".
 
 > [!warning] Promover um follower atrasado a novo leader
-> **O que acontece:** o follower eleito como novo leader não tinha recebido as últimas escritas do leader antigo — aquelas transações somem, mesmo que o cliente tenha recebido confirmação de sucesso.
-> **Por quê:** a eleição escolheu por disponibilidade (o primeiro follower que respondeu), não pelo follower com o log de replicação mais completo.
-> **Como evitar:** o algoritmo de eleição precisa comparar a posição no log de replicação entre os candidatos e escolher o mais atualizado — é parte do que Raft e Paxos formalizam, e é parte do que você sinaliza em entrevista ao dizer "a eleição não pode ser só 'quem respondeu primeiro', tem que ser 'quem tem o log mais avançado'".
+> **O que acontece:** o follower eleito como novo leader não tinha recebido as últimas escritas do leader antigo — aquelas transações somem, mesmo que o cliente tenha recebido confirmação de sucesso. **Por quê:** a eleição escolheu por disponibilidade (o primeiro follower que respondeu), não pelo follower com o log de replicação mais completo. **Como evitar:** o algoritmo de eleição precisa comparar a posição no log de replicação entre os candidatos e escolher o mais atualizado — é parte do que Raft e Paxos formalizam, e é parte do que você sinaliza em entrevista ao dizer "a eleição não pode ser só 'quem respondeu primeiro', tem que ser 'quem tem o log mais avançado'".
 
 ### Testar o failover antes que ele aconteça sem avisar
 
@@ -339,19 +333,13 @@ Se o entrevistador perguntar "e se o leader cair?", a resposta em camadas — de
 ## Armadilhas comuns
 
 > [!warning] Tratar "SQL vs NoSQL" e "replicação" como a mesma decisão
-> **O que acontece:** o candidato responde "eu usaria NoSQL com replicação" como se replicação fosse exclusividade de um dos dois mundos.
-> **Por quê:** confunde os dois eixos ortogonais da nota — modelo de dado e número de cópias. Todo banco sério replica, relacional ou não.
-> **Como evitar:** trate as perguntas separadamente em voz alta: "o modelo eu escolho pelo padrão de acesso; a replicação eu aplico de qualquer forma, para throughput de leitura e tolerância a falha."
+> **O que acontece:** o candidato responde "eu usaria NoSQL com replicação" como se replicação fosse exclusividade de um dos dois mundos. **Por quê:** confunde os dois eixos ortogonais da nota — modelo de dado e número de cópias. Todo banco sério replica, relacional ou não. **Como evitar:** trate as perguntas separadamente em voz alta: "o modelo eu escolho pelo padrão de acesso; a replicação eu aplico de qualquer forma, para throughput de leitura e tolerância a falha."
 
 > [!warning] Ignorar o custo operacional de monitorar lag
-> **O que acontece:** o design assume réplicas de leitura "de graça", sem mencionar que alguém precisa monitorar o lag e alertar quando ele ultrapassa um limite tolerável.
-> **Por quê:** lag de replicação é invisível até o dia em que uma réplica atrasa minutos (rede lenta, follower sobrecarregado) e passa a servir dado perigosamente stale sem que ninguém perceba.
-> **Como evitar:** mencionar, mesmo brevemente, que a operação inclui métricas de lag por réplica e um circuito de alerta — é o tipo de detalhe que sinaliza que você já operou isso em produção, não só leu a respeito.
+> **O que acontece:** o design assume réplicas de leitura "de graça", sem mencionar que alguém precisa monitorar o lag e alertar quando ele ultrapassa um limite tolerável. **Por quê:** lag de replicação é invisível até o dia em que uma réplica atrasa minutos (rede lenta, follower sobrecarregado) e passa a servir dado perigosamente stale sem que ninguém perceba. **Como evitar:** mencionar, mesmo brevemente, que a operação inclui métricas de lag por réplica e um circuito de alerta — é o tipo de detalhe que sinaliza que você já operou isso em produção, não só leu a respeito.
 
 > [!warning] Contar com réplica como se fosse plano de recuperação de desastre
-> **O que acontece:** o candidato responde "e se eu perder o banco?" com "eu tenho réplicas, então está tudo coberto".
-> **Por quê:** como visto acima, réplica protege contra falha de hardware de um nó — não contra erro lógico já replicado, nem contra a perda simultânea de leader e réplicas na mesma região (um incêndio de datacenter, por exemplo).
-> **Como evitar:** separar as duas respostas: "réplicas me dão alta disponibilidade contra falha de nó; para recuperação de desastre eu preciso de backups ponto-no-tempo, e idealmente réplicas numa região geográfica diferente."
+> **O que acontece:** o candidato responde "e se eu perder o banco?" com "eu tenho réplicas, então está tudo coberto". **Por quê:** como visto acima, réplica protege contra falha de hardware de um nó — não contra erro lógico já replicado, nem contra a perda simultânea de leader e réplicas na mesma região (um incêndio de datacenter, por exemplo). **Como evitar:** separar as duas respostas: "réplicas me dão alta disponibilidade contra falha de nó; para recuperação de desastre eu preciso de backups ponto-no-tempo, e idealmente réplicas numa região geográfica diferente."
 
 ## Checklist rápido para levar pra entrevista
 

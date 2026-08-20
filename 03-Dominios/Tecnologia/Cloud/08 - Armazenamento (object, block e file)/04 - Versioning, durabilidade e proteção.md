@@ -179,8 +179,7 @@ $ aws s3api put-bucket-lifecycle-configuration \
 > [!tip] Assista: Amazon S3 Data Protection Overview — Versioning, Object Lock, & Replication
 > **Canal:** Amazon Web Services | **Duração:** ~8min | **Idioma:** EN
 >
-> Vídeo oficial da AWS que percorre exatamente os três mecanismos desta nota — versioning, object lock e replication — em sequência, mostrando como um se apoia no outro (object lock exige versioning habilitado, por exemplo). Bom resumo visual antes de seguir pras seções de Replication e Object Lock abaixo.
-> Trecho de destaque [2:31]: *"inserts a delete marker instead of [removing it permanently]"*
+> Vídeo oficial da AWS que percorre exatamente os três mecanismos desta nota — versioning, object lock e replication — em sequência, mostrando como um se apoia no outro (object lock exige versioning habilitado, por exemplo). Bom resumo visual antes de seguir pras seções de Replication e Object Lock abaixo. Trecho de destaque [2:31]: *"inserts a delete marker instead of [removing it permanently]"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=b18KlhIgmjQ)
 

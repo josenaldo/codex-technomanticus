@@ -579,24 +579,16 @@ usuario.nome = 123;       // TypeError: nome deve ser string
 ## Armadilhas comuns
 
 > [!warning] Invariantes de objetos selados
-> **O que acontece:** `TypeError: 'get' on proxy: property 'x' is a read-only and non-configurable...`
-> **Por quê:** Se o target tem uma propriedade non-configurable non-writable, o trap `get` é obrigado a retornar exatamente o mesmo valor — o motor verifica e lança TypeError se violar.
-> **Como evitar:** Nunca use `Object.freeze()` ou `Object.seal()` no target de um Proxy que modifica propriedades. Use um objeto intermediário simples como target e aplique as restrições no handler.
+> **O que acontece:** `TypeError: 'get' on proxy: property 'x' is a read-only and non-configurable...` **Por quê:** Se o target tem uma propriedade non-configurable non-writable, o trap `get` é obrigado a retornar exatamente o mesmo valor — o motor verifica e lança TypeError se violar. **Como evitar:** Nunca use `Object.freeze()` ou `Object.seal()` no target de um Proxy que modifica propriedades. Use um objeto intermediário simples como target e aplique as restrições no handler.
 
 > [!warning] Proxy não é o target — identity e WeakMap
-> **O que acontece:** `mapa.get(proxy) !== mapa.get(target)` — o Proxy e o objeto original são identidades distintas.
-> **Por quê:** `proxy === target` é `false`. Se você armazena o objeto original em um Map e depois recebe o Proxy, o lookup falha.
-> **Como evitar:** Armazene o Proxy (não o target) em estruturas de dados, ou mantenha um WeakMap de `proxy → target` para conversão bidirecional.
+> **O que acontece:** `mapa.get(proxy) !== mapa.get(target)` — o Proxy e o objeto original são identidades distintas. **Por quê:** `proxy === target` é `false`. Se você armazena o objeto original em um Map e depois recebe o Proxy, o lookup falha. **Como evitar:** Armazene o Proxy (não o target) em estruturas de dados, ou mantenha um WeakMap de `proxy → target` para conversão bidirecional.
 
 > [!warning] Loops infinitos no trap set
-> **O que acontece:** Stack overflow — o trap `set` chama `target[prop] = value` em vez de `Reflect.set`.
-> **Por quê:** Se o target também for um Proxy (ou o handler chama o setter do próprio proxy), você entra em recursão.
-> **Como evitar:** Sempre use `Reflect.set(target, prop, value, receiver)` dentro do trap — nunca `target[prop] = value` diretamente quando o target pode ser reatribuído.
+> **O que acontece:** Stack overflow — o trap `set` chama `target[prop] = value` em vez de `Reflect.set`. **Por quê:** Se o target também for um Proxy (ou o handler chama o setter do próprio proxy), você entra em recursão. **Como evitar:** Sempre use `Reflect.set(target, prop, value, receiver)` dentro do trap — nunca `target[prop] = value` diretamente quando o target pode ser reatribuído.
 
 > [!warning] Symbol.toPrimitive ignorado em JSON.stringify
-> **O que acontece:** `Symbol.toPrimitive` não é chamado por `JSON.stringify` — o objeto serializa com `{}` ou usa `toJSON()`.
-> **Por quê:** `JSON.stringify` usa `toJSON()` e depois converte para string/número diretamente, não passando pelo protocolo `Symbol.toPrimitive`.
-> **Como evitar:** Para serialização customizada, implemente `toJSON()`. Para coerção em expressões, use `Symbol.toPrimitive`.
+> **O que acontece:** `Symbol.toPrimitive` não é chamado por `JSON.stringify` — o objeto serializa com `{}` ou usa `toJSON()`. **Por quê:** `JSON.stringify` usa `toJSON()` e depois converte para string/número diretamente, não passando pelo protocolo `Symbol.toPrimitive`. **Como evitar:** Para serialização customizada, implemente `toJSON()`. Para coerção em expressões, use `Symbol.toPrimitive`.
 
 ---
 

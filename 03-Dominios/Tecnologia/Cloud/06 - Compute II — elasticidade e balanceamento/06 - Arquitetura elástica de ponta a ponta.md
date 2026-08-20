@@ -79,8 +79,7 @@ Repare no que essa figura já entrega sozinha: nenhuma seta aponta de volta para
 > [!tip] Assista: How to Deploy a 3-Tier Architecture on AWS — End-to-End AWS Project
 > **Canal:** Tech Tutorials with Piyush | **Duração:** ~1h10min | **Idioma:** EN
 >
-> Constrói ao vivo, camada por camada, praticamente a mesma pilha desta seção — LB, ASG, instâncias stateless, múltiplas AZs — o que ajuda a ver as camadas do diagrama acima virarem recursos reais criados em sequência, não só caixas num fluxograma.
-> Trecho de destaque [02:48]: *"load balancer so that we can distribute the traffic among multiple EC2 servers as the backend and these EC2 servers are part of the auto scaling group. If there is one EC2 server that is crashed, it will spin up a new EC2 server..."*
+> Constrói ao vivo, camada por camada, praticamente a mesma pilha desta seção — LB, ASG, instâncias stateless, múltiplas AZs — o que ajuda a ver as camadas do diagrama acima virarem recursos reais criados em sequência, não só caixas num fluxograma. Trecho de destaque [02:48]: *"load balancer so that we can distribute the traffic among multiple EC2 servers as the backend and these EC2 servers are part of the auto scaling group. If there is one EC2 server that is crashed, it will spin up a new EC2 server..."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=amiIcyt-J2A)
 
@@ -243,8 +242,7 @@ Uma equipe que precisa de redundância real entre datacenters na DigitalOcean �
 > [!tip] Assista: Operating highly available Multi-AZ applications (ARC329) — AWS re:Invent 2022
 > **Canal:** AWS re:Invent 2022 | **Duração:** ~58min | **Idioma:** EN
 >
-> Um talk oficial da AWS sobre a filosofia por trás desta seção: por que "sobreviver" não é sobre nunca falhar, é sobre quanto de capacidade sobra por zona quando uma delas cai — e por que manter capacidade equivalente em todas as AZs (não só distribuir instâncias) é o requisito que a maioria das equipes esquece.
-> Trecho de destaque [02:26]: *"It's about how hard you can get hit and keep moving forward. If you build a single system with a single point of failure in it, you as soon as that gets hit, you're in trouble."*
+> Um talk oficial da AWS sobre a filosofia por trás desta seção: por que "sobreviver" não é sobre nunca falhar, é sobre quanto de capacidade sobra por zona quando uma delas cai — e por que manter capacidade equivalente em todas as AZs (não só distribuir instâncias) é o requisito que a maioria das equipes esquece. Trecho de destaque [02:26]: *"It's about how hard you can get hit and keep moving forward. If you build a single system with a single point of failure in it, you as soon as that gets hit, you're in trouble."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=mwUV5skJJ0s)
 

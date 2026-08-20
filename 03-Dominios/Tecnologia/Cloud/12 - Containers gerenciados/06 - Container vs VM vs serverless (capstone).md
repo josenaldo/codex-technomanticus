@@ -71,8 +71,7 @@ O eixo que este capstone acrescenta — maturidade operacional do time — não 
 > [!tip] Assista: AWS re:Invent 2022 - Build your application easily & efficiently with serverless containers (CON309)
 > **Canal:** AWS Events | **Duração:** ~44min | **Idioma:** EN
 >
-> Talk oficial que percorre exatamente os três nós da árvore acima do lado serverless/container — Lambda, App Runner e Fargate — comparando concorrência, escala e billing lado a lado, com números reais de latência e custo que complementam a tabela desta seção.
-> Trecho de destaque [09:41]: *"starting with AWS Lambda, think of AWS Lambda as a containerized event handling function in the cloud"*
+> Talk oficial que percorre exatamente os três nós da árvore acima do lado serverless/container — Lambda, App Runner e Fargate — comparando concorrência, escala e billing lado a lado, com números reais de latência e custo que complementam a tabela desta seção. Trecho de destaque [09:41]: *"starting with AWS Lambda, think of AWS Lambda as a containerized event handling function in the cloud"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=MqPxzWqttJs)
 

@@ -67,9 +67,7 @@ git blame -w -C -C -- arquivo.java
 Sem elas, num código que passou por refatorações, o `blame` mente com frequência — atribuindo tudo a quem reorganizou.
 
 > [!warning] O commit de reformatação em massa que apaga a história
-> **O que acontece:** o time rodou um formatador automático em 2023 e commitou tudo de uma vez. Hoje o `blame` do projeto inteiro aponta para aquele commit e para aquela pessoa.
-> **Por quê:** a linha foi de fato modificada — o Git está sendo literal.
-> **Como resolver:** liste os commits a ignorar num arquivo e diga ao Git para pulá-los.
+> **O que acontece:** o time rodou um formatador automático em 2023 e commitou tudo de uma vez. Hoje o `blame` do projeto inteiro aponta para aquele commit e para aquela pessoa. **Por quê:** a linha foi de fato modificada — o Git está sendo literal. **Como resolver:** liste os commits a ignorar num arquivo e diga ao Git para pulá-los.
 > ```bash
 > echo "a3f1c9d5e2b8471f0c6d9a3e7b52814f6d0e9c2a  # formatador, 2023" >> .git-blame-ignore-revs
 > git config blame.ignoreRevsFile .git-blame-ignore-revs
@@ -150,19 +148,13 @@ O último par é ouro em investigação de incidente: `git tag --contains` respo
 ## Armadilhas comuns
 
 > [!warning] Confiar no `blame` como atribuição de culpa
-> **O que acontece:** o nome que aparece é usado para responsabilizar alguém.
-> **Por quê:** além de o `blame` mostrar apenas *quem tocou por último* — que pode ter só reindentado, ou aplicado uma mudança decidida por outra pessoa —, o uso punitivo destrói a disposição do time em mexer em código antigo.
-> **Como usar direito:** o `blame` é para achar **contexto** e **com quem conversar**, não culpado. A pergunta útil é "você lembra por que isso ficou assim?", nunca "por que você fez isso?".
+> **O que acontece:** o nome que aparece é usado para responsabilizar alguém. **Por quê:** além de o `blame` mostrar apenas *quem tocou por último* — que pode ter só reindentado, ou aplicado uma mudança decidida por outra pessoa —, o uso punitivo destrói a disposição do time em mexer em código antigo. **Como usar direito:** o `blame` é para achar **contexto** e **com quem conversar**, não culpado. A pergunta útil é "você lembra por que isso ficou assim?", nunca "por que você fez isso?".
 
 > [!warning] Investigar num clone raso
-> **O que acontece:** `blame` mostra tudo atribuído ao commit inicial, pickaxe não acha nada.
-> **Por quê:** a história não está lá (notas 27 e 30).
-> **Como evitar:** para investigação, clone completo ou parcial — nunca raso.
+> **O que acontece:** `blame` mostra tudo atribuído ao commit inicial, pickaxe não acha nada. **Por quê:** a história não está lá (notas 27 e 30). **Como evitar:** para investigação, clone completo ou parcial — nunca raso.
 
 > [!warning] Parar no commit e não chegar ao contexto
-> **O que acontece:** você acha o commit e a mensagem diz "ajustes".
-> **Por quê:** a disciplina da nota 14 não existia naquele time.
-> **Como contornar:** suba um nível — ache o merge (`--ancestry-path`), o PR, a issue. E, se nada disso existir, olhe os **commits vizinhos no tempo**: `git log --since=<data-1dia> --until=<data+1dia> --all` costuma revelar o que estava acontecendo naquela semana, o que dá contexto mesmo sem mensagem.
+> **O que acontece:** você acha o commit e a mensagem diz "ajustes". **Por quê:** a disciplina da nota 14 não existia naquele time. **Como contornar:** suba um nível — ache o merge (`--ancestry-path`), o PR, a issue. E, se nada disso existir, olhe os **commits vizinhos no tempo**: `git log --since=<data-1dia> --until=<data+1dia> --all` costuma revelar o que estava acontecendo naquela semana, o que dá contexto mesmo sem mensagem.
 
 ---
 

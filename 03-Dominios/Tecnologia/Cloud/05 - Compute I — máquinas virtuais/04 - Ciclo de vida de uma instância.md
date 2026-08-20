@@ -70,8 +70,7 @@ A DigitalOcean documenta um conjunto mais enxuto de valores para o campo `status
 > [!tip] Assista: EC2 Instance States: Start, Stop & Terminate Explained
 > **Canal:** CodeLucky | **Duração:** ~4min | **Idioma:** EN
 >
-> Um resumo rápido e direto da diferença central entre parar (reversível, dado preservado) e terminar (irreversível) — útil como recapitulação de 4 minutos antes de entrar no detalhe estado a estado da tabela abaixo.
-> Trecho de destaque [02:19]: *"Stopping is a reversible action that preserves your data and allows you to restart the instance any time"*
+> Um resumo rápido e direto da diferença central entre parar (reversível, dado preservado) e terminar (irreversível) — útil como recapitulação de 4 minutos antes de entrar no detalhe estado a estado da tabela abaixo. Trecho de destaque [02:19]: *"Stopping is a reversible action that preserves your data and allows you to restart the instance any time"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=ei-jLrSvOKc)
 
@@ -109,8 +108,7 @@ flowchart TD
 > [!tip] Assista: EC2 Instance Hibernation | Stopping | Use cases | Hands-On
 > **Canal:** Srce Cde | **Duração:** ~18min | **Idioma:** EN
 >
-> Usa a mesma analogia do notebook (hibernar vs. desligar) que a nota descreve, e demonstra ao vivo o que acontece com a instância store e a RAM ao comparar as duas operações — bom reforço visual do mermaid acima.
-> Trecho de destaque [00:23]: *"the basic difference between stop and hibernate — imagine you have a computer at [home]"*
+> Usa a mesma analogia do notebook (hibernar vs. desligar) que a nota descreve, e demonstra ao vivo o que acontece com a instância store e a RAM ao comparar as duas operações — bom reforço visual do mermaid acima. Trecho de destaque [00:23]: *"the basic difference between stop and hibernate — imagine you have a computer at [home]"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Er9KE93r6Go)
 

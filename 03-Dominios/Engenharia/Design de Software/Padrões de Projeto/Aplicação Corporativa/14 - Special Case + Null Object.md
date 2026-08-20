@@ -24,14 +24,7 @@ aliases:
 # Special Case + Null Object
 
 > [!abstract] TL;DR
-> `null` é o valor que **cabe em qualquer tipo e não responde a nada** — e por isso a checagem contra
-> ele se espalha por todo o sistema, com o custo de que esquecer **uma** produz um erro em produção. O
-> **Special Case** substitui o caso excepcional por uma **subclasse que sabe se comportar**:
-> `ClienteDesconhecido` responde às mesmas mensagens que um cliente, com respostas neutras ou
-> específicas. O **Null Object** é o seu caso mais famoso. **A ressurreição** é ampla: `Optional`,
-> `Maybe`, `Result` e *pattern matching* atacam o mesmo problema com apoio do sistema de tipos. Esta
-> nota **fecha a família**, com o mapa de reconhecimento dos 14 padrões e a síntese da lente
-> arqueológica.
+> `null` é o valor que **cabe em qualquer tipo e não responde a nada** — e por isso a checagem contra ele se espalha por todo o sistema, com o custo de que esquecer **uma** produz um erro em produção. O **Special Case** substitui o caso excepcional por uma **subclasse que sabe se comportar**: `ClienteDesconhecido` responde às mesmas mensagens que um cliente, com respostas neutras ou específicas. O **Null Object** é o seu caso mais famoso. **A ressurreição** é ampla: `Optional`, `Maybe`, `Result` e *pattern matching* atacam o mesmo problema com apoio do sistema de tipos. Esta nota **fecha a família**, com o mapa de reconhecimento dos 14 padrões e a síntese da lente arqueológica.
 
 ## Quarenta e sete verificações e um esquecimento
 
@@ -112,19 +105,13 @@ O problema foi levado a sério, e a resposta moderna é mais forte que o padrão
 ## Armadilhas comuns
 
 > [!warning] Null Object que esconde erro real
-> **O que acontece:** o repositório devolve um objeto neutro para um identificador que **deveria** existir. O sistema calcula sobre zeros, grava, e a inconsistência só aparece semanas depois — sem rastro do ponto de origem.
-> **Por quê:** o padrão remove a explosão, e a explosão era o mecanismo de detecção. Removê-la sem distinguir os casos troca uma falha ruidosa e barata por uma silenciosa e cara.
-> **Como evitar:** separe as duas operações. `buscar` devolve ausência tratável; `obrigatorio` (ou `getOrFail`) explode. A escolha fica no chamador, explícita, em vez de escondida no repositório.
+> **O que acontece:** o repositório devolve um objeto neutro para um identificador que **deveria** existir. O sistema calcula sobre zeros, grava, e a inconsistência só aparece semanas depois — sem rastro do ponto de origem. **Por quê:** o padrão remove a explosão, e a explosão era o mecanismo de detecção. Removê-la sem distinguir os casos troca uma falha ruidosa e barata por uma silenciosa e cara. **Como evitar:** separe as duas operações. `buscar` devolve ausência tratável; `obrigatorio` (ou `getOrFail`) explode. A escolha fica no chamador, explícita, em vez de escondida no repositório.
 
 > [!warning] Proliferação de casos especiais
-> **O que acontece:** nascem `ClienteDesconhecido`, `ClienteInativo`, `ClienteBloqueado`, `ClienteMigrado`, `ClienteTemporario` — cada um sobrescrevendo métodos de forma sutilmente diferente. Uma mudança na classe-base precisa ser avaliada contra seis subclasses.
-> **Por quê:** o padrão é fácil de aplicar mais uma vez, e cada caso novo parece pequeno.
-> **Como evitar:** quando os casos especiais viram um conjunto, isso é o modelo pedindo **estado explícito** (`Cliente` com uma `Situacao`) em vez de hierarquia. Três ou mais subclasses de caso especial é o sinal.
+> **O que acontece:** nascem `ClienteDesconhecido`, `ClienteInativo`, `ClienteBloqueado`, `ClienteMigrado`, `ClienteTemporario` — cada um sobrescrevendo métodos de forma sutilmente diferente. Uma mudança na classe-base precisa ser avaliada contra seis subclasses. **Por quê:** o padrão é fácil de aplicar mais uma vez, e cada caso novo parece pequeno. **Como evitar:** quando os casos especiais viram um conjunto, isso é o modelo pedindo **estado explícito** (`Cliente` com uma `Situacao`) em vez de hierarquia. Três ou mais subclasses de caso especial é o sinal.
 
 > [!warning] `Optional` usado onde não deve
-> **O que acontece:** `Optional` vira campo de entidade, parâmetro de método e tipo de coleção. O código enche de `.get()` sem checagem — que é `null` com mais cerimônia — e a serialização se complica.
-> **Por quê:** ele é adotado como "o jeito moderno" em vez de para o que foi desenhado.
-> **Como evitar:** `Optional` foi feito para **tipo de retorno** de operações que podem não achar nada. Para coleção, devolva vazia. Para parâmetro opcional, sobrecarregue. E prefira `map`/`orElse` a `isPresent()` seguido de `get()`.
+> **O que acontece:** `Optional` vira campo de entidade, parâmetro de método e tipo de coleção. O código enche de `.get()` sem checagem — que é `null` com mais cerimônia — e a serialização se complica. **Por quê:** ele é adotado como "o jeito moderno" em vez de para o que foi desenhado. **Como evitar:** `Optional` foi feito para **tipo de retorno** de operações que podem não achar nada. Para coleção, devolva vazia. Para parâmetro opcional, sobrecarregue. E prefira `map`/`orElse` a `isPresent()` seguido de `get()`.
 
 ---
 

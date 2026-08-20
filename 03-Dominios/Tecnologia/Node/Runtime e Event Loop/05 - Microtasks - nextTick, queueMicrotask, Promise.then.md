@@ -21,8 +21,7 @@ aliases:
 # Microtasks: nextTick, queueMicrotask, Promise.then
 
 > [!abstract] TL;DR
-> Microtasks rodam **entre fases** do event loop, antes que a próxima fase comece — código síncrono → `nextTick` → microtasks → event loop phase. A hierarquia de prioridade é estrita: `process.nextTick` drena sua fila inteira primeiro (incluindo novos `nextTick` adicionados durante a drenagem), depois `queueMicrotask` e `Promise.then` são processados na fila padrão de microtasks em ordem FIFO.
-> Recursão em `nextTick` **bloqueia o loop indefinidamente** — o fenômeno chamado de queue starvation; use `setImmediate` para trabalho fatiado. `nextTick` é Node-specific; `queueMicrotask` é portável para browsers, Deno e Bun. A diferença entre as três APIs não é só de prioridade: erros em `nextTick`/`queueMicrotask` viram `uncaughtException`, enquanto erros em `Promise.then` viram `unhandledRejection` — categorias de falha distintas com handlers distintos.
+> Microtasks rodam **entre fases** do event loop, antes que a próxima fase comece — código síncrono → `nextTick` → microtasks → event loop phase. A hierarquia de prioridade é estrita: `process.nextTick` drena sua fila inteira primeiro (incluindo novos `nextTick` adicionados durante a drenagem), depois `queueMicrotask` e `Promise.then` são processados na fila padrão de microtasks em ordem FIFO. Recursão em `nextTick` **bloqueia o loop indefinidamente** — o fenômeno chamado de queue starvation; use `setImmediate` para trabalho fatiado. `nextTick` é Node-specific; `queueMicrotask` é portável para browsers, Deno e Bun. A diferença entre as três APIs não é só de prioridade: erros em `nextTick`/`queueMicrotask` viram `uncaughtException`, enquanto erros em `Promise.then` viram `unhandledRejection` — categorias de falha distintas com handlers distintos.
 
 ## Por que `process.nextTick` às vezes dispara antes das suas Promises?
 
@@ -367,17 +366,13 @@ function processarFilaSegura(items) {
 
 ### Perguntas frequentes em entrevista
 
-**"Qual a diferença entre `process.nextTick` e `setImmediate`?"**
-`nextTick` roda antes de qualquer fase do event loop avançar — é uma microtask com prioridade máxima. `setImmediate` roda na fase `check`, que é uma macrotask executada depois de I/O. Em termos de ordem: nextTick → microtasks → I/O → setImmediate → timers (próxima iteração).
+**"Qual a diferença entre `process.nextTick` e `setImmediate`?"** `nextTick` roda antes de qualquer fase do event loop avançar — é uma microtask com prioridade máxima. `setImmediate` roda na fase `check`, que é uma macrotask executada depois de I/O. Em termos de ordem: nextTick → microtasks → I/O → setImmediate → timers (próxima iteração).
 
-**"Quando devo usar `queueMicrotask` em vez de `Promise.resolve().then()`?"**
-Quando não há uma Promise natural no contexto e você quer agendar uma microtask sem criar um wrapper de Promise desnecessário. `queueMicrotask` é mais explícito na intenção e tem overhead ligeiramente menor. Semanticamente são equivalentes em termos de prioridade e ordem. Prefira `queueMicrotask` em código que precisa ser portável entre Node.js e browser.
+**"Quando devo usar `queueMicrotask` em vez de `Promise.resolve().then()`?"** Quando não há uma Promise natural no contexto e você quer agendar uma microtask sem criar um wrapper de Promise desnecessário. `queueMicrotask` é mais explícito na intenção e tem overhead ligeiramente menor. Semanticamente são equivalentes em termos de prioridade e ordem. Prefira `queueMicrotask` em código que precisa ser portável entre Node.js e browser.
 
-**"O que acontece se eu lançar um erro dentro de `process.nextTick`?"**
-O erro propaga como `uncaughtException` — não existe `.catch()` para nextTick. O processo pode ser derrubado se não houver um handler `process.on('uncaughtException', ...)`. Diferente de Promise, onde o erro vira `unhandledRejection` e pode ser capturado com `.catch()`.
+**"O que acontece se eu lançar um erro dentro de `process.nextTick`?"** O erro propaga como `uncaughtException` — não existe `.catch()` para nextTick. O processo pode ser derrubado se não houver um handler `process.on('uncaughtException', ...)`. Diferente de Promise, onde o erro vira `unhandledRejection` e pode ser capturado com `.catch()`.
 
-**"Um `nextTick` registrado dentro de uma Promise roda antes ou depois das outras Promises na fila?"**
-Antes. A `nextTickQueue` é verificada após cada microtask individual — não apenas ao final de toda a fila. Um `nextTick` registrado dentro de `.then()` drena antes das demais Promises já enfileiradas.
+**"Um `nextTick` registrado dentro de uma Promise roda antes ou depois das outras Promises na fila?"** Antes. A `nextTickQueue` é verificada após cada microtask individual — não apenas ao final de toda a fila. Um `nextTick` registrado dentro de `.then()` drena antes das demais Promises já enfileiradas.
 
 ---
 

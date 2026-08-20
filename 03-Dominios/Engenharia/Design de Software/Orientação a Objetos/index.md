@@ -22,28 +22,18 @@ aliases:
 # Orientação a Objetos
 
 > [!abstract] TL;DR
-> Galho de Engenharia sobre o paradigma que organiza software em **objetos** que encapsulam estado
-> e comportamento e colaboram por mensagens. O diferencial de um senior não é recitar os quatro
-> pilares — é demonstrar **quando aplicar, quando não aplicar**, reconhecer anti-patterns, e saber
-> que o modelo OO **muda de forma** conforme a linguagem. Interview-critical.
+> Galho de Engenharia sobre o paradigma que organiza software em **objetos** que encapsulam estado e comportamento e colaboram por mensagens. O diferencial de um senior não é recitar os quatro pilares — é demonstrar **quando aplicar, quando não aplicar**, reconhecer anti-patterns, e saber que o modelo OO **muda de forma** conforme a linguagem. Interview-critical.
 
 ## Sobre este galho
 
-Este galho é o dono dos **fundamentos de OO**: os quatro pilares (encapsulamento, abstração,
-herança, polimorfismo), interfaces e classes abstratas, **composição sobre herança**, acoplamento e
-coesão, a modelagem tática de objetos (identidade/igualdade, imutabilidade, Rich vs Anemic Domain
-Model), os anti-patterns clássicos, e como o paradigma diverge entre linguagens.
+Este galho é o dono dos **fundamentos de OO**: os quatro pilares (encapsulamento, abstração, herança, polimorfismo), interfaces e classes abstratas, **composição sobre herança**, acoplamento e coesão, a modelagem tática de objetos (identidade/igualdade, imutabilidade, Rich vs Anemic Domain Model), os anti-patterns clássicos, e como o paradigma diverge entre linguagens.
 
 **Fronteiras (linka, não duplica):**
-- **SOLID** tem galho próprio → [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]]. Aqui fica
-  `Acoplamento e coesão` (08), que o SOLID referencia.
-- **Design Patterns** (catálogo GoF) → [[Design Patterns]]. Aqui ensinamos o *material bruto*
-  (composição + polimorfismo), não os padrões nomeados.
-- **DDD estratégico** (Aggregate, Bounded Context, Domain Event) → [[Arquitetura de Software]]. Aqui
-  fica só a modelagem **tática** de objeto.
+- **SOLID** tem galho próprio → [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]]. Aqui fica `Acoplamento e coesão` (08), que o SOLID referencia.
+- **Design Patterns** (catálogo GoF) → [[Design Patterns]]. Aqui ensinamos o *material bruto* (composição + polimorfismo), não os padrões nomeados.
+- **DDD estratégico** (Aggregate, Bounded Context, Domain Event) → [[Arquitetura de Software]]. Aqui fica só a modelagem **tática** de objeto.
 
-**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção
-"Em entrevista" com frases prontas em inglês e vocabulário técnico.
+**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista" com frases prontas em inglês e vocabulário técnico.
 
 ## Iniciado — objetos, classes e os pilares
 

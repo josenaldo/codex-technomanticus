@@ -22,7 +22,7 @@
   
 
 > [!important] Make sure you are inside the
-> 
+>
 > **bin/windows** directory.
 
 ## Start Zookeeper and Kafka Broker
@@ -136,7 +136,7 @@ auto.create.topics.enable=false
 # Advanced Kafka CLI operations:
 
 > [!important] Make sure you are inside the
-> 
+>
 > **bin/windows** directory.
 
 ## List the topics in a cluster

@@ -74,8 +74,7 @@ Também funciona em diff fora do git: `diff -u a.txt b.txt | delta`.
 
 ### `[interactive] diffFilter` — afeta `git add -p`
 
-Sem essa key: `git add -p` (patch interativo) usa pager default (cru).
-Com essa key: os chunks que aparecem em `git add -p` ficam coloridos pelo delta.
+Sem essa key: `git add -p` (patch interativo) usa pager default (cru). Com essa key: os chunks que aparecem em `git add -p` ficam coloridos pelo delta.
 
 ### Modo standalone
 

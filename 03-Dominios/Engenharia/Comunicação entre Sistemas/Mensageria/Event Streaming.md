@@ -536,13 +536,11 @@ Todo event-sourced system sério precisa de upcasters para lidar com histórico.
 
 ## Na prática (da minha experiência)
 
-> **Muvz — Event-Carried State Transfer entre microserviços:**
-> Na arquitetura com 5 microserviços, todos os eventos seguiam o padrão **event-carried state transfer**. O evento `ConsultaConfirmada` carregava todos os dados necessários: médico, paciente, valor, horário, local. Isso era crítico para resiliência — o serviço de notificação não precisava consultar o serviço de agendamento para enviar o email, o que significava que ele funcionava mesmo se o outro estivesse fora.
+> **Muvz — Event-Carried State Transfer entre microserviços:** Na arquitetura com 5 microserviços, todos os eventos seguiam o padrão **event-carried state transfer**. O evento `ConsultaConfirmada` carregava todos os dados necessários: médico, paciente, valor, horário, local. Isso era crítico para resiliência — o serviço de notificação não precisava consultar o serviço de agendamento para enviar o email, o que significava que ele funcionava mesmo se o outro estivesse fora.
 >
 > **Decisão consciente de NÃO usar Event Sourcing:** consideramos, mas decidimos que a complexidade não se justificava. Usamos events como **forma de comunicação**, não como **source of truth**. O PostgreSQL continuava sendo a fonte de verdade; o Kafka era o canal de propagação.
 >
-> **MedEspecialista — CQRS parcial:**
-> Implementei CQRS onde fazia sentido: o modelo de **leitura de slots disponíveis** é um Redis cache denormalizado, populado por eventos Kafka. O modelo de **escrita** (reservar um slot) é PostgreSQL com transação. O read model tem lag de segundos; aceitamos isso porque o write sempre valida. A performance de leitura melhorou em 10x — slots disponíveis são consultados centenas de vezes antes de cada reserva.
+> **MedEspecialista — CQRS parcial:** Implementei CQRS onde fazia sentido: o modelo de **leitura de slots disponíveis** é um Redis cache denormalizado, populado por eventos Kafka. O modelo de **escrita** (reservar um slot) é PostgreSQL com transação. O read model tem lag de segundos; aceitamos isso porque o write sempre valida. A performance de leitura melhorou em 10x — slots disponíveis são consultados centenas de vezes antes de cada reserva.
 >
 > **Onde acabamos não fazendo CQRS:** no módulo de cadastro de pacientes. A taxa de leitura não é tão alta, e manter dois modelos sincronizados adicionava complexidade sem benefício. CRUD direto no Postgres.
 >

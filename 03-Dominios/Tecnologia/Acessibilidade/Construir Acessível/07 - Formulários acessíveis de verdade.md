@@ -47,9 +47,7 @@ Por que o label associado importa tanto? Três razões que se acumulam:
 3. **Voz.** Quem usa controle por voz diz "clicar em E-mail" — só funciona se o campo *se chama* E-mail.
 
 > [!warning] Placeholder usado como label
-> **O que acontece:** o texto de dica some no instante em que o usuário começa a digitar; se ele esquece o que era o campo, não tem como recuperar. Para muitas combinações de leitor de tela, o placeholder nem é anunciado como nome.
-> **Por quê:** `placeholder` é uma *dica de formato*, não um rótulo — a especificação diz isso explicitamente. Seu contraste também costuma ser baixo demais (cinza sobre branco), falhando no critério 1.4.3.
-> **Como evitar:** sempre um `<label>` visível e persistente. O placeholder, se usado, complementa ("ex.: nome@empresa.com"), nunca substitui.
+> **O que acontece:** o texto de dica some no instante em que o usuário começa a digitar; se ele esquece o que era o campo, não tem como recuperar. Para muitas combinações de leitor de tela, o placeholder nem é anunciado como nome. **Por quê:** `placeholder` é uma *dica de formato*, não um rótulo — a especificação diz isso explicitamente. Seu contraste também costuma ser baixo demais (cinza sobre branco), falhando no critério 1.4.3. **Como evitar:** sempre um `<label>` visível e persistente. O placeholder, se usado, complementa ("ex.: nome@empresa.com"), nunca substitui.
 
 ## Agrupando campos relacionados: fieldset e legend
 
@@ -155,19 +153,13 @@ O ponto do diagrama: **erro não é um evento visual, é um evento de foco**. Ca
 ## Armadilhas comuns
 
 > [!warning] Erro indicado só pela cor da borda
-> **O que acontece:** o campo com problema fica com borda vermelha e o campo válido, cinza ou verde — nenhum texto, nenhum ícone, só a cor.
-> **Por quê:** viola o critério **1.4.1 (Use of Color)**. Quem tem daltonismo (cerca de 1 em 12 homens) não distingue vermelho de cinza com confiança, e a cor é totalmente invisível para quem usa leitor de tela — que não "vê" bordas.
-> **Como evitar:** sempre acompanhar a cor de um texto explícito (`aria-describedby`) e, se quiser reforço visual extra, um ícone. A cor é bônus, nunca o único canal.
+> **O que acontece:** o campo com problema fica com borda vermelha e o campo válido, cinza ou verde — nenhum texto, nenhum ícone, só a cor. **Por quê:** viola o critério **1.4.1 (Use of Color)**. Quem tem daltonismo (cerca de 1 em 12 homens) não distingue vermelho de cinza com confiança, e a cor é totalmente invisível para quem usa leitor de tela — que não "vê" bordas. **Como evitar:** sempre acompanhar a cor de um texto explícito (`aria-describedby`) e, se quiser reforço visual extra, um ícone. A cor é bônus, nunca o único canal.
 
 > [!warning] `<label>` sem `for`/`id` — associação só visual
-> **O que acontece:** o `<label>` existe no HTML, fica exatamente ao lado do campo, o layout parece perfeito — mas falta o par `for`/`id` (ou o envolvimento do input pelo label). Clicar no texto não foca o campo, e o leitor de tela não lê o rótulo ao entrar nele.
-> **Por quê:** a associação programática entre label e campo não é automática por proximidade no DOM — precisa ser declarada. É o erro mais comum de auditoria: "parece certo" no navegador, falha em qualquer teste com AT.
-> **Como evitar:** `for="id-do-campo"` no label + `id` correspondente no input, ou envolver o input pelo próprio `<label>` (associação implícita). Testar clicando no texto do rótulo: se o foco não vai para o campo, a associação está quebrada.
+> **O que acontece:** o `<label>` existe no HTML, fica exatamente ao lado do campo, o layout parece perfeito — mas falta o par `for`/`id` (ou o envolvimento do input pelo label). Clicar no texto não foca o campo, e o leitor de tela não lê o rótulo ao entrar nele. **Por quê:** a associação programática entre label e campo não é automática por proximidade no DOM — precisa ser declarada. É o erro mais comum de auditoria: "parece certo" no navegador, falha em qualquer teste com AT. **Como evitar:** `for="id-do-campo"` no label + `id` correspondente no input, ou envolver o input pelo próprio `<label>` (associação implícita). Testar clicando no texto do rótulo: se o foco não vai para o campo, a associação está quebrada.
 
 > [!warning] Validação em JavaScript que descarta a acessível nativa
-> **O que acontece:** o time desliga `required`/`type="email"` e reimplementa toda a validação em JS puro para ter mensagens customizadas — e esquece de recriar `aria-invalid`, `aria-describedby` e o anúncio da mudança de estado.
-> **Por quê:** a validação nativa do HTML já é acessível por construção (os browsers anunciam suas mensagens à AT de graça); reescrevê-la em JS sem repor essas peças é trocar acessibilidade grátis por acessibilidade que ninguém implementou.
-> **Como evitar:** se precisar de validação customizada, mantenha o contrato: `aria-invalid="true"` no erro, `aria-describedby` apontando pro texto, e uma região com `aria-live` (ou o resumo com foco) anunciando que o estado mudou. Não é proibido sair do nativo — é proibido sair dele sem repor o que ele fazia.
+> **O que acontece:** o time desliga `required`/`type="email"` e reimplementa toda a validação em JS puro para ter mensagens customizadas — e esquece de recriar `aria-invalid`, `aria-describedby` e o anúncio da mudança de estado. **Por quê:** a validação nativa do HTML já é acessível por construção (os browsers anunciam suas mensagens à AT de graça); reescrevê-la em JS sem repor essas peças é trocar acessibilidade grátis por acessibilidade que ninguém implementou. **Como evitar:** se precisar de validação customizada, mantenha o contrato: `aria-invalid="true"` no erro, `aria-describedby` apontando pro texto, e uma região com `aria-live` (ou o resumo com foco) anunciando que o estado mudou. Não é proibido sair do nativo — é proibido sair dele sem repor o que ele fazia.
 
 ## Como explicar em inglês
 

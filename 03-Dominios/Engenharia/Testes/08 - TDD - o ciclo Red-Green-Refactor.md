@@ -16,9 +16,7 @@ tags:
 # TDD: o ciclo Red-Green-Refactor
 
 > [!abstract] Resumo em uma linha
-> TDD é um ciclo de três passos — escreva um teste que falha (Red), faça-o passar com o mínimo de código (Green), melhore o design com a rede de segurança verde (Refactor) — repetido em ciclos de minutos.
-> Pra sair do Red rumo ao Green, Kent Beck descreve três estratégias: Obvious Implementation (escreve o código real quando é óbvio), Fake It (retorna uma constante e generaliza depois) e Triangulação (um segundo teste força a generalização certa).
-> O efeito mais profundo não é a suíte de testes que sobra — é que o teste, escrito antes da implementação, vira o primeiro cliente da sua API, moldando o design antes que ele exista.
+> TDD é um ciclo de três passos — escreva um teste que falha (Red), faça-o passar com o mínimo de código (Green), melhore o design com a rede de segurança verde (Refactor) — repetido em ciclos de minutos. Pra sair do Red rumo ao Green, Kent Beck descreve três estratégias: Obvious Implementation (escreve o código real quando é óbvio), Fake It (retorna uma constante e generaliza depois) e Triangulação (um segundo teste força a generalização certa). O efeito mais profundo não é a suíte de testes que sobra — é que o teste, escrito antes da implementação, vira o primeiro cliente da sua API, moldando o design antes que ele exista.
 
 Imagine um escalador subindo uma parede de rocha. Ele não sobe trinta metros e só então pensa em proteção. A cada lance, ele prende a corda num ponto fixo, testa o peso, e só depois avança. Se cair, cai um metro — não trinta.
 

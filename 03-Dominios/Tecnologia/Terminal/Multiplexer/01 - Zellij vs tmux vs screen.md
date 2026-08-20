@@ -122,14 +122,11 @@ Para quem quer migrar gradualmente ou prefere o modelo de keybindings do tmux, Z
 
 ### Público-alvo de cada
 
-**Zellij:**
-Desenvolvedor usando workstation local, [[Dicionário do Terminal#dotfile|dotfiles]] modernos, prefere aprender sem decorar atalhos, quer layouts declarativos versionados, confortável com ferramentas novas.
+**Zellij:** Desenvolvedor usando workstation local, [[Dicionário do Terminal#dotfile|dotfiles]] modernos, prefere aprender sem decorar atalhos, quer layouts declarativos versionados, confortável com ferramentas novas.
 
-**tmux:**
-Qualquer pessoa que trabalha frequentemente em servidores remotos via SSH, equipes que precisam de plugin ecosystem maduro, quem já tem config estabelecida e não quer migrar.
+**tmux:** Qualquer pessoa que trabalha frequentemente em servidores remotos via SSH, equipes que precisam de plugin ecosystem maduro, quem já tem config estabelecida e não quer migrar.
 
-**screen:**
-Sysadmin em servidor com ambiente mínimo, casos onde apenas `screen` está disponível (container sem apt, sistema embedded), scripts legados que dependem de `screen -dmS`.
+**screen:** Sysadmin em servidor com ambiente mínimo, casos onde apenas `screen` está disponível (container sem apt, sistema embedded), scripts legados que dependem de `screen -dmS`.
 
 ## Na prática
 

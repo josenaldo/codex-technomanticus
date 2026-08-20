@@ -21,8 +21,7 @@ aliases:
 > [!abstract] TL;DR
 > O Eureka resolveu o *service discovery* num mundo onde a aplicação carregava o peso do registro. Mas ele não é a única — nem sempre a melhor — opção. Duas alternativas dominam o ecossistema atual:
 > - **HashiCorp Consul** (`spring-cloud-starter-consul-discovery`): um registry externo e poliglota que vai *muito além* de discovery. Resolve serviços por **HTTP API e DNS**, faz **health checks** ativos, e ainda guarda configuração num **KV store**. É o "canivete suíço" para frotas heterogêneas (não só Java).
-> - **Spring Cloud Kubernetes**: quando você já roda no k8s, **a própria infra já é o registry**. O Kubernetes registra Pods em `Service`/`Endpoints` por conta própria. A app só consulta — via **API server** (`DiscoveryClient`) ou via **DNS nativo do cluster** (modo *server-side*, FQDN tipo `pedidos.default.svc.cluster.local`).
-> A distinção que importa (vinda da [[03-Dominios/Tecnologia/Java/Microservices e sistemas distribuídos/06 - Service discovery — o conceito e o Eureka|nota 06]]) é **client-side vs server-side**: o Eureka é client-side (a app pergunta ao registry e escolhe a instância). O modo nativo do k8s é server-side — **a infra resolve**, e a app nem sabe que existe discovery.
+> - **Spring Cloud Kubernetes**: quando você já roda no k8s, **a própria infra já é o registry**. O Kubernetes registra Pods em `Service`/`Endpoints` por conta própria. A app só consulta — via **API server** (`DiscoveryClient`) ou via **DNS nativo do cluster** (modo *server-side*, FQDN tipo `pedidos.default.svc.cluster.local`). A distinção que importa (vinda da [[03-Dominios/Tecnologia/Java/Microservices e sistemas distribuídos/06 - Service discovery — o conceito e o Eureka|nota 06]]) é **client-side vs server-side**: o Eureka é client-side (a app pergunta ao registry e escolhe a instância). O modo nativo do k8s é server-side — **a infra resolve**, e a app nem sabe que existe discovery.
 
 ## O que é
 

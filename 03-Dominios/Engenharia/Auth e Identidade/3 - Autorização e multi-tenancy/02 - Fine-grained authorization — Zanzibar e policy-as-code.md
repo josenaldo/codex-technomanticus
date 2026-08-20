@@ -327,26 +327,4 @@ Zanzibar e policy-as-code respondem "como o motor de decisão funciona por dentr
 - **Aserto** — [*Authorization library vs authorization service*](https://www.aserto.com/blog/authorization-library-vs-service) e [*Centralized vs Distributed Authorization*](https://www.aserto.com/blog/centralized-vs-distributed-authorization) — trade-off de latência/disponibilidade entre PDP centralizado e embutido; acessado em 2026-07-11.
 - **Permit.io Docs** — [*Permit's PDP (Policy Decision Point)*](https://docs.permit.io/concepts/pdp/overview/) — modelo híbrido de plano de controle central + PDP distribuído; acessado em 2026-07-11.
 
-[^zanzibar-paper]: USENIX ATC 2019, *Zanzibar: Google's Consistent, Global Authorization System* — paper original apresentado por Pang et al.
-[^zanzibar-scale]: AuthZed, *An Introduction to Google Zanzibar and Relationship-Based Authorization Control* — escala em trilhões de objetos, milhões de checks/segundo.
-[^zanzibar-userset]: USENIX ATC 2019 — mecanismo de userset rewrite para composição de relações.
-[^zanzibar-spanner]: USENIX ATC 2019 — arquitetura construída sobre Spanner e TrueTime.
-[^zanzibar-ops]: USENIX ATC 2019 — operações Check, Expand, Read, Write.
-[^new-enemy]: AuthZed, *Enforcing Causal Ordering in Distributed Systems* — definição e origem do termo "new enemy problem".
-[^zookie-def]: USENIX ATC 2019 — definição de zookie como token opaco de timestamp causal.
-[^zookie-atleast]: AuthZed, *Enforcing Causal Ordering in Distributed Systems* — semântica "at-least-as-fresh".
-[^openfga-cncf]: CNCF, *OpenFGA Becomes a CNCF Incubating Project*, novembro de 2025.
-[^spicedb-zed]: AuthZed Docs, *Google Zanzibar* — mapeamento de zookie para ZedToken em SpiceDB.
-[^keto-perf]: Ory, *Fine-Grained Access Control & Authorization Server* — métricas de produção do Keto.
-[^permify-fusionauth]: GitHub, Permify — status pós-aquisição pela FusionAuth, Community Edition mantida.
-[^opa-cncf]: Open Policy Agent, documentação oficial — status de projeto graduado da CNCF.
-[^opa-rego]: Open Policy Agent, documentação oficial — Rego como linguagem declarativa sobre JSON.
-[^cedar-parc]: AWS, *What is Cedar?* — modelo principal/action/resource/context.
-[^cedar-formal]: AWS Docs, Cedar — verificação formal como requisito de design.
-[^avp-namespaces]: AWS Docs, Amazon Verified Permissions — suporte a múltiplos namespaces, maio de 2026.
-[^xacml-roles]: Wikipedia, XACML — arquitetura de referência e definição de PEP/PDP.
-[^xacml-pip]: Wikipedia, XACML — papel do PIP na resolução de atributos faltantes.
-[^xacml-pap-prp]: Wikipedia, XACML — papéis de PAP (administração) e PRP (armazenamento) de políticas.
-[^opa-envoy-perf]: Open Policy Agent, *OPA-Envoy Plugin* — padrão sidecar, avaliação local sem hop de rede.
-[^aserto-tradeoff]: Aserto, *Authorization library vs authorization service* — comparação de latência e disponibilidade.
-[^permit-hybrid]: Permit.io Docs, *Permit's PDP* — modelo híbrido de plano de controle central com PDP distribuído.
+[^zanzibar-paper]: USENIX ATC 2019, *Zanzibar: Google's Consistent, Global Authorization System* — paper original apresentado por Pang et al. [^zanzibar-scale]: AuthZed, *An Introduction to Google Zanzibar and Relationship-Based Authorization Control* — escala em trilhões de objetos, milhões de checks/segundo. [^zanzibar-userset]: USENIX ATC 2019 — mecanismo de userset rewrite para composição de relações. [^zanzibar-spanner]: USENIX ATC 2019 — arquitetura construída sobre Spanner e TrueTime. [^zanzibar-ops]: USENIX ATC 2019 — operações Check, Expand, Read, Write. [^new-enemy]: AuthZed, *Enforcing Causal Ordering in Distributed Systems* — definição e origem do termo "new enemy problem". [^zookie-def]: USENIX ATC 2019 — definição de zookie como token opaco de timestamp causal. [^zookie-atleast]: AuthZed, *Enforcing Causal Ordering in Distributed Systems* — semântica "at-least-as-fresh". [^openfga-cncf]: CNCF, *OpenFGA Becomes a CNCF Incubating Project*, novembro de 2025. [^spicedb-zed]: AuthZed Docs, *Google Zanzibar* — mapeamento de zookie para ZedToken em SpiceDB. [^keto-perf]: Ory, *Fine-Grained Access Control & Authorization Server* — métricas de produção do Keto. [^permify-fusionauth]: GitHub, Permify — status pós-aquisição pela FusionAuth, Community Edition mantida. [^opa-cncf]: Open Policy Agent, documentação oficial — status de projeto graduado da CNCF. [^opa-rego]: Open Policy Agent, documentação oficial — Rego como linguagem declarativa sobre JSON. [^cedar-parc]: AWS, *What is Cedar?* — modelo principal/action/resource/context. [^cedar-formal]: AWS Docs, Cedar — verificação formal como requisito de design. [^avp-namespaces]: AWS Docs, Amazon Verified Permissions — suporte a múltiplos namespaces, maio de 2026. [^xacml-roles]: Wikipedia, XACML — arquitetura de referência e definição de PEP/PDP. [^xacml-pip]: Wikipedia, XACML — papel do PIP na resolução de atributos faltantes. [^xacml-pap-prp]: Wikipedia, XACML — papéis de PAP (administração) e PRP (armazenamento) de políticas. [^opa-envoy-perf]: Open Policy Agent, *OPA-Envoy Plugin* — padrão sidecar, avaliação local sem hop de rede. [^aserto-tradeoff]: Aserto, *Authorization library vs authorization service* — comparação de latência e disponibilidade. [^permit-hybrid]: Permit.io Docs, *Permit's PDP* — modelo híbrido de plano de controle central com PDP distribuído.

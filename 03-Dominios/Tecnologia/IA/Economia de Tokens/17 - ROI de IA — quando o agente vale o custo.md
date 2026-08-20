@@ -299,17 +299,13 @@ class ROITracker:
 
 ## Casos práticos
 
-**Caso 1 — ROI positivo em geração de testes:**
-Um time de 8 devs adotou agente de geração de testes para código legado. Cobertura subiu de 23% para 61% em 3 meses. Custo: $400/mês em tokens + 20h de setup. Valor medido: 3 bugs críticos pegos em review antes do prod que historicamente chegariam à produção (custo médio de bug em prod: 4h × $50 = $200). ROI no trimestre: +$600 em valor - $1.200 em custo = -$600, mas com trajetória positiva após o payback do setup.
+**Caso 1 — ROI positivo em geração de testes:** Um time de 8 devs adotou agente de geração de testes para código legado. Cobertura subiu de 23% para 61% em 3 meses. Custo: $400/mês em tokens + 20h de setup. Valor medido: 3 bugs críticos pegos em review antes do prod que historicamente chegariam à produção (custo médio de bug em prod: 4h × $50 = $200). ROI no trimestre: +$600 em valor - $1.200 em custo = -$600, mas com trajetória positiva após o payback do setup.
 
-**Caso 2 — ROI negativo em geração de documentação:**
-Uma empresa adotou agente de geração de docs de API. Os devs passavam mais tempo revisando e corrigindo a documentação gerada do que levariam para escrever do zero. O modelo gerava docs corretas na estrutura mas incorretas no conteúdo (semantics específicos de domínio que não estavam nos comentários do código). ROI: negativo. Decisão: descontinuar a geração automática, usar IA só para formatação e linting de docs humanas.
+**Caso 2 — ROI negativo em geração de documentação:** Uma empresa adotou agente de geração de docs de API. Os devs passavam mais tempo revisando e corrigindo a documentação gerada do que levariam para escrever do zero. O modelo gerava docs corretas na estrutura mas incorretas no conteúdo (semantics específicos de domínio que não estavam nos comentários do código). ROI: negativo. Decisão: descontinuar a geração automática, usar IA só para formatação e linting de docs humanas.
 
-**Caso 3 — Payback de 2 meses com agente de debugging:**
-Senior com $60/h de custo adotou agente de debugging (Claude Sonnet + MCP do codebase). Média de 1.2h economizadas por dia, 20 dias úteis, com 15 min de overhead de revisão. Custo de tokens: $180/mês. Net mensal: (0.95h × 20 × $60) - $180 = $1.140 - $180 = $960/mês. Setup: 30h = $1.800. Payback: 1.875 meses. ROI anual após payback: ~640%.
+**Caso 3 — Payback de 2 meses com agente de debugging:** Senior com $60/h de custo adotou agente de debugging (Claude Sonnet + MCP do codebase). Média de 1.2h economizadas por dia, 20 dias úteis, com 15 min de overhead de revisão. Custo de tokens: $180/mês. Net mensal: (0.95h × 20 × $60) - $180 = $1.140 - $180 = $960/mês. Setup: 30h = $1.800. Payback: 1.875 meses. ROI anual após payback: ~640%.
 
-**Caso 4 — ROI de plano vs API:**
-Um dev pesado (power user com 8h/dia de coding assistido) calculou ROI entre plano Pro ($20/mês) e API paga. Com API, consumia ~$120/mês em tokens. O plano Max (uso ilimitado de Claude Opus) custava $100/mês — mas eliminava a fricção de monitorar custo por chamada. Decisão: plano Max para desenvolvimento, API para produção com controles. ROI do plano vs API: +$20/mês de economia + economia mental de não monitorar.
+**Caso 4 — ROI de plano vs API:** Um dev pesado (power user com 8h/dia de coding assistido) calculou ROI entre plano Pro ($20/mês) e API paga. Com API, consumia ~$120/mês em tokens. O plano Max (uso ilimitado de Claude Opus) custava $100/mês — mas eliminava a fricção de monitorar custo por chamada. Decisão: plano Max para desenvolvimento, API para produção com controles. ROI do plano vs API: +$20/mês de economia + economia mental de não monitorar.
 
 ## Cadência de revisão de ROI
 

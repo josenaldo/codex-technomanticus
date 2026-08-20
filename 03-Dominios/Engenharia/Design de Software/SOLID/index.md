@@ -21,26 +21,17 @@ aliases:
 # SOLID
 
 > [!abstract] TL;DR
-> Galho de Engenharia sobre os cinco princípios de design orientado a objetos —
-> **S**RP, **O**CP, **L**SP, **I**SP, **D**IP — que, aplicados juntos, levam a código flexível,
-> testável e evolutivo. Não são regras religiosas: são **heurísticas cujas exceções você deve
-> conhecer**. Interview-critical.
+> Galho de Engenharia sobre os cinco princípios de design orientado a objetos — **S**RP, **O**CP, **L**SP, **I**SP, **D**IP — que, aplicados juntos, levam a código flexível, testável e evolutivo. Não são regras religiosas: são **heurísticas cujas exceções você deve conhecer**. Interview-critical.
 
 ## Sobre este galho
 
-Spin-off do galho [[03-Dominios/Engenharia/Design de Software/Orientação a Objetos/index|Orientação a Objetos]]: os
-cinco princípios de Robert C. Martin (Uncle Bob) rendem fundo o suficiente para terem galho próprio.
-A meta comum dos cinco é **baixo acoplamento e alta coesão** — por isso o galho referencia
-[[08 - Acoplamento e coesão]] (no galho OO), que é seu pré-requisito conceitual.
+Spin-off do galho [[03-Dominios/Engenharia/Design de Software/Orientação a Objetos/index|Orientação a Objetos]]: os cinco princípios de Robert C. Martin (Uncle Bob) rendem fundo o suficiente para terem galho próprio. A meta comum dos cinco é **baixo acoplamento e alta coesão** — por isso o galho referencia [[08 - Acoplamento e coesão]] (no galho OO), que é seu pré-requisito conceitual.
 
 **Fronteiras (linka, não duplica):**
-- **SOLID aplicado à arquitetura** (nível módulo/serviço) → [[Arquitetura de Software]]. Aqui é o
-  nível objeto/classe.
-- **Design Patterns** → [[Design Patterns]]. OCP e DIP usam patterns como exemplo; não ensinamos o
-  catálogo.
+- **SOLID aplicado à arquitetura** (nível módulo/serviço) → [[Arquitetura de Software]]. Aqui é o nível objeto/classe.
+- **Design Patterns** → [[Design Patterns]]. OCP e DIP usam patterns como exemplo; não ensinamos o catálogo.
 
-**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção
-"Em entrevista" com frases prontas em inglês e vocabulário técnico.
+**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista" com frases prontas em inglês e vocabulário técnico.
 
 ## Iniciado — o princípio e os dois primeiros
 

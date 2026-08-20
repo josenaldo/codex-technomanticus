@@ -56,10 +56,7 @@ print(x // y)
 print(2 ** 10)
 ```
 
-A) `2.25`, `2`, `1024`
-B) `2`, `2.25`, `1024`
-C) `2.25`, `2.0`, `1024`
-D) `2.25`, `2`, `100`
+A) `2.25`, `2`, `1024` B) `2`, `2.25`, `1024` C) `2.25`, `2.0`, `1024` D) `2.25`, `2`, `100`
 
 > [!question]- Resposta e explicação
 > **A) `2.25`, `2`, `1024`.** `/` é sempre divisão verdadeira e devolve `float` (`9/4 = 2.25`); `//` é divisão inteira, devolve `int` quando os dois operandos são `int` (`2`, não `2.0` — a alternativa C erra nesse detalhe de tipo); `**` é potenciação (`2**10 = 1024`, não `100`, que seria `2*10*5` por engano de quem confunde `**` com multiplicação). Ver [[03-Dominios/Tecnologia/Python/Core/03 - Operadores e expressões|Core 03 — Operadores e expressões]].
@@ -75,10 +72,7 @@ else:
 print(i)
 ```
 
-A) `loop completo` seguido de `10`
-B) apenas `7`
-C) `loop completo` seguido de `7`
-D) nada é impresso, `NameError`
+A) `loop completo` seguido de `10` B) apenas `7` C) `loop completo` seguido de `7` D) nada é impresso, `NameError`
 
 > [!question]- Resposta e explicação
 > **C) `loop completo` seguido de `7`.** `range(1, 10, 3)` gera `1, 4, 7` (o próximo seria `10`, que já está fora do range exclusivo em `10`). Nenhum desses três valores é maior que `8`, então o `if i > 8` nunca dispara `break` — o `for` termina normalmente e o `else` do loop **roda**, imprimindo `"loop completo"`. Depois do loop, `i` ainda existe com o último valor atribuído (`7` — a variável de loop não é apagada ao sair do `for`, diferente de outras linguagens com escopo de bloco). Ver [[03-Dominios/Tecnologia/Python/Core/05 - Loops — for, while, range, enumerate, zip|Core 05 — Loops]] e a versão detalhada da armadilha do `else` de loop em [[02 - PCEP na prática — fundamentos, controle de fluxo e coleções|02 deste galho]].
@@ -92,10 +86,7 @@ print(dados[-2:])
 print(dados[::2])
 ```
 
-A) `('b', 'c', 'd')`, `('d', 'e')`, `('a', 'c', 'e')`
-B) `('a', 'b', 'c')`, `('d', 'e')`, `('a', 'c', 'e')`
-C) `('b', 'c', 'd')`, `('e',)`, `('a', 'c')`
-D) `('b', 'c', 'd', 'e')`, `('d', 'e')`, `('a', 'c', 'e')`
+A) `('b', 'c', 'd')`, `('d', 'e')`, `('a', 'c', 'e')` B) `('a', 'b', 'c')`, `('d', 'e')`, `('a', 'c', 'e')` C) `('b', 'c', 'd')`, `('e',)`, `('a', 'c')` D) `('b', 'c', 'd', 'e')`, `('d', 'e')`, `('a', 'c', 'e')`
 
 > [!question]- Resposta e explicação
 > **A) `('b', 'c', 'd')`, `('d', 'e')`, `('a', 'c', 'e')`.** Tuplas fatiam exatamente como listas e strings — todas são sequências no mesmo sentido do data model. `dados[1:4]` pega os índices 1, 2, 3 (exclusivo em 4). `dados[-2:]` pega os dois últimos elementos. `dados[::2]` pega todo elemento de índice par (passo 2, sem limites explícitos). Ver [[03-Dominios/Tecnologia/Python/Collections e Comprehensions/02 - Tuplas e desempacotamento|Collections 02 — Tuplas]] e a nota sobre slicing negativo em [[06 - Armadilhas comuns e o estilo de questão da Python Institute|06 deste galho]].
@@ -112,10 +103,7 @@ def dividir_lista(numeros, divisor):
 print(dividir_lista([10, 20, 30], 0))
 ```
 
-A) Nenhuma — imprime `[inf, inf, inf]`
-B) `ZeroDivisionError`
-C) `TypeError`
-D) `ValueError`
+A) Nenhuma — imprime `[inf, inf, inf]` B) `ZeroDivisionError` C) `TypeError` D) `ValueError`
 
 > [!question]- Resposta e explicação
 > **B) `ZeroDivisionError`.** Diferente de linguagens com ponto flutuante IEEE 754 "puro" (onde `1.0 / 0.0` pode devolver `inf`), Python levanta `ZeroDivisionError` para divisão por zero em qualquer contexto — `int / 0`, `float / 0.0`, `//`, `%` — não existe `inf` implícito por divisão de número por zero na aritmética padrão de Python. A exceção acontece já na primeira iteração do `for`, então a função nunca chega a devolver nada. Ver a hierarquia de exceções em [[03-Dominios/Tecnologia/Python/Core/08 - Erros e exceções|Core 08 — Erros e exceções]].
@@ -131,10 +119,7 @@ print(dobrar(21))
 print(utils.dobrar(21))
 ```
 
-A) `42` seguido de `42`
-B) `42` seguido de `NameError`
-C) `NameError` na primeira linha
-D) `42` seguido de `AttributeError`
+A) `42` seguido de `42` B) `42` seguido de `NameError` C) `NameError` na primeira linha D) `42` seguido de `AttributeError`
 
 > [!question]- Resposta e explicação
 > **B) `42` seguido de `NameError`.** `from utils import dobrar` vincula **só** o nome `dobrar` ao namespace atual — o nome `utils` (o módulo em si) nunca é criado nesse namespace, então `utils.dobrar(21)` falha com `NameError: name 'utils' is not defined`. Para acessar via `utils.dobrar`, seria preciso `import utils` (forma completa, que vincula o módulo, exigindo prefixo em todo acesso). É a pegadinha mais citada do bloco Modules. Ver [[03-Dominios/Tecnologia/Python/Core/09 - Módulos e imports|Core 09 — Módulos e imports]] e o mapeamento em [[03 - PCAP — módulos, exceções e strings|03 deste galho]].
@@ -163,10 +148,7 @@ print(processa(-5))
 print(processa(10))
 ```
 
-A) três linhas de `"processamento finalizado"`, seguidas de `erro: zero`, `erro: negativo`, `ok: 10.0`
-B) `erro: zero`, `processamento finalizado`, `erro: negativo`, `processamento finalizado`, `ok: 10.0`, `processamento finalizado`
-C) `processamento finalizado`, `erro: zero`, `processamento finalizado`, `erro: negativo`, `processamento finalizado`, `ok: 10.0`
-D) `erro: zero`, `erro: negativo`, `ok: 10.0`, sem nenhum `processamento finalizado`
+A) três linhas de `"processamento finalizado"`, seguidas de `erro: zero`, `erro: negativo`, `ok: 10.0` B) `erro: zero`, `processamento finalizado`, `erro: negativo`, `processamento finalizado`, `ok: 10.0`, `processamento finalizado` C) `processamento finalizado`, `erro: zero`, `processamento finalizado`, `erro: negativo`, `processamento finalizado`, `ok: 10.0` D) `erro: zero`, `erro: negativo`, `ok: 10.0`, sem nenhum `processamento finalizado`
 
 > [!question]- Resposta e explicação
 > **C.** `finally` **sempre** roda, mesmo quando `except`/`else` já decidiu o valor de retorno via `return` — mas ele roda **antes** do `print()` externo receber o valor de volta, porque a função só efetivamente retorna depois que `finally` termina. Para cada chamada: `processa(0)` cai em `ZeroDivisionError`, `finally` imprime primeiro, depois a string retornada é impressa pelo `print()` de fora. O mesmo padrão se repete para as outras duas chamadas. A ordem entre "o que a função imprime internamente" (`finally`) e "o que o `print()` externo imprime depois" é o ponto exato que separa quem entende a mecânica completa de `try`/`except`/`else`/`finally` de quem decorou só a ordem das cláusulas. Ver [[03-Dominios/Tecnologia/Python/Core/08 - Erros e exceções|Core 08 — Erros e exceções]] e [[03 - PCAP — módulos, exceções e strings|03 deste galho]].
@@ -182,10 +164,7 @@ print(s.count("t"))
 print(s[7:].lower().startswith("in"))
 ```
 
-A) `-1`, `4`, `True`
-B) `-1`, `2`, `True`
-C) `ValueError`, `4`, `True`
-D) `-1`, `4`, `False`
+A) `-1`, `4`, `True` B) `-1`, `2`, `True` C) `ValueError`, `4`, `True` D) `-1`, `4`, `False`
 
 > [!question]- Resposta e explicação
 > **A) `-1`, `4`, `True`.** `.find("z")` não encontra a substring e devolve `-1` (sem levantar erro — diferente de `.index()`, que levantaria `ValueError`). `.count("t")` é **case-sensitive** e conta só `"t"` minúsculo: um em `"Python"` e três em `"Institute"` (`Ins-t-i-t-u-t-e`), totalizando `4` — o `"T"` maiúsculo de "Python" não conta, porque `.count()` não ignora maiúsculas/minúsculas por padrão. `s[7:]` fatia a partir do índice 7 (`"Institute"`, já que o espaço está no índice 6), `.lower()` vira `"institute"`, `.startswith("in")` é `True`. Ver [[03-Dominios/Tecnologia/Python/Core/07 - Strings e formatação|Core 07]] e [[03 - PCAP — módulos, exceções e strings|03 deste galho]], seção `.find()` vs `.index()`.
@@ -198,10 +177,7 @@ print("3.14".isdigit())
 print(ord("a") - ord("A"))
 ```
 
-A) `False`, `True`, `32`
-B) `True`, `False`, `32`
-C) `False`, `False`, `32`
-D) `False`, `False`, `26`
+A) `False`, `True`, `32` B) `True`, `False`, `32` C) `False`, `False`, `32` D) `False`, `False`, `26`
 
 > [!question]- Resposta e explicação
 > **C) `False`, `False`, `32`.** String vazia devolve `False` em **todos** os métodos `.isX()` — nunca `True`, mesmo "não tendo nada que contradiga". `"3.14".isdigit()` é `False` porque o ponto (`.`) não é dígito. `ord("a")` é `97`, `ord("A")` é `65` — a diferença `32` é constante para qualquer par de letras minúscula/maiúscula correspondente no alfabeto latino (é o deslocamento fixo entre os blocos de maiúsculas e minúsculas na tabela ASCII/Unicode). Ver [[03 - PCAP — módulos, exceções e strings|03 deste galho]], seções de métodos booleanos e `ord()`/`chr()`.
@@ -228,10 +204,7 @@ print(c.mostrar_proprio())
 print(c._Configuracao__valor)
 ```
 
-A) `100`, `100`
-B) `100`, `42`
-C) `42`, `100`
-D) `AttributeError` na primeira linha
+A) `100`, `100` B) `100`, `42` C) `42`, `100` D) `AttributeError` na primeira linha
 
 > [!question]- Resposta e explicação
 > **B) `100`, `42`.** Name mangling reescreve `__valor` usando o nome da classe **onde o código está escrito**, não da instância concreta. Dentro de `ConfiguracaoEstendida`, `self.__valor` vira `self._ConfiguracaoEstendida__valor` — um atributo distinto do `self._Configuracao__valor` criado por `Configuracao.__init__`. `mostrar_proprio()` está definido em `ConfiguracaoEstendida`, então lê o atributo mangled dessa classe (`100`). Acessar `c._Configuracao__valor` diretamente pega o atributo mangled criado pelo `__init__` da superclasse, que continua existindo separadamente (`42`) — as duas atribuições nunca colidiram, que é exatamente o propósito documentado do name mangling. Ver [[04 - PCAP — orientação a objetos, o bloco de maior peso|04 deste galho]] e [[03-Dominios/Tecnologia/Python/OO e Data Model/04 - Properties e encapsulamento|OO e Data Model 04 — Properties e encapsulamento]].
@@ -246,10 +219,7 @@ class Meio(Esquerda, Direita): pass
 class Z(Meio, Base): pass
 ```
 
-A) `Z → Meio → Esquerda → Direita → Base → object`
-B) `Z → Base → Meio → Esquerda → Direita → object`
-C) `Z → Meio → Base → Esquerda → Direita → object`
-D) Erro: `TypeError: Cannot create a consistent MRO`
+A) `Z → Meio → Esquerda → Direita → Base → object` B) `Z → Base → Meio → Esquerda → Direita → object` C) `Z → Meio → Base → Esquerda → Direita → object` D) Erro: `TypeError: Cannot create a consistent MRO`
 
 > [!question]- Resposta e explicação
 > **A) `Z → Meio → Esquerda → Direita → Base → object`.** O C3 linearization preserva a ordem declarada em cada nível e só insere uma classe-ancestral depois que **todas** as suas subclasses diretas já apareceram na linearização. `Z(Meio, Base)` declara `Meio` primeiro — a MRO de `Meio` já é `Meio → Esquerda → Direita → Base → object`; juntando com `Z`, o algoritmo mantém essa cadeia intacta e não duplica `Base`, que já apareceria naturalmente ao final. Não há conflito de ordem entre os merges, então a linearização é válida — a alternativa D existe pra testar se você reconhece um MRO **válido** vs. um genuinamente impossível (que exigiria ordens conflitantes entre duas classes-base, não é o caso aqui). Ver [[04 - PCAP — orientação a objetos, o bloco de maior peso|04 deste galho]] e [[03-Dominios/Tecnologia/Python/OO e Data Model/02 - Herança e MRO|OO e Data Model 02 — Herança e MRO]].
@@ -272,10 +242,7 @@ print(e2.membros)
 print(Equipe.membros)
 ```
 
-A) `['Ana', 'Bia']`, `['Ana', 'Bia']`, `['Ana', 'Bia']`
-B) `['Ana']`, `['Bia']`, `[]`
-C) `['Ana']`, `['Ana', 'Bia']`, `[]`
-D) `['Ana']`, `['Bia']`, `['Ana', 'Bia']`
+A) `['Ana', 'Bia']`, `['Ana', 'Bia']`, `['Ana', 'Bia']` B) `['Ana']`, `['Bia']`, `[]` C) `['Ana']`, `['Ana', 'Bia']`, `[]` D) `['Ana']`, `['Bia']`, `['Ana', 'Bia']`
 
 > [!question]- Resposta e explicação
 > **B) `['Ana']`, `['Bia']`, `[]`.** Este é o inverso da pegadinha clássica de atributo de classe mutável — repare que aqui o código usa `self.membros = self.membros + [nome]`, **reatribuição**, não `.append()` (mutação in-place). A leitura do lado direito (`self.membros`) sobe a busca de atributo e encontra a lista vazia da classe; a criação de `self.membros + [nome]` gera uma lista **nova**; a atribuição `self.membros = ...` cria um **atributo de instância** que sombreia o de classe a partir dali, sem nunca mutar o objeto original. Por isso `e1.membros` e `e2.membros` são listas independentes, e `Equipe.membros` (o atributo de classe original) permanece intocado, ainda `[]`. Se o código usasse `self.membros.append(nome)` em vez de reatribuir, o resultado seria a pegadinha inversa: as três listas apareceriam idênticas e compartilhadas. Ver [[04 - PCAP — orientação a objetos, o bloco de maior peso|04 deste galho]] e [[03-Dominios/Tecnologia/Python/OO e Data Model/01 - Classes — definição, atributos e métodos|OO e Data Model 01 — Classes]].
@@ -302,10 +269,7 @@ print(c1 == c2)
 print(c1 == c3)
 ```
 
-A) `3`, `True`, `False`
-B) `3`, `False`, `False`
-C) `3`, `True`, `True`
-D) `AttributeError` na segunda linha
+A) `3`, `True`, `False` B) `3`, `False`, `False` C) `3`, `True`, `True` D) `AttributeError` na segunda linha
 
 > [!question]- Resposta e explicação
 > **A) `3`, `True`, `False`.** `Caixa` não herda de nenhuma classe com noção de tamanho ou igualdade — ela participa de `len()` e `==` só por implementar `__len__` e `__eq__`, o polimorfismo idiomático via Data Model. `len(c1)` chama `c1.__len__()`, que devolve `len(self._itens) = 3`. `c1 == c2` chama `c1.__eq__(c2)`, que compara `len(c1) == len(c2)` — `3 == 3`, `True`, mesmo os itens sendo tipos completamente diferentes (inteiros vs. strings), porque `__eq__` foi definido para comparar só o tamanho, não o conteúdo. `c1 == c3` compara `3 == 2`, `False`. Ver [[04 - PCAP — orientação a objetos, o bloco de maior peso|04 deste galho]] e [[03-Dominios/Tecnologia/Python/OO e Data Model/03 - O Data Model — dunder methods essenciais|OO e Data Model 03 — Data Model]].
@@ -326,10 +290,7 @@ c = Carro(4, 2)
 print(c.rodas, c.portas)
 ```
 
-A) `AttributeError: 'Carro' object has no attribute 'rodas'`
-B) Nenhuma — imprime `4 2`
-C) `TypeError: __init__() missing argument`
-D) Nenhuma — imprime `2 4` (ordem trocada)
+A) `AttributeError: 'Carro' object has no attribute 'rodas'` B) Nenhuma — imprime `4 2` C) `TypeError: __init__() missing argument` D) Nenhuma — imprime `2 4` (ordem trocada)
 
 > [!question]- Resposta e explicação
 > **B) Nenhuma — imprime `4 2`.** Diferente da armadilha clássica (subclasse que sobrescreve `__init__` e **esquece** de chamar `super().__init__(...)`), este código **chama** `super().__init__(rodas)` — só o faz depois de já ter atribuído `self.portas`, não antes. A ordem das duas linhas dentro de `Carro.__init__` não importa para o resultado final: ambos os atributos (`self.portas` e o `self.rodas` criado por `Veiculo.__init__` via `super()`) acabam existindo na instância antes do `print()` rodar. É uma questão desenhada para testar se o candidato assume, por reflexo condicionado do padrão mais comum, que "chamar `super()` depois de outros atributos" é sempre um erro — não é; o erro real é **não chamar** `super().__init__(...)` de forma alguma. Ver [[04 - PCAP — orientação a objetos, o bloco de maior peso|04 deste galho]], seção "Construtores".
@@ -344,10 +305,7 @@ resultado = [linha[i] for linha in matriz for i in range(len(linha)) if linha[i]
 print(resultado)
 ```
 
-A) `[2, 4, 6]`
-B) `[2, 6, 4]`
-C) `[4, 6, 2]`
-D) `[2, 4]`
+A) `[2, 4, 6]` B) `[2, 6, 4]` C) `[4, 6, 2]` D) `[2, 4]`
 
 > [!question]- Resposta e explicação
 > **A) `[2, 4, 6]`.** Dois `for` numa comprehension avaliam da esquerda pra direita, como loops aninhados: o `for linha in matriz` externo é o loop de fora, o `for i in range(len(linha))` é o de dentro. Para `linha = [1, 2, 3]`: `i` percorre `0, 1, 2`, e o filtro `linha[i] % 2 == 0` mantém só `linha[1] = 2`. Para `linha = [4, 5, 6]`: mantém `linha[0] = 4` e `linha[2] = 6`. A ordem final segue a ordem de iteração natural: `[2, 4, 6]`. Ver [[05 - PCAP — miscellaneous, comprehensions, lambdas, closures e arquivos|05 deste galho]] e [[03-Dominios/Tecnologia/Python/Collections e Comprehensions/05 - Comprehensions — list, dict, set e generator expressions|Collections 05 — Comprehensions]].
@@ -362,10 +320,7 @@ for i in range(3):
 print([f(10) for f in somadores])
 ```
 
-A) `[10, 10, 10]`
-B) `[10, 11, 12]`
-C) `[12, 12, 12]`
-D) `TypeError`
+A) `[10, 10, 10]` B) `[10, 11, 12]` C) `[12, 12, 12]` D) `TypeError`
 
 > [!question]- Resposta e explicação
 > **B) `[10, 11, 12]`.** Diferente da armadilha clássica de late binding (`lambda x: x + i`, que produziria `[12, 12, 12]` porque as três lambdas compartilhariam a mesma variável `i`, lida só na hora da chamada), este código usa o conserto padrão: `passo=i` é um **argumento default**, avaliado no momento em que **cada** lambda é criada, dentro daquela iteração específica do loop — não no momento em que é chamada. Isso congela o valor de `i` de cada iteração dentro do parâmetro `passo` de cada lambda individualmente. `f(10)` para cada uma soma `10 + passo`, com `passo` valendo `0`, `1`, `2` respectivamente: `10, 11, 12`. Ver [[05 - PCAP — miscellaneous, comprehensions, lambdas, closures e arquivos|05 deste galho]] e [[03-Dominios/Tecnologia/Python/Funcional e idiomas avançados/04 - Closures de verdade|Funcional 04 — Closures de verdade]].
@@ -383,10 +338,7 @@ with open("log.txt", "w") as f:
     f.write("reiniciado\n")
 ```
 
-A) `evento 1\nevento 2\nreiniciado\n`
-B) `evento 1\nevento 2\n`
-C) `reiniciado\n`
-D) `FileNotFoundError`, porque `log.txt` não existia antes do primeiro `open()`
+A) `evento 1\nevento 2\nreiniciado\n` B) `evento 1\nevento 2\n` C) `reiniciado\n` D) `FileNotFoundError`, porque `log.txt` não existia antes do primeiro `open()`
 
 > [!question]- Resposta e explicação
 > **C) `reiniciado\n`.** Os dois primeiros blocos usam modo `'a'` (append) — cada um cria o arquivo se ele não existir e escreve a partir do fim, então depois deles o arquivo contém `"evento 1\nevento 2\n"`. Mas o terceiro bloco abre em modo `'w'` (write), que **trunca o arquivo imediatamente ao ser aberto**, descartando todo o conteúdo anterior antes mesmo de qualquer `.write()` rodar — o conteúdo final é só o que o último bloco escreveu. A alternativa D testa se o candidato confunde os modos: `'a'` cria o arquivo se não existir (diferente de `'r'`, que levantaria `FileNotFoundError` num arquivo inexistente). Ver [[05 - PCAP — miscellaneous, comprehensions, lambdas, closures e arquivos|05 deste galho]], seção "`open()` e os modos de abertura".
@@ -409,10 +361,7 @@ incrementar(contador_global, "novo")
 print(contador_global)
 ```
 
-A) `{'outro': 999}`
-B) `{'total': 2, 'novo': 1}`
-C) `{'total': 0, 'novo': 0}`
-D) `{'total': 2}`
+A) `{'outro': 999}` B) `{'total': 2, 'novo': 1}` C) `{'total': 0, 'novo': 0}` D) `{'total': 2}`
 
 > [!question]- Resposta e explicação
 > **B) `{'total': 2, 'novo': 1}`.** As duas primeiras linhas de `incrementar` mutam o dicionário compartilhado via atribuição de item (`contador[chave] = ...`), que afeta o objeto original independente do nome usado para acessá-lo. A terceira linha (`contador = {"outro": 999}`) é reatribuição pura do nome **local** `contador` — não muta nada, só faz o nome local apontar para um dicionário novo que é descartado quando a função retorna. `contador_global` nunca perde a referência ao dicionário original, que foi mutado duas vezes (`"total"` chega a `2`) e uma vez com chave nova (`"novo"` chega a `1`). Essa combinação — mutação real seguida de reatribuição inofensiva no mesmo bloco de código — é o padrão exato descrito em [[06 - Armadilhas comuns e o estilo de questão da Python Institute|06 deste galho]], seção "Mutação por referência disfarçada de leitura".
@@ -430,10 +379,7 @@ d = 300
 print(c is d or c == d)
 ```
 
-A) `True`, `True`
-B) `False`, `True`
-C) `True`, `False`
-D) `False`, `False`
+A) `True`, `True` B) `False`, `True` C) `True`, `False` D) `False`, `False`
 
 > [!question]- Resposta e explicação
 > **A) `True`, `True`.** Primeira linha: `a = 200`, `b = 200` — ambos dentro do intervalo `-5..256` cacheado pelo CPython, então `a is b` é `True` (mesmo objeto na memória). `2 + 3 * 2` respeita precedência (`*` antes de `+`): `3 * 2 = 6`, `2 + 6 = 8`, então `8 == 8` é `True`. A expressão completa, por precedência de operador lógico (`and` mais forte que `or`), lê-se `((a is b) and (2 + 3 * 2 == 8)) or bool([])` = `(True and True) or False` = `True or False` = `True` — o `or bool([])` sequer precisaria ser avaliado por curto-circuito, já que o lado esquerdo do `or` já é `True`. Segunda linha: `c = 300`, `d = 300` estão fora do intervalo cacheado — `c is d` tipicamente dá `False` (dois objetos `int` distintos, cada literal `300` avaliado em sua própria atribuição), mas `c == d` é sempre `True` (mesmo valor, comparação por igualdade, não identidade) — `False or True` é `True`. Este é o item mais denso do simulado porque combina três eixos na mesma questão: precedência aritmética/lógica, curto-circuito, e o cache de inteiros pequenos do CPython — exatamente o tipo de composição que a prova real usa nas questões mais difíceis de cada bloco. Ver [[06 - Armadilhas comuns e o estilo de questão da Python Institute|06 deste galho]], seções "`is` vs `==`" e "Precedência de operadores".

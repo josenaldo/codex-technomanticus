@@ -400,58 +400,38 @@ Com módulos e DI mapeados, o próximo passo é entender como o NestJS trata con
 ## Armadilhas comuns
 
 > [!warning] `Scope.REQUEST` usado sem necessidade
-> **O que acontece:** Provider request-scoped propaga escopo para dependências upstream, que deixam de ser singleton.
-> **Por quê:** O container cria nova instância a cada request e força o mesmo comportamento em quem depende desse provider.
-> **Como evitar:** Use singleton como default; request scope só quando a instância precisa ser genuinamente diferente por request. Para passar `userId` ou `correlationId`, prefira interceptor ou contexto explícito.
+> **O que acontece:** Provider request-scoped propaga escopo para dependências upstream, que deixam de ser singleton. **Por quê:** O container cria nova instância a cada request e força o mesmo comportamento em quem depende desse provider. **Como evitar:** Use singleton como default; request scope só quando a instância precisa ser genuinamente diferente por request. Para passar `userId` ou `correlationId`, prefira interceptor ou contexto explícito.
 
 > [!warning] Circular imports entre módulos
-> **O que acontece:** NestJS não consegue resolver o grafo de dependências e lança erro em startup.
-> **Por quê:** Módulo A importa B que importa A — ciclo que o container não sabe como quebrar.
-> **Como evitar:** `forwardRef()` existe mas frequentemente sinaliza design ruim. Prefira extrair a dependência compartilhada para um terceiro módulo compartilhado.
+> **O que acontece:** NestJS não consegue resolver o grafo de dependências e lança erro em startup. **Por quê:** Módulo A importa B que importa A — ciclo que o container não sabe como quebrar. **Como evitar:** `forwardRef()` existe mas frequentemente sinaliza design ruim. Prefira extrair a dependência compartilhada para um terceiro módulo compartilhado.
 
 > [!warning] Esquecer `exports` no módulo
-> **O que acontece:** Outro módulo importa `UsersModule` mas não consegue injetar `UsersService`.
-> **Por quê:** Sem `exports`, o provider só está disponível dentro do próprio módulo.
-> **Como evitar:** Revise o array `exports` de cada módulo no code review; ele é o contrato público da feature.
+> **O que acontece:** Outro módulo importa `UsersModule` mas não consegue injetar `UsersService`. **Por quê:** Sem `exports`, o provider só está disponível dentro do próprio módulo. **Como evitar:** Revise o array `exports` de cada módulo no code review; ele é o contrato público da feature.
 
 > [!warning] Lógica pesada no constructor
-> **O que acontece:** Startup lento, erros difíceis de rastrear e testes complicados.
-> **Por quê:** Constructor deve apenas armazenar dependências injetadas; side-effects em constructor são antipadrão.
-> **Como evitar:** Use lifecycle hooks como `OnModuleInit` para inicialização assíncrona: `async onModuleInit() { await this.db.connect(); }`.
+> **O que acontece:** Startup lento, erros difíceis de rastrear e testes complicados. **Por quê:** Constructor deve apenas armazenar dependências injetadas; side-effects em constructor são antipadrão. **Como evitar:** Use lifecycle hooks como `OnModuleInit` para inicialização assíncrona: `async onModuleInit() { await this.db.connect(); }`.
 
 > [!warning] Injetar interface sem token
-> **O que acontece:** `Error: Nest can't resolve dependencies of the MyService` em runtime.
-> **Por quê:** Interfaces TypeScript são apagadas em compilação; o container precisa de um token concreto.
-> **Como evitar:** Sempre defina um `Symbol` como token e use `@Inject(TOKEN)` ao injetar abstrações.
+> **O que acontece:** `Error: Nest can't resolve dependencies of the MyService` em runtime. **Por quê:** Interfaces TypeScript são apagadas em compilação; o container precisa de um token concreto. **Como evitar:** Sempre defina um `Symbol` como token e use `@Inject(TOKEN)` ao injetar abstrações.
 
 > [!warning] `SharedModule` virar gaveta global
-> **O que acontece:** Tudo importa `SharedModule` e as features ficam acopladas entre si.
-> **Por quê:** Módulo shared sem critério vira acoplamento disfarçado de reuso.
-> **Como evitar:** Shared module só para utilitários genuinamente transversais (logger, config, health). Features com domínio próprio devem ter seu módulo.
+> **O que acontece:** Tudo importa `SharedModule` e as features ficam acopladas entre si. **Por quê:** Módulo shared sem critério vira acoplamento disfarçado de reuso. **Como evitar:** Shared module só para utilitários genuinamente transversais (logger, config, health). Features com domínio próprio devem ter seu módulo.
 
 > [!warning] Controller importando adapter de infraestrutura diretamente
-> **O que acontece:** Regra de negócio fica presa ao framework e ao ORM, impossibilitando testes sem banco.
-> **Por quê:** Controller só deve conhecer use cases/services, não repositórios ou Prisma.
-> **Como evitar:** A dependência de `PrismaService` pertence ao repositório, não ao controller.
+> **O que acontece:** Regra de negócio fica presa ao framework e ao ORM, impossibilitando testes sem banco. **Por quê:** Controller só deve conhecer use cases/services, não repositórios ou Prisma. **Como evitar:** A dependência de `PrismaService` pertence ao repositório, não ao controller.
 
 > [!warning] Decorator de ORM na entity de domínio
-> **O que acontece:** Entity de domínio tem `@Column`, `@Entity` e vira acoplada ao Prisma/TypeORM.
-> **Por quê:** Decorator de persistência na entity viola a dependency rule — o domínio passa a depender de infraestrutura.
-> **Como evitar:** Separe entity de domínio de entity de persistência. Use mappers para converter entre as duas.
+> **O que acontece:** Entity de domínio tem `@Column`, `@Entity` e vira acoplada ao Prisma/TypeORM. **Por quê:** Decorator de persistência na entity viola a dependency rule — o domínio passa a depender de infraestrutura. **Como evitar:** Separe entity de domínio de entity de persistência. Use mappers para converter entre as duas.
 
 ## Perguntas de entrevista
 
-**Qual é a unidade fundamental de organização em NestJS?**
-O módulo. Ele agrupa controllers, providers, imports e exports. É boundary de composição.
+**Qual é a unidade fundamental de organização em NestJS?** O módulo. Ele agrupa controllers, providers, imports e exports. É boundary de composição.
 
-**Por que interfaces precisam de tokens?**
-Porque interfaces TypeScript são apagadas em runtime. O container precisa de um token concreto: string, symbol ou classe.
+**Por que interfaces precisam de tokens?** Porque interfaces TypeScript são apagadas em runtime. O container precisa de um token concreto: string, symbol ou classe.
 
-**Quando usar request scope?**
-Quando a instância realmente precisa ser diferente por request, como contexto específico da request. Não use para resolver conveniência de passar `userId`.
+**Quando usar request scope?** Quando a instância realmente precisa ser diferente por request, como contexto específico da request. Não use para resolver conveniência de passar `userId`.
 
-**Como NestJS se relaciona com Clean Architecture?**
-Ele ajuda com módulos e DI, mas não garante arquitetura limpa. A dependency rule ainda precisa ser respeitada.
+**Como NestJS se relaciona com Clean Architecture?** Ele ajuda com módulos e DI, mas não garante arquitetura limpa. A dependency rule ainda precisa ser respeitada.
 
 ## Em entrevista
 

@@ -21,10 +21,7 @@ aliases:
 # Paginação e ordenação — Pageable, Page e Slice
 
 > [!abstract] TL;DR
-> Passe um `Pageable` para o repositório e receba os resultados em fatias.
-> `Page<T>` dispara uma query `COUNT` adicional para informar o total de elementos e páginas — útil para UIs de paginação completa, mas com custo.
-> `Slice<T>` apenas informa se há uma próxima fatia, sem contar o total — mais barato para feeds e rolagem infinita.
-> A ordenação é controlada por `Sort`, composto dentro do `PageRequest` ou passado diretamente.
+> Passe um `Pageable` para o repositório e receba os resultados em fatias. `Page<T>` dispara uma query `COUNT` adicional para informar o total de elementos e páginas — útil para UIs de paginação completa, mas com custo. `Slice<T>` apenas informa se há uma próxima fatia, sem contar o total — mais barato para feeds e rolagem infinita. A ordenação é controlada por `Sort`, composto dentro do `PageRequest` ou passado diretamente.
 
 ---
 

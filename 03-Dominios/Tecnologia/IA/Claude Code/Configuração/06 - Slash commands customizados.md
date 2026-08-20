@@ -16,9 +16,7 @@ tags:
 # Slash commands customizados — .claude/commands/
 
 > [!abstract] TL;DR
-> Slash commands customizados são arquivos Markdown em `.claude/commands/` (projeto) ou `~/.claude/commands/` (global) que o Claude Code expõe como `/nome-do-arquivo` — o conteúdo do arquivo vira, literalmente, o prompt executado quando você digita o comando.
-> A vantagem sobre colar um prompt ad hoc é que o command fica versionado no git: quando um bug escapa do `/pr-check`, o postmortem vira uma linha nova no checklist, e todo o time herda o aprendizado na próxima invocação — não só quem escreveu o prompt original.
-> O argumento `$ARGUMENTS` captura tudo que você digita depois do nome do comando, permitindo parametrizar o mesmo command para alvos diferentes (`/test-module services/payment`, `/debug erro-de-timeout`).
+> Slash commands customizados são arquivos Markdown em `.claude/commands/` (projeto) ou `~/.claude/commands/` (global) que o Claude Code expõe como `/nome-do-arquivo` — o conteúdo do arquivo vira, literalmente, o prompt executado quando você digita o comando. A vantagem sobre colar um prompt ad hoc é que o command fica versionado no git: quando um bug escapa do `/pr-check`, o postmortem vira uma linha nova no checklist, e todo o time herda o aprendizado na próxima invocação — não só quem escreveu o prompt original. O argumento `$ARGUMENTS` captura tudo que você digita depois do nome do comando, permitindo parametrizar o mesmo command para alvos diferentes (`/test-module services/payment`, `/debug erro-de-timeout`).
 
 ---
 
@@ -251,8 +249,7 @@ Interprete o primeiro token como branch-origem e o segundo como branch-destino.
 > [!tip] Assista: Claude Code Tutorial #6 - Slash Commands
 > **Canal:** The Net Ninja | **Duração:** ~12min | **Idioma:** EN
 >
-> Complementa exatamente esse ponto: além de instruir Claude a interpretar tokens manualmente, o vídeo mostra a convenção de usar colchetes dentro de `$ARGUMENTS` (`[nome]`) para nomear cada valor recebido, e o campo `argument-hint` no frontmatter do command file, que exibe uma dica dos argumentos esperados direto na interface do chat — algo que esta nota ainda não cobria.
-> Trecho de destaque [8:18]: *"I use square brackets to essentially create variables with values where the name of the variable is the thing in the square brackets and the text on the right is telling Claude code what to store for this."*
+> Complementa exatamente esse ponto: além de instruir Claude a interpretar tokens manualmente, o vídeo mostra a convenção de usar colchetes dentro de `$ARGUMENTS` (`[nome]`) para nomear cada valor recebido, e o campo `argument-hint` no frontmatter do command file, que exibe uma dica dos argumentos esperados direto na interface do chat — algo que esta nota ainda não cobria. Trecho de destaque [8:18]: *"I use square brackets to essentially create variables with values where the name of the variable is the thing in the square brackets and the text on the right is telling Claude code what to store for this."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=52KBhQqqHuc)
 

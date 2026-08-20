@@ -208,8 +208,7 @@ A seta tracejada é o buraco: **a inclusão é estrita?** Existe algum problema 
 
 O **certificado** é a engrenagem que faz NP funcionar. Formalizando:
 
-> Um problema `L` está em NP se existe uma MT verificadora `V` e um polinômio `p` tais que, para toda entrada `x`:
-> `x ∈ L` se e somente se EXISTE um certificado `c` com `|c| ≤ p(|x|)` tal que `V(x, c)` aceita em tempo polinomial em `|x|`.
+> Um problema `L` está em NP se existe uma MT verificadora `V` e um polinômio `p` tais que, para toda entrada `x`: `x ∈ L` se e somente se EXISTE um certificado `c` com `|c| ≤ p(|x|)` tal que `V(x, c)` aceita em tempo polinomial em `|x|`.
 
 Em português: a resposta é "sim" exatamente quando existe **alguma** testemunha de tamanho razoável (polinomial) que o verificador aprova rapidinho. Dois exemplos canônicos, formais:
 

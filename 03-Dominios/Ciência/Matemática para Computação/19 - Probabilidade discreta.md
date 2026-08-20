@@ -384,15 +384,7 @@ flowchart TD
 
 Probabilidade aparece em entrevistas de duas formas: o quebra-cabeça clássico (aniversário, dois dados, moedas) e a pergunta de sistema disfarçada ("qual o tamanho de UUID seguro?", "por que esse alerta tem tantos falsos positivos?"). O entrevistador quer ver se você reconhece o **truque do complemento**, se sabe separar **independente de mutuamente exclusivo**, e se entende por que Bayes humilha a intuição com eventos raros. Conecte sempre a probabilidade ao domínio de CS — colisão de hash, Bloom filter, SLA — porque é isso que separa quem decorou de quem entende.
 
-*The probability of an event in a uniform space is just favorable outcomes over total outcomes — it's counting.*
-*Whenever I see "at least one", I compute one minus the probability of "none", because the complement is almost always easier.*
-*Independent and mutually exclusive are opposites: disjoint events with positive probability are strongly dependent.*
-*Bayes' theorem inverts the conditional: posterior is likelihood times prior, divided by the evidence.*
-*For a rare disease, even a 99%-accurate test yields mostly false positives — that's the base rate fallacy.*
-*The birthday paradox says 23 people give over a 50% chance of a shared birthday.*
-*In hashing terms, you expect the first collision after roughly the square root of N insertions.*
-*That's why a birthday attack breaks a b-bit hash in about 2 to the b-over-2 operations.*
-*Bloom filters trade a tunable false-positive rate for tiny memory, with zero false negatives.*
+*The probability of an event in a uniform space is just favorable outcomes over total outcomes — it's counting.* *Whenever I see "at least one", I compute one minus the probability of "none", because the complement is almost always easier.* *Independent and mutually exclusive are opposites: disjoint events with positive probability are strongly dependent.* *Bayes' theorem inverts the conditional: posterior is likelihood times prior, divided by the evidence.* *For a rare disease, even a 99%-accurate test yields mostly false positives — that's the base rate fallacy.* *The birthday paradox says 23 people give over a 50% chance of a shared birthday.* *In hashing terms, you expect the first collision after roughly the square root of N insertions.* *That's why a birthday attack breaks a b-bit hash in about 2 to the b-over-2 operations.* *Bloom filters trade a tunable false-positive rate for tiny memory, with zero false negatives.*
 
 | Português | English |
 |---|---|

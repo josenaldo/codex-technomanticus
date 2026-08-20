@@ -25,8 +25,7 @@ Essa é a habilidade que separa "conhecer a AWS" de "ter decorado a AWS": não �
 > [!tip] Assista: Top 50+ AWS Services Explained in 10 Minutes
 > **Canal:** Fireship | **Duração:** ~12min | **Idioma:** EN
 >
-> Um tour vertiginoso pelos cantos mais exóticos do catálogo — RoboMaker, Ground Station, Braket — no mesmo tom da "loja de departamentos gigante" desta nota, útil para calibrar visualmente o que é vocabulário passivo antes de decidir o que vale ignorar.
-> Trecho de destaque [00:08]: *"Amazon Web Services launched in 2006 with a total of three products... today it offers a mind-numbing 200 and something services, and what's most confusing is that many of them appear to do almost the exact same thing."*
+> Um tour vertiginoso pelos cantos mais exóticos do catálogo — RoboMaker, Ground Station, Braket — no mesmo tom da "loja de departamentos gigante" desta nota, útil para calibrar visualmente o que é vocabulário passivo antes de decidir o que vale ignorar. Trecho de destaque [00:08]: *"Amazon Web Services launched in 2006 with a total of three products... today it offers a mind-numbing 200 and something services, and what's most confusing is that many of them appear to do almost the exact same thing."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=JIbIYCM48to)
 
@@ -109,8 +108,7 @@ Vinte e uma linhas, oito categorias. Some a isso mais três ou quatro que aparec
 > [!tip] Assista: The Most Important AWS Core Services That You NEED To Know About!
 > **Canal:** Be A Better Dev | **Duração:** ~18min | **Idioma:** EN
 >
-> Percorre exatamente o mesmo núcleo desta nota (EC2, S3, RDS, VPC e companhia) do ponto de vista de "por onde começar quando o catálogo assusta" — bom complemento prático à tabela de referência acima, com exemplos de composição real entre os serviços.
-> Trecho de destaque [00:06]: *"I'm going to be talking to you about the most important AWS services, and the motivation behind me making this video is that I've been talking to so many folks... they don't know which services they need to use."*
+> Percorre exatamente o mesmo núcleo desta nota (EC2, S3, RDS, VPC e companhia) do ponto de vista de "por onde começar quando o catálogo assusta" — bom complemento prático à tabela de referência acima, com exemplos de composição real entre os serviços. Trecho de destaque [00:06]: *"I'm going to be talking to you about the most important AWS services, and the motivation behind me making this video is that I've been talking to so many folks... they don't know which services they need to use."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=B08iQQhXG1Y)
 

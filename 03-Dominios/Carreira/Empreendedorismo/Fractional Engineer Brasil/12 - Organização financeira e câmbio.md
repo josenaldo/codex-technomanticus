@@ -65,19 +65,13 @@ Um fractional que gastava o valor bruto recebido sem reserva leva um susto no pr
 ## Armadilhas comuns
 
 > [!warning] Tratar o valor bruto recebido como líquido disponível
-> **O que acontece:** o fractional gasta ou investe o valor inteiro que chega na conta PJ, sem separar o que já é DAS/imposto e o que é pró-labore de fato disponível.
-> **Por quê:** diferente do CLT, nada é retido antes — a ilusão de "ganhei mais do que achava" vem justamente de comparar receita bruta PJ com salário líquido CLT, uma comparação inválida.
-> **Como evitar:** automatizar a separação de uma reserva assim que o pagamento entra, antes de qualquer outra decisão de gasto.
+> **O que acontece:** o fractional gasta ou investe o valor inteiro que chega na conta PJ, sem separar o que já é DAS/imposto e o que é pró-labore de fato disponível. **Por quê:** diferente do CLT, nada é retido antes — a ilusão de "ganhei mais do que achava" vem justamente de comparar receita bruta PJ com salário líquido CLT, uma comparação inválida. **Como evitar:** automatizar a separação de uma reserva assim que o pagamento entra, antes de qualquer outra decisão de gasto.
 
 > [!warning] Ignorar o spread cambial escondido
-> **O que acontece:** o fractional compara só a "taxa de serviço" anunciada por cada plataforma, sem considerar o spread embutido na conversão de câmbio, que pode ser maior que a taxa visível.
-> **Por quê:** plataformas que cobram taxa de serviço baixa às vezes compensam com câmbio pior (margem embutida na cotação) — o custo real só aparece comparando o valor final em reais recebido pra um mesmo valor em dólar enviado.
-> **Como evitar:** simular o mesmo valor de recebimento nas plataformas candidatas e comparar o valor final líquido em reais, não só a taxa anunciada.
+> **O que acontece:** o fractional compara só a "taxa de serviço" anunciada por cada plataforma, sem considerar o spread embutido na conversão de câmbio, que pode ser maior que a taxa visível. **Por quê:** plataformas que cobram taxa de serviço baixa às vezes compensam com câmbio pior (margem embutida na cotação) — o custo real só aparece comparando o valor final em reais recebido pra um mesmo valor em dólar enviado. **Como evitar:** simular o mesmo valor de recebimento nas plataformas candidatas e comparar o valor final líquido em reais, não só a taxa anunciada.
 
 > [!warning] Não declarar bens/contas mantidas no exterior
-> **O que acontece:** quando a empresa opta por manter parte dos recursos no exterior (permitido pela Lei 11.371/2006, mencionada em [[11 - Faturando em dólar — nota fiscal e isenções]]), o fractional esquece de declarar isso corretamente na Declaração de Imposto de Renda pessoa física ou no Banco Central quando aplicável.
-> **Por quê:** manter recursos fora do país sem a declaração correta é uma omissão fiscal, independente de o dinheiro ter ou não entrado fisicamente no Brasil.
-> **Como evitar:** envolver o contador sempre que decidir manter saldo em conta internacional (Wise, Payoneer) por mais de um período de apuração, garantindo que a declaração correspondente seja feita.
+> **O que acontece:** quando a empresa opta por manter parte dos recursos no exterior (permitido pela Lei 11.371/2006, mencionada em [[11 - Faturando em dólar — nota fiscal e isenções]]), o fractional esquece de declarar isso corretamente na Declaração de Imposto de Renda pessoa física ou no Banco Central quando aplicável. **Por quê:** manter recursos fora do país sem a declaração correta é uma omissão fiscal, independente de o dinheiro ter ou não entrado fisicamente no Brasil. **Como evitar:** envolver o contador sempre que decidir manter saldo em conta internacional (Wise, Payoneer) por mais de um período de apuração, garantindo que a declaração correspondente seja feita.
 
 ## Como explicar em inglês
 

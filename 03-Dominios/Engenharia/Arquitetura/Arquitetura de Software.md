@@ -366,11 +366,9 @@ A maior fonte de bugs em software enterprise não é técnica — é **entender 
 
 ### Conceitos estratégicos (big picture)
 
-**Ubiquitous Language (Linguagem Ubíqua):**
-A mesma terminologia entre devs, POs, negócio, documentação e código. Se o negócio chama de "consulta", o código tem `class Consulta`, não `class Appointment`. Se há ambiguidade ("cliente" significa paciente pro médico e empresa pro financeiro), isso é um sinal de bounded contexts diferentes.
+**Ubiquitous Language (Linguagem Ubíqua):** A mesma terminologia entre devs, POs, negócio, documentação e código. Se o negócio chama de "consulta", o código tem `class Consulta`, não `class Appointment`. Se há ambiguidade ("cliente" significa paciente pro médico e empresa pro financeiro), isso é um sinal de bounded contexts diferentes.
 
-**Bounded Context:**
-Fronteira onde um modelo de domínio é consistente. O mesmo conceito ("cliente", "produto", "pedido") pode ter significados diferentes em contextos diferentes.
+**Bounded Context:** Fronteira onde um modelo de domínio é consistente. O mesmo conceito ("cliente", "produto", "pedido") pode ter significados diferentes em contextos diferentes.
 
 ```
 Contexto de Vendas:          Contexto de Faturamento:
@@ -383,8 +381,7 @@ Contexto de Vendas:          Contexto de Faturamento:
 
 Mesma palavra, modelos diferentes. Cada bounded context idealmente tem seu próprio modelo, seu próprio código, e pode virar seu próprio microserviço (ou módulo num monolito modular).
 
-**Context Map:**
-Diagrama de como os bounded contexts se relacionam. Relacionamentos possíveis:
+**Context Map:** Diagrama de como os bounded contexts se relacionam. Relacionamentos possíveis:
 
 | Relacionamento | Descrição |
 | --- | --- |
@@ -405,8 +402,7 @@ Diagrama de como os bounded contexts se relacionam. Relacionamentos possíveis:
 
 ### Conceitos táticos (como modelar)
 
-**Entity:**
-Objeto com identidade que persiste ao longo do tempo. Duas entities são iguais se têm o mesmo ID, mesmo que outros atributos mudem.
+**Entity:** Objeto com identidade que persiste ao longo do tempo. Duas entities são iguais se têm o mesmo ID, mesmo que outros atributos mudem.
 
 ```java
 public class Patient {
@@ -426,8 +422,7 @@ public class Patient {
 }
 ```
 
-**Value Object:**
-Definido pelos atributos, sem identidade. Dois value objects são iguais se todos os atributos forem iguais. Devem ser **imutáveis**.
+**Value Object:** Definido pelos atributos, sem identidade. Dois value objects são iguais se todos os atributos forem iguais. Devem ser **imutáveis**.
 
 ```java
 public record Money(BigDecimal amount, Currency currency) {
@@ -440,8 +435,7 @@ public record Money(BigDecimal amount, Currency currency) {
 }
 ```
 
-**Aggregate:**
-Cluster de entities e value objects que mudam juntos. Tem uma **Aggregate Root** — a única forma de acessar os membros internos.
+**Aggregate:** Cluster de entities e value objects que mudam juntos. Tem uma **Aggregate Root** — a única forma de acessar os membros internos.
 
 ```java
 public class Order {  // Aggregate Root
@@ -467,8 +461,7 @@ public class Order {  // Aggregate Root
 3. Mantenha aggregates **pequenas** — só o que precisa de consistência imediata.
 4. Referencie outras aggregates por ID, não por referência direta.
 
-**Repository:**
-Abstração para persistir e recuperar aggregates. Retorna aggregates completas.
+**Repository:** Abstração para persistir e recuperar aggregates. Retorna aggregates completas.
 
 ```java
 public interface OrderRepository {
@@ -478,8 +471,7 @@ public interface OrderRepository {
 }
 ```
 
-**Domain Service:**
-Lógica que não pertence naturalmente a nenhuma entity ou value object. Use com parcimônia — se tudo está virando service, seu modelo está anemic.
+**Domain Service:** Lógica que não pertence naturalmente a nenhuma entity ou value object. Use com parcimônia — se tudo está virando service, seu modelo está anemic.
 
 ```java
 // Transferência de dinheiro envolve 2 contas — não pertence a uma só
@@ -491,8 +483,7 @@ public class MoneyTransferService {
 }
 ```
 
-**Domain Event:**
-Fato que aconteceu no domínio, relevante para o negócio. Passado, imutável, linguagem de negócio.
+**Domain Event:** Fato que aconteceu no domínio, relevante para o negócio. Passado, imutável, linguagem de negócio.
 
 ```java
 public record OrderPlaced(
@@ -860,15 +851,13 @@ Cada "span" é uma operação. Trace ID é propagado via headers HTTP e logs est
 
 ## Na prática (da minha experiência)
 
-> **Muvz — migração de monolito para microserviços (Java EJB → Spring Boot):**
-> Apliquei Hexagonal Architecture com DDD. Começamos com **Event Storming** com o pessoal de negócio para mapear bounded contexts — acabamos com 5 contextos bem definidos, que viraram 5 microserviços Spring Boot. Kafka como event broker principal (ADR documentando o porquê). Strangler Fig para migrar gradualmente, colocando o Kong como proxy roteando tráfego entre o monolito EJB legado e os novos serviços. A migração durou ~8 meses, sem big-bang, sem downtime significativo.
+> **Muvz — migração de monolito para microserviços (Java EJB → Spring Boot):** Apliquei Hexagonal Architecture com DDD. Começamos com **Event Storming** com o pessoal de negócio para mapear bounded contexts — acabamos com 5 contextos bem definidos, que viraram 5 microserviços Spring Boot. Kafka como event broker principal (ADR documentando o porquê). Strangler Fig para migrar gradualmente, colocando o Kong como proxy roteando tráfego entre o monolito EJB legado e os novos serviços. A migração durou ~8 meses, sem big-bang, sem downtime significativo.
 >
 > **O que deu certo:** começar pela descoberta de domínio (Event Storming) antes de discutir tecnologia. Os bounded contexts ficaram estáveis e os serviços hoje ainda refletem essas fronteiras.
 >
 > **O que eu faria diferente:** Investiria mais cedo em observabilidade (tracing distribuído). Durante os primeiros meses, debuggar fluxos cross-service era doloroso. Hoje, OpenTelemetry é o primeiro a entrar no projeto.
 >
-> **MedEspecialista — decisão consciente de ficar em monolito modular:**
-> O backend Spring Boot é um **modular monolith**, não microserviços. Cada bounded context é um módulo com seu próprio pacote Java (verificado por ArchUnit que impede imports cruzados). Uma única base de dados PostgreSQL, mas com schemas separados por módulo. Se precisarmos extrair um serviço no futuro, o módulo já está isolado — é uma refatoração, não uma reescrita.
+> **MedEspecialista — decisão consciente de ficar em monolito modular:** O backend Spring Boot é um **modular monolith**, não microserviços. Cada bounded context é um módulo com seu próprio pacote Java (verificado por ArchUnit que impede imports cruzados). Uma única base de dados PostgreSQL, mas com schemas separados por módulo. Se precisarmos extrair um serviço no futuro, o módulo já está isolado — é uma refatoração, não uma reescrita.
 >
 > **Por que não microserviços?** A equipe tem 5 pessoas. A escala atual (~10K DAU) cabe folgada num monolito bem projetado. O custo operacional de microserviços (observabilidade, deploys coordenados, consistência distribuída) não seria justificado. O ADR-003 documenta essa decisão e revalidaremos em 2027 ou quando a escala/equipe justificar.
 >

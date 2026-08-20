@@ -10,20 +10,9 @@ tags:
 
 # Roadmap — Descoberta e Pesquisa
 
-Diagnóstico nota a nota. Cada entrada tem estado de enriquecimento, score, classificação
-de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
+Diagnóstico nota a nota. Cada entrada tem estado de enriquecimento, score, classificação de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
 
-**Galho:** `03-Dominios/Engenharia/UX/Descoberta e Pesquisa`
-**Diagnóstico:** 2026-07-28
-**Última execução:** 2026-07-28 — **enriquecimento COMPLETO (9/9 ✅/➖, 0 ⬜, 0 🔄)**
-**Retrofit M1 (2026-07-28, Task 11):** política do domínio mudou — M1 (mídia verificada) passou
-a ser **obrigatório em toda nota**, sem isenção por `fase:`. Isso sobrepõe a isenção de fase
-Iniciado usada no diagnóstico original para 06-08. Ver `03-Dominios/Engenharia/UX/index.md`
-para a regra. Notas 07, 10, 11, 12, 13 e 14 — antes `➖` (07 por isenção de fase; 10-14 porque
-M1 nunca foi item de núcleo) — foram reclassificadas para `✅` depois de receber mídia
-verificada. **Exceção: nota 06 permanece `➖` mesmo sob a política nova** — busca extensiva
-não encontrou vídeo/podcast verificável e pertinente ao tema "generativa vs. avaliativa";
-buraco honesto, registrado explicitamente na entrada da nota abaixo e no report da Task 11.
+**Galho:** `03-Dominios/Engenharia/UX/Descoberta e Pesquisa` **Diagnóstico:** 2026-07-28 **Última execução:** 2026-07-28 — **enriquecimento COMPLETO (9/9 ✅/➖, 0 ⬜, 0 🔄)** **Retrofit M1 (2026-07-28, Task 11):** política do domínio mudou — M1 (mídia verificada) passou a ser **obrigatório em toda nota**, sem isenção por `fase:`. Isso sobrepõe a isenção de fase Iniciado usada no diagnóstico original para 06-08. Ver `03-Dominios/Engenharia/UX/index.md` para a regra. Notas 07, 10, 11, 12, 13 e 14 — antes `➖` (07 por isenção de fase; 10-14 porque M1 nunca foi item de núcleo) — foram reclassificadas para `✅` depois de receber mídia verificada. **Exceção: nota 06 permanece `➖` mesmo sob a política nova** — busca extensiva não encontrou vídeo/podcast verificável e pertinente ao tema "generativa vs. avaliativa"; buraco honesto, registrado explicitamente na entrada da nota abaixo e no report da Task 11.
 
 ## Régua de análise
 
@@ -36,8 +25,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | LINKS | L1 Wikilink cross-galho · L2 Referência externa (URL) |
 | MÍDIA | M1 Vídeo/podcast embutido |
 
-**Esquema de `fase:` detectado:** COM fase (Iniciado 06-08, Adepto 09-14)
-**Piso de linhas:** aplicável — Iniciado ≥300, Adepto ≥400 (ver nota de tensão no rodapé)
+**Esquema de `fase:` detectado:** COM fase (Iniciado 06-08, Adepto 09-14) **Piso de linhas:** aplicável — Iniciado ≥300, Adepto ≥400 (ver nota de tensão no rodapé)
 
 ## Tabela-resumo
 
@@ -49,15 +37,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | ✅ feita | 8 |
 | % concluído | 100% (8/9 com M1; ver nota 06) |
 
-> Gaps concentrados em **M1 (mídia)** nas 9 notas. No diagnóstico original, só 06-08
-> (Iniciado) tinham isenção de M1 por fase; 09-14 (Adepto) não tinham, mas 10-14 ficaram
-> `➖` porque M1 nunca foi item de núcleo do checklist. **A isenção por fase foi revogada
-> em 2026-07-28** (Task 11): M1 é agora obrigatório em toda nota, de qualquer fase. Notas
-> 07, 10, 11, 12, 13 e 14 receberam mídia verificada e ficam `✅`. **Nota 06 é a única
-> exceção**: nenhuma mídia verificável e pertinente foi encontrada após busca extensiva —
-> fica `➖` por buraco honesto, não por isenção de política. Nota 09 já era `✅` (L2 e M1
-> resolvidos antes desta task). Nota 08 é `✅` por desvio de julgamento documentado
-> (nota-espinha do domínio), já resolvido antes desta task.
+> Gaps concentrados em **M1 (mídia)** nas 9 notas. No diagnóstico original, só 06-08 (Iniciado) tinham isenção de M1 por fase; 09-14 (Adepto) não tinham, mas 10-14 ficaram `➖` porque M1 nunca foi item de núcleo do checklist. **A isenção por fase foi revogada em 2026-07-28** (Task 11): M1 é agora obrigatório em toda nota, de qualquer fase. Notas 07, 10, 11, 12, 13 e 14 receberam mídia verificada e ficam `✅`. **Nota 06 é a única exceção**: nenhuma mídia verificável e pertinente foi encontrada após busca extensiva — fica `➖` por buraco honesto, não por isenção de política. Nota 09 já era `✅` (L2 e M1 resolvidos antes desta task). Nota 08 é `✅` por desvio de julgamento documentado (nota-espinha do domínio), já resolvido antes desta task.
 
 ---
 

@@ -336,8 +336,7 @@ Estratégias para controlar custo em CI:
 
 ## Boas práticas de prompt em CI
 
-**Prompt com formato de saída estruturado**
-O output do agente vai para um comentário no PR — estruture o prompt para que a saída seja legível:
+**Prompt com formato de saída estruturado** O output do agente vai para um comentário no PR — estruture o prompt para que a saída seja legível:
 
 ```yaml
 run: |
@@ -354,8 +353,7 @@ run: |
     - [item ou 'Nenhum']"
 ```
 
-**Contexto do projeto via CLAUDE.md**
-Se o repositório tem um `CLAUDE.md` com convenções, inclua uma instrução para o agente ler:
+**Contexto do projeto via CLAUDE.md** Se o repositório tem um `CLAUDE.md` com convenções, inclua uma instrução para o agente ler:
 
 ```yaml
 run: |
@@ -365,8 +363,7 @@ run: |
     Depois analise o diff em /tmp/pr.diff e identifique violações."
 ```
 
-**Filtragem antes do prompt**
-Diffs de PRs grandes excedem o contexto. Filtre antes:
+**Filtragem antes do prompt** Diffs de PRs grandes excedem o contexto. Filtre antes:
 
 ```yaml
 run: |

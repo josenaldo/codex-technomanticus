@@ -254,24 +254,19 @@ O desacordo real é: **quão pesado deve ser o processo de spec** para projetos 
 Casos documentados onde SDD piorou a situação:
 
 > [!warning] Specs gigantescas que ninguém lê
-> **Causa:** features grandes demais viraram specs de dezenas de páginas.
-> **Lição:** quebrar a feature em pedaços menores *antes* de especificar — spec grande é sintoma de escopo grande, não de rigor excessivo.
+> **Causa:** features grandes demais viraram specs de dezenas de páginas. **Lição:** quebrar a feature em pedaços menores *antes* de especificar — spec grande é sintoma de escopo grande, não de rigor excessivo.
 
 > [!warning] Specs sempre stale (desatualizadas)
-> **Causa:** o time operava em spec-first quando o contexto pedia spec-anchored — nada garantia que a spec acompanhasse o código.
-> **Lição:** subir o nível de rigor e ligar um drift gate que force a sincronia.
+> **Causa:** o time operava em spec-first quando o contexto pedia spec-anchored — nada garantia que a spec acompanhasse o código. **Lição:** subir o nível de rigor e ligar um drift gate que force a sincronia.
 
 > [!warning] PRs bloqueados eternamente
-> **Causa:** gates de validação calibrados como se o time já estivesse maduro em SDD, na fase inicial de adoção.
-> **Lição:** calibrar os gates gradualmente — começar permissivo, apertar conforme o time internaliza o processo.
+> **Causa:** gates de validação calibrados como se o time já estivesse maduro em SDD, na fase inicial de adoção. **Lição:** calibrar os gates gradualmente — começar permissivo, apertar conforme o time internaliza o processo.
 
 > [!warning] Time produziu menos por 3 meses
-> **Causa:** ferramentas pesadas (Kiro, Tessl) aplicadas a um projeto pequeno que não justificava o nível de rigor.
-> **Lição:** começar com Spec Kit leve; só subir para ferramentas de spec-as-source quando o contexto realmente exigir.
+> **Causa:** ferramentas pesadas (Kiro, Tessl) aplicadas a um projeto pequeno que não justificava o nível de rigor. **Lição:** começar com Spec Kit leve; só subir para ferramentas de spec-as-source quando o contexto realmente exigir.
 
 > [!warning] Devs frustrados e saindo do time
-> **Causa:** adoção de SDD imposta de cima para baixo, sem buy-in da equipe.
-> **Lição:** adoção de metodologia precisa de convencimento pela evidência (métricas, casos), não de imposição por decreto.
+> **Causa:** adoção de SDD imposta de cima para baixo, sem buy-in da equipe. **Lição:** adoção de metodologia precisa de convencimento pela evidência (métricas, casos), não de imposição por decreto.
 
 ## O debate vibe coding vs SDD em números reais
 

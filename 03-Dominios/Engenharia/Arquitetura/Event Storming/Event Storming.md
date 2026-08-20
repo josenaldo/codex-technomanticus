@@ -335,8 +335,7 @@ Brandolini tem um guia específico de Remote Event Storming.
 
 ## Na prática (da minha experiência)
 
-> **Muvz — Event Storming para migração de monolito:**
-> Na Muvz, usamos Event Storming para descobrir bounded contexts antes de decidir como quebrar o monolito EJB em microserviços. Fizemos um **Big Picture Event Storming** de dois dias com product owners, especialistas do negócio, tech leads e devs. A parede tinha mais de 8 metros de post-its laranja.
+> **Muvz — Event Storming para migração de monolito:** Na Muvz, usamos Event Storming para descobrir bounded contexts antes de decidir como quebrar o monolito EJB em microserviços. Fizemos um **Big Picture Event Storming** de dois dias com product owners, especialistas do negócio, tech leads e devs. A parede tinha mais de 8 metros de post-its laranja.
 >
 > **O que aprendemos:**
 >
@@ -350,8 +349,7 @@ Brandolini tem um guia específico de Remote Event Storming.
 >
 > **5. Os microserviços finais refletiram o resultado do workshop.** Os 5 microserviços que acabamos construindo respeitaram os 5 bounded contexts descobertos. Sem o workshop, teríamos feito os 3 óbvios errados, e descoberto a dor depois.
 >
-> **MedEspecialista — Process Modelling para feature nova:**
-> Quando precisei desenhar o fluxo de reagendamento de consultas (que parecia simples mas envolvia regras complexas de cancellation, reembolso, notificação ao médico, slot de volta na disponibilidade, etc.), fizemos um Process Modelling Event Storming em 3 horas. Descobrimos 6 casos alternativos que ninguém tinha mapeado, incluindo um que tinha implicações financeiras.
+> **MedEspecialista — Process Modelling para feature nova:** Quando precisei desenhar o fluxo de reagendamento de consultas (que parecia simples mas envolvia regras complexas de cancellation, reembolso, notificação ao médico, slot de volta na disponibilidade, etc.), fizemos um Process Modelling Event Storming em 3 horas. Descobrimos 6 casos alternativos que ninguém tinha mapeado, incluindo um que tinha implicações financeiras.
 >
 > **Lição chave: o valor está no workshop, não no artefato.** Os post-its acabaram sendo fotografados e arquivados. O que ficou foi o **entendimento compartilhado**. Um mês depois, quando implementamos, ninguém olhou para as fotos — mas todo mundo lembrava das decisões. O workshop é a forma de aprender coletivamente, não de documentar.
 >
@@ -434,8 +432,7 @@ Brandolini tem um guia específico de Remote Event Storming.
 ### Vídeos essenciais
 
 > [!info] 50,000 Orange Stickies Later — Alberto Brandolini @ ExploreDDD 2017
-> [https://www.youtube.com/watch?v=1i6QYvYhlYQ](https://www.youtube.com/watch?v=1i6QYvYhlYQ)
-> Provavelmente a melhor visão geral dos diferentes formatos de Event Storming.
+> [https://www.youtube.com/watch?v=1i6QYvYhlYQ](https://www.youtube.com/watch?v=1i6QYvYhlYQ) Provavelmente a melhor visão geral dos diferentes formatos de Event Storming.
 
 > [!info] Extreme Modelling Patterns — Alberto Brandolini @ DDD Europe 2023
 > [https://www.youtube.com/watch?v=jv1-ohCWbE0](https://www.youtube.com/watch?v=jv1-ohCWbE0)

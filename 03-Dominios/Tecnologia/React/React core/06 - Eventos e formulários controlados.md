@@ -421,8 +421,7 @@ function Card({ onClick }: { onClick: () => void }) {
 
 > [!question]- Diferença entre preventDefault e stopPropagation?
 > - `preventDefault()`: cancela o comportamento padrão do navegador (submit que recarrega, link que navega). O evento ainda sobe pelo DOM.
-> - `stopPropagation()`: impede que o evento suba para elementos pai. Não cancela o comportamento padrão.
-> São independentes — você pode chamar ambos se precisar.
+> - `stopPropagation()`: impede que o evento suba para elementos pai. Não cancela o comportamento padrão. São independentes — você pode chamar ambos se precisar.
 
 ---
 
@@ -467,9 +466,7 @@ Para formulários simples (2-5 campos), o padrão controlado com `useState` é p
 ## Armadilhas comuns
 
 > [!warning] Input controlado sem onChange — o input congela
-> **O que acontece:** você define `value={nome}` mas não define `onChange`. O input fica completamente imóvel — o usuário não consegue digitar nada.
-> **Por quê:** sem `onChange`, o estado nunca muda. Como o input exibe o estado, ele fica "preso" no valor atual.
-> **Como evitar:** sempre que definir `value`, defina também `onChange`. O TypeScript com tipos corretos vai alertar se você esquecer o handler.
+> **O que acontece:** você define `value={nome}` mas não define `onChange`. O input fica completamente imóvel — o usuário não consegue digitar nada. **Por quê:** sem `onChange`, o estado nunca muda. Como o input exibe o estado, ele fica "preso" no valor atual. **Como evitar:** sempre que definir `value`, defina também `onChange`. O TypeScript com tipos corretos vai alertar se você esquecer o handler.
 >
 > ```tsx
 > // 🚨 Errado — input congela
@@ -480,19 +477,13 @@ Para formulários simples (2-5 campos), o padrão controlado com `useState` é p
 > ```
 
 > [!warning] Esquecer preventDefault no submit — página recarrega
-> **O que acontece:** o formulário é submetido, a página recarrega (ou navega para a mesma URL com query params) e todo o estado React é perdido.
-> **Por quê:** o comportamento padrão de um `<form>` HTML é fazer um GET/POST e navegar. `preventDefault()` cancela isso.
-> **Como evitar:** todo `onSubmit` em React deve começar com `event.preventDefault()`. Sem exceção.
+> **O que acontece:** o formulário é submetido, a página recarrega (ou navega para a mesma URL com query params) e todo o estado React é perdido. **Por quê:** o comportamento padrão de um `<form>` HTML é fazer um GET/POST e navegar. `preventDefault()` cancela isso. **Como evitar:** todo `onSubmit` em React deve começar com `event.preventDefault()`. Sem exceção.
 
 > [!warning] Recriar o handler dentro de um map — performance em listas grandes
-> **O que acontece:** em uma lista de 500 itens, cada render cria 500 novas funções de handler anônimas.
-> **Por quê:** `() => handleClick(item)` é uma nova referência de função a cada chamada de render.
-> **Como evitar:** para listas pequenas, ignore — a diferença é imperceptível. Para listas grandes, use `useCallback` com dependências corretas, ou passe o `id` do item via `data-*` e leia no handler: `event.currentTarget.dataset.id`.
+> **O que acontece:** em uma lista de 500 itens, cada render cria 500 novas funções de handler anônimas. **Por quê:** `() => handleClick(item)` é uma nova referência de função a cada chamada de render. **Como evitar:** para listas pequenas, ignore — a diferença é imperceptível. Para listas grandes, use `useCallback` com dependências corretas, ou passe o `id` do item via `data-*` e leia no handler: `event.currentTarget.dataset.id`.
 
 > [!warning] Tipar o handler como any — perde os benefícios do TypeScript
-> **O que acontece:** `function handleChange(event: any)` compila, mas você perde autocompletar, verificação de `.target.value`, e a segurança de tipos.
-> **Por quê:** `any` desliga o TypeScript localmente.
-> **Como evitar:** use os tipos corretos. Em caso de dúvida, deixe o TypeScript inferir: `onChange={e => setValue(e.target.value)}` — o TypeScript infere `e` como `React.ChangeEvent<HTMLInputElement>` pelo contexto.
+> **O que acontece:** `function handleChange(event: any)` compila, mas você perde autocompletar, verificação de `.target.value`, e a segurança de tipos. **Por quê:** `any` desliga o TypeScript localmente. **Como evitar:** use os tipos corretos. Em caso de dúvida, deixe o TypeScript inferir: `onChange={e => setValue(e.target.value)}` — o TypeScript infere `e` como `React.ChangeEvent<HTMLInputElement>` pelo contexto.
 
 ---
 

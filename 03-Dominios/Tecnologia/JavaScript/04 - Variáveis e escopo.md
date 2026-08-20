@@ -422,9 +422,7 @@ function criarContador() {
 ## Armadilhas comuns
 
 > [!warning] `var` em loops não cria escopo por iteração
-> **O que acontece:** callbacks dentro de um loop com `var` todos compartilham a mesma variável.
-> **Por quê:** `var` tem escopo de função, não de bloco — o loop não cria escopos separados.
-> **Como evitar:** use `let` em loops. Ou, em código legado, use IIFE: `(function(i) { ... })(i)`.
+> **O que acontece:** callbacks dentro de um loop com `var` todos compartilham a mesma variável. **Por quê:** `var` tem escopo de função, não de bloco — o loop não cria escopos separados. **Como evitar:** use `let` em loops. Ou, em código legado, use IIFE: `(function(i) { ... })(i)`.
 > ```javascript
 > // Bug clássico
 > for (var i = 0; i < 3; i++) {
@@ -437,9 +435,7 @@ function criarContador() {
 > ```
 
 > [!warning] Usar variável `let`/`const` antes da declaração no mesmo bloco
-> **O que acontece:** `ReferenceError` mesmo que a variável apareça depois no código.
-> **Por quê:** o hoisting registra a variável, mas a TDZ impede qualquer acesso antes da linha de declaração.
-> **Como evitar:** declare `let`/`const` sempre antes do primeiro uso — é boa prática independente da regra.
+> **O que acontece:** `ReferenceError` mesmo que a variável apareça depois no código. **Por quê:** o hoisting registra a variável, mas a TDZ impede qualquer acesso antes da linha de declaração. **Como evitar:** declare `let`/`const` sempre antes do primeiro uso — é boa prática independente da regra.
 > ```javascript
 > function exemplo() {
 >   console.log(valor); // ReferenceError!
@@ -448,14 +444,10 @@ function criarContador() {
 > ```
 
 > [!warning] Assumir que `const` torna objetos imutáveis
-> **O que acontece:** código assume que um objeto `const` não pode mudar, mas propriedades são alteradas livremente.
-> **Por quê:** `const` protege a referência, não o conteúdo do objeto.
-> **Como evitar:** diferencie "não posso reatribuir" de "não posso mutar". Use `Object.freeze()` se precisar de imutabilidade real.
+> **O que acontece:** código assume que um objeto `const` não pode mudar, mas propriedades são alteradas livremente. **Por quê:** `const` protege a referência, não o conteúdo do objeto. **Como evitar:** diferencie "não posso reatribuir" de "não posso mutar". Use `Object.freeze()` se precisar de imutabilidade real.
 
 > [!warning] `var` vaza do bloco para a função
-> **O que acontece:** uma variável declarada com `var` dentro de um `if` ou `for` fica acessível fora do bloco.
-> **Por quê:** `var` ignora fronteiras de bloco — seu escopo é a função (ou global).
-> **Como evitar:** use sempre `let` ou `const`. Não existe caso moderno onde `var` seja a escolha certa.
+> **O que acontece:** uma variável declarada com `var` dentro de um `if` ou `for` fica acessível fora do bloco. **Por quê:** `var` ignora fronteiras de bloco — seu escopo é a função (ou global). **Como evitar:** use sempre `let` ou `const`. Não existe caso moderno onde `var` seja a escolha certa.
 > ```javascript
 > function teste() {
 >   if (true) {

@@ -12,8 +12,7 @@ tags:
 
 Roadmap **de galho-pai**: mapeia o estado dos **sub-galhos** (não as notas dos netos) e as **notas diretas** logo abaixo desta pasta. Cada sub-galho tem (ou terá) o próprio `roadmap.md` mapeando as próprias notas.
 
-**Galho:** `03-Dominios/Tecnologia/IA/Claude Code`
-**Nível:** galho-pai (contém sub-galhos)
+**Galho:** `03-Dominios/Tecnologia/IA/Claude Code` **Nível:** galho-pai (contém sub-galhos)
 
 > [!success] Galho 100% diagnosticado em 2026-07-02. Os 6 sub-galhos foram auditados nota a nota (55 notas dos netos) e cada um tem seu `roadmap.md`. Superado o gap do mestre (30/06), que marcava Claude Code como "vazio/fora de escopo". Pronto para `/enriquecer-galho`.
 

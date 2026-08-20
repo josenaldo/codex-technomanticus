@@ -22,19 +22,10 @@ aliases:
 # Circuit Breaker
 
 > [!abstract] TL;DR
-> Quando a dependência está fora há minutos, cada tentativa custa um **timeout inteiro** e falha do
-> mesmo jeito — você está gastando recursos para descobrir algo que já sabe. O circuit breaker observa
-> o histórico recente e, ao passar de um limiar, **abre**: as chamadas seguintes falham na hora, sem
-> tocar a rede. Isso protege dois lados — preserva os recursos do chamador e **dá espaço** ao alvo para
-> se recuperar sem ser martelado. O sacrifício é uma aposta estatística: enquanto aberto, ele rejeita
-> requisições que **talvez funcionassem**. E ele só entrega valor real se houver um plano para o que
-> responder quando estiver aberto.
+> Quando a dependência está fora há minutos, cada tentativa custa um **timeout inteiro** e falha do mesmo jeito — você está gastando recursos para descobrir algo que já sabe. O circuit breaker observa o histórico recente e, ao passar de um limiar, **abre**: as chamadas seguintes falham na hora, sem tocar a rede. Isso protege dois lados — preserva os recursos do chamador e **dá espaço** ao alvo para se recuperar sem ser martelado. O sacrifício é uma aposta estatística: enquanto aberto, ele rejeita requisições que **talvez funcionassem**. E ele só entrega valor real se houver um plano para o que responder quando estiver aberto.
 
 > [!info] O recorte desta nota
-> Aqui o padrão como decisão e sua aposta. **Onde tunar os limiares e o custo dos dois erros** em
-> [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/06 - Resiliência operacional|Operação 3-06]];
-> os **três estados sob a ótica de escala e entrevista** em
-> [[03-Dominios/Engenharia/Arquitetura/System Design/3 - Padrões recorrentes/05 - Circuit Breaker e resiliência|System Design 3-05]].
+> Aqui o padrão como decisão e sua aposta. **Onde tunar os limiares e o custo dos dois erros** em [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/06 - Resiliência operacional|Operação 3-06]]; os **três estados sob a ótica de escala e entrevista** em [[03-Dominios/Engenharia/Arquitetura/System Design/3 - Padrões recorrentes/05 - Circuit Breaker e resiliência|System Design 3-05]].
 
 ## Bater numa porta que não abre
 
@@ -89,19 +80,13 @@ Não existe valor universalmente correto — depende de quão custosa é a falha
 ## Armadilhas comuns
 
 > [!warning] Breaker sem fallback: só troca timeout por erro
-> **O que acontece:** o breaker abre corretamente e o usuário passa a receber erro **imediato** em vez de erro após dois segundos. Mais rápido, igualmente inútil.
-> **Por quê:** implementou-se a detecção, que é a parte técnica, e não a resposta, que é decisão de produto — e por isso costuma ficar para depois.
-> **Como evitar:** ao abrir um breaker, o sistema precisa saber **o que responder**: valor em cache, resultado padrão, funcionalidade reduzida. Se não houver resposta melhor que o erro, questione se aquela dependência deveria estar no caminho crítico. É o assunto de [[06 - Fallback e degradação graciosa|Fallback]].
+> **O que acontece:** o breaker abre corretamente e o usuário passa a receber erro **imediato** em vez de erro após dois segundos. Mais rápido, igualmente inútil. **Por quê:** implementou-se a detecção, que é a parte técnica, e não a resposta, que é decisão de produto — e por isso costuma ficar para depois. **Como evitar:** ao abrir um breaker, o sistema precisa saber **o que responder**: valor em cache, resultado padrão, funcionalidade reduzida. Se não houver resposta melhor que o erro, questione se aquela dependência deveria estar no caminho crítico. É o assunto de [[06 - Fallback e degradação graciosa|Fallback]].
 
 > [!warning] Abrir por erro de negócio
-> **O que acontece:** o breaker conta `404` e `422` como falhas. Um pico legítimo de requisições inválidas — um cliente com bug — abre o circuito e derruba a funcionalidade **para todo mundo**, embora o serviço esteja perfeitamente saudável.
-> **Por quê:** a implementação conta "resposta não-2xx" como falha, que é o default fácil.
-> **Como evitar:** só falhas de **infraestrutura** contam — timeout, conexão recusada, 5xx. Erro de contrato (4xx) é resposta correta a um pedido errado: o serviço funcionou.
+> **O que acontece:** o breaker conta `404` e `422` como falhas. Um pico legítimo de requisições inválidas — um cliente com bug — abre o circuito e derruba a funcionalidade **para todo mundo**, embora o serviço esteja perfeitamente saudável. **Por quê:** a implementação conta "resposta não-2xx" como falha, que é o default fácil. **Como evitar:** só falhas de **infraestrutura** contam — timeout, conexão recusada, 5xx. Erro de contrato (4xx) é resposta correta a um pedido errado: o serviço funcionou.
 
 > [!warning] Breaker por processo numa frota grande
-> **O que acontece:** cada uma das 200 instâncias mantém seu próprio breaker e precisa **aprender sozinha** que a dependência caiu, gastando o próprio cota de falhas. A proteção chega tarde e de forma desigual, e o comportamento agregado fica difícil de prever.
-> **Por quê:** o estado local é simples e não exige coordenação — e funciona bem com poucas instâncias.
-> **Como evitar:** reconheça o efeito ao dimensionar limiares (o volume mínimo é **por instância**, não global). Onde a frota é grande, considere mover a decisão para uma camada compartilhada — gateway ou service mesh, assunto de [[11 - Ambassador + Sidecar|Ambassador + Sidecar]].
+> **O que acontece:** cada uma das 200 instâncias mantém seu próprio breaker e precisa **aprender sozinha** que a dependência caiu, gastando o próprio cota de falhas. A proteção chega tarde e de forma desigual, e o comportamento agregado fica difícil de prever. **Por quê:** o estado local é simples e não exige coordenação — e funciona bem com poucas instâncias. **Como evitar:** reconheça o efeito ao dimensionar limiares (o volume mínimo é **por instância**, não global). Onde a frota é grande, considere mover a decisão para uma camada compartilhada — gateway ou service mesh, assunto de [[11 - Ambassador + Sidecar|Ambassador + Sidecar]].
 
 ## Como explicar em inglês
 

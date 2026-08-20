@@ -467,5 +467,4 @@ O modelo de Yegge descreve *o quê* muda (papel do humano, unidade de delegaçã
 - [[03-Dominios/Tecnologia/IA/Context Engineering/index|Context Engineering]]
 - [[03-Dominios/Tecnologia/IA/Spec-Driven Development/index|Spec-Driven Development]]
 - [[03-Dominios/Tecnologia/IA/Segurança e Guardrails/index|Segurança e Guardrails]]
-- [[03-Dominios/Tecnologia/IA/Economia de Tokens/index|Economia de Tokens]]
--
+- [[03-Dominios/Tecnologia/IA/Economia de Tokens/index|Economia de Tokens]] -

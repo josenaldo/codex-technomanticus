@@ -109,8 +109,7 @@ Object storage é hoje o denominador comum de toda arquitetura cloud — do back
 > [!tip] Assista: 4 Cloud Giants Compared in One Chart! AWS vs Azure vs GCP vs Oracle
 > **Canal:** TheCloudIO | **Duração:** ~9min | **Idioma:** EN
 >
-> Percorre em vídeo o mesmo exercício de tradução desta nota — compute, storage de objeto/bloco/arquivo, Kubernetes gerenciado — categoria por categoria, com os nomes de cada provedor lado a lado (aqui trocando DigitalOcean por Oracle, mas o método de leitura da tabela é idêntico).
-> Trecho de destaque [03:08]: *"[S3's] direct equivalent over on Azure is blob storage. For GCP, it's just called cloud storage."*
+> Percorre em vídeo o mesmo exercício de tradução desta nota — compute, storage de objeto/bloco/arquivo, Kubernetes gerenciado — categoria por categoria, com os nomes de cada provedor lado a lado (aqui trocando DigitalOcean por Oracle, mas o método de leitura da tabela é idêntico). Trecho de destaque [03:08]: *"[S3's] direct equivalent over on Azure is blob storage. For GCP, it's just called cloud storage."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=-gfbXDPTY0c)
 

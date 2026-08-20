@@ -440,9 +440,7 @@ Para tipagem avançada de hooks customizados, veja [[03-Dominios/Tecnologia/Reac
 ## Armadilhas comuns
 
 > [!warning] Hook chamado condicionalmente
-> **O que acontece:** `useState` ou `useEffect` dentro de um `if` — o linter avisa, mas o erro em runtime é sutil: o estado de um hook é atribuído ao hook errado na re-renderização.
-> **Por quê:** O React usa a **posição na linked list** para mapear hooks ao seu estado. Se o `if` mudar entre renders, a lista muda de tamanho e o mapeamento fica errado.
-> **Como evitar:** Mova a condição para dentro do hook (dentro do `useEffect`, por exemplo). Nunca envolva o hook em um `if`. Hooks sempre no topo, condições dentro.
+> **O que acontece:** `useState` ou `useEffect` dentro de um `if` — o linter avisa, mas o erro em runtime é sutil: o estado de um hook é atribuído ao hook errado na re-renderização. **Por quê:** O React usa a **posição na linked list** para mapear hooks ao seu estado. Se o `if` mudar entre renders, a lista muda de tamanho e o mapeamento fica errado. **Como evitar:** Mova a condição para dentro do hook (dentro do `useEffect`, por exemplo). Nunca envolva o hook em um `if`. Hooks sempre no topo, condições dentro.
 >
 > ```tsx
 > // ❌
@@ -455,9 +453,7 @@ Para tipagem avançada de hooks customizados, veja [[03-Dominios/Tecnologia/Reac
 > ```
 
 > [!warning] Hook chamado fora de componente ou custom hook
-> **O que acontece:** Chamar `useState` ou `useEffect` em uma função utilitária comum (não prefixada com `use`, não componente) causa erro em runtime: "Invalid hook call".
-> **Por quê:** A linked list de hooks só existe no contexto de renderização de um componente. Fora desse contexto, não há lugar para guardar o estado.
-> **Como evitar:** Se a função precisa de estado, ela **é** um hook — renomeie para `use*` e garanta que só é chamada em componentes ou outros hooks.
+> **O que acontece:** Chamar `useState` ou `useEffect` em uma função utilitária comum (não prefixada com `use`, não componente) causa erro em runtime: "Invalid hook call". **Por quê:** A linked list de hooks só existe no contexto de renderização de um componente. Fora desse contexto, não há lugar para guardar o estado. **Como evitar:** Se a função precisa de estado, ela **é** um hook — renomeie para `use*` e garanta que só é chamada em componentes ou outros hooks.
 >
 > ```tsx
 > // ❌ função utilitária com hook
@@ -474,9 +470,7 @@ Para tipagem avançada de hooks customizados, veja [[03-Dominios/Tecnologia/Reac
 > ```
 
 > [!warning] Esperar que dois componentes compartilhem estado via mesmo hook
-> **O que acontece:** `ComponenteA` e `ComponenteB` chamam `useToggle()`. O desenvolvedor espera que alterar o toggle em A afete B — mas não afeta.
-> **Por quê:** Cada chamada ao hook instancia um estado **novo e independente**. O hook é um molde, não um singleton.
-> **Como evitar:** Para estado compartilhado, use `useContext` + um provider, ou um gerenciador de estado global (Zustand, Jotai). O custom hook pode ainda encapsular a lógica, mas o estado precisa viver em um lugar centralizado.
+> **O que acontece:** `ComponenteA` e `ComponenteB` chamam `useToggle()`. O desenvolvedor espera que alterar o toggle em A afete B — mas não afeta. **Por quê:** Cada chamada ao hook instancia um estado **novo e independente**. O hook é um molde, não um singleton. **Como evitar:** Para estado compartilhado, use `useContext` + um provider, ou um gerenciador de estado global (Zustand, Jotai). O custom hook pode ainda encapsular a lógica, mas o estado precisa viver em um lugar centralizado.
 >
 > ```tsx
 > // ❌ ilusão de estado compartilhado
@@ -492,9 +486,7 @@ Para tipagem avançada de hooks customizados, veja [[03-Dominios/Tecnologia/Reac
 > ```
 
 > [!warning] Dependências de `useEffect` incompletas dentro do hook
-> **O que acontece:** Um hook interno usa `useEffect` mas omite dependências — o efeito não re-executa quando deveria, causando dados stale.
-> **Por quê:** As regras de `exhaustive-deps` do linter se aplicam **dentro** do hook exatamente como em componentes. O hook não tem tratamento especial.
-> **Como evitar:** Sempre complete o array de dependências. Use `useCallback` para funções que entram como dependência para estabilizar a referência.
+> **O que acontece:** Um hook interno usa `useEffect` mas omite dependências — o efeito não re-executa quando deveria, causando dados stale. **Por quê:** As regras de `exhaustive-deps` do linter se aplicam **dentro** do hook exatamente como em componentes. O hook não tem tratamento especial. **Como evitar:** Sempre complete o array de dependências. Use `useCallback` para funções que entram como dependência para estabilizar a referência.
 
 ---
 

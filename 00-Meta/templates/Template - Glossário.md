@@ -15,15 +15,13 @@ publish: true
 
 > Frase descrevendo o escopo deste glossário: que domínio cobre, pra quem é útil.
 
-<!--
-Como usar este glossário:
+<!-- Como usar este glossário:
 
 - Cada verbete é um `###` dentro de uma `##` temática.
 - Linkar de outra nota: [[<% tp.file.title %>#Nome do termo]]
 - Customizar texto exibido: [[<% tp.file.title %>#Nome do termo|texto]]
 - A skill /verbete adiciona termos automaticamente em ordem alfabética.
-- Ajuste `lang:` no frontmatter (`pt` ou `en`) — define o idioma das definições.
--->
+- Ajuste `lang:` no frontmatter (`pt` ou `en`) — define o idioma das definições. -->
 
 ## Seção temática
 

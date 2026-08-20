@@ -133,20 +133,13 @@ A intuição física primeiro: um autômato de pilha tem **uma** pilha. Ele cons
 > [!example] Prova completa por contradição
 > **Passo 1 — Suponha o contrário.** Assuma que L *é* livre de contexto. Então existe um comprimento de bombeamento p ≥ 1.
 >
-> **Passo 2 — Escolha uma palavra esperta.** Escolho, em função de p,
-> > s = aᵖbᵖcᵖ
+> **Passo 2 — Escolha uma palavra esperta.** Escolho, em função de p, > s = aᵖbᵖcᵖ
 >
 > Está em L (forma aⁿbⁿcⁿ com n = p) e tem |s| = 3p ≥ p. Logo é bombeável.
 >
-> **Passo 3 — O que a condição (1) me obriga.** O lema dá s = uvwxy com |vwx| ≤ p. A janela `vwx` tem no máximo p símbolos. Mas os três blocos de s têm p símbolos cada, e o bloco do meio (`b`s) tem largura p inteira. Uma janela de largura ≤ p **não consegue tocar os três tipos de símbolo ao mesmo tempo**: ela é curta demais para ir de um `a` até um `c` (teria que atravessar os p `b`s inteiros e ainda sobrar). Conclusão: **vwx toca no máximo dois dos três tipos de símbolo**. Há dois cenários:
-> > (a) vwx está nos `a`s e `b`s (ou só num deles) — **não toca em nenhum `c`**.
-> > (b) vwx está nos `b`s e `c`s (ou só num deles) — **não toca em nenhum `a`**.
-> Em qualquer caso, **pelo menos um dos três tipos fica de fora** de vx.
+> **Passo 3 — O que a condição (1) me obriga.** O lema dá s = uvwxy com |vwx| ≤ p. A janela `vwx` tem no máximo p símbolos. Mas os três blocos de s têm p símbolos cada, e o bloco do meio (`b`s) tem largura p inteira. Uma janela de largura ≤ p **não consegue tocar os três tipos de símbolo ao mesmo tempo**: ela é curta demais para ir de um `a` até um `c` (teria que atravessar os p `b`s inteiros e ainda sobrar). Conclusão: **vwx toca no máximo dois dos três tipos de símbolo**. Há dois cenários: > (a) vwx está nos `a`s e `b`s (ou só num deles) — **não toca em nenhum `c`**. > (b) vwx está nos `b`s e `c`s (ou só num deles) — **não toca em nenhum `a`**. Em qualquer caso, **pelo menos um dos três tipos fica de fora** de vx.
 >
-> **Passo 4 — Bombeie e quebre.** Pela condição (3), uv²wx²y ∈ L. Pela (2), |vx| ≥ 1, então bombear com i = 2 **aumenta a contagem** de pelo menos um tipo de símbolo. Mas, pelo Passo 3, **algum tipo ficou de fora** e **não** aumentou. Faça por casos:
-> > **Caso (a)** — vx só tem `a`s e/ou `b`s, nenhum `c`. Bombear i = 2 aumenta o total de `a`s e/ou `b`s, mas o número de `c`s continua p. Resultado: a contagem de `c`s fica **menor** que a de algum outro bloco. Logo a palavra não tem os três blocos iguais.
-> > **Caso (b)** — vx só tem `b`s e/ou `c`s, nenhum `a`. Bombear i = 2 aumenta `b`s e/ou `c`s, mas os `a`s continuam p. De novo, os três blocos deixam de ser iguais.
-> Em ambos os casos, uv²wx²y tem os três blocos **desbalanceados**, então uv²wx²y ∉ L.
+> **Passo 4 — Bombeie e quebre.** Pela condição (3), uv²wx²y ∈ L. Pela (2), |vx| ≥ 1, então bombear com i = 2 **aumenta a contagem** de pelo menos um tipo de símbolo. Mas, pelo Passo 3, **algum tipo ficou de fora** e **não** aumentou. Faça por casos: > **Caso (a)** — vx só tem `a`s e/ou `b`s, nenhum `c`. Bombear i = 2 aumenta o total de `a`s e/ou `b`s, mas o número de `c`s continua p. Resultado: a contagem de `c`s fica **menor** que a de algum outro bloco. Logo a palavra não tem os três blocos iguais. > **Caso (b)** — vx só tem `b`s e/ou `c`s, nenhum `a`. Bombear i = 2 aumenta `b`s e/ou `c`s, mas os `a`s continuam p. De novo, os três blocos deixam de ser iguais. Em ambos os casos, uv²wx²y tem os três blocos **desbalanceados**, então uv²wx²y ∉ L.
 >
 > **Passo 5 — Contradição.** O lema garantiu uv²wx²y ∈ L, mas mostramos que uv²wx²y ∉ L. Absurdo. A única premissa foi "L é livre de contexto".
 >
@@ -158,8 +151,7 @@ A intuição física primeiro: um autômato de pilha tem **uma** pilha. Ele cons
 A moral física: aⁿbⁿ é livre de contexto (uma pilha casa dois blocos), mas aⁿbⁿcⁿ não é (precisaria casar três). É o degrau da hierarquia onde a pilha única deixa de ser suficiente e entram as máquinas mais poderosas — que veremos em [[08 - A máquina de Turing]].
 
 > [!example] Por que aⁿbⁿ passa e aⁿbⁿcⁿ não — lado a lado
-> A gramática de aⁿbⁿ é minúscula: `S → aSb | ε`. Ela gera abc balanceado pareando **um** `a` na esquerda com **um** `b` na direita, recursivamente — e o autômato de pilha equivalente empilha cada `a` e desempilha um símbolo por `b`. Uma pilha, um casamento, tudo certo.
-> Agora tente estender para três blocos: você precisaria de algo como "pareie `a` com `b` **e** pareie `b` com `c`", mas a recursão `S → aSc` casaria `a` com `c`, deixando os `b`s soltos no meio — e não há como uma **única** pilha manter as duas contagens (a×b e b×c) simultaneamente. É o mesmo limite que o pumping lemma detecta de fora: a janela `vwx` curta nunca alcança os três blocos. Os dois fatos são a mesma verdade vista por dois ângulos — pela gramática (não há regra que case três) e pelo lema (não há divisão que bombeie sem desbalancear).
+> A gramática de aⁿbⁿ é minúscula: `S → aSb | ε`. Ela gera abc balanceado pareando **um** `a` na esquerda com **um** `b` na direita, recursivamente — e o autômato de pilha equivalente empilha cada `a` e desempilha um símbolo por `b`. Uma pilha, um casamento, tudo certo. Agora tente estender para três blocos: você precisaria de algo como "pareie `a` com `b` **e** pareie `b` com `c`", mas a recursão `S → aSc` casaria `a` com `c`, deixando os `b`s soltos no meio — e não há como uma **única** pilha manter as duas contagens (a×b e b×c) simultaneamente. É o mesmo limite que o pumping lemma detecta de fora: a janela `vwx` curta nunca alcança os três blocos. Os dois fatos são a mesma verdade vista por dois ângulos — pela gramática (não há regra que case três) e pelo lema (não há divisão que bombeie sem desbalancear).
 
 Vale registrar o contraste explícito com [[05 - O pumping lemma para linguagens regulares|aⁿbⁿ no mundo regular]]: lá provamos que aⁿbⁿ **não é regular** (um autômato finito não conta `a`s arbitrários). Aqui afirmamos que aⁿbⁿ **é** livre de contexto. Não há contradição: cada degrau da hierarquia tem o seu limite, e aⁿbⁿ vive exatamente entre os dois — acima do regular, dentro do livre de contexto. O lema de cada nível desenha uma dessas fronteiras.
 
@@ -178,13 +170,9 @@ A intuição é reveladora e contrasta com um primo que **é** livre de contexto
 A prova formal vale a pena, porque a escolha de s é mais sutil que em aⁿbⁿcⁿ (a palavra ingênua aᵖaᵖ **falha** — é bombeável).
 
 > [!example] Prova de que {ww} não é livre de contexto
-> **Suponha** L = {ww} livre de contexto, com comprimento de bombeamento p. A escolha esperta é
-> > s = aᵖbᵖaᵖbᵖ
+> **Suponha** L = {ww} livre de contexto, com comprimento de bombeamento p. A escolha esperta é > s = aᵖbᵖaᵖbᵖ
 >
-> (Pense nela como w·w com w = aᵖbᵖ.) Está em L e tem |s| = 4p ≥ p. Pela condição (1), a janela `vwx` tem largura ≤ p, então ela **não consegue atravessar** uma região inteira de p símbolos — fica confinada a no máximo dois blocos adjacentes dos quatro (a¹b¹a²b², marcando os blocos). Bombeie i = 0 (apagar `v` e `x`):
-> > - Se `vwx` cai na **primeira metade** (dentro de a¹b¹ ou na fronteira deles), o apagamento encurta a primeira metade mas deixa a segunda intacta — as duas metades ficam com tamanhos diferentes, logo a palavra **não é** mais da forma ww.
-> > - Se cai na **segunda metade** (a²b²), simétrico: a segunda encurta, a primeira não.
-> > - Se cai **a cavalo na fronteira do meio** (entre b¹ e a²), o apagamento embaralha a divisão central; mesmo mantendo o comprimento par, o ponto onde a primeira metade deveria terminar deixa de casar com o início da segunda (sobra `b` de um lado, falta `a` do outro). A palavra deixa de ser uma cópia.
+> (Pense nela como w·w com w = aᵖbᵖ.) Está em L e tem |s| = 4p ≥ p. Pela condição (1), a janela `vwx` tem largura ≤ p, então ela **não consegue atravessar** uma região inteira de p símbolos — fica confinada a no máximo dois blocos adjacentes dos quatro (a¹b¹a²b², marcando os blocos). Bombeie i = 0 (apagar `v` e `x`): > - Se `vwx` cai na **primeira metade** (dentro de a¹b¹ ou na fronteira deles), o apagamento encurta a primeira metade mas deixa a segunda intacta — as duas metades ficam com tamanhos diferentes, logo a palavra **não é** mais da forma ww. > - Se cai na **segunda metade** (a²b²), simétrico: a segunda encurta, a primeira não. > - Se cai **a cavalo na fronteira do meio** (entre b¹ e a²), o apagamento embaralha a divisão central; mesmo mantendo o comprimento par, o ponto onde a primeira metade deveria terminar deixa de casar com o início da segunda (sobra `b` de um lado, falta `a` do outro). A palavra deixa de ser uma cópia.
 >
 > Em todos os casos, uv⁰wx⁰y ∉ L. Contradição. **∴ {ww} não é livre de contexto.** ∎
 
@@ -195,8 +183,7 @@ A intuição "pilha inverte, não copia" é o atalho mental; a prova com s = a�
 Há uma armadilha tentadora: se aⁿbⁿcⁿ não é livre de contexto porque uma pilha casa dois blocos e há três, então bastaria "uma pilha a mais" para resolver — e quatro blocos pediriam duas pilhas, e assim por diante? A resposta é não, e **L = {aⁿbⁿcⁿdⁿ : n ≥ 0}** mostra por quê: ela continua **não** sendo livre de contexto, pela mesma faca, e a prova é até mais limpa que a de três blocos.
 
 > [!example] Prova de que aⁿbⁿcⁿdⁿ não é livre de contexto
-> **Suponha** L livre de contexto, com comprimento de bombeamento p. Escolha
-> > s = aᵖbᵖcᵖdᵖ
+> **Suponha** L livre de contexto, com comprimento de bombeamento p. Escolha > s = aᵖbᵖcᵖdᵖ
 >
 > Está em L e tem |s| = 4p ≥ p. Pela condição (1), |vwx| ≤ p: a janela é curta demais para atravessar um bloco inteiro de p símbolos, então **vwx toca no máximo dois blocos adjacentes** dos quatro (a→b, b→c ou c→d — nunca a→c, porque entre eles há p `b`s inteiros). Em todos os casos, **pelo menos dois dos quatro tipos ficam de fora** de vx. Bombeie i = 2: a condição (2) garante que vx aumenta a contagem de um ou dois tipos, mas os outros — que vwx não alcançou — **permanecem em p**. Os quatro blocos deixam de ser iguais, logo uv²wx²y ∉ L. Contradição. **∴ {aⁿbⁿcⁿdⁿ} não é livre de contexto.** ∎
 
@@ -262,12 +249,9 @@ flowchart TD
 O contra-exemplo que prova a não-fechadura sob interseção é elegante e usa o que acabamos de provar:
 
 > [!example] aⁿbⁿcⁿ como interseção de duas LC
-> Considere duas linguagens, **ambas livres de contexto**:
-> > L₁ = { aⁿbⁿcᵐ : n, m ≥ 0 } — casa `a`s com `b`s, e `c`s livres (uma pilha basta).
-> > L₂ = { aᵐbⁿcⁿ : n, m ≥ 0 } — casa `b`s com `c`s, e `a`s livres (uma pilha basta).
+> Considere duas linguagens, **ambas livres de contexto**: > L₁ = { aⁿbⁿcᵐ : n, m ≥ 0 } — casa `a`s com `b`s, e `c`s livres (uma pilha basta). > L₂ = { aᵐbⁿcⁿ : n, m ≥ 0 } — casa `b`s com `c`s, e `a`s livres (uma pilha basta).
 >
-> Cada uma só pede **um** casamento de pares, então cabe numa pilha. Agora a interseção:
-> > L₁ ∩ L₂ = { aⁿbⁿcⁿ : n ≥ 0 }
+> Cada uma só pede **um** casamento de pares, então cabe numa pilha. Agora a interseção: > L₁ ∩ L₂ = { aⁿbⁿcⁿ : n ≥ 0 }
 >
 > Uma palavra está nas duas **se e somente se** `a = b` (por L₁) **e** `b = c` (por L₂), logo a = b = c. Mas acabamos de provar que aⁿbⁿcⁿ **não** é livre de contexto! Então a interseção de duas LC produziu uma **não-LC**. Logo as LC **não são fechadas sob interseção.** ∎
 

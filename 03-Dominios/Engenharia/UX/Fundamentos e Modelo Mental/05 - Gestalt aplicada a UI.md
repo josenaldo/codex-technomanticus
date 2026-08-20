@@ -101,19 +101,13 @@ Uma tela de confirmação de exclusão de conta mostra dois botões lado a lado,
 ## Armadilhas comuns
 
 > [!warning] Espaçar tudo igual "para ficar limpo"
-> **O que acontece:** um desenvolvedor aplica o mesmo `margin`/`gap` em todos os elementos de uma tela, tratando espaçamento uniforme como sinônimo de organização visual.
-> **Por quê:** espaçamento uniforme apaga qualquer sinal de agrupamento — o princípio de proximidade deixa de comunicar estrutura, porque não há diferença entre "espaço dentro do grupo" e "espaço entre grupos". O resultado parece organizado à primeira vista e é confuso na prática, como no formulário do cenário de abertura.
-> **Como evitar:** defina pelo menos dois níveis de espaçamento — um pequeno para dentro de um grupo, um maior entre grupos diferentes — e aplique com consistência, idealmente via tokens de espaçamento.
+> **O que acontece:** um desenvolvedor aplica o mesmo `margin`/`gap` em todos os elementos de uma tela, tratando espaçamento uniforme como sinônimo de organização visual. **Por quê:** espaçamento uniforme apaga qualquer sinal de agrupamento — o princípio de proximidade deixa de comunicar estrutura, porque não há diferença entre "espaço dentro do grupo" e "espaço entre grupos". O resultado parece organizado à primeira vista e é confuso na prática, como no formulário do cenário de abertura. **Como evitar:** defina pelo menos dois níveis de espaçamento — um pequeno para dentro de um grupo, um maior entre grupos diferentes — e aplique com consistência, idealmente via tokens de espaçamento.
 
 > [!warning] Reaproveitar cor/estilo visual para funções diferentes
-> **O que acontece:** um estilo de botão ou de badge, criado para uma função específica, é reutilizado noutro contexto do produto para uma função diferente, só porque "já existia e ficava bonito ali".
-> **Por quê:** pelo princípio de similaridade, o usuário associa o mesmo estilo visual à mesma função em qualquer lugar do produto. Reaproveitar sem essa correspondência quebra a confiança que o usuário deposita nos signifiers do produto inteiro.
-> **Como evitar:** trate cada estilo visual reutilizável como parte de um vocabulário — documente o que ele significa, não só como ele se parece — e reserve-o exclusivamente para essa função.
+> **O que acontece:** um estilo de botão ou de badge, criado para uma função específica, é reutilizado noutro contexto do produto para uma função diferente, só porque "já existia e ficava bonito ali". **Por quê:** pelo princípio de similaridade, o usuário associa o mesmo estilo visual à mesma função em qualquer lugar do produto. Reaproveitar sem essa correspondência quebra a confiança que o usuário deposita nos signifiers do produto inteiro. **Como evitar:** trate cada estilo visual reutilizável como parte de um vocabulário — documente o que ele significa, não só como ele se parece — e reserve-o exclusivamente para essa função.
 
 > [!warning] Confiar só em cor para comunicar hierarquia
-> **O que acontece:** o contraste figura-fundo de um elemento importante depende inteiramente de tonalidade de cor, sem diferença de tamanho, peso ou posição.
-> **Por quê:** cor sozinha é o canal mais frágil de contraste — falha para usuários com daltonismo, falha sob luz solar forte, falha em telas mal calibradas. O princípio de figura-fundo funciona melhor quando reforçado por múltiplos canais (tamanho, peso, espaço, não só matiz).
-> **Como evitar:** para qualquer elemento que precisa se destacar, combine cor com pelo menos mais um sinal (tamanho, negrito, ícone, posição) — nunca dependa de cor isolada. Ver também a fronteira de contraste WCAG em [[03-Dominios/Tecnologia/Acessibilidade/index|Acessibilidade]].
+> **O que acontece:** o contraste figura-fundo de um elemento importante depende inteiramente de tonalidade de cor, sem diferença de tamanho, peso ou posição. **Por quê:** cor sozinha é o canal mais frágil de contraste — falha para usuários com daltonismo, falha sob luz solar forte, falha em telas mal calibradas. O princípio de figura-fundo funciona melhor quando reforçado por múltiplos canais (tamanho, peso, espaço, não só matiz). **Como evitar:** para qualquer elemento que precisa se destacar, combine cor com pelo menos mais um sinal (tamanho, negrito, ícone, posição) — nunca dependa de cor isolada. Ver também a fronteira de contraste WCAG em [[03-Dominios/Tecnologia/Acessibilidade/index|Acessibilidade]].
 
 ## Como explicar em inglês
 

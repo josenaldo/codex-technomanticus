@@ -64,8 +64,7 @@ flowchart LR
 > [!tip] Assista: 6 Pillars of the AWS Well Architected Framework (you should really know this)
 > **Canal:** Be A Better Dev | **Duração:** ~19min | **Idioma:** EN
 >
-> Percorre os seis pilares um a um, com comentário de experiência real — inclusive Excelência Operacional, o pilar "diluído" que esta nota menciona mas não detalha, porque ele não vira domínio próprio no exame.
-> Trecho de destaque [00:42]: *"we're going to talk about the first pillar which is in terms of operational excellence and operational excellence is the idea of running, monitoring and continuously improving your application"*
+> Percorre os seis pilares um a um, com comentário de experiência real — inclusive Excelência Operacional, o pilar "diluído" que esta nota menciona mas não detalha, porque ele não vira domínio próprio no exame. Trecho de destaque [00:42]: *"we're going to talk about the first pillar which is in terms of operational excellence and operational excellence is the idea of running, monitoring and continuously improving your application"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=5odtVlORq_w)
 
@@ -87,8 +86,7 @@ Vinte questões de segurança numa prova de 65 é quase um terço do exame intei
 > [!tip] Assista: SAA-C03 AWS Certified Solutions Architect Associate Exam Overview and Exam Domains
 > **Canal:** Tutorials Dojo | **Duração:** ~8min | **Idioma:** EN
 >
-> Percorre os quatro domínios oficiais na mesma ordem e com os mesmos pesos desta nota (30/26/24/20%), citando os task statements de cada um direto do Exam Guide — bom cross-check pra quem quer ouvir a fonte em vez de só ler a tabela.
-> Trecho de destaque [04:43]: *"the first domain covers the big chunk of the exam at 30 percent followed by the second domain which covers 26, the third is 24 while the last one covers 20 of the exam"*
+> Percorre os quatro domínios oficiais na mesma ordem e com os mesmos pesos desta nota (30/26/24/20%), citando os task statements de cada um direto do Exam Guide — bom cross-check pra quem quer ouvir a fonte em vez de só ler a tabela. Trecho de destaque [04:43]: *"the first domain covers the big chunk of the exam at 30 percent followed by the second domain which covers 26, the third is 24 while the last one covers 20 of the exam"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=6kJ0JhnptlQ)
 

@@ -366,24 +366,7 @@ O assunto de paralelismo de dados aparece em entrevistas de sistemas, performanc
 
 Ângulos frequentes: "explique por que NumPy é mais rápido que um loop Python", "por que treino de ML usa GPU e não CPU com muitos cores", "o que é warp divergence e quando ela prejudica performance", "como você ajudaria o compilador a vetorizar um loop".
 
-*SIMD — Single Instruction, Multiple Data.*
-*Flynn's taxonomy — classifies architectures by instruction and data stream count.*
-*SIMT — Single Instruction, Multiple Threads; NVIDIA's GPU execution model.*
-*Warp — group of 32 threads executing in lockstep on a GPU.*
-*Warp divergence — serialization caused by branching within a warp.*
-*Wavefront — AMD's equivalent of a warp (32 or 64 threads).*
-*AVX-512 — Intel SIMD extension with 512-bit registers, fitting 16 floats.*
-*Auto-vectorization — compiler transformation of scalar loops into SIMD code.*
-*Throughput vs. latency — the fundamental CPU/GPU design tradeoff.*
-*GEMM — General Matrix Multiply; the core operation in deep learning.*
-*cuBLAS — NVIDIA's BLAS implementation for GPU.*
-*HBM — High Bandwidth Memory; GPU memory with TB/s bandwidth.*
-*TPU — Tensor Processing Unit; Google's GEMM-specialized accelerator.*
-*NPU — Neural Processing Unit; dedicated AI accelerator in mobile chips.*
-*Restrict — C keyword promising no pointer aliasing, enabling vectorization.*
-*BLAS — Basic Linear Algebra Subprograms; vectorized linear algebra library.*
-*SVE — ARM Scalable Vector Extension; variable-width SIMD.*
-*NEON — ARM's fixed 128-bit SIMD extension.*
+*SIMD — Single Instruction, Multiple Data.* *Flynn's taxonomy — classifies architectures by instruction and data stream count.* *SIMT — Single Instruction, Multiple Threads; NVIDIA's GPU execution model.* *Warp — group of 32 threads executing in lockstep on a GPU.* *Warp divergence — serialization caused by branching within a warp.* *Wavefront — AMD's equivalent of a warp (32 or 64 threads).* *AVX-512 — Intel SIMD extension with 512-bit registers, fitting 16 floats.* *Auto-vectorization — compiler transformation of scalar loops into SIMD code.* *Throughput vs. latency — the fundamental CPU/GPU design tradeoff.* *GEMM — General Matrix Multiply; the core operation in deep learning.* *cuBLAS — NVIDIA's BLAS implementation for GPU.* *HBM — High Bandwidth Memory; GPU memory with TB/s bandwidth.* *TPU — Tensor Processing Unit; Google's GEMM-specialized accelerator.* *NPU — Neural Processing Unit; dedicated AI accelerator in mobile chips.* *Restrict — C keyword promising no pointer aliasing, enabling vectorization.* *BLAS — Basic Linear Algebra Subprograms; vectorized linear algebra library.* *SVE — ARM Scalable Vector Extension; variable-width SIMD.* *NEON — ARM's fixed 128-bit SIMD extension.*
 
 | Português | English |
 |---|---|

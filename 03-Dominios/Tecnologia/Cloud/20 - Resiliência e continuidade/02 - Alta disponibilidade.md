@@ -116,8 +116,7 @@ Três camadas, três granularidades: o **health check do load balancer** (já de
 > [!tip] Assista: AWS re:Invent 2025 - Global Resilient Apps: Guide to Multi-AZ/Region Architecture with ELB (NET311)
 > **Canal:** AWS Events | **Duração:** ~55min | **Idioma:** EN
 >
-> Talk oficial de re:Invent que detalha, na prática, como o Elastic Load Balancing decide quando tirar uma AZ de circulação — o mesmo mecanismo de "failover automático dentro da região" que esta nota descreve, só que com os bastidores do ELB abertos.
-> Trecho de destaque [4:46]: *"multi-AZ resiliency then and we are going to be focused on ELB here"*
+> Talk oficial de re:Invent que detalha, na prática, como o Elastic Load Balancing decide quando tirar uma AZ de circulação — o mesmo mecanismo de "failover automático dentro da região" que esta nota descreve, só que com os bastidores do ELB abertos. Trecho de destaque [4:46]: *"multi-AZ resiliency then and we are going to be focused on ELB here"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=_WFrt9ABrMM)
 

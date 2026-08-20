@@ -342,8 +342,7 @@ Note que `git push * main` está no deny mas `git push` (sem filtro de branch) n
 
 A teoria de allow/deny só cola quando você vê o efeito colateral de uma configuração ruim. Dois cenários que aparecem o tempo todo em times reais:
 
-**Cenário 1 — CI pipeline preso porque o allow list "esqueceu" o básico.**
-Um time configura `.claude/settings.json` só com os comandos "importantes" (`npm test`, `npm run build`) e assume que o resto — `git status`, `ls`, `cat` — vai funcionar por padrão. Não funciona: sem allow, cada leitura trivial vira um prompt de confirmação. Numa pipeline não-interativa (Claude Code rodando headless num agente de CI), isso não é só irritante — é uma trava. O processo fica esperando confirmação que nunca chega.
+**Cenário 1 — CI pipeline preso porque o allow list "esqueceu" o básico.** Um time configura `.claude/settings.json` só com os comandos "importantes" (`npm test`, `npm run build`) e assume que o resto — `git status`, `ls`, `cat` — vai funcionar por padrão. Não funciona: sem allow, cada leitura trivial vira um prompt de confirmação. Numa pipeline não-interativa (Claude Code rodando headless num agente de CI), isso não é só irritante — é uma trava. O processo fica esperando confirmação que nunca chega.
 
 ```json
 {
@@ -358,8 +357,7 @@ Um time configura `.claude/settings.json` só com os comandos "importantes" (`np
 
 A correção é sempre a mesma: liberar explicitamente o básico de leitura e diagnóstico (`Read(*)`, `Bash(git status)`, `Bash(git log *)`, `Bash(git diff *)`, `Bash(ls *)`) além dos comandos "importantes". Veja o [[#Exemplo completo anotado — projeto fullstack|exemplo fullstack]] acima — a seção de utilitários de leitura existe exatamente para evitar essa trava.
 
-**Cenário 2 — onboarding de repo legado com deny amplo demais.**
-Ao herdar um projeto legado, é tentador "travar tudo que pode dar problema" com um deny genérico:
+**Cenário 2 — onboarding de repo legado com deny amplo demais.** Ao herdar um projeto legado, é tentador "travar tudo que pode dar problema" com um deny genérico:
 
 ```json
 {
@@ -427,8 +425,7 @@ Lembre: settings.json usa **sobrescrita** (não concatenação). A camada mais e
 > [!tip] Assista: Permissions, settings.json, and plan mode: making one Claude Code session safe
 > **Canal:** Tyler Renelle | **Duração:** ~26min | **Idioma:** EN
 >
-> Cobre o mesmo terreno desta nota com um ângulo prático de quem já foi mordido pela armadilha do allow list amplo demais — inclusive o mesmo conselho desta nota (deny cirúrgico + allow nomeado, nunca `Bash(*)` pra silenciar prompts).
-> Trecho de destaque [23:21]: *"The overly broad allow rule. It is so tempting around your second week to just write an allow rule of bash open paren star or bare bash and make all the prompts go away. Don't. [...] Allow the specific commands you run all day, your linter, your tests, your build, by name. Deny the sharp things explicitly, and let everything else prompt."*
+> Cobre o mesmo terreno desta nota com um ângulo prático de quem já foi mordido pela armadilha do allow list amplo demais — inclusive o mesmo conselho desta nota (deny cirúrgico + allow nomeado, nunca `Bash(*)` pra silenciar prompts). Trecho de destaque [23:21]: *"The overly broad allow rule. It is so tempting around your second week to just write an allow rule of bash open paren star or bare bash and make all the prompts go away. Don't. [...] Allow the specific commands you run all day, your linter, your tests, your build, by name. Deny the sharp things explicitly, and let everything else prompt."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=CT9xynq7WZM)
 

@@ -473,9 +473,7 @@ Aqui o backpressure é gerenciado manualmente porque não há cadeia linear — 
 ## Armadilhas comuns
 
 > [!warning] 1. Esquecer `_flush` em parsers — último chunk perdido
-> **O que acontece:** um `Transform` com buffer interno descarta o conteúdo residual ao encerrar — arquivo com 1000 linhas, parser emite 999.
-> **Por quê:** sem `_flush`, o que restou em `this.#buffer` é simplesmente descartado quando o stream fecha.
-> **Como evitar:** todo `Transform` que acumula estado entre chunks precisa de `_flush`.
+> **O que acontece:** um `Transform` com buffer interno descarta o conteúdo residual ao encerrar — arquivo com 1000 linhas, parser emite 999. **Por quê:** sem `_flush`, o que restou em `this.#buffer` é simplesmente descartado quando o stream fecha. **Como evitar:** todo `Transform` que acumula estado entre chunks precisa de `_flush`.
 
 ```javascript
 // ERRADO: sem _flush, a última linha pode nunca ser emitida
@@ -496,9 +494,7 @@ class LineParser extends Transform {
 O bug só aparece se a última linha não terminar com `\n` — comum em arquivos gerados por ferramentas que não adicionam newline final.
 
 > [!warning] 2. `callback(error)` esquecido — erros silenciosos
-> **O que acontece:** exceção é capturada mas `cb()` é chamado normalmente — o stream continua processando como se nada tivesse acontecido.
-> **Por quê:** `cb()` sem argumento sinaliza sucesso ao runtime; o erro é engolido silenciosamente.
-> **Como evitar:** sempre `cb(err)` no catch, nunca `cb()` após capturar um erro.
+> **O que acontece:** exceção é capturada mas `cb()` é chamado normalmente — o stream continua processando como se nada tivesse acontecido. **Por quê:** `cb()` sem argumento sinaliza sucesso ao runtime; o erro é engolido silenciosamente. **Como evitar:** sempre `cb(err)` no catch, nunca `cb()` após capturar um erro.
 
 ```javascript
 // ERRADO: erro capturado mas não propagado
@@ -515,9 +511,7 @@ _transform(chunk, enc, cb) {
 ```
 
 > [!warning] 3. Chamar `cb()` antes de `this.push()` — race condition em alta velocidade
-> **O que acontece:** em streams de alta velocidade, o runtime pode solicitar o próximo chunk antes do atual ter sido completamente enviado, gerando resultados fora de ordem.
-> **Por quê:** `cb()` sinaliza "pronto para o próximo chunk"; se chamado antes de `push()`, o próximo chunk pode chegar enquanto o `push()` do atual ainda não ocorreu.
-> **Como evitar:** sempre chame `this.push()` antes de `cb()`.
+> **O que acontece:** em streams de alta velocidade, o runtime pode solicitar o próximo chunk antes do atual ter sido completamente enviado, gerando resultados fora de ordem. **Por quê:** `cb()` sinaliza "pronto para o próximo chunk"; se chamado antes de `push()`, o próximo chunk pode chegar enquanto o `push()` do atual ainda não ocorreu. **Como evitar:** sempre chame `this.push()` antes de `cb()`.
 
 ```javascript
 // PROBLEMÁTICO: cb() sinaliza que o próximo chunk pode vir
@@ -535,9 +529,7 @@ _transform(chunk, enc, cb) {
 ```
 
 > [!warning] 4. Usar `Duplex` quando a saída deriva da entrada — reimplementar Transform à mão
-> **O que acontece:** lógica de transformação implementada em `Duplex._write` — frágil, sem backpressure correto e difícil de testar.
-> **Por quê:** `Duplex` não conecta os dois lados automaticamente; você reinventa o que `Transform` já faz internamente, e geralmente de forma errada.
-> **Como evitar:** se a saída é derivada da entrada por transformação, use `Transform` — não `Duplex`.
+> **O que acontece:** lógica de transformação implementada em `Duplex._write` — frágil, sem backpressure correto e difícil de testar. **Por quê:** `Duplex` não conecta os dois lados automaticamente; você reinventa o que `Transform` já faz internamente, e geralmente de forma errada. **Como evitar:** se a saída é derivada da entrada por transformação, use `Transform` — não `Duplex`.
 
 ```javascript
 // ERRADO: implementando lógica de Transform em um Duplex puro
@@ -564,9 +556,7 @@ class MeuProcessador extends Transform {
 `Transform` já implementa `_write` internamente de forma que chama `_transform` no momento certo. Reimplementar essa lógica em `Duplex` é reinventar a roda — e geralmente errado.
 
 > [!warning] 5. `highWaterMark` em object mode — a unidade muda
-> **O que acontece:** `highWaterMark: 1` em object mode processa um objeto por vez — throughput mínimo em operações rápidas.
-> **Por quê:** em object mode, `highWaterMark` é em número de objetos (padrão: 16), não em bytes. Valor muito baixo cria overhead excessivo de ciclos de backpressure.
-> **Como evitar:** ajuste `highWaterMark` para o volume de objetos adequado à operação; meça antes de tunar.
+> **O que acontece:** `highWaterMark: 1` em object mode processa um objeto por vez — throughput mínimo em operações rápidas. **Por quê:** em object mode, `highWaterMark` é em número de objetos (padrão: 16), não em bytes. Valor muito baixo cria overhead excessivo de ciclos de backpressure. **Como evitar:** ajuste `highWaterMark` para o volume de objetos adequado à operação; meça antes de tunar.
 
 Em byte mode, `highWaterMark` é em bytes (padrão: 16 KB). Em object mode, é em número de objetos (padrão: 16). Um `Transform` em object mode com `highWaterMark: 1` processa um objeto por vez — útil para operações lentas (ex.: I/O assíncrono por registro), mas pode ser gargalo em operações rápidas.
 

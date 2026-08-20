@@ -414,14 +414,10 @@ const decompressedStream = compressedStream
 ## Armadilhas comuns
 
 > [!warning] Web Streams não substitui Node Streams completamente
-> **O que acontece:** código que assume compatibilidade direta entre os dois mundos falha com `TypeError` ao tentar usar métodos Node em objetos Web Streams.
-> **Por quê:** o ecossistema Node — `fs`, `net`, `http`, `zlib`, `crypto` e centenas de pacotes npm — usa a API nativa de Node Streams. Web Streams é o padrão WHATWG, e em 2026 as duas APIs coexistem sem substituição.
-> **Como evitar:** use `Readable.fromWeb()` / `Readable.toWeb()` (e equivalentes para `Writable`/`Duplex`) para cruzar a fronteira quando necessário. A habilidade de interoperar é a competência central — não escolher um "vencedor".
+> **O que acontece:** código que assume compatibilidade direta entre os dois mundos falha com `TypeError` ao tentar usar métodos Node em objetos Web Streams. **Por quê:** o ecossistema Node — `fs`, `net`, `http`, `zlib`, `crypto` e centenas de pacotes npm — usa a API nativa de Node Streams. Web Streams é o padrão WHATWG, e em 2026 as duas APIs coexistem sem substituição. **Como evitar:** use `Readable.fromWeb()` / `Readable.toWeb()` (e equivalentes para `Writable`/`Duplex`) para cruzar a fronteira quando necessário. A habilidade de interoperar é a competência central — não escolher um "vencedor".
 
 > [!warning] Chamar `.pipe()` em `response.body` de `fetch()`
-> **O que acontece:** `response.body.pipe(fs.createWriteStream(dest))` lança `TypeError: response.body.pipe is not a function`.
-> **Por quê:** `response.body` é um `ReadableStream` da Web Streams API, que não tem o método `.pipe()` do Node.
-> **Como evitar:**
+> **O que acontece:** `response.body.pipe(fs.createWriteStream(dest))` lança `TypeError: response.body.pipe is not a function`. **Por quê:** `response.body` é um `ReadableStream` da Web Streams API, que não tem o método `.pipe()` do Node. **Como evitar:**
 > ```javascript
 > // ERRADO — response.body é ReadableStream (Web), não Node Readable
 > response.body.pipe(fs.createWriteStream(dest)); // TypeError!
@@ -432,14 +428,10 @@ const decompressedStream = compressedStream
 > ```
 
 > [!warning] `tee()` com consumers em velocidades assimétricas
-> **O que acontece:** o consumer mais rápido fica bloqueado esperando o mais lento; em streams grandes, os chunks acumulam em buffer e a memória cresce sem limite visível.
-> **Por quê:** `tee()` sincroniza os dois branches pelo mais lento — o buffer interno cresce proporcionalmente à diferença de velocidade entre os consumers.
-> **Como evitar:** garantir que ambos os consumers processem em velocidades compatíveis, ou substituir `tee()` por um `TransformStream` de multicast com controle explícito de backpressure.
+> **O que acontece:** o consumer mais rápido fica bloqueado esperando o mais lento; em streams grandes, os chunks acumulam em buffer e a memória cresce sem limite visível. **Por quê:** `tee()` sincroniza os dois branches pelo mais lento — o buffer interno cresce proporcionalmente à diferença de velocidade entre os consumers. **Como evitar:** garantir que ambos os consumers processem em velocidades compatíveis, ou substituir `tee()` por um `TransformStream` de multicast com controle explícito de backpressure.
 
 > [!warning] Stream bloqueado (`locked`) após `getReader()`
-> **O que acontece:** `stream.pipeThrough(transform)` lança `TypeError: This readable stream is currently locked to a reader`.
-> **Por quê:** uma vez que `getReader()` é chamado, o stream entra em estado `locked` e não pode ser consumido por outro mecanismo simultaneamente.
-> **Como evitar:**
+> **O que acontece:** `stream.pipeThrough(transform)` lança `TypeError: This readable stream is currently locked to a reader`. **Por quê:** uma vez que `getReader()` é chamado, o stream entra em estado `locked` e não pode ser consumido por outro mecanismo simultaneamente. **Como evitar:**
 > ```javascript
 > // Liberar o lock antes de reutilizar o stream
 > reader.releaseLock();
@@ -447,9 +439,7 @@ const decompressedStream = compressedStream
 > ```
 
 > [!warning] Chunks são `Uint8Array`, não `Buffer`
-> **O que acontece:** `chunk.toString('utf8')` lança `TypeError` — `Uint8Array` não tem o método `toString` com argumento de encoding que `Buffer` do Node oferece.
-> **Por quê:** Web Streams de byte streams emitem `Uint8Array` (padrão Web), não `Buffer` (específico do Node).
-> **Como evitar:**
+> **O que acontece:** `chunk.toString('utf8')` lança `TypeError` — `Uint8Array` não tem o método `toString` com argumento de encoding que `Buffer` do Node oferece. **Por quê:** Web Streams de byte streams emitem `Uint8Array` (padrão Web), não `Buffer` (específico do Node). **Como evitar:**
 > ```javascript
 > for await (const chunk of response.body) {
 >   // chunk é Uint8Array — converter para Buffer antes de usar métodos Node
@@ -552,17 +542,13 @@ fastify.get('/export/events', async (request, reply) => {
 
 ### Perguntas frequentes
 
-**"Qual a diferença entre `pipeTo` e `pipeThrough`?"**
-`pipeTo` conecta um `ReadableStream` a um `WritableStream` — é terminal, não retorna stream. `pipeThrough` passa por um `TransformStream` e retorna o `ReadableStream` de saída — permite encadeamento.
+**"Qual a diferença entre `pipeTo` e `pipeThrough`?"** `pipeTo` conecta um `ReadableStream` a um `WritableStream` — é terminal, não retorna stream. `pipeThrough` passa por um `TransformStream` e retorna o `ReadableStream` de saída — permite encadeamento.
 
-**"Como você consumiria o body de um `fetch()` e salvaria em disco?"**
-`Readable.fromWeb(response.body)` converte o Web Stream para Node Readable, depois `pipeline()` com `fs.createWriteStream()`.
+**"Como você consumiria o body de um `fetch()` e salvaria em disco?"** `Readable.fromWeb(response.body)` converte o Web Stream para Node Readable, depois `pipeline()` com `fs.createWriteStream()`.
 
-**"O que é `tee()`?"**
-Bifurca um `ReadableStream` em dois streams independentes que recebem os mesmos chunks. Útil para processar e logar simultaneamente, mas exige atenção a backpressure assimétrico.
+**"O que é `tee()`?"** Bifurca um `ReadableStream` em dois streams independentes que recebem os mesmos chunks. Útil para processar e logar simultaneamente, mas exige atenção a backpressure assimétrico.
 
-**"Quando você usaria `TransformStream` vs `Transform` do Node?"**
-`TransformStream` (Web) quando o módulo precisa ser isomórfico ou quando já está numa cadeia de Web Streams. `Transform` (Node) quando integrado ao ecossistema Node ou quando se precisa de funcionalidades avançadas como `_flush` com semântica Node.
+**"Quando você usaria `TransformStream` vs `Transform` do Node?"** `TransformStream` (Web) quando o módulo precisa ser isomórfico ou quando já está numa cadeia de Web Streams. `Transform` (Node) quando integrado ao ecossistema Node ou quando se precisa de funcionalidades avançadas como `_flush` com semântica Node.
 
 ### Vocabulário técnico
 

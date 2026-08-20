@@ -83,14 +83,10 @@ O erro clássico é olhar só o número grande e colorido no topo. O valor real 
 2. **A trilha de causa** — cada oportunidade aponta o recurso específico (aquele `.js` de 400 KB, aquela imagem de 2 MB). Isso conecta a métrica ruim à causa concreta que você vai atacar nos Galhos 2 e 3.
 
 > [!warning] Perseguir o 100 no Lighthouse
-> **O que acontece:** o time investe semanas para tirar o score de 92 para 100 e comemora — mas o ranking e a conversão não mudam.
-> **Por quê:** o score é **lab** (uma simulação) e comprime cinco métricas num número. Os últimos pontos costumam vir de micro-otimizações que **não afetam o p75 real** dos usuários. O Google ranqueia pelo **campo (CrUX)**, não pelo score.
-> **Como evitar:** trate o score como um **termômetro de tendência**, não como meta. A meta é o campo verde no topo do PSI. Use os *diagnósticos* do Lighthouse para chegar lá; ignore a corrida pelos últimos pontos do score.
+> **O que acontece:** o time investe semanas para tirar o score de 92 para 100 e comemora — mas o ranking e a conversão não mudam. **Por quê:** o score é **lab** (uma simulação) e comprime cinco métricas num número. Os últimos pontos costumam vir de micro-otimizações que **não afetam o p75 real** dos usuários. O Google ranqueia pelo **campo (CrUX)**, não pelo score. **Como evitar:** trate o score como um **termômetro de tendência**, não como meta. A meta é o campo verde no topo do PSI. Use os *diagnósticos* do Lighthouse para chegar lá; ignore a corrida pelos últimos pontos do score.
 
 > [!warning] Rodar uma vez e confiar no número
-> **O que acontece:** você roda o Lighthouse, dá 78, roda de novo, dá 91 — e não sabe em qual acreditar.
-> **Por quê:** o lab é sensível a ruído da sua máquina (outras abas, CPU ocupada, rede momentânea). Uma única execução é uma amostra barulhenta.
-> **Como evitar:** rode **3–5 vezes** e olhe a **mediana**, ou use o PSI (que roda num ambiente mais estável que seu laptop). Para comparações antes/depois, mantenha as condições idênticas.
+> **O que acontece:** você roda o Lighthouse, dá 78, roda de novo, dá 91 — e não sabe em qual acreditar. **Por quê:** o lab é sensível a ruído da sua máquina (outras abas, CPU ocupada, rede momentânea). Uma única execução é uma amostra barulhenta. **Como evitar:** rode **3–5 vezes** e olhe a **mediana**, ou use o PSI (que roda num ambiente mais estável que seu laptop). Para comparações antes/depois, mantenha as condições idênticas.
 
 **Lighthouse e PSI em uma frase:** o Lighthouse é sua bancada de depuração lab (score de 0–100 dominado por TBT, LCP e CLS, com o TBT servindo de proxy pro INP), e o PageSpeed Insights o embrulha com os dados de campo do CrUX — mas quem manda no ranking é o campo, não o score.
 

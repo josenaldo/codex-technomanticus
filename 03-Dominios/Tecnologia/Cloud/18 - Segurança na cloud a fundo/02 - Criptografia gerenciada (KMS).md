@@ -86,8 +86,7 @@ flowchart LR
 > [!tip] Assista: AWS KMS Tutorial | AWS-managed and customer-managed keys | Encrypt & Decrypt | Key Policy Basics
 > **Canal:** KnoDAX | **Duração:** ~12min | **Idioma:** EN
 >
-> O vídeo mostra na prática, com CLI, a diferença entre chave AWS-managed e customer-managed, e chega exatamente na key policy — a "segunda porta" que esta nota descreve, mostrando a estrutura real do JSON sendo lida no console.
-> Trecho de destaque [08:17]: *"take a look at this KMS key policy"*
+> O vídeo mostra na prática, com CLI, a diferença entre chave AWS-managed e customer-managed, e chega exatamente na key policy — a "segunda porta" que esta nota descreve, mostrando a estrutura real do JSON sendo lida no console. Trecho de destaque [08:17]: *"take a look at this KMS key policy"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=-UPPfUqyGBs)
 

@@ -86,19 +86,13 @@ Um produto B2B, construído ao longo de um ano por três desenvolvedores diferen
 ## Armadilhas comuns
 
 > [!warning] Jargão interno vazando para a UI
-> **O que acontece:** nome de tabela, valor de enum ou código de erro de backend aparece diretamente na tela do usuário final, como no Cenário 2.
-> **Por quê:** é o vocabulário que já está na cabeça de quem construiu a feature — nenhuma tradução extra é necessária para o código funcionar, então a tradução para o usuário simplesmente não acontece, a menos que alguém pare para adicioná-la deliberadamente.
-> **Como evitar:** trate toda saída de um enum, código de erro ou valor técnico como um ponto de tradução obrigatório antes de chegar à tela — uma tabela pequena `valor interno → texto do usuário`, mantida perto do código, resolve estruturalmente.
+> **O que acontece:** nome de tabela, valor de enum ou código de erro de backend aparece diretamente na tela do usuário final, como no Cenário 2. **Por quê:** é o vocabulário que já está na cabeça de quem construiu a feature — nenhuma tradução extra é necessária para o código funcionar, então a tradução para o usuário simplesmente não acontece, a menos que alguém pare para adicioná-la deliberadamente. **Como evitar:** trate toda saída de um enum, código de erro ou valor técnico como um ponto de tradução obrigatório antes de chegar à tela — uma tabela pequena `valor interno → texto do usuário`, mantida perto do código, resolve estruturalmente.
 
 > [!warning] Label de botão que exige releitura do contexto
-> **O que acontece:** botões genéricos como "OK", "Confirmar" ou "Enviar" em ações com consequência real, forçando o usuário a voltar ao texto acima para lembrar o que está confirmando (Cenário 1).
-> **Por quê:** "OK" é o texto padrão que qualquer biblioteca de componentes de UI sugere primeiro — é o caminho de menor esforço ao implementar o modal, e funciona sem erro nenhum de código, então nunca é sinalizado como problema em revisão técnica.
-> **Como evitar:** para toda ação com consequência (exclusão, cancelamento, envio irreversível), aplique o padrão verbo + objeto específico — "Excluir conta", não "OK".
+> **O que acontece:** botões genéricos como "OK", "Confirmar" ou "Enviar" em ações com consequência real, forçando o usuário a voltar ao texto acima para lembrar o que está confirmando (Cenário 1). **Por quê:** "OK" é o texto padrão que qualquer biblioteca de componentes de UI sugere primeiro — é o caminho de menor esforço ao implementar o modal, e funciona sem erro nenhum de código, então nunca é sinalizado como problema em revisão técnica. **Como evitar:** para toda ação com consequência (exclusão, cancelamento, envio irreversível), aplique o padrão verbo + objeto específico — "Excluir conta", não "OK".
 
 > [!warning] Sinônimos livres para o mesmo conceito
-> **O que acontece:** o mesmo conceito de produto aparece com nomes diferentes em telas, e-mails e documentação diferentes, como no Cenário 3.
-> **Por quê:** sem um glossário centralizado, cada pessoa que escreve uma string nova usa a palavra que soa natural para ela naquele momento — nenhuma delas está "errada" isoladamente, mas a soma cria inconsistência que o usuário sente como confusão.
-> **Como evitar:** um glossário de termos do produto de uma página, consultado antes de nomear qualquer conceito novo na UI, elimina a maior parte dessa deriva com esforço mínimo.
+> **O que acontece:** o mesmo conceito de produto aparece com nomes diferentes em telas, e-mails e documentação diferentes, como no Cenário 3. **Por quê:** sem um glossário centralizado, cada pessoa que escreve uma string nova usa a palavra que soa natural para ela naquele momento — nenhuma delas está "errada" isoladamente, mas a soma cria inconsistência que o usuário sente como confusão. **Como evitar:** um glossário de termos do produto de uma página, consultado antes de nomear qualquer conceito novo na UI, elimina a maior parte dessa deriva com esforço mínimo.
 
 ## Como explicar em inglês
 

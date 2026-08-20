@@ -29,8 +29,7 @@ Pense num restaurante que só abre a cozinha quando o primeiro pedido do dia che
 > [!tip] Assista: A serverless journey: AWS Lambda under the hood (re:Invent 2019, SVS405-R1)
 > **Canal:** AWS Events | **Duração:** ~51min | **Idioma:** EN
 >
-> Vai um nível abaixo do que esta nota cobre: mostra a arquitetura interna por trás do cold start — o *front-end* que autentica e checa a concorrência, o *worker manager* que rastreia sandboxes quentes, e o *placement service* acionado só quando não existe um ambiente pronto pra reaproveitar.
-> Trecho de destaque [05:48]: *"the front-end routes to the worker manager and the worker manager's responsibility is to track warm sandboxes that are ready for invocation... since this is a first time invoke... there is not a sandbox that's there and readily available"*
+> Vai um nível abaixo do que esta nota cobre: mostra a arquitetura interna por trás do cold start — o *front-end* que autentica e checa a concorrência, o *worker manager* que rastreia sandboxes quentes, e o *placement service* acionado só quando não existe um ambiente pronto pra reaproveitar. Trecho de destaque [05:48]: *"the front-end routes to the worker manager and the worker manager's responsibility is to track warm sandboxes that are ready for invocation... since this is a first time invoke... there is not a sandbox that's there and readily available"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=xmacMfbrG28)
 

@@ -21,17 +21,10 @@ aliases:
 # Organização de Computadores
 
 > [!abstract] TL;DR
-> Se [[03-Dominios/Ciência/Sistemas Operacionais/index|Sistemas Operacionais]] é o *software* que gerencia
-> a máquina, Organização de Computadores é a **máquina** — como bits viram números (complemento de dois, IEEE 754),
-> como portas lógicas viram um processador (von Neumann, fetch-decode-execute, pipeline), e por que o hardware tem
-> uma "personalidade" (cache, especulação, coerência) que o seu código precisa respeitar. É **mechanical sympathy**
-> virado fundamento: por que `int` estoura, por que `0.1 + 0.2 ≠ 0.3`, por que percorrer matriz por linha bate por
-> coluna, por que array bate lista encadeada na vida real.
+> Se [[03-Dominios/Ciência/Sistemas Operacionais/index|Sistemas Operacionais]] é o *software* que gerencia a máquina, Organização de Computadores é a **máquina** — como bits viram números (complemento de dois, IEEE 754), como portas lógicas viram um processador (von Neumann, fetch-decode-execute, pipeline), e por que o hardware tem uma "personalidade" (cache, especulação, coerência) que o seu código precisa respeitar. É **mechanical sympathy** virado fundamento: por que `int` estoura, por que `0.1 + 0.2 ≠ 0.3`, por que percorrer matriz por linha bate por coluna, por que array bate lista encadeada na vida real.
 
 ## Sobre este galho
-Este é o **andar de baixo** da Ciência da Computação: o degrau abaixo do Sistema Operacional. Ele explica a máquina física
-sobre a qual todo o resto roda — e, principalmente, *por que a abstração vaza*: o desempenho do seu código depende
-de detalhes de hardware (cache, pipeline, ramos) que nenhuma linguagem esconde por completo.
+Este é o **andar de baixo** da Ciência da Computação: o degrau abaixo do Sistema Operacional. Ele explica a máquina física sobre a qual todo o resto roda — e, principalmente, *por que a abstração vaza*: o desempenho do seu código depende de detalhes de hardware (cache, pipeline, ramos) que nenhuma linguagem esconde por completo.
 
 **Fronteiras (linka, não duplica):**
 - **Memória virtual, paginação e escalonamento** → [[03-Dominios/Ciência/Sistemas Operacionais/index|Sistemas Operacionais]] (o *software* que gerencia o hardware). Aqui é o **hardware**: cache, hierarquia física, fetch-decode-execute.
@@ -40,9 +33,7 @@ de detalhes de hardware (cache, pipeline, ramos) que nenhuma linguagem esconde p
 - **A máquina universal** → [[03-Dominios/Ciência/Teoria da Computação/10 - Decidível, reconhecível e a máquina universal|Teoria da Computação]]. A arquitetura de von Neumann é a **realização física** dela.
 - **Criptografia/side-channels (Spectre como ataque)** → futuro galho de Segurança Conceitual. Aqui é o **mecanismo** (especulação, branch prediction). **Codegen/tradução** → futuro galho de Compiladores. Aqui é a **ISA** como alvo.
 
-**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista" com
-frases prontas em inglês e vocabulário técnico PT→EN. (Representação, cache e concorrência-de-hardware caem com
-alguma frequência; o resto é cultura que afia o raciocínio de performance.)
+**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista" com frases prontas em inglês e vocabulário técnico PT→EN. (Representação, cache e concorrência-de-hardware caem com alguma frequência; o resto é cultura que afia o raciocínio de performance.)
 
 ## Iniciado — representar e construir (os tijolos)
 1. [[01 - O que é organização de computadores]] — organização × arquitetura; os níveis de abstração; hardware × software; von Neumann como âncora.

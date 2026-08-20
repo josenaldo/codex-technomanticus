@@ -83,9 +83,7 @@ graph TD
 ```
 
 > [!warning] Criar um papel novo pra cada exceção de acesso
-> **O que acontece:** toda vez que surge uma necessidade de acesso que não cabe nos papéis existentes, alguém cria `editor_projeto_x` ou `viewer_temporario_cliente_y` como papel novo, em vez de modelar a exceção como relação ou atributo.
-> **Por quê:** papéis são, por definição, estáticos e globais — eles não carregam contexto de *qual* recurso específico. Forçar granularidade por recurso dentro de RBAC puro é empurrar contra a forma do modelo, e o resultado é uma explosão combinatória que nenhuma equipe de plataforma consegue manter atualizada nem auditar com confiança.
-> **Como evitar:** separar responsabilidade — papéis continuam definindo o que é amplo e estável (`org_admin`, `org_member`); acesso a recursos específicos (documento, projeto, workspace) vira relacionamento (ReBAC) ou condição de atributo (ABAC), nunca papel novo.
+> **O que acontece:** toda vez que surge uma necessidade de acesso que não cabe nos papéis existentes, alguém cria `editor_projeto_x` ou `viewer_temporario_cliente_y` como papel novo, em vez de modelar a exceção como relação ou atributo. **Por quê:** papéis são, por definição, estáticos e globais — eles não carregam contexto de *qual* recurso específico. Forçar granularidade por recurso dentro de RBAC puro é empurrar contra a forma do modelo, e o resultado é uma explosão combinatória que nenhuma equipe de plataforma consegue manter atualizada nem auditar com confiança. **Como evitar:** separar responsabilidade — papéis continuam definindo o que é amplo e estável (`org_admin`, `org_member`); acesso a recursos específicos (documento, projeto, workspace) vira relacionamento (ReBAC) ou condição de atributo (ABAC), nunca papel novo.
 
 A raiz do problema é conceitual, não de implementação: RBAC relaciona usuário e permissão através de um intermediário estático (o papel), e esse intermediário não tem como carregar "em relação a *qual* objeto". Quando a resposta certa depende do objeto — "Bruno pode editar *este* documento porque ele é o dono, não porque tem um papel global de editor" —, RBAC puro é a ferramenta errada, não importa quanto esforço de modelagem você jogue nele.
 
@@ -267,30 +265,4 @@ Esta nota respondeu "quais são os três modelos e quando cada um se aplica" —
 - **StrongDM** — [*Cedar Policy Language (CPL): 2026 Complete Guide*](https://www.strongdm.com/cedar-policy-language) — Cedar suportando RBAC, ABAC e ReBAC no mesmo policy store; acessado em 2026-07-11.
 - **Security Boulevard** — [*RBAC vs ReBAC: Access Control for Modern SaaS Apps*](https://securityboulevard.com/2026/02/rbac-vs-rebac-access-control-for-modern-saas-apps/) — panorama 2026 de implementações Zanzibar (OpenFGA, SpiceDB, Permify, Ory Keto, Auth0 FGA, WorkOS FGA) e especificação OpenID AuthZEN 1.0; acessado em 2026-07-11.
 
-[^nist-rbac]: NIST CSRC, *The NIST Model for Role-Based Access Control: Towards a Unified Standard*.
-[^permit-comparison]: Permit.io, *RBAC vs ABAC & ReBAC: Choosing the Right Authorization Model* — custo O(1) de checagem RBAC.
-[^corma-rbac]: Corma, *RBAC vs ABAC: How to Choose the Right Access Model (2026)*.
-[^nist-abac-guide]: NIST SP 800-162 — vantagens administrativas de papéis estáveis.
-[^permify-explosion]: Permify, *Role Explosion: The Hidden Cost of RBAC*.
-[^workos-multitenant]: WorkOS, *How to design an RBAC model for multi-tenant SaaS*.
-[^wikipedia-rbac]: Wikipedia, *Role-based access control* — crítica sobre número de papéis superando número de usuários.
-[^nist-abac-def]: NIST SP 800-162 — definição formal de ABAC.
-[^nist-abac-def2]: NIST SP 800-162 (upd2) — escopo e componentes do modelo.
-[^xacml-wiki]: Wikipedia, *XACML* — histórico OASIS 2003/2013 e arquitetura PEP/PDP/PIP.
-[^osohq-decision]: OSO, *RBAC vs ABAC vs PBAC: Understanding Access Control Models in 2025* — OPA/Rego como escolha dominante.
-[^cedar-strongdm]: StrongDM, *Cedar Policy Language (CPL): 2026 Complete Guide*.
-[^aws-abac]: AWS Docs, *Define permissions based on attributes with ABAC authorization*.
-[^aws-abac-intro]: AWS, *Attribute-Based Access Control (ABAC) for AWS*.
-[^osohq-decision-2]: OSO, *RBAC vs ABAC: main differences and which one you should use* — complexidade de autoria de política.
-[^authzed-abac-rebac]: Authzed, *ABAC vs ReBAC: When to use which* — latência de atributos externos.
-[^zanzibar-wiki]: Wikipedia, *Google Zanzibar* — origem no USENIX ATC 2019.
-[^zanzibar-tuples]: Authzed, *An Introduction to Google Zanzibar and Relationship-Based Authorization Control* — notação de tuplas.
-[^zanzibar-scale]: Authzed/Wikipedia, *Google Zanzibar* — 2 trilhões de tuplas, p95 < 10ms.
-[^auth0-rebac-github]: Auth0, *What Is Relationship-based access control (ReBAC)* — GitHub como exemplo de ReBAC.
-[^auth0-rebac-github-both]: Auth0, *What Is Relationship-based access control (ReBAC)* — GitHub combinando RBAC e ReBAC para exclusão de repositório.
-[^aserto-gdrive]: Aserto, *How Google Drive models authorization: A look into Zanzibar*.
-[^permit-hybrid]: Permit.io, *RBAC vs ABAC & ReBAC: Choosing the Right Authorization Model* — híbrido RBAC coarse + ReBAC fine.
-[^osohq-path]: OSO, *RBAC vs ABAC vs ReBAC: What is the best access policy paradigm?* — caminho evolutivo de implementação.
-[^zanzibar-impls]: Security Boulevard, *RBAC vs ReBAC: Access Control for Modern SaaS Apps* — lista de implementações Zanzibar 2026.
-[^authzen-2026]: Security Boulevard, *RBAC vs ReBAC: Access Control for Modern SaaS Apps* — OpenID AuthZEN Authorization API 1.0, janeiro de 2026.
-[^authzed-abac-rebac-2]: Authzed, *ABAC vs ReBAC: When to use which* — distinção entre condição de atributo e travessia de relacionamento.
+[^nist-rbac]: NIST CSRC, *The NIST Model for Role-Based Access Control: Towards a Unified Standard*. [^permit-comparison]: Permit.io, *RBAC vs ABAC & ReBAC: Choosing the Right Authorization Model* — custo O(1) de checagem RBAC. [^corma-rbac]: Corma, *RBAC vs ABAC: How to Choose the Right Access Model (2026)*. [^nist-abac-guide]: NIST SP 800-162 — vantagens administrativas de papéis estáveis. [^permify-explosion]: Permify, *Role Explosion: The Hidden Cost of RBAC*. [^workos-multitenant]: WorkOS, *How to design an RBAC model for multi-tenant SaaS*. [^wikipedia-rbac]: Wikipedia, *Role-based access control* — crítica sobre número de papéis superando número de usuários. [^nist-abac-def]: NIST SP 800-162 — definição formal de ABAC. [^nist-abac-def2]: NIST SP 800-162 (upd2) — escopo e componentes do modelo. [^xacml-wiki]: Wikipedia, *XACML* — histórico OASIS 2003/2013 e arquitetura PEP/PDP/PIP. [^osohq-decision]: OSO, *RBAC vs ABAC vs PBAC: Understanding Access Control Models in 2025* — OPA/Rego como escolha dominante. [^cedar-strongdm]: StrongDM, *Cedar Policy Language (CPL): 2026 Complete Guide*. [^aws-abac]: AWS Docs, *Define permissions based on attributes with ABAC authorization*. [^aws-abac-intro]: AWS, *Attribute-Based Access Control (ABAC) for AWS*. [^osohq-decision-2]: OSO, *RBAC vs ABAC: main differences and which one you should use* — complexidade de autoria de política. [^authzed-abac-rebac]: Authzed, *ABAC vs ReBAC: When to use which* — latência de atributos externos. [^zanzibar-wiki]: Wikipedia, *Google Zanzibar* — origem no USENIX ATC 2019. [^zanzibar-tuples]: Authzed, *An Introduction to Google Zanzibar and Relationship-Based Authorization Control* — notação de tuplas. [^zanzibar-scale]: Authzed/Wikipedia, *Google Zanzibar* — 2 trilhões de tuplas, p95 < 10ms. [^auth0-rebac-github]: Auth0, *What Is Relationship-based access control (ReBAC)* — GitHub como exemplo de ReBAC. [^auth0-rebac-github-both]: Auth0, *What Is Relationship-based access control (ReBAC)* — GitHub combinando RBAC e ReBAC para exclusão de repositório. [^aserto-gdrive]: Aserto, *How Google Drive models authorization: A look into Zanzibar*. [^permit-hybrid]: Permit.io, *RBAC vs ABAC & ReBAC: Choosing the Right Authorization Model* — híbrido RBAC coarse + ReBAC fine. [^osohq-path]: OSO, *RBAC vs ABAC vs ReBAC: What is the best access policy paradigm?* — caminho evolutivo de implementação. [^zanzibar-impls]: Security Boulevard, *RBAC vs ReBAC: Access Control for Modern SaaS Apps* — lista de implementações Zanzibar 2026. [^authzen-2026]: Security Boulevard, *RBAC vs ReBAC: Access Control for Modern SaaS Apps* — OpenID AuthZEN Authorization API 1.0, janeiro de 2026. [^authzed-abac-rebac-2]: Authzed, *ABAC vs ReBAC: When to use which* — distinção entre condição de atributo e travessia de relacionamento.

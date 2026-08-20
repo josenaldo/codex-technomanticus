@@ -357,24 +357,16 @@ A diretriz atual (React 18+): use `renderHook` de `@testing-library/react` diret
 ## Armadilhas comuns
 
 > [!warning] Extrair cedo demais — o hook que não precisava existir
-> **O que acontece:** você vê dois `useState` e um `useEffect` juntos e imediatamente extrai um hook. O hook tem 4 linhas, é usado em um único componente e não será reutilizado em 6 meses.
-> **Por quê:** extração tem custo: um arquivo novo, um nível de indireção, um contexto extra para manter. Antes de extrair, confirme: "Isso vai ser chamado em pelo menos 2 lugares ou a complexidade justifica o isolamento?"
-> **Como evitar:** aplique o princípio do react.dev — extraia quando houver duplicação real ou quando o Effect for complexo o suficiente para merecer nome próprio. Não extraia por antecipação.
+> **O que acontece:** você vê dois `useState` e um `useEffect` juntos e imediatamente extrai um hook. O hook tem 4 linhas, é usado em um único componente e não será reutilizado em 6 meses. **Por quê:** extração tem custo: um arquivo novo, um nível de indireção, um contexto extra para manter. Antes de extrair, confirme: "Isso vai ser chamado em pelo menos 2 lugares ou a complexidade justifica o isolamento?" **Como evitar:** aplique o princípio do react.dev — extraia quando houver duplicação real ou quando o Effect for complexo o suficiente para merecer nome próprio. Não extraia por antecipação.
 
 > [!warning] Hook que faz coisa demais — o "Deus Hook"
-> **O que acontece:** `useUserDashboard` cresce para gerenciar autenticação, preferências do usuário, lista de produtos favoritos e estado da sidebar — 200 linhas, 8 estados internos.
-> **Por quê:** sem a disciplina de Single Responsibility, um hook acumula responsabilidades tão facilmente quanto um componente. A extração que começou para organizar cria um novo monólito.
-> **Como evitar:** cada hook deve ter uma responsabilidade que caiba em 1 frase: "gerencia o estado de toggle", "debounça um valor", "busca produtos pela categoria". Se a frase tem "e", é sinal de divisão.
+> **O que acontece:** `useUserDashboard` cresce para gerenciar autenticação, preferências do usuário, lista de produtos favoritos e estado da sidebar — 200 linhas, 8 estados internos. **Por quê:** sem a disciplina de Single Responsibility, um hook acumula responsabilidades tão facilmente quanto um componente. A extração que começou para organizar cria um novo monólito. **Como evitar:** cada hook deve ter uma responsabilidade que caiba em 1 frase: "gerencia o estado de toggle", "debounça um valor", "busca produtos pela categoria". Se a frase tem "e", é sinal de divisão.
 
 > [!warning] Esperar que dois componentes compartilhem estado via mesmo hook
-> **O que acontece:** `ComponenteA` e `ComponenteB` chamam `useContador()`. Alguém incrementa em A esperando que B reflita o novo valor — mas B tem seu próprio estado, completamente isolado.
-> **Por quê:** custom hooks **não** são singletons. Cada chamada cria uma instância de estado independente. A confusão vem de misturar "mesma lógica" com "mesmo estado".
-> **Como evitar:** para compartilhar estado entre componentes, use Context API, uma store externa (Zustand, Redux) ou eleve o estado para o ancestral comum. O hook pode continuar existindo — mas como interface para esse estado compartilhado, não como a fonte do estado.
+> **O que acontece:** `ComponenteA` e `ComponenteB` chamam `useContador()`. Alguém incrementa em A esperando que B reflita o novo valor — mas B tem seu próprio estado, completamente isolado. **Por quê:** custom hooks **não** são singletons. Cada chamada cria uma instância de estado independente. A confusão vem de misturar "mesma lógica" com "mesmo estado". **Como evitar:** para compartilhar estado entre componentes, use Context API, uma store externa (Zustand, Redux) ou eleve o estado para o ancestral comum. O hook pode continuar existindo — mas como interface para esse estado compartilhado, não como a fonte do estado.
 
 > [!warning] Funções auxiliares sem estado nomeadas com `use`
-> **O que acontece:** `useFormatDate(date)` não chama nenhum hook — só formata uma string. O nome `use*` ativa as regras dos hooks: a função não pode mais ser chamada condicionalmente.
-> **Por quê:** o prefixo `use` é um contrato de que hooks internos estão envolvidos. Quebrá-lo confunde linters, times e o próprio React em futuras otimizações.
-> **Como evitar:** se a função não chama hooks, nomeie sem `use`: `formatDate(date)`. Reserve `use*` para funções que realmente gerenciam estado, efeitos ou contexto.
+> **O que acontece:** `useFormatDate(date)` não chama nenhum hook — só formata uma string. O nome `use*` ativa as regras dos hooks: a função não pode mais ser chamada condicionalmente. **Por quê:** o prefixo `use` é um contrato de que hooks internos estão envolvidos. Quebrá-lo confunde linters, times e o próprio React em futuras otimizações. **Como evitar:** se a função não chama hooks, nomeie sem `use`: `formatDate(date)`. Reserve `use*` para funções que realmente gerenciam estado, efeitos ou contexto.
 
 ## Quando NÃO extrair um custom hook
 

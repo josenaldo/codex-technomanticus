@@ -34,14 +34,11 @@ A solução não é melhor modelo nem mais resolução. É declarar, no prompt, 
 
 Caso concreto. Mesma imagem (screenshot de tela de login com problemas de UX), três prompts:
 
-> **Prompt 1**: "Descreva esta imagem."
-> Output: "A imagem mostra uma tela de login com um campo de email, um campo de senha, um botão azul escrito 'Entrar', e um link 'Esqueci minha senha'."
+> **Prompt 1**: "Descreva esta imagem." Output: "A imagem mostra uma tela de login com um campo de email, um campo de senha, um botão azul escrito 'Entrar', e um link 'Esqueci minha senha'."
 
-> **Prompt 2**: "Analise esta tela quanto a problemas de UX."
-> Output: "Problemas visíveis: (1) o campo de senha não tem toggle de visibilidade; (2) o label 'Email' não está associado ao input via for/id, prejudicando acessibilidade; (3) não há indicador visual do estado de erro ou validação..."
+> **Prompt 2**: "Analise esta tela quanto a problemas de UX." Output: "Problemas visíveis: (1) o campo de senha não tem toggle de visibilidade; (2) o label 'Email' não está associado ao input via for/id, prejudicando acessibilidade; (3) não há indicador visual do estado de erro ou validação..."
 
-> **Prompt 3**: "Extraia o estado atual do formulário e retorne em JSON."
-> Output: `{"campos": [{"label": "Email", "preenchido": false, "tipo": "email"}, ...]}`
+> **Prompt 3**: "Extraia o estado atual do formulário e retorne em JSON." Output: `{"campos": [{"label": "Email", "preenchido": false, "tipo": "email"}, ...]}`
 
 Três outputs úteis — três outputs diferentes — três tarefas diferentes. O modelo não adivinha; você manda.
 

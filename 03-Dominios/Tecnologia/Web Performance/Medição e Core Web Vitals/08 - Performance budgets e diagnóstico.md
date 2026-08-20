@@ -68,9 +68,7 @@ Um budget arbitrário é ignorado; um budget fundamentado é respeitado. Três �
 3. **A concorrência**: use o CrUX (que é público, nota 05) para medir os concorrentes e definir uma meta de "ser mais rápido que eles", não só de "passar no exame".
 
 > [!warning] Definir o budget e nunca fazê-lo falhar
-> **O que acontece:** o time escreve um `budget.json` bonito, mas o CI só *avisa* quando estoura — nunca *quebra* o build. Em três meses todo mundo ignora o aviso e a performance apodrece igual.
-> **Por quê:** um budget que não bloqueia é uma sugestão, e sugestões perdem para prazos. Sem consequência, não há política.
-> **Como evitar:** faça o budget **falhar o build** (ou bloquear o merge) quando estourar. A dor precisa ser sentida **antes** do merge — no Galho 4 você monta isso com Lighthouse CI. Um budget sem dente é teatro.
+> **O que acontece:** o time escreve um `budget.json` bonito, mas o CI só *avisa* quando estoura — nunca *quebra* o build. Em três meses todo mundo ignora o aviso e a performance apodrece igual. **Por quê:** um budget que não bloqueia é uma sugestão, e sugestões perdem para prazos. Sem consequência, não há política. **Como evitar:** faça o budget **falhar o build** (ou bloquear o merge) quando estourar. A dor precisa ser sentida **antes** do merge — no Galho 4 você monta isso com Lighthouse CI. Um budget sem dente é teatro.
 
 ## Diagnóstico: o DevTools Performance panel
 

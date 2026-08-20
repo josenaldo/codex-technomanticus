@@ -240,8 +240,7 @@ Melhores práticas com `/compact` e `/clear`:
 
 A compactação automática é um safety net, não uma estratégia primária. Times com disciplina de sessão gastam menos mesmo com compactação desativada.
 
-**`/clear` — quando mudar de tarefa:**
-O histórico de uma tarefa é custo puro na tarefa seguinte. Se você terminou de corrigir um bug no CSS e vai começar a refatorar o banco de dados, cada token do debug CSS é uma fatura que o modelo lê sem usar.
+**`/clear` — quando mudar de tarefa:** O histórico de uma tarefa é custo puro na tarefa seguinte. Se você terminou de corrigir um bug no CSS e vai começar a refatorar o banco de dados, cada token do debug CSS é uma fatura que o modelo lê sem usar.
 
 ```
 Regra: mudou de domínio? /clear.
@@ -252,8 +251,7 @@ Exemplos que justificam /clear:
   - Bug resolvido → começa task de documentação
 ```
 
-**`/compact` proativo — antes de ficar pesado:**
-Não espere o contexto saturar. Uma heurística útil: quando você percebe que os primeiros turns da sessão não são mais relevantes para a tarefa atual, compacte. Threshold saudável: abaixo de 100k tokens de contexto total.
+**`/compact` proativo — antes de ficar pesado:** Não espere o contexto saturar. Uma heurística útil: quando você percebe que os primeiros turns da sessão não são mais relevantes para a tarefa atual, compacte. Threshold saudável: abaixo de 100k tokens de contexto total.
 
 ```bash
 # Compactação com instrução personalizada (Claude Code 2026)
@@ -261,8 +259,7 @@ Não espere o contexto saturar. Uma heurística útil: quando você percebe que 
          Discard: failed debug attempts, file contents already modified, ack messages.
 ```
 
-**Sessões curtas focadas vs. sessões maratona:**
-Uma sessão de 8 horas com 300+ turns tem custo de compactação progressivo que supera o benefício do cache warm. Prefira sessões de 1-2 horas por tarefa específica — o custo de retomar contexto via state document é menor que manter uma sessão crescente.
+**Sessões curtas focadas vs. sessões maratona:** Uma sessão de 8 horas com 300+ turns tem custo de compactação progressivo que supera o benefício do cache warm. Prefira sessões de 1-2 horas por tarefa específica — o custo de retomar contexto via state document é menor que manter uma sessão crescente.
 
 ## Impacto em custo
 
@@ -332,17 +329,13 @@ A pergunta central para escolher: **"O que precisa sobreviver de uma sessão par
 
 ## Casos práticos
 
-**Caso 1 — Sessão de debugging de 4 horas:**
-Uma sessão de debugging de backend acumulou 80 turns. Os primeiros 40 eram sobre um bug já resolvido. Custo sem compactação: $3,20. Após implementar rolling summarization (sumarizar turns 1-30 em 800 tokens, manter 31-80 completos): custo caiu para $1,10 — e o agente parou de "lembrar" soluções descartadas como candidatas válidas.
+**Caso 1 — Sessão de debugging de 4 horas:** Uma sessão de debugging de backend acumulou 80 turns. Os primeiros 40 eram sobre um bug já resolvido. Custo sem compactação: $3,20. Após implementar rolling summarization (sumarizar turns 1-30 em 800 tokens, manter 31-80 completos): custo caiu para $1,10 — e o agente parou de "lembrar" soluções descartadas como candidatas válidas.
 
-**Caso 2 — Agente de refactoring de monorepo:**
-Um agente de refactoring precisava de contexto de sessões anteriores (decisões de nomenclatura, convenções estabelecidas). Anchored state document com 500 tokens de estado persistente permitiu retomar sessões sem reenviar histórico. Cada nova sessão começa com 500 tokens de estado em vez de 50k de histórico.
+**Caso 2 — Agente de refactoring de monorepo:** Um agente de refactoring precisava de contexto de sessões anteriores (decisões de nomenclatura, convenções estabelecidas). Anchored state document com 500 tokens de estado persistente permitiu retomar sessões sem reenviar histórico. Cada nova sessão começa com 500 tokens de estado em vez de 50k de histórico.
 
-**Caso 3 — Chatbot de suporte com turnos longos:**
-Cada turno de suporte técnico podia ter 2.000 tokens (logs, stack traces). Após 20 turns, o contexto tinha 40k tokens de logs potencialmente irrelevantes. Observation masking de retries falhados + leituras de arquivos modificados reduziu o histórico em 35% sem impacto na qualidade de resposta.
+**Caso 3 — Chatbot de suporte com turnos longos:** Cada turno de suporte técnico podia ter 2.000 tokens (logs, stack traces). Após 20 turns, o contexto tinha 40k tokens de logs potencialmente irrelevantes. Observation masking de retries falhados + leituras de arquivos modificados reduziu o histórico em 35% sem impacto na qualidade de resposta.
 
-**Caso 4 — `/clear` como hábito de time:**
-Um time de desenvolvimento adotou a regra: `/clear` antes de cada novo feature. Em 3 meses, o custo mensal de API caiu 28% — sem nenhuma mudança técnica, só disciplina de sessão.
+**Caso 4 — `/clear` como hábito de time:** Um time de desenvolvimento adotou a regra: `/clear` antes de cada novo feature. Em 3 meses, o custo mensal de API caiu 28% — sem nenhuma mudança técnica, só disciplina de sessão.
 
 ## Checklist
 

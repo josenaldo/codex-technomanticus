@@ -129,18 +129,15 @@ A estratégia é **prova por contradição**: assumimos que L é regular, usamos
 > [!example] Prova completa
 > **Passo 1 — Suponha o contrário.** Assuma que L *é* regular. Então o pumping lemma garante que existe um pumping length p ≥ 1 para L.
 >
-> **Passo 2 — Escolha uma palavra esperta.** Eu posso escolher qualquer palavra de L com |s| ≥ p. Escolho
-> > s = aᵖbᵖ
+> **Passo 2 — Escolha uma palavra esperta.** Eu posso escolher qualquer palavra de L com |s| ≥ p. Escolho > s = aᵖbᵖ
 >
 > Ou seja, p letras `a` seguidas de p letras `b`. Essa palavra está em L (é da forma aⁿbⁿ com n = p) e tem comprimento 2p ≥ p. Pode ser bombeada, então.
 >
-> **Passo 3 — O que a condição (2) me obriga.** O lema diz que s = xyz com |xy| ≤ p. Mas os primeiros p símbolos de s são **todos `a`** (o bloco de `b` só começa na posição p+1). Logo `xy` está inteiramente dentro do bloco de `a`s, e portanto **y é composto só de `a`s**. Combinando com a condição (1), |y| ≥ 1, temos:
-> > y = aᵏ, com k ≥ 1
+> **Passo 3 — O que a condição (2) me obriga.** O lema diz que s = xyz com |xy| ≤ p. Mas os primeiros p símbolos de s são **todos `a`** (o bloco de `b` só começa na posição p+1). Logo `xy` está inteiramente dentro do bloco de `a`s, e portanto **y é composto só de `a`s**. Combinando com a condição (1), |y| ≥ 1, temos: > y = aᵏ, com k ≥ 1
 >
 > Isso é crucial: eu não escolhi quem é y — o "adversário" escolheu. Mas a condição (2) **amarra** y a estar só nos `a`s, não importa qual divisão ele tente.
 >
-> **Passo 4 — Bombeie e quebre.** A condição (3) diz que xyⁱz ∈ L para **todo** i. Escolho i = 2:
-> > xy²z = aᵖ⁻ᵏ · a²ᵏ · bᵖ = aᵖ⁺ᵏbᵖ
+> **Passo 4 — Bombeie e quebre.** A condição (3) diz que xyⁱz ∈ L para **todo** i. Escolho i = 2: > xy²z = aᵖ⁻ᵏ · a²ᵏ · bᵖ = aᵖ⁺ᵏbᵖ
 >
 > (O bloco original tinha p `a`s; tirei o y = aᵏ e botei dois, então sobram p + k `a`s; os `b`s não foram tocados, continuam p.)
 >
@@ -162,11 +159,9 @@ Vale ver como a **escolha de s** muda tudo, com a linguagem dos quadrados perfei
 > [!example] Prova de que { aⁿ² } não é regular
 > **Suponha** L regular, com pumping length p. Escolho s = aᵖ², que está em L (comprimento p², um quadrado) e tem |s| = p² ≥ p.
 >
-> A divisão dá s = xyz com |y| = k, onde 1 ≤ k ≤ p (porque |xy| ≤ p, e y ⊆ xy). Bombeio **i = 2**:
-> > |xy²z| = p² + k
+> A divisão dá s = xyz com |y| = k, onde 1 ≤ k ≤ p (porque |xy| ≤ p, e y ⊆ xy). Bombeio **i = 2**: > |xy²z| = p² + k
 >
-> Para xy²z estar em L, p² + k teria que ser o próximo quadrado perfeito ou algum quadrado. Mas o próximo quadrado depois de p² é (p+1)² = p² + 2p + 1. A distância entre quadrados consecutivos é 2p + 1. Como 1 ≤ k ≤ p, temos:
-> > p² < p² + k ≤ p² + p < p² + 2p + 1 = (p+1)²
+> Para xy²z estar em L, p² + k teria que ser o próximo quadrado perfeito ou algum quadrado. Mas o próximo quadrado depois de p² é (p+1)² = p² + 2p + 1. A distância entre quadrados consecutivos é 2p + 1. Como 1 ≤ k ≤ p, temos: > p² < p² + k ≤ p² + p < p² + 2p + 1 = (p+1)²
 >
 > Ou seja, p² + k cai **estritamente entre** dois quadrados consecutivos — não é quadrado de ninguém. Logo xy²z ∉ L. Contradição. **∴ { aⁿ² } não é regular.** ∎
 
@@ -179,8 +174,7 @@ Vale registrar uma variante que costuma confundir: **L = { aⁿbᵐ : n > m }** 
 > [!example] Prova de que { aⁿbᵐ : n > m } não é regular
 > **Suponha** L regular, pumping length p. Escolho s = aᵖ⁺¹bᵖ — está em L, pois p+1 > p, e |s| ≥ p.
 >
-> Por |xy| ≤ p, a divisão cai inteira nos `a`s, então y = aᵏ com k ≥ 1. Agora bombeio **para baixo**, i = 0:
-> > xy⁰z = xz = aᵖ⁺¹⁻ᵏbᵖ
+> Por |xy| ≤ p, a divisão cai inteira nos `a`s, então y = aᵏ com k ≥ 1. Agora bombeio **para baixo**, i = 0: > xy⁰z = xz = aᵖ⁺¹⁻ᵏbᵖ
 >
 > Como k ≥ 1, o número de `a`s caiu para p+1−k ≤ p, enquanto o de `b`s continua p. Logo `a`s ≤ `b`s, ou seja, **não** é mais verdade que n > m. Então aᵖ⁺¹⁻ᵏbᵖ ∉ L. Contradição. **∴ { aⁿbᵐ : n > m } não é regular.** ∎
 

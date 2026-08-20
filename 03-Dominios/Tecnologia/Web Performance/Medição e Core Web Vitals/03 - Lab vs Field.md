@@ -85,9 +85,7 @@ A divergência entre lab e campo não é um bug; é informação. O padrão mais
 | Ambos bons | Ótimo, mas mantenha o RUM ligado: regressões aparecem primeiro no campo. |
 
 > [!warning] Tratar o Lighthouse como nota de ranking
-> **O que acontece:** o time persegue o "100 no Lighthouse" e acha que isso garante bom ranqueamento de performance.
-> **Por quê:** o score do Lighthouse é **lab** — uma simulação. O Google ranqueia com **CrUX**, que é **campo**. Um pode ir a 100 enquanto o outro está vermelho, porque medem populações diferentes.
-> **Como evitar:** use o Lighthouse para **depurar e comparar**, e o CrUX/RUM para saber se o usuário (e o ranking) melhorou de fato. Otimize olhando o campo; depure olhando o lab.
+> **O que acontece:** o time persegue o "100 no Lighthouse" e acha que isso garante bom ranqueamento de performance. **Por quê:** o score do Lighthouse é **lab** — uma simulação. O Google ranqueia com **CrUX**, que é **campo**. Um pode ir a 100 enquanto o outro está vermelho, porque medem populações diferentes. **Como evitar:** use o Lighthouse para **depurar e comparar**, e o CrUX/RUM para saber se o usuário (e o ranking) melhorou de fato. Otimize olhando o campo; depure olhando o lab.
 
 **Lab vs field em uma frase:** o lab mede uma simulação controlada — ótimo para achar a causa e comparar mudanças —, o campo mede usuários reais — a verdade que o negócio e o Google enxergam —, e você precisa dos dois porque um responde "por quê?" e o outro "para quem?".
 

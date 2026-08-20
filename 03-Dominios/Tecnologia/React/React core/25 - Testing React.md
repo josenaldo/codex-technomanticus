@@ -542,29 +542,19 @@ test('avança para a próxima página e carrega dados', async () => {
 ## Armadilhas comuns
 
 > [!warning] Testar estado interno — a mais cara das armadilhas
-> **O que acontece:** Você acessa `component.state`, chama métodos internos do hook diretamente, ou testa se `useState` foi chamado com determinado valor.
-> **Por quê:** Isso não testa nenhum comportamento observável. Um refactor que muda o nome do estado — mas não o comportamento — quebra o teste.
-> **Como evitar:** Apenas asserte no que aparece no DOM (`screen.getBy...`) ou no que sai do componente via callbacks (`onSubmit`, `onChange`).
+> **O que acontece:** Você acessa `component.state`, chama métodos internos do hook diretamente, ou testa se `useState` foi chamado com determinado valor. **Por quê:** Isso não testa nenhum comportamento observável. Um refactor que muda o nome do estado — mas não o comportamento — quebra o teste. **Como evitar:** Apenas asserte no que aparece no DOM (`screen.getBy...`) ou no que sai do componente via callbacks (`onSubmit`, `onChange`).
 
 > [!warning] Queries por data-testid quando existe alternativa semântica
-> **O que acontece:** `getByTestId('submit-button')` em vez de `getByRole('button', { name: /enviar/i })`.
-> **Por quê:** `data-testid` não existe no DOM real do usuário. Um botão sem texto acessível é um problema de acessibilidade — o teste está mascarando um bug, não verificando qualidade.
-> **Como evitar:** Siga a hierarquia de queries. Se você precisar de `testId`, pergunte-se primeiro: "esse elemento tem um papel semântico e um nome acessível?" Se não, o componente provavelmente precisa de `aria-label`.
+> **O que acontece:** `getByTestId('submit-button')` em vez de `getByRole('button', { name: /enviar/i })`. **Por quê:** `data-testid` não existe no DOM real do usuário. Um botão sem texto acessível é um problema de acessibilidade — o teste está mascarando um bug, não verificando qualidade. **Como evitar:** Siga a hierarquia de queries. Se você precisar de `testId`, pergunte-se primeiro: "esse elemento tem um papel semântico e um nome acessível?" Se não, o componente provavelmente precisa de `aria-label`.
 
 > [!warning] fireEvent em vez de userEvent para interação do usuário
-> **O que acontece:** `fireEvent.click(button)` passa, mas o mesmo fluxo falha em produção porque a lógica depende de `mousedown` antes de `click`.
-> **Por quê:** `fireEvent` dispara um único evento. Um clique de usuário real gera ~8 eventos em sequência. Para máscaras de input, validação on-blur, e handlers que verificam a sequência de eventos, `fireEvent` não reproduz a realidade.
-> **Como evitar:** Use `userEvent.setup()` + `await user.click(...)` para toda interação de usuário. Reserve `fireEvent` para testar handlers que explicitamente ouvem um evento único.
+> **O que acontece:** `fireEvent.click(button)` passa, mas o mesmo fluxo falha em produção porque a lógica depende de `mousedown` antes de `click`. **Por quê:** `fireEvent` dispara um único evento. Um clique de usuário real gera ~8 eventos em sequência. Para máscaras de input, validação on-blur, e handlers que verificam a sequência de eventos, `fireEvent` não reproduz a realidade. **Como evitar:** Use `userEvent.setup()` + `await user.click(...)` para toda interação de usuário. Reserve `fireEvent` para testar handlers que explicitamente ouvem um evento único.
 
 > [!warning] act() warnings — o sinal de que algo está errado
-> **O que acontece:** Vitest/Jest exibe `Warning: An update to Component inside a test was not wrapped in act(...)`.
-> **Por quê:** Um update de estado aconteceu fora do ciclo controlado pelo test runner (geralmente uma promise resolvida depois do assert).
-> **Como evitar:** Use `findBy` em vez de `getBy` para elementos assíncronos. Use `waitFor` para assertions sobre estado que muda. Se o warning persiste, investigue se há atualizações de estado após o unmount do componente.
+> **O que acontece:** Vitest/Jest exibe `Warning: An update to Component inside a test was not wrapped in act(...)`. **Por quê:** Um update de estado aconteceu fora do ciclo controlado pelo test runner (geralmente uma promise resolvida depois do assert). **Como evitar:** Use `findBy` em vez de `getBy` para elementos assíncronos. Use `waitFor` para assertions sobre estado que muda. Se o warning persiste, investigue se há atualizações de estado após o unmount do componente.
 
 > [!warning] Não resetar handlers do MSW entre testes
-> **O que acontece:** Um teste sobrescreve um handler com `server.use(...)` para testar cenário de erro. O próximo teste espera o happy path, mas o handler de erro ainda está ativo.
-> **Por quê:** `server.use()` registra um override persistente até que seja resetado.
-> **Como evitar:** Sempre configure `afterEach(() => server.resetHandlers())` no setup global. Só sobreescreva handlers dentro do teste que precisa do cenário alternativo.
+> **O que acontece:** Um teste sobrescreve um handler com `server.use(...)` para testar cenário de erro. O próximo teste espera o happy path, mas o handler de erro ainda está ativo. **Por quê:** `server.use()` registra um override persistente até que seja resetado. **Como evitar:** Sempre configure `afterEach(() => server.resetHandlers())` no setup global. Só sobreescreva handlers dentro do teste que precisa do cenário alternativo.
 
 ---
 

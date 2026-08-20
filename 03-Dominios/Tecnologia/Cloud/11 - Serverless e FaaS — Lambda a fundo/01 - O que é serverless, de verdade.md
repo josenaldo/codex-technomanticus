@@ -43,8 +43,7 @@ Vale nomear com precisão os quatro elementos que, juntos, definem o modelo — 
 > [!tip] Assista: AWS Lambda explicado: O que é e como funciona
 > **Canal:** AWS Developers LATAM | **Duração:** ~10min | **Idioma:** PT-BR
 >
-> Um resumo direto ao ponto dos quatro elementos que definem serverless — sem servidor pra gerenciar, execução orientada a evento, pague só pelo uso — com exemplos de código lado a lado pra fixar a diferença de mentalidade.
-> Trecho de destaque [00:40]: *"preocupar com servidores é a base do... infraestrutura e nós podemos focar no [código]"*
+> Um resumo direto ao ponto dos quatro elementos que definem serverless — sem servidor pra gerenciar, execução orientada a evento, pague só pelo uso — com exemplos de código lado a lado pra fixar a diferença de mentalidade. Trecho de destaque [00:40]: *"preocupar com servidores é a base do... infraestrutura e nós podemos focar no [código]"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=n31cF3iFCUs)
 

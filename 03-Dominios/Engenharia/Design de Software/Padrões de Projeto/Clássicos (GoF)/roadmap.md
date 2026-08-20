@@ -34,8 +34,7 @@ Padrão "capítulo de livro" (nota que pega o leitor pela mão; ~substancial com
 9. **O que vem a seguir** — ponte pra próxima nota da sequência.
 10. **Fontes** — GoF, Refactoring Guru, Effective Java, docs das 4 linguagens (com URL).
 
-**Esquema de `fase:`:** COM fase, por **centralidade/frequência** do padrão (não gate de aprendizado). Iniciado = os que todo dev encontra primeiro; Adepto = catálogo de trabalho; Magus = situacionais + síntese sênior.
-**Piso de linhas:** flexível — o padrão capítulo substitui o piso rígido; padrões simples podem ser mais curtos, sustentados pela comparação cross-linguagem.
+**Esquema de `fase:`:** COM fase, por **centralidade/frequência** do padrão (não gate de aprendizado). Iniciado = os que todo dev encontra primeiro; Adepto = catálogo de trabalho; Magus = situacionais + síntese sênior. **Piso de linhas:** flexível — o padrão capítulo substitui o piso rígido; padrões simples podem ser mais curtos, sustentados pela comparação cross-linguagem.
 
 ## Tabela-resumo
 

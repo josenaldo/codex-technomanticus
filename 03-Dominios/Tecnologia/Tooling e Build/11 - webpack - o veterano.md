@@ -87,8 +87,7 @@ flowchart TD
 A diferença entre **loader** e **plugin** é o que mais confunde. Vale gravar:
 
 > [!tip] Loader vs. Plugin — a distinção definitiva
-> **Loader** = transforma um arquivo específico. É uma função que recebe o conteúdo de um módulo e retorna o conteúdo transformado. Roda por arquivo, na resolução do módulo.
-> **Plugin** = observa (e modifica) o **ciclo de build inteiro**. Tem acesso ao `compiler` e ao `compilation`, pode emitir arquivos extras, modificar o grafo, injetar código no runtime. Roda em hooks do ciclo de build.
+> **Loader** = transforma um arquivo específico. É uma função que recebe o conteúdo de um módulo e retorna o conteúdo transformado. Roda por arquivo, na resolução do módulo. **Plugin** = observa (e modifica) o **ciclo de build inteiro**. Tem acesso ao `compiler` e ao `compilation`, pode emitir arquivos extras, modificar o grafo, injetar código no runtime. Roda em hooks do ciclo de build.
 >
 > Analogia: loader é como um tradutor de idioma (transforma cada arquivo). Plugin é como um diretor de produção (organiza todo o processo).
 

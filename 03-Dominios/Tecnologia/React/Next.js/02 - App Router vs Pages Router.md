@@ -248,8 +248,7 @@ Browser                               Browser
 > [!tip] Assista: Next.js 13… this changes everything
 > **Canal:** Fireship | **Duração:** ~7min | **Idioma:** EN
 >
-> O vídeo captura ao vivo o momento em que o App Router foi anunciado e explica em sete minutos por que eliminar `getServerSideProps` e `getStaticProps` não é apenas conveniência, mas uma inversão de modelo mental: o servidor deixa de ser um "duto de dados" e passa a ser o lugar onde os componentes de fato executam.
-> Trecho de destaque [3:34]: *"it's a huge deal because now we can totally get rid of things like getStaticProps and getServerSideProps — instead we can just write a plain JavaScript function that uses Fetch and then await the result of that function directly in a component"*
+> O vídeo captura ao vivo o momento em que o App Router foi anunciado e explica em sete minutos por que eliminar `getServerSideProps` e `getStaticProps` não é apenas conveniência, mas uma inversão de modelo mental: o servidor deixa de ser um "duto de dados" e passa a ser o lugar onde os componentes de fato executam. Trecho de destaque [3:34]: *"it's a huge deal because now we can totally get rid of things like getStaticProps and getServerSideProps — instead we can just write a plain JavaScript function that uses Fetch and then await the result of that function directly in a component"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=_w0Ikk4JY7U)
 

@@ -75,8 +75,7 @@ flowchart TD
 > [!tip] Assista: Create Composite Alarms in Amazon CloudWatch
 > **Canal:** Amazon Web Services (oficial) | **Duração:** ~4min | **Idioma:** PT-BR (dublado/legendado)
 >
-> Vídeo curto e direto da própria AWS mostrando a criação de um alarme composto no console, reforçando visualmente por que agrupar alarmes filhos numa única condição reduz a sobrecarga de notificação que esta seção descreve.
-> Trecho de destaque [00:11]: *"que é acionado somente quando as condições especificadas são atendidas, ajudando a reduzir a sobrecarga de alarmes"*
+> Vídeo curto e direto da própria AWS mostrando a criação de um alarme composto no console, reforçando visualmente por que agrupar alarmes filhos numa única condição reduz a sobrecarga de notificação que esta seção descreve. Trecho de destaque [00:11]: *"que é acionado somente quando as condições especificadas são atendidas, ajudando a reduzir a sobrecarga de alarmes"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=0LMQ-Mu-ZCY)
 
@@ -89,8 +88,7 @@ Em linhas gerais: um **SLI** é uma métrica observável ("percentual de requisi
 > [!tip] Assista: Aprenda de vez SLI, SLO e SLA
 > **Canal:** Fabricio Veronez | **Duração:** ~10min | **Idioma:** PT-BR
 >
-> Fixa o vocabulário de SLI/SLO/SLA com exemplos fora do contexto AWS, útil como base conceitual antes de ver como o CloudWatch materializa isso em metric math — o que esta nota faz na sequência.
-> Trecho de destaque [03:37]: *"então agora vamos falar do slo"* (após detalhar SLI com um exemplo de tempo de resposta)
+> Fixa o vocabulário de SLI/SLO/SLA com exemplos fora do contexto AWS, útil como base conceitual antes de ver como o CloudWatch materializa isso em metric math — o que esta nota faz na sequência. Trecho de destaque [03:37]: *"então agora vamos falar do slo"* (após detalhar SLI com um exemplo de tempo de resposta)
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=JQTaWPEE80w)
 

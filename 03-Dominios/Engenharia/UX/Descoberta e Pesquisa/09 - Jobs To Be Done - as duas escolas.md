@@ -61,9 +61,7 @@ graph LR
 ```
 
 > [!warning] Tratar as duas escolas como um método único
-> **O que acontece:** alguém cita "JTBD" numa reunião ou numa entrevista técnica como se fosse um framework só, misturando vocabulário de outcome statement com o de switch interview sem perceber que vêm de linhagens diferentes.
-> **Por quê:** as duas escolas compartilham a frase de efeito ("contratar um produto para um job") mas divergem completamente em metodologia — uma é estatística, a outra é etnográfica. Confundi-las produz um método híbrido mal formado que não segue nenhuma das duas disciplinas direito.
-> **Como evitar:** ao mencionar JTBD, nomeie qual vertente está em uso. Numa entrevista sênior, dizer "usei a switch interview do Moesta para entender o job" soa mais sólido do que "usei JTBD", porque mostra que você sabe que há uma escolha metodológica ali, não um bloco monolítico.
+> **O que acontece:** alguém cita "JTBD" numa reunião ou numa entrevista técnica como se fosse um framework só, misturando vocabulário de outcome statement com o de switch interview sem perceber que vêm de linhagens diferentes. **Por quê:** as duas escolas compartilham a frase de efeito ("contratar um produto para um job") mas divergem completamente em metodologia — uma é estatística, a outra é etnográfica. Confundi-las produz um método híbrido mal formado que não segue nenhuma das duas disciplinas direito. **Como evitar:** ao mencionar JTBD, nomeie qual vertente está em uso. Numa entrevista sênior, dizer "usei a switch interview do Moesta para entender o job" soa mais sólido do que "usei JTBD", porque mostra que você sabe que há uma escolha metodológica ali, não um bloco monolítico.
 
 ## Praticando a switch interview sozinho
 
@@ -97,19 +95,13 @@ Um fractional engineer, ao entrevistar usuários de uma ferramenta interna de ap
 ## Armadilhas comuns
 
 > [!warning] Usar JTBD como rótulo sem aplicar nenhum dos dois métodos
-> **O que acontece:** o time diz "pensamos em jobs to be done" mas na prática segue perguntando feature por feature, sem nunca reconstruir push/pull/ansiedade/hábito nem medir outcome statements.
-> **Por quê:** "job to be done" virou vocabulário de produto popular o suficiente para ser citado sem o rigor metodológico que o sustenta — o nome sobrevive, o método desaparece.
-> **Como evitar:** se você não consegue nomear o push, o pull, a ansiedade e o hábito da última decisão de troca do seu usuário, você não aplicou a switch interview — só usou o jargão.
+> **O que acontece:** o time diz "pensamos em jobs to be done" mas na prática segue perguntando feature por feature, sem nunca reconstruir push/pull/ansiedade/hábito nem medir outcome statements. **Por quê:** "job to be done" virou vocabulário de produto popular o suficiente para ser citado sem o rigor metodológico que o sustenta — o nome sobrevive, o método desaparece. **Como evitar:** se você não consegue nomear o push, o pull, a ansiedade e o hábito da última decisão de troca do seu usuário, você não aplicou a switch interview — só usou o jargão.
 
 > [!warning] Confundir o job com a categoria de produto
-> **O que acontece:** o time pensa no job em termos de "o que nosso produto faz", e não em termos do progresso mais amplo que o usuário busca — perdendo os concorrentes reais (banana, bagel, nada, no exemplo do milkshake).
-> **Por quê:** é mais fácil pensar dentro da própria categoria de produto do que investigar o job amplo, que pode ser satisfeito por soluções completamente diferentes.
-> **Como evitar:** depois de nomear um job, pergunte "que outras coisas — de qualquer categoria — resolveriam esse mesmo progresso?". Se a lista só tem concorrentes diretos, o job provavelmente está definido estreito demais.
+> **O que acontece:** o time pensa no job em termos de "o que nosso produto faz", e não em termos do progresso mais amplo que o usuário busca — perdendo os concorrentes reais (banana, bagel, nada, no exemplo do milkshake). **Por quê:** é mais fácil pensar dentro da própria categoria de produto do que investigar o job amplo, que pode ser satisfeito por soluções completamente diferentes. **Como evitar:** depois de nomear um job, pergunte "que outras coisas — de qualquer categoria — resolveriam esse mesmo progresso?". Se a lista só tem concorrentes diretos, o job provavelmente está definido estreito demais.
 
 > [!warning] Extrapolar 1 switch interview como se fosse dado representativo
-> **O que acontece:** uma única história reveladora vira "o job dos nossos usuários", sem checar se é padrão ou exceção de uma pessoa.
-> **Por quê:** a mesma armadilha da entrevista de descoberta (nota 07) — narrativa individual é rica, mas não é, sozinha, generalizável.
-> **Como evitar:** rode a switch interview com pelo menos 3-5 pessoas antes de tratar um padrão de push/pull como confiável.
+> **O que acontece:** uma única história reveladora vira "o job dos nossos usuários", sem checar se é padrão ou exceção de uma pessoa. **Por quê:** a mesma armadilha da entrevista de descoberta (nota 07) — narrativa individual é rica, mas não é, sozinha, generalizável. **Como evitar:** rode a switch interview com pelo menos 3-5 pessoas antes de tratar um padrão de push/pull como confiável.
 
 ## Como explicar em inglês
 

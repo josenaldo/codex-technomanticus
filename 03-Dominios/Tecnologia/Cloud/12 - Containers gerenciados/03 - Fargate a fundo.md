@@ -28,8 +28,7 @@ Fargate é a resposta da AWS pra essa pergunta especificamente para containers: 
 > [!tip] Assista: AWS Fargate Tutorial: Serverless Container Execution Explained for Beginners
 > **Canal:** CodeLucky | **Duração:** ~9min | **Idioma:** EN
 >
-> Introdução curta e direta que resume o que esta seção acabou de abrir: você define uma task definition, não vê nem gerencia o servidor por trás dela, e o billing acontece por segundo enquanto a task roda — um bom resumo de 9 minutos antes de entrar nos detalhes de pricing e IAM mais à frente na nota.
-> Trecho de destaque [04:06]: *"You never interact with or even see the underlying servers that run your containers."*
+> Introdução curta e direta que resume o que esta seção acabou de abrir: você define uma task definition, não vê nem gerencia o servidor por trás dela, e o billing acontece por segundo enquanto a task roda — um bom resumo de 9 minutos antes de entrar nos detalhes de pricing e IAM mais à frente na nota. Trecho de destaque [04:06]: *"You never interact with or even see the underlying servers that run your containers."*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=BRCQltXQEoU)
 
@@ -118,8 +117,7 @@ Isso é ótimo pra workloads tolerantes a interrupção — processamento em lot
 > [!tip] Assista: AWS re:Invent 2020: AWS Fargate: Are serverless containers right for you?
 > **Canal:** AWS Events | **Duração:** ~31min | **Idioma:** EN
 >
-> Talk oficial da AWS que aprofunda exatamente o billing por segundo e o desconto do Fargate Spot que esta seção acabou de explicar, com números e casos de uso reais de quando vale a pena aceitar o aviso de interrupção de 2 minutos em troca do desconto.
-> Trecho de destaque [15:58]: *"another pricing option is Fargate Spot — if your application is fault tolerant, you can use Fargate Spot to avail a deep discount of 70 percent compared to your on-demand pricing"*
+> Talk oficial da AWS que aprofunda exatamente o billing por segundo e o desconto do Fargate Spot que esta seção acabou de explicar, com números e casos de uso reais de quando vale a pena aceitar o aviso de interrupção de 2 minutos em troca do desconto. Trecho de destaque [15:58]: *"another pricing option is Fargate Spot — if your application is fault tolerant, you can use Fargate Spot to avail a deep discount of 70 percent compared to your on-demand pricing"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Vtymod0nPBo)
 

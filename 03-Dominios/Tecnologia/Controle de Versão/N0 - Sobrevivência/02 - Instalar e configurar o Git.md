@@ -82,9 +82,7 @@ git config --global user.email "ana.ribeiro@universidade.br"
 O nome pode ser o seu nome mesmo, com espaço e acento — ele vai aparecer no histórico como autoria. Não é usuário de login, não tem senha, não precisa ser único.
 
 > [!warning] Use o mesmo e-mail que você vai usar no serviço de hospedagem
-> **O que acontece:** meses depois, você percebe que seus commits aparecem no GitHub como de um autor desconhecido, sem foto e sem link pro seu perfil. Todo o trabalho está lá, mas não é creditado a você.
-> **Por quê:** o GitHub liga commits à sua conta comparando o campo de e-mail. Se o e-mail do commit não estiver cadastrado na conta, ele não consegue fazer a ligação.
-> **Como evitar:** use aqui o mesmo e-mail que você usará ao criar a conta na nota 05 — ou cadastre ambos os endereços na conta depois. E note: **esse e-mail fica visível** para quem tiver acesso ao repositório. Se isso for um problema, o GitHub oferece um endereço mascarado (`...@users.noreply.github.com`); vale decidir isso antes do primeiro commit, porque corrigir depois exige reescrever o histórico.
+> **O que acontece:** meses depois, você percebe que seus commits aparecem no GitHub como de um autor desconhecido, sem foto e sem link pro seu perfil. Todo o trabalho está lá, mas não é creditado a você. **Por quê:** o GitHub liga commits à sua conta comparando o campo de e-mail. Se o e-mail do commit não estiver cadastrado na conta, ele não consegue fazer a ligação. **Como evitar:** use aqui o mesmo e-mail que você usará ao criar a conta na nota 05 — ou cadastre ambos os endereços na conta depois. E note: **esse e-mail fica visível** para quem tiver acesso ao repositório. Se isso for um problema, o GitHub oferece um endereço mascarado (`...@users.noreply.github.com`); vale decidir isso antes do primeiro commit, porque corrigir depois exige reescrever o histórico.
 
 ---
 

@@ -73,19 +73,13 @@ Um fractional que abriu MEI por conta própria, sem orientação contábil, desc
 ## Armadilhas comuns
 
 > [!warning] Confiar em "todo mundo abre MEI primeiro" sem checar o CNAE
-> **O que acontece:** o profissional segue o conselho genérico mais popular (abrir MEI por ser "mais simples e barato") sem verificar se a atividade específica de desenvolvimento de software está na lista permitida.
-> **Por quê:** o conselho de MEI é correto pra muitas atividades, mas desenvolvimento sob encomenda historicamente não está entre elas — informação que muda por atividade, não é regra geral.
-> **Como evitar:** verificar o CNAE específico da atividade (ou consultar um contador) antes de abrir qualquer CNPJ, em vez de seguir recomendação genérica de terceiros.
+> **O que acontece:** o profissional segue o conselho genérico mais popular (abrir MEI por ser "mais simples e barato") sem verificar se a atividade específica de desenvolvimento de software está na lista permitida. **Por quê:** o conselho de MEI é correto pra muitas atividades, mas desenvolvimento sob encomenda historicamente não está entre elas — informação que muda por atividade, não é regra geral. **Como evitar:** verificar o CNAE específico da atividade (ou consultar um contador) antes de abrir qualquer CNPJ, em vez de seguir recomendação genérica de terceiros.
 
 > [!warning] Escolher CNAE genérico demais
-> **O que acontece:** a empresa é aberta com um CNAE de "consultoria em TI" genérico, sem refletir com precisão que o serviço prestado é desenvolvimento de software.
-> **Por quê:** CNAE incorreto pode gerar problema na emissão de nota fiscal de exportação (que exige alinhamento entre atividade declarada e serviço prestado) e complicar o enquadramento no Fator R.
-> **Como evitar:** usar os CNAEs específicos de desenvolvimento (6201-5/01 ou 6202-3/00) em vez de CNAEs de consultoria genérica, mesmo que pareçam mais flexíveis à primeira vista.
+> **O que acontece:** a empresa é aberta com um CNAE de "consultoria em TI" genérico, sem refletir com precisão que o serviço prestado é desenvolvimento de software. **Por quê:** CNAE incorreto pode gerar problema na emissão de nota fiscal de exportação (que exige alinhamento entre atividade declarada e serviço prestado) e complicar o enquadramento no Fator R. **Como evitar:** usar os CNAEs específicos de desenvolvimento (6201-5/01 ou 6202-3/00) em vez de CNAEs de consultoria genérica, mesmo que pareçam mais flexíveis à primeira vista.
 
 > [!warning] Abrir empresa sem projetar o pró-labore desde o início
-> **O que acontece:** a empresa é aberta sem plano de pró-labore, e só meses depois o profissional descobre o Fator R e percebe que está pagando o Anexo V mais caro.
-> **Por quê:** o Fator R é calculado numa janela móvel de 12 meses — quanto mais cedo o pró-labore correto começa, mais rápido a empresa cruza o gatilho dos 28% e migra pro Anexo III.
-> **Como evitar:** definir o pró-labore já no primeiro mês de operação com o cálculo do Fator R em mente, em vez de tratar isso como ajuste posterior.
+> **O que acontece:** a empresa é aberta sem plano de pró-labore, e só meses depois o profissional descobre o Fator R e percebe que está pagando o Anexo V mais caro. **Por quê:** o Fator R é calculado numa janela móvel de 12 meses — quanto mais cedo o pró-labore correto começa, mais rápido a empresa cruza o gatilho dos 28% e migra pro Anexo III. **Como evitar:** definir o pró-labore já no primeiro mês de operação com o cálculo do Fator R em mente, em vez de tratar isso como ajuste posterior.
 
 ## Como explicar em inglês
 

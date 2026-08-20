@@ -95,14 +95,10 @@ Como escolher:
 Na dúvida, **`defer` é o padrão seguro**: não bloqueia, roda com o DOM pronto, e mantém a ordem. `async` é para o que é genuinamente independente. Um `type="module"` já é `defer` por padrão.
 
 > [!warning] Usar `async` em scripts com dependências
-> **O que acontece:** você marca `jquery.js` e `usa-jquery.js` ambos como `async`, e a página quebra intermitentemente com "$ is not defined".
-> **Por quê:** `async` executa **na ordem de chegada**, não na ordem do HTML. Se o segundo script baixar antes do primeiro, ele roda antes — e a dependência não existe ainda. A falha é de corrida, então aparece "às vezes", o que a torna traiçoeira.
-> **Como evitar:** use `defer` (preserva a ordem) para qualquer conjunto de scripts com dependência entre si. Reserve `async` para o que é ilhado.
+> **O que acontece:** você marca `jquery.js` e `usa-jquery.js` ambos como `async`, e a página quebra intermitentemente com "$ is not defined". **Por quê:** `async` executa **na ordem de chegada**, não na ordem do HTML. Se o segundo script baixar antes do primeiro, ele roda antes — e a dependência não existe ainda. A falha é de corrida, então aparece "às vezes", o que a torna traiçoeira. **Como evitar:** use `defer` (preserva a ordem) para qualquer conjunto de scripts com dependência entre si. Reserve `async` para o que é ilhado.
 
 > [!warning] "Colocar o script no fim do body resolve"
-> **O que acontece:** o time move os `<script>` para antes de `</body>` e considera o problema resolvido.
-> **Por quê:** ajuda (o DOM já está quase pronto quando o script roda), mas o script no fim do body **ainda é síncrono** — ele bloqueia o parse do pouco que resta e, sobretudo, só *começa a baixar* quando o parser chega nele, tarde. Com `defer`, o download começa cedo, em paralelo, e a execução espera o fim — melhor dos dois mundos.
-> **Como evitar:** prefira `defer` no `<head>` a `<script>` síncrono no fim do body.
+> **O que acontece:** o time move os `<script>` para antes de `</body>` e considera o problema resolvido. **Por quê:** ajuda (o DOM já está quase pronto quando o script roda), mas o script no fim do body **ainda é síncrono** — ele bloqueia o parse do pouco que resta e, sobretudo, só *começa a baixar* quando o parser chega nele, tarde. Com `defer`, o download começa cedo, em paralelo, e a execução espera o fim — melhor dos dois mundos. **Como evitar:** prefira `defer` no `<head>` a `<script>` síncrono no fim do body.
 
 **Recursos render-blocking em uma frase:** CSS bloqueia o paint e JS síncrono bloqueia o parse, então você inlina o critical CSS e adia o resto, e marca seus scripts com `defer` (dependentes, na ordem) ou `async` (independentes) — deixando bloquear apenas o mínimo que a primeira tela realmente precisa.
 

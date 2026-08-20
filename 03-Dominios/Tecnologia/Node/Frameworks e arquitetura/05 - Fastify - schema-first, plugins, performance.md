@@ -394,58 +394,38 @@ Com Fastify dominado, o próximo passo natural é entender validation em profund
 ## Armadilhas comuns
 
 > [!warning] Schema sem `additionalProperties: false`
-> **O que acontece:** Payloads com campos extras passam pela validation e chegam ao handler.
-> **Por quê:** O default do Ajv é permitir propriedades adicionais — sem a flag, campos desconhecidos entram silenciosamente.
-> **Como evitar:** Sempre adicione `additionalProperties: false` em schemas de body e response onde o contrato é estrito. TypeBox faz isso por default com `Type.Object`.
+> **O que acontece:** Payloads com campos extras passam pela validation e chegam ao handler. **Por quê:** O default do Ajv é permitir propriedades adicionais — sem a flag, campos desconhecidos entram silenciosamente. **Como evitar:** Sempre adicione `additionalProperties: false` em schemas de body e response onde o contrato é estrito. TypeBox faz isso por default com `Type.Object`.
 
 > [!warning] Decorator registrado em plugin encapsulado, esperado fora
-> **O que acontece:** `fastify.decorate("db", ...)` dentro de plugin encapsulado não está disponível no escopo pai.
-> **Por quê:** Encapsulation é o comportamento default — decorator fica restrito ao plugin e seus filhos.
-> **Como evitar:** Use `fastify-plugin` (`fp(plugin)`) para "quebrar" o encapsulamento e expor decorators ao escopo pai.
+> **O que acontece:** `fastify.decorate("db", ...)` dentro de plugin encapsulado não está disponível no escopo pai. **Por quê:** Encapsulation é o comportamento default — decorator fica restrito ao plugin e seus filhos. **Como evitar:** Use `fastify-plugin` (`fp(plugin)`) para "quebrar" o encapsulamento e expor decorators ao escopo pai.
 
 > [!warning] Validation async batendo em banco no `preValidation`
-> **O que acontece:** Cada request faz query de banco para validar unicidade, criando vetor de DoS e aumentando latência.
-> **Por quê:** `preValidation` roda antes do handler em toda request — banco aqui é custo fixo por request.
-> **Como evitar:** Validações de unicidade pertencem ao handler ou use case, não ao hook de preValidation.
+> **O que acontece:** Cada request faz query de banco para validar unicidade, criando vetor de DoS e aumentando latência. **Por quê:** `preValidation` roda antes do handler em toda request — banco aqui é custo fixo por request. **Como evitar:** Validações de unicidade pertencem ao handler ou use case, não ao hook de preValidation.
 
 > [!warning] Teste sem `await app.ready()` ou `await app.close()`
-> **O que acontece:** Plugins assíncronos podem não ter terminado de inicializar; testes ficam instáveis ou vazam handles.
-> **Por quê:** Fastify inicializa plugins de forma assíncrona — `ready()` garante que tudo está pronto.
-> **Como evitar:** Sempre `await app.ready()` antes dos asserts e `await app.close()` no teardown.
+> **O que acontece:** Plugins assíncronos podem não ter terminado de inicializar; testes ficam instáveis ou vazam handles. **Por quê:** Fastify inicializa plugins de forma assíncrona — `ready()` garante que tudo está pronto. **Como evitar:** Sempre `await app.ready()` antes dos asserts e `await app.close()` no teardown.
 
 > [!warning] Usar `onRequest` esperando `req.body` disponível
-> **O que acontece:** `req.body` é `undefined` em `onRequest` — o parsing ainda não aconteceu.
-> **Por quê:** `onRequest` é a primeira fase, antes de `preParsing` e `preValidation`.
-> **Como evitar:** Para lógica que depende de body, use `preHandler`. Para header/auth, `onRequest` é suficiente.
+> **O que acontece:** `req.body` é `undefined` em `onRequest` — o parsing ainda não aconteceu. **Por quê:** `onRequest` é a primeira fase, antes de `preParsing` e `preValidation`. **Como evitar:** Para lógica que depende de body, use `preHandler`. Para header/auth, `onRequest` é suficiente.
 
 > [!warning] Não declarar response schema
-> **O que acontece:** Serialização é feita via `JSON.stringify` padrão — sem otimização e sem contrato de saída.
-> **Por quê:** `fast-json-stringify` só atua quando há response schema declarado.
-> **Como evitar:** Defina `response` schema para todos os status codes relevantes, especialmente 200/201. Isso também gera a doc OpenAPI automaticamente.
+> **O que acontece:** Serialização é feita via `JSON.stringify` padrão — sem otimização e sem contrato de saída. **Por quê:** `fast-json-stringify` só atua quando há response schema declarado. **Como evitar:** Defina `response` schema para todos os status codes relevantes, especialmente 200/201. Isso também gera a doc OpenAPI automaticamente.
 
 > [!warning] Misturar plugin global e feature plugin sem regra
-> **O que acontece:** Decorators aparecem ou somem dependendo da ordem de registro; comportamento fica imprevisível.
-> **Por quê:** Sem regra clara de quais plugins usam `fp()`, a árvore de escopo fica difícil de rastrear.
-> **Como evitar:** Estabeleça convenção: plugins de infraestrutura (db, logger, config) usam `fp()`; plugins de feature ficam encapsulados.
+> **O que acontece:** Decorators aparecem ou somem dependendo da ordem de registro; comportamento fica imprevisível. **Por quê:** Sem regra clara de quais plugins usam `fp()`, a árvore de escopo fica difícil de rastrear. **Como evitar:** Estabeleça convenção: plugins de infraestrutura (db, logger, config) usam `fp()`; plugins de feature ficam encapsulados.
 
 > [!warning] Tratar Fastify como Express com `reply` diferente
-> **O que acontece:** Hooks, schemas e encapsulation ficam subutilizados; o projeto vira Express com API menos familiar.
-> **Por quê:** Os diferenciais do Fastify são schema-first, lifecycle de hooks e plugin encapsulation — não só a API.
-> **Como evitar:** Adote o modelo schema-first desde o primeiro endpoint. Code review deve exigir schema em toda rota nova.
+> **O que acontece:** Hooks, schemas e encapsulation ficam subutilizados; o projeto vira Express com API menos familiar. **Por quê:** Os diferenciais do Fastify são schema-first, lifecycle de hooks e plugin encapsulation — não só a API. **Como evitar:** Adote o modelo schema-first desde o primeiro endpoint. Code review deve exigir schema em toda rota nova.
 
 ## Perguntas de entrevista
 
-**Por que Fastify é chamado schema-first?**
-Porque schemas ficam na definição da rota e participam de validation, serialization e documentação.
+**Por que Fastify é chamado schema-first?** Porque schemas ficam na definição da rota e participam de validation, serialization e documentação.
 
-**O que é plugin encapsulation?**
-É o isolamento de decorators, hooks e rotas por escopo de plugin. O que um plugin registra não vaza automaticamente para o pai ou irmãos.
+**O que é plugin encapsulation?** É o isolamento de decorators, hooks e rotas por escopo de plugin. O que um plugin registra não vaza automaticamente para o pai ou irmãos.
 
-**Quando escolher Fastify sobre Express?**
-Quando contrato HTTP, validation, serialization e throughput importam mais do que o ecossistema máximo e a simplicidade absoluta.
+**Quando escolher Fastify sobre Express?** Quando contrato HTTP, validation, serialization e throughput importam mais do que o ecossistema máximo e a simplicidade absoluta.
 
-**Qual hook você usaria para auth?**
-Depende. Se precisa só de header, `onRequest` pode bastar. Se precisa de params/body validados, `preHandler` é mais seguro.
+**Qual hook você usaria para auth?** Depende. Se precisa só de header, `onRequest` pode bastar. Se precisa de params/body validados, `preHandler` é mais seguro.
 
 ## Em entrevista
 

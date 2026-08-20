@@ -101,20 +101,15 @@ Para uploads enormes com recuperação de falha: cliente envia em pedaços, serv
 
 ## Na prática (da minha experiência)
 
-> **MedEspecialista — API REST com RFC 9457 e Problem Details:**
-> Implementei um `@RestControllerAdvice` global que traduz exceções de domínio em respostas Problem Details padronizadas. Todo erro tem `type`, `title`, `status`, `detail`, `trace_id` e, quando aplicável, um array `errors` com `field`, `code`, `message`. O frontend React mostra mensagens ao usuário usando o `code` (para i18n) e loga o `trace_id` — quando um usuário reporta um problema, eu busco pelo trace_id nos logs do backend e encontro o request exato. Reduziu drasticamente o tempo de debugging.
+> **MedEspecialista — API REST com RFC 9457 e Problem Details:** Implementei um `@RestControllerAdvice` global que traduz exceções de domínio em respostas Problem Details padronizadas. Todo erro tem `type`, `title`, `status`, `detail`, `trace_id` e, quando aplicável, um array `errors` com `field`, `code`, `message`. O frontend React mostra mensagens ao usuário usando o `code` (para i18n) e loga o `trace_id` — quando um usuário reporta um problema, eu busco pelo trace_id nos logs do backend e encontro o request exato. Reduziu drasticamente o tempo de debugging.
 >
-> **Idempotency para pagamentos:**
-> No endpoint de criação de pagamento, exijo header `Idempotency-Key` (UUID). Armazeno a chave + hash do request + response em uma tabela com TTL de 24h. Se o mesmo key vem de novo com mesmo request, retorno a response cacheada. Se vem com request diferente, retorno 422 "key reused". Isso salvou mais de uma vez: mobile com rede ruim retentando o pagamento que tinha ido pelo primeiro tentativa.
+> **Idempotency para pagamentos:** No endpoint de criação de pagamento, exijo header `Idempotency-Key` (UUID). Armazeno a chave + hash do request + response em uma tabela com TTL de 24h. Se o mesmo key vem de novo com mesmo request, retorno a response cacheada. Se vem com request diferente, retorno 422 "key reused". Isso salvou mais de uma vez: mobile com rede ruim retentando o pagamento que tinha ido pelo primeiro tentativa.
 >
-> **Versionamento por URL path:**
-> Uso `/api/v1/...` desde o dia 1. Quando precisei fazer breaking change em um endpoint, lancei `/api/v2/patients` em paralelo, mantive v1 funcionando, e só desliguei v1 depois de 6 meses e de confirmar por logs que nenhum cliente usava mais. Sem drama.
+> **Versionamento por URL path:** Uso `/api/v1/...` desde o dia 1. Quando precisei fazer breaking change em um endpoint, lancei `/api/v2/patients` em paralelo, mantive v1 funcionando, e só desliguei v1 depois de 6 meses e de confirmar por logs que nenhum cliente usava mais. Sem drama.
 >
-> **Paginação cursor-based no feed:**
-> A listagem de consultas agendadas do médico usa cursor-based pagination (encoded com created_at + id). Inicialmente tinha offset, mas com médicos que têm milhares de consultas históricas, offset com página 500 ficava lento. Cursor resolve em O(log n) via índice composto `(doctor_id, created_at DESC, id DESC)`.
+> **Paginação cursor-based no feed:** A listagem de consultas agendadas do médico usa cursor-based pagination (encoded com created_at + id). Inicialmente tinha offset, mas com médicos que têm milhares de consultas históricas, offset com página 500 ficava lento. Cursor resolve em O(log n) via índice composto `(doctor_id, created_at DESC, id DESC)`.
 >
-> **OpenAPI como contrato:**
-> SpringDoc gera o OpenAPI a partir das annotations. O frontend (React + TypeScript) consome esse OpenAPI via `openapi-typescript` para gerar tipos e clients automaticamente. Quando o backend muda um campo, o TypeScript quebra no frontend — erro de compilação, não em runtime. Esse ciclo salvou vários bugs antes de chegar em produção.
+> **OpenAPI como contrato:** SpringDoc gera o OpenAPI a partir das annotations. O frontend (React + TypeScript) consome esse OpenAPI via `openapi-typescript` para gerar tipos e clients automaticamente. Quando o backend muda um campo, o TypeScript quebra no frontend — erro de compilação, não em runtime. Esse ciclo salvou vários bugs antes de chegar em produção.
 >
 > **A lição principal:** tratar a API como um produto, não como uma consequência do código. Quem vai consumir ela? Como fica a experiência dele? O que acontece quando ela falhar? Essas perguntas importam mais que detalhes de implementação.
 

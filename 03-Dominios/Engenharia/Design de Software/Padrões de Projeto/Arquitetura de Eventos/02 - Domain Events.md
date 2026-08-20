@@ -24,13 +24,7 @@ aliases:
 # Domain Events
 
 > [!abstract] TL;DR
-> Antes de ser uma mensagem num broker, o evento é um **elemento do modelo de domínio**:
-> `PedidoConfirmado` é vocabulário que o especialista de negócio usa, não detalhe de infraestrutura.
-> Tratá-lo assim torna explícito algo que costuma ficar implícito — o instante em que algo
-> **aconteceu** — e dá um lugar limpo para os efeitos colaterais que hoje se acumulam dentro do método
-> de negócio. A distinção que mais importa, e que quase todo sistema erra na primeira versão: **evento
-> de domínio** (interno, no vocabulário do modelo, seu) ≠ **evento de integração** (publicado para fora,
-> contrato público, de todos). Publicar o primeiro cru é como expor suas tabelas.
+> Antes de ser uma mensagem num broker, o evento é um **elemento do modelo de domínio**: `PedidoConfirmado` é vocabulário que o especialista de negócio usa, não detalhe de infraestrutura. Tratá-lo assim torna explícito algo que costuma ficar implícito — o instante em que algo **aconteceu** — e dá um lugar limpo para os efeitos colaterais que hoje se acumulam dentro do método de negócio. A distinção que mais importa, e que quase todo sistema erra na primeira versão: **evento de domínio** (interno, no vocabulário do modelo, seu) ≠ **evento de integração** (publicado para fora, contrato público, de todos). Publicar o primeiro cru é como expor suas tabelas.
 
 ## O dia em que renomear um campo quebrou quatro times
 
@@ -108,19 +102,13 @@ Vale notar a simetria com a família anterior: é o mesmo raciocínio do [[03-Do
 ## Armadilhas comuns
 
 > [!warning] Publicar o evento de domínio cru
-> **O que acontece:** o objeto interno é serializado direto no tópico. Meses depois, uma refatoração interna quebra consumidores que ninguém sabia que existiam — e o modelo de domínio congela por medo.
-> **Por quê:** é a linha de menor esforço no dia em que se escreve, e o custo aparece só quando o modelo precisa mudar. Nada no código sinaliza que aquele objeto virou API pública.
-> **Como evitar:** uma tradução explícita na fronteira e um esquema versionado. Se você não consegue nomear quem consome um evento publicado, você já tem o problema — só ainda não o encontrou.
+> **O que acontece:** o objeto interno é serializado direto no tópico. Meses depois, uma refatoração interna quebra consumidores que ninguém sabia que existiam — e o modelo de domínio congela por medo. **Por quê:** é a linha de menor esforço no dia em que se escreve, e o custo aparece só quando o modelo precisa mudar. Nada no código sinaliza que aquele objeto virou API pública. **Como evitar:** uma tradução explícita na fronteira e um esquema versionado. Se você não consegue nomear quem consome um evento publicado, você já tem o problema — só ainda não o encontrou.
 
 > [!warning] Nome imperativo ou no presente
-> **O que acontece:** aparecem `AtualizarEstoque` ou `PedidoConfirmando` no barramento. Consumidores passam a tratá-los como ordens, e o produtor começa a **depender** de que alguém obedeça.
-> **Por quê:** o nome carrega a intenção. Um nome imperativo revela que o produtor sabe o que deve acontecer — e isso é comando, não evento.
-> **Como evitar:** particípio passado, sempre, e no vocabulário do negócio. Se o nome natural for imperativo, aceite: é um comando, e ele quer uma fila dirigida e um consumidor.
+> **O que acontece:** aparecem `AtualizarEstoque` ou `PedidoConfirmando` no barramento. Consumidores passam a tratá-los como ordens, e o produtor começa a **depender** de que alguém obedeça. **Por quê:** o nome carrega a intenção. Um nome imperativo revela que o produtor sabe o que deve acontecer — e isso é comando, não evento. **Como evitar:** particípio passado, sempre, e no vocabulário do negócio. Se o nome natural for imperativo, aceite: é um comando, e ele quer uma fila dirigida e um consumidor.
 
 > [!warning] Efeito colateral escondido no ouvinte
-> **O que acontece:** um ouvinte de `PedidoConfirmado` altera outro agregado, que levanta outro evento, que dispara um terceiro ouvinte. Ninguém consegue prever o que uma confirmação faz, e uma falha no meio deixa o sistema num estado inconsistente.
-> **Por quê:** o ouvinte parece um lugar barato para pendurar comportamento — não exige mudar o código existente, o que é justamente a virtude do padrão levada longe demais.
-> **Como evitar:** ouvintes devem ser **rasos** e, preferencialmente, tocar um agregado só. Encadeamento que atravessa vários agregados com regra de negócio no meio é um processo — e processo quer [[07 - Saga|Saga]] ou [[08 - Process Manager|Process Manager]], com compensação e visibilidade.
+> **O que acontece:** um ouvinte de `PedidoConfirmado` altera outro agregado, que levanta outro evento, que dispara um terceiro ouvinte. Ninguém consegue prever o que uma confirmação faz, e uma falha no meio deixa o sistema num estado inconsistente. **Por quê:** o ouvinte parece um lugar barato para pendurar comportamento — não exige mudar o código existente, o que é justamente a virtude do padrão levada longe demais. **Como evitar:** ouvintes devem ser **rasos** e, preferencialmente, tocar um agregado só. Encadeamento que atravessa vários agregados com regra de negócio no meio é um processo — e processo quer [[07 - Saga|Saga]] ou [[08 - Process Manager|Process Manager]], com compensação e visibilidade.
 
 ## Como explicar em inglês
 

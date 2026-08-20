@@ -74,9 +74,7 @@ Isso dá a você um mapa de causas direto. Um LCP ruim é sempre uma dessas etap
 Repare como as métricas de apoio da [[03-Dominios/Tecnologia/Web Performance/Medição e Core Web Vitals/07 - Métricas de apoio|nota 07 do Galho 1]] são, na prática, "réguas" posicionadas em pontos do CRP: TTFB mede até o passo 1 começar, FCP mede o primeiro paint, LCP mede o paint do conteúdo principal. **Medir era saber *onde* no CRP a coisa parou; este galho é aprender a *destravar* cada ponto.**
 
 > [!warning] Achar que "otimizar carregamento" é uma coisa só
-> **O que acontece:** o time aplica uma dica genérica ("minifique o CSS") e o LCP não melhora.
-> **Por quê:** carregamento não é um problema único — é uma cadeia de seis passos, e a dica só ajuda se o gargalo estiver naquele passo. Minificar CSS não resolve um TTFB alto nem uma imagem hero de 3 MB.
-> **Como evitar:** sempre localize a etapa culpada no CRP **antes** de otimizar (com o Performance panel, nota 08 do Galho 1). Otimização certa no lugar errado é esforço jogado fora.
+> **O que acontece:** o time aplica uma dica genérica ("minifique o CSS") e o LCP não melhora. **Por quê:** carregamento não é um problema único — é uma cadeia de seis passos, e a dica só ajuda se o gargalo estiver naquele passo. Minificar CSS não resolve um TTFB alto nem uma imagem hero de 3 MB. **Como evitar:** sempre localize a etapa culpada no CRP **antes** de otimizar (com o Performance panel, nota 08 do Galho 1). Otimização certa no lugar errado é esforço jogado fora.
 
 **O Critical Rendering Path em uma frase:** é a coreografia HTML→DOM, CSS→CSSOM, render tree → layout → paint que o browser executa para virar bytes em pixels — e como o LCP é o fim desse caminho para o conteúdo principal, toda otimização de carregamento é, no fundo, destravar um dos seus passos.
 

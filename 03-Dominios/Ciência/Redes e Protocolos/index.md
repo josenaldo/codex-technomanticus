@@ -23,33 +23,20 @@ aliases:
 # Redes e Protocolos
 
 > [!abstract] TL;DR
-> Galho de Ciência da Computação sobre como sistemas conversam — do **modelo de camadas** e **TCP/UDP/DNS/TLS**
-> até **HTTP** (métodos, status, caching, CORS, HTTP/2-3), os **protocolos de aplicação**
-> (REST/GraphQL/gRPC, WebSocket/SSE) e a **engenharia de comunicação em escala** (latência, load
-> balancing, CDN, resiliência). Para um senior, a rede é onde nascem os gargalos invisíveis: saber
-> rastrear as camadas é o que separa "está lento" de "está lento *porque*". Interview-critical.
+> Galho de Ciência da Computação sobre como sistemas conversam — do **modelo de camadas** e **TCP/UDP/DNS/TLS** até **HTTP** (métodos, status, caching, CORS, HTTP/2-3), os **protocolos de aplicação** (REST/GraphQL/gRPC, WebSocket/SSE) e a **engenharia de comunicação em escala** (latência, load balancing, CDN, resiliência). Para um senior, a rede é onde nascem os gargalos invisíveis: saber rastrear as camadas é o que separa "está lento" de "está lento *porque*". Interview-critical.
 
 ## Sobre este galho
 
-Networking aparece em entrevista de duas formas: **system design** ("como você projetaria isso?" exige
-latência, DNS, load balancing, CDN, protocolos) e **debugging** ("por que está lento?" exige rastrear
-camadas: DNS? TLS? slow start? N+1 de chamadas?). Este galho cobre as duas faces, do bit ao byte de
-aplicação.
+Networking aparece em entrevista de duas formas: **system design** ("como você projetaria isso?" exige latência, DNS, load balancing, CDN, protocolos) e **debugging** ("por que está lento?" exige rastrear camadas: DNS? TLS? slow start? N+1 de chamadas?). Este galho cobre as duas faces, do bit ao byte de aplicação.
 
 **Fronteiras (linka, não duplica):**
-- **Design de API** (modelagem de recurso, versionamento, paginação, HATEOAS, Richardson) → [[API Design]].
-  Aqui REST/GraphQL/gRPC são tratados **como protocolo** (transporte, serialização, streaming).
-- **Escala e composição de sistema** → [[System Design]]. Load balancing, CDN, números de latência e
-  resiliência são fundamento de rede aqui e **forward-linkam** pra lá.
-- **Comunicação assíncrona** → [[Mensageria]] / [[03-Dominios/Tecnologia/Java/Backend/Kafka/Kafka|Kafka]]. A nota de
-  REST/gRPC menciona mensageria como alternativa síncrona × assíncrona e linka.
-- **Primitivas criptográficas** (Diffie-Hellman, hashing, PKI a fundo) → galho futuro de Segurança
-  Conceitual. A nota de TLS trata o **protocolo**; a cripto interna fica mencionada em prosa.
-- **Java/produção** (OkHttp, Resilience4j, HikariCP) → [[Spring Boot]]. **Operar o stack** (Nginx, Linux,
-  K8s) → [[03-Dominios/Tecnologia/Infraestrutura/Linux|Linux]] / [[Nginx]].
+- **Design de API** (modelagem de recurso, versionamento, paginação, HATEOAS, Richardson) → [[API Design]]. Aqui REST/GraphQL/gRPC são tratados **como protocolo** (transporte, serialização, streaming).
+- **Escala e composição de sistema** → [[System Design]]. Load balancing, CDN, números de latência e resiliência são fundamento de rede aqui e **forward-linkam** pra lá.
+- **Comunicação assíncrona** → [[Mensageria]] / [[03-Dominios/Tecnologia/Java/Backend/Kafka/Kafka|Kafka]]. A nota de REST/gRPC menciona mensageria como alternativa síncrona × assíncrona e linka.
+- **Primitivas criptográficas** (Diffie-Hellman, hashing, PKI a fundo) → galho futuro de Segurança Conceitual. A nota de TLS trata o **protocolo**; a cripto interna fica mencionada em prosa.
+- **Java/produção** (OkHttp, Resilience4j, HikariCP) → [[Spring Boot]]. **Operar o stack** (Nginx, Linux, K8s) → [[03-Dominios/Tecnologia/Infraestrutura/Linux|Linux]] / [[Nginx]].
 
-**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista"
-com frases prontas em inglês e vocabulário técnico PT→EN.
+**Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista" com frases prontas em inglês e vocabulário técnico PT→EN.
 
 ## Iniciado — as camadas e o transporte
 

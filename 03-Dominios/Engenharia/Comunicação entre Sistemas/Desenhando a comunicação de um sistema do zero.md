@@ -114,9 +114,7 @@ sequenceDiagram
 Note o desenho: o cliente recebe a confirmação assim que o pagamento é aprovado e o pedido é gravado — não espera nenhuma das quatro ações downstream. Isso é literalmente a definição de desacoplamento temporal que abre o sub-galho 4: o produtor (checkout) não bloqueia esperando o consumidor (estoque, fiscal, notificação, analytics) processar.
 
 > [!warning] Tornar tudo assíncrono "por padrão" é tão errado quanto tornar tudo síncrono
-> **O que acontece:** um time, animado com os benefícios de desacoplamento, decide que até a aprovação do pagamento deveria ser assíncrona — o cliente recebe um "202 Accepted, estamos processando" e só sabe se o pagamento passou minutos depois, via polling ou push.
-> **Por quê:** o custo de complexidade da assincronia — mencionado explicitamente na nota 01 do sub-galho 4 — só se paga quando o consumidor de fato tolera esperar. Aplicado ao pagamento, isso quebra a expectativa fundamental de qualquer checkout: saber, na hora, se a compra foi concluída.
-> **Como evitar:** a régua não é "assíncrono é melhor" nem "síncrono é mais simples" — é, item por item, "este consumidor específico pode esperar, ou não?". O gateway de pagamento não pode; a nota fiscal pode.
+> **O que acontece:** um time, animado com os benefícios de desacoplamento, decide que até a aprovação do pagamento deveria ser assíncrona — o cliente recebe um "202 Accepted, estamos processando" e só sabe se o pagamento passou minutos depois, via polling ou push. **Por quê:** o custo de complexidade da assincronia — mencionado explicitamente na nota 01 do sub-galho 4 — só se paga quando o consumidor de fato tolera esperar. Aplicado ao pagamento, isso quebra a expectativa fundamental de qualquer checkout: saber, na hora, se a compra foi concluída. **Como evitar:** a régua não é "assíncrono é melhor" nem "síncrono é mais simples" — é, item por item, "este consumidor específico pode esperar, ou não?". O gateway de pagamento não pode; a nota fiscal pode.
 
 ## 4. Confiabilidade do pagamento: idempotência e versionamento desde o dia 1
 
@@ -294,9 +292,7 @@ Três perguntas de acompanhamento comuns, e como esta nota já as respondeu:
 - **"E se o parceiro de logística mandar o mesmo webhook duas vezes?"** — aponta para a seção 7: deduplicação por ID de evento, a mesma disciplina do consumer de notificação da seção 6, aplicada do lado receptor do webhook.
 
 > [!warning] Responder com uma lista de tecnologias em vez de um grafo de decisões
-> **O que acontece:** perguntado "como você desenharia a comunicação deste sistema?", o candidato lista tecnologias — "eu usaria GraphQL, gRPC, Kafka, webhooks com HMAC" — sem conectar cada uma a uma fronteira específica e a um motivo específico.
-> **Por quê:** uma lista de tecnologias, por mais correta que seja individualmente, não demonstra a habilidade que a pergunta testa — que é justamente a capacidade de mapear cada decisão a um requisito real do cenário, não a familiaridade com os nomes.
-> **Como evitar:** narrar a decisão na mesma ordem desta sessão — de fora para dentro, do síncrono para o assíncrono — nomeando, a cada passo, quem é o consumidor e por que essa fronteira específica pede essa tecnologia específica, exatamente como as nove seções acima fizeram.
+> **O que acontece:** perguntado "como você desenharia a comunicação deste sistema?", o candidato lista tecnologias — "eu usaria GraphQL, gRPC, Kafka, webhooks com HMAC" — sem conectar cada uma a uma fronteira específica e a um motivo específico. **Por quê:** uma lista de tecnologias, por mais correta que seja individualmente, não demonstra a habilidade que a pergunta testa — que é justamente a capacidade de mapear cada decisão a um requisito real do cenário, não a familiaridade com os nomes. **Como evitar:** narrar a decisão na mesma ordem desta sessão — de fora para dentro, do síncrono para o assíncrono — nomeando, a cada passo, quem é o consumidor e por que essa fronteira específica pede essa tecnologia específica, exatamente como as nove seções acima fizeram.
 
 ## How to explain in English
 

@@ -22,13 +22,7 @@ aliases:
 # Padrões raros (Bridge, Flyweight, Memento, Interpreter)
 
 > [!abstract] TL;DR
-> Quatro dos 23 padrões do GoF são **genuinamente raros** na prática moderna — **Bridge**,
-> **Flyweight**, **Memento** e **Interpreter**. Em vez de um capítulo forçado para cada, esta nota
-> os cobre juntos e honestamente: o que são, **por que ficaram raros** (a linguagem, o framework ou
-> a economia do hardware os absorveram) e **onde ainda vivem**. É repertório de reconhecimento — num
-> sistema legado, você vai *encontrar* um Flyweight ou um Interpreter caseiro, e saber nomeá-lo vale
-> mais do que saber implementá-lo do zero. A armadilha comum aos quatro: reinventar à mão o que uma
-> biblioteca, um recurso da linguagem ou um *parser generator* já fazem melhor.
+> Quatro dos 23 padrões do GoF são **genuinamente raros** na prática moderna — **Bridge**, **Flyweight**, **Memento** e **Interpreter**. Em vez de um capítulo forçado para cada, esta nota os cobre juntos e honestamente: o que são, **por que ficaram raros** (a linguagem, o framework ou a economia do hardware os absorveram) e **onde ainda vivem**. É repertório de reconhecimento — num sistema legado, você vai *encontrar* um Flyweight ou um Interpreter caseiro, e saber nomeá-lo vale mais do que saber implementá-lo do zero. A armadilha comum aos quatro: reinventar à mão o que uma biblioteca, um recurso da linguagem ou um *parser generator* já fazem melhor.
 
 ## Bridge — separar abstração da implementação
 
@@ -73,19 +67,13 @@ graph LR
 ## Armadilhas comuns
 
 > [!warning] Reinventar o Interpreter em vez de usar parser generator ou engine
-> **O que acontece:** para interpretar uma linguagenzinha, escreve-se um interpretador à mão com uma classe por regra gramatical, que logo vira difícil de estender e cheio de bugs de parsing.
-> **Por quê:** parsing e avaliação são problemas resolvidos. Um *parser generator* (ANTLR) ou uma engine existente (regex, SpEL, uma rule engine) faz melhor, com menos código e menos bugs.
-> **Como evitar:** precisa de uma linguagem real → *parser generator*. Precisa de padrões de texto → regex. Precisa de regras configuráveis → engine de regras. Reserve o Interpreter caseiro para gramáticas minúsculas e estáveis.
+> **O que acontece:** para interpretar uma linguagenzinha, escreve-se um interpretador à mão com uma classe por regra gramatical, que logo vira difícil de estender e cheio de bugs de parsing. **Por quê:** parsing e avaliação são problemas resolvidos. Um *parser generator* (ANTLR) ou uma engine existente (regex, SpEL, uma rule engine) faz melhor, com menos código e menos bugs. **Como evitar:** precisa de uma linguagem real → *parser generator*. Precisa de padrões de texto → regex. Precisa de regras configuráveis → engine de regras. Reserve o Interpreter caseiro para gramáticas minúsculas e estáveis.
 
 > [!warning] Flyweight prematuro (complexidade sem ganho real)
-> **O que acontece:** separa-se estado intrínseco de extrínseco "para economizar memória" num sistema que tem milhares — não milhões — de objetos, onde a memória nunca foi problema.
-> **Por quê:** o Flyweight troca clareza por economia de memória; sem um gargalo de memória **real e medido**, você só ganhou complexidade.
-> **Como evitar:** meça primeiro. Só aplique Flyweight com um problema de memória comprovado e alta cardinalidade. Antes disso, é otimização prematura.
+> **O que acontece:** separa-se estado intrínseco de extrínseco "para economizar memória" num sistema que tem milhares — não milhões — de objetos, onde a memória nunca foi problema. **Por quê:** o Flyweight troca clareza por economia de memória; sem um gargalo de memória **real e medido**, você só ganhou complexidade. **Como evitar:** meça primeiro. Só aplique Flyweight com um problema de memória comprovado e alta cardinalidade. Antes disso, é otimização prematura.
 
 > [!warning] Confundir Bridge com Adapter (ou Strategy)
-> **O que acontece:** rotula-se como Bridge o que é um Adapter (conserto de interface) ou um Strategy (algoritmo intercambiável), e vice-versa.
-> **Por quê:** os três compõem/injetam, mas com intenções distintas: **Adapter** conserta interfaces incompatíveis *depois do fato*; **Bridge** separa dois eixos de variação *por projeto, desde o início*; **Strategy** troca *o algoritmo* de uma operação.
-> **Como evitar:** pergunte *"estou adaptando algo que já existe e não bate (Adapter), planejando duas dimensões que variam independentes (Bridge), ou trocando como uma operação é feita (Strategy)?"*.
+> **O que acontece:** rotula-se como Bridge o que é um Adapter (conserto de interface) ou um Strategy (algoritmo intercambiável), e vice-versa. **Por quê:** os três compõem/injetam, mas com intenções distintas: **Adapter** conserta interfaces incompatíveis *depois do fato*; **Bridge** separa dois eixos de variação *por projeto, desde o início*; **Strategy** troca *o algoritmo* de uma operação. **Como evitar:** pergunte *"estou adaptando algo que já existe e não bate (Adapter), planejando duas dimensões que variam independentes (Bridge), ou trocando como uma operação é feita (Strategy)?"*.
 
 ## Como explicar em inglês
 

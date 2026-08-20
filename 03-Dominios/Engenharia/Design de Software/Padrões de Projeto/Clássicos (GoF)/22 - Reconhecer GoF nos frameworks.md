@@ -19,14 +19,7 @@ aliases:
 # Reconhecer GoF nos frameworks
 
 > [!abstract] TL;DR
-> As notas anteriores mostraram um lado da lente: *quando a linguagem dissolve o padrão*. Esta mostra
-> o outro: **onde o framework já o implementou por você**. Você usa Spring, JPA e Express o dia
-> inteiro sem escrever um único padrão GoF à mão — mas eles estão lá, aplicados pelo framework.
-> `@Transactional` é **Proxy**; um `@Service` orquestrador é **Facade**; `@EventListener` é
-> **Observer**; `JpaRepository` é **Repository**; injeção de dependência é **IoC**. A tese prática:
-> num stack moderno, **reconhecer** o padrão vale mais que **reimplementá-lo** — porque é o
-> reconhecimento que te dá o modelo mental para **depurar** quando o comportamento foge do esperado.
-> A armadilha: tratar o framework como mágica e, quando quebra, não ter por onde raciocinar.
+> As notas anteriores mostraram um lado da lente: *quando a linguagem dissolve o padrão*. Esta mostra o outro: **onde o framework já o implementou por você**. Você usa Spring, JPA e Express o dia inteiro sem escrever um único padrão GoF à mão — mas eles estão lá, aplicados pelo framework. `@Transactional` é **Proxy**; um `@Service` orquestrador é **Facade**; `@EventListener` é **Observer**; `JpaRepository` é **Repository**; injeção de dependência é **IoC**. A tese prática: num stack moderno, **reconhecer** o padrão vale mais que **reimplementá-lo** — porque é o reconhecimento que te dá o modelo mental para **depurar** quando o comportamento foge do esperado. A armadilha: tratar o framework como mágica e, quando quebra, não ter por onde raciocinar.
 
 ## Você já usa os padrões — sem escrevê-los
 
@@ -85,19 +78,13 @@ Reconhecer o padrão é o que te dá o **modelo mental** para entender falhas qu
 ## Armadilhas comuns
 
 > [!warning] Tratar o framework como mágica
-> **O que acontece:** o dev usa `@Transactional`, `@Cacheable`, lazy loading por anos sem saber que são Proxy — até um comportamento inesperado virar um mistério de horas, sem por onde começar.
-> **Por quê:** o framework esconde a implementação, não a existência do padrão. Sem reconhecer o padrão por baixo, você não tem modelo mental para raciocinar quando algo desvia do esperado.
-> **Como evitar:** ao adotar um recurso "mágico" do framework, pergunte *qual padrão é este?*. Saber que `@Transactional` é Proxy, `JpaRepository` é Repository, `@EventListener` é Observer transforma depuração em dedução.
+> **O que acontece:** o dev usa `@Transactional`, `@Cacheable`, lazy loading por anos sem saber que são Proxy — até um comportamento inesperado virar um mistério de horas, sem por onde começar. **Por quê:** o framework esconde a implementação, não a existência do padrão. Sem reconhecer o padrão por baixo, você não tem modelo mental para raciocinar quando algo desvia do esperado. **Como evitar:** ao adotar um recurso "mágico" do framework, pergunte *qual padrão é este?*. Saber que `@Transactional` é Proxy, `JpaRepository` é Repository, `@EventListener` é Observer transforma depuração em dedução.
 
 > [!warning] Reimplementar o que o framework já faz
-> **O que acontece:** escreve-se o próprio container de DI, o próprio *event bus*, o próprio Singleton artesanal, o próprio mecanismo de proxy.
-> **Por quê:** o framework já implementa esses padrões de forma testada, thread-safe e integrada. Reimplementá-los à mão é reintroduzir bugs que outros já resolveram, e ainda perder a integração (ciclo de vida, configuração).
-> **Como evitar:** antes de escrever um padrão à mão, cheque se o framework não o oferece. Singleton → deixe o container. Event bus → use os eventos do framework. Proxy → use AOP.
+> **O que acontece:** escreve-se o próprio container de DI, o próprio *event bus*, o próprio Singleton artesanal, o próprio mecanismo de proxy. **Por quê:** o framework já implementa esses padrões de forma testada, thread-safe e integrada. Reimplementá-los à mão é reintroduzir bugs que outros já resolveram, e ainda perder a integração (ciclo de vida, configuração). **Como evitar:** antes de escrever um padrão à mão, cheque se o framework não o oferece. Singleton → deixe o container. Event bus → use os eventos do framework. Proxy → use AOP.
 
 > [!warning] Achar que "é um padrão" garante bom uso
-> **O que acontece:** conclui-se que, porque o framework aplica o padrão, o seu uso está automaticamente correto — e ignora-se um `@Service` que virou God Facade, ou um `@EventListener` que criou uma cascata de eventos.
-> **Por quê:** o framework implementa o **mecanismo** bem; o **uso** que você faz dele pode ser ruim (uma Facade gigante ainda é um God Object). O padrão é uma ferramenta, não um selo de qualidade.
-> **Como evitar:** as armadilhas de cada padrão (ver as notas individuais) continuam valendo mesmo quando o framework fornece o mecanismo. Reconhecer o padrão inclui reconhecer quando ele está sendo mal usado.
+> **O que acontece:** conclui-se que, porque o framework aplica o padrão, o seu uso está automaticamente correto — e ignora-se um `@Service` que virou God Facade, ou um `@EventListener` que criou uma cascata de eventos. **Por quê:** o framework implementa o **mecanismo** bem; o **uso** que você faz dele pode ser ruim (uma Facade gigante ainda é um God Object). O padrão é uma ferramenta, não um selo de qualidade. **Como evitar:** as armadilhas de cada padrão (ver as notas individuais) continuam valendo mesmo quando o framework fornece o mecanismo. Reconhecer o padrão inclui reconhecer quando ele está sendo mal usado.
 
 ## Como explicar em inglês
 

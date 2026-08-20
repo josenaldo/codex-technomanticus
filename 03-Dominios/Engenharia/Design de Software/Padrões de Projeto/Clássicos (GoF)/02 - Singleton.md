@@ -20,14 +20,7 @@ aliases:
 # Singleton
 
 > [!abstract] TL;DR
-> O **Singleton** garante que uma classe tenha **uma única instância** e oferece um ponto de acesso
-> global a ela. É o padrão mais ensinado — e o mais **controverso**: um singleton mutável é
-> **estado global disfarçado**, com todos os problemas que isso traz (dependências escondidas,
-> testes contaminados, bugs de concorrência). A ironia da nossa lente cross-linguagem: em
-> **Python e Go**, o padrão quase não existe, porque um **módulo/pacote já é um singleton**; em
-> **Java**, precisa de maquinaria. E em qualquer stack moderno, o **container de injeção de
-> dependência** te dá o escopo singleton **sem** o acoplamento do `getInstance()`. Saiba
-> implementá-lo — mas na maioria das vezes a resposta certa é *não* usá-lo.
+> O **Singleton** garante que uma classe tenha **uma única instância** e oferece um ponto de acesso global a ela. É o padrão mais ensinado — e o mais **controverso**: um singleton mutável é **estado global disfarçado**, com todos os problemas que isso traz (dependências escondidas, testes contaminados, bugs de concorrência). A ironia da nossa lente cross-linguagem: em **Python e Go**, o padrão quase não existe, porque um **módulo/pacote já é um singleton**; em **Java**, precisa de maquinaria. E em qualquer stack moderno, o **container de injeção de dependência** te dá o escopo singleton **sem** o acoplamento do `getInstance()`. Saiba implementá-lo — mas na maioria das vezes a resposta certa é *não* usá-lo.
 
 ## Você precisa de exatamente um
 
@@ -165,24 +158,16 @@ Você ganha exatamente o que o Singleton prometia (uma instância compartilhada)
 O Singleton é o padrão onde esta seção mais importa. Quase todo uso "por conveniência" cai em uma destas.
 
 > [!warning] Singleton mutável = estado global disfarçado
-> **O que acontece:** o singleton guarda estado que muda em runtime (um cache, um contador, um "usuário atual"). Em produção surgem bugs de concorrência; em testes, um caso contamina o outro porque o estado sobrevive entre eles.
-> **Por quê:** um singleton mutável é uma variável global com roupa de OO — e estado global compartilhado é a fonte clássica de bugs não-determinísticos e de acoplamento temporal (a ordem de execução passa a importar).
-> **Como evitar:** se precisa mesmo ser singleton, mantenha-o **imutável** (só leitura após a construção). Estado mutável compartilhado quase sempre quer ser um serviço com escopo gerido, não um global.
+> **O que acontece:** o singleton guarda estado que muda em runtime (um cache, um contador, um "usuário atual"). Em produção surgem bugs de concorrência; em testes, um caso contamina o outro porque o estado sobrevive entre eles. **Por quê:** um singleton mutável é uma variável global com roupa de OO — e estado global compartilhado é a fonte clássica de bugs não-determinísticos e de acoplamento temporal (a ordem de execução passa a importar). **Como evitar:** se precisa mesmo ser singleton, mantenha-o **imutável** (só leitura após a construção). Estado mutável compartilhado quase sempre quer ser um serviço com escopo gerido, não um global.
 
 > [!warning] A dependência escondida (viola o DIP)
-> **O que acontece:** `PedidoService` chama `Config.getInstance()` no meio de um método. A assinatura da classe não revela que ela depende de `Config`.
-> **Por quê:** o acesso global **acopla** o chamador a uma implementação concreta sem passar pela porta da frente (o construtor). Isso quebra a Inversão de Dependência ([[06 - DIP - Inversão de Dependência]]) — você depende de um concreto, não de uma abstração injetada — e esconde o grafo de dependências real do sistema.
-> **Como evitar:** injete a dependência pelo construtor. Se ela aparece na assinatura, ela é honesta: rastreável, substituível, óbvia.
+> **O que acontece:** `PedidoService` chama `Config.getInstance()` no meio de um método. A assinatura da classe não revela que ela depende de `Config`. **Por quê:** o acesso global **acopla** o chamador a uma implementação concreta sem passar pela porta da frente (o construtor). Isso quebra a Inversão de Dependência ([[06 - DIP - Inversão de Dependência]]) — você depende de um concreto, não de uma abstração injetada — e esconde o grafo de dependências real do sistema. **Como evitar:** injete a dependência pelo construtor. Se ela aparece na assinatura, ela é honesta: rastreável, substituível, óbvia.
 
 > [!warning] Impossível de mockar em teste
-> **O que acontece:** você quer testar `PedidoService` com uma `Config` falsa, mas ele chama `Config.getInstance()` internamente — não há por onde injetar o dublê.
-> **Por quê:** o ponto de acesso global é resolvido **dentro** da classe, em tempo de execução; o teste não tem gancho para substituí-lo. Você acaba recorrendo a truques frágeis (resetar o singleton por reflection entre testes).
-> **Como evitar:** dependência injetada troca-se por um stub/mock trivialmente. Testabilidade é o sintoma mais barato de detectar acoplamento ruim — se é difícil testar, o design está te avisando.
+> **O que acontece:** você quer testar `PedidoService` com uma `Config` falsa, mas ele chama `Config.getInstance()` internamente — não há por onde injetar o dublê. **Por quê:** o ponto de acesso global é resolvido **dentro** da classe, em tempo de execução; o teste não tem gancho para substituí-lo. Você acaba recorrendo a truques frágeis (resetar o singleton por reflection entre testes). **Como evitar:** dependência injetada troca-se por um stub/mock trivialmente. Testabilidade é o sintoma mais barato de detectar acoplamento ruim — se é difícil testar, o design está te avisando.
 
 > [!warning] Singleton para tudo / classe utilitária
-> **O que acontece:** classes de utilidade viram singletons "para não precisar instanciar", ou todo serviço vira `getInstance()` por hábito.
-> **Por quê:** confunde-se "só preciso de um" com "preciso de um Singleton". Se a classe é **sem estado** (só funções puras), ela não precisa de instância nenhuma — métodos estáticos (ou funções de módulo/pacote) bastam, sem o acoplamento global.
-> **Como evitar:** sem estado → funções estáticas / de módulo. Com estado compartilhado → bean de escopo singleton gerido pelo container. "Singleton artesanal" quase nunca é a resposta.
+> **O que acontece:** classes de utilidade viram singletons "para não precisar instanciar", ou todo serviço vira `getInstance()` por hábito. **Por quê:** confunde-se "só preciso de um" com "preciso de um Singleton". Se a classe é **sem estado** (só funções puras), ela não precisa de instância nenhuma — métodos estáticos (ou funções de módulo/pacote) bastam, sem o acoplamento global. **Como evitar:** sem estado → funções estáticas / de módulo. Com estado compartilhado → bean de escopo singleton gerido pelo container. "Singleton artesanal" quase nunca é a resposta.
 
 ## Como explicar em inglês
 

@@ -199,9 +199,7 @@ Durante `next build`, o Next.js faz substituição literal de `process.env.NEXT_
 - **Visível no bundle** — qualquer um pode inspecionar o JS gerado
 
 > [!warning] NEXT_PUBLIC_ é para dados PÚBLICOS, não secrets
-> **O que acontece:** A variável fica literalmente no código JS enviado ao browser — qualquer usuário pode ver seu valor no DevTools.
-> **Por quê:** O prefixo `NEXT_PUBLIC_` é exatamente um aviso: "este dado vai para o bundle público".
-> **Como evitar:** Tokens de API, senhas e chaves privadas nunca devem ter o prefixo `NEXT_PUBLIC_`. Use variáveis sem prefixo (lidas apenas no servidor) ou crie um Route Handler que forneça dados ao cliente quando necessário.
+> **O que acontece:** A variável fica literalmente no código JS enviado ao browser — qualquer usuário pode ver seu valor no DevTools. **Por quê:** O prefixo `NEXT_PUBLIC_` é exatamente um aviso: "este dado vai para o bundle público". **Como evitar:** Tokens de API, senhas e chaves privadas nunca devem ter o prefixo `NEXT_PUBLIC_`. Use variáveis sem prefixo (lidas apenas no servidor) ou crie um Route Handler que forneça dados ao cliente quando necessário.
 
 ### Variáveis sem prefixo — lidas em runtime no servidor
 
@@ -286,9 +284,7 @@ Você pode observar o comportamento via header `x-nextjs-cache`:
 Quando você tem 3 pods atrás de um load balancer, cada pod tem seu próprio cache em disco. `revalidateTag('posts')` executado no Pod 1 **não invalida** os Pods 2 e 3 — eles continuam servindo conteúdo stale.
 
 > [!warning] ISR em self-host multi-pod sem storage compartilhado
-> **O que acontece:** Usuários recebem versões diferentes do mesmo conteúdo dependendo de qual pod serve a request.
-> **Por quê:** O cache padrão é local ao filesystem de cada instância — não há coordenação entre pods.
-> **Como evitar:** Configure um `cacheHandler` externo (Redis, S3, etc.) e desative o cache em memória:
+> **O que acontece:** Usuários recebem versões diferentes do mesmo conteúdo dependendo de qual pod serve a request. **Por quê:** O cache padrão é local ao filesystem de cada instância — não há coordenação entre pods. **Como evitar:** Configure um `cacheHandler` externo (Redis, S3, etc.) e desative o cache em memória:
 >
 > ```js
 > // next.config.js
@@ -345,9 +341,7 @@ const nextConfig: NextConfig = {
 Com `assetPrefix`, todos os imports de JS/CSS gerados usarão o domínio do CDN. O servidor Next.js ainda precisa servir as requests de página; o CDN fica com a carga de assets.
 
 > [!warning] nginx e streaming não combinam por padrão
-> **O que acontece:** Streaming SSR e PPR param de funcionar — o nginx bufferiza a resposta inteira antes de enviar.
-> **Por quê:** Por padrão o nginx faz buffering de proxy.
-> **Como evitar:** Adicione o header `X-Accel-Buffering: no` via `next.config.ts` ou configure `proxy_buffering off` no nginx.
+> **O que acontece:** Streaming SSR e PPR param de funcionar — o nginx bufferiza a resposta inteira antes de enviar. **Por quê:** Por padrão o nginx faz buffering de proxy. **Como evitar:** Adicione o header `X-Accel-Buffering: no` via `next.config.ts` ou configure `proxy_buffering off` no nginx.
 
 ---
 
@@ -441,19 +435,13 @@ Com o `cacheHandler` apontando para Redis e a chave de criptografia compartilhad
 ## Armadilhas comuns
 
 > [!warning] Vazar secrets com `NEXT_PUBLIC_`
-> **O que acontece:** `NEXT_PUBLIC_API_KEY=sk-prod-xxx` fica literalmente no bundle JS — qualquer usuário inspeciona o código no DevTools e vê a chave.
-> **Por quê:** O prefixo sinaliza ao Next.js que a variável deve ser embutida no bundle do browser.
-> **Como evitar:** Variáveis sensíveis nunca recebem `NEXT_PUBLIC_`. Se o cliente precisa de um token, crie um Route Handler que gera tokens de curta duração via Server Action ou API endpoint autenticado.
+> **O que acontece:** `NEXT_PUBLIC_API_KEY=sk-prod-xxx` fica literalmente no bundle JS — qualquer usuário inspeciona o código no DevTools e vê a chave. **Por quê:** O prefixo sinaliza ao Next.js que a variável deve ser embutida no bundle do browser. **Como evitar:** Variáveis sensíveis nunca recebem `NEXT_PUBLIC_`. Se o cliente precisa de um token, crie um Route Handler que gera tokens de curta duração via Server Action ou API endpoint autenticado.
 
 > [!warning] ISR em self-host retorna conteúdo stale diferente por pod
-> **O que acontece:** `/blog/post-123` retorna versão A no Pod 1 e versão B no Pod 2 após `revalidatePath('/blog/post-123')` ser chamado no Pod 1.
-> **Por quê:** A invalidação é local ao pod que a executa. O cache em disco não é compartilhado.
-> **Como evitar:** Em produção com múltiplos pods, use um `cacheHandler` baseado em Redis com `cacheMaxMemorySize: 0`. Implemente `refreshTags()` no handler para sincronizar estado entre instâncias antes de cada request.
+> **O que acontece:** `/blog/post-123` retorna versão A no Pod 1 e versão B no Pod 2 após `revalidatePath('/blog/post-123')` ser chamado no Pod 1. **Por quê:** A invalidação é local ao pod que a executa. O cache em disco não é compartilhado. **Como evitar:** Em produção com múltiplos pods, use um `cacheHandler` baseado em Redis com `cacheMaxMemorySize: 0`. Implemente `refreshTags()` no handler para sincronizar estado entre instâncias antes de cada request.
 
 > [!warning] Edge runtime sem ISR — pega quem migra do Pages Router
-> **O que acontece:** Você define `export const runtime = 'edge'` e `export const revalidate = 60` na mesma page. O ISR é silenciosamente ignorado e a rota vira dinâmica.
-> **Por quê:** ISR requer o Node.js runtime para escrever no cache de disco. O Edge runtime não tem acesso a filesystem.
-> **Como evitar:** ISR e Edge runtime são mutuamente exclusivos. Para Edge, use cache manual via `fetch` com headers de CDN ou via `'use cache'` (Next 16+).
+> **O que acontece:** Você define `export const runtime = 'edge'` e `export const revalidate = 60` na mesma page. O ISR é silenciosamente ignorado e a rota vira dinâmica. **Por quê:** ISR requer o Node.js runtime para escrever no cache de disco. O Edge runtime não tem acesso a filesystem. **Como evitar:** ISR e Edge runtime são mutuamente exclusivos. Para Edge, use cache manual via `fetch` com headers de CDN ou via `'use cache'` (Next 16+).
 
 ---
 

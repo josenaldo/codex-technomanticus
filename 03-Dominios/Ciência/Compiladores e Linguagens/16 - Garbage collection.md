@@ -413,26 +413,19 @@ stateDiagram-v2
 
 Em entrevistas sênior de sistemas e engenharia de plataforma, GC aparece em perguntas sobre latência, escolha de linguagem, tuning de JVM e design de serviços de baixa latência.
 
-*How does a tracing garbage collector determine which objects are live?*
-*It traces the object graph starting from roots — stack variables, registers, and globals — and marks everything reachable. Unreachable objects are garbage.*
+*How does a tracing garbage collector determine which objects are live?* *It traces the object graph starting from roots — stack variables, registers, and globals — and marks everything reachable. Unreachable objects are garbage.*
 
-*What is the generational hypothesis and why does it matter for GC design?*
-*Most objects die young. Generational GCs exploit this by collecting the young generation frequently with a fast copying collector, and the old generation rarely — yielding high throughput with manageable pause times.*
+*What is the generational hypothesis and why does it matter for GC design?* *Most objects die young. Generational GCs exploit this by collecting the young generation frequently with a fast copying collector, and the old generation rarely — yielding high throughput with manageable pause times.*
 
-*Why does reference counting fail on cyclic data structures?*
-*When A references B and B references A, both have refcount ≥ 1 even after all external references are gone. The cycle is never freed unless a separate cycle detector (like CPython's) or weak references break the cycle.*
+*Why does reference counting fail on cyclic data structures?* *When A references B and B references A, both have refcount ≥ 1 even after all external references are gone. The cycle is never freed unless a separate cycle detector (like CPython's) or weak references break the cycle.*
 
-*What is a write barrier and why does a generational GC need one?*
-*A write barrier is code that runs on every reference write. In a generational GC, it tracks old-to-young references in a remembered set so the minor GC doesn't miss roots held by old-generation objects.*
+*What is a write barrier and why does a generational GC need one?* *A write barrier is code that runs on every reference write. In a generational GC, it tracks old-to-young references in a remembered set so the minor GC doesn't miss roots held by old-generation objects.*
 
-*What does stop-the-world mean and what alternatives exist?*
-*STW pauses all application threads during GC. Alternatives include incremental GC (sliced pauses) and concurrent GC (GC runs on separate threads alongside the mutator, using tri-color marking and write barriers to maintain consistency).*
+*What does stop-the-world mean and what alternatives exist?* *STW pauses all application threads during GC. Alternatives include incremental GC (sliced pauses) and concurrent GC (GC runs on separate threads alongside the mutator, using tri-color marking and write barriers to maintain consistency).*
 
-*What is the throughput-latency-footprint trade-off in GC?*
-*You can't maximize all three simultaneously. More heap improves throughput but increases footprint. Concurrent GC reduces latency but adds CPU overhead. Serial STW maximizes throughput but kills latency.*
+*What is the throughput-latency-footprint trade-off in GC?* *You can't maximize all three simultaneously. More heap improves throughput but increases footprint. Concurrent GC reduces latency but adds CPU overhead. Serial STW maximizes throughput but kills latency.*
 
-*How does Rust achieve memory safety without a garbage collector?*
-*Rust's borrow checker enforces ownership rules at compile time: each value has one owner, references can't outlive the owner. Memory is freed at end of scope (RAII). No runtime GC, no pauses, zero overhead.*
+*How does Rust achieve memory safety without a garbage collector?* *Rust's borrow checker enforces ownership rules at compile time: each value has one owner, references can't outlive the owner. Memory is freed at end of scope (RAII). No runtime GC, no pauses, zero overhead.*
 
 ### Vocabulário PT → EN
 

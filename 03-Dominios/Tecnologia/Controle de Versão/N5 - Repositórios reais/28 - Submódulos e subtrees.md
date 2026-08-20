@@ -83,19 +83,13 @@ git config --global diff.submodule log           # diff mostra os commits, não 
 ## Por que doem
 
 > [!warning] Clonar sem `--recurse-submodules`
-> **O que acontece:** o projeto clona, as pastas dos submódulos existem e estão **vazias**, e a build falha com erros que não fazem sentido.
-> **Por quê:** o pai só guardou o endereço e o hash; buscar o conteúdo é um passo separado.
-> **Como evitar:** documente `--recurse-submodules` no README, e configure `submodule.recurse`. É a causa número um de "não consigo rodar o projeto" em times que usam submódulos.
+> **O que acontece:** o projeto clona, as pastas dos submódulos existem e estão **vazias**, e a build falha com erros que não fazem sentido. **Por quê:** o pai só guardou o endereço e o hash; buscar o conteúdo é um passo separado. **Como evitar:** documente `--recurse-submodules` no README, e configure `submodule.recurse`. É a causa número um de "não consigo rodar o projeto" em times que usam submódulos.
 
 > [!warning] Commitar no submódulo e esquecer de publicá-lo
-> **O que acontece:** você altera o filho, commita nos dois repositórios, e empurra só o pai. Para todo mundo, o pai aponta para um commit **que não existe em lugar nenhum** — e o `submodule update` falha.
-> **Por quê:** são repositórios independentes; publicar um não publica o outro.
-> **Como evitar:** `git push --recurse-submodules=on-demand`, que publica os filhos necessários antes do pai. E, na revisão, desconfiar sempre que o diff mostrar só uma mudança de hash de submódulo.
+> **O que acontece:** você altera o filho, commita nos dois repositórios, e empurra só o pai. Para todo mundo, o pai aponta para um commit **que não existe em lugar nenhum** — e o `submodule update` falha. **Por quê:** são repositórios independentes; publicar um não publica o outro. **Como evitar:** `git push --recurse-submodules=on-demand`, que publica os filhos necessários antes do pai. E, na revisão, desconfiar sempre que o diff mostrar só uma mudança de hash de submódulo.
 
 > [!warning] O submódulo vive em `detached HEAD`
-> **O que acontece:** você edita o submódulo, commita, e depois de um `submodule update` o commit some.
-> **Por quê:** o `update` posiciona o filho **no commit exato** que o pai pede — sem ramo (nota 19). Commits feitos ali não pertencem a ramo nenhum.
-> **Como evitar:** antes de trabalhar dentro de um submódulo, entre nele e faça `git switch main`. E, se já perdeu: `reflog` (nota 23).
+> **O que acontece:** você edita o submódulo, commita, e depois de um `submodule update` o commit some. **Por quê:** o `update` posiciona o filho **no commit exato** que o pai pede — sem ramo (nota 19). Commits feitos ali não pertencem a ramo nenhum. **Como evitar:** antes de trabalhar dentro de um submódulo, entre nele e faça `git switch main`. E, se já perdeu: `reflog` (nota 23).
 
 Some a isso conflitos de merge que apontam para hashes (ilegíveis sem `diff.submodule log`), e a razão da fama fica clara. Submódulo não é ruim — é **preciso e pouco perdoante**.
 

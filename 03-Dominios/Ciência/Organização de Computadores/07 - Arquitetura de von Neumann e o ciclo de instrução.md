@@ -354,14 +354,7 @@ A pergunta direta é rara, mas o conceito reaparece toda vez que o entrevistador
 
 Von Neumann architecture is the foundation of modern computing: instructions and data share the same memory and bus. The CPU runs an endless fetch-decode-execute loop — it reads an instruction from the address in the Program Counter, increments the PC, decodes the opcode and operands, and executes the operation, then repeats. The Control Unit is a finite-state machine that orchestrates this loop. The single shared bus between CPU and memory creates the von Neumann bottleneck: the CPU is orders of magnitude faster than DRAM. The stored-program concept enables JIT compilers, interpreters, and bytecode VMs because code is just data in memory. Harvard architecture uses physically separate instruction and data memories to allow parallel fetch and data access; modern CPUs implement a modified Harvard internally via split L1-I and L1-D caches while remaining von Neumann externally.
 
-*The stored-program concept is what makes software possible: code is just bytes in memory.*
-*The von Neumann bottleneck is why every interview question about performance eventually leads to caching.*
-*The fetch-decode-execute cycle is what your CPU does — literally — four billion times per second.*
-*The Program Counter is the cursor of execution: every branch, call, and return is just a write to the PC.*
-*Harvard architecture solves the bottleneck by separating instruction and data paths; your L1 cache does the same.*
-*The Control Unit is a finite-state machine — the most consequential FSM ever built.*
-*JIT compilers write machine instructions into memory at runtime, then redirect the PC — von Neumann made it possible.*
-*Buffer overflow attacks exploit the stored-program concept: injected bytes in data memory become executable instructions.*
+*The stored-program concept is what makes software possible: code is just bytes in memory.* *The von Neumann bottleneck is why every interview question about performance eventually leads to caching.* *The fetch-decode-execute cycle is what your CPU does — literally — four billion times per second.* *The Program Counter is the cursor of execution: every branch, call, and return is just a write to the PC.* *Harvard architecture solves the bottleneck by separating instruction and data paths; your L1 cache does the same.* *The Control Unit is a finite-state machine — the most consequential FSM ever built.* *JIT compilers write machine instructions into memory at runtime, then redirect the PC — von Neumann made it possible.* *Buffer overflow attacks exploit the stored-program concept: injected bytes in data memory become executable instructions.*
 
 | Português | English |
 |---|---|

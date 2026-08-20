@@ -61,19 +61,13 @@ Uma fractional Head of Engineering brasileira, antes de fechar o primeiro client
 ## Armadilhas comuns
 
 > [!warning] Usar "sou do Brasil" como justificativa de preço baixo
-> **O que acontece:** o fractional assume, sem o cliente pedir, que deveria cobrar menos por estar fora dos EUA — cai na armadilha de "desconto geográfico" já descrita em [[05 - Precificação — retainer, hourly e project-based]].
-> **Por quê:** isso desperdiça exatamente a vantagem que deveria ser vendida (sobreposição de fuso, custo já competitivo por padrão) transformando-a em pretexto pra cobrar ainda menos.
-> **Como evitar:** apresentar fuso e custo como parte do valor entregue, na proposta, em vez de aplicar desconto adicional por insegurança.
+> **O que acontece:** o fractional assume, sem o cliente pedir, que deveria cobrar menos por estar fora dos EUA — cai na armadilha de "desconto geográfico" já descrita em [[05 - Precificação — retainer, hourly e project-based]]. **Por quê:** isso desperdiça exatamente a vantagem que deveria ser vendida (sobreposição de fuso, custo já competitivo por padrão) transformando-a em pretexto pra cobrar ainda menos. **Como evitar:** apresentar fuso e custo como parte do valor entregue, na proposta, em vez de aplicar desconto adicional por insegurança.
 
 > [!warning] Negligenciar o inglês de comunicação executiva
-> **O que acontece:** o fractional tem inglês técnico suficiente pra código e documentação, mas trava em conversas de alto nível — apresentar pra board, negociar escopo, explicar risco com nuance.
-> **Por quê:** o papel fractional, principalmente hands-on, exige comunicação em tempo real com stakeholders não-técnicos — é justamente aí que fusos distantes já perdem por serem assíncronos; um fractional brasileiro que também trava na comunicação perde a vantagem toda.
-> **Como evitar:** investir especificamente em inglês de reunião executiva (não só técnico) antes de vender o modelo hands-on — ver domínio [[03-Dominios/Carreira/Inglês/index|Inglês]] pra recursos de preparação.
+> **O que acontece:** o fractional tem inglês técnico suficiente pra código e documentação, mas trava em conversas de alto nível — apresentar pra board, negociar escopo, explicar risco com nuance. **Por quê:** o papel fractional, principalmente hands-on, exige comunicação em tempo real com stakeholders não-técnicos — é justamente aí que fusos distantes já perdem por serem assíncronos; um fractional brasileiro que também trava na comunicação perde a vantagem toda. **Como evitar:** investir especificamente em inglês de reunião executiva (não só técnico) antes de vender o modelo hands-on — ver domínio [[03-Dominios/Carreira/Inglês/index|Inglês]] pra recursos de preparação.
 
 > [!warning] Ignorar diferença cultural de comunicação direta
-> **O que acontece:** o estilo de comunicação mais indireto, comum em ambientes corporativos brasileiros, gera ruído em times americanos acostumados a feedback direto e explícito.
-> **Por quê:** ambientes ágeis americanos costumam valorizar objetividade — "isso não vai funcionar por causa de X" é mais eficaz do que rodeios pra suavizar a mesma mensagem.
-> **Como evitar:** calibrar o estilo de comunicação pro padrão do time do cliente logo nas primeiras interações, observando como o próprio time se comunica internamente.
+> **O que acontece:** o estilo de comunicação mais indireto, comum em ambientes corporativos brasileiros, gera ruído em times americanos acostumados a feedback direto e explícito. **Por quê:** ambientes ágeis americanos costumam valorizar objetividade — "isso não vai funcionar por causa de X" é mais eficaz do que rodeios pra suavizar a mesma mensagem. **Como evitar:** calibrar o estilo de comunicação pro padrão do time do cliente logo nas primeiras interações, observando como o próprio time se comunica internamente.
 
 ## Como explicar em inglês
 

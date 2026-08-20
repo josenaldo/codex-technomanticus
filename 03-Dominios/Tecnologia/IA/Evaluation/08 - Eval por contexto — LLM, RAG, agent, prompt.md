@@ -175,9 +175,7 @@ Pergunta natural do leitor: então quando um leaderboard diz "modelo X subiu 8 p
 A consequência pra eval é direta. Um leaderboard que troca modelo **e** harness ao mesmo tempo está medindo uma variável confundida — você não sabe a qual das duas mudanças atribuir a diferença. A regra prática é a mesma de qualquer experimento controlado: **fixe o harness antes de atribuir uma diferença ao modelo**. Compare modelos sob o mesmo scaffolding, ou compare scaffoldings sob o mesmo modelo, nunca os dois de uma vez.
 
 > [!example] O confounding na prática
-> Setup A: modelo M1 + harness com retry agressivo e 12 tools → 82% completion.
-> Setup B: modelo M2 + harness enxuto, 4 tools, sem retry → 74% completion.
-> Conclusão ingênua: "M1 > M2". Conclusão correta: **você não sabe** — pode ser que M2 com o harness do A vencesse. Duas variáveis mudaram; o resultado é ilegível.
+> Setup A: modelo M1 + harness com retry agressivo e 12 tools → 82% completion. Setup B: modelo M2 + harness enxuto, 4 tools, sem retry → 74% completion. Conclusão ingênua: "M1 > M2". Conclusão correta: **você não sabe** — pode ser que M2 com o harness do A vencesse. Duas variáveis mudaram; o resultado é ilegível.
 
 Os autores propõem o **HarnessCard**: um artefato leve de reporte, análogo aos *model cards* e *datasheets*, descrevendo a camada de harness usada. A posição deles: *"progress in language agents should report not only the model, but also the harness layer that turns capability into governed action"* — reportar não só o modelo, mas a camada que transforma capacidade em ação governada. Pra quem faz eval, isso vira um item de checklist: ao publicar (ou ler) um resultado de agente, exija a descrição do harness junto.
 

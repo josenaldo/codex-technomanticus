@@ -122,9 +122,7 @@ graph LR
 Ferramentas que fazem isso: **release-please**, **semantic-release**, **changesets** (bom para monorepos) e **git-cliff** (só changelog, agnóstico de linguagem).
 
 > [!warning] Conventional Commits sem automação é cerimônia vazia
-> **O que acontece:** o time adota o formato, briga em revisão sobre `chore` × `refactor`, e no fim escreve o changelog na mão do mesmo jeito.
-> **Por quê:** o padrão não tem valor intrínseco — o valor está no que se deriva dele.
-> **Como evitar:** adote o formato **junto** com a ferramenta que o consome. Se você não vai gerar changelog nem versão automaticamente, uma mensagem clara em português vale tanto quanto, e custa menos discussão. Quando adotar, coloque um verificador na CI (`commitlint`) — padrão não verificado degrada em semanas.
+> **O que acontece:** o time adota o formato, briga em revisão sobre `chore` × `refactor`, e no fim escreve o changelog na mão do mesmo jeito. **Por quê:** o padrão não tem valor intrínseco — o valor está no que se deriva dele. **Como evitar:** adote o formato **junto** com a ferramenta que o consome. Se você não vai gerar changelog nem versão automaticamente, uma mensagem clara em português vale tanto quanto, e custa menos discussão. Quando adotar, coloque um verificador na CI (`commitlint`) — padrão não verificado degrada em semanas.
 
 ---
 
@@ -142,9 +140,7 @@ git show v1.2.0                         # o que há naquele ponto
 **Anotada × leve:** a anotada é um objeto completo no repositório, com autor, data e mensagem próprios (e pode ser assinada). A leve é apenas um ponteiro. Para versão publicada, use **sempre anotada** — a leve não registra quem marcou nem quando.
 
 > [!warning] Tag não vai junto no `git push`
-> **O que acontece:** você cria a tag `v1.2.0`, dá `push`, e ela não aparece no servidor. A release não existe para mais ninguém.
-> **Por quê:** por padrão o `push` envia commits de ramos, não tags.
-> **Como evitar:**
+> **O que acontece:** você cria a tag `v1.2.0`, dá `push`, e ela não aparece no servidor. A release não existe para mais ninguém. **Por quê:** por padrão o `push` envia commits de ramos, não tags. **Como evitar:**
 > ```bash
 > git push origin v1.2.0     # uma tag específica
 > git push --follow-tags     # commits + tags anotadas alcançáveis
@@ -158,19 +154,13 @@ Nas plataformas, a tag é o gatilho: criar uma tag costuma disparar o pipeline d
 ## Armadilhas comuns
 
 > [!warning] `fix: fix`
-> **O que acontece:** o formato é obedecido e a mensagem não diz nada. `fix: correções`, `feat: melhorias`, `chore: ajustes`.
-> **Por quê:** o padrão disciplina o prefixo, não o conteúdo.
-> **Como evitar:** a descrição depois do prefixo continua tendo que passar no teste do "este commit, se aplicado, vai…". Prefixo não substitui pensar.
+> **O que acontece:** o formato é obedecido e a mensagem não diz nada. `fix: correções`, `feat: melhorias`, `chore: ajustes`. **Por quê:** o padrão disciplina o prefixo, não o conteúdo. **Como evitar:** a descrição depois do prefixo continua tendo que passar no teste do "este commit, se aplicado, vai…". Prefixo não substitui pensar.
 
 > [!warning] Commit que mistura refatoração e comportamento
-> **O que acontece:** já descrito acima — a reversão fica impossível e a revisão, cega.
-> **Por quê:** é mais rápido no momento de commitar.
-> **Como evitar:** `git add -p` permite separar em partes o que você editou junto, escolhendo trecho por trecho o que entra em cada commit. É o comando que torna o commit atômico viável na prática, mesmo quando você trabalhou de forma desorganizada.
+> **O que acontece:** já descrito acima — a reversão fica impossível e a revisão, cega. **Por quê:** é mais rápido no momento de commitar. **Como evitar:** `git add -p` permite separar em partes o que você editou junto, escolhendo trecho por trecho o que entra em cada commit. É o comando que torna o commit atômico viável na prática, mesmo quando você trabalhou de forma desorganizada.
 
 > [!warning] Deixar a disciplina só para o final
-> **O que acontece:** o time decide "limpar o histórico antes do merge" e nunca limpa.
-> **Por quê:** limpeza retroativa é trabalho chato e sem prazo.
-> **Como evitar:** se a estratégia de merge do time é **squash** (nota 12), a mensagem que importa é a do squash — e ela é editável no momento do merge. Nesse arranjo, commits internos do ramo podem ser bagunçados sem custo, e a disciplina se concentra num único ponto. É a combinação mais realista para a maioria das equipes.
+> **O que acontece:** o time decide "limpar o histórico antes do merge" e nunca limpa. **Por quê:** limpeza retroativa é trabalho chato e sem prazo. **Como evitar:** se a estratégia de merge do time é **squash** (nota 12), a mensagem que importa é a do squash — e ela é editável no momento do merge. Nesse arranjo, commits internos do ramo podem ser bagunçados sem custo, e a disciplina se concentra num único ponto. É a combinação mais realista para a maioria das equipes.
 
 ---
 

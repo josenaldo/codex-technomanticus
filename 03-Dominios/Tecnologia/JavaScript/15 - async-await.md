@@ -576,34 +576,22 @@ async function carregarComFallback(productId) {
 ## Armadilhas comuns
 
 > [!warning] `await` serial sem querer
-> **O que acontece:** código com múltiplos `await` um abaixo do outro executa operações independentes em sequência, desperdiçando tempo.
-> **Por quê:** cada `await` pausa a função — o próximo `await` só dispara depois que o anterior resolve.
-> **Como evitar:** identifique se as operações têm dependência. Se não tiverem, agrupe em `Promise.all`. Regra: se você pode mover duas linhas `await` para um array sem mudar a lógica, você deveria fazer isso.
+> **O que acontece:** código com múltiplos `await` um abaixo do outro executa operações independentes em sequência, desperdiçando tempo. **Por quê:** cada `await` pausa a função — o próximo `await` só dispara depois que o anterior resolve. **Como evitar:** identifique se as operações têm dependência. Se não tiverem, agrupe em `Promise.all`. Regra: se você pode mover duas linhas `await` para um array sem mudar a lógica, você deveria fazer isso.
 
 > [!warning] `try/catch` ausente
-> **O que acontece:** uma Promise rejeitada vira `UnhandledPromiseRejection` — warning em Node.js antigo, crash em versões modernas (Node 15+).
-> **Por quê:** sem `try/catch`, a rejeição sobe a cadeia de chamadas sem ser capturada.
-> **Como evitar:** toda função `async` que pode falhar deve ter `try/catch`, ou o chamador deve tratar a Promise retornada com `.catch()`. Não misture: se você vai usar `await`, use `try/catch`; se vai usar `.then`, use `.catch`.
+> **O que acontece:** uma Promise rejeitada vira `UnhandledPromiseRejection` — warning em Node.js antigo, crash em versões modernas (Node 15+). **Por quê:** sem `try/catch`, a rejeição sobe a cadeia de chamadas sem ser capturada. **Como evitar:** toda função `async` que pode falhar deve ter `try/catch`, ou o chamador deve tratar a Promise retornada com `.catch()`. Não misture: se você vai usar `await`, use `try/catch`; se vai usar `.then`, use `.catch`.
 
 > [!warning] `forEach` com callback `async`
-> **O que acontece:** o código parece aguardar, mas `console.log('feito')` imprime antes das operações terminarem.
-> **Por quê:** `forEach` não tem conhecimento de Promises — ele invoca a callback e ignora o retorno (que é a Promise).
-> **Como evitar:** use `for...of` (sequencial) ou `Promise.all` + `.map` (paralelo). Nunca use `forEach` com callbacks `async` que precisam de sequenciamento.
+> **O que acontece:** o código parece aguardar, mas `console.log('feito')` imprime antes das operações terminarem. **Por quê:** `forEach` não tem conhecimento de Promises — ele invoca a callback e ignora o retorno (que é a Promise). **Como evitar:** use `for...of` (sequencial) ou `Promise.all` + `.map` (paralelo). Nunca use `forEach` com callbacks `async` que precisam de sequenciamento.
 
 > [!warning] Esquecer o `await`
-> **O que acontece:** em vez do valor, você opera sobre a Promise em si — e o TypeScript não garante pegar isso se os tipos não estiverem corretos.
-> **Por quê:** sem `await`, a expressão retorna a Promise não resolvida.
-> **Como evitar:** se uma função é `async`, você quase sempre precisa de `await` ao chamá-la. Um linter com `no-floating-promises` (TypeScript-ESLint) captura esses casos.
+> **O que acontece:** em vez do valor, você opera sobre a Promise em si — e o TypeScript não garante pegar isso se os tipos não estiverem corretos. **Por quê:** sem `await`, a expressão retorna a Promise não resolvida. **Como evitar:** se uma função é `async`, você quase sempre precisa de `await` ao chamá-la. Um linter com `no-floating-promises` (TypeScript-ESLint) captura esses casos.
 
 > [!warning] Top-level await em módulo crítico de startup
-> **O que acontece:** o startup da aplicação fica lento de forma difícil de diagnosticar.
-> **Por quê:** todo módulo que importa um módulo com top-level await fica bloqueado até que as Promises desse módulo resolvam. Módulos de inicialização são importados por muita coisa.
-> **Como evitar:** limite top-level await a módulos de carregamento lento/configuração que são importados depois do startup principal. Prefira inicialização lazy ou um `init()` explícito.
+> **O que acontece:** o startup da aplicação fica lento de forma difícil de diagnosticar. **Por quê:** todo módulo que importa um módulo com top-level await fica bloqueado até que as Promises desse módulo resolvam. Módulos de inicialização são importados por muita coisa. **Como evitar:** limite top-level await a módulos de carregamento lento/configuração que são importados depois do startup principal. Prefira inicialização lazy ou um `init()` explícito.
 
 > [!warning] Cancelamento ignorado — `fetch` sem `AbortSignal`
-> **O que acontece:** a requisição continua em voo mesmo depois que o resultado já não é necessário (componente desmontou, usuário navegou, nova requisição substituiu a anterior). Respostas chegam fora de ordem e sobrescrevem state mais recente — race condition clássica.
-> **Por quê:** `async/await` com `fetch` não tem cancelamento nativo. A Promise resolve (ou rejeita) quando o servidor responde, independente de o chamador ainda querer o resultado.
-> **Como evitar:** passe um `AbortSignal` para o `fetch` e aborte quando necessário. Para timeout, `AbortSignal.timeout(ms)` é a forma moderna — sem criar `AbortController` nem timer manual. Para combinar timeout + cancel manual, use `AbortSignal.any([s1, s2])`.
+> **O que acontece:** a requisição continua em voo mesmo depois que o resultado já não é necessário (componente desmontou, usuário navegou, nova requisição substituiu a anterior). Respostas chegam fora de ordem e sobrescrevem state mais recente — race condition clássica. **Por quê:** `async/await` com `fetch` não tem cancelamento nativo. A Promise resolve (ou rejeita) quando o servidor responde, independente de o chamador ainda querer o resultado. **Como evitar:** passe um `AbortSignal` para o `fetch` e aborte quando necessário. Para timeout, `AbortSignal.timeout(ms)` é a forma moderna — sem criar `AbortController` nem timer manual. Para combinar timeout + cancel manual, use `AbortSignal.any([s1, s2])`.
 >
 > ```javascript
 > // Timeout automático — sem AbortController manual

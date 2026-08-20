@@ -88,19 +88,13 @@ Uma ferramenta de upload de vídeo mostra um spinner simples enquanto o arquivo 
 ## Armadilhas comuns
 
 > [!warning] Spinner infinito, sem timeout nem fallback
-> **O que acontece:** o spinner gira indefinidamente quando a requisição falha silenciosamente ou trava, sem nunca virar uma mensagem de erro.
-> **Por quê:** é mais rápido de implementar "mostrar spinner enquanto a promise não resolve" do que desenhar explicitamente o caminho de timeout e erro — o caso feliz (a promise sempre resolve rápido) é o único testado antes de produção.
-> **Como evitar:** todo spinner precisa de um timeout definido que, ao ser atingido, troca para um estado de erro explícito com ação de retry — nunca deixe um spinner sem prazo máximo de exibição.
+> **O que acontece:** o spinner gira indefinidamente quando a requisição falha silenciosamente ou trava, sem nunca virar uma mensagem de erro. **Por quê:** é mais rápido de implementar "mostrar spinner enquanto a promise não resolve" do que desenhar explicitamente o caminho de timeout e erro — o caso feliz (a promise sempre resolve rápido) é o único testado antes de produção. **Como evitar:** todo spinner precisa de um timeout definido que, ao ser atingido, troca para um estado de erro explícito com ação de retry — nunca deixe um spinner sem prazo máximo de exibição.
 
 > [!warning] Nenhum feedback antes de ~1 segundo
-> **O que acontece:** o usuário clica numa ação e não vê nenhuma mudança visual até a resposta completa do servidor chegar, mesmo quando essa resposta demora perto de 1 segundo ou mais.
-> **Por quê:** o feedback imediato (desabilitar botão, mudar texto, mostrar spinner pequeno) é frequentemente tratado como "polimento" opcional, deixado para depois — mas sua ausência é o que causa cliques duplicados e a sensação de sistema travado.
-> **Como evitar:** trate o feedback imediato de clique como parte do escopo obrigatório de qualquer ação assíncrona, não como refinamento posterior.
+> **O que acontece:** o usuário clica numa ação e não vê nenhuma mudança visual até a resposta completa do servidor chegar, mesmo quando essa resposta demora perto de 1 segundo ou mais. **Por quê:** o feedback imediato (desabilitar botão, mudar texto, mostrar spinner pequeno) é frequentemente tratado como "polimento" opcional, deixado para depois — mas sua ausência é o que causa cliques duplicados e a sensação de sistema travado. **Como evitar:** trate o feedback imediato de clique como parte do escopo obrigatório de qualquer ação assíncrona, não como refinamento posterior.
 
 > [!warning] Apresentar skeleton screens como solução universal, sem considerar o spinner
-> **O que acontece:** o time adota skeleton screen para toda tela de carregamento, incluindo elementos pequenos ou isolados, seguindo a crença de que skeleton é "sempre melhor" que spinner.
-> **Por quê:** essa crença circula amplamente em conteúdo popular de UX sem a ressalva de que a vantagem do skeleton depende da fidelidade ao layout real — para elementos pequenos ou de layout instável, o esforço de manter o skeleton sincronizado supera o ganho de percepção.
-> **Como evitar:** escolha skeleton só quando a estrutura for previsível e o esforço de mantê-la sincronizada com mudanças futuras for viável; para o resto, um spinner simples e honesto é uma escolha legítima, não uma escolha inferior por padrão.
+> **O que acontece:** o time adota skeleton screen para toda tela de carregamento, incluindo elementos pequenos ou isolados, seguindo a crença de que skeleton é "sempre melhor" que spinner. **Por quê:** essa crença circula amplamente em conteúdo popular de UX sem a ressalva de que a vantagem do skeleton depende da fidelidade ao layout real — para elementos pequenos ou de layout instável, o esforço de manter o skeleton sincronizado supera o ganho de percepção. **Como evitar:** escolha skeleton só quando a estrutura for previsível e o esforço de mantê-la sincronizada com mudanças futuras for viável; para o resto, um spinner simples e honesto é uma escolha legítima, não uma escolha inferior por padrão.
 
 ## Como explicar em inglês
 

@@ -213,14 +213,10 @@ pip install -r requirements.txt   # ou: uv sync / poetry install
 ## Armadilhas comuns
 
 > [!warning] Esquecer de ativar o venv antes de instalar
-> **O que acontece:** o `.venv/` existe no projeto, mas o desenvolvedor roda `pip install biblioteca` sem antes rodar `source .venv/bin/activate` — a instalação vai para o Python global (ou para o venv de outro projeto que ficou ativo de uma sessão de terminal anterior).
-> **Por quê:** criar o venv não o ativa automaticamente; são dois passos distintos, e um terminal recém-aberto nunca começa com um venv ativo por padrão.
-> **Como evitar:** checar `$VIRTUAL_ENV` (ou o prefixo no prompt) antes de qualquer `pip install`; ferramentas como `direnv` podem automatizar ativação ao entrar no diretório do projeto, mas o hábito de checar antes de instalar é a defesa mais barata.
+> **O que acontece:** o `.venv/` existe no projeto, mas o desenvolvedor roda `pip install biblioteca` sem antes rodar `source .venv/bin/activate` — a instalação vai para o Python global (ou para o venv de outro projeto que ficou ativo de uma sessão de terminal anterior). **Por quê:** criar o venv não o ativa automaticamente; são dois passos distintos, e um terminal recém-aberto nunca começa com um venv ativo por padrão. **Como evitar:** checar `$VIRTUAL_ENV` (ou o prefixo no prompt) antes de qualquer `pip install`; ferramentas como `direnv` podem automatizar ativação ao entrar no diretório do projeto, mas o hábito de checar antes de instalar é a defesa mais barata.
 
 > [!warning] Um venv por máquina em vez de um venv por projeto
-> **O que acontece:** criar um único `.venv` "geral" em `~/.venv` e ativá-lo pra todo trabalho Python, achando que já resolve o isolamento.
-> **Por quê:** isso reproduz exatamente o problema original em escala menor — todos os projetos voltam a compartilhar o mesmo `site-packages`, só que agora é o `site-packages` do venv geral em vez do sistema. O conflito de versões entre Projeto A e Projeto B volta a existir.
-> **Como evitar:** um `.venv/` por diretório de projeto, sempre. É barato o suficiente (segundos pra criar, dezenas de MB) para nunca valer a pena compartilhar.
+> **O que acontece:** criar um único `.venv` "geral" em `~/.venv` e ativá-lo pra todo trabalho Python, achando que já resolve o isolamento. **Por quê:** isso reproduz exatamente o problema original em escala menor — todos os projetos voltam a compartilhar o mesmo `site-packages`, só que agora é o `site-packages` do venv geral em vez do sistema. O conflito de versões entre Projeto A e Projeto B volta a existir. **Como evitar:** um `.venv/` por diretório de projeto, sempre. É barato o suficiente (segundos pra criar, dezenas de MB) para nunca valer a pena compartilhar.
 
 ## Como explicar em inglês
 

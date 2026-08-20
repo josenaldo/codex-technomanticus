@@ -212,8 +212,7 @@ Anexada a uma OU inteira, essa política vale para toda conta-membro dentro dela
 > [!tip] Assista: Multi Account Structure in AWS with AWS Organizations
 > **Canal:** Amazon Web Services | **Duração:** ~16min | **Idioma:** EN
 >
-> Vídeo oficial da AWS que mostra, na prática, o console de Organizations criando a hierarquia de OUs e explica como a cobrança consolidada agrega o gasto de todas as contas-membro numa fatura só — o mesmo mecanismo que esta seção descreveu em prosa, aqui visto sendo configurado passo a passo.
-> Trecho de destaque [05:31]: *"simplify billing where resources used within an AWS account can be allocated"*
+> Vídeo oficial da AWS que mostra, na prática, o console de Organizations criando a hierarquia de OUs e explica como a cobrança consolidada agrega o gasto de todas as contas-membro numa fatura só — o mesmo mecanismo que esta seção descreveu em prosa, aqui visto sendo configurado passo a passo. Trecho de destaque [05:31]: *"simplify billing where resources used within an AWS account can be allocated"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=6CBfz0ZdbQM)
 

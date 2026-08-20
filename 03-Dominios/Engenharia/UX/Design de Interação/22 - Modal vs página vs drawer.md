@@ -82,19 +82,13 @@ Um time de QA tenta escrever um teste automatizado para "usuário edita o nome d
 ## Armadilhas comuns
 
 > [!warning] Modal empilhado (modal dentro de modal)
-> **O que acontece:** uma ação dentro de um modal aberto dispara um segundo modal por cima do primeiro.
-> **Por quê:** é a solução mais rápida de implementar quando uma sub-tarefa aparece dentro de uma tarefa já modal — sem repensar se a sub-tarefa merecia seu próprio container.
-> **Como evitar:** se uma tarefa dentro de um modal precisa de uma sub-decisão complexa, prefira substituir o conteúdo do mesmo modal (com um "voltar" interno) ou promover a sub-tarefa para um drawer separado — nunca abrir um segundo modal por cima do primeiro.
+> **O que acontece:** uma ação dentro de um modal aberto dispara um segundo modal por cima do primeiro. **Por quê:** é a solução mais rápida de implementar quando uma sub-tarefa aparece dentro de uma tarefa já modal — sem repensar se a sub-tarefa merecia seu próprio container. **Como evitar:** se uma tarefa dentro de um modal precisa de uma sub-decisão complexa, prefira substituir o conteúdo do mesmo modal (com um "voltar" interno) ou promover a sub-tarefa para um drawer separado — nunca abrir um segundo modal por cima do primeiro.
 
 > [!warning] Escolher modal só porque é mais rápido de implementar, ignorando o crescimento futuro
-> **O que acontece:** uma tarefa que hoje é simples (dois campos) vira modal, e cresce em escopo ao longo dos meses sem ninguém revisitar se o container ainda faz sentido.
-> **Por quê:** a decisão de container raramente é revisitada depois de tomada — o modal "já está lá", funcionando, então mexer nele parece risco desnecessário até que os sintomas (like o Cenário 1) fiquem grandes demais para ignorar.
-> **Como evitar:** trate a escolha de container como decisão que precisa de revisão periódica, não como decisão de uma vez só — especialmente quando um modal ganha novos campos ou seções ao longo do tempo.
+> **O que acontece:** uma tarefa que hoje é simples (dois campos) vira modal, e cresce em escopo ao longo dos meses sem ninguém revisitar se o container ainda faz sentido. **Por quê:** a decisão de container raramente é revisitada depois de tomada — o modal "já está lá", funcionando, então mexer nele parece risco desnecessário até que os sintomas (like o Cenário 1) fiquem grandes demais para ignorar. **Como evitar:** trate a escolha de container como decisão que precisa de revisão periódica, não como decisão de uma vez só — especialmente quando um modal ganha novos campos ou seções ao longo do tempo.
 
 > [!warning] Não sincronizar o estado do modal com a URL quando ele deveria ser compartilhável
-> **O que acontece:** um usuário quer mandar para um colega o link direto de "ver detalhe do pedido #4521", mas a URL da tela é sempre a mesma lista genérica, porque o modal de detalhe nunca escreveu nada na URL.
-> **Por quê:** sincronizar estado de modal com a URL (query param ou rota) dá trabalho extra que parece opcional no momento de implementar — até que alguém realmente precisa do link.
-> **Como evitar:** para qualquer modal ou drawer que mostra o detalhe de um item específico, escreva o identificador do item na URL (`?pedido=4521`) desde o início — o custo de adicionar isso depois é maior do que adicionar de saída.
+> **O que acontece:** um usuário quer mandar para um colega o link direto de "ver detalhe do pedido #4521", mas a URL da tela é sempre a mesma lista genérica, porque o modal de detalhe nunca escreveu nada na URL. **Por quê:** sincronizar estado de modal com a URL (query param ou rota) dá trabalho extra que parece opcional no momento de implementar — até que alguém realmente precisa do link. **Como evitar:** para qualquer modal ou drawer que mostra o detalhe de um item específico, escreva o identificador do item na URL (`?pedido=4521`) desde o início — o custo de adicionar isso depois é maior do que adicionar de saída.
 
 ## Como explicar em inglês
 

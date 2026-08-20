@@ -70,9 +70,7 @@ A perícia tem um roteiro repetível, o mesmo do método de diagnóstico da G1 n
 > As versões recentes do DevTools trazem um painel de **insights** que analisa o trace e lista achados acionáveis ("render-blocking request", "LCP request discovery", "forced reflow", "layout shift culprit") já ligados ao recurso/elemento. É um ótimo atalho antes do mergulho manual. A UI do DevTools muda com frequência — o nome e o layout do painel podem variar entre versões do Chrome; confirme em [developer.chrome.com/docs/devtools/performance](https://developer.chrome.com/docs/devtools/performance).
 
 > [!warning] Diagnosticar sem throttling
-> **O que acontece:** você grava no seu desktop potente, o trace fica todo verde e curto, e você não consegue reproduzir o INP ruim que o RUM aponta.
-> **Por quê:** sem throttling de CPU/rede, o trace mede a *sua* máquina, não a do usuário no p75. A long task que dura 300 ms num celular mediano dura 60 ms no seu desktop e nem aparece como problema.
-> **Como evitar:** **sempre** aplique CPU throttling (4×–6×) e rede lenta antes de gravar um diagnóstico de campo. O objetivo é reproduzir a dor do usuário, não confirmar que a sua máquina é rápida.
+> **O que acontece:** você grava no seu desktop potente, o trace fica todo verde e curto, e você não consegue reproduzir o INP ruim que o RUM aponta. **Por quê:** sem throttling de CPU/rede, o trace mede a *sua* máquina, não a do usuário no p75. A long task que dura 300 ms num celular mediano dura 60 ms no seu desktop e nem aparece como problema. **Como evitar:** **sempre** aplique CPU throttling (4×–6×) e rede lenta antes de gravar um diagnóstico de campo. O objetivo é reproduzir a dor do usuário, não confirmar que a sua máquina é rápida.
 
 **Diagnóstico avançado em uma frase:** grave um trace na condição do usuário (com throttling), leia a trilha da main thread (long tasks/forced reflow no flame chart), os marcadores de métrica (LCP/shifts) e a cascata de rede, e vá do sintoma ao culpado pelo call tree / bottom-up — deixando o painel de insights adiantar os achados acionáveis.
 

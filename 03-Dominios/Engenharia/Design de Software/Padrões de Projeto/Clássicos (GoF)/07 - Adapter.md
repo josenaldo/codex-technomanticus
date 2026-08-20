@@ -22,15 +22,7 @@ aliases:
 # Adapter
 
 > [!abstract] TL;DR
-> O **Adapter** converte a interface de uma classe para **outra que o cliente espera**, servindo de
-> ponte entre o seu código e o de terceiros (ou o legado). É o padrão que mantém o vocabulário de
-> uma biblioteca externa **contido na borda** do sistema, sem vazar para o domínio — a base do
-> Ports & Adapters (arquitetura hexagonal). Na nossa lente cross-linguagem, ele expõe uma distinção
-> importante: em linguagens de **tipagem nominal** (Java), o adapter é obrigatório sempre que as
-> interfaces não batem *por nome*, mesmo que a forma encaixe; em **tipagem estrutural** (Go, TS), se
-> a forma já encaixa, o adapter de "declaração" **desaparece** — mas o de **tradução** (renomear,
-> converter unidades, mapear erros) continua necessário. A armadilha principal: um adapter que
-> **vaza** exatamente o que deveria esconder.
+> O **Adapter** converte a interface de uma classe para **outra que o cliente espera**, servindo de ponte entre o seu código e o de terceiros (ou o legado). É o padrão que mantém o vocabulário de uma biblioteca externa **contido na borda** do sistema, sem vazar para o domínio — a base do Ports & Adapters (arquitetura hexagonal). Na nossa lente cross-linguagem, ele expõe uma distinção importante: em linguagens de **tipagem nominal** (Java), o adapter é obrigatório sempre que as interfaces não batem *por nome*, mesmo que a forma encaixe; em **tipagem estrutural** (Go, TS), se a forma já encaixa, o adapter de "declaração" **desaparece** — mas o de **tradução** (renomear, converter unidades, mapear erros) continua necessário. A armadilha principal: um adapter que **vaza** exatamente o que deveria esconder.
 
 ## Quando as interfaces não se encaixam
 
@@ -115,19 +107,13 @@ const stripeAdapter = (stripe: StripeClient): PaymentGateway => ({
 ## Armadilhas comuns
 
 > [!warning] O adapter que vaza o que deveria esconder
-> **O que acontece:** o adapter implementa a sua interface, mas devolve **tipos do SDK** (um `StripeCharge`) ou aceita parâmetros no formato do SDK. O vocabulário externo vaza pelo buraco.
-> **Por quê:** a razão de existir do adapter é **conter** a dependência externa. Se ele expõe os tipos de terceiros na sua fronteira, o acoplamento vaza para o domínio assim mesmo — você pagou o preço do adapter sem ganhar o isolamento.
-> **Como evitar:** o adapter traduz **nos dois sentidos** — entrada do domínio → SDK, e retorno do SDK → tipos do domínio. Nada do SDK cruza a fronteira.
+> **O que acontece:** o adapter implementa a sua interface, mas devolve **tipos do SDK** (um `StripeCharge`) ou aceita parâmetros no formato do SDK. O vocabulário externo vaza pelo buraco. **Por quê:** a razão de existir do adapter é **conter** a dependência externa. Se ele expõe os tipos de terceiros na sua fronteira, o acoplamento vaza para o domínio assim mesmo — você pagou o preço do adapter sem ganhar o isolamento. **Como evitar:** o adapter traduz **nos dois sentidos** — entrada do domínio → SDK, e retorno do SDK → tipos do domínio. Nada do SDK cruza a fronteira.
 
 > [!warning] O adapter que vira service (lógica de negócio dentro)
-> **O que acontece:** além de traduzir, o adapter começa a validar regras, orquestrar chamadas, decidir fluxos.
-> **Por quê:** o adapter deve ser **fino** — só tradução de vocabulário. Lógica de negócio dentro dele mistura duas responsabilidades (violando SRP) e esconde regra num lugar onde ninguém procura.
-> **Como evitar:** regra de negócio fica no domínio/serviço; o adapter só converte formatos e delega. Se ele está "pensando", virou outra coisa.
+> **O que acontece:** além de traduzir, o adapter começa a validar regras, orquestrar chamadas, decidir fluxos. **Por quê:** o adapter deve ser **fino** — só tradução de vocabulário. Lógica de negócio dentro dele mistura duas responsabilidades (violando SRP) e esconde regra num lugar onde ninguém procura. **Como evitar:** regra de negócio fica no domínio/serviço; o adapter só converte formatos e delega. Se ele está "pensando", virou outra coisa.
 
 > [!warning] Escrever adapter onde a tipagem estrutural já casa
-> **O que acontece:** um dev vindo de Java escreve um adapter cerimonioso em Go/TS para um tipo cuja forma **já** satisfaz a interface.
-> **Por quê:** é portar a solução (motivo 1, declaração) para uma linguagem onde ele não existe. Sem tradução real, o adapter é só indireção.
-> **Como evitar:** em Go/TS, primeiro cheque se a forma já encaixa — se sim, use direto. Só adapte quando houver **tradução** (nomes/tipos/erros diferentes).
+> **O que acontece:** um dev vindo de Java escreve um adapter cerimonioso em Go/TS para um tipo cuja forma **já** satisfaz a interface. **Por quê:** é portar a solução (motivo 1, declaração) para uma linguagem onde ele não existe. Sem tradução real, o adapter é só indireção. **Como evitar:** em Go/TS, primeiro cheque se a forma já encaixa — se sim, use direto. Só adapte quando houver **tradução** (nomes/tipos/erros diferentes).
 
 ## Como explicar em inglês
 

@@ -369,24 +369,16 @@ Não resolve um **DDoS distribuído de verdade**: um ataque coordenado a partir 
 ## Armadilhas comuns
 
 > [!warning] Rate limit só no IP, ignorando credential stuffing distribuído
-> **O que acontece:** o time configura `@limiter.limit("5/minute")` no endpoint de login, usando a chave default (IP), e considera o problema resolvido.
-> **Por quê:** protege contra um atacante concentrado num único endereço, mas um credential stuffing real — como o do incidente de abertura, com centenas de IPs rotativos — nunca acumula 5 tentativas no mesmo IP, contornando o limite por design.
-> **Como evitar:** combinar chave por IP com chave por conta-alvo (`email`/`username` do corpo da requisição), como no exemplo de `key="post:email"` desta nota — a segunda chave fecha exatamente a lacuna que a primeira deixa aberta.
+> **O que acontece:** o time configura `@limiter.limit("5/minute")` no endpoint de login, usando a chave default (IP), e considera o problema resolvido. **Por quê:** protege contra um atacante concentrado num único endereço, mas um credential stuffing real — como o do incidente de abertura, com centenas de IPs rotativos — nunca acumula 5 tentativas no mesmo IP, contornando o limite por design. **Como evitar:** combinar chave por IP com chave por conta-alvo (`email`/`username` do corpo da requisição), como no exemplo de `key="post:email"` desta nota — a segunda chave fecha exatamente a lacuna que a primeira deixa aberta.
 
 > [!warning] Confiar em `X-Forwarded-For` sem garantir que só o proxy confiável o define
-> **O que acontece:** a aplicação lê `X-Forwarded-For` diretamente do header da requisição, sem checar se a infraestrutura garante que esse header não pode ser forjado pelo próprio cliente.
-> **Por quê:** qualquer cliente HTTP pode enviar qualquer valor nesse header — sem uma camada de proxy confiável que sobrescreva (não anexe) esse valor antes de repassar, um atacante contorna o rate limiter trivialmente, variando o header a cada requisição.
-> **Como evitar:** configurar o proxy/load balancer da infraestrutura para sempre sobrescrever `X-Forwarded-For` com o IP real da conexão, e ler só o último IP da cadeia na aplicação — nunca o primeiro, que pode ter sido forjado.
+> **O que acontece:** a aplicação lê `X-Forwarded-For` diretamente do header da requisição, sem checar se a infraestrutura garante que esse header não pode ser forjado pelo próprio cliente. **Por quê:** qualquer cliente HTTP pode enviar qualquer valor nesse header — sem uma camada de proxy confiável que sobrescreva (não anexe) esse valor antes de repassar, um atacante contorna o rate limiter trivialmente, variando o header a cada requisição. **Como evitar:** configurar o proxy/load balancer da infraestrutura para sempre sobrescrever `X-Forwarded-For` com o IP real da conexão, e ler só o último IP da cadeia na aplicação — nunca o primeiro, que pode ter sido forjado.
 
 > [!warning] Rate limit checado depois da lógica cara, não antes
-> **O que acontece:** o rate limiter é aplicado depois que a senha já foi hasheada e o banco já foi consultado — perdendo a maior parte do benefício de custo, mesmo bloqueando a resposta final.
-> **Por quê:** o objetivo do rate limiting não é só "recusar a resposta", é evitar o **custo computacional** de processar a tentativa — e esse custo (hash de senha deliberadamente lento, consulta ao banco) já foi pago se o limite é checado tarde demais no pipeline.
-> **Como evitar:** aplicar o decorator de rate limit o mais cedo possível no pipeline da requisição — como decorator direto na view/rota, antes de qualquer lógica de negócio, exatamente como os exemplos desta nota fazem.
+> **O que acontece:** o rate limiter é aplicado depois que a senha já foi hasheada e o banco já foi consultado — perdendo a maior parte do benefício de custo, mesmo bloqueando a resposta final. **Por quê:** o objetivo do rate limiting não é só "recusar a resposta", é evitar o **custo computacional** de processar a tentativa — e esse custo (hash de senha deliberadamente lento, consulta ao banco) já foi pago se o limite é checado tarde demais no pipeline. **Como evitar:** aplicar o decorator de rate limit o mais cedo possível no pipeline da requisição — como decorator direto na view/rota, antes de qualquer lógica de negócio, exatamente como os exemplos desta nota fazem.
 
 > [!warning] Achar que rate limiting de aplicação substitui proteção de borda
-> **O que acontece:** o time trata `slowapi`/`django-ratelimit` como suficiente para qualquer forma de ataque de volume, sem avaliar proteção de infraestrutura (CDN/Shield).
-> **Por quê:** rate limiting de aplicação só age sobre requisições que já chegaram ao processo — um DDoS volumétrico real satura a rede antes disso, tornando a defesa de aplicação irrelevante para esse cenário específico.
-> **Como evitar:** tratar rate limiting de aplicação e proteção de borda como camadas complementares, não substitutas — a segunda é responsabilidade de infraestrutura/operação, fora do escopo desta trilha, mas não pode ser ignorada num sistema de produção real.
+> **O que acontece:** o time trata `slowapi`/`django-ratelimit` como suficiente para qualquer forma de ataque de volume, sem avaliar proteção de infraestrutura (CDN/Shield). **Por quê:** rate limiting de aplicação só age sobre requisições que já chegaram ao processo — um DDoS volumétrico real satura a rede antes disso, tornando a defesa de aplicação irrelevante para esse cenário específico. **Como evitar:** tratar rate limiting de aplicação e proteção de borda como camadas complementares, não substitutas — a segunda é responsabilidade de infraestrutura/operação, fora do escopo desta trilha, mas não pode ser ignorada num sistema de produção real.
 
 ## Em entrevista
 

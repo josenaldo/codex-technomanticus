@@ -55,8 +55,7 @@ Se a AZ do lado esquerdo cair, o sistema inteiro cai junto — blast radius = 10
 > [!tip] Assista: Why Your Systems Fail — Understanding and Eliminating Single Points of Failure
 > **Canal:** CyberCraft Lab | **Duração:** ~6min | **Idioma:** EN
 >
-> Narra apagões reais (kernel corrompido, load balancer mal configurado) pra mostrar como uma ferramenta desenhada pra *distribuir* risco vira, por um erro de configuração, o próprio ponto único de falha — o mesmo raciocínio de blast radius desta seção, só que com exemplos concretos de como ele se materializa.
-> Trecho de destaque [3:36]: *"turns the very tool meant to distribute risk into a single point of failure"*
+> Narra apagões reais (kernel corrompido, load balancer mal configurado) pra mostrar como uma ferramenta desenhada pra *distribuir* risco vira, por um erro de configuração, o próprio ponto único de falha — o mesmo raciocínio de blast radius desta seção, só que com exemplos concretos de como ele se materializa. Trecho de destaque [3:36]: *"turns the very tool meant to distribute risk into a single point of failure"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=CNfKW5LcjYU)
 
@@ -102,8 +101,7 @@ flowchart LR
 | 99.999% ("cinco noves") | ~5,26 minutos | ~26,3 segundos | ~6,05 segundos |
 
 > [!info] SLA real da AWS (verificado 2026-07-24 via docs oficiais)
-> A AWS diferencia explicitamente os dois primeiros degraus da tabela de níveis de redundância na letra do próprio SLA de EC2: uma instância **única** (sem redundância) tem SLA de **99.5%** de uptime mensal; um deployment **multi-AZ** (duas ou mais AZs na mesma região, ou duas regiões se a região só tiver uma AZ) sobe para **99.99%**. É o contrato formal confirmando, em número, o que a seção anterior descreveu em conceito: cada camada de redundância compra um SLA mais alto.
-> Fonte: [aws.amazon.com/compute/sla](https://aws.amazon.com/compute/sla/)
+> A AWS diferencia explicitamente os dois primeiros degraus da tabela de níveis de redundância na letra do próprio SLA de EC2: uma instância **única** (sem redundância) tem SLA de **99.5%** de uptime mensal; um deployment **multi-AZ** (duas ou mais AZs na mesma região, ou duas regiões se a região só tiver uma AZ) sobe para **99.99%**. É o contrato formal confirmando, em número, o que a seção anterior descreveu em conceito: cada camada de redundância compra um SLA mais alto. Fonte: [aws.amazon.com/compute/sla](https://aws.amazon.com/compute/sla/)
 
 A diferença entre 99.9% e 99.99% parece pequena no papel — um "0" a mais depois do ponto — mas na prática é a diferença entre "posso reiniciar isso manualmente numa manhã de sábado" (8,7 horas de folga por ano) e "preciso de failover automático, sem intervenção humana, em segundos" (52 minutos de folga *no ano inteiro*, praticamente zero margem para manutenção manual). Subir de quatro para cinco noves geralmente significa multiplicar o custo de engenharia e infraestrutura, não somar — daí a importância de perguntar, antes de perseguir o próximo nove: *quanto vale, em dinheiro real, cada minuto de downtime evitado aqui?* É a mesma pergunta que perpassa o galho de FinOps: resiliência tem preço, e o preço certo depende do que está em jogo.
 
@@ -112,8 +110,7 @@ Faça a conta ao contrário para sentir o peso real do número: um e-commerce qu
 > [!tip] Assista: Uptime and Availability Explained
 > **Canal:** CodeLucky | **Duração:** ~6min | **Idioma:** EN
 >
-> Explicador curto e direto da fórmula por trás da tabela de noves acima — uptime dividido pelo tempo total — útil pra quem quer ver o cálculo isolado antes de aplicá-lo aos números de downtime por ano/mês/semana desta seção.
-> Trecho de destaque [1:10]: *"simple formula. Availability percentage equals uptime divided by total time"*
+> Explicador curto e direto da fórmula por trás da tabela de noves acima — uptime dividido pelo tempo total — útil pra quem quer ver o cálculo isolado antes de aplicá-lo aos números de downtime por ano/mês/semana desta seção. Trecho de destaque [1:10]: *"simple formula. Availability percentage equals uptime divided by total time"*
 >
 > 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=40YrKGCw4s8)
 

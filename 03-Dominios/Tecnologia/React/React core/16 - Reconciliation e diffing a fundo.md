@@ -360,19 +360,13 @@ Neste exemplo:
 ## Armadilhas comuns
 
 > [!warning] Usar index como key em listas que mudam de ordem
-> **O que acontece:** componentes trocam de estado visivelmente — um checkbox marcado "pula" para outro item, um input mantém o valor de um item deletado.
-> **Por quê:** o React usa a key como identidade. Se `key=0` sempre aponta para o primeiro item da lista, e o primeiro item muda, o React pensa que é o mesmo componente com props diferentes — e mantém o estado interno.
-> **Como evitar:** use um identificador estável do dado (`user.id`, `post.slug`). Index só é seguro em listas totalmente estáticas e sem estado local nos itens.
+> **O que acontece:** componentes trocam de estado visivelmente — um checkbox marcado "pula" para outro item, um input mantém o valor de um item deletado. **Por quê:** o React usa a key como identidade. Se `key=0` sempre aponta para o primeiro item da lista, e o primeiro item muda, o React pensa que é o mesmo componente com props diferentes — e mantém o estado interno. **Como evitar:** use um identificador estável do dado (`user.id`, `post.slug`). Index só é seguro em listas totalmente estáticas e sem estado local nos itens.
 
 > [!warning] Definir componentes dentro de outros componentes
-> **O que acontece:** o componente interno desmonta e remonta a cada render do pai, perdendo todo estado local. Efeitos rodam em loop, refs são destruídas.
-> **Por quê:** cada vez que o pai renderiza, a expressão `const Inner = () => <div/>` cria uma **nova referência de função**. O React compara tipos por referência — é sempre um tipo diferente, logo sempre desmonta.
-> **Como evitar:** defina todos os componentes no escopo do módulo, fora de qualquer outro componente.
+> **O que acontece:** o componente interno desmonta e remonta a cada render do pai, perdendo todo estado local. Efeitos rodam em loop, refs são destruídas. **Por quê:** cada vez que o pai renderiza, a expressão `const Inner = () => <div/>` cria uma **nova referência de função**. O React compara tipos por referência — é sempre um tipo diferente, logo sempre desmonta. **Como evitar:** defina todos os componentes no escopo do módulo, fora de qualquer outro componente.
 
 > [!warning] Trocar o tipo em renderização condicional sem perceber
-> **O que acontece:** um campo de formulário perde o valor digitado, uma animação reinicia, um componente de timer reseta.
-> **Por quê:** alternar entre dois componentes diferentes em um if/else (mesmo que pareçam "iguais" semanticamente) força desmontagem/remontagem porque o tipo é diferente.
-> **Como evitar:** se você quer preservar estado entre dois modos, use o mesmo tipo e passe props diferentes — ou use CSS para esconder (`hidden`, `display: none`) em vez de desmontar.
+> **O que acontece:** um campo de formulário perde o valor digitado, uma animação reinicia, um componente de timer reseta. **Por quê:** alternar entre dois componentes diferentes em um if/else (mesmo que pareçam "iguais" semanticamente) força desmontagem/remontagem porque o tipo é diferente. **Como evitar:** se você quer preservar estado entre dois modos, use o mesmo tipo e passe props diferentes — ou use CSS para esconder (`hidden`, `display: none`) em vez de desmontar.
 >
 > ```tsx
 > // ❌ Troca de tipo → estado do input perdido
@@ -383,9 +377,7 @@ Neste exemplo:
 > ```
 
 > [!warning] Esperando que `React.memo` evite todos os re-renders
-> **O que acontece:** componente memoizado re-renderiza mesmo sem mudança visível nos dados.
-> **Por quê:** `React.memo` usa `Object.is` em cada prop. Se qualquer prop é um objeto, array ou função criado inline, a referência é nova a cada render do pai — `Object.is` retorna `false` e o memo não funciona.
-> **Como evitar:** estabilize referências com `useMemo` e `useCallback` para props que são objetos/funções. Ou use o React Compiler (disponível desde React 19) que automatiza isso.
+> **O que acontece:** componente memoizado re-renderiza mesmo sem mudança visível nos dados. **Por quê:** `React.memo` usa `Object.is` em cada prop. Se qualquer prop é um objeto, array ou função criado inline, a referência é nova a cada render do pai — `Object.is` retorna `false` e o memo não funciona. **Como evitar:** estabilize referências com `useMemo` e `useCallback` para props que são objetos/funções. Ou use o React Compiler (disponível desde React 19) que automatiza isso.
 
 ---
 

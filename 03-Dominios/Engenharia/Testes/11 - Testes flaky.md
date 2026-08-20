@@ -16,9 +16,7 @@ tags:
 # Testes flaky
 
 > [!abstract] Resumo em uma linha
-> Teste flaky é o que passa às vezes e falha às vezes contra o **mesmo código, mesma versão e mesmo ambiente** — o resultado depende de algo que ninguém controlou (ordem, relógio, rede, uma *thread* que não terminou), não de o código ter quebrado.
-> O dano real não é o CI perder minutos em *retry*: é a erosão de confiança. Cada falso vermelho treina o time a desconfiar do sinal, e no dia em que o vermelho for um bug de verdade, ninguém vai olhar — a suíte inteira vira ruído descartável.
-> Por isso a regra de ouro deste capítulo é dura e sem exceção: **nunca `sleep` em teste**. Um `sleep` aposta num prazo fixo; a cura de quase toda causa de flaky é trocar a aposta por uma espera pela condição real.
+> Teste flaky é o que passa às vezes e falha às vezes contra o **mesmo código, mesma versão e mesmo ambiente** — o resultado depende de algo que ninguém controlou (ordem, relógio, rede, uma *thread* que não terminou), não de o código ter quebrado. O dano real não é o CI perder minutos em *retry*: é a erosão de confiança. Cada falso vermelho treina o time a desconfiar do sinal, e no dia em que o vermelho for um bug de verdade, ninguém vai olhar — a suíte inteira vira ruído descartável. Por isso a regra de ouro deste capítulo é dura e sem exceção: **nunca `sleep` em teste**. Um `sleep` aposta num prazo fixo; a cura de quase toda causa de flaky é trocar a aposta por uma espera pela condição real.
 
 Imagine um alarme de incêndio que dispara sozinho, sem fogo, três vezes por semana. No começo todo mundo corre. Depois de um mês, ninguém levanta da cadeira — "é só o alarme de novo". No dia em que houver fogo de verdade, o prédio inteiro vai ignorar o som.
 

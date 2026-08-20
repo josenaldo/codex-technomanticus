@@ -30,8 +30,7 @@ Um repositório de dez anos é o registro mais completo e mais honesto que exist
 Nada mais no projeto tem essa propriedade. O código diz *o que é hoje*. Os testes dizem *o que se esperava*. Só o histórico diz **como chegou aqui** — e "como chegou aqui" costuma ser a informação que falta para decidir o que fazer a seguir.
 
 > [!info] A relação com a arqueologia de software
-> Este sub-galho é o **instrumento**; o **método** de assumir e trabalhar com sistemas legados mora em [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/index|Engenharia/Arqueologia e Restauração de Software]].
-> A divisão é deliberada: aqui você aprende o que os comandos revelam e como interpretá-los; lá, o ofício de conduzir a investigação, negociar com quem paga a conta e decidir o que refatorar.
+> Este sub-galho é o **instrumento**; o **método** de assumir e trabalhar com sistemas legados mora em [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/index|Engenharia/Arqueologia e Restauração de Software]]. A divisão é deliberada: aqui você aprende o que os comandos revelam e como interpretá-los; lá, o ofício de conduzir a investigação, negociar com quem paga a conta e decidir o que refatorar.
 
 ---
 

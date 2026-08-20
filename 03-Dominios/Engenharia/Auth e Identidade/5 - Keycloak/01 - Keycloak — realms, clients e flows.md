@@ -174,9 +174,7 @@ Isso é o que permite construir um **step-up authentication**: o usuário faz lo
 O Keycloak 26.7 estendeu esse mecanismo de step-up também para SAML (não só OIDC), promovendo o recurso de preview para suportado — sinal de que o padrão está amadurecendo além do nicho OIDC-only[^keycloak-267].
 
 > [!warning] Editar o flow padrão em vez de duplicar
-> **O que acontece:** o time customiza diretamente o flow `browser` built-in do realm.
-> **Por quê:** flows built-in podem ser sobrescritos silenciosamente em upgrades do Keycloak, e não há como comparar facilmente "o que mudei" vs "o que é padrão" quando tudo está misturado no mesmo flow.
-> **Como evitar:** sempre duplicar o flow (`Duplicate`) antes de customizar, dar um nome descritivo (`browser-with-step-up`), e associar o novo flow ao realm/client explicitamente. Isso também facilita reverter uma mudança ruim sem perder a linha de base.
+> **O que acontece:** o time customiza diretamente o flow `browser` built-in do realm. **Por quê:** flows built-in podem ser sobrescritos silenciosamente em upgrades do Keycloak, e não há como comparar facilmente "o que mudei" vs "o que é padrão" quando tudo está misturado no mesmo flow. **Como evitar:** sempre duplicar o flow (`Duplicate`) antes de customizar, dar um nome descritivo (`browser-with-step-up`), e associar o novo flow ao realm/client explicitamente. Isso também facilita reverter uma mudança ruim sem perder a linha de base.
 
 ## Admin console vs Admin REST API
 
@@ -214,19 +212,13 @@ Cada realm tem um **tema** — o conjunto de templates e assets que renderizam a
 ## Armadilhas comuns
 
 > [!warning] Web Origins configurado como `*`
-> **O que acontece:** para "resolver" um erro de CORS rapidamente, alguém configura `Web Origins: *` no client.
-> **Por quê:** o CORS do Keycloak não aceita `*` para requisições credenciadas (com cookies) — e mesmo quando aceita tecnicamente, é uma abertura desnecessária: qualquer origem pode fazer requisições autenticadas contra o endpoint de token[^skycloak-pitfalls].
-> **Como evitar:** listar as origens reais (`https://app.acme.com`), ou usar o atalho `+` do Keycloak, que reflete automaticamente as `Valid Redirect URIs` já configuradas — sem abrir para o mundo.
+> **O que acontece:** para "resolver" um erro de CORS rapidamente, alguém configura `Web Origins: *` no client. **Por quê:** o CORS do Keycloak não aceita `*` para requisições credenciadas (com cookies) — e mesmo quando aceita tecnicamente, é uma abertura desnecessária: qualquer origem pode fazer requisições autenticadas contra o endpoint de token[^skycloak-pitfalls]. **Como evitar:** listar as origens reais (`https://app.acme.com`), ou usar o atalho `+` do Keycloak, que reflete automaticamente as `Valid Redirect URIs` já configuradas — sem abrir para o mundo.
 
 > [!warning] Rodar o banco embutido (H2) em produção
-> **O que acontece:** a imagem Docker padrão do Keycloak sobe com um banco em memória/arquivo H2, que funciona perfeitamente em dev e "some" na primeira restart do container em produção.
-> **Por quê:** H2 embutido não suporta clustering, não tem garantias de durabilidade sérias, e não é o banco testado extensivamente pela equipe do Keycloak[^skycloak-pitfalls-2].
-> **Como evitar:** sempre apontar para PostgreSQL (o banco mais bem suportado) desde o primeiro deploy que não seja um laptop de desenvolvimento — mesmo em POC, se a POC vai virar produção sem ninguém perceber (o que é o caso mais comum de todos).
+> **O que acontece:** a imagem Docker padrão do Keycloak sobe com um banco em memória/arquivo H2, que funciona perfeitamente em dev e "some" na primeira restart do container em produção. **Por quê:** H2 embutido não suporta clustering, não tem garantias de durabilidade sérias, e não é o banco testado extensivamente pela equipe do Keycloak[^skycloak-pitfalls-2]. **Como evitar:** sempre apontar para PostgreSQL (o banco mais bem suportado) desde o primeiro deploy que não seja um laptop de desenvolvimento — mesmo em POC, se a POC vai virar produção sem ninguém perceber (o que é o caso mais comum de todos).
 
 > [!warning] Confundir realm role com client role por conveniência
-> **O que acontece:** toda permissão vira realm role, "porque é mais simples", inclusive permissões que só fazem sentido dentro de uma aplicação específica.
-> **Por quê:** conforme o número de aplicações cresce, o realm acumula dezenas de roles com escopo mal definido, tornando a claim `realm_access.roles` do token gigante e ambígua — um resource server não consegue mais confiar que `invoices.write` significa a mesma coisa em todo lugar.
-> **Como evitar:** aplicar a regra simples: permissão específica de uma aplicação → client role daquele client; permissão que representa identidade cross-sistema (tier de plano, papel organizacional amplo) → realm role.
+> **O que acontece:** toda permissão vira realm role, "porque é mais simples", inclusive permissões que só fazem sentido dentro de uma aplicação específica. **Por quê:** conforme o número de aplicações cresce, o realm acumula dezenas de roles com escopo mal definido, tornando a claim `realm_access.roles` do token gigante e ambígua — um resource server não consegue mais confiar que `invoices.write` significa a mesma coisa em todo lugar. **Como evitar:** aplicar a regra simples: permissão específica de uma aplicação → client role daquele client; permissão que representa identidade cross-sistema (tier de plano, papel organizacional amplo) → realm role.
 
 > [!warning] Editar o flow `browser` padrão em vez de duplicar
 > Já coberto acima, mas vale repetir na lista de armadilhas por ser a causa mais comum de "por que meu login quebrou depois do upgrade": mudanças em flows built-in não sobrevivem com previsibilidade a atualizações do Keycloak.
@@ -291,25 +283,4 @@ Esta nota cobriu o modelo de dados e a configuração de um único realm rodando
 - **Terraform Registry** — [*Keycloak Provider*](https://registry.terraform.io/providers/keycloak/keycloak/latest/docs) — provedor comunitário para IaC; acessado em 2026-07-11.
 - **Authgear** — [*What Is .well-known/openid-configuration? A Developer's Guide*](https://www.authgear.com/post/well-known-openid-configuration/) — discovery endpoint, endpoints expostos; acessado em 2026-07-11.
 
-[^skycloak-tco]: Skycloak, *Is Self-Hosting Keycloak Worth It in 2026?* — TCO real do self-hosted.
-[^skycloak-cost]: Skycloak, idem — custo achatado por infraestrutura vs MAU.
-[^skycloak-selfhost]: Skycloak, idem — residência de dados e controle de chaves.
-[^skycloak-cve]: Skycloak, idem — CVE-2025-3501 e CVE-2025-11419.
-[^skycloak-cluster]: Skycloak, *Top 7 Keycloak Cluster Configuration Best Practices* — risco de cluster mal configurado.
-[^skycloak-mau]: Skycloak, *Is Self-Hosting Keycloak Worth It in 2026?* — ponto de virada MAU vs infraestrutura própria.
-[^intension-realms]: intension GmbH, *Client Separation Starting with Keycloak 26* — isolamento de realm.
-[^intension-orgs]: intension GmbH, idem — Organizations como multi-tenancy mais leve.
-[^oneuptime-clients]: OneUptime, *How to Create Keycloak Clients* — confidential vs public.
-[^oneuptime-service-accounts]: OneUptime, idem — service accounts e Client Credentials Grant.
-[^skycloak-scopes]: Skycloak, *Keycloak Client Scopes vs Roles* — critério realm role vs client role.
-[^skycloak-scopes-vs-roles]: Skycloak, idem — client scopes como pacote de protocol mappers.
-[^skycloak-flows]: Skycloak, *Building Custom Authentication Flows in Keycloak* — flows built-in e customização.
-[^skycloak-conditional]: Keycloak GitHub, *flows.adoc* — semântica REQUIRED/ALTERNATIVE/CONDITIONAL/DISABLED.
-[^redhat-stepup]: Keycloak Community, *multi-factor-admin-and-step-up.md* — comportamento do primeiro nível de autenticação.
-[^keycloak-267]: Keycloak.org, *Keycloak 26.7.0 released* — nova REST API de clients, step-up SAML, SCIM preview.
-[^tf-provider]: Skycloak, *Keycloak Configuration as Code with Terraform* — service account dedicado para automação.
-[^tf-provider-registry]: Terraform Registry, *Keycloak Provider* — recursos declarativos de realm/client/role/flow.
-[^keycloak-themes]: Keycloak.org, *Working with themes* — estrutura de diretório e Theme Selector SPI.
-[^keycloak-themes-2026]: phasetwo.io, *A New Keycloak Theme Experience* — Keycloakify e temas como React.
-[^skycloak-pitfalls]: Skycloak, *Is Keycloak Production Ready? A Practical Checklist* — Web Origins `*`.
-[^skycloak-pitfalls-2]: Skycloak, idem — H2 embutido vs PostgreSQL em produção.
+[^skycloak-tco]: Skycloak, *Is Self-Hosting Keycloak Worth It in 2026?* — TCO real do self-hosted. [^skycloak-cost]: Skycloak, idem — custo achatado por infraestrutura vs MAU. [^skycloak-selfhost]: Skycloak, idem — residência de dados e controle de chaves. [^skycloak-cve]: Skycloak, idem — CVE-2025-3501 e CVE-2025-11419. [^skycloak-cluster]: Skycloak, *Top 7 Keycloak Cluster Configuration Best Practices* — risco de cluster mal configurado. [^skycloak-mau]: Skycloak, *Is Self-Hosting Keycloak Worth It in 2026?* — ponto de virada MAU vs infraestrutura própria. [^intension-realms]: intension GmbH, *Client Separation Starting with Keycloak 26* — isolamento de realm. [^intension-orgs]: intension GmbH, idem — Organizations como multi-tenancy mais leve. [^oneuptime-clients]: OneUptime, *How to Create Keycloak Clients* — confidential vs public. [^oneuptime-service-accounts]: OneUptime, idem — service accounts e Client Credentials Grant. [^skycloak-scopes]: Skycloak, *Keycloak Client Scopes vs Roles* — critério realm role vs client role. [^skycloak-scopes-vs-roles]: Skycloak, idem — client scopes como pacote de protocol mappers. [^skycloak-flows]: Skycloak, *Building Custom Authentication Flows in Keycloak* — flows built-in e customização. [^skycloak-conditional]: Keycloak GitHub, *flows.adoc* — semântica REQUIRED/ALTERNATIVE/CONDITIONAL/DISABLED. [^redhat-stepup]: Keycloak Community, *multi-factor-admin-and-step-up.md* — comportamento do primeiro nível de autenticação. [^keycloak-267]: Keycloak.org, *Keycloak 26.7.0 released* — nova REST API de clients, step-up SAML, SCIM preview. [^tf-provider]: Skycloak, *Keycloak Configuration as Code with Terraform* — service account dedicado para automação. [^tf-provider-registry]: Terraform Registry, *Keycloak Provider* — recursos declarativos de realm/client/role/flow. [^keycloak-themes]: Keycloak.org, *Working with themes* — estrutura de diretório e Theme Selector SPI. [^keycloak-themes-2026]: phasetwo.io, *A New Keycloak Theme Experience* — Keycloakify e temas como React. [^skycloak-pitfalls]: Skycloak, *Is Keycloak Production Ready? A Practical Checklist* — Web Origins `*`. [^skycloak-pitfalls-2]: Skycloak, idem — H2 embutido vs PostgreSQL em produção.

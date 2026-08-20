@@ -17,15 +17,11 @@ aliases:
 # Tecnologia
 
 > [!abstract] TL;DR
-> Camada do *como fazer em X* — linguagens, frameworks, runtimes e ferramentas concretas. Tudo
-> que se instala, versiona e fica obsoleto. A teoria neutra vive em [[03-Dominios/Engenharia/index|Engenharia]];
-> aqui é a implementação que linka de volta pra ela.
+> Camada do *como fazer em X* — linguagens, frameworks, runtimes e ferramentas concretas. Tudo que se instala, versiona e fica obsoleto. A teoria neutra vive em [[03-Dominios/Engenharia/index|Engenharia]]; aqui é a implementação que linka de volta pra ela.
 
 ## Sobre esta camada
 
-Se você consegue rodar `npm install`, `apt install` ou baixar um binário, é Tecnologia. Estes domínios
-cuidam das particularidades de cada stack e linkam pras disciplinas neutras de
-[[03-Dominios/Engenharia/index|Engenharia]] e pra base de [[03-Dominios/Ciência/index|Ciência da Computação]].
+Se você consegue rodar `npm install`, `apt install` ou baixar um binário, é Tecnologia. Estes domínios cuidam das particularidades de cada stack e linkam pras disciplinas neutras de [[03-Dominios/Engenharia/index|Engenharia]] e pra base de [[03-Dominios/Ciência/index|Ciência da Computação]].
 
 ## Domínios
 

@@ -54,19 +54,13 @@ Um fractional percebe que um cliente específico está gerando interrupções fo
 ## Armadilhas comuns
 
 > [!warning] Aceitar disponibilidade "sempre" pra fechar o contrato
-> **O que acontece:** na negociação, o fractional promete disponibilidade ampla ("pode me chamar a qualquer hora") pra parecer mais atrativo, sem considerar o efeito cumulativo com os outros clientes da carteira.
-> **Por quê:** disponibilidade irrestrita de um cliente colide inevitavelmente com o bloco dedicado de outro — e ceder a uma interrupção ilegítima gera precedente que se repete.
-> **Como evitar:** definir a janela de disponibilidade real já na proposta (ver [[09 - Do discovery call ao contrato assinado]]), antes de assinar, não depois que o padrão de interrupção já se estabeleceu.
+> **O que acontece:** na negociação, o fractional promete disponibilidade ampla ("pode me chamar a qualquer hora") pra parecer mais atrativo, sem considerar o efeito cumulativo com os outros clientes da carteira. **Por quê:** disponibilidade irrestrita de um cliente colide inevitavelmente com o bloco dedicado de outro — e ceder a uma interrupção ilegítima gera precedente que se repete. **Como evitar:** definir a janela de disponibilidade real já na proposta (ver [[09 - Do discovery call ao contrato assinado]]), antes de assinar, não depois que o padrão de interrupção já se estabeleceu.
 
 > [!warning] Não reservar tempo pra prospecção e administração
-> **O que acontece:** toda a capacidade disponível é alocada só pros clientes ativos, sem nenhum bloco reservado pra buscar o próximo cliente ou cuidar da parte administrativa (contabilidade, propostas, conteúdo).
-> **Por quê:** quando um dos clientes atuais encerra o contrato, não há pipeline em andamento pra substituir a receita — o mesmo problema de dependência de canal único descrito em [[07 - Canais de prospecção e marketplaces fractional]], só que aplicado ao tempo em vez de ao canal.
-> **Como evitar:** reservar um bloco fixo semanal pra prospecção e administração, tratado com a mesma prioridade estrutural dos blocos de cliente.
+> **O que acontece:** toda a capacidade disponível é alocada só pros clientes ativos, sem nenhum bloco reservado pra buscar o próximo cliente ou cuidar da parte administrativa (contabilidade, propostas, conteúdo). **Por quê:** quando um dos clientes atuais encerra o contrato, não há pipeline em andamento pra substituir a receita — o mesmo problema de dependência de canal único descrito em [[07 - Canais de prospecção e marketplaces fractional]], só que aplicado ao tempo em vez de ao canal. **Como evitar:** reservar um bloco fixo semanal pra prospecção e administração, tratado com a mesma prioridade estrutural dos blocos de cliente.
 
 > [!warning] Medir sucesso pelo volume de horas, não pela profundidade entregue
-> **O que acontece:** o fractional se orgulha de "estar sempre ocupado" entre os 4 clientes, sem perceber que o context switching excessivo está corroendo a qualidade de cada engajamento individual.
-> **Por quê:** ocupação não é a mesma coisa que valor entregue — um fractional espalhado demais entrega decisões mais rasas em cada cliente do que entregaria com blocos protegidos e foco real.
-> **Como evitar:** avaliar periodicamente, por cliente, se a qualidade das decisões e recomendações se mantém — não só se as horas contratadas estão sendo cumpridas.
+> **O que acontece:** o fractional se orgulha de "estar sempre ocupado" entre os 4 clientes, sem perceber que o context switching excessivo está corroendo a qualidade de cada engajamento individual. **Por quê:** ocupação não é a mesma coisa que valor entregue — um fractional espalhado demais entrega decisões mais rasas em cada cliente do que entregaria com blocos protegidos e foco real. **Como evitar:** avaliar periodicamente, por cliente, se a qualidade das decisões e recomendações se mantém — não só se as horas contratadas estão sendo cumpridas.
 
 ## Como explicar em inglês
 

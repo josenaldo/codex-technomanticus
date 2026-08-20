@@ -20,12 +20,7 @@ aliases:
 # Red flags que sêniores produzem sem perceber
 
 > [!abstract] TL;DR
-> O resto do galho trata do que fazer bem. Esta nota trata do inverso: um conjunto pequeno de
-> comportamentos que **desqualifica candidatos tecnicamente fortes**, quase sempre sem que eles notem
-> que aconteceu. Quase todos têm a mesma origem — a experiência que produz competência também produz
-> **convicção**, e convicção mal calibrada lê-se como rigidez. O padrão que atravessa a lista: o
-> entrevistador não avalia o que você diz sobre o passado, avalia **o que aquilo prevê sobre o futuro**
-> dele com você no time.
+> O resto do galho trata do que fazer bem. Esta nota trata do inverso: um conjunto pequeno de comportamentos que **desqualifica candidatos tecnicamente fortes**, quase sempre sem que eles notem que aconteceu. Quase todos têm a mesma origem — a experiência que produz competência também produz **convicção**, e convicção mal calibrada lê-se como rigidez. O padrão que atravessa a lista: o entrevistador não avalia o que você diz sobre o passado, avalia **o que aquilo prevê sobre o futuro** dele com você no time.
 
 ## A frase que custou a vaga
 
@@ -87,19 +82,13 @@ A distinção prática: se você errou o formato, corrija na hora sem drama ("de
 ## Armadilhas comuns
 
 > [!warning] Confundir franqueza com ausência de filtro
-> **O que acontece:** o candidato se orgulha de "falar o que pensa" e emite julgamentos duros sobre ex-colegas, tecnologias e o próprio sistema do entrevistador. Entende que está demonstrando autenticidade.
-> **Por quê:** em times técnicos, franqueza é valorizada — e a linha entre franqueza e falta de tato não é óbvia quando se está do lado de dentro.
-> **Como evitar:** franqueza é sobre **conteúdo**, não sobre alvo. Discordar de uma ideia com argumento é franqueza; qualificar pessoas é outra coisa. O teste: você diria isso com a pessoa presente?
+> **O que acontece:** o candidato se orgulha de "falar o que pensa" e emite julgamentos duros sobre ex-colegas, tecnologias e o próprio sistema do entrevistador. Entende que está demonstrando autenticidade. **Por quê:** em times técnicos, franqueza é valorizada — e a linha entre franqueza e falta de tato não é óbvia quando se está do lado de dentro. **Como evitar:** franqueza é sobre **conteúdo**, não sobre alvo. Discordar de uma ideia com argumento é franqueza; qualificar pessoas é outra coisa. O teste: você diria isso com a pessoa presente?
 
 > [!warning] Tratar a entrevista como demonstração de superioridade técnica
-> **O que acontece:** o candidato corrige o entrevistador em detalhes irrelevantes, exibe conhecimento de nicho e transforma a conversa em competição. Vence os pontos e perde a avaliação.
-> **Por quê:** o contexto parece pedir prova de competência, e competência foi historicamente demonstrada assim.
-> **Como evitar:** corrigir é legítimo quando importa para a decisão em jogo — e o modo importa: "acho que isso mudou nas versões recentes, você chegou a ver?" preserva a conversa e a informação.
+> **O que acontece:** o candidato corrige o entrevistador em detalhes irrelevantes, exibe conhecimento de nicho e transforma a conversa em competição. Vence os pontos e perde a avaliação. **Por quê:** o contexto parece pedir prova de competência, e competência foi historicamente demonstrada assim. **Como evitar:** corrigir é legítimo quando importa para a decisão em jogo — e o modo importa: "acho que isso mudou nas versões recentes, você chegou a ver?" preserva a conversa e a informação.
 
 > [!warning] Deixar a red flag no ar sem reparo
-> **O que acontece:** o candidato percebe, meio segundo depois, que falou mal do gestor anterior — e segue em frente torcendo para que passe. Não passa.
-> **Por quê:** voltar atrás parece constrangedor e reforçar o assunto.
-> **Como evitar:** repare de forma curta e sem drama: "deixa eu reformular — o problema estrutural era a ausência de processo, e o que eu tentei fazer foi...". Reparo consciente **melhora** a impressão, porque demonstra autopercepção.
+> **O que acontece:** o candidato percebe, meio segundo depois, que falou mal do gestor anterior — e segue em frente torcendo para que passe. Não passa. **Por quê:** voltar atrás parece constrangedor e reforçar o assunto. **Como evitar:** repare de forma curta e sem drama: "deixa eu reformular — o problema estrutural era a ausência de processo, e o que eu tentei fazer foi...". Reparo consciente **melhora** a impressão, porque demonstra autopercepção.
 
 ## Como soa em inglês
 

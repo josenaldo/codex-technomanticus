@@ -492,24 +492,16 @@ Este padrão conecta diretamente à forma como `useEffect` modela dependências 
 ## Armadilhas comuns
 
 > [!warning] Memoizar tudo por padrão
-> **O que acontece:** `useMemo`/`useCallback` em todo componente e toda função, sem profiling.
-> **Por quê:** A comparação de dependências tem custo real. Em componentes simples com renders rápidos, o overhead da memoização é maior que o custo do re-render evitado. O resultado é um app mais lento, não mais rápido.
-> **Como evitar:** Use React DevTools Profiler para identificar quais componentes re-renderizam com frequência E têm custo real. Só então aplique memoização cirúrgica.
+> **O que acontece:** `useMemo`/`useCallback` em todo componente e toda função, sem profiling. **Por quê:** A comparação de dependências tem custo real. Em componentes simples com renders rápidos, o overhead da memoização é maior que o custo do re-render evitado. O resultado é um app mais lento, não mais rápido. **Como evitar:** Use React DevTools Profiler para identificar quais componentes re-renderizam com frequência E têm custo real. Só então aplique memoização cirúrgica.
 
 > [!warning] Array de dependências incompleto no `useMemo`
-> **O que acontece:** Um valor usado dentro do `useMemo` foi omitido das deps. O cálculo usa um valor "stale" (desatualizado) porque o React não sabe que precisa recalcular.
-> **Por quê:** O ESLint rule `exhaustive-deps` (do `eslint-plugin-react-hooks`) detecta esse caso, mas é fácil ignorar o aviso ou desabilitá-lo sem entender o impacto.
-> **Como evitar:** Nunca desabilite `// eslint-disable-next-line react-hooks/exhaustive-deps` sem entender por que o linter reclamou. Se a dep muda demais e invalida o cache, reavalie se `useMemo` é a ferramenta certa ali.
+> **O que acontece:** Um valor usado dentro do `useMemo` foi omitido das deps. O cálculo usa um valor "stale" (desatualizado) porque o React não sabe que precisa recalcular. **Por quê:** O ESLint rule `exhaustive-deps` (do `eslint-plugin-react-hooks`) detecta esse caso, mas é fácil ignorar o aviso ou desabilitá-lo sem entender o impacto. **Como evitar:** Nunca desabilite `// eslint-disable-next-line react-hooks/exhaustive-deps` sem entender por que o linter reclamou. Se a dep muda demais e invalida o cache, reavalie se `useMemo` é a ferramenta certa ali.
 
 > [!warning] `React.memo` com prop de objeto inline
-> **O que acontece:** Componente envolvido com `React.memo` re-renderiza em todo render do pai mesmo assim.
-> **Por quê:** `<MemoizedChild style={{ color: "red" }} />` cria um novo objeto `{ color: "red" }` a cada render. `React.memo` compara por shallow reference — novo objeto → props "mudaram" → re-renderiza.
-> **Como evitar:** Stabilize a prop com `useMemo` (para objetos) ou `useCallback` (para funções) no componente pai.
+> **O que acontece:** Componente envolvido com `React.memo` re-renderiza em todo render do pai mesmo assim. **Por quê:** `<MemoizedChild style={{ color: "red" }} />` cria um novo objeto `{ color: "red" }` a cada render. `React.memo` compara por shallow reference — novo objeto → props "mudaram" → re-renderiza. **Como evitar:** Stabilize a prop com `useMemo` (para objetos) ou `useCallback` (para funções) no componente pai.
 
 > [!warning] Confundir `useMemo` (valor) com `useCallback` (função)
-> **O que acontece:** `useMemo(() => myFn, [deps])` retorna `myFn` (a função em si, sem chamá-la) — não o resultado de chamar `myFn`. Isso é o que `useCallback` faz. Se o objetivo era memoizar o *resultado*, isso está errado.
-> **Por quê:** A assinatura similar confunde — ambos recebem `(fn, deps)`.
-> **Como evitar:** `useMemo` → memoiza o *retorno* da função passada. `useCallback` → memoiza a *função em si*. Regra prática: se você quer guardar um valor calculado, use `useMemo`; se quer guardar uma função para passar como prop ou dep, use `useCallback`.
+> **O que acontece:** `useMemo(() => myFn, [deps])` retorna `myFn` (a função em si, sem chamá-la) — não o resultado de chamar `myFn`. Isso é o que `useCallback` faz. Se o objetivo era memoizar o *resultado*, isso está errado. **Por quê:** A assinatura similar confunde — ambos recebem `(fn, deps)`. **Como evitar:** `useMemo` → memoiza o *retorno* da função passada. `useCallback` → memoiza a *função em si*. Regra prática: se você quer guardar um valor calculado, use `useMemo`; se quer guardar uma função para passar como prop ou dep, use `useCallback`.
 
 ---
 

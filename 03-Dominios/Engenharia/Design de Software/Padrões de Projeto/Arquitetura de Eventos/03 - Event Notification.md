@@ -23,12 +23,7 @@ aliases:
 # Event Notification
 
 > [!abstract] TL;DR
-> O evento **magro**: diz apenas *o que aconteceu* e *a qual entidade* — `PedidoConfirmado { id }` — e
-> quem se interessa **volta e pergunta**. É o menor acoplamento de dados possível: o produtor não sabe
-> quem consome nem de que campos eles precisam, e pode refatorar quase tudo sem avisar ninguém. O preço
-> tem duas partes, e a segunda é a que pega gente experiente: o consumidor passa a depender da
-> **disponibilidade** do produtor, e a chamada de volta traz o **estado de agora**, não o do momento do
-> evento — o que abre uma janela de corrida silenciosa.
+> O evento **magro**: diz apenas *o que aconteceu* e *a qual entidade* — `PedidoConfirmado { id }` — e quem se interessa **volta e pergunta**. É o menor acoplamento de dados possível: o produtor não sabe quem consome nem de que campos eles precisam, e pode refatorar quase tudo sem avisar ninguém. O preço tem duas partes, e a segunda é a que pega gente experiente: o consumidor passa a depender da **disponibilidade** do produtor, e a chamada de volta traz o **estado de agora**, não o do momento do evento — o que abre uma janela de corrida silenciosa.
 
 ## O reembolso que foi emitido para um pedido cancelado
 
@@ -107,19 +102,13 @@ E quando **não** é: se praticamente todo consumidor faz a chamada de volta ime
 ## Armadilhas comuns
 
 > [!warning] Ler o estado atual como se fosse o do evento
-> **O que acontece:** o consumidor reage a `PedidoConfirmado`, busca o pedido e o encontra cancelado — mas o código assume a confirmação e segue. Emite fatura, dá baixa em estoque, envia e-mail.
-> **Por quê:** o evento afirma algo sobre o passado e a API responde sobre o presente. A hipótese implícita — "se recebi a confirmação, o pedido está confirmado" — é falsa sob atraso, retry ou reprocessamento.
-> **Como evitar:** **revalide** o estado depois de buscar, em vez de pressupor. E inclua a versão no evento para detectar divergência em vez de descobri-la por acidente.
+> **O que acontece:** o consumidor reage a `PedidoConfirmado`, busca o pedido e o encontra cancelado — mas o código assume a confirmação e segue. Emite fatura, dá baixa em estoque, envia e-mail. **Por quê:** o evento afirma algo sobre o passado e a API responde sobre o presente. A hipótese implícita — "se recebi a confirmação, o pedido está confirmado" — é falsa sob atraso, retry ou reprocessamento. **Como evitar:** **revalide** o estado depois de buscar, em vez de pressupor. E inclua a versão no evento para detectar divergência em vez de descobri-la por acidente.
 
 > [!warning] Teia de notificações sem fluxo legível
-> **O que acontece:** cada consumidor publica um evento novo ao terminar, outro reage a esse, e em seis meses ninguém responde "o que acontece quando um pedido é confirmado?" sem varrer vários repositórios.
-> **Por quê:** o baixo custo de acrescentar um consumidor é a virtude do estilo — e nada limita quantos níveis de encadeamento surgem.
-> **Como evitar:** id de correlação propagado ponta a ponta, rastreamento distribuído, e um catálogo de eventos com produtores e consumidores. Onde o encadeamento **for** um processo de negócio, torne-o explícito com [[08 - Process Manager|Process Manager]] em vez de deixá-lo emergir.
+> **O que acontece:** cada consumidor publica um evento novo ao terminar, outro reage a esse, e em seis meses ninguém responde "o que acontece quando um pedido é confirmado?" sem varrer vários repositórios. **Por quê:** o baixo custo de acrescentar um consumidor é a virtude do estilo — e nada limita quantos níveis de encadeamento surgem. **Como evitar:** id de correlação propagado ponta a ponta, rastreamento distribuído, e um catálogo de eventos com produtores e consumidores. Onde o encadeamento **for** um processo de negócio, torne-o explícito com [[08 - Process Manager|Process Manager]] em vez de deixá-lo emergir.
 
 > [!warning] Tratar como assíncrono um caminho que continua síncrono
-> **O que acontece:** a arquitetura é apresentada como desacoplada, mas uma queda do produtor trava o processamento de todos os consumidores — o incidente atravessa a fronteira que o diagrama dizia existir.
-> **Por quê:** a **entrega** é assíncrona; o **processamento** não é, porque depende da chamada de volta.
-> **Como evitar:** reconheça a dependência e trate-a: *retry* com recuo exponencial, DLQ, e a decisão explícita sobre o que fazer com eventos que não podem ser completados agora. Se essa dependência for inaceitável, o estilo certo é o próximo.
+> **O que acontece:** a arquitetura é apresentada como desacoplada, mas uma queda do produtor trava o processamento de todos os consumidores — o incidente atravessa a fronteira que o diagrama dizia existir. **Por quê:** a **entrega** é assíncrona; o **processamento** não é, porque depende da chamada de volta. **Como evitar:** reconheça a dependência e trate-a: *retry* com recuo exponencial, DLQ, e a decisão explícita sobre o que fazer com eventos que não podem ser completados agora. Se essa dependência for inaceitável, o estilo certo é o próximo.
 
 ## Como explicar em inglês
 

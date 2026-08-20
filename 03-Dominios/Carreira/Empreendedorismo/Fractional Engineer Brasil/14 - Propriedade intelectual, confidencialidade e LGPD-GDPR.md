@@ -62,19 +62,13 @@ Uma fractional Head of Data percebe, já na discovery call, que o projeto envolv
 ## Armadilhas comuns
 
 > [!warning] Contrato sem cláusula explícita de cessão de PI
-> **O que acontece:** o contrato assume implicitamente que "o trabalho é do cliente" sem declarar isso por escrito.
-> **Por quê:** sem a cláusula, a titularidade de código, documentos e decisões de arquitetura fica ambígua — especialmente em disputa depois que a relação termina.
-> **Como evitar:** incluir cláusula explícita de cessão desde o primeiro contrato, com a ressalva de conhecimento prévio bem delimitada.
+> **O que acontece:** o contrato assume implicitamente que "o trabalho é do cliente" sem declarar isso por escrito. **Por quê:** sem a cláusula, a titularidade de código, documentos e decisões de arquitetura fica ambígua — especialmente em disputa depois que a relação termina. **Como evitar:** incluir cláusula explícita de cessão desde o primeiro contrato, com a ressalva de conhecimento prévio bem delimitada.
 
 > [!warning] Reutilizar artefatos de um cliente em outro sem avaliar a linha
-> **O que acontece:** o fractional reaproveita um template, um script ou uma estrutura de decisão desenvolvida especificamente pra um cliente, aplicando em outro sem questionar se aquilo era conhecimento geral ou propriedade cedida.
-> **Por quê:** a linha entre "metodologia própria reutilizável" e "artefato específico cedido ao cliente" nem sempre é óbvia na prática, mesmo com cláusula clara no papel.
-> **Como evitar:** manter separação consciente entre frameworks/processos pessoais (reutilizáveis) e entregáveis específicos de cada cliente (não reutilizáveis sem autorização), revisando a cláusula de PI de cada contrato quando a dúvida surgir.
+> **O que acontece:** o fractional reaproveita um template, um script ou uma estrutura de decisão desenvolvida especificamente pra um cliente, aplicando em outro sem questionar se aquilo era conhecimento geral ou propriedade cedida. **Por quê:** a linha entre "metodologia própria reutilizável" e "artefato específico cedido ao cliente" nem sempre é óbvia na prática, mesmo com cláusula clara no papel. **Como evitar:** manter separação consciente entre frameworks/processos pessoais (reutilizáveis) e entregáveis específicos de cada cliente (não reutilizáveis sem autorização), revisando a cláusula de PI de cada contrato quando a dúvida surgir.
 
 > [!warning] Ignorar exigência de proteção de dados por achar que "é só acesso, não é transferência"
-> **O que acontece:** o fractional acessa remotamente sistemas do cliente contendo dados pessoais, sem considerar isso como transferência internacional de dados sujeita a GDPR/LGPD.
-> **Por quê:** a definição legal de transferência internacional cobre acesso remoto, não só envio ativo de arquivo — a suposição de que "só olhar não conta" é tecnicamente incorreta.
-> **Como evitar:** perguntar explicitamente, na discovery call ou antes de assinar, se o engajamento envolve acesso a dados pessoais sujeitos a GDPR/LGPD, e formalizar a base legal aplicável antes de começar.
+> **O que acontece:** o fractional acessa remotamente sistemas do cliente contendo dados pessoais, sem considerar isso como transferência internacional de dados sujeita a GDPR/LGPD. **Por quê:** a definição legal de transferência internacional cobre acesso remoto, não só envio ativo de arquivo — a suposição de que "só olhar não conta" é tecnicamente incorreta. **Como evitar:** perguntar explicitamente, na discovery call ou antes de assinar, se o engajamento envolve acesso a dados pessoais sujeitos a GDPR/LGPD, e formalizar a base legal aplicável antes de começar.
 
 ## Como explicar em inglês
 

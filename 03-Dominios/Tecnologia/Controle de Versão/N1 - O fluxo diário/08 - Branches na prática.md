@@ -63,9 +63,7 @@ Este é o ponto que costuma assustar: ao trocar de ramo, **os arquivos na sua pa
 Isso não é perda. É o Git colocando na sua frente a versão daquela linha temporal. Tudo o que estava commitado continua guardado; ele só troca o que está visível.
 
 > [!warning] Trocar de ramo com trabalho não commitado dá problema
-> **O que acontece:** o Git recusa a troca com uma mensagem sobre mudanças locais que seriam sobrescritas — ou, pior, deixa você trocar carregando as edições para o ramo errado.
-> **Por quê:** ele não sabe a qual das duas linhas aquelas edições pendentes pertencem.
-> **Como evitar:** **commite antes de trocar de ramo.** Se o trabalho ainda não merece um commit "de verdade", commite mesmo assim com uma mensagem tipo `wip: metade da seção 3` — você conserta a mensagem depois com `--amend`. A alternativa é o `git stash`, que é o assunto da nota 10.
+> **O que acontece:** o Git recusa a troca com uma mensagem sobre mudanças locais que seriam sobrescritas — ou, pior, deixa você trocar carregando as edições para o ramo errado. **Por quê:** ele não sabe a qual das duas linhas aquelas edições pendentes pertencem. **Como evitar:** **commite antes de trocar de ramo.** Se o trabalho ainda não merece um commit "de verdade", commite mesmo assim com uma mensagem tipo `wip: metade da seção 3` — você conserta a mensagem depois com `--amend`. A alternativa é o `git stash`, que é o assunto da nota 10.
 
 ---
 
@@ -114,9 +112,7 @@ git branch -D reestruturacao     # -D maiúsculo: apaga mesmo sem ter sido incor
 Duas semanas de experimento evaporam e a linha principal nunca soube que aquilo existiu. **O custo de tentar caiu para quase zero** — e é essa mudança que faz gente que aprende branches parar de ter medo de mexer no próprio trabalho.
 
 > [!warning] `-d` minúsculo protege, `-D` maiúsculo não
-> **O que acontece:** `git branch -d nome` recusa apagar um ramo cujo trabalho ainda não foi incorporado. O `-D` apaga assim mesmo.
-> **Por quê:** o minúsculo é a versão segura, feita para o caso normal de "já mergeei, pode limpar".
-> **Como conviver:** use `-d` sempre. Quando ele reclamar, pare e pense se você quer mesmo descartar aquilo. E, mesmo tendo usado `-D` por engano, os commits continuam recuperáveis por um tempo — via `reflog`, assunto de um nível adiante.
+> **O que acontece:** `git branch -d nome` recusa apagar um ramo cujo trabalho ainda não foi incorporado. O `-D` apaga assim mesmo. **Por quê:** o minúsculo é a versão segura, feita para o caso normal de "já mergeei, pode limpar". **Como conviver:** use `-d` sempre. Quando ele reclamar, pare e pense se você quer mesmo descartar aquilo. E, mesmo tendo usado `-D` por engano, os commits continuam recuperáveis por um tempo — via `reflog`, assunto de um nível adiante.
 
 ---
 

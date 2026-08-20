@@ -61,8 +61,7 @@ def fixed_chunk(text, size=500, overlap=50):
 
 Tenta partir em separadores hierárquicos: `
 
-` → `
-` → `. ` → ` `.
+` → ` ` → `. ` → ` `.
 
 ```python
 from langchain.text_splitter import RecursiveCharacterTextSplitter

@@ -16,15 +16,13 @@ publish: true
 
 > Glossário do domínio Cloud: vocabulário conceitual-neutro, com o equivalente AWS/DigitalOcean apontado quando fizer sentido. Cada verbete é referenciado por uma ou mais notas das trilhas do domínio.
 
-<!--
-Como usar este glossário:
+<!-- Como usar este glossário:
 
 - Verbetes em ordem alfabética, um `###` cada.
 - Linkar de outra nota: `[[03-Dominios/Tecnologia/Cloud/Dicionário#Nome do termo]]`
 - Customizar texto exibido: `[[03-Dominios/Tecnologia/Cloud/Dicionário#Nome do termo|texto]]`
 - A skill /verbete adiciona termos automaticamente em ordem alfabética.
-- Cada verbete tem 2-4 linhas de definição em PT-BR, provider-neutra, com o equivalente AWS/DO citado quando ajudar a fixar o conceito.
--->
+- Cada verbete tem 2-4 linhas de definição em PT-BR, provider-neutra, com o equivalente AWS/DO citado quando ajudar a fixar o conceito. -->
 
 ### Availability zone
 

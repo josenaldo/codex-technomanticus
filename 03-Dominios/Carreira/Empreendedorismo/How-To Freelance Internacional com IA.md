@@ -38,8 +38,7 @@ Assim como o trader chinês usou 6 workflows no n8n para faturar $180k, você po
 ### 1. Configure o Filtro Inteligente (O Analista)
 Crie um workflow no n8n que:
 1.  Lê o RSS do Upwork a cada 10 minutos.
-2.  Passa o `description` do job para um nó de IA com o seguinte prompt:
-    > "Você é um Analista de Carreira. Avalie este job: Stack [Sua Stack]. Orçamento mínimo: $4,000/mês. Responda em JSON: `{"match": true, "reason": "...", "suggested_rate": "..."}`. Se o job for de baixa qualidade ou baixo valor, retorne match: false."
+2.  Passa o `description` do job para um nó de IA com o seguinte prompt: > "Você é um Analista de Carreira. Avalie este job: Stack [Sua Stack]. Orçamento mínimo: $4,000/mês. Responda em JSON: `{"match": true, "reason": "...", "suggested_rate": "..."}`. Se o job for de baixa qualidade ou baixo valor, retorne match: false."
 
 ### 2. Automatize a Proposta (O Redator)
 Para cada job que der `match`, dispare um segundo nó de IA:
@@ -75,5 +74,4 @@ Não foque apenas em "gigs". Procure **Retainers** (mensalidades):
 - [[03-Dominios/Carreira/Empreendedorismo/Fator R — tributação para devs PJ]] (Para quando o dinheiro entrar)
 - [[03-Dominios/Tecnologia/Ferramentas/Prompts]] (Para refinar suas propostas)
 
----
-*Baseado no relato do sistema de trading automatizado de Obsidian/n8n.*
+--- *Baseado no relato do sistema de trading automatizado de Obsidian/n8n.*

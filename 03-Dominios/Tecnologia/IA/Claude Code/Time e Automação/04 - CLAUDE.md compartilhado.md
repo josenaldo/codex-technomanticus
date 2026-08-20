@@ -323,14 +323,11 @@ Uma forma de garantir: adicione no template de PR um item de checklist — "O CL
 
 Um CLAUDE.md bom não é escrito de uma vez — cresce organicamente com o projeto.
 
-**Fase inicial (primeiros dias)**
-Escreva o mínimo: contexto do projeto, comandos básicos, 2-3 restrições críticas. Um CLAUDE.md vazio é melhor do que um cheio de aspirações não-cumpridas.
+**Fase inicial (primeiros dias)** Escreva o mínimo: contexto do projeto, comandos básicos, 2-3 restrições críticas. Um CLAUDE.md vazio é melhor do que um cheio de aspirações não-cumpridas.
 
-**Fase de descoberta (primeiras semanas)**
-A cada vez que o agente toma uma decisão que viola uma convenção do time, adicione essa convenção ao CLAUDE.md. O arquivo cresce a partir dos erros observados — e esses erros são o sinal mais confiável do que realmente precisa ser documentado.
+**Fase de descoberta (primeiras semanas)** A cada vez que o agente toma uma decisão que viola uma convenção do time, adicione essa convenção ao CLAUDE.md. O arquivo cresce a partir dos erros observados — e esses erros são o sinal mais confiável do que realmente precisa ser documentado.
 
-**Fase de maturidade**
-O CLAUDE.md estabiliza. A maioria dos erros comuns já está documentada. A partir daqui, o trigger principal de atualização são mudanças de arquitetura, adoção de novas ferramentas, ou renomeação de módulos.
+**Fase de maturidade** O CLAUDE.md estabiliza. A maioria dos erros comuns já está documentada. A partir daqui, o trigger principal de atualização são mudanças de arquitetura, adoção de novas ferramentas, ou renomeação de módulos.
 
 **Sinal de que o CLAUDE.md está saudável**: um dev novo consegue fazer seu primeiro PR correto sem precisar de muito feedback de review sobre convenções — o agente que o auxiliou seguiu as mesmas regras que o time espera.
 

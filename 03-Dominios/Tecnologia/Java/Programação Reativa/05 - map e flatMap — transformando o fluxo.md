@@ -21,9 +21,7 @@ aliases:
 # map e flatMap — transformando o fluxo
 
 > [!abstract] TL;DR
-> `map` é uma transformação **síncrona 1:1** (`T → R`): pega cada elemento e devolve outro valor, na mesma thread, sem assinar nada.
-> `flatMap` é uma transformação **assíncrona** (`T → Publisher<R>`): para cada elemento você devolve **outro publisher**, e o `flatMap` o **assina e achata** o resultado de volta no fluxo de fora.
-> A confusão central do reativo: usar `map` onde você precisava de `flatMap` produz um `Mono<Mono<T>>` (ou `Flux<Mono<T>>`) aninhado, porque o `map` nunca assina o publisher interno.
+> `map` é uma transformação **síncrona 1:1** (`T → R`): pega cada elemento e devolve outro valor, na mesma thread, sem assinar nada. `flatMap` é uma transformação **assíncrona** (`T → Publisher<R>`): para cada elemento você devolve **outro publisher**, e o `flatMap` o **assina e achata** o resultado de volta no fluxo de fora. A confusão central do reativo: usar `map` onde você precisava de `flatMap` produz um `Mono<Mono<T>>` (ou `Flux<Mono<T>>`) aninhado, porque o `map` nunca assina o publisher interno.
 
 ## O que é
 
