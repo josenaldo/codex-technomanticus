@@ -219,10 +219,11 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 - **Pendências:** M1 (vídeo/podcast) fora de escopo deste plano por decisão registrada — não é lacuna, é escopo fechado.
 
 #### 16 - A seção de experiência profissional   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
-- **Tarefa do plano:** Bloco C
-- **Escopo:** ordem, densidade decrescente com a idade da experiência, lacunas, passagens curtas, PJ e freelance.
-- **Pendências:** —
+- **Estado:** 🟢 escrita · fase: adepto · 2026-08-20 · 6692 palavras
+- **Tarefa do plano:** Bloco C — Tarefa 17
+- **Escopo:** estrutura da entrada (cargo, empresa, período, linha de contexto), ordem cronológica inversa e densidade decrescente, seis situações desconfortáveis (lacuna, passagem curta, PJ/freelance, agência/body shop, mesmo empregador com vários cargos, sobreposição de vínculos), e o caso de quem não tem experiência formal.
+- **Casos reais usados:** sobreposição UESC (IC, abr/2003–ago/2004) × CEPEDI júnior (nov/2003–fev/2004); SENAI instrutor (mai–jul/2007, passagem curta); CEPEDI Java Coordinator (set/2006, progressão pós programador júnior); TQI alocado no cliente Buscapé (out/2011–out/2012, agência/body shop). Todos verificados nos arquivos-fonte antes de citar.
+- **Pendências:** M1 (mídia) fora de escopo, não registrado como lacuna.
 
 #### 17 - Projetos, portfólio e GitHub depois da IA   [substantivo]
 - **Estado:** ⬜ pendente · fase: adepto
