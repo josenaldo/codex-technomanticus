@@ -3,6 +3,7 @@ title: "Currículo"
 type: moc
 publish: true
 created: 2026-08-20
+updated: 2026-08-21
 status: seedling
 tags:
   - moc
