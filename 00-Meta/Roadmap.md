@@ -145,6 +145,7 @@ aliases:
 | Trilha | Estado | Nota |
 | ------ | ------ | ---- |
 | [[03-Dominios/Carreira/Entrevistas/index\|Entrevistas]] | 🟡 | 6 notas — falta behavioral (STAR), system design practice, negociação |
+| [[03-Dominios/Carreira/Currículo/index\|Currículo]] | ✅ | 27 notas em 3 fases; lente = a peça do documento × o caminho de entrada no mercado; falta só M1 (mídia) |
 | [[03-Dominios/Carreira/Inglês/index\|Inglês]] | 🟡 | 4 notas + mentoria GCA; articulação técnica em inglês |
 | [[03-Dominios/Carreira/Empreendedorismo/index\|Empreendedorismo]] | 🟡 | 23 notas, 1 galho |
 
@@ -189,6 +190,7 @@ aliases:
 
 **Tier 3 — Carreira (contínuo, fecha a candidatura)**
 - ~~**Entrevistas** (6 notas)~~ → ✅ **GALHO RECONSTRUÍDO 2026-07-31**: [[03-Dominios/Carreira/Entrevistas/index|Carreira/Entrevistas]], **14 notas** em 3 fases (Iniciado: critério sênior · funil internacional · pitch · contratação remota · currículo; Adepto: STAR · taxonomia comportamental · entrevista técnica · ponte de system design · banco de histórias; Magus: trade-offs · red flags · entrevista reversa · negociação/capstone). Lente: **o que a etapa está realmente avaliando**. Escopo deliberado: **só teoria compartilhável** — material de preparação pessoal fica fora deste repositório, que é público. As 5 notas antigas foram aposentadas e os 7 inbound reapontados.
+- ✅ **Currículo (galho novo) — COMPLETO 2026-08-21**: [[03-Dominios/Carreira/Currículo/index|Carreira/Currículo]], **27 notas de conteúdo** (26 numeradas + o broto 18a) em 3 fases — Iniciado 9/9 (o terreno, os níveis e as dez portas de entrada no mercado), Adepto 11/11 (a matéria-prima: inventário de evidência, linha de bullet, XYZ/CAR/PAR, números, a seção de experiência), Magus 7/7 (o sistema por trás do documento: a âncora, o brag document, o currículo como pipeline, LinkedIn, mercados internacionais, IA nos dois lados, e o capstone **26 - Seis currículos, uma carreira**). **Lente dupla**: a **peça do documento** (cabeçalho, sumário, experiência, habilidades — eixo principal, variação de senioridade lado a lado dentro de cada nota) × o **caminho de entrada no mercado** (dez portas — de estágio a open source — cada uma produzindo evidência diferente). **Tese**: o currículo é a saída de um sistema de evidência, não um documento. Construído via `00-Meta/specs/2026-08-20-galho-curriculo-plano.md` (30 tarefas); costura final (Tarefa 30) zerou os 27 wikilinks quebrados da linha de base, consertou a divergência de nível de duas personas nas notas 01/06, e auditou as 112 etiquetas `[!example]` do galho (40 `Caso real` + 72 `Caso fictício`, todas com fonte declarada). **Pendências conscientes**: M1 (mídia) em todas as notas; dúvidas de leitura; e os links `josenaldo.com.br/experiences` citados em 10 notas apontam para uma URL que hoje retorna 404 — o site do autor está em reestruturação bilíngue, revisitar quando fechar. Ver [[03-Dominios/Carreira/Currículo/roadmap|roadmap]].
 - **Inglês** (4 notas + GCA) — articulação técnica em inglês.
 
 **Tier 4 — enriquecimento, não tema novo**
