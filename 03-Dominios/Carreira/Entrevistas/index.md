@@ -37,7 +37,7 @@ Catálogo de **teoria geral**: vale para qualquer candidato, com exemplos sempre
 2. [[02 - A anatomia do funil internacional]] — as etapas, quem conduz e **o que cada uma decide**.
 3. [[03 - Fale sobre você — o pitch de abertura]] — a pergunta mais previsível e a mais desperdiçada.
 4. [[04 - Contratação remota internacional]] — contractor × EOR × subsidiária; fuso; assimetria de faixas.
-5. [[05 - Currículo e LinkedIn como artefatos de triagem]] — artefatos funcionais, não autobiografia.
+5. [[05 - Currículo e LinkedIn como artefatos de triagem]] — situa os dois artefatos no funil e remete ao galho [[03-Dominios/Carreira/Currículo/index|Currículo]].
 
 ## Adepto — os formatos e a estrutura da resposta
 
