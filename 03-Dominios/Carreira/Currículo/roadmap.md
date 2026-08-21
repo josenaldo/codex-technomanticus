@@ -14,8 +14,8 @@ tags:
 
 Roadmap do galho `03-Dominios/Carreira/Currículo`. Construção nova (2026-08-20), a partir do plano em `00-Meta/specs/2026-08-20-galho-curriculo-plano.md` (30 tarefas) e da spec de design em `00-Meta/specs/2026-08-20-galho-curriculo-design.md`. Esta é a memória de retomada: cada linha aponta a tarefa do plano que a escreve, para que o galho possa ser continuado em outra sessão sem reler o plano inteiro.
 
-> [!warning] Diagnóstico de 2026-08-20 — Tarefa 13 concluída, bloco Adepto em andamento
-> As Tarefas 1-13 do plano rodaram: pasta, MOC e roadmap (Tarefa 1), as nove notas do bloco Iniciado (01-09, Tarefas 2-10) e as notas 10-12 (Tarefas 11-13) do bloco Adepto. **O bloco Iniciado está 9/9 escrito, e o bloco Adepto está 3/11 escrito**, com gate G1-G5 rodado nota a nota. As Tarefas 14-30 (resto do bloco Adepto e todo o bloco Magus, 15 notas + 1 broto) ainda não rodaram.
+> [!warning] Diagnóstico de 2026-08-20 — Tarefa 21 concluída, bloco Adepto fechado
+> As Tarefas 1-21 do plano rodaram: pasta, MOC e roadmap (Tarefa 1), as nove notas do bloco Iniciado (01-09, Tarefas 2-10) e as onze peças do bloco Adepto (notas 10-19 + o broto 18a, Tarefas 11-21). **O bloco Iniciado está 9/9 escrito, e o bloco Adepto está 11/11 escrito** — bloco completo —, com gate G1-G5 rodado nota a nota. As Tarefas 22-30 (todo o bloco Magus, 7 notas, e o fechamento) ainda não rodaram.
 
 ## A tese e as duas lentes
 
@@ -46,9 +46,9 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 | Iniciado (01-09) | 9 |
 | Adepto (10-19 + 18a) | 11 |
 | Magus (20-26) | 7 |
-| ✅ escritas | 12 (bloco Iniciado completo + notas 10-12 do bloco Adepto) |
-| ⬜ pendentes | 15 |
-| % concluído | 44% |
+| ✅ escritas | 20 (bloco Iniciado completo 9/9 + bloco Adepto completo 11/11) |
+| ⬜ pendentes | 7 (bloco Magus, notas 20-26) |
+| % concluído | 74% |
 | Scaffolding | ✅ roadmap.md + index.md criados (Tarefa 1) |
 | Wikilinks quebrados na Tarefa 1 (linha de base) | 27 (`/verificar-wikilinks`, 2026-08-20) — as 26 notas + o broto 18a do `index.md`, nenhum ainda existe; esperado até a Tarefa 30 |
 
@@ -256,10 +256,16 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 - **Pendências:** confirmar a página primária da ResumeBuilder se algum dia ficar acessível (não bloqueante — a limitação já está declarada na nota); M1 fora de escopo.
 
 #### 19 - Declarar lacuna   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
-- **Tarefa do plano:** Bloco C
-- **Escopo:** como e onde — na conversa, não no documento; por que inflar competência custa a vaga depois de conquistada. Fecha o bloco Adepto.
-- **Pendências:** —
+- **Estado:** ✅ escrita · fase: adepto · 2026-08-20 · 6386 palavras
+- **Tarefa do plano:** Tarefa 21 (Bloco C) — fecha o bloco Adepto
+- **Escopo:** a assimetria de risco herdada da nota 15 (número inventado) aplicada a competência inflada — inflar competência custa a vaga depois de conquistada, o pior momento possível; onde declarar (na conversa, não no documento), com o caso real da seção de lacunas de Go/GCP/Terraform removida do currículo do autor porque a transparência já tinha sido feita por e-mail com a recrutadora e repetir no documento custava uma página inteira; a distinção fina — descrever parceria não é reivindicar operação —, retomando o caso do Kubernetes da nota 09 pelo lado da fala em voz alta, generalizado para qualquer tecnologia que passou perto da trajetória via trabalho colaborativo; o procedimento de três movimentos, nesta ordem — nomear a lacuna sem rodeio, dizer o adjacente que sustenta a rampa, dar o prazo realista —, com explicação de por que inverter a ordem soa evasivo ou como desvio; quando NÃO declarar (lacuna que não é requisito explícito nem seria descoberta cedo não precisa de menção); variação por nível com o vocabulário da nota 03, incluindo a inversão no topo da escada (staff é contratado justamente para o que ainda não existe).
+- **Interfaces produzidas:** o procedimento nomear→adjacente→prazo e o critério das duas condições para declarar (requisito explícito / descoberta cedo), disponíveis para as notas 20 e 22; wikilinks de ancoragem para as notas 03, 09, 15, 18, e cross-galho para `Entrevistas/index`.
+- **Régua de profundidade — palavras, não linhas:** faixa-alvo 4.500-6.500 (`wc -w`). **Contagem final: 6.386 palavras**, dentro da faixa, próxima do topo. Arquivo tem 182 linhas — T2 (piso de 400 linhas) tratado como N/A, régua de palavras é a que vale (mesmo ajuste já registrado em todas as notas 01-18a deste galho, sob a convenção de um parágrafo por linha).
+- **Verificação:** gate G1-G5 rodado manualmente via checklist de `/verificar-nota` (mesma ressalva de execução das notas 04-18a: a skill carrega como procedimento para o próprio agente aplicar). E1 ✓ (TL;DR denso). E2 ✓ (abre pela assimetria de risco herdada da nota 15, não por definição). E3 ✓ (2 diagramas Mermaid — o teste "faço isso sozinho amanhã?" e a sequência nomear→adjacente→prazo com as duas inversões que falham —, validados por `validar-mermaid.mjs`, 0 blocos quebrados). E4 ⚠ — sem seção `## Casos práticos` dedicada, seguindo o precedente das notas 01, 03, 05, 06, 07, 09 e 17 do mesmo galho: os 3 callouts `[!example]` (1 real + 2 fictícios) cobrem cenário concreto sem duplicar conteúdo. E5 ✓. E6 ✓. E7 ✓. E8 ✓ (3 `[!warning]`). S1 ✓ (`validar-mermaid.mjs`, 2 blocos, 0 quebrados). P1 N/A (nota conceitual, sem código). P2 ✓ (mecanismo da ordem dos três movimentos explicado — por que cada inversão produz uma leitura ruim específica —, não só afirmado; mecanismo da assimetria de risco explicado). P3 N/A (adepto isento). P4 ✓ (grandezas nos exemplos — estimativas de prazo de rampa nos casos de Rafael Duarte, "duas ou três semanas"; declarado por extenso em vez de dígito, seguindo o registro do vault para números pequenos em prosa). T2 — ver ajuste de régua de palavras acima. L1 ✓ (wikilink cross-galho para `Entrevistas/index`). L2 ✓ (Fontes remete às notas 09, 15 e 18, cujas fontes primárias sustentam as afirmações reusadas, mais o caso real do próprio repositório de currículos, ferramental privado sem link público, mesmo padrão das notas 05 e 18).
+- **G3 (conferência manual):** nenhuma linha quebrada manualmente (checado por comprimento de linha — parágrafos em linha única, linhas de até ~1.500 caracteres); as 3 etiquetas `[!example]` presentes (1 `Caso real` — a seção de lacunas de Go/GCP/Terraform, sem link público, mesmo padrão das notas 05/18 — + 2 `Caso fictício` com persona declarada — Rafael Duarte, Bianca Torres, ambos reusados no nível canônico pleno já fixado no registro global, nenhuma persona nova criada, sem necessidade de grep de colisão); nenhum vazamento de `codex-technomanticus-apocrypha` (grep vazio); nenhum data broker citado (grep vazio); varredura de resíduo de inglês rodada (`grep -noE` por conectivos/advérbios ingleses soltos) — todas as ocorrências caem dentro do bloco "Como soa em inglês" e da tabela PT↔EN, intencionalmente em inglês; nenhum resíduo real encontrado.
+- **Caso real (seção de lacunas removida):** o fato (Go, GCP, Terraform declarados por e-mail à recrutadora, seção removida do documento por redundância que custava uma página) veio integralmente do brief da Tarefa 21 — nenhum detalhe além do fornecido foi inventado. Repositório de currículos declarado sem link público, seguindo a instrução explícita do brief de não prometer verificabilidade ao leitor, no mesmo padrão já estabelecido pelas notas 05 e 18 para o mesmo pipeline.
+- **Marco do galho:** com esta nota, **as onze peças do bloco Adepto estão escritas** (notas 10-19 + o broto 18a) — bloco Adepto 11/11 completo. Ver Tabela-resumo atualizada abaixo.
+- **Pendências:** M1 (vídeo/podcast) fora de escopo deste plano por decisão registrada — não é lacuna, é escopo fechado.
 
 ## Notas — Magus (o sistema por trás do documento)
 
