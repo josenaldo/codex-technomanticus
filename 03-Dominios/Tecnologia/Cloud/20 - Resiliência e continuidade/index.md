@@ -57,12 +57,6 @@ Primeiro o *porquê* — falhas acontecem o tempo todo, blast radius é o concei
 
 03 (RTO/RPO e as quatro estratégias — o vocabulário que toda decisão de DR usa) → 05 (backup como estratégia, imutabilidade e a disciplina de testar — sem isso, o plano de DR é suposição) → 06 (a árvore de decisão aplicada, camada por camada, a um sistema real).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/20 - Resiliência e continuidade" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

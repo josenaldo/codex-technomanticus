@@ -15,12 +15,3 @@ publish: true
 ## Seção 2
 
 -
-
----
-
-```dataview
-LIST
-FROM "<pasta-do-tema>"
-WHERE type != "moc"
-SORT file.name ASC
-```

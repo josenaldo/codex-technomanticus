@@ -74,15 +74,6 @@ Este galho é um **refator do tronco** `[[Java Fundamentals]]`: as seções de C
 
 04 → 13 → 10 → 07. Lambdas, composição de funções, Optional e operações de stream.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Tecnologia/Java/Collections e Streams"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Java/index|Java (MOC central)]]

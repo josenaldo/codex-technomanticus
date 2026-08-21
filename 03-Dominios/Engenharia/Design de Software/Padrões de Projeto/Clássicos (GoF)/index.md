@@ -77,15 +77,6 @@ Este não é um curso linear: é um **repertório**. Cada nota é autocontida �
 ### Só os criacionais
 01 → 02 → 03 → 04 → 05 → 06. A primeira família inteira, na ordem.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Clássicos (GoF)"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/roadmap|Padrões de Projeto]] — o galho-pai e as outras cinco famílias.

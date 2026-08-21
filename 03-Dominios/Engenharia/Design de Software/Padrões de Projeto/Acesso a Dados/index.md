@@ -60,15 +60,6 @@ Repertório de consulta para o sênior — inclusive em legado, onde DAOs de 200
 ### Legado enterprise
 01 → 05 (DAO) → 06 (Active Record) → 07 (Gateways) → 10 (Unit of Work). Os padrões que você encontra em sistemas antigos.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Acesso a Dados"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/index|Padrões de Projeto]] — o galho-pai e as outras famílias.

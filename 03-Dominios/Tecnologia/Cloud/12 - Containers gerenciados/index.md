@@ -58,12 +58,6 @@ O fio condutor sobe do mapa à árvore fina. Primeiro o *quê* — o que "gerenc
 
 02 (a diferença entre execution role e task role que toda revisão de segurança cobra) → 05 (quando EKS/DOKS realmente compensa contra ECS/App Platform) → 06 (a árvore fina que amarra tudo com o mapa de lock-in).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/12 - Containers gerenciados" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

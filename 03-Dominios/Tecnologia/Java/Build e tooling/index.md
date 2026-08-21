@@ -70,15 +70,6 @@ Qualidade, supply chain, publicação.
 - **Gradle na prática** — 05 → 06 → 07 → 10 → 11 → 12.
 - **Build production-grade / supply chain** — 09 → 16 → 17 → 18 → 19.
 
-## Todas as notas
-
-```dataview
-TABLE fase AS "Fase", status AS "Status"
-FROM "03-Dominios/Tecnologia/Java/Build e tooling"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Java/index|Trilha Java (MOC central)]]

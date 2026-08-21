@@ -56,12 +56,6 @@ O fio condutor sobe do problema à decisão de arquitetura. Primeiro o *porquê*
 
 03 (state/backend/locking, o que mais gera incidente em time) → 05 (a estratégia de ambientes que de fato vence — diretórios, não workspaces — e CI com plan/apply separados) → 06 (a árvore de decisão contra CloudFormation/CDK/Pulumi, e os anti-padrões).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/16 - Infrastructure as Code" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

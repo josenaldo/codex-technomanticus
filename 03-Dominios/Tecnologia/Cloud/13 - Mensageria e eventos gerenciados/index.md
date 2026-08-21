@@ -59,12 +59,6 @@ O fio condutor sobe do problema ao critério. Primeiro o *porquê* — o acoplam
 
 05 (os padrões — fan-out durável, idempotência, outbox, DLQ com estratégia — que separam quem opera mensageria de quem só usa) → 06 (a árvore que distingue fila de pub/sub de event bus de stream, e resolve a pergunta de entrevista "SQS, SNS ou EventBridge?" de vez).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/13 - Mensageria e eventos gerenciados" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

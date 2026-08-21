@@ -74,15 +74,6 @@ Este galho é um **refator com poda integral** do tronco [[JavaFX]] (`Frontend/J
 
 06 → 11 → 13. FXML como base de uma view bem estruturada, MVVM para separar ViewModel testável da View, e jlink/jpackage para empacotar e distribuir sem pedir "instale o Java" — o caminho mínimo de quem quer entregar uma app desktop real.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Tecnologia/Java/JavaFX"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Java/index|Java (MOC central)]]

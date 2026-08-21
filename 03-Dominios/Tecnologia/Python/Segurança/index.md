@@ -46,12 +46,6 @@ Este galho **não reensina** o que já existe em profundidade em outras trilhas 
 8. [[08 - Rate limiting e proteção contra abuso|08 — Rate limiting e proteção contra abuso]]
 9. [[09 - Capstone — hardening da API do Galho 10|09 — Capstone: hardening da API do Galho 10]] — recapitula o galho.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Python/Segurança" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Python/index|Trilha Python]] (MOC central)

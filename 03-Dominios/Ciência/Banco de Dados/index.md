@@ -73,15 +73,6 @@ A narrativa default é **PostgreSQL** (o ferramental mais rico de índice e o me
 ### Dados distribuídos
 05 → 06 → 12 → 13 → 14. Transações e isolamento como base, depois replicação, distribuídas e NoSQL.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Ciência/Banco de Dados"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]

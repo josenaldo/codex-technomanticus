@@ -81,12 +81,6 @@ O recorte não é tutorial. Comando envelhece, e a documentação oficial faz is
 
 01 → 02 → 15 → 09 → 13. O arco que responde "o que é um container, por baixo?" e "como você constrói uma imagem que se defende em produção?".
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Infraestrutura/Docker" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Infraestrutura/index|Infraestrutura]] — MOC do domínio

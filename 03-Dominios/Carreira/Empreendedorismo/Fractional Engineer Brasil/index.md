@@ -112,17 +112,3 @@ Sustentar a operação no dia a dia e crescer além de um único par de mãos.
 | [[Fator R — tributação para devs PJ]] | Simples Nacional, Anexo III vs V, cálculo do Fator R (Bloco 4) |
 | [[How-To Freelance Internacional com IA]] | Prospecção com IA, complementar ao Bloco 3 |
 | *The Fractional Executive* (playbooks de mercado) | Modelos de engajamento, precificação (Blocos 1, 2) |
-
----
-
-## Índice de notas
-
-```dataview
-TABLE
-  title AS "Título",
-  status AS "Status",
-  join(tags, ", ") AS "Tags"
-FROM "03-Dominios/Carreira/Empreendedorismo/Fractional Engineer Brasil"
-WHERE type != "moc"
-SORT file.name ASC
-```

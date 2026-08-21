@@ -59,15 +59,6 @@ Catálogo de consulta, com notas autocontidas e **Armadilhas** pesando no *quand
 > [!tip] Atalho para quem tem um problema concreto
 > A nota [[10 - CQRS]] termina com um **mapa de escolha** que parte do sintoma — "gravei no banco e o evento não saiu", "o cliente foi cobrado duas vezes", "ninguém sabe em que etapa o processo está" — e leva ao padrão e à nota. É o índice mais útil da família em campo.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Arquitetura de Eventos"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/index|Padrões de Projeto]] — o galho-pai e as seis famílias.

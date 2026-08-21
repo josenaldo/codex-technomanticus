@@ -68,15 +68,6 @@ Este galho é o dono dos **fundamentos de OO**: os quatro pilares (encapsulament
 ### Design pragmático
 06 → 07 → 08 → 12. Interfaces, composição, acoplamento/coesão e os anti-patterns a evitar.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Engenharia/Design de Software/Orientação a Objetos"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]

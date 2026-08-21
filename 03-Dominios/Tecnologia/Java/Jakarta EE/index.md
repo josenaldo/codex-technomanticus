@@ -74,15 +74,6 @@ Este é um **galho de pesquisa** (sem tronco a podar): cada nota nasceu da docum
 
 09 → 10 → 11. JPA como contrato, o EntityManager e os estados da entidade, e a JTA coordenando o commit — o contrato de persistência antes de qualquer Hibernate ou Spring Data.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Tecnologia/Java/Jakarta EE"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Java/index|Java (MOC central)]]

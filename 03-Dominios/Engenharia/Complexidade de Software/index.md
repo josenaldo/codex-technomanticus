@@ -55,15 +55,6 @@ Cobre a complexidade como o problema central do software, de ponta a ponta: por 
 
 17. [[17 - Capstone - O diagnóstico diferencial da complexidade]] — as 16 lentes usadas juntas, sob pressão, num caso único: um sistema de faturamento cujo time quer reescrever. Nomeia a doença e encaminha o tratamento.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Engenharia/Complexidade de Software"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]

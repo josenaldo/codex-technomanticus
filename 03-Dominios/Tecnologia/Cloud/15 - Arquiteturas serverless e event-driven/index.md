@@ -57,12 +57,6 @@ O fio condutor sobe da recapitulação à síntese. Primeiro o *paradigma* — o
 
 02 (a decisão orquestração vs coreografia que toda entrevista de arquitetura cobra) → 05 (os anti-padrões que provavelmente já estão no seu sistema) → 06 (a arquitetura de referência e a tabela de decisão do bloco inteiro).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/15 - Arquiteturas serverless e event-driven" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

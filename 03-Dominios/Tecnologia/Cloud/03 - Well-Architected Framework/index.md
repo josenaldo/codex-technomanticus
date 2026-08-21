@@ -52,12 +52,6 @@ Este galho é a bússola conceitual; a aplicação prática de cada pilar em ser
 
 01 (skim) → 03 → 04 → 06 → 07 (os pilares mais cobrados em entrevista de arquitetura, e o trade-off entre eles é a resposta que separa sênior de pleno).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/03 - Well-Architected Framework" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

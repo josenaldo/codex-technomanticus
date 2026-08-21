@@ -66,15 +66,6 @@ Sobre essa base assentam as grandes famílias de algoritmos clássicos — orden
 ### Famílias de técnicas
 04 → 06 → 10 → 11 → 12. Recursão como base, divisão e conquista, DP, greedy e backtracking.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Ciência/Algoritmos"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]

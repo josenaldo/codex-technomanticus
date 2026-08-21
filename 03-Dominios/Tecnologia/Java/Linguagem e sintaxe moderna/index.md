@@ -71,15 +71,6 @@ Este galho cobre a **linguagem** Java de ponta a ponta: tipos primitivos e de re
 
 06 → 07 → 08 → 09. Firmar a orientação a objetos clássica antes de avançar para features modernas.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Java/index|Java (MOC central)]]

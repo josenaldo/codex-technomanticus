@@ -71,15 +71,6 @@ Este é o andar **conceitual**: os mecanismos do kernel que sobrevivem à troca 
 ### Por que está lento? (debugging)
 05 → 07 → 08 → 10 → 14. Escalonamento, paginação, thrashing, I/O e o método de diagnóstico.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Ciência/Sistemas Operacionais"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]

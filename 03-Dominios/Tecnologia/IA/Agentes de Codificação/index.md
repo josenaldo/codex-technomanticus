@@ -105,15 +105,3 @@ Como configurar, como funciona o loop, quando confiar, e como medir.
 | *Yao et al. — ReAct: Reasoning and Acting* | Paper        | Bloco 4     |
 | *Anthropic — MCP Specification*            | Spec         | Bloco 3     |
 | *SWE-bench Leaderboard*                    | Benchmark    | Bloco 4     |
-
-## Todas as notas
-
-```dataview
-TABLE
-  title AS "Título",
-  status AS "Status",
-  join(tags, ", ") AS "Tags"
-FROM "03-Dominios/Tecnologia/IA/Agentes de Codificação"
-WHERE type != "moc"
-SORT file.name ASC
-```

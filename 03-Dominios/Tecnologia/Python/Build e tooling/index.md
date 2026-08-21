@@ -38,12 +38,6 @@ Este galho é sobre o FERRAMENTAL de desenvolvimento — como organizar, instala
 7. [[07 - ruff e black — linting e formatação automática|07 — ruff e black: linting e formatação automática]]
 8. [[08 - Capstone — tooling consistente nos dois serviços|08 — Capstone: tooling consistente nos dois serviços]] — recapitula o galho.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Python/Build e tooling" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Python/index|Trilha Python]] (MOC central)

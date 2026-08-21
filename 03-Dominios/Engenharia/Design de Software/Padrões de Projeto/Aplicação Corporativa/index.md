@@ -58,15 +58,6 @@ Catálogo de consulta para o sênior de plantão. Cada nota é autocontida, a se
 > [!tip] Atalho para quem está com um legado na mesa
 > A nota [[14 - Special Case + Null Object]] termina com um **mapa de reconhecimento**: uma tabela que vai do que você encontra no código (`web.xml` com servlet único, classes `XxxVO`, coluna `VERSION`, `AbstractEntity`) direto para o padrão e a nota. É o índice mais útil da família em campo.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Aplicação Corporativa"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/index|Padrões de Projeto]] — o galho-pai e as seis famílias.

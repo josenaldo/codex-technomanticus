@@ -36,12 +36,6 @@ Python é dinamicamente tipado por natureza, mas desde a PEP 484 (2014) ganhou u
 7. [[07 - Typing avançado — overload, Self, ParamSpec|07 — Typing avançado: `overload`, `Self`, `ParamSpec`]]
 8. [[08 - Capstone — tipagem moderna|08 — Capstone: tipagem moderna]] — recapitula o galho.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Python/Tipagem moderna" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Python/index|Trilha Python]] (MOC central)

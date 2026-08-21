@@ -208,15 +208,3 @@ Como modelos ficam menores, mais baratos, rodáveis localmente e adaptados ao se
 | tempo até o primeiro token | time to first token (TTFT) |
 | não-determinismo | non-determinism |
 | injeção de prompt | prompt injection |
-
-## Todas as notas
-
-```dataview
-TABLE
-  title AS "Título",
-  status AS "Status",
-  join(tags, ", ") AS "Tags"
-FROM "03-Dominios/Tecnologia/IA/Anatomia dos LLMs"
-WHERE type != "moc"
-SORT file.name ASC
-```

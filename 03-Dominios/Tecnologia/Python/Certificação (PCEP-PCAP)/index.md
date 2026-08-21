@@ -35,12 +35,6 @@ Este é o último galho da trilha. Ele pressupõe TODO o núcleo da linguagem (G
 7. [[07 - Estratégia de prova e plano de estudo|07 — Estratégia de prova e plano de estudo]]
 8. [[08 - Capstone — simulado comentado PCEP + PCAP|08 — Capstone: simulado comentado PCEP + PCAP]] — fecha o galho e a trilha Python inteira.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Python/Certificação (PCEP-PCAP)" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Python/index|Trilha Python]] (MOC central) — este é o último galho da trilha.

@@ -77,15 +77,6 @@ As fronteiras difíceis e o que vem depois do verde.
 - **Indo além do verde** — 17 → 18 → 19 → 20 (mutation testing, performance, fitness functions e contratos — o que a cobertura não conta).
 - **Testando o stack reativo** — 01 → 08 → 15 + Galho 11 (Spring WebFlux/`WebClient` — o reativo que o `StepVerifier` verifica).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status
-FROM "03-Dominios/Tecnologia/Java/Testes"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Java/index|Trilha Java]]

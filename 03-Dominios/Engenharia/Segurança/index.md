@@ -77,15 +77,6 @@ Onde os outros galhos da Ciência da Computação perguntam *como a máquina fun
 ### Identidade e acesso (o cluster de produto)
 12 → 13 → 19 + [[03-Dominios/Ciência/Redes e Protocolos/05 - TLS e HTTPS|TLS na prática]]. Autenticação, autorização e zero trust.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Engenharia/Segurança"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]

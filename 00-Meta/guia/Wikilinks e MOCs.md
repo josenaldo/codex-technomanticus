@@ -88,17 +88,11 @@ Um bom MOC tem:
 1. **Introdução de 2-3 frases** descrevendo o que a área cobre
 2. **Seções temáticas** (não alfabéticas) — agrupe por subtema, não por inicial
 3. **Wikilinks pra notas existentes** — não invente entradas vazias
-4. **Dataview opcional** no final, pra listar automaticamente notas que você esqueceu de adicionar:
-
-````markdown
-```dataview
-LIST FROM "03-Dominios/Tecnologia/Java" WHERE type != "moc" SORT file.name ASC
-```
-````
+4. **Uma glosa de uma linha por entrada** — o MOC vale pelo contexto que ele dá, não pela lista; um índice sem glosa é o que a própria pasta já faz de graça
 
 ### MOC desatualizado mente
 
-A maior armadilha de MOC é virar fóssil. Quando você cria uma nota nova em `03-Dominios/Tecnologia/Java/`, **o MOC `Java.md` precisa ser atualizado** ou ele estará escondendo conteúdo. Por isso o bloco Dataview no fim ajuda — ele lista o que está lá fisicamente, mesmo que o MOC manual não cite.
+A maior armadilha de MOC é virar fóssil. Quando você cria uma nota nova em `03-Dominios/Tecnologia/Java/`, **o MOC `Java.md` precisa ser atualizado** ou ele estará escondendo conteúdo. A defesa é a rotina de revisão, não um bloco automático: catalogar a nota no MOC é parte de criar a nota, e a varredura periódica pega o que escapou.
 
 Rotina de revisão de MOCs em [[Manutenção do vault]].
 

@@ -72,15 +72,6 @@ Este galho cobre a **concorrência** Java de ponta a ponta: threads e seu ciclo 
 
 06 → 11 → 05 → 15. Atomics, JMM, locks finos, paralelismo.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Tecnologia/Java/Concorrência e paralelismo"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Java/index|Java (MOC central)]]

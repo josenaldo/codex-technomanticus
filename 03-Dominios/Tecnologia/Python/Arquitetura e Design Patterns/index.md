@@ -35,12 +35,6 @@ Este galho tem uma fonte primária declarada desde o spec: **Architecture Patter
 7. [[07 - Arquitetura hexagonal e Ports and Adapters em Python|07 — Arquitetura hexagonal e Ports and Adapters em Python]]
 8. [[08 - Capstone — refatorando a API de Tarefas pra arquitetura hexagonal|08 — Capstone: refatorando a API de Tarefas pra arquitetura hexagonal]] — recapitula o galho e fecha o bloco "Backend e arquitetura".
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Python/Arquitetura e Design Patterns" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Python/index|Trilha Python]] (MOC central)

@@ -76,15 +76,6 @@ Onde **Teoria da Computação** pergunta *que linguagens são reconhecíveis, e 
 ### A trilha do runtime (o que acontece quando roda)
 02 → 15 → 16 → 17 → 19. Execução, stack frames, garbage collection, JIT e linking/loading.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Ciência/Compiladores e Linguagens"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]

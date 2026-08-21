@@ -71,15 +71,6 @@ Maestria e decisões de arquitetura.
 - **Projetando a camada de persistência** — 02 → 05 → 07 → 10 → 11 → 12 → 16 (entidade, relação, fetch, DTO, paginação, transação, migration).
 - **Persistência sobre Jakarta EE** (a ponte com o Galho 7) — 01 → 03 → 12 + as notas do Galho 7 ([[03-Dominios/Tecnologia/Java/Jakarta EE/09 - JPA — a especificação de persistência|JPA]], [[03-Dominios/Tecnologia/Java/Jakarta EE/10 - EntityManager e o ciclo de vida da entidade|EntityManager]], [[03-Dominios/Tecnologia/Java/Jakarta EE/11 - JTA — transações na plataforma|JTA]]).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status
-FROM "03-Dominios/Tecnologia/Java/Persistência de dados"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Java/index|Trilha Java]] — a estante completa (18 galhos)

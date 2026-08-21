@@ -39,12 +39,6 @@ Até aqui a trilha ensinou a linguagem e como ela executa. Este galho vira a pá
 7. [[07 - Connection pooling e performance em produção|07 — Connection pooling e performance em produção]]
 8. [[08 - Capstone — projetando a camada de persistência de um serviço real|08 — Capstone: projetando a camada de persistência de um serviço real]] — recapitula o galho.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Python/Persistência de dados" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Python/index|Trilha Python]] (MOC central)

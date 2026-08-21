@@ -60,12 +60,3 @@ Trilha sequencial recomendada — leia na ordem para construir o terreno do conc
 
 ### Rota implementador (mão na massa rápida)
 [[06 - O LLM Wiki Pattern (gist do Karpathy)|06 - O LLM Wiki Pattern]] → [[13 - basic-memory — MCP nativo Obsidian|13 - basic-memory]] → [[23 - Guia de implementação do zero]]
-
-## Todas as notas
-
-```dataview
-LIST file.frontmatter.title
-FROM "IA/Memória de Agentes"
-WHERE type != "moc"
-SORT file.name ASC
-```

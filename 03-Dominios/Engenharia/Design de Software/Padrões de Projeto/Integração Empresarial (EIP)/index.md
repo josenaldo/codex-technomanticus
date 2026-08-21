@@ -52,15 +52,6 @@ Repertório de consulta para o sênior — inclusive em legado, onde ESBs, MOM (
 13. [[13 - Guaranteed Delivery + Dead Letter Channel]] — não perder (persistir) e não travar (DLQ).
 14. [[14 - Message Bus × Message Broker]] — hub × backbone; a lição do ESB e o mapa-de-escolha da família.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Integração Empresarial (EIP)"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/index|Padrões de Projeto]] — o galho-pai e as outras famílias.

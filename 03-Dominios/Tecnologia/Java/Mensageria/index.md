@@ -86,15 +86,6 @@ Arquitetura, confiabilidade e o contraste RPC.
 - **Confiabilidade e arquitetura event-driven** — 03 → 20 → 21 → 22 → 23 → 24 (garantias, idempotência, outbox, saga, event sourcing/CQRS, versionamento).
 - **Síncrono vs assíncrono (a ponte com o gRPC)** — 01 → 02 → 27 → 28 → 29 (modelo, queue vs topic, Protobuf, gRPC, o mapa de decisão).
 
-## Todas as notas
-
-```dataview
-TABLE fase AS "Fase", status AS "Status"
-FROM "03-Dominios/Tecnologia/Java/Mensageria"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Java/index|Trilha Java (MOC central)]]

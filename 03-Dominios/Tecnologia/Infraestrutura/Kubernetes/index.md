@@ -71,12 +71,6 @@ O recorte não é tutorial de `kubectl`. É o modelo que permite prever o compor
 21. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/21 - Depurar um cluster|21 — Depurar um cluster]] — o método: em que ponto a convergência parou; o catálogo de sintomas e uma investigação completa de um 503.
 22. [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/22 - Capstone - do zero ao cluster|22 — Capstone: do zero ao cluster]] — caso trabalhado em doze decisões: a imagem do capstone do Docker levada ao cluster, cada escolha citando a nota que a fundamenta.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Infraestrutura/Kubernetes" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Infraestrutura/index|Infraestrutura]] — MOC do domínio

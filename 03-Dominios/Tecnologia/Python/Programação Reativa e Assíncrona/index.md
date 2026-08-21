@@ -33,12 +33,6 @@ O Galho 7 ensinou o vocabulário básico do `asyncio` — como escrever e orques
 7. [[07 - Padrões de produção com asyncio — supervisão de tasks, graceful shutdown, circuit breaker|07 — Padrões de produção com `asyncio`: supervisão de tasks, graceful shutdown, circuit breaker]]
 8. [[08 - Capstone — web scraper assíncrono de produção|08 — Capstone: web scraper assíncrono de produção]] — recapitula o galho.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Python/Programação Reativa e Assíncrona" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Python/index|Trilha Python]] (MOC central)

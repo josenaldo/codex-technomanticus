@@ -76,15 +76,6 @@ Concorrência é o tema onde mais se erra em produção e onde o senior se separ
 ### Os perigos e como evitá-los
 03 → 04 → 05 → 07 → 08 → 17. Race, os três problemas, exclusão mútua, deadlock, lock-free e os padrões.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Ciência/Concorrência e Paralelismo"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]

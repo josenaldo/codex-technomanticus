@@ -47,12 +47,6 @@ Collections/comprehensions avançadas são o [[03-Dominios/Tecnologia/Python/Col
 
 01 → 02 (skim) → 04 (match/case é novo mesmo pra quem já programa) → 06 (`*args`/`**kwargs` é a maior pegadinha de quem vem de Java/C#) → 08 (EAFP é uma inversão cultural real) → 09.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Python/Core" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Python/index|Trilha Python]] (MOC central)

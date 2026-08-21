@@ -54,12 +54,6 @@ O fio condutor constrói a rede de dentro para fora: primeiro o *espaço de ende
 
 02 (por que "pública" é uma rota, não uma flag) → 03 (por que o NAT gateway custa o que custa, e como evitá-lo com endpoints) → 04 (a diferença exata SG vs NACL e a pegadinha das ephemeral ports).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/07 - Rede na nuvem (VPC)" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

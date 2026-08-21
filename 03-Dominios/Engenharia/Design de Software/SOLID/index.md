@@ -58,15 +58,6 @@ Spin-off do galho [[03-Dominios/Engenharia/Design de Software/Orientação a Obj
 ### Os cinco em ordem
 01 → 02 → 03 → 04 → 05 → 06. Um princípio por nota, na ordem do acrônimo.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Engenharia/Design de Software/SOLID"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]

@@ -41,12 +41,6 @@ Este galho é **ferramental**, não teoria — os conceitos de mensageria (fila 
 7. [[07 - Garantias de entrega na prática — DLQ e Outbox em Python|07 — Garantias de entrega na prática: DLQ e Outbox em Python]]
 8. [[08 - Capstone — processamento assíncrono na API de Tarefas|08 — Capstone: processamento assíncrono na API de Tarefas]] — recapitula o galho.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Python/Mensageria" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Python/index|Trilha Python]] (MOC central)

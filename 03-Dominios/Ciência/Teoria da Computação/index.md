@@ -71,15 +71,6 @@ Este é o andar mais **teórico** da Ciência da Computação — e o mais antig
 ### O resgate prático (por que isso importa pro dev)
 04 → 11 → 13 → 15 → 17. Regex, halting, Rice, NP-completo e o capstone.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Ciência/Teoria da Computação"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]

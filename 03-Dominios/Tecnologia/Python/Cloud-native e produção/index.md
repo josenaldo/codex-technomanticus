@@ -35,12 +35,6 @@ Este galho pressupõe o que já foi construído: Dockerfile multi-stage e health
 7. [[07 - Containers vs serverless — trade-offs honestos|07 — Containers vs serverless: trade-offs honestos]]
 8. [[08 - Capstone — os dois serviços em produção de verdade|08 — Capstone: os dois serviços em produção de verdade]] — recapitula o galho e fecha o bloco "Plataforma distribuída e produção".
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Python/Cloud-native e produção" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Python/index|Trilha Python]] (MOC central)

@@ -39,12 +39,6 @@ O Galho 6 explicou por que `threading` não acelera CPU-bound em Python (o GIL) 
 7. [[07 - asyncio na prática — gather, TaskGroup, timeouts e cancelamento|07 — `asyncio` na prática: `gather`, `TaskGroup`, timeouts e cancelamento]]
 8. [[08 - Capstone — escolhendo threading vs multiprocessing vs asyncio|08 — Capstone: escolhendo threading vs multiprocessing vs asyncio]] — recapitula o galho.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Python/Concorrência e paralelismo" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Python/index|Trilha Python]] (MOC central)

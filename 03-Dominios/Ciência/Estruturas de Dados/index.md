@@ -65,15 +65,6 @@ Cada nota traz uma seção **"Implementações comparadas: Java · TypeScript ·
 ### Base para banco de dados
 05 → 06 → 09. Hash, árvores de busca e B-Trees — o que sustenta os índices.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Ciência/Estruturas de Dados"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]

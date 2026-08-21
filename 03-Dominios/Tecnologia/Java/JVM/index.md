@@ -74,15 +74,6 @@ Este galho é um **refator do tronco** [[Java Fundamentals]]: a seção JVM foi 
 
 02 → 03 → 06 → 10 → 11. Mapa de memória, GC como conceito, coletores do HotSpot, leitura de GC log e tuning com metodologia — trilha focada em memória e coleta de lixo do conceito ao ajuste fino.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Tecnologia/Java/JVM"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Java/index|Java (MOC central)]]

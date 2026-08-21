@@ -63,12 +63,6 @@ O fio condutor vai do mito à decisão. Primeiro desmonta o motivo mais repetido
 
 01 (o mito, as razões legítimas vs ruins, o custo decomposto) → 05 (lock-in como alavanca, não pecado) → 06 (o framework e a regra de ouro).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/23 - Panorama multi-cloud e portabilidade" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

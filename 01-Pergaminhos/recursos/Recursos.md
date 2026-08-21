@@ -16,12 +16,3 @@ Referências externas, documentação e materiais de apoio.
 ## Carreira
 
 - [[Brag Document]] — como documentar conquistas profissionais
-
----
-
-```dataview
-LIST
-FROM "Recursos"
-WHERE type != "moc"
-SORT file.name ASC
-```

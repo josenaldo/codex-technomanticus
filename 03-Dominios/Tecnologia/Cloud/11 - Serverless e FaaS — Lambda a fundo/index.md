@@ -57,12 +57,6 @@ O fio condutor sobe do modelo à decisão. Primeiro o *porquê e o quê* — o m
 
 04 (o modelo de escala e a diferença reserved vs provisioned concurrency que toda entrevista cobra) → 05 (o ponto de virada de custo contra uma VM reservada) → 06 (a árvore que separa serverless de container e VM sem hesitar).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/11 - Serverless e FaaS — Lambda a fundo" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

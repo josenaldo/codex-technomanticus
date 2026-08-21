@@ -54,12 +54,6 @@ O fio condutor vai do concreto ao arquitetural: primeiro *o que a coisa é* (uma
 
 04 (a diferença entre `stop`/`hibernate`/`terminate` e o que persiste é a raiz de quase toda perda de dado e susto de fatura) → 05 (por que a mesma instância custa 3x mais ou menos) → 06 (por que "só reiniciar a instância" não é como se recupera de falha de verdade).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/05 - Compute I — máquinas virtuais" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

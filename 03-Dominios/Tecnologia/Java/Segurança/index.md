@@ -72,15 +72,6 @@ OAuth2/OIDC client, autorização avançada, o panorama OWASP e o capstone.
 - **Autorização do grosso ao fino** — 05 → 07 → 14 → 16 (URL-based, method-level, `AuthorizationManager`/RBAC-vs-ABAC, OWASP).
 - **Protegendo a borda web** — 01 → 06 → 10 → 11 → 15 + Galho 9 (`DispatcherServlet`, `Interceptor`s vs `Filter`s — onde a segurança encontra o MVC).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status
-FROM "03-Dominios/Tecnologia/Java/Segurança"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Java/index|Trilha Java]]

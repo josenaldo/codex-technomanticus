@@ -37,12 +37,6 @@ Este galho pega três ferramentas que o resto da linguagem usa por baixo dos pan
 8. [[08 - Context managers via generator|08 — Context managers via generator]]
 9. [[09 - Capstone — funcional e idiomas avançados|09 — Capstone: funcional e idiomas avançados]] — recapitula o galho.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Python/Funcional e idiomas avançados" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Python/index|Trilha Python]] (MOC central)

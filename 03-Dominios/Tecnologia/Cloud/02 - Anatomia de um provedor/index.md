@@ -51,12 +51,6 @@ Os primitivos que rodam dentro dessa anatomia (compute, rede, storage) começam 
 
 03 (plano de controle vs dados raramente é articulado) → 05 (responsabilidade compartilhada é o divisor entre "o provedor falhou" e "eu configurei errado") → 06 (cotas e SLA batem direto na operação real).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/02 - Anatomia de um provedor" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

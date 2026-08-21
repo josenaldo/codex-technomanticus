@@ -64,15 +64,6 @@ Catálogo de consulta, com notas autocontidas e **Armadilhas** pesando no *quand
 > [!tip] Atalho para a hora do incidente
 > A [[14 - Escolher o padrão de resiliência (capstone)|nota 14]] começa com uma tabela **sintoma → padrão** ("a dependência está lenta", "uma funcionalidade opcional derrubou uma essencial", "um job roda N vezes numa frota de N") e traz a **ordem de composição** — timeout dentro de retry dentro de breaker dentro de bulkhead — que é o que evita as três somas que causam incidentes.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Nuvem e Resiliência"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/index|Padrões de Projeto]] — o galho-pai e as seis famílias.

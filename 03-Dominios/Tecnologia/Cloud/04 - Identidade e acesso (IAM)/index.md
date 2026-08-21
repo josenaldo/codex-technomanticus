@@ -51,12 +51,6 @@ Este galho é a aplicação concreta, na nuvem, dos conceitos gerais do domínio
 
 02 (a credencial estática é a raiz de quase todo vazamento) → 03 (avaliação de política é o que ninguém formaliza) → 06 (federação e identidade de CI/CD fecham o arco da credencial que nunca deveria ter existido).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/04 - Identidade e acesso (IAM)" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

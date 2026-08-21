@@ -39,12 +39,6 @@ Iteradores/geradores de verdade (o "como" por trás do `__iter__`/`__next__`) s�
 8. [[08 - Metaclasses — introdução|08 — Metaclasses: introdução]]
 9. [[09 - Composição vs herança|09 — Composição vs herança]] — capstone do galho.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Python/OO e Data Model" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Python/index|Trilha Python]] (MOC central)

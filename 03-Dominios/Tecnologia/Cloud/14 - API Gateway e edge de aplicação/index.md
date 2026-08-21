@@ -56,12 +56,6 @@ O fio condutor sobe do conceito à composição. Primeiro o *porquê* — o fron
 
 02 (a diferença REST vs HTTP API que a maioria escolhe no piloto automático) → 04 (os quatro mecanismos de autorização e quando cada um vale) → 06 (a pilha de decisões e os anti-padrões que separam uma borda bem desenhada de uma que só trocou "servidor" por "função").
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/14 - API Gateway e edge de aplicação" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

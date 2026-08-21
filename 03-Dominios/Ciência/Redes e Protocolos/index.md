@@ -76,15 +76,6 @@ Networking aparece em entrevista de duas formas: **system design** ("como você 
 ### System design de comunicação
 12 → 13 → 14 → 15. Os números, distribuição de carga/CDN, resiliência e o fechamento.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Ciência/Redes e Protocolos"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]

@@ -77,15 +77,6 @@ Este galho cobre o **motor** do Node.js — como uma única thread JS atende mil
 
 03 → 05 → 08 → 09. Foco em entender o "porquê" das promises.
 
-## Todas as notas
-
-```dataview
-TABLE status, updated
-FROM "03-Dominios/Tecnologia/Node/Runtime e Event Loop"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Node/index|Node.js (MOC central)]]

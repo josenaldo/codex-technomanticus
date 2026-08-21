@@ -57,12 +57,6 @@ O fio condutor sobe do *porquê* ao *operar*. Primeiro o modelo mental — os tr
 
 03 (o tracing que ninguém configura até precisar) → 04 (o alarme que dispara no sintoma certo, não em ruído) → 06 (como tudo isso se costura numa arquitetura real, com trace_id atravessando os serviços).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/17 - Observabilidade na cloud" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

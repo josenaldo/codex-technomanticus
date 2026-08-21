@@ -61,15 +61,6 @@ Maestria e decisão de arquitetura.
 - **Construir uma tela do zero** — 01 → 02 → 03 → 04 → 07 (montar uma UI funcional alimentada por dados).
 - **Aparência e customização** — 03 → 09 → 08 → 10 (layouts, Look and Feel, renderers e pintura customizada).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Tecnologia/Java/Swing"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Java/index|Java (MOC central)]]

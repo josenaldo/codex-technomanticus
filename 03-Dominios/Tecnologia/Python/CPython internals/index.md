@@ -34,12 +34,6 @@ Até aqui a trilha tratou Python como uma linguagem — sintaxe, OO, generators,
 8. [[08 - Profiling — cProfile, py-spy, tracemalloc|08 — Profiling: `cProfile`, `py-spy`, `tracemalloc`]]
 9. [[09 - Capstone — CPython internals|09 — Capstone: CPython internals]] — recapitula o galho.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Python/CPython internals" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Python/index|Trilha Python]] (MOC central)

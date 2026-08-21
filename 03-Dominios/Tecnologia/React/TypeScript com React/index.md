@@ -50,15 +50,6 @@ Trilha sequencial recomendada — leia na ordem para construir o terreno do ment
 ### Rota completa
 Sequencial 01 → 15. Recomendada na primeira leitura.
 
-## Todas as notas
-
-```dataview
-LIST file.frontmatter.title
-FROM "03-Dominios/Tecnologia/React/TypeScript com React"
-WHERE type != "moc"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — deep dive da linguagem (referência paralela)

@@ -57,12 +57,6 @@ O fio condutor sobe do sintoma ao sistema. Primeiro o *porquê* — por que a co
 
 02 (o mix de preços que realmente move a agulha) → 04 (os degraus de otimização, na ordem de esforço/retorno) → 06 (o exemplo trabalhado, peça por peça).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/19 - FinOps — a economia da cloud" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

@@ -52,12 +52,6 @@ O fio condutor sobe do porquê à decisão. Primeiro a **filosofia**: três for�
 
 02 (o filtro sinal/ruído que formaliza o que você já faz por instinto) → 05 (as sete correntes, pra nomear o que você segue sem perceber) → 06 (o checklist e o caso de entrevista, pra levar isso pra uma sala de system design).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/21 - AWS a fundo" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

@@ -85,15 +85,6 @@ O escopo inclui: supply chain security (npm audit, lockfiles, socket.dev), geren
 > [!tip] Rota OWASP Top 10 (09 → 01 → 03 → 08)
 > Para quem precisa mapear vulnerabilidades para controles concretos: começa pelo framework OWASP e depois associa cada categoria (injection, supply chain, misconfiguration) à nota específica que a trata.
 
-## Todas as notas
-
-```dataview
-TABLE status, updated
-FROM "03-Dominios/Tecnologia/Node/Segurança"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Node/Node.js|Node.js]] — tronco da trilha Node Senior

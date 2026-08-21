@@ -56,12 +56,6 @@ O fio condutor vai do exame à estratégia. Primeiro o *quê e o porquê* — o 
 
 03 (o mapa que mostra o que já sei e onde estão as lacunas) → 04 (as pegadinhas que a trilha por si só não ensina) → 06 (o cronograma que fecha o resto).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/24 - Certificação AWS Solutions Architect Associate" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

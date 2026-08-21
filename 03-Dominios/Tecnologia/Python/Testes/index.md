@@ -36,12 +36,6 @@ Este galho é **ferramental**, não teoria — a estratégia de testes (pirâmid
 8. [[08 - TDD na prática com pytest|08 — TDD na prática com pytest]]
 9. [[09 - Capstone — a suíte de testes da API de Tarefas|09 — Capstone: a suíte de testes da API de Tarefas]] — recapitula o galho.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Python/Testes" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Python/index|Trilha Python]] (MOC central)

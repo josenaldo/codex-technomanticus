@@ -64,12 +64,6 @@ O recorte não é receita de configuração. Existe documentação oficial excel
 15. [[03-Dominios/Tecnologia/Infraestrutura/Nginx/15 - O ecossistema além do Nginx|15 — O ecossistema além do Nginx]] — Caddy, Traefik, HAProxy e Envoy; onde o Nginx deixou de ser a resposta automática.
 16. [[03-Dominios/Tecnologia/Infraestrutura/Nginx/16 - Capstone - a borda de uma aplicação|16 — Capstone: a borda de uma aplicação]] — caso trabalhado, da app nua até uma borda defensável, cada decisão citando a nota que a fundamenta.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Infraestrutura/Nginx" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Infraestrutura/index|Infraestrutura]] — MOC do domínio

@@ -755,17 +755,6 @@ Notas com mais "shelf life" — fundamentos teóricos, princípios de defesa em 
 - **Crítica:** [[03-Dominios/Tecnologia/IA/O Lado Sombrio da IA/index|O Lado Sombrio da IA]]
 - **Sendas relacionadas:** [[Senda IA]] · [[Senda Entrevistas]]
 
-## Estatísticas
-
-```dataview
-TABLE
-  length(rows.file.path) AS "Notas"
-FROM "03-Dominios/Tecnologia/IA"
-WHERE type != "moc"
-GROUP BY file.folder
-SORT file.folder
-```
-
 ---
 
 > [!quote] Encerramento

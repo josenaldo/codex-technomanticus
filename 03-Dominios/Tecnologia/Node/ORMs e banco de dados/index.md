@@ -74,15 +74,6 @@ Os padrões transversais são tão importantes quanto os ORMs em si. N+1 queries
 
 03 → 07 → 08 → 09. Trilha prática para quem vai adotar Prisma em projeto novo: schema-first, migrations via `prisma migrate`, transações com `$transaction` e paginação com cursor nativo do Prisma.
 
-## Todas as notas
-
-```dataview
-TABLE status, updated
-FROM "03-Dominios/Tecnologia/Node/ORMs e banco de dados"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Node/index|Node.js (MOC central)]]

@@ -83,15 +83,6 @@ Pré-requisito: galho 1 ([[03-Dominios/Tecnologia/Node/Runtime e Event Loop/inde
 
 01 -> 06 -> 12. Para quem está olhando Cloudflare Workers, Deno Deploy, Bun ou serverless multi-runtime.
 
-## Todas as notas
-
-```dataview
-TABLE status, updated
-FROM "03-Dominios/Tecnologia/Node/Frameworks e arquitetura"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Node/index|Node.js (MOC central)]]
@@ -99,4 +90,3 @@ SORT file.name ASC
 - [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index]] - galho 1
 - [[03-Dominios/Tecnologia/Node/Paralelismo/index]] - galho 2
 - [[03-Dominios/Tecnologia/Node/Streams/index]] - galho 3
-

@@ -57,15 +57,6 @@ Catálogo de **teoria geral**: vale para qualquer candidato, com exemplos sempre
 > [!tip] Atalho: por onde começar
 > A [[14 - Negociação de oferta (capstone)|nota 14]] termina com um **mapa por momento** — o que ler antes de aplicar, na preparação, na triagem, no comportamental, no técnico e na oferta. Se um processo já começou, entre por ali.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Carreira/Entrevistas"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Carreira/Inglês/index|Inglês]] — o galho parceiro, para articulação no idioma.

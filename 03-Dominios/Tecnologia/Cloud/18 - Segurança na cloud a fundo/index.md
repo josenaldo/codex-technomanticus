@@ -57,12 +57,6 @@ O fio condutor sobe de uma conta só para muitas contas e muito tempo. Primeiro 
 
 01 (relembrar onde cai a linha da sua responsabilidade) → 05 (CloudTrail, Config, GuardDuty — o que falta institucionalizar) → 06 (o exercício de threat model que amarra tudo).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/18 - Segurança na cloud a fundo" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

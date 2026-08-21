@@ -73,15 +73,6 @@ Persistência reativa, o confronto e a decisão.
 - **O stack web reativo** — 01 → 10 → 11 → 12 → 13 → 16 (modelo, WebFlux, WebClient, functional, R2DBC, capstone).
 - **Reativo vs Virtual Threads** (a ponte com o Galho 4) — 01 → 09 → 14 → 15 + [[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/12 - Virtual Threads e Project Loom|Virtual Threads e Project Loom]] (a decisão honesta).
 
-## Todas as notas
-
-```dataview
-TABLE fase AS "Fase", status AS "Status"
-FROM "03-Dominios/Tecnologia/Java/Programação Reativa"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Java/index|Trilha Java (MOC central)]]

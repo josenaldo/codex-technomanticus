@@ -83,15 +83,6 @@ Este galho cobre **observability e produção em Node.js**: os três pilares (lo
 
 01 → 03 → 06 → 12. Para quem quer entender distributed tracing do zero.
 
-## Todas as notas
-
-```dataview
-TABLE status, updated
-FROM "03-Dominios/Tecnologia/Node/Observability e produção"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Node/index|Node.js (MOC central)]]

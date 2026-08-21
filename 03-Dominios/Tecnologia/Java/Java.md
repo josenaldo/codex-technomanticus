@@ -41,14 +41,3 @@ Ecossistema Java: linguagem, frameworks, ferramentas e boas práticas.
 ## Protocolos e Comunicação
 
 - [[gRPC e Go]]
-
----
-
-*Dataview — notas desta seção:*
-
-```dataview
-LIST
-FROM "Java"
-WHERE type != "moc"
-SORT file.name ASC
-```

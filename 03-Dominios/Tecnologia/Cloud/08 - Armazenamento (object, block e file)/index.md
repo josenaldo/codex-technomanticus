@@ -56,12 +56,6 @@ O fio condutor vai do mapa ao detalhe e volta à decisão. Primeiro o *mapa* dos
 
 03 (por que a fatura do object storage cresce e como lifecycle a controla) → 04 (por que versioning e Object Lock existem, e a pegadinha de custo) → 06 (a árvore de decisão que separa object, block e file sem hesitar em entrevista).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/08 - Armazenamento (object, block e file)" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

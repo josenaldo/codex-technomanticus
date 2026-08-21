@@ -73,15 +73,6 @@ Este galho é **stack-agnóstico**: trata os paradigmas como conceitos, com exem
 ### A divisão imperativo × declarativo
 01 → 02 → 04 → 11 → 12. O mapa, o imperativo, o declarativo, o lógico e o reativo.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Ciência/Paradigmas"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]

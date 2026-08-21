@@ -56,12 +56,6 @@ O fio condutor sobe do porquê ao como e volta à decisão. Primeiro o *porquê*
 
 03 (a diferença exata Multi-AZ vs read replica que toda entrevista cobra) → 04 (por que HA não é backup, e o PITR na prática) → 06 (a árvore que separa relacional, NoSQL, cache e object sem hesitar).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/09 - Bancos gerenciados" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

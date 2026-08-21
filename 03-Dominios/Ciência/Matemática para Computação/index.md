@@ -77,15 +77,6 @@ Se a [[03-Dominios/Ciência/Teoria da Computação/index|Teoria da Computação]
 ### Grafos como matemática
 16 → 17 → 18 + [[03-Dominios/Ciência/Estruturas de Dados/11 - Grafos - travessia e algoritmos|o lado algorítmico em ED]].
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Ciência/Matemática para Computação"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]

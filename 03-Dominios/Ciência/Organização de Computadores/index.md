@@ -74,15 +74,6 @@ Este é o **andar de baixo** da Ciência da Computação: o degrau abaixo do Sis
 ### Representação de dados (a base numérica da máquina)
 02 → 03 → 04 + [[03-Dominios/Ciência/Matemática para Computação/13 - Cardinalidade - contável e incontável|por que floats não são os reais]].
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Ciência/Organização de Computadores"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]

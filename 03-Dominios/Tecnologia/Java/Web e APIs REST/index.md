@@ -78,12 +78,6 @@ Este é um **galho híbrido**: parte refatora o tronco existente `Spring Boot.md
 
 01 → 06 → 02 → 08 → 11 + notas do Galho 7 (Servlet API, JAX-RS, Bean Validation). O percurso para quem vem do Galho 7 e quer mapear Jakarta EE no Spring MVC: onde o `DispatcherServlet` se encaixa no modelo Servlet, como os `@RequestMapping` se relacionam com JAX-RS, como Bean Validation é integrado, e onde Filters (Servlet) terminam e Interceptors (Spring) começam.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Java/Web e APIs REST" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Java/index|Trilha Java]] (MOC central)

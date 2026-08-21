@@ -94,15 +94,6 @@ Integração mal feita é a principal fonte de falhas em microsserviços: connec
 | Resiliência geral | `cockatiel` | latest |
 | HTTP client | `fetch` (Node 18+), `axios`, `got`, `undici` | — |
 
-## Todas as notas
-
-```dataview
-TABLE status, updated
-FROM "03-Dominios/Tecnologia/Node/Integrações"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Node/index|Node.js (MOC central)]]

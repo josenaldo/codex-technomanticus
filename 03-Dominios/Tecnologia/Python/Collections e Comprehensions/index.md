@@ -38,12 +38,6 @@ Iteradores/geradores de verdade (o "como" por trás de comprehensions e generato
 7. [[07 - O módulo collections — Counter, defaultdict, deque, namedtuple|07 — O módulo collections]]
 8. [[08 - Escolhendo a estrutura certa|08 — Escolhendo a estrutura certa]] — capstone do galho.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Python/Collections e Comprehensions" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Python/index|Trilha Python]] (MOC central)

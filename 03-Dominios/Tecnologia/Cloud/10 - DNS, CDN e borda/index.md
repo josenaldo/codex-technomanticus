@@ -57,12 +57,6 @@ O fio condutor sobe do nome ao request. Primeiro o *DNS* em duas notas: a mecân
 
 02 (a diferença exata entre as políticas de roteamento que toda entrevista cobra) → 04 (por que TLS termina na borda e como o certificado se renova sozinho) → 05 (a pilha de defesa inteira e por que o origin nunca é público) → 06 (a arquitetura ponta a ponta que amarra o Bloco 2).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/10 - DNS, CDN e borda" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

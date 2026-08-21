@@ -36,12 +36,6 @@ O Galho 9 ensinou como Python guarda estado no banco; este galho ensina como Pyt
 8. [[08 - Documentação automática com OpenAPI|08 — Documentação automática com OpenAPI]]
 9. [[09 - Capstone — uma API REST completa de ponta a ponta|09 — Capstone: uma API REST completa de ponta a ponta]] — recapitula o galho.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Python/Web e APIs REST" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Python/index|Trilha Python]] (MOC central)

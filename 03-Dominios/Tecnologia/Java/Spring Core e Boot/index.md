@@ -80,12 +80,6 @@ Este é um **galho híbrido**: parte refatora o tronco existente `Spring Boot.md
 
 02 → 07 → 09 → 11 → 18 + notas do Galho 7 (CDI, interceptors, eventos). IoC no Spring vs. CDI, escopos e proxies comparados, AOP no Spring vs. interceptors CDI, eventos do ApplicationContext vs. eventos CDI, e a capstone com o frame de decisão — o percurso para quem vem do Galho 7 e quer mapear um mundo no outro.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Java/Spring Core e Boot" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Java/index|Trilha Java]]

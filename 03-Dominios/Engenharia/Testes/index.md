@@ -82,15 +82,6 @@ E as fronteiras conceituais que este galho não cobre:
 ### Confiança e qualidade da suíte
 10 → 11 → 12 → 13. Técnicas de caso, flaky, coverage/mutation e as estratégias avançadas.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Engenharia/Testes"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]

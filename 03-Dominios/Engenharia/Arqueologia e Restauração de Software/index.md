@@ -73,15 +73,6 @@ Escrito da cadeira do **consultor** — alguém paraquedado *de fora* em codebas
 27. [[27 - Compliance e arqueologia legal]] — por que certo código *não pode* ser deletado; desenterrar restrições antes de mexer.
 28. [[28 - Capstone - Assumindo um sistema legado do zero]] — o playbook do consultor de ponta a ponta, num estudo de caso.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Engenharia/Arqueologia e Restauração de Software"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Engenharia/index|Engenharia (MOC da camada)]]

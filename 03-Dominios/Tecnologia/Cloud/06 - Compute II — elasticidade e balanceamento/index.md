@@ -54,12 +54,6 @@ O fio condutor monta a arquitetura peça por peça: primeiro *por que* precisamo
 
 03 (por que uma instância travada ainda recebe tráfego, e como os thresholds decidem quando ela sai) → 05 (por que o serviço escala tarde ou fica em flapping) → 06 (por que uma frota num datacenter só não é alta disponibilidade de verdade).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/06 - Compute II — elasticidade e balanceamento" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

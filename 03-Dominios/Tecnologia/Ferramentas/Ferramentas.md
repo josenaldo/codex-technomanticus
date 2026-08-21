@@ -19,12 +19,3 @@ Ferramentas de desenvolvimento, produtividade e automação.
 ## IA e Automação
 
 - [[Prompts]]
-
----
-
-```dataview
-LIST
-FROM "Ferramentas"
-WHERE type != "moc"
-SORT file.name ASC
-```

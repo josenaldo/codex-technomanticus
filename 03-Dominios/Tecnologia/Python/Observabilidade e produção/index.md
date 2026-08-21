@@ -35,12 +35,6 @@ Este galho é ferramental — a FILOSOFIA de observabilidade (SLI/SLO, alerting 
 7. [[07 - Deploy básico — Dockerfile e CI-CD|07 — Deploy básico: Dockerfile e CI/CD]]
 8. [[08 - Capstone — os dois serviços prontos pra produção|08 — Capstone: os dois serviços prontos pra produção]] — recapitula o galho.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Python/Observabilidade e produção" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Python/index|Trilha Python]] (MOC central)

@@ -76,15 +76,6 @@ Pré-requisito: galho 1 ([[03-Dominios/Tecnologia/Node/Runtime e Event Loop/inde
 
 01 → 02 → 08 → 09. Foco em "rodar comandos externos e spawn de Node".
 
-## Todas as notas
-
-```dataview
-TABLE status, updated
-FROM "03-Dominios/Tecnologia/Node/Paralelismo"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Node/index|Node.js (MOC central)]]

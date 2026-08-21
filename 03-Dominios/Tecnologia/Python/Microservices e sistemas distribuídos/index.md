@@ -35,12 +35,6 @@ Este galho é **ferramental e aplicado**, não teoria de sistemas distribuídos 
 7. [[07 - Saga orquestrada em Python|07 — Saga orquestrada em Python]]
 8. [[08 - Capstone — extraindo o serviço de Notificações|08 — Capstone: extraindo o serviço de Notificações]] — recapitula o galho.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Python/Microservices e sistemas distribuídos" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Python/index|Trilha Python]] (MOC central)

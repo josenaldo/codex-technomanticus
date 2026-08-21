@@ -72,15 +72,6 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 25. [[03-Dominios/Carreira/Currículo/25 - IA nos dois lados|25 - IA nos dois lados]] — LLM triando, candidato gerando, e o dado real de prompt injection contra o autorrelato.
 26. [[03-Dominios/Carreira/Currículo/26 - Seis currículos, uma carreira|26 - Seis currículos, uma carreira]] — **capstone**: seis currículos ancorados em carreiras reais, um por nível.
 
-## Todas as notas
-
-```dataview
-TABLE fase, status, updated
-FROM "03-Dominios/Carreira/Currículo"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Carreira/Entrevistas/index|Entrevistas]] — o galho parceiro: o que cada etapa do funil avalia.

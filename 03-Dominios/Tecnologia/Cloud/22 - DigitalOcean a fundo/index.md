@@ -53,12 +53,6 @@ O fio condutor sobe da filosofia ao veredito. Primeiro o *porquê* — a origem 
 
 01 (a tese — por que a curadoria não é limitação) → 05 (os gatilhos objetivos de quando migrar) → 06 (o checklist aplicado a um caso real, incluindo o caso onde o gatilho acende).
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/22 - DigitalOcean a fundo" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

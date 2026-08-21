@@ -116,17 +116,3 @@ Manter clientes e crescer de 0 a 2.000 sem quebrar.
 | *Obviously Awesome* | April Dunford | Posicionamento de produto (Bloco 5) |
 | *Shape Up* | Ryan Singer (Basecamp) | Metodologia de produto (Bloco 3) — **gratuito** |
 | *Rework* | Fried & DHH | Filosofia anti-corporate (Blocos 1, 3) |
-
----
-
-## Índice de notas
-
-```dataview
-TABLE
-  title AS "Título",
-  status AS "Status",
-  join(tags, ", ") AS "Tags"
-FROM "03-Dominios/Carreira/Empreendedorismo/Indie Hacker 101"
-WHERE type != "moc"
-SORT file.name ASC
-```

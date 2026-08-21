@@ -35,12 +35,3 @@ Docker, Kubernetes, WSL, cloud e configuração de ambientes.
 ## Cloud
 
 - [[Digital Ocean]]
-
----
-
-```dataview
-LIST
-FROM "Infraestrutura"
-WHERE type != "moc"
-SORT file.name ASC
-```

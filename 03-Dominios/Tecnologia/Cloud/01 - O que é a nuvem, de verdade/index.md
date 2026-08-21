@@ -51,12 +51,6 @@ A mecânica concreta de como um provedor é montado por dentro (conta, regions, 
 
 01 (skim) → 03 (o espectro IaaS-SaaS raramente é articulado com clareza) → 06 (a virada mental é o que costuma faltar em quem "usa a nuvem só como VPS mais cara").
 
-## Todas as notas
-
-```dataview
-TABLE fase, status FROM "03-Dominios/Tecnologia/Cloud/01 - O que é a nuvem, de verdade" WHERE type = "concept" SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (MOC do domínio)

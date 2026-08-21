@@ -53,28 +53,3 @@ tags:
 ## Trilhas relacionadas
 
 - [[TypeScript com React]] — aprofundamento da intersecção TS+React (15 notas + MOC)
-
-## Progresso
-
-```dataview
-TABLE WITHOUT ID
-  link(file.path, regexreplace(file.folder, "^03-Dominios/", "") + "/" + file.name) AS "Nota",
-  default(progresso, "pendente") AS "Status"
-FROM outgoing([[]])
-WHERE file.path != this.file.path AND contains(file.path, "03-Dominios/")
-SORT file.folder ASC, file.name ASC
-```
-
-**Resumo:**
-
-```dataview
-TABLE WITHOUT ID
-  length(rows) AS "Total",
-  length(filter(rows, (r) => default(r.progresso, "pendente") = "feito")) AS "Feitas",
-  length(filter(rows, (r) => default(r.progresso, "pendente") = "andamento")) AS "Em andamento",
-  length(filter(rows, (r) => default(r.progresso, "pendente") = "pausado")) AS "Pausadas",
-  length(filter(rows, (r) => default(r.progresso, "pendente") = "pendente")) AS "Pendentes"
-FROM outgoing([[]])
-WHERE file.path != this.file.path AND contains(file.path, "03-Dominios/")
-GROUP BY true
-```

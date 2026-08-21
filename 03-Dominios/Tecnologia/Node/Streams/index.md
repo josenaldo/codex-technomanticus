@@ -76,15 +76,6 @@ Pré-requisito: galho 1 ([[03-Dominios/Tecnologia/Node/Runtime e Event Loop/inde
 
 03 → 04 → 05 → 06 → 11. Pra quem vai escrever Transform/Duplex próprio.
 
-## Todas as notas
-
-```dataview
-TABLE status, updated
-FROM "03-Dominios/Tecnologia/Node/Streams"
-WHERE type = "concept"
-SORT file.name ASC
-```
-
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Node/index|Node.js (MOC central)]]
