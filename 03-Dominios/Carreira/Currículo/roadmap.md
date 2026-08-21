@@ -14,8 +14,8 @@ tags:
 
 Roadmap do galho `03-Dominios/Carreira/Currículo`. Construção nova (2026-08-20), a partir do plano em `00-Meta/specs/2026-08-20-galho-curriculo-plano.md` (30 tarefas) e da spec de design em `00-Meta/specs/2026-08-20-galho-curriculo-design.md`. Esta é a memória de retomada: cada linha aponta a tarefa do plano que a escreve, para que o galho possa ser continuado em outra sessão sem reler o plano inteiro.
 
-> [!warning] Diagnóstico de 2026-08-20 — Tarefa 21 concluída, bloco Adepto fechado
-> As Tarefas 1-21 do plano rodaram: pasta, MOC e roadmap (Tarefa 1), as nove notas do bloco Iniciado (01-09, Tarefas 2-10) e as onze peças do bloco Adepto (notas 10-19 + o broto 18a, Tarefas 11-21). **O bloco Iniciado está 9/9 escrito, e o bloco Adepto está 11/11 escrito** — bloco completo —, com gate G1-G5 rodado nota a nota. As Tarefas 22-30 (todo o bloco Magus, 7 notas, e o fechamento) ainda não rodaram.
+> [!warning] Diagnóstico de 2026-08-20 — Tarefa 22 concluída, bloco Magus aberto
+> As Tarefas 1-22 do plano rodaram: pasta, MOC e roadmap (Tarefa 1), as nove notas do bloco Iniciado (01-09, Tarefas 2-10), as onze peças do bloco Adepto (notas 10-19 + o broto 18a, Tarefas 11-21) e a primeira nota do bloco Magus (20 - A âncora, Tarefa 22). **O bloco Iniciado está 9/9 escrito, o bloco Adepto está 11/11 escrito, e o bloco Magus está 1/7 escrito**, com gate G1-G5 rodado nota a nota. As Tarefas 23-30 (as seis notas restantes do bloco Magus e o fechamento) ainda não rodaram.
 
 ## A tese e as duas lentes
 
@@ -46,9 +46,9 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 | Iniciado (01-09) | 9 |
 | Adepto (10-19 + 18a) | 11 |
 | Magus (20-26) | 7 |
-| ✅ escritas | 20 (bloco Iniciado completo 9/9 + bloco Adepto completo 11/11) |
-| ⬜ pendentes | 7 (bloco Magus, notas 20-26) |
-| % concluído | 74% |
+| ✅ escritas | 21 (bloco Iniciado completo 9/9 + bloco Adepto completo 11/11 + Magus 1/7) |
+| ⬜ pendentes | 6 (bloco Magus, notas 21-26) |
+| % concluído | 78% |
 | Scaffolding | ✅ roadmap.md + index.md criados (Tarefa 1) |
 | Wikilinks quebrados na Tarefa 1 (linha de base) | 27 (`/verificar-wikilinks`, 2026-08-20) — as 26 notas + o broto 18a do `index.md`, nenhum ainda existe; esperado até a Tarefa 30 |
 
@@ -270,10 +270,16 @@ Sobreposição com Entrevistas é esperada e não deve ser policiada — a front
 ## Notas — Magus (o sistema por trás do documento)
 
 #### 20 - A âncora   [substantivo]
-- **Estado:** ⬜ pendente · fase: magus
-- **Tarefa do plano:** Bloco D
-- **Escopo:** o drill-down de quatro camadas; currículo como uma das quatro saídas da âncora.
-- **Pendências:** —
+- **Estado:** ✅ escrita · fase: magus · 2026-08-20 · 6565 palavras
+- **Tarefa do plano:** Tarefa 22 (Bloco D) — abre o bloco Magus
+- **Escopo:** currículo, pitch falado, resposta comportamental e negociação salarial como quatro saídas da mesma âncora; a fronteira com o sumário (nota 07) — a âncora governa o sumário, não é o sumário; o drill-down de quatro camadas de baixo para cima (4 ferramentas → 3 tipo de sistema → 2 o movimento que se repete → 1 o diferencial), com diálogo explícito entre a camada 3 e a escada de escopo da nota 13; o exercício executável (comparar os três últimos trabalhos, achar o padrão que não é a stack), trabalhado com Bianca Torres subindo as quatro camadas a partir do incidente dos webhooks já canônico na nota 11; o caso real com as duas renderizações verificadas ao vivo da mesma âncora do autor — "I build delivery machines." no currículo-base privado, "I build the machine that ships your software." no site público —, com a lição de que a âncora se reescreve por público sem virar outra posição; a variação por nível com Camila Nogueira (estagiária/staff, reusando os fatos já fixados nas notas 03 e 07), mostrando que a âncora existe em qualquer degrau, só muda de escopo e evidência; o que a âncora não é (slogan, adjetivo, aspiração) e a admissão honesta de hipótese-não-âncora quando falta o terceiro padrão repetido.
+- **Interfaces produzidas:** a fronteira âncora↔sumário, disponível para a nota 07 (já linkada de volta) e para qualquer nota futura do bloco Magus; o vocabulário de quatro camadas e "hipótese, não âncora", disponível para as notas 21 e 22; wikilinks de ancoragem para as notas 03, 07, 09, 13, 18, e cross-galho para `Entrevistas/index`.
+- **Régua de profundidade — palavras, não linhas:** faixa-alvo 4.500-6.500 (`wc -w`). **Contagem final: 6.565 palavras**, dentro da faixa, no topo dela. Arquivo tem 179 linhas — T3 (piso de 500 linhas) tratado como N/A, régua de palavras é a que vale (mesmo ajuste já registrado em todas as notas 01-19 deste galho, sob a convenção de um parágrafo por linha).
+- **Verificação:** gate G1-G5 rodado manualmente via checklist de `/verificar-nota` (mesma ressalva de execução das notas anteriores: a skill carrega como procedimento para o próprio agente aplicar). E1 ✓ (TL;DR denso, a tese das quatro saídas e o drill-down num só bloco). E2 ✓ (abre citando o que o galho já tratou como documento isolado, depois vira o problema das quatro saídas divergentes — não abre por definição). E3 ✓ (1 diagrama Mermaid — o drill-down de quatro camadas com o exemplo de Bianca subindo do fundo ao topo —, validado por `validar-mermaid.mjs`, 0 blocos quebrados). E4 ⚠ — sem seção `## Casos práticos` dedicada, seguindo o mesmo precedente já registrado nas notas 01, 03, 05, 06, 07, 09, 17 e 19 deste galho: os 4 callouts `[!example]` (1 real com as duas fontes verificadas + 3 fictícios com persona declarada) cobrem cenário concreto integrado a cada seção temática, sem duplicar conteúdo numa seção à parte. E5 ✓. E6 ✓. E7 ✓. E8 ✓ (3 `[!warning]`). S1 ✓ (`validar-mermaid.mjs`, 1 bloco, 0 quebrados). P1 N/A (nota conceitual, sem código). P2 ✓ (mecanismo explicado — por que o drill-down sobe de fato concreto para generalização, e não o contrário; por que a inconsistência entre saídas é sentida antes de ser nomeada). P3 ✓ (fase magus — conecta a escada de escopo da nota 13 na camada 3 do drill-down, e o vocabulário de nível da nota 03 na seção de variação por nível). P4 N/A — tema é método de posicionamento, não medição; os números que aparecem (a duração do incidente de Bianca, os anos do padrão de Camila) já são fatos canônicos citados das notas 03/07/11, sem número novo inventado para esta nota, seguindo a proibição explícita de fabricar métrica. T3 — ver ajuste de régua de palavras acima. L1 ✓ (wikilinks cross-galho para `Entrevistas/index`, além de `Entrevistas/03 - Fale sobre você`). L2 ✓ (Fontes com o link verificado ao vivo de josenaldo.com.br, mais a declaração explícita de que o currículo-base é documento privado, sem link).
+- **G3 (conferência manual):** nenhuma linha quebrada manualmente (checado por comprimento de linha — parágrafos em linha única); as 4 etiquetas `[!example]` presentes (1 `Caso real` com as duas frases-âncora verificadas ao vivo em 2026-08-20 — currículo-base sem link público, site com link — + 3 `Caso fictício` com persona declarada — Bianca Torres no exercício do drill-down, Camila Nogueira nos dois extremos de nível —, todas reusadas no nível/trajetória canônicos já fixados no registro global e nas notas 03/07/11, nenhuma persona nova criada, sem necessidade de grep de colisão); nenhum vazamento de `codex-technomanticus-apocrypha` (grep vazio); varredura de resíduo de inglês rodada (`grep -noE` por conectivos/advérbios ingleses soltos) — a única ocorrência cai dentro do bloco "Como soa em inglês", intencionalmente em inglês (citação das duas frases-âncora incluída); nenhum resíduo real encontrado.
+- **Caso real (as duas frases-âncora):** a frase do site — "I build the machine that ships your software." sob o cargo "Fractional Software Engineer & Architect. 20+ years." — foi verificada ao vivo via WebFetch em 2026-08-20 em josenaldo.com.br. A frase do currículo-base — "I build delivery machines." — vem do brief da Tarefa 22 como fato dado sobre documento privado do autor, sem repositório público disponível para verificação externa desta sessão; a nota não afirma nem infere nada além da frase citada, seguindo o mesmo padrão de privacidade já estabelecido pelas notas 05, 18 e 19 para o mesmo pipeline de currículos.
+- **Marco do galho:** com esta nota, **o bloco Magus foi aberto** — primeira das seis peças (notas 20-26) que tratam o currículo como saída de um sistema, não como documento isolado. Faltam as notas 21-25 e o capstone 26.
+- **Pendências:** M1 (vídeo/podcast) fora de escopo deste plano por decisão registrada — não é lacuna, é escopo fechado.
 
 #### 21 - O brag document   [substantivo]
 - **Estado:** ⬜ pendente · fase: magus
