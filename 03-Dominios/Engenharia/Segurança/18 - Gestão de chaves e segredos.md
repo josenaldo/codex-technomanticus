@@ -1,7 +1,7 @@
 ---
 title: "Gestão de chaves e segredos"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-08-20
 type: concept
 fase: magus
 status: evergreen
@@ -193,9 +193,6 @@ flowchart TD
 - **Compartimentalização**: cada arquivo/registro/sessão pode ter sua própria DEK. Comprometer uma DEK expõe apenas aquele objeto, não o dataset inteiro.
 - **Granularidade de controle**: a política de quem pode chamar o KMS para decifrar uma DEK é independente de quem tem acesso ao storage com os dados cifrados.
 
-> [!warning] Anti-padrão frequente
-> Usar **uma única DEK estática** para cifrar todos os dados. Se essa DEK vazar, tudo vaza. A hierarquia KEK/DEK por objeto existe exatamente para limitar o blast radius.
-
 ### O fluxo de decifração — o caminho inverso
 
 O diagrama anterior mostrou a cifração. A decifração tem um detalhe crítico: a DEK cifrada vai ao KMS, e só o KMS consegue decifrar — usando a KEK interna que nunca saiu.
@@ -286,11 +283,7 @@ O cenário clássico:
 
 GitGuardian reportou que em 2024 mais de 12,8 milhões de segredos foram commitados em repositórios públicos do GitHub em um único ano. Bots automatizados varrem commits novos em tempo real — a janela de exposição é de **minutos**, às vezes segundos.
 
-### O caso Uber 2016
-
-Em 2016, atacantes encontraram chaves de acesso AWS hardcoded em um repositório privado do GitHub pertencente a um engenheiro da Uber. Com as chaves, acessaram um bucket S3 e exfiltraram dados pessoais de 57 milhões de usuários e motoristas. O CISO da Uber pagou US$100 mil aos atacantes em troca de silêncio — o que configurou obstrução de justiça. Resultado: US$148 milhões em multas, condenação criminal do CISO, e fim da carreira de várias pessoas.
-
-A chave hardcoded num repo privado causou mais dano do que qualquer ataque sofisticado teria causado.
+O caso mais citado desse anti-padrão — uma chave hardcoded num repositório privado que virou a maior brecha de dados da história de uma empresa de tecnologia — está detalhado em [[#Casos práticos]], junto com um segundo cenário sobre crypto shredding.
 
 ### Anti-padrões documentados
 
@@ -350,9 +343,6 @@ Ferramentas que implementam esse modelo em Kubernetes:
 - **Vault Agent Injector**: sidecar que injeta segredos do Vault como arquivos no pod via init container + mutation webhook
 - **Kubernetes Sealed Secrets**: criptografa segredos para que possam ser commitados em git (mas com uma KEK gerenciada no cluster, não em plaintext)
 
-> [!warning] Kubernetes Secrets não são secretos por padrão
-> Por padrão, Kubernetes Secrets são encodados em base64 — não cifrados. Qualquer pessoa com acesso ao etcd ou permissão `get secret` vê o valor. Para cifrar em repouso, é necessário habilitar **Encryption at Rest** no etcd com uma KEK — preferencialmente gerenciada por um KMS externo (AWS KMS, GCP KMS) via provider de cifração do Kubernetes.
-
 ---
 
 ## Rotação — o custo de chaves de vida longa
@@ -395,12 +385,55 @@ O pré-requisito é que o sistema tenha sido desenhado com **chaves por tenant/p
 
 ---
 
-## Conexões
+## Casos práticos
 
-- Anterior: [[17 - Confiança transitiva e Trusting Trust]]
-- Próxima: [[19 - Zero trust e defesa em profundidade]]
-- Entropia e geração segura de chaves: [[05 - Aleatoriedade e segredos]]
-- Como chaves são usadas para cifrar em trânsito e em repouso: [[14 - Criptografia em trânsito e em repouso]]
+### Caso 1 — Uber 2016: uma chave hardcoded, 57 milhões de registros
+
+Em 2016, atacantes encontraram chaves de acesso AWS hardcoded em um repositório privado do GitHub pertencente a um engenheiro da Uber. Não houve exploit sofisticado, escalonamento de privilégio ou zero-day — apenas uma credencial estática, plaintext, num lugar onde não deveria estar. Com as chaves, os atacantes acessaram um bucket S3 e exfiltraram dados pessoais de 57 milhões de usuários e motoristas. O CISO da Uber pagou US$100 mil aos atacantes em troca de silêncio — o que configurou obstrução de justiça. O resultado final: US$148 milhões em multas, condenação criminal do CISO, e o fim da carreira de várias pessoas envolvidas.
+
+O ponto didático aqui não é "a Uber foi hackeada" — é que a chave hardcoded num repositório **privado** causou mais dano do que a maioria dos ataques sofisticados que a indústria teme. Repositório privado não é controle de acesso equivalente a KMS: qualquer credencial que entra no git deixa de ser um segredo de fato, porque o histórico é permanente e os controles de acesso do repositório não são a fronteira de segurança da chave. Esse é exatamente o cenário descrito na seção anterior — "o cenário clássico" de `git add .` seguido de `git rm` que não apaga nada do histórico.
+
+O mesmo anti-padrão persegue credenciais de aplicação em qualquer stack: uma chave de assinatura JWT hardcoded ou nunca rotacionada é, estruturalmente, o mesmo problema em miniatura — veja [[03 - JWT e a família de tokens|JWT e a família de tokens]] para como o ciclo de vida de uma chave de assinatura (geração, JWKS, rotação) se conecta ao que esta nota descreve para chaves de dados.
+
+### Caso 2 — Crypto shredding como resposta a um pedido de exclusão (LGPD/GDPR)
+
+Imagine um sistema SaaS multi-tenant com anos de operação: dados de um usuário estão espalhados em dezenas de tabelas relacionais, réplicas de leitura, backups incrementais dos últimos 3 anos e um data warehouse analítico. O usuário exerce o direito ao esquecimento (LGPD art. 18 / GDPR art. 17). Localizar e apagar fisicamente cada linha desse usuário em todos esses lugares é, na prática, inviável em prazo curto — e backups imutáveis não podem ser editados seletivamente.
+
+A saída é crypto shredding: se o sistema foi desenhado com uma DEK por usuário desde o início, o pedido de exclusão vira uma única operação — destruir a DEK daquele usuário no KMS. Os dados continuam fisicamente presentes em todas as tabelas e backups, mas tornam-se matematicamente irrecuperáveis: sem a DEK, o ciphertext é ruído. Do ponto de vista de compliance, dado irrecuperável cumpre a mesma obrigação legal que dado apagado.
+
+A armadilha está no pré-requisito: esse truque só funciona se a granularidade de DEK foi decidida **antes** de o sistema crescer. Um sistema que cifra tudo com uma única DEK global não tem como aplicar crypto shredding a um único usuário — destruir a chave apaga todo mundo. A decisão "uma DEK por quê" (por tenant, por usuário, por objeto) é arquitetural e tem consequência legal, não é um detalhe de implementação a resolver depois.
+
+Os dois casos ilustram a mesma lição de fundo desta nota por ângulos opostos: o Caso 1 mostra o custo de **não** ter uma fronteira de segurança entre chave e dado (a chave morava junto com o que protegia); o Caso 2 mostra o benefício de **ter** essa fronteira levada ao extremo — quando a chave é granular o suficiente, destruí-la vira uma operação segura e barata em vez de um risco.
+
+---
+
+## Armadilhas comuns
+
+> [!warning] Uma única DEK estática para todo o sistema
+> Usar **uma única DEK estática** para cifrar todos os dados é o anti-padrão mais comum ao adotar envelope encryption pela primeira vez — parece "mais simples" porque há menos chaves para gerenciar. Mas se essa DEK vazar, tudo vaza de uma vez, e crypto shredding seletivo (Caso 2 acima) se torna impossível. A hierarquia KEK/DEK só limita o blast radius quando a granularidade é por objeto, por registro ou por tenant.
+
+> [!warning] Kubernetes Secrets não são secretos por padrão
+> Por padrão, Kubernetes Secrets são encodados em base64 — não cifrados. Qualquer pessoa com acesso ao etcd ou permissão `get secret` vê o valor em texto claro; base64 não é criptografia, é apenas uma codificação reversível sem chave nenhuma. Para cifrar em repouso, é necessário habilitar **Encryption at Rest** no etcd com uma KEK — preferencialmente gerenciada por um KMS externo (AWS KMS, GCP KMS) via provider de cifração do Kubernetes.
+
+> [!warning] Tratar o KMS como se ele nunca pudesse falhar
+> Envelope encryption elimina o risco de expor a KEK, mas introduz uma dependência de disponibilidade: toda decifração exige uma chamada de rede ao KMS. Se a região do provedor cair, se as credenciais IAM expirarem, ou se houver throttling na API do KMS, a aplicação para de conseguir decifrar dados que fisicamente já tem em mãos — mesmo sem nenhum ataque em curso. Isso não é motivo para voltar a guardar chaves localmente; é motivo para desenhar retries, cache de curta duração de DEKs já decifradas em memória (nunca em disco) e um plano de disaster recovery que inclua explicitamente "o KMS ficou indisponível", não só "o banco de dados ficou indisponível".
+
+---
+
+> [!tip] Vídeo — AWS Envelope Encryption Explained, CloudWolf AWS
+> Caminha pelo fluxo exato descrito nos diagramas desta nota: o KMS gera a DEK em duas versões (plaintext + cifrada), a versão plaintext cifra o dado fora do KMS e é descartada, e a versão cifrada fica armazenada junto ao dado. Cita explicitamente o limite de 4 KB por chamada do KMS como a razão pela qual envelope encryption existe — chamar o KMS para cifrar volumes grandes de dados diretamente não é viável. Trecho (transcrição, EN): *"the plain text version is used to encrypt the data and then it's discarded. Whereas the encrypted version of the key is kept and it's stored along with the data (...) this will be done outside of KMS because remember the limitation of KMS is 4 kilobytes."*
+>
+> https://www.youtube.com/watch?v=OPCzAwY3Wj4
+
+---
+
+## O que vem a seguir
+
+Gestão de chaves resolve **quem pode acessar o segredo**. Mas um atacante que já comprometeu uma credencial válida — uma DEK decifrada, uma sessão autenticada, uma chave de API roubada mas ainda não expirada — não é barrado por HSM nenhum, porque ele está, tecnicamente, "autorizado". A pergunta que sobra é: o que impede esse atacante de se mover livremente pelo resto do sistema depois desse primeiro comprometimento? É exatamente aí que entra [[19 - Zero trust e defesa em profundidade]] — o princípio de nunca confiar implicitamente em nada dentro do perímetro, nem mesmo numa credencial que "deveria" ser legítima.
+
+Duas notas anteriores sustentam o que foi visto aqui: a fonte de aleatoriedade que torna uma chave gerada por CSPRNG imprevisível está em [[05 - Aleatoriedade e segredos]], e o uso concreto dessas chaves para cifrar dados em trânsito (TLS) e em repouso (disco, storage) está detalhado em [[14 - Criptografia em trânsito e em repouso]]. Esta nota também dá continuidade direta ao argumento de confiança recursiva aberto em [[17 - Confiança transitiva e Trusting Trust]]: se você não pode confiar cegamente no compilador, também não pode confiar cegamente em "onde a chave mora" sem uma âncora física verificável.
+
+Vale a pena carregar essa pergunta para a próxima nota: zero trust não substitui a gestão de chaves descrita aqui — ele parte do princípio de que, mesmo com KEK/DEK/HSM implementados corretamente, alguma credencial eventualmente vai vazar, e pergunta o que o sistema faz **depois** disso.
 
 > [!summary] Resumo em uma linha
 > O problema central da criptografia é a gestão de chaves, não os algoritmos: toda segurança colapsa para a segurança da chave, e a resposta industrial é uma hierarquia KEK/DEK ancorada em hardware (HSM/root of trust), com segredos nunca em código e rotação contínua para minimizar janela de exposição.
@@ -456,10 +489,12 @@ Frases que demonstram senioridade na entrevista:
 
 ---
 
-> [!info] Lastro
-> - **NIST SP 800-57 Part 1 Rev 5** — Recommendation for Key Management. Definição normativa dos estados do ciclo de vida e crypto periods: [nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf)
-> - **AWS KMS — Cryptography Essentials** — Documentação oficial de envelope encryption, DEK/KEK, GenerateDataKey: [docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html](https://docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html)
-> - **GCP Cloud KMS — Envelope Encryption** — Perspectiva alternativa da mesma hierarquia DEK/KEK: [cloud.google.com/kms/docs/envelope-encryption](https://cloud.google.com/kms/docs/envelope-encryption)
-> - **OWASP Secrets Management Cheat Sheet** — Anti-padrões e defesas: hardcoded secrets, pre-commit hooks, runtime injection: [cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html](https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html)
-> - **HashiCorp Vault — Dynamic Secrets** — Conceito e tutorial de credenciais on-demand com TTL: [developer.hashicorp.com/vault/tutorials/getting-started/getting-started-dynamic-secrets](https://developer.hashicorp.com/vault/tutorials/getting-started/getting-started-dynamic-secrets)
-> - **Uber Data Breach 2016** — Caso canônico de AWS keys hardcoded em repo GitHub privado; 57M de registros, US$148M em multas: [breaches.cloud/incidents/uber/](https://www.breaches.cloud/incidents/uber/)
+## Fontes
+
+- **NIST SP 800-57 Part 1 Rev 5** — Recommendation for Key Management. Definição normativa dos estados do ciclo de vida e crypto periods: [nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf)
+- **AWS KMS — Cryptography Essentials** — Documentação oficial de envelope encryption, DEK/KEK, GenerateDataKey: [docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html](https://docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html)
+- **GCP Cloud KMS — Envelope Encryption** — Perspectiva alternativa da mesma hierarquia DEK/KEK: [cloud.google.com/kms/docs/envelope-encryption](https://cloud.google.com/kms/docs/envelope-encryption)
+- **OWASP Secrets Management Cheat Sheet** — Anti-padrões e defesas: hardcoded secrets, pre-commit hooks, runtime injection: [cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html](https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html)
+- **HashiCorp Vault — Dynamic Secrets** — Conceito e tutorial de credenciais on-demand com TTL: [developer.hashicorp.com/vault/tutorials/getting-started/getting-started-dynamic-secrets](https://developer.hashicorp.com/vault/tutorials/getting-started/getting-started-dynamic-secrets)
+- **Uber Data Breach 2016** — Caso canônico de AWS keys hardcoded em repo GitHub privado; 57M de registros, US$148M em multas: [breaches.cloud/incidents/uber/](https://www.breaches.cloud/incidents/uber/)
+- **AWS Envelope Encryption Explained | Data Encryption Keys (DEK) & KMS** — CloudWolf AWS, YouTube, 4:38: [youtube.com/watch?v=OPCzAwY3Wj4](https://www.youtube.com/watch?v=OPCzAwY3Wj4)

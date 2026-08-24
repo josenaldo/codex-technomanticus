@@ -1,7 +1,7 @@
 ---
 title: "Criptografia pós-quântica"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-08-21
 type: concept
 fase: magus
 status: evergreen
@@ -189,6 +189,16 @@ Por que isso é hard? Sem o erro, **b** = **A**s é um sistema linear facilmente
 
 A variante **Module-LWE** (MLWE), usada no ML-KEM e ML-DSA, estrutura os vetores em módulos sobre anéis polinomiais, obtendo maior eficiência computacional mantendo a segurança.
 
+A explicação em prosa acima cobre o *quê* e o *por quê* do LWE; para quem quer ver o mecanismo algébrico completo — como a hardness do LWE vira, passo a passo, o esquema de encriptação de chave pública que depois é transformado em KEM — o vídeo abaixo faz exatamente essa ponte.
+
+> [!tip] Assista: Kyber (ML-KEM) [Post-Quantum Cryptography Explained]
+> **Canal:** Cryptography 101 | **Duração:** ~9 min | **Idioma:** EN
+>
+> Constrói o Kyber/ML-KEM de baixo para cima, partindo do LWE: primeiro apresenta a variante *short-secret LWE* e a função de arredondamento, depois monta o esquema de encriptação de chave pública Lindner-Peikert (a versão simplificada que captura a ideia central do Kyber), e só então mostra os dois passos que levam da versão simplificada ao Kyber real — mover de inteiros para polinômios (Module-LWE) e aplicar a transformada Fujisaki-Okamoto para virar um KEM. É o complemento natural da explicação em prosa acima: mostra o mecanismo algébrico por trás da frase "a hardness do LWE reduz a reticulados".
+> Trecho de destaque [0:25]: *"Kyber was standardized by NIST in August 2024 as FIPS 203. It's being deployed in TLS, SSH, and a range of other protocols as organizations start migrating away from classical key exchange."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=G-A1d6P_1yo)
+
 ### Famílias de algoritmos PQC
 
 | Família | Problema base | Vantagens | Desvantagens | Representantes |
@@ -199,12 +209,7 @@ A variante **Module-LWE** (MLWE), usada no ML-KEM e ML-DSA, estrutura os vetores
 | **Isogenias** | Caminhos entre curvas elípticas | Chaves muito pequenas | SIKE QUEBRADO em 2022 — cautela máxima | ~~SIKE~~ (eliminado) |
 | **Multivariáveis** | Sistemas quadráticos sobre corpo finito | Assinaturas pequenas | Rainbow QUEBRADO em 2022 | ~~Rainbow~~ (eliminado) |
 
-> [!warning] SIKE e Rainbow — cautela com algoritmos PQC novos
-> Em 2022, dois candidatos do processo NIST foram quebrados por ataques **clássicos** antes da finalização:
->
-> **SIKE** (Supersingular Isogeny Key Encapsulation): Castryck e Decru publicaram em julho de 2022 um ataque que recupera a chave secreta em horas numa CPU única — SIKEp434 em ~1h, SIKEp751 em ~21h. O ataque explora informação extra sobre pontos de torção (*torsion points*) que o SIDH expunha para eficiência. A ironia: a própria feature que tornava o SIDH prático criou a vulnerabilidade.
->
-> **Rainbow**: Ward Beullens demonstrou em 2022 um ataque de forgery prático. Ambos os casos ilustram que algoritmos PQC têm décadas de análise criptográfica a menos que RSA/ECC — o processo NIST foi projetado para filtrar, mas não é infalível.
+SIKE e Rainbow, dois candidatos do processo NIST, foram quebrados por ataques clássicos em 2022 — antes da finalização. Os detalhes desses dois casos e a lição que deixam para quem avalia algoritmos PQC novos estão em [[#Armadilhas comuns]].
 
 ```mermaid
 graph TD
@@ -383,6 +388,37 @@ graph LR
 | Software/firmware NSS: CNSA 2.0 completo | 2030 |
 | Transição completa NSS | 2031-2035 |
 
+A calibração honesta sobre o tamanho real da ameaça — o que exagerar e o que não minimizar — está detalhada em [[#Armadilhas comuns]].
+
+---
+
+## Casos práticos
+
+A teoria de Shor, Grover e LWE explica *por que* a assimétrica clássica morre e *por que* os reticulados resistem — mas o trabalho de um engenheiro sênior não para na teoria. Os três casos abaixo são decisões que já aconteceram (ou já estão acontecendo) em produção, e cada um ilustra uma faceta diferente do mesmo problema: como agir sob incerteza quando o algoritmo "certo" ainda tem menos de uma década de escrutínio.
+
+**Caso 1 — SIKE: o candidato que caiu num laptop, não num computador quântico.** Em julho de 2022, o SIKE (Supersingular Isogeny Key Encapsulation) era um dos finalistas do processo NIST — um esquema atrativo justamente por gerar chaves muito menores que os concorrentes baseados em reticulados. Castryck e Decru publicaram um ataque puramente **clássico**, rodando numa CPU única: SIKEp434 caiu em cerca de 1 hora, SIKEp751 em cerca de 21 horas. O ataque não explorou nenhuma fraqueza exótica — explorou justamente a informação extra sobre pontos de torção (*torsion points*) que o SIDH expunha para ganhar eficiência. A mesma característica que tornava o esquema rápido e compacto era a porta de entrada do ataque. Ward Beullens quebrou o Rainbow (assinaturas multivariáveis) por um caminho diferente, mas com a mesma lição: ambos eram finalistas do NIST, com anos de escrutínio público, e ainda assim caíram para criptoanálise clássica antes de virarem padrão. Para um engenheiro decidindo qual biblioteca PQC adotar hoje, a lição prática é dupla: preferir os algoritmos que **de fato** viraram FIPS (ML-KEM, ML-DSA, SLH-DSA) em vez de candidatos "quase padronizados", e nunca hardcodar um único algoritmo PQC como fundação exclusiva de um sistema de longa vida — é exatamente o argumento a favor de esquemas híbridos (ver "Migração — cripto-agilidade e esquemas híbridos" acima).
+
+**Caso 2 — Habilitar PQC híbrido num TLS terminator de produção.** Imagine o cenário de um engenheiro responsável pelo edge de uma aplicação com tráfego global, decidindo se e quando habilitar troca de chave híbrida (X25519 + ML-KEM-768) no TLS. Cloudflare colocou X25519+ML-KEM-768 em disponibilidade geral desde 2024 para todos os seus domínios — cerca de 6 milhões de domínios passaram a negociar PQC automaticamente sempre que o cliente suporta. Chrome habilitou ML-KEM por padrão a partir da versão 131 (2024) e o Firefox a partir da versão 128 — ambos entram na negociação de cipher suite do TLS 1.3 sem quebrar compatibilidade com clientes mais antigos, porque o handshake simplesmente negocia o conjunto de key shares que ambos os lados suportam. Na prática, o trade-off que o engenheiro avalia não é "PQC sim ou não" — é o aumento do ClientHello (o ciphertext do ML-KEM-768 soma ~1088 bytes contra ~32 bytes do ECDH-256 puro), que pode importar em redes com MTU restrito ou em handshakes muito frequentes, contra o risco de manter só ECDH num sistema com tráfego de vida útil longa. Signal já tinha feito essa escolha antes: migrou para PQXDH (X25519 + Kyber) em setembro de 2023, tornando-se o primeiro mensageiro de larga escala com PQC em produção — decisão coerente com o modelo de ameaça de mensageria (conversas privadas com expectativa de sigilo por décadas).
+
+**Caso 3 — Descobrir onde RSA e ECDSA estão escondidos antes de migrar.** Antes de qualquer um dos dois cenários acima ser sequer possível, uma organização precisa responder uma pergunta aparentemente banal e na prática difícil: onde, exatamente, o sistema usa criptografia assimétrica hoje? Certificados TLS são o caso óbvio, mas RSA e ECDSA também aparecem em lugares menos visíveis — assinatura de firmware, verificação de pacotes de software, tokens de autenticação embarcados em protocolos internos, chaves SSH de deploy, e bibliotecas de terceiros que hardcodaram uma curva elíptica específica sem expor isso na API pública. É exatamente o problema que motivou o surgimento de ferramentas de **CBOM** (*Cryptography Bill of Materials* — análogo criptográfico do SBOM de dependências de software): mapear automaticamente onde cada primitiva está em uso no código e na configuração, para que a migração não dependa de um engenheiro lembrando de cada lugar. O NIST IR 8547 (rascunho) orienta esse inventário como pré-requisito da migração, não como etapa opcional — sem ele, a organização não sabe nem o tamanho do trabalho que tem pela frente, e a migração vira uma sequência de descobertas em produção em vez de um plano executável.
+
+Os três casos formam uma sequência natural: primeiro descobrir onde a criptografia assimétrica está (Caso 3), depois decidir com que cautela adotar cada substituto novo (Caso 1), e só então executar a migração em produção de forma incremental e híbrida (Caso 2). Pular a ordem — migrar sem inventário, ou confiar cegamente num algoritmo recém-padronizado sem hybrid — é o padrão comum aos erros descritos na próxima seção.
+
+Nenhum dos três casos exige que a organização já tenha um CRQC batendo à porta para justificar o investimento — o próprio Teorema de Mosca, discutido no início desta nota, é o argumento formal para agir antes que a ameaça esteja provada.
+
+---
+
+## Armadilhas comuns
+
+As três armadilhas abaixo cobrem os erros mais comuns de quem chega agora ao tema: confiar demais num algoritmo novo sem escrutínio suficiente, errar a calibração de urgência (para os dois lados), e tratar migração criptográfica como se fosse troca de dependência de uma linha só.
+
+> [!warning] SIKE e Rainbow — cautela com algoritmos PQC novos
+> Em 2022, dois candidatos do processo NIST foram quebrados por ataques **clássicos** antes da finalização:
+>
+> **SIKE** (Supersingular Isogeny Key Encapsulation): Castryck e Decru publicaram em julho de 2022 um ataque que recupera a chave secreta em horas numa CPU única — SIKEp434 em ~1h, SIKEp751 em ~21h. O ataque explora informação extra sobre pontos de torção (*torsion points*) que o SIDH expunha para eficiência. A ironia: a própria feature que tornava o SIDH prático criou a vulnerabilidade.
+>
+> **Rainbow**: Ward Beullens demonstrou em 2022 um ataque de forgery prático. Ambos os casos ilustram que algoritmos PQC têm décadas de análise criptográfica a menos que RSA/ECC — o processo NIST foi projetado para filtrar, mas não é infalível.
+
 > [!warning] Postura honesta sobre a ameaça
 > **Não exagere**: não existe CRQC hoje. Nenhum ator quebrou RSA em produção com computador quântico. Afirmar "RSA está morto" em 2026 é impreciso.
 >
@@ -390,14 +426,24 @@ graph LR
 >
 > A calibração correta: **urgência proporcional à vida útil do dado e ao custo de migração**. Infraestrutura crítica, dados de saúde, comunicações governamentais — migrar agora. Cache de sessão de web app de 5 minutos — baixa prioridade imediata.
 
+> [!warning] Tratar PQC como troca de algoritmo, não troca de sistema
+> O erro mais comum de quem chega agora à migração é imaginar que trocar RSA/ECDSA por ML-KEM/ML-DSA é só apontar para uma biblioteca diferente. Na prática, cada camada do sistema tem uma restrição própria: HSMs que hoje executam ECDSA muitas vezes não suportam ML-DSA sem firmware novo (ou substituição de hardware); uma CA que assina com ECDSA-256 precisa migrar para ML-DSA, o que invalida a cadeia de confiança inteira e obriga a re-emissão em cascata de raízes, intermediárias e certificados folha; e código que hardcodou o OID da curva elíptica ou o tamanho de chave RSA — o oposto de cripto-agilidade — quebra em silêncio quando o algoritmo muda por baixo. Tratar a migração como "troca de biblioteca" subestima o trabalho real: ela é um projeto de infraestrutura de PKI, não um patch.
+>
+> É o mesmo erro, em escala reduzida, que o Caso 3 acima descreve: sem inventário de onde a cripto vive, a organização descobre essas restrições uma a uma, em produção, em vez de num plano.
+
 ---
 
-## Conexões
+## O que vem a seguir
+
+Esta nota fechou o argumento de por que a criptografia assimétrica clássica tem prazo de validade e como a engenharia responde a isso — reticulados, esquemas híbridos, cripto-agilidade. Mas PQC é só um capítulo dentro de uma pergunta maior: o que significa, na prática do dia a dia, ser o engenheiro responsável pela segurança de um sistema — não o especialista que escreve o algoritmo, mas quem decide quando migrar, o que priorizar, e como comunicar risco para quem não é criptógrafo. [[22 - Capstone - segurança como engenheiro]] fecha o galho de Segurança amarrando esse fio: como as notas anteriores (ameaças, criptografia, autenticação, privacidade, e agora PQC) se combinam na cabeça de quem precisa tomar decisões de segurança sob incerteza, prazo e orçamento reais.
+
+Vale notar que a migração PQC não é um problema isolado de criptografia — ela atravessa PKI, gestão de identidade e a camada de transporte que a maioria dos sistemas trata como invisível. Quando o Caso 3 acima fala em inventariar onde RSA/ECDSA estão escondidos, é o mesmo tipo de exercício que aparece na gestão de certificados e chaves em qualquer stack de autenticação — o capstone é o lugar onde essa lente de "onde a cripto vive no sistema" se conecta ao resto do galho de Segurança de forma prática, não só teórica.
 
 - Anterior: [[20 - Privacidade, anonimato e metadados]]
 - Próxima: [[22 - Capstone - segurança como engenheiro]]
 - Fundação vulnerável: [[08 - Criptografia assimétrica]] — RSA, ECDH, ECDSA; tudo que Shor quebra via fatoração e log discreto
 - O que sobrevive: [[07 - Criptografia simétrica]] — AES-256 e por que o speedup quadrático de Grover não é catastrófico
+- Onde o handshake híbrido acontece na prática: [[05 - TLS e HTTPS]] — o protocolo que carrega X25519+ML-KEM-768 no ClientHello
 
 ---
 
@@ -441,10 +487,14 @@ Criptografia pós-quântica sinaliza maturidade em segurança — candidatos que
 
 ---
 
-> [!info] Lastro
-> 1. **Shor, P.** (1994). "Algorithms for Quantum Computation: Discrete Logarithms and Factoring." *FOCS 1994*. [https://arxiv.org/abs/quant-ph/9508027](https://arxiv.org/abs/quant-ph/9508027)
-> 2. **Grover, L.** (1996). "A Fast Quantum Mechanical Algorithm for Database Search." *STOC 1996*. [https://arxiv.org/abs/quant-ph/9605043](https://arxiv.org/abs/quant-ph/9605043)
-> 3. **NIST** (2024). "NIST Releases First 3 Finalized Post-Quantum Encryption Standards." FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), FIPS 205 (SLH-DSA). [https://www.nist.gov/news-events/news/2024/08/nist-releases-first-3-finalized-post-quantum-encryption-standards](https://www.nist.gov/news-events/news/2024/08/nist-releases-first-3-finalized-post-quantum-encryption-standards)
-> 4. **Castryck, W. & Decru, T.** (2022). "An Efficient Key Recovery Attack on SIDH." *IACR ePrint 2022/975*. [https://eprint.iacr.org/2022/975](https://eprint.iacr.org/2022/975)
-> 5. **Cloudflare** (2024). "The state of the post-quantum Internet." Relatório de adoção de ML-KEM em TLS. [https://blog.cloudflare.com/pq-2024/](https://blog.cloudflare.com/pq-2024/)
-> 6. **NSA** (2022, rev. dez/2024). "Commercial National Security Algorithm Suite 2.0 (CNSA 2.0) v2.1." [https://media.defense.gov/2025/May/30/2003728741/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS.PDF](https://media.defense.gov/2025/May/30/2003728741/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS.PDF)
+## Fontes
+
+Papers originais dos dois algoritmos que motivam a migração, o anúncio oficial dos padrões NIST, o paper do ataque que quebrou o SIKE, e os dois relatórios de adoção em produção citados ao longo da nota:
+
+1. **Shor, P.** (1994). "Algorithms for Quantum Computation: Discrete Logarithms and Factoring." *FOCS 1994*. [arxiv.org/abs/quant-ph/9508027](https://arxiv.org/abs/quant-ph/9508027)
+2. **Grover, L.** (1996). "A Fast Quantum Mechanical Algorithm for Database Search." *STOC 1996*. [arxiv.org/abs/quant-ph/9605043](https://arxiv.org/abs/quant-ph/9605043)
+3. **NIST** (2024). "NIST Releases First 3 Finalized Post-Quantum Encryption Standards." FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), FIPS 205 (SLH-DSA). [nist.gov/news-events/news/2024/08/nist-releases-first-3-finalized-post-quantum-encryption-standards](https://www.nist.gov/news-events/news/2024/08/nist-releases-first-3-finalized-post-quantum-encryption-standards)
+4. **Castryck, W. & Decru, T.** (2022). "An Efficient Key Recovery Attack on SIDH." *IACR ePrint 2022/975*. [eprint.iacr.org/2022/975](https://eprint.iacr.org/2022/975)
+5. **Cloudflare** (2024). "The state of the post-quantum Internet." Relatório de adoção de ML-KEM em TLS. [blog.cloudflare.com/pq-2024](https://blog.cloudflare.com/pq-2024/)
+6. **NSA** (2022, rev. dez/2024). "Commercial National Security Algorithm Suite 2.0 (CNSA 2.0) v2.1." [media.defense.gov — CSA CNSA 2.0 Algorithms PDF](https://media.defense.gov/2025/May/30/2003728741/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS.PDF)
+7. **Cryptography 101** (canal, 2026). "Kyber (ML-KEM) [Post-Quantum Cryptography Explained]." [youtube.com/watch?v=G-A1d6P_1yo](https://www.youtube.com/watch?v=G-A1d6P_1yo)

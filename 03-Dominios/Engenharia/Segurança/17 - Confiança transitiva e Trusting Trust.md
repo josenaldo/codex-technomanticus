@@ -110,9 +110,6 @@ flowchart TD
 
 E ele vai além, de forma deliberada: você não criou o compilador do zero. Não escreveu o assembler. Não projetou o Sistema Operacional. Não definiu o microcódigo. Não fabricou o chip. A cada camada que você não controla inteiramente, você **delega confiança** — transitivamente, recursivamente, sem fim.
 
-> [!warning] O ponto filosófico central
-> Thompson não estava descrevendo um ataque difícil de executar que você pode mitigar com boas práticas. Estava descrevendo uma **propriedade estrutural** de qualquer sistema computacional construído em camadas sobre outros sistemas. Confiança se propaga de baixo para cima; a camada superior não pode verificar as inferiores sem depender das próprias camadas suspeitas. Isso não tem solução completa — tem gestão.
-
 ---
 
 ## Confiança transitiva — o grafo que você não vê
@@ -213,6 +210,12 @@ flowchart TD
 > [!info] Leitura do diagrama
 > Cada nó do pipeline é um ponto de injeção possível. O atacante escolhe o ponto de menor resistência — que raramente é o código principal do projeto, monitorado e revisado por muitos olhos. Frequentemente é um plugin de CI obscuro, uma dependência transitiva com um único mantenedor, ou a conta de quem tem permissão de publicar no registry.
 
+---
+
+## Casos práticos
+
+Os quatro casos abaixo são incidentes reais, com análise forense pública, que mostram o argumento de Thompson operando em produção — cada um explorando um elo diferente do pipeline acima.
+
 ### Caso 1 — SolarWinds (2020): o build server comprometido
 
 Em 2020, agentes do SVR russo (GRU Unidade 29155 / Cozy Bear) comprometeram o processo de build da SolarWinds. O vetor exato de entrada inicial ainda é disputado, mas o resultado é documentado: o servidor que compilava o Orion (software de monitoramento de rede) foi modificado para injetar o malware **SUNBURST** no DLL `SolarWinds.Orion.Core.BusinessLayer.dll` durante o processo de compilação.
@@ -238,6 +241,11 @@ Ao investigar, descobriu um backdoor sofisticado inserido por um contribuidor id
 O backdoor modificava o `sshd` via injeção em `liblzma` (carregada pelo systemd, que é linkado ao libsystemd, que é linkado ao liblzma em certas distribuições). O alvo era sistemas Debian sid e Fedora Rawhide/40 — versões de teste que receberam a versão comprometida antes de chegar ao estável.
 
 **A lição Thompson-ana:** confiança em software open-source não é garantida pelo fato de o código ser público. Ela é conquistada por reputação acumulada — que pode ser fabricada deliberadamente ao longo de anos.
+
+> [!tip] Vídeo — a reconstrução completa do caso
+> Thomas Roccia, pesquisador de segurança da Microsoft que trabalhou na investigação ao lado de Andres Freund, reconstrói a operação de dois anos em "[The XZ Backdoor Story: The Undercover Op That Set the Internet on Fire](https://www.youtube.com/watch?v=hwuIb-Vv2Ew)" (DEF CON 32, ago. 2024, 41min). Cobre como o backdoor foi encontrado, a linha do tempo da engenharia social contra Lasse Collin, os detalhes técnicos da injeção em `liblzma` e o que o caso muda na definição de "atacante sofisticado".
+>
+> "today I want to talk about (...) the XZ Backdoor story, the undercover operation that set the internet on fire — and I'm pretty sure that by the end of this presentation your definition of what a sophisticated attacker is will be changed."
 
 ### Caso 3 — event-stream (npm, 2018): a transferência de propriedade maliciosa
 
@@ -374,9 +382,6 @@ flowchart TD
 > [!info] Leitura do diagrama
 > O método requer duas compilações independentes do mesmo fonte, seguidas de uma segunda rodada. A chave é o "diverse": os dois compiladores base não devem compartilhar implementação (e idealmente não devem compartilhar histórico de compilação). Se ambos estiverem infectados com o mesmo ataque, o DDC falha — daí a importância de usar compiladores com origens genuinamente independentes.
 
-> [!warning] Limitação importante do DDC
-> DDC detecta ataques do tipo Trusting Trust no compilador, mas não elimina o problema: (1) exige que o compilador alternativo seja confiável; (2) exige que os binários finais sejam determinísticos (builds reprodutíveis); (3) não cobre outros pontos da cadeia (linker, assembler, SO). É uma verificação parcial — mas é a melhor disponível para esse problema específico.
-
 ### Builds reprodutíveis — a pré-condição técnica
 
 Para que o DDC funcione (e para supply chain security em geral), é necessário que as builds sejam **determinísticas**: dado o mesmo código-fonte e o mesmo ambiente definido, o binário gerado deve ser bit-a-bit idêntico em qualquer máquina que execute o processo.
@@ -394,7 +399,7 @@ O projeto **Sigstore** (Linux Foundation, com contribuições de Google, Red Hat
 A resposta: chaves **efêmeras** ligadas à identidade OIDC.
 
 - **cosign:** ferramenta para assinar e verificar imagens de container e outros artefatos.
-- **fulcio:** CA que emite certificados de curta duração (minutos) ligados à identidade OIDC (conta GitHub, Google, Microsoft). Você não guarda uma chave — ela expira quase imediatamente.
+- **fulcio:** CA que emite certificados de curta duração (minutos) ligados à identidade [[03 - OpenID Connect — identidade sobre OAuth|OIDC]] (conta GitHub, Google, Microsoft). Você não guarda uma chave — ela expira quase imediatamente.
 - **rekor:** log de transparência **imutável** (append-only, Merkle tree) onde todas as assinaturas são registradas publicamente. Mesmo após a chave expirar, a assinatura e o binding identidade-artefato ficam no log para sempre.
 
 A propriedade importante: qualquer tentativa de publicar um artefato modificado sem re-assinar aparece como verificação falha. Qualquer assinatura feita com credencial roubada deixa rastro no log público, auditável retrospectivamente.
@@ -436,13 +441,29 @@ O ponto não é paranoia — é **explicitação e gestão das âncoras de confi
 
 ---
 
-## Conexões
+## Armadilhas comuns
 
-- **Anterior:** [[16 - Classes de vulnerabilidade]]
-- **Próxima:** [[18 - Gestão de chaves e segredos]]
-- **Cross-links:**
-  - [[01 - O que é segurança conceitual]] — Trusted Computing Base e superfície de ataque; a TCB é a formalização do que Thompson chama de "tudo que você não criou"
-  - [[04 - Princípios de design seguro]] — _economy of mechanism_ (TCB mínima) e _open design_ (segurança não pode depender do sigilo do compilador) aplicam-se diretamente ao problema de Trusting Trust
+> [!warning] Achar que o problema tem solução completa
+> Thompson não estava descrevendo um ataque difícil de executar que você pode mitigar com boas práticas. Estava descrevendo uma **propriedade estrutural** de qualquer sistema computacional construído em camadas sobre outros sistemas. Confiança se propaga de baixo para cima; a camada superior não pode verificar as inferiores sem depender das próprias camadas suspeitas. Isso não tem solução completa — tem gestão.
+
+> [!warning] Achar que Diverse Double-Compiling resolve o problema por inteiro
+> DDC detecta ataques do tipo Trusting Trust no compilador, mas não elimina o problema: (1) exige que o compilador alternativo seja confiável; (2) exige que os binários finais sejam determinísticos (builds reprodutíveis); (3) não cobre outros pontos da cadeia (linker, assembler, SO). É uma verificação parcial — mas é a melhor disponível para esse problema específico.
+
+> [!warning] Confundir SBOM com detecção
+> Um SBOM diz **o que** está no seu sistema — não diz se algum desses componentes é malicioso. Quando o CVE-2024-3094 (xz) foi publicado, um SBOM não teria acusado nada de errado antes do anúncio: ele listaria `xz 5.6.1` como um pacote legítimo, com uma versão que parecia normal. O que o SBOM permite é a **resposta rápida depois** que uma vulnerabilidade é divulgada — grep no inventário em vez de auditoria manual de cada build. Tratar SBOM como controle preventivo, e não como pré-condição para resposta a incidente, é o mesmo erro de categoria que tratar assinatura de artefato como prova de integridade de build (ver o caso SolarWinds acima).
+
+---
+
+## O que vem a seguir
+
+Confiança transitiva explica **por que** você não pode verificar tudo o que roda no seu sistema — mas não explica o que fazer com os segredos que esse sistema efetivamente precisa guardar (chaves de assinatura, credenciais de CI/CD, tokens OIDC efêmeros do Sigstore). Essa é a lacuna que [[18 - Gestão de chaves e segredos]] fecha: se você aceita que precisa confiar em alguma âncora, a pergunta seguinte é como proteger essa âncora — rotação, least privilege, HSMs, blast radius quando a chave vaza. Sem essa peça, SBOM e builds reprodutíveis viram teatro: você sabe exatamente o que está confiando, mas continua guardando a chave-mestra num `.env` no repositório.
+
+Antes de chegar aqui, [[16 - Classes de vulnerabilidade]] catalogou os defeitos que um atacante explora dentro de um componente isolado. Este capítulo deu um passo atrás: mesmo um componente sem nenhuma vulnerabilidade de implementação pode ser malicioso por herança, porque você nunca auditou tudo que ele carrega consigo.
+
+**Cross-links:**
+
+- [[01 - O que é segurança conceitual]] — Trusted Computing Base e superfície de ataque; a TCB é a formalização do que Thompson chama de "tudo que você não criou"
+- [[04 - Princípios de design seguro]] — _economy of mechanism_ (TCB mínima) e _open design_ (segurança não pode depender do sigilo do compilador) aplicam-se diretamente ao problema de Trusting Trust
 
 > [!summary] Resumo em uma linha
 > O argumento de Thompson prova que confiança em software é transitiva, potencialmente circular e não verificável só pelo código-fonte; a resposta moderna — SBOM, builds reprodutíveis, Sigstore, DDC — não elimina esse problema estrutural, mas o torna explícito, auditável e gerenciável.
@@ -487,10 +508,12 @@ Frases em inglês para articular o conceito em entrevista:
 
 ---
 
-> [!info] Lastro
-> - Thompson, Ken. "Reflections on Trusting Trust." _Communications of the ACM_, vol. 27, no. 8, ago. 1984, pp. 761–763. [https://dl.acm.org/doi/10.1145/358198.358210](https://dl.acm.org/doi/10.1145/358198.358210) — texto completo também em [https://www.cs.cmu.edu/~rdriley/487/papers/Thompson_1984_ReflectionsonTrustingTrust.pdf](https://www.cs.cmu.edu/~rdriley/487/papers/Thompson_1984_ReflectionsonTrustingTrust.pdf)
-> - Wheeler, David A. "Countering Trusting Trust through Diverse Double-Compiling." Versão revisada, 2009. [https://dwheeler.com/trusting-trust/](https://dwheeler.com/trusting-trust/) — tese original George Mason University, 2005.
-> - Mandiant / FireEye. "Highly Evasive Attacker Leverages SolarWinds Supply Chain to Compromise Multiple Global Victims With SUNBURST Backdoor." 13 dez. 2020. [https://www.mandiant.com/resources/blog/evasive-attacker-leverages-solarwinds-supply-chain-compromises-with-sunburst-backdoor](https://www.mandiant.com/resources/blog/evasive-attacker-leverages-solarwinds-supply-chain-compromises-with-sunburst-backdoor)
-> - Freund, Andres. "backdoor in upstream xz/liblzma leading to ssh server compromise." OSS-Security, 29 mar. 2024. [https://www.openwall.com/lists/oss-security/2024/03/29/4](https://www.openwall.com/lists/oss-security/2024/03/29/4) — CVE-2024-3094; análise técnica detalhada em [https://boehs.org/node/everything-i-know-about-the-xz-backdoor](https://boehs.org/node/everything-i-know-about-the-xz-backdoor)
-> - Reproducible Builds Project. [https://reproducible-builds.org](https://reproducible-builds.org) — status de reprodutibilidade por distribuição e pacote.
-> - Sigstore Project (Linux Foundation). [https://www.sigstore.dev](https://www.sigstore.dev) — documentação de cosign, fulcio e rekor.
+## Fontes
+
+- Thompson, Ken. "Reflections on Trusting Trust." _Communications of the ACM_, vol. 27, no. 8, ago. 1984, pp. 761–763. [dl.acm.org/doi/10.1145/358198.358210](https://dl.acm.org/doi/10.1145/358198.358210) — texto completo também em [cs.cmu.edu/~rdriley](https://www.cs.cmu.edu/~rdriley/487/papers/Thompson_1984_ReflectionsonTrustingTrust.pdf)
+- Wheeler, David A. "Countering Trusting Trust through Diverse Double-Compiling." Versão revisada, 2009. [dwheeler.com/trusting-trust](https://dwheeler.com/trusting-trust/) — tese original George Mason University, 2005.
+- Mandiant / FireEye. "Highly Evasive Attacker Leverages SolarWinds Supply Chain to Compromise Multiple Global Victims With SUNBURST Backdoor." 13 dez. 2020. [mandiant.com/resources/blog/evasive-attacker-leverages-solarwinds-supply-chain-compromises-with-sunburst-backdoor](https://www.mandiant.com/resources/blog/evasive-attacker-leverages-solarwinds-supply-chain-compromises-with-sunburst-backdoor)
+- Freund, Andres. "backdoor in upstream xz/liblzma leading to ssh server compromise." OSS-Security, 29 mar. 2024. [openwall.com/lists/oss-security/2024/03/29/4](https://www.openwall.com/lists/oss-security/2024/03/29/4) — CVE-2024-3094; análise técnica detalhada em [boehs.org/node/everything-i-know-about-the-xz-backdoor](https://boehs.org/node/everything-i-know-about-the-xz-backdoor)
+- Reproducible Builds Project. [reproducible-builds.org](https://reproducible-builds.org) — status de reprodutibilidade por distribuição e pacote.
+- Sigstore Project (Linux Foundation). [sigstore.dev](https://www.sigstore.dev) — documentação de cosign, fulcio e rekor.
+- Roccia, Thomas. "The XZ Backdoor Story: The Undercover Op That Set the Internet on Fire." DEF CON 32, ago. 2024. [youtube.com/watch?v=hwuIb-Vv2Ew](https://www.youtube.com/watch?v=hwuIb-Vv2Ew) — reconstrução técnica e cronológica completa do Caso 2, pelo pesquisador da Microsoft que investigou o backdoor junto com Andres Freund.

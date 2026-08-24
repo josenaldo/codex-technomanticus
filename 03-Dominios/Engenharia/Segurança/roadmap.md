@@ -40,10 +40,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 22 |
-| ⬜ pendente | 7 |
+| ⬜ pendente | 0 |
 | ➖ não precisa | 0 |
-| ✅ feita | 15 |
-| % concluído | 68% |
+| ✅ feita | 22 |
+| % concluído | 100% |
 
 > Tabela preenchida ao final do diagnóstico (Fase 3).
 
@@ -284,7 +284,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   **Ajuste do coordenador:** a citação era literal mas começava em "called…" e carregava o gaguejo "to to" da legenda automática. Aparada para começar no início da frase, sem perder a literalidade, e o link solto virou link markdown no padrão do galho.
 
 #### 16 - Classes de vulnerabilidade   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-20)
 - **Estado:** 470 linhas · fase: magus · status: evergreen · 6 Mermaid · 2 `[!warning]` · 0 wikilink cross-galho
 - **Núcleo/gaps:** E4, E5, E8, L1, L2, M1
 - **Score:** 5/11 (P1 N/A — nota conceitual)
@@ -295,10 +295,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Acrescentar ≥1 wikilink cross-galho (Auth e Identidade, Redes/TLS, Matemática ou SO, conforme o assunto da nota) → ativa L1
   - Converter o callout `[!info] Lastro` em `## Fontes` com URLs clicáveis → ativa L2
   - Buscar e embutir vídeo/podcast verificado por transcrição → ativa M1
-- **Resultado:** —
+- **Resultado:** `## Casos práticos` com 2 cenários (exploração de SQLi, com o sequence diagram que estava embutido em "Família Injection" · HeartBleed, movido da antiga seção standalone "Estudo de caso") · `## Conexões` virou `## O que vem a seguir` com ponte para a 17, que sai da falha isolada e ataca a confiança na cadeia · `## Armadilhas comuns` com 4 `[!warning]`: os 2 existentes movidos mais dois novos (blocklist de IP vs. allowlist em SSRF · confusão CWE×CVE) · L1 via `[[05 - TLS e HTTPS]]` (Ciência/Redes) ancorado no HeartBleed · `[!info] Lastro` virou `## Fontes` com as 6 URLs · M1 **OWASP Top 10 Web Application Security Risks** (Telusko, ~15 min), citação literal em [1:49] verificada por transcrição. 500 linhas, 6 Mermaid válidos.
 
 #### 17 - Confiança transitiva e Trusting Trust   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-20)
 - **Estado:** 496 linhas · fase: magus · status: evergreen · 6 Mermaid · 2 `[!warning]` · 0 wikilink cross-galho
 - **Núcleo/gaps:** E4, E5, E8, L1, L2, M1
 - **Score:** 5/11 (P1 N/A — nota conceitual)
@@ -309,10 +309,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Acrescentar ≥1 wikilink cross-galho (Auth e Identidade, Redes/TLS, Matemática ou SO, conforme o assunto da nota) → ativa L1
   - Converter o callout `[!info] Lastro` em `## Fontes` com URLs clicáveis → ativa L2
   - Buscar e embutir vídeo/podcast verificado por transcrição → ativa M1
-- **Resultado:** —
+- **Resultado:** `## Casos práticos` com os 4 casos históricos (SolarWinds · xz/liblzma · event-stream · Codecov) promovidos de "Supply chain attacks" para seção própria · `## Conexões` virou `## O que vem a seguir` com ponte para a 18 (SBOM e reprodutibilidade sem proteção de chave é teatro) · `## Armadilhas comuns` com 3 `[!warning]`, os 2 existentes movidos mais um novo ("confundir SBOM com detecção") · L1 via `[[03 - OpenID Connect — identidade sobre OAuth|OIDC]]` no trecho de Sigstore/fulcio · `[!info] Lastro` virou `## Fontes` · M1 **The XZ Backdoor Story** (Thomas Roccia, DEF CON 32, 41 min) — casa direto com o Caso 2 já na nota, citação literal verificada por transcrição. 519 linhas, 6 Mermaid válidos.
 
 #### 18 - Gestão de chaves e segredos   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-20)
 - **Estado:** 465 linhas · fase: magus · status: evergreen · 6 Mermaid · 2 `[!warning]` · 0 wikilink cross-galho
 - **Núcleo/gaps:** E4, E5, E8, L1, L2, M1
 - **Score:** 5/11 (P1 N/A — nota conceitual)
@@ -323,10 +323,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Acrescentar ≥1 wikilink cross-galho (Auth e Identidade, Redes/TLS, Matemática ou SO, conforme o assunto da nota) → ativa L1
   - Converter o callout `[!info] Lastro` em `## Fontes` com URLs clicáveis → ativa L2
   - Buscar e embutir vídeo/podcast verificado por transcrição → ativa M1
-- **Resultado:** —
+- **Resultado:** `## Casos práticos` com 2 cenários (Uber 2016, movido de "Segredos em código e CI", que agora só referencia com ponte · crypto shredding para LGPD/GDPR, promovido da lista em "Rotação") · `## Conexões` virou `## O que vem a seguir` com ponte para a 19 (por que zero trust importa depois de gestão de chaves), 4 wikilinks preservados · `## Armadilhas comuns` com 3 `[!warning]`: os 2 existentes movidos (DEK estática única · K8s Secrets em base64) mais um novo (KMS como ponto único de falha de disponibilidade) · L1 via `[[03 - JWT e a família de tokens]]`, ligando chaves de assinatura JWT ao mesmo anti-padrão do Caso 1 · `[!info] Lastro` virou `## Fontes` · M1 **AWS Envelope Encryption Explained** (CloudWolf AWS, 4:38), citação literal verificada por transcrição. 500 linhas, 6 Mermaid válidos.
 
 #### 19 - Zero trust e defesa em profundidade   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-21)
 - **Estado:** 465 linhas · fase: magus · status: evergreen · 5 Mermaid · 1 `[!warning]` · 0 wikilink cross-galho
 - **Núcleo/gaps:** E4, E5, E8, L1, L2, M1
 - **Score:** 5/11 (P1 N/A — nota conceitual)
@@ -337,10 +337,11 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Acrescentar ≥1 wikilink cross-galho (Auth e Identidade, Redes/TLS, Matemática ou SO, conforme o assunto da nota) → ativa L1
   - Converter o callout `[!info] Lastro` em `## Fontes` com URLs clicáveis → ativa L2
   - Buscar e embutir vídeo/podcast verificado por transcrição → ativa M1
-- **Resultado:** —
+- **Resultado:** `## Casos práticos` com 2 cenários (Target 2013, movido de "O modelo de perímetro" · BeyondCorp, movido de "Zero Trust"), com referência cruzada no lugar dos originais · `## Conexões` virou `## O que vem a seguir` com ponte para a 20 (identidade/autorização resolvidas vs. o que ainda vaza por metadado) · `## Armadilhas comuns` com 4 `[!warning]`: o existente movido ("zero trust não é produto") mais 3 convertidos da prosa da antiga "Nuances e armadilhas" (tensão com usabilidade · não é linha de chegada · identidade como novo perímetro) · L1 via `[[04 - Grants de máquina e fluxos especiais]]` no parágrafo de Workload Identity · `[!info] Lastro` virou `## Fontes` · M1 **Zero Trust and Defense in Depth Models** (Bare Metal Cyber, ep. 142, ~15 min), transcrição verificada. 468 linhas, 5 Mermaid válidos.
+  **Pendência herdada:** ficou 32 linhas abaixo do piso Magus de 500 (a nota entrou com 465 e o plano não previa expansão de corpo). Única nota da onda que não bateu o piso — resolver num passe futuro.
 
 #### 20 - Privacidade, anonimato e metadados   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-21)
 - **Estado:** 462 linhas · fase: magus · status: evergreen · 6 Mermaid · 3 `[!warning]` · 1 wikilink cross-galho
 - **Núcleo/gaps:** E4, E5, L2, M1
 - **Score:** 7/11 (P1 N/A — nota conceitual)
@@ -349,10 +350,11 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Converter `## Conexões` em `## O que vem a seguir` com ponte narrativa (por que a próxima nota importa), preservando os wikilinks → ativa E5
   - Converter o callout `[!info] Lastro` em `## Fontes` com URLs clicáveis → ativa L2
   - Buscar e embutir vídeo/podcast verificado por transcrição → ativa M1
-- **Resultado:** —
+- **Resultado:** `## Casos práticos` com 2 cenários (Netflix Prize — deanonimização por cruzamento com o IMDb, Narayanan & Shmatikov 2008 · Signal e a subpoena federal de 2016, minimização como defesa estrutural) · `## Conexões` virou `## O que vem a seguir` com ponte para a 21 via "harvest now, decrypt later" · `[!info] Lastro` virou `## Fontes` com as 9 referências em URL clicável mais 2 novas verificadas (a URL da UT Austin não respondeu e foi trocada pelo mirror da Cornell, também verificado) · M1 **The Definition of Differential Privacy** (Cynthia Dwork, IAS, ~18 min), citação âncora em [3:10] verificada por transcrição. 485 linhas, 6 Mermaid válidos.
+  **Pendências herdadas (fora do plano, não tocadas):** 485 linhas, 15 abaixo do piso Magus · sem heading dedicado E6 ("Como explicar em inglês" existe só como subseção "Frases úteis") · sem `## Armadilhas comuns` dedicada, embora haja 4 `[!warning]`/`[!danger]` espalhados. O diagnóstico classificou a nota como [mecânico] com só 4 itens; E8 não entrou no plano.
 
 #### 21 - Criptografia pós-quântica   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-21)
 - **Estado:** 450 linhas · fase: magus · status: evergreen · 5 Mermaid · 2 `[!warning]` · 0 wikilink cross-galho
 - **Núcleo/gaps:** E4, E5, E8, L1, L2, M1
 - **Score:** 5/11 (P1 N/A — nota conceitual)
@@ -363,10 +365,11 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Acrescentar ≥1 wikilink cross-galho (Auth e Identidade, Redes/TLS, Matemática ou SO, conforme o assunto da nota) → ativa L1
   - Converter o callout `[!info] Lastro` em `## Fontes` com URLs clicáveis → ativa L2
   - Buscar e embutir vídeo/podcast verificado por transcrição → ativa M1
-- **Resultado:** —
+- **Resultado:** `## Casos práticos` com 3 cenários (queda de SIKE/Rainbow · migração TLS híbrida · inventário CBOM), sintetizados do conteúdo já presente · `## Conexões` virou `## O que vem a seguir` com ponte para o capstone · `## Armadilhas comuns` com 3 `[!warning]`: os 2 existentes movidos mais um novo (tratar PQC como troca de biblioteca, quando é troca de sistema) · L1 via `[[05 - TLS e HTTPS]]` · `[!info] Lastro` virou `## Fontes` · M1 **Kyber (ML-KEM) — Post-Quantum Cryptography Explained** (Cryptography 101, ~9 min), transcrição lida na íntegra antes de embutir. 451 → 500 linhas, 5 Mermaid válidos.
+  **Guarda de honestidade:** o subagente foi instruído a não afirmar status normativo do NIST sem confirmar na fonte; ele não acrescentou nada além do que a nota já dizia (FIPS 203, agosto de 2024), e a própria transcrição do vídeo corrobora esse ponto.
 
 #### 22 - Capstone - segurança como engenheiro   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-08-23)
 - **Estado:** 491 linhas · fase: magus · status: evergreen · 5 Mermaid · 0 `[!warning]` · 0 wikilink cross-galho
 - **Núcleo/gaps:** E4, E5, E8, L1, L2, M1
 - **Score:** 5/11 (P1 N/A — nota conceitual)
@@ -377,5 +380,6 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Acrescentar ≥1 wikilink cross-galho (Auth e Identidade, Redes/TLS, Matemática ou SO, conforme o assunto da nota) → ativa L1
   - Converter o callout `[!info] Lastro` em `## Fontes` com URLs clicáveis → ativa L2
   - Buscar e embutir vídeo/podcast verificado por transcrição → ativa M1
-- **Resultado:** —
+- **Resultado:** `## Casos práticos` com 2 cenários (o worked example de login já na nota, recontextualizado como estudo de threat modeling · o bug do `alg: none` em bibliotecas JWT — Tim McLean, Auth0, mar. 2015 — com mecanismo completo e ligação à RFC 8725) · `## Conexões` virou `## O que vem a seguir` escrita como **fechamento de trilha**, apontando para fora do galho (Auth e Identidade e seu capstone · TLS e HTTPS · Operação: secrets em produção e incident response), com os wikilinks antigos preservados na lista de pilares · `## Armadilhas comuns` criada do zero com 3 `[!warning]` (checklist como fim em si · "usamos cripto" ≠ "estamos seguros" · adiar segurança para o pós-MVP) · L1 com 4 wikilinks cross-galho · `[!info] Lastro` virou `## Fontes`, 6 existentes mais 2 novas · M1 **Security Engineering Lecture 1: Who is the Opponent?** (Ross Anderson & Sam Ainsworth, 1h08, 2022) — a transcrição confirma que a aula abre com a mesma frase de Anderson já citada no topo da nota, em [1:52]. 491 → 520 linhas, 5 Mermaid válidos.
+  **Nota do coordenador:** por ser o capstone, E5 não tinha "próxima nota"; a ponte foi redirecionada para fora do galho em vez de inventar continuação. Nenhum dado do usuário foi fabricado — os dois casos são material público documentado.
 

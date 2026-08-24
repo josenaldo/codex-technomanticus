@@ -1,7 +1,7 @@
 ---
 title: "Privacidade, anonimato e metadados"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-08-21
 type: concept
 fase: magus
 status: evergreen
@@ -300,6 +300,14 @@ O **mecanismo de Laplace** é o mais simples: adiciona ruído amostrado da distr
 > [!tip] Differential privacy na prática de engenharia
 > Federated learning (como usado no Google Keyboard) combina differential privacy com treinamento local: os modelos são treinados no dispositivo do usuário, apenas gradientes (com ruído DP) são enviados ao servidor. O servidor nunca vê os dados brutos. DP garante que mesmo observando todos os gradientes, o adversário não consegue reconstruir amostras individuais de treinamento.
 
+> [!tip] Assista: The Definition of Differential Privacy — Cynthia Dwork
+> **Canal:** Institute for Advanced Study | **Duração:** ~18min | **Idioma:** EN (legenda automática)
+>
+> A própria Cynthia Dwork — a fonte da definição formal de ε-differential privacy citada acima — reconstrói ao vivo por que "só anonimizar o dataset" (a estratégia que a seção de deanonimização desta nota já desmontou) não é solução, e por que "só liberar estatísticas agregadas" também falha antes de chegar à definição formal. É a motivação que costuma ficar implícita quando se aprende DP só pela fórmula.
+> Trecho de destaque [3:10]: *"De-identified data isn't either — it isn't data, or it isn't de-identified. [...] We're just not going there."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=lg-VhHlztqo)
+
 ---
 
 ## Privacy by design e minimização de dados
@@ -367,7 +375,19 @@ A LGPD tem 10 bases legais para tratamento — consentimento é apenas uma delas
 
 ---
 
-## Conexões
+## Casos práticos
+
+A teoria acima explica os mecanismos; os dois casos abaixo mostram o que acontece quando eles falham ou funcionam sob pressão real — um sobre um dataset "anonimizado" que não era, outro sobre uma empresa que projetou o próprio sistema para não ter o que entregar a um Grand Jury.
+
+**Caso 1 — Netflix Prize: deanonimização por cruzamento de datasets.** Em 2006, a Netflix publicou um dataset de ~100 milhões de avaliações de filmes de ~500 mil usuários, com IDs trocados por números aleatórios, como parte do desafio público Netflix Prize para melhorar seu algoritmo de recomendação. Do ponto de vista da Netflix, o dataset era anônimo: nenhum nome, nenhum e-mail, nenhum identificador direto. Em 2008, Arvind Narayanan e Vitaly Shmatikov (Universidade do Texas em Austin) mostraram que bastava cruzar as avaliações "anônimas" com avaliações públicas no IMDb — onde muitos usuários usam o próprio nome — para reidentificar indivíduos com alta confiança, usando apenas 6 a 8 avaliações e suas datas aproximadas como quasi-identificadores. Um grupo de usuários processou a Netflix em 2009 alegando que a publicação expôs indiretamente preferências sensíveis (incluindo orientação sexual, inferível de padrões de avaliação); a empresa cancelou uma segunda rodada do desafio e chegou a acordo. O caso é citado até hoje como a demonstração canônica de que remover identificadores diretos não produz anonimato — produz apenas a ilusão dele, até alguém aparecer com o dataset auxiliar certo para cruzar.
+
+**Caso 2 — Signal e a subpoena de 2016: minimização como defesa estrutural.** Em 2016, a Signal Foundation recebeu uma intimação (subpoena) de um Grand Jury federal dos EUA exigindo registros de comunicação de uma conta específica — o tipo de pedido que normalmente obriga um provedor a entregar metadados de conversa (com quem, quando, quantas vezes). A resposta da Signal, tornada pública com autorização judicial, listou o que a empresa tinha para entregar: data de criação da conta e data do último login. Nada mais. Nenhum registro de contatos, nenhum metadado de mensagem, nenhum histórico de conversas — porque o protocolo da Signal foi desenhado desde o início para que esses dados simplesmente não existissem no servidor da empresa. Não foi uma recusa a cooperar; foi a consequência direta de uma decisão de arquitetura tomada anos antes: minimização de dados como defesa contra intimações futuras, não como resposta a elas. É o contraponto prático ao princípio de Privacy by Design descrito acima — "o dado que você não tem não pode ser subpoenado" deixa de ser slogan e vira o motivo pelo qual a empresa não tinha nada a entregar.
+
+---
+
+## O que vem a seguir
+
+Toda a criptografia descrita nesta nota — onion routing, ZKPs, differential privacy — assume que os algoritmos matemáticos por trás dela seguem sólidos hoje. Mas RSA, curvas elípticas e Diffie-Hellman (a base do Tor, do TLS e de boa parte das primitivas discutidas aqui) dependem de problemas matemáticos que um computador quântico suficientemente grande resolveria em tempo polinomial via algoritmo de Shor. Isso não é ficção distante: tráfego cifrado hoje pode estar sendo coletado agora para descriptografia futura ("harvest now, decrypt later") — um ataque que combina exatamente com o tema desta nota, porque é um ataque contra a *confidencialidade de longo prazo*, não contra o presente. A próxima nota, [[21 - Criptografia pós-quântica]], trata da corrida para substituir essas primitivas antes que o relógio quântico chegue a zero.
 
 - Anterior: [[19 - Zero trust e defesa em profundidade]]
 - Próxima: [[21 - Criptografia pós-quântica]]
@@ -450,13 +470,16 @@ Frases úteis em inglês para articular a distinção:
 
 ---
 
-> [!info] Lastro
-> - **Daniel Solove** — "I've Got Nothing to Hide" and Other Misunderstandings of Privacy (2007). San Diego Law Review, vol. 44. Artigo seminal que desmonta a falácia "nothing to hide" com 11 contraargumentos distintos: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=998565
-> - **Michael Hayden** — "We Kill People Based on Metadata" (Johns Hopkins University, 2014). Citado em The New Yorker e confirmado pelo próprio Hayden em entrevista a David Cole na New York Review of Books: https://www.nybooks.com/daily/2014/05/10/we-kill-people-based-metadata/
-> - **Roger Dingledine, Nick Mathewson, Paul Syverson** — "Tor: The Second-Generation Onion Router" (2004). USENIX Security Symposium. Paper fundador do Tor, incluindo análise de ataques de correlação de tráfego e limitações do modelo de adversário: https://svn.torproject.org/svn/projects/design-paper/tor-design.pdf
-> - **Shafi Goldwasser, Silvio Micali, Charles Rackoff** — "The Knowledge Complexity of Interactive Proof Systems" (1985/1989). SIAM Journal on Computing. Formalização original das provas zero-knowledge e introdução das três propriedades (completude, solidez, zero-knowledge). Ganhou o Turing Award em 2012.
-> - **Craig Gentry** — "A Fully Homomorphic Encryption Scheme" (2009). Tese de doutorado, Stanford University. Primeira construção de FHE usando lattices ideais; resolveu um problema em aberto desde Rivest, Adleman e Dertouzos (1978): https://crypto.stanford.edu/craig/craig-thesis.pdf
-> - **Cynthia Dwork** — "Differential Privacy" (2006). ICALP. Artigo fundador da privacidade diferencial com o mecanismo de Laplace e a definição formal de ε-privacy: https://link.springer.com/chapter/10.1007/11787006_1
-> - **Helen Nissenbaum** — "Privacy as Contextual Integrity" (2004). Washington Law Review, vol. 79. Framework da integridade contextual: https://crypto.stanford.edu/~dabo/papers/privacylaw.pdf
-> - **GDPR** — Regulation (EU) 2016/679, Art. 5 (princípios de minimização) e Art. 25 (privacy by design). Texto completo anotado: https://gdpr-info.eu/art-5-gdpr/
-> - **Latanya Sweeney** — "k-Anonymity: A Model for Protecting Privacy" (2002). International Journal of Uncertainty, Fuzziness and Knowledge-Based Systems, 10(5). Demonstra que 87% dos americanos são re-identificáveis com 3 quasi-identificadores: https://dataprivacylab.org/dataprivacy/projects/kanonymity/paper3.pdf
+## Fontes
+
+- Daniel Solove (2007). **"I've Got Nothing to Hide" and Other Misunderstandings of Privacy**. *San Diego Law Review*, vol. 44. Artigo seminal que desmonta a falácia "nothing to hide" com 11 contraargumentos distintos. [papers.ssrn.com/sol3/papers.cfm?abstract_id=998565](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=998565)
+- Michael Hayden — "We Kill People Based on Metadata" (Johns Hopkins University, 2014). Citado em The New Yorker e confirmado pelo próprio Hayden em entrevista a David Cole na New York Review of Books. [nybooks.com/daily/2014/05/10/we-kill-people-based-metadata](https://www.nybooks.com/daily/2014/05/10/we-kill-people-based-metadata/)
+- Roger Dingledine, Nick Mathewson, Paul Syverson (2004). **"Tor: The Second-Generation Onion Router"**. USENIX Security Symposium. Paper fundador do Tor, incluindo análise de ataques de correlação de tráfego e limitações do modelo de adversário. [svn.torproject.org/svn/projects/design-paper/tor-design.pdf](https://svn.torproject.org/svn/projects/design-paper/tor-design.pdf)
+- Shafi Goldwasser, Silvio Micali, Charles Rackoff (1985/1989). **"The Knowledge Complexity of Interactive Proof Systems"**. *SIAM Journal on Computing*. Formalização original das provas zero-knowledge e introdução das três propriedades (completude, solidez, zero-knowledge). Ganhou o Turing Award em 2012.
+- Craig Gentry (2009). **"A Fully Homomorphic Encryption Scheme"**. Tese de doutorado, Stanford University. Primeira construção de FHE usando lattices ideais; resolveu um problema em aberto desde Rivest, Adleman e Dertouzos (1978). [crypto.stanford.edu/craig/craig-thesis.pdf](https://crypto.stanford.edu/craig/craig-thesis.pdf)
+- Cynthia Dwork (2006). **"Differential Privacy"**. ICALP. Artigo fundador da privacidade diferencial com o mecanismo de Laplace e a definição formal de ε-privacy. [link.springer.com/chapter/10.1007/11787006_1](https://link.springer.com/chapter/10.1007/11787006_1)
+- Helen Nissenbaum (2004). **"Privacy as Contextual Integrity"**. *Washington Law Review*, vol. 79. Framework da integridade contextual. [crypto.stanford.edu/~dabo/papers/privacylaw.pdf](https://crypto.stanford.edu/~dabo/papers/privacylaw.pdf)
+- **GDPR** — Regulation (EU) 2016/679, Art. 5 (princípios de minimização) e Art. 25 (privacy by design). Texto completo anotado. [gdpr-info.eu/art-5-gdpr](https://gdpr-info.eu/art-5-gdpr/)
+- Latanya Sweeney (2002). **"k-Anonymity: A Model for Protecting Privacy"**. *International Journal of Uncertainty, Fuzziness and Knowledge-Based Systems*, 10(5). Demonstra que 87% dos americanos são re-identificáveis com 3 quasi-identificadores. [dataprivacylab.org/dataprivacy/projects/kanonymity/paper3.pdf](https://dataprivacylab.org/dataprivacy/projects/kanonymity/paper3.pdf)
+- Arvind Narayanan & Vitaly Shmatikov (2008). **"Robust De-anonymization of Large Sparse Datasets"**. *IEEE Symposium on Security and Privacy*. Deanonimização do dataset do Netflix Prize por cruzamento com avaliações públicas do IMDb — a fonte do Caso 1 acima. [www.cs.cornell.edu/~shmat/shmat_oak08netflix.pdf](https://www.cs.cornell.edu/~shmat/shmat_oak08netflix.pdf)
+- Signal Foundation — resposta pública à subpoena de um Grand Jury federal dos EUA (2016), tornada pública com autorização judicial. Fonte do Caso 2 acima. [signal.org/bigbrother/eastern-virginia-grand-jury](https://signal.org/bigbrother/eastern-virginia-grand-jury/)

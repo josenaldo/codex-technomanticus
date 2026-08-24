@@ -1,7 +1,7 @@
 ---
 title: "Classes de vulnerabilidade"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-08-20
 type: concept
 fase: magus
 status: evergreen
@@ -79,31 +79,7 @@ stmt.setString(1, username);
 stmt.setString(2, password);
 ```
 
-Com prepared statements, o banco recebe a estrutura da query separada dos valores. Não há como um valor "escalar" para a estrutura — o driver garante isso na serialização do protocolo. Escapamento manual falha porque é impossível antecipar todos os contextos de encoding (charset, collation, Unicode).
-
-O passo a passo de uma exploração SQLi em produção:
-
-```mermaid
-sequenceDiagram
-    actor Atacante
-    participant App as Aplicação Web
-    participant DB as Banco de Dados
-
-    Atacante->>App: GET /login?user=' OR '1'='1&pass=x
-    App->>App: Concatena string: "... WHERE user='' OR '1'='1' ..."
-    App->>DB: Executa query malformada
-    DB-->>App: Retorna todos os registros (1=1 sempre verdadeiro)
-    App-->>Atacante: Login bem-sucedido (bypass de auth)
-
-    Note over Atacante,DB: Variante: UNION SELECT para exfiltrar dados
-    Atacante->>App: GET /item?id=1 UNION SELECT user,password,null FROM users--
-    App->>DB: Executa UNION
-    DB-->>App: Dados da tabela users
-    App-->>Atacante: Hashes de senhas expostos
-```
-
-> [!info] Leitura do diagrama
-> O fluxo superior mostra bypass de autenticação — o caso clássico de SQLi "cego". O fluxo inferior mostra exfiltração via UNION SELECT, que requer que o número de colunas seja igual ao da query original. Na prática, o atacante sonda a estrutura iterativamente com ORDER BY e UNION SELECT null,null,...
+Com prepared statements, o banco recebe a estrutura da query separada dos valores. Não há como um valor "escalar" para a estrutura — o driver garante isso na serialização do protocolo. Escapamento manual falha porque é impossível antecipar todos os contextos de encoding (charset, collation, Unicode). O passo a passo completo dessa exploração em produção está no Caso 1 de [[#Casos práticos]].
 
 ### Outras injeções da família
 
@@ -152,9 +128,6 @@ flowchart TD
 2. **Content-Security-Policy (CSP)** — header HTTP que define quais origens de script são permitidas. `script-src 'self'` proíbe scripts inline e scripts de terceiros. `strict-dynamic` com nonce é o padrão moderno (Google recomenda).
 
 3. **HTTPOnly + SameSite cookies** — limita o dano: mesmo que XSS execute, não pode roubar o cookie de sessão via `document.cookie`.
-
-> [!warning] Atenção na entrevista
-> Examinadores frequentemente perguntam "por que escapar HTML não é suficiente?" A resposta: contexto. `<img src="javascript:alert(1)">` não contém `<script>`, mas executa JS. `<a href="' + userInput + '">` requer URL encoding, não HTML encoding. A regra é: **encode para o contexto de saída**, não para "HTML genérico".
 
 ---
 
@@ -223,9 +196,6 @@ Rust elimina buffer overflow, use-after-free e data races em tempo de compilaç�
 | DEP/NX (Data Execution Prevention) | Marca pilha como não-executável | Bypassed por ROP (Return-Oriented Programming) |
 | Stack Canaries | Coloca valor aleatório antes do ret addr | Bypassed por info leak ou overflow parcial |
 | CFI (Control Flow Integrity) | Restringe alvos válidos de `call`/`ret` | Implementação incompleta é bypassável |
-
-> [!warning] Mitigações não são defesas
-> ASLR + NX + Stack Canaries reduziram a exploração trivial, mas atacantes sofisticados combinam info leaks com ROP chains para contornar todas as três. A defesa real é eliminar a linguagem que permite o erro.
 
 ---
 
@@ -315,9 +285,39 @@ Um atacante com controle da thread ou do sistema de arquivos pode ganhar a corri
 
 ---
 
-## Estudo de caso: HeartBleed (CVE-2014-0160)
+## Casos práticos
 
-HeartBleed é o exemplo perfeito de Out-of-Bounds Read porque combina uma falha simples com impacto catastrófico e demonstra por que linguagens gerenciadas importam.
+Os dois casos abaixo mostram a taxonomia em ação: um exploit de Injection ponta a ponta e o CVE mais citado de memory safety da última década. Ambos ilustram a mesma lição — o atacante não precisa de nada exótico, só de um lugar onde dado não-confiável foi tratado como estrutura de código ou como limite de memória.
+
+### Caso 1: bypass de autenticação e exfiltração via SQL Injection
+
+O passo a passo de uma exploração SQLi em produção, contra o código vulnerável mostrado em [[#SQL Injection]]:
+
+```mermaid
+sequenceDiagram
+    actor Atacante
+    participant App as Aplicação Web
+    participant DB as Banco de Dados
+
+    Atacante->>App: GET /login?user=' OR '1'='1&pass=x
+    App->>App: Concatena string: "... WHERE user='' OR '1'='1' ..."
+    App->>DB: Executa query malformada
+    DB-->>App: Retorna todos os registros (1=1 sempre verdadeiro)
+    App-->>Atacante: Login bem-sucedido (bypass de auth)
+
+    Note over Atacante,DB: Variante: UNION SELECT para exfiltrar dados
+    Atacante->>App: GET /item?id=1 UNION SELECT user,password,null FROM users--
+    App->>DB: Executa UNION
+    DB-->>App: Dados da tabela users
+    App-->>Atacante: Hashes de senhas expostos
+```
+
+> [!info] Leitura do diagrama
+> O fluxo superior mostra bypass de autenticação — o caso clássico de SQLi "cego". O fluxo inferior mostra exfiltração via UNION SELECT, que requer que o número de colunas seja igual ao da query original. Na prática, o atacante sonda a estrutura iterativamente com ORDER BY e UNION SELECT null,null,...
+
+### Caso 2: HeartBleed (CVE-2014-0160)
+
+HeartBleed é o exemplo perfeito de Out-of-Bounds Read porque combina uma falha simples com impacto catastrófico e demonstra por que linguagens gerenciadas importam — o tema técnico completo do protocolo está em [[05 - TLS e HTTPS|TLS e HTTPS]].
 
 O protocolo TLS tem uma extensão "Heartbeat": o cliente envia `{payload: "ABCD", length: 4}` e o servidor ecoa de volta os primeiros `length` bytes do payload para confirmar que está vivo. A implementação em OpenSSL confiou no campo `length` fornecido pelo cliente sem verificar o tamanho real do payload:
 
@@ -333,6 +333,24 @@ Com `payload: "A", length: 65535`, o servidor copia 64 KB de memória do process
 O impacto: qualquer servidor OpenSSL 1.0.1 antes de 1.0.1g era explorável remotamente, sem autenticação, sem deixar rastro em logs. Estimou-se que ≈ 17% dos servidores HTTPS do mundo eram vulneráveis no momento do disclosure (abril de 2014).
 
 A raiz da falha é trivial em C — sem verificação de limites, `memcpy` simplesmente obedece. Em Rust, o borrow checker tornaria o código inválido em compilação: uma slice com comprimento maior que o buffer subjacente não existe como tipo válido.
+
+---
+
+## Armadilhas comuns
+
+> [!warning] Escapar HTML não é suficiente contra XSS
+> Examinadores frequentemente perguntam "por que escapar HTML não é suficiente?" A resposta: contexto. `<img src="javascript:alert(1)">` não contém `<script>`, mas executa JS. `<a href="' + userInput + '">` requer URL encoding, não HTML encoding. A regra é: **encode para o contexto de saída**, não para "HTML genérico".
+
+> [!warning] Mitigações de memória não são defesas
+> ASLR + NX + Stack Canaries reduziram a exploração trivial, mas atacantes sofisticados combinam info leaks com ROP chains para contornar todas as três. A defesa real é eliminar a linguagem que permite o erro.
+
+> [!warning] Blocklist de IP não é allowlist contra SSRF
+> A defesa ingênua de SSRF é bloquear os ranges internos conhecidos (`10.0.0.0/8`, `169.254.169.254`) numa blocklist. Isso falha de duas formas: DNS rebinding (o domínio resolve para um IP externo na validação e para um IP interno na conexão real) e a superfície de endereços internos que o defensor esqueceu de listar (IPv6 link-local `fe80::/10`, `0.0.0.0`, notações alternativas de IP como octal ou decimal). A defesa correta é allowlist de destinos explícitos, resolvida e revalidada no momento da conexão — nunca uma lista do que é proibido.
+
+> [!warning] CWE não é CVE
+> É comum, mesmo em entrevista, ouvir "esse CVE é uma classe de vulnerabilidade" ou "esse CWE afetou a versão X do produto Y" — os dois enunciados trocam causa por efeito. CWE-89 (SQL Injection) é a *categoria* de fraqueza; CVE-2014-0160 (HeartBleed) é a *instância* concreta, num produto e versão específicos, que materializa uma CWE (no caso, CWE-125, Out-of-Bounds Read). Um único CWE gera milhares de CVEs ao longo dos anos, em produtos completamente diferentes — confundir os dois níveis é o mesmo erro estrutural de "dado vs. código" aplicado ao vocabulário de segurança: tratar a instância como se fosse a regra geral, ou vice-versa.
+>
+> O mesmo vale para CWE-121 (Stack-based Buffer Overflow): é a classe descrita por Aleph One em 1996, não uma vulnerabilidade específica. Cada CVE de buffer overflow — em cada versão de cada produto C/C++ — é uma nova instância dessa mesma classe, décadas depois.
 
 ---
 
@@ -364,6 +382,14 @@ graph LR
 
 > [!info] Leitura do diagrama
 > Destaques da edição 2021: A01 Broken Access Control subiu para #1 (era #5 em 2017) — controle de acesso falha mais frequentemente do que injeção em aplicações modernas. A04 Insecure Design é nova: falhas que não existem no código mas no design (threat modeling ausente). A10 SSRF estreou refletindo a explosão de cloud e microserviços.
+
+> [!tip] Assista: OWASP Top 10 Web Application Security Risks
+> **Canal:** Telusko | **Duração:** ~15min | **Idioma:** EN
+>
+> Percorre as dez categorias do OWASP Top 10 na perspectiva de quem escreve código no dia a dia, não de quem audita compliance — reforça o ângulo desta nota de que a lista é um mapa de risco, não um checklist. O trecho sobre Injection reencena o mesmo raciocínio do Caso 1 em [[#Casos práticos]]: a aplicação confia demais na entrada do usuário ao montar a consulta ao banco.
+> Trecho de destaque [1:49]: *"The first one is injection. See, the thing is, when you make an application, of course you provide external security to the application, but hackers or the attackers somehow want to get hold on the application."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=wUaeKEl1RCw)
 
 ### O que mudou de 2017 para 2021
 
@@ -412,13 +438,16 @@ Exemplo de leitura do vetor do HeartBleed: `CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H
 
 ---
 
-## Conexões
+## O que vem a seguir
+
+Catalogar as classes de vulnerabilidade responde "o que pode dar errado" — mas não responde a uma pergunta mais incômoda: por que um sistema inteiro pode estar correto peça por peça e ainda assim ser explorável no agregado? É a pergunta que fecha o galho: [[17 - Confiança transitiva e Trusting Trust]] mostra que confiar na cadeia de build, no compilador ou numa dependência de terceiros é uma fronteira de confiança tão real quanto a entrada de um formulário web — só que invisível no código-fonte.
 
 - Anterior: [[15 - Ataques a sistemas cripto]]
 - Próxima: [[17 - Confiança transitiva e Trusting Trust]]
 - Cross-links: [[02 - Pensar como adversário]] — a taxonomia de classes é o vocabulário concreto do modelo mental adversarial
 - Cross-links: [[13 - Autorização e controle de acesso]] — Broken Access Control (A01) e CSRF (confused deputy) conectam as duas notas
 - Cross-links: [[04 - Princípios de design seguro]] — defense in depth e least privilege são as respostas estruturais às classes de falha aqui catalogadas
+- Cross-galho: [[05 - TLS e HTTPS]] (Ciência/Redes e Protocolos) — HeartBleed nasceu de um bug de memory safety em C, mas só foi catastrófico porque explorava a extensão Heartbeat do próprio protocolo TLS; entender o handshake e as garantias que o TLS promete explica por que o vazamento de 64 KB de memória do processo significava, na prática, vazamento de chaves privadas
 
 > [!summary] Resumo em uma linha
 > Toda classe de vulnerabilidade é variação de um erro: dado não-confiável cruza uma fronteira de confiança e é interpretado como código, comando ou controle — a defesa é parametrizar, encodar no contexto correto, e usar linguagens que tornam o erro impossível.
@@ -461,10 +490,11 @@ O que o entrevistador espera ouvir de um senior:
 
 ---
 
-> [!info] Lastro
-> 1. **OWASP Top 10 — 2021** — lista oficial com dados de incidentes. [https://owasp.org/Top10/](https://owasp.org/Top10/)
-> 2. **MITRE CWE Top 25 Most Dangerous Software Weaknesses (2023)** — ranking por prevalência e impacto. [https://cwe.mitre.org/top25/archive/2023/2023_top25_list.html](https://cwe.mitre.org/top25/archive/2023/2023_top25_list.html)
-> 3. **Aleph One — "Smashing the Stack for Fun and Profit"** — Phrack Magazine, Vol. 7, Issue 49, 1996. Texto original que descreve exploração de buffer overflow na stack. [http://phrack.org/issues/49/14.html](http://phrack.org/issues/49/14.html)
-> 4. **Microsoft Security Response Center — "A proactive approach to more secure code" (2019)** — relatório que cita ~70% dos CVEs como falhas de memory safety. [https://msrc.microsoft.com/blog/2019/07/a-proactive-approach-to-more-secure-code/](https://msrc.microsoft.com/blog/2019/07/a-proactive-approach-to-more-secure-code/)
-> 5. **Chromium Security — Memory safety (2020)** — análise de bugs do Chromium confirmando a proporção de 70%. [https://www.chromium.org/Home/chromium-security/memory-safety/](https://www.chromium.org/Home/chromium-security/memory-safety/)
-> 6. **FIRST — Common Vulnerability Scoring System v3.1 Specification** — especificação oficial do CVSS. [https://www.first.org/cvss/specification-document](https://www.first.org/cvss/specification-document)
+## Fontes
+
+1. **OWASP Top 10 — 2021** — lista oficial com dados de incidentes. [https://owasp.org/Top10/](https://owasp.org/Top10/)
+2. **MITRE CWE Top 25 Most Dangerous Software Weaknesses (2023)** — ranking por prevalência e impacto. [https://cwe.mitre.org/top25/archive/2023/2023_top25_list.html](https://cwe.mitre.org/top25/archive/2023/2023_top25_list.html)
+3. **Aleph One — "Smashing the Stack for Fun and Profit"** — Phrack Magazine, Vol. 7, Issue 49, 1996. Texto original que descreve exploração de buffer overflow na stack. [http://phrack.org/issues/49/14.html](http://phrack.org/issues/49/14.html)
+4. **Microsoft Security Response Center — "A proactive approach to more secure code" (2019)** — relatório que cita ~70% dos CVEs como falhas de memory safety. [https://msrc.microsoft.com/blog/2019/07/a-proactive-approach-to-more-secure-code/](https://msrc.microsoft.com/blog/2019/07/a-proactive-approach-to-more-secure-code/)
+5. **Chromium Security — Memory safety (2020)** — análise de bugs do Chromium confirmando a proporção de 70%. [https://www.chromium.org/Home/chromium-security/memory-safety/](https://www.chromium.org/Home/chromium-security/memory-safety/)
+6. **FIRST — Common Vulnerability Scoring System v3.1 Specification** — especificação oficial do CVSS. [https://www.first.org/cvss/specification-document](https://www.first.org/cvss/specification-document)

@@ -35,6 +35,14 @@ A tríade CIA (Confidencialidade, Integridade, Disponibilidade) é o vocabulári
 
 O vocabulário completo acrescenta AAA (Authentication, Authorization, Accounting), não-repúdio e autenticidade — mas a tríade CIA continua sendo o ponto de entrada para modelar qualquer problema de segurança.
 
+> [!tip] Assista: Security Engineering Lecture 1 — Who is the Opponent?
+> **Canal:** Security Engineering | **Duração:** ~1h08 | **Idioma:** EN
+>
+> A aula de abertura do curso público de Ross Anderson e Sam Ainsworth (Cambridge/Edinburgh) começa exatamente pela frase que abre esta nota, dita pelo próprio autor, e segue construindo o raciocínio de threat modeling do zero: quem é o oponente, insider vs. outsider, quão capaz é o atacante, e como isso deriva a política de segurança antes de qualquer escolha de mecanismo. É o mesmo movimento do worked example desta nota — modelo de ameaça primeiro, mecanismo depois — só que na voz de quem escreveu o livro-texto de referência do campo.
+> Trecho de destaque [1:52]: *"So what is security engineering? Well, security engineering is about building systems to remain dependable in the face of malice, error and mischance."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=o1x_Oa0XiDI)
+
 ---
 
 ## Mapa de recapitulação das 22 notas por fase
@@ -125,7 +133,7 @@ Senha sozinha não é suficiente. O segundo fator deve ser de *categoria diferen
 
 **Transporte (nota 14)**
 
-Toda comunicação usa TLS 1.3. Por quê 1.3 e não 1.2? O handshake de 1.3 é mais simples (menos round-trips), remove cifras legadas (RC4, 3DES, exportadas) e estabelece forward secrecy *por padrão* via ECDHE — se a chave privada do servidor vazar amanhã, tráfego capturado hoje não é decriptável. Configure HSTS (`Strict-Transport-Security: max-age=31536000; includeSubDomains`) para garantir que browsers não caiam em downgrade.
+Toda comunicação usa TLS 1.3. Por quê 1.3 e não 1.2? O handshake de 1.3 é mais simples (menos round-trips), remove cifras legadas (RC4, 3DES, exportadas) e estabelece forward secrecy *por padrão* via ECDHE — se a chave privada do servidor vazar amanhã, tráfego capturado hoje não é decriptável. Configure HSTS (`Strict-Transport-Security: max-age=31536000; includeSubDomains`) para garantir que browsers não caiam em downgrade. Para o handshake byte a byte — extensões, record layer, cipher suites como identificadores numéricos — ver [[03-Dominios/Ciência/Redes e Protocolos/05 - TLS e HTTPS|TLS e HTTPS]].
 
 **Cookies de sessão**
 
@@ -410,11 +418,38 @@ Estas são perguntas reais de entrevistas de engenheiro sênior. O que o entrevi
 
 ---
 
-## Conexões
+## Casos práticos
 
-← [[21 - Criptografia pós-quântica]]
+Dois casos concretos, já tocados nas seções anteriores, merecem ser vistos como estudo de caso completo — do sintoma ao mecanismo à correção.
 
-Pilares do galho: [[01 - O que é segurança conceitual]] · [[02 - Pensar como adversário]] · [[04 - Princípios de design seguro]] · [[14 - Criptografia em trânsito e em repouso]] · [[19 - Zero trust e defesa em profundidade]]
+**Caso 1 — o worked example de login como exercício de threat modeling real.** O sistema de autenticação percorrido em [[#Worked example — threat model de um sistema de login|worked example acima]] não é um exemplo de brinquedo: cada decisão nele reproduz uma escolha que qualquer time de plataforma toma de verdade ao construir login — Argon2id em vez de bcrypt legado por causa da recomendação atual do OWASP, TLS 1.3 em vez de 1.2 por causa de forward secrecy por padrão via ECDHE, `SameSite=Strict` em vez de nenhum atributo por causa de CSRF. O valor do exercício não está em decorar a lista de mitigações — está em notar que cada uma delas fecha uma categoria *diferente* de ameaça do STRIDE (nota 02): a checklist só funciona porque foi derivada de um modelo de ameaça, não o contrário. Um time que copia a checklist sem passar pelo STRIDE primeiro tende a proteger o que é fácil de proteger (senha, transporte) e esquecer o que exige pensar em quem ataca (IDOR, rotação de segredos, blast radius de um breach).
+
+**Caso 2 — o bug histórico do `alg: none` em bibliotecas JWT.** Em março de 2015, o pesquisador Tim McLean publicou uma auditoria de várias bibliotecas JWT populares (node-jsonwebtoken, PyJWT, php-jwt, entre outras) e encontrou duas classes de bug shippando em produção por default. A primeira: várias bibliotecas aceitavam um token cujo cabeçalho dizia `{"alg":"none"}` como criptograficamente válido — um token sem assinatura nenhuma, com payload livremente escolhido pelo atacante, passava na verificação. A segunda: bibliotecas que suportavam tanto HMAC quanto RSA verificavam um token HS256 usando qualquer chave que a aplicação tivesse passado — inclusive a chave pública RSA que a aplicação esperava usar para verificar tokens RS256, agora reaproveitada (incorretamente) como segredo HMAC. O resultado prático: um atacante conseguia se autenticar como qualquer usuário, incluindo administradores, sem saber nenhuma chave secreta, sem força bruta e sem ataque criptográfico — só explorando a ambiguidade de que o algoritmo de verificação vem do próprio token, e o token é controlado pelo atacante. A correção não foi "trocar de biblioteca" — foi mudar o modelo: o servidor nunca deve confiar no campo `alg` do token recebido; ele deve fixar de antemão qual algoritmo espera e rejeitar qualquer outro. Esse episódio é a origem direta da recomendação, hoje codificada na RFC 8725 (JWT Best Current Practices), de nunca aceitar `alg: none` e de sempre pinar o algoritmo esperado no lado do verificador — a mesma lição da linha "JWT sem verificação de assinatura" na tabela de antipadrões acima, agora com a fonte primária e o mecanismo completo.
+
+---
+
+## Armadilhas comuns
+
+> [!warning] Tratar a checklist como o objetivo, não como o rastro do modelo de ameaça
+> O checklist do engenheiro seguro (seção acima) é útil como lista de verificação final, mas é uma armadilha séria se virar o ponto de partida do design. Uma checklist é o *resíduo* de um threat modeling bem feito, não um substituto para ele: ela cobre os padrões que a maioria dos sistemas encontra, não o que é específico do seu sistema. Times que "passam no checklist" e param aí tendem a ficar cegos justamente para o vetor que o checklist não previu — porque nenhuma checklist genérica prevê o modelo de ameaça de um sistema específico. O antídoto é sempre voltar ao STRIDE (nota 02) antes de consultar a lista, não depois.
+
+> [!warning] Confundir "usamos criptografia" com "estamos seguros"
+> É comum um time apontar para TLS 1.3, Argon2id e AES-GCM e concluir que o sistema está protegido — mas essas primitivas só cobrem uma fatia estreita da superfície de ataque: confidencialidade e integridade dos dados em trânsito e em repouso. Elas não protegem contra IDOR, contra um segredo commitado no Git, contra rate limiting ausente, contra um IdP comprometido, contra engenharia social. A cheat-sheet ameaça→defesa→primitiva acima existe exatamente para lembrar que cada ameaça tem sua própria primitiva — cripto forte na camada errada dá uma falsa sensação de segurança enquanto a porta ao lado fica destrancada.
+
+> [!warning] Adiar segurança para "depois que o MVP validar o produto"
+> A promessa é retrofitting barato: lançar rápido, adicionar segurança quando houver tração. Na prática, retrofitting é sistematicamente mais caro que design seguro desde o início, porque decisões arquiteturais cedo (como o modelo de dados, os limites de confiança entre serviços, o formato do token de sessão) ficam cristalizadas assim que há usuários e integrações dependendo delas — mudar depois significa migração com risco de downtime e de quebrar contratos externos. O SDL/SSDF (seção "secure by design" acima) existe porque threat modeling na fase de design custa uma reunião; o mesmo problema descoberto em produção custa um incidente, uma correção emergencial e, às vezes, uma notificação de vazamento.
+
+---
+
+## O que vem a seguir
+
+Este capstone fecha o galho de 22 notas de Engenharia/Segurança, mas não fecha o assunto — segurança de sistemas é uma lente que atravessa praticamente todo o resto do vault, e o que este galho construiu é a base conceitual para reconhecer onde aplicá-la.
+
+Se o seu próximo passo é aprofundar identidade e autenticação até o nível de protocolo — OAuth 2.1, OpenID Connect, WebAuthn/passkeys na prática, autorização multi-tenant com Zanzibar/OpenFGA — a trilha [[03-Dominios/Engenharia/Auth e Identidade/index|Auth e Identidade]] pega exatamente onde as notas 12 e 13 pararam, com um capstone próprio ([[03-Dominios/Engenharia/Auth e Identidade/Capstone — Desenhando a identidade de um SaaS B2B do zero|Desenhando a identidade de um SaaS B2B do zero]]) no mesmo formato deste. Se o interesse é o protocolo de transporte byte a byte — handshake TLS, extensões, cipher suites como identificadores numéricos — [[03-Dominios/Ciência/Redes e Protocolos/05 - TLS e HTTPS|TLS e HTTPS]] é a continuação natural da nota 14. E se a pergunta é "como isso tudo se sustenta em produção, dia após dia" — rotação de segredos operacionalizada, resposta a incidente, observabilidade que detecta a anomalia antes do blast radius crescer — a trilha [[03-Dominios/Engenharia/Operação/index|Operação]] retoma exatamente aí, com [[03-Dominios/Engenharia/Operação/2 - Entrega e release/06 - Secrets e configuração em produção|Secrets e configuração em produção]] e [[03-Dominios/Engenharia/Operação/4 - Observar e responder/04 - Incident response e on-call|Incident response e on-call]] como pontes diretas às notas 18 e 19 deste galho.
+
+A meta-lição real do capstone é esta: engenheiro sênior não é quem decorou as 22 notas — é quem, ao entrar em qualquer sistema novo (deste vault ou não), sabe *para onde olhar* quando a pergunta "isso é seguro?" aparece. Se este galho cumpriu seu papel, essa pergunta agora vem acompanhada de um vocabulário preciso e de um instinto de onde procurar a resposta.
+
+Pilares do galho, para consulta rápida: [[01 - O que é segurança conceitual]] · [[02 - Pensar como adversário]] · [[04 - Princípios de design seguro]] · [[14 - Criptografia em trânsito e em repouso]] · [[19 - Zero trust e defesa em profundidade]] · [[21 - Criptografia pós-quântica]]
 
 ---
 
@@ -473,11 +508,13 @@ Frases que demonstram fluência:
 
 ---
 
-> [!info] Lastro
->
-> 1. Anderson, Ross. *Security Engineering: A Guide to Building Dependable Distributed Systems*, 3ª ed. Wiley, 2020. Página do autor com capítulos gratuitos: [https://www.cl.cam.ac.uk/archive/rja14/book.html](https://www.cl.cam.ac.uk/archive/rja14/book.html)
-> 2. Saltzer, J. H. & Schroeder, M. D. "The Protection of Information in Computer Systems." *Proceedings of the IEEE*, vol. 63, nº 9, 1975. DOI: 10.1109/PROC.1975.9939. Espelho UVA: [https://www.cs.virginia.edu/~evans/cs551/saltzer/](https://www.cs.virginia.edu/~evans/cs551/saltzer/)
-> 3. OWASP. *Application Security Verification Standard (ASVS) 5.0*, 2025. [https://owasp.org/www-project-application-security-verification-standard/](https://owasp.org/www-project-application-security-verification-standard/)
-> 4. OWASP. *Top 10:2021*. [https://owasp.org/Top10/2021/](https://owasp.org/Top10/2021/)
-> 5. NIST. *SP 800-218 — Secure Software Development Framework (SSDF) v1.1*, fev. 2022. [https://csrc.nist.gov/pubs/sp/800/218/final](https://csrc.nist.gov/pubs/sp/800/218/final)
-> 6. Schneier, Bruce. *Secrets and Lies: Digital Security in a Networked World*. Wiley, 2000. Ainda relevante para o argumento de que segurança é processo, não produto.
+## Fontes
+
+1. Anderson, Ross. *Security Engineering: A Guide to Building Dependable Distributed Systems*, 3ª ed. Wiley, 2020. Página do autor com capítulos gratuitos: [https://www.cl.cam.ac.uk/archive/rja14/book.html](https://www.cl.cam.ac.uk/archive/rja14/book.html)
+2. Saltzer, J. H. & Schroeder, M. D. "The Protection of Information in Computer Systems." *Proceedings of the IEEE*, vol. 63, nº 9, 1975. DOI: 10.1109/PROC.1975.9939. Espelho UVA: [https://www.cs.virginia.edu/~evans/cs551/saltzer/](https://www.cs.virginia.edu/~evans/cs551/saltzer/)
+3. OWASP. *Application Security Verification Standard (ASVS) 5.0*, 2025. [https://owasp.org/www-project-application-security-verification-standard/](https://owasp.org/www-project-application-security-verification-standard/)
+4. OWASP. *Top 10:2021*. [https://owasp.org/Top10/2021/](https://owasp.org/Top10/2021/)
+5. NIST. *SP 800-218 — Secure Software Development Framework (SSDF) v1.1*, fev. 2022. [https://csrc.nist.gov/pubs/sp/800/218/final](https://csrc.nist.gov/pubs/sp/800/218/final)
+6. Schneier, Bruce. *Secrets and Lies: Digital Security in a Networked World*. Wiley, 2000. Ainda relevante para o argumento de que segurança é processo, não produto.
+7. McLean, Tim. "Critical vulnerabilities in JSON Web Token libraries." Auth0 Blog, mar. 2015. [https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/](https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/)
+8. Jones, M., Bradley, J. & Sakimura, N. *RFC 8725 — JSON Web Token Best Current Practices*. IETF, fev. 2020. [https://datatracker.ietf.org/doc/html/rfc8725](https://datatracker.ietf.org/doc/html/rfc8725)

@@ -1,7 +1,7 @@
 ---
 title: "Zero trust e defesa em profundidade"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-08-21
 type: concept
 fase: magus
 status: evergreen
@@ -64,15 +64,7 @@ Uma vez que um atacante rompe o perímetro por qualquer ponto — phishing em um
 
 Nuvem pública, SaaS, trabalho remoto e mobile apagaram a noção geográfica de "dentro da rede". Onde fica o perímetro quando seu banco de dados está no AWS, seu CRM é SaaS (Salesforce), seu CI/CD roda no GitHub Actions, e seus desenvolvedores trabalham de cafés, aeroportos e escritórios de coworking ao redor do mundo? A resposta honesta é: não existe mais um perímetro claro. Você pode tentar construir um perímetro imaginário em volta de todo esse ambiente distribuído — ou aceitar que o modelo não se aplica e adotar algo melhor.
 
-### Caso canônico: Target 2013
-
-O breach da Target em novembro de 2013 é o exemplo mais citado de movimento lateral em escala real. O vetor inicial foi um **fornecedor de HVAC** (climatização) — Fazio Mechanical — que tinha credenciais de acesso à rede da Target para monitoramento remoto de consumo de energia e temperatura. Os atacantes comprometeram as credenciais da Fazio Mechanical (provavelmente via phishing ou malware) e usaram esse acesso para entrar na rede da Target.
-
-Uma vez dentro, a rede corporativa tinha segmentação mínima entre a rede de gestão de fornecedores e os sistemas de ponto de venda (PoS). Os atacantes se moveram lateralmente, instalaram RAM scrapers nos terminais PoS e durante semanas exfiltraram dados de ~40 milhões de cartões de crédito e débito. O FBI só notificou a Target após detectar os dados à venda em fóruns clandestinos.
-
-O ponto crítico: o perímetro foi cruzado **uma única vez**, via credencial legítima de um fornecedor. Todo o dano foi causado pela liberdade de movimentação interna. Microssegmentação e políticas zero trust entre a rede HVAC e os sistemas PoS teriam contido o ataque no primeiro segmento.
-
-Outros exemplos do mesmo padrão: **SolarWinds 2020** (movimento lateral a partir do processo de build comprometido para redes de clientes governamentais), **Colonial Pipeline 2021** (credencial de VPN legacy sem MFA → acesso à rede operacional).
+O exemplo mais citado desse padrão é o breach da **Target em 2013** — um fornecedor de HVAC com VPN para a rede interna, sem segmentação nenhuma até os sistemas de pagamento. A anatomia completa está em [[#Casos práticos]], junto com o caso oposto: a implementação que mostrou como fazer diferente.
 
 ---
 
@@ -158,25 +150,7 @@ flowchart TD
 > [!info] Leitura do diagrama
 > Cada requisição percorre um gauntlet de verificações independentes antes de chegar ao recurso. O **Policy Decision Point (PDP)** é o componente lógico que toma a decisão de acesso; o **Policy Enforcement Point (PEP)** é o componente que a aplica (proxy reverso, API gateway, agente no host). Contexto de alto risco (login de país incomum, horário atípico) pode acionar re-autenticação em vez de rejeição imediata. Isso remete diretamente à nota [[13 - Autorização e controle de acesso]] (RBAC/ABAC por requisição).
 
-### BeyondCorp — a implementação pioneira
-
-O Google publicou o modelo **BeyondCorp** a partir de 2014 (série de papers no Google Research), descrevendo como eliminou a VPN corporativa e passou a tratar todos os acessos — incluindo os de funcionários no escritório — como potencialmente não confiáveis. É a implementação zero trust mais documentada e influente da história.
-
-Os quatro pilares do BeyondCorp original:
-
-| Pilar | Implementação |
-|---|---|
-| **Inventário de dispositivos** | Banco de dados centralizado de todos os dispositivos gerenciados; cada dispositivo recebe um certificado único |
-| **Identidade do usuário** | Autenticação forte (certificados + MFA) vinculada ao usuário, não ao IP ou localização |
-| **Acesso baseado em política** | Cada serviço define quais combinações de usuário + perfil de dispositivo podem acessá-lo |
-| **Access Proxy** | Todo tráfego passa pelo proxy que aplica as políticas; não há "rede interna" privilegiada |
-
-O resultado: um funcionário do Google no escritório e um funcionário em home office têm exatamente o mesmo nível de acesso — nenhum dos dois tem confiança implícita. O que determina o acesso é a identidade verificada e a conformidade do dispositivo, não a rede de onde a requisição vem.
-
-BeyondCorp inspirou toda uma geração de produtos: **Google BeyondCorp Enterprise**, **Cloudflare Access**, **Zscaler Zero Trust Exchange**, **Microsoft Entra ID (Conditional Access)**, **Palo Alto Prisma Access**.
-
-> [!warning] Zero trust não é um produto
-> Vendors vendem "zero trust" como se fosse algo que se compra e liga. Na prática, zero trust é uma **postura arquitetural** que exige mudanças coordenadas em identidade (MFA, SSO, certificados), rede (microssegmentação, remoção de VPN legacy), endpoints (MDM, EDR, hardening), aplicações (mTLS, autorização granular) e cultura operacional (assume breach, monitoramento contínuo). Um firewall com a etiqueta "zero trust" sem MFA e sem microssegmentação é security theater — remete à nota [[03 - Economia e fator humano da segurança]].
+A implementação zero trust mais documentada e influente da história é o **BeyondCorp** do Google — a íntegra está em [[#Casos práticos]] como Caso 2. A armadilha de tratar "zero trust" como produto de prateleira, em vez de postura arquitetural, está catalogada em [[#Armadilhas comuns]].
 
 ---
 
@@ -311,6 +285,14 @@ Os dois conceitos são complementares, não substitutos. Confundi-los é erro fr
 
 Em prática: zero trust *implementa* defesa em profundidade ao nível de identidade e autorização — é a camada 2 e 3 do diagrama DiD acima. Defesa em profundidade *organiza* os controles restantes (rede, endpoint, dados, detecção) em torno dessa base de zero trust.
 
+> [!tip] Ouça: Zero Trust and Defense in Depth Models
+> **Podcast:** Bare Metal Cyber — Network Plus PrepCast, Episódio 142 | **Duração:** ~15min | **Idioma:** EN (legenda automática verificada)
+>
+> Episódio curto e denso que faz exatamente a síntese que a tabela acima propõe: por que zero trust e defesa em profundidade não competem, e como cada um cobre a lacuna que o outro deixa aberto. Útil como revisão auditiva depois de ler esta nota — não introduz mecanismo novo, mas fixa a diferença "porta da frente vs. contenção interna" com clareza.
+> Trecho de destaque: *"Zero trust ensures that no user or device is trusted without verification, while defense in depth ensures that no single control stands alone."*
+>
+> 🎙️ [Ouvir no YouTube](https://www.youtube.com/watch?v=0RE-2KxUuSI)
+
 > [!tip] A pergunta de entrevista real
 > "Como você aplicaria zero trust em uma migração para nuvem?" — A resposta senior não lista produtos. Ela descreve: inventário de identidades e workloads, definição de políticas de microssegmentação por serviço, implementação de MFA e acesso condicional, remoção gradual de VPN legacy, adoção de OIDC/workload identity para service-to-service auth, instrumentação de observabilidade para detectar anomalias de acesso, e um modelo de maturidade incremental (não big bang). Isso demonstra que você entende os *princípios* por trás dos produtos.
 
@@ -345,7 +327,7 @@ Em arquitetura de microserviços, cada chamada entre serviços é uma requisiç�
 
 **mTLS (mutual TLS)**: ambos os lados da conexão (cliente e servidor) apresentam certificados. O cliente prova que é quem diz ser; o servidor também. Implementado tipicamente por uma **service mesh** (Istio, Linkerd, Consul Connect) que injeta um sidecar proxy em cada pod e gerencia os certificados automaticamente. O código da aplicação não precisa saber que mTLS existe — é transparente.
 
-**OIDC Workload Identity**: em ambientes cloud, serviços se autenticam usando identidades gerenciadas pela plataforma (AWS IAM Roles for Service Accounts, GCP Workload Identity Federation, Azure Managed Identity). O serviço recebe um token OIDC assinado pelo provedor de nuvem que identifica o workload, não um usuário humano. Isso elimina a necessidade de secrets estáticos entre serviços.
+**OIDC Workload Identity**: em ambientes cloud, serviços se autenticam usando identidades gerenciadas pela plataforma (AWS IAM Roles for Service Accounts, GCP Workload Identity Federation, Azure Managed Identity). O serviço recebe um token OIDC assinado pelo provedor de nuvem que identifica o workload, não um usuário humano — o mesmo grant de máquina (client credentials / workload identity) tratado em [[04 - Grants de máquina e fluxos especiais]]. Isso elimina a necessidade de secrets estáticos entre serviços.
 
 ```
 Princípio: nenhum serviço confia em outro só porque estão no mesmo cluster.
@@ -372,41 +354,60 @@ Isso é possível via integração entre o **Policy Decision Point** (que decide
 
 ---
 
-## Nuances e armadilhas
+## Casos práticos
 
-### A falácia do produto zero trust
+### Caso 1: Target 2013 — o preço da rede flat
 
-O mercado de segurança é fértil em buzzwords e zero trust sofreu com isso rapidamente após 2020. Vendors relabelaram produtos existentes — firewalls, VPNs, SIEMs — com a etiqueta "zero trust" sem mudança substancial. Armadilha clássica: comprar um "zero trust network access" (ZTNA) e achar que implementou zero trust, quando na verdade só substituiu a VPN por outra forma de acesso baseado em rede.
+O breach da Target em novembro de 2013 é o exemplo mais citado de movimento lateral em escala real. O vetor inicial foi um **fornecedor de HVAC** (climatização) — Fazio Mechanical — que tinha credenciais de acesso à rede da Target para monitoramento remoto de consumo de energia e temperatura. Os atacantes comprometeram as credenciais da Fazio Mechanical (provavelmente via phishing ou malware) e usaram esse acesso para entrar na rede da Target.
 
-Zero trust real exige mudança em *pelo menos* quatro domínios simultaneamente: identidade forte (MFA + SSO), autorização granular (RBAC/ABAC por requisição), visibilidade (logging e monitoramento contínuo), e resposta automatizada (revogar acesso quando anomalia detectada). Sem os quatro, é arquitetura incompleta.
+Uma vez dentro, a rede corporativa tinha segmentação mínima entre a rede de gestão de fornecedores e os sistemas de ponto de venda (PoS). Os atacantes se moveram lateralmente, instalaram RAM scrapers nos terminais PoS e durante semanas exfiltraram dados de ~40 milhões de cartões de crédito e débito. O FBI só notificou a Target após detectar os dados à venda em fóruns clandestinos.
 
-### A tensão com usabilidade
+O ponto crítico: o perímetro foi cruzado **uma única vez**, via credencial legítima de um fornecedor. Todo o dano foi causado pela liberdade de movimentação interna. Microssegmentação e políticas zero trust entre a rede HVAC e os sistemas PoS teriam contido o ataque no primeiro segmento.
 
-Zero trust mal implementado cria atrito severo para os usuários legítimos: múltiplos prompts de autenticação, acesso negado por falsos positivos de risco, sessões expiradas no meio do trabalho. O resultado é a criação de "shadow IT" — usuários encontram formas de bypassar os controles porque são muito inconvenientes.
+Outros exemplos do mesmo padrão: **SolarWinds 2020** (movimento lateral a partir do processo de build comprometido para redes de clientes governamentais), **Colonial Pipeline 2021** (credencial de VPN legacy sem MFA → acesso à rede operacional).
 
-O design correto usa **step-up authentication** apenas quando o risco justifica: acesso a dados normais com autenticação normal; acesso a dados sensíveis com MFA adicional; acesso a sistemas críticos com aprovação JIT. Não exigir o nível máximo de fricção em toda requisição.
+### Caso 2: BeyondCorp — a implementação pioneira que fez o oposto
 
-### Zero trust não é fim de linha
+O Google publicou o modelo **BeyondCorp** a partir de 2014 (série de papers no Google Research), descrevendo como eliminou a VPN corporativa e passou a tratar todos os acessos — incluindo os de funcionários no escritório — como potencialmente não confiáveis. É a implementação zero trust mais documentada e influente da história, e o contraponto direto ao caso Target: em vez de uma rede interna flat protegida só por VPN, cada requisição é verificada por identidade e postura de dispositivo, não por origem de rede.
 
-"Assume breach" significa que zero trust não é garantia de que não haverá breach — é garantia de que quando houver, o blast radius será menor e a detecção será mais rápida. Organizações que implementam zero trust e relaxam o monitoramento cometem o mesmo erro do modelo de perímetro (confiar cegamente na barreira) só que com uma barreira diferente.
+Os quatro pilares do BeyondCorp original:
 
-A postura correta é: zero trust reduz a superfície de ataque e limita danos, mas **detecção, resposta e recuperação** são igualmente críticos. Defesa em profundidade existe exatamente porque nenhuma camada é perfeita.
+| Pilar | Implementação |
+|---|---|
+| **Inventário de dispositivos** | Banco de dados centralizado de todos os dispositivos gerenciados; cada dispositivo recebe um certificado único |
+| **Identidade do usuário** | Autenticação forte (certificados + MFA) vinculada ao usuário, não ao IP ou localização |
+| **Acesso baseado em política** | Cada serviço define quais combinações de usuário + perfil de dispositivo podem acessá-lo |
+| **Access Proxy** | Todo tráfego passa pelo proxy que aplica as políticas; não há "rede interna" privilegiada |
 
-### Identidade como novo perímetro — e seus riscos
+O resultado: um funcionário do Google no escritório e um funcionário em home office têm exatamente o mesmo nível de acesso — nenhum dos dois tem confiança implícita. O que determina o acesso é a identidade verificada e a conformidade do dispositivo, não a rede de onde a requisição vem.
 
-Ao centralizar a segurança em identidade, o provedor de identidade (IdP) — Okta, Azure AD/Entra, Google Workspace — se torna o ativo mais crítico de toda a infraestrutura. Compromisso do IdP ≠ comprometimento de um sistema; compromisso do IdP = comprometimento potencial de todos os sistemas.
-
-Isso exige proteção extraordinária do IdP: MFA phishing-resistant (FIDO2/passkeys, não TOTP), acesso administrativo super-restrito, monitoramento de mudanças de configuração, e plano de recuperação para cenário de IdP comprometido.
-
-O breach da Okta em 2023 (acesso ao sistema de suporte com potencial exposição de tokens de sessão de clientes) ilustra exatamente esse risco: quando o IdP é o novo perímetro, atacar o IdP é atacar o perímetro.
+BeyondCorp inspirou toda uma geração de produtos: **Google BeyondCorp Enterprise**, **Cloudflare Access**, **Zscaler Zero Trust Exchange**, **Microsoft Entra ID (Conditional Access)**, **Palo Alto Prisma Access**.
 
 ---
 
-## Conexões
+## Armadilhas comuns
+
+> [!warning] Zero trust não é um produto
+> Vendors vendem "zero trust" como se fosse algo que se compra e liga. Na prática, zero trust é uma **postura arquitetural** que exige mudanças coordenadas em identidade (MFA, SSO, certificados), rede (microssegmentação, remoção de VPN legacy), endpoints (MDM, EDR, hardening), aplicações (mTLS, autorização granular) e cultura operacional (assume breach, monitoramento contínuo). Um firewall com a etiqueta "zero trust" sem MFA e sem microssegmentação é security theater — remete à nota [[03 - Economia e fator humano da segurança]]. O mercado de segurança é fértil em buzzwords e zero trust sofreu com isso rapidamente após 2020: vendors relabelaram produtos existentes — firewalls, VPNs, SIEMs — com a etiqueta "zero trust" sem mudança substancial. Armadilha clássica: comprar um "zero trust network access" (ZTNA) e achar que implementou zero trust, quando na verdade só substituiu a VPN por outra forma de acesso baseado em rede. Zero trust real exige mudança em *pelo menos* quatro domínios simultaneamente: identidade forte (MFA + SSO), autorização granular (RBAC/ABAC por requisição), visibilidade (logging e monitoramento contínuo), e resposta automatizada (revogar acesso quando anomalia detectada). Sem os quatro, é arquitetura incompleta.
+
+> [!warning] A tensão com usabilidade
+> Zero trust mal implementado cria atrito severo para os usuários legítimos: múltiplos prompts de autenticação, acesso negado por falsos positivos de risco, sessões expiradas no meio do trabalho. O resultado é a criação de "shadow IT" — usuários encontram formas de bypassar os controles porque são muito inconvenientes. O design correto usa **step-up authentication** apenas quando o risco justifica: acesso a dados normais com autenticação normal; acesso a dados sensíveis com MFA adicional; acesso a sistemas críticos com aprovação JIT. Não exigir o nível máximo de fricção em toda requisição.
+
+> [!warning] Zero trust não é fim de linha
+> "Assume breach" significa que zero trust não é garantia de que não haverá breach — é garantia de que quando houver, o blast radius será menor e a detecção será mais rápida. Organizações que implementam zero trust e relaxam o monitoramento cometem o mesmo erro do modelo de perímetro (confiar cegamente na barreira) só que com uma barreira diferente. A postura correta é: zero trust reduz a superfície de ataque e limita danos, mas **detecção, resposta e recuperação** são igualmente críticos. Defesa em profundidade existe exatamente porque nenhuma camada é perfeita.
+
+> [!warning] Identidade como novo perímetro — e seus riscos
+> Ao centralizar a segurança em identidade, o provedor de identidade (IdP) — Okta, Azure AD/Entra, Google Workspace — se torna o ativo mais crítico de toda a infraestrutura. Compromisso do IdP ≠ comprometimento de um sistema; compromisso do IdP = comprometimento potencial de todos os sistemas. Isso exige proteção extraordinária do IdP: MFA phishing-resistant (FIDO2/passkeys, não TOTP), acesso administrativo super-restrito, monitoramento de mudanças de configuração, e plano de recuperação para cenário de IdP comprometido. O breach da Okta em 2023 (acesso ao sistema de suporte com potencial exposição de tokens de sessão de clientes) ilustra exatamente esse risco: quando o IdP é o novo perímetro, atacar o IdP é atacar o perímetro.
+
+---
+
+## O que vem a seguir
+
+Zero trust resolve "quem pode acessar o quê, agora" — mas verificar identidade e autorizar cada requisição não protege o conteúdo da requisição em si, nem impede que metadados sobre *quem falou com quem, quando e de onde* vazem mesmo que a autorização tenha sido perfeitamente concedida. É exatamente essa lacuna que a próxima nota, [[20 - Privacidade, anonimato e metadados]], ataca: um atacante (ou um observador com poder de vigilância legítimo) pode reconstruir um grafo social inteiro só olhando para *quem* se comunicou com *quem*, sem nunca decifrar o conteúdo — o PDP do diagrama desta nota autoriza o acesso, mas não apaga o rastro de que o acesso aconteceu. Depois de fechar "como verificar cada requisição" (zero trust) e "como conter o dano quando uma camada falha" (defesa em profundidade), o próximo passo lógico é perguntar o que ainda escapa por entre essas duas defesas: os metadados que sobrevivem mesmo quando toda a autenticação e autorização funcionaram como projetado.
 
 - Anterior: [[18 - Gestão de chaves e segredos]]
 - Próxima: [[20 - Privacidade, anonimato e metadados]]
-- Cross-links: [[04 - Princípios de design seguro]] (fail-safe defaults, separação de privilégios, DiD como pilar de design), [[02 - Pensar como adversário]] (assume breach, modelagem de ameaças, threat modeling), [[13 - Autorização e controle de acesso]] (RBAC/ABAC — o mecanismo que zero trust usa para autorizar por requisição)
+- Cross-links: [[04 - Princípios de design seguro]] (fail-safe defaults, separação de privilégios, DiD como pilar de design), [[02 - Pensar como adversário]] (assume breach, modelagem de ameaças, threat modeling), [[13 - Autorização e controle de acesso]] (RBAC/ABAC — o mecanismo que zero trust usa para autorizar por requisição), [[04 - Grants de máquina e fluxos especiais]] (workload identity — o mecanismo OIDC que zero trust usa para autenticar serviço-a-serviço)
 
 > [!summary] Resumo em uma linha
 > Zero trust elimina a confiança implícita por localização de rede — cada requisição é autenticada e autorizada individualmente; defesa em profundidade empilha camadas independentes para que a falha de uma não seja catastrófica.
@@ -456,10 +457,12 @@ Respostas sênior demonstram que você entende os **princípios** por trás dos 
 
 ---
 
-> [!info] Lastro
-> 1. **NIST SP 800-207** — *Zero Trust Architecture* (Scott Rose et al., agosto 2020). Documento normativo que define os sete princípios de ZT e os componentes lógicos de uma arquitetura ZT. [https://doi.org/10.6028/NIST.SP.800-207](https://doi.org/10.6028/NIST.SP.800-207)
-> 2. **Google BeyondCorp papers** — série iniciada em 2014, descrevendo a implementação de ZT no Google sem VPN. Acesso via [https://research.google/pubs/?area=security-and-privacy](https://research.google/pubs/?area=security-and-privacy) (buscar "BeyondCorp"). O paper fundacional é Ward et al., *BeyondCorp: A New Approach to Enterprise Security*, USENIX ;login: 2014.
-> 3. **John Kindervag (Forrester Research, 2010)** — *"No More Chewy Centers: Introducing The Zero Trust Model Of Information Security"*. Documento original que cunhou o termo "zero trust" e a analogia "crocante por fora, mole por dentro" (hard candy shell, soft chewy center).
-> 4. **CISA — Zero Trust Maturity Model v2** (abril 2023). Os cinco pilares e quatro níveis de maturidade. [https://www.cisa.gov/zero-trust-maturity-model](https://www.cisa.gov/zero-trust-maturity-model)
-> 5. **Brian Krebs (Krebs on Security, fevereiro 2014)** — *"Target Hackers Broke in Via HVAC Company"*. Análise primária do breach da Target 2013, detalhando o vetor HVAC (Fazio Mechanical) e o movimento lateral até os sistemas PoS. [https://krebsonsecurity.com/2014/02/target-hackers-broke-in-via-hvac-company/](https://krebsonsecurity.com/2014/02/target-hackers-broke-in-via-hvac-company/)
-> 6. **James Reason — *Human Error*** (Cambridge University Press, 1990). Fonte primária do modelo do queijo suíço (Swiss cheese model), originalmente desenvolvido para acidentes industriais e de aviação, amplamente adotado pela segurança da informação como metáfora para defesa em profundidade.
+## Fontes
+
+1. **NIST SP 800-207** — *Zero Trust Architecture* (Scott Rose et al., agosto 2020). Documento normativo que define os sete princípios de ZT e os componentes lógicos de uma arquitetura ZT. [doi.org/10.6028/NIST.SP.800-207](https://doi.org/10.6028/NIST.SP.800-207)
+2. **Google BeyondCorp papers** — série iniciada em 2014, descrevendo a implementação de ZT no Google sem VPN. Acesso via [research.google/pubs (área Security and Privacy)](https://research.google/pubs/?area=security-and-privacy) (buscar "BeyondCorp"). O paper fundacional é Ward et al., *BeyondCorp: A New Approach to Enterprise Security*, USENIX ;login: 2014.
+3. **John Kindervag (Forrester Research, 2010)** — *"No More Chewy Centers: Introducing The Zero Trust Model Of Information Security"*. Documento original que cunhou o termo "zero trust" e a analogia "crocante por fora, mole por dentro" (hard candy shell, soft chewy center).
+4. **CISA — Zero Trust Maturity Model v2** (abril 2023). Os cinco pilares e quatro níveis de maturidade. [cisa.gov/zero-trust-maturity-model](https://www.cisa.gov/zero-trust-maturity-model)
+5. **Brian Krebs (Krebs on Security, fevereiro 2014)** — *"Target Hackers Broke in Via HVAC Company"*. Análise primária do breach da Target 2013, detalhando o vetor HVAC (Fazio Mechanical) e o movimento lateral até os sistemas PoS. [krebsonsecurity.com/2014/02/target-hackers-broke-in-via-hvac-company](https://krebsonsecurity.com/2014/02/target-hackers-broke-in-via-hvac-company/)
+6. **James Reason — *Human Error*** (Cambridge University Press, 1990). Fonte primária do modelo do queijo suíço (Swiss cheese model), originalmente desenvolvido para acidentes industriais e de aviação, amplamente adotado pela segurança da informação como metáfora para defesa em profundidade.
+7. **Bare Metal Cyber — Network Plus PrepCast, Episódio 142** — *"Zero Trust and Defense in Depth Models"* (podcast, ~15min, EN, transcrição verificada). Síntese conjunta dos dois modelos como estratégias complementares, não concorrentes. [youtube.com/watch?v=0RE-2KxUuSI](https://www.youtube.com/watch?v=0RE-2KxUuSI)
