@@ -1,7 +1,7 @@
 ---
 title: "Auto-configuration e starters"
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-08-25
 type: concept
 progress: backlog
 status: seedling
@@ -197,6 +197,14 @@ public class Application { }
 # ou via propriedade (equivalente, útil quando a classe não está no classpath de compilação)
 spring.autoconfigure.exclude=com.acme.order.autoconfigure.OrderAutoConfiguration
 ```
+
+> [!tip] Assista: Writing your own Spring Boot Starter
+> **Canal:** SpringDeveloper (talk do SpringOne) | **Duração:** ~46min | **Idioma:** EN
+>
+> Constrói um starter de verdade, do zero, e é assistindo alguém encadear as condições que a auto-configuração para de parecer mágica: `@ConditionalOnMissingBean` para entregar um default que o usuário pode sobrescrever só declarando o próprio bean, `@ConditionalOnProperty` para alternar implementações por configuração, e uma condição customizada estendendo `SpringBootCondition` quando as prontas não bastam. O ângulo que a nota não tem é o do **autor** do starter: as decisões mudam quando é você quem precisa adivinhar o que o consumidor vai querer trocar.
+> ⚠️ **A talk está desatualizada num ponto central:** ela registra a auto-configuration em `META-INF/spring.factories`, mecanismo aposentado para esse fim a partir do Boot 2.7. O registro correto hoje é o `AutoConfiguration.imports` documentado na seção acima. O raciocínio sobre condições continua válido; o arquivo, não.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=EDdd56vyjPg)
 
 ## Armadilhas
 

@@ -1,7 +1,7 @@
 ---
 title: "Eventos do ApplicationContext"
 created: 2026-06-08
-updated: 2026-06-11
+updated: 2026-08-25
 type: concept
 progress: backlog
 status: seedling
@@ -223,6 +223,14 @@ public class CacheWarmupListener {
     }
 }
 ```
+
+> [!tip] Assista: Trabalhando com eventos de domínio em Spring Boot
+> **Canal:** Felix Gilioli | **Duração:** ~20min | **Idioma:** PT-BR
+>
+> A seção acima afirma que eventos são síncronos por default. O vídeo **prova isso com um breakpoint**: ele para a execução dentro do listener e mostra o `save` do serviço parado, esperando. É a diferença entre saber a regra e ver a requisição travar por causa dela. Ele também mostra as duas formas de assinar — implementar `ApplicationListener<T>` ou anotar um método qualquer com `@EventListener` — e oferece uma rota que esta nota não cobre: em vez de anotar listener por listener com `@Async`, você sobrescreve o bean `applicationEventMulticaster` com um executor e torna **todos** os eventos assíncronos de uma vez.
+> Trecho de destaque [14:34]: *"esse processo ele é síncrono, quando eu publico o evento aqui ele vai ficar esperando todos os outros processos terminarem"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=wnR_59CiOcc)
 
 ## Armadilhas
 

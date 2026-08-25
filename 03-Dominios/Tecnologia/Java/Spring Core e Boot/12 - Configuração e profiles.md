@@ -1,7 +1,7 @@
 ---
 title: "Configuração e profiles"
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-08-25
 type: concept
 progress: backlog
 status: seedling
@@ -217,6 +217,14 @@ ORDER_SERVICE_URL=https://api.prod/orders \
 ORDER_MAX_RETRIES=5 \
 java -jar order-service.jar
 ```
+
+> [!tip] Assista: ConfigurationProperties explained
+> **Canal:** Java Brains | **Duração:** ~12min | **Idioma:** EN
+>
+> Dois ganhos sobre o que esta nota já cobre. O primeiro é a **segurança de tipo demonstrada ao vivo**: ele troca o valor da porta por `foo` e a aplicação simplesmente **recusa subir**, com a mensagem apontando a propriedade culpada. Um erro de configuração deixa de ser incidente em produção e vira falha de inicialização — que é o momento mais barato possível para descobri-lo. O segundo é o endpoint `/actuator/configprops`, que lista toda propriedade configurável da aplicação **incluindo as centenas que o próprio Spring Boot expõe**, cada uma com o valor atualmente em vigor. É a forma de descobrir o que dá para configurar sem caçar na documentação.
+> Trecho de destaque [5:06]: *"you essentially get type safety in your configuration... you catch that during application startup time and not some time when the application runs"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=z8kfFbfGGME)
 
 ## Armadilhas
 

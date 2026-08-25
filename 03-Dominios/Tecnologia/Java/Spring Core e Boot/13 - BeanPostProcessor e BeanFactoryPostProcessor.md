@@ -1,7 +1,7 @@
 ---
 title: "BeanPostProcessor e BeanFactoryPostProcessor"
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-08-25
 type: concept
 progress: backlog
 status: seedling
@@ -127,6 +127,15 @@ Bean 'meuBPP' of type [...] is not eligible for getting processed
 by all BeanPostProcessors (for example: not eligible for auto-proxying).
 ```
 
+> [!tip] Assista: Writing a BeanPostProcessor
+> **Canal:** Java Brains | **Duração:** ~12min | **Idioma:** EN
+>
+> O detalhe que transforma o `BeanPostProcessor` de curiosidade em chave-mestra: os dois métodos **devolvem um objeto**, e nada obriga esse objeto a ser o mesmo que entrou. Você pode devolver **outro objeto no lugar do bean**, e o container aceita — segue configurando com o que você devolveu. É exatamente essa costura que o Spring usa internamente para trocar o seu bean por um proxy, o que amarra esta nota nas de [[03-Dominios/Tecnologia/Java/Spring Core e Boot/09 - AOP e proxies no Spring|AOP e proxies]] e [[03-Dominios/Tecnologia/Java/Spring Core e Boot/10 - Self-invocation e os limites do proxy|self-invocation]]. Ele fecha notando que não existe gancho equivalente para a destruição.
+> Trecho de destaque [7:34]: *"you can return a different object, so all these things are possible"*
+> *(Série antiga, baseada em `spring.xml` e Eclipse. A semântica do gancho não mudou; o ferramental é de outra era.)*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=-ycOZTpMkow)
+
 ## Na prática
 
 BPP simples que loga a criação de cada bean e envolve `Service`s anotados com `@LogExecution` em um proxy dinâmico de logging:
@@ -164,6 +173,14 @@ public class LoggingBeanPostProcessor implements BeanPostProcessor, Ordered {
 ```
 
 Registrado como `@Component`, este BPP aplica logging transparente sem modificar as classes de serviço — o mesmo padrão que o Spring usa internamente para `@Transactional`.
+
+> [!tip] Assista: Writing a BeanFactoryPostProcessor
+> **Canal:** Java Brains | **Duração:** ~15min | **Idioma:** EN
+>
+> Continuação direta do vídeo acima, e é onde o contraste que dá nome a esta nota fica físico: o `BeanPostProcessor` roda **uma vez por bean, depois de instanciado**; o `BeanFactoryPostProcessor` roda **uma única vez, sobre as definições, antes de qualquer instância existir**. Ele ancora isso no exemplo canônico — a substituição de `${...}` por valores de um arquivo de propriedades — e mostra na saída a ordem exata: o carregador de propriedades faz a substituição, e só então o factory pré-instancia os singletons. Depois disso, "por que não dá para injetar um bean num BFPP" deixa de precisar ser decorado.
+> Trecho de destaque [14:05]: *"the bean factory postprocessor has gone ahead and done the substitution before the bean factory is initialized"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=szNWTBlewQI)
 
 ## Armadilhas
 
