@@ -1,7 +1,7 @@
 ---
 title: "Self-invocation e os limites do proxy"
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-08-25
 type: concept
 progress: backlog
 status: seedling
@@ -160,6 +160,14 @@ public class PedidoService {
 ```
 
 Limitação: funciona apenas quando a propagação padrão (`REQUIRED`) é suficiente. Se `enviarConfirmacao` precisasse de `REQUIRES_NEW` (nova transação independente), essa abordagem não serve. (A semântica de propagação — `REQUIRED`/`REQUIRES_NEW` — é tema do Galho 10, Persistência de dados, planejado.)
+
+> [!tip] Assista: Why doesn't @Transactional work when called within the same class?
+> **Canal:** Laurentiu Spilca | **Duração:** ~16min | **Idioma:** EN
+>
+> O melhor material que existe de graça sobre o assunto desta nota, e ele chega lá pelo caminho mais curto possível: em vez de teorizar sobre proxies, Spilca **imprime a classe em tempo de execução** de `this` e de uma referência injetada. Uma é a sua classe; a outra é `$$EnhancerBySpring`. E então ele faz o experimento que fecha o argumento — injeta a própria classe dentro dela mesma e mostra que, por esse caminho, ela também vira proxy. Mesmo método, mesma anotação, dois caminhos de chamada, comportamentos diferentes. A conclusão vale para qualquer anotação interceptada, não só `@Transactional`.
+> Trecho de destaque [12:43]: *"it's not the annotation itself that has the real value, but the fact that you have a proxy"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=gDpmbUoEpPQ)
 
 ## Na prática
 

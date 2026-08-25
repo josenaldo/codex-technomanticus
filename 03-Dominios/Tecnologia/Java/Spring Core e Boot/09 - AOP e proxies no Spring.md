@@ -1,7 +1,7 @@
 ---
 title: "AOP e proxies no Spring"
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-08-25
 type: concept
 progress: backlog
 status: seedling
@@ -133,6 +133,14 @@ O **pointcut** é a expressão que casa os join points. As mais usadas:
 
 Pointcuts podem ser combinados com `&&`, `||`, `!`, e nomeados num método `@Pointcut` reutilizável para não repetir a expressão.
 
+> [!tip] Assista: Descomplicando Aspectos com Java e Spring AOP
+> **Canal:** [[Giuliana Bezerra]] | **Duração:** ~18min | **Idioma:** PT-BR
+>
+> Se o vocabulário da AOP — aspect, advice, pointcut, join point — ainda soa como quatro sinônimos de "interceptar", este vídeo resolve isso em cinco minutos de slides e depois constrói tudo num projeto real. O que ele acrescenta a esta nota está no final: um `@Around` que esquece de chamar `proceed()` **mata silenciosamente o método interceptado**. O método continua sendo chamado explicitamente no código, não lança exceção nenhuma, e simplesmente não executa. É o tipo de falha que consome uma tarde inteira de depuração porque o sintoma não aponta para o aspecto.
+> Trecho de destaque [16:11]: *"a gente precisa chamar o método para manter ele funcionando, caso contrário a gente só vai ter a preocupação transversal sendo executada"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=StzJwJQNqf0)
+
 ## Na prática
 
 Um aspecto único que faz logging e timing de toda chamada ao `OrderService`, usando `@Around`:
@@ -181,6 +189,14 @@ public class OrderServiceTimingAspect {
 Aqui, qualquer chamada a `OrderService.place(...)`, `OrderService.cancel(...)` etc. passa pelo proxy, dispara o `@Around`, mede o tempo e loga — e o `OrderService` permanece sem uma linha de logging. Adicionar `OrderService.refund(...)` amanhã já vem instrumentado, porque o pointcut casa por padrão de assinatura, não por método nomeado.
 
 Versão alternativa dirigida por anotação, para aplicar timing só onde você quiser: crie `@Timed`, troque o pointcut por `@annotation(com.example.order.aop.Timed)`, e anote os métodos de interesse. É o mesmo modelo de `@Cacheable` e companhia.
+
+> [!tip] Assista: Proxy Design Pattern no Java na Prática
+> **Canal:** [[Giuliana Bezerra]] | **Duração:** ~23min | **Idioma:** PT-BR
+>
+> Esta nota afirma que o Spring escolhe entre proxy dinâmico da JDK e CGLib conforme o bean implemente ou não uma interface. O vídeo é o que faz essa frase parar de ser trivia decorada: Giuliana constrói o padrão Proxy na unha, com interface comum entre proxy e objeto real, depois refaz o mesmo comportamento com o **dynamic proxy da JDK** e depois de novo com **CGLib** — inclusive esbarrando no argumento de JVM que o CGLib exige para acessar módulos internos do Java moderno. Você sai entendendo por que existem duas estratégias, e não apenas que existem.
+> Trecho de destaque [2:06]: *"tem um objeto wrapper ou envelopador ali em cima do objeto real, que é esse proxy"* — a imagem que explica tudo que vem na próxima nota sobre self-invocation.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=elf0DoWEyqE)
 
 ## Armadilhas
 

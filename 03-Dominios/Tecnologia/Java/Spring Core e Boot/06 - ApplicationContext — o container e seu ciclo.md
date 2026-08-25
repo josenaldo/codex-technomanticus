@@ -1,7 +1,7 @@
 ---
 title: "ApplicationContext — o container e seu ciclo"
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-08-25
 type: concept
 progress: backlog
 status: seedling
@@ -126,6 +126,15 @@ O container detecta beans que implementam interfaces `*Aware` durante a fase de 
 | `EmbeddedValueResolverAware` | `setEmbeddedValueResolver(StringValueResolver)` | Resolvedor de placeholders `${...}` para uso em código de infraestrutura |
 
 Interfaces `*Aware` são usadas principalmente por código de infraestrutura e integrações. Em código de aplicação, prefira injeção via `@Autowired` ou construtor.
+
+> [!tip] Assista: Criando um projeto não-web com Spring Framework
+> **Canal:** AlgaWorks | **Duração:** ~29min | **Idioma:** PT-BR
+>
+> Quase todo material de Spring apresenta o container já embrulhado em Boot e em servidor web, e o efeito colateral é que o `ApplicationContext` nunca aparece sozinho — ele vira uma engrenagem que a gente supõe existir. Aqui ele aparece nu: sem Boot, sem web, sem auto-configuração. Alexandre instancia `AnnotationConfigApplicationContext` com as próprias mãos, informa o pacote-base para a varredura de componentes e puxa o bean com `getBean`. É o mesmo construtor que aparece no código desta nota, só que promovido de trecho a projeto inteiro — e é nesse momento que o contêiner deixa de ser abstração e vira um objeto que você segura, inicia e encerra.
+> **Ir direto a [12:23]:** a criação do contexto e a passagem do pacote-base, que é o ponto onde a varredura de `@Component` deixa de ser mágica.
+> *(Aula datada e legenda automática bem imprecisa nos termos técnicos; o áudio é claro.)*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=vrHWFtOKMKM)
 
 ## Na prática
 

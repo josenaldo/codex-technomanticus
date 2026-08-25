@@ -1,7 +1,7 @@
 ---
 title: "Qualificação de beans — @Qualifier, @Primary, @Profile"
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-08-25
 type: concept
 progress: backlog
 status: seedling
@@ -186,6 +186,15 @@ private final Map<String, NotificationChannel> channelsByName;
 ```
 
 Esse padrão permite despachar para implementações pelo nome sem `if`/`switch`.
+
+> [!tip] Assista: Por que usar a anotação @Profile do Spring?
+> **Canal:** AlgaWorks | **Duração:** ~12min | **Idioma:** PT-BR
+>
+> Cobre só um dos três mecanismos desta nota, mas encena bem uma armadilha que quase todo mundo comete uma vez: ativar `spring.profiles.active` **sozinho não faz absolutamente nada**. Ele sobe a aplicação com o profile ativo e mostra os dois beans sendo construídos assim mesmo — porque nenhum deles foi marcado. Só então anota as classes com `@Profile`. A lição que fica é que profile ativo e marcação do bean são duas metades da mesma decisão, e uma sem a outra é silêncio, não erro.
+> **Ir direto a [4:58]:** o momento em que ele ativa o profile, nada muda, e ele explica por quê.
+> *(Legenda automática imprecisa nos termos técnicos.)*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=atoicEqe-ho)
 
 ## Na prática
 
