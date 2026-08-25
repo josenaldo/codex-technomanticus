@@ -1,7 +1,7 @@
 ---
 title: "Tipos de injeção — constructor, setter, field"
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-08-25
 type: concept
 progress: backlog
 status: seedling
@@ -130,6 +130,15 @@ spring.main.allow-circular-references=true
 ```
 
 A forma correta de resolver é refatorar: extrair a responsabilidade compartilhada para um terceiro bean, ou reorganizar as dependências para quebrar o ciclo.
+
+> [!tip] Assista: O que é Injeção de Dependências e como funciona no Spring?
+> **Canal:** AlgaWorks | **Duração:** ~15min | **Idioma:** PT-BR
+>
+> O vídeo percorre os mesmos três pontos de injeção desta nota — construtor, campo e método — mas acrescenta um detalhe que muda o modelo mental de quem só viu setter: `@Autowired` num **método qualquer** funciona. O método não precisa ser um setter, não precisa seguir a convenção JavaBean e não precisa nem ter um único parâmetro; basta ser um método cujos parâmetros sejam de tipos que o contêiner conhece, e o Spring resolve todos. O "setter injection" é, na verdade, um caso particular de injeção por método — a convenção existe para documentar a intenção, não porque o Spring dependa dela.
+> **Ir direto a [9:17]:** é onde ele abre esse parêntese e explica por que ainda assim vale seguir o padrão JavaBean (documentação implícita para quem lê o código depois).
+> *(Legenda automática e bastante imprecisa nos termos técnicos — `@Autowired` sai transcrito como "a rua ao". O áudio é claro.)*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=GaOxliPuQtA)
 
 ## Na prática
 

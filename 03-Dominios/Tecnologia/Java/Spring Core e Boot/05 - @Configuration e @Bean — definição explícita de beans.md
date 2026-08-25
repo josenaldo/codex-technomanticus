@@ -1,7 +1,7 @@
 ---
 title: "@Configuration e @Bean — definição explícita de beans"
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-08-25
 type: concept
 progress: backlog
 status: seedling
@@ -167,6 +167,15 @@ public class HttpClientConfig {
 ```
 
 Agora qualquer bean que precise de `ObjectMapper` ou `RestClient` simplesmente declara o tipo como parâmetro do construtor — o Spring injeta os beans definidos acima.
+
+> [!tip] Assista: Métodos produtores com Spring usando a anotação @Bean
+> **Canal:** AlgaWorks | **Duração:** ~14min | **Idioma:** PT-BR
+>
+> Uma aula inteira dedicada ao caso de uso que justifica `@Bean` existir: transformar em bean uma classe sobre a qual você **não tem controle nenhum**. Ele monta dois projetos Maven de verdade, instala o auxiliar no repositório local, declara a dependência e então registra a classe de terceiro no contêiner por um método produtor. É o mesmo raciocínio da seção acima, mas com o atrito real da integração aparecendo no caminho.
+> **Ir direto a [5:17]:** o ponto em que fica claro por que anotar a classe com `@Component` não era uma opção — o código-fonte é de outro projeto e você não pode tocá-lo.
+> *(Aula datada: Java 8, Spring Tool Suite e passeio pelo `pom.xml`. Vale pelo raciocínio, não pelo ferramental. Legenda automática e imprecisa.)*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=8-vBfcaZjhk)
 
 ## Armadilhas
 

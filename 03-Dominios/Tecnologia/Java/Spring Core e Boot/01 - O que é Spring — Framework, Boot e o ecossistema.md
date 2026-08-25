@@ -1,7 +1,7 @@
 ---
 title: "O que é Spring — Framework, Boot e o ecossistema"
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-08-25
 type: concept
 progress: backlog
 status: seedling
@@ -65,6 +65,15 @@ Spring Boot é o framework de facto para desenvolvimento backend em Java moderno
 Em entrevistas técnicas para posições pleno/sênior, a distinção entre **Spring Framework** e **Spring Boot** é cobrada com frequência. Respostas vagas como "Spring Boot é o Spring mais fácil" demonstram lacuna conceitual; a resposta precisa é sobre *o que cada camada adiciona* e *quais problemas cada uma resolve*.
 
 Entender o modelo de camadas também é pré-requisito para as notas seguintes: IoC e DI fazem parte do **Framework**; auto-configuração e starters são mecanismos do **Boot**; Spring Data e Security são **projetos separados** que apenas se integram ao ecossistema.
+
+> [!tip] Assista: O que é Spring Boot e quais as vantagens de usá-lo?
+> **Canal:** AlgaWorks | **Duração:** ~10min | **Idioma:** PT-BR
+>
+> Se esta nota te deu o mapa do ecossistema, o vídeo te dá a sensação de dirigir dentro dele. Alexandre defende a convenção-sobre-configuração por um ângulo que a nota só encosta: o valor do starter não está em economizar linhas de `pom.xml`, e sim em receber um conjunto de versões transitivas **já testadas entre si** pela equipe do Spring e pela comunidade — a compatibilidade é o produto, a brevidade é o efeito colateral. Ele fecha com a inversão que resume o Boot: tudo isso acontece sem gerar uma única linha de código-fonte no seu projeto, e no instante em que você configura algo à mão, o Boot detecta e sai da frente.
+> **Ir direto a [8:35]:** ele mostra que o jar gerado pelo Boot tem estrutura interna própria — não é o jar tradicional do Java com as dependências jogadas dentro, é um formato que existe para viabilizar a aplicação autocontida. É a peça que explica por que `java -jar` funciona.
+> *(Legenda automática e bastante imprecisa nos termos técnicos; o áudio é claro, mas não confie na transcrição escrita.)*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=ABjV1bObFW8)
 
 ## Como funciona
 

@@ -1,7 +1,7 @@
 ---
 title: "IoC e injeção de dependência no Spring"
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-08-25
 type: concept
 progress: backlog
 status: seedling
@@ -119,6 +119,14 @@ Se você veio do Galho 7, isso vai soar familiar: o [[03-Dominios/Tecnologia/Jav
 > Este é o ponto que mais gera confusão. O Spring **não** implementa a spec CDI — ele tem seu próprio modelo de container, anterior ao CDI inclusive. Por compatibilidade, o Spring *suporta* as anotações `jakarta.inject` (`@Inject`, `@Named`), mas o motor por baixo é dele. Dizer "Spring é a implementação de CDI" numa entrevista é um erro factual.
 
 Não vamos re-explicar o CDI aqui — para o detalhe da spec, siga o wikilink. O assunto desta nota é o container do **Spring**.
+
+> [!tip] Assista: Injeção de dependências — do Java ao Spring
+> **Canal:** [[Giuliana Bezerra]] | **Duração:** ~20min | **Idioma:** PT-BR
+>
+> Esta nota argumenta que injeção de dependência é um padrão que existe **antes e independentemente** do Spring. O vídeo prova isso ao vivo, e é por isso que ele vale os vinte minutos: Giuliana começa criando um projeto Spring Boot e **arranca o Spring fora**, escreve um migrador de usuários acoplado a `FileReader` e `DbWriter` concretos, sente a dor de trocar a origem dos dados, refatora para interfaces (aproveitando para generalizá-las com genéricos, de "ler usuários" para "ler qualquer coisa") e só então injeta pelo construtor — tudo na unha. O Spring só volta no minuto 14, quando o trabalho manual já ficou insustentável. Você vê a motivação nascer antes da solução, que é a ordem inversa da maioria dos tutoriais.
+> Trecho de destaque [13:17]: *"essa estratégia aqui de passar as dependências no construtor é injeção de dependências"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=CSsB53HCC3A)
 
 ## Na prática
 
