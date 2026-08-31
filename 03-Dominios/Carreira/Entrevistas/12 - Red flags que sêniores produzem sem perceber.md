@@ -108,6 +108,7 @@ A distinção prática: se você errou o formato, corrija na hora sem drama ("de
 
 A red flag número três tem nota própria — e ela é a única parte do processo que você controla inteiramente, além de ser a melhor fonte de informação sobre se você quer mesmo aquele emprego.
 
+- [[12a - Defender um hiato longo]] *(broto)* — o caso em que o fato **não** é red flag mas a resposta sobre ele é: um hiato de anos no histórico, e os cinco movimentos que separam uma defesa madura de uma desqualificação autoinfligida.
 - [[13 - A entrevista reversa]] — o que perguntar, e o que as respostas revelam.
 - [[14 - Negociação de oferta (capstone)]] — o fechamento do processo e do galho.
 - [[07 - A taxonomia das perguntas comportamentais]] — onde a maior parte destas red flags aparece.

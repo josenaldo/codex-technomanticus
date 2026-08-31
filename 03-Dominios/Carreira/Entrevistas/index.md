@@ -51,6 +51,7 @@ Catálogo de **teoria geral**: vale para qualquer candidato, com exemplos sempre
 
 11. [[11 - Comunicar trade-offs sob pressão]] — admitir o custo é o que torna a decisão crível.
 12. [[12 - Red flags que sêniores produzem sem perceber]] — o que desqualifica quem é tecnicamente forte.
+    - [[12a - Defender um hiato longo]] *(broto)* — o hiato de anos não é a red flag; a resposta sobre ele é. Cinco movimentos, e o que a empresa não pode perguntar.
 13. [[13 - A entrevista reversa]] — suas perguntas, e o que as respostas revelam sobre a empresa.
 14. [[14 - Negociação de oferta (capstone)]] — **fecha o galho**: ancoragem, BATNA, o pacote completo e o mapa das 14 notas por etapa.
 

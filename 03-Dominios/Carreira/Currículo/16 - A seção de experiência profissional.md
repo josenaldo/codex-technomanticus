@@ -84,6 +84,9 @@ A razão pela qual a omissão silenciosa costuma sair pior do que a menção bre
 > [!example] Caso fictício
 > Bianca Torres, desenvolvedora backend pleno já apresentada em notas anteriores deste galho, ficou onze meses sem vínculo formal depois de um desligamento, cuidando da própria saúde mental antes de voltar a procurar emprego. Na primeira versão do currículo, escreveu apenas os anos de cada cargo, sem os meses — "2021" seguido de "2023" — tentando deixar o intervalo menos visível. Um amigo que revisou o documento reconheceu o padrão de "anos sem meses" como sinal clássico de lacuna escondida, e apontou que a tentativa de disfarce era mais visível do que a lacuna seria se declarada. Bianca reescreveu com meses explícitos e acrescentou uma linha entre as duas entradas: "Pausa para cuidado de saúde (mar/2022–jan/2023)." A entrevista seguinte incluiu uma pergunta sobre o período — mas ela já tinha uma resposta pronta, preparada com calma, em vez de improvisada sob pressão.
 
+> [!info] Quando o vão é de anos, e não de meses
+> Tudo nesta subseção foi calibrado para a escala em que a lacuna de emprego costuma aparecer — seis meses, um ano. Acima disso a prescrição não escala, porque a pergunta do leitor migra de "o que aconteceu" para "você ainda opera?", e a linha curta deixa de responder a metade que decide. O broto [[03-Dominios/Carreira/Currículo/16a - Lacuna longa e reentrada|16a - Lacuna longa e reentrada]] trata dessa escala: o que a evidência de campo diz sobre duração, como partir um vão de anos com trabalho real que nunca entrou no documento, e por que um motivo de saúde se declara por categoria e não por diagnóstico.
+
 ### Passagens curtas
 
 Três meses aqui, cinco meses ali: passagens curtas são o segundo tipo de desconforto que a maioria dos currículos tenta esconder, e o mecanismo é parecido com o da lacuna, mas com dúvida diferente — o leitor não pergunta "o que aconteceu nesse intervalo", pergunta **"essa pessoa não fica"**. Uma sequência de duas ou três passagens curtas seguidas, sem contexto, é lida como padrão de comportamento, não como coincidência.
@@ -187,6 +190,7 @@ Fechada a seção de experiência profissional e as seis situações que mais ge
 
 - [[03-Dominios/Carreira/Currículo/17 - Projetos, portfólio e GitHub depois da IA|17 - Projetos, portfólio e GitHub depois da IA]] — o que conta como evidência técnica fora do vínculo empregatício, e como a IA generativa mudou o valor sinal de um projeto genérico.
 - [[03-Dominios/Carreira/Currículo/18 - Adaptar por vaga sem reescrever|18 - Adaptar por vaga sem reescrever]] — como a densidade e a ordem desta nota se ajustam, cirurgicamente, a cada vaga específica, sem reescrever o documento do zero.
+- [[03-Dominios/Carreira/Currículo/16a - Lacuna longa e reentrada|16a - Lacuna longa e reentrada]] *(broto)* — a mesma seção de experiência quando a lacuna é de anos: partir o vão, declarar por categoria, e realocar o espaço para prova de atualidade.
 - [[03-Dominios/Carreira/Currículo/19 - Declarar lacuna|19 - Declarar lacuna]] — o par oral desta nota: como e onde declarar a mesma lacuna na conversa, não só no documento.
 
 ## Veja também
