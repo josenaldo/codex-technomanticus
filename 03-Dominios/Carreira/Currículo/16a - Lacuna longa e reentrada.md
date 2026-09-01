@@ -149,25 +149,33 @@ O mecanismo por trás dessa decisão tem nome, e é generalizável: **divulgaç�
 | --- | --- | --- |
 | Currículo | a seleção — o que você quer que decidam por | todo mundo, em segundos |
 | LinkedIn | a trajetória, com espaço para contexto e um campo próprio para a pausa | quem foi conferir |
-| Site ou portfólio | o histórico completo, com detalhe por experiência | quem se interessou de verdade |
+| Site ou portfólio *(opcional)* | o histórico completo, com detalhe por experiência | quem se interessou de verdade |
 | Blog, texto pessoal, conversa | a história — incluindo, se você quiser, o motivo real | quem já decidiu que quer te conhecer |
 
 A elegância disso é que a transparência não diminui: ela é **reordenada**. Ninguém está escondendo nada de ninguém — o material está publicado, acessível, assinado. O que muda é que a pausa deixa de disputar espaço com a competência no único artefato onde o espaço é escasso, e passa a estar disponível exatamente para quem foi procurá-la.
 
-> [!warning] Quando a estratégia de seleção **não** funciona
-> Ela depende de três condições, e falha sem qualquer uma delas.
-> **Primeira: você precisa ter o que omitir.** O direito de curar é proporcional ao volume. Vinte anos de carreira com trinta projetos tornam a seleção natural — ninguém espera completude de quem tem tanto. Três anos de carreira com dois empregos não escondem nada: ali, a seleção *é* o histórico, e o vão aparece do mesmo jeito.
-> **Segunda: a camada seguinte precisa existir de verdade e ser alcançável.** Site no ar, link no cabeçalho, histórico realmente detalhado. Sem isso, "seleção" vira só um currículo com buracos.
-> **Terceira: o formato do documento precisa declarar que é seleção.** Um cabeçalho `Projetos selecionados` ou `Experiência relevante` faz esse trabalho numa palavra. Uma seção chamada `Experiência profissional`, em ordem cronológica reversa, promete completude mesmo que você não queira prometer.
+E vale desarmar de imediato a objeção mais provável, porque ela quase sempre vem: *"mas eu não tenho site"*. A maioria dos desenvolvedores não tem, e isso não invalida nada. Site pessoal é um **amplificador**, não um requisito — quem tem ganha uma camada rica e sob controle próprio, quem não tem já possui a camada seguinte de graça, porque o LinkedIn é ilimitado em espaço, praticamente universal, e tem desde 2022 um campo formal para a pausa. A cadeia funciona com currículo e LinkedIn apenas.
+
+> [!important] Para carreira longa, selecionar não é estratégia — é obrigação
+> Aqui está o ponto que reorganiza esta seção inteira, e que quase todo guia inverte. Um currículo tem uma ou duas páginas. Quem tem vinte anos de estrada e trinta projetos **não pode** listar tudo, sob nenhuma hipótese, com pausa ou sem pausa. A seleção já está acontecendo — ela é imposta pelo tamanho do documento, não escolhida por conveniência.
 >
-> E há contextos em que ela não se aplica: formulários que pedem histórico completo, concursos e processos públicos, empresas que reconstroem a cronologia dentro do próprio ATS, e mercados onde a cronologia integral é expectativa cultural — a [[03-Dominios/Carreira/Currículo/24 - Mercados, e o Brazilian Cultural Bug|nota 24]] trata dessas diferenças.
+> Isso muda o enquadramento da decisão. O veterano não está decidindo *se* vai curar; ele já está curando dezenas de trabalhos para fora. A única pergunta que resta é se a pausa merece uma das poucas linhas que sobraram — e, colocada assim, ela quase se responde: se um projeto de dois anos que deu certo ficou de fora por falta de espaço, é difícil justificar que um período sem projeto nenhum entre no lugar dele.
+
+> [!warning] Quando a estratégia de seleção **não** funciona
+> Duas condições sustentam a curadoria, e ela falha sem qualquer uma das duas.
+>
+> **Primeira: você precisa ter o que omitir.** O direito de curar é proporcional ao volume. Vinte anos de carreira com trinta projetos tornam a seleção natural — ninguém espera completude de quem tem tanto, e a omissão passa despercebida porque é obviamente necessária. Três anos de carreira com dois empregos não escondem nada: ali, a seleção *é* o histórico, e o vão aparece do mesmo jeito. É por isso que esta estratégia serve a Helena e ao autor deste vault, e **não** serve ao Éverton da próxima seção.
+>
+> **Segunda: o documento precisa declarar que é seleção.** É esta condição que faz o trabalho pesado, e ela custa uma palavra. Um cabeçalho `Projetos selecionados` ou `Experiência relevante` avisa ao leitor que ele está diante de um recorte, e ninguém procura buraco num recorte. Uma seção chamada `Experiência profissional`, em ordem cronológica reversa, promete completude mesmo que você não tenha querido prometer — e é a promessa, não a omissão, que cria o buraco.
+>
+> E há contextos em que a curadoria não se aplica, independentemente das duas condições: formulários que pedem histórico completo, concursos e processos públicos, empresas que reconstroem a cronologia dentro do próprio ATS, e mercados onde a cronologia integral é expectativa cultural — a [[03-Dominios/Carreira/Currículo/24 - Mercados, e o Brazilian Cultural Bug|nota 24]] trata dessas diferenças.
 
 Com isso na mesa, a decisão deixa de ser um dilema moral e vira uma escolha de projeto, com três opções e critérios claros:
 
 | Estratégia | Como fica no papel | Quando escolher |
 | --- | --- | --- |
 | **Declarar** | uma linha rotulada entre as entradas: *"Pausa na carreira — saúde (nov/2016 – nov/2019)"* | carreira curta, documento cronológico, ou pausa entre dois empregos formais que o leitor vai notar de qualquer jeito |
-| **Curar** | nenhuma linha sobre a pausa; cabeçalho de seleção e link para a camada seguinte | carreira longa com muito a omitir, camada seguinte publicada, vaga que não exige histórico completo |
+| **Curar** | nenhuma linha sobre a pausa; cabeçalho de seleção, e um link para onde há mais (site, se houver; LinkedIn, sempre) | carreira longa — onde a seleção já é obrigatória por falta de espaço — e vaga que não exige histórico completo |
 | **Preencher** | uma entrada real para o trabalho do período, com o rótulo honesto dele | houve trabalho no meio da pausa — e aí esta é sempre a melhor das três, e pode ser combinada com as outras duas |
 
 Note que a terceira não compete com as outras: se existe trabalho para registrar, registre, independentemente de declarar ou curar. É a operação da seção *"O que eu fiz"*, e ela é sempre ganho.
@@ -185,7 +193,8 @@ Três projetos publicados, com foco em sistemas distribuídos — github.com/usu
 PROJETOS SELECIONADOS
 (em vez de "Experiência profissional")
 
-Histórico completo e detalhado: seudominio.com.br/experiencias
+Histórico completo: seudominio.com.br/experiencias
+   (sem site, use o LinkedIn — linkedin.com/in/seu-usuario)
 ```
 
 Duas regras de redação valem para todas elas. **Rotule o período, não a si mesmo** — *"Pausa na carreira"* descreve um intervalo, *"Fiquei desempregado"* descreve uma pessoa, e a segunda versão gruda. E **não peça desculpa em lugar nenhum**: nada de "infelizmente", "tive que", "por motivos pessoais infelizmente precisei". A linha honesta e neutra é sempre mais forte que a linha honesta e humilde.
