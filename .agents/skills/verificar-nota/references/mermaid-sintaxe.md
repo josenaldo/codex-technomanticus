@@ -105,6 +105,17 @@ Backtick abre modo markdown-string, frágil com `${}`, `<>` e `()`. Backtick dup
 `sequenceDiagram`, `mindmap` e `quadrantChart` **não suportam** `style`. A linha não colore nada e
 ainda derruba o diagrama inteiro. Remova-a — não há equivalente nesses tipos.
 
+Em flowchart e `stateDiagram-v2`, cor de nó vem de `classDef` + `class N <classe>`, nunca de
+`style N fill:#...` nem de diretiva `%%{init}%%`: as duas formas ganham do tema do site e prendem a
+nota a uma paleta antiga. As cinco classes estão em `escrever-nota/SKILL.md`.
+
+Duas armadilhas de sintaxe no `classDef`, as duas custaram diagrama quebrado:
+
+- **`rgba()` não passa no parser de flowchart** — as vírgulas dentro dos parênteses quebram o
+  parse. Use hex de 8 dígitos: `#FFAA0024`, não `rgba(255,170,0,.14)`.
+- **`classDef` vem depois da linha de tipo.** Se o bloco começa com `%%{init}%%` ou comentário, o
+  `classDef` colocado antes de `graph LR` derruba o diagrama com "Syntax error in text".
+
 ## R7 — `mindmap`: folha com caracteres especiais precisa de ID
 
 Aqui aspas sozinhas **não** bastam — é preciso `id["texto"]`.

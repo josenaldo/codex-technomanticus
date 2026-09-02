@@ -130,10 +130,39 @@ Explica o mecanismo — o por quê. Cada conceito introduzido tem:
 ### Diagrama Mermaid (opcional)
 
 ```mermaid
-%% Paleta semântica: azul = ok/normal, âmbar = atenção, vermelho = erro/impossível
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[...] -->|...| B[...]
+    class A neutro
+    class B destaque
 ```
+
+**Cor de nó vem de classe, nunca de `style` nem de `%%{init}%%`.** Estilo e diretiva inline ganham
+do tema do site e do CSS: a nota fica presa a uma paleta antiga e nenhuma mudança de marca a
+alcança. As cinco classes do sistema:
+
+| Classe | Quando |
+|---|---|
+| `neutro` | o nó apenas se distingue dos outros — é o padrão |
+| `marca` | segundo nível de distinção, quando `neutro` já está em uso |
+| `destaque` | âmbar: o nó para onde o leitor deve olhar. Use com parcimônia |
+| `ok` | verde: o nó **afirma** um estado positivo ("escrita confirmada") |
+| `falha` | vermelho: o nó **afirma** um estado negativo ("403 Forbidden") |
+
+Verde e vermelho são semânticos, nunca categóricos: um nó verde não significa "bom", significa que
+ele afirma sucesso. Para diferenciar nós que só são diferentes, use `neutro`/`marca`/`destaque`.
+
+```
+classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+classDef marca    fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+classDef neutro   fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+classDef falha    fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+classDef ok       fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+```
+
+Hex de 8 dígitos, não `rgba()`: o parser de flowchart do Mermaid quebra nas vírgulas dentro dos
+parênteses. E os `classDef` vêm **depois** da linha que declara o tipo do diagrama.
 
 Use Mermaid para **mostrar estrutura, fluxo ou contraste visual**, nunca como decoração. Se um
 diagrama não acrescenta além do texto, omita.
