@@ -50,7 +50,7 @@ def test_catalogo_tem_tres_produtos(produtos_disponiveis):
 
 Rodado isoladamente, `test_catalogo_tem_tres_produtos` passa. Rodado depois de `test_remover_produto_esgotado`, na mesma execução da suíte inteira, falha — `len(produtos_disponiveis)` é `2`, não `3`. O autor do segundo teste jura que não mudou nada; o autor do primeiro teste jura que seu teste está correto (ele *precisa* remover um produto pra testar a lógica de "produto esgotado"). Os dois estão certos sobre o próprio teste, e os dois estão errados sobre uma premissa que nenhum dos dois questionou: que `produtos_disponiveis` chega "fresco" em cada teste.
 
-```
+```text
 $ pytest tests/test_catalogo.py -v
 tests/test_catalogo.py::test_remover_produto_esgotado PASSED
 tests/test_catalogo.py::test_catalogo_tem_tres_produtos FAILED

@@ -42,8 +42,9 @@ está ok, o que está faltando, e sugere qual skill usar para corrigir cada item
 | # | Item | Critério de aprovação |
 |---|------|-----------------------|
 | S1 | Mermaid renderizável | Todo bloco ` ```mermaid ` passa no checklist de [references/mermaid-sintaxe.md](references/mermaid-sintaxe.md) |
+| S2 | Cerca com linguagem | Nenhuma cerca nua: toda ` ``` ` declara linguagem, e `text` quando não é código (ver `escrever-nota/SKILL.md`) |
 
-S1 **não conta pontos** — é um gate de bug, não de riqueza. Um diagrama com erro de sintaxe não
+S1 e S2 **não contam pontos** — são gate de bug, não de riqueza. Um diagrama com erro de sintaxe não
 degrada, ele simplesmente não renderiza (caixa de erro no Obsidian, bloco cru no Quartz). Nota com
 S1 reprovado **não é aprovada**, qualquer que seja o score. Se a nota não tem bloco Mermaid, S1 é
 N/A (a ausência já é cobrada por E3).

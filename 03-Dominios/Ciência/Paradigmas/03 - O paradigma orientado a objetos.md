@@ -202,7 +202,7 @@ Vamos trabalhar um exemplo. Imagine que você modela formas geométricas e preci
 
 Em **OO**, cada tipo é uma classe que implementa as operações:
 
-```
+```java
 class Circulo implements Forma {
     double area()  { ... }
     void   render(){ ... }

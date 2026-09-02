@@ -296,7 +296,7 @@ Text objects de par de caracteres como `i"`, `i'`, `i(` operam na **linha atual 
 
 **Cenário problemático:**
 
-```
+```text
 const x = "hello   ← cursor aqui, quer apagar o conteúdo
 world"              ← aspas fecham aqui
 ```

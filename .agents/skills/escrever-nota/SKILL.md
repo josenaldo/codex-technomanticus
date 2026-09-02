@@ -127,6 +127,26 @@ Explica o mecanismo — o por quê. Cada conceito introduzido tem:
 - Por que funciona assim (o mecanismo)
 - Quando usar / quando não usar (se relevante)
 
+### Bloco de código
+
+**Toda cerca declara a linguagem.** Cerca nua (` ``` `) faz o Shiki não ter o que colorir: o bloco
+sai cinza inteiro no site e parece bug de CSS, não decisão de autor.
+
+Quando o conteúdo não é código, a linguagem certa é `text` — e ela é obrigatória do mesmo jeito:
+
+| Conteúdo | Cerca |
+|---|---|
+| código | a linguagem real (`java`, `python`, `go`, `ts`…) |
+| saída de terminal, sessão com `$`, stack trace | ` ```text ` |
+| árvore de diretórios, tabela ASCII, diagrama em caracteres | ` ```text ` |
+| template de saída de skill, prosa em bloco | ` ```text ` |
+
+O `text` explícito é o que separa "é para ficar cinza" de "faltou rotular". Sem ele as duas coisas
+ficam idênticas e ninguém consegue varrer as segundas.
+
+Extras úteis do Quartz: ` ```java {numberLines} ` liga a numeração, `{2,5-7}` destaca linhas e
+`title="Arquivo.java"` põe rótulo acima do bloco.
+
 ### Diagrama Mermaid (opcional)
 
 ```mermaid

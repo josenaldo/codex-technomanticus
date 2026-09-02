@@ -33,7 +33,7 @@ Oito meses depois, a suíte tem quatrocentos testes e leva um minuto e quarenta 
 
 A suíte ficou rápida de novo — e imediatamente instável. Um teste que cria um pedido com `status="pendente"` passa a existir no banco depois que o teste termina, porque `scope="session"` significa que ninguém dá `drop_all` até o fim de tudo. O próximo teste que faz `SELECT * FROM pedidos WHERE status = 'pendente'` esperando encontrar exatamente **um** pedido (o que ele mesmo criou) encontra dois — o seu e o órfão do teste anterior. A falha não aparece sempre: depende de quais testes rodaram antes, em que ordem, e se algum deles deixou dado "sujo" no caminho. É o mesmo tipo de bug que a nota de fixtures já descreveu para dado mutável em memória — só que agora o dado mutável não é uma lista Python, é uma linha de banco, e o "objeto compartilhado" é o arquivo `.db` inteiro.
 
-```
+```text
 $ pytest tests/test_pedidos.py -v
 tests/test_pedidos.py::test_criar_pedido_pendente PASSED
 tests/test_pedidos.py::test_listar_pedidos_pendentes FAILED

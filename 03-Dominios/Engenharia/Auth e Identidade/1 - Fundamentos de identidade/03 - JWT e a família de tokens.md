@@ -27,7 +27,7 @@ publish: true
 
 Um time recebe um JWT no header `Authorization: Bearer ...` e escreve isto no middleware:
 
-```
+```javascript
 const payload = JSON.parse(atob(token.split('.')[1]));
 if (payload.role === 'admin') { /* libera */ }
 ```

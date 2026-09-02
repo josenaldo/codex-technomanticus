@@ -45,7 +45,7 @@ def test_soma():
 
 Roda `pytest`. Passa. Aí ele **quebra o teste de propósito** pra ver a mensagem de erro — muda `somar(2, 3) == 5` para `somar(2, 3) == 6` — e o output do pytest mostra:
 
-```
+```text
     def test_soma():
 >       assert somar(2, 3) == 6
 E       assert 5 == 6

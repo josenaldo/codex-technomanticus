@@ -27,7 +27,7 @@ TypeScript vive numa dualidade permanente. Há o mundo dos **valores** — vari�
 
 Em Java ou C#, essa separação é rígida por design. Em TypeScript, ela é permeável — e é exatamente essa permeabilidade que torna o sistema de tipos tão expressivo. Os três operadores desta nota são as pontes que cruzam essa fronteira:
 
-```
+```text
 Mundo dos Valores          Mundo dos Tipos
 ─────────────────          ───────────────
 const config = { ... }  ──typeof──►  type Config = { ... }

@@ -306,7 +306,7 @@ Examina o código em busca de erros que compilam mas quase certamente estão err
 go doc fmt.Println
 ```
 
-```
+```text
 package fmt // import "fmt"
 
 func Println(a ...any) (n int, err error)
