@@ -63,7 +63,6 @@ Lê-se de cima para baixo, na ordem real de execução. O erro "sobe" pela cadei
 Uma Promise nasce **pending** e termina em um de dois estados finais — e uma vez que settle, não muda mais.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#fff", "edgeLabelBackground": "#f4f4f4"}}}%%
 stateDiagram-v2
     direction LR
     [*] --> pending : new Promise(executor)
@@ -242,17 +241,19 @@ Quando você chama `.then(fn)`:
    - Se `fn` **lança** um erro: P2 fica rejected com esse erro.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#f4f4f4"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Promise P1\n(fulfilled)"] -->|"then(fn)"| B["fn() executa\ncomo microtask"]
     B -->|"retorna valor"| C["P2 fulfilled\ncom valor"]
     B -->|"retorna Promise"| D["P2 adota estado\nda Promise retornada"]
     B -->|"lança erro"| E["P2 rejected\ncom erro"]
 
-    style A fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#fff
-    style E fill:#D0021B,color:#fff
+    class A neutro
+    class C neutro
+    class D destaque
+    class E falha
 ```
 
 Isso explica o flattening automático — se você retorna um `fetch(url)` dentro de `.then`, a próxima `.then` na cadeia recebe a resposta HTTP, não o objeto Promise.
@@ -313,8 +314,9 @@ function getConfig() {
 Quatro combinadores para quatro semânticas distintas de "esperar N Promises":
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q{Preciso que...} -->|"todas resolvam"| A
     Q -->|"esperar todas,\nver cada resultado"| B
     Q -->|"a mais rápida\n(resolve ou rejeita)"| C
@@ -325,10 +327,10 @@ flowchart TD
     C["Promise.race()\nFalha rápida: não — race puro\nRetorna: primeiro settled"]
     D["Promise.any()\nFalha rápida: não\nRetorna: primeiro fulfilled"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#fff
-    style D fill:#F5A623,color:#fff
+    class A neutro
+    class B neutro
+    class C destaque
+    class D destaque
 ```
 
 ### `Promise.all(promises)`

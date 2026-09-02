@@ -49,7 +49,6 @@ O payload contém o essencial para identificar o fato:
 Nada de cliente, itens ou total. Quem precisar, busca.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant P as Pedidos
     participant B as Broker

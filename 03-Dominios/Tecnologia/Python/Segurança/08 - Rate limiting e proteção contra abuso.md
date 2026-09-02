@@ -59,8 +59,11 @@ Ambas as ameaças compartilham a mesma correção estrutural: um limite de tenta
 Antes de entrar em código específico de framework, vale visualizar onde essa defesa se encaixa — porque o ponto central é que a rejeição acontece **antes** do handler de negócio, evitando o custo da lógica cara:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     REQ["Requisição\nPOST /login"] --> LIMITER{"Rate limiter\nchave já excedeu\no limite na janela?"}
 
     LIMITER -->|"não excedeu"| HANDLER["Handler de login\nvalida schema Pydantic"]
@@ -70,10 +73,10 @@ flowchart TB
 
     LIMITER -->|"excedeu"| REJ["429 Too Many Requests\nRetry-After: N segundos"]
 
-    style LIMITER fill:#4A90D9,color:#fff
-    style REJ fill:#D0021B,color:#fff
-    style HASH fill:#e8a33d,color:#fff
-    style RESP200 fill:#2d7a4a,color:#fff
+    class LIMITER neutro
+    class REJ falha
+    class HASH destaque
+    class RESP200 ok
 ```
 
 A requisição rejeitada por `429` nunca chega ao hash de senha nem à consulta ao banco — é justamente esse curto-circuito que evita a saturação de CPU vista no incidente de abertura. Um rate limiter mal posicionado (por exemplo, checado só depois de já ter feito o hash) perde boa parte do benefício, porque o custo caro já foi pago antes da rejeição.
@@ -89,8 +92,9 @@ Tanto `slowapi` quanto `django-ratelimit` (via a lib `limits`, no caso do `slowa
 A diferença prática aparece exatamente na borda entre dois blocos:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph FW["Fixed window — limite 5/minuto"]
         direction TB
         FW1["23:59:58 → 5 requisições\n(dentro do bloco 23:59)"]
@@ -105,8 +109,8 @@ flowchart LR
         SW1 --> SW2
     end
 
-    style FW2 fill:#D0021B,color:#fff
-    style SW2 fill:#2d7a4a,color:#fff
+    class FW2 falha
+    class SW2 ok
 ```
 
 No fixed window, um cliente pode disparar 5 requisições no último segundo de um bloco e mais 5 no primeiro segundo do bloco seguinte — 10 requisições em poucos segundos, mesmo com um limite nominal de "5 por minuto". Cada bloco individualmente respeitou o limite; a borda entre eles não. Isso é conhecido como o problema de **burst na borda** (*boundary burst*), e é a razão pela qual o sliding window é considerado mais justo: ele nunca permite que uma janela de 60 segundos qualquer, medida a partir de qualquer ponto no tempo, exceda o limite — não só as janelas alinhadas ao relógio.
@@ -320,8 +324,9 @@ A escolha de **chave** de limitação — o "quem" que está sendo contado — �
 **Por API key** — o padrão em integrações B2B, onde o cliente não é uma pessoa navegando, mas um sistema integrando via chave de API. A chave de limitação é a própria API key do cliente, permitindo que cada parceiro de integração tenha sua própria cota, independente do IP de onde as requisições partem (que pode mudar, se o parceiro roda em infraestrutura de nuvem elástica).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q{"Que chave usar?"}
     Q -->|"endpoint pré-autenticação\n(login, cadastro, reset de senha)"| IP["Por IP\n+ campo customizado\n(email/username do corpo)"]
     Q -->|"ação pós-login\n(troca de senha, upload)"| USER["Por usuário autenticado"]
@@ -329,8 +334,8 @@ flowchart TB
 
     IP --> WARN["Atenção: NAT/proxy\ncompartilhado agrupa\nmuitos usuários num IP"]
 
-    style Q fill:#4A90D9,color:#fff
-    style WARN fill:#e8a33d,color:#000
+    class Q neutro
+    class WARN destaque
 ```
 
 > [!warning] Confiar em `X-Forwarded-For` sem proxy confiável é abrir a porta para spoofing do próprio rate limiter

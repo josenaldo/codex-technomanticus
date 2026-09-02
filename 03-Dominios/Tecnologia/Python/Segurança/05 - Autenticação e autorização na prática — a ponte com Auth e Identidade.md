@@ -110,7 +110,6 @@ def buscar_tarefa(
 Repare no que muda de pouco para muito importante: `current_user` deixa de ser um parâmetro decorativo (presente só para forçar `401` em quem não tem token) e passa a **ser usado** dentro do corpo do handler, na comparação `tarefa.usuario_id != current_user.id`. É essa linha — uma linha — que separa o endpoint vulnerável do incidente de abertura do endpoint corrigido. A árvore de dependências, resolvida pelo FastAPI antes de `buscar_tarefa` rodar, é:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Cliente
     participant FastAPI

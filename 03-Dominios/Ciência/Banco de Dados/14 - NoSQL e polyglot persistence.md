@@ -113,6 +113,8 @@ Isso não cai do céu: é exatamente o trade-off do teorema CAP que você viu em
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q["Uma escrita acabou de acontecer.<br/>Outro nó faz uma leitura.<br/>O que ele ve?"]
     Q --> ACID["Mundo ACID<br/>(relacional, CP)"]
     Q --> BASE["Mundo BASE<br/>(muitos NoSQL, AP)"]
@@ -125,8 +127,8 @@ flowchart TB
     B1 --> B2["Garantia fraca:<br/>converge 'eventualmente'"]
     B2 --> B3["Premio: alta disponibilidade,<br/>escala horizontal,<br/>baixa latencia"]
 
-    style ACID fill:#dbeafe,stroke:#3b82f6
-    style BASE fill:#fef3c7,stroke:#f59e0b
+    class ACID neutro
+    class BASE destaque
 ```
 
 **Leitura do diagrama:** a mesma situação — escrever e depois ler de outro nó — produz respostas opostas conforme o contrato. O mundo ACID nunca te mostra lixo, mas paga em latência e disponibilidade. O mundo BASE te mostra um valor possivelmente velho, e em troca fica de pé e rápido sob carga e falha. Saber para qual lado um dado pode pender é trabalho de senior: contador de likes? BASE serve. Saldo bancário? ACID, sem negociação.
@@ -162,6 +164,8 @@ A árvore de decisão abaixo é o coração prático da nota. Repara que ela **c
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Start["Preciso guardar/buscar esse dado.<br/>Comeco no PostgreSQL."]
     Start --> Q1{"O Postgres ja resolve<br/>com indice/JSONB/extensao<br/>de forma boa o suficiente?"}
     Q1 -->|Sim| Stay["FIQUE no Postgres.<br/>Esse e o caminho default."]
@@ -174,10 +178,10 @@ flowchart TD
     Q2 -->|"Relacoes profundas<br/>(amigo-de-amigo-de-amigo)"| Graph["Considere grafo (Neo4j)<br/>se joins recursivos<br/>doem de verdade"]
     Q2 -->|"Escrita massiva global,<br/>eventual consistency OK"| Wide["Considere coluna-larga<br/>(Cassandra/Scylla).<br/>Escala que poucos atingem"]
 
-    style Start fill:#dcfce7,stroke:#22c55e
-    style Stay fill:#dcfce7,stroke:#22c55e
-    style TS fill:#dbeafe,stroke:#3b82f6
-    style Vec fill:#dbeafe,stroke:#3b82f6
+    class Start ok
+    class Stay ok
+    class TS neutro
+    class Vec neutro
 ```
 
 **Leitura do diagrama:** o filtro inteiro é a pergunta do meio — *"e eu MEDI a dor"*. Sem medição (um `EXPLAIN ANALYZE` lento de [[08 - EXPLAIN e otimização]], um p95 de latência estourado de [[10 - Performance e armadilhas]], um custo de query insustentável), você não tem o direito de sair do Postgres. E mesmo quando sai, repara nos nós azuis: para séries temporais a primeira parada é **TimescaleDB** (que é Postgres), e para embeddings é **pgvector** (que é Postgres). Você quase nunca *precisa* trocar de banco — precisa de uma extensão dele.
@@ -197,6 +201,7 @@ A razão pela qual "comece com Postgres" não é dogma é que o Postgres, sozinh
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     PG(("PostgreSQL"))
     PG --> Doc["JSONB<br/>(família documento)"]
     PG --> Arr["Arrays + GIN<br/>(coleções)"]
@@ -206,7 +211,7 @@ flowchart LR
     PG --> KV["UNLOGGED tables<br/>(chave-valor rápido)"]
     PG --> Ext["Centenas de extensões<br/>(PostGIS, FDW, ...)"]
 
-    style PG fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    class PG neutro
 ```
 
 **Leitura do diagrama:** cada seta é uma família NoSQL que o Postgres absorve. **JSONB** te dá documentos indexáveis (com índice GIN, você consulta dentro do JSON quase como no MongoDB). **Arrays** modelam coleções pequenas sem tabela de junção. O **full-text** nativo resolve busca textual moderada sem Elasticsearch. **pgvector** traz embeddings. **TimescaleDB** é uma extensão que transforma o Postgres num time-series competente. Some isso ao ecossistema de centenas de extensões e à conclusão do monólito: *"Postgres faz quase tudo bem o suficiente"*.

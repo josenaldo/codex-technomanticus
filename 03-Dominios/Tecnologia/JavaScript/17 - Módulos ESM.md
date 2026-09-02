@@ -181,8 +181,9 @@ console.log(count); // AINDA 0 — você recebeu uma cópia do primitivo
 Esse comportamento fica ainda mais claro com o diagrama abaixo:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph ESM["ESM — Live Binding"]
         direction LR
         A1["main.js<br/><code>count</code>"] -- "referência ao slot" --> B1["contador.js<br/><code>count = 2</code>"]
@@ -193,8 +194,8 @@ graph LR
         A2["main.cjs<br/><code>count = 0</code>"] -. "valor copiado no require" .-> B2["contador.cjs<br/><code>count = 2</code>"]
     end
 
-    style ESM fill:#e8f4fd,stroke:#4A90D9
-    style CJS fill:#fff8e8,stroke:#F5A623
+    class ESM neutro
+    class CJS destaque
 ```
 
 **Resumo do mecanismo**: o motor ESM cria um *module record* para cada arquivo, e cada `export` é um slot nesse record. Quando outro módulo importa, recebe uma ligação (binding) para aquele slot — não uma cópia. Por isso importações ESM são **somente-leitura do lado do importador** (você não pode fazer `count = 5` diretamente), mas o módulo de origem pode mudar o valor e você enxerga.
@@ -210,17 +211,18 @@ ESM é **estático e lazy-evaluado**: o motor faz três fases antes de executar 
 3. **Evaluation** — executa cada módulo do grafo, de folhas para raízes (dependências primeiro)
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["app.js\n(entry)"] --> B["router.js"]
     A --> C["logger.js"]
     B --> D["utils.js"]
     C --> D
 
-    style D fill:#4A90D9,color:#fff
-    style B fill:#7ab8e8,color:#fff
-    style C fill:#7ab8e8,color:#fff
-    style A fill:#b3d4f0,color:#333
+    class D neutro
+    class B marca
+    class C marca
+    class A neutro
 ```
 
 No grafo acima, `utils.js` é executado primeiro (é folha), depois `router.js` e `logger.js` (em ordem), e por último `app.js`. Cada módulo executa **uma única vez**, mesmo que seja importado por múltiplos módulos. O resultado fica em cache — imports subsequentes retornam o mesmo module record.

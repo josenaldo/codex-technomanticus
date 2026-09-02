@@ -32,6 +32,8 @@ Imagine uma sala de decisão onde todas as reuniões já acontecidas ainda estã
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Início da sessão"
         A1[Decisão A - clara]
         A2[Contexto relevante]
@@ -59,8 +61,8 @@ flowchart LR
     B2 --> C1
     B6 --> C4
 
-    style B6 fill:#fff5f5,stroke:#ff6b6b
-    style C4 fill:#f0fff4,stroke:#51cf66
+    class B6 falha
+    class C4 ok
 ```
 
 > [!summary] Contexto acumulado = sinal diluído. Gestão de contexto é o trabalho de manter a relação sinal/ruído alta durante toda a sessão — não apenas no começo.
@@ -203,6 +205,7 @@ A diferença central em relação a tudo que foi dito até aqui: `/compact` gere
 
 ```mermaid
 flowchart TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     O["Orquestrador\n(contexto principal)"]
     S1["Sub-agent A\n20 tool calls, contexto isolado"]
     S2["Sub-agent B\n15 tool calls, contexto isolado"]
@@ -215,7 +218,7 @@ flowchart TB
     S2 -->|"só o resultado"| O
     S3 -->|"só o resultado"| O
 
-    style O fill:#f0fff4,stroke:#51cf66
+    class O ok
 ```
 
 Isso não é só arquitetura elegante — é mensurável. A Anthropic reportou que um sistema multi-agent (agente líder Opus + subagentes Sonnet paralelos) superou um único agente Opus em **90,2%** numa avaliação interna de pesquisa, principalmente porque o formato permite gastar mais tokens úteis no problema sem que cada um deles compita pelo mesmo contexto compartilhado.

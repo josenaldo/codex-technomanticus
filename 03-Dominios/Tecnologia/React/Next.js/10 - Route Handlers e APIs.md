@@ -221,7 +221,6 @@ Por padrão (sem nenhum export de config), o handler roda a cada requisição �
 ## Fluxo request → handler → response
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#fff"}}}%%
 sequenceDiagram
     participant C as Cliente (browser/mobile/serviço)
     participant N as Next.js Router
@@ -242,17 +241,17 @@ sequenceDiagram
 Essa é a pergunta de entrevista mais frequente sobre o App Router. A regra não é técnica — é de design:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "warningBkgColor": "#F5A623"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[Preciso executar código no servidor] --> B{Outros clientes vão consumir?\nMobile / 3rd party / API pública?}
     B -- Sim --> C[Route Handler\napp/api/.../route.ts]
     B -- Não --> D{É uma mutação\nligada a um formulário/UI?}
     D -- Sim --> E[Server Action\n'use server']
     D -- Não --> F[Server Component\nfetch direto no render]
 
-    style C fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
+    class C neutro
+    class E neutro
+    class F neutro
 ```
 
 | Situação | Use |

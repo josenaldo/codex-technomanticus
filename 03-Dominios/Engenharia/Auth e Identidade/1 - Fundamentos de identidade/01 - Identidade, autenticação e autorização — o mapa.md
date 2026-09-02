@@ -50,7 +50,6 @@ O vocabulário que a indústria usa para nomear essas decisões vem de um framew
 Repare que as três acontecem em **momentos diferentes** e respondem a **perguntas diferentes**. Isso é mais fácil de enxergar seguindo uma requisição HTTP do início ao fim:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant C as Cliente
     participant AuthN as Camada AuthN
@@ -125,8 +124,9 @@ O CISA (a agência americana de segurança de infraestrutura) recomenda explicit
 A resposta da indústria a esse problema tem nome: **phishing-resistant MFA**. O padrão FIDO2/WebAuthn (a base técnica das **passkeys**, tema da nota 05 desta trilha) amarra criptograficamente a autenticação ao domínio exato que a solicitou, o que torna o phishing estruturalmente impossível — não é que o usuário "resista melhor" ao golpe, é que o protocolo não permite que a credencial seja usada em um domínio diferente do original, mesmo que a vítima seja enganada. O NIST formaliza essa hierarquia em **Authenticator Assurance Levels (AAL)**: AAL1 aceita um único fator qualquer; AAL2 exige dois fatores de categorias diferentes (e a revisão mais recente do padrão, SP 800-63-4, já exige que toda implementação AAL2 ofereça uma opção phishing-resistant); AAL3 exige um autenticador de hardware resistente a phishing, como uma chave FIDO2 ou um smartcard[^aal].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     F["Fatores de<br/>autenticação"] --> K["Something you know<br/>(senha, PIN)"]
     F --> H["Something you have<br/>(SMS, app, chave FIDO2)"]
     F --> B["Something you are<br/>(biometria)"]
@@ -135,9 +135,9 @@ graph TD
     K -->|"+ H de categoria diferente"| MFA["MFA real<br/>AAL2"]
     H -->|"chave de hardware<br/>FIDO2/WebAuthn"| PR["Phishing-resistant<br/>AAL2/AAL3"]
 
-    style SF fill:#D0021B,color:#fff
-    style MFA fill:#4A90D9,color:#fff
-    style PR fill:#4A90D9,color:#fff
+    class SF falha
+    class MFA neutro
+    class PR neutro
 ```
 
 Em uma frase: **MFA só é MFA quando os fatores vêm de categorias diferentes — e nem todo segundo fator resiste ao mesmo nível de ataque.**
@@ -176,15 +176,15 @@ Os números de 2026 confirmam essa tese, embora com uma reviravolta interessante
 O DBIR 2026 também traz um dado sobre a economia por trás disso: **73% das vítimas de ransomware tinham uma infecção de infostealer ou vazamento de credencial associado no ano anterior ao ataque**, e os datasets de "stealer logs" monitorados pelo relatório surfam em média **2.362 credenciais corporativas vazadas por mês** só pelo domínio de email das organizações analisadas[^dbir2026]. Esse é o motor por trás do **credential stuffing** — o ataque automatizado que testa combinações de usuário/senha vazadas em outros serviços contra o seu login, na aposta (estatisticamente muito boa, dado o reuso de senha) de que algum usuário reutilizou a mesma senha em mais de um lugar. Uma análise de 2026 sobre logs de SSO corporativo encontrou uma mediana diária de **19% de todas as tentativas de autenticação classificadas como credential stuffing**, chegando a 44% no pior dia registrado[^credstuff].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     L["Vazamento em<br/>Serviço A"] -->|"reuso de senha"| CS["Credential<br/>stuffing"]
     IS["Infostealer<br/>no dispositivo"] -->|"rouba sessão/senha"| CS
     CS -->|"login automatizado<br/>em massa"| ATO["Account<br/>Takeover"]
     ATO -->|"acesso válido"| RW["Ransomware /<br/>exfiltração"]
 
-    style CS fill:#D0021B,color:#fff
-    style ATO fill:#D0021B,color:#fff
+    class CS falha
+    class ATO falha
 ```
 
 Do lado da autorização, o quadro é igualmente concentrado: o **OWASP Top 10:2025** manteve *Broken Access Control* na posição A01 — o topo da lista — pelo segundo ciclo consecutivo, com o dado já citado de 100% das aplicações testadas apresentando alguma falha de controle de acesso[^owasp]. Junte os dois relatórios e a conclusão é direta: **quem ataca sistemas modernos ataca identidade — seja roubando a credencial (AuthN), seja explorando a ausência de checagem de permissão depois que a credencial já é válida (AuthZ)**. Isso não é uma tendência passageira de um ano; é a razão estrutural pela qual esta trilha existe como disciplina própria, e não como um apêndice de "segurança geral".
@@ -196,7 +196,6 @@ Em uma frase: **identidade não é um componente do sistema — em 2026, ela é 
 Esta é a nota de abertura de uma trilha com 25 notas organizadas em cinco sub-galhos progressivos. Nenhum dos temas abaixo é aprofundado aqui — o objetivo é você sair desta nota sabendo *onde* cada peça vai morar, para não se perder navegando o restante.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     SG1["SG1 · Fundamentos<br/>(esta nota)<br/>sessões, JWT, senhas/MFA, passkeys"] --> SG2
     SG2["SG2 · OAuth 2.1 + OIDC<br/>delegação, Authorization Code+PKCE,<br/>OIDC, grants de máquina, SSO"] --> SG3

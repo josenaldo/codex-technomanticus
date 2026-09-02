@@ -26,14 +26,15 @@ Progressive disclosure é termo de HCI **associado a Jakob Nielsen desde os anos
 O racional não é estético, é cognitivo, e vem direto da **Lei de Hick** (já coberta na [[03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental/04 - Leis de UX - Fitts, Hick, Jakob, Miller, Peak-End|nota 04]]): o tempo de decisão cresce com o número de opções apresentadas simultaneamente, mesmo quando a opção certa já era conhecida de antemão. Isso significa que os 37 campos avançados do exemplo de abertura não são neutros para quem não precisa deles — eles ativamente atrasam a decisão de quem só queria preencher os três campos simples, porque o cérebro precisa varrer e descartar os 37 antes de confirmar que os três certos são os certos. Esconder o que a maioria não usa não é "escondê-lo dela" no sentido de negar acesso — é reduzir o espaço de busca de quem não precisa, sem impedir quem precisa de ir buscar.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Tela com tudo visível<br/>(40 campos)"] -->|"tempo de decisão ∝ log(N)<br/>Lei de Hick"| B["Todo usuário paga<br/>o custo dos 37 irrelevantes"]
     C["Tela com disclosure<br/>(3 campos + 'avançado')"] -->|"maioria decide rápido"| D["90% dos usuários<br/>nunca pagam esse custo"]
     C -->|"clique explícito"| E["10% que precisam<br/>acessam os 37 restantes"]
-    style B fill:#D0021B,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
+    class B falha
+    class D neutro
+    class E neutro
 ```
 
 **O mecanismo em uma frase:** progressive disclosure não remove capacidade, troca "todo mundo paga o custo cognitivo de todas as opções" por "só quem precisa de uma opção paga o custo de buscá-la" — um trade-off que só vale a pena porque a maioria das opções, na maioria dos casos, é usada por uma minoria de usuários.

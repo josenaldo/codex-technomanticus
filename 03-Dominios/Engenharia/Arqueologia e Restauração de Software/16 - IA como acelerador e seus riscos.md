@@ -43,8 +43,10 @@ O mecanismo é simples de enunciar e fácil de esquecer sob pressão. Um LLM ger
 Por isso a rede não é burocracia — é o único instrumento que consegue responder, em segundos, à pergunta que a IA é estruturalmente incapaz de responder sozinha: **"esta mudança preservou o que o sistema fazia antes?"** Sem characterization tests ([[10 - A rede de segurança primeiro|nota 10]]) cobrindo o método, ou approval tests ([[11 - Approval e Golden Master testing|nota 11]]) cobrindo a saída, você não tem como saber — só pode *acreditar* no diff, e acreditar é exatamente o que a nota 10 chamou de "salto no escuro" em vez de "experimento controlado".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["1. Entender<br/>(IA ajuda: resumir, mapear,<br/>notas 06/07/08)"] --> B{"2. Existe rede de<br/>caracterização aqui?"}
     B -->|"NÃO"| C["Construir a rede PRIMEIRO<br/>(notas 10/11 — IA pode<br/>ajudar no boilerplate)"]
     C --> B
@@ -56,15 +58,15 @@ flowchart TD
     G --> H{"Revisor entende<br/>e concorda?"}
     H -->|"carimbo automático"| I["Automation bias —<br/>risco não eliminado"]
     H -->|"revisão de fato"| J["6. Micro-commit<br/>rastreável"]
-    style B fill:#F5A623,color:#000
-    style C fill:#F5A623,color:#000
-    style D fill:#F5A623,color:#000
-    style E fill:#F5A623,color:#000
-    style F fill:#D0021B,color:#fff
-    style I fill:#D0021B,color:#fff
-    style G fill:#4A90D9,color:#fff
-    style H fill:#4A90D9,color:#fff
-    style J fill:#7ED321,color:#000
+    class B destaque
+    class C destaque
+    class D destaque
+    class E destaque
+    class F falha
+    class I falha
+    class G neutro
+    class H neutro
+    class J destaque
 ```
 
 Repare no que o diagrama força: a caixa 2 é um **gate**, não uma formalidade. Se a resposta é "não" e você segue em frente mesmo assim — pulando direto para "IA propõe a mudança" — você recriou exatamente o cenário de abertura desta nota. E repare também na bifurcação da caixa 4 (H): a rede passar de verde não é o fim da história se o carimbo humano na revisão for automático. Isso é o próximo risco.

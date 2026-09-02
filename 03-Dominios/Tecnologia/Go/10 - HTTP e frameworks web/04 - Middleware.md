@@ -71,12 +71,14 @@ Não há truque nenhum aqui além do que a nota 01 já estabeleceu: `http.Handle
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["next http.Handler\n(o handler original)"] --> B["Middleware(next)"]
     B --> C["novo http.Handler\n(envolve next)"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#7ED321,color:#000
+    class A neutro
+    class B destaque
+    class C destaque
 ```
 
 Um exemplo concreto, resolvendo só o log:

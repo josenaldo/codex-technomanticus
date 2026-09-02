@@ -29,17 +29,19 @@ Porque as duas percorrem **caminhos diferentes** no pipeline de rendering. A ver
 Toda vez que a página muda, o browser pode precisar refazer até três etapas, nesta ordem:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[Mudança] --> B["1. Layout / reflow<br/>onde e que tamanho"]
     B --> C["2. Paint<br/>preencher pixels"]
     C --> D["3. Composite<br/>combinar camadas (GPU)"]
     B -.geometria.-> B
     C -.aparência.-> C
     D -.transform/opacity.-> D
-    style B fill:#D0021B,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#4A90D9,color:#fff
+    class B falha
+    class C destaque
+    class D neutro
 ```
 
 - **Layout (reflow):** calcular a **geometria** — posição e tamanho de cada elemento afetado. É a etapa mais cara, porque mudar um elemento pode empurrar muitos outros (mudar a largura de um container reposiciona todos os filhos). Dispara também paint e composite depois.

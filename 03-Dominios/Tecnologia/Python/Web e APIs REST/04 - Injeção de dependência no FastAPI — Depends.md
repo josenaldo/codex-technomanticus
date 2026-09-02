@@ -188,8 +188,9 @@ def listar_pedidos(config: dict = Depends(get_configuracao_tenant)):
 `listar_pedidos` nunca menciona `get_tenant_id` diretamente — não precisa. `get_configuracao_tenant` é quem declara `Depends(get_tenant_id)`, e o FastAPI monta a cadeia sozinho: para resolver `config`, primeiro resolve `tenant_id` (chamando `get_tenant_id`, que por sua vez lê o header `X-Tenant-Id` da requisição), e só então chama `get_configuracao_tenant(tenant_id)`.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     REQ["Requisição HTTP\nheader X-Tenant-Id: loja-a"]
 
     subgraph Arvore["Árvore de dependências resolvida de baixo para cima"]
@@ -203,10 +204,10 @@ flowchart TB
     D1 -->|"tenant_id = 'loja-a'"| D2
     D2 -->|"config = {moeda, limite_pedidos}"| HANDLER
 
-    style REQ fill:#4A90D9,color:#fff
-    style D1 fill:#4A90D9,color:#fff
-    style D2 fill:#4A90D9,color:#fff
-    style HANDLER fill:#2d7a4a,color:#fff
+    class REQ neutro
+    class D1 neutro
+    class D2 neutro
+    class HANDLER ok
 ```
 
 Essa composição é o que permite construir peças pequenas e reaproveitáveis — `get_tenant_id` sozinho já é útil em qualquer rota que só precise saber qual tenant está fazendo a requisição, sem precisar da configuração completa. Times que crescem uma API FastAPI de verdade acabam com dezenas de dependências pequenas, compostas em árvores diferentes conforme o endpoint precisa de mais ou menos contexto — o mesmo princípio de composição que motiva funções pequenas em qualquer código, aplicado à camada de resolução de parâmetros.

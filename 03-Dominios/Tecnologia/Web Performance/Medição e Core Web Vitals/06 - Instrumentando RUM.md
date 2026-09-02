@@ -114,15 +114,16 @@ addEventListener('visibilitychange', () => {
 > O evento `unload` (e o `beforeunload`) é **não-confiável no mobile**: quando o usuário troca de app ou o sistema mata a aba em segundo plano, o `unload` muitas vezes **não dispara**. O `visibilitychange` para `hidden` é o último momento garantido em que sua página ainda está viva — dispara ao minimizar, trocar de aba, trocar de app. É o gancho oficialmente recomendado para enviar telemetria. Usar `unload` é a razão silenciosa de muitos RUMs subcontarem sessões mobile.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[onLCP/onINP/onCLS...] -->|callback| B[Buffer local<br/>Map por métrica]
     C["visibilitychange → hidden"] --> D[sendBeacon<br/>envia o lote]
     B --> D
     D --> E[Seu endpoint<br/>+ rótulos: rota, deploy, país]
-    style A fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#F5A623,color:#000
+    class A neutro
+    class D neutro
+    class E destaque
 ```
 
 ## Attribution: do "está ruim" para "está ruim por causa disto"

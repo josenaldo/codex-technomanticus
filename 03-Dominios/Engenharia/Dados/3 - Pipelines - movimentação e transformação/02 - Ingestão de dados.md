@@ -87,18 +87,19 @@ Isso dá a log-based CDC três vantagens decisivas sobre query-based:
 O preço dessas vantagens é complexidade operacional: log-based CDC normalmente exige acesso privilegiado ao banco de origem (permissão para ler o WAL/binlog, às vezes configuração especial como *logical replication slots* no Postgres), uma infraestrutura de streaming para transportar os eventos capturados (tipicamente Kafka ou equivalente — o transporte por mensageria em si é assunto de [[03-Dominios/Engenharia/Comunicação entre Sistemas/index|Comunicação entre Sistemas]], não desta nota), e cuidado redobrado com o ciclo de vida do log (retenção, *slot* que não pode ficar preso indefinidamente sob risco de encher o disco da origem). A ferramenta mais citada nesse espaço é o **Debezium** — uma plataforma open source que lê logs de transação de bancos como PostgreSQL, MySQL, SQL Server e MongoDB e publica os eventos capturados em tópicos Kafka, geralmente usada como o "conector CDC" dentro de uma arquitetura maior (não é, sozinha, um pipeline completo de ingestão para warehouse).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     PG["Postgres<br/>(pedidos)"] -->|"toda escrita<br/>vira entrada"| WAL["Transaction log<br/>(WAL / binlog)"]
     WAL -->|"lido como<br/>réplica de leitura"| CDC["Conector CDC<br/>(ex.: Debezium)"]
     CDC -->|"eventos:<br/>insert/update/delete"| Bus["Streaming<br/>(Kafka ou equivalente)"]
     Bus -->|"quase em<br/>tempo real"| DW["Warehouse<br/>(tabela de pedidos)"]
 
-    style PG fill:#4A90D9,color:#fff
-    style WAL fill:#4A90D9,color:#fff
-    style CDC fill:#F5A623,color:#000
-    style Bus fill:#F5A623,color:#000
-    style DW fill:#4A90D9,color:#fff
+    class PG neutro
+    class WAL neutro
+    class CDC destaque
+    class Bus destaque
+    class DW neutro
 ```
 
 Voltando ao exemplo do e-commerce: full load da tabela `pedidos` deixou de ser viável quando o volume passou de alguns milhões de linhas — a varredura completa não cabe mais na janela noturna, e o impacto na base de produção se tornou visível em métricas de latência do checkout. Query-based CDC (consultar por `updated_at`) já seria uma melhoria real, mas perderia os cancelamentos (deletes lógicos, se implementados como remoção de linha) e os estados intermediários que o time de logística precisa para medir tempo entre "separado" e "enviado". Log-based CDC resolve as duas lacunas: cada mudança de status do pedido — pago, separado, enviado, entregue, cancelado — vira um evento capturado do WAL do Postgres, entregue ao warehouse em segundos, sem tocar as tabelas de produção com uma única consulta a mais.

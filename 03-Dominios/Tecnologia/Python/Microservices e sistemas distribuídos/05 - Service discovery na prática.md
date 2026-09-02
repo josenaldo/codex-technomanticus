@@ -68,7 +68,6 @@ O resto desta nota desenvolve, nessa ordem: por que o DNS do Kubernetes Service 
 Um `Service` do Kubernetes ganha, automaticamente, um nome DNS resolvível dentro do cluster — no formato `<nome-do-service>.<namespace>.svc.cluster.local` (ou, dentro do mesmo namespace, o encurtamento `<nome-do-service>` já basta). Esse nome não muda: enquanto o `Service` existir, `notificacoes-service` resolve para *algum* Pod saudável por trás dele, não importa quantas vezes esses Pods subam, caiam, sejam substituídos por um deploy novo, ou mudem de IP — o próprio mecanismo do `Service`/`Endpoints`/CoreDNS existe exatamente para absorver essa instabilidade, mantendo o nome estável enquanto o conjunto de IPs por trás dele muda o tempo todo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Tarefas as Serviço de Tarefas<br/>(código Python)
     participant DNS as CoreDNS<br/>(interno do cluster)
@@ -112,7 +111,6 @@ Esse modelo não desapareceu — ele continua sendo a escolha certa em dois cen�
 - **Topologia multi-cluster ou multi-região** — quando o serviço de Tarefas roda num cluster e o serviço de Notificações roda em outro (ou numa região geográfica diferente), o DNS interno de um único cluster Kubernetes não enxerga o outro. Um registry externo ao cluster, ou um service mesh operando entre clusters, volta a ser necessário para resolver esse "quem está vivo, em qualquer lugar" além da fronteira de um único cluster.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#F5A623", "primaryBorderColor": "#B87A1A", "lineColor": "#F5A623"}}}%%
 sequenceDiagram
     participant Tarefas as Cliente<br/>(código Python)
     participant Registry as Service Registry<br/>(Consul / Eureka)
@@ -142,8 +140,9 @@ Quando o serviço de Notificações tem múltiplas réplicas — o caso comum so
 No ecossistema Python/Kubernetes, essa decisão quase nunca aparece como código de aplicação, por um motivo estrutural: o `Service` do Kubernetes já é, ele mesmo, um balanceador. Cada resolução de DNS contra `notificacoes-service` pode devolver um IP diferente entre as réplicas disponíveis (round-robin básico feito pelo próprio CoreDNS/kube-proxy), e mesmo quando o DNS é cacheado por um período curto, o `kube-proxy` (ou, em clusters com service mesh, o proxy sidecar de cada Pod) distribui as conexões TCP entre as réplicas saudáveis do `Service` na camada de rede — antes mesmo de qualquer decisão de "qual instância chamar" chegar a existir como uma linha de código Python.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Java["Trilha Java — client-side LB explícito"]
         direction TB
         JC["Código do cliente"] --> JLB["Spring Cloud LoadBalancer\n(estratégia escolhida em código)"]
@@ -158,8 +157,8 @@ flowchart LR
         PDNS --> PI2["Pod B"]
     end
 
-    style JLB fill:#F5A623,color:#000
-    style PDNS fill:#4A90D9,color:#fff
+    class JLB destaque
+    class PDNS neutro
 ```
 
 Isso não significa que balanceamento sofisticado (afinidade de zona, peso por capacidade de cada réplica, balanceamento consciente de latência) seja impossível no ecossistema Kubernetes — significa que, quando ele é necessário, a resposta canônica também é uma peça de infraestrutura, não uma biblioteca Python: um **service mesh** (Istio, Linkerd) rodando como proxy sidecar em cada Pod, capaz de aplicar estratégias de roteamento muito mais ricas do que round-robin, sem que uma única linha do código da aplicação precise saber que essas estratégias existem.

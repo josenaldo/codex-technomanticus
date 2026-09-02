@@ -38,6 +38,8 @@ Porque "todos os arquivos afetados" por uma mudança em código compartilhado po
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Sem knowledge graph"
         A1["detect_change(commit)"]
         A2["Identificar: 3 arquivos modificados"]
@@ -52,8 +54,8 @@ flowchart LR
         B4["Ler só os 5 críticos\n~8k tokens"]
     end
 
-    style A4 fill:#fff5f5,stroke:#ff6b6b
-    style B4 fill:#f0fff4,stroke:#51cf66
+    class A4 falha
+    class B4 ok
 ```
 
 > [!summary] Knowledge graph inverte a lógica: em vez de "ler tudo para entender o impacto", você "consultar o impacto para saber o que ler". Em monorepos, essa inversão muda de inviável para prático.

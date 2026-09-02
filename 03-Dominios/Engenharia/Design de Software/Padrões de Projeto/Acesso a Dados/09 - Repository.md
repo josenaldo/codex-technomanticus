@@ -32,16 +32,17 @@ Por que isso importa? Porque o domínio **não deveria** falar a língua da pers
 ## A ideia: fachada de coleção sobre o mapper
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     S["Serviço de domínio"] -->|"pedidos.findByCliente(id)"| R{{"«Repository»<br/>PedidoRepository"}}
     R -->|"delega"| M["Data Mapper / EntityManager"]
     M --> DB[("banco")]
     R -.->|"devolve objetos<br/>de domínio puros"| S
 
-    style R fill:#4A90D9,color:#fff
-    style S fill:#4A90D9,color:#fff
-    style M fill:#F5A623,color:#000
+    class R neutro
+    class S neutro
+    class M destaque
 ```
 
 Para o serviço, o `PedidoRepository` **é** uma coleção de pedidos. Ele nunca vê o mapper nem monta query — pede em linguagem de domínio e recebe objetos de domínio prontos. Toda a mecânica de tradução fica de um lado só da fachada.

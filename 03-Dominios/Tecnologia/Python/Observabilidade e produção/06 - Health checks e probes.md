@@ -31,7 +31,6 @@ O problema é que o código da aplicação, entre o momento em que o processo so
 Os primeiros clientes que caem nesse pod, nessa janela de segundos, recebem um erro 500 — `asyncpg.exceptions.ConnectionDoesNotExistError` ou equivalente, porque o handler tenta usar um pool que ainda não terminou de abrir. Ninguém no time percebeu nada de errado no deploy: os testes passaram, o healthcheck simplório que o time tinha configurado (uma checagem TCP genérica, a única coisa que o orquestrador sabia fazer sem instrução explícita do código) disse "vivo, pode receber tráfego" no primeiro milissegundo em que a porta abriu. O "warm-up" do processo, que deveria ser invisível para o usuário, virou um punhado de erros reais, visíveis, num momento em que nada de fato quebrado tinha acontecido — só um processo que ainda não tinha terminado de se preparar sendo tratado, erroneamente, como pronto.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant K8s as Kubernetes
     participant Pod as Processo (uvicorn)
@@ -116,8 +115,10 @@ Duas peças fazem esse endpoint funcionar corretamente. Primeiro, `SELECT 1` —
 > O objetivo do readiness é **observar** o estado atual da conexão que a aplicação já mantém — não criar uma conexão nova a cada verificação, o que seria caro (handshake AMQP completo) e mascararia o problema real: se a conexão de longa duração que os handlers de fato usam está fechada, é isso que precisa aparecer no `/ready`, não o resultado de uma conexão de teste que não tem nenhuma relação com o que os handlers vão usar de verdade. O mesmo raciocínio vale para o pool do banco: `SELECT 1` usa uma conexão emprestada do **mesmo** pool que os handlers usam, não uma conexão paralela criada só para o check.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph LIVE["liveness — /health"]
         L1["processo responde<br/>ao próprio loop?"]
     end
@@ -130,11 +131,11 @@ flowchart LR
     R1 -->|"falha"| ACT2["Kubernetes REMOVE<br/>do balanceador,<br/>pod continua vivo"]
     R2 -->|"falha"| ACT2
 
-    style ACT1 fill:#D0021B,color:#fff
-    style ACT2 fill:#F5A623,color:#000
-    style L1 fill:#4A90D9,color:#fff
-    style R1 fill:#4A90D9,color:#fff
-    style R2 fill:#4A90D9,color:#fff
+    class ACT1 falha
+    class ACT2 destaque
+    class L1 neutro
+    class R1 neutro
+    class R2 neutro
 ```
 
 O diagrama acima é a distinção inteira desta nota resumida numa ação: falha de liveness é **destrutiva** (mata o processo, na expectativa de que um processo novo resolva o que um travamento interno causou); falha de readiness é **reversível** (só tira o pod da fila de tráfego, sem tocar no processo, e assim que os checks voltarem a passar, o pod volta a receber requisições sozinho, sem intervenção nenhuma). Confundir as duas — colocar checagem de dependência externa no endpoint de liveness, como o `[!warning]` anterior descreveu — troca uma ação reversível por uma destrutiva, pelo motivo errado.

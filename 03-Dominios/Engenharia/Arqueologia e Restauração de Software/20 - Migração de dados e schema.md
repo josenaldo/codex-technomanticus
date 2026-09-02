@@ -25,13 +25,14 @@ Esse é o buraco que esta nota tapa. O Strangler Fig te ensinou a mover o *fluxo
 O nome vem de Martin Fowler e Danilo Sato, que descreveram o padrão como **parallel change** — mudar uma interface (de código ou de schema) em três passos, nunca num só, para que nunca exista um instante em que consumidores antigos e novos não tenham para onde ir. Aplicado a schema de banco, os três passos ganharam o apelido mais comum na indústria: **expand-contract**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[EXPAND<br/>schema novo, compativel para tras] --> B[MIGRATE<br/>dual writes + backfill + leituras migram]
     B --> C[CONTRACT<br/>schema velho removido]
-    style A fill:#4A90D9
-    style B fill:#F5A623
-    style C fill:#4A90D9
+    class A neutro
+    class B destaque
+    class C neutro
 ```
 
 **EXPAND — adicionar sem remover.** O primeiro passo é puramente aditivo: cria-se a coluna, a tabela ou o schema novo *ao lado* do velho, sem tocar em nada que já existe. Nenhum código antigo quebra, porque nada que ele lê ou escreve mudou — só apareceu algo novo que ele ainda ignora. Esta é a fase mais barata e mais segura de toda a migração, e é onde a maior parte do trabalho de *design* do schema novo acontece: pensar a estrutura certa sem a pressão de já estar movendo dado real.
@@ -54,15 +55,16 @@ O expand-contract descreve a *estratégia*; para tabelas de milhões ou bilhões
 A ideia: em vez de alterar a tabela em produção, cria-se uma cópia dela — a *sombra* — já com o schema novo, vazia. Um mecanismo de captura de mudanças (no caso do `gh-ost`, lendo o *binary log* de replicação do MySQL) espelha, em tempo real, toda escrita que chega na tabela original para a sombra. Em paralelo, um job de *backfill* copia, em lotes pequenos e sem lock, as linhas que já existiam antes de a sombra nascer. Quando a sombra está totalmente sincronizada — todo histórico copiado, toda escrita nova replicando em tempo real — a troca final é um `RENAME TABLE` atômico: a sombra vira a tabela oficial, a antiga vira a que vai ser descartada. A operação inteira nunca bloqueia uma escrita por mais do que o tempo de um `RENAME`, tipicamente milissegundos.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     T[Tabela original em producao] -->|replica mudancas ao vivo via binlog/CDC| S[Shadow table<br/>schema novo]
     T -->|backfill em lotes, background, sem lock| S
     S --> R{Backfill completo<br/>e replicacao em dia?}
     R -->|nao| T
     R -->|sim| W[Swap atomico: RENAME TABLE]
-    style S fill:#F5A623
-    style W fill:#4A90D9
+    class S destaque
+    class W neutro
 ```
 
 Repare que a shadow table é, em miniatura, o próprio expand-contract: a sombra é o EXPAND (schema novo crescendo ao lado), a replicação ao vivo mais o backfill são o MIGRATE, e o `RENAME` atômico é o CONTRACT — só que comprimido para dentro de uma única operação de banco, em vez de espalhado por semanas de código de aplicação. É por isso que ferramentas como `gh-ost` resolvem *mudança de estrutura* (adicionar coluna, mudar tipo, criar índice) numa única tabela, mas não substituem o expand-contract quando a migração cruza *sistemas* diferentes (do monólito para um serviço novo, por exemplo) — aí o dual write e o backfill precisam viver no código da aplicação, não dentro do banco.

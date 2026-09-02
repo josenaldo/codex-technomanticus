@@ -27,8 +27,9 @@ Por que isso acontece? Porque o leitor de tela não olha para a sua tela. Ele l�
 Quando o navegador carrega uma página, ele já constrói uma árvore que você conhece: o **DOM**, a representação estruturada do seu HTML que o CSS estiliza e o JavaScript manipula. O que muita gente não sabe é que, a partir do DOM, o browser deriva uma **segunda** árvore, voltada exclusivamente para tecnologias assistivas: o *accessibility tree*.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     HTML[Seu HTML] --> DOM[DOM tree]
     DOM -->|renderiza| Pixels[Pixels na tela]
     DOM -->|deriva| AX[Accessibility tree]
@@ -36,9 +37,9 @@ graph TD
     Pixels -.->|o olho vê| User1[Usuário vidente]
     AT -->|fala, braille, foco| User2[Usuário de AT]
 
-    style DOM fill:#4A90D9,color:#fff
-    style AX fill:#4A90D9,color:#fff
-    style AT fill:#F5A623,color:#000
+    class DOM neutro
+    class AX neutro
+    class AT destaque
 ```
 
 Repare no ponto essencial do diagrama: o usuário de tecnologia assistiva e o usuário vidente **consomem saídas diferentes do mesmo DOM**. Um recebe pixels; o outro recebe a árvore de acessibilidade traduzida pela *platform accessibility API* do sistema operacional (a UIA no Windows, a AX API no macOS, a AT-SPI no Linux, a Accessibility API no Android). O leitor de tela conversa com essa API do sistema — não com o seu CSS, não com o seu layout, não com a sua bela cor de destaque.

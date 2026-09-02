@@ -37,16 +37,17 @@ Se cada consumidor traduz o que recebe, a lógica de conversão se espalha e se 
 Hohpe organiza a transformação em camadas, das mais superficiais às mais profundas — e uma tradução real frequentemente cruza várias:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     T["Transporte<br/>(TCP ↔ fila ↔ HTTP)"] --> R["Representação<br/>(XML ↔ JSON ↔ CSV)"]
     R --> D["Tipos de dado<br/>('250' ↔ 25000 centavos)"]
     D --> E["Estrutura<br/>(valorTotal → amount;<br/>achatar/aninhar)"]
 
-    style T fill:#4A90D9,color:#fff
-    style R fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
-    style E fill:#F5A623,color:#000
+    class T neutro
+    class R neutro
+    class D destaque
+    class E destaque
 ```
 
 1. **Transporte** — o canal/protocolo (de uma fila JMS para um POST HTTP).

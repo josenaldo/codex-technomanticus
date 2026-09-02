@@ -140,8 +140,9 @@ Aqui, React não re-renderiza a cada tecla. O DOM cuida do valor internamente. V
 ## Diagrama: quem detém a fonte da verdade?
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#fff"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph CONTROLADO["Controlado — React detém o valor"]
         direction LR
         U1[Usuário digita] -->|evento onChange| S[Estado React\nuseState]
@@ -154,8 +155,8 @@ flowchart LR
         I2 -->|ref.current.value\nno submit| R[Ref React]
     end
 
-    style CONTROLADO fill:#e8f4fd,stroke:#4A90D9
-    style NAOCONTROLADO fill:#fef9e7,stroke:#F5A623
+    class CONTROLADO neutro
+    class NAOCONTROLADO destaque
 ```
 
 ---

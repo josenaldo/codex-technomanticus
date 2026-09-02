@@ -29,16 +29,17 @@ Estratégia é **alocação**: dado orçamento finito de tempo e manutenção, o
 A pirâmide clássica (muitos unit, poucos E2E — [[03-Dominios/Engenharia/Testes/02 - A pirâmide de testes e suas variações|Engenharia/Testes 02]]) foi pensada para uma era em que testes de integração eram lentos e frágeis. No front-end moderno, com Testing Library + MSW, o **teste de integração ficou barato e confiável** — então o formato ótimo para apps de UI é o **troféu de testes** (Kent C. Dodds):
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     E["🏆 E2E (Playwright)<br/>poucos, caminhos críticos"] --> I
     I["INTEGRAÇÃO (Testing Library + MSW)<br/>a maior fatia — melhor ROI"] --> U
     U["UNIT (Vitest)<br/>lógica pura, edge cases"] --> S
     S["ESTÁTICO (TypeScript + ESLint)<br/>fundação de graça"]
-    style E fill:#F5A623,color:#000
-    style I fill:#4A90D9,color:#fff
-    style U fill:#4A90D9,color:#fff
-    style S fill:#4A90D9,color:#fff
+    class E destaque
+    class I neutro
+    class U neutro
+    class S neutro
 ```
 
 - **Estático** (base, de graça): **TypeScript** pega classes inteiras de bug antes de qualquer teste rodar; **ESLint** pega padrões ruins. É o teste mais barato que existe — o compilador rodando.

@@ -31,17 +31,18 @@ Os quatro sistemas:
 4. **Busca** — o mecanismo de encontrar diretamente, sem navegar pela estrutura. Depende de metadado e indexação bem feitos; sem organização e rotulação sólidas por baixo, a busca também falha (ver Armadilha abaixo).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     C["Conteúdo/funcionalidades<br/>do produto"] --> O["1. Organização<br/>como agrupar"]
     O --> L["2. Rotulação<br/>como chamar"]
     L --> N["3. Navegação<br/>como se mover"]
     L --> S["4. Busca<br/>como achar direto"]
     N --> R["Rotas do produto<br/>(código)"]
     S --> R
-    style O fill:#4A90D9,color:#fff
-    style L fill:#4A90D9,color:#fff
-    style R fill:#F5A623,color:#000
+    class O neutro
+    class L neutro
+    class R destaque
 ```
 
 O diagrama mostra a ordem de dependência real, e é essa ordem que o cenário de abertura inverteu: as rotas (o código, a parte que um engenheiro naturalmente projeta primeiro) deveriam ser a **última** coisa decidida, depois que organização e rotulação já existem explicitamente. Quando a ordem se inverte — rota nova, depois item de menu, depois nome do item — cada decisão de AI é tomada isoladamente, sem nenhuma delas conversar com as anteriores. O menu de 31 itens do cenário de abertura é exatamente esse efeito acumulado: 31 decisões de rotulação e navegação, cada uma correta isoladamente no dia em que foi tomada, e coletivamente incompreensíveis.

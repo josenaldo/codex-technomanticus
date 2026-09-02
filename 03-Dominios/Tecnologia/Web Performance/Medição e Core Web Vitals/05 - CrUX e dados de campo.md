@@ -35,8 +35,9 @@ O **Chrome UX Report** é um programa do Google que coleta métricas de performa
 3. **Precisa de tráfego suficiente.** Uma origem (ou URL) só aparece no CrUX se tiver visitantes bastante para o dado ser estatisticamente significativo e anônimo. Sites pequenos e páginas de cauda longa simplesmente **não têm dados de campo**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     U["Usuários reais do Chrome<br/>(que optaram por compartilhar)"] --> C[CrUX agrega por origem/URL]
     C -->|janela de 28 dias, p75| D{Fontes de consulta}
     D --> D1[PageSpeed Insights]
@@ -44,9 +45,9 @@ graph TB
     D --> D3[BigQuery / CrUX History API]
     D --> D4[Search Console]
     C -.alimenta.-> R[Sinal de ranking<br/>Page Experience]
-    style U fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style R fill:#F5A623,color:#000
+    class U neutro
+    class C neutro
+    class R destaque
 ```
 
 ## Como você consulta o CrUX

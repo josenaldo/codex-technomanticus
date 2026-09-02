@@ -40,6 +40,8 @@ A leitura de `T extends U ? X : Y` é: *"Se T for atribuível a U, o tipo result
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     T["T (tipo de entrada)"]
     Q{{"T extends U?"}}
     X["Resultado: X"]
@@ -49,8 +51,8 @@ flowchart LR
     Q -- "sim (T atribuível a U)" --> X
     Q -- "não" --> Y
 
-    style X fill:#1a472a,color:#fff
-    style Y fill:#5a0000,color:#fff
+    class X ok
+    class Y falha
 ```
 
 Mas conditional types se tornam realmente interessantes quando `T` é um parâmetro de tipo genérico — porque aí o TypeScript não conhece `T` na hora em que você escreve o tipo. Ele adia a avaliação para quando o tipo for instanciado:
@@ -93,6 +95,8 @@ Esse comportamento não é um bug — é uma feature deliberada que torna possí
 
 ```mermaid
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     IN["T = string | number | boolean"]
     DIST["Distribuição automática\n(T é naked type parameter)"]
     C1["string extends string?\n→ true"]
@@ -104,8 +108,8 @@ flowchart TD
     DIST --> C1 & C2 & C3
     C1 & C2 & C3 --> R
 
-    style DIST fill:#4a3000,color:#fff
-    style R fill:#1a3a5a,color:#fff
+    class DIST destaque
+    class R neutro
 ```
 
 A regra de ouro da distribuição:
@@ -305,6 +309,10 @@ type TC4 = TypeCategory<string>;      // "primitive"
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     T["TypeCategory<T>"]
     Q1{{"T extends\n(...args) => any?"}}
     Q2{{"T extends\nany[]?"}}
@@ -322,10 +330,10 @@ flowchart TD
     Q3 -- sim --> RO
     Q3 -- não --> RP
 
-    style RF fill:#1a472a,color:#fff
-    style RA fill:#1a2a47,color:#fff
-    style RO fill:#3a1a47,color:#fff
-    style RP fill:#472a1a,color:#fff
+    class RF ok
+    class RA neutro
+    class RO marca
+    class RP destaque
 ```
 
 ---

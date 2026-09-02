@@ -48,17 +48,18 @@ O NIST formalizou esse modelo num padrão de referência em 2000, organizado em 
 No nosso SaaS de documentos, um RBAC simples resolveria a primeira fatia do problema assim: todo usuário da organização tem um papel — `org_admin`, `org_member` — e esses papéis controlam o que ele pode fazer **na organização como um todo**: convidar gente, ver a lista de faturamento, criar workspaces novos. Isso é exatamente o tipo de decisão que RBAC resolve bem: papéis estáveis, poucos, aplicados de forma uniforme.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     U1["Usuário: Ana"] -->|"tem papel"| R1["org_admin"]
     U2["Usuário: Bruno"] -->|"tem papel"| R2["org_member"]
     R1 -->|"concede"| P1["convidar membros<br/>ver faturamento<br/>criar workspace"]
     R2 -->|"concede"| P2["criar documento<br/>listar workspace"]
 
-    style U1 fill:#4A90D9,color:#fff
-    style U2 fill:#4A90D9,color:#fff
-    style R1 fill:#F5A623,color:#000
-    style R2 fill:#F5A623,color:#000
+    class U1 neutro
+    class U2 neutro
+    class R1 destaque
+    class R2 destaque
 ```
 
 A checagem de RBAC é, na prática, um `if role in required_roles` — barata, previsível, O(1) contra um conjunto pequeno de papéis carregado na sessão ou no token[^permit-comparison]. É essa simplicidade que faz o RBAC ser recomendado como ponto de partida quase universal: fácil de explicar para um auditor, suportado nativamente por todo provedor de identidade, e adequado para a maioria dos aplicativos internos e SaaS em estágio de MVP[^corma-rbac]. NIST SP 800-162, o guia canônico de ABAC (que veremos a seguir), reconhece essa vantagem do RBAC diretamente: quando os papéis são estáveis e bem definidos, RBAC é mais simples de administrar e de auditar do que qualquer alternativa[^nist-abac-guide].
@@ -70,16 +71,18 @@ O problema aparece quando o "quem pode o quê" deixa de ser uniforme por organiz
 É aqui que nasce o fenômeno batizado **role explosion**: a resposta ingênua para "preciso de granularidade por recurso" é criar mais papéis — `document_X_editor`, `document_Y_viewer` — e a contagem cresce de forma combinatória. O exemplo citado com frequência na literatura: um produto com 10 papéis distintos, multiplicado por 1.000 tenants (clientes B2B), cada um querendo variações do mesmo conceito, resulta em algo próximo de 10.000 definições de papel para gerenciar — na prática, muitas vezes um conjunto quase-duplicado por tenant ("Admin", "Super Admin", "Admin v2") que ninguém mais consegue auditar de forma confiável[^permify-explosion][^workos-multitenant]. Em organizações internas de porte médio, o mesmo padrão aparece de forma menos dramática mas igualmente real: é comum que o número de papéis definidos supere o número de funcionários, porque cada exceção de acesso vira um papel novo em vez de uma regra composicional[^wikipedia-rbac].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["10 papéis por produto"] --> B["× 1.000 tenants B2B"]
     B --> C["~10.000 definições de papel"]
     C --> D["Admin, Admin v2, Super Admin<br/>por tenant — quase-duplicados"]
     D --> E["Impossível auditar<br/>quem pode o quê, globalmente"]
 
-    style A fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style E fill:#D0021B,color:#fff
+    class A neutro
+    class C destaque
+    class E falha
 ```
 
 > [!warning] Criar um papel novo pra cada exceção de acesso
@@ -98,8 +101,9 @@ O padrão histórico mais influente para expressar esse tipo de política é o *
 O exemplo mais citado de ABAC em produção é o **AWS IAM**: tags. Você anexa tags a recursos (`project=alpha`) e a entidades IAM (usuários, roles), e a política libera acesso quando as tags do principal e do recurso combinam — `aws:ResourceTag/project` igual a `aws:PrincipalTag/project`[^aws-abac]. A vantagem prática que a própria AWS destaca: ABAC **reduz o número de políticas necessárias**, porque você não precisa criar uma política nova para cada recurso novo — a permissão "acompanha" a tag, automaticamente, sem intervenção do administrador[^aws-abac-intro]. É o oposto exato do problema de role explosion: em vez de multiplicar papéis para cobrir combinações, você multiplica *condições* que já vêm parametrizadas pelos próprios dados.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Requisicao["Requisição de acesso"]
         S["Sujeito<br/>Bruno, dept=financeiro"]
         O["Objeto<br/>doc:relatorio-q3, dept=financeiro"]
@@ -112,8 +116,8 @@ graph LR
     E --> PDP
     PDP -->|"todos os atributos batem"| ALLOW["Permitir"]
 
-    style PDP fill:#F5A623,color:#000
-    style ALLOW fill:#4A90D9,color:#fff
+    class PDP destaque
+    class ALLOW neutro
 ```
 
 O custo de ABAC é duplo. Primeiro, **autoria de política vira uma disciplina própria** — escrever Rego ou Cedar corretamente exige cuidado real, edições de política costumam passar por revisão dedicada, e um erro sutil de lógica booleana pode abrir ou fechar acesso de formas difíceis de prever só de ler o texto[^osohq-decision-2]. Segundo, **latência**: enquanto avaliar a política dentro do Policy Decision Point costuma ser rápido, buscar os atributos em sistemas externos (o Policy Information Point — um serviço de RH pra saber o departamento do usuário, por exemplo) pode introduzir latência significativa e imprevisível, e manter esses atributos consistentes entre sistemas que atualizam em ritmos diferentes é um problema de engenharia à parte[^authzed-abac-rebac].
@@ -137,8 +141,9 @@ O detalhe interessante — e uma lição de modelagem que vale reter — é que 
 O Google Drive segue a mesma lógica, e é o exemplo original do próprio paper Zanzibar. O tipo `document` tem relações `owner`, `editor`, `viewer` e `parent` — Alice é `owner` do documento X, Bob é `editor`. A relação `parent` é o que resolve herança: quando você compartilha uma pasta, todo mundo com acesso à pasta ganha automaticamente o mesmo acesso a tudo dentro dela, porque a checagem de permissão de um arquivo consulta recursivamente a permissão da pasta-pai via a tupla `parent`[^aserto-gdrive]. É exatamente esse mecanismo — herança via travessia de grafo, não papéis duplicados por nível de pasta — que Zanzibar foi desenhado para tornar rápido em qualquer profundidade de aninhamento.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Org["organização:acme"] -->|"member"| Ana["Ana"]
     Org -->|"member"| Bruno["Bruno"]
     Pasta["pasta:projeto-q3"] -->|"parent_de"| Doc["documento:relatorio"]
@@ -146,9 +151,9 @@ graph TD
     Doc -->|"editor"| Ana
     Doc -->|"viewer (herdado via parent)"| Org
 
-    style Doc fill:#F5A623,color:#000
-    style Bruno fill:#4A90D9,color:#fff
-    style Ana fill:#4A90D9,color:#fff
+    class Doc destaque
+    class Bruno neutro
+    class Ana neutro
 ```
 
 No nosso SaaS de documentos, o desenho ReBAC ficaria assim: `documento:X#owner@bruno` (Bruno criou o documento e é dono), `documento:X#editor@ana` (Bruno compartilhou com Ana como editora), `pasta:Y#parent@documento:X` mais `pasta:Y#viewer@organização:acme` (todo mundo da organização enxerga a pasta, e por herança, o documento). A pergunta "Diana pode ver o documento X?" vira uma travessia: Diana é membro de `organização:acme` → `organização:acme` é `viewer` de `pasta:Y` → `pasta:Y` é `parent` de `documento:X` → logo Diana pode ver `documento:X`. Nenhuma dessas relações precisou de um papel novo — cada compartilhamento é só mais uma tupla no grafo.
@@ -156,8 +161,10 @@ No nosso SaaS de documentos, o desenho ReBAC ficaria assim: `documento:X#owner@b
 ## Comparando os três modelos lado a lado
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph RBAC["RBAC — papel"]
         R1["Pergunta: que papel<br/>esse usuário tem?"]
         R2["Rápido, auditável,<br/>fácil de explicar"]
@@ -174,9 +181,9 @@ graph TD
         B3["Custo: infraestrutura de grafo<br/>+ indexação pra latência baixa"]
     end
 
-    style RBAC fill:#4A90D9,color:#fff
-    style ABAC fill:#F5A623,color:#000
-    style ReBAC fill:#D0021B,color:#fff
+    class RBAC neutro
+    class ABAC destaque
+    class ReBAC falha
 ```
 
 | Dimensão | RBAC | ABAC | ReBAC |

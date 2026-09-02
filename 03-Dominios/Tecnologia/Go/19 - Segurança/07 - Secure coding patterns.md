@@ -39,6 +39,8 @@ O problema não está na lógica — está no **tempo**. O operador `==` de stri
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph errado["== (vazamento de tempo)"]
         direction LR
         A1["compara byte 1"] --> A2{"igual?"}
@@ -54,9 +56,9 @@ flowchart TB
         B2 --> B3["retorna 1 ou 0\n(tempo idêntico em qualquer caso)"]
     end
 
-    style A3 fill:#D0021B,color:#fff
-    style A6 fill:#D0021B,color:#fff
-    style B3 fill:#7ED321,color:#000
+    class A3 falha
+    class A6 falha
+    class B3 destaque
 ```
 
 O pacote [`crypto/subtle`](https://pkg.go.dev/crypto/subtle) existe exatamente para isso: operações cujo tempo de execução **não depende dos dados**, só do tamanho deles.
@@ -180,12 +182,14 @@ Go não faz *bounds checking* em aritmética de inteiros. Somar `MaxInt32 + 1` n
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["MaxInt32\n2147483647"] -->|"+1"| B["overflow"]
     B --> C["MinInt32\n-2147483648"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#D0021B,color:#fff
-    style C fill:#4A90D9,color:#fff
+    class A neutro
+    class B falha
+    class C neutro
 ```
 
 Por que isso é um problema de **segurança**, e não só de correção numérica? Porque overflow silencioso vira, com frequência, **bypass de checagem**. O exemplo clássico — presente em CVEs reais de outras linguagens de sistemas — é uma validação de tamanho antes de alocar memória:
@@ -247,6 +251,8 @@ As três armadilhas acima têm um padrão em comum: cada uma, isolada, parece um
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Atacante((Atacante)) --> L1
 
     subgraph L1["Camada 1 — Validação de input"]
@@ -269,8 +275,8 @@ flowchart TB
     end
     L4 --> Sistema[("Dado protegido")]
 
-    style Atacante fill:#D0021B,color:#fff
-    style Sistema fill:#7ED321,color:#000
+    class Atacante falha
+    class Sistema destaque
 ```
 
 Aplicado ao que este capítulo cobriu: mesmo que um dev esqueça `subtle.ConstantTimeCompare` numa rota nova, a **rate-limiting** na borda (fora do escopo desta nota, mas parte da mesma filosofia) reduz o número de tentativas que um atacante consegue fazer por segundo, tornando o timing attack impraticável mesmo sem a correção pontual. Mesmo que um `int32` estoure em algum ponto do código, uma checagem de tamanho **antes** da aritmética (validação de input, nota 04) já teria rejeitado o valor absurdo que causaria o overflow. Nenhuma camada é perfeita sozinha — a composição de várias é o que segura o sistema quando (não "se") uma delas falha.

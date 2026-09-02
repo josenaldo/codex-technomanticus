@@ -29,6 +29,8 @@ Quando você especifica critérios, o agente muda de modo: em vez de varrer o c�
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph SEM ["Sem critérios"]
         A[Revise meu código] --> B[Heurísticas gerais]
         B --> C[Lista de observações\nde estilo]
@@ -41,8 +43,8 @@ flowchart LR
         G --> H[Review acionável]
     end
 
-    style D fill:#fff5f5,stroke:#ff6b6b
-    style H fill:#f0fff4,stroke:#51cf66
+    class D falha
+    class H ok
 ```
 
 > [!summary] Criteria-first review: especifique o que procurar antes de pedir o review. O agente é um verificador de padrões, não um juiz de qualidade geral.

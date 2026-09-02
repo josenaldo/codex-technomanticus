@@ -51,7 +51,6 @@ Os 7 R's dizem *o que você pode fazer* com um componente. Eles não dizem *qual
 Cruzar esses dois eixos produz quatro quadrantes, e cada quadrante prescreve um verbo:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 quadrantChart
     title TIME — valor de negocio x qualidade tecnica
     x-axis "Qualidade tecnica BAIXA" --> "Qualidade tecnica ALTA"
@@ -73,8 +72,9 @@ quadrantChart
 O fluxo de decisão completo, então, tem duas etapas: primeiro o TIME classifica cada componente num quadrante (a decisão *estratégica*, de portfólio); depois, dentro do quadrante Migrate — o único que demanda intervenção pesada — você escolhe o R específico (a decisão *tática*, de execução).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[Componente legado] --> B{TIME: valor x qualidade}
     B -->|alto valor, alta qual.| C[INVEST: evoluir]
     B -->|baixo valor, alta qual.| D[TOLERATE: Retain]
@@ -83,8 +83,8 @@ graph TD
     F -->|existe SaaS que cabe| G[Repurchase: substituir]
     F -->|teoria vale a pena recuperar| H[Refactor: restaurar incremental]
     F -->|so a plataforma e o problema| I[Replatform]
-    style F fill:#F5A623
-    style H fill:#4A90D9
+    class F destaque
+    class H neutro
 ```
 
 ## A decisão mais cara: rewrite total vs. incremento

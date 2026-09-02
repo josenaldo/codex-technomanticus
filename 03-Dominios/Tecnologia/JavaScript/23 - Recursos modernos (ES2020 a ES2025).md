@@ -32,7 +32,6 @@ Entre ES2020 e ES2025, o TC39 fechou sistematicamente esses gaps. Este tour perc
 ## Timeline geral
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#F5A623", "tertiaryColor": "#D0021B"}}}%%
 timeline
     title ECMAScript 2020-2025: marcos de DX
     ES2020 : optional chaining ?.

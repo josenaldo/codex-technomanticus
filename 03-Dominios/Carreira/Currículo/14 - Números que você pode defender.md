@@ -61,8 +61,10 @@ A regra para este nível é curta e não admite exceção: **um número lembrado
 Vale nomear, aqui, um erro comum e compreensível: tratar "lembrado" como sinônimo de "inútil" ou "não deveria aparecer no currículo". Não é essa a lição. A [[03-Dominios/Carreira/Currículo/15 - Quando não há número|nota 15]], mais adiante no galho, trata em profundidade do que fazer quando nem sequer a ordem de grandeza está disponível — e mesmo um número puramente lembrado, desde que apresentado como o que é, continua sendo informação real e útil para o leitor. O problema nunca foi lembrar; foi disfarçar uma lembrança de medição, emprestando dela uma precisão que ela nunca teve.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     F1["Fonte reproduzível<br/>git log · painel de CI ·<br/>suíte de testes · log de incidente"] --> M["MEDIDO"]
     F2["Registro que existe,<br/>contado à mão<br/>histórico de mensagens · Kanban fechado · planilha"] --> C["CONTADO"]
     F3["Memória sem<br/>registro recuperável"] --> L["LEMBRADO"]
@@ -71,12 +73,12 @@ graph TD
     C --> CA["Nomeia a fonte na própria frase.<br/>Declara a limitação antes de perguntarem."]
     L --> LA["Só ordem de grandeza.<br/>Nunca deriva percentual disso."]
 
-    style M fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style L fill:#D0021B,color:#fff
-    style MA fill:#4A90D9,color:#fff
-    style CA fill:#F5A623,color:#000
-    style LA fill:#D0021B,color:#fff
+    class M neutro
+    class C destaque
+    class L falha
+    class MA neutro
+    class CA destaque
+    class LA falha
 ```
 
 O diagrama fixa a regra que as três seções acima descreveram em prosa: o comprimento da cadeia entre o fato e a fonte decide o nível, e o nível decide o que a frase final tem autorização para dizer. Não existe atalho de um nível mais frágil para um mais forte — só existe a decisão honesta de qual dos três, hoje, descreve de verdade a origem do número que está prestes a virar uma linha de currículo.

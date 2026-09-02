@@ -283,6 +283,8 @@ func handlerVerPedido(w http.ResponseWriter, r *http.Request) {
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Requisição chega"] --> B{"Token válido?<br/>(AuthN)"}
     B -- não --> C["401 Unauthorized"]
     B -- sim --> D{"Role tem permissão<br/>pra esse tipo de operação?<br/>(AuthZ - RBAC)"}
@@ -291,9 +293,9 @@ flowchart TD
     F -- não --> E
     F -- sim --> G["200 OK - executa"]
 
-    style B fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
-    style F fill:#F5A623,color:#000
+    class B neutro
+    class D destaque
+    class F destaque
 ```
 
 ## Amarrando tudo: um serviço mínimo completo

@@ -67,8 +67,9 @@ A analogia da mochila ajuda aqui: quando uma função é criada, ela "empacota" 
 O diagrama abaixo mostra a cadeia de escopos (scope chain) formada pelo exemplo do contador:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph Global["Escopo Global"]
         G["contador → referência para incrementar()"]
     end
@@ -87,9 +88,9 @@ graph TD
     IRef -->|"resolve contagem"| Outer
     ORef -->|"cadeia até"| Global
 
-    style Outer fill:#4A90D9,color:#fff
-    style Inner fill:#4A90D9,color:#fff
-    style Global fill:#e8e8e8
+    class Outer neutro
+    class Inner neutro
+    class Global marca
 ```
 
 Quando `incrementar()` executa `contagem++`:
@@ -229,16 +230,17 @@ Por quê? `var` é **function-scoped**, não block-scoped. O loop inteiro compar
 Cada closure captura a **referência** ao binding, não uma **cópia** do valor — e como todas apontam para o mesmo `i`, todas veem `3`.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#D0021B"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     B1["callback #0\n[[Environment]] →"] --> S["binding i: 3"]
     B2["callback #1\n[[Environment]] →"] --> S
     B3["callback #2\n[[Environment]] →"] --> S
 
-    style S fill:#D0021B,color:#fff
-    style B1 fill:#F5A623
-    style B2 fill:#F5A623
-    style B3 fill:#F5A623
+    class S falha
+    class B1 destaque
+    class B2 destaque
+    class B3 destaque
 ```
 
 ### Solução 1: `let` (recomendada — ES6+)

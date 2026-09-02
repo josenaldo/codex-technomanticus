@@ -105,8 +105,9 @@ A linha do tempo de maturação da CNCF é o sinal mais objetivo de que CloudEve
 A lista de quem adota CloudEvents nativamente, hoje, cobre os principais provedores de nuvem: AWS EventBridge suporta receber e enviar CloudEvents no formato JSON v1.0, tanto pelo binding HTTP quanto por API destinations, permitindo filtrar e rotear eventos CloudEvents sem entender a lógica de negócio dentro deles ([AWS Compute Blog, *Sending and receiving CloudEvents with Amazon EventBridge*](https://aws.amazon.com/blogs/compute/sending-and-receiving-cloudevents-with-amazon-eventbridge/)); Azure Event Grid tem suporte de primeira classe ao schema CloudEvents, inclusive nos Namespaces mais recentes do serviço ([Microsoft Learn, *Event Grid Namespaces — support for CloudEvents schema*](https://learn.microsoft.com/en-us/azure/event-grid/namespaces-cloud-events)); e, dentro do ecossistema Kubernetes nativo da CNCF, o Knative Eventing usa CloudEvents como formato **nativo** de evento — toda a integração entre EventBridge e Knative Eventing, por exemplo, é possível precisamente porque os dois falam o mesmo envelope CloudEvents, sem tradutor no meio ([Knative Eventing overview](https://knative.dev/docs/eventing/)).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph SISTEMAS["Sistemas heterogêneos, formatos próprios"]
         S1["Pagamento<br/>event_type/occurred_at"]
         S2["Antifraude<br/>type/timestamp"]
@@ -122,10 +123,10 @@ flowchart TD
     ENV --> KN["Knative Eventing"]
     ENV --> C1["Consumer de notificação"]
 
-    style ENV fill:#4A90D9,color:#fff
-    style S1 fill:#F5A623,color:#000
-    style S2 fill:#F5A623,color:#000
-    style S3 fill:#F5A623,color:#000
+    class ENV neutro
+    class S1 destaque
+    class S2 destaque
+    class S3 destaque
 ```
 
 ## AsyncAPI: o "OpenAPI dos eventos"
@@ -229,8 +230,9 @@ A diferença real entre os dois mundos nunca esteve no **problema** — é estru
 O movimento de 2026 que abriu esta nota confirma essa convergência de mais um ângulo: a própria Intuit, ao trocar seu formato proprietário de webhook por CloudEvents, está aplicando o mesmo raciocínio de padronização de envelope que Kafka/EventBridge/Event Grid já aplicam para eventos internos — reconhecendo, na prática, que um webhook **é** um evento, só entregue por outro canal de transporte (HTTP direto, em vez de um broker intermediário). A fronteira entre "mensageria" e "webhook" nunca foi uma fronteira de arquitetura — foi sempre só uma fronteira de **infraestrutura**: quem carrega a fila (um broker dedicado, ou a memória e o disco de quem envia o `POST`).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     E["Evento acontece<br/>(pagamento capturado)"] --> Q{"Como notificar<br/>o interessado?"}
 
     Q -->|"Fila/stream dedicado<br/>(Kafka, RabbitMQ, SQS)"| BROKER["Broker com<br/>durabilidade formal"]
@@ -242,11 +244,11 @@ graph TD
     G1 --> DEDUP["Idempotência +<br/>dedup por ID"]
     G2 --> DEDUP
 
-    style E fill:#4A90D9,color:#fff
-    style BROKER fill:#4A90D9,color:#fff
-    style WH fill:#F5A623,color:#000
-    style G2 fill:#F5A623,color:#000
-    style DEDUP fill:#4A90D9,color:#fff
+    class E neutro
+    class BROKER neutro
+    class WH destaque
+    class G2 destaque
+    class DEDUP neutro
 ```
 
 ## Síntese: o que os sub-galhos 3 e 4 juntos ensinaram sobre confiabilidade de entrega

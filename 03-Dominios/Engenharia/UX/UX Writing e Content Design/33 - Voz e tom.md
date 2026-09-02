@@ -26,14 +26,15 @@ A distinção central do campo, usada por praticamente toda literatura de conten
 Pense em uma pessoa real com personalidade estável — digamos, alguém genuinamente bem-humorado. Essa pessoa não some quando o assunto fica sério: ela continua sendo quem é, mas ajusta *como* fala. No velório de um amigo, ela não conta piada, mas também não vira outra pessoa — ela está mais quieta, mais cuidadosa, ainda ela mesma. Numa comemoração, o humor volta à tona sem esforço. A voz (quem ela é) não mudou; o tom (como ela se expressa naquele momento) mudou porque o contexto mudou. Um produto que erra o tom na tela de erro de pagamento é como aquela pessoa que conta piada no velório — não porque a personalidade dela seja ruim, mas porque ela não percebeu que o momento pedia outra coisa.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     V["Voz do produto<br/>(constante)<br/>ex: direto, próximo, sem jargão"] --> T1["Tom em onboarding<br/>acolhedor, animado"]
     V --> T2["Tom em sucesso<br/>celebratório, breve"]
     V --> T3["Tom em erro comum<br/>calmo, direto ao ponto"]
     V --> T4["Tom em erro de pagamento/dados<br/>sério, sem humor, focado em ação"]
-    style V fill:#4A90D9,color:#fff
-    style T4 fill:#F5A623,color:#000
+    class V neutro
+    class T4 destaque
 ```
 
 **O mecanismo em uma frase:** a voz responde "quem fala", o tom responde "como essa pessoa fala dado o que está acontecendo agora" — e o erro de misturar os dois é tratar a resposta da primeira pergunta como se já respondesse a segunda.

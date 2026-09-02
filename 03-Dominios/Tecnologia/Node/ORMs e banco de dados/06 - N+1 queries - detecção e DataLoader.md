@@ -26,6 +26,9 @@ aliases:
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     REQ["Requisição\n/posts?limit=50"]
     Q1["Query 1\nSELECT * FROM posts LIMIT 50"]
     N_Q["Queries N (×50)\nSELECT * FROM users WHERE id = ?"]
@@ -44,12 +47,12 @@ flowchart TD
     EL --> SOL
     DL --> SOL
 
-    style PROB fill:#D0021B,color:#fff
-    style EL fill:#4A90D9,color:#fff
-    style DL fill:#F5A623,color:#000
-    style SOL fill:#4A90D9,color:#fff
-    style Q1 fill:#F5A623,color:#000
-    style N_Q fill:#D0021B,color:#fff
+    class PROB falha
+    class EL neutro
+    class DL destaque
+    class SOL neutro
+    class Q1 destaque
+    class N_Q falha
 ```
 
 ## O que é

@@ -306,6 +306,8 @@ Esse mecanismo é o que permite ter dois perfis de execução da mesma suíte, s
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Local["Máquina do desenvolvedor"]
         C["git commit"] --> H["hook de pre-commit"]
         H --> P1["pytest -m 'not slow'"]
@@ -317,8 +319,8 @@ flowchart LR
         P2 -->|"~4min, suíte completa<br/>incluindo slow + integration"| OK2["build verde / vermelho"]
     end
 
-    style P1 fill:#4A90D9,color:#fff
-    style P2 fill:#D0021B,color:#fff
+    class P1 neutro
+    class P2 falha
 ```
 
 Isso resolve uma tensão real de qualquer suíte que cresce: testes de integração genuinamente lentos (subindo um container de banco, fazendo uma chamada HTTP real) dão confiança maior, mas rodá-los a cada `git commit` tornaria o ciclo de desenvolvimento insuportável. Marcar esses testes como `slow`/`integration` e filtrá-los do hook local, mantendo-os obrigatórios no CI, dá as duas coisas: feedback rápido localmente, confiança completa antes do merge.
@@ -334,6 +336,8 @@ A convenção mais comum na comunidade Python é uma pasta `tests/` na raiz do p
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     ROOT["meu_projeto/"] --> SRC["meu_projeto/<br/>(pacote de produção)"]
     ROOT --> TESTS["tests/"]
     ROOT --> CONF["pyproject.toml<br/>(markers, testpaths, etc.)"]
@@ -354,8 +358,8 @@ flowchart TD
     INTEG --> IREPO["repositorio/<br/>test_persistencia.py"]
     INTEG --> IAPI["api/<br/>test_rotas_end_to_end.py"]
 
-    style UNIT fill:#4A90D9,color:#fff
-    style INTEG fill:#D0021B,color:#fff
+    class UNIT neutro
+    class INTEG falha
 ```
 
 A pasta `unit/validacao/` espelhando `meu_projeto/validacao/` não é uma regra rígida — é uma convenção que paga dividendos justamente quando a suíte cresce: quem move `cpf.py` de `validacao/` para `dominio/cpf/` sabe exatamente qual pasta de teste mover junto, e quem procura o teste de uma função sabe onde procurar sem depender de busca textual.

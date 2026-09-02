@@ -35,8 +35,9 @@ A vantagem aparece quando as regras **interagem** e se **repetem**. A regra "só
 Ter classes `Pedido`, `Item`, `Cliente` **não** significa ter um Domain Model. A pergunta decisiva é: **onde está o comportamento?**
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph anemico["Modelo ANÊMICO (anti-padrão)"]
         SA["PedidoService<br/>(toda a lógica aqui)"] --> PA["Pedido<br/>só getters/setters"]
     end
@@ -44,10 +45,10 @@ graph TD
         SR["PedidoService<br/>(fino: orquestra)"] --> PR["Pedido.aprovar()<br/>regras aqui"]
     end
 
-    style PA fill:#F5A623,color:#000
-    style SA fill:#F5A623,color:#000
-    style PR fill:#4A90D9,color:#fff
-    style SR fill:#4A90D9,color:#fff
+    class PA destaque
+    class SA destaque
+    class PR neutro
+    class SR neutro
 ```
 
 O **modelo anêmico** tem objetos que são só estruturas de dados (getters/setters) e concentra toda a lógica em *services*. Parece OO, mas é **Transaction Script disfarçado** — a regra não mora com os dados, e você perde exatamente o benefício que motivava o Domain Model. Martin Fowler o chama de anti-padrão justamente porque paga o custo de modelar objetos sem colher o ganho de encapsular comportamento. O aprofundamento vive em [[03-Dominios/Engenharia/Design de Software/Orientação a Objetos/10 - Rich vs Anemic Domain Model|Rich vs Anemic Domain Model]].

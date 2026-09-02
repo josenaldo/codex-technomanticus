@@ -42,8 +42,9 @@ Antes de qualquer coisa nova, o roteiro do que **já está resolvido** — para 
 Repare no que essas três notas **pressupõem**: elas descrevem uma API stateless, autenticada via Bearer token — o caso comum de SPA + backend Express como resource server. O que falta é exatamente o outro lado do espectro, ainda extremamente comum em produção: aplicações Express que servem HTML renderizado no servidor, ou que atuam como BFF (Backend-for-Frontend) mantendo o próprio estado de login via **sessão** — e a decisão de qual biblioteca usar para orquestrar login social, senha e MFA num app real, decisão que Node/Seg 04-06 não precisou tomar porque partiu do pressuposto "o cliente já chega com um JWT".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Existente["Node/Segurança 04-06 — já cobrem"]
         J["JWT: sign/verify,<br/>access+refresh, revogação"]
         O["OAuth/OIDC: openid-client,<br/>PKCE, ID Token"]
@@ -56,8 +57,8 @@ graph TD
         K["Express como client OIDC<br/>do Keycloak"]
     end
 
-    style Existente fill:#4A90D9,color:#fff
-    style Novo fill:#F5A623,color:#000
+    class Existente neutro
+    class Novo destaque
 ```
 
 ## Sessão production-grade: express-session + Redis
@@ -147,7 +148,6 @@ app.post('/login', async (req, res) => {
 `req.session.regenerate()` é a chamada que a própria documentação do Express recomenda como prática padrão contra fixation[^express-session-docs]; o callback aninhado com `req.session.save()` garante que a resposta HTTP só é enviada depois que o Redis confirmou a persistência da nova sessão — pular esse passo é uma race condition sutil que só aparece sob carga.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant U as Usuário (browser)
     participant E as Express
@@ -243,8 +243,9 @@ app.listen(3000)
 | Ideal para | Apps com stack legada, strategy nicho, controle granular | SaaS novo, MVP rápido com features completas | OIDC enterprise com Keycloak/Okta/Azure AD, requisitos de segurança rigorosos e auditáveis |
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q1{"Precisa de multi-tenancy,\npasskeys, 2FA prontos?"}
     Q2{"App legada com\nstrategy nicho específica?"}
     Q3{"IdP enterprise\n(Keycloak/Okta/Azure AD)?"}
@@ -256,9 +257,9 @@ flowchart TD
     Q3 -->|Sim| OC["express-session + openid-client\n(Node/Seg 05)"]
     Q3 -->|Não| BA
 
-    style BA fill:#4A90D9,color:#fff
-    style PP fill:#F5A623,color:#000
-    style OC fill:#4A90D9,color:#fff
+    class BA neutro
+    class PP destaque
+    class OC neutro
 ```
 
 ## Integrando Express com Keycloak como OIDC client

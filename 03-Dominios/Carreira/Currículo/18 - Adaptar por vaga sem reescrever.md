@@ -83,8 +83,10 @@ Nenhum fato novo. Nenhuma invenção. As duas frases descrevem a mesma pessoa, o
 **A ordem e a ênfase dos bullets** são a segunda peça, e a decisão aqui é um nível acima da que a nota 11 trata. Não é *como escrever* o bullet — é, dado um conjunto de bullets já escritos e válidos, qual aparece primeiro dentro da entrada, e qual palavra dentro dele carrega o negrito. Um bullet sobre otimização de performance e um sobre liderança técnica podem ser igualmente verdadeiros e igualmente fortes. Se a vaga enfatiza escala, o primeiro sobe. Se enfatiza coordenação entre times, o segundo sobe. O conteúdo de nenhum dos dois muda — só a posição relativa.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     BASE["Currículo base<br/>experiência real, bullets<br/>já escritos na fórmula da nota 11"]
 
     BASE -->|"copia inteira"| VAR["Variante para a vaga X"]
@@ -93,10 +95,10 @@ graph LR
     VAR --> O["Ordem e ênfase<br/>dos bullets recentes<br/>reordenados, não reescritos"]
     VAR --> RESTO["Todo o resto<br/>idêntico à base"]
 
-    style BASE fill:#4A90D9,color:#fff
-    style S fill:#7ED321,color:#000
-    style O fill:#7ED321,color:#000
-    style RESTO fill:#999,color:#fff
+    class BASE neutro
+    class S destaque
+    class O destaque
+    class RESTO marca
 ```
 
 Repare na proporção que o diagrama fixa: duas peças pequenas se movem, e o resto do documento — a maior parte dele, em volume — fica exatamente como estava. Uma variante que se afasta muito dessa proporção parou de ser adaptação e virou outra coisa. É disso que trata o critério de parada, mais adiante.

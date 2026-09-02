@@ -72,6 +72,7 @@ A árvore abaixo mostra a recursão de `fib(5)` sem memória. Observe os nós de
 
 ```mermaid
 flowchart TD
+    classDef rep fill:#ffe0e0,stroke:#cc0000,stroke-width:2px;
     F5["fib(5)"]
     F4a["fib(4)"]
     F3a["fib(3) (repetido)"]
@@ -103,7 +104,6 @@ flowchart TD
     F2c --> F1e
     F2c --> F0c
 
-    classDef rep fill:#ffe0e0,stroke:#cc0000,stroke-width:2px;
     class F3a,F3b,F2a,F2b,F2c rep;
 ```
 
@@ -414,6 +414,7 @@ O fluxograma abaixo formaliza essa árvore de decisão. Comece de cima com o pro
 
 ```mermaid
 flowchart TD
+    classDef rec fill:#e0f0ff,stroke:#0066cc;
     START["Problema de otimização<br/>ou contagem sobre escolhas"]
     Q1{"Tem subestrutura<br/>ótima?"}
     Q2{"Subproblemas se<br/>repetem (sobrepostos)?"}
@@ -435,7 +436,6 @@ flowchart TD
     Q2 -->|"não (distintos)"| DC
     Q2 -->|"sim (sobrepostos)"| DP
 
-    classDef rec fill:#e0f0ff,stroke:#0066cc;
     class DP rec;
 ```
 

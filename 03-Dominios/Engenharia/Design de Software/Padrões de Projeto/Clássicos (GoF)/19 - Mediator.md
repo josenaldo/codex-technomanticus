@@ -32,8 +32,8 @@ O Mediator recolhe essa coordenação para um objeto central. Cada colega passa 
 ## A ideia
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph antes["Sem mediator — teia N²"]
         A1[Campo A] --- B1[Campo B]
         A1 --- C1[Campo C]
@@ -49,7 +49,7 @@ graph TD
         D2[Campo D] --> M
     end
 
-    style M fill:#4A90D9,color:#fff
+    class M neutro
 ```
 
 À esquerda, cada colega conhece vários outros (acoplamento que cresce quadraticamente). À direita, todos conhecem só o mediator, que orquestra a interação.

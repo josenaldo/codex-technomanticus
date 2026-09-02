@@ -75,20 +75,22 @@ A ideia central do Data Vault é separar, em tabelas distintas, três coisas que
 **Satellite — os atributos descritivos, com histórico completo.** É aqui que o nome do produto, a categoria, o preço de tabela realmente moram — e cada Satellite guarda, por natureza, o histórico completo de mudança desses atributos ao longo do tempo, sem precisar de nenhuma técnica adicional de versionamento. Um Satellite associado a `hub_produto` guarda uma linha por versão do conjunto de atributos, com uma data de início de validade — o equivalente, dentro do Data Vault, ao que um SCD tipo 2 faz no modelo dimensional (ver nota 04 desta trilha), só que como parte estrutural do modelo, não como uma técnica aplicada por cima dele.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     HP["Hub Produto<br/>(chave de negócio)"] --- LK["Link<br/>Pedido-Produto"]
     HD["Hub Pedido<br/>(chave de negócio)"] --- LK
     HP --- SP["Satellite Produto<br/>(nome, categoria, preço,<br/>histórico completo)"]
     HD --- SD["Satellite Pedido<br/>(status, canal,<br/>histórico completo)"]
     LK --- SL["Satellite do Link<br/>(quantidade, desconto<br/>no momento da venda)"]
 
-    style HP fill:#4A90D9,color:#fff
-    style HD fill:#4A90D9,color:#fff
-    style LK fill:#F5A623,color:#000
-    style SP fill:#D0021B,color:#fff
-    style SD fill:#D0021B,color:#fff
-    style SL fill:#D0021B,color:#fff
+    class HP neutro
+    class HD neutro
+    class LK destaque
+    class SP falha
+    class SD falha
+    class SL falha
 ```
 
 Repare no que essa separação compra. Quando um novo marketplace começa a mandar o catálogo de produto num formato diferente, você não precisa re-modelar `hub_produto` — a chave de negócio (o SKU) continua a mesma. Você só adiciona um novo Satellite (ou estende o existente) para os atributos que essa fonte específica traz, sem tocar no que já existe. Cada Hub, Link e Satellite pode ser carregado de forma **independente e em paralelo**, porque a chave de negócio no Hub não depende de nenhum outro objeto ter sido carregado primeiro — uma propriedade valiosa quando o volume de ingestão é alto e vem de múltiplas fontes simultâneas. E como cada Satellite guarda proveniência (de onde veio, quando chegou) junto com o histórico completo de mudança, responder "de onde veio esse dado, e o que ele dizia em qualquer ponto do passado" é uma consulta direta ao modelo, não uma reconstrução forense.
@@ -165,17 +167,19 @@ A ideia é simples de enunciar e poderosa na prática: o dado entra bruto e vai 
 **Gold — agregado e modelado para consumo.** É na camada gold que a modelagem dimensional entra em cena. Gold é onde o dado silver, já limpo e conformado, é reorganizado especificamente para responder perguntas de negócio — e essa reorganização, na grande maioria dos casos práticos, **é** um star schema Kimball, ou uma OBT materializada para um caso de uso específico, ou (com menos frequência) uma camada Data Vault se a organização precisar da auditabilidade extra. Gold é a camada que um dashboard de BI ou um analista consulta diretamente.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     F["Fontes<br/>(OLTP, APIs, eventos,<br/>marketplaces)"] --> B["Bronze<br/>raw, append-only"]
     B -->|"limpeza,<br/>validação,<br/>conformação"| S["Silver<br/>limpo, conformado"]
     S -->|"modelagem<br/>dimensional"| G["Gold<br/>star schema / OBT"]
     G --> BI["Dashboard de BI"]
     G --> ML["Modelos de ML"]
 
-    style B fill:#D0021B,color:#fff
-    style S fill:#4A90D9,color:#fff
-    style G fill:#F5A623,color:#000
+    class B falha
+    class S neutro
+    class G destaque
 ```
 
 O ponto que mais gera confusão — e que vale grifar explicitamente — é este: **medallion não compete com Kimball, ele o contém.** "Onde entra o star schema no medallion?" é uma pergunta com resposta direta: na camada gold. Medallion responde "em que ordem e com que disciplina o dado é refinado, de fonte bruta até pronto para consumo"; Kimball (ou Data Vault, ou OBT) responde "como o dado é estruturado *dentro* daquela camada gold, uma vez que já está limpo". São perguntas ortogonais, e um projeto de dados maduro no lakehouse tipicamente responde as duas ao mesmo tempo — camadas bronze/silver/gold para organizar o pipeline, star schema (ou variantes) dentro da gold para organizar o consumo. A movimentação e transformação de dado entre essas camadas — os pipelines em si, ETL vs ELT — é o assunto do próximo sub-galho desta trilha, não desta nota.

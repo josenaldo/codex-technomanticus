@@ -157,7 +157,6 @@ O registro `connections` é deliberadamente **não durável** (cache, TTL curto)
 ## Diagrama macro
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     A["Cliente A<br/>(Alice)"] -- "WebSocket" --> LB["Load Balancer<br/>(sticky no handshake)"]
     B["Cliente B<br/>(Bob)"] -- "WebSocket" --> LB
@@ -189,7 +188,6 @@ Esse roteamento entre servidores é o motivo pelo qual "escalar o número de cha
 ### Sequência de envio de uma mensagem (com ACK)
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Alice
     participant CS1 as Chat Server 1
@@ -255,7 +253,6 @@ Três garantias distintas — que a entrevista frequentemente trata como uma coi
 **Destinatário offline.** Se o Connection Registry não encontra Bob em nenhum chat server, a mensagem não é descartada — ela é gravada no Message Store normalmente (a fonte de verdade não depende de ninguém estar online) e o sistema dispara uma **push notification** via APNs (iOS) ou FCM (Android) para acordar o app em segundo plano. Quando Bob reconecta, o cliente pede ao servidor, via histórico REST, todas as mensagens com `seq` maior que o último que ele tem localmente por chat — um catch-up simples que reaproveita exatamente a mesma API de paginação usada para rolar o histórico antigo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
     M["Mensagem chega<br/>no Chat Server"] --> Q{"Bob está conectado<br/>(Connection Registry)?"}
     Q -->|"Sim"| PUSH1["Entrega via<br/>WebSocket ativo"]
@@ -282,7 +279,6 @@ Presence parece trivial — "salva um bit: online ou offline" — mas o desafio 
 A mitigação padrão é **assinatura seletiva, não broadcast total**: em vez de notificar todos os 500 contatos de Alice sempre que ela muda de status, o sistema só notifica quem está **ativamente olhando** para o status dela agora — por exemplo, quem tem a conversa com Alice aberta na tela, ou quem abriu a lista de contatos recentemente. Isso transforma presence de um problema de "broadcast para toda a rede social do usuário" em um problema de "pub/sub com poucos assinantes por publicador em qualquer instante dado" — o mesmo padrão de [[01 - Pub-Sub e event-driven em escala]], aplicado aqui à granularidade de "status de um usuário".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Alice
     participant PresSvc as Presence Service

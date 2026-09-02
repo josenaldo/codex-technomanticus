@@ -247,6 +247,8 @@ A escada subindo do fraco ao forte:
 
 ```mermaid
 flowchart TD
+    classDef fraco fill:#fde8e8,stroke:#c0392b
+    classDef forte fill:#e8f5e9,stroke:#27ae60
     P1["🔧 12. Números / parâmetros<br/><i>(timeout, threshold)</i>"] --> P2
     P2["📦 11-10. Buffers, estoques e fluxos<br/><i>(tamanho da fila, do pool)</i>"] --> P3
     P3["⏱️ 9-7. Atrasos e força dos loops<br/><i>(retry, autoscaler, ciclo vicioso)</i>"] --> P4
@@ -258,8 +260,6 @@ flowchart TD
 
     P1:::fraco
     P8:::forte
-    classDef fraco fill:#fde8e8,stroke:#c0392b
-    classDef forte fill:#e8f5e9,stroke:#27ae60
 ```
 
 Leitura do diagrama: de cima (vermelho, alavancagem **fraca**: mexer num número) para baixo (verde, alavancagem **forte**: mudar o paradigma). Quanto mais fundo, mais o ponto transforma o sistema — e mais difícil é enxergá-lo e tocá-lo.

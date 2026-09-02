@@ -33,8 +33,9 @@ A pesquisa que sustenta esta nota converge em sete sinais concretos, cada um lig
 7. **Saber onde o framework quebra.** Nomear JTBD ou Opportunity Solution Tree é fácil; dizer quando não usar sinaliza senioridade de verdade — o exemplo mais forte do domínio é a [[03-Dominios/Engenharia/UX/Medir, Validar e Sustentar/42 - Quando A-B não se aplica|nota 42]]: saber que não há tráfego suficiente para um A/B, e o que fazer no lugar, é exatamente o tipo de limite que separa quem decorou de quem aplicou.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q["Pergunta de UX<br/>na entrevista"] --> A["Trade-off explícito"]
     Q --> B["Vocabulário compartilhado"]
     Q --> C["Erro/vazio como escopo"]
@@ -49,8 +50,8 @@ flowchart TD
     E --> R
     F --> R
     G --> R
-    style Q fill:#4A90D9,color:#fff
-    style R fill:#F5A623,color:#000
+    class Q neutro
+    class R destaque
 ```
 
 ## As perguntas reveladoras — e como respondê-las

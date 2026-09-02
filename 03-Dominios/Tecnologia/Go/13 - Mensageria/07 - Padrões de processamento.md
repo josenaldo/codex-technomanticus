@@ -128,6 +128,8 @@ A saída não é abrir mão de paralelismo — é garantir paralelismo **entre e
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Kafka["Tópico particionado por chave"]
         P0["Partição 0\nconta 42, 42, 99"]
         P1["Partição 1\nconta 7, 7, 7"]
@@ -141,10 +143,10 @@ flowchart LR
     P0 --> W0
     P1 --> W1
 
-    style P0 fill:#4A90D9,color:#fff
-    style P1 fill:#4A90D9,color:#fff
-    style W0 fill:#F5A623,color:#000
-    style W1 fill:#F5A623,color:#000
+    class P0 neutro
+    class P1 neutro
+    class W0 destaque
+    class W1 destaque
 ```
 
 A regra prática, direto do que a nota 02 já estabeleceu sobre particionamento: **escolha uma chave que agrupe tudo que precisa de ordem relativa** (aqui, o ID da conta) e **um worker por partição, nunca um pool compartilhado consumindo múltiplas partições em paralelo sem essa disciplina**. Se o seu consumer usa `kafka-go` com um `Reader` por partição — ou `segmentio/kafka-go` com `GroupBalancer` que atribui partições inteiras a consumers — a ordem já vem de graça da infraestrutura; o erro comum é, dentro de UM consumer que recebe UMA partição, ainda assim distribuir as mensagens dela para um pool de workers concorrentes, destruindo a ordem que o broker preservou com tanto cuidado.
@@ -192,14 +194,16 @@ Essa mensagem é uma **poison message** — e o efeito colateral dela, sem trata
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Mensagem #100\nJSON malformado"] -->|"retry 1... 2... 3..."| B{"Ainda falha?"}
     B -->|"sim, indefinidamente"| C["Offset trava em #100"]
     C --> D["Mensagens #101, #102, #103...\nesperam atrás, mesmo saudáveis"]
     B -->|"não — reconhecida como poison"| E["Move pra DLQ\ncommit do offset segue"]
     E --> F["Mensagens #101+ processam normalmente"]
 
-    style C fill:#D0021B,color:#fff
-    style E fill:#F5A623,color:#000
+    class C falha
+    class E destaque
 ```
 
 A nota 06 já introduziu a DLQ (*dead-letter queue*) como destino de mensagens que esgotaram as tentativas de retry — o mecanismo de poison message é literalmente esse mesmo circuito, com um detalhe extra: **classificar** a falha antes de decidir se vale retry ou se é caso perdido de saída. Um erro de rede vale retry; um erro de deserialização de JSON não vale retentar dez vezes — a estrutura não muda entre uma tentativa e a próxima.
@@ -269,13 +273,16 @@ Lag baixo e estável é saudável — o consumer processa aproximadamente na mes
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Lag estável\n~baixo, oscila pouco"] -->|"saudável"| B["Nada a fazer"]
     C["Lag crescendo\nlinearmente"] -->|"consumer mais lento\nque produtor"| D["Escalar workers\nou partições"]
     E["Lag travado\nnum valor fixo"] -->|"consumer parado\nou preso em poison message"| F["Investigar:\nprocesso vivo? DLQ?"]
 
-    style A fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style E fill:#D0021B,color:#fff
+    class A neutro
+    class C destaque
+    class E falha
 ```
 
 Sem observar lag, você só descobre que um consumer parou de processar quando um humano do lado de negócio reclama que um pedido de três dias atrás nunca chegou — tarde demais para ser um incidente tratado com calma. Com lag exposto como métrica, é um alerta automático muito antes disso.

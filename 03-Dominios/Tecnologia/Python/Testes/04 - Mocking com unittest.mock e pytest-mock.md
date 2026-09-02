@@ -346,13 +346,16 @@ O diagrama abaixo resume as três camadas de rigor, da mais permissiva (e mais p
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Mock() sem spec"] -->|"aceita qualquer atributo<br/>e qualquer chamada"| A1["Não detecta renomeação<br/>nem assinatura errada"]
     B["Mock(spec=Classe)"] -->|"valida que o atributo existe"| B1["Detecta renomeação/remoção,<br/>não valida argumentos"]
     C["autospec=True /<br/>create_autospec(Classe)"] -->|"valida existência<br/>+ assinatura completa"| C1["Detecta renomeação,<br/>remoção E argumento errado"]
 
-    style A fill:#D0021B,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
+    class A falha
+    class B destaque
+    class C neutro
 ```
 
 ## Quando mockar, quando não mockar
@@ -453,6 +456,9 @@ O diagrama mostra a fronteira entre o que roda de verdade e o que é substituíd
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Teste["Dentro do teste (processo Python, sem rede)"]
         T["test_calcula_transportadora_sudeste_para_sp"] --> S["ServicoDeFrete<br/>(código real, sob teste)"]
         S --> C["ClienteCep<br/>(instância real)"]
@@ -461,10 +467,10 @@ flowchart LR
 
     M -.->|"NUNCA chega aqui"| API["API externa de CEP<br/>(rede real)"]
 
-    style S fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style M fill:#F5A623,color:#000
-    style API fill:#D0021B,color:#fff
+    class S neutro
+    class C neutro
+    class M destaque
+    class API falha
 ```
 
 `ServicoDeFrete` e a instância de `ClienteCep` são reais — o teste exercita a lógica de decisão de transportadora de verdade. Só o método que faz a chamada HTTP (`consultar`) é substituído, e a linha pontilhada até a API externa nunca é percorrida durante o teste. Essa é a assinatura de um mock bem colocado: a fronteira do mock coincide exatamente com a fronteira de I/O externo, nem mais (mockando lógica interna) nem menos (deixando a rede real vazar para dentro do teste unitário).

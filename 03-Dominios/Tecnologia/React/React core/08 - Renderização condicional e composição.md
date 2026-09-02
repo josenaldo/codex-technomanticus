@@ -185,8 +185,9 @@ function Alert({ message }: AlertProps) {
 ### Escolhendo a técnica certa
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[Quantas saídas possíveis?] -->|"1 ou 0\n(mostrar ou esconder)"| B{"A condição é\num valor numérico?"}
     A -->|"2 alternativas"| C[Ternário ? :]
     A -->|"3 ou mais\nalternativas"| D[if / early return\nou variável content]
@@ -197,12 +198,12 @@ flowchart TD
     C --> G[Inline no JSX]
     D --> H[Antes do return\nou componente separado]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
+    class A neutro
+    class B destaque
+    class E neutro
+    class F neutro
+    class C neutro
+    class D neutro
 ```
 
 ---
@@ -312,8 +313,10 @@ O `PageLayout` não sabe nada sobre navegação ou rodapé — ele apenas declar
 ### Diagrama: árvore de composição
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     App["App"]
     App --> Layout["PageLayout\n(header / children / footer)"]
 
@@ -325,14 +328,14 @@ graph TD
     M --> Content["ArticleContent"]
     F --> FooterComp["FooterLinks"]
 
-    style App fill:#4A90D9,color:#fff
-    style Layout fill:#4A90D9,color:#fff
-    style H fill:#F5A623,color:#fff
-    style M fill:#F5A623,color:#fff
-    style F fill:#F5A623,color:#fff
-    style Nav fill:#27AE60,color:#fff
-    style Content fill:#27AE60,color:#fff
-    style FooterComp fill:#27AE60,color:#fff
+    class App neutro
+    class Layout neutro
+    class H destaque
+    class M destaque
+    class F destaque
+    class Nav ok
+    class Content ok
+    class FooterComp ok
 ```
 
 O `PageLayout` é o "gabarito" — define a estrutura. Os nós verdes são o conteúdo que o usuário do componente injeta via slots. A árvore pode crescer para qualquer profundidade sem que o `PageLayout` precise saber o que está dentro.

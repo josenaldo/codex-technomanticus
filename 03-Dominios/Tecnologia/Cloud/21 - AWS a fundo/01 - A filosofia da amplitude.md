@@ -39,6 +39,8 @@ A AWS escolheu a primeira, deliberadamente, desde o lançamento do S3 e do EC2 e
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph AWS["AWS — primitivos componíveis"]
         direction LR
         A1["S3<br/>(guarda bytes)"]
@@ -54,8 +56,8 @@ flowchart TB
         direction LR
         D1["App Platform<br/>(build + deploy + scale,<br/>já decidido)"]
     end
-    style AWS fill:#232f3e,color:#fff
-    style DO fill:#0080ff,color:#fff
+    class AWS neutro
+    class DO marca
 ```
 
 Esse contraste não é acidente de tamanho de empresa — é filosofia de produto, e ele reaparece em praticamente toda decisão de design da AWS. Cada vez que você se pergunta "por que a AWS não tem um serviço que já faz X, Y e Z junto?", a resposta quase sempre é: porque a aposta da AWS é que você, arquiteto, sabe compor X, Y e Z melhor do que qualquer decisão genérica que a AWS pudesse tomar por você. É uma aposta na sua competência — e também, sejamos honestos, uma forma de vender mais SKUs.

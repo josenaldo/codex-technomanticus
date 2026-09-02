@@ -208,8 +208,11 @@ Repare no último comentário: a função `criar_usuario` retorna o `registro` i
 > Além de filtrar, `response_model` é a fonte que o FastAPI usa para gerar a seção "Responses" do schema OpenAPI ([[08 - Documentação automática com OpenAPI|nota 08]]) — qualquer pessoa consumindo a API vê exatamente que campos esperar de volta, sem precisar ler o código da rota. Isso também documenta, por omissão, o que **não** volta: se `hashed_password` não aparece no schema de `UsuarioRead`, fica implícito (e visível no Swagger UI) que a API nunca expõe esse campo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Requisicao["Requisição HTTP"]
         JSON_IN["JSON de entrada\n{nome, email, senha}"]
     end
@@ -233,12 +236,12 @@ flowchart TB
 
     JSON_IN -.->|"campo/tipo inválido"| ERRO422["HTTP 422\nValidationError estruturada"]
 
-    style JSON_IN fill:#4A90D9,color:#fff
-    style VALID fill:#4A90D9,color:#fff
-    style OBJ fill:#8b6914,color:#fff
-    style FILTRO fill:#2d7a4a,color:#fff
-    style JSON_OUT fill:#2d7a4a,color:#fff
-    style ERRO422 fill:#D0021B,color:#fff
+    class JSON_IN neutro
+    class VALID neutro
+    class OBJ destaque
+    class FILTRO ok
+    class JSON_OUT ok
+    class ERRO422 falha
 ```
 
 ### Por que não usar um único modelo com campo opcional/oculto

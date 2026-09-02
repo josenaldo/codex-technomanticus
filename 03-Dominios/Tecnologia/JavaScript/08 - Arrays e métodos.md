@@ -105,7 +105,6 @@ console.log(cores);      // ["vermelho", "amarelo", "azul"]
 Aqui está a distinção que mais causa bugs em JavaScript:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph LR
     subgraph mut["🔴 Mutam o original"]
         direction TB

@@ -27,8 +27,9 @@ A [[01 - Panorama — de monolito modular a microservices em Python|nota 01 dest
 Esta capstone é o dia em que isso para de ser verdade. `notificacoes-service` ganha seu próprio repositório, seu próprio pipeline de CI/CD, seu próprio deploy — o time de notificações sobe o adaptador de push mobile na tarde do code freeze de Tarefas sem pedir permissão a ninguém, porque o binário que ele está deployando não é mais o mesmo binário que a migração de banco está testando. É esse o resultado concreto, mensurável, de tudo que este galho ensinou: não "arquitetura mais bonita", mas "dois times deployando de forma independente por um motivo que já estava causando dor real".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Antes["ANTES — monólito modular (Galhos 13-14)"]
         direction TB
         A1["Um único deployável\ntarefas-service"]
@@ -47,9 +48,9 @@ flowchart TB
         B2 --> B3
     end
 
-    style A1 fill:#8b6914,color:#fff
-    style B1 fill:#4A90D9,color:#fff
-    style B2 fill:#F5A623,color:#000
+    class A1 destaque
+    class B1 neutro
+    class B2 destaque
 ```
 
 O que o diagrama deixa explícito, lado a lado: no monólito modular, `AbstractNotificador`/`SlackAdapter` e o consumer da fila viviam dentro do mesmo processo — ou do mesmo conjunto de processos do mesmo repositório — que o handler HTTP de Tarefas. Depois desta capstone, os três (a interface de notificação, o adapter concreto e o consumer de eventos) migram inteiros para dentro de um processo separado, com seu próprio ciclo de vida. A seta pontilhada entre os dois blocos — a única coisa genuinamente nova em termos de tráfego de rede — é exatamente a seta que a [[01 - Panorama — de monolito modular a microservices em Python|nota 01]] já tinha antecipado no seu próprio diagrama, como o "preço" que esta extração cobra.
@@ -394,7 +395,6 @@ def instrumentar(app) -> None:
 `resource.create({"service.name": ...})` é a única diferença entre os dois blocos — cada serviço se anuncia com seu próprio nome ao coletor, para que a árvore de spans resultante consiga distinguir "isso aconteceu em Tarefas" de "isso aconteceu em Notificações", exatamente como a nota 06 já explicou. Nenhum dos dois blocos escreve `headers={"traceparent": ...}` manualmente — `HTTPXClientInstrumentor` no lado que chama injeta o header sozinho; `FastAPIInstrumentor` no lado que recebe lê e usa esse header sozinho.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Cliente as Cliente HTTP
     participant Tarefas as tarefas-service<br/>(FastAPIInstrumentor)
@@ -515,8 +515,9 @@ app = FastAPI(lifespan=lifespan)
 O detalhe que faz esta peça valer a capstone inteira, e não só uma nota a mais: `notificador.enviar(...)`, dentro de `processar_tarefa_concluida`, volta a ser uma **chamada de método Python in-process** — não uma requisição HTTP. É a mesma economia que existia antes de qualquer serviço ser extraído, só que agora confinada dentro do processo de `notificacoes-service`, que é o único lugar onde `SlackAdapter` ainda faz sentido morar sem atravessar rede. O consumer não precisa de `httpx`, não precisa de retry/circuit breaker das Peças 3-4 (essas peças protegem a chamada **entre** tarefas-service e notificacoes-service, não uma chamada dentro do próprio notificacoes-service), e não precisa de autenticação da Peça 5 — porque não há fronteira de rede a proteger ali dentro.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Tarefas["tarefas-service"]
         HTTP["FastAPI\nPATCH /tarefas/id/concluir"]
         SVC["concluir_tarefa()\nOutbox (Galho 14)"]
@@ -542,8 +543,8 @@ flowchart LR
     BEAT -->|publish| MQ
     MQ -->|"binding: tarefa.concluida"| CONSUMER
 
-    style Notif fill:#4A90D9,color:#fff
-    style SLACK fill:#F5A623,color:#000
+    class Notif neutro
+    class SLACK destaque
 ```
 
 > [!question]- Por que não fazer o consumer chamar `POST /notificacoes` do próprio serviço, via `localhost`, em vez de chamar `SlackAdapter` direto?
@@ -647,7 +648,6 @@ async def orquestrar_criar_tarefa_com_lembrete(
 Comparando com o código original da nota 07: a única diferença estrutural é que `_agendar_lembrete` agora recebe o `AsyncClient` da Peça 3 e o `GatewayTokenClient` da Peça 5 como parâmetros — porque a nota 07 foi escrita antes de o galho ter construído autenticação e configuração de endereço, então seu exemplo usava um `httpx.Client()` genérico, síncrono, sem token. `_deve_retentar`, `breaker_notificacoes`, a decisão explícita entre `cancelar_criacao_tarefa` e `marcar_lembrete_pendente`, e a garantia de idempotência das duas funções de compensação — nada disso muda; é o mesmo código, agora rodando contra um serviço de verdade em vez de um `MockTransport` de teste.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant H as Handler HTTP<br/>(tarefas-service)
     participant O as orquestrar_criar_tarefa_com_lembrete
@@ -673,8 +673,11 @@ O que a nota 07 nomeou como "a decisão de negócio explícita" — compensar qu
 ## A arquitetura completa, as nove peças juntas
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph TS["tarefas-service — deploy e pipeline PRÓPRIOS"]
         direction TB
         TH["FastAPI\nPATCH /concluir · POST /tarefas"]
@@ -706,10 +709,10 @@ flowchart TB
     TBEAT -->|publish| MQ
     MQ -->|"binding tarefa.concluida"| NCONS
 
-    style TS fill:#2d7a4a,color:#fff
-    style NS fill:#4A90D9,color:#fff
-    style NSLACK fill:#F5A623,color:#000
-    style NDLQ fill:#D0021B,color:#fff
+    class TS ok
+    class NS neutro
+    class NSLACK destaque
+    class NDLQ falha
 ```
 
 O detalhe que resume a capstone inteira, se for preciso escolher só um: a caixa verde (`tarefas-service`) e a caixa azul (`notificacoes-service`) são, hoje, **dois deployáveis, dois pipelines, dois times** — mas o núcleo hexagonal de cada uma continua exatamente do tamanho que era. `AbstractNotificador`/`SlackAdapter` não cresceram uma linha para acomodar a extração; o que cresceu foi tudo que existe **na fronteira** entre as duas caixas — o cliente HTTP, a resiliência, a autenticação, a configuração, o tracing. É exatamente esse o "preço" que a nota 01 nomeou desde a abertura do galho, agora visível como código real, não mais como uma tabela abstrata de trade-offs.

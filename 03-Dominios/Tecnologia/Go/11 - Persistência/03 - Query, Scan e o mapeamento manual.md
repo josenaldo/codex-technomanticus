@@ -44,6 +44,9 @@ Isso muda a pergunta "por que preciso fechar `rows`?" de detalhe de limpeza para
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["QueryContext"] --> B{"err != nil?"}
     B -- sim --> Z1["return err"]
     B -- não --> C["defer rows.Close()"]
@@ -58,9 +61,9 @@ flowchart TD
     I -- sim --> Z3["erro veio da rede/driver\nno meio da iteração"]
     I -- não --> J["fim normal — todas\nas linhas foram lidas"]
 
-    style D fill:#4A90D9,color:#fff
-    style E fill:#F5A623,color:#000
-    style H fill:#D0021B,color:#fff
+    class D neutro
+    class E destaque
+    class H falha
 ```
 
 Três chamadas, três papéis distintos, que costumam ser confundidos por quem vem de APIs que devolvem uma lista pronta (`ResultSet` do JDBC tem um formato parecido, mas Hibernate/JPA escondem esse laço; em Python, `cursor.fetchall()` do `psycopg2` já entrega tudo materializado):

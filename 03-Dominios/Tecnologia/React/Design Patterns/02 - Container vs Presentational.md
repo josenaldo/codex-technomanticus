@@ -100,16 +100,19 @@ A analogia que ajuda: pense num restaurante. O **garçom** (container) vai até 
 ## Diagrama: fluxo de dados
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#fff"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     API["🌐 API / Fonte de dados"] -->|fetch| C["Container Component\nUserListContainer\n(smart, stateful)"]
     C -->|users, loading, error| P["Presentational Component\nUserListView\n(dumb, stateless)"]
     P -->|renderiza| UI["🖥️ UI final"]
 
-    style C fill:#4A90D9,color:#fff,stroke:#2c5f8a
-    style P fill:#27ae60,color:#fff,stroke:#1e8449
-    style API fill:#F5A623,color:#fff,stroke:#c47d0e
-    style UI fill:#ecf0f1,stroke:#bdc3c7
+    class C neutro
+    class P ok
+    class API destaque
+    class UI marca
 ```
 
 O fluxo de dados é **unidirecional**: API → Container → Presentational → UI. Nenhuma seta vai para trás.

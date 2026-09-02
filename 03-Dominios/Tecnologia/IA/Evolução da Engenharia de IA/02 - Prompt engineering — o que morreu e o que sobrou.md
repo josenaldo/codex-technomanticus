@@ -92,16 +92,19 @@ Isso explica por que a queda do título "Prompt Engineer" e o boom da skill "pro
 
 ```mermaid
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["2023 — Modelo instável<br/>fraseados diferentes → qualidade diferente"] --> B["Truque explora a instabilidade<br/>implorar / ameaçar / persona genérica"]
     B --> C["Ganho real e mensurável<br/>enquanto a instabilidade existe"]
     D["2024-2025 — Modelo melhora<br/>interpreta intenção direta de forma robusta"] --> E["Variância que o truque explorava<br/>encolhe até virar ruído"]
     E --> F["Arbitragem fecha<br/>o truque para de render ganho"]
     C -.-> F
 
-    style A fill:#F5A623,color:#000
-    style B fill:#F5A623,color:#000
-    style D fill:#4A90D9,color:#fff
-    style F fill:#D0021B,color:#fff
+    class A destaque
+    class B destaque
+    class D neutro
+    class F falha
 ```
 
 > [!question]- E se o modelo piorar de novo, ou um domínio específico continuar instável?
@@ -190,6 +193,8 @@ Isso explica, com precisão, o número de 250% de crescimento na skill: mais sis
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph M["Morreu — discurso descartado"]
         T1["Implorar / ameaçar"]
         T2["'World-class expert' genérico"]
@@ -205,16 +210,16 @@ graph LR
     end
     S -.->|"vira componente de"| C["Flow / Context / Harness / Loop / Graph engineering"]
 
-    style T1 fill:#D0021B,color:#fff
-    style T2 fill:#D0021B,color:#fff
-    style T3 fill:#D0021B,color:#fff
-    style T4 fill:#D0021B,color:#fff
-    style F1 fill:#4A90D9,color:#fff
-    style F2 fill:#4A90D9,color:#fff
-    style F3 fill:#4A90D9,color:#fff
-    style F4 fill:#4A90D9,color:#fff
-    style F5 fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
+    class T1 falha
+    class T2 falha
+    class T3 falha
+    class T4 falha
+    class F1 neutro
+    class F2 neutro
+    class F3 neutro
+    class F4 neutro
+    class F5 neutro
+    class C neutro
 ```
 
 Essa é a lição transferível desta nota — o motivo real de ela existir dentro deste galho, e não só uma curiosidade de mercado de trabalho: **absorção não é extinção**. Toda camada nova, ao nascer, precisa de espaço discursivo para se afirmar, e a forma mais fácil de abrir esse espaço é anunciar que a camada anterior "morreu" ou "virou jardim de infância". Isso é retórica de lançamento, não balanço técnico. Na prática, quase sempre o que acontece é: a camada nova resolve um problema em uma unidade de design maior (o fluxo, a janela, o ambiente, o ciclo, a rede), e a camada anterior encolhe de "a disciplina inteira" para "um componente necessário dentro da disciplina nova" — sem desaparecer.

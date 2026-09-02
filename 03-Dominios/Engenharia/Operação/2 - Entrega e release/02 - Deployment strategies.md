@@ -37,18 +37,21 @@ As estratégias de deployment que esta nota cobre existem para responder a uma p
 Cada estratégia mexe em dois botões independentes: **quantas instâncias rodam a versão nova ao mesmo tempo** e **por quanto tempo as duas versões coexistem**. Do mais abrupto ao mais gradual:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     R["Recreate<br/>0% → 100%<br/>de uma vez"] --> RU["Rolling update<br/>gradual,<br/>instância por instância"]
     RU --> BG["Blue-green<br/>0% → 100%<br/>switch atômico"]
     BG --> C["Canary<br/>1% → 5% → 25%<br/>→ 100%, gradual"]
     C --> S["Shadow<br/>0% de tráfego real<br/>(só espelho)"]
 
-    style R fill:#D0021B,color:#fff
-    style RU fill:#F5A623,color:#000
-    style BG fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style S fill:#2E5C8A,color:#fff
+    class R falha
+    class RU destaque
+    class BG neutro
+    class C neutro
+    class S marca
 ```
 
 Repare que essa ordem não é "pior para melhor" em linha reta — blue-green e canary resolvem problemas diferentes, e shadow nem chega a ser uma estratégia de *release* no sentido estrito, é uma técnica de validação que roda em paralelo a uma das outras.
@@ -95,8 +98,9 @@ Esse é o preço do rolling update: ele elimina o downtime do big-bang, mas intr
 **O que é:** dois ambientes de produção completos e idênticos — "blue" (ativo, recebendo 100% do tráfego) e "green" (a versão nova, rodando mas sem tráfego real ainda). Depois que a equipe valida green — smoke tests, verificação manual, tráfego sintético — o roteador (load balancer, DNS, ou Service do Kubernetes) troca de blue para green **de uma vez**, atomicamente. Martin Fowler descreve a técnica assim: "once the software is working in the green environment, you switch the router so that all incoming requests go to the green environment" — e se algo der errado, "you switch the router back to your blue environment" ([Fowler, *BlueGreenDeployment*](https://martinfowler.com/bliki/BlueGreenDeployment.html), atualizado 2010, referência canônica ainda citada).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     LB["Roteador / Load Balancer"]
     subgraph BLUE["Blue — v1 (ativo)"]
         B1["10 réplicas"]
@@ -108,8 +112,8 @@ graph TD
     LB -.->|"0% tráfego<br/>testes internos"| GREEN
     LB ==>|"switch atômico<br/>após validação"| GREEN
 
-    style BLUE fill:#4A90D9,color:#fff
-    style GREEN fill:#F5A623,color:#000
+    class BLUE neutro
+    class GREEN destaque
 ```
 
 **A vantagem que ninguém rebate:** rollback é trivial e rápido — trocar o roteador de volta para blue, sem re-deploy, sem esperar containers subirem de novo. Isso também torna blue-green, como observa Fowler, uma forma barata de **testar seu processo de disaster recovery** a cada release — você exercita o switch de ambiente com frequência, em vez de só na hora de uma catástrofe real.
@@ -127,15 +131,16 @@ graph TD
 Martin Fowler descreve o objetivo central: "reduce the risk of introducing a new software version in production by slowly rolling out the change to a small subset of users before rolling it out to the entire infrastructure" ([Fowler, *CanaryRelease*](https://martinfowler.com/bliki/CanaryRelease.html)).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     T0["t=0<br/>v2: 5% tráfego<br/>v1: 95% tráfego"] -->|"métricas OK<br/>por 10min"| T1["t=10min<br/>v2: 25%<br/>v1: 75%"]
     T1 -->|"métricas OK<br/>por 10min"| T2["t=20min<br/>v2: 50%<br/>v1: 50%"]
     T2 -->|"métricas OK<br/>por 10min"| T3["t=30min<br/>v2: 100%<br/>v1: 0%<br/>(promovido)"]
     T1 -.->|"métrica degradou →<br/>rollback automático"| ROLLBACK["v2: 0%<br/>volta pra v1"]
 
-    style T3 fill:#4A90D9,color:#fff
-    style ROLLBACK fill:#D0021B,color:#fff
+    class T3 neutro
+    class ROLLBACK falha
 ```
 
 Um exemplo declarativo com Argo Rollouts (o controller mais usado para canary sofisticado em Kubernetes):

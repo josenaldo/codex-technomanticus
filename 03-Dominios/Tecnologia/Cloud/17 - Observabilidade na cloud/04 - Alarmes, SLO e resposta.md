@@ -55,6 +55,8 @@ O ganho prático de um composite alarm não é sofisticação — é **ruído**.
 
 ```mermaid
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Alarme: Latência p99 > SLO"] --> D{"Composite Alarm<br/>ALARM(A) AND ALARM(B)"}
     B["Alarme: Taxa de erro 5xx > 1%"] --> D
     C["Alarme: CPU instância > 80%<br/>(NÃO entra no composite —<br/>é causa, não sintoma)"]
@@ -65,8 +67,8 @@ flowchart TD
     SNS --> PD["PagerDuty"]
     SNS --> Lambda["Lambda de<br/>auto-remediação"]
 
-    style D fill:#6d4d1a,color:#fff
-    style C fill:#3a3a3a,color:#999
+    class D destaque
+    class C neutro
 ```
 
 > [!info] Verificado em 2026-07-24 na doc oficial AWS

@@ -34,7 +34,6 @@ Esse conjunto tem nome. É o **contexto de execução**, e ele é a matéria des
 ## O contrato, item por item
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     P["<b>processo</b><br/>o binário em execução"]
     P --- A["<b>identidade</b><br/>PID · PPID · sessão · grupo"]

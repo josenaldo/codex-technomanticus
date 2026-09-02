@@ -59,15 +59,16 @@ Uma regressão visual que escapa do gate e chega a produção — um botão que 
 A ponte mais concreta entre "regra de design" e "regra que o computador aplica sozinho" é o [[03-Dominios/Engenharia/UX/Linguagem Visual e Design System/29 - Design tokens como sistema|design token]]: quando contraste, espaçamento e cor deixam de ser escolha manual de cada desenvolvedor e viram token com valor único e testável, a conformidade deixa de depender de alguém lembrar de checar e passa a ser **verificação automática** — o lint recusa um valor de cor que não é token; o teste de contraste roda sobre os tokens, não sobre cada tela individualmente. É a mesma virada que a a11y descreve como "acessível por construção": corrigir o token uma vez corrige todo lugar que o usa; usar um valor fora do token quebra o gate antes de chegar a qualquer revisor humano.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     D["Design token<br/>correto por construção"] --> L["Lint de token<br/>barra valor solto"]
     L --> CR["Code review<br/>checklist de UX"]
     CR --> CI["Gate de CI<br/>snapshot + a11y"]
     CI --> DoD["Definition of Done<br/>estados + erro + vazio"]
     DoD --> M["Merge"]
-    style D fill:#4A90D9,color:#fff
-    style M fill:#F5A623,color:#000
+    class D neutro
+    class M destaque
 ```
 
 ## Casos práticos

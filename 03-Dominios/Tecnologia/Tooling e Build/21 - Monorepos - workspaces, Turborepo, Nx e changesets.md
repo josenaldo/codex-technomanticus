@@ -169,8 +169,8 @@ npm e yarn também suportam workspaces, mas com diferenças relevantes:
 A diferença crítica: npm e yarn usam hoisting flat — todas as dependências dos pacotes são içadas para `node_modules` da raiz. Isso pode criar situações onde um pacote usa uma dependência que não declarou explicitamente, apenas porque outro pacote a instalou. O pnpm usa strict linking por padrão: cada pacote só enxerga o que declarou, o que evita esse tipo de bug fantasma.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#fff"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "npm/yarn — hoisting flat"
         R1["node_modules/ (raiz)"]
         R1 --> D1["react"]
@@ -190,10 +190,10 @@ graph TD
         R2 -.->|"store global"| D5
     end
 
-    style R1 fill:#4A90D9,color:#fff
-    style R2 fill:#4A90D9,color:#fff
-    style S1 fill:#4A90D9,color:#fff
-    style S2 fill:#4A90D9,color:#fff
+    class R1 neutro
+    class R2 neutro
+    class S1 neutro
+    class S2 neutro
 ```
 
 ---
@@ -234,8 +234,9 @@ Para cada task de cada pacote, o Turborepo calcula um **hash** a partir de:
 Se o hash bateu com uma execução anterior (local em `.turbo/` ou remoto), ele **restaura os artefatos** sem executar nada. Se não bateu, executa e armazena.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#fff"}}}%%
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     CHG["git push\n(mudou packages/utils)"]
     HASH["Turborepo\ncalcula hashes"]
     UTILS["utils: hash mudou\n→ re-executa"]
@@ -251,11 +252,11 @@ flowchart LR
     HASH -->|"não afetado"| COMP
     HASH -->|"não afetado"| DOCS
 
-    style COMP fill:#1a6b1a,color:#fff
-    style DOCS fill:#1a6b1a,color:#fff
-    style UTILS fill:#F5A623,color:#000
-    style UI fill:#F5A623,color:#000
-    style APP fill:#F5A623,color:#000
+    class COMP ok
+    class DOCS ok
+    class UTILS destaque
+    class UI destaque
+    class APP destaque
 ```
 
 ### Configurando o `turbo.json`
@@ -329,7 +330,6 @@ turbo link
 O cache local em `.turbo/` já economiza tempo na sua máquina. O Remote Cache — gratuito no Vercel desde 2024 — compartilha esse cache com toda a equipe e com o CI.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#fff"}}}%%
 sequenceDiagram
     participant DEV as dev/Alice
     participant CI as CI (GitHub Actions)
@@ -425,7 +425,6 @@ turbo build --log-file=.turbo/build.log
 A distinção entre grafo de pacotes e grafo de tasks é o ponto onde a maioria dos devs trava ao debugar comportamentos inesperados do Turborepo:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#fff"}}}%%
 graph LR
     subgraph "Package Graph (quem depende de quem)"
         UI["@empresa/ui"]
@@ -621,8 +620,9 @@ Sem boundaries, a promessa do monorepo se degrada: eventualmente, todo pacote im
 ### Turborepo vs Nx: quando usar cada um
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#fff"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     START["Escolhendo o orquestrador"]
 
     START --> Q1["Time pequeno, JS/TS puro,\nquer adoção rápida?"]
@@ -637,8 +637,8 @@ graph TD
     Q3 -->|"Sim"| NX
     Q3 -->|"Não"| TURBO
 
-    style TURBO fill:#4A90D9,color:#fff
-    style NX fill:#1a6b1a,color:#fff
+    class TURBO neutro
+    class NX ok
 ```
 
 | Aspecto | Turborepo 2.10 | Nx 23 |
@@ -705,7 +705,6 @@ pnpm changeset publish
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#fff"}}}%%
 sequenceDiagram
     participant DEV as Desenvolvedor
     participant GIT as Git / PR
@@ -1035,7 +1034,6 @@ Para empresas com requisitos de compliance, o remote cache na Vercel não é op�
 O Nx Cloud oferece task distribution (DTE — Distributed Task Execution) além de cache remoto: ele divide as tasks de um CI run entre múltiplos agentes paralelos. Em repos com 200+ tasks, isso é a diferença entre CI de 30 minutos e CI de 4 minutos.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#fff"}}}%%
 graph LR
     CI["CI Run\n(push to main)"]
     NXC["Nx Cloud\nTask Scheduler"]

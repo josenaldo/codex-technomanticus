@@ -24,7 +24,6 @@ publish: true
 O nível 3 mostrou que existem três lugares: o `HEAD` (via ref), o index e o diretório de trabalho. Todo comando de desfazer é uma combinação de "qual destes eu mexo".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
     A["<b>HEAD</b><br/>via ref do ramo"] --- B["<b>index</b><br/>o preparado"] --- C["<b>diretório</b><br/>seus arquivos"]
 ```
@@ -50,7 +49,6 @@ Duas leituras dessa tabela valem mais que decorar comandos:
 ## A árvore
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     Q1{"Já foi<br/>publicado?"}
     Q1 -->|"sim — outros<br/>já têm"| R["<b>git revert</b><br/>cria commit que desfaz<br/>✔ única opção segura"]
@@ -114,7 +112,6 @@ git revert -m 1 <hash-do-merge>
 ## `reset` × `revert`: a diferença que importa
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph RL
     subgraph A["git reset --hard C2 — reescreve"]
         M1["main"] --> C2a["C2"] --> C1a["C1"]

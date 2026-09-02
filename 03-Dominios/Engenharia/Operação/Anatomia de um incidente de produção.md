@@ -38,7 +38,6 @@ O pipeline de CI/CD roda os testes, passa, e o deploy sobe pela estratégia que 
 O pipeline também aplica a disciplina que [[04 - Migrations de banco em produção]] ensina para esse tipo de mudança: a coluna nova é adicionada de forma **expand** — aditiva, com valor default, sem quebrar a versão anterior do código, que simplesmente ignora a coluna que não conhece. Nenhuma coluna é removida, nenhum contrato antigo é quebrado. Essa disciplina — expandir antes de contrair — é o que permite rodar duas versões do código (canary e estável) lado a lado contra o mesmo schema de banco sem que uma delas quebre.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     COMMIT["Commit: fallback<br/>de gateway + migration<br/>expand (coluna nova)"] --> CI["CI/CD<br/>testes verdes"]
     CI --> DEPLOY["Deploy: artefato<br/>sobe, ainda não<br/>serve tráfego"]
@@ -62,7 +61,6 @@ O que está acontecendo, e que ninguém percebe ainda, é a combinação de dois
 **Segundo fator — e este é o que transforma um sintoma pequeno numa cascata.** O novo circuito de fallback de gateway, adicionado neste mesmo deploy, faz uma chamada HTTP ao segundo provedor de cartão quando o primeiro demora — mas o desenvolvedor que escreveu o circuito de fallback não configurou um timeout explícito na chamada; a biblioteca HTTP usada tem um timeout default de 30 segundos, dez vezes maior que qualquer chamada normal a esse gateway deveria levar. Quando o provedor primário começa a responder um pouco mais devagar — algo que já acontecia esporadicamente antes do deploy, sem consequência — o circuito de fallback passa a acionar com mais frequência, e cada chamada de fallback ocupa uma worker thread por até 30 segundos em vez dos ~200ms esperados.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph TD
     M1["Migration: índice<br/>criado 15min DEPOIS<br/>do código no ar"] --> M2["Full scan silencioso<br/>na coluna nova<br/>(mais tempo de conexão)"]
     T1["Fallback de gateway<br/>sem timeout explícito<br/>(default 30s)"] --> T2["Provedor primário<br/>degrada ligeiramente"]
@@ -85,7 +83,6 @@ Nenhum dos dois fatores sozinho derrubaria o serviço. Juntos, formam exatamente
 A prática recomendada pelo Google SRE Workbook para esse tipo de alerta usa múltiplas janelas e múltiplos limiares — algo como sinalizar page quando o consumo atinge cerca de 2% do orçamento numa janela de uma hora, ou 5% numa janela de seis horas, com um limiar mais frouxo (~10% em três dias) reservado para um ticket, não para acordar alguém — precisamente para diferenciar um pico curto e sério de uma degradação lenta que ainda dá tempo de investigar sem pressa (Google SRE Workbook, *Alerting on SLOs*, 2018).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
     SLO["SLO: 99.9%<br/>disponibilidade+latência<br/>error budget mensal"] --> BURN["Burn rate atual:<br/>~14x o ritmo normal"]
     BURN -->|"esgotaria o<br/>orçamento em ~3h<br/>se não corrigido"| PAGE["🚨 Alerta de página<br/>não de ticket"]
@@ -106,7 +103,6 @@ Em três minutos, mais duas pessoas entram na call: Renata, que passa a atuar co
 Diego, como IC, faz a pergunta que estrutura tudo que vem depois: **"o que sabemos que provavelmente mitiga isso, mesmo sem saber a causa exata?"** — não "qual é a causa raiz?". A resposta óbvia, olhando a timeline: o único evento recente e relevante é o deploy que subiu às 14h35, cerca de uma hora antes do sintoma começar a aparecer de forma visível.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph TD
     ALERT["🚨 Burn rate alert<br/>15h32"] --> DECLARE["Diego declara<br/>incidente, assume IC"]
     DECLARE --> ROLES["Renata: Ops Lead<br/>Bruno: Comms Lead"]
@@ -130,7 +126,6 @@ Com o sintoma contido, a call não se encerra — ela muda de tom. Agora sim é 
 A ferramenta de observabilidade do time segue os três pilares que [[01 - Observabilidade como prática]] descreve — métricas, logs e traces, correlacionados por um `trace_id` comum. Renata puxa um trace de uma request lenta capturada durante a janela do incidente (15h20, antes da mitigação) e a visualização mostra exatamente onde o tempo foi gasto: 60% numa query que toca a tabela de transações (a query sem índice), e 35% numa chamada de fallback de gateway que levou 28 segundos antes de finalmente ter timeout — quase os 30 segundos default da biblioteca.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     TRACE["Trace de uma request<br/>lenta (15h20)"] --> Q1["Query em transactions<br/>~1.4s (full scan,<br/>sem índice novo)"]
     TRACE --> Q2["Chamada fallback<br/>gateway ~28s<br/>(sem timeout explícito)"]
@@ -180,7 +175,6 @@ Nenhum dos quatro action items do postmortem de Aurora fica só no papel — cad
 - O **game day trimestral** é chaos engineering deliberado — o mesmo princípio que fecha o sub-galho 4 ([[06 - Debugging de produção e chaos engineering]]): injetar a falha de propósito, num horário controlado, para descobrir que o timeout de 2 segundos realmente segura a cascata, em vez de descobrir isso de novo às 15h32 de uma sexta-feira real.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     PM["Postmortem<br/>4 action items"] --> SG2["Sub-galho 2<br/>checklist no pipeline"]
     PM --> SG4A["Sub-galho 4<br/>novo alerta de saturação"]
@@ -200,7 +194,6 @@ Esse é o ponto que a nota 01 desta trilha chamou de **confiabilidade como orça
 A métrica DORA de MTTR, introduzida na primeira nota desta trilha, ganha textura quando decomposta nas quatro fases que [[04 - Incident response e on-call]] descreve — e o incidente de Aurora ilustra por que a decomposição importa mais do que o número único:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 gantt
     dateFormat  HH:mm
     axisFormat  %H:%M

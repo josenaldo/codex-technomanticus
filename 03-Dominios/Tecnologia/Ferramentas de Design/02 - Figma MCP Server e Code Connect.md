@@ -48,14 +48,15 @@ Segundo o Help Center do Figma, existem dois jeitos de configurar essa ligação
 Ambos alimentam o MCP Server com o mesmo resultado final: em vez de o agente **gerar uma aproximação** do componente a partir do design, ele recebe o **exemplo de código real conectado** ao componente do design system — a documentação oficial chama isso de "MCP codegen aprimorado", que mostra prévias de código baseadas nos arquivos-fonte conectados de fato, em vez de sugestões genéricas.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     F["Arquivo Figma<br/>componentes, variables, layout"] -->|Dev Mode MCP Server| CTX["Contexto estruturado<br/>árvore, não pixels"]
     R["Repositório de código<br/>componentes reais"] -->|Code Connect| CTX
     CTX --> A["Agente de IA<br/>ex: Claude Code"]
     A --> IMPL["Implementação fiel<br/>reutiliza componente certo"]
-    style CTX fill:#4A90D9,color:#fff
-    style IMPL fill:#F5A623,color:#000
+    class CTX neutro
+    class IMPL destaque
 ```
 
 > [!question]- Sem Code Connect, o MCP Server ainda serve pra alguma coisa?

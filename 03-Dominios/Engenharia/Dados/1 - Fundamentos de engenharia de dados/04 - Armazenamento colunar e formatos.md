@@ -44,8 +44,11 @@ Agora troque a pergunta: em vez de "me dê o pedido #48219 inteiro", pergunte "s
 O armazenamento **columnar** (colunar) inverte esse layout: em vez de guardar linha por linha, ele guarda **coluna por coluna** — todos os valores de `quantidade` contíguos em um bloco, todos os valores de `preco_unitario` contíguos em outro bloco, e assim por diante. Para responder "some `quantidade * preco_unitario`, agrupado por mês", o motor colunar lê **só os blocos de `quantidade`, `preco_unitario` e `criado_em`** — e nem toca em `desconto`, `pedido_id` ou qualquer outra coluna irrelevante para essa pergunta. Menos bytes lidos do disco significa menos I/O, que costuma ser o gargalo dominante numa varredura de milhões de linhas — a CPU quase sempre tem folga de sobra; o disco (ou a rede, em storage de objeto na nuvem) é o recurso escasso.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph ROW["Row-oriented — lê a linha inteira"]
         direction LR
         R1["Linha 1: pedido_id, produto_id,<br/>QUANTIDADE, PRECO, desconto, data"]
@@ -65,12 +68,12 @@ graph TB
     Query -->|"lê só<br/>2 colunas"| CQ
     Query --> CP
 
-    style ROW fill:#D0021B,color:#fff
-    style COL fill:#4A90D9,color:#fff
-    style CQ fill:#4A90D9,color:#fff
-    style CP fill:#4A90D9,color:#fff
-    style CX fill:#999,color:#fff
-    style Query fill:#F5A623,color:#000
+    class ROW falha
+    class COL neutro
+    class CQ neutro
+    class CP neutro
+    class CX marca
+    class Query destaque
 ```
 
 Esse ganho de I/O é a razão física de fundo por trás de todo o resto que a trilha construiu até aqui: por que o motor de armazenamento de um data warehouse é diferente do motor do Postgres, e por que "adaptar" um banco row-oriented para se comportar como analítico não é questão de configuração, como já adiantado na nota 01. É outra estrutura de dado em disco, de baixo para cima.
@@ -123,8 +126,10 @@ Formato de arquivo resolve como os bytes ficam organizados *dentro* de um arquiv
 O caso canônico: uma tabela de vendas particionada por data, em que cada dia (ou mês) vira um diretório próprio — `vendas/ano=2026/mes=07/dia=12/arquivo.parquet`, e assim por diante. Quando uma query filtra `WHERE data_venda BETWEEN '2026-01-01' AND '2026-03-31'`, o motor de query não precisa nem abrir os arquivos de abril em diante — ele sabe, só pelo caminho do diretório, que aqueles arquivos não podem conter linha nenhuma que satisfaça o filtro, e **pula o arquivo inteiro sem lê-lo**. Essa técnica se chama **partition pruning** (poda de partição), e é o análogo, em nível de arquivo inteiro, do que o predicate pushdown faz em nível de bloco de coluna dentro de um arquivo Parquet: os dois mecanismos existem para que o motor leia o mínimo possível de bytes antes de responder a pergunta.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     Q["Query: WHERE data_venda<br/>BETWEEN jan e mar de 2026"] --> Root["vendas/"]
     Root --> Jan["ano=2026/mes=01/<br/>✅ lido"]
     Root --> Fev["ano=2026/mes=02/<br/>✅ lido"]
@@ -132,12 +137,12 @@ graph TB
     Root --> Abr["ano=2026/mes=04/<br/>❌ podado, nunca aberto"]
     Root --> Mai["ano=2026/mes=05/.../<br/>❌ podado, nunca aberto"]
 
-    style Q fill:#F5A623,color:#000
-    style Jan fill:#4A90D9,color:#fff
-    style Fev fill:#4A90D9,color:#fff
-    style Mar fill:#4A90D9,color:#fff
-    style Abr fill:#999,color:#fff
-    style Mai fill:#999,color:#fff
+    class Q destaque
+    class Jan neutro
+    class Fev neutro
+    class Mar neutro
+    class Abr marca
+    class Mai marca
 ```
 
 A escolha de **por qual coluna particionar** é uma decisão de arquitetura real, não um detalhe: particionar por uma coluna que a maioria das queries filtra (data, quase sempre; às vezes região ou tenant) traz ganho enorme; particionar por uma coluna de altíssima cardinalidade (um ID de cliente único, por exemplo) produz milhões de diretórios minúsculos, o que leva ao segundo problema estrutural desta seção.
@@ -162,8 +167,9 @@ Nenhuma dessas perguntas é sobre o formato do *arquivo* — Parquet, isoladamen
 Vale fixar a distinção com uma frase que separa dois níveis diferentes de abstração: **Parquet é formato de arquivo — descreve como bytes de uma coleção de linhas ficam organizados dentro de um arquivo. Iceberg, Delta Lake e Hudi são formatos de tabela — descrevem como um conjunto de arquivos, no seu todo, se comporta como uma tabela transacional.** Um formato de tabela normalmente *usa* Parquet por baixo como formato de arquivo — não o substitui, empilha sobre ele.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Engine["Engine de query<br/>(Spark, Trino, Snowflake, DuckDB...)"]
     Meta["Camada de metadados do table format<br/>(Iceberg / Delta Lake / Hudi)<br/>— snapshots, schema, transações, partition evolution"]
     Files["Arquivos Parquet (ou ORC)<br/>— os bytes de fato, colunares, comprimidos"]
@@ -171,9 +177,9 @@ graph TB
     Engine --> Meta
     Meta --> Files
 
-    style Engine fill:#F5A623,color:#000
-    style Meta fill:#4A90D9,color:#fff
-    style Files fill:#4A90D9,color:#fff
+    class Engine destaque
+    class Meta neutro
+    class Files neutro
 ```
 
 Quatro capacidades que essa camada de metadados adiciona, concretamente, sobre um diretório de Parquet solto:

@@ -52,15 +52,17 @@ Essa separação entre "ler o `.proto`" e "gerar código" não é acidente de im
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[".proto"] --> B["protoc\n(parser C++)"]
     B -->|"CodeGeneratorRequest"| C["protoc-gen-go"]
     B -->|"CodeGeneratorRequest"| D["protoc-gen-go-grpc"]
     C -->|"CodeGeneratorResponse"| E["*.pb.go\n(structs de mensagem)"]
     D -->|"CodeGeneratorResponse"| F["*_grpc.pb.go\n(client + server stubs)"]
 
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#F5A623,color:#000
+    class B neutro
+    class C destaque
+    class D destaque
 ```
 
 Cada linguagem tem seu próprio plugin, identificado por convenção de nome: `protoc-gen-go` é o plugin oficial que gera as structs Go das mensagens; `protoc-gen-go-grpc` é um segundo plugin, separado, que gera os stubs de cliente e servidor gRPC. `protoc` acha esses binários procurando `protoc-gen-<nome>` no `PATH` — é por isso que instalar os dois com `go install` e garantir que `$GOBIN` (ou `$GOPATH/bin`) esteja no `PATH` é pré-requisito, não detalhe:

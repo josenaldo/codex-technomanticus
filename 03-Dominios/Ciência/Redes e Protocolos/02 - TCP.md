@@ -76,11 +76,13 @@ A ideia: o receptor anuncia, em cada ACK, quanto espaço ainda tem no buffer del
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Bytes ja enviados<br/>e confirmados"] --> B["Bytes em voo<br/>enviados aguardando ACK"]
     B --> C["Janela: pode enviar<br/>agora"]
     C --> D["Bytes que ainda<br/>nao podem ir"]
-    style B fill:#fff3cd
-    style C fill:#d4edda
+    class B destaque
+    class C ok
 ```
 
 Leitura do diagrama: a janela é a faixa verde — o que o emissor está autorizado a enviar agora. À esquerda, o que já foi confirmado (pode esquecer). Em amarelo, o que está em voo. À direita, o que terá que esperar a janela deslizar. Se o receptor está lento processando, ele anuncia uma janela menor, e o emissor naturalmente segura o passo. Esse é o controle de fluxo: o receptor dita o ritmo.
@@ -98,6 +100,8 @@ A conexão começa com uma janela de congestionamento (*congestion window*, ou c
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Inicio da conexao<br/>cwnd ~10 segmentos ~14KB"] --> B["RTT 1: pode dobrar?"]
     B -->|"sem perda"| C["cwnd ~28KB"]
     C --> D["RTT 2: pode dobrar?"]
@@ -106,8 +110,8 @@ flowchart TD
     F -->|"sem perda"| G["cresce ate limiar"]
     F -->|"perda detectada"| H["reduz a janela<br/>e fica cauteloso"]
     G --> I["regime estavel:<br/>banda bem aproveitada"]
-    style A fill:#f8d7da
-    style I fill:#d4edda
+    class A falha
+    class I ok
 ```
 
 Leitura do diagrama: a janela parte minúscula (vermelho) e dobra a cada ida e volta, desde que não haja perda. Quando um pacote some, o TCP interpreta como sinal de congestionamento, recua a janela e passa a crescer com mais cautela. O ponto-chave: **os primeiros RTTs de uma conexão nova são subutilizados** — a janela ainda é pequena demais para encher o cano.
@@ -172,6 +176,9 @@ Esse regime linear segue uma política com nome próprio: **AIMD**, de *additive
 
 ```mermaid
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Conexao nova<br/>cwnd pequena"] --> B["SLOW START<br/>cwnd dobra a cada RTT"]
     B -->|"cwnd cruza ssthresh"| C["CONGESTION AVOIDANCE<br/>cwnd +1 por RTT (linear)"]
     B -->|"3 ACKs duplicados"| D["fast retransmit<br/>+ fast recovery"]
@@ -180,9 +187,9 @@ flowchart TD
     C -->|"RTO estoura"| E["volta ao SLOW START<br/>do zero"]
     B -->|"RTO estoura"| E
     E --> B
-    style B fill:#fff3cd
-    style C fill:#d4edda
-    style E fill:#f8d7da
+    class B destaque
+    class C ok
+    class E falha
 ```
 
 Leitura do diagrama: a conexão arranca no slow start (amarelo, exponencial). Ao cruzar o ssthresh, vira para prevenção de congestionamento (verde, linear) — o regime estável onde a maior parte da vida da conexão se passa. Perda leve (3 ACKs duplicados) só corta a janela pela metade e fica no regime linear, via fast recovery. Perda grave (RTO) é a catástrofe vermelha: zera tudo de volta ao slow start. AIMD é exatamente a aresta verde subindo devagar e o corte pela metade descendo.
@@ -200,14 +207,16 @@ Isso é o **bloqueio de cabeça de fila** (*head-of-line blocking*, ou HOL block
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["seg 500-600<br/>PERDIDO"] -.bloqueia.-> B["seg 601-700<br/>chegou, no buffer"]
     A -.bloqueia.-> C["seg 701-800<br/>chegou, no buffer"]
     A -.bloqueia.-> D["seg 801-900<br/>chegou, no buffer"]
     B --> E["Aplicacao<br/>nao recebe NADA<br/>ate o 500 voltar"]
     C --> E
     D --> E
-    style A fill:#f8d7da
-    style E fill:#fff3cd
+    class A falha
+    class E destaque
 ```
 
 Leitura do diagrama: o segmento perdido (vermelho) segura tudo. Três segmentos posteriores já chegaram e estão guardados no buffer, mas a aplicação não vê nenhum byte até a retransmissão do buraco completar. A garantia de ordem do TCP, que parecia só vantagem, aqui vira corrente: um pacote perdido congela o fluxo inteiro.

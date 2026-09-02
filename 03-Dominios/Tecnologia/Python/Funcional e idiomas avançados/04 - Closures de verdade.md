@@ -125,6 +125,8 @@ print(contador())   # 3
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Externa["fazer_contador() — escopo Enclosing"]
         T["total = 0<br/>(vive numa cell,<br/>não no frame normal)"]
         subgraph Interna["incrementar() — escopo Local"]
@@ -133,9 +135,9 @@ flowchart TB
     end
     N -.->|"aponta pra mesma cell,<br/>não uma cópia"| T
 
-    style T fill:#4A90D9,color:#fff
-    style N fill:#F5A623,color:#000
-    style INC fill:#F5A623,color:#000
+    class T neutro
+    class N destaque
+    class INC destaque
 ```
 
 > [!warning] `nonlocal` não alcança o escopo global — só o enclosing mais próximo

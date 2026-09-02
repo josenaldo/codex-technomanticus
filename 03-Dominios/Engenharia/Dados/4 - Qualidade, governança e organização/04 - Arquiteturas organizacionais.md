@@ -89,8 +89,9 @@ O quarto princípio é o que impede que ownership distribuído vire uma bagunça
 A palavra "computacional" no nome do princípio é o detalhe que costuma passar despercebido, e é o que o diferencia de governança tradicional: em vez de um comitê de governança aprovando manualmente cada mudança de schema — o antipadrão já descartado na nota anterior, porque empurra times de volta para atalhos não governados —, os padrões globais são **aplicados automaticamente pela própria plataforma**. Um pipeline que tenta publicar um dataset sem documentação, sem dono declarado, ou com uma coluna de PII não classificada, simplesmente falha a validação automatizada — do mesmo jeito que um data contract quebrado falha um pipeline no modelo já visto na nota 02 deste sub-galho. Governança deixa de depender de aprovação humana lenta e passa a ser regra codificada, verificada em cada publicação.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph CENTRAL["Warehouse centralizado"]
         TD["Time de dados central"] -->|"constrói e é dono de tudo"| WH[("Warehouse único")]
         M1["Domínio Marketing"] -.->|"pede, espera na fila"| TD
@@ -107,12 +108,12 @@ graph TB
         PLAT --> BI2["BI / consumidores<br/>de qualquer domínio"]
     end
 
-    style TD fill:#4A90D9,color:#fff
-    style WH fill:#4A90D9,color:#fff
-    style PLAT fill:#4A90D9,color:#fff
-    style D1 fill:#F5A623,color:#000
-    style D2 fill:#F5A623,color:#000
-    style D3 fill:#F5A623,color:#000
+    class TD neutro
+    class WH neutro
+    class PLAT neutro
+    class D1 destaque
+    class D2 destaque
+    class D3 destaque
 ```
 
 > [!warning] Adotar só ownership distribuído, sem os outros três princípios

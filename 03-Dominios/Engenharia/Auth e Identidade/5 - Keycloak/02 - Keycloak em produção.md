@@ -36,8 +36,9 @@ A nota anterior, [[01 - Keycloak — realms, clients e flows|01]], tratou o Keyc
 O primeiro problema é **estado**: um realm sozinho não modela "múltiplas empresas usando o mesmo produto, cada uma com seu próprio IdP corporativo e seus próprios admins" sem gambiarra — é isso que o recurso Organizations resolve. O segundo é **disponibilidade**: um único nó Keycloak é um único ponto de falha, e a resposta ingênua ("só sobe mais um nó atrás de um load balancer") esconde uma pergunta nada trivial — o que acontece com a sessão de um usuário logado quando o nó que a criou cai? É aí que entra o Infinispan. O terceiro é **operação contínua**: quem administra um IdP em produção precisa saber fazer upgrade sem quebrar login de ninguém, entender o que o proxy na frente está fazendo com os headers, e decidir quando estender o produto via SPI em vez de esperar uma feature request ser atendida upstream.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Dev["start-dev<br/>H2 · sem TLS · 1 nó"] -->|"múltiplos tenants B2B"| Org["Organizations<br/>(multi-tenancy no realm)"]
     Dev -->|"login sem senha"| PK["Passkeys nativos<br/>(26.4+)"]
     Dev -->|"onboarding automatizado"| SCIM["SCIM API<br/>(26.7 preview)"]
@@ -46,11 +47,11 @@ graph TD
     Dev -->|"nova versão sem tirar do ar"| Upgrade["Rolling upgrade"]
     Dev -->|"requisito que o produto não cobre"| SPI["SPI / extensões"]
 
-    style Dev fill:#F5A623,color:#000
-    style Org fill:#4A90D9,color:#fff
-    style PK fill:#4A90D9,color:#fff
-    style SCIM fill:#4A90D9,color:#fff
-    style HA fill:#4A90D9,color:#fff
+    class Dev destaque
+    class Org neutro
+    class PK neutro
+    class SCIM neutro
+    class HA neutro
 ```
 
 Cada um desses seis eixos é uma seção desta nota. Fechamos com a pergunta honesta: em que ponto manter esse cluster de pé custa mais caro, em tempo de engenharia, do que o problema de identidade que ele resolve.
@@ -62,8 +63,9 @@ O conceito de multi-tenancy — isolar tenants, decidir onde fica a fronteira de
 Organizations foi introduzido como preview no Keycloak 25 (meados de 2024) e estabilizado — general availability — a partir do Keycloak 26[^kc-org-announce]. A ideia central: em vez de um realm por tenant (o modelo antigo de "SaaS multi-tenant com Keycloak"), um único realm ganha uma camada de agrupamento — a Organization — à qual usuários podem pertencer. Um usuário existe no realm; a Organization é uma **camada de membership** sobre ele, não um container que o isola[^kc-org-medium]. Isso resolve de cara o problema mais comum de B2B SaaS: um consultor, um administrador de plataforma, ou um usuário que atende múltiplos clientes precisa pertencer a mais de uma organização ao mesmo tempo — trivial em Organizations, doloroso em realm-por-tenant, onde o mesmo humano precisaria de uma conta por realm.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Realm["Realm único: meuproduto"]
         Client["Client OIDC compartilhado<br/>(mesmos scopes/flows)"]
         subgraph OrgA["Organization: Acme Corp"]
@@ -80,9 +82,9 @@ graph TD
     Consultor -.->|"pertence a"| OrgA
     Consultor -.->|"pertence a"| OrgB
 
-    style Realm fill:#4A90D9,color:#fff
-    style OrgA fill:#F5A623,color:#000
-    style OrgB fill:#F5A623,color:#000
+    class Realm neutro
+    class OrgA destaque
+    class OrgB destaque
 ```
 
 Cada Organization pode ter seu próprio **identity provider federado** (o cliente enterprise que já tem Okta ou Entra ID interno) e seu próprio **domínio de e-mail** para roteamento automático de login — um usuário que digita `usuario@acme.com` na tela de login é automaticamente direcionado para o IdP da Acme, sem precisar escolher manualmente[^kc-org-skycloak]. Isso é exatamente o padrão que faz Organizations ser "o default certo" para a maioria dos SaaS B2B: uma empresa opera um único realm, um único cluster, uma única superfície de operação — e ainda assim oferece a cada cliente enterprise a ilusão de um IdP dedicado.
@@ -120,7 +122,6 @@ Antes do 26.4, oferecer passkeys no Keycloak significava configurar WebAuthn com
 **Discoverable credentials como primeiro fator.** A política de WebAuthn Passwordless (`Authentication → Policies → Webauthn Passwordless Policy`) ganha uma opção **Discoverable Credentials**, que segue a especificação atual do WebAuthn com três valores: `required`, `preferred`, `discouraged`. Configurando essa política com `Enabled Passkeys = yes` e `Require Discoverable Credentials = yes`, o Keycloak ativa o login estilo passkey já no fluxo de browser padrão, sem precisar editar o authentication flow manualmente[^kc-passkey-github]. Um novo autenticador, o **Conditional - credential**, entra automaticamente no browser flow padrão para pular o segundo fator quando o primeiro já foi uma passkey — reconhecendo que uma passkey já é, por si só, resistente a phishing e equivalente a MFA[^kc-passkey-github].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant U as Usuário
     participant B as Browser
@@ -164,8 +165,9 @@ Esse estado vive num cache distribuído chamado **Infinispan**, e o Keycloak usa
 **Cache externo (external Infinispan).** Um cluster Infinispan separado, rodando fora dos processos Keycloak, com os nós Keycloak se conectando a ele como clientes remotos. Isso torna o Keycloak **stateless** — reiniciar, escalar ou fazer upgrade de um nó não perde nenhuma sessão, porque o estado nunca esteve nele —, além de tornar operações de escrita mais rápidas (só o Infinispan externo precisa replicar) e permitir escalar cache e aplicação de forma independente[^dev-infinispan-cache]. O custo é operar um sistema distribuído a mais, com sua própria disponibilidade, backup e monitoramento.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     LB["Load Balancer<br/>(sticky sessions)"] --> K1["Keycloak nó 1"]
     LB --> K2["Keycloak nó 2"]
     LB --> K3["Keycloak nó 3"]
@@ -179,9 +181,9 @@ graph TD
     K2 --> DB
     K3 --> DB
 
-    style LB fill:#4A90D9,color:#fff
-    style DB fill:#4A90D9,color:#fff
-    style Embedded fill:#F5A623,color:#000
+    class LB neutro
+    class DB neutro
+    class Embedded destaque
 ```
 
 ### Multi-site e o fim do cache externo separado (26.7 preview)
@@ -246,8 +248,9 @@ Duas regras operacionais fecham o assunto. Primeiro, empacotamento: a extensão 
 Juntando as peças, um desenho razoável para um SaaS B2B de porte médio rodando Keycloak 26.6 em produção, atendendo múltiplos clientes enterprise dentro de um único realm:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Internet["Clientes / apps"] --> LB["Load Balancer<br/>TLS termination<br/>sticky sessions"]
     LB -->|"X-Forwarded-*"| K1["Keycloak 26.6<br/>--optimized<br/>nó 1"]
     LB -->|"X-Forwarded-*"| K2["Keycloak 26.6<br/>--optimized<br/>nó 2"]
@@ -268,9 +271,9 @@ graph TD
     K1 -.-> Realm
     IdPExt["Entra ID da Acme<br/>(SCIM provisioning, preview)"] -.->|"SCIM"| OrgAcme
 
-    style LB fill:#4A90D9,color:#fff
-    style PG fill:#4A90D9,color:#fff
-    style Realm fill:#F5A623,color:#000
+    class LB neutro
+    class PG neutro
+    class Realm destaque
 ```
 
 Nesse desenho: três nós Keycloak formam um cluster Infinispan embarcado (suficiente para a maioria dos SaaS de porte médio, sem a complexidade operacional de um Infinispan externo); o Postgres é a fonte de verdade persistente; o load balancer termina TLS e injeta `X-Forwarded-*`, e o Keycloak sobe com `--proxy-headers xforwarded` e hostname fixo; a Organization "Acme" federa autenticação com o Entra ID corporativo do cliente e recebe provisionamento via SCIM (assumindo que a equipe avaliou o risco de depender de uma feature preview); a Organization "Globex", menor, usa login local com passkeys habilitadas via política de discoverable credentials. Rodar em Kubernetes com o Operator, observabilidade e métricas de cluster aprofundadas (dashboards, alertas, tracing) é assunto de Operação — mencionado aqui, não desenvolvido.

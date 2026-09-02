@@ -36,15 +36,16 @@ O Strangler Fig se apoia numa peça de infraestrutura que é o coração de todo
 Com a facade no lugar, o ciclo é sempre o mesmo, repetido por função:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     C[Clientes] --> F{Facade de roteamento}
     F -->|funcao ja migrada| N[Sistema novo]
     F -->|resto| L[Sistema legado]
     N -.-> D[(Dados)]
     L -.-> D
-    style F fill:#F5A623
-    style N fill:#4A90D9
+    class F destaque
+    class N neutro
 ```
 
 1. **Interceptar** — pôr a facade na frente do legado, roteando tudo para ele. Passo de risco quase zero (nada de comportamento muda), mas que instala o interruptor de que todo o resto depende.
@@ -66,15 +67,16 @@ O segredo do padrão está no passo 3: a **unidade de trabalho é a função, n�
 As duas se amarram: para capturar um ativo, você precisa interceptar todos os eventos que o afetam, para que o novo sistema — agora dono daquele ativo — receba tudo o que muda seu estado.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     E[Evento/requisicao entra] --> I{Event interception:<br/>afeta ativo capturado?}
     I -->|sim| N[Sistema novo<br/>dono do ativo]
     I -->|nao| L[Sistema legado<br/>dono do resto]
     N --> A[(Ativos capturados)]
     L --> B[(Ativos ainda no legado)]
-    style I fill:#F5A623
-    style N fill:#4A90D9
+    class I destaque
+    class N neutro
 ```
 
 > [!info] Por que separar fluxo de dado importa tanto

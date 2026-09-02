@@ -166,8 +166,10 @@ O acesso dominante em `notification_request` é escrita (uma vez por pedido) seg
 Com API e modelo fixados, a visão consolidada — do evento de negócio até a entrega no canal, passando pela decisão de fan-out por fila que é o coração deste design:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     P1["Serviço de Pedidos"] --> NS["Notification Service<br/>(API + orquestração)"]
     P2["Serviço de Marketing"] --> NS
     P3["Serviço de Chat"] --> NS
@@ -192,11 +194,11 @@ graph TD
     WE -.->|"falha após retries"| DLQ
     WS -.->|"falha após retries"| DLQ
 
-    style QP fill:#4A90D9,color:#fff
-    style QE fill:#4A90D9,color:#fff
-    style QS fill:#4A90D9,color:#fff
-    style DLQ fill:#D0021B,color:#fff
-    style IDX fill:#F5A623,color:#000
+    class QP neutro
+    class QE neutro
+    class QS neutro
+    class DLQ falha
+    class IDX destaque
 ```
 
 O ponto que vale narrar explicitamente ao desenhar isso: o **Notification Service não fala diretamente com APNs, Twilio ou SES** — ele resolve preferências, monta o conteúdo a partir do template, checa idempotência e **publica numa fila por canal**. Quem efetivamente chama o provedor externo é um pool de workers dedicado àquele canal, consumindo daquela fila. Essa separação — evento → fila → worker especializado — é o que permite que uma lentidão do APNs afete só os workers de push, sem tocar em email ou SMS, e é o assunto do primeiro deep dive.
@@ -216,7 +218,6 @@ Uma fila única parece mais simples à primeira vista — um worker genérico co
 Push é barato e tolera fan-out agressivo — um worker pool de push pode escalar para dezenas de instâncias sem custo adicional relevante por mensagem. SMS custa centavos por mensagem e é regulado (TCPA, discutido nos gargalos) — o worker pool de SMS deveria ser deliberadamente mais contido, com rate limiting mais agressivo. Email tem latência de entrega mais tolerante, mas provedores como SES têm sandbox de reputação de domínio (enviar rápido demais derruba a reputação e aumenta a taxa de spam). Se as três compartilham fila, um pico de push arrastaria consigo a latência de SMS, mesmo sem nenhuma relação de causa entre os dois.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
     E["Evento de negócio<br/>(1 pedido)"] --> NS["Notification<br/>Service"]
     NS -->|"resolve canais<br/>por preferência"| FO{"Fan-out"}
@@ -248,7 +249,6 @@ Nem todo erro merece retry: um `400 BadDeviceToken` do APNs (token de push invá
 **Circuit breaker.** Retry por si só não impede que, sob uma falha prolongada do provedor, cada worker continue tentando (e falhando, e esperando o timeout de cada tentativa) indefinidamente — consumindo threads e conexões que poderiam estar processando outras mensagens. O padrão coberto em detalhe em [[3 - Padrões recorrentes/05 - Circuit Breaker e resiliência|Circuit Breaker e resiliência]] resolve isso: o worker mantém uma contagem de falhas recentes contra aquele provedor; quando a taxa de falha ultrapassa um limiar, o circuito **abre**, e por um período de cooldown toda chamada àquele provedor falha imediatamente (sem sequer tentar a rede) — como descrito por Martin Fowler, o circuito "curto-circuita" a chamada. Passado o cooldown, o circuito entra em **half-open** e deixa passar um punhado de chamadas de teste; se recuperaram, volta a **closed** (normal); se não, volta a **open**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 stateDiagram-v2
     [*] --> Closed
     Closed --> Open: taxa de falha<br/>ultrapassa limiar
@@ -283,7 +283,6 @@ chave = "{event_id}:{user_id}:{channel}"
 O fluxo do worker, com a chave aplicada:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 sequenceDiagram
     participant Q as Fila
     participant W as Worker

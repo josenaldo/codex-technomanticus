@@ -42,17 +42,18 @@ O Recipient List calcula, **por mensagem**, o conjunto de destinos e envia uma c
 ## Scatter-Gather: pergunte a vários, componha a resposta
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     REQ["cotar<br/>produto X"] --> RL{{"Recipient List<br/>(fornecedores de X)"}}
     RL --> F1["Fornecedor A"] --> AG
     RL --> F2["Fornecedor B"] --> AG
     RL --> F3["Fornecedor C"] --> AG{{"Aggregator<br/>(espera + escolhe<br/>a melhor)"}}
     AG --> BEST["melhor oferta"]
 
-    style RL fill:#4A90D9,color:#fff
-    style AG fill:#F5A623,color:#000
-    style BEST fill:#4A90D9,color:#fff
+    class RL neutro
+    class AG destaque
+    class BEST neutro
 ```
 
 Scatter-Gather = **espalhar** (Recipient List ou pub-sub) + **juntar** (Aggregator). O clássico é a "licitação": pergunta a vários fornecedores, agrega as respostas, escolhe. Como reusa o Aggregator, herda **todas** as quatro decisões dele — em especial a mais crítica aqui: o **timeout**, porque você está esperando **sistemas externos** que podem estar lentos ou fora do ar.

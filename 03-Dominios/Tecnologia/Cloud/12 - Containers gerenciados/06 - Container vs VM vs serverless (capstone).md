@@ -26,6 +26,9 @@ O capstone do Galho 11 já desenhou esta árvore com seis perguntas amarradas a 
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Start(["Novo workload de compute<br/>a arquitetar"])
 
     Q1{"Padrão de carga:<br/>rajada/imprevisível<br/>ou constante/alta?"}
@@ -49,9 +52,9 @@ flowchart TD
     Q6 -->|"Sim"| Serverless["SERVERLESS / FaaS<br/>(Galho 11)"]
     Q6 -->|"Não, precisa manter<br/>conexão/cache em memória"| Container
 
-    style Serverless fill:#262,color:#fff
-    style Container fill:#245,color:#fff
-    style VM fill:#653,color:#fff
+    class Serverless ok
+    class Container neutro
+    class VM destaque
 ```
 
 Traduzindo os seis eixos que decidem essa árvore numa tabela só, agora com as três opções lado a lado — e com o eixo que faltava nas notas anteriores: maturidade operacional do time, porque nenhuma dessas três escolhas é neutra em relação a quem vai operá-la depois:
@@ -81,6 +84,9 @@ Aqui está a árvore que faltava nas cinco notas anteriores, cada uma delas prov
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Start(["Já decidi: container gerenciado.<br/>Qual serviço?"])
 
     Q1{"Quer builds a partir<br/>de git push, sem<br/>escrever infraestrutura?"}
@@ -96,11 +102,11 @@ flowchart TD
     Q3 -->|"Não — quero simplicidade<br/>de operação, sem gerenciar<br/>nós"| Fargate["FARGATE<br/>(nota 03)"]
     Q3 -->|"Preciso de controle fino<br/>de instância, spot, GPU<br/>na própria máquina do host"| ECS["ECS launch type EC2<br/>(nota 02)"]
 
-    style AppRunner fill:#245,color:#fff
-    style AppPlat fill:#245,color:#fff
-    style K8s fill:#262,color:#fff
-    style Fargate fill:#245,color:#fff
-    style ECS fill:#653,color:#fff
+    class AppRunner neutro
+    class AppPlat neutro
+    class K8s ok
+    class Fargate neutro
+    class ECS destaque
 ```
 
 E a tabela que amarra os quatro caminhos por controle, simplicidade, portabilidade e custo — os quatro eixos que qualquer arquiteto sênior pesa antes de comprometer um time a um deles:
@@ -142,6 +148,9 @@ O capstone do Galho 11 nomeou o lock-in do serverless com precisão: modelo de e
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph Alto["Lock-in ALTO"]
         direction TB
         L1["Serverless/FaaS<br/>(event sources, IAM,<br/>SAM/CloudFormation)"]
@@ -159,9 +168,9 @@ flowchart LR
         B1["EKS / DOKS<br/>(Kubernetes upstream,<br/>manifesto YAML portável)"]
     end
 
-    style Alto fill:#422,color:#fff
-    style Medio fill:#542,color:#fff
-    style Baixo fill:#242,color:#fff
+    class Alto falha
+    class Medio destaque
+    class Baixo ok
 ```
 
 A ironia estrutural vale nomear direto: dentro da mesma categoria "container gerenciado", ECS e App Platform têm um lock-in comparável ao do serverless — vocabulário, API e ferramental proprietários — enquanto EKS/DOKS, rodando o mesmo Kubernetes certificado, entregam a portabilidade que a categoria inteira promete de fora. Escolher "container" na árvore grande não compra portabilidade automaticamente; compra a *opção* de portabilidade, que só se realiza se você também escolher o sabor Kubernetes.

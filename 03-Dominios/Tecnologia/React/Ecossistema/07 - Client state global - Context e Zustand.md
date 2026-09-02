@@ -83,8 +83,9 @@ Essas técnicas funcionam para casos simples, mas exigem disciplina constante e 
 O diagrama abaixo mostra o que acontece quando `cart` muda em cada abordagem:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#F5A623", "tertiaryColor": "#D0021B", "background": "#ffffff"}}}%%
 graph TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph CTX["Context — re-render universal"]
         direction TB
         P1["Provider ❰ value = {user, cart, notif} ❱"]
@@ -107,8 +108,8 @@ graph TB
         S -->|"✅ sem mudança, skip"| Z3
     end
 
-    style CTX fill:#FDECEA,stroke:#D0021B
-    style ZST fill:#EAF4FB,stroke:#4A90D9
+    class CTX falha
+    class ZST neutro
 ```
 
 No Context, o Provider detecta mudança no `value` (objeto novo) e notifica todos os consumidores indiscriminadamente. No Zustand, cada componente tem seu próprio subscriber que compara apenas o valor retornado pelo selector — `<Header>` assina `state => state.user`, então só re-renderiza se `user` mudar.

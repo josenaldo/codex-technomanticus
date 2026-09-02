@@ -51,6 +51,8 @@ A [[04 - Accept interfaces, return structs|nota 04]] já estabeleceu a metade "a
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Errado["Reflexo Java/C#: interface no producer"]
         direction TB
         P1["pacote notification"] --> P2["type Notifier interface {...}"]
@@ -65,8 +67,8 @@ flowchart LR
         D2 -.->|"pequena, moldada\npelo que billing precisa"| D1
     end
 
-    style P2 fill:#D0021B,color:#fff
-    style D2 fill:#7ED321,color:#000
+    class P2 falha
+    class D2 destaque
 ```
 
 Reescrevendo o exemplo: o pacote `notification` expõe só o tipo concreto. Nenhuma interface.

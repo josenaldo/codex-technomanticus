@@ -151,12 +151,12 @@ Vamos tornar isso concreto. Imagine uma API simples: um load balancer na frente,
 
 ```mermaid
 flowchart LR
+    classDef cliente fill:#f9d5d3,stroke:#c0392b
+    classDef provedor fill:#d4efdf,stroke:#27ae60
     Internet(("Internet")) --> LB["Load Balancer\n(gerenciado pelo provedor)"]
     LB --> App["Instâncias de aplicação\n(EC2 / Droplet — IaaS)"]
     App --> DB[("Banco gerenciado\n(RDS / Managed DB — PaaS)")]
 
-    classDef cliente fill:#f9d5d3,stroke:#c0392b
-    classDef provedor fill:#d4efdf,stroke:#27ae60
     class LB provedor
     class App cliente
     class DB cliente

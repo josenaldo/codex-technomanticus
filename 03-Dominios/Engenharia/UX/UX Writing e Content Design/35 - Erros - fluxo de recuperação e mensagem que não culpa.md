@@ -30,14 +30,15 @@ Toda mensagem de erro que funciona responde três perguntas, nesta ordem, e uma 
 A âncora canônica dessa estrutura é a **heurística 9 de Nielsen — ajudar o usuário a reconhecer, diagnosticar e recuperar de erros** — já coberta em profundidade na [[03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental/03 - As 10 heurísticas de Nielsen|nota 03]] deste domínio. Esta nota não reexplica a heurística; ela é a aplicação concreta dela ao problema específico de *como escrever* o texto que a heurística exige.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     E["Erro ocorre"] --> A["O que aconteceu?<br/>linguagem do usuário"]
     A --> B["Por quê?<br/>causa, quando ajuda"]
     B --> C["O que fazer agora?<br/>ação concreta"]
     C --> R["Usuário recupera<br/>sem abrir ticket"]
-    style E fill:#D0021B,color:#fff
-    style R fill:#4A90D9,color:#fff
+    class E falha
+    class R neutro
 ```
 
 **O mecanismo em uma frase:** o sistema quase sempre já sabe o que aconteceu — a mensagem de erro genérica não é falta de informação técnica, é falta de tradução dessa informação para as três perguntas que o usuário precisa ter respondidas.

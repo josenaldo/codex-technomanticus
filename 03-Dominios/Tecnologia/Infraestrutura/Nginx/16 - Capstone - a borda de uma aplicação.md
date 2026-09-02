@@ -25,6 +25,9 @@ O `nginx.conf` cresce em doze passos. Cada decisão enuncia o problema concreto 
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     Cli["Cliente"] -->|"HTTPS 443"| L["listen + server_name<br/>decisão 1 e 2"]
     L --> Rot{"location vencedor<br/>decisão 3"}
     Rot -->|"= /health, ^~ /assets/"| Est["Estático / SPA<br/>decisão 4"]
@@ -38,9 +41,9 @@ graph LR
     Up --> Log["log_format json + request_id<br/>decisão 10"]
     UpWs --> Log
 
-    style L fill:#4A90D9,stroke:#2c5f8a,color:#fff
-    style Cache fill:#F5A623,stroke:#a66f10,color:#000
-    style Log fill:#8e6fc9,stroke:#5a3f8f,color:#fff
+    class L neutro
+    class Cache destaque
+    class Log marca
 ```
 
 > [!tip] Vídeo — que peça faz o quê na borda, antes de configurar qualquer uma

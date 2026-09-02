@@ -36,8 +36,10 @@ Mas há um segundo motivo, mais sutil e mais valioso: **o processo de buildar j�
 O *First Contact* técnico se resume a responder, em ordem, quatro perguntas — e cada resposta é tanto um pré-requisito para a próxima quanto um sinal de diagnóstico.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     C["1. Consigo CLONAR<br/>e obter as dependências?"] -->|sim| B["2. Consigo BUILDAR<br/>do zero?"]
     B -->|sim| R["3. Consigo RODAR<br/>localmente?"]
     R -->|sim| T["4. Consigo rodar<br/>os TESTES?"]
@@ -45,14 +47,14 @@ graph TD
     B -.->|"não: toolchain/env<br/>não documentado"| X2["Sinal: build não reprodutível"]
     R -.->|"não: config/dados<br/>de prod acoplados"| X3["Sinal: sem ambiente isolado"]
     T -.->|"não existem testes"| X4["Sinal: sem rede (nota 01)"]
-    style C fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style R fill:#4A90D9,color:#fff
-    style T fill:#4A90D9,color:#fff
-    style X1 fill:#F5A623,color:#000
-    style X2 fill:#F5A623,color:#000
-    style X3 fill:#F5A623,color:#000
-    style X4 fill:#D0021B,color:#fff
+    class C neutro
+    class B neutro
+    class R neutro
+    class T neutro
+    class X1 destaque
+    class X2 destaque
+    class X3 destaque
+    class X4 falha
 ```
 
 A quarta pergunta — "existem testes que rodam?" — reencontra a definição de Feathers da [[01 - O que é código legado|nota 01]]: código sem testes é código legado. Se a resposta for "não há testes", você acabou de confirmar, empiricamente, que herdou a primeira das duas ausências. A resposta não te desanima; te diz onde o trabalho começa (a [[10 - A rede de segurança primeiro|rede de segurança da nota 10]]).

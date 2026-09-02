@@ -62,8 +62,9 @@ O padrão usual é acumular os eventos **no agregado** durante a operação e de
 ## Domínio × integração: a fronteira
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph INT["Dentro do serviço de Pedidos"]
         A["Agregado Pedido<br/>confirmar()"] -->|"registra"| DE["<b>Evento de domínio</b><br/>PedidoConfirmado<br/>objeto rico · interno · muda quando eu quiser"]
         DE --> H["Ouvintes internos<br/>auditoria · projeção"]
@@ -73,9 +74,9 @@ graph LR
     IE --> C1["Faturamento"]
     IE --> C2["Logística"]
 
-    style DE fill:#4A90D9,color:#fff
-    style T fill:#F5A623,color:#000
-    style IE fill:#4A90D9,color:#fff
+    class DE neutro
+    class T destaque
+    class IE neutro
 ```
 
 O âmbar é a peça que costuma faltar — e é barata: uma função que mapeia o evento interno para o contrato publicado.

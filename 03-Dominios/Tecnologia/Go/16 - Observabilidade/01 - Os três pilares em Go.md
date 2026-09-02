@@ -30,6 +30,8 @@ Cada pergunta pede uma ferramenta diferente. É essa divisão do trabalho que a 
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q["Serviço lento em produção"] --> L["Logs\n'o que aconteceu, e quando'"]
     Q --> M["Métricas\n'quanto, e como isso mudou'"]
     Q --> T["Traces\n'por onde passou, e quanto\ncada trecho consumiu'"]
@@ -38,10 +40,10 @@ flowchart TB
     M --> M2["expvar (stdlib) +\nclient_golang (Prometheus)"]
     T --> T2["OpenTelemetry SDK\n(go.opentelemetry.io/otel)"]
 
-    style Q fill:#4A90D9,color:#fff
-    style L2 fill:#F5A623,color:#000
-    style M2 fill:#F5A623,color:#000
-    style T2 fill:#F5A623,color:#000
+    class Q neutro
+    class L2 destaque
+    class M2 destaque
+    class T2 destaque
 ```
 
 ## Pilar 1 — Logs: eventos discretos

@@ -108,6 +108,8 @@ Duas formas de organizar a comunicação assíncrona, e a diferença entre elas 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Fila["Fila (queue) — ponto a ponto"]
         direction LR
         P1["Produtor"] --> Q1[("Fila")]
@@ -123,8 +125,8 @@ flowchart LR
         T1 --> S3["Assinante Z"]
     end
 
-    style Q1 fill:#4A90D9,color:#fff
-    style T1 fill:#F5A623,color:#000
+    class Q1 neutro
+    class T1 destaque
 ```
 
 - **Fila (queue)** — cada mensagem é entregue a **um único consumidor** dentro de um grupo de consumidores que competem pelo trabalho. É o modelo certo para *distribuir trabalho*: dez workers lendo da mesma fila, cada mensagem processada uma vez, throughput escalando com o número de workers. Pensar nela como uma lista de tarefas que qualquer worker livre pode pegar ajuda mais do que pensar nela como um "cano" — não existe garantia de que o worker que pegou a mensagem 1 pegue também a mensagem 2.

@@ -62,12 +62,13 @@ Isso soa estranho para quem vem de ecossistemas onde formatação é assunto de 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Código-fonte<br/>recém-escrito"] -->|"gofmt / go fmt ./..."| B["Formatação<br/>canônica única"]
     B -->|"go vet ./..."| C["Erros comuns<br/>detectados estaticamente"]
     C -->|"code review"| D["Revisor foca em<br/>lógica e design,<br/>não em estilo"]
 
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
+    class B neutro
+    class C neutro
 ```
 
 A consequência prática, e é isso que faz `gofmt` ser mais que estética: **debates de estilo somem do code review**. Ninguém comenta "prefiro tabs" ou "essa chave deveria estar na linha de baixo", porque a ferramenta já decidiu isso antes do PR existir — a maioria dos editores roda `gofmt` automaticamente ao salvar. O tempo de revisão que sobra vai inteiro para lógica, nomes, design — o que de fato importa. Ferramentas de terceiros como `golangci-lint`, que agregam múltiplos linters incluindo checagens de estilo mais opinativas, entram no galho 20 desta trilha; aqui, `gofmt` e `go vet` são os dois guarda-corpos que já vêm de fábrica com qualquer instalação do Go, sem configuração.

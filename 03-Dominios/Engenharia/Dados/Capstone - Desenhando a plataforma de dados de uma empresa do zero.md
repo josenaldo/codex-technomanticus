@@ -32,8 +32,8 @@ Um data engineer sênior se senta para desenhar, do zero, a plataforma de dados 
 O erro mais comum nessa sessão não é escolher a ferramenta errada — é abrir a reunião perguntando "warehouse ou lake, Airflow ou dbt?" como se a resposta fosse uma escolha única, definitiva, para a plataforma inteira. As 17 notas anteriores já desmontaram essa pergunta peça por peça. Esta nota aplica esse desmonte ao ciclo de vida inteiro, decisão por decisão, na ordem em que uma sessão de design real percorreria — do gatilho até a organização do time que vai operar tudo isso por anos.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["1. O gatilho<br/>OLTP trava"] --> B["2. Onde guardar<br/>warehouse/lake"]
     B --> C["3. Como modelar<br/>dimensional"]
     C --> D["4. Como mover<br/>ELT + ingestão"]
@@ -42,9 +42,9 @@ graph LR
     F --> G["7. Governar<br/>catálogo/lineage"]
     G --> H["8. Organizar<br/>o time"]
 
-    style A fill:#F5A623,color:#000
-    style E fill:#F5A623,color:#000
-    style H fill:#F5A623,color:#000
+    class A destaque
+    class E destaque
+    class H destaque
 ```
 
 Esse é o roteiro. Cada bloco em âmbar é um ponto onde a decisão errada custa caro — ou em incidente de produção, ou em meses de retrabalho organizacional. Vale prestar atenção redobrada neles, tanto nesta nota quanto numa entrevista real.
@@ -83,8 +83,9 @@ A camada de **ingestão** — como o dado sai do Postgres sem repetir o erro de 
 Uma vez o dado bruto carregado no warehouse, a **transformação** — juntar, limpar, agregar, aplicar o modelo dimensional da seção 3 — é hoje majoritariamente feita em SQL versionado, testado e revisado como código de software, o padrão que a [[03-Dominios/Engenharia/Dados/3 - Pipelines - movimentação e transformação/03 - Transformação SQL-first|nota de transformação SQL-first]] descreve (o papel de analytics engineer nasceu exatamente dessa disciplina). E amarrando ingestão e transformação numa sequência confiável e recuperável de passos — extrai às 2h, transforma às 3h, valida às 4h, e sabe o que fazer se qualquer passo falhar — está a **orquestração**, coberta na [[03-Dominios/Engenharia/Dados/3 - Pipelines - movimentação e transformação/04 - Orquestração|nota de orquestração]]: DAGs (grafos acíclicos dirigidos) que expressam dependência entre passos, com retry e alerta quando algo quebra.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Fontes["Fontes"]
         PG[("Postgres<br/>produção")]
         EV["Eventos de app<br/>(cliques, carrinho)"]
@@ -125,10 +126,10 @@ graph TB
     DW --> ML
     DW --> AH
 
-    style PG fill:#4A90D9,color:#fff
-    style DW fill:#4A90D9,color:#fff
-    style ORQ fill:#F5A623,color:#000
-    style CDC fill:#F5A623,color:#000
+    class PG neutro
+    class DW neutro
+    class ORQ destaque
+    class CDC destaque
 ```
 
 ## 5. Streaming, onde vale — e onde é desperdício
@@ -161,8 +162,9 @@ A última decisão desta sessão não é técnica — é organizacional, e é a 
 Conforme a empresa cresce — mais domínios de negócio (vendas, logística, marketing, financeiro), mais times de produto, cada um querendo modelar seu próprio domínio de dado sem depender de fila de um time central sobrecarregado — o modelo centralizado começa a rachar pelas costuras: o time de plataforma vira gargalo, e ninguém no time central entende profundamente o domínio de logística o suficiente para modelar bem a dimensão de entrega. É o ponto onde **data mesh** — domínios de dado descentralizados, cada um dono e responsável pelo seu próprio "produto de dado", com um padrão federado de governança e infraestrutura de self-service comum — começa a se justificar. A [[03-Dominios/Engenharia/Dados/4 - Qualidade, governança e organização/04 - Arquiteturas organizacionais|nota de arquiteturas organizacionais]] detalha os dois modelos e a Lei de Conway como o mecanismo por trás dessa escolha: a estrutura de comunicação da organização acaba, inevitavelmente, se refletindo na estrutura técnica da plataforma — lutar contra isso custa mais do que desenhar a organização e a plataforma juntas.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Startup["Startup — poucos analistas"]
         T1["Time único de dados"] --> WH1[("Warehouse<br/>centralizado")]
         WH1 --> BI1["BI para toda<br/>a empresa"]
@@ -177,8 +179,8 @@ graph LR
 
     Startup -.->|"empresa cresce,<br/>time central vira gargalo"| Enterprise
 
-    style T1 fill:#4A90D9,color:#fff
-    style GOV fill:#F5A623,color:#000
+    class T1 neutro
+    class GOV destaque
 ```
 
 | Decisão | Startup (poucos analistas) | Enterprise (dezenas de times de dados) |
@@ -198,8 +200,9 @@ Nenhum dos dois lados da tabela é "certo" em abstrato — a resposta certa depe
 Juntando as oito decisões numa única imagem — da fonte ao consumo, com qualidade e governança atravessando tudo:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Fontes["1. Fontes — o gatilho"]
         PG[("Postgres OLTP<br/>produção")]
         EV["Eventos de app"]
@@ -241,11 +244,11 @@ graph TB
     DW --> BI
     DW --> ML
 
-    style PG fill:#4A90D9,color:#fff
-    style DW fill:#4A90D9,color:#fff
-    style QUAL fill:#F5A623,color:#000
-    style GOV fill:#F5A623,color:#000
-    style STRM fill:#F5A623,color:#000
+    class PG neutro
+    class DW neutro
+    class QUAL destaque
+    class GOV destaque
+    class STRM destaque
 ```
 
 ## Reflexão final: como a trilha inteira se costura

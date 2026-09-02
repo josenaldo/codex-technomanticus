@@ -47,7 +47,6 @@ A referência que qualquer entrevistador espera — codificada por Alex Xu em *S
 Cada cliente tem um "balde" com capacidade máxima de `B` tokens. O balde começa cheio (ou com algum valor inicial). Tokens são adicionados a uma taxa constante `r` por segundo, até o limite `B`. Cada requisição consome 1 token; se o balde está vazio, a requisição é rejeitada (ou enfileirada, dependendo do design).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     R["Taxa de reposição<br/>r tokens/segundo"] -->|"adiciona"| BUCKET["Balde<br/>capacidade máxima B<br/>tokens atuais: 3/10"]
     REQ["Requisição chega"] -->|"consome 1 token"| BUCKET
@@ -78,7 +77,6 @@ Divida o tempo em janelas fixas (ex: minuto 14:00:00–14:00:59) e mantenha um c
 É trivialmente simples de implementar — um `INCR` com `EXPIRE` no Redis resolve — mas tem um defeito estrutural conhecido como **o problema da borda** (*boundary problem*): um cliente pode disparar o limite inteiro nos últimos instantes de uma janela e o limite inteiro de novo nos primeiros instantes da próxima, efetivamente enviando **até 2x o limite nominal** num intervalo curto de tempo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph TD
     subgraph W1["Janela 1: 14:00:00–14:00:59<br/>limite = 100 req/min"]
         A1["50 req entre<br/>14:00:55–14:00:59"]
@@ -152,7 +150,6 @@ Duas decisões ortogonais precisam ser tomadas antes de escolher o algoritmo: **
 **Camada de aplicação.** Aplicar o limite na borda (edge/gateway/CDN) barra tráfego malicioso o mais cedo possível, antes de consumir qualquer recurso do backend — é onde Cloudflare e um [[06 - API Gateway e BFF|API Gateway]] atuam. Aplicar no próprio serviço dá granularidade fina por endpoint (o limite de `POST /pagamentos` não precisa ser igual ao de `GET /produtos`) mas cada requisição já consumiu recursos de rede e roteamento antes de ser rejeitada. Sistemas maduros fazem os dois: um limite grosso na borda, limites finos por endpoint dentro do serviço.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     C["Cliente"] --> EDGE["Borda / CDN<br/>limite grosso por IP<br/>(defesa contra abuso anônimo)"]
     EDGE --> GW["API Gateway<br/>limite por API key<br/>(fairness entre tenants)"]
@@ -173,7 +170,6 @@ A solução padrão é um **store central compartilhado** — normalmente Redis 
 O problema é que "verificar se está sob o limite" e "incrementar o contador" são, ingenuamente, duas operações — e entre elas existe uma **corrida** (race condition). Dois nós podem ler o contador simultaneamente, ambos ver "abaixo do limite", ambos incrementar, e o limite acaba sendo violado mesmo que cada leitura individual estivesse correta no instante em que foi feita.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 sequenceDiagram
     participant No1 as Nó A
     participant Redis

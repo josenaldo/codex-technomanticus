@@ -214,14 +214,16 @@ print(y)           # (1, 2) — y não mudou, x agora aponta pra outro objeto
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["a += b"] --> B{"a tem __iadd__?"}
     B -- "Sim" --> C["chama a.__iadd__(b)\ntipicamente MUTA self e devolve self"]
     B -- "Não" --> D["cai para a = a.__add__(b)\nSEMPRE cria instância NOVA"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#F5A623,color:#000
+    class A neutro
+    class B neutro
+    class C destaque
+    class D destaque
 ```
 
 ### `__call__`: instâncias que se comportam como função

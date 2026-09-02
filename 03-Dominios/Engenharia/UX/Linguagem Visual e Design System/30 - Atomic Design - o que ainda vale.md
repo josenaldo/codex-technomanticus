@@ -24,14 +24,15 @@ Um time adota Atomic Design com rigor no início de um design system novo. Toda 
 **Brad Frost** publicou "Atomic Design" como artigo em 2013 e, três anos depois, como livro auto-publicado (**2016**). A metáfora é emprestada da química: átomos são os blocos indivisíveis (um botão, um label, um input isolado); moléculas combinam átomos em unidades funcionais simples (um campo de busca = input + botão); organismos combinam moléculas em seções complexas e relativamente autônomas (um header completo, com logo, navegação e busca); templates arranjam organismos numa estrutura de página sem conteúdo real; páginas são templates com conteúdo real, o produto final visível.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Átomos<br/>botão, input, label"] --> M["Moléculas<br/>campo de busca"]
     M --> O["Organismos<br/>header completo"]
     O --> T["Templates<br/>estrutura de página"]
     T --> P["Páginas<br/>conteúdo real"]
-    style A fill:#4A90D9,color:#fff
-    style P fill:#F5A623,color:#000
+    class A neutro
+    class P destaque
 ```
 
 A força original da metáfora, e o motivo pelo qual ela dominou a conversa de design systems por quase uma década: ela deu um **vocabulário compartilhado** entre design e engenharia para falar sobre composição — antes dela, "componente" era um termo genérico demais, usado indistintamente para um botão isolado e para uma página inteira. Ter cinco níveis nomeados permitiu conversas mais precisas sobre onde uma mudança deveria acontecer.

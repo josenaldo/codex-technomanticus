@@ -27,16 +27,17 @@ O resultado é a **cascata em escada**: o browser só pede o recurso B depois de
 ## Os quatro hints e quando usar cada um
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[preconnect] -->|abre conexão| A1["domínio conhecido,<br/>recurso ainda não"]
     B[preload] -->|baixa agora| B1["recurso crítico<br/>DESTA página"]
     C[prefetch] -->|baixa ocioso| C1["recurso da<br/>PRÓXIMA página"]
     D[fetchpriority] -->|reordena| D1["sobe/desce a<br/>prioridade"]
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#4A90D9,color:#fff
+    class A neutro
+    class B neutro
+    class C destaque
+    class D neutro
 ```
 
 ### `preconnect` — abra a porta antes

@@ -43,6 +43,8 @@ A estrutura que está sendo percorrida é uma **árvore de decisões implícita*
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["raiz: solução vazia"] --> B["escolha 1"]
     A --> C["escolha 2"]
     A --> D["escolha 3"]
@@ -54,10 +56,10 @@ flowchart TD
     C1 --> C1a["SOLUÇÃO válida"]
     D --> D1["PODADO (inviável)"]
 
-    style B2 fill:#f9d,stroke:#c36
-    style D1 fill:#f9d,stroke:#c36
-    style B1a fill:#9f9,stroke:#3a3
-    style C1a fill:#9f9,stroke:#3a3
+    class B2 marca
+    class D1 marca
+    class B1a ok
+    class C1a ok
 ```
 
 **Leitura do diagrama:** da raiz (solução ainda vazia) saem todas as primeiras escolhas. Descer por uma aresta é "aplicar uma escolha"; subir de volta é "desfazer". Os nós em rosa (`PODADO`) são ramos que uma verificação de viabilidade cortou **antes** de explorá-los — toda a subárvore embaixo deles nunca é visitada, e é daí que vem a economia. Os nós em verde são folhas que formam soluções válidas. O nó "beco sem saída" mostra o outro motivo de voltar: você explorou até o fim e não deu certo, então retrocede para tentar o próximo irmão. Note que a busca é em profundidade: ela esgota tudo embaixo de "escolha 1" antes de tocar em "escolha 2".
@@ -101,6 +103,9 @@ Existe uma variação importante. Em vez de mutar-e-desfazer um estado compartil
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     Start(["entrar no nó com estado E"]) --> Goal{"é solução?"}
     Goal -- "sim" --> Reg["registrar; retornar"]
     Goal -- "não" --> Loop{"há próxima escolha?"}
@@ -112,10 +117,10 @@ flowchart TD
     Rec --> Undo["DESESCOLHER: desfazer escolha"]
     Undo --> Loop
 
-    style Apply fill:#cdf,stroke:#36c
-    style Rec fill:#ffd,stroke:#cc3
-    style Undo fill:#fdc,stroke:#c63
-    style Valid fill:#f9d,stroke:#c36
+    class Apply neutro
+    class Rec destaque
+    class Undo destaque
+    class Valid marca
 ```
 
 **Leitura do diagrama:** este é o template virado em fluxo de controle. Entrou no nó, primeiro pergunta se já é solução (caso-base, sai). Senão, entra no laço de escolhas. Cada escolha passa pelo filtro de **poda** (rosa): se inválida, pula direto pra próxima sem gastar nenhuma recursão. Se válida, executa o tríptico em sequência — **escolher** (azul, muta o estado), **explorar** (amarelo, a recursão que desce a subárvore), **desescolher** (laranja, reverte) — e volta ao laço para o próximo irmão. Repare que o laço de escolhas e o par escolher/desescolher formam o ciclo onde o estado é montado e desmontado tijolo por tijolo. Quando as escolhas acabam, o nó retorna e o controle sobe ao pai, que então faz *seu* próprio desescolher.
@@ -134,6 +139,9 @@ Há uma forma mais sofisticada de poda chamada **propagação de restrições (c
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     R["raiz"] --> N1["prefixo viável"]
     R --> N2["prefixo INVÁLIDO ✂"]
     N1 --> N1a["prefixo viável"]
@@ -143,12 +151,12 @@ flowchart TD
     N2 -. "subárvore NUNCA visitada" .-> X1["(milhares de candidatos)"]
     N1b -. "subárvore NUNCA visitada" .-> X2["(milhares de candidatos)"]
 
-    style N2 fill:#f9d,stroke:#c36
-    style N1b fill:#f9d,stroke:#c36
-    style X1 fill:#eee,stroke:#999,stroke-dasharray: 5 5
-    style X2 fill:#eee,stroke:#999,stroke-dasharray: 5 5
-    style S1 fill:#9f9,stroke:#3a3
-    style S2 fill:#9f9,stroke:#3a3
+    class N2 marca
+    class N1b marca
+    class X1 neutro
+    class X2 neutro
+    class S1 ok
+    class S2 ok
 ```
 
 **Leitura do diagrama:** os nós rosa com a tesoura (✂) são prefixos parciais que a verificação de viabilidade rejeitou. As setas pontilhadas levam às subárvores cinzas que **nunca são visitadas** — cada uma podendo conter milhares de candidatos completos que a força bruta teria gerado e testado um a um. Esse é o ganho concreto da poda: não é que você visita os nós ruins mais rápido, é que você **não os visita**. Quanto mais alto na árvore um corte acontece, maior a subárvore que some.
@@ -185,6 +193,7 @@ Gerar todas as ordenações de `[1, 2, 3]`. A escolha em cada nível é "qual el
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     R["[ ]"] --> A1["[1]"]
     R --> A2["[2]"]
     R --> A3["[3]"]
@@ -201,12 +210,12 @@ flowchart TD
     B31 --> C312["[3,1,2]"]
     B32 --> C321["[3,2,1]"]
 
-    style C123 fill:#9f9,stroke:#3a3
-    style C132 fill:#9f9,stroke:#3a3
-    style C213 fill:#9f9,stroke:#3a3
-    style C231 fill:#9f9,stroke:#3a3
-    style C312 fill:#9f9,stroke:#3a3
-    style C321 fill:#9f9,stroke:#3a3
+    class C123 ok
+    class C132 ok
+    class C213 ok
+    class C231 ok
+    class C312 ok
+    class C321 ok
 ```
 
 **Leitura do diagrama:** a árvore de permutações de `[1,2,3]`. A raiz é o caminho parcial vazio. Cada nível fixa mais uma posição usando um elemento ainda não escolhido — por isso a ramificação encolhe de 3 para 2 para 1. As 6 folhas verdes são as `3! = 6` permutações completas. Descer uma aresta é "escolher e marcar usado"; subir é "desmarcar" — o desfazer que libera o elemento para o ramo irmão. Se você esquecesse de desmarcar, o ramo de `[2]` nunca conseguiria usar o `1`, porque ele teria ficado marcado lá no ramo de `[1]`.
@@ -272,6 +281,8 @@ A poda em N-rainhas é o que dá ao problema sua fama didática. Antes de pôr a
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     L0["linha 0: rainha em col 0"] --> L1a["linha 1: col 0 ✗ (mesma coluna)"]
     L0 --> L1b["linha 1: col 1 ✗ (diagonal)"]
     L0 --> L1c["linha 1: col 2 ✓"]
@@ -281,14 +292,14 @@ flowchart TD
     L1c --> L2c["linha 2: col 2 ✗ (coluna)"]
     L1c --> L2d["linha 2: col 3 ✗ (diagonal) → backtrack"]
 
-    style L1a fill:#f9d,stroke:#c36
-    style L1b fill:#f9d,stroke:#c36
-    style L2a fill:#f9d,stroke:#c36
-    style L2b fill:#f9d,stroke:#c36
-    style L2c fill:#f9d,stroke:#c36
-    style L2d fill:#f9d,stroke:#c36
-    style L1c fill:#9f9,stroke:#3a3
-    style L1d fill:#9f9,stroke:#3a3
+    class L1a marca
+    class L1b marca
+    class L2a marca
+    class L2b marca
+    class L2c marca
+    class L2d marca
+    class L1c ok
+    class L1d ok
 ```
 
 **Leitura do diagrama:** um pedaço da busca de 4-rainhas começando com a rainha da linha 0 na coluna 0. Na linha 1, as colunas 0 (mesma coluna) e 1 (diagonal) são podadas de cara; só 2 e 3 sobrevivem. Seguindo pela coluna 2, **todas** as colunas da linha 2 estão atacadas — esse ramo é um beco sem saída e a busca faz **backtrack**, voltando para tentar a coluna 3 na linha 1. Cada nó rosa é uma posição que a verificação de não-ataque rejeitou sem nunca descer. É a poda agindo a cada passo, e é por isso que o espaço efetivo de N-rainhas é muito menor que `n!`.
@@ -365,6 +376,9 @@ Saber **quando não usar** backtracking é tão importante quanto saber implemen
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     Q1{"o que você quer?"} -- "enumerar TODAS<br/>as soluções" --> BT["BACKTRACKING<br/>busca com poda"]
     Q1 -- "OTIMIZAR<br/>(min/max)" --> Q2{"subproblemas<br/>se sobrepõem?"}
     Q1 -- "achar UMA<br/>solução viável" --> Q3{"há escolha gulosa<br/>provada ótima?"}
@@ -373,9 +387,9 @@ flowchart TD
     Q3 -- "sim" --> GR["GREEDY<br/>decidir e seguir"]
     Q3 -- "não" --> BT
 
-    style BT fill:#cdf,stroke:#36c
-    style DP fill:#ffd,stroke:#cc3
-    style GR fill:#dfd,stroke:#3a3
+    class BT neutro
+    class DP destaque
+    class GR ok
 ```
 
 **Leitura do diagrama:** uma árvore de decisão sobre qual técnica aplicar. O primeiro corte é o objetivo. Se você precisa **enumerar todas** as soluções, backtracking é quase sempre a resposta — DP e greedy otimizam ou contam, não listam. Se você quer **otimizar** e os subproblemas se **sobrepõem** (o mesmo subproblema reaparece em vários ramos), você memoiza e cai em DP. Se você quer **uma** solução viável rápido e existe uma escolha gulosa **provadamente** ótima, é greedy. Em todos os ramos onde falta estrutura — sem sobreposição para DP explorar, sem garantia gulosa — você volta para backtracking, a ferramenta de último recurso que ainda assim é a certa.

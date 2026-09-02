@@ -94,6 +94,8 @@ Note a sutileza: a generalizada com k = n recupera a versão básica, porque n +
 
 ```mermaid
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     P["n + 1 pombos"] --> D{"distribuir em n casas"}
     D --> C1["casa 1"]
     D --> C2["casa 2"]
@@ -104,8 +106,8 @@ flowchart TD
     Cn -.-> LIMITE
     LIMITE --> CONTRA["mas temos n + 1 pombos<br/>n + 1 maior que n"]
     CONTRA --> COL["logo: alguma casa tem 2 ou mais<br/>COLISAO GARANTIDA"]
-    style COL fill:#fca,stroke:#c33
-    style CONTRA fill:#fee
+    class COL destaque
+    class CONTRA falha
 ```
 
 **Leitura do diagrama**: n + 1 pombos entram, mas a capacidade "sem colisão" do pombal é apenas n (uma vaga por casa). Como n + 1 ultrapassa n, o excesso força um empilhamento. A seta vermelha é a conclusão: a colisão não é provável, é **certa**.
@@ -124,6 +126,7 @@ Se o domínio é maior que o contradomínio — e sempre é — então a funçã
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph DOM["Dominio: infinitas chaves"]
         K1["chave A"]
         K2["chave B"]
@@ -140,7 +143,7 @@ flowchart LR
     K3 --> S1
     K4 --> S0
     S1 -. "A e C colidem" .-> COL["COLISAO inevitavel<br/>dominio maior que imagem"]
-    style COL fill:#fca,stroke:#c33
+    class COL destaque
 ```
 
 **Leitura do diagrama**: as chaves à esquerda são os pombos; os slots à direita são as casas. Como sempre há mais chaves possíveis que slots, duas chaves (A e C) caem no mesmo slot. Nenhuma engenhosidade de função de hash escapa disso — o que uma boa hash faz é **distribuir bem** as colisões, não eliminá-las.
@@ -187,12 +190,13 @@ A cada rodada, k + 1 chaves disputam k slots. Casa dos pombos: não cabem todas.
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Aplicacao de CS"] --> P["Casa dos Pombos<br/>mais itens que recipientes"]
     P --> H["Hashing<br/>chaves maior que slots → colisao certa"]
     P --> C["Compressao<br/>arquivos maior que codigos curtos → algum cresce"]
     P --> T["Pumping Lemma<br/>simbolos maior que estados → estado repete"]
     P --> K["Cache<br/>chaves quentes maior que slots → miss certo"]
-    style P fill:#cdf,stroke:#36c
+    class P neutro
 ```
 
 **Leitura do diagrama**: o nó central é o mesmo princípio; os quatro ramos são disfarces dele. Em todos, "algo maior mapeado em algo menor" força uma repetição/colisão inevitável. Aprenda a enxergar o nó azul por baixo de cada problema.
@@ -239,6 +243,8 @@ Com três conjuntos a coisa fica mais bonita. Você soma os três, mas agora as 
 
 ```mermaid
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph TRES["Tres conjuntos sobrepostos"]
         AA["A"]
         BB["B"]
@@ -251,8 +257,8 @@ flowchart TD
     SOMA["+ A + B + C<br/>somou demais"] --> SUB["− pares AB AC BC<br/>tirou o centro 3 vezes a mais"]
     SUB --> ADD["+ ABC<br/>devolve o centro"]
     ADD --> OK["contagem exata de A ∪ B ∪ C"]
-    style ABC fill:#fdb
-    style OK fill:#cfc,stroke:#3a3
+    class ABC destaque
+    class OK ok
 ```
 
 **Leitura do diagrama**: a região central (A ∩ B ∩ C) é a vilã. Ao somar A, B, C ela entra 3 vezes; ao subtrair os três pares ela sai 3 vezes — zerando. Por isso o `+ ABC` no fim devolve a única cópia que ela merecia. O ritmo "soma, subtrai, soma" não é arbitrário: cada termo conserta o excesso do anterior.
@@ -349,6 +355,8 @@ E por Stirling, log₂(n!) ≈ n log₂ n. A altura da árvore é o **número de
 
 ```mermaid
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     R["raiz: a menor b?"] -->|sim| N1["b menor c?"]
     R -->|nao| N2["a menor c?"]
     N1 -->|sim| F1["folha: a b c"]
@@ -357,8 +365,8 @@ flowchart TD
     N2 -->|nao| F3["folha: ..."]
     N3 --> FN["n! folhas no total"]
     FN -. "2^h maior ou igual a n!" .-> ALT["altura h maior ou igual a log2 de n!<br/>≈ n log n comparacoes"]
-    style ALT fill:#fdb,stroke:#c93
-    style FN fill:#eef
+    class ALT destaque
+    class FN neutro
 ```
 
 **Leitura do diagrama**: cada caminho da raiz a uma folha é uma execução possível do algoritmo. Como existem n! ordens distintas a separar, a árvore precisa de n! folhas — e uma árvore binária só consegue isso se for alta o bastante. A altura mínima ⌈log₂ n!⌉ é o piso de comparações. É contagem provando impossibilidade.

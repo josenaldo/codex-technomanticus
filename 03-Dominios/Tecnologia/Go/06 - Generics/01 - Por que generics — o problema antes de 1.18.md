@@ -116,6 +116,9 @@ Uma função só, para todos os tipos — resolve a duplicação da saída 1. Ma
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["func Max(a, b interface{}) interface{}"] --> B["compila com qualquer tipo,\nmesmo os errados"]
     A --> C["type switch / type assertion\nem runtime"]
     A --> D["boxing: valor + tipo\nalocado no heap"]
@@ -124,10 +127,10 @@ flowchart TB
     C --> F["custo de CPU a cada chamada\npara descobrir o tipo real"]
     D --> G["custo de memória e GC\nque MaxInt nunca paga"]
 
-    style A fill:#4A90D9,color:#fff
-    style E fill:#D0021B,color:#fff
-    style F fill:#F5A623,color:#000
-    style G fill:#F5A623,color:#000
+    class A neutro
+    class E falha
+    class F destaque
+    class G destaque
 ```
 
 **1. Perda de verificação em tempo de compilação.** `Max(3, "oi")` compila sem erro nenhum — `interface{}` aceita `int` e `string` igualmente bem. O `default: panic(...)` só dispara quando esse código *roda*, possivelmente em produção, possivelmente muito depois de escrito. A promessa central de uma linguagem estaticamente tipada — "se compilou, essa classe de erro não existe" — desaparece exatamente na função que devia ser mais genérica e reutilizável.

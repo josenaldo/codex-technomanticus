@@ -37,6 +37,8 @@ A metáfora que vale gravar antes de qualquer código: um slice não *é* os dad
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Array["array subjacente (na memória)"]
         direction LR
         A0["10"] --- A1["20"] --- A2["30"] --- A3["40"] --- A4["50"]
@@ -51,8 +53,8 @@ flowchart TB
 
     Slice -.->|"aponta para"| Array
 
-    style Slice fill:#4A90D9,color:#fff
-    style Array fill:#F5A623,color:#000
+    class Slice neutro
+    class Array destaque
 ```
 
 Por baixo, um slice é um struct de três campos que o runtime de Go gerencia por você:

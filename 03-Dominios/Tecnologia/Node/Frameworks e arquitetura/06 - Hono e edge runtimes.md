@@ -37,6 +37,8 @@ Edge runtimes mudam o contrato. Cloudflare Workers e similares não são "Node c
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     HO[Hono App\nexport default app] --> CF[Cloudflare Workers\napp.fetch]
     HO --> DN[Deno Deploy\nDeno.serve]
     HO --> BN[Bun\nexport default fetch]
@@ -53,15 +55,15 @@ graph TD
     MW --> HD[handler]
     HD --> RS[Response]
 
-    style HO fill:#4A90D9,color:#fff
-    style FA fill:#F5A623,color:#fff
-    style CF fill:#4A90D9,color:#fff
-    style DN fill:#4A90D9,color:#fff
-    style BN fill:#4A90D9,color:#fff
-    style LA fill:#4A90D9,color:#fff
-    style ND fill:#4A90D9,color:#fff
-    style MW fill:#F5A623,color:#fff
-    style HD fill:#4A90D9,color:#fff
+    class HO neutro
+    class FA destaque
+    class CF neutro
+    class DN neutro
+    class BN neutro
+    class LA neutro
+    class ND neutro
+    class MW destaque
+    class HD neutro
 ```
 
 ```typescript

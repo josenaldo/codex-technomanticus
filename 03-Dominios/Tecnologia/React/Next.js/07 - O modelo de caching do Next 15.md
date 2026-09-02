@@ -35,8 +35,10 @@ O Next 15 virou a mesa. **Agora o padrão é "não cache nada"** — comportamen
 Antes de entrar em cada um, vale visualizar o fluxo completo. Uma request passa por 4 camadas de cache em sequência — da mais rápida (cliente) à mais persistente (servidor).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Browser["🌐 Browser\n(usuário navega)"]
     RC["Router Cache\n(client-side, in-memory)\nLayouts sempre / Pages opt-in"]
     FRC["Full Route Cache\n(servidor, disco)\nHTML + RSC payload estático"]
@@ -55,11 +57,11 @@ graph TD
     FRC --> RC
     RC --> Browser
 
-    style RC fill:#F5A623,color:#000
-    style FRC fill:#4A90D9,color:#fff
-    style DC fill:#4A90D9,color:#fff
-    style RM fill:#4A90D9,color:#fff
-    style DB fill:#D0021B,color:#fff
+    class RC destaque
+    class FRC neutro
+    class DC neutro
+    class RM neutro
+    class DB falha
 ```
 
 Cada camada tem escopo, duração e regras de invalidação diferentes. Confundi-las é o erro número 1 ao debugar comportamento inesperado.
@@ -311,8 +313,9 @@ export async function GET() { ... }
 Entender como os 4 caches se afetam é o que diferencia quem "acha que sabe" de quem realmente entende:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     DCC["Data Cache\ninvalidado por\nrevalidatePath/Tag"]
     FRC["Full Route Cache\nre-renderiza a rota"]
     RC["Router Cache\nsegmento invalidado\n(via Server Action)"]
@@ -323,9 +326,9 @@ graph LR
     RC -->|"router.refresh()"| DCC
     RC -.->|"não invalida"| FRC
 
-    style DCC fill:#4A90D9,color:#fff
-    style FRC fill:#4A90D9,color:#fff
-    style RC fill:#F5A623,color:#000
+    class DCC neutro
+    class FRC neutro
+    class RC destaque
 ```
 
 Regras práticas:

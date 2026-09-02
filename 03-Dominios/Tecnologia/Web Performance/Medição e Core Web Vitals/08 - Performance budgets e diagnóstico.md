@@ -35,15 +35,17 @@ Ele muda a **política** do time de três formas:
 - Torna performance **um trade-off explícito** — cada feature nova precisa caber no orçamento, forçando a conversa de custo na hora certa.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[PR abre] --> B{Budget check<br/>no CI}
     B -->|dentro do limite| C[Merge liberado]
     B -->|estourou| D[Build falha<br/>regressão barrada]
     D --> E[Diagnóstico:<br/>DevTools Performance]
-    style C fill:#4A90D9,color:#fff
-    style D fill:#D0021B,color:#fff
-    style E fill:#F5A623,color:#000
+    class C neutro
+    class D falha
+    class E destaque
 ```
 
 ## Os três tipos de budget

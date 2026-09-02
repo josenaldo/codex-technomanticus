@@ -69,8 +69,9 @@ Todo seam tem um **enabling point** (ponto habilitador): o lugar exato onde voc�
 Feathers descreve três famílias, cada uma amarrada a um mecanismo de linguagem diferente:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     S["Onde a dependência<br/>entra no código?"] --> A{"Linguagem<br/>orientada a objetos?"}
     A -->|"sim, via new /<br/>chamada de método"| OS["Object seam<br/>(o mais comum)"]
     A -->|"não — C/C++ com<br/>macros/pré-processador"| PS["Preprocessing seam"]
@@ -80,13 +81,13 @@ graph TD
     PS --> PS1["Enabling point: a<br/>diretiva #define/#ifdef"]
     LS --> LS1["Enabling point: qual<br/>lib entra no classpath/link"]
 
-    style OS fill:#7ED321,color:#000
-    style OS1 fill:#7ED321,color:#000
-    style PS fill:#F5A623,color:#000
-    style PS1 fill:#F5A623,color:#000
-    style LS fill:#F5A623,color:#000
-    style LS1 fill:#F5A623,color:#000
-    style S fill:#4A90D9,color:#fff
+    class OS destaque
+    class OS1 destaque
+    class PS destaque
+    class PS1 destaque
+    class LS destaque
+    class LS1 destaque
+    class S neutro
 ```
 
 - **Object seam** — o seam do dia a dia em OO (Java, C#, Python, TypeScript, Ruby). Você troca um objeto concreto por outro através de polimorfismo: uma interface, uma classe injetada via construtor ou setter, um método `protected` sobrescrevível. É o seam que você vai abrir na maioria absoluta dos casos em código legado corporativo, e é o foco do resto desta nota.
@@ -100,18 +101,19 @@ Na prática de sistemas corporativos modernos (Java, C#, Python, JS/TS), você v
 Feathers amarra tudo isso a um fluxo de cinco passos que ele chama de *legacy change algorithm* — a espinha dorsal de como mudar qualquer código legado com segurança:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     P1["1. Identificar<br/>pontos de mudança"] --> P2["2. Achar pontos<br/>de teste"]
     P2 --> P3["3. Quebrar<br/>dependências<br/>(ESTA NOTA)"]
     P3 --> P4["4. Escrever<br/>testes<br/>(nota 10/11)"]
     P4 --> P5["5. Fazer a mudança<br/>e refatorar<br/>(nota 13/14)"]
 
-    style P1 fill:#4A90D9,color:#fff
-    style P2 fill:#4A90D9,color:#fff
-    style P3 fill:#F5A623,color:#000
-    style P4 fill:#7ED321,color:#000
-    style P5 fill:#7ED321,color:#000
+    class P1 neutro
+    class P2 neutro
+    class P3 destaque
+    class P4 destaque
+    class P5 destaque
 ```
 
 Repare na ordem: o passo 3 (quebrar dependência) vem **antes** do passo 4 (escrever o teste), não depois. Isso responde a uma pergunta que a nota 10 deixou em aberto — "às vezes você quebra uma dependência mínima só para conseguir rodar o teste feio o suficiente para começar". É exatamente isto: sem abrir o seam do construtor de `CalculadoraDeComissao`, você não tem *onde* plugar o characterization test. A rede de segurança da nota 10 pressupõe que a classe já seja instanciável isolada — e é essa instanciação que esta nota resolve.

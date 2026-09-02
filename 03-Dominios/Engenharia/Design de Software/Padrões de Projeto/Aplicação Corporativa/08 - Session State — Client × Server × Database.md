@@ -40,16 +40,17 @@ A causa é que o estado da conversa vive na **memória do processo** de um dos d
 ## Os três lugares
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     R["Requisição"] --> Q{"Onde mora<br/>o estado da conversa?"}
     Q -->|"Client"| C["No próprio cliente<br/>cookie · campo oculto · token<br/>viaja em toda requisição"]
     Q -->|"Server"| S["Na memória do processo<br/>HttpSession<br/>exige afinidade ou replicação"]
     Q -->|"Database"| D["Fora do processo<br/>tabela · Redis · DynamoDB<br/>qualquer servidor atende"]
 
-    style C fill:#4A90D9,color:#fff
-    style S fill:#F5A623,color:#000
-    style D fill:#4A90D9,color:#fff
+    class C neutro
+    class S destaque
+    class D neutro
 ```
 
 **Client Session State** — o estado viaja junto de cada requisição. Nenhum servidor precisa lembrar de nada, o que torna o servidor genuinamente **sem estado**: qualquer instância atende qualquer requisição. Os custos são o **tamanho** (tudo trafega toda vez), a **confiança** (o cliente pode adulterar) e a **revogação** (o servidor não tem o que apagar para encerrar a sessão).

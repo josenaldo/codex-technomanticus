@@ -45,7 +45,6 @@ O núcleo da prática blameless está numa mudança de uma única pergunta. Em v
 Allspaw formalizou essa mudança com um conceito que se tornou vocabulário padrão na indústria: toda ação tem uma **"primeira história"** (first story) e uma **"segunda história"** (second story). A primeira história é o que aconteceu na superfície — "Camila rodou um comando destrutivo no cluster errado." É factual, mas incompleta, e sozinha convida a única conclusão possível: alguém errou, alguém deve ser mais cuidadoso. A segunda história pergunta *por que essa decisão fazia sentido para a pessoa, no momento, dado o que ela sabia e via* — o script de troca de contexto que ela tinha acabado de rodar, a ambiguidade de nomenclatura entre staging e produção, a ausência de qualquer confirmação antes de um comando irreversível, a pressão do horário para terminar a limpeza antes do fim do expediente. A segunda história é onde estão as alavancas reais de melhoria — porque nenhuma delas depende de Camila "ter mais cuidado" da próxima vez; todas dependem do sistema mudar.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     EVENT["Comando rodou<br/>no cluster errado"] --> S1["Primeira história<br/>(o que aconteceu)"]
     EVENT --> S2["Segunda história<br/>(por que fazia sentido<br/>pra pessoa, no momento)"]
@@ -95,7 +94,6 @@ Com o princípio estabelecido, a estrutura prática. Um postmortem bem escrito �
 **Lições aprendidas — o que também deu certo.** Um postmortem maduro não documenta só falhas: registra o que funcionou — o alerta que disparou na hora certa, o runbook que economizou dez minutos, a comunicação que manteve stakeholders informados sem pânico. Isso não é só cortesia; é dado real sobre o que reforçar, e ajuda a evitar que o documento inteiro tenha tom punitivo mesmo quando ninguém é nomeado.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     INC["🔴 Incidente"] --> PM["📝 Postmortem<br/>timeline + fatores<br/>contribuintes"]
     PM --> AI["✅ Action items<br/>dono + prazo,<br/>atacam o sistema"]

@@ -126,15 +126,17 @@ diga_oi()
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["def diga_oi(): ...<br/>seguido de @meu_decorator"] --> B["Python compila isso como:<br/>diga_oi = meu_decorator(diga_oi)"]
     B --> C["meu_decorator recebe a função<br/>diga_oi ORIGINAL como argumento"]
     C --> D["cria e devolve wrapper —<br/>uma closure que guarda referência<br/>à função original"]
     D --> E["nome 'diga_oi' no namespace<br/>agora aponta pro wrapper,<br/>não mais pra função original"]
     E --> F["diga_oi() de fato chama wrapper(),<br/>que chama a função original por dentro"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style F fill:#4A90D9,color:#fff
+    class A neutro
+    class B destaque
+    class F neutro
 ```
 
 É esse comportamento que o [glossário oficial do Python](https://docs.python.org/3/glossary.html#term-decorator) descreve de forma direta: "a sintaxe do decorator é meramente açúcar sintático" (*"the decorator syntax is merely syntactic sugar"*), e apresenta a mesma equivalência com o exemplo canônico de `@staticmethod` — `def f(arg): ...` seguido de `f = staticmethod(f)` é *semanticamente* idêntico a escrever `@staticmethod` acima de `def f(arg): ...`. Não existe nenhuma capacidade nova sendo adicionada à linguagem por `@` — é puramente uma questão de onde, visualmente, a transformação aparece no código: colada à declaração da função, em vez de numa linha separada, potencialmente distante, depois dela.

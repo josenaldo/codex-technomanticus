@@ -34,6 +34,8 @@ A ideia central é simples de enunciar e chata de implementar direito: **todo lo
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Requisição chega\nOTel gera trace_id"] --> B["Handler processa"]
     B --> C["slog emite logs\ncom trace_id no campo"]
     B --> D["Prometheus incrementa\ncounters/histograms\n(sem trace_id — cardinalidade)"]
@@ -42,10 +44,10 @@ flowchart LR
     F["Grafana: latência anômala\nno painel de métricas"] -.->|"link por trace_id\n(exemplar)"| G["Jaeger: trace específico"]
     G -.->|"trace_id no span"| H["Loki/CloudWatch: logs\nfiltrados por trace_id"]
 
-    style A fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style G fill:#F5A623,color:#000
-    style H fill:#F5A623,color:#000
+    class A neutro
+    class C destaque
+    class G destaque
+    class H destaque
 ```
 
 Repare que a métrica em si **não carrega** `trace_id` — isso é intencional, e a próxima seção explica por quê. A ponte entre métrica e trace é feita por um recurso chamado **exemplar** (Prometheus 2.26+): um histogram pode anexar, a cada bucket, um `trace_id` de exemplo daquela faixa de latência, sem transformar o `trace_id` numa label da série. É o Grafana clicando num ponto do gráfico e abrindo o trace exato que gerou aquele ponto — sem multiplicar a cardinalidade da métrica.
@@ -109,16 +111,19 @@ Uma métrica Prometheus com labels não é um número — é uma **série tempor
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Label de baixa cardinalidade\nstatus: 5-10 valores\nmethod: 4-5 valores\npath (com template): 10-50 valores"] --> B["Séries: produto dos valores\n(centenas a poucos milhares)"]
     C["Label de alta cardinalidade\ntrace_id: bilhões de valores\nuser_id: milhões\nemail, IP, request path SEM template"] --> D["Séries: uma por evento\n(explosão sem limite)"]
 
     B --> E["Prometheus estável"]
     D --> F["OOM / TSDB corrompido /\ncusto de storage inviável"]
 
-    style B fill:#4A90D9,color:#fff
-    style D fill:#D0021B,color:#fff
-    style E fill:#7ED321,color:#000
-    style F fill:#D0021B,color:#fff
+    class B neutro
+    class D falha
+    class E destaque
+    class F falha
 ```
 
 A regra prática que times de SRE convergiram, e que a própria documentação do Prometheus recomenda, chama-se **cardinality budget**: antes de adicionar uma label nova a uma métrica, pergunte "quantos valores distintos esse campo pode assumir, ao longo do tempo, em produção?". Um orçamento comum para produção é manter cada métrica abaixo de algumas centenas a poucos milhares de séries — nunca dezenas de milhões.

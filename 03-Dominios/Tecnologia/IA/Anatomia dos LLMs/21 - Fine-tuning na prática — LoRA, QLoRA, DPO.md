@@ -76,6 +76,9 @@ W_efetivo = W_congelado + (alpha/r)·B·A
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Camada de atenção com LoRA"
         X["Input x"] --> W["W original\n4096×4096\n(16.7M params)\n🔒 congelado"]
         X --> A["Matriz A\n4096×8\n(32k params)\n✏️ treina"]
@@ -85,10 +88,10 @@ graph LR
         SUM --> Y["Output h"]
     end
     note1["Total treinável: 64k params\nvs 16.7M do original\n= 0.38%"]
-    style W fill:#cccccc,stroke:#666666
-    style A fill:#99ff99,stroke:#009900
-    style B fill:#99ff99,stroke:#009900
-    style note1 fill:#fff3cd
+    class W neutro
+    class A ok
+    class B ok
+    class note1 destaque
 ```
 
 Consequências práticas:
@@ -106,6 +109,9 @@ QLoRA (Dettmers et al., 2023) leva LoRA ao extremo: **quantiza o base congelado 
 
 ```mermaid
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "QLoRA: arquitetura de memória"
         BASE["Modelo base\n65B params\nQuantizado NF4 (4 bits)\n~33 GB na GPU\n🔒 congelado"]
         LORA["Adapters LoRA\nFP16 (16 bits)\n~30 MB\n✏️ treináveis"]
@@ -115,9 +121,9 @@ graph TD
     end
     RESULT["🎯 Resultado:\nFine-tuning de 65B\nem 1 GPU de 48GB\n(ex: A6000)"]
     LORA --> RESULT
-    style BASE fill:#ffcc99,stroke:#cc6600
-    style LORA fill:#99ff99,stroke:#009900
-    style PAGED fill:#e6e6ff,stroke:#6666cc
+    class BASE destaque
+    class LORA ok
+    class PAGED neutro
 ```
 
 Com *double quantization* e *paged optimizers*, isso põe o fine-tuning de um **33B/65B numa única GPU**. É a ponte literal com a nota [[20 - Compressão de modelos — quantização e destilação]]: a quantização aqui não é só para *rodar* barato, é para *treinar* barato. Em 2026, QLoRA é o default de quem fine-tuna modelo aberto fora de um cluster.
@@ -128,6 +134,8 @@ Depois do SFT, você quer ajustar **julgamento**. O caminho clássico, o RLHF ([
 
 ```mermaid
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "RLHF (clássico) — 3 etapas"
         SFT_A["1. SFT"]
         RM["2. Reward Model\n(treinar separado)"]
@@ -141,8 +149,8 @@ graph TD
         DATA --> DPO_LOSS
         SFT_B -- "KL regularization" --> DPO_LOSS
     end
-    style PPO fill:#ff9999,stroke:#cc0000
-    style DPO_LOSS fill:#99ff99,stroke:#009900
+    class PPO falha
+    class DPO_LOSS ok
 ```
 
 Um **modelo de referência** congelado (o próprio SFT) segura a rédea (um termo de KL) para o modelo não desandar. Variantes que você vai encontrar:
@@ -155,6 +163,9 @@ Um **modelo de referência** congelado (o próprio SFT) segura a rédea (um term
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     BASE["Base pré-treinado\n(Llama 4 / Qwen 3 / Mistral)"]
     SFT["SFT com QLoRA\n→ Aprende formato, tom, jargão\nDados: pares entrada→saída\n~1k-100k exemplos"]
     INST["Modelo instruído"]
@@ -164,9 +175,9 @@ flowchart TD
     DEPLOY["Deploy\nLocal (Ollama) / Edge / API"]
 
     BASE --> SFT --> INST --> DPO --> ALIGN --> MERGE --> DEPLOY
-    style SFT fill:#99ccff,stroke:#0066cc
-    style DPO fill:#99ff99,stroke:#009900
-    style MERGE fill:#ffcc99,stroke:#cc6600
+    class SFT neutro
+    class DPO ok
+    class MERGE destaque
 ```
 
 ## Quando usar qual

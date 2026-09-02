@@ -91,6 +91,8 @@ State Space Models (SSMs) como Mamba estão sendo integrados em arquiteturas Tra
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Transformer puro"
         T1["Token 1"] --> A["Atenção full O(n²)\nVê tudo, custa tudo"]
         T2["Token N"] --> A
@@ -101,8 +103,8 @@ graph LR
         AT --> MIX["Combina\nlocal + global"]
         SM --> MIX
     end
-    style A fill:#ff9999,stroke:#cc0000
-    style MIX fill:#99ccff,stroke:#0066cc
+    class A falha
+    class MIX neutro
 ```
 
 **Implicação:** A distinção entre "janela de contexto" e "memória" vai se borrar. LLMs de 2027 provavelmente terão memória nativa persistente — sem RAG explícito para conversas longas.

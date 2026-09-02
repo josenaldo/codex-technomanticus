@@ -25,8 +25,9 @@ Imagine herdar, seis meses depois de um projeto começar, um banco de eventos de
 A convenção mais consolidada de nomeação de evento segue o padrão **object-action** (às vezes descrito como verb_noun, mesma ideia com ordem invertida): o nome do evento identifica o **objeto** sobre o qual a ação ocorreu, seguido da **ação** em si — `report_exported`, `checkout_completed`, `video_watched`, `form_submitted`. Sempre em `snake_case`, sempre em tempo passado (a ação já aconteceu quando o evento é disparado), sempre com um **vocabulário controlado** de verbos permitidos (`created`, `completed`, `viewed`, `submitted` — não sinônimos livres como `finished`, `done`, `wrapped_up` para a mesma ideia).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph SEM["Sem convenção — 5 nomes, 1 ação"]
         A1["Button Click"]
         A2["btn_clicked"]
@@ -38,8 +39,8 @@ graph LR
         B1["checkout_cta_clicked"]
     end
     SEM -.->|"governança"| COM
-    style SEM fill:#D0021B,color:#fff
-    style COM fill:#4A90D9,color:#fff
+    class SEM falha
+    class COM neutro
 ```
 
 A convenção sozinha resolve o problema de nomeação superficial, mas não resolve o problema estrutural — que é o que realmente importa para esta nota.

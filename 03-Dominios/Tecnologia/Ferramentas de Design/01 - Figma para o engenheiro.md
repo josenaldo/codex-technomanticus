@@ -39,16 +39,17 @@ Um arquivo Figma moderno tem, no mínimo, quatro peças que interessam a quem im
 **Componentes com props** são o equivalente a um componente React parametrizado: um botão-componente no Figma pode ter variantes (`primary`/`secondary`/`ghost`), booleanos (`disabled`, `com ícone`) e texto editável — exatamente como props de um componente de código. Reconhecer que dois botões visualmente parecidos são *instâncias do mesmo componente com props diferentes*, versus dois componentes-Frankenstein desconectados, é o que decide se a implementação em código vira um componente reutilizável ou uma duplicação de CSS.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     V["Variables/modes<br/>cor, espaço, tipografia"] --> C["Componentes com props<br/>variantes, booleanos"]
     AL["Auto layout<br/>flex do canvas"] --> C
     C --> DM["Dev Mode<br/>painel de inspeção"]
     DM --> CC["Code Connect<br/>referência de implementação"]
     CC --> CODE["Seu componente de código"]
-    style V fill:#4A90D9,color:#fff
-    style DM fill:#4A90D9,color:#fff
-    style CODE fill:#F5A623,color:#000
+    class V neutro
+    class DM neutro
+    class CODE destaque
 ```
 
 > [!question]- Preciso saber desenhar no Figma para fazer esse trabalho?

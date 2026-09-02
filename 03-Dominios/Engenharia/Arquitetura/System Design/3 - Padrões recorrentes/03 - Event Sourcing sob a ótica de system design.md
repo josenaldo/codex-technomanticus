@@ -59,8 +59,9 @@ Essa imutabilidade é o contrato inteiro. Um evento gravado no stream nunca é e
 Fowler chama atenção para um detalhe de design que aparece aqui: eventos que carregam a **diferença** ("some $10 à conta de Martin") são mais fáceis de reverter do que eventos que carregam o **valor absoluto** ("a conta de Martin agora é $110") — no primeiro caso, reverter é só subtrair; no segundo, você já perdeu a informação de qual era o valor antes ([Fowler, *Event Sourcing*](https://martinfowler.com/eaaDev/EventSourcing.html)). É um lembrete de que "guardar eventos" não é automaticamente "guardar os eventos certos" — o design do evento importa.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph LOG["Event Store — append-only, imutável"]
         E1["ContaCriada"] --> E2["DepositoRealizado<br/>+500"]
         E2 --> E3["SaqueRealizado<br/>-120"]
@@ -71,10 +72,10 @@ graph LR
     LOG -->|"replay"| P2["Projeção: Extrato mensal<br/>(read model)"]
     LOG -->|"replay"| P3["Projeção: Detecção de fraude<br/>(read model)"]
 
-    style LOG fill:#4A90D9,color:#fff
-    style P1 fill:#F5A623,color:#000
-    style P2 fill:#F5A623,color:#000
-    style P3 fill:#F5A623,color:#000
+    class LOG neutro
+    class P1 destaque
+    class P2 destaque
+    class P3 destaque
 ```
 
 Repare que o mesmo log alimenta **múltiplas** projeções, cada uma respondendo a uma pergunta diferente sobre os mesmos fatos. Isso não é coincidência de diagrama — é o motivo pelo qual Event Sourcing quase sempre aparece ao lado de [[02 - CQRS sob a ótica de system design|CQRS]]: o event store é a escrita (o lado *command*), e cada projeção é um read model materializado (o lado *query*). Se você já leu a nota de CQRS, isto é a peça que faltava: de onde vêm os eventos que alimentam as projeções lá descritas.
@@ -86,7 +87,6 @@ Fazer replay de cinco eventos para calcular um saldo é trivial. Fazer replay de
 Esse é o primeiro custo operacional real do padrão, e a resposta padrão são **snapshots**: periodicamente (a cada N eventos, ou a cada intervalo de tempo), o sistema salva um "resumo" do estado derivado até aquele ponto — `{ conta: 42, saldo: 380, até_evento: 5000 }`. Na próxima leitura, em vez de fazer replay desde o evento 1, o sistema carrega o snapshot mais recente e faz replay só dos eventos **posteriores** a ele.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 sequenceDiagram
     participant C as Cliente
     participant P as Serviço de projeção
@@ -150,7 +150,6 @@ Um problema que aparece assim que dois usuários tentam alterar a mesma entidade
 A técnica padrão é **controle de concorrência otimista no nível do stream**: cada `append` de evento é feito informando a versão esperada do stream (ex.: "anexe este evento, mas só se o último evento do stream ainda for o #5000"). Se outro escritor já anexou o #5001 entre a leitura e a escrita, o event store rejeita a operação com um conflito de versão, e o cliente precisa reler o estado atualizado e decidir se ainda faz sentido reaplicar o comando.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant A as App Cliente
     participant B as App Gerente
@@ -193,16 +192,17 @@ Até aqui, tratamos o event store como algo interno a um serviço: ele guarda os
 Um serviço de Antifraude, um serviço de Notificações e um serviço de Relatórios Regulatórios podem todos **assinar** o mesmo stream de eventos de contas, cada um construindo sua própria projeção independente, sem que o serviço de Contas saiba que eles existem. Isso é o ponto de contato direto com [[01 - Pub-Sub e event-driven em escala|Pub/Sub e event-driven em escala]]: o event store, além de fonte da verdade, funciona como o **tópico** que outros serviços consomem — muitas vezes literalmente publicando cada evento gravado também num broker (Kafka, por exemplo) para consumo externo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     ES["Event Store<br/>Serviço de Contas"] -->|"stream de eventos"| PROJ["Projeção interna<br/>(saldo)"]
     ES -->|"publica"| BUS["Broker de eventos<br/>(Kafka/pub-sub)"]
     BUS --> FRAUD["Serviço de<br/>Antifraude"]
     BUS --> NOTIF["Serviço de<br/>Notificações"]
     BUS --> REPORT["Serviço de<br/>Relatórios regulatórios"]
 
-    style ES fill:#4A90D9,color:#fff
-    style BUS fill:#F5A623,color:#000
+    class ES neutro
+    class BUS destaque
 ```
 
 Esse desacoplamento tem um efeito colateral valioso para **debugging distribuído**: quando um comportamento estranho aparece três serviços adiante da origem, o log de eventos imutável é o ponto de partida da investigação — ele mostra, na ordem exata, os fatos que dispararam a cadeia, sem depender de logs de aplicação dispersos e sem timestamp confiável entre serviços.

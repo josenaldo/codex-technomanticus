@@ -118,6 +118,9 @@ O diagrama abaixo organiza as quatro propriedades como as raízes da dificuldade
 
 ```mermaid
 flowchart TD
+    classDef root fill:#1f2933,color:#fff,stroke:#0b3d91,stroke-width:2px;
+    classDef prop fill:#e8eef7,color:#1f2933,stroke:#0b3d91;
+    classDef sink fill:#f7e8e8,color:#1f2933,stroke:#7a1f1f;
     SW["Software é<br/>singularmente difícil"]
     SW --> C["Complexidade<br/>(nenhuma parte se repete)"]
     SW --> CF["Conformidade<br/>(regras humanas arbitrárias)"]
@@ -127,9 +130,6 @@ flowchart TD
     CF --> NB
     CH --> NB
     I --> NB
-    classDef root fill:#1f2933,color:#fff,stroke:#0b3d91,stroke-width:2px;
-    classDef prop fill:#e8eef7,color:#1f2933,stroke:#0b3d91;
-    classDef sink fill:#f7e8e8,color:#1f2933,stroke:#7a1f1f;
     class SW root;
     class C,CF,CH,I prop;
     class NB sink;
@@ -205,6 +205,9 @@ O diagrama abaixo amarra as duas causas aos três sintomas que elas produzem.
 
 ```mermaid
 flowchart LR
+    classDef cause fill:#e8eef7,color:#1f2933,stroke:#0b3d91,stroke-width:2px;
+    classDef symptom fill:#fff4e0,color:#1f2933,stroke:#a86b00;
+    classDef out fill:#f7e8e8,color:#1f2933,stroke:#7a1f1f,stroke-width:2px;
     D["CAUSA<br/>Dependências"]
     O["CAUSA<br/>Obscuridade"]
     CA["Change amplification<br/>(amplificação de mudança)"]
@@ -217,9 +220,6 @@ flowchart LR
     CA --> CX["Complexidade:<br/>difícil de entender<br/>e modificar"]
     CL --> CX
     UU --> CX
-    classDef cause fill:#e8eef7,color:#1f2933,stroke:#0b3d91,stroke-width:2px;
-    classDef symptom fill:#fff4e0,color:#1f2933,stroke:#a86b00;
-    classDef out fill:#f7e8e8,color:#1f2933,stroke:#7a1f1f,stroke-width:2px;
     class D,O cause;
     class CA,CL,UU symptom;
     class CX out;
@@ -291,6 +291,9 @@ O diagrama abaixo contrasta as duas posturas e mostra para onde cada uma leva ao
 
 ```mermaid
 flowchart TD
+    classDef q fill:#1f2933,color:#fff,stroke:#0b3d91,stroke-width:2px;
+    classDef bad fill:#f7e8e8,color:#1f2933,stroke:#7a1f1f;
+    classDef good fill:#e6f4ea,color:#1f2933,stroke:#1f7a3d;
     Q["Diante de cada<br/>decisão de design..."]
     Q --> T["Programação TÁTICA<br/>'fazer funcionar agora'"]
     Q --> E["Programação ESTRATÉGICA<br/>'bom design que também funciona'"]
@@ -300,9 +303,6 @@ flowchart TD
     E --> E1["~10–20% do tempo<br/>investido em design"]
     E1 --> E2["Complexidade contida<br/>a cada passo"]
     E2 --> E3["Sistema barato<br/>de mudar por anos"]
-    classDef q fill:#1f2933,color:#fff,stroke:#0b3d91,stroke-width:2px;
-    classDef bad fill:#f7e8e8,color:#1f2933,stroke:#7a1f1f;
-    classDef good fill:#e6f4ea,color:#1f2933,stroke:#1f7a3d;
     class Q q;
     class T,T1,T2,T3 bad;
     class E,E1,E2,E3 good;
@@ -333,6 +333,9 @@ O diagrama abaixo desenha, de forma conceitual, a relação entre complexidade a
 
 ```mermaid
 flowchart LR
+    classDef low fill:#e6f4ea,color:#1f2933,stroke:#1f7a3d;
+    classDef mid fill:#fff4e0,color:#1f2933,stroke:#a86b00;
+    classDef high fill:#f7e8e8,color:#1f2933,stroke:#7a1f1f;
     C0["Complexidade baixa<br/>(sistema jovem)"] --> M0["Mudança barata<br/>e segura"]
     C1["Complexidade média<br/>(incrementos acumulam)"] --> M1["Mudança lenta<br/>exige cuidado"]
     C2["Complexidade alta<br/>(morte por mil cortes)"] --> M2["Mudança cara, arriscada<br/>medo de tocar"]
@@ -340,9 +343,6 @@ flowchart LR
     C1 -.acúmulo incremental.-> C2
     M0 -.custo sobe.-> M1
     M1 -.custo acelera.-> M2
-    classDef low fill:#e6f4ea,color:#1f2933,stroke:#1f7a3d;
-    classDef mid fill:#fff4e0,color:#1f2933,stroke:#a86b00;
-    classDef high fill:#f7e8e8,color:#1f2933,stroke:#7a1f1f;
     class C0,M0 low;
     class C1,M1 mid;
     class C2,M2 high;
@@ -358,6 +358,9 @@ Vale ter o mapa na cabeça antes de mergulhar.
 
 ```mermaid
 flowchart TD
+    classDef root fill:#1f2933,color:#fff,stroke:#0b3d91,stroke-width:2px;
+    classDef phase fill:#e8eef7,color:#1f2933,stroke:#0b3d91,stroke-width:2px;
+    classDef notes fill:#f4f6fa,color:#1f2933,stroke:#8893a8;
     R["Complexidade de Software<br/>(Galho 12 — Fundamentos)"]
     R --> I["INICIADO<br/>por que software é difícil"]
     R --> A["ADEPTO<br/>os mecanismos e onde falham"]
@@ -368,9 +371,6 @@ flowchart TD
     A --> A2["09 — As três dívidas<br/>10 técnica · 11 cognitiva · 12 intenção"]
     M --> M1["13 — Entropia e decaimento<br/>14 — Manutenção e evolução"]
     M --> M2["15 — Pensamento sistêmico<br/>16 — Lei de Conway"]
-    classDef root fill:#1f2933,color:#fff,stroke:#0b3d91,stroke-width:2px;
-    classDef phase fill:#e8eef7,color:#1f2933,stroke:#0b3d91,stroke-width:2px;
-    classDef notes fill:#f4f6fa,color:#1f2933,stroke:#8893a8;
     class R root;
     class I,A,M phase;
     class I1,I2,A1,A2,M1,M2 notes;

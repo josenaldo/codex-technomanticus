@@ -115,8 +115,9 @@ Use `Map.groupBy` quando a chave de agrupamento pode ser um objeto (não apenas 
 Essa é a dúvida prática que aparece todo dia. A regra geral: use objeto quando os campos são conhecidos em tempo de design (estrutura fixa, tipo `{ nome, email, idade }`); use `Map` quando os dados são dinâmicos (chaves desconhecidas em tempo de compilação, ou chaves não-string).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[Preciso de par chave→valor] --> B{Chaves são<br/>strings fixas<br/>conhecidas?}
     B -->|Sim| C[Objeto puro<br/>ex: config, DTO, record]
     B -->|Não / misto| D{Chaves são<br/>objetos ou<br/>não-string?}
@@ -125,9 +126,9 @@ graph TB
     F -->|Sim| E
     F -->|Não| G[Objeto puro<br/>com checagem de<br/>hasOwnProperty]
 
-    style C fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style G fill:#F5A623,color:#fff
+    class C neutro
+    class E neutro
+    class G destaque
 ```
 
 | Aspecto | Objeto puro | Map |
@@ -233,8 +234,9 @@ function processarDom(elemento) {
 A diferença fundamental em relação à memória — explicada com a tipologia de referência:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Map (referência forte)"
         M[Map] -->|chave forte| OBJ1[Objeto]
         M -->|valor| V1[dado]
@@ -248,8 +250,8 @@ graph LR
         GC2 -->|entrada removida| WM
     end
 
-    style GC1 fill:#D0021B,color:#fff
-    style GC2 fill:#4A90D9,color:#fff
+    class GC1 falha
+    class GC2 neutro
 ```
 
 ### Por que WeakMap/WeakSet não são iteráveis

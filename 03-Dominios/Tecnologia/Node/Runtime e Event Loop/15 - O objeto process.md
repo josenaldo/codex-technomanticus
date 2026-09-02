@@ -25,7 +25,6 @@ Esse é o cenário mais frequente de incidente com `process` em produção. Reso
 Pense no `process` como o "painel de controle" do processo Unix que hospeda o Node. Ele não é construído pelo seu código — o Node o cria antes de executar qualquer linha sua. Em CJS e ESM, `process` é global: sem `require` nem `import`.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 mindmap
   root((process))
     Ambiente

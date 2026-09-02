@@ -146,8 +146,10 @@ A diferença estrutural mais importante: **layouts são nativos e aninhados**. V
 ### Diagrama: comparação das duas árvores
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#F5A623", "tertiaryColor": "#f0f0f0"}}}%%
 graph TB
+  classDef legacy fill:#F5A623,stroke:#c47f00,color:#000
+  classDef current fill:#4A90D9,stroke:#2970b0,color:#fff
+  classDef server fill:#e0e0e0,stroke:#999,color:#333
   subgraph PR["Pages Router (legado)"]
     direction TB
     PA["pages/"]:::legacy
@@ -174,9 +176,6 @@ graph TB
     ABPage -. "async/await\ndireto no Server Component" .-> AServer["Servidor\n(onde o componente roda)"]:::server
   end
 
-classDef legacy fill:#F5A623,stroke:#c47f00,color:#000
-classDef current fill:#4A90D9,stroke:#2970b0,color:#fff
-classDef server fill:#e0e0e0,stroke:#999,color:#333
 ```
 
 ### O modelo de data fetching

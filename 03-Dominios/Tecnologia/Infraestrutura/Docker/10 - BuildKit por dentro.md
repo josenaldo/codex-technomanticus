@@ -30,6 +30,9 @@ BuildKit muda a unidade de análise: em vez de ler instrução por instrução, 
 
 ```mermaid
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     F1["FROM node:22-alpine AS frontend"] --> C1["COPY web/ ."]
     C1 --> R1["RUN npm run build"]
 
@@ -39,9 +42,9 @@ graph TB
     R1 --> M["FROM alpine:3.20<br/>COPY --from=frontend /web/dist ./static<br/>COPY --from=backend /bin/server ./server"]
     R2 --> M
 
-    style F1 fill:#2a3a5a
-    style F2 fill:#5a3a2a
-    style M fill:#2a5a2a
+    class F1 neutro
+    class F2 destaque
+    class M ok
 ```
 
 O diagrama mostra os dois ramos — `frontend` e `backend` — sem nenhuma aresta entre si: nada no ramo do frontend depende de qualquer coisa produzida pelo ramo do backend, e vice-versa. Sob o construtor legado, esses dois ramos seriam construídos em sequência, na ordem em que aparecem no arquivo. Sob BuildKit, o motor identifica essa independência a partir do grafo e os constrói em paralelo, convergindo só no estágio final `M`, que de fato depende dos dois. O tempo total de build, nesse cenário, tende ao tempo do ramo mais lento entre os dois, não à soma dos dois — um ganho que cresce proporcionalmente ao número de estágios independentes que um Dockerfile mais complexo acumula.
@@ -297,13 +300,14 @@ docker buildx build \
 
 ```mermaid
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     T["ghcr.io/minhaorg/minha-api:latest<br/>(manifesto multi-plataforma)"]
     T --> A["manifesto linux/amd64"]
     T --> B["manifesto linux/arm64"]
     A --> A1["camadas específicas amd64"]
     B --> B1["camadas específicas arm64"]
 
-    style T fill:#2a3a5a
+    class T neutro
 ```
 
 **Emulação contra construção nativa** é a distinção que determina o custo real desse build. Quando a máquina que executa `buildx build` é `amd64` e o alvo inclui `linux/arm64`, BuildKit tem duas formas de produzir esse segundo manifesto: **emulação**, via QEMU, que traduz instruções ARM para rodar (mais lentamente, às vezes numa ordem de magnitude) sobre um processador que fisicamente só entende instruções `amd64`; ou **construção nativa**, delegando esse build específico para uma máquina que realmente possui um processador `arm64`, através de um builder remoto configurado para essa arquitetura. Emulação é mais simples de configurar — `docker buildx create` já ativa suporte a QEMU automaticamente em instalações recentes do Docker Desktop — mas paga um custo de tempo de build real, às vezes severo para builds pesados em compilação (um `RUN cargo build` ou `RUN mvn package` emulado pode levar múltiplas vezes mais tempo que o mesmo comando rodando nativamente). Construção nativa evita esse custo, ao preço de exigir infraestrutura de build própria para cada arquitetura-alvo — tipicamente um builder remoto real rodando naquela arquitetura, configurado como um nó adicional do mesmo `buildx`.

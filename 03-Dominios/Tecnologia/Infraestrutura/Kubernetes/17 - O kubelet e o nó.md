@@ -32,6 +32,8 @@ O fim de linha é o que importa mais para esta nota: o kubelet é o **único** c
 
 ```mermaid
 graph LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     ETCD["etcd"] -->|"watch: Pods com<br/>spec.nodeName = node-3"| KUB["kubelet (node-3)"]
     KUB -->|"compara: Pods atribuídos<br/>× containers que existem"| CMP{"Diferença?"}
     CMP -->|"sim"| ACT["Age: cria, reinicia<br/>ou remove containers"]
@@ -39,8 +41,8 @@ graph LR
     ACT -->|"CRI (gRPC)"| RT["Container runtime<br/>(containerd / CRI-O)"]
     KUB -->|"escreve status.phase,<br/>status.containerStatuses"| ETCD
 
-    style ACT fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style RT fill:#4a3b7a,stroke:#8e6fd6,color:#fff
+    class ACT ok
+    class RT marca
 ```
 
 Vale reconectar essa observação a um detalhe que a nota [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/02 - O loop de reconciliação|O loop de reconciliação]] já registrou de passagem, sem abrir: "o `status` do Pod é preenchido por quem observa a realidade". O kubelet é exatamente esse "quem" para tudo que acontece dentro de um nó. Quando `kubectl describe pod` mostra `status.phase: Running`, `status.containerStatuses` com o `RestartCount` de cada container, ou um evento `Pulling image "minha-api:v7"`, nenhuma dessas linhas foi escrita por um controller do control plane olhando de fora — foi o kubelet daquele nó específico, tendo de fato observado o container existir (ou falhar ao existir), relatando o que viu de volta ao api-server. O kubelet não é só um executor; ele é, ao mesmo tempo, a fonte primária de verdade sobre tudo que diz respeito ao seu próprio nó.
@@ -109,6 +111,10 @@ Juntando as duas metades — a interface CRI que o kubelet fala, e a cadeia que 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph K8S["Camada Kubernetes"]
         SN["spec.nodeName<br/>preenchido pelo scheduler"] --> KL["kubelet observa via watch"]
         KL --> DEC["Compara: Pods atribuídos<br/>× o que existe no nó"]
@@ -127,10 +133,10 @@ flowchart LR
         CG --> EXEC["execve() — o processo existe"]
     end
 
-    style K8S fill:#2e4d7a,stroke:#3498db,color:#fff
-    style CRI_L fill:#5a4a1e,stroke:#c9a227,color:#fff
-    style OCI_L fill:#4a3b7a,stroke:#8e6fd6,color:#fff
-    style KERNEL fill:#1e5c3a,stroke:#27ae60,color:#fff
+    class K8S neutro
+    class CRI_L destaque
+    class OCI_L marca
+    class KERNEL ok
 ```
 
 O paralelo com a cadeia `docker run` que a nota [[03-Dominios/Tecnologia/Infraestrutura/Docker/15 - Docker por dentro|Docker por dentro]] descreveu é direto e vale nomear sem rodeio: os dois caminhos convergem exatamente no mesmo ponto, `containerd`, só que chegam até ali por portas diferentes. `docker run` entra pela API REST do `dockerd`, que por sua vez fala com `containerd` via sua própria API interna. O kubelet entra direto por CRI, sem nenhum `dockerd` no meio — um caminho estruturalmente mais curto, e é exatamente essa ausência de um elo intermediário desnecessário que motivou a remoção do dockershim: manter uma tradução CRI→API-do-Docker→API-do-containerd para, no fim, chegar no mesmo lugar que uma chamada CRI direta já alcançava, era peso sem benefício correspondente. Dali para baixo — snapshotter extraindo o rootfs, shim dedicado por container, `runc` chamando `clone()`, `pivot_root()` e `execve()` — é, literal e mecanicamente, a mesma cadeia, o mesmo mecanismo de kernel que a nota [[03-Dominios/Ciência/Sistemas Operacionais/13 - Virtualização e containers|Virtualização e containers]] aprofunda; esta nota não reabre esse mecanismo, só nomeia o instante em que o Kubernetes o aciona por essa porta específica.
@@ -227,6 +233,8 @@ Vale explicar por que esse `Lease` existe como objeto separado, em vez de o kube
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Antes — sem Lease dedicado"
         N1["kubelet reescreve<br/>NodeStatus inteiro<br/>a cada 10s"] --> E1["etcd sob carga de escrita<br/>proporcional ao nº de nós"]
     end
@@ -234,8 +242,8 @@ graph LR
         N2["kubelet renova<br/>Lease minúsculo a cada 10s"] --> E2["etcd: escrita barata"]
         N3["kubelet atualiza<br/>NodeStatus completo<br/>só quando algo muda"] --> E3["etcd: escrita rara e cara,<br/>mas pouco frequente"]
     end
-    style E1 fill:#7a2e2e,stroke:#c0392b,color:#fff
-    style E2 fill:#1e5c3a,stroke:#27ae60,color:#fff
+    class E1 falha
+    class E2 ok
 ```
 
 ## As condições do `Node`: mais do que `Ready`
@@ -300,15 +308,18 @@ Essa ordem é governada pela classe de **Quality of Service (QoS)** de cada Pod 
 
 ```mermaid
 graph TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     P["Pressão detectada<br/>(memória, disco ou PIDs)"] --> Q1{"Existe Pod<br/>BestEffort?"}
     Q1 -->|"sim"| E1["Despeja BestEffort primeiro"]
     Q1 -->|"não"| Q2{"Existe Pod Burstable<br/>excedendo requests?"}
     Q2 -->|"sim"| E2["Despeja o que mais excede,<br/>entre os Burstable"]
     Q2 -->|"não"| Q3["Só resta Guaranteed —<br/>despejo indica nó em crise real"]
 
-    style E1 fill:#7a2e2e,stroke:#c0392b,color:#fff
-    style E2 fill:#5a4a1e,stroke:#c9a227,color:#fff
-    style Q3 fill:#1e5c3a,stroke:#27ae60,color:#fff
+    class E1 falha
+    class E2 destaque
+    class Q3 ok
 ```
 
 Vale nomear ainda a diferença entre os dois tipos de limiar que governam quando esse despejo dispara, porque ela decide se um Pod recebe alguma janela de graça ou não. **Limiares suaves** (*soft eviction thresholds*) dão ao kubelet uma margem antes de agir — o sinal precisa permanecer cruzado por um período de graça configurável antes do despejo de fato começar, e mesmo o despejo em si respeita, dentro de um teto, o `terminationGracePeriodSeconds` do Pod, dando chance a um desligamento ordenado. **Limiares rígidos** (*hard eviction thresholds*) não dão margem nenhuma: assim que o sinal é cruzado, o kubelet despeja imediatamente, sem esperar nenhum período de graça — a situação já é considerada crítica o bastante para não valer a pena negociar tempo.

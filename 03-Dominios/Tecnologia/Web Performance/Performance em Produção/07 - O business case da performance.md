@@ -29,14 +29,15 @@ O melhor trabalho técnico do mundo não é feito se ninguém aprovar o tempo pa
 O Galho 1 ([[03-Dominios/Tecnologia/Web Performance/Medição e Core Web Vitals/01 - Por que performance importa|G1 nota 01]]) provou que a relação existe: 0,1 s de velocidade → +8% de conversão no varejo (Deloitte); a curva de bounce que acelera com a espera. Aqui você usa esses fatos como **argumento de investimento**, em três níveis de força crescente:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Estudos de terceiros<br/>(Deloitte, Google)"] -->|fraco: 'outras empresas'| B["Seu RUM correlacionado<br/>(seu p75 × sua conversão)"]
     B -->|forte: 'nossos dados'| C["Experimento A/B<br/>(prova causal)"]
     C -->|mais forte: 'nós provamos'| D[💰 caso de investimento]
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
+    class B neutro
+    class C neutro
+    class D destaque
 ```
 
 1. **Estudos de terceiros** (Deloitte, Google, casos de Amazon/Pinterest): úteis para introduzir a ideia, mas fracos porque são "outras empresas, outro contexto". Servem de gancho, não de prova.

@@ -31,6 +31,12 @@ aliases:
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef parent fill:#4A90D9,color:#fff,stroke:#2c6fad
+    classDef shell fill:#D0021B,color:#fff,stroke:#8b0000
+    classDef cmd fill:#F5A623,color:#000,stroke:#c47d0e
+    classDef safe fill:#4A90D9,color:#fff,stroke:#2c6fad
     A(["`**Node.js
     processo pai`"]):::parent
 
@@ -54,13 +60,9 @@ flowchart LR
     A -- "execFile('bin', [args])" --> D
     A -- "spawn('bin', [args])" --> E
 
-    style exec fill:#fce8e8,stroke:#D0021B
-    style execFile fill:#e8f4e8,stroke:#4A90D9
-    style spawnBox fill:#e8f4e8,stroke:#4A90D9
-    classDef parent fill:#4A90D9,color:#fff,stroke:#2c6fad
-    classDef shell fill:#D0021B,color:#fff,stroke:#8b0000
-    classDef cmd fill:#F5A623,color:#000,stroke:#c47d0e
-    classDef safe fill:#4A90D9,color:#fff,stroke:#2c6fad
+    class exec falha
+    class execFile ok
+    class spawnBox ok
 ```
 
 ---

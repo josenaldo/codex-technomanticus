@@ -379,6 +379,7 @@ Vale nomear um detalhe técnico real, sem se aprofundar: `BaseHTTPMiddleware` pr
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Django["Django — lista MIDDLEWARE, cebola completa"]
         DA["Middleware A<br/>(entrada)"] --> DB["Middleware B<br/>(entrada)"] --> DV["View"] --> DB2["Middleware B<br/>(saída)"] --> DA2["Middleware A<br/>(saída)"]
     end
@@ -391,9 +392,9 @@ flowchart TB
         AA["Middleware A<br/>(entrada)"] --> AB["Middleware B<br/>(entrada)"] --> AV["Rota"] --> AB2["Middleware B<br/>(saída)"] --> AA2["Middleware A<br/>(saída)"]
     end
 
-    style DV fill:#4A90D9,color:#fff
-    style FV fill:#4A90D9,color:#fff
-    style AV fill:#4A90D9,color:#fff
+    class DV neutro
+    class FV neutro
+    class AV neutro
 ```
 
 | Aspecto | Django | Flask | FastAPI |

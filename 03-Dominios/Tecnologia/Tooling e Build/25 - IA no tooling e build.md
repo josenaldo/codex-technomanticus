@@ -39,8 +39,9 @@ A questão não é mais "será que IA vai entrar no tooling?" — já entrou. A 
 Antes de entrar em cada ferramenta, vale mapear visualmente onde a IA pode (e não pode) intervir.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#fff"}}}%%
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph DEV["Loop de desenvolvimento"]
         E["Editor / IDE\n(Cursor, VS Code + Copilot)"]
         LC["Lint / Format\nlocal\n(ESLint, Biome)"]
@@ -73,11 +74,11 @@ flowchart LR
     AGT -.->|"pode executar\nqualquer etapa"| DEV
     AGT -.->|"pode abrir PRs,\nrodar CI"| CI
 
-    style AIR fill:#F5A623,color:#000
-    style AGT fill:#F5A623,color:#000
-    style MCP_SRV fill:#4A90D9,color:#fff
-    style BUILD fill:#4A90D9,color:#fff
-    style SEC fill:#4A90D9,color:#fff
+    class AIR destaque
+    class AGT destaque
+    class MCP_SRV neutro
+    class BUILD neutro
+    class SEC neutro
 ```
 
 A distinção cromática importa: azul são os estágios que devem permanecer determinísticos e auditáveis — onde a saída é a mesma dado o mesmo input. Âmbar é onde a IA opera: review, sugestões, execução de tarefas de alto nível. Os dois convivem, mas não são intercambiáveis.
@@ -98,7 +99,6 @@ Cursor ou Claude Code são, na prática, um processo que pode:
 Isso é fundamentalmente diferente de autocompletar código. É um processo com acesso ao mesmo toolchain que o desenvolvedor tem — e com capacidade de raciocinar sobre o resultado.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     actor Dev as Desenvolvedor
     participant Agente as Agente (Claude Code)
@@ -191,8 +191,9 @@ Com essa configuração, o agente pode:
 O ecossistema de MCP servers para dev tooling cresceu rapidamente: em meados de 2026, o GitHub lista mais de 13.000 servers, e a categoria de ferramentas de desenvolvimento (git, bundlers, linters, CIs) é uma das mais populares.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Clientes["Clients MCP (2026)"]
         CC["Claude Code"]
         CUR["Cursor"]
@@ -223,10 +224,10 @@ graph TD
     PROTO --> BUILD
     PROTO --> DOCS
 
-    style PROTO fill:#4A90D9,color:#fff
-    style CC fill:#F5A623,color:#000
-    style CUR fill:#F5A623,color:#000
-    style VSC fill:#F5A623,color:#000
+    class PROTO neutro
+    class CC destaque
+    class CUR destaque
+    class VSC destaque
 ```
 
 > [!question]- Preciso criar meu próprio MCP server para o build do meu projeto?
@@ -249,8 +250,8 @@ A diferença arquitetural importa para entender o que cada ferramenta consegue f
 **Qodo** — foco em testes: analisa o código e propõe testes unitários que cobrem os casos identificados no review.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph PR["Pull Request"]
         DIFF["Diff do PR\n(arquivos alterados)"]
         FULL["Repositório\ncompleto"]
@@ -278,8 +279,8 @@ graph LR
     GR --> SUM
     QD --> TST
 
-    style GR fill:#4A90D9,color:#fff
-    style FULL fill:#4A90D9,color:#fff
+    class GR neutro
+    class FULL neutro
 ```
 
 ### O que review por IA não substitui
@@ -334,8 +335,9 @@ Existe uma confusão frequente sobre o papel da IA em relação às ferramentas 
 **AI code review (CodeRabbit, Greptile)** — raciocínio probabilístico sobre o *significado* do código. Detecta padrões que nenhuma regra estática capturaria: "este if/else poderia ser simplificado com early return dado o contexto desta função", ou "essa mudança parece inconsistente com o padrão de tratamento de erro nas outras rotas do módulo".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Det["Lint determinístico (sempre em CI)"]
         L1["Regra definida explicitamente\n(no-unused-vars, max-len...)"]
         L2["Resultado idêntico\npara o mesmo input"]
@@ -358,8 +360,8 @@ graph TD
     Det --> B1
     AI --> B2
 
-    style Det fill:#4A90D9,color:#fff
-    style AI fill:#F5A623,color:#000
+    class Det neutro
+    class AI destaque
 ```
 
 A regra prática: lint determinístico bloqueia o merge. Review por IA informa a decisão do merge. Nunca inverta isso — um sistema onde IA bloqueia o merge com base em raciocínio probabilístico vai criar ruído e frustração no time.
@@ -393,8 +395,9 @@ Depois de ver onde a IA agrega, é igualmente importante nomear o que ela não s
 **Reprodutibilidade > velocidade.** Se o agente gera um build mais rápido mas que produz output diferente dependendo de quando é executado (race condition em paralelismo, timestamp embutido, ordem de resolução não-determinística), isso é pior do que um build lento e determinístico. O agente pode ajudar a diagnosticar flakiness — mas não pode ser a causa dela.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph PERMANENTE["O que o tooling determinístico sempre garante"]
         P1["Lockfile\n(mesma dep, sempre)"]
         P2["CI limpo\n(ambiente reprodutível)"]
@@ -412,8 +415,8 @@ graph LR
 
     PERMANENTE -->|"base não negociável"| IA_ZONA
 
-    style PERMANENTE fill:#4A90D9,color:#fff
-    style IA_ZONA fill:#F5A623,color:#000
+    class PERMANENTE neutro
+    class IA_ZONA destaque
 ```
 
 ---
@@ -487,8 +490,9 @@ A escala em números concretos:
 O que torna o slopsquatting qualitativamente diferente do typosquatting clássico é o **loop autônomo**. No typosquatting, um humano precisa digitar errado. No slopsquatting com agentes autônomos, o agente instala a dependência alucinada por conta própria — sem ninguém revisar.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     LLM["LLM alucina\nnome de pacote\n(ex: vite-plugin-meu-plugin)"]
     ATCK["Atacante registra\no nome no npm\ncom payload malicioso"]
     AGT["Agente executa\nnpm install sem revisão"]
@@ -500,11 +504,11 @@ flowchart TD
     AGT --> INF
     INF --> CI
 
-    style LLM fill:#F5A623,color:#000
-    style ATCK fill:#c0392b,color:#fff
-    style INF fill:#c0392b,color:#fff
-    style CI fill:#c0392b,color:#fff
-    style AGT fill:#F5A623,color:#000
+    class LLM destaque
+    class ATCK falha
+    class INF falha
+    class CI falha
+    class AGT destaque
 ```
 
 ### Como mitigar

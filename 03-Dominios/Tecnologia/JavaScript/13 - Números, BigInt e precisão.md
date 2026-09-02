@@ -33,17 +33,16 @@ Antes de corrigir o problema, vale entender o mecanismo. JavaScript usa **um ún
 Esses 64 bits são divididos em três campos:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph LR
+    classDef azul fill:#4A90D9,color:#fff,stroke:none
+    classDef ambar fill:#F5A623,color:#fff,stroke:none
+    classDef verde fill:#27AE60,color:#fff,stroke:none
     subgraph 64 bits ["64 bits — IEEE 754 Double Precision"]
         S["Sinal\n1 bit\n(+ ou -)"]:::azul
         E["Expoente\n11 bits\n(escala)"]:::ambar
         M["Mantissa\n52 bits\n(dígitos significativos)"]:::verde
     end
 
-    classDef azul fill:#4A90D9,color:#fff,stroke:none
-    classDef ambar fill:#F5A623,color:#fff,stroke:none
-    classDef verde fill:#27AE60,color:#fff,stroke:none
 ```
 
 A fórmula é: `valor = (-1)^sinal × 2^(expoente-1023) × 1.mantissa`

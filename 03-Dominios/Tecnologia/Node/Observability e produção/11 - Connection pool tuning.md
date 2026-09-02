@@ -58,6 +58,10 @@ O ciclo de vida de uma requisição atravessa o pool em dois caminhos — o cami
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     R["Request chega\n(query SQL)"] --> A{"Pool tem\nconexão livre?"}
     A -->|"Sim"| Q["Query executada\nConexão retorna ao pool"]
     A -->|"Não — pool cheio"| W["Request entra na fila\n(acquireTimeoutMillis)"]
@@ -69,13 +73,13 @@ flowchart TD
     D -->|"Pool muito pequeno"| FIX1["Aumentar max\n(recalcular por pod)"]
     D -->|"Transaction leak"| FIX2["Adicionar try/finally\ncom rollback"]
 
-    style R fill:#4A90D9,color:#fff
-    style Q fill:#27AE60,color:#fff
-    style W fill:#F5A623,color:#fff
-    style E fill:#D0021B,color:#fff
-    style AL fill:#D0021B,color:#fff
-    style FIX1 fill:#27AE60,color:#fff
-    style FIX2 fill:#27AE60,color:#fff
+    class R neutro
+    class Q ok
+    class W destaque
+    class E falha
+    class AL falha
+    class FIX1 ok
+    class FIX2 ok
 ```
 
 ### Dimensionamento do pool

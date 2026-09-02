@@ -74,19 +74,20 @@ aliases:
 Os padrões se aninham, e a ordem muda o comportamento de formas não óbvias. A composição convencional, de fora para dentro:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     B["<b>Bulkhead</b><br/>quantas dessas podem existir em paralelo"] --> C["<b>Circuit Breaker</b><br/>vale a pena tentar agora?"]
     C --> R["<b>Retry</b><br/>tenta de novo, com recuo"]
     R --> T["<b>Timeout</b><br/>cada tentativa termina"]
     T --> X["chamada"]
     C -.->|"aberto"| F["<b>Fallback</b><br/>o que responder"]
 
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style R fill:#F5A623,color:#000
-    style T fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
+    class B neutro
+    class C neutro
+    class R destaque
+    class T neutro
+    class F neutro
 ```
 
 A lógica de cada nível: o **timeout** é o mais interno porque delimita **cada tentativa**; o **retry** envolve tentativas; o **breaker** observa o resultado do conjunto e decide se vale começar; o **bulkhead** limita quantas dessas operações existem ao mesmo tempo.

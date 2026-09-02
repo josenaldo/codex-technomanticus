@@ -32,6 +32,9 @@ Imagine o mesmo servidor HTTP — recebe 10 mil requisições por segundo, cada 
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Java["Java — OS thread por tarefa (pool)"]
         direction TB
         JT["kernel escalona N OS threads"]
@@ -64,10 +67,10 @@ flowchart TB
         GP2 --> GG2["milhares de goroutines"]
     end
 
-    style JT fill:#4A90D9,color:#fff
-    style NL fill:#D0021B,color:#fff
-    style PG fill:#D0021B,color:#fff
-    style GM fill:#7ED321,color:#000
+    class JT neutro
+    class NL falha
+    class PG falha
+    class GM destaque
 ```
 
 Repare que só Go e (com ressalvas) Java oferecem **paralelismo real** — mais de uma instrução executando no mesmo instante, em núcleos diferentes. Node e Python, para o código que você escreve diretamente (JS puro, Python puro), oferecem **concorrência sem paralelismo**: várias tarefas progridem intercaladas, mas nunca duas ao mesmo tempo. A diferença entre concorrência e paralelismo — já trabalhada na [[01 - Concorrência vs paralelismo|nota 01]] deste galho — é exatamente o eixo que separa essas quatro estratégias.
@@ -156,6 +159,7 @@ Python parece, à primeira vista, mais parecido com Java do que com Node: `threa
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph SemGIL["Sem GIL (hipotético) — 4 threads, 4 núcleos"]
         direction TB
         A1["Thread 1"] -.->|núcleo 1| C1["executando"]
@@ -173,7 +177,7 @@ flowchart LR
         G -->|"revezamento"| G
     end
 
-    style G fill:#D0021B,color:#fff
+    class G falha
 ```
 
 O detalhe que costuma confundir é: o GIL **é liberado** durante chamadas de I/O bloqueantes (leitura de socket, de arquivo) e durante certas operações em bibliotecas C que soltam o lock explicitamente (boa parte do NumPy, por exemplo). Por isso, `threading` em Python continua útil para cargas **I/O-bound** — várias threads esperando rede ao mesmo tempo se comportam quase como se não houvesse GIL, porque a maior parte do tempo nenhuma delas está segurando o lock. O problema aparece só em trabalho **CPU-bound** puro: somar uma lista gigante em Python com quatro threads não corre 4x mais rápido — corre quase na mesma velocidade de uma thread só, porque elas ficam se revezando pelo mesmo lock.

@@ -68,7 +68,6 @@ Pense em `useEffect` como o mecanismo de sincronização entre dois relógios co
 Eles não se atualizam juntos automaticamente. `useEffect` é o fio que, depois de cada mudança no relógio A, ajusta o relógio B para ficar na mesma hora. E quando o relógio A muda novamente, o fio primeiro *desfaz* o ajuste anterior antes de fazer um novo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 sequenceDiagram
     participant R as React (estado/props)
     participant D as DOM/pintura

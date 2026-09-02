@@ -47,7 +47,6 @@ O estilo **imperativo** é uma sequência de comandos: "crie uma VM", "depois in
 O estilo **declarativo** descreve o **estado final desejado** — "eu quero uma VM com essas specs, com o Nginx instalado, com a porta 80 aberta" — e deixa a ferramenta descobrir sozinha os passos necessários para chegar lá a partir do estado atual, seja qual for esse estado atual. **Terraform** e **Kubernetes** são os exemplos canônicos: você não diz "crie o pod"; você diz "eu quero 3 réplicas rodando esta imagem", e o sistema calcula a diferença entre o que existe e o que foi pedido, e só faz o necessário para fechar essa diferença. O estilo declarativo responde à pergunta *o quê*.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     subgraph IMP["Imperativo — 'como'"]
         I1["Passo 1:<br/>criar VM"] --> I2["Passo 2:<br/>instalar Nginx"] --> I3["Passo 3:<br/>abrir porta 80"]
@@ -78,7 +77,6 @@ O Terraform precisa saber a diferença entre "o que existe" e "o que deveria exi
 O security group da história de abertura é drift em estado puro: uma mudança manual, bem-intencionada, sem registro, que diverge silenciosamente do que o código (se existisse) diria. Drift é perigoso não porque a mudança em si seja necessariamente ruim — às vezes é uma correção legítima e urgente — mas porque ela **não é visível** para quem olha o código-fonte da infraestrutura. O código mente sobre o que realmente está rodando.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
     CODE["Código declarativo<br/>(o que DEVERIA existir)"] -->|"apply inicial"| REAL["Infraestrutura real<br/>(o que DE FATO existe)"]
     HUMAN["👤 Alguém entra no<br/>console/kubectl e<br/>muda algo direto"] -.->|"mudança sem<br/>passar pelo código"| REAL
@@ -117,7 +115,6 @@ A organização OpenGitOps (parte da CNCF) formalizou essa prática em **quatro 
 O terceiro princípio — **pull, não push** — é o que mais surpreende quem vem do modelo tradicional de deploy (CI/CD clássico, coberto na nota 01 deste sub-galho, onde o pipeline **empurra** artefatos para o ambiente-alvo usando credenciais que apontam *para fora*). No modelo pull, é o inverso: um agente **dentro** do cluster observa o repositório e traz a mudança para dentro, sem que o cluster jamais precise expor credenciais de escrita para um sistema externo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant DEV as Dev
     participant GIT as Git (fonte da verdade)

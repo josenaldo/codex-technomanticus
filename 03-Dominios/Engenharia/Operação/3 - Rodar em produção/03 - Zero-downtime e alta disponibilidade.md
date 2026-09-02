@@ -39,7 +39,6 @@ Enquanto essa propagação não termina, o Pod continua recebendo tráfego novo 
 Esse não é um cenário hipotético. Um dos issues mais antigos e citados do repositório do Kubernetes documenta exatamente isso: em 2017, um usuário relatou perder requests atrás de um NodePort a ~60 req/s durante rolling updates, porque "the pod gets the termination signal before it is removed from the service load balancing" ([kubernetes/kubernetes#43576](https://github.com/kubernetes/kubernetes/issues/43576)). O mesmo padrão aparece de novo com Ingress-NGINX e conexões keep-alive ([kubernetes/ingress-nginx#489](https://github.com/kubernetes/ingress-nginx/issues/489)) e em relatos de engenharia recorrentes sobre "502/504 temporários durante rolling updates" (Stefan Franziskus, [*Getting rid of temporary 50x gateway errors in Kubernetes*](https://medium.com/@stefan4all/getting-rid-of-temporary-50x-gateway-errors-in-kubernetes-a95d6e4617e8)). O workaround que a comunidade convergiu para adotar — e que hoje é praticamente item de checklist de produção — é o assunto da próxima seção.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant K as Controller K8s
     participant EP as EndpointSlice /<br/>kube-proxy / Ingress
@@ -86,7 +85,6 @@ O que esse `sleep 15` compra é tempo puro: durante esses 15 segundos, o Pod já
 O detalhe que decide se essa estratégia funciona ou não é orçamentário: `preStop` e o handler de `SIGTERM` **dividem o mesmo orçamento**, `terminationGracePeriodSeconds` (default 30s). Se o `preStop` consome 25 desses 30 segundos, sobram só 5 para o processo de fato drenar requests em voo antes do `SIGKILL` — que mata o processo sem chance de terminar nada de forma limpa, não importa o que estivesse em andamento.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 gantt
     dateFormat X
     axisFormat %Ss
@@ -133,8 +131,8 @@ Esse trecho diz: entre as zonas disponíveis, a diferença no número de réplic
 Um detalhe que a documentação oficial destaca e que vale carregar: essas constraints garantem o espalhamento **no momento do agendamento** — não há garantia automática de que a distribuição continue balanceada depois de um scale-down ou de rebalanceamentos futuros, exceto se um Descheduler estiver rodando para corrigir desvios ao longo do tempo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph AZ1["Zona A"]
         P1["Pod checkout-1"]
     end
@@ -148,9 +146,9 @@ graph TD
     LB --> P2
     LB --> P3
 
-    style AZ1 fill:#4A90D9,color:#fff
-    style AZ2 fill:#4A90D9,color:#fff
-    style AZ3 fill:#4A90D9,color:#fff
+    class AZ1 neutro
+    class AZ2 neutro
+    class AZ3 neutro
 ```
 
 > [!question]- Espalhar por zona não é caro? Tráfego entre zonas cobra mais que dentro da mesma zona.

@@ -35,8 +35,9 @@ Esta nota assume que você já sabe **o que** é uma sessão, um JWT, o fluxo OA
 Antes de escrever uma linha de código, vale ver o território. O Django não tem "um jeito de fazer auth" — tem uma pilha de camadas que se combinam de formas diferentes dependendo do tipo de cliente:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["django.contrib.auth<br/>modelo de User + backends"] --> B["Sessões<br/>(SessionMiddleware)"]
     A --> C["Custom User Model<br/>AbstractUser / AbstractBaseUser"]
     B --> D["Views renderizadas no servidor<br/>(Django clássico)"]
@@ -46,10 +47,10 @@ graph TD
     F --> H["mozilla-django-oidc<br/>valida tokens de IdP externo"]
     E --> I["allauth.headless<br/>API JSON pra SPA/mobile"]
 
-    style A fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style E fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
+    class A neutro
+    class C destaque
+    class E neutro
+    class F neutro
 ```
 
 Quatro peças fazem o trabalho pesado:
@@ -113,7 +114,6 @@ Se o projeto já está em produção com o `User` padrão e populado, a rota doc
 Vamos seguir um cenário concreto pelo resto da nota: uma aplicação Django que serve (1) um painel administrativo renderizado no servidor, para operadores internos, e (2) uma API consumida por um app mobile de clientes finais. Essa combinação é comum o suficiente para justificar as duas abordagens de auth lado a lado — e é exatamente o tipo de decisão que aparece em entrevista como "como você projetaria autenticação para uma aplicação com essas duas superfícies?".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Op as Operador (browser)
     participant Dj as Django (views + templates)
@@ -163,15 +163,16 @@ O comando `python manage.py check --deploy` audita boa parte dessa lista automat
 Quando o cliente não é mais um navegador rodando templates Django, `SessionAuthentication` deixa de ser suficiente sozinha — mas isso não significa "sempre use JWT". Há três caminhos, e a escolha certa depende de quem é o cliente:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Quem consome a API?"] -->|"Frontend Django,<br/>mesmo domínio"| B["SessionAuthentication<br/>+ CSRF token"]
     A -->|"SPA/mobile próprios,<br/>API própria"| C["SimpleJWT<br/>Django emite o token"]
     A -->|"Cliente de terceiros,<br/>ou IdP corporativo (Keycloak)"| D["mozilla-django-oidc<br/>Django só VALIDA o token"]
 
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#4A90D9,color:#fff
+    class B neutro
+    class C destaque
+    class D neutro
 ```
 
 ### SimpleJWT — quando o Django é a autoridade

@@ -34,6 +34,8 @@ A defesa não é humana — é estrutural. Há duas camadas independentes:
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["🎯 Budget mensal\n(Planejamento estatístico)"] --> B["70% atingido → Alerta amarelo"]
     A --> C["90% atingido → Alerta vermelho"]
     A --> D["100% → Intervenção manual"]
@@ -45,8 +47,8 @@ flowchart TD
     A -.->|"Budget diz quanto gastar"| E
     E -.->|"Hard limit garante que\nnão ultrapasse"| A
 
-    style E fill:#f8d7da,stroke:#721c24
-    style A fill:#d4edda,stroke:#155724
+    class E falha
+    class A ok
 ```
 
 ## Duas camadas: orçamento vs hard limit

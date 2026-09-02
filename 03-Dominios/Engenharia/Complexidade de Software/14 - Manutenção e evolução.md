@@ -54,6 +54,8 @@ Vale ver as quatro lado a lado, organizadas pela pergunta que cada uma responde 
 
 ```mermaid
 flowchart TD
+    classDef domina fill:#2d6a4f,stroke:#1b4332,color:#fff
+    classDef energia fill:#7b2cbf,stroke:#5a189a,color:#fff
     M["Manutencao<br/>(tudo apos o 1o release)"]
     M --> R["Reativa<br/>(gatilho externo)"]
     M --> P["Proativa<br/>(decisao da equipe)"]
@@ -62,8 +64,6 @@ flowchart TD
     R --> E["Perfectiva<br/>pediram mais/melhor:<br/>features, performance"]
     P --> V["Preventiva<br/>saude antes da falha:<br/>refatorar, simplificar"]
 
-    classDef domina fill:#2d6a4f,stroke:#1b4332,color:#fff
-    classDef energia fill:#7b2cbf,stroke:#5a189a,color:#fff
     class E domina
     class V energia
 ```
@@ -89,6 +89,8 @@ Não só a manutenção domina o custo — dentro da própria manutenção, a ma
 
 ```mermaid
 flowchart LR
+    classDef pequeno fill:#495057,stroke:#212529,color:#fff
+    classDef grande fill:#2d6a4f,stroke:#1b4332,color:#fff
     subgraph CICLO["Custo total do ciclo de vida"]
         direction LR
         BUILD["Construcao<br/>~20-40%"]
@@ -97,8 +99,6 @@ flowchart LR
     MANUT --> EVOL["A maior parte<br/>e EVOLUCAO<br/>(perfectiva + adaptativa)"]
     MANUT --> REPARO["Minoria<br/>e REPARO<br/>(corretiva)"]
 
-    classDef pequeno fill:#495057,stroke:#212529,color:#fff
-    classDef grande fill:#2d6a4f,stroke:#1b4332,color:#fff
     class BUILD,REPARO pequeno
     class MANUT,EVOL grande
 ```
@@ -165,14 +165,14 @@ O fluxo dos dois passos, lado a lado com o atalho tentador:
 
 ```mermaid
 flowchart LR
+    classDef bom fill:#2d6a4f,stroke:#1b4332,color:#fff
+    classDef ruim fill:#9d0208,stroke:#6a040f,color:#fff
     F["Feature<br/>desejada"] --> Q{"O codigo torna<br/>esta mudanca<br/>facil?"}
     Q -->|"Nao"| PREP["Passo 1: refatorar<br/>a estrutura<br/>(make the change easy)<br/>AVISO: pode ser dificil"]
     PREP --> EASY["Passo 2: a feature<br/>agora e trivial<br/>(make the easy change)"]
     Q -->|"Atalho: enfiar<br/>na marra"| DEBT["Mudanca dificil + risco<br/>juros pra toda<br/>mudanca futura"]
     EASY --> OK["Mudanca limpa<br/>+ regiao mais facil<br/>da proxima vez"]
 
-    classDef bom fill:#2d6a4f,stroke:#1b4332,color:#fff
-    classDef ruim fill:#9d0208,stroke:#6a040f,color:#fff
     class PREP,EASY,OK bom
     class DEBT ruim
 ```
@@ -229,14 +229,14 @@ A cada migração, mais tráfego vai pro novo e menos pro velho — até que o l
 
 ```mermaid
 flowchart LR
+    classDef velho fill:#9d0208,stroke:#6a040f,color:#fff
+    classDef novo fill:#2d6a4f,stroke:#1b4332,color:#fff
     CLI["Clientes"] --> GW["Camada de roteamento<br/>(API gateway / proxy)"]
     GW -->|"funcoes ainda<br/>nao migradas"| OLD["Sistema legado<br/>(encolhendo)"]
     GW -->|"funcoes ja<br/>migradas"| NEW["Sistema novo<br/>(crescendo)"]
     NEW -.->|"a cada release,<br/>mais rotas migram"| GW
     OLD -.->|"quando vazio,<br/>desliga sem big-bang"| FIM["Legado removido"]
 
-    classDef velho fill:#9d0208,stroke:#6a040f,color:#fff
-    classDef novo fill:#2d6a4f,stroke:#1b4332,color:#fff
     class OLD velho
     class NEW,FIM novo
 ```

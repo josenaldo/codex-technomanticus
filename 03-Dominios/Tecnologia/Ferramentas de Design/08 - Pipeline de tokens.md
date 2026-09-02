@@ -26,8 +26,8 @@ Um time (ou um engenheiro solo cuidando de várias telas) muda a cor de "sucesso
 ## O pipeline, passo a passo
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     F["Figma Variables<br/>cor, espaço, tipografia"] -->|sync| TS["Tokens Studio<br/>ou API do Figma"]
     TS -->|commit| GIT["Git<br/>fonte de verdade em JSON"]
     GIT -->|build| SD["Style Dictionary<br/>transforma JSON → plataforma"]
@@ -35,8 +35,8 @@ graph LR
     SD --> SWIFT["Swift / iOS"]
     SD --> JS["JavaScript"]
     CSS --> COMP["Componente de produção"]
-    style GIT fill:#4A90D9,color:#fff
-    style SD fill:#4A90D9,color:#fff
+    class GIT neutro
+    class SD neutro
 ```
 
 **1. Figma Variables** — a origem do valor, definida pelo designer no arquivo de design, exatamente como a [[03-Dominios/Tecnologia/Ferramentas de Design/01 - Figma para o engenheiro|nota 01]] deste galho ensinou a ler.

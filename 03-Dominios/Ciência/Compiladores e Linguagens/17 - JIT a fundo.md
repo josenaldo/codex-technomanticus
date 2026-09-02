@@ -50,15 +50,17 @@ JIT moderno não é binário (interpretado OU compilado). É uma **escada de tie
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["Tier 0 — Interpretador\nbytecode, start rápido, coleta perfil"] -->|"invocações >= threshold-1"| B["Tier 1 — Baseline / Quick JIT\ncompila rápido, sem otimizações, código razoável"]
     B -->|"invocações >= threshold-2"| C["Tier 2 — Mid-tier Optimizing JIT\nSSA, otimizações moderadas, usa perfil parcial"]
     C -->|"muito quente + perfil maduro"| D["Tier 3+ — Full Optimizing JIT\nagressivo, especulações, código ótimo"]
     D -->|"guard falha: DEOPTIMIZA"| A
 
-    style A fill:#2d3748,color:#e2e8f0
-    style B fill:#2c5282,color:#e2e8f0
-    style C fill:#2a4365,color:#e2e8f0
-    style D fill:#1a365d,color:#e2e8f0
+    class A neutro
+    class B marca
+    class C neutro
+    class D marca
 ```
 
 > [!info] Leitura do diagrama
@@ -174,14 +176,17 @@ O nome "inline" vem da ideia original: o endereço do destino é colocado **inli
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Call site\nobj.metodo()"] --> B{"tipos vistos?"}
     B -->|"1 tipo (Dog)"| C["Monomorphic IC\n1 check, jump direto\notimizavel"]
     B -->|"2-4 tipos"| D["Polymorphic IC\nlista curta\naceitavel"]
     B -->|"5+ tipos"| E["Megamorphic IC\ndispatch generica\nsem otimizacao"]
 
-    style C fill:#276749,color:#e2e8f0
-    style D fill:#744210,color:#e2e8f0
-    style E fill:#742a2a,color:#e2e8f0
+    class C ok
+    class D destaque
+    class E falha
 ```
 
 > [!info] Leitura do diagrama
@@ -232,6 +237,8 @@ Para cada aposta, o JIT emite um **guard**: uma instrução de verificação rá
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Perfil maduro:\n'variavel X sempre int,\nmetodo M nunca sobrescrito'"] --> B["JIT gera codigo otimizado\ncom guards embutidos"]
     B --> C{"Guard verifica\nhipotese em runtime"}
     C -->|"guard passa - caso normal"| D["Executa codigo nativo\nultra-otimizado"]
@@ -244,9 +251,9 @@ flowchart TD
     I --> J["Recompila com hipoteses\nmais conservadoras"]
     J --> B
 
-    style D fill:#276749,color:#e2e8f0
-    style E fill:#742a2a,color:#e2e8f0
-    style F fill:#742a2a,color:#e2e8f0
+    class D ok
+    class E falha
+    class F falha
 ```
 
 > [!info] Leitura do diagrama
@@ -279,18 +286,21 @@ Um programa JIT não roda no seu melhor desempenho desde o início. Precisa **es
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["t=0\nInicio cold"] --> B["Fase: Interpretador\nstart rapido, throughput baixo"]
     B --> C["Fase: Baseline JIT\nthroughput moderado"]
     C --> D["Fase: Mid-tier JIT\nthroughput bom"]
     D --> E["Fase: Optimizing JIT\nthroughput crescendo"]
     E --> F["Peak\nperformance estavel"]
 
-    style A fill:#1a202c,color:#e2e8f0
-    style B fill:#2d3748,color:#e2e8f0
-    style C fill:#2c5282,color:#e2e8f0
-    style D fill:#2a4365,color:#e2e8f0
-    style E fill:#1e4976,color:#e2e8f0
-    style F fill:#276749,color:#e2e8f0
+    class A neutro
+    class B marca
+    class C neutro
+    class D marca
+    class E neutro
+    class F ok
 ```
 
 > [!info] Leitura do diagrama

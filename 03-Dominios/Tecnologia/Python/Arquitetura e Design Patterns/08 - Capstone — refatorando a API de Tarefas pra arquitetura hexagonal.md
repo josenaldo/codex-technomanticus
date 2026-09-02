@@ -38,8 +38,10 @@ Funciona. Passa em produção, passa em pentest, passa na suíte inteira. O prob
 O trabalho desta capstone não introduz nenhum conceito novo — cada peça do refactor que vem a seguir já foi ensinada, isolada, numa das sete notas anteriores deste galho. O que falta é a mesma coisa que faltou nas três capstones anteriores da trilha: montar as peças juntas, contra o código real, e nomear explicitamente o que cada passo do refactor prova (ou não prova).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     G12["API do Galho 12\n(blindada, testada,\nhandler ainda gordo)"] --> P1["Passo 1\nDomínio puro (N02)"]
     P1 --> P2["Passo 2\nRepository (N03)"]
     P2 --> P3["Passo 3\nUnit of Work (N04)"]
@@ -49,9 +51,9 @@ flowchart LR
     P6 --> P7["Passo 7\nSuíte do Galho 12\nCONTINUA VERDE"]
     P7 --> DONE["Arquitetura hexagonal\ncompleta"]
 
-    style G12 fill:#8b6914,color:#fff
-    style P7 fill:#D0021B,color:#fff
-    style DONE fill:#2d7a4a,color:#fff
+    class G12 destaque
+    class P7 falha
+    class DONE ok
 ```
 
 > [!question]- Por que refatorar algo que já está em produção, testado e blindado? Não é risco desnecessário?
@@ -62,8 +64,11 @@ flowchart LR
 Antes do código, vale nomear a estrutura de diretório que o refactor produz — não é uma reorganização cosmética, é a materialização física da separação de camadas que as sete notas deste galho já defenderam:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Antes["ANTES — capstone do Galho 12"]
         A1["src/main.py"]
         A2["src/routers/tarefas.py\nHandler + regra + SQL, tudo junto"]
@@ -82,10 +87,10 @@ flowchart TB
         D7["tests/unit, integration, security\nMESMOS 42 testes, sem editar"]
     end
 
-    style Antes fill:#8b6914,color:#fff
-    style Depois fill:#2d7a4a,color:#fff
-    style D1 fill:#4A90D9,color:#fff
-    style D7 fill:#D0021B,color:#fff
+    class Antes destaque
+    class Depois ok
+    class D1 neutro
+    class D7 falha
 ```
 
 A pasta `tests/` do lado direito não tem asterisco nenhum de "adaptada" — é a mesma árvore, os mesmos arquivos, o mesmo conteúdo da capstone do Galho 12. Esse é o ponto que a última seção desta nota prova em detalhe: o refactor inteiro acontece **por trás** da fronteira que `TestClient` já exercitava, e por isso nenhum teste de integração ou de segurança precisa mudar uma linha para continuar válido.
@@ -572,8 +577,10 @@ A tabela de vocabulário que a nota 07 já construiu se aplica sem alteração a
 E o diagrama final da arquitetura, com os seis passos deste refactor sobrepostos:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph DrivingAdapters["Driving Adapters — entrada (Passo 5)"]
         HTTP["FastAPI\napi/routers/tarefas.py"]
     end
@@ -612,11 +619,11 @@ flowchart TB
     MAIN -->|instancia e injeta| SQL
     MAIN -->|instancia e injeta| EMAIL
 
-    style Core fill:#2d7a4a,color:#fff
-    style ENT fill:#2d7a4a,color:#fff
-    style DrivingPorts fill:#4A90D9,color:#fff
-    style DrivenPorts fill:#4A90D9,color:#fff
-    style Root fill:#F5A623,color:#000
+    class Core ok
+    class ENT ok
+    class DrivingPorts neutro
+    class DrivenPorts neutro
+    class Root destaque
 ```
 
 ## Passo 7 — a prova viva: a suíte do Galho 12 continua verde
@@ -658,8 +665,10 @@ def test_usuario_b_nao_acessa_tarefa_de_usuario_a(client, como_usuario_b):
 Esse teste nunca importou `_buscar_tarefa_do_usuario`. Nunca importou `AbstractRepository`. Nunca soube, e não precisa saber, que existe uma coisa chamada "Repository pattern". Ele fala com a API através de `TestClient` — HTTP puro, requisições e respostas, exatamente como um pentest ou um cliente real falaria com a aplicação em produção. Antes desta capstone, `GET /tarefas/{id}` chamava `_buscar_tarefa_do_usuario(db, tarefa_id, usuario_id)`, que filtrava por dono numa query SQLAlchemy inline dentro do handler. Depois desta capstone, o mesmo `GET` chama `uow.tarefas.get_do_usuario(tarefa_id, usuario_id)` — implementação diferente, arquivo diferente, camada diferente — mas o **comportamento observável através da porta HTTP** é idêntico: usuário B recebe `404` ao tentar acessar a tarefa de A. O teste nunca sabia como a checagem era implementada por dentro; só sabia o que ela devolvia por fora.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#D0021B", "primaryBorderColor": "#8B0000"}}}%%
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph Teste["test_usuario_b_nao_acessa_tarefa_de_usuario_a (Galho 12, inalterado)"]
         T["client.get(f'/tarefas/{id}')\nassert status == 404"]
     end
@@ -675,9 +684,9 @@ flowchart TB
     T -.->|"exercitava"| A
     T -.->|"continua exercitando,\nSEM MUDAR UMA LINHA"| D
 
-    style Teste fill:#D0021B,color:#fff
-    style Antes fill:#8b6914,color:#fff
-    style Depois fill:#2d7a4a,color:#fff
+    class Teste falha
+    class Antes destaque
+    class Depois ok
 ```
 
 Isso não é coincidência de sorte — é a consequência direta e previsível de duas decisões que a [[03-Dominios/Tecnologia/Python/Testes/05 - Testando a API REST — TestClient e dependency overrides|nota 05 do Galho 12]] já cravou e que esta capstone só herdou: `TestClient` testa através da fronteira HTTP, nunca importando implementação interna; e a [[06 - Service Layer — orquestrando casos de uso#Contraste com TestClient: regra de negócio vs. integração fim a fim|nota 06 deste galho]] já nomeou essa mesma distinção do outro lado — testes de comportamento (via `TestClient`) provam que o **fio** está montado, não como ele está montado por dentro.

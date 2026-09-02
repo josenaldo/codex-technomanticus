@@ -259,6 +259,9 @@ O parâmetro `this` some completamente em runtime (é tipo-erased como todo o re
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     DEF["function f(this: Carrinho, item: string)"]
     COMP["Compilador TS\nverifica: this é Carrinho?"]
     OK["Chamada via obj.f(item)\nthis = obj: Carrinho ✓"]
@@ -270,9 +273,9 @@ flowchart TD
     COMP --> ERR
     DEF --> RUN
 
-    style OK fill:#1a6b00,color:#fff
-    style ERR fill:#8a0000,color:#fff
-    style RUN fill:#1f6feb,color:#fff
+    class OK ok
+    class ERR falha
+    class RUN neutro
 ```
 
 ---
@@ -323,6 +326,8 @@ O mecanismo é simples: o compilador percorre as assinaturas de overload **de ci
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     CALL["processar(entrada)"]
     O1["Overload 1: processar(string) → string[]"]
     O2["Overload 2: processar(number) → number"]
@@ -334,9 +339,9 @@ flowchart TD
     O2 -->|"number? ✓ — usa este"| RET2["Retorno: number"]
     O2 -.->|"compilador usa p/ verificar corpo"| IMPL
 
-    style RET1 fill:#1a6b00,color:#fff
-    style RET2 fill:#1a6b00,color:#fff
-    style IMPL fill:#555,color:#fff
+    class RET1 ok
+    class RET2 ok
+    class IMPL neutro
 ```
 
 > [!important] A assinatura de implementação é invisível
@@ -451,6 +456,7 @@ Quando você chama `numeros.map(...)`, o TS já sabe que `T = number` (do tipo d
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     ARR["numeros: number[]"]
     MAP["Array<T>.map<U>(\n  cb: (value: T, ...) => U\n): U[]"]
     CB["(x) => x * 2"]
@@ -460,7 +466,7 @@ flowchart LR
     MAP -->|"tipo esperado do cb\n→ flui para dentro"| CB
     CB --> INF
 
-    style INF fill:#1a6b00,color:#fff
+    class INF ok
 ```
 
 > [!note] Leitura do diagrama

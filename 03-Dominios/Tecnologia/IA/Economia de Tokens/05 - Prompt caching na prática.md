@@ -143,6 +143,9 @@ response = model.generate_content("Minha pergunta sobre o documento")
 
 ```mermaid
 graph TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Prompt["Prompt otimizado para caching"]
         A["1. System instructions\n(estáticas, 1-3k tokens)\ncache_control: ephemeral"]
         B["2. Tool definitions\n(estáticas, 2-5k tokens)\ncache_control: ephemeral"]
@@ -153,11 +156,11 @@ graph TD
 
     A --> B --> C --> D --> E
 
-    style A fill:#1a5c1a,color:#fff
-    style B fill:#1a5c1a,color:#fff
-    style C fill:#5c5c00,color:#fff
-    style D fill:#7a4000,color:#fff
-    style E fill:#7a0000,color:#fff
+    class A ok
+    class B ok
+    class C destaque
+    class D destaque
+    class E falha
 ```
 
 **Princípio:** conteúdo mais estático no início → mais dinâmico no final. O ponto de `cache_control` é o ponto de quebra — tudo antes é cacheado; tudo depois é processado normalmente a cada chamada.

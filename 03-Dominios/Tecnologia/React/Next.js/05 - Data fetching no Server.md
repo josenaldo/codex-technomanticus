@@ -132,7 +132,6 @@ export default async function ArtistPage({
 Cada `await` bloqueia o JavaScript. O runtime espera `getArtist` terminar para sequer iniciar `getAlbums`, mesmo que nenhum dado de `artist` seja necessário para `getAlbums`. Isso é um waterfall.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#D0021B", "edgeLabelBackground": "#ffffff"}}}%%
 sequenceDiagram
     participant C as Componente
     participant A as API /artist
@@ -179,7 +178,6 @@ export default async function ArtistPage({
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 sequenceDiagram
     participant C as Componente
     participant A as API /artist

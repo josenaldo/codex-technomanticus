@@ -88,12 +88,14 @@ Por que colisão é mais fácil de quebrar que preimagem — e por que isso enga
 
 ```mermaid
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     P["Busca exaustiva de preimagem\n2^256 tentativas"] -->|"mais difícil"| C
     P2["Busca de 2ª preimagem\n2^256 tentativas"] -->|"mais difícil"| C
     C["Busca de colisão\n2^128 tentativas\n(paradoxo do aniversario)"]
-    style C fill:#ffcccc,stroke:#cc0000
-    style P fill:#ccffcc,stroke:#007700
-    style P2 fill:#ccffcc,stroke:#007700
+    class C falha
+    class P ok
+    class P2 ok
 ```
 
 > [!info] Leitura do diagrama

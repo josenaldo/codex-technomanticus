@@ -37,8 +37,9 @@ A mensagem chegou ao canal. Agora, como a aplicação **fica sabendo**? Há duas
 ## Polling × Event-Driven
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph POLL["Polling Consumer (pull)"]
         A1["App"] -->|"tem msg?"| C1["canal"]
         C1 -->|"aqui / vazio"| A1
@@ -47,9 +48,9 @@ graph TD
         C2["canal"] -->|"invoca callback"| A2["App (handler)"]
     end
 
-    style A1 fill:#4A90D9,color:#fff
-    style C2 fill:#F5A623,color:#000
-    style A2 fill:#4A90D9,color:#fff
+    class A1 neutro
+    class C2 destaque
+    class A2 neutro
 ```
 
 - **Polling Consumer** — a aplicação **puxa** ativamente (`receive()`), no seu ritmo. A grande vantagem é o **controle de vazão**: se está sobrecarregada, ela simplesmente puxa mais devagar — throttling natural. As desvantagens: **latência** (a mensagem espera até o próximo poll) e **desperdício** (polls que voltam vazios queimam CPU e chamadas ao broker).

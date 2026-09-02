@@ -220,6 +220,8 @@ O diagrama abaixo mostra por que a leitura do código de `acumulador()` costuma 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Fora["Código chamador"]
         A["gen.send(10)"]
     end
@@ -231,9 +233,9 @@ flowchart LR
     A -->|"injeta 10"| C
     B -->|"devolveu total anterior"| A
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#F5A623,color:#000
+    class A neutro
+    class B destaque
+    class C destaque
 ```
 
 ### `throw(excecao)`: injetar uma exceção no ponto da pausa
@@ -311,16 +313,18 @@ O "estado" que um iterator escrito manualmente guardaria em atributos de instân
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Função contém yield<br/>em algum lugar do corpo?"] -->|"Sim"| B["Compilador Python cria um<br/>objeto generator ao chamar a função"]
     A -->|"Não"| C["Função comum —<br/>roda inteira, devolve com return"]
     B --> D["generator já tem __iter__<br/>(devolve self) e __next__<br/>(retoma bytecode no yield)<br/>IMPLEMENTADOS NATIVAMENTE"]
     D --> E["Objeto passa isinstance(x, Iterator)<br/>funciona com for, next(), unpacking..."]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
-    style E fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
+    class A neutro
+    class B neutro
+    class D destaque
+    class E neutro
+    class C neutro
 ```
 
 **Em uma frase:** um generator é um iterator que o compilador do Python escreve para você, usando o próprio mecanismo de pausa/retomada de `yield` como o "estado interno" que um `__iter__`/`__next__` manual precisaria guardar à mão.

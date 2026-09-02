@@ -40,8 +40,9 @@ O primeiro caminho é **Kubernetes de fato**: não o Dockerfile (isso já está 
 O segundo caminho é **serverless com AWS Lambda**, via `Mangum` — um adapter que traduz eventos do Lambda para o protocolo ASGI que a trilha já usa desde o [[03-Dominios/Tecnologia/Python/Web e APIs REST/index|Galho 8]], permitindo rodar a *mesma* aplicação FastAPI como função Lambda sem reescrever a lógica de negócio. Não existe cluster pra administrar, não existe réplica pra dimensionar manualmente — a AWS aloca capacidade sob demanda, por invocação, e cobra por isso. O custo operacional despenca, mas não desaparece: ele se desloca para dois problemas novos e específicos de serverless — **cold start** (a primeira invocação depois de um período ocioso paga o preço de inicializar o processo do zero, alguns segundos de latência que não existem num container sempre ligado) e **timeout** (uma função Lambda tem um limite máximo de execução — não serve pra processamento longo, e um handler mal dimensionado é abortado no meio, não fica só "mais lento").
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     IMG["Imagem Docker 180 MB<br/>(Galho 17 nota 07 — FEITO ✓)<br/>livenessProbe/readinessProbe prontos<br/>(Galho 17 nota 06 — FEITO ✓)"]
 
     IMG --> K8S_PATH["Caminho 1: Kubernetes"]
@@ -71,15 +72,15 @@ flowchart TB
 
     DECISAO --> CAPSTONE["nota 08 — Capstone:<br/>Tarefas e Notificações,<br/>qual vai pra qual caminho<br/>(A FAZER)"]
 
-    style IMG fill:#4A90D9,color:#fff
-    style K1 fill:#F5A623,color:#000
-    style K2 fill:#F5A623,color:#000
-    style K3 fill:#F5A623,color:#000
-    style K4 fill:#F5A623,color:#000
-    style L1 fill:#F5A623,color:#000
-    style L2 fill:#F5A623,color:#000
-    style DECISAO fill:#F5A623,color:#000
-    style CAPSTONE fill:#F5A623,color:#000
+    class IMG neutro
+    class K1 destaque
+    class K2 destaque
+    class K3 destaque
+    class K4 destaque
+    class L1 destaque
+    class L2 destaque
+    class DECISAO destaque
+    class CAPSTONE destaque
 ```
 
 O diagrama acima é o placar deste galho: a imagem Docker e o contrato de health check já estão prontos (azul, herdado do Galho 17); tudo o que orquestra essa imagem — dos dois lados — ainda está por fazer (âmbar, notas 02 a 08).

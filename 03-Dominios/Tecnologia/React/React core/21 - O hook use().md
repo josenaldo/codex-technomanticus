@@ -87,7 +87,6 @@ Quando você passa uma Promise para `use()`, o React faz algo que parece mágico
 5. Se a Promise **rejeita**, o erro sobe para o Error Boundary mais próximo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#fff"}}}%%
 sequenceDiagram
     participant SC as Server Component
     participant CC as Client Component
@@ -197,8 +196,9 @@ function Notification({ type }: { type: 'toast' | 'banner' }) {
 ## Mapa mental: `use()` vs as APIs anteriores
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#F5A623", "tertiaryColor": "#D0021B"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[Preciso de dados externos] --> B{Estou num Server Component?}
     B -- Sim --> C["await fetchData() direto<br/>(async SC)"]
     B -- Não --> D{Tenho uma Promise estável?}
@@ -209,13 +209,13 @@ graph TD
     F --> I[⚠ Loading state manual]
     F --> J[⚠ Erro state manual]
 
-    style C fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style F fill:#F5A623,color:#fff
-    style G fill:#4A90D9,color:#fff
-    style H fill:#4A90D9,color:#fff
-    style I fill:#F5A623,color:#fff
-    style J fill:#F5A623,color:#fff
+    class C neutro
+    class E neutro
+    class F destaque
+    class G neutro
+    class H neutro
+    class I destaque
+    class J destaque
 ```
 
 ---
@@ -442,7 +442,6 @@ Esta seção fecha o círculo entre `use()` e os Server Components. Se você ain
 A restrição central do `use(promise)` é que a Promise deve ser **estável** — a mesma referência entre renders. Server Components resolvem isso estruturalmente: eles não re-renderizam. A Promise é criada uma vez, no servidor, para aquele request. Não há o risco de uma nova Promise ser criada a cada render porque simplesmente não há "próximo render" no servidor.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#7ED321"}}}%%
 sequenceDiagram
     participant Browser
     participant RSC as Server Component<br/>(servidor)

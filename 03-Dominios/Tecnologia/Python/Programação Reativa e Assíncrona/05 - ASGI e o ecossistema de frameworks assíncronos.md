@@ -150,6 +150,8 @@ WSGI (PEP 3333) formalizou, em 2010, um contrato que já era de fato o padrão d
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph WSGI["WSGI — síncrono, uma troca por conexão"]
         W1["requisição chega"] --> W2["application(environ, start_response)<br/>bloqueia até terminar"]
         W2 --> W3["resposta sai, conexão fecha<br/>(ou volta ao pool via keep-alive)"]
@@ -163,8 +165,8 @@ flowchart LR
         A4 -.->|"pode repetir N vezes"| A2
     end
 
-    style W2 fill:#4A90D9,color:#fff
-    style A2 fill:#7ED321,color:#000
+    class W2 neutro
+    class A2 destaque
 ```
 
 Essa diferença estrutural — bloquear uma thread até uma resposta completa vs. `await`s intercalados por uma coroutine — não é uma escolha estética. É a razão pela qual servidores WSGI tradicionais (Gunicorn com workers síncronos, uWSGI no modo padrão) escalam concorrência via **múltiplos processos ou threads**: cada requisição em andamento ocupa um worker inteiro até terminar. Servidores ASGI escalam concorrência via **um único event loop por processo** cuidando de milhares de conexões simultâneas, porque a maior parte do tempo de qualquer requisição de rede é gasto esperando I/O — exatamente o problema que o Galho 7 (event loop, `Task`, `gather`) e as notas anteriores deste galho (streams, `aiohttp`) já resolveram para o caso geral; ASGI é a formalização desse modelo assíncrono como uma interface padronizada entre servidor e aplicação web, em vez de cada framework assíncrono inventar sua própria integração ad-hoc com cada servidor.
@@ -199,6 +201,8 @@ A spec ASGI deliberadamente separa dois papéis que, em WSGI, tendiam a ficar ma
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Rede["Rede: cliente HTTP/WebSocket"]
         Cliente["navegador, curl, cliente WebSocket"]
     end
@@ -222,9 +226,9 @@ flowchart TB
     FastAPI --> Handlers
     Starlette -.->|"Starlette puro,<br/>sem FastAPI"| Handlers
 
-    style Uvicorn fill:#4A90D9,color:#fff
-    style Starlette fill:#7ED321,color:#000
-    style FastAPI fill:#F5A623,color:#000
+    class Uvicorn neutro
+    class Starlette destaque
+    class FastAPI destaque
 ```
 
 Uma aplicação Starlette mínima já dá uma noção concreta do que essa camada economiza em relação a escrever `scope`/`receive`/`send` na mão — sem entrar em profundidade em Starlette/FastAPI, que é assunto do Galho 10:

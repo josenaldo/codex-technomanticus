@@ -37,6 +37,8 @@ Em uma frase: **a posição no arquivo só decide entre regexes concorrentes —
 
 ```mermaid
 graph TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     U["URI da request"] --> Exato{"Existe location = URI<br/>com match exato?"}
     Exato -->|"sim"| M1["Usa este location<br/>PARA — busca termina aqui"]
     Exato -->|"não"| Pref["Compara contra todos os<br/>location de prefixo"]
@@ -48,12 +50,12 @@ graph TD
     RMatch -->|"sim, a primeira que bateu"| M3["Usa esta regex<br/>PARA — não olha as demais"]
     RMatch -->|"nenhuma bateu"| M4["Usa o prefixo memorizado<br/>lá no passo de Pref"]
 
-    style M1 fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style M2 fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style M3 fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style M4 fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style Exato fill:#F5A623,stroke:#a66f10,color:#000
-    style Caret fill:#F5A623,stroke:#a66f10,color:#000
+    class M1 ok
+    class M2 ok
+    class M3 ok
+    class M4 ok
+    class Exato destaque
+    class Caret destaque
 ```
 
 > [!info] Baseline de versão

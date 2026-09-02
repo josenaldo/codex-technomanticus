@@ -47,15 +47,17 @@ var pilhaDeNomes Stack[string]
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     G["type Stack[T any] struct { itens []T }"]
     G -->|"instancia com T = int"| A["Stack[int]\nitens []int"]
     G -->|"instancia com T = string"| B["Stack[string]\nitens []string"]
     G -->|"instancia com T = Pedido"| C["Stack[Pedido]\nitens []Pedido"]
 
-    style G fill:#4A90D9,color:#fff
-    style A fill:#F5A623,color:#000
-    style B fill:#F5A623,color:#000
-    style C fill:#F5A623,color:#000
+    class G neutro
+    class A destaque
+    class B destaque
+    class C destaque
 ```
 
 Dentro do corpo do struct, `T` se comporta como qualquer tipo nomeado normal — pode ser o tipo de um campo, de um slice de campos, de um mapa. A constraint (`any`, aqui, a mais permissiva possível — a nota 03 detalha as outras) só limita o que você pode **fazer** com valores de `T`; não limita onde `T` pode aparecer na declaração.
@@ -262,6 +264,7 @@ func main() {
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     R["NoArvore[int]{Valor: 5}"]
     R --> E["NoArvore[int]{Valor: 2}"]
     R --> D["NoArvore[int]{Valor: 8}"]
@@ -269,7 +272,7 @@ flowchart TB
     E --> ED["NoArvore[int]{Valor: 3}"]
     D --> DD["NoArvore[int]{Valor: 9}"]
 
-    style R fill:#4A90D9,color:#fff
+    class R neutro
 ```
 
 ## Armadilhas comuns

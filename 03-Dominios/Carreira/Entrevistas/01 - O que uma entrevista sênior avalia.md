@@ -55,16 +55,17 @@ Um segundo eixo, mais desconfortável de aceitar: a partir de certo nível, **a 
 Do outro lado da mesa, o entrevistador tem 45 minutos e um problema difícil: prever seu comportamento futuro a partir de uma amostra pequena, enviesada e ensaiada. Ele busca **sinal** — evidência que correlaciona com desempenho real — em meio a muito **ruído** (nervosismo, familiaridade com o formato, quão bem você fala).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     P["A pergunta literal<br/>'conte um conflito técnico'"] --> R["O que o candidato ouve<br/><i>'descreva a briga'</i>"]
     P --> S["<b>O que está sendo medido</b><br/>como você fala de quem discordou<br/>quando ele não está na sala"]
     S --> D1["você ataca a pessoa?"]
     S --> D2["reconhece o argumento dela?"]
     S --> D3["o que mudou em você depois?"]
 
-    style R fill:#F5A623,color:#000
-    style S fill:#4A90D9,color:#fff
+    class R destaque
+    class S neutro
 ```
 
 Quem responde ao que a pergunta **diz** produz um relato do conflito. Quem responde ao que ela **mede** produz um relato que mostra como avaliou o argumento do outro, o que concedeu e o que aprendeu — e essa é a resposta que sobrevive à pergunta de acompanhamento.

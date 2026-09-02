@@ -150,6 +150,8 @@ Esse padrão — ler, calcular, tentar trocar, repetir se falhar — é o que "l
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Preciso proteger acesso concorrente"] --> B{"Quantos campos\nprecisam mudar\njuntos, de forma\nconsistente?"}
     B -->|"Um só, tipo escalar\n(int, bool, ponteiro)"| C["atomic.Int64 / Bool / Pointer[T]"]
     B -->|"Dois ou mais campos\nrelacionados"| D["sync.Mutex"]
@@ -157,9 +159,9 @@ flowchart TD
     E -->|"Sim — validação,\nchamada de função,\nmúltiplos passos"| D
     E -->|"Não"| F["Fique com atomic"]
 
-    style C fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
-    style F fill:#4A90D9,color:#fff
+    class C neutro
+    class D destaque
+    class F neutro
 ```
 
 O critério prático não é "qual é mais rápido" isoladamente — atomic quase sempre ganha em benchmark puro de um único valor — mas **o que a seção crítica precisa proteger**:

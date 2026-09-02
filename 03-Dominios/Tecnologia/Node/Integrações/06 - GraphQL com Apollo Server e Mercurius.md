@@ -67,6 +67,8 @@ O escopo do DataLoader deve ser **por request** (instanciado no context). Um Dat
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     CL["Cliente\n(browser / mobile)"] -->|"POST /graphql\n{ query, variables }"| AS
 
     subgraph AS["Servidor GraphQL (Apollo / Mercurius)"]
@@ -80,9 +82,9 @@ flowchart TD
     DL -->|"array ordenado"| E
     E -->|"JSON response"| CL
 
-    style AS fill:#4A90D9,color:#fff
-    style DL fill:#F5A623,color:#fff
-    style DB fill:#4A90D9,color:#fff
+    class AS neutro
+    class DL destaque
+    class DB neutro
 ```
 
 ## Snippets de código

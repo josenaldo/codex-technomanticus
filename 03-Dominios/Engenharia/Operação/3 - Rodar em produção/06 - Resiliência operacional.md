@@ -33,20 +33,21 @@ A resposta, quase sempre, está nos números. Um timeout de 30 segundos que deve
 Antes de entrar em cada padrão, vale visualizar a cadeia de propagação inteira e onde, operacionalmente, cada defesa intervém — porque a decisão de tuning de cada padrão só faz sentido em relação às outras.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["payment-service fica lento<br/>8-15s por chamada"] -->|"1) TIMEOUT mal calibrado<br/>(30s em vez de ~500ms)<br/>deixa a espera continuar"| B["order-service<br/>threads presas esperando"]
     B -->|"2) RETRY sem backoff/jitter<br/>multiplica chamadas no<br/>serviço já sofrendo"| C["mais carga em<br/>payment-service"]
     C -->|"3) CIRCUIT BREAKER com<br/>threshold alto demais<br/>não abre a tempo"| D["pool de threads<br/>esgota (200/200)"]
     D -->|"4) BULKHEAD ausente:<br/>pool compartilhado com<br/>inventory-service saudável"| E["order-service para<br/>de responder — tudo"]
     E -->|"5) sem FALLBACK<br/>nem LOAD SHEDDING"| F["cart-service cai junto<br/>falha em cascata completa"]
 
-    style A fill:#F5A623,stroke:#2E5C8A,color:#000
-    style B fill:#F5A623,stroke:#2E5C8A,color:#000
-    style C fill:#F5A623,stroke:#2E5C8A,color:#000
-    style D fill:#D0021B,stroke:#2E5C8A,color:#fff
-    style E fill:#D0021B,stroke:#2E5C8A,color:#fff
-    style F fill:#D0021B,stroke:#2E5C8A,color:#fff
+    class A destaque
+    class B destaque
+    class C destaque
+    class D falha
+    class E falha
+    class F falha
 ```
 
 Cada seta numerada nesse diagrama é uma decisão de tuning que, bem calibrada, corta a corrente ali mesmo — timeout curto o bastante não deixa a thread ficar presa; retry com orçamento não soma carga em cima de carga; circuit breaker com threshold sensível abre antes do pool esgotar; bulkhead impede que a dependência doente contamine as saudáveis; fallback e load shedding garantem que, mesmo com tudo isso, o sistema degrada em vez de colapsar. As seções seguintes destrincham cada uma, na ordem em que a cascata as atravessaria.
@@ -74,13 +75,13 @@ O mecanismo de backoff exponencial + jitter já foi explicado em SG3-05 — cada
 O problema que a pergunta ataca chama-se **retry amplification**, e o mecanismo é multiplicativo, não aditivo. Considere uma cadeia de quatro camadas — gateway, `order-service`, `payment-service`, `bank-gateway` — onde cada uma aplica, independentemente, "retry até 3 vezes se falhar". Se a camada mais interna (`bank-gateway`) começa a falhar 50% das chamadas, cada camada acima dela multiplica o tráfego que chega à camada de baixo: sem limite, esse tipo de composição sem coordenação pode levar a um fator de amplificação de tráfego de 3,5x ou mais sobre o volume normal — exatamente na dependência que já está sofrendo e menos capaz de absorver carga extra. É a versão distribuída, silenciosa, do "retry storm" descrito em SG3-05: não é mais só clientes sincronizados batendo no mesmo instante — é a própria topologia de chamadas amplificando retry sobre retry, camada após camada.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     G["Gateway<br/>1 requisição"] -->|"retry x3<br/>se falhar"| OS["order-service<br/>até 3 chamadas"]
     OS -->|"retry x3<br/>por chamada"| PS["payment-service<br/>até 9 chamadas"]
     PS -->|"retry x3<br/>por chamada"| BG["bank-gateway<br/>até 27 chamadas<br/>de 1 requisição original"]
 
-    style BG fill:#D0021B,stroke:#2E5C8A,color:#fff
+    class BG falha
 ```
 
 A defesa operacional para isso tem nome: **retry budget** (também chamado de orçamento de retry, ou implementado como um token bucket dedicado a retries). A regra prática, adotada em bibliotecas de resiliência de produção, limita retries a uma fração pequena do tráfego normal — algo na faixa de 10 a 20%: a cada 100 chamadas bem-sucedidas, o sistema "ganha" 10 a 20 tokens de retry; quando o orçamento esgota, novas tentativas de retry são recusadas e a chamada falha rápido em vez de insistir. O efeito mensurado é dramático: numa simulação de falha de 50% numa dependência, retry sem orçamento gera até 3,5x de amplificação de tráfego e impede a recuperação; com um orçamento de 20%, o tráfego total fica em torno de 1,2x do normal — o suficiente para a dependência doente respirar e se recuperar, em vez de ser enterrada por retries bem-intencionados.
@@ -106,13 +107,14 @@ Não existe um número universal — o ponto de equilíbrio depende de quão cr�
 **3) O tamanho da janela half-open — quantas chamadas de teste liberar antes de decidir.** Poucas chamadas de teste (1-2) decidem rápido, mas com alto risco de um resultado por sorte — uma chamada de teste que passou por acaso reabre o circuito prematuramente. Mais chamadas de teste (10+) dão uma decisão mais confiável, mas atrasam a recuperação percebida e, se a dependência ainda estiver realmente doente, geram mais dano antes de o circuito reabrir.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Threshold baixo<br/>+ wait curto"] -->|"abre cedo,<br/>fecha cedo"| B["Falsos positivos:<br/>recusa tráfego saudável"]
     C["Threshold alto<br/>+ wait longo"] -->|"abre tarde,<br/>fecha tarde"| D["Falsos negativos:<br/>não protege a tempo /<br/>recupera devagar"]
 
-    style B fill:#F5A623,stroke:#2E5C8A,color:#000
-    style D fill:#D0021B,stroke:#2E5C8A,color:#fff
+    class B destaque
+    class D falha
 ```
 
 > [!question]- Como decidir os números sem esperar um incidente real acontecer?
@@ -158,7 +160,6 @@ Até aqui, os padrões foram discutidos como se vivessem sempre dentro do códig
 A alternativa que ganhou tração na última década move essa lógica para fora do código da aplicação, para o **service mesh** — um sidecar proxy (tipicamente Envoy, orquestrado por um control plane como Istio) que intercepta todo o tráfego de rede do serviço, sem que uma linha do código da aplicação precise saber que ele existe. O Istio expõe circuit breaking, retry e timeout como configuração declarativa (um `DestinationRule`), e implementa **outlier detection** — o equivalente funcional de um circuit breaker, mas aplicado por instância/réplica dentro de um pool de load balancing: em vez de abrir ou fechar uma chamada para *um serviço*, o outlier detection do Envoy monitora cada réplica individualmente (erros consecutivos, latência) e remove automaticamente do pool de load balancing as réplicas que se comportam mal, sem intervenção humana e sem que o serviço chamador precise saber que aquela réplica específica está doente.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     subgraph APP["Resiliência no código (Resilience4j)"]
         A1["order-service<br/>+ lib Resilience4j"] -->|"decorador na chamada,<br/>ciente do contexto de negócio"| A2["payment-service"]

@@ -67,8 +67,9 @@ Vale ser preciso sobre o que a categorização resolve e o que ela não resolve.
 Um efeito colateral útil da categorização, que poucos guias de currículo mencionam, é que ela também ajuda o **primeiro leitor** — a busca por termo — de um jeito indireto: um recrutador que varre visualmente a página, sem usar busca automatizada nenhuma, encontra mais rápido a categoria relevante (por exemplo, "Infraestrutura", se a vaga é de DevOps) e lê com atenção só aquela linha, ignorando o resto com segurança, porque a categoria já sinalizou que ali está o que ele procura. A categorização não beneficia só quem lê rápido em busca da silhueta — beneficia também quem lê rápido em busca de um termo específico, porque reduz a área de busca visual antes mesmo de o olho encontrar a palavra exata.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     RAW["30 termos numa lista plana<br/>ou num parágrafo corrido"] --> CAT["Agrupados por categoria:<br/>linguagens · back-end · front-end<br/>dados · infraestrutura · testes · metodologias"]
 
     CAT --> L1["Leitor 1 — busca por termo"]
@@ -77,10 +78,10 @@ graph TD
     L1 -.encontra.-> R1["o termo continua isolado,<br/>agora dentro de uma categoria nomeada"]
     L2 -.forma.-> R2["a silhueta do perfil em segundos,<br/>sem ler item por item"]
 
-    style RAW fill:#F5A623,color:#000
-    style CAT fill:#4A90D9,color:#fff
-    style R1 fill:#7ED321,color:#000
-    style R2 fill:#7ED321,color:#000
+    class RAW destaque
+    class CAT neutro
+    class R1 destaque
+    class R2 destaque
 ```
 
 O diagrama fixa o ponto central desta seção: a categorização não é um sacrifício que troca um leitor pelo outro — é a única operação que atende os dois ao mesmo tempo, porque o problema nunca foi a quantidade de termos, foi a ausência de estrutura entre eles.
@@ -137,8 +138,9 @@ O caso acima não é uma regra sobre Kubernetes especificamente — é uma regra
 Vale notar que essa distinção não é uma forma de esconder ou minimizar contato real com uma tecnologia — é o oposto: é o que permite **manter** informação valiosa e verdadeira (a parceria aconteceu, o projeto foi real, o resultado foi real) sem inflar essa informação para um nível que ela não sustenta. Remover Kubernetes da lista de habilidades não apaga a experiência de ter trabalhado perto dela — só coloca essa experiência no lugar certo do documento, no formato certo, com o verbo certo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     T["Uma tecnologia apareceu<br/>na sua trajetória"] --> Q{"Você mesmo<br/>a operou sozinho?"}
 
     Q -->|"sim, com história<br/>real para contar"| SKILL["Entra na seção de<br/>Habilidades técnicas"]
@@ -147,10 +149,10 @@ graph TD
     SKILL -.teste.-> TESTE1["'Me conta uma vez que<br/>você fez X sozinho'<br/>— tem resposta concreta"]
     BULLET -.teste.-> TESTE2["'Partnered with DevOps<br/>to run X on Y'<br/>— factualmente correto"]
 
-    style SKILL fill:#7ED321,color:#000
-    style BULLET fill:#4A90D9,color:#fff
-    style TESTE1 fill:#7ED321,color:#000
-    style TESTE2 fill:#4A90D9,color:#fff
+    class SKILL destaque
+    class BULLET neutro
+    class TESTE1 destaque
+    class TESTE2 neutro
 ```
 
 O diagrama fixa a régua de decisão inteira desta seção num único ponto de bifurcação: a mesma tecnologia pode aparecer no currículo de duas formas diferentes, dependendo só de quem, de fato, operou o quê — nunca de quanto a vaga valorizaria ver o termo listado.

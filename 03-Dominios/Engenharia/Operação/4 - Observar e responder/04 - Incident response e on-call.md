@@ -47,7 +47,6 @@ Isso levou ao projeto FIRESCOPE (Firefighting Resources of California Organized 
 O núcleo do ICS gira em torno de três funções que qualquer resposta a incidente — incêndio ou software — precisa cobrir: **coordenar** (decidir o quê fazer e por quem), **comunicar** (manter todos, dentro e fora, informados) e **controlar** (executar as ações decididas, sem interferência cruzada). É essa estrutura de três funções, quase intacta, que o Google adaptou para produção de software — e é essa herança que explica por que os papéis de um incidente de tecnologia soam estranhamente parecidos com os de um incêndio florestal: **Incident Commander**, **Operations**, **Communications**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     ICS["ICS — 1968-72<br/>bombeiros da Califórnia<br/>coordenar / comunicar / controlar"] -->|"adaptado por"| GOOGLE["IMAG do Google<br/>Incident Management<br/>at Google — anos 2000"]
     GOOGLE -->|"popularizado por"| SRE["SRE Book / Workbook<br/>Managing Incidents<br/>Incident Response"]
@@ -74,7 +73,6 @@ O documento de incidente vivo — a responsabilidade mais importante do IC segun
 Um quarto papel, menos formal mas recorrente na prática, é o **scribe** — quem mantém a timeline atualizada em tempo real, frequentemente o próprio IC ou alguém que ele designa, especialmente em incidentes longos onde manter o documento vivo consome atenção demais para uma pessoa só fazer junto com coordenar.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph TD
     ALERT["📟 Alerta dispara<br/>ou report chega"] --> TRIAGE["Triagem<br/>quão grave? quem envolver?"]
     TRIAGE -->|"SEV1/2<br/>major incident"| DECLARE["Declarar incidente<br/>nomear papéis"]
@@ -139,7 +137,6 @@ Externamente, o Communications Lead mantém atualizações regulares e previsív
 O documento de incidente vivo mencionado antes — mantido pelo IC ou pelo scribe — é a fonte de verdade *interna*: qualquer pessoa que entra na call, mesmo pela primeira vez, consegue ler três linhas e entender onde o incidente está, sem interromper quem está trabalhando para perguntar verbalmente.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
     subgraph INTERNO["Dentro do incidente"]
         DOC["Documento vivo<br/>estado + timeline<br/>+ próximas ações"]
@@ -188,7 +185,6 @@ Turnos de plantão sustentáveis, segundo o guia de práticas mais recente da in
 **Follow-the-sun.** Empresas com equipes distribuídas globalmente frequentemente adotam o modelo *follow-the-sun*: cada região cobre seu próprio horário diurno, e o plantão "segue o sol" — quando a Ásia dorme, a Europa assume; quando a Europa dorme, as Américas assumem. O benefício óbvio é eliminar plantão noturno de fato (ninguém precisa acordar às 2h, porque sempre há alguém acordado em algum fuso). O risco, bem documentado, é justamente o handoff: quando um incidente atravessa três fusos em sequência — Ásia para Europa para América — cada transição é uma chance de perder contexto, e relatos da indústria mostram que incidentes que cruzam múltiplos handoffs regionais frequentemente pioram justamente nessa costura, não por falta de competência técnica em nenhuma das regiões, mas pela lacuna de contexto entre elas.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
     P["Primary<br/>primeira chamada"] -->|"não reconhece<br/>em N minutos"| S["Secondary<br/>escalação automática"]
     S -->|"não reconhece /<br/>incidente grave"| L["Liderança<br/>escalação final"]

@@ -38,6 +38,8 @@ Existe um teste simples pra separar aresta real de ordem de digitação: desenhe
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Resumir relatório"]
     B["Checar clima"]
     C["Cruzar os dois"]
@@ -45,9 +47,9 @@ flowchart LR
     A -->|"resumo"| C
     B -->|"previsão"| C
 
-    style A fill:#e8f4f8,stroke:#4A90D9
-    style B fill:#e8f4f8,stroke:#4A90D9
-    style C fill:#fff3e0,stroke:#F5A623
+    class A neutro
+    class B neutro
+    class C destaque
 ```
 
 Repare que A e B não têm seta entre si — porque nenhuma variável atravessa de um para o outro. As duas só convergem em C, que de fato precisa dos dois resultados. Isso já é o esqueleto do diamante que a seção "As topologias" vai formalizar.
@@ -157,6 +159,8 @@ Junte fan-out e fan-in e você tem a topologia mais usada de qualquer grafo sér
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     split["Nó split\n(divide o trabalho)"]
 
     w1["Nó de trabalho\narquivo A"]
@@ -174,12 +178,12 @@ flowchart TB
     w3 --> reduce
     reduce --> synth
 
-    style split fill:#e8f4f8,stroke:#4A90D9
-    style w1 fill:#e8f4f8,stroke:#4A90D9
-    style w2 fill:#e8f4f8,stroke:#4A90D9
-    style w3 fill:#e8f4f8,stroke:#4A90D9
-    style reduce fill:#fff3e0,stroke:#F5A623
-    style synth fill:#e8f4f8,stroke:#4A90D9
+    class split neutro
+    class w1 neutro
+    class w2 neutro
+    class w3 neutro
+    class reduce destaque
+    class synth neutro
 ```
 
 Uma vez que você vê o diamante, a pergunta que você faz sobre um agente que "não dá mais passos" muda de "como faço ele ir mais fundo" para "onde está o split, onde está o merge" — que é a pergunta que de fato escala, porque tem resposta em código em vez de resposta em mais tokens de raciocínio no mesmo agente.
@@ -338,6 +342,9 @@ A forma do grafo não é cosmética — é a maior alavanca isolada sobre tempo 
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph B["Barreira — parallel(): espera o mais lento"]
         direction LR
         bA["A: 2u"]
@@ -363,18 +370,18 @@ flowchart TB
         pD["D: 1→2 em 2u, 2→3 em 4u"]
     end
 
-    style bA fill:#4A90D9,color:#fff
-    style bB fill:#4A90D9,color:#fff
-    style bD fill:#4A90D9,color:#fff
-    style bC fill:#D0021B,color:#fff
-    style bIdleA fill:#F5A623,color:#fff
-    style bIdleB fill:#F5A623,color:#fff
-    style bIdleD fill:#F5A623,color:#fff
-    style bGate fill:#F5A623,color:#fff
-    style pA fill:#4A90D9,color:#fff
-    style pB fill:#4A90D9,color:#fff
-    style pD fill:#4A90D9,color:#fff
-    style pC fill:#D0021B,color:#fff
+    class bA neutro
+    class bB neutro
+    class bD neutro
+    class bC falha
+    class bIdleA destaque
+    class bIdleB destaque
+    class bIdleD destaque
+    class bGate destaque
+    class pA neutro
+    class pB neutro
+    class pD neutro
+    class pC falha
 ```
 
 O diagrama mostra o custo real de uma barreira: no cenário de cima, os itens A, B e D terminam o próprio trabalho em 2 unidades de tempo, mas ficam **ociosos** esperando o item C (lento, 8 unidades) até a barreira liberar o próximo estágio em 8. No cenário de baixo, sem barreira, A, B e D avançam para o estágio seguinte assim que terminam o seu — o item C ainda está atrasando *ele mesmo*, mas não está mais segurando os outros três.

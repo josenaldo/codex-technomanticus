@@ -31,8 +31,9 @@ Essa velocidade é o motivo pelo qual a Gestalt importa tanto para interface: os
 Elementos próximos entre si são lidos, automaticamente, como pertencentes ao mesmo grupo — mesmo sem nenhuma borda, cor ou rótulo os conectando. É o princípio isolado mais aplicado em interface, porque é **a base literal de todo layout de formulário e de card**: o espaço (ou a falta dele) entre elementos comunica relação antes de qualquer palavra ser lida.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph SemGrupo["Espaçamento uniforme"]
         direction LR
         A1["Rua"] --- A2["Número"] --- A3["Bairro"] --- A4["CEP"]
@@ -42,8 +43,8 @@ graph LR
         B1["Rua"] --- B2["Número"]
         B3["Bairro"] --- B4["CEP"]
     end
-    style ComGrupo fill:#4A90D9,color:#fff
-    style SemGrupo fill:#F5A623,color:#000
+    class ComGrupo neutro
+    class SemGrupo destaque
 ```
 
 O bug do cenário de abertura desta nota é exatamente a falha de proximidade: espaçamento uniforme apaga o grupo que deveria existir.

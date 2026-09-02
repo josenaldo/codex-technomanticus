@@ -35,6 +35,9 @@ Quando API tem contrato claro, schema-first reduz validação ad-hoc e aproxima 
 
 ```mermaid
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     RQ[Request] --> OR[onRequest]
     OR --> PP[preParsing]
     PP --> PV[preValidation]
@@ -50,12 +53,12 @@ flowchart TD
     HD -->|throw| EH[setErrorHandler]
     EH --> ER[Error Response]
 
-    style SC fill:#F5A623,color:#fff
-    style HD fill:#4A90D9,color:#fff
-    style E4 fill:#D0021B,color:#fff
-    style EH fill:#D0021B,color:#fff
-    style RS fill:#4A90D9,color:#fff
-    style OS fill:#F5A623,color:#fff
+    class SC destaque
+    class HD neutro
+    class E4 falha
+    class EH falha
+    class RS neutro
+    class OS destaque
 ```
 
 ```typescript

@@ -45,6 +45,8 @@ A [especificação da linguagem](https://go.dev/ref/spec#String_types) é direta
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     S["string \"café\""] --> B0["byte 'c' (0x63)"]
     S --> B1["byte 'a' (0x61)"]
     S --> B2["byte 0xC3"]
@@ -53,8 +55,8 @@ flowchart TB
     B2 -.->|"2 bytes juntos\ncodificam 1 rune"| RUNE["rune 'é' (U+00E9)"]
     B3 -.-> RUNE
 
-    style S fill:#4A90D9,color:#fff
-    style RUNE fill:#F5A623,color:#000
+    class S neutro
+    class RUNE destaque
 ```
 
 `c` e `a` são ASCII — cabem num byte cada. `é` não é ASCII: em UTF-8, code points acima de `U+007F` são codificados em 2, 3 ou 4 bytes. `s[2]` e `s[3]` não são "meio caractere" corrompido — são exatamente os dois bytes que, juntos, formam o code point `é` (`U+00E9`). Isolado, `s[2]` (`0xC3`) não é um caractere válido nenhum — é só o primeiro byte de uma sequência UTF-8 multi-byte.
@@ -152,14 +154,16 @@ s3 := string(r)  // recodifica UTF-8: runes -> string
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     STR["string\n(imutável)"] -->|"[]byte(s)\ncopia bytes"| BYTES["[]byte\n(mutável, 5 elementos)"]
     STR -->|"[]rune(s)\ndecodifica UTF-8"| RUNES["[]rune\n(mutável, 4 elementos)"]
     BYTES -->|"string(b)\ncopia bytes"| STR
     RUNES -->|"string(r)\nrecodifica UTF-8"| STR
 
-    style STR fill:#4A90D9,color:#fff
-    style BYTES fill:#F5A623,color:#000
-    style RUNES fill:#7ED321,color:#000
+    class STR neutro
+    class BYTES destaque
+    class RUNES destaque
 ```
 
 Toda conversão nessa figura **copia** — não existe conversão "de graça" entre esses três tipos, porque `string` é imutável e `[]byte`/`[]rune` não são: se a conversão reaproveitasse o buffer, mutar o slice resultante corromperia a string original, quebrando a garantia de imutabilidade que todo código Go assume ao passar strings por valor sem medo. `string(b)` e `[]byte(s)` são as conversões mais baratas (cópia byte a byte, sem decodificação); `[]rune(s)` e `string(r)` são mais caras, porque envolvem decodificar ou recodificar UTF-8 inteiro.

@@ -161,7 +161,6 @@ return response
 ## Fluxo de uma requisição pelo middleware
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 sequenceDiagram
     participant B as Browser
     participant E as Edge (middleware.ts)
@@ -275,17 +274,18 @@ O padrão é o mesmo em ambas: a lib encapsula a verificação de sessão e deci
 ## Camadas de segurança: onde cada verificação mora
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     MW["Middleware (Edge)\nUX: redireciona não-autenticado\nVerifica: token existe? JWT válido?\nNÃO verifica: permissões de recurso"]
     SC["Server Component / Layout\nUX: conteúdo condicional\nVerifica: sessão + papel do usuário\nNÃO acessa DB diretamente"]
     DAL["Data Access Layer\nSegurança REAL\nVerifica: authn + authz por recurso\nRetorna apenas DTOs seguros"]
     DB["Banco de dados\n(opcional: Row Level Security)"]
 
-    style MW fill:#F5A623,color:#000
-    style SC fill:#4A90D9,color:#fff
-    style DAL fill:#4A90D9,color:#fff
-    style DB fill:#4A90D9,color:#fff
+    class MW destaque
+    class SC neutro
+    class DAL neutro
+    class DB neutro
 
     MW -->|"passa request"| SC
     SC -->|"chama"| DAL

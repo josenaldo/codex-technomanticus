@@ -52,7 +52,6 @@ A formalização das 11 camadas usada nesta trilha vem da série *Become an AI E
 ## Como as camadas se conectam
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     classDef definition fill:#4A90D9,stroke:#2171B5,color:#fff
     classDef execution fill:#2CA05A,stroke:#1A7A3F,color:#fff

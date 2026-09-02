@@ -76,17 +76,18 @@ A consequência prática é importante e contraintuitiva: **a relutância em abs
 A ordem importa. Cada passo depende do anterior, e pular um faz o seguinte falhar de um jeito difícil de diagnosticar.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["1 · Autorizar<br/>no system"] --> B["2 · Formatar<br/>campo estruturado"]
     B --> C["3 · Rotear<br/>limiar + destino"]
     C --> D["4 · Recompensar<br/>anti-tests no eval"]
     D -.->|"sem este passo,<br/>os três somem<br/>na próxima iteração"| A
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#4A90D9,color:#fff
+    class A neutro
+    class B neutro
+    class C destaque
+    class D neutro
 ```
 
 ### 1 · Autorizar

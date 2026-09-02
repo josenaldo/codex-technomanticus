@@ -110,7 +110,6 @@ follows(follower_id, followee_id, created_at)
 **`feed_cache` (ou `precomputed_feed`)** — a projeção pré-computada por usuário, o coração da arquitetura de fan-out on-write. Chave por `user_id`, valor é uma lista ordenada (por tempo) de `(tweet_id, author_id)`, limitada às últimas **~800 entradas** (número usado pelo Twitter em produção — ver deep dive). Vive em Redis, não no banco relacional/primário — é *cache reconstruível*, não fonte de verdade: se ele se perder, dá para reconstruir consultando `follows` + `tweets`, só que mais devagar.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 erDiagram
     USERS ||--o{ FOLLOWS : "segue"
     USERS ||--o{ TWEETS : "publica"
@@ -143,8 +142,9 @@ erDiagram
 Dois fluxos separados — escrita (postar) e leitura (abrir o feed) — que se encontram na estrutura de dados do feed cache.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph WRITE["Write path — postar"]
         U1["Usuário posta"] --> API1["Tweet Service"]
         API1 -->|"grava (fonte da verdade)"| DB[("tweets DB")]
@@ -160,9 +160,9 @@ graph TD
         API2 -->|"hidrata (autor,<br/>midia, contadores)"| HYDRATE["Hydration"]
         HYDRATE --> U2
     end
-    style MQ fill:#F5A623,color:#000
-    style CACHE1 fill:#4A90D9,color:#fff
-    style CACHE2 fill:#4A90D9,color:#fff
+    class MQ destaque
+    class CACHE1 neutro
+    class CACHE2 neutro
 ```
 
 O write path é assíncrono a partir da fila: o `Tweet Service` responde "publicado!" assim que grava no banco de posts — não espera o fan-out terminar. Isso é o mesmo padrão de desacoplar o caminho crítico do não-crítico discutido em [[05 - Message queues e processamento assíncrono]]: o usuário não precisa esperar 90 milhões de escritas de timeline para saber que seu post saiu.
@@ -180,8 +180,8 @@ Esta é a decisão central da nota, e a resposta certa em entrevista nunca é "e
 **Fan-out on-read (pull).** Nada é pré-computado. Quando o usuário abre o feed, o sistema busca, na hora, os posts recentes de *cada conta que ele segue* e mescla por tempo. Escrever um post é barato — uma linha na tabela `tweets`. Ler é caro: se o usuário segue 3.000 contas, a leitura precisa tocar (ou pelo menos consultar índice de) até 3.000 fontes.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph PUSH["Fan-out on-write (push)"]
         P1["Post criado"] -->|"grava em N<br/>timelines de seguidores"| PN["N escritas<br/>na hora do post"]
         PR["Ler feed"] -->|"1 leitura da<br/>timeline pronta"| PF["rapido, O(1)"]
@@ -190,8 +190,8 @@ graph LR
         L1["Post criado"] -->|"1 escrita"| LW["barato"]
         LR["Ler feed"] -->|"busca e mescla<br/>M contas seguidas"| LF["lento, O(M)<br/>a cada leitura"]
     end
-    style PN fill:#F5A623,color:#000
-    style LF fill:#F5A623,color:#000
+    class PN destaque
+    class LF destaque
 ```
 
 | | Fan-out on-write (push) | Fan-out on-read (pull) |
@@ -225,8 +225,8 @@ A solução, documentada de forma equivalente por Twitter, Instagram e no design
 - **No momento da leitura**, o `Feed Service` busca a timeline pré-computada normal (rápida) **e**, em paralelo, consulta diretamente os posts recentes das contas grandes que aquele usuário segue (normalmente pouquíssimas — a maioria das pessoas segue no máximo algumas celebridades) — e **mescla** os dois conjuntos por tempo antes de responder.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     POST["Novo post"] --> CHECK{"Autor tem ></br>~10k seguidores?"}
     CHECK -->|"nao — caso comum"| FANOUT["Fan-out on-write<br/>grava em N timelines"]
     CHECK -->|"sim — celebridade"| SKIP["Nao faz fan-out<br/>so grava em 'tweets'"]
@@ -235,8 +235,8 @@ graph TD
     PRECOMP --> MERGE["Mescla por tempo"]
     CELEB --> MERGE
     MERGE --> RESP["Responde o feed"]
-    style SKIP fill:#F5A623,color:#000
-    style CELEB fill:#F5A623,color:#000
+    class SKIP destaque
+    class CELEB destaque
 ```
 
 O resultado prático: o custo de escrita de uma celebridade cai de "90 milhões de gravações" para "uma gravação" (o post em si). O custo dessa decisão é jogado para a leitura — mas de forma controlada, porque cada leitor típico segue *poucas* celebridades (a maioria das pessoas não segue centenas de contas com dezenas de milhões de seguidores cada), então o `O(M)` da mesclagem no read path é pequeno na prática, mesmo sendo tecnicamente "fan-out on-read" para esse subconjunto.
@@ -266,13 +266,13 @@ A razão é dupla. Primeiro, tamanho: se cada uma das 800 entradas carregasse o 
 A solução é separar duas responsabilidades: o **feed cache** guarda só a lista ordenada de IDs (a "espinha" do feed, praticamente imutável depois de escrita), e um **cache de conteúdo** separado — indexado por `tweet_id`, compartilhado entre todos os feeds que referenciam aquele post — guarda o conteúdo hidratável (texto, autor, contadores), atualizável em um único lugar. O `Feed Service`, ao responder uma requisição de `GET /v1/feed`, primeiro lê a lista de IDs do feed cache e depois faz um **batch fetch** desses IDs no cache de conteúdo — uma única rodada de leituras em lote (não N chamadas sequenciais, que seria o clássico problema de N+1 em versão distribuída) — para hidratar os 20 posts que vão de fato aparecer na tela.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     FEED["Feed Cache<br/>(so IDs, por usuario)"] -->|"20 tweet_ids<br/>da pagina atual"| BATCH["Batch fetch"]
     BATCH -->|"1 rodada, N chaves"| CONTENT["Content Cache<br/>(tweet_id -> texto/autor/midia)"]
     CONTENT --> RESP["Feed hidratado<br/>pronto pra tela"]
-    style FEED fill:#4A90D9,color:#fff
-    style CONTENT fill:#4A90D9,color:#fff
+    class FEED neutro
+    class CONTENT neutro
 ```
 
 Esse desenho também resolve, de graça, um problema que apareceria se conteúdo vivesse dentro do feed cache: quando um post é apagado ou tem visibilidade alterada (deletado pelo autor, removido por moderação), basta invalidar **uma** entrada no cache de conteúdo — não caçar e reescrever a mesma informação espalhada em milhões de feeds pré-computados que ainda referenciam aquele ID.

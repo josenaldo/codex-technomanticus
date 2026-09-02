@@ -49,6 +49,9 @@ O que muda tecnicamente:
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[Tarefa recebida] --> B{Plan Mode ativo?}
 
     B -- Não --> C[Agente raciocina<br/>internamente]
@@ -65,9 +68,9 @@ flowchart TD
     J -- Corrige --> I
     J -- Cancela --> L[Tarefa descartada<br/>sem dano]
 
-    style G fill:#ff6b6b,color:#fff
-    style H fill:#51cf66,color:#fff
-    style L fill:#868e96,color:#fff
+    class G falha
+    class H ok
+    class L neutro
 ```
 
 > [!summary] O plano não é um relatório — é uma janela para o raciocínio que o agente teria de qualquer forma. Abri-la custa tokens; não abri-la custa correções. A assimetria de custo (tokens vs. horas de debug) é a justificativa econômica para Plan Mode em tarefas médias e complexas.

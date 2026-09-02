@@ -35,16 +35,17 @@ Como uma carta, a Message resolve isso com um **envelope**. O **payload** é a c
 ## Anatomia: header + payload
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph MSG["Message"]
         H["HEADER (metadados)<br/>messageId · messageType<br/>correlationId · replyTo<br/>timestamp · expiration"]
         P["PAYLOAD (corpo)<br/>{ pedidoId: 1001,<br/>valor: 250.00 }"]
     end
     H -.roteamento/correlação<br/>lê só o header.-> R["Router / Broker"]
 
-    style H fill:#4A90D9,color:#fff
-    style P fill:#F5A623,color:#000
+    class H neutro
+    class P destaque
 ```
 
 O **header** carrega o que a infraestrutura precisa:

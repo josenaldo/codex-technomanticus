@@ -52,7 +52,6 @@ A tabela abaixo mostra como a comunidade foi refinando a solução para o mesmo 
 ## Mapa mental dos padrões
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#fff"}}}%%
 mindmap
   root((Design Patterns<br/>React))
     Reuso de lógica
@@ -98,8 +97,9 @@ mindmap
 Quando você se deparar com um problema de componentes, percorra estas perguntas em ordem:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#F5A623", "tertiaryColor": "#D0021B"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[Problema a resolver] --> B{Preciso reusar\nlógica com estado/effects?}
     B -->|Sim| C{Preciso controlar\no que é renderizado?}
     B -->|Não| D{Preciso compartilhar\nestado em subárvore?}
@@ -122,13 +122,13 @@ flowchart TD
     M -->|Sim| O[Headless UI\nhook-first sem estilo]
     M -->|Não| P[Container / Presentational\nou composição simples]
 
-    style E fill:#4A90D9,color:#fff
-    style H fill:#4A90D9,color:#fff
-    style K fill:#4A90D9,color:#fff
-    style O fill:#4A90D9,color:#fff
-    style G fill:#F5A623,color:#fff
-    style N fill:#4A90D9,color:#fff
-    style P fill:#4A90D9,color:#fff
+    class E neutro
+    class H neutro
+    class K neutro
+    class O neutro
+    class G destaque
+    class N neutro
+    class P neutro
 ```
 
 ### Tabela problema → padrão

@@ -171,7 +171,6 @@ console.log("D");                          // linha 4
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#F5A623", "tertiaryColor": "#D0021B"}}}%%
 sequenceDiagram
     participant Stack as Call Stack
     participant MQ as Microtask Queue
@@ -529,7 +528,6 @@ Promise.resolve().then(() => console.log("2")); // entra depois na queue
 **A regra:** a posição na microtask queue é FIFO — primeiro a ser enfileirado, primeiro a executar. A ordem das linhas síncronas que criam as Promises determina a ordem das microtasks.
 
 ```mermaid
-%%{init: {"theme": "base"}}%%
 sequenceDiagram
     participant Sync as Fase Síncrona
     participant MQ as Microtask Queue

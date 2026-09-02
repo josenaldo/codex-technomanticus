@@ -26,6 +26,8 @@ aliases:
 
 ```mermaid
 flowchart TD
+    classDef blue fill:#4A90D9,color:#fff,stroke:#4A90D9
+    classDef amber fill:#F5A623,color:#fff,stroke:#F5A623
     start([Qual o contexto?]) --> q1{Deploy target?}:::amber
 
     q1 -->|Edge / serverless\nmulti-runtime| hono["Hono\nWeb Standards\nbindings do runtime"]:::blue
@@ -40,8 +42,6 @@ flowchart TD
     q4 -->|Sim| fastify["Fastify\nJSON Schema nativo\nOpenAPI-ready"]:::blue
     q4 -->|Não| express["Express\nsimplicidade\nmaior ecossistema"]:::blue
 
-    classDef blue fill:#4A90D9,color:#fff,stroke:#4A90D9
-    classDef amber fill:#F5A623,color:#fff,stroke:#F5A623
 ```
 
 ### Árvore em texto (revisão rápida)

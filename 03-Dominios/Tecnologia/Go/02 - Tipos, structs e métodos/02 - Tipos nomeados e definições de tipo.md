@@ -53,6 +53,8 @@ Essa linha declara um **defined type** (tipo definido) chamado `Celsius`. Segund
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph UT["underlying type: float64"]
         direction TB
         F["Representação em memória,\naritmética, zero value"]
@@ -64,8 +66,8 @@ flowchart TB
     C -.->|"identidade própria"| CID["Celsius ≠ Fahrenheit\npara o compilador"]
     Fa -.-> CID
 
-    style UT fill:#4A90D9,color:#fff
-    style CID fill:#D0021B,color:#fff
+    class UT neutro
+    class CID falha
 ```
 
 O nome "underlying type" não é acidente de vocabulário — é o termo que a própria especificação usa, e ele importa porque é **transitivo apenas até a base**: se você definir `type CelsiusPositivo Celsius`, o underlying type de `CelsiusPositivo` continua sendo `float64` (a especificação "acha" o tipo subjacente seguindo a cadeia de definições até chegar num tipo pré-declarado ou composto que não é ele mesmo um defined type derivado de outro nome).
@@ -144,14 +146,17 @@ A conversão `Fahrenheit(c)` **compila** — a especificação permite conversã
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     C["Celsius(100)"] -->|"conversão explícita\nCelsius → float64"| U1["float64"]
     C -->|"conversão explícita\n(mesmo underlying)"| Fh["Fahrenheit(c)"]
     C -.->|"❌ atribuição direta\nvar f Fahrenheit = c"| X["ERRO de compilação"]
     C -.->|"❌ operação aritmética\nc + f"| X
 
-    style C fill:#4A90D9,color:#fff
-    style X fill:#D0021B,color:#fff
-    style Fh fill:#F5A623,color:#000
+    class C neutro
+    class X falha
+    class Fh destaque
 ```
 
 ## Type alias: o mesmo tipo, outro nome

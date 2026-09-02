@@ -31,8 +31,9 @@ Por baixo, o Table Module trabalha sobre um **Record Set**: uma estrutura tabula
 ## A ideia, e a diferença de granularidade
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph tm["Table Module — 1 objeto por TABELA"]
         M["PedidosModule<br/>trata TODOS os pedidos"] --> RS["Record Set<br/>(linhas da tabela pedido)"]
     end
@@ -40,11 +41,11 @@ graph TD
         P1["Pedido #1"] & P2["Pedido #2"] & P3["Pedido #3"]
     end
 
-    style M fill:#4A90D9,color:#fff
-    style RS fill:#4A90D9,color:#fff
-    style P1 fill:#F5A623,color:#000
-    style P2 fill:#F5A623,color:#000
-    style P3 fill:#F5A623,color:#000
+    class M neutro
+    class RS neutro
+    class P1 destaque
+    class P2 destaque
+    class P3 destaque
 ```
 
 Essa é a distinção que cai em entrevista: no **Domain Model**, cada pedido é um objeto com identidade e comportamento próprios; no **Table Module**, há **um** objeto que manipula a tabela de pedidos como um todo. O Table Module fica mais perto do banco (pensa em Record Set); o Domain Model fica mais perto do negócio (pensa em entidades).

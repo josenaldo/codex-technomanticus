@@ -37,6 +37,10 @@ A diferença crucial: o raciocínio do agente é moldado pelo contexto que você
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     SP["🔧 System Prompt\n(instruções built-in do Claude Code)"]
     CM["📋 CLAUDE.md\n(instruções do projeto e do usuário)"]
     HS["📜 Histórico da sessão\n(conversas e tool calls anteriores)"]
@@ -48,11 +52,11 @@ flowchart TD
     HS --> DC
     PT --> DC
 
-    style DC fill:#4a90d9,color:#fff
-    style SP fill:#888,color:#fff
-    style CM fill:#5a8a5a,color:#fff
-    style HS fill:#7a7a9a,color:#fff
-    style PT fill:#9a6a3a,color:#fff
+    class DC neutro
+    class SP marca
+    class CM ok
+    class HS neutro
+    class PT destaque
 ```
 
 **System prompt** — as instruções built-in do Claude Code: como pedir confirmação antes de ações destrutivas, quais tools usar para quê, como formatar respostas. Você não edita isso diretamente.

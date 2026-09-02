@@ -398,8 +398,9 @@ Lookahead verifica se um padrão existe *após* a posição atual, sem consumir 
 ## Diagrama: do texto ao resultado
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     INPUT["String de entrada\n(imutável, UTF-16)"]
 
     subgraph METODOS["Métodos de String"]
@@ -433,11 +434,11 @@ flowchart LR
     TEMPLATE --> OUTPUT
     REGEX --> OUTPUT
 
-    style INPUT fill:#4A90D9,color:#fff
-    style OUTPUT fill:#4A90D9,color:#fff
-    style METODOS fill:#f0f4ff
-    style TEMPLATE fill:#f0f4ff
-    style REGEX fill:#f0f4ff
+    class INPUT neutro
+    class OUTPUT neutro
+    class METODOS marca
+    class TEMPLATE marca
+    class REGEX marca
 ```
 
 ---

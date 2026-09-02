@@ -32,15 +32,16 @@ O Proxy resolve pondo um objeto **no meio do caminho**: o cliente pensa que cham
 ## A ideia
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     C[Cliente] -->|mesma interface| P[Proxy]
     P -->|"antes: abre tx / checa cache"| R[Objeto real]
     P -->|"depois: comita / grava cache"| R
 
-    style P fill:#4A90D9,color:#fff
-    style R fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
+    class P neutro
+    class R neutro
+    class C destaque
 ```
 
 Proxy e objeto real implementam a mesma interface — por isso o cliente não percebe a troca. O proxy envolve a chamada com o controle de acesso (antes/depois) e repassa ao real.

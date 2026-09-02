@@ -40,17 +40,18 @@ A palavra-chave é **chunk** (pedaço). A memória de trabalho não conta linhas
 Não existe "a" forma de ler código. Existem duas, e o profissional alterna entre elas conforme o que já sabe.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q["Preciso entender<br/>este trecho"] --> TD["TOP-DOWN<br/>(de cima pra baixo)"]
     Q --> BU["BOTTOM-UP<br/>(de baixo pra cima)"]
     TD -->|"tenho hipótese<br/>sobre o que faz"| TDB["Procuro beacons<br/>que confirmem/refutem"]
     BU -->|"não faço ideia<br/>do que faz"| BUB["Leio linha a linha,<br/>monto o sentido"]
     TDB --> M["Modelo mental"]
     BUB --> M
-    style TD fill:#4A90D9,color:#fff
-    style BU fill:#F5A623,color:#000
-    style M fill:#7ED321,color:#000
+    class TD neutro
+    class BU destaque
+    class M destaque
 ```
 
 **Top-down (de cima pra baixo):** você chega com uma *hipótese* ("isto deve ser o cálculo de frete") e lê procurando **beacons** — nomes, chamadas, estruturas que confirmam ou derrubam a hipótese. É rápido e é como especialistas leem quando reconhecem o domínio. O risco: se a hipótese estiver errada, você lê o código enviesado, encaixando o que vê na história errada.

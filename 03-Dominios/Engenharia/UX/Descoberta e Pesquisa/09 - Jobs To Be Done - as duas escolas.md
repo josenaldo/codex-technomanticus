@@ -46,8 +46,8 @@ A switch interview investiga quatro forças que empurram e puxam a decisão:
 Essa vertente é a que se encaixa em escala de um: é uma entrevista, não um survey — dá para conduzir com o mesmo roteiro de uma entrevista de descoberta comum, seguindo as mesmas regras de "passado concreto" do Mom Test.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph U["Ulwick — ODI (~1990, termo 1999)"]
         UQ["Quantitativa<br/>outcome statements + survey"]
     end
@@ -56,8 +56,8 @@ graph LR
     end
     UQ -->|"prioriza portfólio<br/>com amostra grande"| D1["Decisão de<br/>onde investir"]
     CQ -->|"revela a história<br/>de 1 troca real"| D2["Decisão de<br/>o que construir"]
-    style UQ fill:#4A90D9,color:#fff
-    style CQ fill:#4A90D9,color:#fff
+    class UQ neutro
+    class CQ neutro
 ```
 
 > [!warning] Tratar as duas escolas como um método único

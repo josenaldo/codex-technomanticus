@@ -31,8 +31,9 @@ Isso posiciona PCEP e PCAP num lugar específico do mercado de certificações: 
 ## PCEP vs PCAP: dois níveis, um só objetivo real pra quem chega até aqui
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     START["Quem já fez<br/>Galhos 1-6<br/>(núcleo da linguagem)"]
 
     START --> PCEP["PCEP-30-02<br/>Entry-Level<br/>30 itens · 4 blocos"]
@@ -40,9 +41,9 @@ flowchart LR
 
     PCEP -. "pré-requisito formal<br/>de fato, NENHUM" .-> PCAP
 
-    style START fill:#4A90D9,color:#fff
-    style PCEP fill:#F5A623,color:#000
-    style PCAP fill:#7ED321,color:#000
+    class START neutro
+    class PCEP destaque
+    class PCAP destaque
 ```
 
 O nome já entrega o nível: PCEP é *Entry-Level*, pensado pra quem está começando — variáveis, tipos primitivos, `if`/`while`/`for`, listas e strings no nível mais básico, funções simples. Nenhum dos 4 blocos do syllabus do PCEP-30-02 exige orientação a objetos, tratamento de exceções avançado ou módulos além do essencial. É a prova certa pra alguém no meio do Galho 1 desta trilha — não pra quem já terminou os Galhos 1-6.

@@ -46,6 +46,8 @@ Quatro problemas diferentes, quatro ferramentas diferentes — mas todas compart
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Preciso tipar algo que\nUnion/Generic não cobrem"] --> B{"O quê?"}
     B -->|"dict com schema fixo\n(payload JSON, API)"| C["TypedDict"]
     B -->|"parâmetro só aceita\nvalores literais específicos"| D["Literal"]
@@ -53,13 +55,13 @@ flowchart TD
     B -->|"constante que não pode\nser reatribuída"| F["Final"]
     B -->|"atributo de classe,\nnão de instância"| G["ClassVar"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
-    style G fill:#4A90D9,color:#fff
+    class A neutro
+    class B destaque
+    class C neutro
+    class D neutro
+    class E neutro
+    class F neutro
+    class G neutro
 ```
 
 ## `TypedDict`: schema estático sobre um `dict` de verdade
@@ -262,14 +264,16 @@ O ganho é exatamente o buraco da Cena 3, fechado: `UserId` e `ProductId` são, 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["UserId = NewType('UserId', int)"] --> B["Em runtime:\nUserId(42) → 42\n(função identidade, zero custo)"]
     A --> C["No checador estático:\nUserId é tipo distinto de int\ne de outros NewType sobre int"]
     C --> D["buscar_usuario(user_id: UserId)\naceita só UserId, rejeita\nint puro e ProductId"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#4A90D9,color:#fff
+    class A neutro
+    class B neutro
+    class C destaque
+    class D neutro
 ```
 
 > [!question]- Por que não usar uma subclasse de verdade (`class UserId(int): ...`) em vez de `NewType`?
@@ -378,14 +382,16 @@ Sem `ClassVar`, `@dataclass` trataria `contador_instancias: int = 0` como **mais
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Atributo anotado no\ncorpo da classe"] --> B{"ClassVar[...]?"}
     B -->|"Sim"| C["Atributo de CLASSE\ncompartilhado por todas\nas instâncias; excluído do\n__init__/__repr__/__eq__ gerados"]
     B -->|"Não"| D["Atributo de INSTÂNCIA\n(campo normal de dataclass,\nentra no __init__ gerado)"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
+    class A neutro
+    class B destaque
+    class C neutro
+    class D neutro
 ```
 
 `ClassVar` e `Final` respondem perguntas diferentes e **podem ser combinados**: `ClassVar` diz "esse atributo é da classe, não da instância"; `Final` diz "esse nome não pode ser reatribuído depois de definido". Uma constante de classe genuinamente fixa é tipicamente as duas coisas ao mesmo tempo — mas a ordem de composição importa, e a PEP 591 é explícita sobre isso:

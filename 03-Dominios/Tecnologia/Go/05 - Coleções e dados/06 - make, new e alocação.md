@@ -41,6 +41,8 @@ Só que `new` para por aí: aloca, zera, devolve ponteiro. Para a maioria dos ti
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph novo["new(T) — para qualquer T"]
         direction TB
         N1["aloca memória"] --> N2["zera"] --> N3["devolve *T"]
@@ -50,8 +52,8 @@ flowchart TB
         M1["aloca a struct de cabeçalho\n(ponteiro/len/cap ou buffer)"] --> M2["inicializa a estrutura interna\n(array subjacente, hash table, buffer de canal)"] --> M3["devolve T pronto pra uso\n(não um ponteiro)"]
     end
 
-    style N3 fill:#4A90D9,color:#fff
-    style M3 fill:#F5A623,color:#000
+    class N3 neutro
+    class M3 destaque
 ```
 
 ## Por que só slice, map e channel precisam de `make`

@@ -51,8 +51,9 @@ Antes de comparar ferramentas, vale nomear a pergunta que já foi respondida em 
 Mas nem todo problema de desacoplamento em Python é uma tarefa fire-and-forget. Às vezes você precisa de controle fino sobre roteamento de mensagens (múltiplas filas, prioridades, exchanges do tipo topic) que a abstração de tarefa esconde de propósito — aí entra **aio-pika**, falando AMQP puro. E às vezes o que você tem não é uma tarefa, é um evento de negócio que três serviços diferentes (notificações, analytics, auditoria) precisam consumir de forma independente, com possibilidade de replay — aí a ferramenta certa não é task queue nenhuma, é um cliente Kafka: **aiokafka**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Preciso tirar trabalho<br/>do caminho síncrono"] --> B{"É uma tarefa a executar<br/>uma vez, com retry,<br/>ou um fato que múltiplos<br/>consumers vão reagir/reler?"}
     B -->|"Tarefa (fire-and-forget)"| C{"Já tem RabbitMQ<br/>na stack, ou precisa<br/>de scheduling maduro<br/>(Beat)?"}
     C -->|"Sim"| D["Celery<br/>(Redis ou RabbitMQ)"]
@@ -60,10 +61,10 @@ flowchart TD
     B -->|"Controle fino direto<br/>com o broker AMQP"| F["aio-pika<br/>(assíncrono, RabbitMQ)"]
     B -->|"Fato/evento — múltiplos<br/>consumer groups, replay"| G["aiokafka / kafka-python<br/>(event streaming)"]
 
-    style D fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style F fill:#F5A623,color:#000
-    style G fill:#F5A623,color:#000
+    class D neutro
+    class E neutro
+    class F destaque
+    class G destaque
 ```
 
 **Resumo em uma frase:** se a pergunta é "quero que isso aconteça depois, sem me importar como", é task queue (Celery/RQ); se a pergunta é "quero falar com o broker diretamente, com controle total sobre roteamento ou sobre um log de eventos", é comunicação direta (aio-pika/aiokafka) — e essa segunda categoria não é "Celery mais difícil", é uma categoria de problema diferente.

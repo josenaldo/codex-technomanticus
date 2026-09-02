@@ -128,6 +128,9 @@ vllm serve meta-llama/Llama-3-70b-Instruct \
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A{Objetivo do\nself-hosting?} --> B[Prototipagem /\naprendizado]
     A --> C[Produção /\nmúltiplos usuários]
     A --> D[Performance máxima\nem CPU / Apple Silicon]
@@ -136,9 +139,9 @@ graph TD
     C --> F["vLLM\n→ continuous batching\n→ paged attention\n→ OpenAI-compatible API\n→ tensor parallelism"]
     D --> G["llama.cpp\n→ GGUF quantization\n→ Apple MLX\n→ kernels SIMD otimizados"]
 
-    style E fill:#99ccff,stroke:#0066cc
-    style F fill:#99ff99,stroke:#009900
-    style G fill:#ffcc99,stroke:#cc6600
+    class E neutro
+    class F ok
+    class G destaque
 ```
 
 ## Quando vale a pena self-host?

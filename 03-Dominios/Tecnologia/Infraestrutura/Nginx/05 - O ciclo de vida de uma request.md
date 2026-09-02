@@ -60,6 +60,10 @@ O diagrama a seguir junta a sequência inteira, marcando o laço que a fase `POS
 
 ```mermaid
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     P1["1 — POST_READ<br/>realip substitui o IP do cliente"] --> P2["2 — SERVER_REWRITE<br/>rewrite do server"]
     P2 --> P3["3 — FIND_CONFIG<br/>location é escolhido aqui"]
     P3 --> P4["4 — REWRITE<br/>rewrite do location"]
@@ -73,11 +77,11 @@ graph TB
     P9 --> P10["10 — CONTENT<br/>gera a resposta<br/>(static, proxy_pass, return)"]
     P10 --> P11["11 — LOG<br/>fora do percurso normal —<br/>roda na finalização da request"]
 
-    style P3 fill:#4A90D9,stroke:#2c5f8a,color:#fff
-    style P5 fill:#F5A623,stroke:#a66f10,color:#000
-    style P8 fill:#F5A623,stroke:#a66f10,color:#000
-    style P11 fill:#8e6fc9,stroke:#5a3f8f,color:#fff
-    style FIM fill:#7a2e2e,stroke:#c0392b,color:#fff
+    class P3 neutro
+    class P5 destaque
+    class P8 destaque
+    class P11 marca
+    class FIM falha
 ```
 
 O laço entre as fases 3, 4 e 5 é o único ponto do percurso inteiro em que a request pode "voltar": se um `rewrite` dentro do `location` muda a URI, a fase `POST_REWRITE` reencaminha a request para `FIND_CONFIG`, que escolhe um `location` novo com base na URI nova — possivelmente um `location` completamente diferente do primeiro, com seu próprio bloco de `rewrite`, que por sua vez pode mudar a URI de novo. Esse laço tem um limite explícito, e vale saber o número de cor porque ele aparece na mensagem de erro: a documentação do `ngx_http_core_module` crava **10 redirecionamentos internos por request**, justamente para impedir que uma configuração incorreta trave o worker num laço infinito. Ao estourar esse teto, o Nginx devolve **500 (Internal Server Error)** ao cliente e escreve no log de erro a mensagem `rewrite or internal redirection cycle` — que é, na prática, o nome próprio desse bug. Diante de um 500 sem nenhuma exceção correspondente do lado da aplicação, essa linha no `error_log` é o que distingue "o backend quebrou" de "a configuração do Nginx está se mordendo pelo rabo". Configurações de `rewrite` mal desenhadas — regra A reescreve para uma URI que bate no `location` de origem da regra B, que reescreve de volta para uma URI que bate no `location` de origem da regra A — são a causa mais comum desse erro, e o diagrama acima é exatamente o mapa para encontrar onde, no ciclo, esse tipo de loop nasce.

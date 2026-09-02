@@ -32,14 +32,17 @@ Go tem uma vantagem estrutural aqui que outras linguagens não têm de graça: o
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["go vet\nbugs sintáticos óbvios"] --> B["go test -race\ncorretude + data races"]
     B --> C["golangci-lint\nestilo + bugs mais sutis"]
     C --> D["go build\no binário existe"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#D0021B,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#7ED321,color:#000
+    class A neutro
+    class B falha
+    class C destaque
+    class D destaque
 ```
 
 A ordem não é arbitrária — é do mais barato e mais fundamental para o mais caro e mais superficial:

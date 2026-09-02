@@ -35,14 +35,14 @@ A resposta ingênua é adicionar uma tabela `project_members` ligando `users` a 
 Essa é a distinção que separa autenticação de **autorização multi-tenant**: autenticação prova identidade global (este é o José, dono deste e-mail); autorização multi-tenant precisa de um segundo eixo — o **contexto de tenant** — antes de decidir qualquer coisa. A WorkOS resume isso de forma direta: autenticação multi-tenant é, na prática, um processo de duas fases — primeiro provar quem você é no nível do usuário, depois entrar num **contexto de tenant** que carrega suas próprias regras de autenticação e sua própria tabela de membership[^workos-multitenant-auth]. Sem essa segunda fase explícita, todo o resto do sistema — autorização fina, isolamento de dados, auditoria — herda a ambiguidade.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Modelo ingênuo:<br/>users → projects direto"] -->|"cliente pede<br/>time compartilhado"| B["project_members<br/>(role por projeto)"]
     B -->|"segundo cliente<br/>chega"| C["Nada impede<br/>usuário da Empresa A<br/>ver projeto da Empresa B"]
     C -->|"causa raiz"| D["Nunca existiu uma entidade<br/>'organização' — só usuário<br/>e recurso, sem fronteira"]
 
-    style C fill:#D0021B,color:#fff
-    style D fill:#D0021B,color:#fff
+    class C falha
+    class D falha
 ```
 
 O resto desta nota resolve essa lacuna: como modelar a organização como cidadã de primeira classe, e como blindar as três camadas onde a fronteira de tenant precisa ser reforçada — dados, identidade e propagação de contexto.
@@ -58,7 +58,6 @@ O padrão que o mercado convergiu — Slack, GitHub, Notion, Linear, e os proved
 Essa terceira tabela é o que resolve, de saída, o problema que abriu a nota: a mesma pessoa pode ter uma linha em `memberships` como `admin` na Empresa A e outra linha como `viewer` na Empresa B — sem duplicar `users`, sem colisão de e-mail, sem gambiarra. Uma descrição direta desse padrão: "uma tabela `users` guarda a identidade global; uma tabela `organizations` guarda a organização; uma tabela `memberships` carrega o vínculo usuário-organização mais o papel daquele usuário em cada organização — permitindo que a mesma pessoa tenha papéis diferentes em organizações diferentes sem contas duplicadas"[^ssojet-multitenant]. É essencialmente o mesmo desenho relacional que uma solução *many-to-many* clássica de banco de dados, só que aplicado à fronteira mais sensível do sistema: quem pode fazer o quê, em nome de qual empresa.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 erDiagram
     USERS ||--o{ MEMBERSHIPS : "tem"
     ORGANIZATIONS ||--o{ MEMBERSHIPS : "tem"
@@ -109,7 +108,6 @@ Padrões que aparecem em produtos maduros de 2026 valem menção porque resolvem
 O outro lado da moeda — o usuário que já pertence a várias organizações, como a Maria do exemplo, ou como qualquer pessoa que usa Slack ou Notion profissionalmente e tem uma conta pessoal separada — é o **org switcher**: uma UI (geralmente um dropdown no topo da aplicação) que troca o contexto ativo sem exigir novo login. O Slack deixa a pessoa alternar entre workspaces a partir de um ícone dedicado, mantendo sessões simultâneas; o Notion resolve de forma parecida, com um seletor de workspace que também dá acesso a "Manage organization" quando aplicável[^workos-slack-notion]. Tecnicamente, trocar de organização é trocar **qual token/sessão está ativo** — não um novo login contra o IdP (a pessoa já provou quem é), mas uma nova emissão de token com um `organization_id`/`tenant_id` diferente embutido, e com o conjunto de permissões recalculado a partir da `membership` daquela organização específica.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Admin as Admin (Acme)
     participant M as Maria (convidada)
@@ -150,8 +148,9 @@ O **Postgres Row-Level Security (RLS)** existe justamente para tirar essa respon
 RLS não é bala de prata, porém. Duas ressalvas documentadas merecem peso: primeiro, RLS depende de a aplicação nunca rodar como usuário superuser do banco — superusers ignoram RLS por definição, então o desenho exige um role de aplicação com privilégios restritos, e frequentemente `FORCE ROW LEVEL SECURITY` explícito, já que o dono da tabela também escapa das políticas por padrão[^crunchy-rls-owner]. Segundo, e mais sério: uma CVE documentada em 2024 (CVE-2024-10976) mostrou que, sob certas condições de *connection pooling*, mudanças de identidade de usuário no meio de uma sessão reutilizada podiam fazer políticas RLS ignorarem a troca de contexto — potencialmente devolvendo linhas do tenant errado[^cve-rls]. A lição prática não é "não use RLS" — é que RLS deve ser **uma camada de defesa em profundidade, nunca a única**: a aplicação continua responsável por filtrar corretamente e por gerenciar o pooling de conexões com cuidado extra em cenários multi-tenant, exatamente como o próprio princípio de defesa em profundidade recomenda.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph DB["Banco por tenant"]
         direction TB
         D1["Isolamento mais forte"]
@@ -171,9 +170,9 @@ graph LR
         R3["1 migração, todos tenants"]
     end
 
-    style DB fill:#4A90D9,color:#fff
-    style Schema fill:#F5A623,color:#000
-    style RLS fill:#F5A623,color:#000
+    class DB neutro
+    class Schema destaque
+    class RLS destaque
 ```
 
 > [!warning] Hybrid tenancy — o padrão real de produção em 2026
@@ -192,8 +191,9 @@ A alternativa, introduzida no Keycloak 25 e amadurecida na linha 26.x, é a feat
 A recomendação predominante para a maioria dos SaaS B2B em 2026 é: **Organizations como padrão**. Autentique cada tenant contra sua própria fonte de identidade, roteie por domínio de e-mail, e opere um realm só. Reserve realm-por-tenant para quando os tenants exigem isolamento rígido de configuração, tema ou administração — cenário raro fora de setups híbridos (um realm interno para funcionários da própria empresa dona do SaaS, separado do realm de clientes, que por sua vez usa Organizations para multi-tenancy leve entre os clientes)[^skycloak-guide].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph RPT["Realm por tenant"]
         direction TB
         RP1["Isolamento total<br/>de config/tema/fluxos"]
@@ -208,8 +208,8 @@ graph TD
         O4["Usuário em N orgs<br/>(desde 26.x)"]
     end
 
-    style RPT fill:#F5A623,color:#000
-    style Org fill:#4A90D9,color:#fff
+    class RPT destaque
+    class Org neutro
 ```
 
 > [!info] Versão em aberto
@@ -226,7 +226,6 @@ Resolvidos "onde os dados moram" e "onde a identidade mora", falta a pergunta qu
 A combinação recomendada para B2B é **subdomínio para descoberta + claim no token para propagação de confiança**[^multi-tenant-saas-jwt]. O ponto que separa um desenho seguro de um vulnerável é onde a **decisão de autorização** se apoia: ela precisa se apoiar exclusivamente no claim assinado, nunca no header solto. Uma fonte especializada no assunto descreve o padrão de falha real, não teórico: "raramente é uma assinatura quebrada. É um serviço que assina o token corretamente, mas depois deriva o tenant de outro lugar que não o payload verificado — um header `X-Tenant-ID`, um segmento de path, um lookup em cache indexado por `sub` — e um único descompasso concede ao Tenant A uma query que devolve linhas do Tenant B"[^multi-tenant-saas-jwt-failure]. Em outras palavras: o header pode existir como conveniência (ex.: numa arquitetura de microserviços internos, onde um gateway já validou o token e repassa o `tenant_id` extraído dele para os serviços downstream, que confiam no gateway como perímetro de confiança) — mas nunca pode ser a fonte de verdade final se o serviço em questão está exposto diretamente, sem esse gateway confiável na frente.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant U as acme.projeta.com
     participant GW as Gateway/BFF

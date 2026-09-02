@@ -52,16 +52,16 @@ A regra:
 | **`toStrictEqual`** | estrutura + tipos + `undefined` + sparse arrays | quando o tipo e campos `undefined` importam |
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["O que comparo?"] --> B{primitivo?}
     B -->|sim| C[toBe]
     B -->|não, é objeto/array| D{tipos e undefined importam?}
     D -->|não| E[toEqual]
     D -->|sim| F[toStrictEqual]
-    style C fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
+    class C neutro
+    class E neutro
+    class F neutro
 ```
 
 > [!question]- Por que `toEqual` "ignora `undefined`" e isso importa?

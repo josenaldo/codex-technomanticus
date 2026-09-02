@@ -37,15 +37,16 @@ test('serializa o pedido', () => {
 Na **primeira** execução, o Vitest grava a saída num arquivo `__snapshots__/arquivo.test.ts.snap` e o teste passa. Nas execuções **seguintes**, ele compara a saída atual com o `.snap` guardado:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[1ª execução] -->|grava| B[.snap]
     C[execuções seguintes] -->|compara com| B
     C --> D{igual?}
     D -->|sim| E[✅ passa]
     D -->|não| F["❌ falha: mudou<br/>(bug OU mudança intencional?)"]
-    style E fill:#4A90D9,color:#fff
-    style F fill:#F5A623,color:#000
+    class E neutro
+    class F destaque
 ```
 
 Quando falha, você decide: se a mudança é **um bug**, conserte o código; se é **intencional**, atualize o snapshot com `vitest -u` (update). Há duas formas:

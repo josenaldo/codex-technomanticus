@@ -35,13 +35,13 @@ O problema é que tudo que passa pela barra de endereço do navegador **não é 
 A pergunta que o design do OAuth moderno responde é: **como delegar acesso sem nunca deixar o segredo de verdade (o token) passar pelo canal hostil (o navegador)?** A resposta é o **Authorization Code Flow**: em vez do token, o front channel só carrega um **código** — um vale-presente de uso único, sem valor sozinho, que só pode ser trocado pelo token de verdade numa chamada que o navegador nunca vê.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Implicit flow<br/>(morto no 2.1)"] -->|"token no fragment<br/>da URL"| B["Histórico do browser<br/>Logs / Referer<br/>Scripts de 3ºs"]
     B -->|"vazamento"| C["Token roubado<br/>sem precisar<br/>de segredo algum"]
 
-    style A fill:#D0021B,color:#fff
-    style C fill:#D0021B,color:#fff
+    class A falha
+    class C falha
 ```
 
 Em uma frase: **o token nunca deveria tocar o navegador — só um código descartável deveria, e mesmo esse código precisa de proteção extra.**
@@ -60,7 +60,6 @@ O Authorization Code Flow usa os dois, cada um para o que ele faz bem: o **front
 Vamos seguir uma requisição completa, do clique do usuário até o app ter um token utilizável. O exemplo é uma SPA (`app.exemplo.com`) delegando acesso à API `api.exemplo.com`, autenticando via `auth.exemplo.com` — os papéis (resource owner, client, authorization server, resource server) foram definidos em [[01 - OAuth — o problema da delegação]].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant U as Usuário (browser)
     participant C as Client (SPA)
@@ -155,7 +154,6 @@ PKCE resolve isso trocando um segredo *estático* (que teria que estar embutido 
 A RFC 7636 define dois métodos de transformação do `code_verifier` em `code_challenge`: `plain` (o challenge é literalmente igual ao verifier, sem transformação) e `S256` (o challenge é o hash SHA-256 do verifier, em Base64-URL)[^rfc7636-s256]. Na prática, `plain` só existe para dispositivos tão limitados que não conseguem nem calcular um SHA-256 — e ele **não protege nada contra observadores do front channel**: se um atacante vir o `code_challenge` na URL de `/authorize` (que trafega em texto, mesmo sobre HTTPS, para quem tiver acesso ao dispositivo ou logs) e o modo for `plain`, ele já tem o `code_verifier` também, porque são o mesmo valor. Só `S256` garante que ver o challenge não revela o verifier — é uma função de mão única. Por isso o OAuth 2.1 declara `S256` **Mandatory To Implement (MTI)** no servidor, e a RFC 9700 recomenda que clientes usem exclusivamente métodos que não exponham o verifier na requisição de autorização — hoje, isso significa `S256`, ponto final[^rfc9700-s256].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant C as Client legítimo
     participant Atk as App malicioso<br/>(mesmo dispositivo)
@@ -201,8 +199,9 @@ Um caso documentado publicamente envolveu o fluxo OAuth do Booking.com contra o 
 Já vimos por que o implicit flow (`response_type=token`) expõe o token ao front channel sem necessidade. Vale fechar comparando os dois modelos lado a lado, porque a diferença estrutural — não só "um é mais seguro" — é o que costuma aparecer em entrevista.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Implicit["Implicit flow — morto no OAuth 2.1"]
         I1["Front channel único"] --> I2["Token no fragment da URL"]
         I2 --> I3["Sem client authentication"]
@@ -214,8 +213,8 @@ graph TD
         C3 --> C4["Refresh token rotation possível"]
     end
 
-    style Implicit fill:#D0021B,color:#fff
-    style Code fill:#4A90D9,color:#fff
+    class Implicit falha
+    class Code neutro
 ```
 
 O implicit flow existiu porque, no início dos anos 2010, SPAs não tinham como fazer uma chamada POST cross-origin autenticada de forma confiável — CORS ainda era inconsistente entre navegadores, e a "solução" foi eliminar a etapa de troca (o back channel) inteiramente, aceitando o token direto no redirect[^implicit-cors]. Hoje CORS é padrão universal, e essa justificativa não existe mais: toda SPA moderna consegue fazer o `POST /token` do passo 9 sem problema. O OAuth 2.1 formaliza essa mudança removendo o implicit flow do texto da especificação — ele "é omitido desta especificação", nas palavras do próprio draft[^oauth21-omitted] — e exigindo Authorization Code + PKCE de todo cliente, público ou confidencial.

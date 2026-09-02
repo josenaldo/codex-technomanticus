@@ -67,15 +67,17 @@ Claude Code tem o sistema de hierarquia mais sofisticado — configs são empilh
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["Global: ~/.claude/CLAUDE.md\n(preferências pessoais do usuário)"] --> B
     B["Projeto: ./CLAUDE.md\n(regras do time + stack + proibições)"] --> C
     C["Módulo: ./src/auth/CLAUDE.md\n(regras específicas do módulo)"] --> D
     D["Sessão: instruções no chat\n(instrução pontual da task atual)"]
 
-    style A fill:#e8e8e8
-    style B fill:#c8d8f8
-    style C fill:#b8c8e8
-    style D fill:#a8b8d8
+    class A neutro
+    class B marca
+    class C neutro
+    class D marca
 ```
 
 Configs mais específicas sobrescrevem as mais gerais. Um `CLAUDE.md` em `/src/auth/` pode dizer "aqui usamos sempre bcrypt com 12 rounds" — e essa instrução vai prevalecer sobre qualquer menção mais genérica de criptografia no arquivo raiz.

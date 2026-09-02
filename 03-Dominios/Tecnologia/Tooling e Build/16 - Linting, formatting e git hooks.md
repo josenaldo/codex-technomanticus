@@ -36,6 +36,8 @@ Hoje, em 2026, esse consenso se solidificou de formas diferentes: o Biome baniu 
 
 ```mermaid
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     SRC["Código-fonte"]
 
     subgraph "Linting — qualidade e bugs"
@@ -55,14 +57,14 @@ graph TD
     SRC --> L1 & L2 & L3 & L4
     SRC --> F1 & F2 & F3 & F4
 
-    style L1 fill:#3a1a1a,color:#fff
-    style L2 fill:#3a1a1a,color:#fff
-    style L3 fill:#3a1a1a,color:#fff
-    style L4 fill:#3a1a1a,color:#fff
-    style F1 fill:#1a2f3a,color:#fff
-    style F2 fill:#1a2f3a,color:#fff
-    style F3 fill:#1a2f3a,color:#fff
-    style F4 fill:#1a2f3a,color:#fff
+    class L1 falha
+    class L2 falha
+    class L3 falha
+    class L4 falha
+    class F1 neutro
+    class F2 neutro
+    class F3 neutro
+    class F4 neutro
 ```
 
 ---
@@ -219,6 +221,7 @@ O custo é real: regras type-aware exigem que o TypeScript leia e analise o proj
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     SRC["Arquivo .ts/.tsx"]
 
     subgraph "Lint sem type-info (rápido)"
@@ -235,8 +238,8 @@ flowchart TD
     SRC --> PARSE --> SYNRULE
     SRC --> TS --> TYPED --> TYPERULE
 
-    style TYPERULE fill:#1e3a5f,color:#fff
-    style TS fill:#1e3a5f,color:#fff
+    class TYPERULE neutro
+    class TS neutro
 ```
 
 O preset `tseslint.configs.recommendedTypeChecked` ativa apenas as regras type-aware consideradas seguras para a maioria dos projetos. O `strictTypeChecked` adiciona mais regras que podem gerar falsos positivos em codebases que usam `any` intencionalmente em pontos de integração.
@@ -321,6 +324,8 @@ O `projectService: true` é a opção correta para novos projetos desde typescri
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "project: './tsconfig.json' — legado"
         E1["ESLint cria tsc program\nindependente"]
         T1["TypeScript #1\n(editor)"]
@@ -334,8 +339,8 @@ flowchart LR
     T1 -.->|"não compartilha"| T2
     E2 --> T3
 
-    style T2 fill:#3a1a1a,color:#fff
-    style T3 fill:#1e3a1e,color:#fff
+    class T2 falha
+    class T3 ok
 ```
 
 ---
@@ -913,6 +918,8 @@ A estratégia que mais cresce em times de alta performance em 2026:
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Pre-commit (rápido)"
         OX["oxlint\n838 regras nativas\n50-100× mais rápido"]
     end
@@ -929,9 +936,9 @@ flowchart LR
     CI --> OX2 & ESL
     IDE -.->|"feedback contínuo"| SRC["código"]
 
-    style OX fill:#3a2a00,color:#fff
-    style OX2 fill:#3a2a00,color:#fff
-    style ESL fill:#1e3a5f,color:#fff
+    class OX destaque
+    class OX2 destaque
+    class ESL neutro
 ```
 
 O raciocínio: o desenvolvedor recebe feedback de tipo no editor (IDE com ESLint + typescript-eslint). O pre-commit roda apenas oxlint — rápido o suficiente para ser tolerado. O CI roda oxlint + ESLint mínimo como gate definitivo. Ninguém espera 60 segundos em nenhum ponto do fluxo.
@@ -957,6 +964,9 @@ A escolha não é óbvia porque as ferramentas estão em momentos diferentes de 
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     START["Novo projeto ou migração\nde ferramental de lint/format"]
 
     Q1{"Precisa de\ntype-aware linting?\n(no-floating-promises, etc.)"}
@@ -985,9 +995,9 @@ flowchart TD
 
     A4 -.->|"Se precisar de\ntype-aware depois"| A5
 
-    style A1 fill:#1e3a5f,color:#fff
-    style A4 fill:#004d20,color:#fff
-    style A3 fill:#3a2a00,color:#fff
+    class A1 neutro
+    class A4 ok
+    class A3 destaque
 ```
 
 Em resumo: projetos TypeScript sérios com preocupação com bugs async/await ainda precisam do ESLint com typescript-eslint. Projetos que querem simplicidade máxima e não dependem de type-aware linting podem migrar para Biome. oxlint como drop-in para a maioria das regras ESLint + complemento para type-aware é a aposta de alta performance para grandes codebases.

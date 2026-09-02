@@ -28,6 +28,9 @@ aliases:
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     REQ["Request\n(user + resource + action)"]
 
     subgraph RBAC ["RBAC — verificação de papel"]
@@ -52,10 +55,10 @@ flowchart TD
     REQ --> R1
     R_OK --> A1
 
-    style A_DENY fill:#D0021B,color:#fff
-    style R_DENY fill:#F5A623,color:#000
-    style A_OK fill:#4A90D9,color:#fff
-    style R_OK fill:#4A90D9,color:#fff
+    class A_DENY falha
+    class R_DENY destaque
+    class A_OK neutro
+    class R_OK neutro
 ```
 
 ## O que é

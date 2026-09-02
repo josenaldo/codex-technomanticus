@@ -44,13 +44,16 @@ Isso não é peculiaridade de Kafka ou NATS — é a mesma physics que a [[03-Do
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[At-most-once] -->|"ACK antes\nde processar"| A2["risco: perde mensagem"]
     B[At-least-once] -->|"ACK depois\nde processar"| B2["risco: duplica mensagem"]
     C[Exactly-once] -->|"transação distribuída\nproduzir+consumir"| C2["risco: custo/latência/\nescopo limitado"]
 
-    style A fill:#D9534F,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
+    class A falha
+    class B destaque
+    class C neutro
 ```
 
 - **At-most-once**: o produtor envia e não confirma (fire-and-forget), ou o consumidor faz ACK antes de processar. Zero duplicatas, mas mensagens somem sempre que algo falha no meio. Raramente é a escolha certa fora de métricas/telemetria onde perder amostras é tolerável.
@@ -145,6 +148,8 @@ O **padrão outbox** resolve isso trocando a segunda escrita, arriscada, por uma
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Tx["1. Transação única no banco"]
         direction LR
         T1["INSERT pedido\n(status=pago)"] --> T2["INSERT outbox\n(evento pendente)"]
@@ -153,9 +158,9 @@ flowchart TB
     Poller --> Broker["3. Publica no Kafka/NATS"]
     Broker --> Mark["4. Marca outbox\ncomo publicado"]
 
-    style Tx fill:#4A90D9,color:#fff
-    style Poller fill:#F5A623,color:#000
-    style Broker fill:#7ED321,color:#000
+    class Tx neutro
+    class Poller destaque
+    class Broker destaque
 ```
 
 A ideia: em vez de publicar direto no broker dentro do fluxo de request, grave o evento numa tabela `outbox` **na mesma transação** que grava o estado de negócio. Como é a mesma transação, ou os dois `INSERT`s commitam juntos, ou nenhum commita — sem janela de inconsistência. Um processo separado (o *relay* ou *poller*, às vezes implementado via CDC — Change Data Capture, com Debezium lendo o WAL do Postgres) lê a tabela outbox e publica no broker de fato, marcando cada linha como publicada depois do ACK.

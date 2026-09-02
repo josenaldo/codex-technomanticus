@@ -57,6 +57,8 @@ Uma requisição HTTP sobre TCP não é uma operação isolada e barata — ante
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph SemPool["Sem reutilizar sessão — uma ClientSession por requisição"]
         R1["Requisição 1"] --> H1["TCP handshake<br/>+ TLS handshake"]
         R2["Requisição 2"] --> H2["TCP handshake<br/>+ TLS handshake"]
@@ -75,11 +77,11 @@ flowchart TB
         Pool --> DC["dados"]
     end
 
-    style H1 fill:#D0021B,color:#fff
-    style H2 fill:#D0021B,color:#fff
-    style H3 fill:#D0021B,color:#fff
-    style HA fill:#D0021B,color:#fff
-    style Pool fill:#7ED321,color:#000
+    class H1 falha
+    class H2 falha
+    class H3 falha
+    class HA falha
+    class Pool destaque
 ```
 
 O fix do bug de abertura é criar **uma** `ClientSession` fora do loop de requisições, e passá-la (ou reutilizá-la via closure/parâmetro) para cada chamada individual:

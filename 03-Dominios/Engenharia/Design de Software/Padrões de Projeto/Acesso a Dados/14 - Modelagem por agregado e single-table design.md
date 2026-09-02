@@ -36,8 +36,9 @@ O NoSQL de alta escala (DynamoDB, Cassandra) **proíbe** o join — porque join 
 A peça conceitual que organiza essa inversão é o **agregado** do [[03 - Domain Model|DDD]]: um grupo de objetos que formam uma unidade — um `Pedido` **com** seus `Itens` — tratado como um todo, com uma **raiz** (o `Pedido`) por onde tudo é acessado, e uma **fronteira de consistência** (você salva o agregado inteiro numa operação atômica). Fowler chama os bancos NoSQL de documento/chave-valor/coluna de **aggregate-oriented databases** justamente por isso: eles armazenam **um agregado por unidade**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph REL["Relacional — normalizado"]
         P1["pedidos"] -.join.-> I1["itens"]
         P1 -.join.-> C1["clientes"]
@@ -46,8 +47,8 @@ graph LR
         D["{ pedido, itens:[...],<br/>cliente:{...} }"]
     end
 
-    style D fill:#4A90D9,color:#fff
-    style P1 fill:#F5A623,color:#000
+    class D neutro
+    class P1 destaque
 ```
 
 No relacional, o pedido vive espalhado em três tabelas que o join reconstitui. Num banco de documentos, o agregado inteiro é **um documento** — você lê o pedido com itens e cliente numa **única** operação, sem join. Guardou junto o que lê junto. A regra de ouro é essa: **a fronteira do agregado é a fronteira do documento**.

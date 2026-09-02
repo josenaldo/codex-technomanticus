@@ -46,17 +46,18 @@ Esse é o modo de falha característico do padrão, e ele tem nome: **tempestade
 **Jitter** — aleatorizar o intervalo. Esta é a correção que mais falta e a menos intuitiva:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     F["Falha atinge<br/>1000 clientes ao mesmo tempo"] --> S["<b>Sem jitter</b><br/>todos esperam exatamente 200ms"]
     F --> J["<b>Com jitter</b><br/>cada um espera 0-200ms<br/>aleatoriamente"]
     S --> P["1000 requisições<br/>no MESMO instante<br/>⇒ novo pico, nova falha"]
     J --> D["carga distribuída<br/>no intervalo<br/>⇒ alvo consegue drenar"]
 
-    style S fill:#D0021B,color:#fff
-    style P fill:#D0021B,color:#fff
-    style J fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
+    class S falha
+    class P falha
+    class J neutro
+    class D neutro
 ```
 
 Sem jitter, os clientes que falharam juntos **voltam juntos** — o recuo exponencial apenas move o pico para frente, sincronizado. É um efeito de rebanho: todos os relógios apontam para o mesmo instante. Com aleatorização, a mesma quantidade de tentativas chega distribuída, e o alvo consegue processá-las.

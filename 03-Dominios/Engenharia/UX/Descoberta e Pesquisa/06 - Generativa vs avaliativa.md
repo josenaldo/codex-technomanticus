@@ -37,14 +37,14 @@ A distinção entre pesquisa generativa e avaliativa é terminologia consolidada
 O ponto que a tabela não mostra sozinha: as duas fases não competem pelo mesmo orçamento de tempo — elas resolvem problemas diferentes, na ordem certa. Fazer avaliativa sem ter feito generativa antes é como revisar a ortografia de um relatório que responde à pergunta errada. Vai sair bem escrito. Vai continuar errado.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Generativa<br/>qual é o problema?"] --> B["Solução desenhada"]
     B --> C["Avaliativa<br/>a solução funciona?"]
     C -->|"não funciona"| B
     C -->|"funciona, mas surge<br/>problema novo"| A
-    style A fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
+    class A neutro
+    class C neutro
 ```
 
 O ciclo não termina numa flecha só. Uma avaliação pode confirmar que a solução funciona *para o problema que ela foi desenhada para resolver* — e, ao mesmo tempo, revelar um problema novo, adjacente, que pede uma rodada generativa de novo. É o que aconteceria no cenário de abertura se, depois de descobrir o filtro por período customizado, o cliente perguntasse "e por que ninguém consegue salvar um filtro para reusar depois?" — pergunta nova, generativa de novo.

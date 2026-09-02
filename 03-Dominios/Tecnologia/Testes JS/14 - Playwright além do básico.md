@@ -63,16 +63,16 @@ await expect(page.getByText('Falha ao carregar')).toBeVisible();
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[Playwright além do E2E] --> B["storageState<br/>login 1x, reusa"]
     A --> C["page.route<br/>mockar rede no browser"]
     A --> D["toHaveScreenshot<br/>regressão visual"]
     A --> E["component testing<br/>browser real, não jsdom"]
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
+    class B neutro
+    class C neutro
+    class D neutro
+    class E neutro
 ```
 
 > [!question]- Uso `page.route` do Playwright ou reuso o MSW (nota 09) no E2E?

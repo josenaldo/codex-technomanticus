@@ -59,6 +59,8 @@ Profilers de CPU se dividem em duas famílias com trade-offs opostos, e a escolh
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Det["Profiling determinístico — cProfile"]
         direction TB
         D1["Toda chamada de função"] --> D2["Gancho: registra entrada,\ntempo, argumentos de contexto"]
@@ -73,13 +75,13 @@ flowchart TB
         S2 --> S3["Acumula amostras\n(histograma estatístico)"]
     end
 
-    style D1 fill:#4A90D9,color:#fff
-    style D2 fill:#F5A623,color:#000
-    style D3 fill:#4A90D9,color:#fff
-    style D4 fill:#F5A623,color:#000
-    style S1 fill:#4A90D9,color:#fff
-    style S2 fill:#4A90D9,color:#fff
-    style S3 fill:#4A90D9,color:#fff
+    class D1 neutro
+    class D2 destaque
+    class D3 neutro
+    class D4 destaque
+    class S1 neutro
+    class S2 neutro
+    class S3 neutro
 ```
 
 > [!question]- Se amostragem é "só uma aproximação estatística", por que confiar nela mais que a exatidão do profiling determinístico?
@@ -311,6 +313,8 @@ Rodando com `python -m memory_profiler script.py`, a saída anota, linha a linha
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Start["Preciso investigar performance"] --> Tipo{"O problema é tempo (CPU)\nou memória?"}
 
     Tipo -- Tempo --> Onde{"Onde estou rodando isso?"}
@@ -321,14 +325,14 @@ flowchart TD
     Escopo -- "Onde no código está\no crescimento (vazamento)?" --> Tmalloc["tracemalloc\ntake_snapshot() + compare_to()"]
     Escopo -- "Qual linha específica\nconsome mais memória?" --> MemProf["memory_profiler\n@profile linha a linha"]
 
-    style Start fill:#4A90D9,color:#fff
-    style Tipo fill:#4A90D9,color:#fff
-    style Onde fill:#4A90D9,color:#fff
-    style CProf fill:#F5A623,color:#000
-    style PySpy fill:#F5A623,color:#000
-    style Escopo fill:#4A90D9,color:#fff
-    style Tmalloc fill:#F5A623,color:#000
-    style MemProf fill:#F5A623,color:#000
+    class Start neutro
+    class Tipo neutro
+    class Onde neutro
+    class CProf destaque
+    class PySpy destaque
+    class Escopo neutro
+    class Tmalloc destaque
+    class MemProf destaque
 ```
 
 | Cenário | Ferramenta | Por quê |

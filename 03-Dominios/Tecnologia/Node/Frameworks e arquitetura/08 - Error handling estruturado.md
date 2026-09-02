@@ -119,6 +119,9 @@ app.onError((err, c) => {
 
 ```mermaid
 flowchart TD
+    classDef blue fill:#4A90D9,color:#fff,stroke:#4A90D9
+    classDef amber fill:#F5A623,color:#fff,stroke:#F5A623
+    classDef red fill:#D0021B,color:#fff,stroke:#D0021B
     thrown([Exceção lançada]) --> classify{Classificar}:::amber
     classify -->|AppError / HttpError| typed[Erro tipado]:::blue
     classify -->|Error genérico / unknown| untyped[Erro não classificado]:::red
@@ -127,9 +130,6 @@ flowchart TD
     specific --> resp["Problem Details\napplication/problem+json"]:::blue
     generic --> resp
 
-    classDef blue fill:#4A90D9,color:#fff,stroke:#4A90D9
-    classDef amber fill:#F5A623,color:#fff,stroke:#F5A623
-    classDef red fill:#D0021B,color:#fff,stroke:#D0021B
 ```
 
 Taxonomy prática:

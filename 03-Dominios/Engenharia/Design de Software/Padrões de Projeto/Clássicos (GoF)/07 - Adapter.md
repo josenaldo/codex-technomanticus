@@ -35,16 +35,17 @@ O ganho é de **contenção**: todo o conhecimento sobre o Stripe fica num arqui
 ## A ideia
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     C[Domínio] -->|"charge(Money, id)"| I{{"«sua interface»<br/>PaymentGateway"}}
     A[StripeAdapter] -.implementa.-> I
     A -->|"createCharge(cents, ...)"| S[StripeClient<br/>SDK de terceiros]
 
-    style I fill:#4A90D9,color:#fff
-    style A fill:#4A90D9,color:#fff
-    style S fill:#F5A623,color:#000
-    style C fill:#F5A623,color:#000
+    class I neutro
+    class A neutro
+    class S destaque
+    class C destaque
 ```
 
 O domínio depende só da **sua** interface (azul). O adapter é o único ponto que conhece o SDK (âmbar) e faz a tradução de vocabulário na fronteira.

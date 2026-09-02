@@ -25,14 +25,14 @@ Imagine que você acabou de terminar o fluxo de checkout de um produto B2B e que
 Jakob Nielsen — o mesmo autor das [[03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental/03 - As 10 heurísticas de Nielsen|10 heurísticas]] que dão vocabulário para nomear o que um teste guerrilha encontra — com base num estudo anterior com **Thomas Landauer** (Nielsen, J. e Landauer, T.K., *A Mathematical Model of the Finding of Usability Problems*, 1993), publicou em 2000 um artigo que se tornou um dos mais citados (e mal citados) da área: com 5 usuários testando um design, você tipicamente descobre cerca de **85% dos problemas de usabilidade** existentes. O modelo matemático por trás disso: cada usuário adicional revela problemas novos, mas com retorno decrescente — o primeiro usuário revela boa parte dos problemas óbvios, o segundo revela menos problemas novos, e assim por diante, até que testar mais gente custe mais do que revela.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     U1["1 usuário<br/>~31%"] --> U2["+2 usuários<br/>~55%"]
     U2 --> U5["+3 usuários<br/>(total 5)<br/>~85%"]
     U5 -->|"1ª rodada"| R1["Corrigir problemas<br/>encontrados"]
     R1 -->|"2ª e 3ª rodadas<br/>de 5 (Nielsen)"| U15["Total 15 usuários<br/>~perto de 100%"]
-    style U5 fill:#4A90D9,color:#fff
-    style U15 fill:#4A90D9,color:#fff
+    class U5 neutro
+    class U15 neutro
 ```
 
 O padrão matemático explica por que 5 é o ponto de maior retorno-por-esforço para uma **primeira rodada** — mas essa é exatamente a parte da recomendação original que se perdeu na repetição popular do "só precisa de 5". A curva não para nos 85%; ela continua subindo com mais usuários, só que mais devagar.

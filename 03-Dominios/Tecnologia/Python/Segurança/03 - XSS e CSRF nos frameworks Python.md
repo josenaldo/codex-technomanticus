@@ -89,7 +89,6 @@ qualquer pessoa que clique nesse link específico executa o script — mas só e
 Já demonstrado no incidente de abertura: o **XSS armazenado** (*stored XSS*) persiste o payload em algum lugar que o servidor depois renderiza para outros usuários — um comentário, uma bio, o nome de um produto num marketplace, uma avaliação. É estruturalmente mais grave que o refletido por dois motivos: não exige engenharia social por vítima (basta visitar uma página que já existe) e escala automaticamente — um único payload injetado ataca todo mundo que visualizar aquele conteúdo, indefinidamente, até alguém limpar o banco.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#D0021B", "primaryBorderColor": "#8B0000", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant A as Atacante
     participant S as Servidor (Django)
@@ -218,11 +217,13 @@ O navegador só interpreta uma resposta como HTML executável se o `Content-Type
 
 ```mermaid
 graph LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Payload malicioso salvo:<br/>'&lt;script&gt;roubo&lt;/script&gt;'"] --> B{"Como a resposta<br/>é servida?"}
     B -->|"Content-Type: application/json<br/>(FastAPI/DRF puro)"| C["Navegador trata como STRING<br/>dentro de um objeto — não executa"]
     B -->|"Content-Type: text/html<br/>(template server-rendered)"| D["Navegador PODE executar,<br/>se não estiver escapado"]
-    style C fill:#2d7a4a,color:#fff
-    style D fill:#D0021B,color:#fff
+    class C ok
+    class D falha
 ```
 
 ### Onde o risco reaparece — e de quem é a responsabilidade
@@ -241,7 +242,6 @@ Vale nomear, por completude, que existe uma variante ainda mais rara de XSS em A
 O ataque clássico, num sistema Django server-rendered autenticado por sessão:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#D0021B", "primaryBorderColor": "#8B0000", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant V as Vítima (logada em banco.exemplo)
     participant M as site-malicioso.com
@@ -335,7 +335,6 @@ CSRF funciona porque o navegador tem uma regra específica, e só uma: **anexar 
 3. Uma requisição `fetch()`/`XMLHttpRequest` disparada por JavaScript de outra origem **poderia**, em teoria, tentar setar um header `Authorization` — mas o CORS entra em ação: o navegador bloqueia a leitura da resposta (e, para métodos não-simples ou headers customizados, bloqueia até o envio da requisição sem um preflight `OPTIONS` bem-sucedido) a menos que o servidor explicitamente autorize aquela origem via `Access-Control-Allow-Origin`. Uma API bem configurada nunca autoriza `site-malicioso.com` nessa lista.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant V as Vítima (JWT guardado no frontend legítimo)
     participant M as site-malicioso.com

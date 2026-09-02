@@ -37,7 +37,6 @@ Para o encurtador, isso significa literalmente percorrer os dois endpoints:
 - `GET /{short_code}` → cliente → load balancer → app server → **consulta o cache primeiro** (é aqui que os 15.440 QPS de pico do passo 2 entram em cena) → se hit, responde direto; se miss, consulta o banco, preenche o cache, responde com redirect 302.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     C["Cliente"] --> LB["Load Balancer"]
     LB --> AS1["App Server"]
@@ -96,7 +95,6 @@ Repare na estrutura: **modo de falha nomeado** (colisão), **impacto quantificad
 Um segundo deep dive possível, sinalizado mas não expandido aqui porque pertence ao Sub-galho 2, seria o cache: qual política de eviction, como evitar *cache stampede* quando um código viraliza. O ponto do passo 5 não é esgotar um catálogo de técnicas — é escolher **um ou dois** e ir fundo de verdade, em vez de tocar em cinco superficialmente.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#F5A623", "primaryBorderColor": "#B87F1A", "lineColor": "#F5A623"}}}%%
 graph LR
     N["Números do<br/>passo 2 (QPS,<br/>storage)"] --> R["Qual componente<br/>concentra mais<br/>risco/carga?"]
     R --> DD["Deep dive:<br/>falhas + gargalos<br/>+ alternativas"]

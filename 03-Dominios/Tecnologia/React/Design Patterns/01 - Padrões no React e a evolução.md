@@ -77,7 +77,6 @@ No React, os padrões mais importantes resolvem três categorias de problemas:
 A evolução dos padrões no React não foi planejada centralmente. Foi a comunidade descobrindo problemas, propondo soluções e percebendo os novos problemas que essas soluções criavam. É uma história honesta de engenharia iterativa.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 timeline
     title Evolução dos padrões React
     2013 : React lançado (Facebook)
@@ -349,8 +348,10 @@ Leia cada entrada como um capítulo independente. As primeiras notas cobrem padr
 O catálogo organiza os padrões em três grupos funcionais:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#7ED321", "tertiaryColor": "#F5A623"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     ROOT["Design Patterns no React"] --> RL["Reuso de Lógica"]
     ROOT --> COM["Composição"]
     ROOT --> IOC["Inversão de Controle"]
@@ -367,10 +368,10 @@ graph TD
     IOC --> IOC2["Control Props\n(estado controlado externamente)"]
     IOC --> IOC3["Props Getters\n(formulários complexos)"]
 
-    style RL fill:#4A90D9,color:#fff
-    style COM fill:#7ED321,color:#fff
-    style IOC fill:#F5A623,color:#000
-    style ROOT fill:#2C3E50,color:#fff
+    class RL neutro
+    class COM destaque
+    class IOC destaque
+    class ROOT marca
 ```
 
 Os padrões "legados" (HOC e Render Props) ainda aparecem em codebases existentes e frequentemente em perguntas de entrevista — entender o mecanismo e os problemas que causavam é parte do conhecimento sênior em React.

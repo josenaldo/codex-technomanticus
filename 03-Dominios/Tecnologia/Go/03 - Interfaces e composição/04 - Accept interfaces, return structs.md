@@ -79,6 +79,8 @@ Se `NovoServico` devolve `Notificador` (uma interface), o chamador só enxerga o
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph certo["accept interfaces, return structs"]
         direction LR
         C1["chamador"] -->|"passa qualquer Sender"| C2["NovoServico(Sender) *NotificationService"]
@@ -90,8 +92,8 @@ flowchart LR
         E2 -->|"devolve só o que a interface declara"| E3["chamador vê SÓ os métodos da interface"]
     end
 
-    style C2 fill:#4A90D9,color:#fff
-    style E2 fill:#D0021B,color:#fff
+    class C2 neutro
+    class E2 falha
 ```
 
 Há um segundo custo, mais sutil: retornar interface obriga quem *escreve* a função a **adivinhar de antemão** toda operação que qualquer consumidor futuro vai precisar, e cravar isso na interface de retorno. Se a previsão falhar — e ela falha, porque requisitos mudam — a correção exige alterar a assinatura pública da interface, o que é uma mudança *breaking* para todo mundo que já depende dela. Retornar o struct concreto adia essa decisão: o consumidor pega o tipo completo e decide sozinho, no seu próprio código, que subconjunto de comportamento ele quer tratar como abstrato (declarando a própria interface local — assunto da [[03-Dominios/Tecnologia/Go/03 - Interfaces e composição/08 - Design idiomático de interfaces|nota 08]]).
@@ -103,14 +105,16 @@ Há um segundo custo, mais sutil: retornar interface obriga quem *escreve* a fun
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["func NovoServico"] --> B["(dep Dependencia)"]
     B --> C["*Servico"]
 
     B -.->|"parâmetro: interface\n— o CHAMADOR decide a implementação"| B
     C -.->|"retorno: struct concreto\n— o CHAMADOR vê tudo"| C
 
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
+    class B destaque
+    class C neutro
 ```
 
 A leitura de uma assinatura como `func NovoServico(dep Dependencia) *Servico` já entrega, sem olhar o corpo, o contrato inteiro: "esta função aceita qualquer coisa que satisfaça `Dependencia`, e devolve um `*Servico` de verdade, com todos os seus métodos disponíveis". Compare com a assinatura equivalente em Java, onde a convenção do "programe para interfaces" empurra para o outro lado:

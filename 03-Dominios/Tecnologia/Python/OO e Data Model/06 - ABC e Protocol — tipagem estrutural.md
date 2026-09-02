@@ -155,6 +155,9 @@ Segundo a [documentação oficial](https://docs.python.org/3/library/abc.html), 
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Nominal["Tipagem nominal — abc.ABC"]
         direction TB
         A1["class Desenhavel(ABC):\n    @abstractmethod\n    def draw(self): ..."]
@@ -175,12 +178,12 @@ flowchart TB
         B4 -- Não --> B6["Erro do mypy\n(não runtime)"]
     end
 
-    style Nominal fill:#4A90D9,color:#fff
-    style Estrutural fill:#F5A623,color:#000
-    style A5 fill:#D0021B,color:#fff
-    style B6 fill:#D0021B,color:#fff
-    style A6 fill:#4A90D9,color:#fff
-    style B5 fill:#F5A623,color:#000
+    class Nominal neutro
+    class Estrutural destaque
+    class A5 falha
+    class B6 falha
+    class A6 neutro
+    class B5 destaque
 ```
 
 ## Por que importa
@@ -334,6 +337,8 @@ As ABCs de `collections.abc` funcionam tanto como **checagem** (`isinstance(x, S
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph DM["Data Model (nota 03) — protocolo informal"]
         D1["__iter__"]
         D2["__len__"]
@@ -356,8 +361,8 @@ flowchart LR
     D4 -.-> A4
     D5 -.-> A5
 
-    style DM fill:#4A90D9,color:#fff
-    style ABC fill:#F5A623,color:#000
+    class DM neutro
+    class ABC destaque
 ```
 
 ## Na prática: reescrevendo o problema de abertura

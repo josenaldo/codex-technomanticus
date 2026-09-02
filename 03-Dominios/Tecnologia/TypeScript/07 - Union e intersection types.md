@@ -78,6 +78,8 @@ Esse comportamento não é limitação arbitrária — é **corretude**. Se o co
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph UA["União A | B"]
         direction LR
         A["Tipo A\nnome, correr"]
@@ -91,9 +93,9 @@ graph LR
     UA --> D
     UA --> E
 
-    style C fill:#1f6feb,color:#fff
-    style D fill:#8a6d00,color:#fff
-    style E fill:#8a6d00,color:#fff
+    class C neutro
+    class D destaque
+    class E destaque
 ```
 
 > [!note] Leitura do diagrama
@@ -143,6 +145,8 @@ dir = "diagonal";              // ERRO — 'diagonal' is not assignable to type 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     V["valor em runtime"]
     U{"Direcao\n'norte' | 'sul' |\n'leste' | 'oeste'"}
     OK["✓ compilador aceita"]
@@ -152,8 +156,8 @@ flowchart LR
     V -->|"'sul'"| U
     V -->|"'diagonal'"| ERR
 
-    style OK fill:#1f6feb,color:#fff
-    style ERR fill:#8a0000,color:#fff
+    class OK neutro
+    class ERR falha
 ```
 
 A union de literais tem vantagens claras sobre `enum`: não gera código, é tree-shakeable, funciona diretamente com autocomplete da IDE, e compõe naturalmente com outros tipos. A nota [[19 - Enums, const objects e modelagem de constantes]] aprofunda essa comparação e mostra o padrão `as const` object — a forma canônica recomendada quando você precisa também de uma referência pelo nome (como `Status.Active`).
@@ -182,6 +186,8 @@ Na teoria de [[03-Dominios/Ciência/Paradigmas/10 - Tipos algébricos, pattern m
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph SOMA["Union = Soma de tipos"]
         S["A | B\nm + n possibilidades\nrecebo UM de dois"]
     end
@@ -192,9 +198,9 @@ graph TD
         V["string & number\n= never\nconjunto vazio"]
     end
 
-    style S fill:#1f6feb,color:#fff
-    style P fill:#1f6feb,color:#fff
-    style V fill:#8a0000,color:#fff
+    class S neutro
+    class P neutro
+    class V falha
 ```
 
 Essa intuição de soma/produto guia o design: quando você quer "A ou B", use `|`. Quando quer "A e B juntos", use `&` — mas entre objetos, não entre primitivos.
@@ -276,6 +282,8 @@ O tipo `C` é tecnicamente válido como definição, mas nenhum valor pode ser a
 
 ```mermaid
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     TA["Tipo A\nx: string"]
     TB["Tipo B\nx: number"]
     TC["A & B\nx: string & number\n= x: never"]
@@ -285,8 +293,8 @@ flowchart TD
     TB --> TC
     TC --> ERR
 
-    style TC fill:#8a6d00,color:#fff
-    style ERR fill:#8a0000,color:#fff
+    class TC destaque
+    class ERR falha
 ```
 
 > [!warning] Conflito silencioso

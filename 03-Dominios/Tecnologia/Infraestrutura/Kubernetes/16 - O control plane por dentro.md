@@ -30,6 +30,7 @@ O que torna o `etcd` confiável o suficiente para carregar essa responsabilidade
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph "Cluster etcd de 5 membros — quórum = 3"
         M1["Membro 1<br/>(líder)"]
         M2["Membro 2"]
@@ -43,7 +44,7 @@ graph TB
     M1 -->|"replica escrita"| M4
     M1 -->|"replica escrita"| M5
 
-    style M1 fill:#4a3b7a,stroke:#8e6fd6,color:#fff
+    class M1 marca
 ```
 
 A consequência prática de perder quórum é a mais severa entre todas as que este galho já descreveu para qualquer outro componente: o `etcd` não fica "mais lento" nem "eventualmente consistente" — ele para de aceitar escritas por completo. Sem maioria disponível para confirmar uma proposta de escrita, o algoritmo de Raft nunca a considera comprometida, e o `etcd` simplesmente não responde a ela com sucesso; a documentação oficial do projeto chama perda permanente de quórum de "catastrófica". E porque o `kube-apiserver`, por padrão, exige leitura **linearizável** — a garantia de que toda leitura reflete a escrita confirmada mais recente, o que também depende de consultar a maioria dos membros —, a maior parte das leituras também deixa de responder junto com as escritas: na prática, um cluster Kubernetes inteiro que perde quórum de `etcd` fica, para a esmagadora maioria dos propósitos operacionais, indisponível, não só congelado num estado somente-leitura confortável. `kubectl get` pode até devolver algo em circunstâncias específicas de leitura servida por um membro isolado, mas nenhuma escrita nova — nenhum `apply`, nenhuma reconciliação, nenhum Pod novo — acontece até o quórum ser restaurado.
@@ -99,6 +100,9 @@ A nota [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/13 - RBAC e ServiceAcc
 
 ```mermaid
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     Req["Requisição HTTP<br/>(POST/PATCH/PUT)"] --> Auth["Autenticação<br/>quem é você?"]
     Auth --> Az["Autorização — RBAC<br/>o que você pode fazer?"]
     Az --> MA["Mutating admission<br/>webhooks + controllers embutidos"]
@@ -106,10 +110,10 @@ graph LR
     Sch --> VA["Validating admission<br/>webhooks + controllers embutidos"]
     VA --> ETCD["etcd<br/>persistência final"]
 
-    style Req fill:#5a4a1e,stroke:#c9a227,color:#fff
-    style ETCD fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style MA fill:#4a3b7a,stroke:#8e6fd6,color:#fff
-    style VA fill:#4a3b7a,stroke:#8e6fd6,color:#fff
+    class Req destaque
+    class ETCD ok
+    class MA marca
+    class VA marca
 ```
 
 Repare na ordem exata entre as duas fases de admission e a validação de esquema: **mutating** roda primeiro, depois vem a validação de esquema contra o OpenAPI do recurso, e só então roda **validating**. Essa ordem não é arbitrária — ela existe precisamente para que um plugin mutating tenha a chance de corrigir ou completar um objeto (preencher um campo omitido, injetar um container sidecar, adicionar uma anotação) antes que qualquer verificação de validade seja aplicada sobre o resultado final, e para que a etapa de validating, rodando por último, sempre veja a versão definitiva do objeto — já mutada, já com o schema conferido — em vez de uma versão intermediária que ainda vai mudar.
@@ -203,6 +207,8 @@ O `kube-apiserver` é **sem estado**: cada requisição HTTP que ele recebe já 
 
 ```mermaid
 graph TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "kube-apiserver — sem estado, réplicas ativas"
         A1["Réplica 1<br/>(ativa)"]
         A2["Réplica 2<br/>(ativa)"]
@@ -222,12 +228,12 @@ graph TB
         S3 -.->|"tenta assumir<br/>se o lease expirar"| Lease
     end
 
-    style A1 fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style A2 fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style A3 fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style S1 fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style S2 fill:#5a4a1e,stroke:#c9a227,color:#fff
-    style S3 fill:#5a4a1e,stroke:#c9a227,color:#fff
+    class A1 ok
+    class A2 ok
+    class A3 ok
+    class S1 ok
+    class S2 destaque
+    class S3 destaque
 ```
 
 Esse `Lease` de liderança não é um conceito abstrato — é um objeto comum do cluster, gravado no api-server como qualquer outro, que qualquer identidade com permissão de leitura consegue inspecionar diretamente para descobrir, sem ambiguidade, qual réplica está de fato ativa neste exato momento:

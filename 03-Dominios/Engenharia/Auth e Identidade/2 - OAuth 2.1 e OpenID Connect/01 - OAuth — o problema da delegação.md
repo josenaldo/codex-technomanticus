@@ -55,8 +55,9 @@ OAuth define quatro papéis fixos — a RFC 6749, o documento que formalizou OAu
 | **Resource Server** | "Servidor que hospeda os recursos protegidos, capaz de aceitar e responder a requisições usando access tokens."[^rfc6749] | A Google Calendar API — o serviço que efetivamente guarda seus eventos e responde às chamadas do Agenda Já. |
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     RO["Resource Owner<br/>(você)"]
     C["Client<br/>(Agenda Já)"]
     AS["Authorization Server<br/>(accounts.google.com)"]
@@ -67,10 +68,10 @@ graph LR
     C -->|"3. usa o token<br/>para chamar a API"| RS
     RS -->|"4. valida o token,<br/>devolve os eventos"| C
 
-    style RO fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style AS fill:#4A90D9,color:#fff
-    style RS fill:#4A90D9,color:#fff
+    class RO neutro
+    class C destaque
+    class AS neutro
+    class RS neutro
 ```
 
 Um detalhe que costuma confundir quem chega vindo de sistemas mais simples: **authorization server e resource server são conceitualmente separados, mesmo quando a mesma empresa opera os dois**. No exemplo, é o Google quem roda tanto `accounts.google.com` quanto a Calendar API — mas são componentes distintos com responsabilidades distintas. A própria RFC 6749 deixa essa interação como algo "fora do escopo da especificação"[^rfc6749], justamente porque cada provedor resolve essa comunicação interna (validação local de assinatura, introspecção, banco compartilhado) do seu próprio jeito. É por isso que dá pra existir um IdP como o Keycloak (sub-galho 5 desta trilha) separado das APIs que ele protege: os dois papéis nunca precisaram estar no mesmo processo.
@@ -112,16 +113,18 @@ Access tokens de curta duração criam um problema prático óbvio — o usuári
 ## A história em três eras: de assinatura manual a bearer token universal
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     P["Password<br/>anti-pattern<br/>(pré-2007)"] -->|"delegação<br/>com assinatura"| V1["OAuth 1.0<br/>out/2007<br/>RFC 5849 (2010)"]
     V1 -->|"simplifica:<br/>bearer tokens<br/>sobre TLS"| V2["OAuth 2.0<br/>RFC 6749<br/>out/2012"]
     V2 -->|"fragmentação:<br/>RFCs satélite<br/>(PKCE, BCP...)"| SAT["Grants inseguros<br/>+ pilha de RFCs<br/>corretivos"]
     SAT -->|"consolida e poda"| V21["OAuth 2.1<br/>draft, em revisão<br/>(2020–2026)"]
 
-    style P fill:#D0021B,color:#fff
-    style SAT fill:#F5A623,color:#000
-    style V21 fill:#4A90D9,color:#fff
+    class P falha
+    class SAT destaque
+    class V21 neutro
 ```
 
 ### OAuth 1.0 — poderoso, mas frágil de implementar

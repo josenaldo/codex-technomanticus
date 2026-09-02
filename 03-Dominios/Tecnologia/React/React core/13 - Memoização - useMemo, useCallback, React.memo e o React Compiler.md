@@ -211,18 +211,20 @@ Esse é o motivo pelo qual `React.memo`, `useMemo` e `useCallback` formam um tri
 ## Fluxo completo: como os três se conectam
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[Pai re-renderiza] --> B{Props do filho mudaram?}
     B -->|Referência primitiva mudou| C[Filho re-renderiza ✓]
     B -->|Objeto/função nova referência| D["React.memo vê props 'novas'"]
     B -->|Referência estável - useMemo/useCallback| E[React.memo pula re-render ✓]
     D --> F[Filho re-renderiza desnecessariamente ✗]
 
-    style C fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style F fill:#D0021B,color:#fff
-    style D fill:#F5A623,color:#fff
+    class C neutro
+    class E neutro
+    class F falha
+    class D destaque
 ```
 
 O fluxo crítico: o pai cria um objeto/função → sem memoização, nova referência → `React.memo` não consegue pular → filho re-renderiza mesmo sem mudança real.
@@ -380,8 +382,9 @@ O ESLint plugin `eslint-plugin-react-hooks` reporta esses casos. Componentes com
 ## Antes e depois: visão comparativa
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Legado["Sem React Compiler"]
         direction TB
         L1["Escrever useMemo\npara cálculos caros"]
@@ -399,8 +402,8 @@ flowchart LR
 
     Legado -->|"Migração:\nbabel plugin + audit"| Moderno
 
-    style Legado fill:#F5A623,color:#333
-    style Moderno fill:#4A90D9,color:#fff
+    class Legado destaque
+    class Moderno neutro
 ```
 
 ---

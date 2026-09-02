@@ -29,6 +29,8 @@ Diferente de um interpretador que executa linha a linha, o TypeScript realiza an
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     SRC["Seu código .ts"]
     PARSE["Parser\n(AST)"]
     CHECKER["Type Checker\n(análise semântica)"]
@@ -39,8 +41,8 @@ flowchart LR
     CHECKER -->|"tipos OK"| EMIT
     CHECKER -->|"violação"| ERR
 
-    style ERR fill:#8a0000,color:#fff
-    style EMIT fill:#1a6b1a,color:#fff
+    class ERR falha
+    class EMIT ok
 ```
 
 A consequência prática: os erros do TypeScript são mensagens da fase de análise semântica, não de execução. Eles sempre descrevem uma *incompatibilidade entre o que o código promete e o que ele entrega*, vista do ponto de vista dos tipos.
@@ -65,6 +67,10 @@ Toda mensagem de erro do TypeScript tem até três camadas:
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Mensagem de erro do TypeScript"]
     B["1. Declaração principal\n'Type X is not assignable to type Y'"]
     C["2. Razão\n(por que X não cabe em Y)"]
@@ -73,10 +79,10 @@ flowchart TD
 
     A --> B --> C --> D --> E
 
-    style B fill:#8a0000,color:#fff
-    style C fill:#7b3000,color:#fff
-    style D fill:#555,color:#fff
-    style E fill:#1a6b1a,color:#fff
+    class B falha
+    class C destaque
+    class D neutro
+    class E ok
 ```
 
 ### O ponto mais profundo — onde mora o erro real
@@ -571,6 +577,8 @@ Este segundo erro revela que `Repositorio` foi projetado com a premissa de `id: 
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     CALL["criarRepo(repoMap)"]
     INFER["T inferido: Produto"]
     CHECK["T extends Entidade?"]
@@ -588,8 +596,8 @@ flowchart TD
     COMPAT -->|"não"| ERR
     COMPAT -->|"sim"| OK
 
-    style ERR fill:#8a0000,color:#fff
-    style OK fill:#1a6b1a,color:#fff
+    class ERR falha
+    class OK ok
 ```
 
 ---

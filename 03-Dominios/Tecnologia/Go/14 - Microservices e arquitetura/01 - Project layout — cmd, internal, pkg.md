@@ -30,6 +30,9 @@ O problema aparece seis meses depois. O pacote de config do serviço A, pensado 
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Root["meu-servico/ (raiz do módulo)"]
         direction TB
         CMD["cmd/\nbinários — pontos de entrada finos"]
@@ -45,10 +48,10 @@ flowchart TB
     OUT["outro módulo qualquer"] -->|"import OK"| PKG
     OUT -.->|"import BLOQUEADO\npelo compilador"| INT
 
-    style INT fill:#F5A623,color:#000
-    style CMD fill:#4A90D9,color:#fff
-    style PKG fill:#7ED321,color:#000
-    style OUT fill:#D0021B,color:#fff
+    class INT destaque
+    class CMD neutro
+    class PKG destaque
+    class OUT falha
 ```
 
 ### `cmd/` — os pontos de entrada

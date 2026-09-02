@@ -65,7 +65,6 @@ O `pull` faz as duas coisas de uma vez. É o atalho do dia a dia — e é ótimo
 Ao rodar `git branch -a` você vai ver, além dos seus ramos, coisas como `remotes/origin/main`. Isso é um **ramo de rastreamento remoto**: a fotografia do que o servidor tinha na última vez que você falou com ele.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
     A["<b>main</b><br/>seu trabalho local"] -->|git push| C["<b>servidor</b><br/>a verdade compartilhada"]
     C -->|git fetch| B["<b>origin/main</b><br/>o que você SABE<br/>sobre o servidor"]

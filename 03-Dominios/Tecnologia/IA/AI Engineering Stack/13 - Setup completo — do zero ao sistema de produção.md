@@ -26,6 +26,10 @@ aliases:
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     P1["① Purpose\n(escopo + sucesso)"]
     P7["② Workflow vs Agent\n(arquitetura)"]
     P4["③ Output\n(contrato de saída)"]
@@ -37,10 +41,10 @@ flowchart TD
 
     P1 --> P7 --> P4 --> P2 --> P5 --> P8 --> P10 --> P11
 
-    style P1 fill:#4A90D9,stroke:#2171B5,color:#fff
-    style P7 fill:#2CA05A,stroke:#1A7A3F,color:#fff
-    style P8 fill:#F5A623,stroke:#C47D0A,color:#000
-    style P11 fill:#9B59B6,stroke:#7D3C98,color:#fff
+    class P1 neutro
+    class P7 ok
+    class P8 destaque
+    class P11 marca
 ```
 
 ## O sistema de exemplo

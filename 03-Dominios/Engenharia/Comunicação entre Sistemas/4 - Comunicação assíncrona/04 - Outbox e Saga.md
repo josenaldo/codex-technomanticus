@@ -97,8 +97,9 @@ Em vez de um processo consultando a tabela por fora, uma ferramenta de **Change 
 A vantagem é dupla: **latência quase zero** (o evento sai assim que a transação comita, não no próximo polling) e **zero carga de leitura adicional** no banco (o WAL já existe, o banco já o escreve independente do Debezium existir ou não). O preço é mais peças móveis — um cluster Kafka Connect rodando, permissão de replicação configurada no banco, uma dependência operacional a mais para monitorar — e um acoplamento mais estreito aos detalhes internos do motor de banco escolhido.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph SVC["Serviço de Pedidos"]
         T["Transação única:<br/>INSERT pedido<br/>INSERT outbox"]
     end
@@ -114,10 +115,10 @@ flowchart LR
     BROKER --> C1["Consumer 1"]
     BROKER --> C2["Consumer 2"]
 
-    style T fill:#4A90D9,color:#fff
-    style DB fill:#4A90D9,color:#fff
-    style CDC fill:#F5A623,color:#000
-    style PP fill:#4A90D9,color:#fff
+    class T neutro
+    class DB neutro
+    class CDC destaque
+    class PP neutro
 ```
 
 > [!warning] Outbox garante at-least-once, nunca exactly-once
@@ -154,8 +155,9 @@ Nenhum desses dois passos é um `ROLLBACK` de SQL. São `INSERT`s e `UPDATE`s no
 Na coreografia, não existe coordenador. Cada serviço publica um evento quando termina sua parte, e os serviços seguintes da cadeia estão inscritos nesses eventos — reagindo, cada um por conta própria, sem que ninguém tenha uma visão centralizada do fluxo inteiro.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Pedidos:<br/>pedido.criado"] -->|"evento"| B["Estoque:<br/>reserva o item"]
     B -->|"estoque.reservado"| C["Pagamento:<br/>cobra o cartão"]
     C -->|"pagamento.aprovado"| D["Notificação:<br/>envia confirmação"]
@@ -163,12 +165,12 @@ flowchart TD
     C -.->|"pagamento.recusado"| E["Estoque:<br/>libera reserva<br/>(compensação)"]
     E -.->|"estoque.liberado"| F["Pedidos:<br/>marca cancelado<br/>(compensação)"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#F5A623,color:#000
-    style F fill:#F5A623,color:#000
+    class A neutro
+    class B neutro
+    class C neutro
+    class D neutro
+    class E destaque
+    class F destaque
 ```
 
 **A favor:** desacoplamento máximo — o serviço de Pagamento não precisa saber que existe um serviço de Notificação, só precisa publicar `pagamento.aprovado` e seguir em frente; adicionar um quinto serviço à saga (por exemplo, um serviço de fidelidade que credita pontos) não exige tocar em nenhum dos quatro serviços existentes, só inscrever o novo serviço no evento certo. Escala bem em throughput, porque não existe um ponto central por onde toda mensagem precisa passar.
@@ -180,8 +182,9 @@ flowchart TD
 Na orquestração, existe um componente explícito — o orquestrador — que conhece a sequência completa da saga e chama cada serviço, um de cada vez, decidindo o que fazer a seguir com base na resposta.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     O["Orquestrador<br/>da Saga de Pedido"]
 
     O -->|"1. reservar"| ES["Estoque"]
@@ -191,10 +194,10 @@ flowchart TD
     O -.->|"3. compensar: liberar"| ES
     O -.->|"4. compensar: cancelar"| PD["Pedidos"]
 
-    style O fill:#4A90D9,color:#fff
-    style ES fill:#4A90D9,color:#fff
-    style PG fill:#F5A623,color:#000
-    style PD fill:#F5A623,color:#000
+    class O neutro
+    class ES neutro
+    class PG destaque
+    class PD destaque
 ```
 
 ```

@@ -178,7 +178,6 @@ Por que os três `setCount` resultam em apenas `+1`? Porque `count` é `0` para 
 O diagrama abaixo ilustra como cada render tem seu próprio snapshot:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#F5A623", "tertiaryColor": "#e8f4f8"}}}%%
 sequenceDiagram
     participant U as Usuário
     participant R as React

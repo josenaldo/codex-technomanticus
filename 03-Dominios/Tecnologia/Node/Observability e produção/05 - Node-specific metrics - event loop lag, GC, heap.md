@@ -33,6 +33,9 @@ Pense no event loop como o coração do processo: quando bate rápido e regular,
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph proc["Processo Node.js — thread única"]
         EL["Event Loop\n(libuv)"]
         V8["V8 Engine"]
@@ -52,12 +55,12 @@ flowchart TB
     EL -->|"lag p99 > 100ms =\np99 HTTP degradado"| AL["🚨 Alertar"]
     OS -->|"heapUsed/heapTotal > 0.85 =\nOOM iminente"| AL
 
-    style EL fill:#4A90D9,color:#fff
-    style V8 fill:#4A90D9,color:#fff
-    style NS fill:#4A90D9,color:#fff
-    style OS fill:#F5A623,color:#fff
-    style CS fill:#4A90D9,color:#fff
-    style AL fill:#D0021B,color:#fff
+    class EL neutro
+    class V8 neutro
+    class NS neutro
+    class OS destaque
+    class CS neutro
+    class AL falha
 ```
 
 A geração jovem (`new_space`) é coletada rapidamente e com frequência — normal. A geração antiga (`old_space`) exige pausa completa do processo. Alertar em lag > 100ms e heap > 85% dá tempo de agir antes do colapso.

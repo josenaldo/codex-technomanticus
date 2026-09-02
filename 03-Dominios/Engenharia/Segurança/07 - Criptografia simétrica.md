@@ -133,6 +133,8 @@ A cifra de bloco é o motor. O modo de operação é a transmissão. Um motor de
 
 ```mermaid
 flowchart TD
+  classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+  classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
   AES_CORE["AES (bloco 128 bits)"] --> ECB["ECB\nQUEBRADO"]
   AES_CORE --> CBC["CBC\nCuidado com IV e padding"]
   AES_CORE --> CTR["CTR\nNonce único obrigatório"]
@@ -140,8 +142,8 @@ flowchart TD
   CHACHA["ChaCha20\n(cifra de fluxo)"] --> POLY["+ Poly1305\nAEAD alternativo"]
   GCM --> RECOMENDADO["✓ Use: AES-256-GCM\nou ChaCha20-Poly1305"]
   POLY --> RECOMENDADO
-  style ECB fill:#ff4444,color:#fff
-  style RECOMENDADO fill:#44aa44,color:#fff
+  class ECB falha
+  class RECOMENDADO ok
 ```
 
 > [!info] Leitura do diagrama
@@ -159,6 +161,7 @@ Além do problema visual: em dados estruturados, ECB vaza informação sobre rep
 
 ```mermaid
 flowchart TD
+  classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
   P1["Bloco P1\n(fundo branco)"] --> E1["AES-ECB"] --> C1["C1"]
   P2["Bloco P2\n(fundo branco)"] --> E2["AES-ECB"] --> C2["C2"]
   P3["Bloco P3\n(corpo preto)"] --> E3["AES-ECB"] --> C3["C3"]
@@ -166,7 +169,7 @@ flowchart TD
   REGRA["P1 = P2 = P4\n&rarr; C1 = C2 = C4\nPadr&atilde;o vaza!"] -.-> C1
   REGRA -.-> C2
   REGRA -.-> C4
-  style REGRA fill:#ffcccc
+  class REGRA falha
 ```
 
 > [!info] Leitura do diagrama

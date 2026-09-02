@@ -43,8 +43,9 @@ Antes de comparar as duas ordens, vale fixar o vocabulário que a nota de abertu
 Um pipeline não é uma linha reta — é melhor pensado como um **grafo de passos com dependências**: extrair a tabela de pedidos depende de nada; construir a tabela de fatos de vendas depende de ter extraído pedidos, itens e produtos; um relatório de faturamento por categoria depende da tabela de fatos já pronta. Formalmente, esse grafo é um **DAG** — *directed acyclic graph*, grafo direcionado sem ciclos: cada passo aponta para o próximo, e nunca existe um caminho que volte a um passo já executado, porque isso criaria uma dependência circular impossível de resolver. Esse formato é o que faz o pipeline **componível**: cada nó pode ser testado, reexecutado e depurado isoladamente, sem precisar entender o pipeline inteiro de uma vez. Quem decide *quando* e *em que ordem* cada nó desse grafo roda — o motor que agenda, monitora e reexecuta cada passo — é o **orquestrador**, assunto da nota 04 desta trilha; aqui o ponto a fixar é mais simples: ETL e ELT são duas formas diferentes de desenhar os **nós** desse grafo, não de decidir a ordem de execução deles.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph ETL["ETL — transforma antes de carregar"]
         E1["Extract<br/>(Postgres)"] --> T1["Transform<br/>(servidor/engine<br/>de staging)"]
         T1 --> L1["Load<br/>(warehouse já limpo)"]
@@ -55,12 +56,12 @@ graph LR
         L2 --> T2["Transform<br/>(SQL rodando<br/>no próprio warehouse)"]
     end
 
-    style E1 fill:#4A90D9,color:#fff
-    style E2 fill:#4A90D9,color:#fff
-    style L1 fill:#4A90D9,color:#fff
-    style L2 fill:#4A90D9,color:#fff
-    style T1 fill:#F5A623,color:#000
-    style T2 fill:#F5A623,color:#000
+    class E1 neutro
+    class E2 neutro
+    class L1 neutro
+    class L2 neutro
+    class T1 destaque
+    class T2 destaque
 ```
 
 ## ETL: o padrão clássico
@@ -94,16 +95,17 @@ Essa inversão só faz sentido econômico graças a uma mudança arquitetural qu
 No exemplo do e-commerce: em vez de transformar pedidos, itens e produtos num servidor de staging antes de carregar, o pipeline moderno extrai as tabelas do Postgres e carrega o dado **bruto** — pedidos crus, itens crus, produtos crus — direto no warehouse. É só depois, com SQL rodando dentro do warehouse (o assunto detalhado da nota 03 desta trilha), que esse dado bruto vira a tabela de fatos de vendas ligada às dimensões de produto, categoria e tempo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     PG[("Postgres<br/>pedidos, itens,<br/>produtos")] -->|"extract"| RAW[("Warehouse —<br/>camada raw<br/>(dado bruto)")]
     RAW -->|"transform em SQL,<br/>dentro do warehouse"| STAR[("Warehouse —<br/>modelo dimensional<br/>(fatos + dimensões)")]
     STAR --> BI["Dashboard de BI"]
 
-    style PG fill:#4A90D9,color:#fff
-    style RAW fill:#4A90D9,color:#fff
-    style STAR fill:#4A90D9,color:#fff
-    style BI fill:#F5A623,color:#000
+    class PG neutro
+    class RAW neutro
+    class STAR neutro
+    class BI destaque
 ```
 
 Para tornar isso menos abstrato, veja como a etapa de "transform" do ELT se parece na prática, dentro do warehouse — sem entrar na ferramenta específica (dbt e SQLMesh são o assunto tool-specific da nota 03 desta trilha), só na forma do SQL que resolve o problema:

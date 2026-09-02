@@ -30,6 +30,7 @@ O que o api-server de fato sabe fazer, para qualquer tipo de objeto registrado, 
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph "O que o api-server sabe fazer — genérico, para qualquer tipo registrado"
         V["Validar contra esquema"]
         P["Persistir no etcd"]
@@ -43,8 +44,8 @@ graph TB
     Cert["Certificate<br/>(registrado por um CRD instalado depois)"] --> V
     Backup["Backup<br/>(registrado por um CRD seu)"] --> V
 
-    style Cert fill:#4a3b7a,stroke:#8e6fd6,color:#fff
-    style Backup fill:#4a3b7a,stroke:#8e6fd6,color:#fff
+    class Cert marca
+    class Backup marca
 ```
 
 É essa generalidade — não a existência de um recurso específico, não a popularidade de nenhum operator em particular — que explica o ecossistema inteiro do Kubernetes. Cert-manager não existe porque alguém convenceu o projeto Kubernetes a adicionar TLS ao núcleo; existe porque qualquer um pode registrar um tipo `Certificate`, escrever um controller que observa esses objetos e fala com uma autoridade certificadora, e distribuir os dois juntos como um pacote instalável. O mesmo vale para Prometheus Operator, para Argo CD, para praticamente todo projeto de infraestrutura que se anuncia como "nativo do Kubernetes": a frase inteira significa, na prática, "registra tipos via CRD e reconcilia com um controller próprio". Se o api-server tivesse lógica de negócio hard-coded por tipo, esse ecossistema simplesmente não existiria — cada extensão exigiria um fork do próprio Kubernetes.

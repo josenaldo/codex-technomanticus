@@ -113,18 +113,20 @@ Até a Python 3.10, existia uma única estrutura para isso: `PyFrameObject`, um 
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["chamada de função<br/>calcular_total(10, 3)"] --> B["_PyEval_EvalFrameDefault<br/>aloca _PyInterpreterFrame"]
     B --> C["_PyInterpreterFrame:<br/>code object, bytecode ptr,<br/>locals, frame anterior,<br/>value stack própria"]
     C -->|"execução normal termina"| D["frame descartado —<br/>PyFrameObject NUNCA criado"]
     C -->|"exceção sobe / debugger /<br/>sys._getframe() / generator pausa"| E["PyFrameObject materializado<br/>a partir do _PyInterpreterFrame<br/>(objeto Python de verdade,<br/>refcounted, no heap)"]
     E --> F["visível em traceback,<br/>inspect, f_locals, f_back"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#F5A623,color:#000
-    style F fill:#F5A623,color:#000
+    class A neutro
+    class B neutro
+    class C neutro
+    class D neutro
+    class E destaque
+    class F destaque
 ```
 
 O ganho de performance dessa divisão é justamente evitar pagar o custo de um objeto Python completo (alocação de heap, inicialização de refcount, campos que ninguém vai ler) em toda chamada de função — a imensa maioria das chamadas nunca precisa de introspecção, então a maioria dos frames nunca vira um `PyFrameObject` de verdade. É esse mecanismo — junto com a especialização adaptativa da seção anterior — que a [PEP 659 e o trabalho da 3.11 em geral](https://docs.python.org/3/whatsnew/3.11.html) citam como responsável por boa parte do ganho de ~25% de velocidade média da 3.11 sobre a 3.10 em benchmarks padrão.

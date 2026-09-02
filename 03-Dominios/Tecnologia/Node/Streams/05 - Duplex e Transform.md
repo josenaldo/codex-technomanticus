@@ -63,6 +63,9 @@ Exemplos da biblioteca padrão: `zlib.createGzip()` comprime o que você escreve
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph DUPLEX ["stream.Duplex — dois buffers independentes"]
         direction TB
         WA["write(chunk)\n[buffer de escrita]"]
@@ -75,13 +78,13 @@ flowchart LR
         WB["write(chunk)"] -->|"_transform(chunk, enc, cb)"| TR["this.push(resultado)"] --> RB["read()"]
     end
 
-    style DUPLEX fill:#1a2035,stroke:#4A90D9,color:#ccc
-    style TRANSFORM fill:#1a2035,stroke:#4A90D9,color:#ccc
-    style WA fill:#1e2d4a,stroke:#4A90D9,color:#ccc
-    style RA fill:#1e2d4a,stroke:#4A90D9,color:#ccc
-    style WB fill:#1e2d4a,stroke:#4A90D9,color:#ccc
-    style TR fill:#1e3a1a,stroke:#4A90D9,color:#ccc
-    style RB fill:#1e2d4a,stroke:#4A90D9,color:#ccc
+    class DUPLEX neutro
+    class TRANSFORM neutro
+    class WA marca
+    class RA marca
+    class WB marca
+    class TR ok
+    class RB marca
 ```
 
 A linha pontilhada no `Duplex` sinaliza ausência de conexão — os dois buffers coexistem na mesma instância mas não se falam. No `Transform`, `_transform` é a ponte obrigatória: o que entra pelo lado `write` sai pelo lado `read` apenas depois de passar pela função de transformação.

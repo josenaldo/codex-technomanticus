@@ -61,8 +61,8 @@ A segunda versão do `Dockerfile`, com multi-stage build correto, reduz a mesma 
 A ideia central de um multi-stage build é simples: um `Dockerfile` pode conter **múltiplos** blocos `FROM`, cada um começando um estágio novo, isolado dos anteriores. Cada estágio pode copiar arquivos específicos dos estágios anteriores via `COPY --from=<nome-do-estágio>` — mas nada mais do estágio anterior vaza pra frente automaticamente. Isso permite que o estágio de **build** tenha acesso a tudo que precisa (compilador, `uv`, dependências de desenvolvimento) sem que nada disso sobreviva no estágio **final**, que só recebe, explicitamente, o que foi pedido via `COPY --from`.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph BUILD["Estágio 1 — builder (descartado no final)"]
         direction TB
         B1["FROM python:3.12-slim AS builder"]
@@ -84,8 +84,8 @@ flowchart TB
 
     B4 -.->|"COPY --from=builder<br/>só o .venv/, nada mais"| F3
 
-    style BUILD fill:#F5A623,color:#000
-    style FINAL fill:#7ED321,color:#000
+    class BUILD destaque
+    class FINAL destaque
 ```
 
 O compilador C, os headers de desenvolvimento, o próprio `uv`, o `.git`, o cache de teste — tudo isso existe **só dentro do estágio `builder`**, que o Docker descarta por completo depois que o build termina. A imagem final nunca viu nenhuma dessas camadas; ela só recebeu, via `COPY --from=builder`, exatamente o diretório `.venv/` já pronto e o código-fonte da aplicação.
@@ -219,8 +219,9 @@ docs/
 Com o `Dockerfile` e o `.dockerignore` prontos, falta o mecanismo que garante que a imagem só é construída — e só chega a um registry — depois que o código passou pelos mesmos gates que o [[03-Dominios/Tecnologia/Python/Build e tooling/index|Galho 16]] já configurou localmente: lint e testes. A filosofia de **por que** um pipeline de CI/CD existe, o que separa "deploy" de "release", e como desenhar gates sem sacrificar velocidade já foi desenvolvida, agnóstica de linguagem, em [[03-Dominios/Engenharia/Operação/2 - Entrega e release/01 - Pipeline de CI-CD como decisão de design|Engenharia/Operação — Pipeline de CI/CD como decisão de design]] — esta nota não repete essa discussão. O que segue é só o esqueleto **Python-específico** de um pipeline GitHub Actions: quais steps, em que ordem, usando as ferramentas que a trilha já construiu.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["push / PR"] --> B["uv sync --frozen<br/>(Galho 16)"]
     B --> C["ruff check<br/>(Galho 16)"]
     C --> D["pytest<br/>(Galho 12)"]
@@ -228,8 +229,8 @@ flowchart LR
     E --> F["docker push<br/>pro registry"]
     D -->|"algo falhou"| G["pipeline para,<br/>imagem NUNCA é construída"]
 
-    style G fill:#D0021B,color:#fff
-    style F fill:#7ED321,color:#000
+    class G falha
+    class F destaque
 ```
 
 O ponto estrutural do diagrama acima — e a razão de existir um pipeline em vez de rodar `docker build` manualmente do laptop de alguém — é a seta vermelha: se `ruff check` ou `pytest` falharem, a imagem **nunca é construída**, muito menos publicada. É a mesma garantia que o [[03-Dominios/Tecnologia/Python/Build e tooling/08 - Capstone — tooling consistente nos dois serviços|capstone do Galho 16]] já estabeleceu para lint e teste local — reaplicada aqui num contexto onde o resultado de passar é literalmente um artefato indo pra produção, não só um commit sendo aceito.

@@ -32,8 +32,9 @@ Você tem os padrões — canais, roteadores, tradutores, endpoints confiáveis.
 ## Broker (hub-and-spoke) × Bus (backbone)
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph BROKER["Message Broker (hub-and-spoke)"]
         H{{"Broker central<br/>(roteia)"}}
         S1["A"] --- H
@@ -49,8 +50,8 @@ graph TD
         E4["D*"] --- BB
     end
 
-    style H fill:#4A90D9,color:#fff
-    style BB fill:#F5A623,color:#000
+    class H neutro
+    class BB destaque
 ```
 
 - **Message Broker** — um **mediador central** recebe todas as mensagens e as roteia aos destinos. Cada sistema fala **só** com o broker, ignorante dos demais — desacoplamento máximo e um lugar único para aplicar roteamento e monitoramento. O risco: o hub é **central** (ponto único de falha) e **tenta** atrair inteligência (roteamento complexo, transformação, regra) — e aí vira gargalo.

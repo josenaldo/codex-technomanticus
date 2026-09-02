@@ -78,8 +78,10 @@ A tabela abaixo separa as duas categorias para os pontos mais repetidos sobre o 
 A régua que separa as duas colunas é sempre a mesma, e vale nomeá-la de forma explícita porque ela ensina algo que vai além do LinkedIn: **um fato é observável quando você pode verificá-lo abrindo a própria interface do sistema, sem depender de ninguém que afirme ter acesso privilegiado ao que está por trás dela.** Um fato é especulação quando a única forma de confirmá-lo seria ver o código, o peso interno, a lógica de ranqueamento — e nenhuma fonte disponível tem, de fato, esse acesso. A primeira coluna da tabela nunca precisa de citação de terceiro comercial nenhum; a segunda nunca deveria ser citada sem a ressalva de que é palpite, por mais consistente e razoável que pareça.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph CV["Currículo — leitura reativa"]
         App["Candidatura enviada<br/>(alguém já decidiu olhar)"] --> Ler1["Leitura acontece<br/>(nota 04: três leitores)"]
     end
@@ -90,12 +92,12 @@ flowchart TD
         Busca -->|"sim"| Ler2["Só agora começa<br/>a leitura do perfil"]
     end
 
-    style App fill:#4A90D9,color:#fff
-    style Ler1 fill:#7ED321,color:#000
-    style Filtro fill:#4A90D9,color:#fff
-    style Busca fill:#F5A623,color:#000
-    style Nada fill:#D0021B,color:#fff
-    style Ler2 fill:#7ED321,color:#000
+    class App neutro
+    class Ler1 destaque
+    class Filtro neutro
+    class Busca destaque
+    class Nada falha
+    class Ler2 destaque
 ```
 
 O diagrama fixa a diferença que dá título a esta nota: no currículo, a leitura é uma consequência quase direta de alguém ter decidido olhar — a candidatura já filtrou o interesse antes de o texto entrar em jogo. No LinkedIn, entre a intenção do recrutador e a leitura existe uma etapa a mais, o filtro de busca, e é nessa etapa extra — invisível para quem está do outro lado do perfil — que um perfil bem escrito ainda pode nunca chegar a ser lido.

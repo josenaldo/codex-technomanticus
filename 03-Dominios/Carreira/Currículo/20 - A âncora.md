@@ -61,8 +61,10 @@ Vale nomear alguns exemplos do tipo de movimento que costuma aparecer nessa cama
 No topo do drill-down está a **âncora** propriamente dita: o movimento da camada 2, nomeado de um jeito que o leitor entende o valor sem precisar do currículo inteiro, do histórico de empregos ou de uma conversa de trinta minutos para chegar lá. É a tradução do padrão comportamental repetido numa frase curta, memorável, que funciona como resumo executivo de uma carreira inteira — não porque simplifica a carreira a ponto de mentir sobre ela, mas porque escolhe, deliberadamente, a única coisa que precisa aparecer primeiro para o leitor entender, em segundos, que tipo de problema aquela pessoa resolve. "Estabilizo sistemas de integração que já estão quebrados em produção" é uma âncora possível para o exemplo da camada anterior — não é a única frase correta para descrever aquele padrão, mas é o tipo de frase que a camada 1 pede: curta, específica o suficiente para não servir a qualquer candidato do mercado, e ligada a um valor que o leitor reconhece sem esforço, porque todo negócio que roda em produção teme, com razão concreta, o sistema que quebra sem aviso.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph BT
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     C4["<b>Camada 4 — ferramentas</b><br/>'Java, Node.js, PostgreSQL, RabbitMQ.'<br/><br/>zero vantagem — todo mundo da vaga tem"]
     C3["<b>Camada 3 — tipo de sistema</b><br/>'Integração com parceiros externos,<br/>APIs de alto tráfego.'<br/><br/>descreve a caixa, ainda genérico"]
     C2["<b>Camada 2 — o movimento que se repete</b><br/>'Em três empregos diferentes, entrei depois<br/>que algo já estava quebrado e estabilizei.'<br/><br/>o padrão que não é a stack"]
@@ -72,10 +74,10 @@ graph BT
     C3 -->|"sobe: compare três<br/>empregos, ache o padrão"| C2
     C2 -->|"sobe: nomeie o padrão<br/>de forma que o leitor sinta o valor"| C1
 
-    style C4 fill:#D0021B,color:#fff
-    style C3 fill:#F5A623,color:#000
-    style C2 fill:#7ED321,color:#000
-    style C1 fill:#4A90D9,color:#fff
+    class C4 falha
+    class C3 destaque
+    class C2 destaque
+    class C1 neutro
 ```
 
 O diagrama mostra o mesmo exemplo subindo as quatro camadas, e a direção das setas é o ponto central desta nota: o drill-down não desce de um conceito abstrato para um exemplo concreto, como boa parte do conteúdo de posicionamento profissional sugere — ele **sobe**, de fatos concretos e verificáveis (as ferramentas usadas, o tipo de sistema) para uma generalização que só é honesta se os fatos concretos, comparados entre si, de fato sustentam o padrão nomeado no topo. É essa direção — de baixo para cima, de evidência para síntese — que separa uma âncora genuína de um slogan inventado, tema que a seção mais adiante desta nota trata com mais detalhe.

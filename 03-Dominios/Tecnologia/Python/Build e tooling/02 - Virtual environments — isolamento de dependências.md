@@ -147,6 +147,8 @@ O incidente do `apt` no início desta nota é o caso extremo — quebrar o próp
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph Global["Sem isolamento: um único site-packages global"]
         G["Python do sistema<br/>site-packages compartilhado"]
         PA["Projeto A<br/>precisa Django 4.2"] -->|"pip install django==4.2"| G
@@ -163,8 +165,8 @@ flowchart TB
         VB -.-> OK
     end
 
-    style Conflito fill:#c0392b,color:#fff
-    style OK fill:#27ae60,color:#fff
+    class Conflito falha
+    class OK ok
 ```
 
 > [!info] Leitura do diagrama

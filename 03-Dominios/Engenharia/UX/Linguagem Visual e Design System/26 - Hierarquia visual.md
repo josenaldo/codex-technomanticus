@@ -32,15 +32,17 @@ Hierarquia visual é a resposta à pergunta "o que o olho vê primeiro, e é a c
 **Hierarquia se controla por peso e tamanho, não por família tipográfica.** Trocar de fonte para "destacar" um elemento é o instinto mais comum de quem não tem vocabulário de hierarquia — e o menos eficaz. O canal que funciona é variar o **peso** (regular → medium → bold) e o **tamanho** dentro da mesma família, complementado por cor e contraste. Duas ou três famílias tipográficas coexistindo numa tela raramente comunicam hierarquia; comunicam inconsistência.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Ação primária<br/>botão preenchido, cor de marca, peso bold"] --> D["Decisão da tela"]
     B["Ação secundária<br/>outline ou texto, peso medium"] --> D
     C["Ação terciária/destrutiva<br/>texto discreto, cor neutra ou de alerta"] --> D
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#D0021B,color:#fff
-    style D fill:#F5A623,color:#000
+    class A neutro
+    class B destaque
+    class C falha
+    class D destaque
 ```
 
 > [!question]- Isso não é só "deixar bonito"? Por que um engenheiro sem formação de design consegue aplicar isso com confiança?

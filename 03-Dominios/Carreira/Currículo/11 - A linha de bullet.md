@@ -37,15 +37,16 @@ Tratar a linha como unidade de projeto tem uma consequência prática que orient
 A fórmula que sustenta uma linha forte tem três partes, nesta ordem, e cada parte cumpre um trabalho específico que as outras duas não cumprem sozinhas. O **verbo de ação**, no passado, abre a linha e já comunica, antes de qualquer outra palavra, que o sujeito da frase fez algo — não recebeu, não participou de longe, não esteve presente enquanto acontecia. "O que foi feito" vem em seguida, com contexto técnico suficiente para que um leitor que não estava lá entenda do que se trata, sem exigir que ele já conheça o produto, o time ou a stack por dentro. O **resultado** fecha a linha, e é a parte que a maioria dos currículos fracos simplesmente omite — um número, um prazo, ou, na ausência de qualquer um dos dois, uma consequência concreta do que passou a ser possível depois.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["<b>Verbo de ação</b><br/>Conduzi · Migrei · Eliminei<br/>Padronizei · Estabilizei"] --> B["<b>O que foi feito</b><br/>específico, com<br/>contexto técnico"]
     B --> C["<b>Resultado</b><br/>número, prazo<br/>ou consequência"]
 
     D["❌ 'Responsável por manutenção<br/>de sistemas legados'"] -.->|"vira"| E["✅ 'Estabilizei um sistema legado<br/>com incidentes semanais,<br/>reduzindo-os a menos de um por mês'"]
 
-    style D fill:#D0021B,color:#fff
-    style E fill:#4A90D9,color:#fff
+    class D falha
+    class E neutro
 ```
 
 O contraste no diagrama não é decorativo — é o par que organiza esta nota inteira. A versão ruim, "responsável por manutenção de sistemas legados", tem sujeito implícito ("eu era responsável"), tem objeto genérico ("manutenção", sem dizer o quê) e não tem verbo de ação nenhum: "manutenção" é substantivo, não verbo, e a construção inteira descreve uma atribuição de cargo, não um evento que aconteceu. A versão boa, "estabilizei um sistema legado com incidentes semanais, reduzindo-os a menos de um por mês", tem verbo no passado que já denuncia ação concluída ("estabilizei"), tem o que foi feito com contexto suficiente para o leitor visualizar o problema ("um sistema legado com incidentes semanais") e tem resultado mensurável fechando a frase ("reduzindo-os a menos de um por mês"). As duas frases podem descrever, literalmente, o mesmo período de trabalho na mesma empresa — a diferença inteira está em qual delas o autor decidiu escrever.

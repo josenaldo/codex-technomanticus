@@ -43,6 +43,8 @@ O pacote `runtime` da biblioteca padrão não é um bloco monolítico — mas as
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Runtime["runtime (embutido no binário)"]
         direction TB
         SCHED["Scheduler\n(GMP)\nmultiplexa goroutines\nem threads do SO"]
@@ -57,8 +59,8 @@ flowchart TB
     MEM -.->|"decide ONDE\ncada valor vive"| GR
     GR -.->|"pressão de alocação\nguia o GC"| MEM
 
-    style Runtime fill:#4A90D9,color:#fff
-    style APP fill:#F5A623,color:#000
+    class Runtime neutro
+    class APP destaque
 ```
 
 **Scheduler** — decide *quando* e *em qual thread do SO* cada goroutine roda. Um programa Go típico cria centenas ou milhares de goroutines (uma por requisição HTTP, por exemplo), mas o SO só entende threads — e criar uma thread do SO por goroutine seria proibitivamente caro (cada thread do SO custa MBs de stack e microssegundos de *context switch* gerenciado pelo kernel). O scheduler resolve isso com o **modelo GMP** (Goroutine, Machine, Processor): multiplexa muitas goroutines num número pequeno de threads do SO, com *context switches* medidos em dezenas de nanossegundos — porque acontecem inteiramente em espaço de usuário, sem passar pelo kernel. Este é o assunto completo da [[02 - O scheduler GMP a fundo|próxima nota]].

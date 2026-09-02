@@ -78,6 +78,8 @@ Isso não é bug nem falha de design — é a aposta central do TypeScript: ser 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Compilação["Mundo TypeScript (compile time)"]
         TSCode["Código TS com tipos\ninterface Usuario { ... }"]
         Compiler["Compilador TS\n(type checker)"]
@@ -94,8 +96,8 @@ flowchart LR
 
     Compiler -->|"emite JS\napaga tipos"| JSCode
 
-    style Compilação fill:#1a3a5c,color:#c8d8e8
-    style Execução fill:#3a1a1a,color:#e8c8c8
+    class Compilação neutro
+    class Execução falha
 ```
 
 ---
@@ -224,6 +226,8 @@ A distinção parece sutil mas tem consequências profundas:
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     RAW["Dados brutos\n(unknown / any)"]
 
     subgraph Validar["Validate (antipadrão)"]
@@ -243,8 +247,8 @@ flowchart LR
     RAW --> Validar
     RAW --> Parsear
 
-    style Parsear fill:#1a3a1a,color:#c8e8c8
-    style Validar fill:#3a1a1a,color:#e8c8c8
+    class Parsear ok
+    class Validar falha
 ```
 
 A diferença prática: com o padrão "parse", o tipo do valor retornado **já é** `T` — não é `unknown` que você depois castou para `T`. A operação de parse e a produção do tipo confiável são **a mesma operação**. Você não pode ter um `T` sem ter passado pelo parse; o sistema de tipos impõe isso.
@@ -322,6 +326,8 @@ O `z.infer<typeof UsuarioSchema>` extrai o tipo TypeScript que o schema descreve
 
 ```mermaid
 graph TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Antipadrão["Antipadrão: duas fontes de verdade"]
         I["interface Usuario { ... }"]
         S["schema de validação manual"]
@@ -341,8 +347,8 @@ graph TD
         ZS --> ZT --> ZU
     end
 
-    style Padrão fill:#1a3a1a,color:#c8e8c8
-    style Antipadrão fill:#3a1a1a,color:#e8c8c8
+    class Padrão ok
+    class Antipadrão falha
 ```
 
 ---
@@ -504,6 +510,9 @@ O design que emerge desse princípio tem um nome: **boundary pattern** (ou padr�
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Externo["Mundo Externo (unknown / any)"]
         API["API REST / GraphQL"]
         ENV["Variáveis de ambiente"]
@@ -534,9 +543,9 @@ flowchart TB
     S2 <--> S3
     S2 <--> S4
 
-    style Fronteira fill:#3a3a1a,color:#e8e8c8
-    style Miolo fill:#1a3a1a,color:#c8e8c8
-    style Externo fill:#3a1a1a,color:#e8c8c8
+    class Fronteira destaque
+    class Miolo ok
+    class Externo falha
 ```
 
 O benefício arquitetural: o código no miolo da aplicação pode ser escrito sem verificações defensivas constantes. `usuario.email` é uma string válida — o email foi verificado na fronteira. `config.DATABASE_URL` é uma URL — foi verificada quando o processo iniciou. `produto.preco` é um número positivo — o banco de dados pode ter corrompido os dados, mas se chegou até aqui, passou pelo parse.
@@ -608,6 +617,8 @@ Note que `safeParse` retorna uma **discriminated union** — exatamente o padrã
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     SP["UsuarioSchema.safeParse(dados)"]
 
     SP -->|"success: true"| OK["{ success: true\n  data: Usuario }"]
@@ -616,8 +627,8 @@ flowchart LR
     OK -->|"resultado.data"| TYPED["Usuario\n(tipo confiável)"]
     ERR -->|"resultado.error.issues"| ISSUES["ZodIssue[]\n(erros detalhados)"]
 
-    style OK fill:#1a3a1a,color:#c8e8c8
-    style ERR fill:#3a1a1a,color:#e8c8c8
+    class OK ok
+    class ERR falha
 ```
 
 ---

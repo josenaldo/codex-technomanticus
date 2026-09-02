@@ -42,6 +42,8 @@ Nenhuma dessas notas, isolada, produz um serviço. Esta nota junta as sete numa 
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph cmd["cmd/api/main.go"]
         M["main() — só wiring:\nconfig → adapters → use cases → router → shutdown"]
     end
@@ -67,9 +69,9 @@ flowchart TB
     PayAd -.implementa.-> Port
     UC --> Port
 
-    style M fill:#4A90D9,color:#fff
-    style UC fill:#F5A623,color:#000
-    style Port fill:#7ED321,color:#000
+    class M neutro
+    class UC destaque
+    class Port destaque
 ```
 
 Repare no fluxo de dependência: `main.go` é o único lugar do serviço que conhece **todas** as peças concretas — config, repositório Postgres, cliente HTTP de pagamento, roteador. Todo o resto só conhece interfaces (`Port`) ou é conhecido por elas. Isso não é acidente — é a [[05 - Arquitetura hexagonal e clean em Go|nota 05]] aplicada até o fim: `service.go` (o caso de uso) nunca importa `database/sql`, `net/http` como cliente de saída, nem o SDK de nenhum provedor externo.

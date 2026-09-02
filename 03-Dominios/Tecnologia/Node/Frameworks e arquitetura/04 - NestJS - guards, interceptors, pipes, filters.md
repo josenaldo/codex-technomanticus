@@ -38,6 +38,9 @@ Sem lifecycle hooks, controllers acumulam boilerplate: checar auth, validar body
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     MW[Middleware\nexpress/fastify] --> GD[Guard\ncanActivate]
     GD --> IB[Interceptor\nbefore]
     IB --> PP[Pipe\nvalidar e transformar]
@@ -50,14 +53,14 @@ flowchart LR
     HD -->|throw| EF[Exception Filter]
     EF --> ER[Error Response\nProblem Details]
 
-    style GD fill:#D0021B,color:#fff
-    style PP fill:#F5A623,color:#fff
-    style IB fill:#4A90D9,color:#fff
-    style IA fill:#4A90D9,color:#fff
-    style EF fill:#D0021B,color:#fff
-    style HD fill:#4A90D9,color:#fff
-    style F1 fill:#D0021B,color:#fff
-    style F2 fill:#F5A623,color:#fff
+    class GD falha
+    class PP destaque
+    class IB neutro
+    class IA neutro
+    class EF falha
+    class HD neutro
+    class F1 falha
+    class F2 destaque
 ```
 
 ```typescript

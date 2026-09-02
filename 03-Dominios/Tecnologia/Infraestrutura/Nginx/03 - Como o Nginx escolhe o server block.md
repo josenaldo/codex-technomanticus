@@ -29,6 +29,9 @@ Vale nomear de saída a arquitetura da resposta, porque o erro mais comum de que
 
 ```mermaid
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     C["Conexão TCP chega<br/>(IP:porta de destino)"] --> S1["Etapa 1 — listen<br/>Qual socket escuta este IP:porta?"]
     S1 --> G["Grupo de server blocks<br/>que compartilham este socket"]
     G --> TLS{"É HTTPS?"}
@@ -37,10 +40,10 @@ graph TB
     SNI --> S2["Etapa 2 — server_name<br/>Host da request contra server_name"]
     S2 --> R["server block escolhido"]
 
-    style S1 fill:#4A90D9,stroke:#2c5f8a,color:#fff
-    style S2 fill:#4A90D9,stroke:#2c5f8a,color:#fff
-    style SNI fill:#F5A623,stroke:#a66f10,color:#000
-    style R fill:#1e5c3a,stroke:#27ae60,color:#fff
+    class S1 neutro
+    class S2 neutro
+    class SNI destaque
+    class R ok
 ```
 
 Repare que o TLS não é um passo extra depois da etapa 2 — ele se intromete **entre** as duas, e roda com informação mais pobre do que a etapa 2 vai ter disponível segundos depois. É essa intromissão, mais do que qualquer detalhe de sintaxe, que explica por que "certificado errado" é uma categoria de bug diferente de "fui parar no `server` errado". A seção sobre TLS e SNI, mais adiante nesta nota, desenvolve essa consequência com profundidade; por ora, o que importa reter é que ela existe e que acontece antes da etapa 2, nunca depois.
@@ -112,6 +115,8 @@ O Nginx para na primeira categoria que produzir um match: se existe um `server_n
 
 ```mermaid
 graph TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     H["Host da request"] --> E{"Bate com um<br/>server_name exato?"}
     E -->|"sim"| M1["Usa este server block"]
     E -->|"não"| WS{"Bate com um curinga<br/>no começo (*.exemplo.com)?"}
@@ -122,11 +127,11 @@ graph TD
     RE -->|"sim"| M4["Usa a PRIMEIRA regex<br/>que bateu, na ordem do arquivo"]
     RE -->|"não"| DEF["Usa o default_server<br/>deste socket"]
 
-    style M1 fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style M2 fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style M3 fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style M4 fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style DEF fill:#F5A623,stroke:#a66f10,color:#000
+    class M1 ok
+    class M2 ok
+    class M3 ok
+    class M4 ok
+    class DEF destaque
 ```
 
 A consequência prática mais comum dessa tabela: alguém adiciona um `server_name *.exemplo.com;` esperando que ele capture tudo, inclusive `exemplo.com` sem subdomínio, e se surpreende quando `exemplo.com` puro cai no `default_server` em vez de no bloco do curinga — porque `*.exemplo.com` é, por definição, um curinga que exige pelo menos um rótulo antes do domínio; `exemplo.com` sem subdomínio simplesmente não bate com esse padrão, curinga ou não. Quem precisa cobrir os dois casos declara os dois nomes explicitamente no mesmo bloco: `server_name exemplo.com *.exemplo.com;`.

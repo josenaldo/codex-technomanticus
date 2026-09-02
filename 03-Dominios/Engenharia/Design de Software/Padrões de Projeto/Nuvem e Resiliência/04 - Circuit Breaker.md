@@ -40,7 +40,6 @@ A ideia do padrão vem do disjuntor elétrico, e a analogia é boa: ele não con
 ## Os três estados
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 stateDiagram-v2
     [*] --> Fechado
     Fechado --> Aberto: taxa de falha > limiar<br/>(com volume mínimo)

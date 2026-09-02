@@ -148,6 +148,8 @@ Você declarou três dependências diretas. Simples. Mas cada uma delas tem suas
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     ROOT["seu projeto\npackage.json"]
 
     ROOT -->|"^18.0.0"| REACT["react@18.3.1"]
@@ -166,10 +168,10 @@ graph TD
     FORM_DATA --> ASYNCKIT["asynckit@0.4.0"]
     FORM_DATA --> COMBINED_STREAM["combined-stream@1.0.8"]
 
-    style ROOT fill:#1f6feb,color:#fff
-    style REACT fill:#4c9ed9,color:#fff
-    style RTL fill:#4c9ed9,color:#fff
-    style AXIOS fill:#4c9ed9,color:#fff
+    class ROOT neutro
+    class REACT marca
+    class RTL marca
+    class AXIOS marca
 ```
 
 > [!note] Leitura do diagrama
@@ -336,6 +338,8 @@ Esses dois comandos fazem coisas fundamentalmente diferentes — e confundi-los 
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "npm install — desenvolvimento"
         direction TB
         I1["Lê package.json\n(ranges)"]
@@ -355,8 +359,8 @@ flowchart LR
         C1 --> C3 --> C4
     end
 
-    style C2 fill:#8a0000,color:#fff
-    style I3 fill:#2d5016,color:#fff
+    class C2 falha
+    class I3 ok
 ```
 
 | Característica | `npm install` | `npm ci` |

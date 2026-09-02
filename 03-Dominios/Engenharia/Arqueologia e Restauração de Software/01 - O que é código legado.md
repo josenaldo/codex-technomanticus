@@ -75,7 +75,6 @@ O código é apenas a **encarnação parcial** dessa teoria. Muita coisa nunca c
 As definições de Feathers e Bellotti não competem — elas medem **eixos diferentes** do mesmo objeto. Uma pergunta "você consegue mudar com segurança?" (rede de testes). A outra pergunta "alguém ainda entende por quê?" (teoria viva). Cruzando os dois eixos, o terreno fica claro:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 quadrantChart
     title Os dois eixos do legado
     x-axis "Sem testes (medo de mudar)" --> "Com testes (rede de seguranca)"

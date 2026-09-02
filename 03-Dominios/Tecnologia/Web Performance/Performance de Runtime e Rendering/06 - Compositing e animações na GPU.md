@@ -31,8 +31,9 @@ Pense na página como um desenho feito de **transparências empilhadas** (como a
 Esse passo de "combinar as transparências na imagem final" é o **compositing**, a etapa mais barata do pipeline de rendering. Quando um elemento está na própria camada e você anima apenas seu `transform` ou `opacity`, o browser **não recalcula layout nem repinta nada** — só a GPU recompõe as camadas. Por isso essas animações rodam a 60 fps mesmo com a main thread ocupada: elas nem passam por ela.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph SEM["Sem camada própria"]
         A[muda posição] --> B[repinta a região<br/>na main thread]
     end
@@ -40,8 +41,8 @@ graph TB
         C[muda transform] --> D[GPU recompõe<br/>as camadas]
         D --> E[✓ 60fps, fora da main thread]
     end
-    style B fill:#F5A623,color:#000
-    style E fill:#4A90D9,color:#fff
+    class B destaque
+    class E neutro
 ```
 
 ## Como promover um elemento a camada

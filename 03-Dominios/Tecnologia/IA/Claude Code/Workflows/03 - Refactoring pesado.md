@@ -42,6 +42,9 @@ O código final pode ser o mesmo — mas o caminho importa por três razões:
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[Início — arquivo grande] --> B{Cobertura ≥ 70%?}
     B -- Não --> C[TDD: escrever testes\npara comportamentos críticos]
     C --> B
@@ -55,9 +58,9 @@ flowchart TD
     I --> J[Extração N → Testes → Commit]
     J --> K[✓ Refactor completo\ncom histórico limpo]
 
-    style C fill:#fff5f5,stroke:#ff6b6b
-    style K fill:#f0fff4,stroke:#51cf66
-    style G fill:#fff9db,stroke:#fab005
+    class C falha
+    class K ok
+    class G destaque
 ```
 
 > [!summary] Refactor pesado = N refactors pequenos em sequência, cada um verificado e commitado. O agente não fica mais inteligente com mais contexto — fica mais confuso.

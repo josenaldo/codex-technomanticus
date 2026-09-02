@@ -39,14 +39,16 @@ Com `GOGC=100` (o padrão), o heap pode **dobrar** — crescer 100% além do que
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Heap vivo: 50MB\n(fim do ciclo anterior)"] --> B["GOGC=100:\nmeta = 50 × 2 = 100MB"]
     B --> C["Heap cresce alocando..."]
     C -->|"atinge 100MB"| D["Novo ciclo de GC dispara"]
     D --> E["Heap vivo agora: 55MB"]
     E -.->|"novo alvo = 55 × 2 = 110MB"| B
 
-    style B fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
+    class B neutro
+    class D destaque
 ```
 
 O trade-off é direto e vale internalizar como uma régua:
@@ -109,12 +111,14 @@ O caso de uso canônico é exatamente o cenário de abertura: container com limi
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Container: memory.limit = 512Mi"] --> B["GOMEMLIMIT = 450MiB\n(~88% do limite)"]
     B --> C["Margem de ~62MiB\npara overhead não-heap"]
     C --> D["GC acelera perto do teto\nao invés de deixar o container\nestourar OOM"]
 
-    style B fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
+    class B neutro
+    class D destaque
 ```
 
 > [!warning] GOMEMLIMIT sozinho, sem GOGC, não é "desligar o GC até o limite"

@@ -279,8 +279,10 @@ Antes de mapear otimizações para métricas, vale fixar o que cada CWV realment
 ## Mapa: otimização → Core Web Vital
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     IMG["next/image"]
     FONT["next/font"]
     DYN["next/dynamic\n+ code splitting"]
@@ -298,14 +300,14 @@ graph TD
     DYN -->|"ssr:false remove server work"| LCP
     TURBO -->|"HMR instantâneo"| DX
 
-    style LCP fill:#4A90D9,color:#fff
-    style CLS fill:#4A90D9,color:#fff
-    style INP fill:#4A90D9,color:#fff
-    style DX fill:#7ED321,color:#fff
-    style IMG fill:#F5F5F5,stroke:#333
-    style FONT fill:#F5F5F5,stroke:#333
-    style DYN fill:#F5F5F5,stroke:#333
-    style TURBO fill:#F5F5F5,stroke:#333
+    class LCP neutro
+    class CLS neutro
+    class INP neutro
+    class DX destaque
+    class IMG marca
+    class FONT marca
+    class DYN marca
+    class TURBO marca
 ```
 
 ---

@@ -110,6 +110,8 @@ func (c *ContadorSeguro) Incrementa() {
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph RLock["RLock() — leitura"]
         direction LR
         R1["Goroutine A: RLock()"] --- R2["Goroutine B: RLock()"] --- R3["Goroutine C: RLock()"]
@@ -123,8 +125,8 @@ flowchart TB
 
     RLock -.->|"escritor pede Lock():\nespera leitores atuais terminarem,\nbloqueia novos RLock()"| Lock
 
-    style RLock fill:#4A90D9,color:#fff
-    style Lock fill:#F5A623,color:#000
+    class RLock neutro
+    class Lock destaque
 ```
 
 - `RLock()` / `RUnlock()` — trava de **leitura**. Múltiplas goroutines podem ter um `RLock()` ativo ao mesmo tempo, desde que nenhuma escrita esteja em andamento (nem pendente — ver a nota sobre starvation abaixo).

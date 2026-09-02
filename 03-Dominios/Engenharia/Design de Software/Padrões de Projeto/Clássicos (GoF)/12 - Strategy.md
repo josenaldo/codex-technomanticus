@@ -30,15 +30,16 @@ O cálculo do frete depende da transportadora: uma cobra por peso, outra por CEP
 O problema é que **um comportamento que varia** está codificado como uma cadeia de condicionais fixa. O Strategy extrai cada variação para trás de uma interface (`CalculadoraFrete`) e deixa o cliente receber **a estratégia certa** já escolhida. Adicionar uma transportadora vira criar uma implementação nova — sem tocar no checkout. É o [[03 - OCP - Aberto-Fechado|Aberto-Fechado]] em ação: aberto para novas estratégias, fechado para modificação.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Ctx[FreteService] -->|delega o cálculo| S{{"«interface» CalculadoraFrete"}}
     S -.-> P[FretePorPeso]
     S -.-> C[FretePorCEP]
     S -.-> G[FreteGratis]
 
-    style S fill:#4A90D9,color:#fff
-    style Ctx fill:#F5A623,color:#000
+    class S neutro
+    class Ctx destaque
 ```
 
 O contexto (âmbar) não sabe *qual* algoritmo roda — só delega à interface. Trocar ou acrescentar uma estratégia não encosta nele.

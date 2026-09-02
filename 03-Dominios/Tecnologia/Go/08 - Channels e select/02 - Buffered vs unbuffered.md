@@ -81,6 +81,7 @@ Um channel buffered carrega uma fila interna (FIFO) com capacidade fixa `n`. `ch
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Buffer["chan int, cap 3"]
         direction LR
         S1["7"] --> S2["12"] --> S3["_"]
@@ -88,7 +89,7 @@ flowchart LR
     P["Sender"] -- "ch <- v\n(não bloqueia,\nainda há espaço)" --> Buffer
     Buffer -- "v := <-ch\n(não bloqueia,\nainda há item)" --> Cons["Receiver"]
 
-    style Buffer fill:#4A90D9,color:#fff
+    class Buffer neutro
 ```
 
 ```go

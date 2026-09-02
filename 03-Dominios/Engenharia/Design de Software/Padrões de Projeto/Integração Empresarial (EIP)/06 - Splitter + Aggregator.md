@@ -34,8 +34,9 @@ Esse é o ciclo **quebra-processa-junta**, e o EIP o resolve com dois padrões c
 ## A ideia: fan-out e fan-in
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     P["pedido<br/>(20 itens)"] --> S{{"Splitter"}}
     S --> I1["item 1"] --> PR["verifica<br/>estoque"]
     S --> I2["item 2"] --> PR
@@ -43,9 +44,9 @@ graph LR
     PR --> AG{{"Aggregator<br/>(stateful:<br/>espera os 20)"}}
     AG --> R["veredito<br/>do pedido"]
 
-    style S fill:#4A90D9,color:#fff
-    style AG fill:#F5A623,color:#000
-    style R fill:#4A90D9,color:#fff
+    class S neutro
+    class AG destaque
+    class R neutro
 ```
 
 O **Splitter** olha a mensagem composta e emite uma mensagem por elemento — geralmente carregando um **Correlation Identifier** (o id do pedido) e um número de sequência, para o Aggregator saber depois quais partes pertencem ao mesmo todo. O **Aggregator** acumula as partes correlacionadas até a **condição de completude** ser satisfeita, então aplica a **estratégia de agregação** e emite o resultado. A combinação Splitter → (rota) → Aggregator tem nome próprio: **Composed Message Processor**.

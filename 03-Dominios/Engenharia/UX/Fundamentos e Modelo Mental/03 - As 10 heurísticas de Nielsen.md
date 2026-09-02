@@ -28,8 +28,9 @@ Jakob Nielsen, com Rolf Molich, publicou as heurísticas originais em 1990, num 
 Antes do detalhe de cada uma, vale ver como as dez se agrupam por *quando* na jornada do usuário elas mais pesam — isso ajuda a lembrar qual heurística invocar diante de um problema concreto, em vez de recitar a lista inteira toda vez:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Antes["Antes de agir — orientação"]
         H1["1. Status do sistema"]
         H2["2. Sistema = mundo real"]
@@ -46,9 +47,9 @@ graph TD
         H9["9. Diagnosticar e recuperar erros"]
         H10["10. Ajuda e documentação"]
     end
-    style Antes fill:#4A90D9,color:#fff
-    style Durante fill:#4A90D9,color:#fff
-    style Depois fill:#F5A623,color:#000
+    class Antes neutro
+    class Durante neutro
+    class Depois destaque
 ```
 
 O grupo "depois de errar" (âmbar no diagrama) é o que mais custa confiança quando ausente — é também o que menos recebe atenção de design, porque exige imaginar o caminho infeliz antes que ele aconteça de verdade.

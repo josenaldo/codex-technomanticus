@@ -150,8 +150,10 @@ Rodar este arquivo já sobe, sem configuração adicional, dois endpoints de doc
 - `GET /openapi.json` — o próprio documento OpenAPI cru, em JSON, que Swagger UI e ReDoc consomem, e que qualquer ferramenta externa (geradores de SDK, testes de contrato) também pode consumir.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Codigo["Código já escrito por outro motivo"]
         TH["Type hints\nproduto_id: int"]
         BM["Pydantic BaseModel\nPedidoCreate / PedidoRead"]
@@ -177,12 +179,12 @@ flowchart LR
     SPEC --> SDK
     SPEC --> MOCK
 
-    style TH fill:#4A90D9,color:#fff
-    style BM fill:#4A90D9,color:#fff
-    style RM fill:#4A90D9,color:#fff
-    style SPEC fill:#2d7a4a,color:#fff
-    style SWAGGER fill:#F5A623,color:#000
-    style REDOC fill:#F5A623,color:#000
+    class TH neutro
+    class BM neutro
+    class RM neutro
+    class SPEC ok
+    class SWAGGER destaque
+    class REDOC destaque
 ```
 
 O ponto que separa esse mecanismo de "só gerar uma página bonita" é que ele fecha exatamente o incidente de abertura desta nota: como a spec vem do próprio código que roda, é **estruturalmente impossível** que a documentação afirme algo diferente do que o servidor de fato faz — não porque alguém foi disciplinado o suficiente para lembrar de atualizar um arquivo separado, mas porque não existe arquivo separado. Mudar `PedidoCreate` muda a validação **e** a documentação, no mesmo commit, pela mesma linha de código.

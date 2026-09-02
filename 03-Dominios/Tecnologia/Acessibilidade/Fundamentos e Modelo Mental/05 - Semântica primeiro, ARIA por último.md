@@ -84,15 +84,16 @@ Nada disto é "ARIA é ruim, nunca use". ARIA existe porque o HTML **não tem** 
 A regra de bolso: **ARIA para o que o HTML não tem; HTML para tudo o que ele já tem.** E o teste honesto antes de escrever qualquer atributo ARIA é a pergunta "existe um elemento HTML que já faz isto?". Na maioria das vezes, existe.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q{"Existe um elemento HTML<br/>que já faz isto?"}
     Q -->|sim| N["Use o nativo<br/>role, foco, teclado de graça ✓"]
     Q -->|não| A{"É widget novo, atualização<br/>dinâmica ou relação?"}
     A -->|sim| U["Use ARIA — e cumpra o<br/>contrato INTEIRO (estado + teclado)"]
     A -->|não| N
-    style N fill:#4A90D9,color:#fff
-    style U fill:#F5A623,color:#000
+    class N neutro
+    class U destaque
 ```
 
 **Semântica primeiro em uma frase:** o HTML certo entrega role, name, foco e teclado de graça e sem bugs — ARIA é a exceção cara e sem rede que só se justifica quando o nativo genuinamente não alcança.

@@ -41,7 +41,6 @@ A resposta é uma restrição simples de enunciar e fácil de esquecer sob press
 Isso descarta de cara qualquer migration que seja **destrutiva e imediata**: remover uma coluna que o código antigo ainda lê, renomear algo sem deixar o nome antigo disponível, mudar o tipo de uma coluna de forma que quebre a serialização que o código antigo espera. Cada uma dessas operações, se feita "de uma vez", assume implicitamente que só existe uma versão de código rodando — uma premissa que rolling/blue-green/canary já invalidaram.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     subgraph JANELA["Janela do rollout"]
         V1["v1 (código antigo)<br/>ainda rodando em N instâncias"]
@@ -69,8 +68,10 @@ Aplicado a schema de banco, o padrão vira três fases, cada uma um **deploy sep
 **3. Contract.** Remove o velho. Só é seguro quando **nenhuma instância em produção ainda depende dele** — nem para ler, nem para escrever. Essa é, tipicamente, a operação mais rápida de todas (remover uma coluna é metadado, não reescrita de dados), mas é a que mais gente executa cedo demais, antes de confirmar que o velho está realmente órfão.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph E["1. EXPAND (deploy A)"]
         E1["Adiciona coluna nova<br/>Schema = velho + novo"]
     end
@@ -82,10 +83,10 @@ graph LR
         C2["Remove coluna velha"]
     end
     E1 --> M1 --> C1 --> C2
-    style E1 fill:#4A90D9,color:#fff
-    style M1 fill:#F5A623,color:#000
-    style C1 fill:#D0021B,color:#fff
-    style C2 fill:#D0021B,color:#fff
+    class E1 neutro
+    class M1 destaque
+    class C1 falha
+    class C2 falha
 ```
 
 Repare no detalhe estrutural: **são três deploys, não um.** Cada fase só avança depois que a anterior foi confirmada estável em produção — geralmente com dias de intervalo entre elas, não minutos. É o oposto do impulso natural de "resolver tudo numa migration só, de uma vez, e seguir em frente".
@@ -163,7 +164,6 @@ Outro caso citado com frequência: adicionar uma constraint `NOT NULL` numa tabe
 Em MySQL, o quadro histórico foi pior: por muito tempo, boa parte dos `ALTER TABLE` reconstruía a tabela inteira, bloqueando escritas durante todo o processo. Isso motivou o ecossistema a construir ferramentas de migration *online* por fora do próprio `ALTER TABLE`: o `gh-ost`, criado pelo GitHub, usa o binlog do MySQL para replicar mudanças para uma tabela-sombra sem usar triggers (ao contrário de ferramentas anteriores como o `pt-online-schema-change` da Percona), permitindo pausar, throttle e controlar o ritmo da migration dinamicamente sem nunca travar a tabela original (github.blog, anúncio do gh-ost). O Vitess, a camada que a PlanetScale expõe como "non-blocking schema changes", segue a mesma ideia arquitetural: cria uma cópia da tabela, aplica a mudança nela, mantém as duas sincronizadas, e faz um cutover rápido no final (planetscale.com/blog/non-blocking-schema-changes).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph TD
     OP["Operação de DDL"] --> Q{"Trava a tabela<br/>inteira?"}
     Q -->|"Sim — CREATE INDEX comum,<br/>ALTER com reescrita,<br/>SET NOT NULL direto"| BAD["🔴 Todo tráfego<br/>(v1 e v2) espera<br/>o lock liberar"]

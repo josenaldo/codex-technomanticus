@@ -25,6 +25,9 @@ aliases:
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     REQ["Requisição de página"] --> Q{"Qual estratégia?"}
 
     Q -->|Offset| OFF["LIMIT 10 OFFSET N"]
@@ -43,14 +46,14 @@ flowchart TD
     CUR_PERF -->|"Usa quando"| CUR_USE["Infinite scroll\nFeed mobile\nChave composta necessária"]
     KEY_PERF -->|"Usa quando"| KEY_USE["Tabela append-only\nID sequencial\nETL em lote"]
 
-    style REQ fill:#4A90D9,color:#fff
-    style Q fill:#4A90D9,color:#fff
-    style OFF fill:#F5A623,color:#fff
-    style CUR fill:#4A90D9,color:#fff
-    style KEY fill:#4A90D9,color:#fff
-    style OFF_PERF fill:#D0021B,color:#fff
-    style CUR_PERF fill:#4A90D9,color:#fff
-    style KEY_PERF fill:#4A90D9,color:#fff
+    class REQ neutro
+    class Q neutro
+    class OFF destaque
+    class CUR neutro
+    class KEY neutro
+    class OFF_PERF falha
+    class CUR_PERF neutro
+    class KEY_PERF neutro
 ```
 
 ## Como funciona

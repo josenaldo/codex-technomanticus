@@ -56,8 +56,8 @@ Repare que nenhuma menciona ferramenta. A tecnologia entra como detalhe da decis
 O segundo eixo a inverter é o do índice. Uma tabela simples resolve, e cobrir as sete famílias da [[07 - A taxonomia das perguntas comportamentais|nota 07]] é o objetivo:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     H1["História A"] --> F1["Conflito"]
     H1 --> F2["Liderança sem autoridade"]
     H2["História B"] --> F3["Fracasso"]
@@ -67,10 +67,10 @@ graph TD
     H4["História D"] --> F6["Ambiguidade"]
     H4 --> F7["Stakeholder"]
 
-    style H1 fill:#4A90D9,color:#fff
-    style H2 fill:#4A90D9,color:#fff
-    style H3 fill:#4A90D9,color:#fff
-    style H4 fill:#4A90D9,color:#fff
+    class H1 neutro
+    class H2 neutro
+    class H3 neutro
+    class H4 neutro
 ```
 
 O diagrama mostra a propriedade que torna o método econômico: **uma história serve a várias famílias**, mudando a ênfase. Por isso o repertório é pequeno — seis a oito histórias, se bem escolhidas, cobrem as sete famílias com folga.

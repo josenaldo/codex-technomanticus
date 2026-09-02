@@ -75,7 +75,6 @@ A separação entre requisito funcional e não-funcional já apareceu na nota an
 Um exercício útil para não confundir as duas colunas: pergunte-se "isso aparece no diagrama como uma caixa, ou como uma característica de várias caixas ao mesmo tempo?" "Postar um tweet" vira uma caixa (o serviço de escrita). "Latência <2s" não vira caixa nenhuma — ela pressiona *todas* as caixas do caminho de leitura a serem rápidas.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     Q["Enunciado vago<br/>'projete o X'"] --> P1["Perguntas de escopo:<br/>usuários, read/write,<br/>features, tolerância"]
     P1 --> RF["Requisitos Funcionais<br/>(verbos, features)"]

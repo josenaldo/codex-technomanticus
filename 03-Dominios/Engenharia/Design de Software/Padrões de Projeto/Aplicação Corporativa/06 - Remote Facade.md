@@ -51,8 +51,9 @@ Fowler enuncia isso como a **Primeira Lei da Distribuição de Objetos**: *não 
 A resposta não é piorar o design do domínio. É colocar, **na fronteira**, um objeto de granularidade diferente:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph SEM["Sem Remote Facade — chatty"]
         C1["Cliente"] -.->|"getNumero()"| O1["Pedido"]
         C1 -.->|"getItens()"| O1
@@ -65,11 +66,11 @@ graph LR
         RF --> P["Pedido · Item · Produto<br/>(chamadas locais, baratas)"]
     end
 
-    style O1 fill:#D0021B,color:#fff
-    style O2 fill:#D0021B,color:#fff
-    style O3 fill:#D0021B,color:#fff
-    style RF fill:#4A90D9,color:#fff
-    style P fill:#4A90D9,color:#fff
+    class O1 falha
+    class O2 falha
+    class O3 falha
+    class RF neutro
+    class P neutro
 ```
 
 O vermelho marca o custo: cada seta pontilhada é uma viagem de rede. O Remote Facade converte trezentas e quarenta viagens em uma — o cliente pede o que quer em uma frase, e a fachada faz todas as chamadas **locais** necessárias do outro lado.

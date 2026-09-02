@@ -106,20 +106,21 @@ Clicar em "Curtidas" não afeta "Visualizações". São dois `useState` distinto
 O poder real aparece quando hooks chamam outros hooks. A composição é linear, não aninhada:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#fff"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["Componente\n(SearchPage)"] -->|"chama"| B["useProductSearch\n(hook de domínio)"]
     B -->|"chama"| C["useDebounce\n(hook utilitário)"]
     B -->|"chama"| D["useAsync\n(hook de infra)"]
     D -->|"chama"| E["useState + useEffect\n(built-ins)"]
     C -->|"chama"| F["useState + useEffect\n(built-ins)"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#7BB3E0,color:#fff
-    style D fill:#7BB3E0,color:#fff
-    style E fill:#B8D4F0,color:#333
-    style F fill:#B8D4F0,color:#333
+    class A neutro
+    class B neutro
+    class C marca
+    class D marca
+    class E neutro
+    class F neutro
 ```
 
 O componente vê apenas `useProductSearch` — toda a cadeia de composição fica invisível. Se amanhã você trocar `useAsync` por uma implementação com React Query, o componente não muda.

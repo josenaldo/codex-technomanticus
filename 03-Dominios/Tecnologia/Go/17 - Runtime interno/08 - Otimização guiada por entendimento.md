@@ -38,6 +38,8 @@ O fluxo correto, na ordem certa:
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Sintoma: latência alta,\nCPU alta, memória alta"] --> B["Medir com benchmark\n(testing.B) e/ou pprof"]
     B --> C{"O hot path\nestá onde\nvocê esperava?"}
     C -->|Não| D["Ajuste a hipótese —\nvolte pro profile"]
@@ -48,9 +50,9 @@ flowchart TD
     G -->|Não| D
     G -->|Sim| H["Commit — e documentar\no PORQUÊ da otimização"]
 
-    style B fill:#4A90D9,color:#fff
-    style E fill:#F5A623,color:#000
-    style H fill:#7ED321,color:#000
+    class B neutro
+    class E destaque
+    class H destaque
 ```
 
 Repare que o profile aparece **duas vezes** no fluxo: antes de tocar no código (pra saber onde olhar) e depois (pra confirmar que a mudança realmente ajudou). Pular a segunda medição é tão comum quanto pular a primeira — e tão perigoso, porque "eu acho que ficou mais rápido" não é verificação.

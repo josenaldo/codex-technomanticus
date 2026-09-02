@@ -44,8 +44,8 @@ A ideia não nasceu na computação. Veio do arquiteto (de prédios) **Christoph
 O GoF agrupa os 23 por **intenção** — o tipo de problema que cada um ataca:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     P[23 Padrões GoF] --> C[Criacionais<br/>como objetos NASCEM]
     P --> E[Estruturais<br/>como objetos se COMPÕEM]
     P --> B[Comportamentais<br/>como objetos INTERAGEM]
@@ -54,9 +54,9 @@ graph TD
     E --> E1[Adapter · Decorator · Facade<br/>Proxy · Composite · Bridge · Flyweight]
     B --> B1[Strategy · Observer · Command · State<br/>Template Method · Iterator · Chain of Resp.<br/>Mediator · Memento · Visitor · Interpreter]
 
-    style C fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
+    class C neutro
+    class E neutro
+    class B neutro
 ```
 
 - **Criacionais (5)** — lidam com a **criação de objetos**. O objetivo é abstrair *como* os objetos são instanciados, para o sistema não ficar acoplado às classes concretas. *Ex.: em vez de `new EmailSender()` espalhado, uma fábrica decide qual sender criar.*

@@ -101,6 +101,9 @@ O diagrama abaixo mostra essa pilha para um container único, da base até o top
 
 ```mermaid
 graph TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Visão única do processo (union mount)"
         M["Sistema de arquivos mesclado\nque o processo dentro do container enxerga"]
     end
@@ -121,9 +124,9 @@ graph TB
     P["Processo da aplicação\n(lê e escreve como se fosse\num filesystem comum)"]
     M --> P
 
-    style W fill:#7a2e2e,stroke:#c0392b,color:#fff
-    style M fill:#2e4d7a,stroke:#3498db,color:#fff
-    style P fill:#5a4a1e,stroke:#c9a227,color:#fff
+    class W falha
+    class M neutro
+    class P destaque
 ```
 
 Note a diferença de natureza entre as quatro camadas de baixo e a camada do topo. As quatro primeiras compõem a **imagem** propriamente dita: imutáveis, endereçadas por hash de conteúdo, e — este é o ponto que a próxima seção explora — potencialmente compartilhadas com outras imagens completamente diferentes. A camada do topo pertence ao **container**, não à imagem: ela nasce vazia no instante em que o container é criado, e é a única camada em toda a pilha na qual se pode escrever.
@@ -139,6 +142,7 @@ Considere duas imagens: `minha-api:v1`, construída sobre `python:3.12-slim`, e 
 
 ```mermaid
 graph TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Imagem minha-api:v1"
         A4["Camada — código da API\nsha256:api999..."]
         A3["Camada — dependências da API\nsha256:dep777..."]
@@ -160,8 +164,8 @@ graph TB
     S2 --> B3
     S1 --> S2
 
-    style S1 fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style S2 fill:#1e5c3a,stroke:#27ae60,color:#fff
+    class S1 ok
+    class S2 ok
 ```
 
 O armazenamento local do Docker guarda cada camada uma única vez, indexada pelo seu hash, dentro de `/var/lib/docker/overlay2/` (no Linux, com o driver padrão). Não existe duplicação de disco para camadas idênticas, e não existe re-download de camadas que já estão lá — a única coisa que amarra `minha-api:v1` e `minha-worker:v1` à mesma camada de base é o fato de ambas terem, em algum ponto do manifesto, uma referência ao mesmo hash `sha256:py333...`. Isso é economia de banda e de disco como efeito colateral de uma decisão de endereçamento, não como uma feature de deduplicação implementada à parte.
@@ -208,6 +212,8 @@ O diagrama abaixo resume as três peças que, juntas, formam o que rotineirament
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     MAN["Manifesto\n(JSON — lista de referências, sem dados)"]
     CFG["Configuração da imagem\n(JSON — comando padrão, ENV, USER,\narquitetura-alvo, array de hashes de camada)"]
     L1["Camada de dados 1\nsha256:aaa111..."]
@@ -219,8 +225,8 @@ graph TB
     MAN -->|"referencia por hash"| L2
     MAN -->|"referencia por hash"| L3
 
-    style MAN fill:#4a3b7a,stroke:#8e6fd6,color:#fff
-    style CFG fill:#3b5a7a,stroke:#5b9bd5,color:#fff
+    class MAN marca
+    class CFG neutro
 ```
 
 O manifesto não contém as camadas nem a configuração — ele só sabe onde encontrá-las, pelo hash. É essa indireção que permite ao registry (ou ao armazenamento local) guardar cada camada uma única vez e deixar múltiplos manifestos, de imagens diferentes, apontarem para ela sem duplicação, exatamente o mecanismo de compartilhamento que a seção anterior demonstrou na prática.

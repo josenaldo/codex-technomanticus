@@ -28,8 +28,10 @@ O consultor que aceita essa ligação não está entrando num onboarding tranqui
 Antes de entrar no caso, vale ver o mapa inteiro de uma vez. As três fases do galho não são um índice de sumário — são uma sequência de posturas que o consultor assume, cada uma pré-requisito da seguinte:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     START[Modo: due diligence, heranca ou resgate] --> I1
 
     subgraph INI[INICIADO - entender antes de tocar]
@@ -53,9 +55,9 @@ graph TD
     I3 --> AD1
     AD4 --> M1
 
-    style I1 fill:#D0021B,color:#fff
-    style M1 fill:#F5A623
-    style M5 fill:#4A90D9,color:#fff
+    class I1 falha
+    class M1 destaque
+    class M5 neutro
 ```
 
 Vermelho no início não é decoração: é o estado real do consultor no primeiro dia, cego diante de um sistema que não escreveu. Azul no fim é o destino — não "sistema perfeito", mas *dono confiante*, alguém que entende a teoria bem o bastante para decidir e agir sobre ela sem medo. O âmbar no meio marca a única bifurcação genuína da jornada: o ponto onde TIME e os 7 R's ([[17 - Frameworks de decisão|nota 17]]) transformam tudo o que foi escavado em decisão.
@@ -67,14 +69,16 @@ Só que o diagrama acima mente por omissão, e a jornada real corrige essa menti
 A [[03 - A lente do consultor|nota 03]] avisa: due diligence, herança e resgate "não são estanques" — um engajamento migra de modo, e reconhecer a transição é parte do trabalho. O mesmo vale para as três fases. Elas não são um trilho de mão única onde, uma vez em Magus, você nunca mais volta a agir como Iniciado. Um incidente em produção durante a execução de um Strangler Fig te devolve, sem aviso, à postura de primeiro contato — só que agora sob fogo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     DD[Due diligence] -->|negocio fechado| HE[Heranca]
     HE -->|incidente em producao| RE[Resgate]
     RE -->|paciente estabilizado| HE
-    style DD fill:#F5A623
-    style HE fill:#4A90D9,color:#fff
-    style RE fill:#D0021B,color:#fff
+    class DD destaque
+    class HE neutro
+    class RE falha
 ```
 
 Guarde esse diagrama — os dois cenários a seguir são exatamente essa sequência acontecendo, na mesma plataforma de logística que abriu as notas 17 e 18.

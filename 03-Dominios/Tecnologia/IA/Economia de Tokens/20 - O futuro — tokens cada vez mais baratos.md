@@ -139,14 +139,17 @@ A deflação de preço cria uma armadilha cognitiva: "tokens ficando mais barato
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["📉 Preço/token cai"] --> B["Agentes mais viáveis\ne acessíveis"]
     B --> C["Volume de tokens\npor tarefa explode\n(10-100x mais)"]
     C --> D["Gasto total\npode crescer"]
     D --> E["Economia de tokens\nainda é essencial"]
     
-    style A fill:#d4edda,stroke:#155724
-    style D fill:#fff3cd,stroke:#856404
-    style E fill:#cce5ff,stroke:#004085
+    class A ok
+    class D destaque
+    class E neutro
 ```
 
 **Dados concretos:**

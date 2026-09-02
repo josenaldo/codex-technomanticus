@@ -84,8 +84,10 @@ Para as experiências mais antigas de uma carreira longa, há três destinos. **
 Vale ser explícito sobre o terceiro: omitir uma entrada muito antiga, sem criar lacuna relevante, é **curadoria normal** — não ocultação de fato desconfortável. A diferença entre as duas coisas é exatamente o que a próxima seção existe para nomear.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Cargo atual /<br/>mais recente"] --> B["4-6 bullets<br/>detalhe completo"]
     C["Cargo de<br/>5-8 anos atrás"] --> D["2-3 bullets<br/>menos contexto"]
     E["Experiência inicial<br/>de carreira"] --> F{"Ainda relevante<br/>para a vaga?"}
@@ -93,9 +95,9 @@ graph TD
     F -->|"vários itens curtos<br/>do mesmo período"| H["Agrupar sob<br/>um cabeçalho comum"]
     F -->|"nenhuma relação<br/>com a direção atual"| I["Omitir<br/>(curadoria, não ocultação)"]
 
-    style A fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style E fill:#D0021B,color:#fff
+    class A neutro
+    class C destaque
+    class E falha
 ```
 
 ## As seis situações que os guias evitam

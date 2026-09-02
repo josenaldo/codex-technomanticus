@@ -99,7 +99,6 @@ E, quando não houver repositório, três mitigações valem: baixar o script e 
 ## As três camadas de empacotamento
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     A["<b>pacote da distribuição</b><br/>apt · dnf · pacman · apk"] --> A1["integrado, assinado,<br/>versão às vezes antiga"]
     B["<b>pacote universal</b><br/>Snap · Flatpak · AppImage"] --> B1["traz as dependências,<br/>versão nova, mais peso"]

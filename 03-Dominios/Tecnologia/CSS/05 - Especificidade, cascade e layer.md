@@ -27,6 +27,9 @@ A nota 01 apresentou a cascade em alto nível. Aqui, o algoritmo completo, na or
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["1. Transições CSS\n(animation-fill / transition em andamento)"]
     B["2. !important do browser\n(acessibilidade, modo forçado)"]
     C["3. !important do usuário\n(high contrast, preferências)"]
@@ -37,9 +40,9 @@ flowchart TD
     H["8. CSS normal do browser\n(user-agent stylesheet)"]
 
     A --> B --> C --> D --> E --> F --> G --> H
-    style A fill:#ff9999
-    style D fill:#ffcc99
-    style F fill:#99ff99
+    class A falha
+    class D destaque
+    class F ok
 ```
 
 Na prática do dia a dia: a maioria das decisões acontece no nível 6 — CSS normal do autor, resolvido por especificidade.

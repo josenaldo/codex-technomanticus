@@ -56,19 +56,20 @@ Essa distinção é o que justifica o preço. Um fractional CTO cobra na faixa d
 ## Como a fração se distribui na prática
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     F["Fractional Engineer<br/>~40h/semana de capacidade total"]
     F -->|"Hands-on<br/>2-3 dias/semana"| C1["Cliente A<br/>scale-up em crescimento"]
     F -->|"Advisory<br/>6h/mês"| C2["Cliente B<br/>startup early-stage"]
     F -->|"Advisory<br/>4h/mês"| C3["Cliente C<br/>empresa em due diligence"]
     F -.->|"Project-based<br/>prazo fechado"| C4["Cliente D<br/>migração pontual"]
 
-    style F fill:#4A90D9,color:#fff
-    style C1 fill:#4A90D9,color:#fff
-    style C2 fill:#F5A623,color:#000
-    style C3 fill:#F5A623,color:#000
-    style C4 fill:#F5A623,color:#000
+    class F neutro
+    class C1 neutro
+    class C2 destaque
+    class C3 destaque
+    class C4 destaque
 ```
 
 O diagrama mostra o padrão típico de uma carteira madura: um engagement hands-on consome a maior fatia da semana, enquanto vários advisory cabem nas horas restantes. O project-based entra e sai — não ocupa uma fatia fixa da agenda no longo prazo, por isso a linha pontilhada.

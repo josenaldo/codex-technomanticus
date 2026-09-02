@@ -44,8 +44,9 @@ A segunda falha é mais insidiosa que a primeira, e é a que acontece mais — p
 ## A ideia: uma escrita só
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["confirmar(pedido)"] --> T["<b>Uma transação de banco</b>"]
     T --> D1["UPDATE pedido<br/>status = confirmado"]
     T --> D2["INSERT outbox<br/>PedidoConfirmado"]
@@ -55,9 +56,9 @@ graph TD
     R --> B["Broker"]
     R -.->|"falhou? tenta de novo<br/>⇒ pode publicar 2×"| B
 
-    style T fill:#4A90D9,color:#fff
-    style OK fill:#4A90D9,color:#fff
-    style R fill:#F5A623,color:#000
+    class T neutro
+    class OK neutro
+    class R destaque
 ```
 
 O evento é gravado **na mesma transação** do dado, numa tabela de saída. O banco garante atomicidade porque é uma transação local, comum: ou as duas linhas existem, ou nenhuma. Depois, um processo separado — o *relay* — lê a tabela e publica.

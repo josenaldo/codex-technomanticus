@@ -38,18 +38,20 @@ A ordem entre as duas nunca se inverte. Isso é o que separa o playbook de firef
 Cinco passos, sempre nessa ordem, mesmo que o passo 3 leve minutos e o passo 4 leve dias:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[Alerta dispara] --> B[Detectar:<br/>confirmar o incidente]
     B --> C[Mitigar:<br/>estancar o sangramento]
     C --> D[Diagnosticar:<br/>achar a causa]
     D --> E[Resolver:<br/>corrigir de verdade]
     E --> F[Post-mortem<br/>sem culpa]
-    style B fill:#D0021B
-    style C fill:#F5A623
-    style D fill:#4A90D9
-    style E fill:#4A90D9
-    style F fill:#4A90D9
+    class B falha
+    class C destaque
+    class D neutro
+    class E neutro
+    class F neutro
 ```
 
 1. **Detectar** — confirmar que é um incidente de verdade, não ruído (um alerta falso, um pico normal de tráfego). Em sistema legado sem observabilidade, esse passo sozinho pode consumir minutos preciosos: você não tem dashboard, só um cliente reclamando no chat. É o primeiro argumento a favor de instrumentar *antes* de precisar ([[21 - Validação em produção|nota 21]]).
@@ -68,8 +70,9 @@ As técnicas de escavação que este galho ensinou nas fases Iniciado e Adepto n
 **`git bisect` e `git blame`** ([[07 - Arqueologia do histórico|nota 07]]) são a primeira parada quando o incidente coincide com um deploy recente — o cenário mais comum de longe. Em vez de ler commit por commit em ordem cronológica, `git bisect` faz busca binária: você marca um commit "bom" (o último release estável) e um "ruim" (o atual), e o Git escolhe o ponto médio para você testar. A cada rodada, o espaço de commits suspeitos cai pela metade — encontrar o culpado entre 200 commits leva, no pior caso, apenas 8 testes, não 200.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     G["~200 commits suspeitos<br/>entre o ultimo bom e o atual"] --> H["git bisect start"]
     H --> I{"Testa o commit<br/>do meio"}
     I -->|bom| J["Metade recente<br/>vira o novo espaco"]
@@ -77,8 +80,8 @@ flowchart TD
     J --> I
     K --> I
     I -->|1 commit restante| L["git bisect identifica<br/>o culpado"]
-    style I fill:#F5A623
-    style L fill:#4A90D9
+    class I destaque
+    class L neutro
 ```
 
 Uma vez achado o commit culpado, `git blame` na linha exata que ele tocou te dá o contexto que falta: quem escreveu, quando, e — se a mensagem de commit for boa — *por quê*. É o passo mais rápido de recuperação parcial de teoria (Naur) que existe: você não reconstrói a teoria inteira do sistema, só a teoria daquela linha específica, e é exatamente o suficiente para diagnosticar.
@@ -109,15 +112,15 @@ O playbook acima parece só bom senso operacional, mas repousa sobre teoria form
 O melhor incidente é o que nunca acontece, e as ferramentas para isso já foram dadas em notas anteriores — o firefighting é, em boa parte, a fatura que se paga quando elas faltaram.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     P1["Rede de caracterizacao<br/>(notas 10-11)"] --> Q["Menos regressoes<br/>chegam a producao"]
     P2["Deploys pequenos<br/>e reversiveis<br/>(Mikado 15, Strangler 18)"] --> R["Quando algo falha,<br/>o raio de suspeitos e pequeno"]
     P3["Monitoramento<br/>antecipado (nota 21)"] --> S["Deteccao em minutos,<br/>nao em reclamacao de cliente"]
     Q --> T["Menos incidentes,<br/>e os que restam sao pequenos"]
     R --> T
     S --> T
-    style T fill:#4A90D9
+    class T neutro
 ```
 
 A rede de caracterização ([[10 - A rede de segurança primeiro|nota 10]]) captura o comportamento atual antes de qualquer mudança — a maioria das regressões que viram incidente de madrugada são exatamente o tipo de coisa que um teste de caracterização pegaria em CI, de dia, sem pressão. Deploys pequenos e reversíveis (o [[15 - O Método Mikado|Mikado]] no nível do código, o [[18 - Strangler Fig|Strangler Fig]] no nível do sistema) fazem o mesmo trabalho que o `git bisect` faz depois do fato — só que *antes*: se cada mudança é pequena, o espaço de suspeitos quando algo quebra já nasce pequeno. E monitoramento instalado com antecedência ([[21 - Validação em produção|nota 21]]) transforma o passo Detectar de "um cliente reclamou às três da manhã" para "um alerta automático disparou em segundos". Firefighting bem-sucedido é uma habilidade que vale a pena ter — mas a melhor versão dela é nunca precisar usá-la.

@@ -111,6 +111,9 @@ Esse é o coração operacional do Terraform, e a razão de ele ser mais seguro 
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["terraform init"] --> B["terraform plan"]
     B --> C{Revisão humana<br/>ou CI aprova?}
     C -->|sim| D["terraform apply"]
@@ -118,9 +121,9 @@ flowchart LR
     D --> E[Infraestrutura<br/>na nuvem]
     E -.->|quando não precisa mais| F["terraform destroy"]
 
-    style B fill:#f9d77e,stroke:#333
-    style D fill:#90c8ac,stroke:#333
-    style F fill:#e08283,stroke:#333
+    class B destaque
+    class D ok
+    class F falha
 ```
 
 **`terraform init`** — roda uma vez por diretório de config (ou sempre que você adiciona/troca um provider). Lê o bloco `required_providers`, baixa os plugins correspondentes (o plugin `aws`, o plugin `digitalocean`) para uma pasta local `.terraform/`, e configura o backend onde o state vai morar. Sem isso, o Terraform nem sabe como falar com a AWS — o provider é literalmente o código que traduz HCL em chamadas de API.
@@ -290,17 +293,19 @@ O Terraform não executa seu código de cima para baixo — ele constrói um gra
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     VPC["aws_vpc.main"] --> Subnet["aws_subnet.public"]
     VPC --> SG["aws_security_group.web_sg"]
     Subnet --> Instance["aws_instance.web"]
     SG --> Instance
     Instance --> EIP["aws_eip.web"]
 
-    style VPC fill:#8ecae6
-    style Subnet fill:#8ecae6
-    style SG fill:#8ecae6
-    style Instance fill:#ffb703
-    style EIP fill:#ffb703
+    class VPC neutro
+    class Subnet neutro
+    class SG neutro
+    class Instance destaque
+    class EIP destaque
 ```
 
 **Dependência implícita** é o caso comum: quando um resource referencia um atributo de outro (`subnet_id = aws_subnet.public.id`), o Terraform infere automaticamente que precisa criar a subnet antes da instância. Isso cobre a esmagadora maioria dos casos — você quase nunca precisa declarar dependência manualmente.

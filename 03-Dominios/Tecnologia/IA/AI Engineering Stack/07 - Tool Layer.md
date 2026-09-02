@@ -35,6 +35,8 @@ A Tool Layer não é sobre quais ferramentas usar — é sobre **quem decide o q
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Sem Tool Layer"
         A1["Modelo recebe tarefa"]
         A2["Todas as tools disponíveis\nsem política"]
@@ -51,8 +53,8 @@ flowchart LR
     A1 --> A2 --> A3
     B1 --> B2 --> B3 --> B4
 
-    style A3 fill:#fff5f5,stroke:#ff6b6b
-    style B4 fill:#f0fff4,stroke:#51cf66
+    class A3 falha
+    class B4 ok
 ```
 
 ## O que é esta camada

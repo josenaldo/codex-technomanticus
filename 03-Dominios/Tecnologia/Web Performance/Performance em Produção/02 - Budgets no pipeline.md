@@ -27,17 +27,18 @@ Quase sempre, uma de duas coisas: ou o budget **só avisava** (nunca quebrou o b
 ## Os dois budgets que se complementam
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A[PR aberto] --> B["Budget de QUANTIDADE<br/>size-limit / bundlesize"]
     A --> C["Budget de MÉTRICA<br/>Lighthouse CI"]
     B -->|bundle > limite| D[❌ falha]
     C -->|LCP/INP/CLS > limite| D
     B -->|ok| E[merge liberado]
     C -->|ok| E
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#D0021B,color:#fff
+    class B neutro
+    class C neutro
+    class D falha
 ```
 
 ### Budget de quantidade: o early warning barato

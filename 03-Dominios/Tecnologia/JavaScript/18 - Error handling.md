@@ -145,14 +145,16 @@ try {
 A causa pode ser qualquer valor — outro `Error`, uma string, um objeto de resposta HTTP. O encadeamento é manual (não recursivo automático), mas já é suficiente para a maioria dos casos de produção.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#F5A623", "tertiaryColor": "#D0021B"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["AppError\n'Falha ao buscar usuário 42'"] -->|cause| B["FetchError\n'Failed to fetch'"]
     B -->|cause| C["TypeError\n'network error'"]
 
-    style A fill:#4A90D9,color:#fff,stroke:#2c5f8a
-    style B fill:#F5A623,color:#fff,stroke:#b37318
-    style C fill:#D0021B,color:#fff,stroke:#8a0012
+    class A neutro
+    class B destaque
+    class C falha
 ```
 
 > [!info] Suporte
@@ -287,7 +289,6 @@ tentativa(); // → UnhandledError (processo pode travar)
 O motivo: quando `setTimeout` dispara, a call stack já saiu do bloco `try/catch`. O `try/catch` protege apenas a execução **síncrona** do seu bloco. O callback do `setTimeout` roda em um tick completamente novo, sem nenhuma relação com o frame anterior.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#F5A623", "tertiaryColor": "#D0021B"}}}%%
 sequenceDiagram
     participant CallStack
     participant EventLoop

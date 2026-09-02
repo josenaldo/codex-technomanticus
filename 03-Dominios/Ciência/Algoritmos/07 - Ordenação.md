@@ -81,6 +81,8 @@ Parece pedante até você precisar de **ordenações encadeadas**. Suponha uma l
 
 ```mermaid
 flowchart TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph entrada["Entrada &#40;já ordenada por nome&#41;"]
         E1["Ana &middot; 30"]
         E2["Bruno &middot; 25"]
@@ -108,8 +110,8 @@ flowchart TB
     est --> saidaE
     ins --> saidaI
 
-    style saidaE fill:#1b5e20,color:#fff
-    style saidaI fill:#7f1d1d,color:#fff
+    class saidaE ok
+    class saidaI falha
 ```
 
 **Leitura do diagrama.** Partimos de uma lista já ordenada por nome. Um sort **estável** por idade produz, dentro de cada idade, a ordem alfabética intacta (Bruno antes de Diego nos 25; Ana antes de Carla nos 30). Um sort **instável** por idade *também produz uma ordenação correta por idade* — Diego e Bruno continuam ambos nos 25 — mas a ordem de desempate por nome se perde. Por isso ordenações encadeadas exigem estabilidade: você ordena pelo critério secundário primeiro, depois pelo primário com um sort estável, e o desempate sobrevive. Sem estabilidade, o segundo sort destrói o trabalho do primeiro.
@@ -147,6 +149,8 @@ E há o segundo motivo: insertion sort é **adaptativo**. Numa lista quase orden
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     P0["Início: [5, 2, 4, 6, 1, 3]"] --> P1
     P1["i=1: pega 2, desliza p/ tras de 5 &rarr; [2, 5, 4, 6, 1, 3]"] --> P2
     P2["i=2: pega 4, encaixa entre 2 e 5 &rarr; [2, 4, 5, 6, 1, 3]"] --> P3
@@ -155,8 +159,8 @@ flowchart TB
     P5["i=5: pega 3, encaixa entre 2 e 4 &rarr; [1, 2, 3, 4, 5, 6]"] --> P6
     P6["Ordenado &#10003;"]
 
-    style P0 fill:#1e3a5f,color:#fff
-    style P6 fill:#1b5e20,color:#fff
+    class P0 neutro
+    class P6 ok
 ```
 
 **Leitura do diagrama.** A invariante é simples: **à esquerda do índice `i`, tudo já está ordenado.** A cada passo, pegamos o elemento em `i` e o *deslizamos* para a esquerda até achar sua posição entre os já ordenados. Repare no passo `i=3`: o `6` já é maior que tudo à esquerda, então não desliza nada — é aqui que mora a adaptatividade. Se a lista já estivesse ordenada, *todo* passo seria assim, e o custo cairia para O(n). O pior caso (O(n²)) acontece com a lista em ordem inversa, em que cada elemento desliza por toda a parte ordenada.
@@ -171,6 +175,7 @@ A intuição: um sort por comparação só pode olhar para os dados perguntando 
 
 ```mermaid
 flowchart TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["a &lt; b ?"] -->|sim| B["b &lt; c ?"]
     A -->|não| C["a &lt; c ?"]
 
@@ -184,12 +189,12 @@ flowchart TB
     E -->|sim| F5["[b, c, a]"]
     E -->|não| F6["[c, b, a]"]
 
-    style F1 fill:#1b5e20,color:#fff
-    style F2 fill:#1b5e20,color:#fff
-    style F3 fill:#1b5e20,color:#fff
-    style F4 fill:#1b5e20,color:#fff
-    style F5 fill:#1b5e20,color:#fff
-    style F6 fill:#1b5e20,color:#fff
+    class F1 ok
+    class F2 ok
+    class F3 ok
+    class F4 ok
+    class F5 ok
+    class F6 ok
 ```
 
 **Leitura do diagrama.** Esta é a árvore de decisão para ordenar **três** elementos `a, b, c`. Cada caminho da raiz até uma folha é uma sequência de comparações que o algoritmo faz; a folha é a ordem final que ele declara. Existem **3! = 6 permutações** possíveis de três elementos, então a árvore precisa ter **pelo menos 6 folhas** — uma para cada resposta possível, senão o algoritmo confundiria duas entradas diferentes. O **número de comparações no pior caso** é a *altura* da árvore (o caminho mais longo): aqui, 3.
@@ -202,14 +207,16 @@ E pela aproximação de Stirling, $\log_2(n!) = \Theta(n \log n)$. A altura `h` 
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     raiz["Raiz: a primeira comparação"] --> n1["nível 1: 2 nós"]
     n1 --> n2["nível 2: 4 nós"]
     n2 --> n3["nível h: ate 2^h folhas"]
     n3 --> req["Precisamos de &ge; n! folhas"]
     req --> conc["Logo 2^h &ge; n! &rArr; h &ge; log&#8322;&#40;n!&#41; = &Theta;&#40;n log n&#41;"]
 
-    style conc fill:#4a148c,color:#fff
-    style req fill:#1e3a5f,color:#fff
+    class conc marca
+    class req neutro
 ```
 
 **Leitura do diagrama.** A cada nível, a árvore binária no máximo *dobra* o número de nós: nível 1 tem 2, nível 2 tem 4, e o nível `h` tem até `2^h` folhas. Para distinguir todas as `n!` ordenações possíveis, precisamos de pelo menos `n!` folhas. Resolvendo `2^h ≥ n!` chegamos em `h ≥ log₂(n!) = Θ(n log n)`. Por isso merge sort e heap sort, que *atingem* O(n log n) no pior caso, são **assintoticamente ótimos** entre os sorts por comparação — não dá para fazer melhor com comparações.
@@ -229,14 +236,16 @@ Não compara nada. Ele **conta quantas vezes cada valor aparece** e usa essa con
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Entrada: [2, 5, 2, 1, 5, 2]"] --> B["1&deg; passe: conta ocorrencias"]
     B --> C["count: 0&times;0, 1&times;1, 3&times;2, 0&times;3, 0&times;4, 2&times;5"]
     C --> D["2&deg; passe: soma prefixos &rarr; posições finais"]
     D --> E["3&deg; passe: percorre entrada de tras p/ frente, posiciona &#40;estavel&#41;"]
     E --> F["Saída: [1, 2, 2, 2, 5, 5]"]
 
-    style A fill:#1e3a5f,color:#fff
-    style F fill:#1b5e20,color:#fff
+    class A neutro
+    class F ok
 ```
 
 **Leitura do diagrama.** Três passes lineares. O **primeiro** conta quantas vezes cada valor aparece (zero comparações — só incrementa `count[valor]`). O **segundo** transforma as contagens em **somas de prefixo**, que dizem *em que posição final* termina cada bloco de valores iguais. O **terceiro** percorre a entrada **de trás para frente** e coloca cada elemento na sua posição, decrementando o contador — varrer ao contrário é o truque que torna o counting sort **estável** (mantém a ordem original dos iguais). O custo é Θ(n + k): linear no número de elementos `n` *e* no tamanho do range `k`. Se `k` for muito maior que `n` (ordenar `[0, 5, 1000000]`), o `+k` mata: você aloca um array de um milhão de contadores para três elementos. Counting sort só vale quando **k = O(n)**.
@@ -365,6 +374,9 @@ O contraste é didático: Java/Python/JS *decidem por você* (estável se for ob
 
 ```mermaid
 graph TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     Q["Que sort sua linguagem usa?"] --> tipo{"Primitivo ou objeto?"}
 
     tipo -->|"objeto / coleção"| obj["TimSort &mdash; estavel + adaptativo<br/>&#40;Python, Java objetos, JS&#41;"]
@@ -373,9 +385,9 @@ graph TB
     obj --> motivoO["identidade observavel &rArr;<br/>estabilidade importa"]
     prim --> motivoP["sem identidade alem do valor &rArr;<br/>estabilidade irrelevante &rArr; ganha o in-place"]
 
-    style obj fill:#1b5e20,color:#fff
-    style prim fill:#1e3a5f,color:#fff
-    style Q fill:#4a148c,color:#fff
+    class obj ok
+    class prim neutro
+    class Q marca
 ```
 
 **Leitura do diagrama.** A resposta certa para "que sort sua linguagem usa?" não é um nome — é **uma bifurcação**. Para **coleções de objetos**, as quatro convergiram para **TimSort** (estável e adaptativo), porque objetos têm identidade e estabilidade importa para ordenações encadeadas. Para **primitivos/slices**, elas divergem para variantes de **quicksort in-place** (Dual-Pivot no Java, pdqsort no Go), porque sem identidade observável a estabilidade é irrelevante e o quicksort in-place tem a melhor constante. Go é o de fora: deixa *você* escolher estável ou não. A lição de fundo: as bibliotecas-padrão não escolhem "o melhor sort" no abstrato — elas escolhem o trade-off certo para o *tipo de dado*.

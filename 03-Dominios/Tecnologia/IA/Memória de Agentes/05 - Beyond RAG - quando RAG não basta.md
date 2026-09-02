@@ -52,10 +52,12 @@ Os cinco cenários não são hipotéticos: cada um tem um modo de falha específ
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     R[RAG passivo<br/>read-only] -->|insuficiente quando:| C5["1. multi-session continuity<br/>2. evolving knowledge<br/>3. implicit connections<br/>4. meta-knowledge<br/>5. cross-doc synthesis"]
     C5 --> M[Memória ativa<br/>write-manage-read]
-    style R fill:#e8f4f8
-    style M fill:#f0f8e8
+    class R neutro
+    class M ok
 ```
 
 ### 1. Multi-session continuity

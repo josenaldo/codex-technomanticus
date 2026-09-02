@@ -233,6 +233,9 @@ Quando uma expressão mistura vários operadores sem parênteses, o Python segue
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["1 · := (walrus)"] --> B["2 · lambda"]
     B --> C["3 · if – else (condicional)"]
     C --> D["4 · or"]
@@ -250,9 +253,9 @@ flowchart TB
     O --> P["16 · await x"]
     P --> Q["17 · (), [], {}, x[i], x(), x.attr (mais alta)"]
 
-    style A fill:#4A90D9,color:#fff
-    style Q fill:#F5A623,color:#000
-    style G fill:#D0021B,color:#fff
+    class A neutro
+    class Q destaque
+    class G falha
 ```
 
 Três pontos merecem grifo:

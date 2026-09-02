@@ -37,16 +37,17 @@ Todos têm a mesma raiz: **algo entra no fluxo do layout e empurra o que já est
 | **Fontes/imagens tardias** | (majoritariamente Galho 2, mas reaparecem se carregadas via JS) |
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph BAD["❌ Empurra o conteúdo"]
         A[banner carrega] --> B[insere no topo do fluxo] --> C[tudo desce → CLS]
     end
     subgraph GOOD["✅ Espaço reservado"]
         D[espaço já reservado<br/>min-height/skeleton] --> E[conteúdo preenche] --> F[nada se move]
     end
-    style C fill:#D0021B,color:#fff
-    style F fill:#4A90D9,color:#fff
+    class C falha
+    class F neutro
 ```
 
 ## Os quatro remédios

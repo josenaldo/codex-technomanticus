@@ -37,8 +37,9 @@ Para operacionalizar essa definição, Peter Morville propôs em 2004 o que fico
 O formulário do cenário acima só recebeu a disciplina 4 (e nem toda ela — só o visual, sem pensar no texto). As disciplinas 1, 2, 3, 5 e 6 nunca entraram na sala. Não é coincidência que o produto tenha "funcionado" tecnicamente e falhado no mundo real: cada disciplina pulada é uma pergunta que ninguém fez, e cada pergunta não feita é uma aposta não verificada.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     P["Pesquisa e descoberta<br/>quem usa, o quê, por quê"] --> D["Decisão de produto"]
     AI["Arquitetura de informação<br/>o que existe, como se acha"] --> D
     IX["Design de interação<br/>fluxo, estados, comportamento"] --> D
@@ -46,8 +47,8 @@ graph TD
     CD["Content design<br/>o que a interface diz"] --> D
     M["Medição<br/>funcionou? como sei?"] --> D
     D --> T["a tela — o artefato visível"]
-    style T fill:#F5A623,color:#000
-    style D fill:#4A90D9,color:#fff
+    class T destaque
+    class D neutro
 ```
 
 A tela é o que fica visível no final — mas é a menor fração do trabalho, e a única que o cliente do cenário acima pediu para "fazer parecido com esse". Um bom engenheiro de UX não entrega uma tela bonita; entrega uma decisão bem informada que *se materializa* numa tela.

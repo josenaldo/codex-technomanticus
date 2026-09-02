@@ -45,13 +45,16 @@ spec:
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     CRD["CRD<br/>vocabulário<br/>(kind: PostgresCluster)"] --> OP["Operator"]
     CTRL["Controller<br/>laço observar-comparar-agir"] --> OP
     OP --> Res["Sistema que se opera sozinho:<br/>provisiona, faz backup,<br/>promove réplica, restaura"]
 
-    style CRD fill:#4a3b7a,stroke:#8e6fd6,color:#fff
-    style CTRL fill:#2e4d7a,stroke:#3498db,color:#fff
-    style OP fill:#1e5c3a,stroke:#27ae60,color:#fff
+    class CRD marca
+    class CTRL neutro
+    class OP ok
 ```
 
 Vale nomear com a mesma precisão que a nota anterior aplicou ao CRD: o vocabulário sozinho é estático, uma forma; o laço sozinho, sem um tipo para observar, não tem o que reconciliar. É a soma das duas peças — nunca uma isolada — que produz o que a comunidade chama de operator. A documentação oficial do Kubernetes descreve exatamente essa combinação: operators são extensões de software que usam recursos customizados para gerenciar aplicações e seus componentes, seguindo o princípio do control loop — clientes da API que atuam como controllers para Custom Resources.
@@ -65,6 +68,8 @@ Vale desfazer, sem rodeio, uma mística comum sobre o que um operator "faz por d
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     PC["PostgresCluster<br/>(instância do CRD)"] -->|"observado por"| OP["Operator (controller)"]
     OP -->|"cria/reconcilia"| SS["StatefulSet<br/>3 réplicas"]
     OP -->|"cria/reconcilia"| SVC["Service headless"]
@@ -73,8 +78,8 @@ graph TB
     OP -->|"cria/reconcilia"| CJ["CronJob<br/>backup 03:00"]
     OP -->|"escreve"| ST["status.fase, status.primaria,<br/>status.ultimoBackup"]
 
-    style OP fill:#4a3b7a,stroke:#8e6fd6,color:#fff
-    style PC fill:#2e4d7a,stroke:#3498db,color:#fff
+    class OP marca
+    class PC neutro
 ```
 
 Essa desmistificação vale a pena repetir com todas as letras: **um operator é, na essência mecânica, um programa que faz `kubectl apply` em nome de você, com lógica.** A parte difícil de escrever não é a chamada à API — `client-go`, a mesma biblioteca que sustenta o Informer descrito na nota sobre o loop de reconciliação, cuida disso — a parte difícil é a lógica de decisão: quando criar o `CronJob` de backup, quando decidir que a réplica 1 deve ser promovida, quando um `PostgresCluster` com `spec.version: "17"` deve disparar uma migração de versão maior em vez de só trocar a imagem do container.
@@ -268,6 +273,8 @@ Um **validating webhook** intercepta a requisição depois da autorização (RBA
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Req["kubectl apply<br/>PostgresCluster"] --> Auth["Autenticação + RBAC<br/>(nota 13)"]
     Auth -->|"autorizado"| CEL["Validação estrutural<br/>+ regras CEL (nota 18)"]
     CEL -->|"schema válido"| MW["Mutating webhook<br/>do operator"]
@@ -275,9 +282,9 @@ graph LR
     VW -->|"aprovado"| ETCD["etcd — objeto gravado"]
     VW -->|"rejeitado"| Err["Erro específico do domínio"]
 
-    style MW fill:#4a3b7a,stroke:#8e6fd6,color:#fff
-    style VW fill:#4a3b7a,stroke:#8e6fd6,color:#fff
-    style Err fill:#7a2e2e,stroke:#c0392b,color:#fff
+    class MW marca
+    class VW marca
+    class Err falha
 ```
 
 O custo dessa camada extra é o mesmo já nomeado na nota sobre CRDs para a estratégia `Webhook` de conversão: um serviço HTTP a mais, mantido e monitorado à parte, com sua própria disponibilidade — se o webhook cair e a política de falha estiver configurada como `Fail` (em vez de `Ignore`), toda escrita contra aquele tipo passa a falhar até o webhook voltar, mesmo que a intenção do usuário fosse perfeitamente válida. `controller-runtime` oferece o mesmo tipo de andaime para webhooks que oferece para o `Reconcile` — Kubebuilder gera o esqueleto de ambos a partir da mesma anotação no tipo Go — o que reduz, mas não elimina, o esforço de manter essa peça adicional funcionando de forma confiável.

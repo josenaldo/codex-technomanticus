@@ -132,6 +132,8 @@ func criarPedido(w http.ResponseWriter, r *http.Request) {
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Cliente envia corpo\nda requisição"] --> B{"Bytes lidos até agora\n> limite?"}
     B -- não --> C["Decode/leitura\ncontinua normalmente"]
     C --> B
@@ -139,8 +141,8 @@ flowchart TD
     D --> E["ResponseWriter marcado —\nconexão será fechada,\nnão reaproveitada em keep-alive"]
     E --> F["Handler trata o erro\ncomo 413"]
 
-    style D fill:#D9534F,color:#fff
-    style F fill:#F5A623,color:#000
+    class D falha
+    class F destaque
 ```
 
 `MaxBytesReader` não espera o body inteiro chegar para então medir o tamanho — ele conta bytes conforme lê, e aborta assim que o total ultrapassa o limite, no meio da leitura. É por isso que ele intercepta um upload de 50 GB depois de gastar só `maxBodySize` bytes de esforço, não os 50 GB inteiros: o desperdício de banda e memória fica limitado ao próprio teto configurado.

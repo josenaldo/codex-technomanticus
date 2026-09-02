@@ -25,8 +25,9 @@ Imagine que uma entrevista de descoberta (nota 07) e uma switch interview (nota 
 A OST tem quatro níveis, de cima para baixo:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     O["Outcome<br/>o resultado de negócio que importa"]
     O --> OP1["Oportunidade 1<br/>dor/necessidade não atendida"]
     O --> OP2["Oportunidade 2<br/>dor/necessidade não atendida"]
@@ -34,9 +35,9 @@ graph TD
     OP1 --> S2["Solução candidata B"]
     S1 --> T1["Teste de premissa"]
     S1 --> T2["Teste de premissa"]
-    style O fill:#4A90D9,color:#fff
-    style OP1 fill:#F5A623,color:#000
-    style OP2 fill:#F5A623,color:#000
+    class O neutro
+    class OP1 destaque
+    class OP2 destaque
 ```
 
 - **Outcome** — o resultado de negócio mensurável que o trabalho deve mover (ex: "reduzir tempo médio de aprovação de contrato de 5 dias para 1"). Não é uma feature, é uma métrica que importa para o cliente/negócio.

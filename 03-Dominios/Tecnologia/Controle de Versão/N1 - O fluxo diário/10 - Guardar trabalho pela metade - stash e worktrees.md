@@ -106,7 +106,6 @@ git worktree remove ../monografia-entrega  # limpa
 ## Qual usar
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     A{"Preciso interromper.<br/>Quanto tempo?"} --> B["Minutos<br/><i>vou voltar já</i>"]
     A --> C["Horas ou dias"]

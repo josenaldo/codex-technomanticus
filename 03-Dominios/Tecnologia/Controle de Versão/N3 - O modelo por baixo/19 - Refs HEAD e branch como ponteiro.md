@@ -86,7 +86,6 @@ Sete passos, do primeiro commit à divergência. Vale acompanhar um a um — est
 **1. Um commit existe.** Ele aponta para um tree, que aponta para os blobs.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph RL
     C1["C1"] --> T1["tree"] --> B["blobs"]
 ```
@@ -94,7 +93,6 @@ graph RL
 **2. Um commit novo aponta para o anterior.** A história é essa corrente.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph RL
     C3["C3"] --> C2["C2"] --> C1["C1"]
 ```
@@ -102,7 +100,6 @@ graph RL
 **3. `main` é só uma ref apontando para o último commit** — e `HEAD` aponta para `main`.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph RL
     H["HEAD"] -.-> M["main"]
     M --> C3["C3"] --> C2["C2"] --> C1["C1"]
@@ -111,7 +108,6 @@ graph RL
 **4. `git branch teste` cria outra ref**, apontando para o mesmo commit. Nada foi copiado: escreveram-se 41 bytes. E repare que o `HEAD` **não** se moveu.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph RL
     H["HEAD"] -.-> M["main"]
     M --> C3["C3"]
@@ -122,7 +118,6 @@ graph RL
 **5. `git switch teste` move o `HEAD`** — só o `HEAD`, e ele passa a conter `ref: refs/heads/teste`. Os arquivos da pasta são atualizados para o tree daquele commit (que aqui é o mesmo, então nada visível muda).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph RL
     H["HEAD"] -.-> T["teste"]
     M["main"] --> C3["C3"]
@@ -133,7 +128,6 @@ graph RL
 **6. Um commit faz avançar o ramo para onde o `HEAD` aponta.** `teste` avança; `main` fica onde estava.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph RL
     H["HEAD"] -.-> T["teste"]
     T --> C4["C4"] --> C3["C3"]
@@ -144,7 +138,6 @@ graph RL
 **7. Volte para `main` e commite: as histórias divergem.** Agora existem duas linhas com um ancestral comum em `C3` — que é exatamente o que o merge da nota 21 vai precisar encontrar.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph RL
     H["HEAD"] -.-> M["main"]
     M --> C5["C5"] --> C3["C3"]

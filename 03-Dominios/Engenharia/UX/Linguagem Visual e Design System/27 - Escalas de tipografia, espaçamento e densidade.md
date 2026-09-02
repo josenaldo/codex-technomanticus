@@ -57,15 +57,16 @@ Material Design, Tailwind CSS e Ant Design convergem nessa base — é **consens
 O espaçamento nesta escala é exatamente o mecanismo pelo qual a **proximidade** — o princípio de Gestalt coberto na [[03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental/05 - Gestalt aplicada a UI|nota 05 do SG1]] — vira sistemática em vez de decidida pixel a pixel: espaço pequeno (`8px`, `12px`) dentro de um grupo; espaço maior (`24px`, `32px`) entre grupos diferentes.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     B["base: 16px"] -->|"× 1.25"| A["20px<br/>texto grande"]
     A -->|"× 1.25"| C["25px<br/>título de seção"]
     C -->|"× 1.25"| D["31px<br/>título de página"]
     S1["espaço: 8px<br/>dentro do grupo"] -.->|"Gestalt: proximidade"| G["agrupamento percebido"]
     S2["espaço: 24px<br/>entre grupos"] -.->|"Gestalt: proximidade"| G
-    style B fill:#4A90D9,color:#fff
-    style G fill:#F5A623,color:#000
+    class B neutro
+    class G destaque
 ```
 
 ## Largura de linha e restrição tipográfica

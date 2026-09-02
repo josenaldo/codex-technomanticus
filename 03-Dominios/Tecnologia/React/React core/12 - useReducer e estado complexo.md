@@ -223,8 +223,9 @@ Compare com a versão em `useState`: cada handler agora chama `dispatch` com a i
 ## Fluxo de dados: o ciclo dispatch → reducer → render
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     U["👤 Usuário\nclica 'Remover'"]
     D["dispatch\n{ type: 'REMOVE_ITEM',\n  payload: 'abc' }"]
     R["reducer\n(state, action)\n⇒ nextState"]
@@ -237,9 +238,9 @@ flowchart LR
     S -->|trigger| C
     C -.->|novo evento| D
 
-    style D fill:#4A90D9,color:#fff
-    style R fill:#4A90D9,color:#fff
-    style S fill:#27AE60,color:#fff
+    class D neutro
+    class R neutro
+    class S ok
 ```
 
 O fluxo é sempre unidirecional: evento → dispatch → reducer → novo estado → render. Nunca ao contrário.
@@ -300,7 +301,6 @@ function paymentReducer(state: PaymentState, action: PaymentAction): PaymentStat
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 stateDiagram-v2
     [*] --> idle
     idle --> validating : SUBMIT

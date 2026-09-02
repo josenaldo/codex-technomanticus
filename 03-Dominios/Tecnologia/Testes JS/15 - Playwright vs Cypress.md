@@ -25,8 +25,9 @@ Você vai montar a camada E2E do zero. As duas opções sérias são Cypress e P
 ## A diferença que explica tudo: onde o teste roda
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph CY["Cypress: DENTRO do browser"]
         C1[teste roda no mesmo<br/>event loop da app] --> C2[DX rica, time-travel]
         C1 --> C3[⚠ preso ao browser:<br/>abas/origens/engines]
@@ -35,9 +36,9 @@ graph TB
         P1[teste controla o browser<br/>por protocolo] --> P2[multi-browser, multi-aba]
         P1 --> P3[paralelismo, WebKit real]
     end
-    style C3 fill:#F5A623,color:#000
-    style P2 fill:#4A90D9,color:#fff
-    style P3 fill:#4A90D9,color:#fff
+    class C3 destaque
+    class P2 neutro
+    class P3 neutro
 ```
 
 - **Cypress** roda o **teste dentro do browser**, no mesmo contexto da sua aplicação. Isso deu a ele a DX que o tornou famoso: o **time-travel debugging** (você "volta no tempo" e vê o estado do app em cada comando), o runner visual que mostra a app rodando ao vivo, e uma sensação de estar "dentro" do app. Mas rodar dentro do browser tem um custo estrutural: o teste está **preso ao event loop e ao sandbox do browser**, o que historicamente causou limitações com **múltiplas abas**, **múltiplas origens** (cross-domain), iframes, e um suporte **tardio e parcial** a outros engines (por muito tempo só Chromium; Firefox e WebKit vieram depois e com ressalvas).

@@ -43,7 +43,6 @@ A abordagem ingênua — uma flag `sou_o_lider = true` numa tabela — falha no 
 A resposta é o **lease**: uma reserva com **prazo de validade** que o líder precisa **renovar** periodicamente. Se ele parar de renovar — porque morreu, travou ou perdeu a rede —, o lease expira sozinho e outra instância assume. A liderança deixa de ser um estado permanente e vira uma **assinatura que vence**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant A as Instância A
     participant L as Store de lease

@@ -47,7 +47,6 @@ Quando um processo abre alguma coisa, o kernel devolve **um número**. Esse núm
 O ponto que faz o modelo valer a pena: **o processo não sabe, e não precisa saber, o que tem do outro lado**. Escrever no descritor 1 é a mesma operação, com a mesma chamada de sistema, quer ele esteja ligado a um terminal, a um arquivo em disco, a um pipe para outro processo ou a um socket de rede. É isso que a frase "tudo é arquivo" quer dizer: não que tudo *seja* arquivo, mas que tudo é **acessado pela mesma interface**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
     subgraph P["tabela de descritores do processo"]
         D0["0 — entrada"]

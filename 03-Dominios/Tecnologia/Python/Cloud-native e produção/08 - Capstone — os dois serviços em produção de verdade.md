@@ -30,8 +30,9 @@ Volta à cena de abertura da [[01 - Panorama — orquestrar de verdade|nota 01 d
 O que esta capstone faz — como toda capstone desta trilha — não é introduzir mecanismo novo. É amarrar as sete peças já construídas nos mesmos dois serviços, numa decisão de fato tomada, com números, não com a generalização abstrata que a [[07 - Containers vs serverless — trade-offs honestos|nota 07]] deixou deliberadamente em aberto pro capstone fechar.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Antes["Cena de abertura do galho — imagem parada"]
         direction TB
         A1["Imagem Docker 180MB<br/>publicada no registry"]
@@ -49,8 +50,8 @@ flowchart TB
         D2 --> D3
     end
 
-    style A3 fill:#D0021B,color:#fff
-    style D3 fill:#7ED321,color:#000
+    class A3 falha
+    class D3 destaque
 ```
 
 > [!tip] Esta capstone não reabre a discussão — ela decide
@@ -482,7 +483,6 @@ Uma sexta-feira, 10h da manhã: uma campanha de marketing dispara um aumento rea
 **No `notificacoes-service`**: a mesma campanha gera um volume muito maior de tarefas concluídas, cada uma publicando um evento `TarefaConcluida` na exchange `eventos.dominio`. A fila `notificacoes.fila` recebe uma rajada de mensagens em minutos — não um crescimento gradual, um degrau abrupto. Como não existe mais um `Deployment` com HPA cuidando disso (a decisão da Parte 2 já tirou este serviço do cluster), a resposta é inteiramente do modelo Lambda: cada mensagem no lote SQS dispara uma invocação (ou lote de invocações, respeitando `BatchSize: 10`) da `NotificacoesConsumerFunction`, e a AWS aloca ambientes de execução novos conforme o volume de mensagens sobe, sem nenhum número de "réplicas" configurado, sem `minReplicas`/`maxReplicas` — só o limite de concorrência da conta AWS, uma configuração de infraestrutura separada do código.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant Marketing as Campanha (10h)
     participant Tarefas as tarefas-service<br/>(Kubernetes + HPA)
@@ -520,8 +520,8 @@ A resposta dos dois modelos é estruturalmente diferente, e essa diferença é a
 Esta capstone não fecha só o Galho 18 — fecha o bloco "Plataforma distribuída e produção" (Galhos 14 a 18) da trilha Python inteira, e vale nomear a jornada completa antes de apontar pro que vem a seguir.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     G14["Galho 14<br/>Mensageria<br/>(Outbox, aio-pika,<br/>eventos de domínio)"]
     G15["Galho 15<br/>Microservices<br/>(extração do serviço<br/>de Notificações)"]
     G16["Galho 16<br/>Build e tooling<br/>(uv, ruff,<br/>consistência)"]
@@ -531,8 +531,8 @@ flowchart LR
 
     G14 --> G15 --> G16 --> G17 --> G18 --> G19
 
-    style G18 fill:#7ED321,color:#000
-    style G19 fill:#F5A623,color:#000
+    class G18 destaque
+    class G19 destaque
 ```
 
 O [[03-Dominios/Tecnologia/Python/Mensageria/index|Galho 14]] deu ao sistema comunicação assíncrona confiável — o padrão Outbox, o consumer `aio-pika`, os eventos de domínio que hoje disparam a rajada de fila desta capstone. O [[03-Dominios/Tecnologia/Python/Microservices e sistemas distribuídos/index|Galho 15]] extraiu `notificacoes-service` do monólito, dando a ele a arquitetura própria (endpoint HTTP fino, consumer de eventos, service discovery) que torna possível decidir seu destino de infraestrutura de forma independente de `tarefas-service` — a decisão que esta capstone finalmente toma. O Galho 16 deu aos dois serviços tooling consistente — mesmo `uv`, mesmo `ruff`, mesma disciplina de build, base do `Dockerfile` reusado nesta capstone. O [[03-Dominios/Tecnologia/Python/Observabilidade e produção/index|Galho 17]] deu a eles os três pilares de observabilidade e um artefato Docker publicável — a métrica de latência p99 que alimenta o HPA da Parte 1, o `202 Accepted` que fundamenta o Critério 3 da Parte 2. E este Galho 18 fechou a lacuna final: nenhuma dessas peças, sozinha, coloca uma réplica no ar — era preciso, além de tudo isso, decidir *onde* e *como* cada serviço de fato roda, com manifests reais de um lado e uma avaliação formal do outro.

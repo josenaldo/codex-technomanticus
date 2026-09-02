@@ -52,15 +52,16 @@ Uma paleta de produto madura tem uma estrutura pequena e disciplinada:
 A regra que o cenário de abertura desta nota viola: **nunca reusar o vermelho de erro para "destaque" não relacionado**. Isso vale para qualquer cor semântica — o verde de "sucesso" não deveria aparecer num badge decorativo, o âmbar de "aviso" não deveria virar cor de marketing para uma promoção. O motivo é o mesmo princípio de **similaridade** (Gestalt, [[03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental/05 - Gestalt aplicada a UI|nota 05]]): o usuário aprende, ao longo do uso do produto, que "essa cor = esse significado" — e cada reaproveitamento fora do papel quebra essa promessa implícita, silenciosamente, sem nenhum erro técnico visível.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Brand["Cor de marca/ação<br/>1 cor, ação primária"] --> Pal["Paleta de produto"]
     Neutral["Neutra dominante<br/>texto, fundo, borda"] --> Pal
     Sem["Semânticas fixas<br/>erro · sucesso · aviso · info"] --> Pal
     Pal -->|"nunca reaproveitar"| X["❌ vermelho de erro<br/>usado como destaque decorativo"]
-    style Sem fill:#D0021B,color:#fff
-    style Pal fill:#4A90D9,color:#fff
-    style X fill:#D0021B,color:#fff
+    class Sem falha
+    class Pal neutro
+    class X falha
 ```
 
 ## As duas fronteiras: contraste e dados

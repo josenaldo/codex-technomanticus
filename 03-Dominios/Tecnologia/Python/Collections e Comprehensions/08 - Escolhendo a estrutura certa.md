@@ -86,6 +86,9 @@ A fonte canônica para essas complexidades é a [**TimeComplexity wiki oficial d
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Array["Array contíguo — list, tuple"]
         A0["[0]"] --- A1["[1]"] --- A2["[2]"] --- A3["[3]"]
     end
@@ -103,12 +106,12 @@ flowchart LR
     Blocos -->|"pontas conhecidas<br/>O(1)"| BE["Inserção nas pontas RÁPIDA"]
     Blocos -->|"percorre blocos<br/>O(n)"| BM["Acesso no meio LENTO"]
 
-    style Array fill:#4A90D9,color:#fff
-    style Hash fill:#F5A623,color:#000
-    style Blocos fill:#4A90D9,color:#fff
-    style AS fill:#D0021B,color:#fff
-    style HP fill:#D0021B,color:#fff
-    style BM fill:#D0021B,color:#fff
+    class Array neutro
+    class Hash destaque
+    class Blocos neutro
+    class AS falha
+    class HP falha
+    class BM falha
 ```
 
 O padrão estrutural por trás da tabela: cada uma dessas quatro implementações internas (array contíguo, tabela hash, blocos duplamente encadeados) é **rápida exatamente onde foi desenhada para ser rápida**, e lenta em tudo que exige um trabalho que a estrutura não foi pensada para fazer. Não existe estrutura "melhor" em abstrato — só estrutura certa para a operação que o seu código faz **com mais frequência**.
@@ -122,6 +125,8 @@ Com a tabela de custo estabelecida, a pergunta prática vira: dado um problema c
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q0["Novo dado a guardar"] --> Q1{"Preciso de ORDEM<br/>(sequência, posição relevante)?"}
 
     Q1 -->|"não"| Q2{"Preciso de UNICIDADE<br/>(sem duplicatas)?"}
@@ -139,18 +144,18 @@ flowchart TD
     Q5 -->|"sim"| DEQUE["collections.deque"]
     Q5 -->|"não, só no fim<br/>(ou só leitura)"| LIST2["list"]
 
-    style Q0 fill:#4A90D9,color:#fff
-    style Q1 fill:#4A90D9,color:#fff
-    style Q2 fill:#4A90D9,color:#fff
-    style Q3 fill:#4A90D9,color:#fff
-    style Q4 fill:#4A90D9,color:#fff
-    style Q5 fill:#4A90D9,color:#fff
-    style SET fill:#F5A623,color:#000
-    style DICT fill:#F5A623,color:#000
-    style LIST fill:#F5A623,color:#000
-    style LIST2 fill:#F5A623,color:#000
-    style TUPLE fill:#F5A623,color:#000
-    style DEQUE fill:#F5A623,color:#000
+    class Q0 neutro
+    class Q1 neutro
+    class Q2 neutro
+    class Q3 neutro
+    class Q4 neutro
+    class Q5 neutro
+    class SET destaque
+    class DICT destaque
+    class LIST destaque
+    class LIST2 destaque
+    class TUPLE destaque
+    class DEQUE destaque
 ```
 
 As cinco perguntas, com o raciocínio por trás de cada uma:

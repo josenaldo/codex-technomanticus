@@ -74,8 +74,9 @@ Protobuf resolve o problema de *quantos bytes* trafegam. HTTP/2 resolve um probl
 HTTP/2 resolve isso com **multiplexação**: múltiplos *streams* (cada um representando uma requisição/resposta independente) compartilham a **mesma conexão TCP**, intercalados em frames e reconstruídos de forma independente do lado que recebe. Uma chamada lenta não bloqueia as rápidas atrás dela na mesma conexão — porque elas não estão "na fila" atrás dela, estão entrelaçadas.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph HTTP1["HTTP/1.1 — conexões seriais/paralelas"]
         C1["Cliente"] -->|"conexão TCP 1"| S1["Requisição A"]
         C1 -->|"conexão TCP 2"| S2["Requisição B"]
@@ -87,8 +88,8 @@ graph TD
         MUX --> ST2["Stream 2 (B)"]
         MUX --> ST3["Stream 3 (C)"]
     end
-    style HTTP2 fill:#4A90D9,color:#fff
-    style HTTP1 fill:#D0021B,color:#fff
+    class HTTP2 neutro
+    class HTTP1 falha
 ```
 
 O segundo ganho, menos falado mas igualmente relevante para gRPC, é a compressão de cabeçalhos via **HPACK**. Em chamadas gRPC de alto volume, os mesmos cabeçalhos (`content-type: application/grpc`, tokens de autenticação, metadados de tracing) se repetem em praticamente toda chamada dentro da mesma conexão. HPACK mantém uma **tabela dinâmica** de cabeçalhos já vistos e, depois da primeira transmissão, referencia repetições por índice em vez de reenviar o texto completo — reduzindo o overhead de cabeçalho em [até 85-90% em aplicações reais](https://jadhavsaurabh037.medium.com/grpc-deep-dive-efficient-network-communication-using-http-2-11bb97151b09), com estudos independentes registrando economias de banda de cabeçalho por volta de 76%. Para uma única chamada isolada isso não muda nada perceptível; para centenas de chamadas por segundo entre checkout e estoque, é banda e CPU de parsing que deixam de ser gastos repetidamente.
@@ -101,8 +102,10 @@ O segundo ganho, menos falado mas igualmente relevante para gRPC, é a compress�
 A palavra "streaming" no nome gRPC não é acidental — é a parte do modelo que REST e GraphQL, por desenho, não cobrem nativamente. O `.proto` declara o modo de cada RPC pela presença (ou ausência) da palavra-chave `stream` no tipo de requisição e/ou resposta, e essa escolha determina um padrão de interação completamente diferente.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#F5A623", "primaryBorderColor": "#B87A1A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph U["Unary"]
         U1["Cliente"] -->|"1 request"| U2["Servidor"]
         U2 -->|"1 response"| U1
@@ -119,10 +122,10 @@ graph LR
         B1["Cliente"] -.->|"stream"| B2["Servidor"]
         B2 -.->|"stream"| B1
     end
-    style U fill:#4A90D9,color:#fff
-    style SS fill:#F5A623,color:#000
-    style CS fill:#F5A623,color:#000
-    style BD fill:#D0021B,color:#fff
+    class U neutro
+    class SS destaque
+    class CS destaque
+    class BD falha
 ```
 
 ### Unary — a chamada de função comum
@@ -174,7 +177,6 @@ Um detalhe que separa gRPC de "HTTP com timeout no cliente" é como ele trata pr
 gRPC formaliza isso como **deadline**: em vez de "espere 5 segundos a partir de agora" (um timeout, relativo), o cliente propaga um **ponto absoluto no tempo** que a chamada inteira — incluindo qualquer sub-chamada que o servidor faça a outros serviços — não deve ultrapassar. Se o serviço A chama o serviço B com um deadline de 5 segundos, e B por sua vez chama C, C recebe o **tempo restante real** daquele deadline original, não um novo prazo de 5 segundos contado a partir de quando C começou a trabalhar. Nenhum serviço na cadeia gasta tempo processando uma requisição cujo prazo, do ponto de vista de quem pediu originalmente, já expirou.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Checkout
     participant Estoque
@@ -217,13 +219,15 @@ Isso não é um detalhe implementável "com mais esforço" — é uma limitaçã
 A solução é **gRPC-Web** — um protocolo companheiro (não o mesmo protocolo, uma variante compatível) que o cliente JavaScript fala, usando apenas o que o navegador expõe (requisições HTTP/1.1 ou HTTP/2 sem controle de frame bruto), e que precisa ser traduzido para gRPC "de verdade" antes de chegar ao serviço backend. Essa tradução acontece em um **proxy** — o mais usado em produção é o **Envoy**, com um filtro dedicado (`envoy.filters.http.grpc_web`) que recebe as requisições HTTP/1.1 codificadas em gRPC-Web e as reescreve como chamadas HTTP/2 gRPC padrão para o serviço real, e faz o caminho inverso na resposta.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#D0021B", "primaryBorderColor": "#8A0000", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Browser["Navegador<br/>(gRPC-Web via fetch/XHR)"] -->|"HTTP/1.1 ou HTTP/2<br/>sem controle de frame"| Proxy["Proxy<br/>(Envoy, tradução)"]
     Proxy -->|"gRPC nativo<br/>HTTP/2 completo"| Backend["Serviço backend gRPC"]
-    style Browser fill:#D0021B,color:#fff
-    style Proxy fill:#F5A623,color:#000
-    style Backend fill:#4A90D9,color:#fff
+    class Browser falha
+    class Proxy destaque
+    class Backend neutro
 ```
 
 Essa camada extra tem duas implicações práticas que vale nomear:

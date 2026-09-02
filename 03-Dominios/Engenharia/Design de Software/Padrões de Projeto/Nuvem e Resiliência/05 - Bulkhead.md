@@ -41,8 +41,9 @@ Porque as duas coisas — buscar o produto e buscar as recomendações — usam 
 ## A ideia: dar a cada um o seu balde
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph S["Pool compartilhado"]
         R1["Requisições"] --> P1["Pool único<br/>50 threads"]
         P1 --> D1["Catálogo (essencial)"]
@@ -58,10 +59,10 @@ graph TD
         N2["recomendação satura seu limite de 10<br/>⇒ catálogo segue com suas 40"]
     end
 
-    style N1 fill:#D0021B,color:#fff
-    style P1 fill:#D0021B,color:#fff
-    style N2 fill:#4A90D9,color:#fff
-    style P2 fill:#4A90D9,color:#fff
+    class N1 falha
+    class P1 falha
+    class N2 neutro
+    class P2 neutro
 ```
 
 A compartimentação pode ser feita em vários níveis, do mais barato ao mais forte:

@@ -112,17 +112,19 @@ O termo **gradual typing** não nasceu com Python — foi cunhado por Jeremy Sie
 O mecanismo que viabiliza essa coexistência é o tipo especial `Any` (de `typing`), que a própria PEP 484 descreve como **consistente com todos os tipos** — pode ser atribuído a partir de qualquer tipo e atribuído para qualquer tipo, sem que um checador estático reclame. Qualquer valor sem anotação explícita é tratado, para fins de checagem estática, como se fosse `Any` — o que significa: código legado não anotado e código novo totalmente tipado convivem sem conflito, e o processo de adicionar hints pode ser **incremental**, função por função, módulo por módulo, sem precisar de uma reescrita completa de uma vez.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Espectro["Espectro de tipagem gradual num mesmo código-base"]
         direction LR
         A["Código legado\nsem hints\n(tratado como Any)"] --> B["Função com hints\nparciais"] --> C["Módulo\ntotalmente tipado"] --> D["mypy --strict\nzero Any implícito"]
     end
 
-    style A fill:#D0021B,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
+    class A falha
+    class B destaque
+    class C neutro
+    class D neutro
 ```
 
 Nenhum desses quatro estágios é "mais Python" que o outro — todos executam exatamente da mesma forma, porque, do ponto de vista do interpretador, tipagem gradual não muda nada sobre *como* o código roda. O que muda é **quanto uma ferramenta externa consegue verificar antes de rodar**. É essa distinção — entre "o que o interpretador faz" e "o que uma ferramenta de análise faz" — que organiza o resto desta nota.

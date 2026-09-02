@@ -57,7 +57,6 @@ Duas propriedades do nível 3 se combinam aqui.
 O `reflog` é a terceira peça: um registro paralelo que guarda os hashes por onde as refs passaram. Ele **mantém alcançáveis** commits que nenhuma ref alcança mais.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph RL
     M["main"] --> C2["C2"] --> C1["C1"]
     R["reflog<br/>HEAD@{1}"] -.->|"ainda alcança"| C3["C3 <i>(órfão)</i>"]

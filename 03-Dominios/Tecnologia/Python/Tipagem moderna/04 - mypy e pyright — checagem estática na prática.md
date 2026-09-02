@@ -189,8 +189,10 @@ Quando um checador encontra um `.pyi` ao lado (ou no caminho de busca de stubs) 
 Por padrão, quando `mypy` encontra um `import outro_modulo`, ele segue esse import e também checa `outro_modulo` — o que é ótimo quando o projeto inteiro é tipado, mas se torna um problema quando `outro_modulo` é um trecho legado gigantesco que ainda não recebeu nenhum tratamento. A flag `--follow-imports=skip` instrui mypy a **não seguir** imports para módulos que ainda não foram explicitamente listados para checagem — tratando o que vem de lá como `Any`, sem tentar analisar o arquivo importado. A própria documentação classifica esse uso como "fortemente desencorajado, necessário só em situações relativamente de nicho" — é uma válvula de escape para destravar a adoção inicial num monólito legado, não uma configuração para deixar ligada permanentemente. O caminho recomendado, segundo o [guia oficial de adoção em código existente](https://mypy.readthedocs.io/en/stable/existing_code.html), é: começar rodando mypy só sobre os módulos novos/já tipados (via `files =` no `mypy.ini`/`pyproject.toml`), e ir expandindo essa lista aos poucos — em vez de rodar sobre tudo com `--follow-imports=skip` ligado indefinidamente.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Código-base legado\nsem hints, sem checagem"] --> B{"Como adotar\nsem travar o time?"}
     B -->|"Módulo por módulo"| C["mypy roda só sobre\narquivos já anotados\n(files= no config)"]
     B -->|"Sem tocar no .py"| D["Stub .pyi para\ndependência de terceiros\nou módulo grande demais"]
@@ -200,13 +202,13 @@ flowchart TD
     E --> F
     F --> G["mypy --strict\nno projeto inteiro"]
 
-    style A fill:#D0021B,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
-    style G fill:#4A90D9,color:#fff
+    class A falha
+    class B destaque
+    class C neutro
+    class D neutro
+    class E neutro
+    class F neutro
+    class G neutro
 ```
 
 **Tipagem incremental em uma frase**: você nunca precisa tipar um código-base inteiro de uma vez — `files=` restringe o escopo checado, `.pyi` tipa sem tocar no fonte, `# type: ignore[código]` silencia cirurgicamente um ponto específico, e `--follow-imports=skip` é a válvula de emergência para destravar o primeiro dia.

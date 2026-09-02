@@ -48,8 +48,10 @@ A **realização** descreve o que mudou **por sua causa** — o evento concreto 
 A **alavancagem** descreve o que passou a ser possível **para outras pessoas** por causa da sua decisão — não mais só o que você fez, mas o que o seu trabalho destravou para alguém além de você. "Construí uma ferramenta de geração automática de relatórios que hoje é usada por quatro analistas de outras áreas, devolvendo cerca de vinte horas por semana ao time como um todo" é alavancagem: o sujeito da frase continua sendo você — foi você quem decidiu, quem construiu — mas o objeto do resultado deixou de ser o seu próprio trabalho e passou a ser o trabalho de outras pessoas. É o degrau que quase ninguém escreve, e a razão é estrutural, não uma questão de modéstia mal colocada: alavancagem exige um tipo de fato que boa parte do trabalho técnico, honestamente, nunca produz — um artefato, uma decisão ou um padrão que sobrevive à sua autoria original e passa a operar sozinho, no trabalho de gente que nunca precisou pedir sua ajuda para usá-lo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["<b>Atribuição</b><br/>'Responsável pela geração<br/>dos relatórios semanais<br/>de indicadores.'<br/><br/>descreve o cargo"]
     B["<b>Realização</b><br/>'Automatizei a geração dos<br/>relatórios, reduzindo o tempo<br/>de 6 horas para 20 minutos.'<br/><br/>já é seu — ainda é sobre você"]
     C["<b>Alavancagem</b><br/>'Construí uma ferramenta que<br/>hoje 4 analistas usam, devolvendo<br/>~20h/semana ao time.'<br/><br/>possível para outras pessoas"]
@@ -61,9 +63,9 @@ graph TD
     E["owner"] -.perfil do 2º degrau.-> B
     F["force multiplier"] -.perfil do 3º degrau.-> C
 
-    style A fill:#D0021B,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
+    class A falha
+    class B destaque
+    class C neutro
 ```
 
 O diagrama fixa o que as três seções acima descreveram em prosa, e uma coisa que ele deixa visível merece ser dita em palavras: as setas apontam numa direção só, mas isso não significa que todo trabalho percorre o caminho inteiro. É perfeitamente possível — e, como a seção mais adiante desta nota vai insistir, é a situação mais comum — que um pedaço de trabalho pare no segundo degrau para sempre, sem nunca chegar ao terceiro. A escada não é uma escada rolante que carrega todo mundo até o topo com o tempo; é uma régua para medir onde um fato específico, hoje, realmente está.

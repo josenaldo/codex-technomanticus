@@ -29,14 +29,15 @@ Na maioria dos apps modernos, a resposta é **hidratação**: o framework está 
 Como vimos na [[03-Dominios/Tecnologia/Web Performance/Performance de Runtime e Rendering/01 - A thread principal e o event loop|nota 01]], a web é single-threaded *para o que toca a página*. Os **Web Workers** são a exceção: eles rodam JavaScript numa **thread separada**, em paralelo de verdade à main thread. O preço dessa liberdade: um Worker **não pode tocar o DOM** — ele vive isolado, e conversa com a main thread por mensagens.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     M["Main thread<br/>DOM, eventos, UI"] <-->|postMessage| W["Web Worker<br/>cálculo pesado<br/>(sem DOM)"]
     M -->|responsiva| U[👆 usuário]
     W -->|resultado pronto| M
-    style M fill:#4A90D9,color:#fff
-    style W fill:#4A90D9,color:#fff
-    style U fill:#F5A623,color:#000
+    class M neutro
+    class W neutro
+    class U destaque
 ```
 
 ```js
@@ -82,17 +83,18 @@ Ambas fazem a **mesma pergunta certa**: *quais componentes realmente precisam de
 O galho inteiro decorre de uma meta — **manter a main thread livre para responder** — e cada nota foi uma tática:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     G["Meta: main thread livre → INP baixo"] --> A["Faça MENOS<br/>menos JS, islands/RSC, remover deps"]
     G --> B["Faça MENOR<br/>quebrar tarefas, ceder a thread (yield)"]
     G --> C["Faça FORA<br/>Web Workers p/ trabalho sem DOM"]
     G --> D["Renderize BARATO<br/>transform/opacity, sem thrashing, reservar espaço"]
-    style G fill:#F5A623,color:#000
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
+    class G destaque
+    class A neutro
+    class B neutro
+    class C neutro
+    class D neutro
 ```
 
 - **Menos:** envie menos JavaScript — hidratação parcial (islands), RSC, remover bibliotecas (notas 02, 08).

@@ -157,7 +157,6 @@ Object.prototype.toString.call(new MinhaColecao()); // "[object MinhaColecao]"
 Um Proxy é literalmente um intermediário entre o código que acessa um objeto e o objeto em si. Quando você faz `proxy.nome`, o motor não vai direto ao objeto — passa pelo **handler** primeiro.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#fff"}}}%%
 sequenceDiagram
     participant C as Código cliente
     participant P as Proxy (handler)

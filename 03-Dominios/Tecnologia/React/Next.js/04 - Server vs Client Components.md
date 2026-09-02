@@ -121,8 +121,10 @@ export function AddToCartButton({ produtoId }: Props) {
 Pense no `'use client'` como uma linha no mapa da sua árvore de componentes. Tudo **acima** da linha é servidor. Tudo **abaixo** (incluindo o arquivo com a diretiva) é cliente.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph TD
+    classDef server fill:#4A90D9,color:#fff,stroke:#2c6fad
+    classDef boundary fill:#F5A623,color:#fff,stroke:#c4851a
+    classDef client fill:#7B5EA7,color:#fff,stroke:#5a4280
     A["🖥️ RootLayout (Server)"]:::server
     B["🖥️ ProductPage (Server)"]:::server
     C["🖥️ ProductInfo (Server)"]:::server
@@ -136,9 +138,6 @@ graph TD
     D --> E
     D --> F
 
-    classDef server fill:#4A90D9,color:#fff,stroke:#2c6fad
-    classDef boundary fill:#F5A623,color:#fff,stroke:#c4851a
-    classDef client fill:#7B5EA7,color:#fff,stroke:#5a4280
 ```
 
 A fronteira (boundary) existe uma vez — no arquivo com `'use client'`. Não é necessário repetir a diretiva nos filhos; eles já fazem parte do grafo do cliente.
@@ -287,8 +286,9 @@ O mesmo padrão funciona com qualquer prop do tipo `React.ReactNode`:
 ## Árvore real: como Server e Client se intercalam
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef server fill:#4A90D9,color:#fff,stroke:#2c6fad
+    classDef boundary fill:#F5A623,color:#fff,stroke:#c4851a
     Root["🖥️ RootLayout\nServer"]:::server
     Nav["🖥️ NavBar\nServer (links estáticos)"]:::server
     NavSearch["🌐 SearchInput\n'use client'"]:::boundary
@@ -304,8 +304,6 @@ graph TD
     Page --> Modal
     Modal -->|"children (slot)"| Resumo
 
-    classDef server fill:#4A90D9,color:#fff,stroke:#2c6fad
-    classDef boundary fill:#F5A623,color:#fff,stroke:#c4851a
 ```
 
 O que este diagrama mostra:

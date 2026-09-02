@@ -33,8 +33,9 @@ Esse "próximo" é este texto. E o motivo de isso importar não é estético —
 O trabalho desta capstone não introduz nenhum mecanismo novo. Cada peça da suíte que vem a seguir já foi ensinada, isolada, em uma das oito notas anteriores deste galho — o que falta é montá-las juntas, contra o código real das capstones dos Galhos 9, 10 e 11, e nomear explicitamente a parte mais fácil de esquecer: testes de segurança não são "mais alguns testes" — são a prova de que um pentest que passou hoje continua passando amanhã.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     G11["API do Galho 11\n(blindada, zero teste)"] --> P1["Peça 1\nUnit tests (N01, N04)"]
     P1 --> P2["Peça 2\nFixtures em conftest.py (N02, N03)"]
     P2 --> P3["Peça 3\nIntegração via TestClient (N05)"]
@@ -43,8 +44,8 @@ flowchart LR
     P5 --> P6["Peça 6\nCoverage honesto (N07)"]
     P6 --> SUITE["Suíte completa\npronta pra CI"]
 
-    style G11 fill:#8b6914,color:#fff
-    style SUITE fill:#2d7a4a,color:#fff
+    class G11 destaque
+    class SUITE ok
 ```
 
 > [!question]- Por que não bastava a nota 05 já ter mostrado o teste de Broken Access Control?
@@ -364,8 +365,9 @@ O segundo teste é, deliberadamente, um teste sobre a **própria infraestrutura 
 Chegando à peça que dá sentido ao resto: transformar cada correção manual da [[03-Dominios/Tecnologia/Python/Segurança/09 - Capstone — hardening da API do Galho 10|capstone do Galho 11]] numa asserção que roda a cada `git commit`, não numa checagem feita uma vez com `curl`.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#D0021B", "primaryBorderColor": "#8B0000"}}}%%
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     E2["Etapa 2 do Galho 11\nBroken Access Control corrigido"] --> T1["test_broken_access_control.py"]
     E3["Etapa 3 do Galho 11\nSSTI corrigida"] --> T2["test_ssti.py"]
     E5["Etapa 5 do Galho 11\nRate limiting"] --> T3["test_rate_limiting.py"]
@@ -381,8 +383,8 @@ flowchart TD
     R2 -->|"não"| OK
     R3 -->|"não"| OK
 
-    style F fill:#D0021B,color:#fff
-    style OK fill:#2d7a4a,color:#fff
+    class F falha
+    class OK ok
 ```
 
 ### (a) Broken Access Control: 404 para quem não é dono
@@ -521,8 +523,9 @@ TOTAL                                  198      9      42       6     91%
 > A [[07 - Coverage — pytest-cov e o que ele não mede|nota 07]] já deixou isso explícito: coverage mede execução, não correção. Os três testes de `tests/security/` desta capstone **executam** as linhas certas — mas o que de fato prova que eles pegam uma regressão real é o conteúdo específico de cada `assert` (o `assert not any("49" in html ...)` da Peça 5b, não um genérico `assert resposta.status_code == 200`), não o número de coverage. Para essa fatia específica do código — autenticação, checagem de posse, sanitização de template — um investimento periódico em mutation testing (`mutmut`, também citado na nota 07) valeria mais que perseguir os últimos pontos percentuais de coverage nas linhas de erro menos críticas.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph CI["Pipeline de CI, a cada push"]
         A["git push"] --> B["pytest tests/unit tests/integration<br/>~200ms, roda sempre"]
         B --> C["pytest tests/security<br/>~400ms, roda sempre — NUNCA opcional"]
@@ -531,9 +534,9 @@ flowchart LR
         D -->|"≥ 85%"| F["Build passa"]
     end
 
-    style C fill:#D0021B,color:#fff
-    style E fill:#D0021B,color:#fff
-    style F fill:#2d7a4a,color:#fff
+    class C falha
+    class E falha
+    class F ok
 ```
 
 O detalhe que essa figura torna explícito: `tests/security/` não é um subconjunto opcional, marcado `slow` ou `integration`, filtrado do dia a dia pela técnica de marks que a [[03 - Parametrização e organização de suíte|nota 03]] ensinou para separar pre-commit rápido de CI completo. Os três testes de regressão de segurança desta capstone rodam sempre, em toda execução — o custo de rodá-los (milissegundos, contra `TestClient` e SQLite em memória) é irrelevante perto do custo de uma regressão de Broken Access Control chegar a produção sem ninguém notar.
@@ -543,8 +546,10 @@ O detalhe que essa figura torna explícito: `tests/security/` não é um subconj
 Somando as peças, uma suíte real para esta API teria uma forma próxima desta — não um número absoluto a copiar, mas uma proporção plausível para o tamanho do sistema:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Piramide["Pirâmide de testes da API de Tarefas"]
         direction TB
         SEG["tests/security/\n8 testes\nBAC, SSTI, rate limiting"]
@@ -554,9 +559,9 @@ flowchart TD
 
     UNIT --> INTEG --> SEG
 
-    style UNIT fill:#2d7a4a,color:#fff
-    style INTEG fill:#4A90D9,color:#fff
-    style SEG fill:#D0021B,color:#fff
+    class UNIT ok
+    class INTEG neutro
+    class SEG falha
 ```
 
 42 testes ao todo — não é um número grande para uma API de quatro recursos, dois endpoints de autenticação e um endpoint de busca, e é exatamente o tamanho que a pirâmide de testes ([[03-Dominios/Engenharia/Testes/index|Engenharia/Testes]], não reexplicada aqui) prevê: mais testes unitários (baratos, rápidos, muitos casos de borda) do que testes de integração (mais caros, cobrindo fluxos), e um punhado pequeno mas não-negociável de testes de segurança — não porque segurança importe menos, mas porque cada teste de segurança, bem escrito, já cobre uma classe inteira de ataque de uma vez (o teste de Broken Access Control cobre quatro verbos num só; não precisa de quatro testes de segurança separados para isso).

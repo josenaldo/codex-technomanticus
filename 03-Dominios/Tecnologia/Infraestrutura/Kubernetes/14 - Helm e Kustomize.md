@@ -28,6 +28,8 @@ Vale nomear a distinção com precisão antes de entrar em qualquer detalhe de s
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph Helm["Helm — template"]
         T["templates/deployment.yaml<br/>(NÃO é YAML válido sozinho)"] --> R["Motor de template<br/>(Go template + Sprig)"]
         V["values.yaml"] --> R
@@ -40,8 +42,8 @@ graph TB
         M --> Y2["YAML final mesclado"]
     end
 
-    style T fill:#4a3b7a,stroke:#8e6fd6,color:#fff
-    style B fill:#1e5c3a,stroke:#27ae60,color:#fff
+    class T marca
+    class B ok
 ```
 
 Essa diferença de filosofia não é estética — ela se propaga para cada decisão prática das duas ferramentas. Um chart do Helm pode gerar YAML sintaticamente inválido se o template estiver mal escrito, porque o texto que você edita não é validado como YAML até o momento da renderização. Um `kustomization.yaml` nunca corre esse risco da mesma forma, porque cada peça que ele consome — o `base/`, cada patch — já é YAML de verdade, validável isoladamente, antes mesmo de o Kustomize entrar em cena.

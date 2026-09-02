@@ -62,7 +62,6 @@ UPDATE cliente SET telefone = ?, endereco = ?, versao = versao + 1
 Se outra pessoa gravou nesse meio-tempo, a versão mudou, **nenhuma linha é afetada**, e o sistema sabe que houve conflito. O `UPDATE` condicional é a peça inteira do mecanismo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant A as Atendente A
     participant DB as Banco

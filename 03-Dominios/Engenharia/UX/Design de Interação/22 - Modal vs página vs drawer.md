@@ -27,16 +27,16 @@ Imagine decidir, num sprint qualquer, como implementar "editar o nome de um proj
 - **Drawer** — o meio-termo. Mantém o contexto da tela anterior visível ao fundo (ou parcialmente visível, deslizando por cima), o que é especialmente útil para mostrar o detalhe de um item dentro de uma lista sem perder de vista a lista inteira — o usuário nunca esquece de onde clicou.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Preciso decidir o container<br/>de uma nova tarefa de UI"] --> B{"Precisa de URL própria,<br/>compartilhável ou favoritável?"}
     B -->|sim| C["Página"]
     B -->|não| D{"O usuário precisa ver<br/>o contexto anterior enquanto age?"}
     D -->|sim, tarefa média/lista| E["Drawer"]
     D -->|não, tarefa curta| F["Modal"]
-    style C fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
+    class C neutro
+    class E neutro
+    class F neutro
 ```
 
 **O mecanismo em uma frase:** a pergunta que decide o container certo não é "quanto conteúdo cabe na tela", é "quanto do contexto de navegação — URL, histórico, tela anterior visível — essa tarefa precisa preservar para o usuário não se perder".

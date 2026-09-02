@@ -36,7 +36,6 @@ Um time pequeno precisa expor, via HTTP, o sistema de tarefas que várias notas 
 Cada uma dessas versões corrigidas corresponde a uma nota deste galho. O sistema desta capstone é a sexta versão — a que já nasce com as cinco correções embutidas, exatamente o mesmo movimento que a [[03-Dominios/Tecnologia/Python/Persistência de dados/08 - Capstone — projetando a camada de persistência de um serviço real|capstone do Galho 9]] fez para a camada de dados.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 erDiagram
     USUARIO ||--o{ TAREFA : "cria"
 
@@ -526,8 +525,10 @@ app.include_router(router)
 Rodar `uvicorn main:app --reload` contra um Postgres local (ou o SQLite de teste que o Galho 9 já ensinou a usar como banco descartável) e chamar `GET /docs` já entrega, sem nenhuma linha de documentação escrita à mão, a spec inteira dessa API — os schemas `TarefaCreate`/`TarefaRead`, os quatro endpoints com seus status codes de sucesso, e (como a [[08 - Documentação automática com OpenAPI|nota 08]] já ensinou) espaço para enriquecer com `description`/`tags` sem sair do próprio decorator de rota. O que essa spec **não** documenta ainda de graça são as respostas de erro 404/500 — a nota 08 já nomeou essa lacuna: documentar `responses={404: {...}}` explicitamente no decorator é um passo manual a mais, não coberto por esta capstone para não alongar o exemplo, mas seguindo exatamente o mesmo mecanismo que a nota 08 descreveu.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Entrada["Camada transversal — roda em toda requisição"]
         MW["middleware_de_correlation_id_e_tempo\n(nota 07)"]
     end
@@ -555,10 +556,10 @@ flowchart TB
     SERVICO -->|"exceção de domínio"| EH
     VALID -.->|"type hints + BaseModel"| OPENAPI
 
-    style MW fill:#4A90D9,color:#fff
-    style DEP fill:#4A90D9,color:#fff
-    style EH fill:#2d7a4a,color:#fff
-    style OPENAPI fill:#F5A623,color:#000
+    class MW neutro
+    class DEP neutro
+    class EH ok
+    class OPENAPI destaque
 ```
 
 ## Armadilhas comuns

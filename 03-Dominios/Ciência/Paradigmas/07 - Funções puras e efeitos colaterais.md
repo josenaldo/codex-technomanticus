@@ -52,12 +52,14 @@ Vamos ver o contraste num diagrama. Numa função pura, tudo entra pelos argumen
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["entrada (args)"] --> F["função pura"]
     F --> B["saída (retorno)"]
 
-    style F fill:#1f6f3f,color:#fff
-    style A fill:#2b3a55,color:#fff
-    style B fill:#2b3a55,color:#fff
+    class F ok
+    class A neutro
+    class B neutro
 ```
 
 Leitura do diagrama: a função pura é uma caixa fechada. A única forma de informação entrar é pelos argumentos; a única forma de sair é pelo valor de retorno. Não há canos laterais para o banco, para a tela ou para variáveis globais.
@@ -94,6 +96,9 @@ A mesma caixa, agora com vazamentos:
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["entrada (args)"] --> F["função impura"]
     F --> B["saída (retorno)"]
     F -->|escreve| DB[("banco")]
@@ -101,13 +106,13 @@ flowchart LR
     REL["relógio / random"] -->|entrada oculta| F
     G["estado global"] <-->|lê e muta| F
 
-    style F fill:#7a2222,color:#fff
-    style A fill:#2b3a55,color:#fff
-    style B fill:#2b3a55,color:#fff
-    style DB fill:#3a3a3a,color:#fff
-    style IO fill:#3a3a3a,color:#fff
-    style REL fill:#3a3a3a,color:#fff
-    style G fill:#3a3a3a,color:#fff
+    class F falha
+    class A neutro
+    class B neutro
+    class DB marca
+    class IO marca
+    class REL marca
+    class G marca
 ```
 
 Leitura do diagrama: a função impura tem canos por todos os lados. Lê o relógio (entrada que não está na assinatura), conversa com o banco, imprime na tela e mexe no estado global. Olhar só os argumentos não te diz mais o que vai acontecer — você precisa conhecer o estado do mundo inteiro.
@@ -138,6 +143,8 @@ const a = adicionar(5); // depende de quantas vezes adicionar já rodou
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph Antes
         E1["resultado = soma(2,3) * 4"]
     end
@@ -147,9 +154,9 @@ flowchart TB
     Antes -->|substituir expressão pelo valor| Depois
     E2 --> R["mesmo programa, mesmo resultado"]
 
-    style E1 fill:#2b3a55,color:#fff
-    style E2 fill:#1f6f3f,color:#fff
-    style R fill:#1f6f3f,color:#fff
+    class E1 neutro
+    class E2 ok
+    class R ok
 ```
 
 Leitura do diagrama: porque `soma(2,3)` é referencialmente transparente, troco a chamada pelo valor `5` e o programa não percebe diferença. É como simplificar uma conta de matemática no papel.
@@ -197,6 +204,9 @@ A resposta clássica é o padrão **functional core, imperative shell**, popular
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph SHELL["casca imperativa (borda)"]
         IN["lê entrada / banco / rede"] --> CORE
         CORE --> OUT["escreve saída / banco / rede"]
@@ -207,13 +217,13 @@ flowchart TB
         end
     end
 
-    style SHELL fill:#7a2222,color:#fff
-    style CORE fill:#1f6f3f,color:#fff
-    style L fill:#2b5c3f,color:#fff
-    style C fill:#2b5c3f,color:#fff
-    style T fill:#2b5c3f,color:#fff
-    style IN fill:#3a3a3a,color:#fff
-    style OUT fill:#3a3a3a,color:#fff
+    class SHELL falha
+    class CORE ok
+    class L ok
+    class C ok
+    class T ok
+    class IN neutro
+    class OUT neutro
 ```
 
 Leitura do diagrama: a casca fina e impura faz a entrada e a saída — lê do banco, escreve no banco, fala com a rede. Ela coleta os dados, entrega ao núcleo puro como valores simples, recebe de volta uma decisão (também um valor) e só então executa o efeito. Toda a lógica difícil vive no núcleo verde, que é trivial de testar.

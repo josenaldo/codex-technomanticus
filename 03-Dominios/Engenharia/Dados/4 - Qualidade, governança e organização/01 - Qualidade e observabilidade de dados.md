@@ -102,8 +102,9 @@ Testes de dados são verificação **ativa** — alguém escreveu uma asserção
 **5. Lineage** — de onde este dado veio, e para onde ele vai? Quando um número no dashboard está errado, lineage é o que permite responder "quais tabelas upstream alimentam esta, e qual delas mudou recentemente" em minutos em vez de horas de investigação manual. Lineage também informa **blast radius**: se a tabela de dimensão de produto quebrar, lineage mostra instantaneamente quantos dashboards e modelos downstream dependem dela — informação essencial para priorizar o conserto. O aprofundamento de lineage — como ele é capturado, catalogado e navegado em escala — é o assunto da próxima nota desta trilha[^lineage].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Pilares["5 pilares de data observability"]
         F["Freshness<br/>quando atualizou?"]
         V["Volume<br/>quantas linhas?"]
@@ -119,12 +120,12 @@ graph TB
     Tab --> L
     L --> Down["Dashboards e modelos<br/>downstream"]
 
-    style Tab fill:#4A90D9,color:#fff
-    style F fill:#F5A623,color:#000
-    style V fill:#F5A623,color:#000
-    style S fill:#F5A623,color:#000
-    style Q fill:#F5A623,color:#000
-    style L fill:#F5A623,color:#000
+    class Tab neutro
+    class F destaque
+    class V destaque
+    class S destaque
+    class Q destaque
+    class L destaque
 ```
 
 Os cinco pilares não competem com os testes de dados da seção anterior — eles cobrem o espaço que os testes não alcançam. Um teste `relationships` teria pego a falha de categoria do exemplo de abertura, mas só se alguém tivesse pensado em escrevê-lo. Um monitor de schema, rodando de forma automática e sem depender de ninguém prever o caso, teria pego a mesma falha no momento em que o rename aconteceu na origem — dias ou semanas antes de virar um problema visível no dashboard.

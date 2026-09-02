@@ -47,6 +47,7 @@ O diagrama abaixo desenha a anatomia do vazamento: a interface promete uma coisa
 
 ```mermaid
 flowchart TD
+    classDef leak fill:#fde0e0,stroke:#c0392b,color:#000;
     Cliente["Cliente da abstração"]
     subgraph Interface["Interface (a promessa)"]
         Promessa["'Ignore a camada de baixo:<br/>é simples, rápida e confiável'"]
@@ -58,7 +59,6 @@ flowchart TD
     Promessa -. esconde .-> Real
     Real == "vaza pela costura<br/>(latência, falha, ordem)" ==> Cliente
 
-    classDef leak fill:#fde0e0,stroke:#c0392b,color:#000;
     class Real leak
 ```
 
@@ -93,6 +93,7 @@ O diagrama mostra a promessa de TCP empilhada sobre a realidade de IP, e o ponto
 
 ```mermaid
 flowchart LR
+    classDef leak fill:#fde0e0,stroke:#c0392b,color:#000;
     App["Aplicação"] -->|"bytes em ordem,<br/>sem perda"| Conf
     subgraph TCP["TCP — promessa"]
         Conf["Entrega confiável<br/>e ordenada"]
@@ -104,7 +105,6 @@ flowchart LR
     NoGar -. "rede ok:<br/>TCP reordena e retransmite" .-> Conf
     NoGar == "cabo rompido /<br/>congestão extrema" ==> App
 
-    classDef leak fill:#fde0e0,stroke:#c0392b,color:#000;
     class NoGar leak
 ```
 
@@ -171,12 +171,12 @@ A cadeia conceitual liga os três autores numa linha do tempo só: cada um pega 
 
 ```mermaid
 flowchart LR
+    classDef prescrit fill:#e0f0e0,stroke:#27ae60,color:#000;
+    classDef descrit fill:#e0e8fd,stroke:#2c5fc0,color:#000;
     Parnas["Parnas (1972)<br/>information hiding"] -->|"prescreve<br/>o que esconder"| Spolsky["Spolsky (2002)<br/>Lei das Abstrações Vazadas"]
     Spolsky -->|"observa que o<br/>esconderijo sempre<br/>vaza um pouco"| Hyrum["Hyrum (~2010s)<br/>Lei de Hyrum"]
     Hyrum -->|"em escala, tudo que<br/>vazou vira contrato"| Loop["Toda a implementação<br/>vira interface implícita"]
 
-    classDef prescrit fill:#e0f0e0,stroke:#27ae60,color:#000;
-    classDef descrit fill:#e0e8fd,stroke:#2c5fc0,color:#000;
     class Parnas prescrit
     class Spolsky,Hyrum,Loop descrit
 ```
@@ -227,6 +227,7 @@ O termo vem da Fórmula 1 (Jackie Stewart: *"você não precisa ser engenheiro p
 
 ```mermaid
 flowchart TD
+    classDef tax fill:#fdf0e0,stroke:#d98c1f,color:#000;
     Req["Request"] --> L1["Proxy / gateway"]
     L1 --> L2["Framework web"]
     L2 --> L3["ORM"]
@@ -240,7 +241,6 @@ flowchart TD
     L4 -. "+ vazamento" .-> Tax
     L5 -. "+ vazamento" .-> Tax
 
-    classDef tax fill:#fdf0e0,stroke:#d98c1f,color:#000;
     class Tax tax
 ```
 
@@ -263,6 +263,7 @@ O diagrama organiza as respostas, das mais conservadoras às mais radicais.
 
 ```mermaid
 flowchart TD
+    classDef act fill:#e0e8fd,stroke:#2c5fc0,color:#000;
     Dor["Um vazamento está doendo"] --> Q{"A abstração ainda<br/>economiza mais do<br/>que custa?"}
     Q -->|"Sim, mas vaza demais"| Redesenhar["1. Redesenhar:<br/>especificar contrato,<br/>esconder a decisão volátil"]
     Q -->|"Existe coisa melhor"| Trocar["2. Trocar por uma<br/>abstração melhor"]
@@ -271,7 +272,6 @@ flowchart TD
     Trocar --> Naoempilhar["Não embrulhar a vazada<br/>em mais uma camada"]
     Remover --> Naoempilhar
 
-    classDef act fill:#e0e8fd,stroke:#2c5fc0,color:#000;
     class Redesenhar,Trocar,Remover,Escape,Naoempilhar act
 ```
 

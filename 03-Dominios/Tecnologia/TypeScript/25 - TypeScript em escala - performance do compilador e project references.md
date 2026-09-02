@@ -37,6 +37,7 @@ O custo cresce por três razões distintas:
 
 ```mermaid
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["tsc sem cache\nsem project references"]
     B["500 arquivos no grafo"]
     C["Muda 1 arquivo"]
@@ -45,7 +46,7 @@ graph TD
 
     A --> B --> C --> D --> E
 
-    style E fill:#5a0000,color:#fff
+    class E falha
 ```
 
 O custo real é que a experiência de desenvolvimento se degrada: o language server que alimenta o seu editor fica lento, o CI leva minutos em cada PR, e o watch mode vira uma tortura de espera.
@@ -104,6 +105,7 @@ Abra `trace.json` no Chrome em `chrome://tracing`. Você verá uma timeline de f
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     DIAG["tsc --extendedDiagnostics"]
     TRACE["tsc --generateTrace ./out"]
     FLAME["chrome://tracing\n→ flamegraph"]
@@ -112,7 +114,7 @@ flowchart LR
     DIAG -->|"Onde está o tempo?"| HOT
     TRACE --> FLAME --> HOT
 
-    style HOT fill:#1a3a5a,color:#fff
+    class HOT neutro
 ```
 
 > [!tip] `npx tsc-output-parser`
@@ -214,6 +216,8 @@ Esse setup tem problemas sérios:
 
 ```mermaid
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     ROOT["tsconfig.json (raiz)\ninclude: packages/*/src"]
     CORE["core/src"]
     UTILS["utils/src"]
@@ -224,8 +228,8 @@ graph TD
 
     note["Qualquer mudança\n= re-análise de tudo"]
 
-    style ROOT fill:#5a0000,color:#fff
-    style note fill:#3a1a00,color:#fff
+    class ROOT falha
+    class note destaque
 ```
 
 ---
@@ -318,6 +322,8 @@ Na raiz do monorepo, um `tsconfig.json` de solução lista todos os projetos. El
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     ROOT["tsconfig.json (raiz)\narchivo de solução"]
 
     CORE["packages/core\ncomposite: true\nsem references"]
@@ -330,8 +336,8 @@ graph TD
     API --> CORE & UTILS
     FE --> API & UTILS
 
-    style ROOT fill:#1a3a5a,color:#fff
-    style CORE fill:#1a472a,color:#fff
+    class ROOT neutro
+    class CORE ok
 ```
 
 ### Rodando com `tsc -b`
@@ -435,6 +441,7 @@ O TypeScript impõe um limite de 100.000 tipos em unions geradas por template li
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph "Custo de template literal"
         A["N membros × M membros"]
         B["= N×M combinações"]
@@ -448,7 +455,7 @@ graph LR
         D --> E
     end
 
-    style C fill:#5a0000,color:#fff
+    class C falha
 ```
 
 ### Mapped types sobre interfaces grandes
@@ -571,6 +578,8 @@ A nota [[21 - Modules - ESM, CJS e type-only imports]] aprofunda `import type` e
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     SRC["Código TypeScript\n(.ts)"]
 
     TSC["tsc --noEmit\n(só type-check,\nnão emite nada)"]
@@ -582,8 +591,8 @@ graph LR
     SRC --> TSC --> ERRORS
     SRC --> BUILD --> JS
 
-    style TSC fill:#1a3a5a,color:#fff
-    style BUILD fill:#1a472a,color:#fff
+    class TSC neutro
+    class BUILD ok
 ```
 
 **`tsc` faz type-check.** Emite zero JavaScript. É o guardião da correção de tipos. **`esbuild`/`swc` transpila.** Faz zero type-checking. É o guardião da velocidade.

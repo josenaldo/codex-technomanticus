@@ -50,12 +50,13 @@ Para o público deste domínio — quem já pensa em termos de modelagem, camada
 Esse vazamento não é um detalhe estético: **é o sintoma direto de que o modelo de domínio vazou para o usuário sem tradução.** No vocabulário de modelagem que este público já tem — [[03-Dominios/Engenharia/Arquitetura/Arquitetura de Software#Domain-Driven Design (DDD)|Domain-Driven Design]] descreve exatamente esse problema com o conceito de **bounded context**: um mesmo conceito ("pedido", "status") pode ter um modelo interno rico, cheio de estados técnicos, e um modelo externo que precisa ser deliberadamente mais simples e mais próximo da linguagem do usuário. A **Ubiquitous Language** de um bounded context é a linguagem compartilhada *dentro* daquele contexto entre devs e especialistas de domínio — não é automaticamente a linguagem que deveria aparecer na tela do usuário final, que muitas vezes está fora desse contexto e não compartilha o vocabulário técnico dele. Quando um valor de enum aparece cru na UI, o que aconteceu é que a fronteira de tradução entre o modelo interno e a superfície visível simplesmente não existiu — o mesmo tipo de vazamento que uma Anti-Corruption Layer existe para evitar entre dois bounded contexts, só que aqui o "contexto externo" é o próprio usuário.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     M["Modelo de domínio<br/>status: PENDING_REVIEW"] -->|"sem tradução"| UI1["Tela do usuário<br/>'PENDING_REVIEW'"]
     M -->|"com camada de tradução<br/>(microcopy deliberada)"| UI2["Tela do usuário<br/>'Em análise'"]
-    style UI1 fill:#D0021B,color:#fff
-    style UI2 fill:#4A90D9,color:#fff
+    class UI1 falha
+    class UI2 neutro
 ```
 
 **O mecanismo em uma frase:** todo valor interno que chega à tela sem passar por uma camada de tradução de microcopy carrega consigo as escolhas de nomenclatura otimizadas para o código, não para quem lê a tela — e a correção é sempre a mesma, uma tabela pequena mapeando cada valor interno para o texto que o usuário deveria ler.

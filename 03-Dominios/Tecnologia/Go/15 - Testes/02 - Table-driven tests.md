@@ -76,6 +76,8 @@ Adicionar um caso novo — testar `Soma(100, -100)`, por exemplo — vira uma li
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["slice de struct anônimo:\ncada elemento é um caso"] --> B["for _, c := range casos"]
     B --> C["got := FuncaoTestada(c.entrada)"]
     C --> D{"got == c.want?"}
@@ -84,8 +86,8 @@ flowchart TB
     F --> E
     E --> B
 
-    style A fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
+    class A neutro
+    class D destaque
 ```
 
 Um detalhe que passa despercebido na primeira leitura: `t.Errorf` **não interrompe** o loop (diferente de `t.Fatalf`). Se o caso `"negativos"` falhar, o loop continua para `"zero"` e `"misto"` — o relatório final do `go test` mostra todas as falhas da tabela de uma vez, não só a primeira. Isso importa na prática: sem esse comportamento, corrigir um bug de tabela viraria um ciclo de "roda, corrige um erro, roda de novo, corrige o próximo" — em vez de ver o quadro completo já na primeira execução.

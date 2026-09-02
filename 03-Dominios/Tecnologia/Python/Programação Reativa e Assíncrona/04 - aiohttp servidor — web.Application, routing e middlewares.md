@@ -87,6 +87,8 @@ Todo handler recebe um único argumento, `request: web.Request`, e devolve (ou l
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Cliente["Cliente HTTP"] -->|"GET /produtos/42"| Loop["Event loop (asyncio)"]
     Loop --> Router["app.router<br/>resolve rota + match_info"]
     Router --> MW1["middleware 1<br/>(ex: logging)"]
@@ -97,8 +99,8 @@ flowchart LR
     MW1 --> Loop
     Loop -->|"resposta HTTP"| Cliente
 
-    style Handler fill:#7ED321,color:#000
-    style Loop fill:#4A90D9,color:#fff
+    class Handler destaque
+    class Loop neutro
 ```
 
 Handlers também podem ser implementados como classes (`web.View`), úteis quando múltiplos métodos HTTP para a mesma rota compartilham estado ou lógica de preparação — mas para a maioria dos endpoints, uma função `async def` simples, registrada por método e path, é suficiente e é o padrão dominante no ecossistema.
@@ -314,6 +316,8 @@ Voltando ao bug de abertura — `legacy_pricing_sdk.consultar_preco()` chamado s
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph WSGI["Worker WSGI síncrono (ex: Gunicorn sync, Flask clássico)"]
         W1["Worker 1<br/>trava em legacy_sdk.consultar_preco()"] -.->|"só esta requisição afetada"| X1["req. de outro cliente,<br/>atendida por Worker 2"]
         W1 --> R1["/produtos/1/enriquecido<br/>lento (aceitável, isolado)"]
@@ -324,9 +328,9 @@ flowchart TB
         H1 -.->|"BLOQUEIA a thread inteira"| Travado["TODAS as outras conexões<br/>ficam paradas — /health, /produtos/2, etc."]
     end
 
-    style H1 fill:#D0021B,color:#fff
-    style Travado fill:#D0021B,color:#fff
-    style R1 fill:#F5A623,color:#000
+    class H1 falha
+    class Travado falha
+    class R1 destaque
 ```
 
 A comparação com um worker WSGI síncrono deixa o contraste explícito: em Flask clássico servido por Gunicorn com workers síncronos (ou Django sem ASGI, num modelo equivalente), **1 worker atende 1 requisição de cada vez, de forma bloqueante por design** — se um handler chama `time.sleep(5)` ou uma query lenta, aquele worker específico fica ocupado por 5 segundos, mas outros workers (processos ou threads, dependendo da configuração) continuam livres para atender outras requisições normalmente. O modelo é "lento, mas isolado" — o preço de uma chamada bloqueante é pago só pela requisição que a fez (e por quem estiver na fila daquele worker específico, se a fila do servidor de aplicação estiver saturada). Em `aiohttp` (e em qualquer servidor `asyncio` de forma geral, incluindo ASGI — assunto da [[05 - ASGI e o ecossistema de frameworks assíncronos|nota 05]]), o modelo é o oposto: **1 processo lida com milhares de conexões concorrentes de forma não-bloqueante**, o que é extremamente eficiente exatamente porque nenhuma conexão individual monopoliza a CPU enquanto espera I/O — mas essa eficiência depende inteiramente da disciplina de que **nenhum handler bloqueie a thread**. Um único ponto de bloqueio síncrono derruba a propriedade central do modelo inteiro: em vez de "lento, mas isolado", vira "uma requisição lenta paralisa todas as outras".

@@ -47,6 +47,8 @@ Três decisões de estrutura de dados já aconteceram nessa declaração, mesmo 
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q["Que pergunta você vai fazer<br/>aos dados depois?"] --> A["Qual é o N-ésimo?<br/>Preciso de ordem?<br/>Vou iterar sequencialmente?"]
     Q --> B["Isso existe aqui?<br/>Qual é o valor associado a esta chave?"]
     Q --> C["Os campos têm papéis<br/>diferentes entre si?"]
@@ -59,9 +61,9 @@ flowchart TD
     M -.->|"O(1) amortizado por chave<br/>sem ordem garantida<br/>overhead de hashing"| M2["ex: map[string]Cliente por ID"]
     ST -.->|"acesso por nome de campo<br/>tipagem por posição semântica<br/>tamanho fixo em compile-time"| ST2["ex: struct{Nome, Idade}"]
 
-    style S fill:#4A90D9,color:#fff
-    style M fill:#F5A623,color:#000
-    style ST fill:#7ED321,color:#000
+    class S neutro
+    class M destaque
+    class ST destaque
 ```
 
 A pergunta "qual é o N-ésimo?" e a pergunta "isso existe aqui?" parecem parecidas — ambas são "busca" no sentido genérico — mas pedem estruturas fisicamente diferentes por baixo. Um slice é um bloco contíguo de memória: acessar `s[42]` é aritmética de ponteiro, `O(1)` sem exceção, e percorrer `s[0]`, `s[1]`, `s[2]`... sequencialmente é o padrão de acesso que a CPU mais gosta — prefetch de cache line funciona de graça (a nota 05 já cobriu esse modelo de memória contíguo). Já um map não guarda nada contíguo por chave: internamente é uma tabela hash — buckets espalhados, sem relação de vizinhança entre `m["a"]` e `m["b"]`. Isso dá `O(1)` amortizado pra "essa chave existe?" — mas troca a localidade de cache por essa flexibilidade, e não garante nenhuma ordem de iteração (a nota 03 já mostrou isso: `for k := range m` embaralha a cada rodada, de propósito, desde Go 1).
@@ -91,6 +93,8 @@ A pergunta óbvia é: por que `struct{}` e não `bool`? Um map `map[string]bool`
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph BoolSet["map[string]bool"]
         direction TB
         B1["alice → true"]
@@ -104,8 +108,8 @@ flowchart LR
         S3["carol → ausente, não uma entrada"]
     end
 
-    style BoolSet fill:#D0021B,color:#fff
-    style StructSet fill:#7ED321,color:#000
+    class BoolSet falha
+    class StructSet destaque
 ```
 
 Tem uma segunda razão, mais sutil que economia de bytes: `map[string]bool` permite um estado ambíguo — `presentes["carol"] = false` é uma entrada real no map, com "carol" ocupando espaço, mas que significa "carol não está no set". Isso convida ao bug clássico: código que checa só `if presentes["carol"]` (sem o segundo valor de retorno) lê `false` tanto para "carol não existe" quanto para "carol existe e foi explicitamente marcada como false" — duas situações que deveriam ser distinguíveis, mas colapsam na mesma leitura. Com `map[T]struct{}`, não existe "valor falso" pra confundir: ou a chave está no map (pertence ao set), ou não está — a checagem correta e idiomática usa sempre a forma de dois retornos:

@@ -56,6 +56,8 @@ type ReadWriter interface {
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Reader["interface Reader"]
         R["Read(p []byte) (int, error)"]
     end
@@ -68,9 +70,9 @@ flowchart TB
         RW2["Writer"] -.expande para.-> W
     end
 
-    style ReadWriter fill:#4A90D9,color:#fff
-    style Reader fill:#F5A623,color:#000
-    style Writer fill:#F5A623,color:#000
+    class ReadWriter neutro
+    class Reader destaque
+    class Writer destaque
 ```
 
 O compilador trata `ReadWriter` como se as assinaturas de `Reader` e `Writer` estivessem coladas ali dentro, literalmente. Não existe um mecanismo de despacho, vtable ou resolução em tempo de execução — a [especificação da linguagem](https://go.dev/ref/spec#Interface_types) descreve isso como o method set da interface embutida sendo **incluído** no method set da interface que embute. O efeito prático: satisfazer `ReadWriter` exige, ao mesmo tempo, ter `Read(p []byte) (int, error)` **e** `Write(p []byte) (int, error)` no method set do tipo concreto — a satisfação estrutural da [[01 - Interfaces implícitas e satisfação estrutural]] continua valendo, só que agora o contrato a bater é a união de duas listas em vez de uma.
@@ -159,6 +161,8 @@ A confusão mais comum: achar que `type ReadWriter interface { Reader; Writer }`
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph StructEmb["Embedding de struct (Galho 2)"]
         direction TB
         E1["Employee{ Person, ... }"] --> E2["valor Person\narmazenado em memória"]
@@ -171,8 +175,8 @@ flowchart LR
         I2 --> I3["checado em\ncompile time:\ntipo concreto tem\nRead e Write?"]
     end
 
-    style E2 fill:#4A90D9,color:#fff
-    style I2 fill:#F5A623,color:#000
+    class E2 neutro
+    class I2 destaque
 ```
 
 ## Casos práticos

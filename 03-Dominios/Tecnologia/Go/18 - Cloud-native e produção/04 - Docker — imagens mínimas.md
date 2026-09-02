@@ -54,6 +54,8 @@ Docker resolve esse problema com um recurso chamado **multi-stage build**: o `Do
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph S1["Estágio builder — golang:1.23"]
         A["COPY go.mod go.sum"] --> B["go mod download"]
         B --> C["COPY . ."]
@@ -64,8 +66,8 @@ flowchart LR
     end
     D -.->|"binário copiado,\ncompilador descartado"| E
 
-    style S1 fill:#4A90D9,color:#fff
-    style S2 fill:#F5A623,color:#000
+    class S1 neutro
+    class S2 destaque
 ```
 
 O ponto chave: o estágio `builder` (com seus 800MB de toolchain) **não faz parte da imagem final**. O Docker daemon descarta as camadas do `builder` depois do build — só o que foi explicitamente copiado via `COPY --from=builder` sobrevive. É como usar uma cozinha industrial inteira para preparar um prato e depois entregar só o prato, não a cozinha, ao cliente.

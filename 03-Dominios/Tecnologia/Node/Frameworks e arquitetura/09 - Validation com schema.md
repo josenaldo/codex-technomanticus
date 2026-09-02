@@ -118,6 +118,9 @@ app.post("/users", zValidator("json", CreateUserSchema), (c) => {
 
 ```mermaid
 flowchart LR
+    classDef blue fill:#4A90D9,color:#fff,stroke:#4A90D9
+    classDef amber fill:#F5A623,color:#fff,stroke:#F5A623
+    classDef red fill:#D0021B,color:#fff,stroke:#D0021B
     ext([Entrada externa\nbody · query · params\nwebhook · fila]):::red
     ext --> schema{Schema\nvalidation}:::amber
     schema -->|inválido| err["ValidationError\n→ Problem Details 400"]:::red
@@ -125,9 +128,6 @@ flowchart LR
     typed --> usecase[Use case\ndomínio]:::blue
     typed --> domain[Value object\ninvariantes fortes]:::blue
 
-    classDef blue fill:#4A90D9,color:#fff,stroke:#4A90D9
-    classDef amber fill:#F5A623,color:#fff,stroke:#F5A623
-    classDef red fill:#D0021B,color:#fff,stroke:#D0021B
 ```
 
 Schema de boundary protege a aplicação de dados externos; value objects protegem o domínio de invariantes quebradas internamente.

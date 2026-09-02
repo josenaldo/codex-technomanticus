@@ -33,6 +33,8 @@ A Purpose Layer força uma decisão antes do código: **o que este sistema é** 
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Sem Purpose Layer"
         A1["Pedido do usuário"]
         A2["Modelo improvisa\n(tenta ser útil)"]
@@ -52,9 +54,9 @@ flowchart LR
     B2 -- sim --> B3
     B2 -- não --> B4
 
-    style A4 fill:#fff5f5,stroke:#ff6b6b
-    style B3 fill:#f0fff4,stroke:#51cf66
-    style B4 fill:#f0fff4,stroke:#51cf66
+    class A4 falha
+    class B3 ok
+    class B4 ok
 ```
 
 ## O que é esta camada

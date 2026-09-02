@@ -36,8 +36,10 @@ A nota [[04 - Node — Express|Express]] mostrou como montar sessões production
 O NestJS nasceu exatamente para fechar esse buraco. Ele empresta de Angular a ideia de que existem **categorias nomeadas** de coisas que acontecem numa requisição — não é tudo "middleware", existem **Guards**, **Interceptors**, **Pipes** e **Exception Filters**, cada um com um papel e um lugar fixo no pipeline[^lifecycle]. Auth (autenticação **e** autorização) tem uma casa dedicada: o **Guard**. Isso não é estética — significa que qualquer desenvolvedor que entra num projeto Nest novo já sabe, sem ler a lógica de negócio, **onde procurar** a decisão de "esse request pode passar?".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Request chega"] --> B["Middleware<br/>(global → módulo)"]
     B --> C["Guards<br/>(global → controller → rota)"]
     C -->|"canActivate() === false"| X["403 / 401<br/>ForbiddenException"]
@@ -47,9 +49,9 @@ graph LR
     F --> G["Interceptors<br/>(after — resposta)"]
     G --> H["Response"]
 
-    style C fill:#4A90D9,color:#fff
-    style X fill:#D0021B,color:#fff
-    style D fill:#F5A623,color:#000
+    class C neutro
+    class X falha
+    class D destaque
 ```
 
 O ponto crítico deste diagrama, e a razão pela qual auth mora em **Guards** e não em **Interceptors**: um Guard decide **se** o handler roda — ele retorna `boolean` (ou lança) antes de qualquer outra coisa no pipeline de processamento acontecer. Um Interceptor, por definição, **embrulha** a chamada ao handler (ele roda "antes e depois", tem acesso a um `Observable` do resultado) — é a ferramenta certa para logging, cache, transformação de resposta, mas semanticamente errada para "bloquear o request", porque o próprio nome já assume que o handler *vai* rodar. Guards rodam depois do middleware (que ainda não tem acesso ao `ExecutionContext` nem sabe qual handler vai ser chamado) e antes de interceptors e pipes — é o ponto mais cedo do pipeline em que o framework já sabe **qual rota** está sendo chamada, o que é exatamente a informação que um guard de RBAC por rota precisa[^guards-order].
@@ -349,8 +351,10 @@ export class WsJwtGuard implements CanActivate {
 A mitigação recomendada é validar o token **no próprio `handleConnection()`** do gateway (não só via guard nos handlers de mensagem), desconectando explicitamente (`client.disconnect()`) qualquer socket que não apresente um token válido logo na conexão — fechando a janela em que um cliente não-autenticado fica pendurado esperando algum evento sem guard[^ws-best-practice]. Diferente de REST e GraphQL, aqui **não existe** um "coloque o guard globalmente e esqueça" que cubra 100% do ciclo de vida — a conexão em si precisa de tratamento manual.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph REST["REST"]
         R1["Guard roda a cada request"] --> R2["Cobertura completa"]
     end
@@ -362,9 +366,9 @@ graph TD
         W2 --> W3["handleConnection() manual<br/>fecha a janela"]
     end
 
-    style R2 fill:#4A90D9,color:#fff
-    style G2 fill:#F5A623,color:#000
-    style W3 fill:#D0021B,color:#fff
+    class R2 neutro
+    class G2 destaque
+    class W3 falha
 ```
 
 ## Testando guards: o que a DI realmente compra

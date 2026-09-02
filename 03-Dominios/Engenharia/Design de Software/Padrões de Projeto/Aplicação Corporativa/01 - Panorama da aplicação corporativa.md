@@ -47,16 +47,16 @@ Esse último ponto é o que a maioria das discussões de arquitetura ignora. Nã
 Antes de qualquer padrão específico vem a divisão que condiciona todos eles — separar o programa em **apresentação**, **domínio** e **fonte de dados**:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     P["Apresentação<br/>HTTP, telas, formatação"] --> D["Domínio<br/>regras, cálculos, validações"]
     D --> F["Fonte de dados<br/>banco, serviços remotos"]
 
     P -.->|"nunca pula<br/>a camada do meio"| F
 
-    style P fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
+    class P neutro
+    class D neutro
+    class F neutro
 ```
 
 O ganho não é estético: é **reduzir o escopo de atenção**. Trabalhando na regra de negócio, você consegue ignorar como a tela é montada e tratar o banco como um conjunto abstrato de funções que entregam e guardam dados. Cada camada só conversa com a vizinha — a apresentação não fala com o banco por cima do domínio. Quando essa regra é violada (a JSP que abre conexão e roda SQL), o sistema perde exatamente a propriedade que justificava as camadas.
@@ -66,8 +66,9 @@ O ganho não é estético: é **reduzir o escopo de atenção**. Trabalhando na 
 ## O mapa desta família
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Aplicação Corporativa<br/>(PoEAA não-dados)"] --> W["Apresentação web"]
     A --> DI["Distribuição"]
     A --> C["Estado e concorrência offline"]
@@ -78,11 +79,11 @@ graph TD
     C --> C1["Session State · Offline Locks<br/>Coarse-Grained Lock"]
     B --> B1["Layer Supertype · Separated Interface<br/>Registry · Plugin · Service Stub<br/>Value Object · Money · Special Case"]
 
-    style A fill:#4A90D9,color:#fff
-    style W fill:#4A90D9,color:#fff
-    style DI fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style B fill:#4A90D9,color:#fff
+    class A neutro
+    class W neutro
+    class DI neutro
+    class C destaque
+    class B neutro
 ```
 
 - **Apresentação web** — como uma requisição HTTP vira uma tela. Quem recebe (um controlador por página ou um ponto único?), quem decide o próximo passo, e como o HTML é produzido.

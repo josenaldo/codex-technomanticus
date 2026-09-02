@@ -35,6 +35,8 @@ O banco passa a guardar, numa tabela de controle própria, **qual foi a última 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["schema vazio"] -->|"0001_create_users.up.sql"| B["users existe"]
     B -->|"0002_add_email_verified.up.sql"| C["users + email_verified"]
     C -->|"0003_create_orders.up.sql"| D["users + orders"]
@@ -43,8 +45,8 @@ flowchart LR
     C -.->|"0002_add_email_verified.down.sql"| B
     B -.->|"0001_create_users.down.sql"| A
 
-    style A fill:#999,color:#fff
-    style D fill:#4A90D9,color:#fff
+    class A neutro
+    class D marca
 ```
 
 Cada seta sólida é `up`; cada seta pontilhada é o `down` correspondente, disponível caso algo precise voltar atrás. A tabela `schema_migrations` no banco guarda um único número: em qual ponto dessa linha o ambiente está agora.

@@ -61,6 +61,8 @@ Back-pressure é o nome que sistemas de streaming e de mensageria dão a um prob
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph SemLimite["Sem back-pressure"]
         P1["Produtor\n(rápido)"] -->|"gera trabalho\nsem controle"| Buf1["Buffer implícito\n(memória, sockets, conexões)"]
         Buf1 -->|"consumidor não\nabsorve no ritmo"| Cresce["Cresce sem limite"]
@@ -74,8 +76,8 @@ flowchart LR
         Cons -.->|"libera espaço"| Freio
     end
 
-    style Falha fill:#D0021B,color:#fff
-    style Freio fill:#F5A623,color:#000
+    class Falha falha
+    class Freio destaque
 ```
 
 A pergunta que qualquer sistema produtor-consumidor precisa responder explicitamente é: **o que acontece quando o produtor está adiantado demais em relação ao consumidor?** Há três respostas possíveis, e só uma delas é geralmente aceitável em produção:

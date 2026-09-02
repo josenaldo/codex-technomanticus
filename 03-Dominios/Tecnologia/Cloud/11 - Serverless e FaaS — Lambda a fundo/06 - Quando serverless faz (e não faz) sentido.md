@@ -27,6 +27,9 @@ Um arquiteto sênior nunca escolhe compute por moda. A pergunta certa não é "s
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Start(["Novo workload de compute<br/>a arquitetar"])
 
     Q1{"Padrão de carga:<br/>rajada/imprevisível<br/>ou constante/alta?"}
@@ -50,9 +53,9 @@ flowchart TD
     Q6 -->|"Sim"| Serverless["SERVERLESS / FaaS<br/>Lambda / DO Functions<br/>(este galho)<br/>pay-per-use vence"]
     Q6 -->|"Não, precisa manter<br/>conexão/cache em memória"| Container
 
-    style Serverless fill:#262,color:#fff
-    style Container fill:#245,color:#fff
-    style VM fill:#653,color:#fff
+    class Serverless ok
+    class Container neutro
+    class VM destaque
 ```
 
 Uma frase por caminho: **serverless** vence quando a carga é imprevisível, a execução é curta, o cold start é tolerável (ou mitigado com provisioned concurrency) e o processamento é stateless por invocação. **Container gerenciado** vence quando o processo é stateless mas precisa rodar por mais tempo, manter uma conexão viva, ou simplesmente não tolera nenhum cold start em nenhuma invocação. **VM** vence quando a carga é constante e alta o bastante para que o custo por hora reservada bata o custo por invocação, ou quando o workload exige controle de hardware que nenhuma das duas abstrações gerenciadas entrega.
@@ -157,15 +160,18 @@ Vale aplicar a árvore inteira a um cenário concreto, com quatro workloads da m
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Upload["Cliente sobe foto<br/>de avaliação de produto"] -->|"evento S3"| Thumb["Função: gera thumbnail<br/>SERVERLESS — evento, curto, rajada"]
     Pedido["Checkout aprovado"] -->|"evento SQS"| Fatura["Função: gera nota fiscal<br/>SERVERLESS — evento, curto, rajada"]
     API["App mobile consulta<br/>catálogo, o dia inteiro"] -->|"HTTP constante"| Catalogo["Serviço de catálogo<br/>CONTAINER — throughput alto e constante"]
     Recom["Motor de recomendação<br/>batch noturno, 2h de processamento"] -->|"cron"| Batch["Job batch<br/>VM/instância spot — excede 15 min"]
 
-    style Thumb fill:#262,color:#fff
-    style Fatura fill:#262,color:#fff
-    style Catalogo fill:#245,color:#fff
-    style Batch fill:#653,color:#fff
+    class Thumb ok
+    class Fatura ok
+    class Catalogo neutro
+    class Batch destaque
 ```
 
 O gerador de thumbnail e o gerador de nota fiscal são serverless porque encaixam nos seis critérios da seção anterior: disparam por evento, rodam em segundos, o volume varia com o tráfego de compras do dia. O serviço de catálogo, ao contrário, recebe requisição o dia inteiro, em volume alto e constante — é exatamente o padrão que a nota 05 já mostrou custar mais em Lambda do que numa frota de containers ou instâncias dimensionada corretamente, então vira container gerenciado. E o motor de recomendação processa por duas horas seguidas toda madrugada — ultrapassa o teto de 15 minutos de largada, então nunca foi candidato a função, é job batch numa instância spot.
@@ -210,6 +216,8 @@ A carga real que "explode" não é o exemplo isolado — é o produto que cresce
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Brilha["Onde serverless BRILHA"]
         direction TB
         B1["Glue code / automação"]
@@ -230,8 +238,8 @@ flowchart LR
         A6["Monolito lift-and-shift"]
     end
 
-    style Brilha fill:#242,color:#fff
-    style Anti fill:#422,color:#fff
+    class Brilha ok
+    class Anti falha
 ```
 
 | Requisito do problema | Serverless resolve? | Alternativa correta |
@@ -302,6 +310,9 @@ Isso muda a árvore de decisão na prática, não só no detalhe: um caso de uso
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q1{"Caso de uso"}
     Q1 -->|"Reagir a evento de storage/fila,<br/>nativamente integrado"| AWS_Q{"Provedor?"}
     Q1 -->|"Endpoint HTTP simples<br/>ou tarefa agendada"| Ambos["Serverless funciona bem<br/>nos dois provedores<br/>(web trigger / scheduled trigger)"]
@@ -312,10 +323,10 @@ flowchart TD
     DO_Choice -->|"Não — complexidade<br/>não compensa"| AppPlatform["APP PLATFORM (container)<br/>ou droplet dedicado<br/>a árvore pende mais cedo<br/>pra container/VM na DO"]
     DO_Choice -->|"Sim — volume baixo,<br/>simplicidade aceitável"| DOFunctions["DO Functions<br/>com trigger manual via HTTP"]
 
-    style Lambda fill:#262,color:#fff
-    style Ambos fill:#262,color:#fff
-    style AppPlatform fill:#245,color:#fff
-    style DOFunctions fill:#653,color:#fff
+    class Lambda ok
+    class Ambos ok
+    class AppPlatform neutro
+    class DOFunctions destaque
 ```
 
 A honestidade que vale registrar: a árvore de decisão central desta nota é neutra em provedor, mas ela **pende mais cedo para container/VM quando o provedor é a DigitalOcean**, não porque a DO seja pior, mas porque o ecossistema em volta do FaaS — o fator que fez "serverless brilha" ganhar tantos casos de uso na seção anterior — é bem mais raso ali. Escolher DO Functions ainda é a decisão certa para web trigger simples e cron; para processamento de evento orientado a storage ou fila, a lacuna de integração nativa é real o bastante para pesar a favor de App Platform desde o início, em vez de reconstruir manualmente o que o Lambda entrega de fábrica.

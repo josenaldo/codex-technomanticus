@@ -26,6 +26,9 @@ aliases:
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     SCHEMA["schema.ts\n(pgTable · columns · relations)"]
     TYPES["TypeScript\ntype inference\n($inferSelect · $inferInsert)"]
     QB["Query Builder\n.select().from().where()"]
@@ -40,12 +43,12 @@ flowchart TD
     QB --> DRIVERS
     RQAPI --> DRIVERS
 
-    style SCHEMA fill:#4A90D9,color:#fff
-    style TYPES fill:#4A90D9,color:#fff
-    style QB fill:#F5A623,color:#000
-    style RQAPI fill:#F5A623,color:#000
-    style DK fill:#D0021B,color:#fff
-    style DRIVERS fill:#4A90D9,color:#fff
+    class SCHEMA neutro
+    class TYPES neutro
+    class QB destaque
+    class RQAPI destaque
+    class DK falha
+    class DRIVERS neutro
 ```
 
 ## O que é

@@ -267,7 +267,6 @@ Com `enabled: false`, a query fica em estado `'pending'` (sem dados, sem request
 ## Ciclo de vida de uma query
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#fff", "primaryBorderColor": "#2c6fad", "edgeLabelBackground": "#f8f8f8"}}}%%
 stateDiagram-v2
     [*] --> Fetching : componente monta\n(cache vazio)
     Fetching --> Fresh : queryFn resolve ✓\n(dentro do staleTime)

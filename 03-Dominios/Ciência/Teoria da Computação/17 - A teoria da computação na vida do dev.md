@@ -34,17 +34,22 @@ E aí vêm os **dois muros**. O primeiro é o muro do **incomputável**: existem
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["Linguagens REGULARES<br/>(sem memória)<br/>autômato finito · regex"] --> B["Linguagens LIVRES DE CONTEXTO<br/>(memória = pilha)<br/>autômato de pilha · parser"]
     B --> C["RECONHECÍVEL POR TURING<br/>(memória = fita infinita)<br/>máquina de Turing · qualquer linguagem"]
     C --> D{"Os dois muros"}
     D --> E["MURO 1: INCOMPUTÁVEL<br/>parada · Rice<br/>nenhuma máquina resolve"]
     D --> F["MURO 2: CARO<br/>P, NP, NP-difícil<br/>resolve, mas tempo proibitivo"]
 
-    style A fill:#1b3a4b,color:#e0f0ff
-    style B fill:#1b4b3a,color:#e0fff0
-    style C fill:#4b3a1b,color:#fff0e0
-    style E fill:#4b1b1b,color:#ffe0e0
-    style F fill:#4b1b3a,color:#ffe0f0
+    class A neutro
+    class B ok
+    class C destaque
+    class E falha
+    class F marca
 ```
 
 **Leitura do diagrama:** de cima pra baixo, cada degrau ganha mais memória e mais poder. Regular → pilha → fita = a hierarquia de capacidade. Os dois muros no fim são de naturezas diferentes: o primeiro diz "não dá, nunca"; o segundo diz "dá, mas não num tempo que você queira esperar". Confundir esses dois muros é o erro número um.
@@ -126,6 +131,11 @@ Antes de seguir, o resumo em forma de mapa. Imprima na cabeça:
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Start{"Que tipo de problema é esse?"}
     Start --> Q1{"É casamento de padrão<br/>PLANO?<br/>(e-mail, CEP, token)"}
     Q1 -->|Sim| R1["REGULAR<br/>→ use regex / autômato finito<br/>(cuidado com ReDoS)"]
@@ -137,11 +147,11 @@ flowchart TD
     Q4 -->|Sim| R4["provavelmente INDECIDÍVEL<br/>→ heurística + timeout<br/>(Rice / parada)"]
     Q4 -->|Não| R5["talvez tratável<br/>→ procure o algoritmo eficiente"]
 
-    style R1 fill:#1b3a4b,color:#e0f0ff
-    style R2 fill:#1b4b3a,color:#e0fff0
-    style R3 fill:#4b1b3a,color:#ffe0f0
-    style R4 fill:#4b1b1b,color:#ffe0e0
-    style R5 fill:#3a3a1b,color:#fffce0
+    class R1 neutro
+    class R2 ok
+    class R3 marca
+    class R4 falha
+    class R5 destaque
 ```
 
 **Leitura do diagrama:** é a árvore de decisão mental do dev. Quatro perguntas, na ordem certa, classificam quase qualquer problema do dia a dia. Note que ela desce pela torre: primeiro pergunta se é simples (regular), depois se é estruturado (livre de contexto), depois se é caro (NP), por fim se é impossível (indecidível). A última caixa verde é o caso feliz — vale a pena procurar o algoritmo bom.

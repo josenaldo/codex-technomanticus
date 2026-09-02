@@ -43,15 +43,16 @@ Assumir código legado é a versão mais brutal dessa curva, por um motivo que a
 O nome "30-60-90" sugere prazos rígidos, mas os números são **marcos**, não datas de cartório — num sistema pequeno os arcos comprimem para semanas; num monólito de 15 anos, cada um pode dobrar. O que não muda é a **ordem** e o que cada arco entrega.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["0-30 dias<br/>ORIENTAR-SE<br/>construir o mapa"] -->|"aprendizado"| B["30-60 dias<br/>CONTRIBUIR<br/>entregas seguras"]
     B -->|"confiança"| C["60-90 dias<br/>INDEPENDÊNCIA<br/>conduzir mudanças"]
     C -->|"ponto de equilíbrio"| D["Dono da teoria"]
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#7ED321,color:#000
-    style D fill:#7ED321,color:#000
+    class A neutro
+    class B destaque
+    class C destaque
+    class D destaque
 ```
 
 | | **0-30: Orientar-se** | **30-60: Contribuir** | **60-90: Independência** |

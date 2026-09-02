@@ -61,6 +61,9 @@ O diagrama abaixo é a linha divisória que vale a pena gravar: tudo que fica à
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph LIB["Biblioteca headless entrega"]
         direction TB
         A["Navegação por teclado<br/>(setas, Home/End, typeahead)"]
@@ -79,14 +82,14 @@ flowchart LR
 
     LIB -.->|"'headless' resolve o widget"| DEV
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#F5A623,color:#000
-    style F fill:#F5A623,color:#000
-    style G fill:#D0021B,color:#fff
-    style H fill:#F5A623,color:#000
+    class A neutro
+    class B neutro
+    class C neutro
+    class D neutro
+    class E destaque
+    class F destaque
+    class G falha
+    class H destaque
 ```
 
 ```jsx

@@ -37,6 +37,8 @@ A ideia de RPC (*remote procedure call*) é antiga — chamar uma função que r
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Cliente["Processo cliente"]
         A["client.GetUser(ctx, req)"]
     end
@@ -54,9 +56,9 @@ flowchart LR
     C -.->|"paralelo, sem bloquear B"| Rede
     D -.->|"paralelo, sem bloquear B"| Rede
 
-    style A fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
+    class A neutro
+    class E neutro
+    class B destaque
 ```
 
 Três decisões de design do HTTP/2 é que fazem o gRPC valer a pena, comparado a montar RPC sobre HTTP/1.1:

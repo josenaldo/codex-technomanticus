@@ -30,6 +30,11 @@ aliases:
 
 ```mermaid
 flowchart TB
+    classDef primary fill:#4A90D9,color:#fff,stroke:#2c6fad
+    classDef worker fill:#F5A623,color:#000,stroke:#c47d0e
+    classDef pm2 fill:#4A90D9,color:#fff,stroke:#2c6fad
+    classDef k8s fill:#4A90D9,color:#fff,stroke:#2c6fad
+    classDef pod fill:#F5A623,color:#000,stroke:#c47d0e
     subgraph cluster_native["Cluster Nativo (stdlib)"]
         P(["`**primary**`"]):::primary
         W1(["`**worker 1**\n:3000`"]):::worker
@@ -59,11 +64,6 @@ flowchart TB
         HPA -.->|"escala"| POD3
     end
 
-    classDef primary fill:#4A90D9,color:#fff,stroke:#2c6fad
-    classDef worker fill:#F5A623,color:#000,stroke:#c47d0e
-    classDef pm2 fill:#4A90D9,color:#fff,stroke:#2c6fad
-    classDef k8s fill:#4A90D9,color:#fff,stroke:#2c6fad
-    classDef pod fill:#F5A623,color:#000,stroke:#c47d0e
 ```
 
 ## O que é

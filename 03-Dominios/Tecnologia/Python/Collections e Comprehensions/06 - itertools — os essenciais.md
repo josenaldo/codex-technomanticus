@@ -102,6 +102,8 @@ Esse último ponto — um iterador consumido fica vazio para sempre, não existe
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Iterável de entrada<br/>(lista, string, range...)"] --> B{"Função itertools"}
     B -->|chain| C["Concatena sem copiar"]
     B -->|product| D["Produto cartesiano"]
@@ -109,9 +111,9 @@ flowchart LR
     B -->|groupby| F["Agrupa CONSECUTIVOS"]
     B -->|islice| G["Fatia sem [a:b]"]
     C & D & E & F & G --> H["Iterador lazy<br/>(consome 1x, não reinicia)"]
-    style A fill:#4A90D9,color:#fff
-    style H fill:#4A90D9,color:#fff
-    style F fill:#F5A623,color:#000
+    class A neutro
+    class H neutro
+    class F destaque
 ```
 
 ## `chain()` — concatenar sem copiar

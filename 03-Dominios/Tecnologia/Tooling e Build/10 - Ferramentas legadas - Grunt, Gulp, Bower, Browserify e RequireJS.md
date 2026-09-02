@@ -44,6 +44,7 @@ Para entender as ferramentas legadas, é preciso revisitar o contexto que as cri
 
 ```mermaid
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph "Problemas do ecossistema JS (2010-2013)"
         P1["Dependências de front-end\nsem gerenciador formal\n(jquery.js copiado manualmente)"]
         P2["Módulos no browser\nnão existiam nativamente\n(tudo global, IIFEs como gambiarra)"]
@@ -51,10 +52,10 @@ graph TD
         P4["Sem hot reload, sem source maps,\nsem assets hashing\nem dev local"]
     end
 
-    style P1 fill:#5a1a1a,color:#fff
-    style P2 fill:#5a1a1a,color:#fff
-    style P3 fill:#5a1a1a,color:#fff
-    style P4 fill:#5a1a1a,color:#fff
+    class P1 falha
+    class P2 falha
+    class P3 falha
+    class P4 falha
 ```
 
 Cada ferramenta nasceu para resolver um desses quadrantes. Nenhuma resolveu o problema inteiro — e foi exatamente isso que abriu espaço para as ferramentas modernas que engoliram todas de uma vez.

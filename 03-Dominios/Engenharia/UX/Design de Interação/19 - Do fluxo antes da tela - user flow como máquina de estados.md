@@ -30,8 +30,9 @@ Não há um único nome associado à origem do user flow como técnica — é pr
 Para quem já pensa em software como estados e transições, a analogia é direta e literal, não decorativa. Uma **máquina de estados** define um conjunto de estados possíveis, os eventos que disparam transição entre eles, e o que acontece em cada transição — inclusive as transições que levam a um estado de erro. Um **user flow** faz exatamente isso, só que a unidade não é um objeto de domínio, é uma pessoa navegando um produto: cada tela (ou modal, ou etapa) é um estado; cada ação do usuário (clicar, digitar, esperar uma resposta de rede) é um evento que dispara uma transição; e — este é o ponto que mais se perde — **cada transição precisa de um destino definido para todo evento possível, incluindo os que dão errado**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 stateDiagram-v2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     [*] --> FormularioEmail: gatilho - clicou "esqueci a senha"
     FormularioEmail --> Enviando: submeteu o e-mail
     Enviando --> EmailEnviado: e-mail existe na base
@@ -45,11 +46,11 @@ stateDiagram-v2
     ErroEmailInexistente --> FormularioEmail: tentar de novo
     ErroLinkExpirado --> FormularioEmail: pedir novo link
     Sucesso --> [*]
-    style Sucesso fill:#4A90D9,color:#fff
-    style ErroEmailInexistente fill:#D0021B,color:#fff
-    style ErroRede fill:#D0021B,color:#fff
-    style ErroLinkExpirado fill:#D0021B,color:#fff
-    style ErroLinkJaUsado fill:#D0021B,color:#fff
+    class Sucesso neutro
+    class ErroEmailInexistente falha
+    class ErroRede falha
+    class ErroLinkExpirado falha
+    class ErroLinkJaUsado falha
 ```
 
 Note que o diagrama acima tem **quatro estados de erro** e só **um** caminho feliz completo. Isso não é exagero didático — é o tamanho real do problema de recuperação de senha quando desenhado por completo. Quem parte direto pro código, sem esse mapa, tipicamente implementa o caminho feliz e um `catch` genérico — o equivalente a colapsar quatro branches de uma state machine num `else` só, perdendo a informação de *qual* erro aconteceu e, portanto, a chance de dar uma mensagem específica ao usuário (ver heurística 9 de Nielsen, recuperação de erros, na [[03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental/03 - As 10 heurísticas de Nielsen|nota 03]]).

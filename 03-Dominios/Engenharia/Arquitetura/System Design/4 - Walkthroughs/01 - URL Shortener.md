@@ -162,8 +162,9 @@ O acesso dominante — `WHERE short_code = ?` — é um **lookup puro por chave 
 Com API e modelo fixados, a visão consolidada de alto nível — os dois caminhos, escrita e leitura, através dos mesmos componentes:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     C["Cliente"] --> LB["Load Balancer<br/>(L7)"]
     LB --> WS["Write Service<br/>(stateless)"]
     LB --> RS["Read Service<br/>(stateless)"]
@@ -178,9 +179,9 @@ graph TD
     WS -.->|"evento assíncrono"| Q["Fila<br/>(analytics)"]
     Q --> AN["Serviço de<br/>Analytics"]
 
-    style KGS fill:#F5A623,color:#000
-    style Cache fill:#4A90D9,color:#fff
-    style DB fill:#4A90D9,color:#fff
+    class KGS destaque
+    class Cache neutro
+    class DB neutro
 ```
 
 O ponto que vale narrar explicitamente ao desenhar isso: **write e read service são separados intencionalmente**, mesmo sendo o mesmo código-base ou o mesmo processo em designs menores. A justificativa não é estética — é a mesma que apareceu na estimativa: a carga de leitura é 100x a de escrita, então a camada de leitura precisa escalar (mais réplicas, cache agressivo) de forma independente da de escrita, que raramente precisa de mais que um punhado de instâncias. Escalar as duas juntas desperdiça capacidade numa ou provisiona de menos na outra.
@@ -253,7 +254,6 @@ O segundo componente que vale aprofundar é o caminho que recebe os quase **12 m
 **Cache-aside (lazy loading).** O padrão dominante, coberto em detalhe em [[2 - Building blocks/02 - Caching|Caching]]: o Read Service primeiro consulta o cache (Redis); se o dado está lá (**hit**), devolve direto, sem tocar o banco; se não está (**miss**), busca no banco, devolve ao cliente **e** popula o cache para a próxima leitura da mesma chave.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 sequenceDiagram
     participant C as Cliente
     participant RS as Read Service
@@ -319,15 +319,16 @@ Nenhum dos componentes discutidos até aqui é gratuito — cada um introduz um 
 **Analytics assíncrono via fila.** Contar cliques em tempo real, no caminho crítico do redirect, adicionaria latência exatamente onde o requisito de <100ms é mais rígido. A solução padrão é publicar um evento leve ("clique no código X, timestamp Y, IP Z") numa fila (Kafka, SQS) de forma **fire-and-forget** — o Read Service não espera confirmação de que o evento foi processado antes de responder o redirect ao usuário — e processar a agregação de analytics de forma totalmente desacoplada, em um serviço consumidor que nunca bloqueia o caminho de leitura. Isso reforça o padrão coberto em [[2 - Building blocks/05 - Message queues e processamento assíncrono|Message queues e processamento assíncrono]]: desacoplar quem produz trabalho (o redirect) de quem consome (a agregação de analytics).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     RS["Read Service"] -->|"302 imediato<br/>(caminho crítico)"| C["Cliente"]
     RS -.->|"evento fire-and-forget<br/>(fora do caminho crítico)"| Q["Fila"]
     Q --> W["Worker de<br/>agregação"]
     W --> AD[("Analytics DB<br/>(agregado)")]
 
-    style RS fill:#4A90D9,color:#fff
-    style Q fill:#F5A623,color:#000
+    class RS neutro
+    class Q destaque
 ```
 
 ## Variações de follow-up

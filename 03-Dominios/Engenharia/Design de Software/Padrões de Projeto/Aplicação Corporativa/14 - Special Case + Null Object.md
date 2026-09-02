@@ -57,8 +57,10 @@ class ClienteDesconhecido extends Cliente {
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph N["Com null — o chamador decide, 47 vezes"]
         R1["repo.buscar(id)"] -->|"null"| C1["if (c != null) ...<br/>espalhado por 47 lugares"]
         C1 -->|"a 48ª faltou"| X["NullPointerException"]
@@ -69,10 +71,10 @@ graph TD
         C2 --> OK["chamador não testa nada"]
     end
 
-    style X fill:#D0021B,color:#fff
-    style C1 fill:#F5A623,color:#000
-    style C2 fill:#4A90D9,color:#fff
-    style OK fill:#4A90D9,color:#fff
+    class X falha
+    class C1 destaque
+    class C2 neutro
+    class OK neutro
 ```
 
 Duas coisas mudaram. O chamador **não decide mais** — ele chama o método e recebe uma resposta válida, por polimorfismo. E a regra do caso especial ganhou **um lugar só**: quer mudar o rótulo do cliente desconhecido? Um arquivo.

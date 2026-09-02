@@ -22,6 +22,9 @@ tags:
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     DEF["Model.init()\ndefinição de colunas"]
     ASSOC["setupAssociations()\nhasMany · belongsTo · etc"]
     CRUD["Queries\nfindAll · create · update · destroy"]
@@ -33,11 +36,11 @@ flowchart LR
     CRUD --> HOOK
     CRUD --> TX
 
-    style DEF fill:#4A90D9,color:#fff
-    style ASSOC fill:#4A90D9,color:#fff
-    style CRUD fill:#F5A623,color:#000
-    style HOOK fill:#F5A623,color:#000
-    style TX fill:#D0021B,color:#fff
+    class DEF neutro
+    class ASSOC neutro
+    class CRUD destaque
+    class HOOK destaque
+    class TX falha
 ```
 
 ## O que é

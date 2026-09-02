@@ -35,6 +35,8 @@ Em apps grandes, wiring manual, lifecycle e padrões transversais viram custo. N
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     AM[AppModule] --> UM[UsersModule]
     AM --> OM[OrdersModule]
     AM --> DM[DatabaseModule]
@@ -50,12 +52,12 @@ graph TD
 
     DM --> DB[(DatabaseClient)]
 
-    style AM fill:#4A90D9,color:#fff
-    style DM fill:#F5A623,color:#fff
-    style UC fill:#4A90D9,color:#fff
-    style OC fill:#4A90D9,color:#fff
-    style DB fill:#4A90D9,color:#fff
-    style CU fill:#F5A623,color:#fff
+    class AM neutro
+    class DM destaque
+    class UC neutro
+    class OC neutro
+    class DB neutro
+    class CU destaque
 ```
 
 ```typescript

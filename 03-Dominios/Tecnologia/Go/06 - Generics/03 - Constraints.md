@@ -42,14 +42,16 @@ O compilador recusa com `invalid operation: operator + not defined on a (variabl
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["type parameter T"] --> B{"Qual constraint?"}
     B -->|"any"| C["nenhuma operação além de\natribuição e passagem de valor"]
     B -->|"comparable"| D["== e != liberados"]
     B -->|"interface com type set\n(union de tipos)"| E["operações do underlying type\nliberadas: +, -, <, etc."]
 
-    style A fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
-    style E fill:#F5A623,color:#000
+    class A neutro
+    class D destaque
+    class E destaque
 ```
 
 ## `comparable`: a constraint para `==`
@@ -98,6 +100,8 @@ fmt.Println(Soma(1.5, 2.5))   // 4.0 (float64)
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Interface["interface Numero"]
         direction TB
         T1["int"]
@@ -106,8 +110,8 @@ flowchart LR
     end
     F["func Soma[T Numero](a, b T) T"] -->|"T restrito a"| Interface
 
-    style Interface fill:#4A90D9,color:#fff
-    style F fill:#F5A623,color:#000
+    class Interface neutro
+    class F destaque
 ```
 
 Repare que uma interface de type set ainda **pode** misturar métodos e tipos — `interface { int | string; String() string }` seria válida, exigindo tipo dentro do union **e** presença do método. Mas o caso comum, para restringir tipos numéricos ou ordenáveis, usa só o union de tipos, sem método algum.
@@ -142,12 +146,13 @@ type Numero interface {
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["~float64"] --> B["float64"]
     A --> C["type Celsius float64"]
     A --> D["type Fahrenheit float64"]
     A --> E["qualquer type X float64"]
 
-    style A fill:#4A90D9,color:#fff
+    class A neutro
 ```
 
 > [!warning] `~` só funciona se o tipo aprovar ser underlying type de outro

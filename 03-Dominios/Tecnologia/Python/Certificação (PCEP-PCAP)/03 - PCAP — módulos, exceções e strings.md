@@ -26,6 +26,10 @@ O PCAP-31-03 (Certified Associate in Python Programming) tem 40 itens em 5 bloco
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     PCAP["PCAP-31-03 — 40 itens, 5 blocos"] --> B1["Bloco 1: Modules and Packages<br/>12% · 6 itens"]
     PCAP --> B2["Bloco 2: Exceptions<br/>14% · 5 itens"]
     PCAP --> B3["Bloco 3: Strings<br/>18% · 8 itens<br/>ESTA NOTA"]
@@ -37,16 +41,16 @@ flowchart TB
     B3 --> N07["Core 07 — Strings e formatação"]
     B3 --> NOVO["Conteúdo novo desta nota:<br/>ASCII/Unicode, métodos menos comuns,<br/>math/random/platform"]
 
-    style PCAP fill:#4A90D9,color:#fff
-    style B3 fill:#F5A623,color:#000
-    style B1 fill:#7ED321,color:#000
-    style B2 fill:#7ED321,color:#000
-    style B4 fill:#9013FE,color:#fff
-    style B5 fill:#9013FE,color:#fff
-    style N09 fill:#4A90D9,color:#fff
-    style N08 fill:#4A90D9,color:#fff
-    style N07 fill:#4A90D9,color:#fff
-    style NOVO fill:#D0021B,color:#fff
+    class PCAP neutro
+    class B3 destaque
+    class B1 destaque
+    class B2 destaque
+    class B4 marca
+    class B5 marca
+    class N09 neutro
+    class N08 neutro
+    class N07 neutro
+    class NOVO falha
 ```
 
 > [!tip] Ordem de estudo sugerida
@@ -149,12 +153,14 @@ print(chr(0x1F600))    # "😀" — Unicode vai muito além da tabela ASCII de 1
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     ASCII["ASCII<br/>128 code points (0-127)<br/>subconjunto de..."] --> UNI["Unicode<br/>1,1M+ code points<br/>o que É cada caractere"]
     UNI -->|"codificado via UTF-8, UTF-16..."| BYTES["bytes concretos<br/>como o caractere é ARMAZENADO"]
 
-    style ASCII fill:#7ED321,color:#000
-    style UNI fill:#4A90D9,color:#fff
-    style BYTES fill:#F5A623,color:#000
+    class ASCII destaque
+    class UNI neutro
+    class BYTES destaque
 ```
 
 > [!question]- `ord()` e ler bytes de um arquivo são a mesma coisa?

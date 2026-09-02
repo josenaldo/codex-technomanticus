@@ -45,17 +45,18 @@ Esse cenário reúne os três padrões desta nota: um Registry usado mal, um Plu
 ## Os três, no eixo do "quando"
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q["Quem decide qual<br/>implementação usar?"] --> A["Compilação<br/>(new direto)"]
     Q --> B["Configuração<br/><b>Plugin</b>"]
     Q --> C["Execução<br/><b>Registry</b>"]
     Q --> D["Teste<br/><b>Service Stub</b>"]
 
-    style A fill:#F5A623,color:#000
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
+    class A destaque
+    class B neutro
+    class C neutro
+    class D neutro
 ```
 
 **Registry** — um objeto bem-conhecido, acessível de qualquer lugar, onde se **procura** um serviço pelo nome ou tipo. Resolve o problema real de "como o código no fundo da pilha alcança algo que só foi criado no arranque", e resolve mal, pelo motivo da seção de armadilhas.

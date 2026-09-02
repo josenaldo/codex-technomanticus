@@ -43,8 +43,9 @@ A boa notícia, e o motivo pelo qual esta extração é discutível em vez de im
 - **Contrato de evento já nomeado.** `TarefaConcluida` já é um Domain Event serializável, com `evento_id`, `ocorrido_em` e um payload estável — o mesmo contrato que hoje um worker in-process consome pode, sem mudar de forma, ser consumido por um processo totalmente separado.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph M["Monólito modular — hoje (Galhos 13-14)"]
         direction TB
         A1["Handler HTTP\nPATCH /tarefas/id/concluir"] --> A2["Tarefa.concluir()\ngera TarefaConcluida"]
@@ -62,9 +63,9 @@ flowchart TD
         B5 -. "HTTP síncrono, quando precisa\nconsultar/confirmar (notas 02-06)" .-> B1
     end
 
-    style A5 fill:#4A90D9,color:#fff
-    style B5 fill:#F5A623,color:#000
-    style B1 fill:#4A90D9,color:#fff
+    class A5 neutro
+    class B5 destaque
+    class B1 neutro
 ```
 
 Note a diferença real entre os dois lados do diagrama: o caminho assíncrono (evento via Outbox → RabbitMQ → consumer) **não muda nada** com a extração — ele já era desacoplado. O que aparece de novo é a seta pontilhada: qualquer chamada **síncrona** entre os dois serviços (o serviço de Tarefas perguntando ao de Notificações "esse usuário tem push habilitado?", por exemplo) agora atravessa rede, com tudo que isso implica — é exatamente essa seta que as seis notas seguintes deste galho existem para tratar.

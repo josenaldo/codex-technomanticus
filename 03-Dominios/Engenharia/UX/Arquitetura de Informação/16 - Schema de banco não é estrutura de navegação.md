@@ -26,8 +26,9 @@ O modelo relacional existe para responder uma pergunta: **como armazenar dado se
 A arquitetura de informação existe para responder uma pergunta diferente: **como uma pessoa, com uma tarefa concreta na cabeça e nenhum conhecimento do schema, encontra o que precisa no menor número de decisões possível.** Ela otimiza para *findability* e carga cognitiva — não para integridade referencial. Essas duas otimizações não são a mesma coisa, e frequentemente **puxam em direções opostas**: o schema quer as entidades separadas e normalizadas; a navegação, na maior parte das tarefas reais, quer a informação já cruzada e apresentada junto, no contexto da tarefa que o usuário está tentando resolver.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph SB["Modelo relacional — otimiza integridade"]
         T1["customers"] -->|FK| T2["orders"]
         T2 -->|FK| T3["order_items"]
@@ -38,8 +39,8 @@ graph LR
         M1["Onde está meu pedido?<br/>(cliente + pedido + envio + depósito, juntos)"]
     end
     SB -.->|"tradução deliberada,<br/>não cópia direta"| NAV
-    style SB fill:#F5A623,color:#000
-    style NAV fill:#4A90D9,color:#fff
+    class SB destaque
+    class NAV neutro
 ```
 
 O diagrama mostra o que o cenário de abertura pulou: a seta pontilhada entre os dois modelos precisa ser uma **tradução deliberada** — alguém decide como as cinco tabelas se recombinam em telas organizadas por tarefa — e não uma cópia automática de tabela para item de menu. Quando essa tradução não acontece, cada tabela vira um item de menu, e cada tarefa do usuário que cruza mais de uma tabela (a maioria delas, na prática) vira um exercício manual de `JOIN` feito com o cérebro e várias abas abertas.

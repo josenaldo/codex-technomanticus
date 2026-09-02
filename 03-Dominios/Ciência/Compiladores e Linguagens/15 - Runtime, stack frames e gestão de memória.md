@@ -73,6 +73,8 @@ O que mora num stack frame?
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["⬆ endereços altos"] --> B["Argumentos passados na pilha (arg7, arg8...)"]
     B --> C["Endereço de retorno (return address)"]
     C --> D["Frame pointer salvo do chamador (saved RBP)"]
@@ -81,14 +83,14 @@ graph TD
     F --> G["Área de spill de registradores"]
     G --> H["⬇ SP aponta aqui (topo da pilha)"]
 
-    style A fill:#1a1a2e,color:#e0e0e0
-    style H fill:#1a1a2e,color:#e0e0e0
-    style B fill:#16213e,color:#a8d8ea
-    style C fill:#16213e,color:#f08080
-    style D fill:#16213e,color:#a8d8ea
-    style E fill:#16213e,color:#90ee90
-    style F fill:#16213e,color:#ffd700
-    style G fill:#16213e,color:#dda0dd
+    class A neutro
+    class H neutro
+    class B marca
+    class C marca
+    class D marca
+    class E marca
+    class F marca
+    class G marca
 ```
 
 > [!info] Leitura do diagrama
@@ -102,6 +104,7 @@ A **call stack** é a sequência de frames empilhados. É uma estrutura LIFO: o 
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Pilha após main chamar foo, foo chamar bar"
         F1["Frame de main\n(base da pilha)"]
         F2["Frame de foo\n(chamada de main)"]
@@ -109,9 +112,9 @@ graph TD
     end
     F1 --- F2 --- F3
 
-    style F1 fill:#16213e,color:#a8d8ea
-    style F2 fill:#16213e,color:#ffd700
-    style F3 fill:#16213e,color:#f08080
+    class F1 neutro
+    class F2 neutro
+    class F3 neutro
 ```
 
 > [!info] Leitura do diagrama
@@ -130,16 +133,19 @@ O compilador não escreve apenas o *corpo* da função. Ele gera automaticamente
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["CALL: empurra return address\nSP -= 8"] --> B["Prólogo:\npush RBP\nmov RBP, RSP\nsub RSP, N"]
     B --> C["Corpo da função\n(código gerado)"]
     C --> D["Epílogo:\nmov RSP, RBP\npop RBP\nret"]
     D --> E["Retorno ao chamador\nSP += 8"]
 
-    style A fill:#16213e,color:#a8d8ea
-    style B fill:#1a472a,color:#90ee90
-    style C fill:#16213e,color:#ffd700
-    style D fill:#4a1942,color:#dda0dd
-    style E fill:#16213e,color:#a8d8ea
+    class A neutro
+    class B ok
+    class C neutro
+    class D marca
+    class E neutro
 ```
 
 > [!info] Leitura do diagrama
@@ -287,6 +293,9 @@ Por que existem dois lugares para dados? Porque eles têm naturezas opostas.
 
 ```mermaid
 graph LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph "STACK — Pilha"
         S1["Alocação automática\npor escopo"]
         S2["Liberação automática\nno retorno"]
@@ -302,16 +311,16 @@ graph LR
         H5["Qualquer ordem\nde liberação"]
     end
 
-    style S1 fill:#1a472a,color:#90ee90
-    style S2 fill:#1a472a,color:#90ee90
-    style S3 fill:#1a472a,color:#90ee90
-    style S4 fill:#4a3000,color:#ffd700
-    style S5 fill:#4a3000,color:#ffd700
-    style H1 fill:#4a1942,color:#dda0dd
-    style H2 fill:#4a1942,color:#dda0dd
-    style H3 fill:#4a3000,color:#ffd700
-    style H4 fill:#1a472a,color:#90ee90
-    style H5 fill:#1a472a,color:#90ee90
+    class S1 ok
+    class S2 ok
+    class S3 ok
+    class S4 destaque
+    class S5 destaque
+    class H1 marca
+    class H2 marca
+    class H3 destaque
+    class H4 ok
+    class H5 ok
 ```
 
 > [!info] Leitura do diagrama
@@ -389,6 +398,9 @@ A solução: o compilador detecta que `count` *escapa* do escopo de `make_counte
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["make_counter() é chamada\nframe criado na pilha"] --> B["'count = 0' criado\nno frame"]
     B --> C["'increment' é criada\ncapturando 'count'"]
     C --> D{"'count' escapa\ndo frame?"}
@@ -397,10 +409,10 @@ flowchart TD
     E --> G["Frame de make_counter\né destruído\n'count' sobrevive no heap"]
     F --> H["Frame destruído\n'count' some junto — OK"]
 
-    style A fill:#16213e,color:#a8d8ea
-    style E fill:#4a1942,color:#dda0dd
-    style F fill:#1a472a,color:#90ee90
-    style G fill:#4a1942,color:#dda0dd
+    class A neutro
+    class E marca
+    class F ok
+    class G marca
 ```
 
 > [!info] Leitura do diagrama

@@ -141,14 +141,16 @@ Com JetStream, você declara um **stream** — um log persistente vinculado a um
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     P["Publisher"] -->|publish| S["Subject: pedidos.criado"]
     S --> ST["Stream JetStream\n(persistido em disco)"]
     ST --> C1["Consumer durável 1\n(ack explícito)"]
     ST --> C2["Consumer durável 2\n(replay independente)"]
 
-    style ST fill:#4A90D9,color:#fff
-    style C1 fill:#F5A623,color:#000
-    style C2 fill:#F5A623,color:#000
+    class ST neutro
+    class C1 destaque
+    class C2 destaque
 ```
 
 A diferença estrutural em relação ao core: consumers do JetStream são **duráveis** — o servidor lembra até onde cada consumer leu, exatamente como o Kafka lembra offsets por consumer group. Se o consumer cair e voltar, ele retoma de onde parou em vez de perder tudo que foi publicado no meio-tempo. E cada consumer pode ter sua própria posição de leitura, então dois consumers diferentes podem processar o mesmo stream em ritmos e pontos diferentes — o mesmo desacoplamento de "múltiplos leitores independentes" que Kafka oferece via consumer groups, discutido na nota 01.

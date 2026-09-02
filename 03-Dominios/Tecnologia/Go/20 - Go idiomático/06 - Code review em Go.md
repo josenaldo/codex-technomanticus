@@ -40,14 +40,16 @@ O nome oficial é **Go Code Review Comments**, mantido no [wiki do próprio proj
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Revisor encontra padrão problemático"] --> B{"Já está documentado em\nCode Review Comments?"}
     B -->|sim| C["Comenta com link direto\npro item específico"]
     B -->|não| D["Comenta o motivo por extenso\n(pode virar item novo no wiki)"]
     C --> E["Autor ajusta — não é debate,\né convenção já pactuada"]
     D --> E
 
-    style C fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
+    class C neutro
+    class B destaque
 ```
 
 O efeito prático é que revisor não precisa reescrever a justificativa a cada PR — cola `see https://go.dev/wiki/CodeReviewComments#error-strings` e segue em frente. Isso reduz o review a uma troca rápida, sem fricção pessoal: o comentário não é "eu acho que...", é "isso já é convenção documentada, ajusta". A diferença emocional é grande — ninguém discute gosto quando a régua é externa e nomeada.

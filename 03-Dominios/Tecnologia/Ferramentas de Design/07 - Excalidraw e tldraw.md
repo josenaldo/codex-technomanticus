@@ -36,15 +36,15 @@ tldraw se descreve, na própria documentação (`tldraw.dev`), como um "Infinite
 Historicamente, o projeto ficou conhecido fora do nicho de devs de canvas pelo demo **"Make Real"** — um projeto que transformava um sketch desenhado no canvas em uma página web funcional via LLM, usando a própria chave de API do usuário. **Atenção de caducidade:** ao verificar o repositório oficial (`github.com/tldraw/make-real`) para esta nota, ele aparece **arquivado desde 20 de fevereiro de 2026**, e não encontrei confirmação de um sucessor oficial ativo dentro da documentação atual do SDK. Trate "Make Real" como o marco histórico que popularizou a ideia — sketch → LLM → UI funcional — não como uma feature atualmente mantida; se você precisar dessa capacidade hoje, confirme o estado atual antes de depender dela.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q{"Eu quero desenhar,<br/>ou construir com canvas?"}
     Q -->|desenhar| EXC["Excalidraw<br/>standalone, leve, descartável"]
     Q -->|construir produto<br/>com canvas embutido| TLD["tldraw<br/>SDK React, multiplayer, persistência"]
     EXC --> INT["Integrado a VS Code,<br/>Obsidian, Notion"]
     TLD --> PROD["Infraestrutura dentro<br/>do seu próprio produto"]
-    style EXC fill:#4A90D9,color:#fff
-    style TLD fill:#4A90D9,color:#fff
+    class EXC neutro
+    class TLD neutro
 ```
 
 > [!question]- Dá pra usar tldraw só para desenhar, como o Excalidraw?

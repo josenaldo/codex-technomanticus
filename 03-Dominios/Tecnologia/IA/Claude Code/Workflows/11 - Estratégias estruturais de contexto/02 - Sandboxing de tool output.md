@@ -35,6 +35,8 @@ O sandboxing funciona porque a maioria dos tool outputs grandes tem assimetria e
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Sem sandboxing"
         A1["Tool executa\n(Bash, Read, MCP…)"]
         A2["Output completo → contexto\n30k tokens de uma vez"]
@@ -50,8 +52,8 @@ flowchart LR
         B5["Custo: $\nContexto limpo"]
     end
 
-    style A4 fill:#fff5f5,stroke:#ff6b6b
-    style B5 fill:#f0fff4,stroke:#51cf66
+    class A4 falha
+    class B5 ok
 ```
 
 > [!summary] A assimetria que o sandboxing explora: a maioria dos tool outputs grandes tem menos de 5% de conteúdo útil para a tarefa atual. O restante é custo puro de contexto.

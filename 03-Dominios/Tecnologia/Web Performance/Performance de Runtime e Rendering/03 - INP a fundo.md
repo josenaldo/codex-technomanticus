@@ -27,8 +27,9 @@ Sem quebrar a interação em fases, você otimiza no escuro — mexe no código 
 ## As três fases de uma interação
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["👆 usuário clica"] --> B["1. Input delay<br/>thread ocupada?"]
     B --> C["2. Processing time<br/>handler roda"]
     C --> D["3. Presentation delay<br/>layout + paint"]
@@ -36,10 +37,10 @@ graph LR
     B -.remédio.-> B1["matar long tasks"]
     C -.remédio.-> C1["ceder a thread"]
     D -.remédio.-> D1["menos DOM/layout"]
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#F5A623,color:#000
+    class B neutro
+    class C neutro
+    class D neutro
+    class E destaque
 ```
 
 ### Fase 1: Input delay

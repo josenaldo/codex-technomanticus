@@ -192,6 +192,10 @@ quadrantChart
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     AgentWant["Agente quer executar\nTool X com argumento Y"]
     CheckDeny{"Algum padrão em deny\ncobre Tool X(Y)?"}
     DenyBlock["Bloqueado\nRuntimeError"]
@@ -209,10 +213,10 @@ flowchart TD
     AskUser -- "sim" --> ExecAfterApproval
     AskUser -- "não" --> Abort
 
-    style DenyBlock fill:#c0392b,color:#fff
-    style AutoExec fill:#27ae60,color:#fff
-    style ExecAfterApproval fill:#2980b9,color:#fff
-    style Abort fill:#7f8c8d,color:#fff
+    class DenyBlock falha
+    class AutoExec ok
+    class ExecAfterApproval neutro
+    class Abort marca
 ```
 
 O fluxo tem três saídas possíveis: bloqueio (deny), execução automática (allow), execução após aprovação (nenhuma regra → pergunta ao usuário). Não existe "convencer o porteiro" — o resultado é determinístico.

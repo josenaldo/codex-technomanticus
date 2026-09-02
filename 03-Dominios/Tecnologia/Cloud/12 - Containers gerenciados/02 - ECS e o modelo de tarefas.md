@@ -24,6 +24,7 @@ O Amazon **Elastic Container Service (ECS)** é a resposta nativa da AWS pra ess
 
 ```mermaid
 flowchart TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph Cluster["Cluster (agrupamento lógico)"]
         subgraph Service["Service — mantém desired count"]
             T1["Task 1<br/>(rodando)"]
@@ -38,8 +39,8 @@ flowchart TB
     ALB --> T2
     ALB --> T3
 
-    style TD fill:#2d6a4f,color:#fff
-    style Service fill:#1b4332,color:#fff
+    class TD ok
+    class Service ok
 ```
 
 **Task definition** é o blueprint — um documento JSON versionado que descreve *o que* rodar, nunca *onde*. É parecido com uma planta de arquiteto: não é a casa, é a especificação de como construí-la. Toda vez que você registra uma task definition, ela ganha uma revisão (`family:revisão`, tipo `minha-api:7`), e revisões antigas continuam existindo — o que te dá rollback de graça.

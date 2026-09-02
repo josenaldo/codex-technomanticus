@@ -46,7 +46,6 @@ Essa é a ideia inteira: **o Git identifica conteúdo pelo hash do conteúdo**. 
 ## Os quatro tipos de objeto
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     C["<b>commit</b> a3f1c9d<br/>tree: 9d2f1a<br/>parent: c4d2e1<br/>autor, data, mensagem"] --> T["<b>tree</b> 9d2f1a<br/>(a raiz do projeto)"]
     T -->|"capitulo-1.tex"| B1["<b>blob</b> f8b0e1<br/>conteúdo do arquivo"]

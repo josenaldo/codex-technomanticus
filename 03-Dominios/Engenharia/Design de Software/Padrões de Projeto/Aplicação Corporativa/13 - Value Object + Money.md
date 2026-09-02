@@ -48,8 +48,8 @@ Os dois problemas têm a mesma raiz: um conceito rico do domínio foi representa
 A distinção-mãe é entre dois tipos de objeto:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph E["Entidade — identidade por id"]
         E1["Cliente #4471<br/>nome: Ana"] -.->|"muda o nome<br/><b>continua o mesmo cliente</b>"| E2["Cliente #4471<br/>nome: Ana Maria"]
     end
@@ -59,11 +59,11 @@ graph TD
         V3["Dinheiro(10, BRL) == Dinheiro(10, BRL)<br/>são o mesmo valor"]
     end
 
-    style E1 fill:#4A90D9,color:#fff
-    style E2 fill:#4A90D9,color:#fff
-    style V1 fill:#4A90D9,color:#fff
-    style V2 fill:#4A90D9,color:#fff
-    style V3 fill:#4A90D9,color:#fff
+    class E1 neutro
+    class E2 neutro
+    class V1 neutro
+    class V2 neutro
+    class V3 neutro
 ```
 
 Uma **entidade** tem identidade própria e contínua: o cliente 4471 continua sendo ele mesmo depois de trocar de nome e endereço. Um **value object** *é* o seu conteúdo: não faz sentido perguntar "qual dos R$ 10 é este?", e "alterar" um valor significa **produzir outro**.

@@ -93,8 +93,10 @@ Um fluxo de eventos é, por definição, infinito — não existe "somar todas a
 - **Session window** (janela de sessão): não tem duração fixa — agrupa eventos que acontecem próximos no tempo, separando grupos por um período de inatividade (por exemplo, "todos os cliques do mesmo usuário até 30 minutos de silêncio contam como uma sessão"). É o padrão natural para medir comportamento de navegação, onde a duração de uma interação varia por usuário.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Stream["Fluxo contínuo de eventos"]
         E1(("e1")) --> E2(("e2")) --> E3(("e3")) --> E4(("e4")) --> E5(("e5")) --> E6(("e6"))
     end
@@ -111,12 +113,12 @@ graph TB
         S2["Sessão B<br/>e4, e5, e6"]
     end
 
-    style T1 fill:#4A90D9,color:#fff
-    style T2 fill:#4A90D9,color:#fff
-    style T3 fill:#4A90D9,color:#fff
-    style S1 fill:#F5A623,color:#000
-    style S2 fill:#F5A623,color:#000
-    style Gap fill:#D0021B,color:#fff
+    class T1 neutro
+    class T2 neutro
+    class T3 neutro
+    class S1 destaque
+    class S2 destaque
+    class Gap falha
 ```
 
 ### Dado atrasado e watermarks de streaming
@@ -158,8 +160,9 @@ A **arquitetura Kappa**, proposta por Jay Kreps (um dos criadores do Kafka) em 2
 Isso só é viável porque plataformas de mensageria modernas (o exemplo canônico é o Kafka) passaram a suportar **retenção durável e configurável de eventos** — um tópico Kafka pode reter semanas, meses, ou indefinidamente, funcionando como um log append-only que serve tanto de canal em tempo real quanto de fonte para reprocessamento histórico. É esse recurso de infraestrutura, mais do que uma ideia puramente conceitual, que tornou Kappa prática — sem um log durável para reler, "reprocessar tudo como stream" seria só um slogan.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Lambda["Arquitetura Lambda — duas camadas"]
         direction LR
         Src1["Fonte de eventos"] --> Batch["Batch layer<br/>(processamento completo,<br/>lento, correto)"]
@@ -176,12 +179,12 @@ graph TB
         Log -.->|"reprocessamento:<br/>relê o log desde o início"| Stream
     end
 
-    style Batch fill:#4A90D9,color:#fff
-    style Speed fill:#F5A623,color:#000
-    style Log fill:#4A90D9,color:#fff
-    style Stream fill:#F5A623,color:#000
-    style Serve1 fill:#4A90D9,color:#fff
-    style Serve2 fill:#4A90D9,color:#fff
+    class Batch neutro
+    class Speed destaque
+    class Log neutro
+    class Stream destaque
+    class Serve1 neutro
+    class Serve2 neutro
 ```
 
 | Dimensão | Lambda | Kappa |

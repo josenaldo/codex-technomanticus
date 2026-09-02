@@ -132,6 +132,8 @@ Diagrama 3 — Pipeline OoO com ROB (fluxo completo)
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Fetch\n(em ordem)"] --> B["Decode /\nRename"]
     B --> C["Dispatch p/\nReservation\nStations"]
     C --> D["Execute\n(fora de ordem)"]
@@ -139,8 +141,8 @@ flowchart LR
     E --> F["Commit /\nRetire\n(em ordem)"]
     F --> G["Registradores\narquiteturais"]
 
-    style D fill:#f0a500,color:#000
-    style F fill:#2d7a2d,color:#fff
+    class D destaque
+    class F ok
 ```
 
 **Leitura do diagrama:** o estágio amarelo (Execute) é onde a ordem do programa é quebrada. O estágio verde (Commit) restaura a ordem. Entre os dois, o ROB serve de "sala de espera" onde resultados aguardam sua vez de serem tornados permanentes.
@@ -157,6 +159,8 @@ Diagrama 4 — Estrutura interna de um processador superescalar OoO
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     F["Branch Predictor +\nInstruction Cache"] --> FQ["Fetch Queue\n(instruções em ordem)"]
     FQ --> D["Decode\n(x86 → micro-ops)"]
     D --> RAT["Register Alias Table\n(renomeação arquitetural→físico)"]
@@ -180,9 +184,9 @@ flowchart TD
     CDB --> RS4
     ROB --> ARF["Architectural\nRegister File\n(commit)"]
 
-    style ROB fill:#1a4a8a,color:#fff
-    style CDB fill:#8a4a00,color:#fff
-    style RAT fill:#4a4a00,color:#fff
+    class ROB neutro
+    class CDB destaque
+    class RAT destaque
 ```
 
 **Leitura do diagrama:** as instruções entram pelo topo (fetch), passam pela decodificação e renomeação (RAT), e são inseridas no ROB e nas reservation stations. Cada RS monitora o CDB: quando o resultado que ela espera aparecer no barramento, ela captura o valor e fica pronta para executar. As unidades de execução são paralelas — ALU 0 e ALU 1 podem rodar operações diferentes ao mesmo tempo. O ROB (fila circular azul) mantém a ordem de commit. O ARF (banco de registradores arquiteturais) só é atualizado quando a instrução chega ao commit.
@@ -249,6 +253,7 @@ Diagrama 6 — Renomeação arquitetural → físico
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "ISA - 16 regs arquiteturais"
         A1["rax"] --> P3["P47"]
         A2["rbx"] --> P2["P12"]
@@ -265,10 +270,10 @@ flowchart TD
         P6["P49 (livre)"]
     end
 
-    style A1 fill:#4a4a8a,color:#fff
-    style A2 fill:#4a4a8a,color:#fff
-    style A3 fill:#4a4a8a,color:#fff
-    style A4 fill:#4a4a8a,color:#fff
+    class A1 neutro
+    class A2 neutro
+    class A3 neutro
+    class A4 neutro
 ```
 
 **Leitura do diagrama:** `rax` aponta para `P47` no ciclo atual. Quando uma nova instrução escreve `rax`, ela recebe `P48` — e o RAT é atualizado para `rax → P48`. A instrução anterior que leu de `P47` não é afetada. WAR resolvido.

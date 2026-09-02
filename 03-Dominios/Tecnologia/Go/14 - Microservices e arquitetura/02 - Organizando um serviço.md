@@ -55,6 +55,8 @@ A alternativa é organizar por **domínio**: um pacote `order` que contém tudo 
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Tecnica["Por camada técnica"]
         direction TB
         H["handlers/"] --> S["services/"]
@@ -70,13 +72,13 @@ flowchart TB
         P["payment/\n(handler + service + repo)"]
     end
 
-    style H fill:#4A90D9,color:#fff
-    style S fill:#4A90D9,color:#fff
-    style R fill:#4A90D9,color:#fff
-    style M fill:#4A90D9,color:#fff
-    style O fill:#7ED321,color:#000
-    style U fill:#7ED321,color:#000
-    style P fill:#7ED321,color:#000
+    class H neutro
+    class S neutro
+    class R neutro
+    class M neutro
+    class O destaque
+    class U destaque
+    class P destaque
 ```
 
 Repare que a organização por camada técnica *parece* ter uma vantagem — "todo handler HTTP está num lugar só, fácil de achar". Mas essa vantagem é de **busca** ("onde está o código de handlers?"), não de **mudança** ("o que preciso tocar para adicionar um campo a `Order`?"). Editores modernos resolvem busca com um `Ctrl+P`; nenhum editor resolve, sozinho, o acoplamento estrutural de quatro pacotes que sempre mudam juntos.

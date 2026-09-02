@@ -31,6 +31,9 @@ Não existe "a melhor ferramenta de IaC" fora de contexto — existe a ferrament
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     Start["Preciso provisionar\ninfraestrutura como código"] --> Q1{"Só AWS,\nou multi-cloud\n/ multi-provedor?"}
 
     Q1 -->|"Só AWS"| Q2{"Time quer lógica real\n(loops, testes, condicionais)\nou declaração estática basta?"}
@@ -42,10 +45,10 @@ flowchart TD
     Q3 -->|"HCL declarativo,\necossistema maduro"| TF["Terraform\n(multi-cloud, state próprio)"]
     Q3 -->|"Linguagem real,\naceita adoção menor"| Pulumi["Pulumi\n(multi-cloud, state próprio)"]
 
-    style TF fill:#a7d5f9
-    style CFN fill:#f9d5a7
-    style CDK fill:#f9d5a7
-    style Pulumi fill:#d5a7f9
+    class TF neutro
+    class CFN destaque
+    class CDK destaque
+    class Pulumi marca
 ```
 
 A primeira pergunta é a que mais pesa, porque ela é estrutural, não estética: **sua infra vai viver só na AWS, ou você tem (ou vai ter) DigitalOcean, ou uma segunda nuvem, no horizonte?** Se a resposta é "só AWS, com convicção", CloudFormation e CDK entram no jogo — e trazem consigo uma vantagem que nenhuma ferramenta de terceiros replica: zero state para perder ou corromper, porque a AWS gerencia isso internamente na própria stack, e rollback automático se um `update-stack` falhar no meio (ambos cobertos na nota 04 deste galho). Se a resposta envolve mais de um provedor — e este é o caso de qualquer arquitetura desta trilha, dado o par AWS/DigitalOcean que a acompanha do início ao fim — a escolha converge para Terraform ou Pulumi.
@@ -101,12 +104,15 @@ Escolher a ferramenta certa resolve só metade do problema. A outra metade é o 
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     S1["Estágio 1\nUma pessoa,\napply do laptop"] --> S2["Estágio 2\nTime pequeno,\nCI roda plan/apply,\nmódulos compartilhados"]
     S2 --> S3["Estágio 3\nMúltiplos times,\nplataforma interna,\nself-service com guardrails"]
 
-    style S1 fill:#f9a7a7
-    style S2 fill:#f9d5a7
-    style S3 fill:#a7f9a7
+    class S1 falha
+    class S2 destaque
+    class S3 ok
 ```
 
 No **estágio 1**, uma pessoa escreve o `.tf`, roda `apply` do próprio laptop, e o state mora onde ela colocou — geralmente sem locking, geralmente sem revisão. Funciona para um projeto pessoal ou um protótipo; é exatamente o estágio que os anti-padrões abaixo descrevem quando ele não evolui.
@@ -135,6 +141,7 @@ Volte à arquitetura serverless do Bloco 3. Ela tem, no mínimo, quatro família
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Root["Root module (environments/prod/main.tf)"]
         direction LR
         C1["module api"]
@@ -170,7 +177,7 @@ flowchart TB
     C2 -.->|"module.mensageria.event_bus_arn"| C3
     C2 -.->|"module.dados.rds_endpoint"| C4
 
-    style Root fill:#a7d5f9
+    class Root neutro
 ```
 
 O root module de produção fica curto — pouco mais que quatro chamadas de `module` com os inputs certos — porque toda a substância mora dentro de cada módulo, testável e reutilizável isoladamente:
@@ -311,14 +318,16 @@ O Bloco 4 desta trilha trata do que vem depois de desenhar a arquitetura: observ
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     IaC["IaC\n(este galho)"] --> Obs["Observabilidade\n(próximo galho)"]
     IaC --> Sec["Segurança\n(Bloco 4)"]
     IaC --> Res["Resiliência\n(Bloco 4)"]
 
     IaC -.->|"sem isto,\nas três viram\nconfig manual"| Manual["Dashboards, alarmes e\npolíticas criados no console,\nsem histórico nem revisão"]
 
-    style IaC fill:#a7d5f9
-    style Manual fill:#f9a7a7
+    class IaC neutro
+    class Manual falha
 ```
 
 Pense no que cada disciplina do Bloco 4 exige, concretamente, como pré-condição:

@@ -33,17 +33,19 @@ O Lazy Load corta o efeito dominó: carrega o pedido **agora** e deixa o resto c
 ## A ideia: um proxy que busca no primeiro toque
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     P["pedido.getItens()"] --> PX{{"proxy da lista<br/>(ainda vazia)"}}
     PX -->|"1º acesso real<br/>(iterar, .size())"| Q["dispara SELECT itens"]
     Q --> DB[("banco")]
     Q --> L["lista populada"]
     PX -.->|"sessão já fechada?"| EX["LazyInitializationException"]
 
-    style PX fill:#4A90D9,color:#fff
-    style EX fill:#D0021B,color:#fff
-    style Q fill:#F5A623,color:#000
+    class PX neutro
+    class EX falha
+    class Q destaque
 ```
 
 `getItens()` devolve um **proxy** — um substituto com a mesma interface da lista, mas ainda sem dados. Enquanto ninguém itera nem chama `.size()`, nenhuma query roda. No primeiro acesso real, o proxy dispara o `SELECT` e se popula. É o [[10 - Proxy|Proxy]] do GoF aplicado à persistência: o cliente conversa com o substituto achando que é o objeto real. **Mas** — se a sessão que sustenta o proxy já fechou quando o acesso acontece, não há como buscar: é a `LazyInitializationException`.

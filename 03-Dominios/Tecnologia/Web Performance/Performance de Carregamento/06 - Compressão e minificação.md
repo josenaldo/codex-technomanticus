@@ -55,15 +55,16 @@ Dois algoritmos dominam:
 O Brotli é o padrão moderno para recursos de texto — melhor compressão pelo mesmo (ou menor) custo de descompressão. gzip continua como fallback universal.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[código-fonte] -->|minifica em build| B[minificado]
     B -->|comprime em build/servidor| C["Brotli (ou gzip)"]
     C -->|Content-Encoding: br| D[Browser]
     D -->|descomprime| E[executa]
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style E fill:#F5A623,color:#000
+    class B neutro
+    class C neutro
+    class E destaque
 ```
 
 ## Estático vs dinâmico: o nível de compressão importa

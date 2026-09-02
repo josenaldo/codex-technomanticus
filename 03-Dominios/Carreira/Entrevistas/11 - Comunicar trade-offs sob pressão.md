@@ -35,14 +35,14 @@ O entrevistador não conclui "essa pessoa não sabe microsserviços". Conclui al
 ## A estrutura de cinco partes
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     P["<b>1. Problema</b><br/>com número<br/>ou restrição"] --> O["<b>2. Opções</b><br/>2-3, todas<br/>defensáveis"]
     O --> C["<b>3. Critério</b><br/>o que fez<br/>a diferença"]
     C --> E["<b>4. Escolha</b>"]
     E --> L["<b>5. O que se perdeu</b><br/>+ como mitigamos<br/>+ quando reveríamos"]
 
-    style L fill:#F5A623,color:#000
+    class L destaque
 ```
 
 O âmbar é o que separa a resposta forte da correta. Um exemplo genérico, com as cinco partes:

@@ -76,7 +76,6 @@ O ganho prático é esconder a latência de revalidação do usuário: em vez de
 Um `ETag` é um identificador opaco — uma string qualquer, sem significado interpretável fora do servidor que a gerou — que representa o estado exato de um recurso num dado momento. O servidor devolve esse identificador junto com a resposta; da próxima vez que o cliente quiser o mesmo recurso, ele manda esse identificador de volta no cabeçalho `If-None-Match`, perguntando, em essência, "isso ainda é o estado atual?".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant C as Cliente
     participant S as Servidor
@@ -174,7 +173,6 @@ GraphQL quebra essa premissa na raiz: por convenção histórica, toda operaçã
 A correção de mercado dominante é **Automatic Persisted Queries (APQ)**: em vez de mandar a query inteira a cada chamada, o cliente registra a query uma vez (calculando um hash SHA-256 dela) e, nas chamadas seguintes, manda só o hash — o que é curto o suficiente para caber numa URL, transformando a operação numa `GET` real, com uma URL determinística que qualquer CDN sabe cachear normalmente ([Apollo GraphQL Docs, *Automatic Persisted Queries*](https://www.apollographql.com/docs/apollo-server/performance/apq)).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant C as Cliente
     participant CDN as CDN

@@ -127,7 +127,6 @@ Pronto. O merge está completo.
 ## O fluxo completo, em diagrama
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     A["git merge outro-ramo"] --> B{"Mexeram no<br/>mesmo trecho?"}
     B -->|não| C["Merge automático<br/>✔ pronto"]

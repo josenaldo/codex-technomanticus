@@ -42,6 +42,8 @@ O ponto que organiza tudo: os cinco tipos se dividem em dois mundos. Quem **alim
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     TD["Test Double<br/>(substitui dependência real)"]
     TD --> ALIM["Alimentam o SUT<br/>(verificação de ESTADO)"]
     TD --> VER["Participam da verificação<br/>(verificação de INTERAÇÃO)"]
@@ -53,8 +55,8 @@ flowchart TD
     VER --> SPY["Spy<br/>registra chamadas p/ checar depois"]
     VER --> MOCK["Mock<br/>expectativas pré-programadas, falha sozinho"]
 
-    style ALIM fill:#1b4d3e,color:#fff
-    style VER fill:#5b2333,color:#fff
+    class ALIM ok
+    class VER falha
 ```
 
 Leitura do diagrama: tudo é *test double*. O galho da esquerda (dummy, stub, fake) existe pra fazer o SUT rodar — depois você verifica o **estado** do SUT. O galho da direita (spy, mock) entra na própria asserção — você verifica a **interação**. Essa divisão é a coisa mais importante da nota.
@@ -228,6 +230,9 @@ Na prática, a maioria dos times sênior pousa no meio: clássico por padrão (f
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Q1{"A dependência é<br/>usada no caminho<br/>do teste?"}
     Q1 -->|Não, só preenche assinatura| DUMMY["DUMMY"]
     Q1 -->|Sim| Q2{"O que importa<br/>verificar?"}
@@ -241,11 +246,11 @@ flowchart TD
     Q4 -->|Sim, declaro a expectativa antes| MOCK["MOCK"]
     Q4 -->|Não, registro e checo manualmente| SPY["SPY"]
 
-    style DUMMY fill:#3a3a3a,color:#fff
-    style STUB fill:#1b4d3e,color:#fff
-    style FAKE fill:#1b4d3e,color:#fff
-    style MOCK fill:#5b2333,color:#fff
-    style SPY fill:#5b2333,color:#fff
+    class DUMMY neutro
+    class STUB ok
+    class FAKE ok
+    class MOCK falha
+    class SPY falha
 ```
 
 Leitura do diagrama: primeiro pergunte se a dependência é tocada (se não, dummy). Depois, o eixo decisivo: você verifica **estado** (stub/fake) ou **interação** (mock/spy)? Por fim, refine: estado com lógica vira fake; interação com expectativa declarada vira mock.

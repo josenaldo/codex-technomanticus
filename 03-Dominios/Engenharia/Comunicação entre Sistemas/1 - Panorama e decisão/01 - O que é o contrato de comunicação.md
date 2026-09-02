@@ -38,7 +38,6 @@ Repare que esses papéis não são fixos por serviço — são fixos **por inter
 O vocabulário muda um pouco conforme o contexto: em REST, fala-se em *client* e *server*; em mensageria, em *producer* e *consumer* (ou *publisher* e *subscriber*); em contratos de dados e pipelines, a mesma dupla aparece como "produtor e consumidor de dados". O papel é sempre o mesmo — só o nome muda com a tecnologia. É por isso que, no resto desta trilha, você vai ver "producer/consumer" como o vocabulário-guia, independente de a comunicação ser um `POST` HTTP ou uma mensagem publicada num tópico.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     P["Producer<br/>(expõe a capacidade)"] -->|"Contrato:<br/>forma + tempo"| C["Consumer<br/>(depende da capacidade)"]
     C -.->|"assume o contrato<br/>ao integrar"| P
@@ -74,7 +73,6 @@ A literatura de arquitetura de mensageria é enfática nessa distinção: intera
 O ponto central — e a razão de estas duas dimensões merecerem seções separadas — é que elas são **independentes**. Você pode ter uma API REST (síncrona) com um contrato de dados extremamente estável, versão a versão, há anos — baixo acoplamento de dados, alto acoplamento temporal. E pode ter um tópico de eventos (assíncrono) cujo schema muda a cada duas semanas, quebrando consumers com frequência — baixo acoplamento temporal, alto acoplamento de dados. Tratar "acoplamento" como uma coisa só esconde que você pode resolver uma dimensão sem tocar na outra — e é exatamente isso que o resto da trilha faz: o Sub-galho 2 (síncrona) e o Sub-galho 3 (confiabilidade) atacam majoritariamente o acoplamento de dados; o Sub-galho 4 (assíncrona) ataca majoritariamente o acoplamento temporal.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
     CONTR["O contrato de<br/>comunicação"] --> DADOS["Acoplamento de dados<br/>(schema, campos, tipos)"]
     CONTR --> TEMP["Acoplamento temporal<br/>(quando a resposta chega)"]

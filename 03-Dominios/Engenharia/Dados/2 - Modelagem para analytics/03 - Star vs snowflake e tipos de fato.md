@@ -86,8 +86,9 @@ A mesma consulta — soma de vendas por categoria — agora precisa de **três j
 O diagrama abaixo contrasta as duas formas para a mesma informação:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph STAR["Star schema — dimensão denormalizada"]
         F1["fato_vendas"] -->|"produto_key<br/>(1 join)"| D1["dim_produto<br/>nome, categoria,<br/>subcategoria, marca<br/>(tudo achatado)"]
     end
@@ -98,12 +99,12 @@ graph TB
         D3 -->|"departamento_key<br/>(join 3)"| D4["dim_departamento<br/>nome"]
     end
 
-    style F1 fill:#4A90D9,color:#fff
-    style D1 fill:#4A90D9,color:#fff
-    style F2 fill:#4A90D9,color:#fff
-    style D2 fill:#F5A623,color:#000
-    style D3 fill:#F5A623,color:#000
-    style D4 fill:#F5A623,color:#000
+    class F1 neutro
+    class D1 neutro
+    class F2 neutro
+    class D2 destaque
+    class D3 destaque
+    class D4 destaque
 ```
 
 ## O trade-off, e por que Kimball prefere star
@@ -197,8 +198,10 @@ Isso é exatamente o que faz esse tipo de fato ser tão bom para medir **lead ti
 ### As três lado a lado, no mesmo domínio de e-commerce
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph T["Transaction fact"]
         T1["fato_vendas<br/>1 linha por item vendido<br/>grão máximo, imutável"]
     end
@@ -213,9 +216,9 @@ graph TB
     Pergunta2["'Quanto tínhamos em estoque no fim do dia?'"] --> P1
     Pergunta3["'Quanto tempo entre pagamento e entrega?'"] --> A1
 
-    style T1 fill:#4A90D9,color:#fff
-    style P1 fill:#F5A623,color:#000
-    style A1 fill:#D0021B,color:#fff
+    class T1 neutro
+    class P1 destaque
+    class A1 falha
 ```
 
 | Tipo de fato | Granularidade | Atualização | Pergunta que responde bem | Exemplo no e-commerce |
@@ -233,8 +236,9 @@ A resposta de Kimball é o conceito de **dimensão conformada** (*conformed dime
 O benefício concreto disso é o **drill across**: a capacidade de comparar processos de negócio diferentes na mesma consulta, porque eles falam da mesma dimensão com o mesmo vocabulário. "Qual categoria vende mais em proporção ao estoque médio que mantém?" é uma pergunta que atravessa `fato_vendas` e `fato_estoque_diario` — e ela só é trivial de responder porque as duas tabelas usam a mesma `dim_produto`, com a mesma `produto_key` e a mesma definição de categoria. Se cada fato tivesse sua própria versão da dimensão produto — com categorias nomeadas ou codificadas de formas ligeiramente diferentes —, comparar os dois processos exigiria primeiro reconciliar as duas versões da dimensão, um trabalho de "tradução" que devia ter sido resolvido uma vez, na modelagem, não repetido a cada análise.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     DP["dim_produto<br/>(dimensão conformada)"]
     DT["dim_tempo<br/>(dimensão conformada)"]
 
@@ -245,10 +249,10 @@ graph TB
 
     DP -.->|"drill across:<br/>mesma chave, mesmo vocabulário"| DP
 
-    style DP fill:#4A90D9,color:#fff
-    style DT fill:#4A90D9,color:#fff
-    style FV fill:#F5A623,color:#000
-    style FE fill:#F5A623,color:#000
+    class DP neutro
+    class DT neutro
+    class FV destaque
+    class FE destaque
 ```
 
 Isso não significa que toda dimensão precisa ser idêntica em todo lugar — `fato_estoque_diario` talvez use só um subconjunto dos atributos de `dim_produto` (não precisa de todos os atributos de marketing, por exemplo). Kimball chama isso de conformidade **parcial**: os atributos compartilhados batem exatamente; os atributos extras, quando existem só em um contexto, não quebram a conformidade, desde que a interseção seja consistente.

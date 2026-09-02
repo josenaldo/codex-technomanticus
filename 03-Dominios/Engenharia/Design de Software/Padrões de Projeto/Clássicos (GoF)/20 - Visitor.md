@@ -34,8 +34,9 @@ O Visitor inverte o eixo. As classes de nó ganham **um** método genérico — 
 Toda a tensão do Visitor cabe numa matriz **tipos × operações**:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph OO["OO padrão (método na classe)"]
         O1["fácil: novo TIPO<br/>(nova classe, todos os métodos)"]
         O2["difícil: nova OPERAÇÃO<br/>(editar toda classe)"]
@@ -45,10 +46,10 @@ graph LR
         V2["difícil: novo TIPO<br/>(editar todo visitor)"]
     end
 
-    style O1 fill:#4A90D9,color:#fff
-    style V1 fill:#4A90D9,color:#fff
-    style O2 fill:#F5A623,color:#000
-    style V2 fill:#F5A623,color:#000
+    class O1 neutro
+    class V1 neutro
+    class O2 destaque
+    class V2 destaque
 ```
 
 O default OO (métodos na classe) facilita **novos tipos** e penaliza **novas operações**. O Visitor faz o **oposto**: facilita operações, penaliza tipos. Você escolhe o padrão conforme qual eixo muda mais no seu problema — se os tipos são estáveis (nós de uma AST bem definida) e as operações crescem (avaliar, otimizar, compilar, formatar), o Visitor ganha.

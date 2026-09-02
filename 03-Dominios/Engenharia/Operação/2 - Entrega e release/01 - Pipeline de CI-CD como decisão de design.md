@@ -40,7 +40,6 @@ A confusão mais comum em entrevista — e no dia a dia — é tratar "CI/CD" co
 **Continuous Deployment** remove até esse clique: toda mudança que passa em todos os gates **vai para produção automaticamente**, sem intervenção humana. É o compromisso mais exigente dos três — requer confiança real na suite de testes, feature flags para desacoplar deploy de exposição ao usuário, e monitoramento capaz de detectar e reverter problemas mais rápido do que um humano perceberia.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     CI["Continuous<br/>Integration<br/>build + test<br/>a cada commit"] --> CD1["Continuous<br/>Delivery<br/>+ sempre deployável<br/>(aprovação manual)"]
     CD1 --> CD2["Continuous<br/>Deployment<br/>+ deploy automático<br/>(sem humano)"]
@@ -60,8 +59,10 @@ O livro descreve o pipeline canônico em estágios que ficam progressivamente ma
 Adaptado ao vocabulário de pipeline moderno (GitHub Actions, GitLab CI), a mesma lógica se traduz numa cadeia como esta:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     COMMIT["Commit /<br/>Pull Request"] --> BUILD["🔵 Build<br/>compila, lint<br/>segundos"]
     BUILD --> UNIT["🔵 Testes<br/>unitários<br/>segundos-minutos"]
     UNIT --> INTEG["🔵 Testes de<br/>integração<br/>minutos"]
@@ -69,12 +70,12 @@ graph LR
     SCAN --> ART["🔵 Artefato<br/>imutável<br/>(imagem/pacote)"]
     ART --> DEPLOY["🔴 Deploy<br/>(gate de<br/>aprovação/health)"]
 
-    style BUILD fill:#4A90D9,color:#fff
-    style UNIT fill:#4A90D9,color:#fff
-    style INTEG fill:#4A90D9,color:#fff
-    style SCAN fill:#F5A623,color:#000
-    style ART fill:#4A90D9,color:#fff
-    style DEPLOY fill:#D0021B,color:#fff
+    class BUILD neutro
+    class UNIT neutro
+    class INTEG neutro
+    class SCAN destaque
+    class ART neutro
+    class DEPLOY falha
 ```
 
 Cada seta nesse diagrama esconde uma decisão de gate: o estágio anterior *precisa* passar para o próximo rodar, ou eles podem rodar em paralelo? A resposta certa depende do custo relativo. Build e lint são baratos e determinam se vale a pena rodar qualquer outra coisa — sempre bloqueantes, sempre primeiro. Testes unitários são baratos o suficiente para rodar sempre, e caros o bastante em falso-negativo (um bug óbvio passando) para também bloquear. Já testes de integração e scan de segurança frequentemente **podem rodar em paralelo** entre si, já que um não depende logicamente do resultado do outro — a única razão para serializá-los seria economizar recursos de CI compartilhados, não uma dependência real.
@@ -128,7 +129,6 @@ Trunk-based development — todo mundo integrando direto (ou quase direto) na br
 Mas essa prática tem uma pré-condição incontornável: **o pipeline precisa terminar rápido o suficiente para caber dentro do ciclo de "mudar, subir, esperar, integrar" várias vezes por dia**. Se o commit stage leva 45 minutos, ninguém consegue de fato integrar quatro vezes ao dia — o "trunk-based" vira de fachada, com branches que na prática ficam abertas o dia inteiro esperando o pipeline liberar. A referência prática que a comunidade de trunk-based development converge é manter o **commit stage abaixo de 10-15 minutos**; acima disso, a prática de merge frequente começa a se corroer silenciosamente, porque o custo de esperar passa a competir com o benefício de integrar cedo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
     A["Pipeline rápido<br/>(commit stage <15min)"] -->|"sustenta"| B["Merges frequentes<br/>ao trunk"]
     B -->|"habilita"| C["Deploys pequenos<br/>e frequentes"]

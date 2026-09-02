@@ -76,6 +76,8 @@ Um ponteiro é uma variável cujo valor é o **endereço de memória** de outra 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Memória["Memória"]
         end1["Endereço 0xc0000140a0<br/>valor: 10"]
     end
@@ -83,9 +85,9 @@ flowchart LR
     x["variável x<br/>(tipo int)"] -->|mora em| end1
     p["variável p<br/>(tipo *int)<br/>valor: 0xc0000140a0"] -.->|aponta para| end1
 
-    style x fill:#4A90D9,color:#fff
-    style p fill:#F5A623,color:#000
-    style end1 fill:#7ED321,color:#000
+    class x neutro
+    class p destaque
+    class end1 destaque
 ```
 
 Três operadores fazem todo o trabalho:
@@ -128,6 +130,8 @@ Esta é a regra mais importante da nota, e vale repetir sem meias-palavras: **to
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph SemPonteiro["Passagem por valor (sem ponteiro)"]
         A1["minhaConta.Saldo = 100"] --> A2["depositar(minhaConta, 50)"]
         A2 --> A3["parâmetro 'conta' é uma\nCÓPIA de minhaConta"]
@@ -142,8 +146,8 @@ flowchart TD
         B4 --> B5["minhaConta.Saldo vira 150"]
     end
 
-    style A5 fill:#D0021B,color:#fff
-    style B5 fill:#7ED321,color:#000
+    class A5 falha
+    class B5 destaque
 ```
 
 A versão corrigida da função `depositar`, agora recebendo um ponteiro:
@@ -332,14 +336,17 @@ Em Go, esse código é perfeitamente seguro, e a razão é o **escape analysis**
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["compilador analisa criarConta"] --> B{"'conta' é referenciada\nfora da função?"}
     B -->|"Não — só usada\ndentro de criarConta"| C["aloca 'conta' no STACK\n(barato, some no retorno)"]
     B -->|"Sim — &conta escapa\nvia return"| D["aloca 'conta' no HEAP\n(sobrevive ao retorno,\nliberada pelo GC depois)"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#7ED321,color:#000
-    style D fill:#D0021B,color:#fff
+    class A neutro
+    class B destaque
+    class C destaque
+    class D falha
 ```
 
 O ponto central para reter desta nota: **você nunca escreve código para decidir stack ou heap** — não existe `malloc`/`free` em Go, não existe uma palavra-chave "aloque isso no heap". A decisão é inteiramente do compilador, automática, baseada em análise estática do fluxo do ponteiro. Isso é parte do que torna ponteiros em Go seguros por padrão: o mesmo padrão que seria um bug garantido em C ("retornar ponteiro para local") é simplesmente correto em Go, porque a linguagem foi desenhada para que a "intenção óbvia" do programador (devolver um ponteiro utilizável) sempre funcione.

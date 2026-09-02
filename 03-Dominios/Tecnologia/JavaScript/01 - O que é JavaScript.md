@@ -80,19 +80,20 @@ Toda engine segue a mesma spec (ECMAScript), mas cada uma toma decisões própri
 Quando a engine recebe código JavaScript, ela passa por quatro fases. Abaixo, o fluxo simplificado usando V8 como exemplo:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["📄 Código-fonte\n(texto .js)"] -->|"Lexer + Parser"| B["🌳 AST\n(Abstract Syntax Tree)"]
     B -->|"Ignition"| C["⚙️ Bytecode\n(Ignition interpreter)"]
     C -->|"código frio\nexecuta linha a linha"| E["🖥️ Resultado"]
     C -->|"código quente\ndetectado pelo profiler"| D["🚀 Código de máquina\n(TurboFan / Maglev JIT)"]
     D --> E
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#27AE60,color:#fff
-    style E fill:#4A90D9,color:#fff
+    class A neutro
+    class B neutro
+    class C neutro
+    class D ok
+    class E neutro
 ```
 
 **Fase 1 — Parse:** a engine lê o texto do arquivo e converte em uma estrutura chamada **AST** (Abstract Syntax Tree — Árvore Sintática Abstrata). É como converter "Maria comeu a maçã" em uma árvore onde "comer" é o verbo, "Maria" é o sujeito, "maçã" é o objeto. Erros de sintaxe são descobertos aqui.

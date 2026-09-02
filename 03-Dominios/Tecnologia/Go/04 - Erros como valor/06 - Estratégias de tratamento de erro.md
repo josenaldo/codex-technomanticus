@@ -67,6 +67,8 @@ A formulação mais citada da comunidade Go vem de Dave Cheney, num post que vir
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["erro nasce no repository"] --> B{"repository decide:\nlog ou return?"}
     B -->|"return + wrap"| C["service recebe o erro"]
     C --> D{"service decide:\nlog ou return?"}
@@ -75,10 +77,10 @@ flowchart TB
     F -->|"log (borda do sistema)"| G["1 linha de log,\ncontexto completo"]
     F -->|"return"| H["resposta HTTP\n(nota do galho 10)"]
 
-    style B fill:#F5A623,color:#000
-    style D fill:#F5A623,color:#000
-    style F fill:#F5A623,color:#000
-    style G fill:#4A90D9,color:#fff
+    class B destaque
+    class D destaque
+    class F destaque
+    class G neutro
 ```
 
 Repare que cada camada intermediária (`repository`, `service`) só faz uma metade da escolha: **return**, nunca log. Só a última camada — a borda — decide logar. O resultado é uma única entrada de log por falha, e essa entrada carrega o contexto acumulado de toda a subida, porque cada `return` envelopou um pouco:
@@ -146,16 +148,18 @@ As três notas anteriores do galho já ensinaram *como* declarar cada estilo —
 
 ```mermaid
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q["o chamador precisa\nramificar o comportamento\ncom base no erro?"] -->|"não — só precisa saber\nque falhou, com contexto"| Opaque["Opaque error\nfmt.Errorf com %w"]
     Q -->|"sim — precisa comparar\ncontra um valor conhecido"| Q2["o erro tem dados\nassociados (campo, valor)?"]
     Q2 -->|"não, só identidade"| Sentinel["Sentinel error\nerrors.Is(err, ErrX)"]
     Q2 -->|"sim, carrega dados"| Typed["Typed error\nerrors.As(err, &x)"]
 
-    style Q fill:#F5A623,color:#000
-    style Q2 fill:#F5A623,color:#000
-    style Opaque fill:#4A90D9,color:#fff
-    style Sentinel fill:#4A90D9,color:#fff
-    style Typed fill:#4A90D9,color:#fff
+    class Q destaque
+    class Q2 destaque
+    class Opaque neutro
+    class Sentinel neutro
+    class Typed neutro
 ```
 
 - **Opaque** — a esmagadora maioria dos erros no meio de uma pilha de chamadas. `fmt.Errorf("ler config: %w", err)` — o chamador não vai fazer nada diferente dependendo do conteúdo exato; só precisa saber que a operação falhou, com contexto suficiente pra logar ou reportar. É o caso default; use os outros dois só quando tiver motivo concreto.

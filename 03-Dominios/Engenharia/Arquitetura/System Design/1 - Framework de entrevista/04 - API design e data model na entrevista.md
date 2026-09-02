@@ -36,7 +36,6 @@ Pense assim: se o endpoint de leitura de um encurtador é `GET /{code}` e o aces
 Essa é a ponte: **requisitos** dizem o que o sistema faz; **API + data model** traduzem isso em uma forma concreta de acesso a dados; e é essa forma de acesso — não o requisito em si — que dita se você precisa de um Postgres com índices normais ou de um DynamoDB particionado.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     RF["Requisitos<br/>funcionais"] --> API["API design<br/>(endpoints)"]
     RF --> DM["Data model<br/>(entidades)"]
@@ -142,7 +141,6 @@ Para um feed de rede social, já são pelo menos três: `User`, `Post`, `Follow`
 É exatamente aqui, olhando para o **padrão de acesso** revelado pelas entidades e pelos endpoints, que a decisão SQL vs NoSQL deve ser tomada — e ela precisa ser tomada **cedo**, porque muda a forma do diagrama macro inteiro.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
     Q["Qual o padrão<br/>de acesso?"] --> J["Precisa de joins,<br/>transações multi-tabela,<br/>consistência forte?"]
     Q --> K["Acesso por chave,<br/>alta escala,<br/>schema flexível?"]

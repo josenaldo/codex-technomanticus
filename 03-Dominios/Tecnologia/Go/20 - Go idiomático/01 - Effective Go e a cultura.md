@@ -32,6 +32,8 @@ Se o Effective Go tivesse que ser resumido numa frase, seria: **prefira o caminh
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Go decide NÃO ter..."] --> B["herança de classe"]
     A --> C["exceções (try/catch)"]
     A --> D["sobrecarga de operadores/métodos"]
@@ -44,12 +46,12 @@ flowchart TB
     E --> J["→ generics chegaram em 2022,\nsó quando o custo compensou\n(Galho 6)"]
     F --> K["→ go generate, não macro\nde tempo de compilação"]
 
-    style A fill:#4A90D9,color:#fff
-    style G fill:#F5A623,color:#000
-    style H fill:#F5A623,color:#000
-    style I fill:#F5A623,color:#000
-    style J fill:#F5A623,color:#000
-    style K fill:#F5A623,color:#000
+    class A neutro
+    class G destaque
+    class H destaque
+    class I destaque
+    class J destaque
+    class K destaque
 ```
 
 Cada "não" do lado esquerdo é uma feature que outra linguagem oferece e Go recusou — ou adiou por mais de uma década, no caso dos generics. E cada recusa não é ausência gratuita: é uma aposta de que o código sem aquele recurso é **mais fácil de ler seis meses depois**, por alguém que não o escreveu.

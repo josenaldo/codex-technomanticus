@@ -158,6 +158,9 @@ Um detalhe que confunde bastante gente: **fatiamento simples não avalia** — `
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Pedido.objects.filter(status='pendente')"] --> B["QuerySet<br/>(descrição acumulada,<br/>NENHUM SQL rodou)"]
     B --> C{"o que acontece a seguir?"}
     C -->|".order_by(...) / .filter(...) / .exclude(...)"| D["novo QuerySet<br/>(ainda descrição, ainda lazy)"]
@@ -165,10 +168,10 @@ flowchart TB
     C -->|"for p in qs: / list(qs) / bool(qs) / qs[5]"| E["SELECT disparado AGORA<br/>contra o estado ATUAL do banco"]
     E --> F["resultados materializados<br/>em objetos Python"]
 
-    style B fill:#F5A623,color:#000
-    style D fill:#F5A623,color:#000
-    style E fill:#D0021B,color:#fff
-    style F fill:#4A90D9,color:#fff
+    class B destaque
+    class D destaque
+    class E falha
+    class F neutro
 ```
 
 > [!question]- Se eu avaliar o mesmo `QuerySet` duas vezes, ele roda o `SELECT` duas vezes?
@@ -300,6 +303,8 @@ Django faz algo estruturalmente diferente: migrations são **parte do framework*
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Alembic["Alembic (SQLAlchemy)"]
         A1["MetaData no código"] --> A3["revision --autogenerate"]
         A2["banco REAL<br/>(via reflection)"] --> A3
@@ -312,8 +317,8 @@ flowchart TB
         D3 --> D4["diff: código vs. último estado<br/>registrado no histórico"]
     end
 
-    style A2 fill:#F5A623,color:#000
-    style D2 fill:#4A90D9,color:#fff
+    class A2 destaque
+    class D2 neutro
 ```
 
 Essa diferença tem uma consequência prática direta: `makemigrations` funciona **sem conexão nenhuma com um banco de dados** — é possível rodar `makemigrations` num ambiente que nunca tocou o banco de produção, porque a comparação é inteiramente contra arquivos versionados no repositório. `migrate` (o equivalente Django ao `upgrade` do Alembic) é o comando separado que de fato conecta no banco e aplica as migrations pendentes:

@@ -45,6 +45,8 @@ A assimetria input/output é estrutural — output é mais caro porque **o decod
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Custo por chamada"
         I["Input tokens\n(50k × $3/MTok)\n= $0.15"]
         O["Output tokens\n(10k × $15/MTok)\n= $0.15"]
@@ -53,8 +55,8 @@ graph LR
     I --> T
     O --> T
     note1["⚠️ Output é 5× mais caro\npor token que input"]
-    style O fill:#ff9999,stroke:#cc0000
-    style note1 fill:#fff3cd
+    class O falha
+    class note1 destaque
 ```
 
 ## Tabela de preços (maio 2026)
@@ -121,15 +123,17 @@ A sessão de 50 turns que "parecia barata" custou $13.50 — e escala linearment
 
 ```mermaid
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Chamada ao modelo"] --> B["Input tokens visíveis\n(prompt + contexto)"]
     A --> C["Tool definitions ocultos\n(schemas JSON: 2-5k tokens por call)"]
     A --> D["Histórico acumulado\n(turns anteriores reenviados como input)"]
     A --> E["Reasoning tokens ocultos\n(gerados internamente, cobrados como output)"]
     A --> F["Retries por falha\n(paga-se duas vezes)"]
-    style C fill:#ffcc99,stroke:#cc6600
-    style D fill:#ffcc99,stroke:#cc6600
-    style E fill:#ff9999,stroke:#cc0000
-    style F fill:#ffcc99,stroke:#cc6600
+    class C destaque
+    class D destaque
+    class E falha
+    class F destaque
 ```
 
 | Item                       | Por que é custo oculto                                                                                |

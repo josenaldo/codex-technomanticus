@@ -73,12 +73,14 @@ Isso se chama **inferência de tipos** (type inference), e é o coração do uso
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["const preco = 29.90"] --> B{"tsc\nanalisa o valor"}
     B --> C["Literal 29.90\né do tipo number"]
     C --> D["preco: number\n(inferido)"]
     D --> E["Ops inválidas\nsão barradas"]
-    style B fill:#1f6feb,color:#fff
-    style E fill:#b22222,color:#fff
+    class B neutro
+    class E falha
 ```
 
 > [!tip] Por que inferência importa mais do que parece
@@ -177,14 +179,16 @@ O compilador sabe que `let` permite reatribuição. Você pode fazer `metodo = "
 
 ```mermaid
 flowchart TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph CONST["const — imutável"]
         C1["const metodo = &quot;GET&quot;"] --> C2["Nunca vai mudar\n→ tipo: &quot;GET&quot;\n(literal type)"]
     end
     subgraph LET["let — mutável"]
         L1["let metodo = &quot;GET&quot;"] --> L2["Pode ser reatribuído\n→ tipo: string\n(widening)"]
     end
-    style C2 fill:#1a6b1a,color:#fff
-    style L2 fill:#8a6d00,color:#fff
+    class C2 ok
+    class L2 destaque
 ```
 
 Esse comportamento tem um nome: **widening**. O TypeScript "alarga" o tipo do literal para o tipo primitivo correspondente quando a variável pode mudar.
@@ -316,14 +320,17 @@ const metodos: Array<"GET" | "POST"> = ["GET", "POST"];
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Nova variável ou\nparâmetro"] --> B{"Tem inicializador\nclaro?"}
     B -->|"Sim"| C{"É boundary\npúblico?"}
     B -->|"Não"| D["Anote ✏️\nobrigatório"]
     C -->|"Sim\n(export, API pública)"| E["Anote ✏️\nboas práticas"]
     C -->|"Não\n(variável local)"| F["Infira ✅\ndeixa o tsc trabalhar"]
-    style D fill:#b22222,color:#fff
-    style E fill:#1f6feb,color:#fff
-    style F fill:#1a6b1a,color:#fff
+    class D falha
+    class E neutro
+    class F ok
 ```
 
 > [!warning] Antipadrão: anotar tudo
@@ -439,14 +446,17 @@ verificar(200);          // ✅ literal direto — sempre aceito
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["const STATUS_OK = 200"] -->|"const"| B["tipo: 200\n(literal)"]
     C["let statusAtual = 200"] -->|"let"| D["tipo: number\n(widening)"]
     B --> E["verificar(STATUS_OK)\n✅ 200 é subtype de 200|400|404|500"]
     D --> F["verificar(statusAtual)\n❌ number é mais amplo\nque 200|400|404|500"]
-    style B fill:#1a6b1a,color:#fff
-    style D fill:#8a6d00,color:#fff
-    style E fill:#1a6b1a,color:#fff
-    style F fill:#b22222,color:#fff
+    class B ok
+    class D destaque
+    class E ok
+    class F falha
 ```
 
 ---

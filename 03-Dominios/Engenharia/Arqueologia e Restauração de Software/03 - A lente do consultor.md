@@ -39,17 +39,19 @@ Essa é a razão de o galho ser escrito nesta chave. Um livro de "trabalhar com 
 "De fora" não é monolítico. Antes de abrir o primeiro arquivo, você precisa saber em qual dos três modos está — porque cada um responde a uma pergunta diferente, e responder à pergunta errada é desperdiçar a janela inteira.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Q["Assumindo um sistema<br/>de fora"] --> DD["1. Due diligence<br/>'vale a pena comprar?'"]
     Q --> H["2. Herança<br/>'vou manter isto adiante'"]
     Q --> R["3. Resgate<br/>'está pegando fogo AGORA'"]
     DD -->|"dias/semanas · não mantém"| DDE["Entregável:<br/>relatório de risco"]
     H -->|"meses · vira o dono"| HE["Entregável:<br/>capacidade de operar e evoluir"]
     R -->|"horas/dias · para o sangramento"| RE["Entregável:<br/>sistema estabilizado"]
-    style DD fill:#4A90D9,color:#fff
-    style H fill:#7ED321,color:#000
-    style R fill:#D0021B,color:#fff
+    class DD neutro
+    class H destaque
+    class R falha
 ```
 
 A tabela a seguir é o mapa que você consulta no primeiro dia. O resto da nota destrincha cada linha.

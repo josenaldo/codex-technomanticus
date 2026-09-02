@@ -31,6 +31,9 @@ O diagrama a seguir é o coração desta nota — ele mostra exatamente onde o p
 
 ```mermaid
 flowchart TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph provedor["Gerenciado pelo provedor (control plane)"]
         api["API server<br/>(kubectl fala com isso)"]
         etcd["etcd<br/>(estado do cluster)"]
@@ -51,9 +54,9 @@ flowchart TB
     nodes -->|roda| pods
     pods --> helm
 
-    style provedor fill:#2d5016,color:#fff
-    style compartilhado fill:#5c4a1a,color:#fff
-    style seu fill:#5c1a1a,color:#fff
+    class provedor ok
+    class compartilhado destaque
+    class seu falha
 ```
 
 Repare que existe uma zona do meio: os **nós** (as máquinas que efetivamente rodam seus pods). Em Kubernetes gerenciado com *managed node groups* (EKS) ou *node pools* (DOKS), o provedor cuida do provisionamento da máquina, da instalação do `kubelet` (o agente que fala com o control plane) e — em boa parte dos casos — dos patches de sistema operacional e da substituição automática de nós não saudáveis. Mas o nó ainda é uma VM sua rodando na sua conta, cobrada como instância normal. Ele não desaparece como no Fargate.
@@ -184,6 +187,8 @@ No DOKS, o control plane padrão roda numa configuração enxuta — e é justam
 
 ```mermaid
 flowchart TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph eks["EKS — padrão"]
         eks_api1["API server<br/>AZ-1"]
         eks_api2["API server<br/>AZ-2"]
@@ -204,9 +209,9 @@ flowchart TB
         doks_api3["API server<br/>réplica 3"]
     end
 
-    style eks fill:#2d5016,color:#fff
-    style doks_std fill:#5c4a1a,color:#fff
-    style doks_ha fill:#2d5016,color:#fff
+    class eks ok
+    class doks_std destaque
+    class doks_ha ok
 ```
 
 Essa é a pergunta certa pra levar pra entrevista ou pra decisão de arquitetura: não "qual control plane é mais barato", mas "qual nível de resiliência do control plane eu realmente preciso, e quanto isso custa em cada provedor".

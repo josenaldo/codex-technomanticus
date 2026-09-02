@@ -130,7 +130,6 @@ E o hábito que evita acidente: **`pgrep -af "padrao"` antes de `pkill -f "padra
 Aqui fecha o terceiro enigma, e ele depende de três agrupamentos que existem acima do processo:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     T["<b>terminal de controle</b>"] --> S["<b>sessão</b><br/>líder: o shell"]
     S --> G1["<b>grupo de processos</b><br/>primeiro plano"]

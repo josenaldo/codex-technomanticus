@@ -31,8 +31,9 @@ O catálogo inteiro que você acabou de percorrer foi construído para evitar es
 ## A regra de ouro: problema primeiro
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     P["Tenho um problema recorrente e concreto?"] -->|não| N["Não use padrão.<br/>Código direto."]
     P -->|sim| L["A linguagem/framework já resolve?"]
     L -->|sim| U["Use o recurso.<br/>Não reimplemente."]
@@ -40,10 +41,10 @@ graph TD
     D -->|não| N2["Espere. YAGNI.<br/>Adicione quando aparecer."]
     D -->|sim| Y["Aplique o padrão<br/>que nomeia essa solução."]
 
-    style N fill:#F5A623,color:#000
-    style N2 fill:#F5A623,color:#000
-    style U fill:#4A90D9,color:#fff
-    style Y fill:#4A90D9,color:#fff
+    class N destaque
+    class N2 destaque
+    class U neutro
+    class Y neutro
 ```
 
 Repare quantos caminhos levam a **não usar padrão nenhum**. Esse é o ponto: o fluxo default é código simples; o padrão é a exceção que você justifica, não o ponto de partida.

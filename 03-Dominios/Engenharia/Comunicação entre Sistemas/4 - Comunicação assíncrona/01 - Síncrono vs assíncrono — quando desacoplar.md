@@ -37,8 +37,10 @@ O problema aparece quando a carga sobe. Aqui vale um resultado de teoria de fila
 Esse mecanismo — thread pool exhaustion propagando falha para trás na cadeia de chamadas — é bem documentado na literatura de confiabilidade de microsserviços: quando um serviço downstream fica lento, as threads do serviço chamador ficam bloqueadas esperando, consumindo recursos que deveriam atender outras requisições; se o serviço A esgota suas threads esperando o serviço B, os serviços que chamam A também começam a bloquear, e em poucos minutos uma única dependência lenta congela a arquitetura inteira ([The Silent Killer of Microservices: Thread Pool Exhaustion](https://powersoft2026.substack.com/p/the-silent-killer-of-microservices)). Um caso relatado publicamente descreve exatamente essa dinâmica: a latência de um provedor de pagamento subiu de 180ms para 2,4 segundos, e em seis minutos esse atraso se propagou por catorze serviços dependentes — em sete minutos, mais de um terço das requisições de checkout estava expirando no gateway. É a mesma forma de falha da cena de abertura desta nota, só que medida em minutos em vez de horas.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Carga baixa"] -->|"síncrono"| B["Latência mínima<br/>caminho feliz"]
     C["Carga alta<br/>(pico, Black Friday)"] -->|"síncrono"| D["Threads presas<br/>fila cresce"]
     D -->|"Lei de Little:<br/>L = λW"| E["Latência de cauda<br/>explode"]
@@ -46,11 +48,11 @@ graph TD
     C -->|"assíncrono"| G["Fila absorve o pico<br/>(buffer)"]
     G --> H["Throughput preservado<br/>latência de processamento sobe,<br/>não quebra"]
 
-    style D fill:#F5A623,color:#000
-    style E fill:#D0021B,color:#fff
-    style F fill:#D0021B,color:#fff
-    style G fill:#4A90D9,color:#fff
-    style H fill:#4A90D9,color:#fff
+    class D destaque
+    class E falha
+    class F falha
+    class G neutro
+    class H neutro
 ```
 
 Assíncrono responde a essa mesma pressão de um jeito estruturalmente diferente. Um broker de mensagens funciona como um **buffer** entre producer e consumer, absorvendo o descompasso entre a taxa em que os eventos chegam e a taxa em que são processados — três dimensões de desacoplamento nascem desse buffer: tempo (os dois lados não precisam estar ativos no mesmo instante), disponibilidade (um lado pode cair sem derrubar o outro) e velocidade (o lado rápido não fica refém do lento) ([Producer-Consumer Problem with Backpressure, Scalable Thread](https://newsletter.scalablethread.com/p/how-to-solve-producer-consumer-problem)). Um documento da AWS Builders' Library formaliza isso com um princípio direto: quando você constrói sobre uma fila como o SQS, a disponibilidade do seu producer passa a ser proporcional à disponibilidade da própria fila — não mais à disponibilidade do consumer que está do outro lado ([Avoiding Insurmountable Queue Backlogs, AWS](https://aws.amazon.com/builders-library/avoiding-insurmountable-queue-backlogs/)). Se o serviço de e-mail cair inteiro durante a Black Friday, os eventos `pedido.confirmado` ficam acumulados na fila; o checkout segue publicando e respondendo ao cliente normalmente, e os e-mails saem quando o serviço de e-mail voltar — atrasados, mas sem nunca ter travado uma única compra.
@@ -104,8 +106,9 @@ Vale desmontar essa pergunta em três testes concretos, na ordem em que costumam
 **Teste 3 — um único evento precisa disparar várias reações independentes?** Esse é o caso em que assíncrono deixa de ser "aceitável" e passa a ser **quase sempre a escolha certa**, mesmo que a operação individual fosse rápida o suficiente para ser síncrona. Quando "pedido confirmado" precisa, ao mesmo tempo, atualizar o estoque, notificar o armazém, disparar o e-mail, atualizar o painel de analytics e recalcular recomendações, fazer isso de forma síncrona significaria o checkout chamar cinco serviços diferentes, um atrás do outro (ou em paralelo, mas ainda esperando todos responderem) — cinco pontos de falha síncrona onde antes havia um só, e a disponibilidade composta do checkout despencando a cada novo consumer adicionado. Esse padrão — **fan-out**, um evento disparando múltiplas ações paralelas ou entregue a múltiplos assinantes de uma vez — é a razão de existir do modelo pub/sub: cada assinatura de um tópico recebe cada mensagem publicada, de forma independente e processada em paralelo, sem que o producer tenha qualquer conhecimento de quantos ou quais consumers existem ([Fan-Out, GetStream.io](https://getstream.io/glossary/fan-out/); [Fan-Out Pattern com Pub/Sub, OneUptime](https://oneuptime.com/blog/post/2026-02-02-pubsub-fan-out/view)). Adicionar um sexto consumer — digamos, um novo serviço de detecção de fraude que precisa reagir a todo pedido confirmado — não exige tocar no código do checkout nem dos outros cinco consumers; basta criar uma nova assinatura no mesmo tópico. É esse desacoplamento de "quantos ouvintes existem" que nenhuma cadeia de chamadas síncronas replica sem acumular acoplamento a cada novo consumer.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q1{"O usuário precisa de uma<br/>resposta definitiva AGORA?"}
     Q1 -->|"Sim"| SYNC["Síncrono<br/>(ou 202 + polling se lento)"]
     Q1 -->|"Não"| Q2{"O negócio perde algo real<br/>se a resposta chegar depois?"}
@@ -114,9 +117,9 @@ flowchart TD
     Q3 -->|"Sim — fan-out"| ASYNC["Assíncrono<br/>quase sempre vence"]
     Q3 -->|"Não, é 1:1"| ASYNC2["Assíncrono é aceitável,<br/>avalie custo vs benefício"]
 
-    style SYNC fill:#4A90D9,color:#fff
-    style ASYNC fill:#F5A623,color:#000
-    style ASYNC2 fill:#F5A623,color:#000
+    class SYNC neutro
+    class ASYNC destaque
+    class ASYNC2 destaque
 ```
 
 A tabela abaixo condensa o framework num formato consultável — mas vale ler as três colunas como perguntas em sequência, não como uma lista neutra de opções equivalentes:

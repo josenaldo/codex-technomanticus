@@ -43,17 +43,19 @@ O mecanismo é direto: o broker **grava a mensagem em disco** (armazenamento dur
 ## Dead Letter Channel: o destino do que falha
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q["fila"] --> C["Consumidor processa"]
     C -->|"sucesso → ack"| OK["removida da fila"]
     C -->|"falha"| RT{{"tentativa < N?"}}
     RT -->|"sim"| Q
     RT -->|"não (poison)"| DLQ["Dead Letter Channel<br/>(necrotério + alarme)"]
 
-    style Q fill:#4A90D9,color:#fff
-    style DLQ fill:#D0021B,color:#fff
-    style OK fill:#F5A623,color:#000
+    class Q neutro
+    class DLQ falha
+    class OK destaque
 ```
 
 A mecânica: em caso de falha, o broker **reentrega** (bom para falhas **transitórias** — o banco piscou, a rede caiu). Mas com um **limite**: após N tentativas, a mensagem é considerada **poison** (o problema é nela, não transitório) e desviada para o **Dead Letter Channel** — uma fila separada onde ela **aguarda análise** em vez de ser perdida ou reentregue eternamente. Retry cuida do transitório; DLQ cuida do permanente.

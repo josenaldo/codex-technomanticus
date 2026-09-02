@@ -219,8 +219,9 @@ fusca.ligar(); // "Fusca ligado."
 Quando você se perguntar "o que é `this` aqui?", percorra esta lista de cima para baixo e use a primeira regra que se aplicar.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 flowchart TD
+    classDef ok fill:#4A90D9,color:#fff,stroke:none
+    classDef warn fill:#F5A623,color:#fff,stroke:none
     A[Função chamada] --> B{Com new?}
     B -->|Sim| C["this = objeto novo criado\n(new binding)"]:::ok
     B -->|Não| D{Com call/apply/bind?}
@@ -231,8 +232,6 @@ flowchart TD
     H -->|Sim| I["this = undefined\n(default strict)"]:::warn
     H -->|Não| J["this = objeto global\n(default sloppy)"]:::warn
 
-    classDef ok fill:#4A90D9,color:#fff,stroke:none
-    classDef warn fill:#F5A623,color:#fff,stroke:none
 ```
 
 ---

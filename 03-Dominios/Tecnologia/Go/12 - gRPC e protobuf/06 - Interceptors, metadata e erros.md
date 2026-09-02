@@ -51,6 +51,7 @@ Um interceptor é uma função que o gRPC chama **antes** (e, para streams, tamb
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Unario["RPC unário"]
         direction LR
         C1["cliente"] -->|"1 requisição"| I1["UnaryServerInterceptor"]
@@ -66,8 +67,8 @@ flowchart TB
         I2 -.-> C2
     end
 
-    style I1 fill:#F5A623,color:#000
-    style I2 fill:#F5A623,color:#000
+    class I1 destaque
+    class I2 destaque
 ```
 
 **`UnaryServerInterceptor`** recebe o contexto, a requisição, informação sobre o método chamado, e uma função `handler` que — quando chamada — executa o handler de negócio de verdade (ou o próximo interceptor da cadeia):

@@ -49,8 +49,9 @@ Vale a pena percorrer os cinco movimentos com esse mesmo pedido em mente, porque
 Cinco etapas, um pedido, uma jornada inteira até virar decisão. O diagrama abaixo resume o ciclo — e já adianta o ponto central desta nota: as cinco etapas não bastam para descrever o trabalho real.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     G["Geração<br/>OLTP, eventos,<br/>APIs, planilhas, sensores"] --> I["Ingestão<br/>batch / streaming<br/>push / pull"]
     I --> A["Armazenamento<br/>lake / warehouse"]
     A --> T["Transformação<br/>limpar, modelar,<br/>agregar"]
@@ -74,12 +75,12 @@ flowchart LR
     U -.-> T
     U -.-> S
 
-    style G fill:#4A90D9,color:#fff
-    style I fill:#4A90D9,color:#fff
-    style A fill:#4A90D9,color:#fff
-    style T fill:#4A90D9,color:#fff
-    style S fill:#4A90D9,color:#fff
-    style U fill:#F5A623,color:#000
+    class G neutro
+    class I neutro
+    class A neutro
+    class T neutro
+    class S neutro
+    class U destaque
 ```
 
 Repare nas duas setas pontilhadas entre armazenamento e transformação, no sentido de ida e volta: não é acidente de desenho. Um pipeline raramente transforma o dado uma vez só e entrega; ele costuma ler do armazenamento, transformar um pedaço, gravar de volta, ler de novo para o próximo passo. É exatamente por isso que armazenamento aparece no meio do ciclo mas na prática "vaza" para as duas etapas vizinhas — ponto que a próxima seção desenvolve.

@@ -111,7 +111,6 @@ Inline é conveniente para ações pontuais, mas dispersa lógica de server no c
 ## O fluxo completo: form → action → cache → UI
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 sequenceDiagram
     participant B as Browser
     participant C as Next Router (client)

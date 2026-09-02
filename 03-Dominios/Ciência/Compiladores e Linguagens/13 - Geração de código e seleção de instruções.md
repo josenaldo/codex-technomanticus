@@ -60,16 +60,19 @@ Dada uma árvore de IR e um conjunto de padrões de instrução com custos assoc
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     ADD["ADD"] --> MUL["MUL"]
     ADD --> b["b"]
     MUL --> c["c"]
     MUL --> CONST4["CONST 4"]
 
-    style ADD fill:#f9c,stroke:#c66
-    style MUL fill:#cfc,stroke:#6a6
-    style b fill:#eee,stroke:#999
-    style c fill:#eee,stroke:#999
-    style CONST4 fill:#eee,stroke:#999
+    class ADD marca
+    class MUL ok
+    class b neutro
+    class c neutro
+    class CONST4 neutro
 ```
 
 > [!info] Leitura do diagrama

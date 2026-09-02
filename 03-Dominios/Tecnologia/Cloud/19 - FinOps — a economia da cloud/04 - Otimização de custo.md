@@ -26,16 +26,18 @@ Pense em otimização de custo como uma escada: cada degrau economiza mais, mas 
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Degrau 1<br/>Eliminar desperdício<br/><i>esforço: baixo · risco: ~zero</i>"] --> B["Degrau 2<br/>Right-sizing<br/><i>esforço: baixo-médio · risco: baixo</i>"]
     B --> C["Degrau 3<br/>Comprar melhor<br/><i>compromisso RI/Savings/Spot</i><br/><i>esforço: médio · risco: médio</i>"]
     C --> D["Degrau 4<br/>Data transfer<br/><i>o custo escondido</i><br/><i>esforço: médio · risco: baixo</i>"]
     D --> E["Degrau 5<br/>Arquitetura consciente de custo<br/><i>esforço: alto · retorno: o maior</i>"]
 
-    style A fill:#2d6a4f,color:#fff
-    style B fill:#40916c,color:#fff
-    style C fill:#74a892,color:#fff
-    style D fill:#95b8a8,color:#000
-    style E fill:#b7ccbe,color:#000
+    class A ok
+    class B ok
+    class C ok
+    class D ok
+    class E neutro
 ```
 
 A ordem importa: subir a escada fora de ordem — por exemplo, comprar Reserved Instances (degrau 3) antes de eliminar desperdício (degrau 1) — significa comprometer dinheiro de longo prazo pra pagar por recursos que nem deveriam existir. Vamos descer degrau por degrau.

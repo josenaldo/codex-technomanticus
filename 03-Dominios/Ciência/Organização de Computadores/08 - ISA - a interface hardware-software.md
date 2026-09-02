@@ -48,12 +48,13 @@ O diagrama abaixo mostra onde a ISA se encaixa na pilha de abstrações de um si
 
 ```mermaid
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Código C / Rust / Java"] --> B["Compilador / JIT"]
     B --> C["ISA — contrato binário"]
     C --> D["Microarquitetura — pipeline, cache, execução fora de ordem"]
     D --> E["Transistores — CMOS, clock, tensão"]
 
-    style C fill:#f5a623,color:#000,stroke:#c47d0e
+    class C destaque
 ```
 
 **Leitura do diagrama:** o compilador traduz código de alto nível para instruções da ISA. Abaixo da linha laranja, o hardware pode ser redesenhado livremente — o compilador nunca precisa saber. Acima dela, o software escreve para a ISA e só para ela.

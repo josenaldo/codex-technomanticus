@@ -45,6 +45,7 @@ Quando você desenha um grafo planar, as arestas cortam o plano em **regiões**.
 
 ```mermaid
 graph TD
+    classDef v fill:#1f3b57,stroke:#7fb2e6,color:#fff
     A((A)) --- B((B))
     B --- C((C))
     C --- D((D))
@@ -54,7 +55,6 @@ graph TD
     B:::v
     C:::v
     D:::v
-    classDef v fill:#1f3b57,stroke:#7fb2e6,color:#fff
 ```
 
 Esse desenho é um quadrado A-B-C-D com a diagonal A-C.
@@ -163,6 +163,9 @@ A palavra "vizinho" aqui é a fonte de todo o poder prático. Vizinhos = coisas 
 
 ```mermaid
 graph TD
+    classDef azul fill:#2563eb,stroke:#fff,color:#fff
+    classDef verm fill:#dc2626,stroke:#fff,color:#fff
+    classDef verde fill:#16a34a,stroke:#fff,color:#fff
     A((A azul)):::azul
     B((B vermelho)):::verm
     C((C verde)):::verde
@@ -171,9 +174,6 @@ graph TD
     A --- C
     B --- C
     C --- D
-    classDef azul fill:#2563eb,stroke:#fff,color:#fff
-    classDef verm fill:#dc2626,stroke:#fff,color:#fff
-    classDef verde fill:#16a34a,stroke:#fff,color:#fff
 ```
 
 **Leitura do diagrama.** Veja o triângulo A-B-C: três vértices, todos vizinhos entre si. Eles **exigem** três cores diferentes (azul, vermelho, verde) — não dá pra fazer com menos. O vértice D só toca C (verde), então pode reaproveitar vermelho. Resultado: χ = 3. Regra de bolso: um triângulo já força χ ≥ 3, e qualquer **clique** de tamanho k força χ ≥ k.
@@ -292,12 +292,12 @@ Em português: **nenhum grupo de pessoas pode estar disputando menos opções do
 
 ```mermaid
 graph TD
+    classDef bad fill:#7f1d1d,stroke:#fca5a5,color:#fff
     S["Subconjunto S do lado X<br/>3 trabalhadores"]
     N["Vizinhança N de S<br/>só 2 tarefas alcançáveis"]
     S -->|"|S| = 3"| CHK{"|N de S| ≥ |S|?"}
     N -->|"|N| = 2"| CHK
     CHK -->|"2 ≥ 3 é FALSO"| FAIL["Sem matching que sature X"]
-    classDef bad fill:#7f1d1d,stroke:#fca5a5,color:#fff
     class FAIL bad
 ```
 

@@ -30,6 +30,10 @@ O mesmo acontece com sessões longas do Claude Code. Contexto acumulado cria vi�
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     orquestrador["Agente orquestrador\n(planeja e coordena)"]
 
     sub1["Sub-agent A\nPaymentService\ncontexto: payment interfaces\n+ Stripe config"]
@@ -45,11 +49,11 @@ flowchart TB
     sub2 -->|resultado| resultado
     sub3 -->|resultado| resultado
 
-    style orquestrador fill:#f3f0ff,stroke:#7950f2
-    style sub1 fill:#e8f4f8,stroke:#339af0
-    style sub2 fill:#fff3e0,stroke:#ff9800
-    style sub3 fill:#f0fff4,stroke:#51cf66
-    style resultado fill:#f3f0ff,stroke:#7950f2
+    class orquestrador marca
+    class sub1 neutro
+    class sub2 destaque
+    class sub3 ok
+    class resultado marca
 ```
 
 > [!summary] A regra de ouro do dispatch: passe o contexto mínimo suficiente. Sub-agent que recebe contexto demais vai ter os mesmos problemas de bias que uma sessão longa. Sub-agent que recebe contexto de menos vai inventar convenções.

@@ -79,6 +79,7 @@ Esse é o padrão central — uma janela quebrada vira o gatilho de um ciclo que
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Uma bagunca visivel<br/>nao-consertada"] --> B["Sinal: 'aqui ninguem liga'"]
     B --> C["Proximo dev nao sente<br/>culpa de adicionar a sua"]
     C --> D["Mais bagunca tolerada"]
@@ -86,8 +87,8 @@ flowchart TD
     E -->|realimentacao social| B
     E --> F["Big Ball of Mud"]
 
-    style A fill:#fde2e2,stroke:#c0392b
-    style F fill:#3a1212,color:#fff,stroke:#c0392b
+    class A falha
+    class F falha
 ```
 
 Leitura do diagrama: o nó vermelho-escuro (a bola de lama) não é a causa, é o *destino* de um laço que se realimenta — cada volta no ciclo "ninguém liga → mais bagunça → régua mais baixa" empurra o sistema mais fundo no lodo. Quebrar o laço é barato no início (consertar uma janela) e quase impossível no fim.
@@ -175,6 +176,8 @@ As quatro juntas formam um laço que se reforça — e é por isso que "vai deca
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     I["Lei I: Mudanca Continua<br/>(adaptar ou ficar obsoleto)"] --> VI["Lei VI: Crescimento Continuo<br/>(mais funcao pra satisfazer)"]
     VI --> II["Lei II: Complexidade Crescente<br/>(cada mudanca adiciona desordem)"]
     II --> VII["Lei VII: Qualidade Declinante<br/>(a qualidade parece cair)"]
@@ -182,8 +185,8 @@ flowchart TD
     II -.->|'unless explicit work is done'| E["Trabalho explicito:<br/>refatorar, simplificar"]
     E -.->|injeta energia,<br/>quebra o laco| II
 
-    style II fill:#fde2e2,stroke:#c0392b
-    style E fill:#e2f0d9,stroke:#27ae60
+    class II falha
+    class E ok
 ```
 
 Leitura do diagrama: o ciclo vermelho (I → VI → II → VII → I) é um *loop de reforço* — cada lei alimenta a próxima, e a queda de qualidade fecha de volta no topo, gerando mais demanda por mudança. A única saída é a seta verde tracejada: o "trabalho explícito" da Lei II, que é a *única* coisa que interrompe o laço.
@@ -217,6 +220,8 @@ A diferença prática é de *intenção*. Erosão é quebrar a regra que você c
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     P["Arquitetura PRETENDIDA<br/>(diagramas, decisoes,<br/>intencao do desenho)"]
     R["Arquitetura REAL<br/>(o que o codigo de fato faz)"]
 
@@ -232,9 +237,9 @@ flowchart LR
 
     R --> G["Fenda crescente<br/>= apodrecimento arquitetural"]
 
-    style P fill:#e2f0d9,stroke:#27ae60
-    style R fill:#fde2e2,stroke:#c0392b
-    style G fill:#3a1212,color:#fff,stroke:#c0392b
+    class P ok
+    class R falha
+    class G falha
 ```
 
 Leitura do diagrama: as duas caixas de cima são a *mesma* arquitetura vista de dois lugares — o que se quis (verde) e o que se construiu (vermelho). No dia zero elas quase coincidem (a seta tracejada fina). Erosão e deriva são as *duas máquinas* que alargam a fenda entre elas; o resultado, embaixo, é o apodrecimento arquitetural — a versão estrutural da entropia que as outras seções descreveram átomo a átomo.
@@ -291,6 +296,9 @@ A imagem que amarra tudo é a da entropia ao longo do tempo. Sem energia injetad
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph SemEnergia["Sem manutencao (sistema 'fechado')"]
         S0["Dia 0: ordem alta"] --> S1["Cada mudanca<br/>deposita desordem"]
         S1 --> S2["Janelas quebradas<br/>se acumulam"]
@@ -305,9 +313,9 @@ flowchart TD
         E3 --> E1
     end
 
-    style S4 fill:#3a1212,color:#fff,stroke:#c0392b
-    style E3 fill:#e2f0d9,stroke:#27ae60
-    style E2 fill:#d9e8f5,stroke:#2e6da4
+    class S4 falha
+    class E3 ok
+    class E2 neutro
 ```
 
 Leitura do diagrama: os dois fluxos partem do *mesmo* ponto (ordem alta, dia 0) e enfrentam a *mesma* força (cada mudança deposita desordem). A diferença é só a caixa azul à direita — a injeção deliberada de energia — que transforma uma linha reta rumo ao lodo num laço estável que segura a entropia plana. O default é a coluna da esquerda; a saúde é uma escolha que custa a coluna da direita, sempre.

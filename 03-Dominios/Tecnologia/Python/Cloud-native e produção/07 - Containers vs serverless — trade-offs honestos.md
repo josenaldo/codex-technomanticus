@@ -49,8 +49,9 @@ Agora, hipoteticamente, se o mesmo volume de tráfego de `tarefas-service` — c
 `notificacoes-service`, com o padrão em rajadas que a nota 06 já descreveu, inverte a conta: se ele rodasse como um `Deployment` de 1-2 réplicas sempre de pé — a única opção nativa em Kubernetes puro, que não faz scale-to-zero sem extensões como KEDA —, essas réplicas ficariam ociosas na maior parte das 24 horas do dia, cobrando o preço cheio de capacidade alocada mesmo nos vales longos e silenciosos entre rajadas. Como Lambda, o mesmo serviço custa próximo de zero nesses vales — não existe ambiente de execução rodando, não existe cobrança — e paga só pelos segundos de CPU efetivamente usados durante as rajadas.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph EIXO["Custo em função da taxa de utilização"]
         direction LR
         BAIXA["Utilização baixa<br/>(rajadas, vales longos)<br/>notificacoes-service"]
@@ -63,10 +64,10 @@ flowchart LR
     BAIXA -.->|"custo maior"| K8S2["Kubernetes<br/>paga capacidade ociosa"]
     ALTA -.->|"custo maior"| LAMBDA2["Serverless<br/>paga preço cheio<br/>por invocação, sempre"]
 
-    style LAMBDA fill:#4A90D9,color:#fff
-    style K8S fill:#4A90D9,color:#fff
-    style K8S2 fill:#D0021B,color:#fff
-    style LAMBDA2 fill:#D0021B,color:#fff
+    class LAMBDA neutro
+    class K8S neutro
+    class K8S2 falha
+    class LAMBDA2 falha
 ```
 
 > [!tip] A pergunta certa não é "qual é mais barato", é "em que ponto da curva de utilização meu serviço está"
@@ -129,8 +130,9 @@ Toda função AWS Lambda tem um **timeout máximo configurável de até 15 minut
 Isso descarta Lambda, sem meio-termo, pra qualquer processamento que rotineiramente ultrapasse esse teto: um relatório que agrega meses de dados, um job de reprocessamento em lote de milhões de registros, um pipeline de ETL de longa duração. Um **worker Kubernetes** — um Pod comum, sem nenhum `Service` na frente, processando itens de uma fila em loop — não tem teto de tempo de execução nenhum. Ele roda o tempo que o processamento exigir, limitado só pelos `resources.limits` de CPU/memória (nota 03) e pela disponibilidade do próprio cluster, não por um limite de tempo artificial imposto pela plataforma.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     START["Processamento a fazer"]
     START --> Q{"Duração típica<br/>ultrapassa 15 minutos?"}
     Q -->|"Sim, rotineiramente"| K8SWORKER["Worker Kubernetes<br/>(Pod sem teto de tempo,<br/>só limits.cpu/memory)"]
@@ -138,9 +140,9 @@ flowchart TB
     Q2 -->|"Sim"| K8SDEP["Deployment + HPA<br/>(nota 02, nota 05)"]
     Q2 -->|"Não, em rajadas/esporádico"| LAMBDA["Lambda + Mangum<br/>(nota 06)"]
 
-    style K8SWORKER fill:#4A90D9,color:#fff
-    style K8SDEP fill:#4A90D9,color:#fff
-    style LAMBDA fill:#F5A623,color:#000
+    class K8SWORKER neutro
+    class K8SDEP neutro
+    class LAMBDA destaque
 ```
 
 > [!question]- E se um processamento estiver perto do limite, tipo 12-13 minutos — dá pra confiar em Lambda mesmo assim?
@@ -153,8 +155,9 @@ Os quatro eixos anteriores tratam a decisão como binária — um serviço intei
 Esse padrão generaliza bem além do caso específico da trilha. Um sistema real raramente é "tudo Kubernetes" ou "tudo serverless" — é comum ver a API pública de alto tráfego em containers com HPA, um job de geração de relatório noturno como worker Kubernetes (porque ultrapassa o teto de 15 minutos), e um handler de webhook esporádico de terceiros como função Lambda (porque o tráfego é imprevisível e raro). Tratar a decisão como "escolher uma plataforma pra empresa inteira" é o mesmo erro de enquadramento que o [!warning] da nota 01 já nomeou — só que em escala maior.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph SISTEMA["O mesmo sistema, decisão componente a componente"]
         direction TB
         A["tarefas-service<br/>API HTTP, tráfego constante"] --> K8S1["Kubernetes + HPA<br/>(nota 05)"]
@@ -163,10 +166,10 @@ flowchart TB
         D["Job de relatório mensal<br/>duração > 15 min"] --> K8S2["Worker Kubernetes<br/>(CronJob, sem teto de tempo)"]
     end
 
-    style K8S1 fill:#4A90D9,color:#fff
-    style K8S2 fill:#4A90D9,color:#fff
-    style LAMBDA1 fill:#F5A623,color:#000
-    style LAMBDA2 fill:#F5A623,color:#000
+    class K8S1 neutro
+    class K8S2 neutro
+    class LAMBDA1 destaque
+    class LAMBDA2 destaque
 ```
 
 > [!tip] "Híbrido" não é indecisão — é aplicar o mesmo critério peça por peça

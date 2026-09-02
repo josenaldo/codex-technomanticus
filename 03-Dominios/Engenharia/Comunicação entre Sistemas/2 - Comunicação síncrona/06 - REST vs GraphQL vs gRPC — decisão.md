@@ -52,8 +52,9 @@ Seis critérios recorrem em praticamente toda decisão real de arquitetura de AP
 | **Streaming** | Não nativo (poll ou SSE à parte) | Subscriptions (via WebSocket, separado do modelo request-response) | Nativo — 4 tipos: unary, server, client, bidirectional |
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q{"Quem consome<br/>esta fronteira?"}
     Q -->|"Público externo,<br/>desconhecido"| R1{"Precisa de cache<br/>HTTP/CDN nativo?"}
     Q -->|"Interno,<br/>time próprio controla"| R2{"Latência/throughput<br/>são críticos?"}
@@ -65,10 +66,10 @@ graph TD
     R2 -->|"Sim"| GRPC1["gRPC + Protobuf"]
     R2 -->|"Não, CRUD simples<br/>entre 2 serviços"| REST2["REST interno<br/>(simples > otimizado)"]
 
-    style REST1 fill:#4A90D9,color:#fff
-    style REST2 fill:#4A90D9,color:#fff
-    style GQ fill:#F5A623,color:#000
-    style GRPC1 fill:#4A90D9,color:#fff
+    class REST1 neutro
+    class REST2 neutro
+    class GQ destaque
+    class GRPC1 neutro
 ```
 
 Repare que a árvore não tem um nó "vermelho" — nenhum dos três é "errado" em abstrato. O único uso genuinamente arriscado é aplicar a árvore inteira à fronteira errada: gRPC numa API pública consumida por navegador sem proxy (quebra, porque browsers não falam HTTP/2 puro), ou GraphQL numa API interna simples de dois serviços que só trocam um payload fixo (complexidade sem retorno).
@@ -103,8 +104,9 @@ A conclusão prática de tudo até aqui — cada estilo vence numa fronteira dif
 O padrão que emerge dessas três histórias — e se repete em GitHub, Airbnb e The New York Times — tem um nome comum na indústria: **Backend for Frontend (BFF)**. A ideia central: internamente, os serviços conversam entre si via REST ou gRPC (o que for mais adequado por par de serviços); e uma camada de agregação dedicada — geralmente GraphQL, às vezes um BFF REST customizado por tipo de cliente — fica entre esses serviços e os clientes finais, moldando os dados especificamente para o que cada tela ou cada app precisa. A Netflix, num estágio anterior da própria evolução, chegou a implementar BFFs literalmente como scripts (em Groovy) escritos pelos próprios desenvolvedores de UI — cada um sabendo exatamente que dado a própria tela precisava, e cada script funcionando como cliente fino de serviços gRPC ou REST por trás ([InfoQ, *Evolving the Federated GraphQL Platform at Netflix*](https://www.infoq.com/articles/federated-GraphQL-platform-Netflix/)).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Clientes
         Mobile["App mobile"]
         Web["App web"]
@@ -135,8 +137,8 @@ graph LR
     S1 -->|"gRPC"| S2
     S2 -->|"gRPC"| S3
 
-    style GQL fill:#F5A623,color:#000
-    style REST_pub fill:#4A90D9,color:#fff
+    class GQL destaque
+    class REST_pub neutro
 ```
 
 > [!question]- Se o padrão híbrido é tão comum, por que ainda existe debate "REST vs GraphQL" como se fosse escolha única?
@@ -232,16 +234,17 @@ Documentar o contrato resolve metade do problema — a outra metade é garantir 
 **Pact** ataca um problema estruturalmente diferente dos dois anteriores, e por isso é o mais relevante numa arquitetura de microsserviços: **contract testing consumer-driven**. Em vez de validar contra um documento estático, Pact gera o contrato a partir do que o **consumidor** realmente usa da resposta — se o serviço provedor devolve trinta campos mas um consumidor específico só lê quatro, o contrato daquele par consumidor-provedor cobre só esses quatro campos. Isso significa que o provedor pode adicionar campos novos, reordenar o payload, ou mudar partes que nenhum consumidor toca, sem quebrar nada — o contrato só protege o que de fato importa para quem consome ([Pact Docs, *Introduction*](https://docs.pact.io/)). Isso resolve um problema real de escala organizacional: numa arquitetura com dezenas de serviços e times, testar end-to-end tudo contra tudo é caro demais e lento demais para rodar em todo PR; Pact permite que cada time valide, de forma isolada e rápida, que não quebrou ninguém que dependa dele — sem precisar subir o sistema inteiro.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     C["Consumidor<br/>(ex.: app mobile)"] -->|"1. gera expectativa<br/>do que usa"| PB["Pact Broker"]
     PB -->|"2. provedor busca<br/>contratos publicados"| P["Provedor<br/>(ex.: serviço de agenda)"]
     P -->|"3. roda testes contra<br/>cada contrato"| V{"Contrato<br/>satisfeito?"}
     V -->|"Sim"| OK["Deploy liberado"]
     V -->|"Não"| FAIL["Bloqueia deploy —<br/>quebraria o consumidor"]
 
-    style OK fill:#4A90D9,color:#fff
-    style FAIL fill:#D0021B,color:#fff
+    class OK neutro
+    class FAIL falha
 ```
 
 Um desenho de mercado, para 2026, combina as três ferramentas em momentos diferentes do ciclo: Prism cedo, quando o backend ainda não existe e o front-end precisa de algo para integrar; Pact continuamente, entre serviços internos, como gate de CI antes de qualquer deploy; Dredd (ou seu sucessor mais ativo, Schemathesis) como verificação periódica de que a documentação pública não mentiu ([The Chaos and Order Blog, *API Contract Testing & API Tooling 2026 Deep-Dive*](https://www.youngju.dev/blog/culture/2026-05-25-api-contract-testing-pact-bruno-hoppscotch-msw-karate-schemathesis-2026-deep-dive.en)). GraphQL tem seu próprio ecossistema de validação de schema (linters de breaking change, como o GraphQL Inspector), e gRPC se beneficia de checagem de compatibilidade em nível de `.proto` (o `buf breaking` da Buf detecta mudanças que quebrariam clientes gerados) — mas o princípio por trás de todos é o mesmo: o contrato só vale alguma coisa se alguma automação garante, continuamente, que ninguém o violou silenciosamente.

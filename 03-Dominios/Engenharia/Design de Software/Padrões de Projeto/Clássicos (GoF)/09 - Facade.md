@@ -34,16 +34,17 @@ O ponto não é esconder que os subsistemas existem (você ainda pode usá-los d
 ## A ideia
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Cliente -->|"checkout(req)"| F[CheckoutFacade]
     F --> E[EstoqueService]
     F --> P[PagamentoGateway]
     F --> O[PedidoRepository]
     F --> N[NotificacaoService]
 
-    style F fill:#4A90D9,color:#fff
-    style Cliente fill:#F5A623,color:#000
+    class F neutro
+    class Cliente destaque
 ```
 
 O cliente conhece só a fachada. A fachada conhece — e coordena — o subsistema. A seta de dependência para as quatro classes internas fica **contida** num lugar só.

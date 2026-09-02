@@ -271,6 +271,9 @@ As cinco notas anteriores deram profundidade a cada resposta; esta árvore aplic
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     Q1{"Quantas instâncias<br/>precisam acessar<br/>este dado ao mesmo tempo?"}
 
     Q1 -->|"Uma só,<br/>como um disco dedicado"| Q2{"O dado precisa de<br/>I/O de baixa latência<br/>e alto IOPS?"}
@@ -285,9 +288,9 @@ flowchart TD
     Q2 -->|"Não, mas precisa<br/>compartilhar"| Q4
     Q3 -->|"Não, precisa de<br/>edição parcial"| Q4
 
-    style Block fill:#245,color:#fff
-    style Object fill:#622,color:#fff
-    style File fill:#262,color:#fff
+    class Block neutro
+    class Object falha
+    class File ok
 ```
 
 Vale nomear a leitura desta árvore em uma frase por ramo: block storage vence quando a resposta é "uma máquina, rápido, dedicado"; object storage vence quando a resposta é "muitos clientes, por chave, objeto inteiro"; file storage vence quando a resposta é "muitas máquinas, mesma pasta, editando de verdade" — o único dos três cenários que nem block (uma instância só) nem object (sem edição parcial nativa) resolvem sozinhos.
@@ -308,6 +311,9 @@ A nota 01 fechou com uma versão resumida deste cenário; esta nota aplica a mes
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     User(("Cliente / navegador"))
 
     subgraph VPC["VPC da loja (galho 7)"]
@@ -337,10 +343,10 @@ flowchart TB
     Pipe1 & Pipe2 -->|"GET original / PUT miniatura"| S3Bucket
     User -.->|"GET direto,<br/>sem passar pela frota"| S3Bucket
 
-    style S3Bucket fill:#622,color:#fff
-    style EFSConfig fill:#262,color:#fff
-    style EBSBoot fill:#245,color:#fff
-    style EBSDados fill:#245,color:#fff
+    class S3Bucket falha
+    class EFSConfig ok
+    class EBSBoot neutro
+    class EBSDados neutro
 ```
 
 Cada seta desse diagrama é uma decisão justificada, não uma escolha arbitrária:

@@ -86,15 +86,16 @@ Aqui o axe roda no Chromium (ou Firefox/WebKit) real, sobre a página com todo o
 Somando as camadas, emerge uma pirâmide que espelha a de testes tradicional:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     M["Manual (nota 15) — a metade que a máquina não vê<br/>teclado, leitor de tela, julgamento"]
     E["E2E: Playwright + axe — página real, múltiplos estados"]
     U["Unit/componente: Testing Library + jest/vitest-axe<br/>semântica forçada + varredura por componente"]
     U --> E --> M
-    style U fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style M fill:#F5A623,color:#000
+    class U neutro
+    class E neutro
+    class M destaque
 ```
 
 Muitos testes de componente (baratos, rápidos, rodam a cada save), alguns testes E2E por fluxo crítico (checkout, cadastro, login), e — coroando tudo, insubstituível — a auditoria manual. As duas camadas de baixo são o que você automatiza no CI; a de cima é humana e é a próxima nota.

@@ -27,6 +27,8 @@ Por que isso importa de verdade? Pergunte a si mesmo: se ninguém de fora depend
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     Cliente([Cliente]) -->|chama| API
 
     subgraph Objeto["Objeto Conta"]
@@ -36,8 +38,8 @@ flowchart LR
 
     Cliente -.x NÃO acessa.-x Estado
 
-    style API fill:#1b5e20,color:#fff
-    style Estado fill:#4a148c,color:#fff
+    class API ok
+    class Estado marca
 ```
 
 **Leitura do diagrama:** o cliente só alcança a casca verde (a interface). A linha pontilhada cortada mostra o caminho proibido: tocar o estado roxo diretamente. A interface fica *entre* o cliente e o estado, e é exatamente esse "entre" que dá a você liberdade de mexer no roxo sem avisar ninguém.
@@ -80,6 +82,8 @@ Repare: não existe nenhuma forma, de fora, de deixar `saldoCentavos` abaixo de 
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A[Cliente chama sacar 100] --> B{valor positivo?}
     B -->|não| X1[lança exceção]
     B -->|sim| C{saldo menos valor<br/>respeita o limite?}
@@ -87,8 +91,8 @@ flowchart TD
     C -->|sim| D[muta o estado<br/>saldo menos 100]
     D --> E[objeto continua válido]
 
-    style C fill:#4a148c,color:#fff
-    style E fill:#1b5e20,color:#fff
+    class C marca
+    class E ok
 ```
 
 **Leitura do diagrama:** todo caminho que muta o estado (a caixa final) só é alcançado **depois** de passar pelos dois portões de validação (losangos). Não há atalho. O cliente nunca consegue empurrar o objeto para um estado inválido — as exceções barram as rotas ruins antes de qualquer mutação acontecer.

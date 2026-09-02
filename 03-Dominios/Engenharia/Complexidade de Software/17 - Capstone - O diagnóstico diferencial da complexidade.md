@@ -50,6 +50,13 @@ E aqui está o custo de pular esta etapa: as cinco causas abaixo produzem **o me
 
 ```mermaid
 flowchart TD
+    classDef sintoma fill:#4A90D9,stroke:#2E5F8F,color:#fff
+    classDef essencial fill:#F5A623,stroke:#A8701A,color:#000
+    classDef acidental fill:#F5A623,stroke:#A8701A,color:#000
+    classDef divida fill:#F5A623,stroke:#A8701A,color:#000
+    classDef entropia fill:#F5A623,stroke:#A8701A,color:#000
+    classDef conway fill:#F5A623,stroke:#A8701A,color:#000
+    classDef trat fill:#fff,stroke:#4A90D9,color:#000
     S["Sintoma: 'está difícil mudar'"]:::sintoma
 
     S --> D1["Complexidade essencial<br/>o domínio é assim"]:::essencial
@@ -64,13 +71,6 @@ flowchart TD
     D4 --> T4["Injetar energia contínua"]:::trat
     D5 --> T5["Mexer nas fronteiras de time"]:::trat
 
-    classDef sintoma fill:#4A90D9,stroke:#2E5F8F,color:#fff
-    classDef essencial fill:#F5A623,stroke:#A8701A,color:#000
-    classDef acidental fill:#F5A623,stroke:#A8701A,color:#000
-    classDef divida fill:#F5A623,stroke:#A8701A,color:#000
-    classDef entropia fill:#F5A623,stroke:#A8701A,color:#000
-    classDef conway fill:#F5A623,stroke:#A8701A,color:#000
-    classDef trat fill:#fff,stroke:#4A90D9,color:#000
 ```
 
 Um sintoma, cinco causas, cinco tratamentos que não se substituem. É isso que torna o diagnóstico obrigatório.
@@ -154,6 +154,10 @@ Já os quatro formatos de configuração são o oposto: cada um é uma [[06 - Ab
 
 ```mermaid
 flowchart LR
+    classDef ruim fill:#D0021B,stroke:#8B0113,color:#fff
+    classDef erro fill:#D0021B,stroke:#8B0113,color:#fff
+    classDef bom fill:#4A90D9,stroke:#2E5F8F,color:#fff
+    classDef ok fill:#F5A623,stroke:#A8701A,color:#000
     subgraph antes["Como o time vê"]
         A1["CalculadoraDeFrete<br/>4.100 linhas"]:::ruim
         A1 --> A2["'Precisa quebrar<br/>em 15 classes'"]:::erro
@@ -166,10 +170,6 @@ flowchart LR
         B3 --> B4["Acidental:<br/>remover"]:::ok
     end
 
-    classDef ruim fill:#D0021B,stroke:#8B0113,color:#fff
-    classDef erro fill:#D0021B,stroke:#8B0113,color:#fff
-    classDef bom fill:#4A90D9,stroke:#2E5F8F,color:#fff
-    classDef ok fill:#F5A623,stroke:#A8701A,color:#000
 ```
 
 ## Lente 4 — O tempo e a direção da curva
@@ -184,6 +184,9 @@ Isso muda a urgência, não o diagnóstico. E acrescenta uma leitura de [[15 - P
 
 ```mermaid
 flowchart LR
+    classDef vermelho fill:#D0021B,stroke:#8B0113,color:#fff
+    classDef ambar fill:#F5A623,stroke:#A8701A,color:#000
+    classDef azul fill:#4A90D9,stroke:#2E5F8F,color:#fff
     I["Incidente de<br/>faturamento"]:::vermelho --> T["Tempo do time<br/>em apagar incêndio"]:::vermelho
     T --> M["Menos energia para<br/>entender e limpar"]:::ambar
     M --> D["Dívida cognitiva<br/>e entropia crescem"]:::ambar
@@ -191,9 +194,6 @@ flowchart LR
 
     R["Reescrita proposta<br/>(6 meses)"]:::azul -.->|"congela o<br/>investimento"| M
 
-    classDef vermelho fill:#D0021B,stroke:#8B0113,color:#fff
-    classDef ambar fill:#F5A623,stroke:#A8701A,color:#000
-    classDef azul fill:#4A90D9,stroke:#2E5F8F,color:#fff
 ```
 
 O laço explica por que o time propôs reescrever: de dentro dele, a saída parece impossível, porque cada mês tem menos folga que o anterior. A proposta de reescrita é **um sintoma do laço**, não uma solução para ele.

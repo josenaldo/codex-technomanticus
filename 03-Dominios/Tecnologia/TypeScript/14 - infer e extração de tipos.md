@@ -43,6 +43,8 @@ O `infer R` só é válido dentro de um conditional type. Você não pode escrev
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     T["T = () => string"]
     PAD["padrão: (...args: any[]) => infer R"]
     CHK{"T extends padrão?"}
@@ -54,8 +56,8 @@ flowchart LR
     CHK -->|"compatível"| YES
     YES --> RES
 
-    style YES fill:#1f6feb,color:#fff
-    style RES fill:#333,color:#fff
+    class YES neutro
+    class RES marca
 ```
 
 ---
@@ -409,6 +411,7 @@ Agora podemos usar `Resultados` para tipar qualquer coisa que consuma os retorno
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     H["typeof handlers"]
     
     subgraph HandlerReturns
@@ -424,7 +427,7 @@ flowchart LR
     K2 --> R
     K3 --> R
 
-    style R fill:#1f6feb,color:#fff
+    class R neutro
 ```
 
 ---

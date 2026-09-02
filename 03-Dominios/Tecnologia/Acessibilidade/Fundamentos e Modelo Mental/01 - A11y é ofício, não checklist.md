@@ -58,16 +58,17 @@ Pegue o eixo motor, "usar um único braço":
 A interface que funciona com um braço só serve às três. O mesmo vale para os outros eixos: alguém cego / alguém em recuperação de cirurgia ocular / alguém dirigindo ao sol com o parabrisa estourando de luz. Alguém surdo / alguém com uma otite / alguém num bar barulhento.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     P["Permanente<br/>um braço"] --> S["a mesma interface<br/>de um-braço-só"]
     T["Temporário<br/>braço quebrado"] --> S
     Si["Situacional<br/>bebê no colo"] --> S
     S --> M["26 mil permanentes<br/>+20 milhões no total"]
-    style P fill:#4A90D9,color:#fff
-    style T fill:#F5A623,color:#000
-    style Si fill:#F5A623,color:#000
-    style M fill:#4A90D9,color:#fff
+    class P neutro
+    class T destaque
+    class Si destaque
+    class M neutro
 ```
 
 > [!info] "Solve for one, extend to many"

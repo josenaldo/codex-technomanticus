@@ -295,15 +295,17 @@ A parte nova é a regra de acesso ao *stream em si*, documentada explicitamente 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Cliente["Cliente — 2 goroutines"]
         GS["goroutine\nSend loop"] -->|escreve no stream| ST["Stream HTTP/2"]
         ST -->|entrega ao| GR["goroutine\nRecv loop"]
     end
     GR -.->|"close(done)\nao ver io.EOF"| DONE(["channel done"])
 
-    style GS fill:#4A90D9,color:#fff
-    style GR fill:#F5A623,color:#000
-    style ST fill:#7ED321,color:#000
+    class GS neutro
+    class GR destaque
+    class ST destaque
 ```
 
 Esse padrão — uma goroutine emissora, uma goroutine receptora, um `channel` (`done`, no exemplo) só para sinalizar "a leitura acabou" — não é um truque específico de gRPC. É o mesmo padrão produtor/consumidor que qualquer código Go concorrente usa para coordenar duas goroutines que precisam correr em paralelo sem compartilhar estado mutável diretamente: o `channel` substitui um mutex, porque a única coisa que precisa ser comunicada é "terminei".

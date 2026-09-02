@@ -35,8 +35,10 @@ Engenheiros tendem a pular direto para factibilidade — é a dimensão mais con
 Depois de listar as premissas nas três categorias, o passo seguinte é posicioná-las num quadrante de duas dimensões:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Q["Importância x Evidência"]
         direction LR
         A["Alta importância<br/>Baixa evidência<br/>= TESTAR PRIMEIRO"]
@@ -44,10 +46,10 @@ graph TD
         C["Baixa importância<br/>Baixa evidência<br/>= ignorar por ora"]
         D["Baixa importância<br/>Alta evidência<br/>= não gasta mais tempo"]
     end
-    style A fill:#D0021B,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#4A90D9,color:#fff
+    class A falha
+    class B neutro
+    class C destaque
+    class D neutro
 ```
 
 - **Importância** — se essa premissa estiver errada, o quanto isso derruba a solução inteira? (não a sua opinião sobre o quanto ela importa — o impacto real se ela falhar)

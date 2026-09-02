@@ -160,8 +160,9 @@ Repare também que `ref_count` em `blocks` é o que torna a deleção segura: qu
 ## Diagrama macro
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     C1["Cliente<br/>(laptop)"] -- "1. metadata:<br/>init upload" --> META
     C1 -- "2. bytes dos blocos<br/>(paralelo, direto)" --> BLOCK
 
@@ -177,8 +178,8 @@ graph TD
     C2 -- "GET blocos faltantes" --> CDN["CDN / edge cache<br/>(downloads quentes)"]
     CDN -.->|"cache miss"| BLOCK
 
-    style META fill:#4A90D9,stroke:#2E5C8A,color:#fff
-    style BLOCK fill:#F5A623,stroke:#2E5C8A,color:#000
+    class META neutro
+    class BLOCK destaque
 ```
 
 A separação no centro do diagrama é a decisão de arquitetura mais importante da nota: **metadata service** e **block storage** não são só dois componentes, são dois *sistemas com requisitos opostos*, e tratá-los como um só é o erro mais comum da resposta ingênua da abertura.
@@ -207,7 +208,6 @@ A decisão nasce de três problemas concretos que "subir o arquivo inteiro como 
 **Paralelismo.** Blocos independentes podem subir em paralelo, em conexões TCP diferentes, possivelmente para servidores de armazenamento diferentes — o que reduz o tempo total de upload de arquivos grandes de forma quase linear com o número de conexões paralelas abertas, até o limite de banda do link do cliente.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
     F["Arquivo de 12MB"] --> B1["Bloco 1<br/>(4MB)<br/>hash: a1b2..."]
     F --> B2["Bloco 2<br/>(4MB)<br/>hash: c3d4..."]
@@ -268,7 +268,6 @@ O mecanismo de "delta desde X" depende de um **cursor** — um ponteiro opaco (p
 **Conflito de edição concorrente — o caso difícil.** Alice edita o mesmo arquivo no laptop e no celular, ambos offline, e os dois sincronizam quase ao mesmo tempo quando a rede volta. O sistema não tem como saber qual edição é "a certa" — os dois dispositivos genuinamente divergiram. A resposta documentada e usada em produção pelo Dropbox não tenta resolver isso automaticamente: em vez de mesclar (o que arriscaria corromper silenciosamente o conteúdo), o sistema salva **as duas versões**, marcando a mais recente como principal e criando uma **"conflicted copy"** — um arquivo separado com o nome original mais um sufixo identificando o dispositivo/data do conflito — para que o usuário resolva manualmente (ver Fontes).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant L as Laptop (offline)
     participant C as Celular (offline)

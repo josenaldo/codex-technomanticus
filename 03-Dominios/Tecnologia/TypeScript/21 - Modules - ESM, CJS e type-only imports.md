@@ -53,6 +53,8 @@ Antes de ver como o TypeScript lida com os dois, é importante ter clareza sobre
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph CJS["CommonJS (CJS)"]
         direction TB
         CQ["require() é síncrono\n(bloqueia até carregar)"]
@@ -69,8 +71,8 @@ flowchart LR
         EE["export é uma binding\n(somente leitura no importador)"]
     end
 
-    style CJS fill:#3a1a00,color:#fff
-    style ESM fill:#001a3a,color:#fff
+    class CJS destaque
+    class ESM neutro
 ```
 
 O ponto mais importante para o TypeScript é que **ESM é estático**. Quando você escreve `import { foo } from './mod'`, o bundler e o runtime sabem, antes de executar qualquer linha de código, que você depende de `foo` em `'./mod'`. Isso permite tree-shaking, análise estática e — crucialmente para o TS — verificação de tipos precisa.
@@ -95,6 +97,8 @@ No Node 22+, a regra é:
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     FILE["arquivo .js"]
     PKG{{"package.json\ntem 'type': 'module'?"}}
     ESM["Tratado como ESM"]
@@ -108,8 +112,8 @@ flowchart TD
     MJS --> ESM
     CJSF --> CJS
 
-    style ESM fill:#001a3a,color:#fff
-    style CJS fill:#3a1a00,color:#fff
+    class ESM neutro
+    class CJS destaque
 ```
 
 ---
@@ -306,6 +310,8 @@ const u: User = createUser('Ana');
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     IMP["import { Foo } from './mod'"]
     VM{{"verbatimModuleSyntax\nativo?"}}
     USE{{"Foo é usado\ncomo valor?"}}
@@ -321,9 +327,9 @@ flowchart TD
     USE2 -- sim --> EMIT2["Emite o import"]
     USE2 -- não --> ERROR
 
-    style ERROR fill:#5a0000,color:#fff
-    style EMIT fill:#1a472a,color:#fff
-    style EMIT2 fill:#1a472a,color:#fff
+    class ERROR falha
+    class EMIT ok
+    class EMIT2 ok
 ```
 
 ### Por que usar `verbatimModuleSyntax`?
@@ -429,6 +435,9 @@ Quando o `tsc` emite JavaScript, ele mantém `@ui/Button` como está. O runtime 
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     SRC["import { Button } from '@ui/Button'"]
 
     subgraph TS["TypeScript (type-check)"]
@@ -453,9 +462,9 @@ flowchart LR
     RT --> NODE
     RT --> TSPATH
 
-    style NODE fill:#5a0000,color:#fff
-    style VITE fill:#1a472a,color:#fff
-    style TSPATH fill:#1a2a4a,color:#fff
+    class NODE falha
+    class VITE ok
+    class TSPATH neutro
 ```
 
 ### Como resolver em cada ambiente
@@ -577,6 +586,8 @@ class User {
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     TS_FILE["arquivo.ts"]
 
     subgraph NODE24["Node 24+ (type stripping)"]
@@ -594,8 +605,8 @@ flowchart LR
     TS_FILE --> NODE24
     TS_FILE --> TSC
 
-    style NODE24 fill:#001a3a,color:#fff
-    style TSC fill:#1a3a00,color:#fff
+    class NODE24 neutro
+    class TSC ok
 ```
 
 > [!warning] Type stripping não substitui o type-checker

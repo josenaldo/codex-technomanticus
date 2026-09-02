@@ -129,6 +129,9 @@ pedido.aprovar()   # ok — checador sabe que "pedido" é Pedido, não Any
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Pilha genérica<br/>(Generic[T] ou Pilha[T])"] -->|"instanciada com<br/>Pilha[Pedido]"| B["T resolvido como Pedido<br/>nesta instância"]
     A -->|"instanciada com<br/>Pilha[int]"| C["T resolvido como int<br/>nesta instância"]
     A -->|"sem parametrizar,<br/>equivalente a Any implícito"| D["checador não rastreia<br/>o tipo do conteúdo"]
@@ -137,13 +140,13 @@ flowchart TD
     C --> F["empilhar(42) ok<br/>empilhar('texto') — erro estático"]
     D --> G["nenhum erro é pego<br/>até explodir em runtime"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
-    style E fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
-    style G fill:#D0021B,color:#fff
+    class A neutro
+    class B neutro
+    class C neutro
+    class D destaque
+    class E neutro
+    class F neutro
+    class G falha
 ```
 
 Repare que `Pilha[Pedido]` não cria uma classe nova em runtime — é a mesma classe `Pilha`, com metadados extras (uma `_GenericAlias`) que o checador estático consulta. Em runtime, `Pilha[Pedido]().empilhar("texto")` **não** levanta exceção nenhuma — type hints, como visto em [[01 - Type hints — fundamentos e gradual typing|01 — Type hints: fundamentos e gradual typing]], não mudam o comportamento do interpretador. O ganho é inteiramente do checador estático para trás (`mypy`/`pyright`, cobertos na [[04 - mypy e pyright — checagem estática na prática|nota 04]] deste galho) — a checagem acontece **antes** de rodar, não durante.
@@ -234,15 +237,17 @@ Vale a pena marcar com clareza o que a nota da spec deste galho já adiantou: **
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Preciso de uma classe<br/>ou função genérica"] --> B{"Código roda<br/>só em Python 3.12+?"}
     B -->|"sim"| C["sintaxe PEP 695<br/>class Pilha[T]: / def f[T](...)"]
     B -->|"não, precisa<br/>compatibilidade < 3.12"| D["TypeVar + Generic[T]<br/>(estilo clássico)"]
     B -->|"TypeVar precisa ser<br/>compartilhado entre<br/>declarações não relacionadas"| D
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
+    class A neutro
+    class B destaque
+    class C neutro
+    class D neutro
 ```
 
 **PEP 695 em uma frase:** a partir do Python 3.12, `class Pilha[T]:` e `def f[T](x: T) -> T:` substituem `TypeVar` + `Generic[T]` explícitos para os casos comuns, com escopo automático e variância inferida — mas o estilo clássico continua válido e necessário para compatibilidade com versões anteriores.

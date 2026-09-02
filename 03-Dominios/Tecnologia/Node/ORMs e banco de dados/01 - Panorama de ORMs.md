@@ -26,6 +26,8 @@ tags:
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Abstrações["Nível de abstração"]
         SQL["SQL puro\n(pg, mysql2)"]
         QB["Query Builder\n(knex, kysely)"]
@@ -37,10 +39,10 @@ flowchart TD
     QB -->|"+ schema TS"| ORML
     ORML -->|"+ abstração objeto"| ORMF
 
-    style SQL fill:#4A90D9,color:#fff
-    style QB fill:#4A90D9,color:#fff,opacity:0.8
-    style ORML fill:#F5A623,color:#fff
-    style ORMF fill:#F5A623,color:#000
+    class SQL neutro
+    class QB neutro
+    class ORML destaque
+    class ORMF destaque
 ```
 
 ## O que é

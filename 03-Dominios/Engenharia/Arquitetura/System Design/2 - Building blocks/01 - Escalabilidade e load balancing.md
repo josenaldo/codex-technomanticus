@@ -37,7 +37,6 @@ Mas scale-up bate em três paredes. A **física**: existe um limite de CPU/RAM q
 **Scale-out** (escala horizontal) é adicionar mais máquinas, cada uma relativamente modesta, e distribuir a carga entre elas. Em vez de um servidor de 128 cores, dez servidores de 16 cores atrás de um distribuidor de tráfego.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     subgraph SU["Scale-up (vertical)"]
         C1["Cliente"] --> S1["1 servidor<br/>cada vez maior"]
@@ -66,7 +65,6 @@ Se o servidor A guarda "o usuário X está logado" só na própria memória (uma
 Um servidor é **stateless** quando ele não guarda, entre requisições, nenhum dado que outra réplica precisaria para atender o próximo pedido do mesmo cliente. Toda a informação necessária vem *dentro* da própria requisição (um token JWT, por exemplo) ou é buscada de um armazenamento **compartilhado** — um Redis, um banco — que qualquer réplica pode consultar.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
     U["Usuário"] --> LB["Load Balancer"]
     LB --> A["Servidor A<br/>(stateless)"]
@@ -100,7 +98,6 @@ Load balancers operam em duas camadas do modelo de rede, e a diferença não é 
 O custo do L7 é que ele processa mais — abre a conexão duas vezes (cliente↔LB e LB↔servidor) e interpreta o protocolo — então tem mais latência e menos throughput bruto que um L4 puro. Na AWS, essa distinção é literal: o **Network Load Balancer** opera em L4 e o **Application Load Balancer** em L7, sendo o ALB o que roteia por conteúdo da requisição HTTP.[^1]
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     REQ["Requisição chega"] --> L4{"LB em L4?"}
     L4 -->|"sim"| PKT["Vê só IP:porta<br/>roteia o pacote<br/>rápido, cego ao conteúdo"]

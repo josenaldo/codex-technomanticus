@@ -159,6 +159,9 @@ Esta é a seção que separa quem decorou "o GIL trava tudo" de quem entende o m
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Start["Thread quer executar código"] --> HasGIL{"Segura o GIL?"}
     HasGIL -- Não --> Wait["Espera na fila do GIL"]
     Wait --> HasGIL
@@ -170,13 +173,13 @@ flowchart TB
     External --> Reacquire["Py_END_ALLOW_THREADS\n(readquire o GIL)"]
     Reacquire --> Bytecode
 
-    style Start fill:#4A90D9,color:#fff
-    style HasGIL fill:#4A90D9,color:#fff
-    style Bytecode fill:#4A90D9,color:#fff
-    style Blocking fill:#F5A623,color:#000
-    style Release fill:#F5A623,color:#000
-    style External fill:#D0021B,color:#fff
-    style Reacquire fill:#F5A623,color:#000
+    class Start neutro
+    class HasGIL neutro
+    class Bytecode neutro
+    class Blocking destaque
+    class Release destaque
+    class External falha
+    class Reacquire destaque
 ```
 
 Os três casos concretos em que isso acontece:

@@ -231,6 +231,8 @@ A regra prática: diante de um teste vermelho, prefira sempre a transformação 
 
 ```mermaid
 flowchart BT
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     T1["1 · {} → nil"] --> T2["2 · nil → constante"]
     T2 --> T3["3 · constante → constante+"]
     T3 --> T4["4 · constante → escalar"]
@@ -242,8 +244,8 @@ flowchart BT
     T9 --> T10["10 · if → while"]
     T10 --> T11["11 · expressão → função"]
     T11 --> T12["12 · variável → atribuição"]
-    style T1 fill:#c8e6c9
-    style T12 fill:#ffcdd2
+    class T1 ok
+    class T12 falha
 ```
 
 > [!note] Leitura do diagrama

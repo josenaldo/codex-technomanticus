@@ -86,8 +86,9 @@ O algoritmo mark-and-sweep funciona em duas fases:
 **Sweep (varredura):** percorre o heap e libera qualquer objeto **não marcado** — ninguém tem referência para ele, portanto não pode ser usado.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     R1["🌐 globalThis"] --> A["objeto A\n(alcançável)"]
     R2["📦 call stack"] --> B["objeto B\n(alcançável)"]
     A --> C["objeto C\n(alcançável)"]
@@ -97,13 +98,13 @@ graph TD
     E["objeto E\n❌ não alcançável"]
     D --> E
 
-    style R1 fill:#4A90D9,color:#fff
-    style R2 fill:#4A90D9,color:#fff
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#D0021B,color:#fff
-    style E fill:#D0021B,color:#fff
+    class R1 neutro
+    class R2 neutro
+    class A neutro
+    class B neutro
+    class C neutro
+    class D falha
+    class E falha
 ```
 
 D e E formam um ciclo entre si, mas nenhum root aponta para eles — logo, são coletados. Isso resolve o problema clássico de "referência circular", que algoritmos de contagem de referência (reference counting) não conseguem resolver.
@@ -151,8 +152,10 @@ O old generation usa **Mark-Sweep-Compact**, que opera em três subetapas:
 3. **Compacting (compactação):** move objetos sobreviventes para eliminar fragmentação. Apenas em páginas com alta fragmentação — é o passo mais caro.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph YG["Young Generation (Scavenger)"]
         direction LR
         NF["from-space"] -->|"copia alcançáveis"| NT["to-space"]
@@ -165,11 +168,11 @@ flowchart LR
         M["Mark\n(incremental\n+ concurrent)"] --> S["Sweep\n(paralelo)"] --> C["Compact\n(seletivo)"]
     end
 
-    style YG fill:#e8f4e8,stroke:#4A90D9
-    style OG fill:#fff3e0,stroke:#F5A623
-    style M fill:#4A90D9,color:#fff
-    style S fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#fff
+    class YG ok
+    class OG destaque
+    class M neutro
+    class S neutro
+    class C destaque
 ```
 
 > [!info] Concurrent vs Incremental

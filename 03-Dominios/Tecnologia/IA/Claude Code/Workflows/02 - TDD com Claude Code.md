@@ -47,6 +47,9 @@ A analogia: é a diferença entre um arquiteto que desenha a planta antes de con
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph RED ["🔴 RED — testes falham"]
         A[Você define requisitos] --> B[Agente escreve testes]
         B --> C[Rode os testes]
@@ -71,9 +74,9 @@ flowchart LR
         M -- Sim --> N[✓ Ciclo completo]
     end
 
-    style RED fill:#fff5f5,stroke:#ff6b6b
-    style GREEN fill:#f0fff4,stroke:#51cf66
-    style REFACTOR fill:#f0f4ff,stroke:#4c6ef5
+    class RED falha
+    class GREEN ok
+    class REFACTOR neutro
 ```
 
 > [!summary] O ciclo Red/Green/Refactor não é disciplina por disciplina — é a sequência que garante que cada teste existe por uma razão, e cada linha de implementação existe para satisfazer um teste.

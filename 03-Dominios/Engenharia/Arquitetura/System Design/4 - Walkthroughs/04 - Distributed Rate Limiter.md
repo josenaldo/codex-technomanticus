@@ -94,7 +94,6 @@ plans:
 ## Diagrama macro
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     C1["Cliente A"] --> LB["Load Balancer"]
     C2["Cliente B"] --> LB
@@ -114,7 +113,6 @@ graph TD
 A variante que reduz a dependência síncrona do Redis mantém um **contador local aproximado** em cada servidor, sincronizado periodicamente:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
     C["Cliente"] --> LB["Load Balancer"]
     LB --> S1["Servidor 1<br/>contador local: 60/100"]
@@ -159,7 +157,6 @@ Vale colocar um número na "janela de imprecisão" para tirá-la do abstrato. Co
 Mesmo com um store central único, o problema não está resolvido — porque "verificar se está sob o limite" e "incrementar o contador" são, ingenuamente, **duas operações separadas**, e entre elas existe uma janela de corrida.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant S1 as Servidor 1
     participant Redis

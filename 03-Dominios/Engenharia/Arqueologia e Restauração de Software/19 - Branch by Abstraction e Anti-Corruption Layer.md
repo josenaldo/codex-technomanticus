@@ -25,8 +25,8 @@ O consultor propõe o óbvio: "vamos fazer aqui o mesmo que fizemos no faturamen
 A distinção que resolve isso é simples de enunciar e fácil de esquecer sob pressão: **o Strangler Fig opera no nível da requisição/sistema; o Branch by Abstraction opera no nível do código.** O primeiro precisa de uma borda de rede — algo que já intercepta tráfego de fora, como um gateway ou um proxy — para existir. O segundo não precisa de rede nenhuma: ele constrói a borda que falta, *dentro* do processo, na forma de uma interface.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph S1["Strangler Fig - nivel sistema"]
     C1[Clientes externos] --> F1{Facade de roteamento<br/>na borda de rede}
     F1 --> L1[Sistema legado]
@@ -37,8 +37,8 @@ graph TD
     AB --> L2[Implementacao antiga]
     AB --> N2[Implementacao nova]
     end
-    style F1 fill:#F5A623
-    style AB fill:#F5A623
+    class F1 destaque
+    class AB destaque
 ```
 
 Repare no paralelo estrutural: em ambos os casos existe um único ponto de decisão (a facade, a interface) que sabe rotear entre velho e novo, e em ambos os casos os chamadores não sabem — nem precisam saber — qual dos dois está respondendo. A diferença é só *onde* esse ponto de decisão mora: na borda de rede, ou na borda do código. Quem já internalizou o Strangler Fig não está aprendendo um padrão novo aqui — está aprendendo a aplicar o mesmo princípio um nível mais fundo, onde não existe rede para interceptar.
@@ -51,16 +51,17 @@ Repare no paralelo estrutural: em ambos os casos existe um único ponto de decis
 Paul Hammant descreveu o Branch by Abstraction como uma alternativa a uma prática comum e perigosa: abrir um branch Git de longa duração para fazer uma mudança grande, trabalhar nele por semanas, e depois enfrentar um merge doloroso. O nome é irônico de propósito — "branch" no título, mas o método inteiro existe para **evitar** um branch de verdade. Em vez de ramificar o *repositório*, você ramifica a *implementação*, dentro do próprio trunk, atrás de uma abstração:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["1. Introduzir uma abstracao<br/>sobre o componente a substituir"] --> B["2. Migrar os chamadores<br/>para usar a abstracao"]
     B --> C["3. Construir a nova implementacao<br/>por tras da abstracao"]
     C --> D{"4. Alternar a abstracao<br/>via flag, gradualmente"}
     D -->|"flag = antigo"| E["Comportamento antigo,<br/>sem risco"]
     D -->|"flag = novo"| F["Comportamento novo,<br/>em producao"]
     F --> G["5. Remover a implementacao antiga<br/>e, se quiser, a abstracao"]
-    style D fill:#F5A623
-    style G fill:#4A90D9
+    class D destaque
+    class G neutro
 ```
 
 1. **Introduzir a abstração.** Antes de mudar qualquer comportamento, você extrai uma interface — `IAlocadorDeFrete` — que descreve o contrato do componente sem expor sua implementação interna. Esse passo, sozinho, já é valioso mesmo se a migração parar aqui: é literalmente a instalação de um **seam** deliberado ([[12 - Seams e quebra de dependência|nota 12]]), só que aqui o objetivo não é testar, é trocar a implementação inteira por trás dele.
@@ -81,8 +82,9 @@ O risco aqui não é técnico, é conceitual: se o serviço novo simplesmente im
 Eric Evans, em *Domain-Driven Design*, batizou a defesa contra isso de **Anti-Corruption Layer (ACL)**: uma camada de **tradução** posicionada exatamente na fronteira entre os dois modelos, cujo único trabalho é converter os conceitos de um lado nos conceitos do outro. Do lado de dentro do novo *bounded context*, o código só fala a linguagem do modelo novo — nunca vê um tipo, um campo ou uma regra do legado diretamente. Do lado de fora, a ACL sabe como o legado pensa, e traduz.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph SC["Sem ACL - modelo contaminado"]
     NS1[Modelo novo] -->|chamada/leitura direta| LEG1[Modelo legado]
     LEG1 -.->|conceitos vazam para dentro| NS1
@@ -91,8 +93,8 @@ graph TD
     NS2[Modelo novo] --> ACL{"Anti-Corruption Layer<br/>traduz conceitos"}
     ACL --> LEG2[Modelo legado]
     end
-    style LEG1 fill:#D0021B
-    style ACL fill:#F5A623
+    class LEG1 falha
+    class ACL destaque
 ```
 
 Concretamente, a ACL costuma ter três peças, mesmo em implementações simples: um **adaptador** que fala o protocolo de acesso ao legado (chamar a classe antiga, consultar a tabela antiga); um **tradutor** que mapeia os tipos e conceitos do legado para os tipos e conceitos do modelo novo (um `enum StatusCarga` limpo em vez do `char(1)` com sete valores mágicos do banco antigo); e uma **fachada** que expõe, para o resto do serviço novo, só a interface no vocabulário do domínio novo — a *ubiquitous language* que Evans coloca no centro do DDD.

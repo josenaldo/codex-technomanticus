@@ -41,6 +41,8 @@ A DigitalOcean **escolhe não construir** a maior parte do que a AWS constrói. 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph AWS["AWS — amplitude"]
         direction TB
         A1[S3 Standard]
@@ -65,8 +67,8 @@ flowchart LR
     AWS -->|"você decide<br/>entre ~8 opções"| Solução1[(Solução AWS)]
     DO -->|"a decisão já<br/>foi tomada"| Solução2[(Solução DO)]
 
-    style AWS fill:#232f3e,color:#fff
-    style DO fill:#0080ff,color:#fff
+    class AWS neutro
+    class DO marca
 ```
 
 Esse padrão se repete serviço a serviço, e você vai ver isso de perto nas próximas notas do galho: um único jeito de fazer banco gerenciado (Managed Databases, poucos motores, poucas variações de plano), um único jeito de fazer deploy gerenciado (App Platform — que "faz o build, o deploy e a escala automaticamente, cuidando da infraestrutura por baixo", nas palavras da própria documentação), um único jeito de fazer Kubernetes gerenciado (DOKS, sem a floresta de add-ons que o EKS oferece).
@@ -98,14 +100,16 @@ Essa diferença é **DX — developer experience** — e a DigitalOcean trata DX
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     Dev["Dev quer subir<br/>um servidor"] --> Escolha{Onde?}
     Escolha -->|AWS| EC2["Console EC2:<br/>escolher AMI, VPC, subnet,<br/>security group, key pair,<br/>instance type, storage,<br/>IAM role..."]
     Escolha -->|DigitalOcean| Droplet["Criar Droplet:<br/>imagem + tamanho + região<br/>+ botão verde"]
     EC2 --> Tempo1["~10-20 min<br/>(1ª vez: horas)"]
     Droplet --> Tempo2["~55 segundos"]
 
-    style EC2 fill:#232f3e,color:#fff
-    style Droplet fill:#0080ff,color:#fff
+    class EC2 neutro
+    class Droplet marca
 ```
 
 > [!info] Verificado 2026-07-24

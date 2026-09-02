@@ -33,14 +33,14 @@ O ganho de prototipar em código, especificamente para esse perfil de leitor:
 - **Não há tradução perdida entre design e implementação.** Não existe handoff, porque não existem dois artefatos — o protótipo já é o código que vai (ou não) para produção.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     ID["Ideia de interação"] --> D{"Interação simples<br/>de simular visualmente?"}
     D -->|sim| FIG["Prototipar em Figma<br/>rápido de comunicar"]
     D -->|não —<br/>estado real, foco, teclado| COD["Prototipar em código<br/>componente real, local"]
     COD --> PW["Playwright MCP<br/>olha o resultado"]
-    style COD fill:#4A90D9,color:#fff
-    style FIG fill:#4A90D9,color:#fff
+    class COD neutro
+    class FIG neutro
 ```
 
 ## O trade-off que não pode ser escondido: código é mais caro de jogar fora

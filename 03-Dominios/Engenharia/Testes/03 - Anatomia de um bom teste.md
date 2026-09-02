@@ -55,11 +55,14 @@ Repare nos três blocos separados por linhas em branco. Você lê de cima a baix
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Arrange<br/>monta o cenario"] --> B["Act<br/>executa a acao"]
     B --> C["Assert<br/>verifica o resultado"]
-    style A fill:#1e3a5f,color:#fff
-    style B fill:#5f4b1e,color:#fff
-    style C fill:#1e5f33,color:#fff
+    class A neutro
+    class B destaque
+    class C ok
 ```
 
 **Leitura do diagrama:** as três fases acontecem em ordem fixa e sem volta. Você nunca arruma de novo no meio do verificar. Se precisar, é sinal de que o teste está fazendo coisa demais.
@@ -130,6 +133,8 @@ Imagine um teste gigante com 20 verificações cobrindo 5 comportamentos diferen
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph Gigante["Um teste gigante"]
         T1["testTudo()"] --> C1["comportamento 1"]
         T1 --> C2["comportamento 2"]
@@ -141,10 +146,10 @@ flowchart TB
         TB["deve_Y..."] --> CB["comportamento 2"] --> FB["FALHOU<br/>e o 2"]
         TC["deve_Z..."] --> CC["comportamento 3"] --> FC["passa"]
     end
-    style F1 fill:#7a1e1e,color:#fff
-    style FB fill:#7a1e1e,color:#fff
-    style FA fill:#1e5f33,color:#fff
-    style FC fill:#1e5f33,color:#fff
+    class F1 falha
+    class FB falha
+    class FA ok
+    class FC ok
 ```
 
 **Leitura do diagrama:** no teste gigante, a falha é ambígua — sabe-se que algo quebrou, não o quê. Nos testes focados, dois passam (verde) e um falha (vermelho): o diagnóstico vem de graça, sem abrir o código. Cada teste é um fusível: queima o que estourou, deixa o resto aceso.
@@ -157,17 +162,18 @@ Robert C. Martin, no *Clean Code*, condensou as propriedades de um bom teste uni
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     FIRST["Um bom teste unitario"]
     FIRST --> F["Fast<br/>roda em milissegundos"]
     FIRST --> I["Independent<br/>nao depende de outro teste"]
     FIRST --> R["Repeatable<br/>mesmo resultado sempre"]
     FIRST --> S["Self-validating<br/>passa ou falha, sem olho humano"]
     FIRST --> T["Timely<br/>escrito junto com o codigo"]
-    style F fill:#1e3a5f,color:#fff
-    style I fill:#1e3a5f,color:#fff
-    style R fill:#1e3a5f,color:#fff
-    style S fill:#1e3a5f,color:#fff
-    style T fill:#1e3a5f,color:#fff
+    class F neutro
+    class I neutro
+    class R neutro
+    class S neutro
+    class T neutro
 ```
 
 **Leitura do diagrama:** as cinco propriedades não são opcionais nem alternativas — um teste unitário decente atende as cinco ao mesmo tempo. Falhar em uma já o degrada.

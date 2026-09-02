@@ -25,6 +25,9 @@ aliases:
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     DEV["Desenvolvedor\nedita schema/entidade/model"]
     GEN["generate\n(prisma migrate dev · drizzle-kit generate\n· typeorm migration:generate · sequelize-cli migration:generate)"]
     FILE["Arquivo SQL versionado\n(commitado no git)"]
@@ -41,11 +44,11 @@ flowchart TD
     PUSH["drizzle-kit push / prisma db push\nAPENAS DEV LOCAL\nsem arquivo, sem histórico"]
     DEV -->|"prototipagem"| PUSH
 
-    style FILE fill:#4A90D9,color:#fff
-    style APPLY fill:#4A90D9,color:#fff
-    style PUSH fill:#D0021B,color:#fff
-    style CI fill:#F5A623,color:#000
-    style PROD fill:#4A90D9,color:#fff
+    class FILE neutro
+    class APPLY neutro
+    class PUSH falha
+    class CI destaque
+    class PROD neutro
 ```
 
 ## O que é

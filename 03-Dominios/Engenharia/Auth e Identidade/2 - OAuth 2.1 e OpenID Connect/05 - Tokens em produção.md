@@ -45,8 +45,9 @@ Um access token é, na prática, um **bearer token**: quem o possui, o usa — n
 A RFC 9700 (o *Security Best Current Practice*, sucessor consolidado da RFC 6819) recomenda que access tokens sejam **sender-constrained** (amarrados criptograficamente a quem os recebeu, via mTLS ou DPoP) **ou** tenham vida curta o suficiente para que o roubo valha pouco[^rfc9700-access]. Na prática de mercado, isso converge para uma faixa de **5 a 30 minutos** — bem longe das 24 horas do incidente acima, e também longe do outro extremo (segundos), que sobrecarregaria o authorization server com um volume de refreshes desnecessário[^obsidian-refresh].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Curto["TTL curto (5-15min)"]
         C1["Janela de roubo pequena"] --> C2["Mais refreshes<br/>= mais carga no AS"]
     end
@@ -54,8 +55,8 @@ graph LR
         L1["Menos carga no AS"] --> L2["Janela de roubo grande<br/>sem revogação real"]
     end
 
-    style Curto fill:#4A90D9,color:#fff
-    style Longo fill:#F5A623,color:#000
+    class Curto neutro
+    class Longo destaque
 ```
 
 Esse é o trade-off central da nota, e não tem resposta "certa" universal — é uma escolha de risco. Uma API bancária pode escolher 5 minutos e pagar o preço em requisições de refresh extras; um produto interno de baixo risco pode aceitar 30 minutos. O que **não** é aceitável, segundo o consenso pós-RFC 9700, é usar o mesmo raciocínio de "sessão web tradicional" (horas ou dias) para um bearer token que passa pela rede em cada chamada.
@@ -83,7 +84,6 @@ Aqui está o mecanismo que torna a rotation mais que teatro de segurança. Se o 
 A resposta correta a esse sinal não é só rejeitar a segunda tentativa: é revogar **toda a família de tokens** derivada daquele fluxo de autenticação original — todo refresh token e todo access token descendente daquela cadeia de rotations, mesmo os que ainda não expiraram. A RFC 9700 é explícita: revogação por reuse "deve invalidar toda a família de tokens, não só o token atual, para prevenir que atacantes usem tokens previamente rotacionados mas ainda em cache"[^scalekit-family]. A Okta documenta esse comportamento publicamente com um evento de log dedicado (`app.oauth2.as.token.detect_reuse`), e o Auth0 expõe uma janela de tolerância configurável (*rotation overlap period*) para não confundir reuse malicioso com problemas legítimos de concorrência de rede (ex.: o client reenvia a mesma requisição por timeout, sem ter recebido a resposta original)[^auth0-overlap].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant Atk as Atacante<br/>(cópia roubada de RT1)
     participant C as Client legítimo
@@ -196,15 +196,17 @@ Toda essa engenharia de rotation, reuse detection e revogação vira irrelevante
 **Cookie `HttpOnly` é o padrão-ouro — mas só funciona com um backend por trás.** Um cookie marcado `HttpOnly` é **inacessível a JavaScript**, ponto final — nenhum XSS, por mais grave, consegue ler seu valor via `document.cookie`. Combinado com `Secure` (só HTTPS) e `SameSite=Strict` ou `Lax` (mitiga CSRF), é a defesa mais forte disponível no navegador hoje[^owasp-html5-storage]. O problema: uma SPA pura, sem backend, não tem como *setar* um cookie `HttpOnly` para si mesma — só um servidor pode fazer isso no header `Set-Cookie` de uma resposta. É exatamente essa limitação que leva ao padrão da próxima seção.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["localStorage / sessionStorage<br/>/ IndexedDB"] -->|"pior — acessível<br/>a qualquer JS"| A1["1 XSS = todos os tokens"]
     B["Memória<br/>(variável JS)"] -->|"melhor, mas some<br/>no reload"| B1["UX degradada +<br/>ainda vulnerável a XSS ativo"]
     C["Cookie HttpOnly<br/>via backend (BFF)"] -->|"padrão-ouro"| C1["Inacessível a JS,<br/>mesmo com XSS"]
 
-    style A fill:#D0021B,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
+    class A falha
+    class B destaque
+    class C neutro
 ```
 
 ## O padrão BFF: o consenso de 2026 para SPAs
@@ -218,7 +220,6 @@ O **IETF draft-ietf-oauth-browser-based-apps** (revisão 27, julho de 2026) form
 O draft é explícito sobre qual escolher: recomenda o padrão BFF como **"fortemente recomendado para aplicações de negócio, aplicações sensíveis e aplicações que lidam com dados pessoais"**, porque ele garante que "a superfície de ataque da aplicação não aumenta pelo uso de OAuth" — o token nunca atravessa o navegador, então XSS deixa de ser um vetor de roubo de token (continua sendo um problema para outras coisas, mas não para essa)[^draft-bba-recommend].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant SPA as SPA (browser)
     participant BFF as BFF (backend)

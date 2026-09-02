@@ -34,6 +34,8 @@ Essas seis perguntas são o denominador comum de quase toda entrevista de Go em 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Slice["slice header (24 bytes em 64-bit)"]
         P["ponteiro"] --> A
         L["len"]
@@ -43,9 +45,9 @@ flowchart LR
         E0["0"] --- E1["1"] --- E2["2"] --- E3["3"] --- E4["4"]
     end
 
-    style P fill:#4A90D9,color:#fff
-    style L fill:#F5A623,color:#000
-    style C fill:#F5A623,color:#000
+    class P neutro
+    class L destaque
+    class C destaque
 ```
 
 O gotcha clássico que todo entrevistador espera testar em seguida: dois slices derivados do mesmo array, via `s[1:3]`, compartilham memória — escrever em um afeta o outro, até que um `append` force realocação.
@@ -130,6 +132,8 @@ var _ Escritor = Log{} // se Log deixar de satisfazer Escritor, isso não compil
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph G["Goroutines (milhares, gerenciadas pelo Go runtime)"]
         g1["G1"]
         g2["G2"]
@@ -148,8 +152,8 @@ flowchart TB
 
     G --> P --> M
 
-    style G fill:#4A90D9,color:#fff
-    style P fill:#F5A623,color:#000
+    class G neutro
+    class P destaque
 ```
 
 ```go

@@ -77,14 +77,17 @@ A AWS descreve, no whitepaper oficial de disaster recovery, quatro estratégias 
 
 ```mermaid
 graph LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Backup & Restore<br/>RTO: horas · RPO: horas<br/>💲"] --> B["Pilot Light<br/>RTO: ~10 min · RPO: minutos<br/>💲💲"]
     B --> C["Warm Standby<br/>RTO: minutos · RPO: segundos-min<br/>💲💲💲"]
     C --> D["Multi-Site Active/Active<br/>RTO: ~zero · RPO: ~zero<br/>💲💲💲💲"]
 
-    style A fill:#2d5016,color:#fff
-    style B fill:#4a7c2c,color:#fff
-    style C fill:#c77d17,color:#fff
-    style D fill:#b32020,color:#fff
+    class A ok
+    class B ok
+    class C destaque
+    class D falha
 ```
 
 ### 1. Backup & Restore

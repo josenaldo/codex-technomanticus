@@ -29,6 +29,9 @@ O erro mais caro de quem se prepara mal não é não saber Go — é treinar só
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph B1["Bloco 1 — Conceitual"]
         direction TB
         C1["Perguntas faladas\nsemântica da linguagem"]
@@ -50,9 +53,9 @@ flowchart TB
 
     B1 --> B2 --> B3
 
-    style B1 fill:#4A90D9,color:#fff
-    style B2 fill:#F5A623,color:#000
-    style B3 fill:#7B61FF,color:#fff
+    class B1 neutro
+    class B2 destaque
+    class B3 marca
 ```
 
 Cada bloco mede um risco de contratação distinto — e é por isso que raramente um substitui o outro numa entrevista bem estruturada.
@@ -168,6 +171,8 @@ Um jeito útil de pensar sobre a avaliação: o entrevistador de Go quase sempre
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     N1["01\nO que cai\n(mapa)"] --> N2["02\nPerguntas\nconceituais"]
     N2 --> N3["03\nConcorrência\nem entrevista"]
     N3 --> N4["04\nGotchas\nfavoritos"]
@@ -175,8 +180,8 @@ flowchart LR
     N5 --> N6["06\nSystem design\ncom Go"]
     N6 --> N7["07\nSimulado\ncomentado"]
 
-    style N1 fill:#4A90D9,color:#fff
-    style N7 fill:#7B61FF,color:#fff
+    class N1 neutro
+    class N7 marca
 ```
 
 O galho segue a progressão natural de uma preparação real: primeiro o terreno conceitual clássico (nota 02), depois o tópico que mais separa júnior de sênior em Go — concorrência sob pressão de entrevista (nota 03) —, depois os gotchas que aparecem tanto no bloco conceitual quanto no live coding (nota 04). As três últimas notas sobem de fase para Magus: como conduzir a sessão de live coding do início ao fim sem travar (nota 05), como estruturar um system design usando Go como material de construção (nota 06), e um simulado comentado que costura tudo — as três camadas, numa sessão só, com comentário linha a linha do que um avaliador estaria procurando (nota 07).

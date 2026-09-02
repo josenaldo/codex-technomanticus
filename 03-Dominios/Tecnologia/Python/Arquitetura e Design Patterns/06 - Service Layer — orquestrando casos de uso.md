@@ -123,6 +123,9 @@ Percival e Gregory, em *Architecture Patterns with Python*, chamam essa camada d
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Entrada["Camadas de entrada — cada uma sabe traduzir SUA forma de chegada"]
         HTTP["Handler HTTP (FastAPI)\nparse do request → Comando → serializa resposta"]
         WORKER["Task de worker (Celery/RQ)\nmonta Comando a partir da linha do CSV"]
@@ -150,9 +153,9 @@ flowchart TB
     UOW --> REPO
     REPO --> DB[("Banco / Fake em memória")]
 
-    style SVC fill:#4A90D9,color:#fff
-    style ENT fill:#2d7a4a,color:#fff
-    style UOW fill:#F5A623,color:#000
+    class SVC neutro
+    class ENT ok
+    class UOW destaque
 ```
 
 A seta importante neste diagrama é a que sai de cada camada de entrada e converge sempre no mesmo retângulo azul: `criar_tarefa` e `concluir_tarefa` não sabem, e não precisam saber, se quem as chamou foi um handler HTTP resolvendo um `POST`, uma task de worker processando uma linha de CSV, ou um comando de CLI rodado por um administrador. Cada camada de entrada tem sua própria responsabilidade de tradução — "como uma requisição HTTP vira uma intenção de negócio", "como uma linha de CSV vira uma intenção de negócio" — mas a partir do momento em que essa intenção está montada, o caminho é único.
@@ -327,6 +330,9 @@ O worker não reimplementa a checagem de quota — ele chama `criar_tarefa`, rec
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Antes["ANTES — lógica presa no handler"]
         H1["Handler FastAPI\ncriar_tarefa()"] -->|"checa quota inline\nquery + commit direto"| DB1[("Banco")]
         W1["Worker de importação"] -->|"CÓPIA do corpo do handler\nsem HTTPException, sem Depends()"| DB1
@@ -340,9 +346,9 @@ flowchart LR
         SVC --> DB2[("Banco, via UoW + Repository")]
     end
 
-    style Antes fill:#8b6914,color:#fff
-    style Depois fill:#2d7a4a,color:#fff
-    style SVC fill:#4A90D9,color:#fff
+    class Antes destaque
+    class Depois ok
+    class SVC neutro
 ```
 
 ## Testando sem FastAPI, sem banco: `FakeUnitOfWork`

@@ -31,14 +31,14 @@ O MSW resolve pela **camada certa**: em vez de mockar a ferramenta que faz a req
 ## Como o MSW funciona
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["seu código<br/>fetch('/api/x')"] --> B{MSW intercepta}
     B -->|handler casou| C["HttpResponse.json(...)<br/>resposta fingida"]
     B -->|sem handler| D[passa pra rede real]
     C --> A
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
+    class B neutro
+    class C neutro
 ```
 
 Você escreve **handlers** que casam requisições e devolvem respostas. No Node (testes), o `setupServer` intercepta no nível da runtime; no browser (dev/Storybook), o `setupWorker` usa um Service Worker de verdade. A mesma lista de handlers alimenta os dois.

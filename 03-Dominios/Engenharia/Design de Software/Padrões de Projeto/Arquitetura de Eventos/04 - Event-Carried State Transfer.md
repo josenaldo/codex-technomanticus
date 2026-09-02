@@ -38,8 +38,9 @@ Três meses depois, a mesma escolha cobra a conta. O time de pedidos precisa des
 ## A ideia: mandar o estado junto
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph N["Event Notification"]
         P1["Pedidos"] -->|"{id: 4471}"| C1["Faturamento"]
         C1 -.->|"GET /pedidos/4471<br/>precisa que P1 esteja no ar"| P1
@@ -50,8 +51,8 @@ graph LR
         C2 -.->|"não chama ninguém"| C2
     end
 
-    style C1 fill:#F5A623,color:#000
-    style C2 fill:#4A90D9,color:#fff
+    class C1 destaque
+    class C2 neutro
 ```
 
 O consumidor mantém uma **cópia local** dos dados de que precisa — não do pedido inteiro necessariamente, mas do recorte que interessa a ele — e a atualiza a cada evento. Ele nunca chama o produtor.

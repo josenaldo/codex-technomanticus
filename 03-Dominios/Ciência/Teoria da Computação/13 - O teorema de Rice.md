@@ -80,6 +80,8 @@ A régua é simples: a propriedade depende do que o programa **faz** (rode-o men
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#1b3a1b,stroke:#4caf50,color:#e8f5e9
+    classDef bad fill:#3a1b1b,stroke:#f44336,color:#ffebee
     Q["Pergunta sobre um programa M"] --> Tipo{"Depende do que M<br/>FAZ ou do que M É?"}
     Tipo -->|"do que M É<br/>(texto, estrutura)"| Sin["Propriedade SINTÁTICA"]
     Tipo -->|"do que M FAZ<br/>(linguagem que reconhece)"| Sem["Propriedade SEMÂNTICA<br/>(comportamental)"]
@@ -91,8 +93,6 @@ flowchart TD
     SinD:::ok
     TrivD:::ok
     RiceD:::bad
-    classDef ok fill:#1b3a1b,stroke:#4caf50,color:#e8f5e9
-    classDef bad fill:#3a1b1b,stroke:#f44336,color:#ffebee
 ```
 
 > [!note] Leitura do diagrama
@@ -135,6 +135,7 @@ Agora a peça-chave — a **máquina fabricada**. Dado um par ⟨M, w⟩ (a entr
 
 ```mermaid
 flowchart TD
+    classDef bad fill:#3a1b1b,stroke:#f44336,color:#ffebee
     Start["Entrada do decisor de Rice (hipotético):<br/>propriedade não-trivial P"] --> Inst["Recebe instância da PARADA: ⟨M, w⟩"]
     Inst --> Build["Fabrica máquina M' assim:"]
     Build --> Step1["M'(x): primeiro IGNORA x<br/>e simula M sobre w"]
@@ -148,7 +149,6 @@ flowchart TD
     Conn --> Punch["⟹ 'M' tem P?' = 'M para em w?'<br/>Decidir P decidiria a PARADA. Absurdo."]
 
     Punch:::bad
-    classDef bad fill:#3a1b1b,stroke:#f44336,color:#ffebee
 ```
 
 > [!note] Leitura do diagrama
@@ -243,6 +243,8 @@ Como nenhum analisador pode acertar sempre, todo analisador precisa errar de alg
 
 ```mermaid
 flowchart TD
+    classDef bad fill:#3a1b1b,stroke:#f44336,color:#ffebee
+    classDef warn fill:#3a341b,stroke:#ffc107,color:#fff8e1
     Real["Realidade: o programa<br/>TEM ou NÃO TEM o bug<br/>(indecidível, Rice)"] --> Tool{"Que tipo de analisador<br/>você escolhe?"}
 
     Tool -->|"Aproxima POR CIMA<br/>(over-approximation)"| Sound["SOUND / Conservador"]
@@ -260,8 +262,6 @@ flowchart TD
     Both:::bad
     Sound:::warn
     Complete:::warn
-    classDef bad fill:#3a1b1b,stroke:#f44336,color:#ffebee
-    classDef warn fill:#3a341b,stroke:#ffc107,color:#fff8e1
 ```
 
 > [!note] Leitura do diagrama
@@ -324,6 +324,7 @@ Mas atenção a uma sutileza histórica e técnica: **a parada veio antes** (Tur
 
 ```mermaid
 flowchart LR
+    classDef key fill:#1b2a3a,stroke:#2196f3,color:#e3f2fd
     Cantor["Diagonalização<br/>(Cantor / Turing)"] --> Halt["Problema da PARADA<br/>indecidível<br/>(nota 11)"]
     Halt --> Red["REDUÇÕES<br/>derrubam problemas<br/>um a um<br/>(nota 12)"]
     Halt --> Rice["Teorema de RICE<br/>derruba TODA propriedade<br/>comportamental não-trivial<br/>(esta nota)"]
@@ -331,7 +332,6 @@ flowchart LR
     Rice --> Eng["Consequência de Engenharia:<br/>análise estática perfeita<br/>NÃO existe<br/>(soundness × completeness)"]
 
     Eng:::key
-    classDef key fill:#1b2a3a,stroke:#2196f3,color:#e3f2fd
 ```
 
 > [!note] Leitura do diagrama

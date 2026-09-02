@@ -29,8 +29,9 @@ O "custo do JavaScript" é mal compreendido porque a parte cara é **invisível 
 O browser define uma **long task** como qualquer tarefa que segura a main thread por **mais de 50 ms**. Por que 50 ms? Porque acima disso o usuário começa a perceber a falta de resposta — o limiar do "instantâneo" percebido. Enquanto uma long task roda (run-to-completion, ver [[03-Dominios/Tecnologia/Web Performance/Performance de Runtime e Rendering/01 - A thread principal e o event loop|nota 01]]), qualquer clique fica na fila esperando.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph BAD["Long task: 250 ms"]
         A[Tarefa gigante roda] -->|clique espera 250ms| B[⛔ página travada]
     end
@@ -38,8 +39,8 @@ graph LR
         C[50ms] -->|cede| D[50ms] -->|cede| E[50ms]
         D -.clique processado aqui.-> F[✓ responde]
     end
-    style B fill:#D0021B,color:#fff
-    style F fill:#4A90D9,color:#fff
+    class B falha
+    class F neutro
 ```
 
 A régua-chave: entre 0–200 ms de INP é "bom"; long tasks são o que empurra o INP para cima. Você as vê no **painel Performance** do DevTools (barras longas com um triângulo vermelho no canto) e as mede programaticamente com a **Long Tasks API** (`PerformanceObserver` com `entryType: "longtask"`).

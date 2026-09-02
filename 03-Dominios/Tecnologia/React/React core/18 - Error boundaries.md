@@ -91,7 +91,6 @@ export default SimpleErrorBoundary;
 O fluxo interno é:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#fff"}}}%%
 sequenceDiagram
     participant R as React (render)
     participant C as ComponenteFilho
@@ -333,8 +332,9 @@ Em SSR (Next.js, Remix), error boundaries só entram em ação no lado do client
 A granularidade do boundary determina quanto da app sobrevive a um erro. Há três estratégias comuns:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "lineColor": "#888"}}}%%
 graph TD
+    classDef ok fill:#4A90D9,color:#fff,stroke:#2c6fad
+    classDef amber fill:#F5A623,color:#000,stroke:#c4831a
     App["App Root"]
 
     subgraph "Estratégia A — 1 boundary global"
@@ -362,8 +362,6 @@ graph TD
         EB5 --> W8["Widget 3"]
     end
 
-    classDef ok fill:#4A90D9,color:#fff,stroke:#2c6fad
-    classDef amber fill:#F5A623,color:#000,stroke:#c4831a
 ```
 
 **Recomendação para apps de produção:**

@@ -88,14 +88,16 @@ O crescimento chama mais atenção, mas o runtime também faz o caminho inverso:
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Stack de 2KB\n(goroutine nova)"] -->|"função aprofunda,\nprólogo detecta overflow"| B["morestack:\naloca 2x, copia, libera antiga"]
     B -->|"laço/recursão\ncontinua crescendo"| B
     B -->|"GC varre stacks:\nuso < 1/4 da capacidade"| C["shrinkstack:\naloca menor, copia, libera antiga"]
     C -->|"volta a crescer\nse precisar"| B
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#7ED321,color:#000
+    class A neutro
+    class B destaque
+    class C destaque
 ```
 
 ## Limite superior: a stack não cresce para sempre

@@ -25,8 +25,8 @@ Uma tech lead se senta para desenhar, do zero, a camada de comunicação de uma 
 O erro mais comum nessa sessão não é escolher a tecnologia errada — é abrir a reunião perguntando "REST ou gRPC?" como se essa fosse uma pergunta que se responde uma vez, para o sistema inteiro. A [[03-Dominios/Engenharia/Comunicação entre Sistemas/2 - Comunicação síncrona/06 - REST vs GraphQL vs gRPC — decisão|nota de decisão do sub-galho 2]] já desmontou essa pergunta: a resposta certa não é "qual", é "qual, em qual fronteira". Esta nota aplica esse princípio ao sistema inteiro, fronteira por fronteira, na ordem em que uma sessão de design real percorreria — de fora para dentro, do síncrono para o assíncrono, do controlado para o externo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["1. Borda externa<br/>app ↔ backend"] --> B["2. Comunicação interna<br/>serviço ↔ serviço"]
     B --> C["3. Corte<br/>síncrono/assíncrono"]
     C --> D["4. Confiabilidade<br/>do pagamento"]
@@ -36,9 +36,9 @@ graph LR
     G --> H["8. Rate limiting<br/>e cache"]
     H --> I["9. O que fica<br/>de fora"]
 
-    style D fill:#F5A623,color:#000
-    style E fill:#F5A623,color:#000
-    style G fill:#F5A623,color:#000
+    class D destaque
+    class E destaque
+    class G destaque
 ```
 
 Esse é o roteiro. Cada bloco em âmbar é um ponto onde a decisão errada custa caro em produção — vale prestar atenção redobrada neles, tanto nesta nota quanto numa entrevista real.
@@ -92,7 +92,6 @@ Todo o resto da lista tem resposta "pode esperar", e cada item ilustra um motivo
 - **Analytics** tolera atraso de minutos ou horas sem problema nenhum — é o exemplo mais puro de "throughput importa mais que latência" do framework da nota.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant App as App do cliente
     participant CO as Checkout
@@ -175,16 +174,17 @@ A [[03-Dominios/Engenharia/Comunicação entre Sistemas/3 - Confiabilidade do co
 O reconhecimento explícito que a [[03-Dominios/Engenharia/Comunicação entre Sistemas/4 - Comunicação assíncrona/06 - O que está emergindo em mensageria|última nota do sub-galho 4]] deixa amarrado é o mais importante desta seção: **um webhook é mensageria invertida** — estruturalmente o mesmo problema de garantia de entrega sob falha parcial que a seção 6 resolveu para o consumidor interno de notificação, só que sem a infraestrutura formal de um broker por trás. Não existe Kafka nem RabbitMQ garantindo durabilidade entre o parceiro e o endpoint do e-commerce — existe só HTTP cru, e toda a disciplina (retry, dedup, dead letter) precisa ser reconstruída manualmente dos dois lados. Por isso, times maduros — como a própria nota descreve — terminam colocando uma fila interna entre a chegada do webhook e o processamento real: o endpoint recebe o `POST`, valida a assinatura, e imediatamente publica um evento interno (`delivery.status_updated`) num tópico próprio do sistema, devolvendo `200 OK` ao parceiro assim que possível. Dali para frente, o processamento (atualizar o pedido, notificar o cliente que o pacote saiu para entrega) segue as mesmas garantias já estabelecidas nas seções 5 e 6 — o webhook vira, na prática, só mais um produtor externo alimentando a mesma infraestrutura de mensageria interna que o pagamento já usa.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     P["Parceiro de logística"] -->|"POST /webhooks/entrega<br/>+ HMAC assinado"| EP["Endpoint receptor"]
     EP -->|"1. Valida assinatura<br/>2. Dedup por evento_id"| PUB["Publica evento interno<br/>delivery.status_updated"]
     EP -->|"200 OK imediato"| P
     PUB --> BRK["Broker interno<br/>(mesma infra do pagamento)"]
     BRK --> NOT["Notificação:<br/>'seu pedido saiu para entrega'"]
 
-    style EP fill:#F5A623,color:#000
-    style PUB fill:#4A90D9,color:#fff
+    class EP destaque
+    class PUB neutro
 ```
 
 ## 8. Rate limiting e cache: a API pública que os parceiros consomem
@@ -213,8 +213,10 @@ Uma sessão de design madura não é só sobre o que escolher — é também sob
 Juntando as nove decisões anteriores numa única imagem — cada seta rotulada com a tecnologia escolhida e o motivo, não a tecnologia "da moda":
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Clientes["Clientes"]
         App["App mobile / Web"]
         Parceiro["Sistema do parceiro<br/>de logística"]
@@ -264,11 +266,11 @@ graph TB
     FILA --> FIS
     STREAM --> AN
 
-    style PAG fill:#D0021B,color:#fff
-    style OUT fill:#F5A623,color:#000
-    style FILA fill:#F5A623,color:#000
-    style WH fill:#F5A623,color:#000
-    style NOT fill:#4A90D9,color:#fff
+    class PAG falha
+    class OUT destaque
+    class FILA destaque
+    class WH destaque
+    class NOT neutro
 ```
 
 Vermelho no gateway de pagamento não é acidente: é o único ponto do diagrama inteiro onde a comunicação é estritamente síncrona e bloqueante, o único onde uma falha impede a resposta ao cliente na hora. Tudo em âmbar é onde a confiabilidade precisa de desenho deliberado — Outbox, fila, webhook — porque são exatamente os pontos onde "a rede não tem memória e falha de formas parciais e imprevisíveis", a frase que fecha a última nota do sub-galho 4. Tudo em azul é comunicação que, tendo sido bem desenhada nas seções anteriores, já opera com as garantias certas por padrão.

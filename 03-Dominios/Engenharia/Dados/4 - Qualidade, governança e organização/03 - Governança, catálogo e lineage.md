@@ -98,18 +98,19 @@ Esse rastro serve a três propósitos concretos, e cada um resolve uma dor real 
 O diagrama abaixo mostra o lineage do exemplo de faturamento por categoria, da fonte ao dashboard:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     PG[("Postgres OLTP<br/>itens_pedido.preco_unitario")] --> STG["Staging<br/>stg_itens_pedido"]
     STG --> FATO["fato_vendas<br/>valor_total"]
     DIM["dim_categoria"] --> FATO
     FATO --> AGG["Modelo agregado<br/>faturamento_por_categoria"]
     AGG --> BI["Dashboard de BI<br/>faturamento_mensal"]
 
-    style PG fill:#4A90D9,color:#fff
-    style FATO fill:#4A90D9,color:#fff
-    style AGG fill:#4A90D9,color:#fff
-    style BI fill:#F5A623,color:#000
+    class PG neutro
+    class FATO neutro
+    class AGG neutro
+    class BI destaque
 ```
 
 Historicamente, cada ferramenta do pipeline (o orquestrador, a ferramenta de transformação, o warehouse) reportava lineage no seu próprio formato proprietário — o que tornava impossível montar o mapa completo ponta a ponta quando um pipeline atravessava várias ferramentas de fornecedores diferentes. **OpenLineage** surgiu como um esforço de padronização: uma especificação aberta para que diferentes ferramentas emitam eventos de lineage num formato comum, permitindo montar o grafo completo mesmo num stack heterogêneo[^openlineage]. Como toda peça tool-neutral desta trilha, o ponto aqui não é aprender a instrumentar OpenLineage — é reconhecer que o problema de "lineage fragmentado entre ferramentas" tem uma resposta de padrão da indústria, não só de fornecedor único.

@@ -451,16 +451,18 @@ A diferença estrutural que vale destacar, porque muda o que é seguro assumir: 
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Start["Preciso rodar\nvárias coroutines\nconcorrentemente"] --> Q1{"Se uma falhar,\nas outras devem\nser canceladas?"}
     Q1 -- "Sim" --> TG["TaskGroup\n(cancelamento automático\n+ ExceptionGroup)"]
     Q1 -- "Não, quero\ntodos os resultados\nmesmo com falhas" --> GA["gather(return_exceptions=True)"]
     Q1 -- "Código legado,\nsó a 1ª falha importa" --> GS["gather() padrão"]
 
-    style Start fill:#4A90D9,color:#fff
-    style Q1 fill:#4A90D9,color:#fff
-    style TG fill:#F5A623,color:#000
-    style GA fill:#F5A623,color:#000
-    style GS fill:#F5A623,color:#000
+    class Start neutro
+    class Q1 neutro
+    class TG destaque
+    class GA destaque
+    class GS destaque
 ```
 
 ## Armadilhas comuns

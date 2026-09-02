@@ -35,13 +35,13 @@ Imagine um cron job que precisa chamar a API de faturamento toda madrugada para 
 O OAuth reconhece que **máquina falando com máquina é um cenário estrutural diferente de humano delegando acesso**, e oferece um grant dedicado a isso: o client credentials grant, onde o próprio client — não um usuário fictício disfarçado de client — é a identidade que se autentica e recebe o token. Não há front channel, não há redirect, não há tela de consentimento: é uma única chamada servidor-a-servidor.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Usuário-robô<br/>(senha compartilhada)"] -->|"login humano<br/>reaproveitado"| B["Sem MFA possível<br/>Sem revogação granular<br/>Indistinguível de humano nos logs"]
     B -->|"credencial vaza"| C["Todo processo<br/>que usa essa senha<br/>fica comprometido"]
 
-    style A fill:#D0021B,color:#fff
-    style C fill:#D0021B,color:#fff
+    class A falha
+    class C falha
 ```
 
 Em uma frase: **quando não há usuário no fluxo, o protocolo não deveria fingir que há um — ele deveria ter um grant que trata a máquina como o que ela é: uma identidade de primeira classe.**
@@ -51,7 +51,6 @@ Em uma frase: **quando não há usuário no fluxo, o protocolo não deveria fing
 No client credentials grant (RFC 6749 §4.4, mantido no OAuth 2.1 como um dos poucos grants sobreviventes junto do authorization code), a troca é direta: o client se autentica no endpoint `/token` e recebe um access token de volta, sem etapa de autorização — porque não há ninguém para autorizar nada além do próprio client. O client, aqui, **é o resource owner de si mesmo**: ele não está pedindo acesso a um recurso de terceiros, está provando "eu sou o serviço de faturamento, me dê um token que outros serviços aceitem"[^oauth-net-cc].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant S as Serviço A<br/>(cron de faturamento)
     participant AS as Authorization Server
@@ -93,7 +92,6 @@ Client credentials resolve M2M puro, mas há um terceiro cenário que não é ne
 A RFC 8628 formaliza o **Device Authorization Grant** para exatamente esse caso: o fluxo não exige comunicação bidirecional entre o dispositivo limitado e o navegador do usuário — o dispositivo nunca recebe um redirect, porque não tem como processar um[^rfc8628-overview]. Em vez disso, o dispositivo mostra um código curto na tela e pede para o usuário completar a autorização **em outro aparelho** — o celular, o notebook — que tem browser de verdade.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant D as Dispositivo<br/>(smart TV / CLI)
     participant AS as Authorization Server
@@ -122,7 +120,6 @@ A propriedade que torna o device flow útil — o dispositivo confia cegamente e
 O resultado é simples e devastador: quando a vítima completa a autenticação real dela contra o código do atacante, é o **atacante** quem recebe o token de acesso — não a vítima. Nenhuma senha foi roubada, nenhum malware foi instalado; a vítima literalmente autorizou a sessão do atacante com as próprias credenciais, dentro do fluxo oficial da Microsoft. Por volta do final de 2025, a técnica já havia se espalhado além de campanhas estatais documentadas, e em março de 2026 uma nota de pesquisa da Cloud Security Alliance relatou phishing via device code atingindo mais de 340 organizações Microsoft 365 em cinco países — com o surgimento, em fevereiro de 2026, de uma plataforma "EvilTokens" de Phishing-as-a-Service dedicada especificamente a essa técnica, marcando sua comoditização[^csa-2026].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant Atk as Atacante
     participant V as Vítima
@@ -147,7 +144,6 @@ Imagine uma API de pedidos (`orders-api`) que recebeu uma requisição autentica
 A RFC 8693 (**OAuth 2.0 Token Exchange**) define um Security Token Service dentro do próprio modelo OAuth: um endpoint `/token` com `grant_type=urn:ietf:params:oauth:grant-type:token-exchange` onde um serviço troca um token que já possui por um **novo token, mais restrito ou reformatado, para um público-alvo diferente**[^rfc8693-overview].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant U as Usuário
     participant O as orders-api
@@ -186,7 +182,6 @@ mTLS é forte, mas exige infraestrutura de certificados de cliente — nem toda 
 O proof JWT carrega, no header, a chave pública (`jwk`) correspondente — é assim que o servidor descobre qual chave validar contra — e, no payload, quatro claims que fecham o cerco: `htm` (o método HTTP da requisição, ex. `GET`), `htu` (a URL exata de destino), `jti` (um identificador único, para detectar replay) e `iat` (timestamp de emissão, com tolerância curta de relógio)[^dpop-medium]. Quando o proof acompanha o *uso* do token (não a emissão), ele também carrega `ath` — o hash SHA-256, em Base64-URL, do próprio access token — amarrando o proof àquele token específico. O authorization server, ao emitir o token, grava na claim `cnf` um `jkt` (JWK thumbprint, conforme RFC 7638) derivado da chave pública do client; o resource server, ao receber cada requisição, recalcula o thumbprint da chave usada para assinar o `DPoP` proof e compara com o `jkt` gravado no token — se um atacante tiver só o token e não a chave privada, ele não consegue gerar um proof válido, e a requisição falha[^rfc9449-mechanics].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant C as Client
     participant AS as Authorization Server

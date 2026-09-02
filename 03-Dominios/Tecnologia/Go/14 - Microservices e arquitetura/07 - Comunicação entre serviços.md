@@ -36,14 +36,16 @@ Esse é o primeiro instinto que precisa morrer ao escrever comunicação entre s
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Serviço A\n(cliente)"] -->|"1. discovery:\nresolve endereço"| B["Registry / DNS"]
     A -->|"2. chamada HTTP/gRPC\ncom timeout + retry"| C["Serviço B\n(servidor)"]
     C -->|"3. resposta segue\num contrato\nversionado"| A
     A -.->|"4. se a resposta\nse perde, retry\nprecisa ser seguro"| C
 
-    style A fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
+    class A neutro
+    class C neutro
+    class B destaque
 ```
 
 Quatro peças, quatro seções desta nota: descoberta do endereço, cliente bem configurado, contrato entre as pontas, e o que fazer quando a chamada falha no meio.

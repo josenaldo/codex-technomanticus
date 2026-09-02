@@ -32,6 +32,9 @@ O diagrama organiza as nove falhas em dois eixos: **tipo** (o que o modelo vê, 
 
 ```mermaid
 graph TD
+  classDef alta fill:#2e7d32,color:#fff
+  classDef parcial fill:#f9a825,color:#000
+  classDef baixa fill:#c62828,color:#fff
   subgraph Percepcao["Percepção — o que o modelo vê"]
     F1["1. Alucinação visual"]:::parcial
     F2["2. OCR fraco"]:::parcial
@@ -47,9 +50,6 @@ graph TD
     F6["6. Latência maior"]:::alta
     F7["7. Screenshot-all"]:::alta
   end
-  classDef alta fill:#2e7d32,color:#fff
-  classDef parcial fill:#f9a825,color:#000
-  classDef baixa fill:#c62828,color:#fff
 ```
 
 ## 1. Alucinação visual

@@ -78,6 +78,8 @@ Compare os quatro modelos lado a lado:
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Go["Go"]
         G1["código-fonte<br/>.go"] -->|"compilador (go build)"| G2["binário nativo<br/>autocontido"]
         G2 -->|"executa direto na CPU"| G3["processo rodando"]
@@ -98,10 +100,10 @@ flowchart TD
         N2 -->|"executa (com engine V8 presente)"| N3["processo rodando"]
     end
 
-    style G2 fill:#4A90D9,color:#fff
-    style J2 fill:#F5A623,color:#000
-    style P2 fill:#F5A623,color:#000
-    style N2 fill:#F5A623,color:#000
+    class G2 neutro
+    class J2 destaque
+    class P2 destaque
+    class N2 destaque
 ```
 
 Repare na diferença estrutural: em Java, Python e Node, existe uma caixa intermediária (bytecode, ou código gerado em tempo de execução) que **depende de um motor de execução presente na máquina de destino** — a JVM instalada, o interpretador CPython instalado, o runtime Node/V8 instalado. Em Go, o compilador produz diretamente um **binário de código de máquina nativo** para a arquitetura e sistema operacional alvo (Linux/amd64, macOS/arm64, Windows/amd64, o que for). Não existe "motor de execução do Go" separado para instalar no servidor — o binário *é* o programa completo.

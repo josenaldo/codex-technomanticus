@@ -31,6 +31,8 @@ Isso não é peculiaridade de Go — é qualquer entrevista técnica de qualquer
 
 ```mermaid
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["1. Parafrasear o problema\nnegociar casos de borda"] --> B["2. Assinatura da função\nnomes de tipos primeiro"]
     B --> C["3. Caso feliz\nversão mais simples que compila"]
     C --> D["4. Erros como valor\nreturn zero, err"]
@@ -39,9 +41,9 @@ flowchart TD
     F -->|sim| G["6. Refinar: nomes, edge cases,\ncomplexidade — narrando cada troca"]
     F -->|não| H["Parar no funcional,\nnarrar o que faltou"]
 
-    style A fill:#F5A623,color:#000
-    style D fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
+    class A destaque
+    class D neutro
+    class E neutro
 ```
 
 Repare que testar (passo 5) não é o último item da lista — é o penúltimo, antes do refinamento. Isso é deliberado: em Go, um teste table-driven bem escrito **é** a prova de que você entendeu os casos de borda que negociou no passo 1. Se o entrevistador pedir "e se a lista vier vazia?", a resposta ideal não é uma frase — é adicionar uma linha na tabela de testes e rodar.

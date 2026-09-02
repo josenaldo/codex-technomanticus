@@ -64,8 +64,8 @@ Dois números controlam o ritmo da substituição, e ambos podem ser um valor ab
 - **`maxUnavailable`** — quantos Pods, do total desejado, podem estar **indisponíveis** (fora da rotação de tráfego, seja porque ainda não passaram no `readinessProbe`, seja porque já estão sendo desligados) ao mesmo tempo, durante o rollout. `maxUnavailable: 0` significa que o Kubernetes nunca reduz a capacidade real de atendimento abaixo do número de réplicas desejadas — ele só remove um Pod antigo depois que um Pod novo já estiver pronto pra substituí-lo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph T0["t0 — antes do rollout"]
         P1["Pod v1"]
         P2["Pod v1"]
@@ -90,11 +90,11 @@ flowchart TB
 
     T0 --> T1 --> T2 --> T3
 
-    style P4b fill:#F5A623,color:#000
-    style P4c fill:#7ED321,color:#000
-    style P4d fill:#7ED321,color:#000
-    style P5d fill:#7ED321,color:#000
-    style P6d fill:#7ED321,color:#000
+    class P4b destaque
+    class P4c destaque
+    class P4d destaque
+    class P5d destaque
+    class P6d destaque
 ```
 
 `maxUnavailable: 0` com `maxSurge: 1` — a combinação do exemplo acima — é a escolha mais conservadora possível: capacidade nunca cai abaixo do desejado, à custa de usar temporariamente um Pod a mais de recursos do cluster durante cada rollout. É o par de valores certo quando o serviço não tolera nenhuma redução de capacidade, nem por alguns segundos — o caso do `tarefas-service`, que atende tráfego constante o dia inteiro.
@@ -110,7 +110,6 @@ flowchart TB
 Com `RollingUpdate` configurado, o controller do `Deployment` executa uma sequência coordenada pra cada Pod substituído — e é exatamente essa sequência, não a estratégia em si, que decide se o rollout corta tráfego ou não.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant Ctrl as Deployment controller
     participant PodNovo as Pod novo (v2)
@@ -194,8 +193,9 @@ spec:
 `terminationGracePeriodSeconds` (padrão do Kubernetes: 30 segundos) é o prazo **total** que o kubelet espera, desde o momento em que decide desligar um Pod, até forçar `SIGKILL` — e esse prazo inclui, dentro dele, tanto a duração do `preStop` hook quanto o tempo que o processo tem, depois do `SIGTERM`, para terminar de drenar sozinho. Não são dois orçamentos de tempo separados — é um único orçamento, compartilhado.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     START["Kubernetes decide<br/>desligar o Pod"] --> PS["preStop hook<br/>(5s)"]
     PS --> SIG["SIGTERM enviado"]
     SIG --> DRAIN["gunicorn drena<br/>(--graceful-timeout)"]
@@ -203,8 +203,8 @@ flowchart LR
     FIM -->|"sim"| OK["processo encerra<br/>normalmente"]
     FIM -->|"não, prazo total<br/>de 60s esgotou"| KILL["kubelet manda<br/>SIGKILL forçado"]
 
-    style OK fill:#7ED321,color:#000
-    style KILL fill:#D0021B,color:#fff
+    class OK destaque
+    class KILL falha
 ```
 
 A regra prática, direta: `preStop.sleep` + `--graceful-timeout` do gunicorn precisa ser **menor** que `terminationGracePeriodSeconds` — com margem, não no limite exato. No exemplo desta nota, `5s` de `preStop` mais `40s` de `--graceful-timeout` (um valor calibrado pelo p99 real de latência do serviço, seguindo a orientação já dada na [[03-Dominios/Tecnologia/Python/Observabilidade e produção/05 - Configuração de servidor de produção — workers, timeouts e graceful shutdown|nota 05 do Galho 17]]) soma `45s`, deixando `15s` de margem dentro do `terminationGracePeriodSeconds: 60`. Foi exatamente essa conta que faltou no incidente de abertura: `--graceful-timeout: 45` contra um `terminationGracePeriodSeconds` que ainda estava no padrão de `30` — o kubelet forçava `SIGKILL` 15 segundos antes do gunicorn ter chance de terminar de drenar sozinho, cortando exatamente as requisições mais lentas em voo naquele instante.

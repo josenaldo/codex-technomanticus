@@ -30,17 +30,17 @@ Um gerente de produto chega e diz: "os usuários reclamam que o site está lento
 Sem um vocabulário preciso, "lento" é um balde onde cabe tudo e não se conserta nada. Foi para resolver isso que o Google, em 2020, destilou a experiência do usuário em três métricas mensuráveis, cada uma capturando **um** desses momentos. É o que permite sair de "está lento" para "o **INP** no mobile está em 480 ms, então o problema é responsividade, não carregamento".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[Usuário pede a página] --> B["LCP<br/>carregou?"]
     B --> C["INP<br/>respondeu?"]
     C --> D["CLS<br/>ficou estável?"]
     B -.mede.-> B1[Largest Contentful Paint]
     C -.mede.-> C1[Interaction to Next Paint]
     D -.mede.-> D1[Cumulative Layout Shift]
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
+    class B neutro
+    class C neutro
+    class D neutro
 ```
 
 ## A tabela que você precisa decorar

@@ -36,18 +36,19 @@ Um sistema de tokens maduro tem **três camadas**, cada uma com um papel diferen
 **Componente** — o uso específico dentro de um componente da interface. `button-bg-primary` aponta para `color-action-primary`; `card-border` aponta para um token semântico de borda. Esta camada existe para permitir que um componente específico se desvie do padrão semântico sem quebrar a cadeia — mas só quando há motivo real, não por padrão.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     P["Primitivo<br/>blue-500"] --> S["Semântico<br/>color-action-primary"]
     S --> C["Componente<br/>button-bg-primary"]
     P2["Primitivo<br/>space-4"] --> S2["Semântico<br/>space-inset-md"]
     S2 --> C2["Componente<br/>card-padding"]
-    style P fill:#4A90D9,color:#fff
-    style S fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style P2 fill:#4A90D9,color:#fff
-    style S2 fill:#4A90D9,color:#fff
-    style C2 fill:#F5A623,color:#000
+    class P neutro
+    class S neutro
+    class C destaque
+    class P2 neutro
+    class S2 neutro
+    class C2 destaque
 ```
 
 Sem essa hierarquia, o resultado é **token soup**: tokens demais, sem camada declarada entre eles, indireção que não compra manutenibilidade nenhuma — exatamente o produto do cenário de abertura, com 340 nomes competindo pelo mesmo significado.

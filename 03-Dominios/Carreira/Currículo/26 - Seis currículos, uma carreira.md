@@ -332,8 +332,8 @@ Lidas as seis peças em sequência, um padrão fica visível que nenhuma delas, 
 E três coisas descem, na direção oposta, também como a nota 03 previu: a lista de tecnologias específicas, generosa nos currículos de Yasmin e do júnior reconstruído, quase ausente no sumário do sênior e completamente ausente do sumário da projeção de staff; a certificação e o curso avulso, que pesam nas peças iniciais e desaparecem depois; e a descrição de tarefa de dia a dia, substituída por decisão e padrão à medida que a escada sobe.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Est["Estagiário<br/>Yasmin (fictício)"] --> Tra["Trainee<br/>Cassiana (real)"] --> Jr["Júnior<br/>reconstruído"] --> Pl["Pleno<br/>reconstruído"] --> Sr["Sênior<br/>real, atual"] --> St["Staff<br/>projeção"]
 
     Est -.prova.-> P1["potencial e<br/>disciplina"]
@@ -347,13 +347,13 @@ graph LR
     Anc -.atravessa.-> Sr
     Anc -.atravessa.-> St
 
-    style Anc fill:#7ED321,color:#000
-    style P1 fill:#F5A623,color:#000
-    style P2 fill:#F5A623,color:#000
-    style P3 fill:#F5A623,color:#000
-    style P4 fill:#F5A623,color:#000
-    style P5 fill:#F5A623,color:#000
-    style P6 fill:#F5A623,color:#000
+    class Anc destaque
+    class P1 destaque
+    class P2 destaque
+    class P3 destaque
+    class P4 destaque
+    class P5 destaque
+    class P6 destaque
 ```
 
 O que o diagrama tenta deixar visível é o eixo horizontal — as seis peças, cada uma provando algo diferente — cruzado com uma linha vertical que atravessa todas elas sem se mover: não é a mesma pessoa em cinco das seis peças (Yasmin é fictícia, Cassiana é outra pessoa), mas é o mesmo **mecanismo**, o mesmo tipo de trabalho de reenquadrar evidência real em prova legível, repetido seis vezes em seis momentos e seis pessoas diferentes. É exatamente esse mecanismo — não a extensão da lista de tecnologias, não o número de anos de carreira — que a [[03-Dominios/Carreira/Currículo/03 - Os seis níveis e o que muda entre eles|nota 03]] chamou, na abertura do galho, de vocabulário certo para cada degrau, e que este capstone finalmente mostrou funcionando, seis vezes, em vez de apenas descrever.

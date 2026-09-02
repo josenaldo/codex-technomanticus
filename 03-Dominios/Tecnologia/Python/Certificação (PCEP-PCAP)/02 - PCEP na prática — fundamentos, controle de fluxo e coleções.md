@@ -39,6 +39,9 @@ Nota de corte: **70% cumulativo** sobre os 30 itens (dado confirmado no [[01 - P
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph PCEP["PCEP-30-02 — 30 itens, corte 70%"]
         B1["Bloco 1<br/>Fundamentals<br/>18%"]
         B2["Bloco 2<br/>Control Flow<br/>29%"]
@@ -61,10 +64,10 @@ flowchart TB
     B4 --> N06["Core 06<br/>funções"]
     B4 --> N08["Core 08<br/>exceções"]
 
-    style B2 fill:#D0021B,color:#fff
-    style B4 fill:#F5A623,color:#000
-    style B1 fill:#4A90D9,color:#fff
-    style B3 fill:#4A90D9,color:#fff
+    class B2 falha
+    class B4 destaque
+    class B1 neutro
+    class B3 neutro
 ```
 
 O diagrama já entrega a leitura estratégica: os dois blocos coloridos em destaque (Control Flow e Functions/Exceptions) somam mais da metade da prova. As seções a seguir seguem essa mesma ordem de prioridade — não a ordem numérica do syllabus, mas a ordem de peso, começando pelo bloco de fundamentos (base necessária) e terminando no de maior peso combinado.

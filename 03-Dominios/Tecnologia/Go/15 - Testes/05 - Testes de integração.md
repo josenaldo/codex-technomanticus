@@ -29,6 +29,8 @@ Testes de integração fecham essa lacuna trocando o dublê pela coisa real — 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Rapido["go test ./... (padrão)"]
         U1["Testes unitários"] -->|"milissegundos"| R1["✅ roda sempre"]
     end
@@ -36,8 +38,8 @@ flowchart LR
         I1["Testes de integração"] -->|"Docker + segundos"| R2["✅ roda no CI / sob demanda"]
     end
 
-    style Rapido fill:#4A90D9,color:#fff
-    style Lento fill:#F5A623,color:#000
+    class Rapido neutro
+    class Lento destaque
 ```
 
 ## Build tags: excluir arquivos da compilação por padrão
@@ -148,6 +150,8 @@ func TestHealthHandler_SemServidor(t *testing.T) {
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Recorder["httptest.NewRecorder — mais rápido, sem rede"]
         direction LR
         A1["httptest.NewRequest"] --> A2["chama o handler direto"] --> A3["httptest.ResponseRecorder\n(grava em memória)"]
@@ -157,8 +161,8 @@ flowchart TB
         B1["http.Get(server.URL + rota)"] --> B2["servidor real\nem porta livre"] --> B3["roteador → middlewares → handler"]
     end
 
-    style Recorder fill:#4A90D9,color:#fff
-    style Server fill:#F5A623,color:#000
+    class Recorder neutro
+    class Server destaque
 ```
 
 A diferença entre os dois é justamente o que se está testando: `NewRecorder` isola o handler (mais próximo de teste unitário — chama a função Go diretamente, sem rede real); `NewServer` testa a cadeia inteira, incluindo se a rota está registrada no lugar certo e se middlewares (autenticação, logging, CORS) participam como esperado. Ambos vivem no mesmo pacote `httptest` porque resolvem o mesmo problema geral em dois níveis de fidelidade — nenhum dos dois exige build tag por si só, já que ambos rodam rápido o suficiente para o `go test` comum. A build tag `integration` entra quando o teste depende de algo externo lento, como um banco real — o assunto da próxima seção.

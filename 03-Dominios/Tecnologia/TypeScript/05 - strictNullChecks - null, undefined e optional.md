@@ -58,6 +58,8 @@ O diagrama abaixo ilustra onde o bug passa:
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["getUser(99)\nretorna null"]
     B{"TS type checker\nsem strictNullChecks"}
     C["user.name.toUpperCase()"]
@@ -67,8 +69,8 @@ flowchart LR
     B -->|"null ≤ qualquer tipo\n→ OK para o compilador"| C
     C --> D
 
-    style D fill:#b22222,color:#fff
-    style B fill:#555,color:#fff
+    class D falha
+    class B neutro
 ```
 
 Agora com a flag ligada:
@@ -111,6 +113,8 @@ O mecanismo que torna tudo isso útil é o **control flow analysis** — o compi
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["const user: User | null"]
     B{"if user !== null"}
     C["Ramo true:\nuser: User\n(null excluído)"]
@@ -122,8 +126,8 @@ flowchart TD
     B -->|false| D
     B -->|"continua"| E
 
-    style C fill:#1a6b1a,color:#fff
-    style D fill:#8a1a1a,color:#fff
+    class C ok
+    class D falha
 ```
 
 Esse estreitamento acontece com vários padrões:
@@ -184,6 +188,8 @@ O TS resolve o tipo resultante do `?.` estaticamente: ele sabe que cada passo qu
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["user?.address?.city"]
     B{"user é\nnull/undefined?"}
     C["→ undefined"]
@@ -197,9 +203,9 @@ flowchart LR
     D -->|sim| E
     D -->|não| F
 
-    style C fill:#8a1a1a,color:#fff
-    style E fill:#8a1a1a,color:#fff
-    style F fill:#1a6b1a,color:#fff
+    class C falha
+    class E falha
+    class F ok
 ```
 
 O nullish coalescing `??` fornece um valor padrão apenas quando o operando esquerdo é `null` ou `undefined` (diferente de `||`, que responde a qualquer falsy):
@@ -338,6 +344,8 @@ const xpto = scores["nao-existe"];   // tipo: number | undefined — correto!
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph SEM["Sem noUncheckedIndexedAccess"]
         A1["arr[0]"] --> B1["tipo: string"]
         B1 --> C1["arr[999].toUpperCase()"]
@@ -351,9 +359,9 @@ flowchart LR
         C2 -->|"string"| E2["operação segura"]
     end
 
-    style D1 fill:#b22222,color:#fff
-    style D2 fill:#1a6b1a,color:#fff
-    style E2 fill:#1a6b1a,color:#fff
+    class D1 falha
+    class D2 ok
+    class E2 ok
 ```
 
 > [!tip] Iteração segura com noUncheckedIndexedAccess
@@ -433,6 +441,7 @@ O diagrama de fluxo do tipo através da função:
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["users.find(...)"]
     B["User | undefined"]
     C["user?.address"]
@@ -444,7 +453,7 @@ flowchart TD
 
     A --> B --> C --> D --> E --> F --> G --> H
 
-    style H fill:#1a6b1a,color:#fff
+    class H ok
 ```
 
 Cada `?` no caminho da propriedade acrescenta `| undefined` ao tipo parcial. O `??` no final "limpa" o `| undefined` fornecendo um fallback que nunca é `null`/`undefined`. O retorno final é `string` — sem exceção possível.

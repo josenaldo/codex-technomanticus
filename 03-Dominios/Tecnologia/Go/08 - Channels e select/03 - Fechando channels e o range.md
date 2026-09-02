@@ -47,14 +47,16 @@ close(ch)
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["make(chan int, 3)"] --> B["ch <- 1\nch <- 2"]
     B --> C["close(ch)"]
     C --> D["<-ch → 1"]
     D --> E["<-ch → 2"]
     E --> F["<-ch → 0, ok=false\n(zero value, sem bloquear)"]
 
-    style C fill:#F5A623,color:#000
-    style F fill:#D0021B,color:#fff
+    class C destaque
+    class F falha
 ```
 
 Duas regras de compilador/runtime que valem memorizar, porque violá-las é `panic` garantido:

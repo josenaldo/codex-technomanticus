@@ -79,7 +79,6 @@ A quarta é a que mais gente subestima e a que mais salva. "Por quê" é a infor
 Cada registro desses tem um nome: **commit**. Pense num commit como um *save* de videogame. Você joga um trecho, chega num ponto estável, salva. Se a próxima fase der errado, você carrega o save. A diferença é que aqui os saves não se sobrescrevem — todos ficam, em ordem, com legenda.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
     subgraph B["Sua pasta hoje"]
         F1["monografia.docx"]
@@ -126,7 +125,6 @@ Vale conhecer a história, porque ela explica a característica mais estranha e 
 Controle de versão não é novidade — existe desde os anos 1970, e passou por três formatos:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     subgraph L["1. Local (anos 70-80)"]
         L1["Seu computador<br/>histórico numa pasta oculta"]
@@ -217,7 +215,6 @@ Hoje, seu ciclo é: abrir o arquivo → escrever → salvar → (às vezes) dupl
 Com Git, vira: abrir o arquivo → escrever → salvar → **e, quando terminar um pedaço que faz sentido, registrar um commit com uma frase dizendo o que fez**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
     A["Escrever<br/>(seu editor de sempre)"] --> B["Salvar<br/>(Ctrl+S, como sempre)"]
     B --> C{"Terminei um<br/>pedaço coerente?"}

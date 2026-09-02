@@ -30,14 +30,15 @@ Você tem uma coleção e quer percorrê-la. Se o cliente precisa saber que é u
 O Iterator resolve dando a toda coleção uma forma **uniforme** de dizer "me dê o próximo elemento" — `hasNext()`/`next()`, ou o equivalente. O cliente pede elementos em sequência sem saber a representação; a coleção pode mudar por dentro sem afetar quem itera. É o que faz o `for (x : colecao)` funcionar igual para lista, conjunto e árvore.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     C[Cliente] -->|"hasNext() / next()"| I{{Iterator}}
     I -->|percorre| Col[Coleção: array? lista? árvore?]
 
-    style I fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style Col fill:#F5A623,color:#000
+    class I neutro
+    class C destaque
+    class Col destaque
 ```
 
 O cliente só conhece o protocolo `hasNext`/`next`; a estrutura real da coleção (âmbar) fica escondida atrás do iterador.

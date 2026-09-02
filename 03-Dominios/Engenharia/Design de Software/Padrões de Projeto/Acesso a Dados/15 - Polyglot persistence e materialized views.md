@@ -36,17 +36,18 @@ A persistência poliglota é aceitar essa realidade de frente: use, no mesmo sis
 Se o mesmo fato vive em vários bancos, alguém precisa **mantê-los em sincronia** — e reconstruir a visão de leitura a cada request (com joins caros) mataria a performance. A resposta é a **materialized view**: o resultado de uma consulta **calculado uma vez e guardado pronto**, desnormalizado, atualizado quando a fonte muda. No banco relacional é o `MATERIALIZED VIEW` (Postgres) que você dá `REFRESH`; na arquitetura, é o **read model** — uma projeção desenhada para **uma** tela, alimentada pelos eventos da escrita.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     W["Modelo de escrita<br/>(relacional, ACID)"] -->|"eventos de mudança"| BUS{{"stream / eventos"}}
     BUS --> R1["read model: busca<br/>(Elasticsearch)"]
     BUS --> R2["read model: cache<br/>(Redis)"]
     BUS --> R3["view: dashboard<br/>(colunar)"]
 
-    style W fill:#4A90D9,color:#fff
-    style R1 fill:#F5A623,color:#000
-    style R2 fill:#F5A623,color:#000
-    style R3 fill:#F5A623,color:#000
+    class W neutro
+    class R1 destaque
+    class R2 destaque
+    class R3 destaque
 ```
 
 Essa separação **escrita normalizada → leituras desnormalizadas** é o **CQRS** (Command Query Responsibility Segregation): comandos alteram o modelo de escrita; consultas leem dos read models otimizados. É o mesmo espírito do [[14 - Command|Command]] do GoF — separar a intenção de mudança da de leitura — agora no nível da arquitetura de dados. A propagação por eventos (event sourcing / *change data capture*) é o que mantém as views vivas; o assunto ganha corpo próprio na família de **Padrões de Eventos**, ainda por escrever.

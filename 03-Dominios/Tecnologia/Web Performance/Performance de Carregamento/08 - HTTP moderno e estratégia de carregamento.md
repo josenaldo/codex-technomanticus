@@ -35,8 +35,9 @@ Mas o HTTP/2 roda sobre **TCP**, e aí mora seu calcanhar: o **head-of-line bloc
 O **HTTP/3** troca o transporte: em vez de TCP, roda sobre **QUIC**, um protocolo construído sobre **UDP**. A jogada genial é que o QUIC entende de **streams no próprio nível de transporte** — cada stream lida com perda de pacote de forma **independente**. A perda de um pacote da imagem afeta só a imagem; o JS e o CSS continuam fluindo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph H2["HTTP/2 sobre TCP"]
         T1[stream JS] --> TCP[TCP entrega em ordem]
         T2[stream CSS] --> TCP
@@ -48,9 +49,9 @@ graph TB
         Q2[stream CSS] --> OK2[✓ flui]
         Q3[stream IMG perde pacote] --> WAIT[só IMG espera]
     end
-    style BLOCK fill:#D0021B,color:#fff
-    style OK1 fill:#4A90D9,color:#fff
-    style OK2 fill:#4A90D9,color:#fff
+    class BLOCK falha
+    class OK1 neutro
+    class OK2 neutro
 ```
 
 Outros ganhos do QUIC: **handshake mais rápido** (combina o setup de conexão e TLS; 0-RTT em reconexões) e **migração de conexão** (você troca de Wi-Fi para 4G sem derrubar a conexão — o celular no bolso agradece).
@@ -79,15 +80,16 @@ Em 2026 é suportado em todos os browsers principais (Chrome/Edge preload+precon
 Este galho te deu peças; a maestria é orquestrá-las. Uma estratégia de carregamento coerente, na ordem do Critical Rendering Path:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["1. Protocolo<br/>HTTP/3 + CDN"] --> B["2. Servidor<br/>TTFB baixo, Early Hints"]
     B --> C["3. Head<br/>critical CSS inline,<br/>defer JS, preload fonte+LCP"]
     C --> D["4. Assets<br/>AVIF/srcset, font-display,<br/>Brotli, cache imutável"]
     D --> E["5. LCP verde"]
-    style A fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style E fill:#F5A623,color:#000
+    class A neutro
+    class C neutro
+    class E destaque
 ```
 
 1. **Fundação:** sirva por **HTTP/3** de uma **CDN** perto do usuário. TTFB baixo, streams independentes.

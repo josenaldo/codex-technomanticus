@@ -69,6 +69,8 @@ Um Pod consome um `ConfigMap` (ou um `Secret`) de duas formas fundamentalmente d
 
 ```mermaid
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     Q{"Como o processo vai<br/>usar esse dado?"} -->|"lido uma vez na<br/>inicialização, nunca mais"| ENV["Variável de ambiente<br/>env / envFrom"]
     Q -->|"pode mudar em runtime,<br/>ou é grande/estruturado<br/>(arquivo inteiro)"| VOL["Volume montado<br/>volumes + volumeMounts"]
     ENV --> ENVR["Congelado no exec() do processo<br/>só muda recriando o Pod"]
@@ -77,9 +79,9 @@ graph TD
     SUB -->|"sim"| NOUP["Congelado também —<br/>bind mount direto, sem link atômico"]
     SUB -->|"não"| UP["Atualiza de fato,<br/>se o processo reler o arquivo"]
 
-    style ENVR fill:#7a2e2e,stroke:#c0392b,color:#fff
-    style NOUP fill:#7a2e2e,stroke:#c0392b,color:#fff
-    style UP fill:#1e5c3a,stroke:#27ae60,color:#fff
+    class ENVR falha
+    class NOUP falha
+    class UP ok
 ```
 
 ### Como variável de ambiente: lida uma vez, na criação do processo

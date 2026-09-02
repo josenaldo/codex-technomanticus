@@ -37,8 +37,10 @@ Cada chamada nova é uma dependência nova. O serviço de pedidos agora *conhece
 Essa é a dor que o pub/sub resolve. Em vez de o produtor chamar cada consumidor um por um, ele publica **um único evento** — `PedidoCriado` — num broker. Estoque, e-mail, faturamento e analytics se inscrevem nesse evento de forma independente. O serviço de pedidos nunca precisa saber que analytics existe. Quando o time de recomendação quiser entrar, ele simplesmente se inscreve — zero linha de código alterada no produtor.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph RR["Request-response — produtor conhece N consumidores"]
         P1["Serviço de<br/>Pedidos"] -->|"chama"| E1["Estoque"]
         P1 -->|"chama"| E2["E-mail"]
@@ -54,9 +56,9 @@ graph TD
         B -->|"fan-out"| S4["Analytics"]
         B -.->|"5º consumidor?<br/>só se inscreve"| S5["Recomendação"]
     end
-    style B fill:#F5A623,color:#000
-    style E5 fill:#D0021B,color:#fff
-    style S5 fill:#4A90D9,color:#fff
+    class B destaque
+    class E5 falha
+    class S5 neutro
 ```
 
 Repare no diagrama: à esquerda, cada seta é uma dependência que o produtor carrega. À direita, o produtor tem **uma** dependência — o broker — e o broker é quem carrega o conhecimento de quantos e quais consumidores existem. O acoplamento não desaparece; ele **migra do código para a infraestrutura**, que é desenhada para esse tipo de fan-out.
@@ -127,8 +129,8 @@ A saída é **ordering por chave**: você associa cada evento a uma chave de par
 O Google Cloud Pub/Sub formaliza exatamente essa garantia com **ordering keys**: mensagens publicadas com a mesma chave, na mesma região, são entregues na ordem em que chegaram ao serviço — mas mensagens com chaves diferentes não têm ordem garantida entre elas, e mensagens com chave vazia não são ordenadas de forma alguma. Kafka resolve o mesmo problema pela chave de partição do produtor: mensagens com a mesma chave sempre vão para a mesma partição, e dentro de uma partição a ordem de escrita é preservada.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph PUB["Publicados (ordem de emissão)"]
         A1["Pedido A: criado"] --> A2["Pedido A: pago"]
         B1["Pedido B: criado"] --> B2["Pedido B: pago"]
@@ -139,8 +141,8 @@ graph LR
     B2 -->|"chave = pedidoId B"| PB
     PA -->|"ordem preservada<br/>dentro da chave A"| CA["Consumidor lê:<br/>A-criado → A-pago"]
     PB -->|"ordem preservada<br/>dentro da chave B"| CB["Consumidor lê:<br/>B-criado → B-pago"]
-    style PA fill:#4A90D9,color:#fff
-    style PB fill:#4A90D9,color:#fff
+    class PA neutro
+    class PB neutro
 ```
 
 > [!question]- Por que não garantir ordem global — não seria mais simples?
@@ -189,7 +191,6 @@ Para fechar o raciocínio com números, volte ao serviço de pedidos e compare o
 **No modelo pub/sub:** o time de recomendação escreve seu próprio serviço, inscreve-se no tópico `pedidos.criado` (ou no evento com o filtro certo), testa contra o mesmo tópico em um ambiente de staging, e faz deploy — **sem tocar em uma linha do serviço de pedidos**. Se o serviço de recomendação cair no primeiro dia em produção, o pior caso é que ele fica com lag de mensagens não processadas (que ele drena quando volta); o checkout nunca soube que ele existiu.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant T as Time de Recomendação
     participant B as Broker (tópico pedidos.criado)

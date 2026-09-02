@@ -37,8 +37,10 @@ Duas semanas depois de subir uma versão nova, o time recebe dois alertas correl
 A reação mais comum, e a mais cara em tempo perdido, é tratar isso como "vazamento de memória, deve ser algum cache sem limite" e sair caçando `del` faltando. Esta nota mostra por que essa reação está incompleta — e por que o diagnóstico correto exige exatamente as oito peças que as notas 01 a 08 deste galho ensinaram, uma de cada vez.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["RSS sobe de 300MB → 2.4GB\nlatência sobe de 40ms → 180ms"] --> B{"RSS crescente é\nvazamento real?"}
     B -->|"nota 07: pymalloc raramente\ndevolve arena ao SO"| C["Pode ser comportamento\nesperado do alocador"]
     C --> D["tracemalloc: comparar snapshots\n(nota 08)"]
@@ -53,20 +55,20 @@ flowchart TD
     L --> M["cProfile em dev / py-spy em prod\nconfirmam o ganho (nota 08)"]
     M --> N["Motor por trás de tudo:\nceval loop + frames (nota 01)"]
 
-    style A fill:#D0021B,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#4A90D9,color:#fff
-    style E fill:#D0021B,color:#fff
-    style F fill:#4A90D9,color:#fff
-    style G fill:#D0021B,color:#fff
-    style H fill:#4A90D9,color:#fff
-    style I fill:#4A90D9,color:#fff
-    style J fill:#F5A623,color:#000
-    style K fill:#4A90D9,color:#fff
-    style L fill:#F5A623,color:#000
-    style M fill:#4A90D9,color:#fff
-    style N fill:#4A90D9,color:#fff
+    class A falha
+    class B neutro
+    class C destaque
+    class D neutro
+    class E falha
+    class F neutro
+    class G falha
+    class H neutro
+    class I neutro
+    class J destaque
+    class K neutro
+    class L destaque
+    class M neutro
+    class N neutro
 ```
 
 ## Etapa 1: RSS crescente não é, por si só, prova de vazamento
@@ -180,6 +182,8 @@ A nota 03 foi explícita sobre a condição para isso ser seguro: `gc.disable()`
 
 ```mermaid
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Ciclo formado a cada pedido"
         P["Pedido\nob_refcnt = 2\n(variável local + item.pedido)"] -->|"pedido.itens"| I["Item\nob_refcnt = 2\n(pedido.itens + variável local)"]
         I -->|"item.pedido"| P
@@ -188,9 +192,9 @@ graph LR
     ext["Variáveis locais\n(fim do processamento)"] -.->|"referência removida"| P
     ext -.->|"referência removida"| I
 
-    style P fill:#F5A623,color:#000
-    style I fill:#F5A623,color:#000
-    style ext fill:#4A90D9,color:#fff
+    class P destaque
+    class I destaque
+    class ext neutro
 ```
 
 ### A correção: `weakref` no lado que não precisa manter o outro vivo
@@ -328,7 +332,6 @@ sudo py-spy record -o antes_depois.svg --pid 51204 --duration 30
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Fila as Fila de pedidos
     participant Proc as Processo principal

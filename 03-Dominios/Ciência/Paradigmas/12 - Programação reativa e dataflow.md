@@ -30,12 +30,14 @@ A ideia mais antiga aqui se chama **dataflow** (fluxo de dados). O programa não
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["A1 = 10"] --> B["B1 = A1 * 2"]
     A --> C["C1 = A1 + 5"]
     B --> D["D1 = B1 + C1"]
     C --> D
-    style A fill:#5b8c5a,color:#fff
-    style D fill:#8c5a5a,color:#fff
+    class A ok
+    class D falha
 ```
 
 **Leitura do diagrama:** A1 é uma fonte. B1 e C1 dependem dela; D1 depende de ambas. Mude A1 e a onda de recomputação varre o grafo na ordem certa — B1 e C1 primeiro, D1 depois. Você nunca escreveu essa ordem. Ela **emerge** das dependências.
@@ -55,12 +57,14 @@ E o que você faz com uma esteira? Você compõe transformações sobre ela, exa
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     S["source<br/>(cliques)"] --> M["map<br/>(extrai x,y)"]
     M --> F["filter<br/>(só x &gt; 100)"]
     F --> D["debounce<br/>(300ms)"]
     D --> SUB["subscribe<br/>(efeito: render)"]
-    style S fill:#5a6c8c,color:#fff
-    style SUB fill:#8c5a5a,color:#fff
+    class S neutro
+    class SUB falha
 ```
 
 **Leitura do diagrama:** um pipeline reativo. A fonte emite cliques; `map` transforma cada um, `filter` descarta os que não interessam, `debounce` agrupa rajadas no tempo (espera a poeira baixar) e só no fim o `subscribe` executa o efeito. Repare: `map` e `filter` aqui são os **mesmos** do funcional — só que operam sobre valores que ainda não chegaram.
@@ -108,6 +112,8 @@ Cada bolinha desce no **mesmo instante** em que subiu — `map` mexe no valor, n
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph TR["Transformação"]
         T["map · scan · flatMap<br/>muda o valor"]
     end
@@ -121,8 +127,8 @@ flowchart TB
         TM["delay · timeout<br/>buffer · sample<br/>mexe no quando"]
     end
     SRC["source<br/>(stream de eventos)"] --> TR --> FI --> CO --> TE --> OUT["subscribe<br/>(efeito)"]
-    style SRC fill:#5a6c8c,color:#fff
-    style OUT fill:#8c5a5a,color:#fff
+    class SRC neutro
+    class OUT falha
 ```
 
 **Leitura do diagrama:** as quatro famílias como estágios de um pipeline. Um stream entra pela esquerda; cada estágio aplica uma classe de operador e passa adiante. Você não precisa usar as quatro — mas qualquer pipeline reativo real é uma escolha de quais operadores de cada família encaixar, e em que ordem. A ordem importa: `debounce` antes ou depois de `map` muda o comportamento.
@@ -181,6 +187,8 @@ Um observable **quente** (hot) produz valores **independentemente de haver assin
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph COLD["FRIO (cold) — unicast"]
         CS1["subscribe A"] --> CE1["execução própria<br/>HTTP do zero"]
         CS2["subscribe B"] --> CE2["execução própria<br/>outro HTTP do zero"]
@@ -190,9 +198,9 @@ flowchart TB
         HP --> HS1["subscribe A<br/>(recebe daqui pra frente)"]
         HP --> HS2["subscribe B<br/>(perdeu o que veio antes)"]
     end
-    style CE1 fill:#5a6c8c,color:#fff
-    style CE2 fill:#5a6c8c,color:#fff
-    style HP fill:#8c5a5a,color:#fff
+    class CE1 neutro
+    class CE2 neutro
+    class HP falha
 ```
 
 **Leitura do diagrama:** no frio, cada `subscribe` dispara uma execução nova e isolada — duas inscrições, dois HTTPs. No quente, existe um produtor só que já está rodando; os assinantes plugam num fluxo em andamento e dividem o resultado, mas quem chega depois não vê o passado. Frio = a fita recomeça pra cada um; quente = transmissão ao vivo, você pega no ponto em que ligou a TV.
@@ -208,10 +216,12 @@ A solução é a **backpressure** (contrapressão): o consumidor precisa de um j
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     P["Producer<br/>(rápido)"] -- "onNext (push)" --> C["Consumer<br/>(lento)"]
     C -- "request(n) (pull)" --> P
-    style P fill:#5b8c5a,color:#fff
-    style C fill:#8c5a5a,color:#fff
+    class P ok
+    class C falha
 ```
 
 **Leitura do diagrama:** a seta de cima é o push (a fonte entrega valores); a seta de baixo é o pull (o consumidor controla a vazão pedindo `n` por vez). A backpressure nasce dessa seta de volta — sem ela, um produtor rápido afoga um consumidor lento.
@@ -242,12 +252,14 @@ Volte ao grafo de dependências do começo. Há um problema sutil que aparece qu
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["A = 1 → 2"] --> B["B = A + 1"]
     A --> C["C = A * 10"]
     B --> D["D = B + C"]
     C --> D
-    style A fill:#5b8c5a,color:#fff
-    style D fill:#8c5a5a,color:#fff
+    class A ok
+    class D falha
 ```
 
 **Leitura do diagrama:** A alimenta B e C; ambos alimentam D. Quando A vai de 1 para 2, há dois caminhos até D: um curto (A para C) e um... igual, mas a *ordem de visita* importa. Se o motor recomputar B (vira 3) e D **antes** de atualizar C, D soma `3 + 10` (C ainda velho) = 13 — um valor que não corresponde nem ao estado antigo (`2 + 10 = 12`) nem ao novo (`3 + 20 = 23`). Esse 13 é o glitch: uma piscada de inconsistência que aparece e some.

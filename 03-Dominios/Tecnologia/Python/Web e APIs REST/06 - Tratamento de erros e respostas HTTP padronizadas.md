@@ -200,8 +200,10 @@ def buscar_produto(produto_id: int, db=Depends(get_db)):
 > `@app.exception_handler(ProdutoNaoEncontrado)` é registrado **uma vez**, na inicialização do app, e vale para **qualquer** rota que deixe `ProdutoNaoEncontrado` subir — não é preciso repetir `try/except` em cada endpoint que pode falhar dessa forma. É o mesmo princípio do `response_model` visto na [[03 - Validação e serialização com Pydantic|nota 03]]: declarar a regra uma vez, num ponto central, em vez de confiar em disciplina repetida em cada rota.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph Rota["Camada de API"]
         REQ["GET /produtos/42"] --> HANDLER["função de rota\nbuscar_produto()"]
     end
@@ -222,10 +224,10 @@ flowchart TB
     EH --> RESP
     RESP --> CLIENTE["Cliente HTTP\nrecebe 404 estruturado"]
 
-    style REQ fill:#4A90D9,color:#fff
-    style EXC fill:#D0021B,color:#fff
-    style EH fill:#2d7a4a,color:#fff
-    style RESP fill:#2d7a4a,color:#fff
+    class REQ neutro
+    class EXC falha
+    class EH ok
+    class RESP ok
 ```
 
 ### `RequestValidationError`: sobrescrevendo o formato do 422

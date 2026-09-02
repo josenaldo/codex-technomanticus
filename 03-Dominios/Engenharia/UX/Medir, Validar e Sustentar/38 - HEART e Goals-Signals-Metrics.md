@@ -33,18 +33,19 @@ As cinco categorias, cada uma cobrindo uma fase diferente do ciclo de vida de us
 5. **Task Success** — eficácia, eficiência e taxa de erro na execução de uma tarefa específica: tempo até concluir o checkout, taxa de sucesso na busca, número de tentativas até o formulário validar.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     H["Happiness<br/>atitudinal · survey"] -->|"como a pessoa<br/>SE SENTE"| U["Experiência do usuário"]
     E["Engagement<br/>comportamental · log"] -->|"quanto ela<br/>USA"| U
     A["Adoption<br/>comportamental · log"] -->|"quantos<br/>COMEÇAM a usar"| U
     R["Retention<br/>comportamental · log"] -->|"quantos<br/>CONTINUAM usando"| U
     T["Task Success<br/>comportamental · log"] -->|"ela CONSEGUE<br/>fazer a tarefa"| U
-    style H fill:#F5A623,color:#000
-    style E fill:#4A90D9,color:#fff
-    style A fill:#4A90D9,color:#fff
-    style R fill:#4A90D9,color:#fff
-    style T fill:#4A90D9,color:#fff
+    class H destaque
+    class E neutro
+    class A neutro
+    class R neutro
+    class T neutro
 ```
 
 O ponto mais frequentemente perdido, e o motivo do diagrama acima destacar Happiness em cor diferente: **quatro das cinco categorias vêm de log de comportamento (o que a pessoa fez), e só uma vem de pergunta direta (o que a pessoa diz que sentiu)**. É comum ver times tratando as cinco como intercambiáveis — "vamos medir Happiness contando cliques" — o que é um erro de categoria: contar cliques mede Engagement, não Happiness. Se ninguém perguntou nada a ninguém, não existe dado de Happiness no seu painel, por mais que o comportamento pareça "feliz".
@@ -63,13 +64,14 @@ HEART nomeia *onde* olhar; não diz *o que* medir no seu produto específico. Se
 3. **Metric** — a operacionalização do sinal: um número específico, com definição de cálculo, que se torna comparável ao longo do tempo. "Taxa de conclusão do formulário de cadastro em uma sessão, dividida por sessões que iniciaram o formulário."
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     G["Goal<br/>prosa, sem número<br/>'usuário completa o cadastro'"] --> S["Signal<br/>evidência observável<br/>'não abandona nem retrocede'"]
     S --> M["Metric<br/>número operacionalizado<br/>'taxa de conclusão / sessões iniciadas'"]
     M -.->|"pertence a qual<br/>categoria HEART?"| T["Task Success"]
-    style G fill:#F5A623,color:#000
-    style M fill:#4A90D9,color:#fff
+    class G destaque
+    class M neutro
 ```
 
 **HEART sem GSM é um checklist; HEART com GSM é sistema de medição.** A frase resume o encaixe: HEART te diz em qual das cinco gavetas guardar a métrica; GSM te diz como fabricar a métrica certa para a gaveta certa, partindo do objetivo de negócio em vez de partir do dado que já existe no banco. A ordem importa — GSM começa no Goal, não na Metric. Começar pela métrica ("o que já temos instrumentado?") produz exatamente o painel do cenário de abertura: números fáceis de coletar, difíceis de ligar a uma decisão.

@@ -30,8 +30,9 @@ A correção: depois de cobrar, baixar estoque e gravar o pedido — as três co
 Essa é a ideia central deste bloco: **assincronismo é uma ferramenta de desacoplamento**, e a fila é o mecanismo que a viabiliza.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph SYNC["Síncrono — acoplado"]
         C1["Checkout"] -->|"chama e espera"| P1["Cobrar cartão"]
         P1 -->|"chama e espera"| P2["Baixar estoque"]
@@ -45,8 +46,8 @@ graph TD
         C2 -->|"responde na hora"| U["Usuário"]
         MQ -->|"consome quando puder"| Q3["Enviar e-mail"]
     end
-    style P3 fill:#D0021B,color:#fff
-    style MQ fill:#F5A623,color:#000
+    class P3 falha
+    class MQ destaque
 ```
 
 ## Por que ir assíncrono
@@ -79,7 +80,6 @@ O modelo mental é o de uma fila de banco: uma pessoa é atendida, sai da fila, 
 O modelo mental é o de uma fita gravada: você pode rebobinar e tocar de novo, e várias pessoas podem assistir independentemente, cada uma na sua própria posição. Isso viabiliza **replay** — reprocessar os últimos 3 dias de eventos porque você achou um bug no consumidor, sem pedir para o produtor reenviar nada — e múltiplos **grupos de consumidores independentes** lendo o mesmo stream para propósitos diferentes (um grupo grava em um data warehouse, outro atualiza um cache, outro dispara alertas).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
     subgraph FT["Fila tradicional (RabbitMQ/SQS)"]
         P1["Produtor"] --> Q["Fila"]
@@ -151,15 +151,16 @@ Toda entrevista de system design que toca filas, mais cedo ou mais tarde, chega 
 Por isso, na prática de design de sistemas, a resposta madura não é "implementar exactly-once" — é: **assuma at-least-once do broker e torne o consumidor idempotente**. Se processar a mesma mensagem duas vezes produz o mesmo resultado final que processá-la uma vez (debitar um saldo condicionado a um `id_transacao` que só é aplicado uma vez, `UPSERT` em vez de `INSERT`, uma chave de idempotência armazenada), duplicatas deixam de importar. Você conseguiu o efeito prático de exactly-once sem pagar o preço de coordenação distribuída para garanti-lo de verdade — que, aliás, esbarra nos mesmos limites que [[06 - CAP, consistência e consenso]] discute para consenso distribuído em geral.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     G["Garantias de entrega"] --> AM["At-most-once<br/>pode perder"]
     G --> AL["At-least-once<br/>pode duplicar"]
     G --> EO["Exactly-once<br/>caro / limitado ao broker"]
     AL --> ID["Consumidor idempotente<br/>= efeito prático de exactly-once"]
     EO -.->|"quebra ao sair<br/>do ecossistema do broker"| SIDE["Chamada externa<br/>(API de pagamento, e-mail)"]
-    style EO fill:#F5A623,color:#000
-    style SIDE fill:#D0021B,color:#fff
+    class EO destaque
+    class SIDE falha
 ```
 
 > [!question]- Por que não simplesmente sempre pagar o preço do exactly-once?

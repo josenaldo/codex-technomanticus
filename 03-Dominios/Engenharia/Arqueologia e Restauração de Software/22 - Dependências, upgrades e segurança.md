@@ -44,8 +44,10 @@ A resposta operacional a um risco que cresce sozinho não pode ser manual — ni
 **Scanners contínuos** — Dependabot (nativo do GitHub desde 2019) ou Renovate (mais configurável, open source) — fecham o ciclo: eles não rodam o SCA uma vez por auditoria, rodam **todo dia**, e quando encontram uma atualização disponível — de segurança ou não — abrem automaticamente um pull request com o bump de versão e o changelog relevante. Transformam "manter dependências em dia" de um projeto especial que ninguém tem tempo de fazer numa esteira que roda sozinha em segundo plano.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[SBOM: inventario de dependencias] --> B[SCA: cruza com NVD/CVE]
     B --> C{Vulnerabilidade encontrada?}
     C -->|nao| A
@@ -54,9 +56,9 @@ graph LR
     D --> F[Atualizar dependencia]
     E --> F
     F --> A
-    style E fill:#D0021B
-    style D fill:#F5A623
-    style F fill:#4A90D9
+    class E falha
+    class D destaque
+    class F neutro
 ```
 
 > [!info] Priorizar não é só ler o número do CVSS
@@ -69,20 +71,21 @@ Detectar e atualizar patches pequenos (`4.2.1` → `4.2.3`) é o caso fácil: em
 A resposta está no contrato que o **Semantic Versioning** (SemVer) estabelece: um bump de versão *major* sinaliza *breaking changes* — a promessa explícita de que algo que funcionava vai parar de funcionar. Quando você pula de `v1` direto para `v5`, você não evita as breaking changes de `v2`, `v3` e `v4` — você as **acumula e recebe todas ao mesmo tempo**, sem nenhum ponto intermediário onde isolar qual mudança quebrou o quê. É o mesmo argumento de lotes pequenos que fundamenta o Strangler Fig ([[18 - Strangler Fig|nota 18]]): o risco de uma migração não cresce linearmente com o tamanho do salto, cresce de forma desproporcional, porque o espaço de causas possíveis de uma falha explode com o número de coisas que mudaram juntas.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph sg9025["Incremental - um major por vez, testado a cada passo"]
     A1[v1] --> A2[v2] --> A3[v3] --> A4[v4]
     end
     subgraph sg1456["Salto direto - todas as breaking changes de uma vez"]
     B1[v1] -.-> B2[v4]
     end
-    style A1 fill:#4A90D9
-    style A2 fill:#4A90D9
-    style A3 fill:#4A90D9
-    style A4 fill:#4A90D9
-    style B1 fill:#4A90D9
-    style B2 fill:#D0021B
+    class A1 neutro
+    class A2 neutro
+    class A3 neutro
+    class A4 neutro
+    class B1 neutro
+    class B2 falha
 ```
 
 Há uma segunda razão, mais mecânica, para subir um major de cada vez: o **transitive dependency hell**. Cada pacote direto que você usa depende de outros pacotes, que dependem de outros — e cada um deles avança no tempo, ganhando suas próprias majors, enquanto o seu fica parado. Quanto mais tempo passa, maior o **gap de versão** em cada ramo dessa árvore, e maior a chance de dois pacotes exigirem versões incompatíveis de uma terceira dependência compartilhada — o resolvedor de pacotes (npm, Maven, pip) não consegue satisfazer ambos e ou falha, ou instala duplicatas silenciosamente. Adiar não congela o problema: **alarga a árvore inteira ao mesmo tempo**, tornando a eventual migração exponencialmente mais cara do que teria sido se feita major a major, ano a ano.

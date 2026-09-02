@@ -54,17 +54,18 @@ Não existe "o fallback": existe uma escada de respostas, da melhor à pior. Val
 A última linha é a mais importante e a mais esquecida: **nem toda funcionalidade deve ter fallback.** Se o serviço antifraude está fora, o fallback "aprova a transação" é catastrófico e o fallback "recusa tudo" pode ser aceitável — mas alguém precisa decidir isso explicitamente, e a decisão pertence ao negócio. Para saldo bancário, mostrar um valor em cache pode ser pior que mostrar erro.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     C["Chamada falhou<br/>(timeout · breaker aberto)"] --> Q{"existe resposta<br/>aceitável e pior?"}
     Q -->|"sim"| F["Fallback<br/>cache · padrão · sem o bloco"]
     Q -->|"não — responder errado<br/>é pior que não responder"| E["Erro honesto"]
     F --> M["<b>marcar como degradado</b><br/>métrica + sinal ao usuário"]
     E --> M
 
-    style F fill:#4A90D9,color:#fff
-    style E fill:#F5A623,color:#000
-    style M fill:#4A90D9,color:#fff
+    class F neutro
+    class E destaque
+    class M neutro
 ```
 
 O quadrado final é o que mais falta na prática: **degradar em silêncio é uma armadilha**. Se o fallback não emite métrica, o sistema pode operar degradado por semanas com todos os painéis verdes — porque, do ponto de vista das métricas de erro, ele está respondendo 200.

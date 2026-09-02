@@ -51,14 +51,15 @@ estilo.9f8e7d.css
 A mágica: se o conteúdo muda, o hash muda, e portanto a **URL muda**. Uma URL nova nunca está em cache — o browser baixa a versão nova automaticamente. E a URL antiga, que estava com cache eterno, simplesmente deixa de ser referenciada. Isso permite a combinação perfeita:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["HTML<br/>Cache-Control: no-cache"] -->|sempre revalida| B[aponta pro hash atual]
     B --> C["app.a1b2c3.js<br/>max-age=31536000, immutable"]
     C -->|conteúdo muda| D["app.NOVOHASH.js<br/>URL nova → baixa"]
-    style A fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
+    class A destaque
+    class C neutro
+    class D neutro
 ```
 
 - **Assets com hash** (`app.a1b2c3.js`): `Cache-Control: public, max-age=31536000, immutable` — cache de 1 ano, nunca revalida. É seguro porque a URL só existe para *aquele* conteúdo.

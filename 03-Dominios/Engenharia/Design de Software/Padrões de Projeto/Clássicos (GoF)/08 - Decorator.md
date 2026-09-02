@@ -32,16 +32,16 @@ O Decorator inverte a lógica. Em vez de uma classe por combinação, você cria
 ## A ideia
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Cliente --> D1[Criptografia] --> D2[Compressão] --> Core[FileDataSource]
     D1 -.mesma interface.-> I{{DataSource}}
     D2 -.-> I
     Core -.-> I
 
-    style D1 fill:#4A90D9,color:#fff
-    style D2 fill:#4A90D9,color:#fff
-    style Core fill:#4A90D9,color:#fff
+    class D1 neutro
+    class D2 neutro
+    class Core neutro
 ```
 
 Todos — o núcleo e os decorators — implementam `DataSource`. O cliente fala com o de fora sem saber quantas camadas existem; cada camada acrescenta seu comportamento e repassa a chamada para dentro. Como todos têm a **mesma interface**, a pilha é transparente: o cliente não muda quando você adiciona ou remove uma camada.

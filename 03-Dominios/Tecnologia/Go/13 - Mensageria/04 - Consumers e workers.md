@@ -57,6 +57,7 @@ A [[02 - Kafka em Go|nota 02]] já mencionou `GroupID` de passagem; aqui é o me
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Topico["Tópico pedidos — 6 partições"]
         P0["P0"]
         P1["P1"]
@@ -79,9 +80,9 @@ flowchart TB
     P4 --> C3
     P5 --> C3
 
-    style C1 fill:#4A90D9,color:#fff
-    style C2 fill:#4A90D9,color:#fff
-    style C3 fill:#4A90D9,color:#fff
+    class C1 neutro
+    class C2 neutro
+    class C3 neutro
 ```
 
 Isso é o que dá **escalabilidade horizontal por partição**: para processar mais rápido, você sobe mais instâncias do consumer — até o limite do número de partições. A sétima instância de `worker-pedidos`, num tópico de 6 partições, fica **ociosa**: não há partição sobrando para atribuir a ela. É por isso que o número de partições de um tópico Kafka é uma decisão de capacidade tomada na criação do tópico, não algo ajustado depois sem custo (repartição é possível, mas não trivial e fora do escopo aqui).
@@ -195,6 +196,7 @@ O erro sutil é achar que dá para paralelizar **dentro** da mesma partição se
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph OK["Paralelo entre partições — OK"]
         direction TB
         PA["Partição 0: msg 1,2,3..."] --> WA["worker A"]
@@ -207,7 +209,7 @@ flowchart LR
         WD -.->|"pode terminar\nantes de WC"| X["ordem perdida"]
     end
 
-    style X fill:#D0021B,color:#fff
+    class X falha
 ```
 
 A regra prática, portanto: o `jobs` channel do worker pool pode misturar mensagens de partições diferentes livremente — isso é paralelismo saudável, é literalmente para isso que consumer group divide partições entre instâncias. O que não deve acontecer, a menos que a aplicação explicitamente não se importe com ordem, é ter **duas goroutines processando mensagens consecutivas da mesma partição ao mesmo tempo**. Uma forma comum de garantir isso num worker pool que precisa de mais paralelismo do que "uma goroutine por partição" é fazer *hashing* da chave da mensagem para um worker fixo — a mesma chave sempre cai no mesmo worker, preservando ordem por chave sem serializar o processo inteiro:

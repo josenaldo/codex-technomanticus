@@ -38,6 +38,8 @@ A ideia central é simples de enunciar: em vez de uma goroutine por item de trab
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     P["produtor\n(envia jobs)"] -->|jobs chan| C(("channel\njobs"))
     C --> W1["worker 1"]
     C --> W2["worker 2"]
@@ -47,11 +49,11 @@ flowchart LR
     W3 --> R
     R --> Co["consumidor\n(lê results)"]
 
-    style C fill:#4A90D9,color:#fff
-    style R fill:#4A90D9,color:#fff
-    style W1 fill:#F5A623,color:#000
-    style W2 fill:#F5A623,color:#000
-    style W3 fill:#F5A623,color:#000
+    class C neutro
+    class R neutro
+    class W1 destaque
+    class W2 destaque
+    class W3 destaque
 ```
 
 O número de workers passa a ser o seu dial de concorrência — três workers processam no máximo três jobs ao mesmo tempo, não importa quantos milhares de jobs estejam esperando na fila. É a mesma ideia de um channel **buffered** (nota 02) atuando como fila de trabalho, mas agora com consumidores múltiplos do lado de saída em vez de um só.

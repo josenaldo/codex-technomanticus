@@ -39,6 +39,8 @@ Vamos ver a busca acontecer. Este diagrama é uma **ilustração** da busca, nã
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q["Query: WHERE id = 42"] --> R["Raiz: id &lt; 50?"]
     R -->|"sim, vai à esquerda"| N1["Nó: id &lt; 25?"]
     R -->|não| N2["Nó: id &lt; 75?"]
@@ -47,8 +49,8 @@ flowchart TD
     N2 --> F3["Folha: 55, 60, 70"]
     N2 --> F4["Folha: 80, 90, 99"]
     F2 -.->|"achou 42"| T["Vai à tabela buscar a linha completa (heap fetch)"]
-    style F2 fill:#2d4a2d,color:#fff
-    style T fill:#3a3a5a,color:#fff
+    class F2 ok
+    class T neutro
 ```
 
 Leitura do diagrama: para achar `id = 42`, o banco desce três níveis, comparando em cada nó, e descarta metade da árvore a cada passo. Chega à folha que contém o 42, que guarda um **ponteiro** para a linha real na tabela. O índice não guarda a linha inteira — guarda a chave ordenada mais o endereço. Esse passo final (`heap fetch`) é o que distingue um `Index Scan` de um `Index Only Scan`, e veremos por que isso importa quando falarmos de covering index.
@@ -110,17 +112,20 @@ Essa é a **regra do leftmost prefix**: um índice em `(a, b, c)` serve qualquer
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     IDX["Índice em (a, b, c)"]
     IDX --> Q1["WHERE a = ?<br/>USA o índice"]
     IDX --> Q2["WHERE a = ? AND b = ?<br/>USA o índice"]
     IDX --> Q3["WHERE a = ? AND b = ? AND c = ?<br/>USA totalmente"]
     IDX --> Q4["WHERE b = ?<br/>NÃO usa (pulou 'a')"]
     IDX --> Q5["WHERE a = ? AND c = ?<br/>USA SÓ 'a', depois filtra 'c' linha a linha"]
-    style Q1 fill:#2d4a2d,color:#fff
-    style Q2 fill:#2d4a2d,color:#fff
-    style Q3 fill:#2d4a2d,color:#fff
-    style Q4 fill:#5a2d2d,color:#fff
-    style Q5 fill:#5a4a2d,color:#fff
+    class Q1 ok
+    class Q2 ok
+    class Q3 ok
+    class Q4 falha
+    class Q5 destaque
 ```
 
 Leitura do diagrama: as três primeiras queries são prefixos válidos e o índice as serve com busca direta. `WHERE b = ?` (laranja-vermelho) **não usa o índice** porque pular `a` é pedir os "Joãos espalhados". E `WHERE a = ? AND c = ?` (amarelo) é o caso parcial: o índice posiciona pelo `a`, mas como `b` não foi filtrado, o `c` não está agrupado — o banco usa o índice até onde dá e depois filtra `c` linha por linha. Funciona, mas não com a eficiência de um prefixo completo.
@@ -148,14 +153,16 @@ Aqui está a sacada que muita gente não tem: **o otimizador pode ignorar um ín
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Q["WHERE ativo = true<br/>(50% das linhas casam)"] --> D{"Otimizador decide"}
     D -->|"via índice"| I["Para cada linha que casa:<br/>ler índice + heap fetch aleatório<br/>= 500k saltos pela tabela"]
     D -->|"via Seq Scan"| S["Ler a tabela inteira em sequência<br/>= leitura sequencial, cache-friendly"]
     I --> C["Custo ALTO (I/O aleatório)"]
     S --> CH["Custo MENOR (I/O sequencial)"]
     CH --> WIN["Otimizador escolhe Seq Scan<br/>e IGNORA o índice"]
-    style WIN fill:#2d4a2d,color:#fff
-    style C fill:#5a2d2d,color:#fff
+    class WIN ok
+    class C falha
 ```
 
 Leitura do diagrama: quando metade da tabela casa o filtro, usar o índice significa fazer centenas de milhares de **saltos aleatórios** entre o índice e a tabela — e I/O aleatório é muito mais caro que ler a tabela inteira de forma sequencial. O otimizador calcula isso pelas estatísticas e decide, corretamente, varrer a tabela. Você criou o índice, pagou o custo de escrita e espaço, e o índice fica ali sem ser usado. **Pior dos dois mundos.**
@@ -186,6 +193,9 @@ Para fechar o modelo mental, vale ver lado a lado as duas estratégias que o oti
 
 ```mermaid
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     START["Query com filtro em coluna C"] --> EST{"Quantas linhas o filtro<br/>deve retornar? (estatísticas)"}
     EST -->|"muitas (baixa seletividade)"| SEQ["Seq Scan<br/>lê a tabela inteira<br/>em ordem física"]
     EST -->|"poucas (alta seletividade)"| HASIDX{"Existe índice<br/>usável em C?"}
@@ -194,9 +204,9 @@ flowchart TD
     IDX --> COVER{"O SELECT pede só<br/>colunas no índice?"}
     COVER -->|sim| IOS["Index Only Scan<br/>nem toca a tabela<br/>(o mais rápido)"]
     COVER -->|não| DONE["Index Scan normal"]
-    style SEQ fill:#5a4a2d,color:#fff
-    style IDX fill:#2d4a2d,color:#fff
-    style IOS fill:#2d4a4a,color:#fff
+    class SEQ destaque
+    class IDX ok
+    class IOS neutro
 ```
 
 Leitura do diagrama: o otimizador parte das **estatísticas** (mantidas pelo `ANALYZE`) para estimar quantas linhas o filtro retorna. Se forem muitas, ele escolhe `Seq Scan` mesmo havendo índice — porque, como vimos, I/O sequencial vence I/O aleatório em massa. Se forem poucas e existir índice usável, vai de `Index Scan`. E o prêmio máximo é o `Index Only Scan`: quando o `SELECT` pede apenas colunas que já estão no índice (graças a um covering index), o banco responde sem nunca tocar a tabela. É por isso que `SELECT *` atrapalha — ele força o heap fetch ao pedir colunas que não estão no índice.

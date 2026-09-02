@@ -39,7 +39,6 @@ E o critério que decide não é preferência estética. É **como o software ch
 Um único ramo de longa duração (`main`), sempre publicável. Todo trabalho sai dele em ramos curtos, volta por PR, e é publicado logo depois.
 
 ```mermaid
-%%{init: {"theme": "base"}}%%
 gitGraph
    commit id: "v1"
    branch feature-busca
@@ -66,7 +65,6 @@ gitGraph
 Dois ramos permanentes (`main` com o que está publicado, `develop` com o que vem na próxima versão) e três tipos temporários (`feature/*`, `release/*`, `hotfix/*`).
 
 ```mermaid
-%%{init: {"theme": "base"}}%%
 gitGraph
    commit id: "v1.0" tag: "v1.0"
    branch develop

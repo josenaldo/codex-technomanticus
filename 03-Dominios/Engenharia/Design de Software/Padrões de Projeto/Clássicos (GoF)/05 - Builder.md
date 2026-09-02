@@ -103,16 +103,17 @@ const u = criarUser({ name: "Josenaldo", email: "jm@ex.com", role: Role.Admin })
 > **A tese, no seu caso mais limpo:** o Builder é a resposta *estrutural* (uma classe extra) para a falta de um recurso *da linguagem* (argumentos nomeados/opcionais). Onde a linguagem tem esse recurso, escrever um Builder é reinventar de forma verbosa o que já vem de graça. Reconhecer isso é o que evita você portar mecanicamente um Builder de Java para Python — e piorar o código no caminho.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     P["Problema:<br/>muitos campos, muitos opcionais"] --> J["Java / C++<br/>→ Builder (classe extra)"]
     P --> O["Python · TS · Go<br/>→ recurso da linguagem"]
     O --> O1["kwargs / dataclass"]
     O --> O2["objeto literal opcional"]
     O --> O3["functional options"]
 
-    style J fill:#F5A623,color:#000
-    style O fill:#4A90D9,color:#fff
+    class J destaque
+    class O neutro
 ```
 
 ## Armadilhas comuns

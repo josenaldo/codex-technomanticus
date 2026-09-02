@@ -142,7 +142,6 @@ A diferença é o que cada um verifica:
 - **`--force-with-lease`** — "sobrescreva **somente se** o servidor ainda estiver onde eu vi pela última vez". Se alguém publicou, o envio é recusado e você descobre antes de destruir.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     A["Ramo reescrito localmente"] --> B{"O servidor está onde<br/>eu o vi por último?"}
     B -->|sim| C["--force-with-lease<br/>✔ publica"]

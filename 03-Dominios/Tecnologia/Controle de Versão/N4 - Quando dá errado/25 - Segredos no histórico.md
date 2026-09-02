@@ -25,7 +25,6 @@ publish: true
 O instinto é errado. Quando alguém percebe que commitou o `.env`, a reação típica é entrar em pânico com o histórico — e gastar duas horas nisso enquanto a chave continua ativa.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     A["Descobri o vazamento"] --> B["<b>1. ROTACIONAR</b><br/>invalidar a credencial<br/>e emitir outra"]
     B --> C["<b>2. Avaliar exposição</b><br/>era público? por quanto tempo?<br/>há log de uso indevido?"]

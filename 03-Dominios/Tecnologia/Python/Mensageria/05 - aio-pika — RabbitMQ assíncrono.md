@@ -111,8 +111,9 @@ Três detalhes nesse `aio_pika.Message` valem nomear porque não são o caminho 
 - **`declare_exchange` é idempotente** — chamar de novo com os mesmos parâmetros não recria nada, só retorna uma referência à exchange existente. É seguro (e comum) declarar a mesma exchange em cada função de publish, sem precisar de um script de provisionamento separado — desde que os parâmetros (tipo, durabilidade) sejam sempre os mesmos; declarar a mesma exchange com parâmetros diferentes lança uma exceção.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     P1["pedidos-service<br/>publish('pedido.criado')"] --> EX
     P2["pagamentos-service<br/>publish('pagamento.confirmado')"] --> EX
     P3["cursos-service<br/>publish('curso.concluido')"] --> EX
@@ -125,9 +126,9 @@ flowchart LR
 
     Q1 --> C1["serviço de notificações<br/>async for message in queue.iterator()"]
 
-    style EX fill:#F5A623,color:#000
-    style Q1 fill:#4A90D9,color:#fff
-    style C1 fill:#4A90D9,color:#fff
+    class EX destaque
+    class Q1 neutro
+    class C1 neutro
 ```
 
 **Resumo em uma frase:** três produtores que não se conhecem publicam eventos com routing keys descritivas numa exchange topic compartilhada, e um único consumidor decide — via bindings declarados do próprio lado, sem tocar nos produtores — quais padrões de evento lhe interessam.
@@ -255,7 +256,6 @@ async with message.process():
 `message.process()` é útil para o caso simples, mas esconde uma decisão que produção geralmente quer tomar explicitamente: o requeue automático em caso de exceção é exatamente o comportamento que causa loop infinito com poison messages — uma mensagem malformada que sempre lança a mesma exceção volta pro início da fila indefinidamente, sendo entregue, falhando, e voltando, sem nunca chegar a uma DLQ. É por isso que o exemplo do serviço de notificações acima usa `ack()`/`nack(requeue=False)` explícitos em vez de `message.process()` — o controle manual é mais verboso, mas é a versão que efetivamente decide o que fazer com uma falha permanente, em vez de aceitar o default do atalho.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant P as pagamentos-service
     participant EX as exchange (topic)

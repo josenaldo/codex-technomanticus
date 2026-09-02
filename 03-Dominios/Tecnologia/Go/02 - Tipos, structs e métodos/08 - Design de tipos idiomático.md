@@ -48,6 +48,8 @@ Se você escrever os métodos de `Horario` e `Servidor` sem parar para pensar ne
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q0["Novo tipo a desenhar"] --> Q1{"Duas cópias com o<br/>mesmo conteúdo são<br/>'a mesma coisa'?"}
     Q1 -->|"sim — Horario 14:30<br/>é sempre 14:30"| VAL["Semântica de VALOR<br/>tipo pequeno, copiável"]
     Q1 -->|"não — só existe<br/>UM Servidor real"| REF["Semântica de REFERÊNCIA<br/>identidade, estado compartilhado"]
@@ -58,10 +60,10 @@ flowchart TD
     REF --> RR["pointer receiver em TODOS<br/>os métodos (nota 04)"]
     REF --> RI["fábrica devolve *T<br/>(nota 06), nunca T"]
 
-    style Q0 fill:#4A90D9,color:#fff
-    style Q1 fill:#4A90D9,color:#fff
-    style VAL fill:#7ED321,color:#000
-    style REF fill:#F5A623,color:#000
+    class Q0 neutro
+    class Q1 neutro
+    class VAL destaque
+    class REF destaque
 ```
 
 Go não tem uma palavra-chave para declarar "este tipo é de valor" ou "este tipo é de referência" — ao contrário de C++, que distingue explicitamente `value class` de `reference class` em bibliotecas mais formais, ou de Kotlin, que tem `data class` para reforçar semântica de valor. Em Go, essa decisão é **inteiramente convencional**, e se manifesta através de uma escolha concreta que você já domina desde a nota 04: **a consistência do receiver**. Um tipo com semântica de valor usa value receiver em absolutamente todos os métodos — nenhuma exceção, mesmo que um método específico "só quisesse" mutar internamente por conveniência. Um tipo com semântica de referência usa pointer receiver em todos os métodos, e a fábrica (nota 06) devolve `*T`, nunca `T`.
@@ -197,6 +199,7 @@ Toda a discussão até aqui foi sobre *como* um tipo se comporta. Esta seção f
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Normal["struct{ X int }"]
         direction TB
         N1["8 bytes ocupados<br/>(um int)"]
@@ -206,8 +209,8 @@ flowchart LR
         V1["0 bytes ocupados<br/>— largura zero"]
     end
 
-    style N1 fill:#F5A623,color:#000
-    style V1 fill:#7ED321,color:#000
+    class N1 destaque
+    class V1 destaque
 ```
 
 Isso soa como curiosidade acadêmica até você ver o uso mais comum: **`struct{}` como o valor de um `map` usado só como conjunto (set)**. Go não tem um tipo `set` nativo — o idioma da comunidade é `map[T]bool` ou `map[T]struct{}`, e a segunda forma é a mais correta semanticamente, porque comunica com precisão que **o valor não importa, só a existência da chave importa**:

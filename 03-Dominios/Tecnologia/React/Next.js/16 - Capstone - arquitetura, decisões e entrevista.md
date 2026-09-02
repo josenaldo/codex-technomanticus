@@ -39,8 +39,9 @@ Este capstone organiza as decisões recorrentes em árvores visuais e traduz os 
 A primeira decisão que você toma ao criar qualquer componente no App Router. Errar aqui infla o bundle do cliente ou quebra a renderização.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Start([Novo componente]) --> Q1{Precisa de interatividade?\nuseState · useEffect · onClick\neventos do browser}
     Q1 -- Sim --> Q2{Consegue isolar a parte\ninterativa num filho menor?}
     Q2 -- Sim --> SC1["✅ Pai = Server Component\nFilho interativo = Client Component\npassar dados como props"]
@@ -53,10 +54,10 @@ flowchart TD
     Q5 -- Sim --> SC3["✅ Server Component\n(padrão do App Router)"]
     Q5 -- Não --> CC
 
-    style SC1 fill:#4A90D9,color:#fff
-    style SC2 fill:#4A90D9,color:#fff
-    style SC3 fill:#4A90D9,color:#fff
-    style CC fill:#F5A623,color:#000
+    class SC1 neutro
+    class SC2 neutro
+    class SC3 neutro
+    class CC destaque
 ```
 
 **Regra de ouro:** comece como Server Component (é o padrão). Só adicione `'use client'` quando a necessidade for inequívoca — interatividade, estado local, API do browser. O boundary é de módulo, não de componente; tudo que o arquivo importa entra no bundle.
@@ -68,8 +69,10 @@ flowchart TD
 A decisão de quando pré-gerar, quando renderizar por request, ou quando usar a abordagem híbrida do PPR.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     Start([Rota a definir]) --> Q1{O conteúdo é igual\npara todos os usuários?}
     Q1 -- Sim --> Q2{Precisa de parâmetros\ndinâmicos de URL?}
     Q2 -- Não --> SSG["✅ SSG\nEstático no build\nnenhuma config necessária"]
@@ -82,11 +85,11 @@ flowchart TD
     Q5 -- Sim --> PPR["⚡ PPR — Partial Prerendering\nshell estático + Suspense\n(experimental no Next 15\nestável no Next 16)"]
     Q5 -- Não --> SSR
 
-    style SSG fill:#4A90D9,color:#fff
-    style ISG fill:#4A90D9,color:#fff
-    style ISR fill:#4A90D9,color:#fff
-    style SSR fill:#F5A623,color:#000
-    style PPR fill:#9B59B6,color:#fff
+    class SSG neutro
+    class ISG neutro
+    class ISR neutro
+    class SSR destaque
+    class PPR marca
 ```
 
 **Regra de ouro:** o App Router assume estático por padrão. Qualquer uso de `cookies()`, `headers()`, `searchParams` ou `connection()` torna a rota dinâmica automaticamente. Não declare `dynamic = 'force-dynamic'` sem razão — você descarta cache para toda a rota.
@@ -98,8 +101,9 @@ flowchart TD
 O modelo de quatro camadas do Next 15 tem comportamento diferente do 14. Cada camada responde a um problema diferente.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Start([Preciso de cache]) --> Q1{Onde o dado é consumido?}
     Q1 -- "No servidor\n(Server Component, Route Handler)" --> Q2{Escopo desejado?}
     Q2 -- "Só dentro do render atual\n(dedup de chamadas duplicadas)" --> RM["✅ Request Memoization\nAutomático — mesma URL+options\nno mesmo render"]
@@ -111,12 +115,12 @@ flowchart TD
 
     Q2 -- "Rota inteira\n(HTML+RSC pré-gerado)" --> FRC["✅ Full Route Cache\nAutomático para rotas estáticas\nInvalidado por revalidatePath"]
 
-    style RM fill:#4A90D9,color:#fff
-    style FC fill:#4A90D9,color:#fff
-    style ISRC fill:#4A90D9,color:#fff
-    style TAG fill:#4A90D9,color:#fff
-    style RC fill:#F5A623,color:#000
-    style FRC fill:#4A90D9,color:#fff
+    class RM neutro
+    class FC neutro
+    class ISRC neutro
+    class TAG neutro
+    class RC destaque
+    class FRC neutro
 ```
 
 > [!warning] Next 15: cache é opt-in, não opt-out
@@ -129,8 +133,9 @@ flowchart TD
 A decisão mais confundida no App Router. Ambos executam no servidor, mas têm propósitos distintos.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Start([Preciso de lógica no servidor]) --> Q1{Quem vai chamar?}
     Q1 -- "Outro serviço / app externo\n(webhook, mobile, parceiro)" --> RH["✅ Route Handler\nroute.ts — endpoint HTTP real\nURL pública e versionável"]
     Q1 -- "Só o próprio app Next.js" --> Q2{É uma mutação\nou busca de dado?}
@@ -143,9 +148,9 @@ flowchart TD
     Q5 -- Sim --> RH
     Q5 -- Não --> SC["✅ Server Component\nfetch direto no componente\n— sem camada de API"]
 
-    style RH fill:#F5A623,color:#000
-    style SA fill:#4A90D9,color:#fff
-    style SC fill:#4A90D9,color:#fff
+    class RH destaque
+    class SA neutro
+    class SC neutro
 ```
 
 **Regra de ouro:** Server Action para mutações da própria UI; Route Handler para APIs públicas e integrações externas. Para buscar dados que só a sua UI consome, nem precisa de nenhum dos dois — faça o `fetch` direto no Server Component.

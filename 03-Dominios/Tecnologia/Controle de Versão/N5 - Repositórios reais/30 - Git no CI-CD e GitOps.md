@@ -22,7 +22,6 @@ publish: true
 ## O repositório que a CI enxerga
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     A["Sua máquina"] --> A1["clone completo · ramo nomeado<br/>tags · ~/.gitconfig · credenciais"]
     B["Runner de CI"] --> B1["clone RASO · detached HEAD<br/>sem tags · sem config · token efêmero"]
@@ -65,7 +64,6 @@ A quarta linha é uma ideia poderosa: o pipeline é código no mesmo repositóri
 GitOps estende esse princípio para a infraestrutura. Em vez de o pipeline **empurrar** mudanças para o ambiente, um agente rodando no ambiente **puxa** do repositório e reconcilia continuamente.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
     A["Repositório<br/>estado desejado<br/><i>declarativo</i>"] --> B["Agente<br/>(Argo CD, Flux)"]
     B -->|"compara"| C["Ambiente real"]

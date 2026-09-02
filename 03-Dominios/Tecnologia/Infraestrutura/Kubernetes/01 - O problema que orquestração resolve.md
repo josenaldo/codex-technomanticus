@@ -104,6 +104,7 @@ O diagrama abaixo resume as quatro lacunas que aparecem, todas de uma vez, no mo
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph Problema["Frota de máquinas — o que muda"]
         direction TB
         P1["Onde colocar cada processo,<br/>dado o que cada máquina<br/>tem de capacidade livre agora?"]
@@ -122,7 +123,7 @@ flowchart TB
     P3 --> F
     P4 --> F
 
-    style F fill:#4a3b7a,stroke:#8e6fd6,color:#fff
+    class F marca
 ```
 
 É útil nomear, mesmo sem sintaxe real ainda, o formato de intenção que está faltando — não um comando a mais para rodar, mas uma declaração de resultado desejado que alguma coisa se responsabilize por manter verdadeira:
@@ -288,14 +289,17 @@ O diagrama a seguir situa onde cada camada de conhecimento se aplica, da unidade
 
 ```mermaid
 flowchart TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     Img["Imagem — camadas imutáveis,<br/>endereçadas por hash<br/>(já conhecido de Docker)"] --> Cont["Container em execução —<br/>nasce da imagem, escreve numa<br/>camada efêmera própria<br/>(já conhecido de Docker)"]
     Cont --> Node["Nó — uma máquina do cluster,<br/>roda vários containers agendados<br/>nela pelo orquestrador"]
     Node --> Cluster["Cluster — conjunto de nós,<br/>observado e reconciliado<br/>continuamente por um controlador"]
 
-    style Img fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style Cont fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style Node fill:#2e4d7a,stroke:#3498db,color:#fff
-    style Cluster fill:#4a3b7a,stroke:#8e6fd6,color:#fff
+    class Img ok
+    class Cont ok
+    class Node neutro
+    class Cluster marca
 ```
 
 As duas camadas de baixo, em verde, são exatamente o que o galho de Docker já cobriu; as duas de cima, em azul e roxo, são o que este galho acrescenta. Nenhuma delas invalida a de baixo — um cluster Kubernetes inteiro, no fim das contas, ainda é feito de containers individuais se comportando exatamente como sempre se comportaram, só que agendados, observados e substituídos por um sistema maior, em vez de por uma pessoa digitando comandos.

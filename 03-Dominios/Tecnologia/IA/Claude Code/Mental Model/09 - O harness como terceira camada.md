@@ -50,6 +50,11 @@ Não é uma ou outra. É uma soma: modelo capaz + harness adequado = performance
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Harness["⚙️ O Harness"]
         CM["📋 CLAUDE.md\n(contexto hierárquico)"]
         HK["🪝 Hooks\n(guardrails e eventos)"]
@@ -67,14 +72,14 @@ flowchart TD
     MCP --> LSP
     LSP --> SA
 
-    style Harness fill:#f0f4ff,stroke:#4a90d9
-    style CM fill:#5a8a5a,color:#fff
-    style HK fill:#8a5a5a,color:#fff
-    style SK fill:#5a5a8a,color:#fff
-    style PL fill:#8a7a3a,color:#fff
-    style MCP fill:#3a7a8a,color:#fff
-    style LSP fill:#6a4a8a,color:#fff
-    style SA fill:#4a6a3a,color:#fff
+    class Harness neutro
+    class CM ok
+    class HK falha
+    class SK marca
+    class PL destaque
+    class MCP neutro
+    class LSP marca
+    class SA ok
 ```
 
 | Componente | Função | ROI relativo | Coberto em |

@@ -62,6 +62,10 @@ O diagrama abaixo fixa a divisão e dá exemplos de cada lado.
 
 ```mermaid
 flowchart TB
+    classDef root fill:#1f2933,color:#fff,stroke:#0b3d91,stroke-width:2px;
+    classDef ess fill:#f7e8e8,color:#1f2933,stroke:#7a1f1f;
+    classDef acc fill:#e6f4ea,color:#1f2933,stroke:#1f7a3d;
+    classDef verb fill:#e8eef7,color:#1f2933,stroke:#0b3d91;
     TOTAL["Complexidade total<br/>de um sistema"]
     TOTAL --> ESS["ESSENCIAL<br/>(núcleo irredutível)<br/>a natureza do problema"]
     TOTAL --> ACC["ACIDENTAL<br/>(casca removível)<br/>a forma de representá-lo"]
@@ -73,10 +77,6 @@ flowchart TB
     ACC --> A3["Config de ambiente,<br/>build, infraestrutura"]
     ESS -.-> R1["Postura: MODELAR<br/>e CONTER"]
     ACC -.-> R2["Postura: SIMPLIFICAR<br/>e ELIMINAR"]
-    classDef root fill:#1f2933,color:#fff,stroke:#0b3d91,stroke-width:2px;
-    classDef ess fill:#f7e8e8,color:#1f2933,stroke:#7a1f1f;
-    classDef acc fill:#e6f4ea,color:#1f2933,stroke:#1f7a3d;
-    classDef verb fill:#e8eef7,color:#1f2933,stroke:#0b3d91;
     class TOTAL root;
     class ESS,E1,E2,E3 ess;
     class ACC,A1,A2,A3 acc;
@@ -189,6 +189,9 @@ O diagrama liga as três fontes ao problema e mostra onde a proposta da Tar Pit 
 
 ```mermaid
 flowchart LR
+    classDef bad fill:#f7e8e8,color:#1f2933,stroke:#7a1f1f;
+    classDef sink fill:#1f2933,color:#fff,stroke:#7a1f1f,stroke-width:2px;
+    classDef fix fill:#e6f4ea,color:#1f2933,stroke:#1f7a3d,stroke-width:2px;
     ST["ESTADO<br/>(mutável)<br/>réu principal"]
     CT["CONTROLE<br/>(ordem de execução)<br/>cúmplice"]
     CV["VOLUME<br/>DE CÓDIGO<br/>cúmplice (secundário)"]
@@ -199,9 +202,6 @@ flowchart LR
     FRP["Functional Relational<br/>Programming:<br/>minimizar estado +<br/>modelo declarativo"]
     FRP -.ataca.-> ST
     FRP -.ataca.-> CT
-    classDef bad fill:#f7e8e8,color:#1f2933,stroke:#7a1f1f;
-    classDef sink fill:#1f2933,color:#fff,stroke:#7a1f1f,stroke-width:2px;
-    classDef fix fill:#e6f4ea,color:#1f2933,stroke:#1f7a3d,stroke-width:2px;
     class ST,CT,CV bad;
     class COMP sink;
     class FRP fix;
@@ -280,6 +280,8 @@ Ou seja: não é só que esses avanços atacaram o acidental. É que cada um del
 
 ```mermaid
 flowchart TB
+    classDef era fill:#e8eef7,color:#1f2933,stroke:#0b3d91;
+    classDef ess fill:#f7e8e8,color:#1f2933,stroke:#7a1f1f,stroke-width:2px;
     A["Assembly / código de máquina<br/>(registradores, branches)"]
     B["Linguagens de alto nível<br/>(operações, tipos, sequências)"]
     C["Time-sharing / ambientes integrados<br/>(imediatismo, ferramentas juntas)"]
@@ -291,8 +293,6 @@ flowchart TB
     B -.-> ESS
     D -.-> ESS
     F -.-> ESS
-    classDef era fill:#e8eef7,color:#1f2933,stroke:#0b3d91;
-    classDef ess fill:#f7e8e8,color:#1f2933,stroke:#7a1f1f,stroke-width:2px;
     class A,B,C,D,E,F era;
     class ESS ess;
 ```
@@ -318,6 +318,11 @@ Saber fazer essa pergunta com frieza é uma **habilidade sênior**. O júnior tr
 
 ```mermaid
 flowchart TD
+    classDef start fill:#1f2933,color:#fff,stroke:#0b3d91,stroke-width:2px;
+    classDef q fill:#e8eef7,color:#1f2933,stroke:#0b3d91;
+    classDef ess fill:#f7e8e8,color:#1f2933,stroke:#7a1f1f;
+    classDef acc fill:#e6f4ea,color:#1f2933,stroke:#1f7a3d;
+    classDef warn fill:#fff3cd,color:#1f2933,stroke:#a67c00;
     START["Uma dificuldade<br/>te trava"]
     Q["O especialista do domínio,<br/>SEM computador,<br/>ainda enfrentaria isso?"]
     START --> Q
@@ -326,11 +331,6 @@ flowchart TD
     ESS --> ESSA["Modele com cuidado.<br/>Isole num módulo<br/>bem nomeado. Contenha."]
     ACC --> ACCA["Refatore, troque a<br/>abstração, melhore o tooling.<br/>Elimine."]
     ESSA --> WARN["Erro caro:<br/>tratar essencial como acidental<br/>= caçar a ferramenta mágica<br/>que nunca vem"]
-    classDef start fill:#1f2933,color:#fff,stroke:#0b3d91,stroke-width:2px;
-    classDef q fill:#e8eef7,color:#1f2933,stroke:#0b3d91;
-    classDef ess fill:#f7e8e8,color:#1f2933,stroke:#7a1f1f;
-    classDef acc fill:#e6f4ea,color:#1f2933,stroke:#1f7a3d;
-    classDef warn fill:#fff3cd,color:#1f2933,stroke:#a67c00;
     class START start;
     class Q q;
     class ESS,ESSA ess;

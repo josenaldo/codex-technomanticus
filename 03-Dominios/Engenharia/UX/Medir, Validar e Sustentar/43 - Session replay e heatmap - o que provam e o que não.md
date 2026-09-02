@@ -37,17 +37,19 @@ Um heatmap agrega o comportamento de clique, movimento de mouse (proxy imperfeit
 **A frase que resume o limite: heatmap é gerador de hipótese, nunca prova causal.** Ele é excelente para responder "onde devo olhar com mais atenção?" e péssimo para responder "por que isso está acontecendo, e o que eu faço a respeito?".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     HM["Heatmap<br/>agregado de N sessões"] -->|"mostra"| ONDE["ONDE a atenção<br/>se concentra"]
     HM -.->|"NÃO mostra"| PORQUE["por quê"]
     SR["Session Replay<br/>1 sessão por vez"] -->|"mostra"| OQUE["O QUE aconteceu<br/>passo a passo"]
     SR -->|"permite inferir"| PORQUE
     ONDE -->|"gera hipótese para"| SR
-    style HM fill:#F5A623,color:#000
-    style ONDE fill:#4A90D9,color:#fff
-    style PORQUE fill:#D0021B,color:#fff
-    style SR fill:#4A90D9,color:#fff
+    class HM destaque
+    class ONDE neutro
+    class PORQUE falha
+    class SR neutro
 ```
 
 ## Session replay: o que ele responde, e o preço de privacidade que ele cobra

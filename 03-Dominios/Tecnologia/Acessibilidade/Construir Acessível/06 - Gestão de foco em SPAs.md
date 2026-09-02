@@ -69,16 +69,17 @@ Aqui está o coração do bug do modal. Quando um modal (diálogo) abre, ele cob
 A solução é o **focus trap**: enquanto o modal está aberto, o Tab circula **apenas** entre os elementos focáveis dentro dele. Chegou no último e apertou Tab? Volta pro primeiro. Está no primeiro e apertou Shift+Tab? Vai pro último. O foco fica *preso* no modal, como deve ser.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[Abrir modal] --> B[Salvar elemento que tinha foco]
     B --> C[Mover foco pra dentro do modal]
     C --> D[Prender Tab dentro do modal]
     D --> E[Fechar: Esc ou botão]
     E --> F[Restaurar foco ao elemento salvo]
-    style C fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
-    style F fill:#4A90D9,color:#fff
+    class C neutro
+    class D destaque
+    class F neutro
 ```
 
 Além de prender o Tab, um modal acessível precisa de duas coisas que o diagrama mostra: fechar no **Esc** (expectativa universal) e — crucialmente — tornar o resto da página **inerte** enquanto está aberto. É aqui que entra uma ferramenta relativamente nova e poderosa:

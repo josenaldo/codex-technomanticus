@@ -84,8 +84,10 @@ Pense no estado como uma conta bancária: colocar o dinheiro no banco central qu
 A regra é simples: **estado deve morar o mais perto possível de quem o usa**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["App (AuthContext, ThemeContext)"] --> B["FeatureDashboard"]
     A --> C["FeatureProfile"]
     B --> D["DashboardHeader\n(estado: activeTab)"]
@@ -94,14 +96,14 @@ graph TD
     F --> G["UserRow\n(sem estado)"]
     F --> H["Pagination\n(sem estado)"]
 
-    style A fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
-    style G fill:#6abf69,color:#fff
-    style H fill:#6abf69,color:#fff
-    style B fill:#e8f4f8
-    style C fill:#e8f4f8
+    class A neutro
+    class D neutro
+    class E neutro
+    class F neutro
+    class G ok
+    class H ok
+    class B marca
+    class C marca
 ```
 
 Nessa árvore:
@@ -327,8 +329,9 @@ src/
 Essa é a estrutura recomendada pelo Bulletproof React (alan2207/bulletproof-react) e adotada por equipes que escalam além de ~5 features simultâneas.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["src/features/"] --> B["auth/"]
     A --> C["dashboard/"]
     A --> D["billing/"]
@@ -341,9 +344,9 @@ graph LR
     F --> F2["hooks/"]
     F --> F3["utils/"]
 
-    style A fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
-    style B4 fill:#F5A623,color:#fff
+    class A neutro
+    class F neutro
+    class B4 destaque
 ```
 
 **Regra de ouro da feature-based:** componentes dentro de uma feature podem se importar livremente. Componentes de features diferentes só se comunicam via `shared/` ou pela API pública do `index.ts`. Nunca `import { X } from '../auth/components/LoginForm'` de dentro de `dashboard/`.
@@ -431,8 +434,10 @@ function UserDashboard() {
 Um erro comum é tratar Suspense e Error Boundaries como detalhes de implementação para adicionar depois. Na arquitetura, eles são **camadas de contrato**: definem onde o loading e o erro param de se propagar.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["<ErrorBoundary fallback=AppCrash>"] --> B["<Suspense fallback=AppSkeleton>"]
     B --> C["<Header>"]
     B --> D["<ErrorBoundary fallback=PanelError>"]
@@ -441,10 +446,10 @@ graph TD
     E --> G["<UserList>"]
     B --> H["<Sidebar>"]
 
-    style A fill:#D0021B,color:#fff
-    style D fill:#F5A623,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
+    class A falha
+    class D destaque
+    class B neutro
+    class E neutro
 ```
 
 **Princípio:** coloque Error Boundaries e Suspense onde você quer que o fallback pare. Um único `<ErrorBoundary>` na raiz da app significa que qualquer erro em qualquer componente derruba a app inteira. Error Boundaries em torno de features individuais isolam falhas.

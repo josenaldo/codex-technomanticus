@@ -36,16 +36,17 @@ O mercado de bibliotecas de componente para React, em 2026, tem um espectro conh
 A regra prática para quem decide sozinho: pergunte pelas **restrições do projeto**, não pelo "melhor absoluto" — o stack já usa Tailwind? É um dashboard denso de dados? É greenfield sem legado a respeitar? A resposta a essas perguntas elimina a maioria das opções antes mesmo de comparar API.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q["Novo projeto, precisa<br/>de componentes de UI"] --> R{"3+ usos reais<br/>repetidos já existem?"}
     R -->|"Não"| N["❌ Não extraia sistema<br/>ainda — construa direto na tela"]
     R -->|"Sim"| S{"Stack já usa<br/>Tailwind?"}
     S -->|"Sim"| SH["shadcn/ui<br/>código copiado, você é dono"]
     S -->|"Não, dashboard denso"| AD["MUI ou Ant Design"]
     S -->|"Não, greenfield flexível"| MA["Mantine"]
-    style N fill:#D0021B,color:#fff
-    style Q fill:#4A90D9,color:#fff
+    class N falha
+    class Q neutro
 ```
 
 ## A armadilha central: design system prematuro

@@ -57,16 +57,19 @@ Esse é o fio condutor desta nota: channels não têm garbage collection de "con
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["Operação em channel"] --> B{"Qual operação?"}
     B -->|"send em channel fechado"| C["panic imediato\nsend on closed channel"]
     B -->|"receive em channel nil"| D["bloqueia para sempre\nsem erro nenhum"]
     B -->|"send/receive sem\nparceiro em NENHUMA goroutine"| E["deadlock detectado\nfatal error: all goroutines asleep"]
     B -->|"send sem receiver,\nmas outras goroutines seguem vivas"| F["goroutine leak\nprocesso continua rodando"]
 
-    style C fill:#D0021B,color:#fff
-    style D fill:#F5A623,color:#000
-    style E fill:#D0021B,color:#fff
-    style F fill:#9013FE,color:#fff
+    class C falha
+    class D destaque
+    class E falha
+    class F marca
 ```
 
 As quatro se dividem em dois grupos por severidade: **panic/deadlock** (C e E) o runtime detecta e você fica sabendo na hora, geralmente em desenvolvimento ou nos primeiros segundos de produção. **Bloqueio silencioso e leak** (D e F) são os perigosos de verdade — o programa continua de pé, e o problema só aparece como degradação lenta, difícil de reproduzir e ainda mais difícil de linkar à causa raiz.
@@ -252,6 +255,8 @@ func main() {
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Antes["Antes do break"]
         P1["produtor (goroutine)"] -->|"out <- i²"| C1["range ch"]
     end
@@ -260,8 +265,8 @@ flowchart LR
         C2["main() segue\nexecutando normalmente"]
     end
 
-    style P2 fill:#9013FE,color:#fff
-    style X fill:#D0021B,color:#fff
+    class P2 marca
+    class X falha
 ```
 
 Em produção, esse padrão se acumula: cada requisição HTTP que dispara um `gerar()` e sai cedo demais deixa uma goroutine zumbi para trás. Depois de horas ou dias, `pprof` mostra dezenas de milhares de goroutines em `chan send`, e a memória do processo cresce sem nenhum vazamento óbvio de heap — porque o vazamento é de *goroutines*, não de objetos soltos.
@@ -358,6 +363,8 @@ Vale quantificar por que um leak que "não trava nada" ainda é grave. Cada goro
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph "1 leak isolado"
         L1["goroutine travada"] --> M1["~2KB de stack\n+ closure capturada"]
     end
@@ -365,8 +372,8 @@ flowchart LR
         L2["10.000 goroutines\ntravadas"] --> M2["dezenas/centenas de MB\nnunca liberados"]
     end
 
-    style L1 fill:#9013FE,color:#fff
-    style L2 fill:#D0021B,color:#fff
+    class L1 marca
+    class L2 falha
 ```
 
 Um serviço HTTP que atende 10 mil requisições por hora, com uma taxa de vazamento de até 1% (uma em cada cem requisições saindo cedo do `range` sem drenar o channel do lado produtor), acumula 100 goroutines vazadas por hora — 2.400 por dia. Multiplicado pelo que cada uma carrega via closure, é um padrão de crescimento de memória que parece "vazamento de memória" nas métricas, mas cuja causa raiz é 100% relacionada a channel, não a alocação direta. É exatamente o tipo de bug que só o `pprof` de goroutine — não o `pprof` de heap — expõe com clareza, porque o sintoma no heap é indireto.

@@ -183,7 +183,6 @@ Optimistic updates invertem a ordem: em vez de esperar o servidor confirmar para
 ### O ciclo completo com rollback
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#fff", "primaryBorderColor": "#2c6fad", "edgeLabelBackground": "#f8f8f8", "secondaryColor": "#F5A623", "tertiaryColor": "#27AE60"}}}%%
 sequenceDiagram
     actor Usuário
     participant UI

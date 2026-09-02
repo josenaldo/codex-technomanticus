@@ -41,6 +41,8 @@ A diferença de raiz em relação a Java/Node/Python é onde mora o runtime da l
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Java["Java: runtime separado"]
         direction TB
         J1["app.jar"] -.->|"precisa de"| J2["JVM instalada no host"]
@@ -58,10 +60,10 @@ flowchart TB
         G1 -.-> G4["dependências (go.sum)\ncompiladas junto"]
     end
 
-    style G1 fill:#4A90D9,color:#fff
-    style J2 fill:#F5A623,color:#000
-    style N2 fill:#F5A623,color:#000
-    style N3 fill:#F5A623,color:#000
+    class G1 neutro
+    class J2 destaque
+    class N2 destaque
+    class N3 destaque
 ```
 
 Não é só o runtime de Go que entra no binário — as dependências declaradas em `go.mod`/`go.sum` também são compiladas junto, não baixadas em tempo de execução. Não existe um equivalente Go de `node_modules` ou `site-packages` acompanhando o artefato final: o `go build` resolve tudo em tempo de compilação e produz um único arquivo autocontido.
@@ -118,12 +120,14 @@ ENTRYPOINT ["/servidor"]
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["golang:1.23\n(~800MB, toolchain completa)"] -->|"go build\nCGO_ENABLED=0"| B["servidor\n(binário estático, ~10-20MB)"]
     B -->|"COPY --from=build"| C["FROM scratch\n(0 bytes de SO)"]
     C --> D["imagem final\n≈ tamanho do binário"]
 
-    style A fill:#F5A623,color:#000
-    style D fill:#4A90D9,color:#fff
+    class A destaque
+    class D neutro
 ```
 
 Compare com o equivalente em Java ou Node: a imagem final precisa, no mínimo, de uma JRE (`eclipse-temurin:21-jre-alpine` já soma dezenas de MB) ou de um runtime Node completo, mesmo usando Alpine como base. Go dispensa os dois — a imagem final pode ser literalmente só o binário, tipicamente na casa de poucos megabytes a algumas dezenas, dependendo do que a aplicação importa. Menos superfície de ataque (nada de shell, nada de pacotes de SO com CVEs para corrigir), menos tempo de pull da imagem, e menos coisa para o `docker scan` reclamar. A [[04 - Docker — imagens mínimas|nota 04]] deste galho retoma exatamente essa construção com multi-stage build em profundidade — esta nota cobre só a pré-condição que a torna possível: o binário estático em si.

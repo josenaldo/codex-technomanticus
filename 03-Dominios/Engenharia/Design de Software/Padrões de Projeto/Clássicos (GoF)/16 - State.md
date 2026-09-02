@@ -32,7 +32,6 @@ O State recolhe o comportamento de cada estado para **um objeto**. `PedidoPenden
 ## A ideia
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 stateDiagram-v2
     [*] --> Pendente
     Pendente --> Aprovado: aprovar()

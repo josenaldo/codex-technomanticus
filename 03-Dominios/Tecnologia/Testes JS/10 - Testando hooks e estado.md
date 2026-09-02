@@ -63,13 +63,14 @@ O `act(...)` diz ao React "estou prestes a causar uma atualização; processe-a 
 > Warning: An update to X inside a test was not wrapped in act(...)
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[disparo update fora de evento] --> B{envolvido em act?}
     B -->|não| C["⚠ warning + estado inconsistente"]
     B -->|sim| D["React processa tudo<br/>→ asserção confiável"]
-    style C fill:#D0021B,color:#fff
-    style D fill:#4A90D9,color:#fff
+    class C falha
+    class D neutro
 ```
 
 > [!question]- Preciso de `act` em todo teste? Ouvi dizer que "quase nunca".

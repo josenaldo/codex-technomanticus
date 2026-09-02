@@ -29,11 +29,11 @@ aliases:
 **O que é:** desacopla uma **abstração** da sua **implementação**, para que as duas variem de forma independente. O exemplo clássico: `Forma` (abstração: círculo, quadrado) × `API de desenho` (implementação: OpenGL, SVG). Em vez de uma classe por combinação (`CirculoOpenGL`, `QuadradoSVG`...), a forma **contém** uma referência à API de desenho — dois eixos que crescem separados.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Abstração: Forma<br/>(círculo, quadrado)"] -->|contém| I["Implementação: Renderer<br/>(OpenGL, SVG)"]
-    style A fill:#4A90D9,color:#fff
-    style I fill:#4A90D9,color:#fff
+    class A neutro
+    class I neutro
 ```
 
 **Por que é raro:** o princípio "componha em vez de herdar, injete a implementação" — que é a essência do Bridge — hoje é simplesmente **como se programa** com injeção de dependência. Você aplica a ideia do Bridge sem chamá-la assim. Além disso, ele é constantemente **confundido com Adapter** (Adapter conserta interfaces incompatíveis *depois*; Bridge planeja a separação *antes*) e com Strategy.

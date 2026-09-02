@@ -45,7 +45,6 @@ Isso não é um descuido do design original — é escopo. OAuth foi desenhado p
 O OIDC formaliza isso adicionando um segundo token à resposta do fluxo: o **ID token**. Ele nasce no mesmo `token_endpoint` do OAuth, na mesma troca de `code` por tokens que você já conhece da nota 02 — o OIDC não inventa um fluxo novo, ele enriquece a resposta do fluxo existente.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant U as Usuário
     participant C as Client (RP)
@@ -78,8 +77,9 @@ Esta é a confusão mais cara do OIDC, e a que abriu a vulnerabilidade do Sign i
 **Access token** é uma concessão de autorização. Ele responde "o portador deste token pode fazer X na API Y?" — e o consumidor legítimo dele é o **resource server**, que não precisa (e frequentemente não consegue) saber quem é o usuário por trás; ele só precisa confiar que o token é válido e carrega os scopes certos.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     TE["Token Endpoint"] -->|"emite"| IDT["ID Token<br/>(JWT sempre)"]
     TE -->|"emite"| AT["Access Token<br/>(opaco ou JWT)"]
 
@@ -91,9 +91,9 @@ graph LR
 
     C -.->|"NUNCA envia<br/>id_token pra API"| X["❌"]
 
-    style IDT fill:#4A90D9,color:#fff
-    style AT fill:#4A90D9,color:#fff
-    style X fill:#D0021B,color:#fff
+    class IDT neutro
+    class AT neutro
+    class X falha
 ```
 
 A distinção tem raiz técnica, não é só convenção de nomes. O claim `aud` (audience) do ID token, segundo a **OpenID Connect Core 1.0**, "deve conter o `client_id` da Relying Party" que solicitou o token[^oidccore] — ou seja, o próprio token diz, criptograficamente, "eu fui emitido *para este client específico*, não para uma API qualquer". Uma API que aceitasse um ID token estaria, na prática, ignorando esse `aud` (porque o `aud` nunca vai bater com o identificador da API) ou aceitando tokens cujo público-alvo declarado nunca foi ela. O Auth0 resume três problemas concretos dessa confusão: descasamento de audiência (o `aud` do ID token é o `client_id`, não o identificador da API); ausência de sender-constraining (nada amarra o ID token ao canal client-API, então um ID token roubado funciona para qualquer atacante que o capture); e o fato de o ID token ser assinado com uma chave conhecida do próprio client, o que significa que a API não tem como saber se o client modificou o token antes de reenviá-lo[^auth0idvsat].
@@ -205,7 +205,6 @@ Mas isso resolve só a sessão no OP. Se o usuário tinha sessões abertas em *o
 - **Back-Channel Logout 1.0** — o OP faz uma chamada servidor-a-servidor diretamente para cada RP, sem depender do navegador do usuário. Uma vantagem citada pela documentação da especificação é justamente essa independência: "back-channel logout não tem dependência do user agent, e como resultado, usuários serão deslogados do client mesmo que o user agent tenha sido fechado"[^backchannel]. A contrapartida é operacional — o endpoint de back-channel logout do RP precisa ser alcançável pelo OP, o que significa que o RP não pode estar atrás de firewall/NAT inacessível a partir de OPs públicos, e a lógica de "o que significa encerrar minha sessão" fica a cargo de cada RP implementar corretamente (limpar cookie é trivial; invalidar tudo que dependia daquela sessão, nem sempre)[^backchannel].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 sequenceDiagram
     participant U as Usuário
     participant RP1 as App A (RP)

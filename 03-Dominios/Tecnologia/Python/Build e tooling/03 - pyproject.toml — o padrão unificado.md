@@ -45,6 +45,8 @@ Ninguém decidiu deliberadamente ter sete arquivos de configuração na raiz —
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Antes["Antes — arquivos espalhados"]
         SP["setup.py<br/>(código executável)"]
         SC["setup.cfg"]
@@ -65,8 +67,8 @@ flowchart LR
 
     Antes -->|"consolidação"| Depois
 
-    style SP fill:#D0021B,color:#fff
-    style PT fill:#4A90D9,color:#fff
+    class SP falha
+    class PT neutro
 ```
 
 > [!tip] O alívio não é estético, é operacional
@@ -152,6 +154,8 @@ A seção `[project]` já teria sido um avanço sozinha — um formato declarati
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     PT["pyproject.toml"] --> BS["[build-system]<br/>PEP 518 — quem constrói o pacote"]
     PT --> PJ["[project]<br/>PEP 621 — metadados e dependências"]
     PT --> TOOL["[tool.*]<br/>namespace compartilhado"]
@@ -162,8 +166,8 @@ flowchart TD
     TOOL --> COV["[tool.coverage.run]<br/>cobertura de testes"]
     TOOL --> UV["[tool.uv]<br/>config do gerenciador"]
 
-    style TOOL fill:#4A90D9,color:#fff
-    style PT fill:#2E7D32,color:#fff
+    class TOOL neutro
+    class PT ok
 ```
 
 A regra é simples e não tem cerimônia formal: qualquer projeto pode adicionar `[tool.qualquer-coisa]` e a ferramenta correspondente vai procurar exatamente ali quando rodar dentro daquele diretório (ou de um diretório abaixo — a maioria das ferramentas do ecossistema sobe a árvore de diretórios procurando o `pyproject.toml` mais próximo). Ferramentas que não reconhecem uma seção `[tool.X]` simplesmente a ignoram — não há conflito possível entre `[tool.ruff]` e `[tool.mypy]` coexistindo no mesmo arquivo, porque cada ferramenta só lê sua própria chave.

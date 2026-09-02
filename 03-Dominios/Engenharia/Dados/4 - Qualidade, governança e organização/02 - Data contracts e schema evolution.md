@@ -68,8 +68,9 @@ A abordagem reativa — a que o e-commerce tinha antes do incidente — é testa
 2. Quando isso não é possível (o produtor é um sistema de terceiros, ou legado, sem esse tipo de gate), a validação acontece o mais próximo possível do ponto de ingestão — o pipeline recusa dado que não bate com o schema esperado, em vez de aceitar silenciosamente e deixar o erro se propagar.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Reativo["Abordagem reativa — sem shift-left"]
         A1["Produtor muda<br/>schema"] --> A2["Pipeline extrai<br/>(sem checar)"] --> A3["Transforma"] --> A4["Warehouse"] --> A5["Teste de qualidade<br/>detecta aqui"]
     end
@@ -80,9 +81,9 @@ graph LR
         B2 -->|"não"| B4["Deploy segue,<br/>pipeline confia"]
     end
 
-    style A5 fill:#F5A623,color:#000
-    style B3 fill:#4A90D9,color:#fff
-    style B4 fill:#4A90D9,color:#fff
+    class A5 destaque
+    class B3 neutro
+    class B4 neutro
 ```
 
 O ganho de shift-left não é só velocidade de detecção — é **quem** paga o custo de descobrir o problema. Na abordagem reativa, quem descobre é o consumidor, geralmente muito depois, sem contexto sobre o que mudou. No shift-left, quem descobre é o próprio produtor, no momento exato em que ele tem todo o contexto da mudança na cabeça — o lugar mais barato do mundo para corrigir um erro.

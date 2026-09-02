@@ -41,6 +41,8 @@ Em [[02 - Análise de complexidade - Big-O]] você ordenou as classes de crescim
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph TRATAVEL["TRATÁVEL — polinomial"]
         direction TB
         A["O(1) constante"]
@@ -58,8 +60,8 @@ flowchart LR
     end
     TRATAVEL ==>|"a parede"| INTRATAVEL
 
-    style TRATAVEL fill:#dfd,stroke:#3a3
-    style INTRATAVEL fill:#fdd,stroke:#c33
+    class TRATAVEL ok
+    class INTRATAVEL falha
 ```
 
 **Leitura do diagrama:** tudo do lado verde compartilha uma propriedade: o expoente de n é **fixo** (1, 2, 3...). São os algoritmos polinomiais, e por convenção chamamos todos eles de "tratáveis". Tudo do lado vermelho tem n **no expoente** (2ⁿ) ou cresce ainda mais selvagemente (n!, nⁿ). A seta grossa entre os dois blocos — "a parede" — é a fronteira polinomial vs exponencial. Não é uma linha arbitrária: ela marca uma mudança de natureza no comportamento, não só de grau.
@@ -85,6 +87,8 @@ Antes do vocabulário, vale dissolver uma impressão comum: a de que intratabili
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph REAL["o que o engenheiro vê"]
         S1["escalonar turnos / tarefas"]
         S2["alocar VMs / containers"]
@@ -108,8 +112,8 @@ flowchart TD
     S5 --> C5
     S6 --> C6
 
-    style REAL fill:#eef,stroke:#88a
-    style CORE fill:#fd9,stroke:#e80
+    class REAL neutro
+    class CORE destaque
 ```
 
 **Leitura do diagrama:** à esquerda, o problema como ele chega no Jira ("preciso alocar VMs nas máquinas físicas"); à direita, o esqueleto NP-completo que mora por baixo ("bin packing"). Reconhecer o mapeamento da esquerda para a direita é metade do trabalho — assim que você nomeia o problema clássico, herda toda a literatura sobre como atacá-lo. Veja quatro casos com a forma exata e como a indústria os trata.
@@ -175,6 +179,10 @@ A relação intuitiva entre os quatro termos:
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph NPhard["NP-difícil — pelo menos tão difícil quanto NP-completo"]
         direction TB
         subgraph NP["NP — fácil de verificar"]
@@ -185,11 +193,11 @@ flowchart TD
         FORA["NP-difícil mas NÃO em NP\n(TSP-otimização, halting problem)"]
     end
 
-    style P fill:#dfd,stroke:#3a3
-    style NPC fill:#fd9,stroke:#e80
-    style FORA fill:#fdd,stroke:#c33
-    style NP fill:#eef,stroke:#88a
-    style NPhard fill:#f7f0f0,stroke:#a66
+    class P ok
+    class NPC destaque
+    class FORA falha
+    class NP neutro
+    class NPhard falha
 ```
 
 **Leitura do diagrama (intuitivo, assumindo P ≠ NP):** a caixa azul é **NP** — tudo que dá pra verificar rápido. Dentro dela, o verde **P** é o que também dá pra **resolver** rápido, e o laranja **NP-completo** é a fronteira mais difícil de NP. A interseção de NP-completo com NP-difícil são os problemas que são as duas coisas. O bloco vermelho de fora mostra que **NP-difícil transborda NP**: há problemas tão duros que nem são verificáveis em tempo polinomial (TSP-otimização) ou nem são computáveis (halting problem). Atenção: este é o mapa **se** P ≠ NP. Se um dia provarem P = NP, o verde engole o laranja e o desenho colapsa — é justamente isso que está em jogo.
@@ -218,14 +226,17 @@ Agora vire a lógica do avesso, e você tem o motor das provas de NP-dificuldade
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["instância de A\n(problema novo)"] -->|"transformação barata"| B["instância de B\n(problema conhecido)"]
     B --> SOLVE["algoritmo para B"]
     SOLVE --> RB["resposta de B"]
     RB -->|"traduz de volta"| RA["resposta de A"]
 
-    style A fill:#fd9,stroke:#e80
-    style B fill:#dfd,stroke:#3a3
-    style SOLVE fill:#eef,stroke:#88a
+    class A destaque
+    class B ok
+    class SOLVE neutro
 ```
 
 **Leitura do diagrama:** a redução é o trilho de cima e o de baixo. Você pega uma instância de A, transforma barato numa instância de B, joga no algoritmo de B, e traduz a resposta de volta. Se a transformação e a tradução são baratas (polinomiais), então "resolver B" e "resolver A" custam essencialmente o mesmo — toda a dificuldade está concentrada no algoritmo do meio. É essa cadeia que faz a NP-completude ser contagiosa: Cook provou SAT NP-completo (1971), Karp reduziu SAT a 21 outros problemas (1972), e cada novo problema NP-completo descende de um anterior por uma redução dessas. (O formalismo exato da "redução polinomial" — o que conta como "barato", a direção da seta, a prova de corretude — é tratado no galho Teoria da Computação; aqui a intuição do trilho basta.)
@@ -250,6 +261,10 @@ Esta é a parte mais útil da nota, e a que de fato distingue o engenheiro sêni
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     START["Problema parece NP-difícil"] --> Q1{"n é pequeno\ne fixo?"}
     Q1 -->|"sim"| EXP["Aceite o exponencial\nforça bruta / DP exponencial\n(ex.: Held-Karp O(2ⁿ·n²))"]
     Q1 -->|"não"| Q2{"a dificuldade\nse concentra num\nparâmetro k pequeno?"}
@@ -260,12 +275,12 @@ flowchart TD
     Q4 -->|"sim"| APPROX["Algoritmo de aproximação\nperto do ótimo, provado\n(ex.: 2-aprox vertex cover)"]
     Q4 -->|"não"| HEUR["Heurística / solver\nsem garantia, boa na prática\n(greedy, busca local, SA,\ngenéticos, SAT/MILP solver)"]
 
-    style START fill:#fdd,stroke:#c33
-    style EXP fill:#eef,stroke:#88a
-    style FPT fill:#eef,stroke:#88a
-    style SPECIAL fill:#dfd,stroke:#3a3
-    style APPROX fill:#dfd,stroke:#3a3
-    style HEUR fill:#fd9,stroke:#e80
+    class START falha
+    class EXP neutro
+    class FPT neutro
+    class SPECIAL ok
+    class APPROX ok
+    class HEUR destaque
 ```
 
 **Leitura do diagrama:** descendo de cima, você faz perguntas progressivamente menos exigentes. Primeiro tenta escapar de graça (n pequeno? estrutura especial?); só lá embaixo, quando nada salva, você abre mão da otimalidade. As folhas verdes são as situações felizes (resposta exata viável); a azul é "exponencial controlado"; a laranja (heurística/solver) é o último recurso, onde você abandona a garantia formal em troca de "bom o suficiente, agora". Vamos por cada folha.

@@ -38,16 +38,16 @@ Essa pergunta é o eixo desta nota: mapear onde cada ferramenta principal dessa 
 **Polymet** — gera mockups de alta fidelidade e código React (shadcn) a partir de texto, sketch ou imagem, com importação/exportação de arquivos Figma. Diferente do que a pesquisa original sinalizava (fontes de baixa autoridade, perfil de diretório SEO), a página oficial do produto hoje se posiciona com peso institucional real — **backed by Y Combinator**, com clientes citados nominalmente (Cisco, SAP, ByteDance) e postura "enterprise-ready". Isso não é prova de maturidade técnica da geração de código em si, mas eleva a confiança de que não é um produto abandonado ou fantasma.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     N["Prompt / imagem / sketch"] --> V0["v0<br/>React/Next.js, agora c/ backend"]
     N --> BOLT["Bolt.new<br/>IDE navegador + Supabase"]
     N --> LOV["Lovable<br/>MVP full-stack, GitHub sync"]
     N --> SF["Subframe<br/>editor visual, export 1:1"]
     N --> PM["Polymet<br/>mockup + React/shadcn"]
     SF -.->|MCP| CC["Claude Code / Cursor"]
-    style N fill:#4A90D9,color:#fff
-    style SF fill:#4A90D9,color:#fff
+    class N neutro
+    class SF neutro
 ```
 
 ## Onde ajudam de verdade, e onde produzem lixo

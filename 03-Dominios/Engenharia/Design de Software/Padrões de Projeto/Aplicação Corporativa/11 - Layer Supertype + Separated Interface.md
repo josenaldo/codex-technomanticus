@@ -51,8 +51,9 @@ O problema é outro. O domínio precisa gravar pedidos, e gravar é responsabili
 A saída é separar **onde a interface é declarada** de **onde ela é implementada**. A interface é declarada **junto de quem a usa** — no domínio, expressa no vocabulário do domínio. A implementação vive na infraestrutura, que **importa o domínio** para implementá-la.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph SEM["Dependência direta"]
         D1["Domínio<br/>ServicoDePedido"] -->|"depende de"| I1["Infra<br/>PedidoJdbcDao"]
     end
@@ -64,10 +65,10 @@ graph TD
         I2 -->|"implementa · depende do domínio"| D2
     end
 
-    style D1 fill:#F5A623,color:#000
-    style I1 fill:#F5A623,color:#000
-    style D2 fill:#4A90D9,color:#fff
-    style I2 fill:#4A90D9,color:#fff
+    class D1 destaque
+    class I1 destaque
+    class D2 neutro
+    class I2 neutro
 ```
 
 Repare que a seta entre os módulos **inverteu de sentido**. Essa é a única coisa que o padrão faz — e é o suficiente para que o domínio compile e seja testado sem banco, e para que a infraestrutura seja substituível sem tocar no domínio.

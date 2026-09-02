@@ -68,6 +68,9 @@ Os dois arquivos vivem na mesma pasta `caixa/` e declaram `package caixa` — po
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     D["diretório caixa/"] --> A["conta.go<br/>package caixa"]
     D --> B["log.go<br/>package caixa"]
     D --> C["conta_test.go<br/>package caixa"]
@@ -83,9 +86,9 @@ flowchart TD
     F --> I["visível só dentro de caixa/"]
     G --> I
 
-    style H fill:#4A90D9,color:#fff
-    style I fill:#D0021B,color:#fff
-    style D fill:#F5A623,color:#000
+    class H neutro
+    class I falha
+    class D destaque
 ```
 
 > [!question]- O nome do diretório precisa ser igual ao nome do pacote?
@@ -251,14 +254,16 @@ A ordem de execução, quando há múltiplos `init()` envolvidos, segue uma regr
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["pacote database<br/>(sem dependências internas)"] -->|init roda 1º| B["pacote config<br/>importa database"]
     B -->|init roda 2º| C["pacote main<br/>importa config"]
     C -->|init roda 3º| D["main() roda por último"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#7ED321,color:#000
+    class A neutro
+    class B neutro
+    class C neutro
+    class D destaque
 ```
 
 O caso de uso mais legítimo de `init()` é justamente o do blank import visto acima: um pacote de driver de banco usa `init()` para se registrar num registro global (`sql.Register(...)`) antes que qualquer código de aplicação tenha chance de chamar `sql.Open(...)`. Outros usos aceitos: validar invariantes de configuração no arranque (falhar cedo se uma variável de ambiente obrigatória estiver ausente), inicializar tabelas de lookup calculadas uma única vez, ou registrar tipos num serializador.

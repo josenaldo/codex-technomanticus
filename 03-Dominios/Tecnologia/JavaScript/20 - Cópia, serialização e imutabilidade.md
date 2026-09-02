@@ -95,8 +95,9 @@ copy1.arr.push(5);        // ⚠️ afeta original.arr — mesma referência
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Após shallow copy"
         V1["original"] -->|"referência"| O1["Objeto A\n{ a: 1 }"]
         V2["copy1"] -->|"referência"| O2["Objeto B\n{ a: 1 } (novo)"]
@@ -108,10 +109,10 @@ graph TD
         O2 -->|"arr"| A1
     end
 
-    style N1 fill:#F5A623,color:#000
-    style A1 fill:#F5A623,color:#000
-    style O2 fill:#4A90D9,color:#fff
-    style O1 fill:#4A90D9,color:#fff
+    class N1 destaque
+    class A1 destaque
+    class O2 neutro
+    class O1 neutro
 ```
 
 O nível amarelo (aninhado) é compartilhado — qualquer mutação lá reflete nos dois lados.
@@ -251,8 +252,9 @@ O par `replacer`/`reviver` é a forma de ensinar ao JSON como tratar tipos perso
 ## Diagrama: qual abordagem usar?
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     START([Preciso de uma cópia]) --> Q1{Estrutura\naninhada?}
 
     Q1 -->|Não| SHALLOW["Cópia rasa\nspread / Object.assign"]
@@ -267,10 +269,10 @@ flowchart TD
     Q4 -->|Sim| SC["structuredClone()\nSolução moderna nativa ✓"]
     Q4 -->|Não| JSONOK
 
-    style SHALLOW fill:#4A90D9,color:#fff
-    style JSONOK fill:#4A90D9,color:#fff
-    style SC fill:#4A90D9,color:#fff
-    style MANUAL fill:#F5A623,color:#000
+    class SHALLOW neutro
+    class JSONOK neutro
+    class SC neutro
+    class MANUAL destaque
 ```
 
 ---

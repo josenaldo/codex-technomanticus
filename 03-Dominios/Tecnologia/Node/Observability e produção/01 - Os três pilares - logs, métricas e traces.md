@@ -268,12 +268,15 @@ Logs, métricas e traces formam um triângulo de diagnóstico que é a base do p
 
 ```mermaid
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Alerta\n(métrica fora do SLO)"] -->|"QUE há um problema"| T["Trace\nOnde na cadeia de chamadas?"]
     T -->|"ONDE está o gargalo"| L["Log\nO quê aconteceu exatamente?"]
 
-    style A fill:#F5A623,color:#000
-    style T fill:#D0021B,color:#fff
-    style L fill:#4A90D9,color:#fff
+    class A destaque
+    class T falha
+    class L neutro
 ```
 
 Exemplo de workflow num incidente real:

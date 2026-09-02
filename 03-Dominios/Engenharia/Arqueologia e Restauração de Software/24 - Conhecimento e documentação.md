@@ -34,17 +34,18 @@ Antes das ferramentas, vale nomear por que esse problema é genuinamente difíci
 > Porque a alternativa não é "teoria perfeita vs. documentação imperfeita" — é "documentação imperfeita vs. nada". Sem nada, o próximo consultor reconstrói a teoria do zero, por arqueologia pura, do jeito que você fez nas notas 05 a 09 deste galho. Com ADRs e living docs, ele reconstrói a mesma teoria em uma fração do tempo, porque você deixou marcos: aqui está o *porquê*, aqui está a arquitetura em camadas, aqui está quem sabe o quê. Documentação não é a teoria — é o **mapa arqueológico** que você deixa para a próxima escavação, feito por quem já cavou o sítio inteiro.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     T1[Teoria viva na cabeca<br/>do time original] -->|equipe sai, teoria some| L[LEGADO: so sobra codigo]
     L -->|voce reconstroi por arqueologia| T2[Teoria reconstruida<br/>na sua cabeca]
     T2 -->|voce sai sem documentar| L
     T2 -->|voce externaliza de proposito| E[ADR + Living Docs + C4<br/>+ pairing]
     E --> T3[Proximo consultor<br/>reconstroi mais rapido]
-    style L fill:#D0021B
-    style T2 fill:#4A90D9
-    style E fill:#4A90D9
-    style T3 fill:#4A90D9
+    class L falha
+    class T2 neutro
+    class E neutro
+    class T3 neutro
 ```
 
 O ciclo vermelho do diagrama é o que trouxe você até este galho na nota 01. O ciclo azul é o que você escolhe deliberadamente ativar antes de sair — e é o único jeito de garantir que o próximo consultor não comece do zero absoluto, como você começou.
@@ -60,16 +61,17 @@ Em 2011, Michael Nygard publicou um post curto que se tornou o padrão de fato d
 O detalhe que faz o ADR funcionar, e que a maioria das tentativas de documentação erra, é a **imutabilidade**. Um ADR nunca é editado depois de aceito — se a decisão muda, você escreve um **ADR novo** que marca o antigo como *superseded* e explica por que a circunstância mudou. Isso preserva algo que nenhuma wiki editável preserva: o **histórico do raciocínio ao longo do tempo**. Seis meses depois, quando alguém perguntar "por que a gente não usou o SaaS de faturamento fiscal?", a resposta não está perdida numa mensagem de Slack de 2019 — está no ADR-014, junto do commit que a implementou, legível para sempre.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[Decisao arquitetural tomada] --> B[Escrever ADR: contexto, decisao, consequencias]
     B --> C[Commitar junto ao codigo, no mesmo repositorio]
     C --> D{A decisao muda depois?}
     D -->|nao| E[ADR permanece valido, imutavel]
     D -->|sim| F[Novo ADR criado,<br/>marca o antigo como Superseded]
     F --> C
-    style B fill:#4A90D9
-    style F fill:#F5A623
+    class B neutro
+    class F destaque
 ```
 
 > [!info] Por que "leve" é a característica que faz o ADR sobreviver
@@ -82,15 +84,16 @@ ADRs capturam decisões pontuais — eventos no tempo. Mas existe outra pergunta
 O **C4 model** de Simon Brown é o formato mais adotado dessa família para descrever arquitetura. A ideia é resolver um problema real: diagramas de arquitetura tendem a ser ou vagos demais (uma caixa "Sistema" e pronto) ou detalhados demais (um diagrama UML de classes que ninguém lê). C4 resolve isso com **quatro níveis de zoom**, cada um respondendo a uma pergunta diferente e para uma audiência diferente:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Nivel 1: Contexto<br/>(o sistema no mundo,<br/>quem o usa e com quem fala)"] --> B["Nivel 2: Conteineres<br/>(as partes que rodam:<br/>API, banco, fila, frontend)"]
     B --> C["Nivel 3: Componentes<br/>(dentro de um conteiner:<br/>modulos e responsabilidades)"]
     C --> D["Nivel 4: Codigo<br/>(classes/funcoes,<br/>raramente vale manter manual)"]
-    style A fill:#4A90D9
-    style B fill:#4A90D9
-    style C fill:#4A90D9
-    style D fill:#F5A623
+    class A neutro
+    class B neutro
+    class C neutro
+    class D destaque
 ```
 
 Repare que Brown recomenda **não** manter o nível 4 manualmente — o próprio código já é essa documentação, e um diagrama de classes desatualizado é pior do que nenhum diagrama. Os níveis que valem o investimento são 1 a 3: um diretor entende o Contexto em trinta segundos; um novo engenheiro entende os Contêineres no primeiro dia; quem vai mexer num módulo específico lê os Componentes daquele módulo antes de tocar nele. Para o consultor, o C4 é o antídoto direto contra o "primeiro contato" caótico da [[05 - First Contact|nota 05]] — é o mapa que você deixa para que o *próximo* primeiro contato seja mais curto que o seu.

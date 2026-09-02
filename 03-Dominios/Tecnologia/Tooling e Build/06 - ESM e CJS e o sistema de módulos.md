@@ -61,6 +61,8 @@ Antes de ver como os bundlers e o Node navegam essa divisão, vale entender as d
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph CJS["CommonJS — o legado síncrono"]
         direction TB
         CQ["require() é síncrono\n(bloqueia até carregar o módulo)"]
@@ -77,8 +79,8 @@ flowchart LR
         EE["export é uma binding read-only\npara quem importa"]
     end
 
-    style CJS fill:#2a1500,color:#ddd
-    style ESM fill:#001525,color:#ddd
+    class CJS destaque
+    class ESM neutro
 ```
 
 **Live binding vs. cópia:** a diferença é sutil mas importante. Em CJS, quando você faz `require()`, o objeto retornado é uma cópia do valor de `module.exports` naquele instante — como uma foto. Se o módulo depois mudar o valor de um export, quem já fez `require()` não vê a mudança:
@@ -123,6 +125,8 @@ Essa incompatibilidade de timing é exatamente por que `require(esm)` demorou ta
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     FILE["arquivo JavaScript"]
 
     EXT{Extensão?}
@@ -142,10 +146,10 @@ flowchart TD
     PKG -->|sim| ESM_FINAL
     PKG -->|não / ausente| CJS_FINAL
 
-    style MJS fill:#001525,color:#ddd
-    style ESM_FINAL fill:#001525,color:#ddd
-    style CJS_FINAL fill:#2a1500,color:#ddd
-    style CJS_EXT fill:#2a1500,color:#ddd
+    class MJS neutro
+    class ESM_FINAL neutro
+    class CJS_FINAL destaque
+    class CJS_EXT destaque
 ```
 
 Regras:
@@ -206,6 +210,8 @@ keys.forEach(k => { exports[k] = () => k; });
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     CJS["módulo CJS\nmodule.exports = { ... }"]
     LEXER["cjs-module-lexer\n(análise estática do texto)"]
     NAMED["named exports detectados\nimport { foo } ✅"]
@@ -215,8 +221,8 @@ flowchart LR
     LEXER -->|"exports.foo = ...\nmodule.exports = { foo }"| NAMED
     LEXER -->|"exports computados\ndinâmicos / Proxy"| DEFAULT_ONLY
 
-    style NAMED fill:#0a2a0a,color:#ddd
-    style DEFAULT_ONLY fill:#2a1500,color:#ddd
+    class NAMED ok
+    class DEFAULT_ONLY destaque
 ```
 
 ---
@@ -496,6 +502,7 @@ O resultado: singletons não são singleton; verificações `instanceof` falham;
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     APP["Aplicação"]
     
     ESM_CONSUMER["consumidor.mjs\nimport { Cache } from 'minha-lib'"]
@@ -513,7 +520,7 @@ flowchart TD
     ESM_BUILD --> HAZARD
     CJS_BUILD --> HAZARD
 
-    style HAZARD fill:#3a0000,color:#ddd
+    class HAZARD falha
 ```
 
 **Quando o hazard é real**: pacotes com estado global (singletons, registries, caches, Maps compartilhados, instâncias de classe sujeitas a `instanceof`).
@@ -536,6 +543,7 @@ O bundler precisa responder: "dado esse specifier de import, qual arquivo físic
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     IMP["import { foo } from 'pacote'"]
 
     EXPORTS{"package.json\ntem campo exports?"}
@@ -555,7 +563,7 @@ flowchart TD
     MODULE --> FOUND
     MAIN_F --> FOUND
 
-    style FOUND fill:#0a2a0a,color:#ddd
+    class FOUND ok
 ```
 
 ### `mainFields`: o legado de antes do `exports`

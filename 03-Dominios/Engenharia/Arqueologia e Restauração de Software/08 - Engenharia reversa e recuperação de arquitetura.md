@@ -52,8 +52,9 @@ O grafo cru é grande e ruidoso demais para ler direto. É aqui que entra a idei
 3. **Deixe a ferramenta computar o reflexion model.** Ela extrai o grafo real e o sobrepõe à sua hipótese, classificando cada relação em três tipos:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     H["Seu mapa esperado<br/>(hipótese / teoria)"] --> C{"Reflexion<br/>model"}
     S["Grafo extraído<br/>do código real"] --> C
     C --> CV["CONVERGÊNCIA<br/>esperei e existe ✓"]
@@ -61,10 +62,10 @@ graph LR
     C --> AB["AUSÊNCIA<br/>esperei, mas NÃO existe ⚠"]
     DV --> R["Onde a arquitetura<br/>foi erodida"]
     AB --> R
-    style CV fill:#7ED321,color:#000
-    style DV fill:#F5A623,color:#000
-    style AB fill:#F5A623,color:#000
-    style R fill:#D0021B,color:#fff
+    class CV destaque
+    class DV destaque
+    class AB destaque
+    class R falha
 ```
 
 - **Convergências** (verde): você esperava a dependência e ela existe. Sua teoria estava certa ali.
@@ -87,15 +88,16 @@ O diagrama oficial congela a *intenção* de um momento passado; o código conti
 O livro *Object-Oriented Reengineering Patterns* (Demeyer, Ducasse & Nierstrasz) organiza a engenharia reversa como uma escalada do *First Contact* ([[05 - First Contact|nota 05]]) até o entendimento detalhado dos subsistemas críticos. A lição central: você **não mapeia o sistema inteiro** — isso é impossível e inútil. Você mapeia guiado por objetivo, num vaivém entre dois sentidos:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     TD["TOP-DOWN<br/>hipótese de arquitetura<br/>(o que eu espero)"] --> M["Ponto de encontro:<br/>o reflexion model"]
     BU["BOTTOM-UP<br/>grafo extraído + métricas<br/>(o que existe)"] --> M
     M --> D["Divergências guiam<br/>onde ler a fundo"]
     D --> RE["Refina a hipótese"]
     RE -.itera.-> TD
-    style M fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
+    class M neutro
+    class D destaque
 ```
 
 Você começa com uma hipótese grosseira (top-down), extrai a estrutura real (bottom-up), e usa as **divergências** para decidir *onde* investir sua leitura cara de código. Cada mergulho refina a hipótese, que refina o próximo mapa. É iterativo e barato: em vez de ler 340 mil linhas, você lê as 3 mil que o mapa apontou como o coração do risco.

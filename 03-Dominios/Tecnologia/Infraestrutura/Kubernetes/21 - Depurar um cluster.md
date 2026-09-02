@@ -30,6 +30,9 @@ O método desta nota é, por isso, uma sequência fixa de perguntas, cada uma re
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["Sintoma: algo não funciona"] --> B{"O objeto existe?<br/>kubectl get"}
     B -->|"não existe"| B1["Erro ficou no apply<br/>YAML inválido, quota, RBAC"]
     B -->|"existe"| C{"Foi agendado?<br/>spec.nodeName preenchido?"}
@@ -43,12 +46,12 @@ flowchart TD
     F -->|"não"| F1["Cadeia do Service<br/>EndpointSlice, selector, targetPort"]
     F -->|"sim, mas o problema persiste"| G["Não é o Pod —<br/>ver o nó e o control plane"]
 
-    style B1 fill:#7a2e2e,stroke:#c0392b,color:#fff
-    style D1 fill:#7a2e2e,stroke:#c0392b,color:#fff
-    style D2 fill:#7a2e2e,stroke:#c0392b,color:#fff
-    style E1 fill:#5a4a1e,stroke:#c9a227,color:#fff
-    style F1 fill:#5a4a1e,stroke:#c9a227,color:#fff
-    style G fill:#4a3b7a,stroke:#8e6fd6,color:#fff
+    class B1 falha
+    class D1 falha
+    class D2 falha
+    class E1 destaque
+    class F1 destaque
+    class G marca
 ```
 
 Vale nomear, em ordem, o que cada degrau dessa árvore de fato responde, porque a ordem não é arbitrária — ela segue exatamente a mesma disciplina de custo crescente que a nota 14 de Docker já ensinou: primeiro o que só lê estado já registrado, sem tocar em nada vivo; depois o que exige o objeto vivo e cooperando.
@@ -153,15 +156,17 @@ Na maioria dos casos reais, `kubectl describe deployment` mostra o rollout trava
 
 ```mermaid
 graph TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     D["Deployment<br/>describe: Progressing=False"] -->|"ownerReference"| RS1["ReplicaSet antigo<br/>3/3 prontos"]
     D -->|"ownerReference"| RS2["ReplicaSet novo<br/>0/3 prontos"]
     RS2 -->|"ownerReference"| P1["Pod novo #1<br/>describe: causa real aqui"]
     RS2 -->|"ownerReference"| P2["Pod novo #2"]
     RS2 -->|"ownerReference"| P3["Pod novo #3"]
 
-    style D fill:#5a4a1e,stroke:#c9a227,color:#fff
-    style RS2 fill:#7a2e2e,stroke:#c0392b,color:#fff
-    style P1 fill:#7a2e2e,stroke:#c0392b,color:#fff
+    class D destaque
+    class RS2 falha
+    class P1 falha
 ```
 
 ## O catálogo de sintomas

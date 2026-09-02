@@ -29,15 +29,16 @@ Um engenheiro pede a um agente de IA para ajustar o espaçamento de um card até
 O padrão que consolidou em 2026 para agentes de codificação trabalhando com interface visual segue uma sequência simples, repetida até o critério de aceite ser satisfeito:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     C["Muda código"] --> N["Navega até a página<br/>Playwright MCP"]
     N --> S["Captura estado<br/>browser_snapshot"]
     S --> A{"Bate com<br/>o critério?"}
     A -->|não| C
     A -->|sim| DONE["Concluído"]
-    style S fill:#4A90D9,color:#fff
-    style A fill:#F5A623,color:#000
+    class S neutro
+    class A destaque
 ```
 
 Esse ciclo é a fatia deste galho que diverge mais do que a [[03-Dominios/Tecnologia/Testes JS/14 - Playwright além do básico|nota 14 de Testes JS]] cobre: lá, Playwright é ferramenta de **teste** — `toHaveScreenshot()` compara pixel a pixel para pegar regressão, `storageState` reutiliza autenticação, componentes rodam em browser real em vez de jsdom. Aqui, Playwright vira **olho do agente de design** durante o desenvolvimento ativo, antes de qualquer suíte de teste formal existir — o mesmo motor, usado num momento diferente do ciclo de vida do código, com um propósito diferente (guiar iteração, não certificar regressão).

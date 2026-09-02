@@ -343,6 +343,9 @@ As duas versões fazem exatamente a mesma coisa. A diferença é que a segunda v
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["for item in iterável:"] --> B{"condição de break?"}
     B -->|"sim"| C["break"]
     C --> D["else é PULADO"]
@@ -353,9 +356,9 @@ flowchart TD
     G -->|"sim, sem break"| H["else EXECUTA"]
     H --> E
 
-    style C fill:#D0021B,color:#fff
-    style H fill:#4A90D9,color:#fff
-    style E fill:#F5A623,color:#000
+    class C falha
+    class H neutro
+    class E destaque
 ```
 
 > [!question]- Por que o `else` de loop é tão pouco usado, se resolve um problema real?

@@ -56,8 +56,10 @@ O terceiro é o que dá origem a esta família inteira: **não há como saber se
 ## O mapa: onde cada padrão corta a corrente
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     U["Usuário"] --> A["Seu serviço"]
     A -->|"chamada"| D["Dependência<br/>lenta ou fora"]
 
@@ -68,14 +70,14 @@ graph TD
     F["<b>Fallback</b><br/>respondo pior"] -.->|"salva a resposta"| A
     L["<b>Rate limit / shedding</b><br/>recuso na entrada"] -.->|"protege da carga"| A
 
-    style D fill:#D0021B,color:#fff
-    style A fill:#4A90D9,color:#fff
-    style T fill:#4A90D9,color:#fff
-    style R fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
-    style L fill:#4A90D9,color:#fff
+    class D falha
+    class A neutro
+    class T neutro
+    class R destaque
+    class C neutro
+    class B neutro
+    class F neutro
+    class L neutro
 ```
 
 O âmbar no Retry é intencional: é o único padrão do mapa que **piora** o problema quando mal configurado — todos os outros, no pior caso, são inúteis; o retry ingênuo transforma um serviço fraco num serviço morto.

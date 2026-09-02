@@ -32,15 +32,16 @@ A intuição diz **não** — a regra de negócio é uma coisa, o formato de arm
 ## A ideia: uma camada no meio, ignorância dos dois lados
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     D["Pedido<br/>(domínio puro — sem SQL)"] -->|"não conhece"| M
     M{{"PedidoMapper<br/>(conhece os dois)"}} -->|"traduz"| D
     M -->|"SQL"| DB[("banco")]
     DB -->|"linhas"| M
 
-    style D fill:#4A90D9,color:#fff
-    style M fill:#F5A623,color:#000
+    class D neutro
+    class M destaque
 ```
 
 A seta que importa é a que **não existe**: do domínio para o banco. O `Pedido` não tem referência ao mapper nem ao banco — ele poderia rodar num teste sem nenhuma infraestrutura. Só o mapper vive no meio, e é o **único** ponto que conhece as duas linguagens. Essa assimetria é o coração do padrão: a dependência aponta **para dentro**, do detalhe (persistência) para o domínio, nunca o contrário.

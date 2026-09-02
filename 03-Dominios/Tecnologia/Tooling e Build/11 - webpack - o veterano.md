@@ -52,6 +52,10 @@ Antes de ver config, você precisa ter o mapa mental do webpack. Ele tem quatro 
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph INPUT["Entrada"]
         E["Entry point(s)\n(src/index.js, src/admin.js...)"]
     end
@@ -74,11 +78,11 @@ flowchart TD
 
     E --> G --> L --> P --> O
 
-    style INPUT fill:#1a2e3d,color:#fff
-    style RESOLVE fill:#2d2d00,color:#fff
-    style TRANSFORM fill:#3d1a00,color:#fff
-    style ORCHESTRATE fill:#1a3d1a,color:#fff
-    style OUTPUT fill:#2d1a3d,color:#fff
+    class INPUT neutro
+    class RESOLVE destaque
+    class TRANSFORM destaque
+    class ORCHESTRATE ok
+    class OUTPUT marca
 ```
 
 > [!note] Leitura do diagrama
@@ -117,6 +121,7 @@ Com múltiplos entry points, o webpack gera um chunk principal para cada um, mai
 
 ```mermaid
 graph TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     HOME_E["entry: home.js"]
     CHECK_E["entry: checkout.js"]
     ADMIN_E["entry: admin.js"]
@@ -134,7 +139,7 @@ graph TD
     CHECK_C -.->|"depende de"| VENDOR_C
     ADMIN_C -.->|"depende de"| VENDOR_C
 
-    style VENDOR_C fill:#2d4a1e,color:#fff
+    class VENDOR_C ok
 ```
 
 > [!note] Leitura do diagrama
@@ -205,6 +210,8 @@ A cadeia de loaders para um arquivo `.module.css` fica assim:
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     CSS["Button.module.css\n(arquivo original)"]
     POSTCSS["postcss-loader\n(autoprefixer, nesting)\n↓\n.btn { color: red }"]
     CSSLOADER["css-loader\n(resolve imports, CSS Modules)\n↓\nJS com objeto de classes\n{ btn: '_abc123_btn' }"]
@@ -213,8 +220,8 @@ flowchart LR
 
     CSS --> POSTCSS --> CSSLOADER --> EXTRACT --> IMPORT
 
-    style CSS fill:#1a2e3d,color:#fff
-    style IMPORT fill:#2d4a1e,color:#fff
+    class CSS neutro
+    class IMPORT ok
 ```
 
 > [!note] Leitura do diagrama
@@ -241,6 +248,8 @@ Existem três famílias principais de hooks:
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph COMPILER["compiler (ciclo de build inteiro)"]
         C1["hooks.beforeRun\n(SyncHook)"]
         C2["hooks.run\n(AsyncSeriesHook)"]
@@ -258,8 +267,8 @@ flowchart TD
 
     C3 --> D1 --> D2 --> D3 --> D4 --> C4 --> C5
 
-    style COMPILER fill:#1a2e3d,color:#fff
-    style COMPILATION fill:#2d1a3d,color:#fff
+    class COMPILER neutro
+    class COMPILATION marca
 ```
 
 > [!note] Leitura do diagrama
@@ -439,6 +448,8 @@ module.exports = {
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Build 1 (cold)"
         B1_SRC["src/**\n(600 módulos)"]
         B1_PROC["processamento completo\nbabel, ts, css, assets"]
@@ -457,8 +468,8 @@ flowchart LR
 
     B1_CACHE -.->|"cache read"| B2_CHECK
 
-    style B1_TIME fill:#3d1a00,color:#fff
-    style B2_TIME fill:#1a3d1a,color:#fff
+    class B1_TIME destaque
+    class B2_TIME ok
 ```
 
 > [!note] Leitura do diagrama
@@ -847,6 +858,8 @@ A solução pré-Module Federation era iframe (funciona mas é preso) ou build e
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Shell App (container)"
         SHELL["shell/\n(entry do usuário)\nwww.empresa.com"]
         SHELL_MF["ModuleFederationPlugin\nremotes:\n  checkout: 'checkout@https://checkout.empresa.com/mf.js'\n  catalog: 'catalog@https://catalog.empresa.com/mf.js'"]
@@ -866,9 +879,9 @@ flowchart LR
     SHELL -->|"import('@catalog/ProductCard')\nem runtime, lazy"| CAT_BUILD
     CHECK_BUILD -.->|"shared react@18\n(se shell já carregou, reutiliza)"| SHELL
 
-    style SHELL fill:#1a2e3d,color:#fff
-    style CHECK_BUILD fill:#2d4a1e,color:#fff
-    style CAT_BUILD fill:#2d4a1e,color:#fff
+    class SHELL neutro
+    class CHECK_BUILD ok
+    class CAT_BUILD ok
 ```
 
 > [!note] Leitura do diagrama

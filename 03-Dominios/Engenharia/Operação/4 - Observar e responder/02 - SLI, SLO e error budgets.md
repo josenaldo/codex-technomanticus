@@ -66,15 +66,15 @@ Para um e-commerce, por exemplo, "navegar catálogo", "adicionar ao carrinho", "
 A recomendação prática, também do material do Google Cloud, é mirar entre **3 e 5 SLIs por jornada crítica** — poucos o suficiente para caber num orçamento de atenção humana, muitos o suficiente para cobrir disponibilidade, latência e (quando aplicável) corretude sem virar um mar de dashboards que ninguém olha.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     CUJ["Jornadas críticas<br/>de usuário (CUJ)<br/>ordenadas por impacto"] --> J1["Checkout"]
     CUJ --> J2["Busca de produto"]
     CUJ --> J3["Consulta de pedido"]
     J1 --> S1["SLI: % checkouts<br/>bem-sucedidos < 2s"]
     J1 --> S2["SLI: % pagamentos<br/>processados sem erro"]
     J2 --> S3["SLI: % buscas<br/>respondidas < 500ms"]
-    style J1 fill:#F5A623,color:#000
+    class J1 destaque
 ```
 
 Note que jornadas de criticidade diferente não precisam — e não deveriam — compartilhar o mesmo SLO. Um serviço pode ter múltiplos SLOs simultâneos, um por jornada, cada um com seu próprio orçamento e sua própria política de reação. Bucketing por rota, por tipo de request, ou por classe de cliente (ex.: enterprise vs free tier) é a técnica padrão para separar sinais que, agregados, se cancelariam.
@@ -132,7 +132,6 @@ $$
 Isso confirma a tabela de "noves" de [[04 - Confiabilidade como feature]] — mas agora ancorado num volume real de tráfego, não numa abstração de percentual. O número que o time efetivamente acompanha no dia a dia **não é os 43,2 minutos** — é os **129.600 requests**, porque é isso que aparece contado, em tempo real, num dashboard de error budget. "Faltam 43 minutos de downtime" é uma tradução conceitual útil para conversar com quem não vive de dashboard; "faltam 62.000 requests de orçamento" é o número operacional.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph LR
     T["129,6M requests<br/>em 30 dias"] -->|"× (100% − 99,9%)"| B["Error budget<br/>= 129.600 requests"]
     B -->|"saldo > 0"| VERDE["🟢 Squad lança<br/>features livremente"]
@@ -186,17 +185,18 @@ Valores de referência citados pelo próprio Workbook, para uma janela de orçam
 O detalhamento de como transformar esses limiares em alertas configurados de verdade — regras Prometheus, políticas de página vs ticket, fadiga de alerta — é o assunto da próxima nota deste sub-galho. Aqui, o que importa reter é o princípio: **burn rate alto e sustentado em duas janelas simultâneas é o sinal mais confiável de que o orçamento vai estourar antes do fim do período**, e é esse sinal — não "o serviço caiu" isoladamente — que deveria acordar alguém.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     START["Início do período<br/>orçamento = 100%"] --> D1["Dia 5: incidente pequeno<br/>burn rate 3x por 20min"]
     D1 -->|"orçamento cai<br/>~2%"| D2["Dia 12: normal<br/>burn rate ~1x"]
     D2 --> D3["Dia 22: incidente grande<br/>burn rate 15x por 35min"]
     D3 -->|"consome ~32%<br/>do orçamento"| D4["Dia 24: saldo 66%<br/>ainda 🟢"]
     D4 --> D5["Dia 27: segundo incidente<br/>burn rate 8x por 2h"]
     D5 -->|"orçamento<br/>zera"| RED["🔴 Dia 28: SLO violado<br/>error budget policy ativa"]
-    style D3 fill:#F5A623,color:#000
-    style D5 fill:#F5A623,color:#000
-    style RED fill:#D0021B,color:#fff
+    class D3 destaque
+    class D5 destaque
+    class RED falha
 ```
 
 ## Error budget como política: transformando número em decisão
@@ -215,7 +215,6 @@ A Expedia publicou publicamente um exemplo real desse tipo de política: quando 
 O detalhe mais importante dessa mecânica — fácil de subestimar — é que a política **precisa ter dentes de verdade**. Se a autoridade máxima da organização consegue simplesmente ignorar o freeze toda vez que uma feature importante está sob pressão de prazo, a política vale zero: ela vira decoração, e a próxima reunião de priorização volta a ser a mesma briga política de sempre, só que agora com um dashboard bonito ao fundo que ninguém respeita. A recomendação prática é definir o processo de exceção de forma deliberadamente cara — que exija aprovação explícita de alguém sênior o suficiente, documentada, e rara o bastante para não virar rotina.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     OK["🟢 Orçamento > 25%<br/>operação normal"] -->|"consumo<br/>continua"| WARN["🟡 Orçamento 10-25%<br/>alerta ao squad<br/>e ao tech lead"]
     WARN -->|"consumo<br/>continua"| FROZEN["🔴 Orçamento < 10% ou zerado<br/>freeze de feature<br/>foco 100% em estabilidade"]

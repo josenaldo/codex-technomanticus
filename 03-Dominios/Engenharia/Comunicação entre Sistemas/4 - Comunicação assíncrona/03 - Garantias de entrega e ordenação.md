@@ -28,8 +28,10 @@ Nenhum desses dois bugs nasce de um erro óbvio de código. Nascem de uma suposi
 Toda discussão séria de mensageria — de artigo técnico a pergunta de entrevista sênior — se ancora nesse vocabulário de três termos, porque eles descrevem o que **pode** dar errado numa entrega de mensagem através de uma rede que falha. A pergunta que cada garantia responde é: quando algo falha no meio do caminho (o producer não recebe confirmação, o broker cai, o consumer trava antes de confirmar o processamento), o que o sistema escolhe fazer?
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph AMO["At-most-once"]
         A1["Envia e esquece"]
         A2["Falha → mensagem perdida"]
@@ -47,12 +49,12 @@ graph LR
         C2["Caro e raramente<br/>genuíno end-to-end"]
     end
 
-    style A2 fill:#D0021B,color:#fff
-    style B3 fill:#F5A623,color:#000
-    style C2 fill:#F5A623,color:#000
-    style A1 fill:#4A90D9,color:#fff
-    style B1 fill:#4A90D9,color:#fff
-    style C1 fill:#4A90D9,color:#fff
+    class A2 falha
+    class B3 destaque
+    class C2 destaque
+    class A1 neutro
+    class B1 neutro
+    class C1 neutro
 ```
 
 ### At-most-once — pode perder, nunca duplica
@@ -164,14 +166,15 @@ O SQS padrão (standard queue) não garante ordem nenhuma — mensagens podem ch
 O critério que decide se ordenação importa de verdade não é sobre o tipo de mensagem — é sobre se as mensagens em questão **descrevem o mesmo agregado ou entidade de negócio**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Dois eventos chegando"] --> B{"Mesmo agregado/entidade?<br/>(mesmo pedido, mesma conta,<br/>mesmo item de estoque)"}
     B -->|"Sim"| C["Ordem importa —<br/>use chave de particionamento<br/>por ID da entidade"]
     B -->|"Não"| D["Ordem entre eles<br/>é irrelevante —<br/>paralelize livremente"]
 
-    style C fill:#F5A623,color:#000
-    style D fill:#4A90D9,color:#fff
+    class C destaque
+    class D neutro
 ```
 
 - **Ordem importa** quando processar fora de sequência muda o resultado final: `estoque.reservado` seguido de `estoque.liberado` do **mesmo SKU** — inverter a ordem deixa o estoque num estado errado. `pedido.criado` seguido de `pedido.cancelado` do **mesmo pedido** — processar o cancelamento antes da criação é, na melhor das hipóteses, um no-op incorreto, e na pior, uma exceção não tratada.

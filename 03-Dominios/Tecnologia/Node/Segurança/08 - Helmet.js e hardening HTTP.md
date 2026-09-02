@@ -26,6 +26,8 @@ aliases:
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph CLIENT ["Browser"]
         REQ["HTTP Request"]
         POLICY["Aplica políticas\nCSP / HSTS / CORS"]
@@ -50,9 +52,9 @@ flowchart TD
     CSP & HSTS & XFO & XCT & CORS_MW --> HEADERS
     HEADERS --> POLICY
 
-    style HELMET fill:#4A90D9,color:#fff
-    style CSP fill:#4A90D9,color:#fff
-    style HSTS fill:#F5A623,color:#000
+    class HELMET neutro
+    class CSP neutro
+    class HSTS destaque
 ```
 
 ## O que é

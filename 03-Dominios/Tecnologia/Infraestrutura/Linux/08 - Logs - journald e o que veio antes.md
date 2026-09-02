@@ -158,7 +158,6 @@ MaxRetentionSec=30day
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
     A["aplicação<br/>escreve em stdout/stderr"] --> B["<b>journald</b><br/>acrescenta campos confiáveis"]
     B --> C{"Storage="}

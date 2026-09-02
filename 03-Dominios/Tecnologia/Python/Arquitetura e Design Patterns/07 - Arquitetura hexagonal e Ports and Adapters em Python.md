@@ -276,8 +276,10 @@ O ponto que vale destacar, porque é o que mais confunde quem chega de fora: **F
 Juntando tudo que este galho construiu — domínio (nota 02), Repository/UoW (notas 03-04), DI (nota 05), Service Layer (nota 06), e o `AbstractNotificador` desta nota — a API de Tarefas da capstone do Galho 10 se reorganiza assim:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph DrivingAdapters["Driving Adapters — entrada (acionam a aplicação)"]
         HTTP["FastAPI\nrouters/tarefas.py\nCapstone Galho 10"]
         WORKER["Worker de fila\nimportar_tarefas_csv()"]
@@ -329,12 +331,12 @@ flowchart TB
     EMAIL --> SMTP
     SLACK --> SLACKAPI
 
-    style Core fill:#2d7a4a,color:#fff
-    style ENT fill:#2d7a4a,color:#fff
-    style DrivingPorts fill:#4A90D9,color:#fff
-    style DrivenPorts fill:#4A90D9,color:#fff
-    style DrivingAdapters fill:#8b6914,color:#fff
-    style DrivenAdapters fill:#8b6914,color:#fff
+    class Core ok
+    class ENT ok
+    class DrivingPorts neutro
+    class DrivenPorts neutro
+    class DrivingAdapters destaque
+    class DrivenAdapters destaque
 ```
 
 O núcleo verde (`Tarefa`, `Notificacao`, suas regras) não tem nenhuma seta saindo dele em direção às camadas externas — só recebe chamadas de dentro da Service Layer, e é isso que a [[02 - Domain modeling — separando a lógica de negócio do framework|nota 02]] já garantiu ao proibir qualquer `import fastapi`/`import sqlalchemy` do domínio. As duas faixas azuis (Ports) são só interfaces — `abc.ABC` com `@abstractmethod`, sem lógica nenhuma por trás — e é o fato de a Service Layer só conhecer essas faixas azuis, nunca as faixas marrons (Adapters), que torna o diagrama verdadeiro: trocar `SlackAdapter` por outro provedor de mensageria, ou trocar FastAPI por outro framework web inteiro, é uma mudança confinada a uma faixa marrom — nenhuma seta cruza de uma faixa marrom para outra sem passar pela faixa azul do meio.

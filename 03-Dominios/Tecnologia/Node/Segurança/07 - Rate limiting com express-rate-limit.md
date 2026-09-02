@@ -25,6 +25,9 @@ aliases:
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph CLIENTES ["Clientes"]
         C1["Cliente A\n(req 1 de 100)"]
         C2["Cliente B\n(req 101 de 100 — blocked)"]
@@ -51,9 +54,9 @@ flowchart LR
     CHECK -->|"Não (ainda ok)"| HANDLER
     CHECK -->|"Sim (excedeu)"| R429
 
-    style R429 fill:#D0021B,color:#fff
-    style STORE fill:#4A90D9,color:#fff
-    style CHECK fill:#F5A623,color:#000
+    class R429 falha
+    class STORE neutro
+    class CHECK destaque
 ```
 
 ## O que é

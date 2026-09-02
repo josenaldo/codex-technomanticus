@@ -41,6 +41,9 @@ A regra central do modelo: o número de Ps é fixo em `GOMAXPROCS` (default = n�
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph P0["P (Processor) — contexto lógico"]
         RQ0["run queue local\naté 256 G"]
     end
@@ -58,10 +61,10 @@ flowchart TB
     GQ["Global run queue\n(compartilhada, precisa de lock)"] -.-> P0
     GQ -.-> P1
 
-    style P0 fill:#4A90D9,color:#fff
-    style P1 fill:#4A90D9,color:#fff
-    style GQ fill:#F5A623,color:#000
-    style M2 fill:#999,color:#fff
+    class P0 neutro
+    class P1 neutro
+    class GQ destaque
+    class M2 marca
 ```
 
 Repare no que essa separação compra: sem P, cada M precisaria de um lock global toda vez que fosse buscar a próxima goroutine para rodar — contenção brutal com múltiplos núcleos. Com P, cada M busca goroutines primeiro na fila **local** do P que está segurando, sem lock nenhum na maioria dos casos. O lock global só entra quando a fila local esvazia — e mesmo aí, o scheduler prefere roubar de outro P antes de pagar o custo do lock na fila global.
@@ -111,6 +114,8 @@ Quando a fila local de um P esvazia e a fila global também não tem nada, o P n
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["P vazio\n(fila local esgotada)"] --> B{Global tem\ngoroutine?}
     B -->|sim| C["pega da global"]
     B -->|não| D["escolhe P vítima\nao acaso"]
@@ -123,8 +128,8 @@ flowchart LR
     I -->|sim| J["executa"]
     I -->|não| K["P fica ocioso\nM pode dormir"]
 
-    style F fill:#4A90D9,color:#fff
-    style K fill:#999,color:#fff
+    class F neutro
+    class K marca
 ```
 
 Esse mecanismo é o que dá ao Go balanceamento de carga automático entre núcleos, sem que o programador precise pensar em "distribuir trabalho manualmente" entre workers — algo que em outras linguagens exigiria um pool de threads configurado à mão, com filas próprias e lógica de rebalanceamento explícita. A analogia mais direta: é como um restaurante onde cada garçom (P) tem sua própria lista de mesas, mas quando um termina o turno cedo, ele pega metade das mesas de um colega sobrecarregado — em vez de ficar parado esperando o gerente (a fila global) distribuir manualmente.
@@ -175,14 +180,16 @@ O Go 1.14 introduziu a **preempção assíncrona baseada em sinais** do sistema 
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["sysmon detecta G\nrodando >10ms sem ceder"] --> B["envia SIGURG\npra thread M"]
     B --> C["handler de sinal\nintercepta execução"]
     C --> D["salva estado da G\nmarca como preemptada"]
     D --> E["scheduler retoma\ncontrole do P"]
     E --> F["G volta pra fila\ncomo runnable"]
 
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
+    class B destaque
+    class C neutro
 ```
 
 Isso resolveu, de uma vez, uma classe inteira de bugs de produção que existia desde o Go 1.0 — loops de cálculo pesado (parsing, compressão, hashing manual) que travavam o GC e faziam todo o processo parecer congelado por segundos, mesmo com outras goroutines prontas para rodar. Vale notar que a preempção assíncrona não substitui a cooperativa — ela é a rede de segurança para os casos em que os pontos cooperativos normais (chamadas de função, principalmente) não aparecem com frequência suficiente.

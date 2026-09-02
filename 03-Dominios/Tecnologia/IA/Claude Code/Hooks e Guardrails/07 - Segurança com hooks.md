@@ -40,6 +40,7 @@ Um guardrail bloqueia um comando. Uma estratégia de segurança com hooks cobre 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["O que pode\nexecutar?"] --> B["PreToolUse\nBash"]
     C["O que pode\neditar?"] --> D["PreToolUse\nEdit/Write"]
     E["O que pode\ncommitar?"] --> F["PreToolUse\ngit commit"]
@@ -47,12 +48,12 @@ flowchart LR
     I["Credenciais\nno código?"] --> J["PostToolUse\ngit add"]
     K["Histórico\nde auditoria"] --> L["PreToolUse\nmatcher vazio"]
 
-    style A fill:#2980b9,color:#fff
-    style C fill:#2980b9,color:#fff
-    style E fill:#2980b9,color:#fff
-    style G fill:#2980b9,color:#fff
-    style I fill:#2980b9,color:#fff
-    style K fill:#2980b9,color:#fff
+    class A neutro
+    class C neutro
+    class E neutro
+    class G neutro
+    class I neutro
+    class K neutro
 ```
 
 Cinco camadas, cinco hooks distintos. Cada um protege um ponto diferente do fluxo.

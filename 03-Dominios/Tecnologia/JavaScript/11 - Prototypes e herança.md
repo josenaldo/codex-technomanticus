@@ -76,8 +76,9 @@ Quando você faz `obj.prop`, o motor segue um algoritmo preciso:
 3. Repete até encontrar ou chegar em `null` → retorna `undefined`.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["cachorro\n{ nome: 'Rex' }"]
     B["animal\n{ tipo: 'mamífero', respirar() }"]
     C["Object.prototype\n{ toString(), hasOwnProperty(), ... }"]
@@ -87,10 +88,10 @@ graph TD
     B -->|"[[Prototype]]"| C
     C -->|"[[Prototype]]"| D
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#888,color:#fff
+    class A neutro
+    class B neutro
+    class C neutro
+    class D marca
 ```
 
 Pense numa cadeia de postos de trabalho: você pergunta algo ao seu líder imediato; se ele não sabe, ele pergunta ao dele, e assim por diante. A resposta vem do primeiro que sabe. Se ninguém sabe (`null`), você recebe `undefined`.
@@ -125,8 +126,9 @@ console.log(gato.prototype); // undefined
 O diagrama mental:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     F["Função Animal"]
     P["Animal.prototype\n{ falar() }"]
     I["instância gato\n{ nome: 'Miau' }"]
@@ -134,9 +136,9 @@ graph LR
     F -->|".prototype"| P
     I -->|"[[Prototype]]"| P
 
-    style F fill:#F5A623,color:#fff
-    style P fill:#4A90D9,color:#fff
-    style I fill:#4A90D9,color:#fff
+    class F destaque
+    class P neutro
+    class I neutro
 ```
 
 ---

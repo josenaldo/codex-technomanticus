@@ -197,6 +197,9 @@ Segundo a [documentação oficial sobre a inicialização de `sys.path`](https:/
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["import requests"] --> B{"'requests' está em<br/>sys.modules?"}
     B -->|sim| C["reusa o módulo já<br/>carregado (cache)"]
     B -->|não| D["varre sys.path<br/>na ordem"]
@@ -210,10 +213,10 @@ flowchart LR
     H -->|achou| I
     H -->|não achou em<br/>nenhum lugar| J["ModuleNotFoundError"]
 
-    style A fill:#4A90D9,color:#fff
-    style I fill:#4A90D9,color:#fff
-    style J fill:#D0021B,color:#fff
-    style C fill:#F5A623,color:#000
+    class A neutro
+    class I neutro
+    class J falha
+    class C destaque
 ```
 
 Essa ordem — primeiro o diretório local, só depois a biblioteca padrão e pacotes instalados — é a origem de um bug clássico de iniciante: criar um arquivo chamado `json.py` no próprio projeto (achando que é só um nome qualquer) e, a partir dali, `import json` dentro de qualquer arquivo daquela pasta passa a carregar o **seu** `json.py`, não o módulo `json` da biblioteca padrão — porque o diretório local vem primeiro em `sys.path`. O sintoma costuma ser um `AttributeError` bizarro (`module 'json' has no attribute 'dumps'`) que não faz sentido até você perceber que o "módulo `json`" que está sendo importado nem é o da stdlib.

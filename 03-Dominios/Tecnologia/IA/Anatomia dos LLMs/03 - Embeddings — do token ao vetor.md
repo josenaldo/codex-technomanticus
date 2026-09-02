@@ -74,6 +74,7 @@ A "direção" que separa *homem* de *mulher* é mais ou menos a mesma que separa
 
 ```mermaid
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Espaço de embedding (simplificado a 2D)"
         REI["rei 👑"]
         RAINHA["rainha 👑"]
@@ -83,7 +84,7 @@ graph TD
         HOMEM -. "mesma direção\nde gênero" .-> MULHER
     end
     note["Na realidade: 4096+ dimensões\nO espaço aprende eixos de gênero,\ntempo verbal, país-capital,\nsingular-plural, etc."]
-    style note fill:#fff3cd
+    class note destaque
 ```
 
 A proximidade entre dois embeddings costuma ser medida por **similaridade de cosseno** (o ângulo entre os vetores, não a distância absoluta): cosseno perto de `1` = muito parecidos; perto de `0` = sem relação.

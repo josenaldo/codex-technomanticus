@@ -245,6 +245,8 @@ exit 0
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     Action["Agente quer executar ação"]
 
     subgraph Global["Global (~/.claude/settings.json)"]
@@ -268,8 +270,8 @@ flowchart TD
     Project -- "bloqueou" --> Block
     Local -- "bloqueou" --> Block
 
-    style Block fill:#c0392b,color:#fff
-    style Execute fill:#27ae60,color:#fff
+    class Block falha
+    class Execute ok
 ```
 
 ---

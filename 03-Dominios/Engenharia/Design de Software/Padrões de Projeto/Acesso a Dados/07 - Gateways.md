@@ -43,8 +43,9 @@ O **Table Data Gateway** inverte a geometria: **um** objeto atende a **tabela in
 Isso o casa naturalmente com o [[04 - Table Module|Table Module]]: o Table Module é a lógica de negócio que **opera sobre** o Record Set que o Table Data Gateway produziu. No mundo .NET clássico, o par era onipresente — o gateway enche um `DataSet`/`DataTable`, o Table Module aplica as regras sobre ele.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph RDG["Row Data Gateway — 1 objeto por LINHA"]
         R1["PersonGateway<br/>id=1, nome=Ana"]
         R2["PersonGateway<br/>id=2, nome=Beto"]
@@ -57,10 +58,10 @@ graph TD
         T --> DBT[("tabela person")]
     end
 
-    style R1 fill:#4A90D9,color:#fff
-    style R2 fill:#4A90D9,color:#fff
-    style T fill:#F5A623,color:#000
-    style RS fill:#F5A623,color:#000
+    class R1 neutro
+    class R2 neutro
+    class T destaque
+    class RS destaque
 ```
 
 > [!question]- Se os dois se chamam "gateway", como não confundir na hora?

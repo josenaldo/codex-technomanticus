@@ -91,6 +91,8 @@ A composição que o próprio slide de Perez cita como exemplo de arquitetura de
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph T["A traição — nota 05"]
         direction TB
         G["GOODHART<br/>métrica é gamed"]
@@ -112,14 +114,14 @@ flowchart LR
     C -.->|contida por| ARB
     D -.->|contida por| AUD
 
-    style G fill:#D0021B,color:#fff
-    style B fill:#D0021B,color:#fff
-    style C fill:#D0021B,color:#fff
-    style D fill:#D0021B,color:#fff
-    style PAIR fill:#4A90D9,color:#fff
-    style HIER fill:#4A90D9,color:#fff
-    style ARB fill:#4A90D9,color:#fff
-    style AUD fill:#4A90D9,color:#fff
+    class G falha
+    class B falha
+    class C falha
+    class D falha
+    class PAIR neutro
+    class HIER neutro
+    class ARB neutro
+    class AUD neutro
 ```
 
 > [!warning] Uma aresta desenhada errado é tão traiçoeira quanto nenhuma aresta
@@ -156,6 +158,8 @@ O **work graph** é dinâmico e efêmero: são os nós de tarefa que existem só
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph ORG["Org graph — estrutural, estável"]
         direction LR
         O1["Agente Segurança<br/>papel permanente"]
@@ -176,12 +180,12 @@ flowchart TB
 
     ORG -.->|"work graph roteia pedidos<br/>através das zonas do org graph"| WORK
 
-    style O1 fill:#4A90D9,color:#fff
-    style O2 fill:#4A90D9,color:#fff
-    style O3 fill:#4A90D9,color:#fff
-    style W1 fill:#F5A623,color:#000
-    style W2 fill:#F5A623,color:#000
-    style W3 fill:#F5A623,color:#000
+    class O1 neutro
+    class O2 neutro
+    class O3 neutro
+    class W1 destaque
+    class W2 destaque
+    class W3 destaque
 ```
 
 Sobre esse fundamento de grafo duplo, Thakker descreve três padrões de produção que já aparecem repetidos em times diferentes:

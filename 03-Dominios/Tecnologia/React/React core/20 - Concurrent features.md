@@ -50,8 +50,9 @@ O mecanismo concreto é o sistema de **lanes** — um bitmap de 31 bits onde cad
 Quando você usa `useTransition`, o React move seu update para `TransitionLane`. Quando chega uma tecla nova (SyncLane), o React pode **abortar** o render da transition e começar do zero com a nova entrada. Não é delay — é prioridade.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Usuário digita 'g'"] --> B{Scheduler}
     B --> C["SyncLane: atualiza input\n(imediato, não-interruptível)"]
     B --> D["TransitionLane: filtra 10k itens\n(interruptível, background)"]
@@ -62,12 +63,12 @@ graph TD
     G --> D
     H --> I["UI completa e consistente"]
 
-    style C fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#fff
-    style G fill:#F5A623,color:#fff
-    style H fill:#4A90D9,color:#fff
-    style I fill:#4A90D9,color:#fff
+    class C neutro
+    class E neutro
+    class D destaque
+    class G destaque
+    class H neutro
+    class I neutro
 ```
 
 ---
@@ -217,7 +218,6 @@ O padrão `isStale = query !== deferredQuery` é canônico: enquanto os valores 
 ## Diagrama: urgente vs transition na fila de render
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant U as Usuário
     participant S as Scheduler

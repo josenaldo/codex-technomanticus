@@ -147,7 +147,6 @@ O que costuma aparecer ali e em nenhum outro lugar:
 ## Escolher a ferramenta pela pergunta
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     Q{"o processo está…"} --> A["consumindo muito"]
     Q --> B["parado, sem consumir"]

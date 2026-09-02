@@ -30,6 +30,11 @@ Multi-agent resolve ambos: cada sub-agent começa com contexto limpo (sem viés)
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     objetivo["Objetivo de\nalto nível"]
     orch["Orquestrador\n(planeja e coordena)"]
 
@@ -48,11 +53,11 @@ flowchart LR
     orch -->|"após Sub1+2+3"| sub4
     sub4 -->|"resultado"| orch
 
-    style orch fill:#f3f0ff,stroke:#7950f2
-    style sub1 fill:#e8f4f8,stroke:#339af0
-    style sub2 fill:#fff3e0,stroke:#ff9800
-    style sub3 fill:#f0fff4,stroke:#51cf66
-    style sub4 fill:#fff5f5,stroke:#ff6b6b
+    class orch marca
+    class sub1 neutro
+    class sub2 destaque
+    class sub3 ok
+    class sub4 falha
 ```
 
 > [!summary] A diferença entre sub-agents e multi-agent é escala e estrutura: sub-agents são o mecanismo; multi-agent é a arquitetura que organiza como sub-agents se relacionam, dependem e revisam o trabalho uns dos outros.

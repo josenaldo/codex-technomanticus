@@ -47,6 +47,8 @@ Um slice em Go é uma struct pequena e fixa — a especificação e o runtime ch
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Header["slice header (24 bytes em 64-bit)"]
         direction TB
         P["ptr → endereço do primeiro elemento visível"]
@@ -56,10 +58,10 @@ flowchart LR
 
     Header -->|"ptr aponta para"| Array["backing array\n[e0][e1][e2][e3][e4]..."]
 
-    style P fill:#4A90D9,color:#fff
-    style L fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style Array fill:#F5A623,color:#000
+    class P neutro
+    class L neutro
+    class C neutro
+    class Array destaque
 ```
 
 - **`ptr`** — o endereço do primeiro elemento que o slice enxerga. Não precisa ser o início do array de verdade — pode ser o meio.
@@ -90,6 +92,8 @@ fmt.Println(cap(fatia))      // 4 — sobrou espaço até o fim do array (índic
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Array["backing array de original"]
         direction LR
         A0["10"] --- A1["20"] --- A2["30"] --- A3["40"] --- A4["50"]
@@ -98,9 +102,9 @@ flowchart TB
     O["original\nptr→A0 len=5 cap=5"] -.-> A0
     F["fatia\nptr→A1 len=2 cap=4"] -.-> A1
 
-    style A1 fill:#4A90D9,color:#fff
-    style A2 fill:#4A90D9,color:#fff
-    style F fill:#F5A623,color:#000
+    class A1 neutro
+    class A2 neutro
+    class F destaque
 ```
 
 `cap(fatia)` é `4`, não `2` — porque a capacidade conta até o **fim do array**, não até onde o `len` do próprio slice para de enxergar. Essa diferença entre `len` (o que o slice mostra) e `cap` (o que ainda está disponível, escondido, à direita) é exatamente o espaço onde `append` pode escrever sem pedir mais memória ao sistema operacional — e é exatamente o espaço onde o aliasing se torna perigoso.
@@ -127,12 +131,14 @@ Aqui mora a armadilha que abriu esta nota. `append(s, x)` tem dois comportamento
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["append(s, x)"] --> B{"len(s) < cap(s)?"}
     B -->|"sim — sobra espaço"| C["escreve x na posição s[len(s)]\ndo MESMO backing array\nretorna slice com len+1, cap igual"]
     B -->|"não — array cheio"| D["aloca um backing array NOVO\n(maior, geralmente 2x)\ncopia todos os elementos\nescreve x no array novo\nretorna slice apontando pro array novo"]
 
-    style C fill:#D0021B,color:#fff
-    style D fill:#7ED321,color:#000
+    class C falha
+    class D destaque
 ```
 
 - **Se `cap(s) > len(s)`** — ainda há espaço reservado no backing array — `append` escreve o novo elemento *na mesma memória*, sem alocar nada. Qualquer outro slice que compartilhe esse array e "enxergue" aquela posição vê o valor mudar.

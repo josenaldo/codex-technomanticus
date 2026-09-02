@@ -33,18 +33,18 @@ A observação de Pipes and Filters é que cada um desses passos é **independen
 ## A ideia: filtros burros conectados por canais
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     IN["pedido<br/>cifrado"] --> F1["Decrypt"]
     F1 -->|pipe| F2["Validate"]
     F2 -->|pipe| F3["De-dup"]
     F3 -->|pipe| F4["Translate"]
     F4 -->|pipe| OUT["sistema<br/>destino"]
 
-    style F1 fill:#4A90D9,color:#fff
-    style F2 fill:#4A90D9,color:#fff
-    style F3 fill:#4A90D9,color:#fff
-    style F4 fill:#4A90D9,color:#fff
+    class F1 neutro
+    class F2 neutro
+    class F3 neutro
+    class F4 neutro
 ```
 
 Cada **filtro** conhece só sua entrada e sua saída — nunca o vizinho. O **pipe** entre eles é um [[03 - Message Channel|Message Channel]]. Como a interface entre filtros é sempre "mensagem entra, mensagem sai", eles são **intercambiáveis**: você reordena, insere um filtro novo, ou substitui um por outro sem tocar nos demais. É o mesmo princípio dos pipes do Unix (`cat log | grep ERRO | sort | uniq -c`) — cada comando ignora quem vem antes e depois, e você compõe pipelines poderosos a partir de peças simples.

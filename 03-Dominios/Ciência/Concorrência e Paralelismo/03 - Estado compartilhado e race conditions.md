@@ -27,14 +27,16 @@ Um bug de concorrência por estado compartilhado precisa de três ingredientes s
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Estado MUTÁVEL<br/>(pode mudar)"] --> X{"Os três<br/>juntos?"}
     B["COMPARTILHADO<br/>(visível a vários)"] --> X
     C["Acesso CONCORRENTE<br/>(em paralelo)"] --> X
     X -->|sim| BUG["Bug em potencial<br/>(race condition)"]
     X -->|"falta 1+"| OK["Seguro por construção"]
 
-    style BUG fill:#fca5a5
-    style OK fill:#86efac
+    class BUG falha
+    class OK ok
 ```
 
 Leitura do diagrama: os três fatores entram juntos no losango. Só quando os três coexistem há perigo. Remova um único deles e você cai no ramo verde — seguro, sem precisar de nenhuma trava.
@@ -177,6 +179,8 @@ Read-modify-write e check-then-act (TOCTOU) são os dois rostos mais famosos da 
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     R["Race condition<br/>(resultado depende do timing)"] --> RMW["Read-modify-write<br/>(lost update)"]
     R --> CTA["Check-then-act<br/>(TOCTOU)"]
     R --> TORN["Leitura rasgada<br/>(torn / inconsistent read)"]
@@ -187,11 +191,11 @@ flowchart TD
     TORN --> TORNex["ler {x, y} no meio<br/>de uma escrita de ambos"]
     INIT --> INITex["double-checked locking quebrado"]
 
-    style R fill:#fca5a5
-    style RMWex fill:#fde68a
-    style CTAex fill:#fde68a
-    style TORNex fill:#fde68a
-    style INITex fill:#fde68a
+    class R falha
+    class RMWex destaque
+    class CTAex destaque
+    class TORNex destaque
+    class INITex destaque
 ```
 
 Leitura do diagrama: os quatro galhos descem de uma única raiz — "o resultado depende do timing". Read-modify-write e check-then-act já vimos em detalhe. Os dois novos abaixo completam a árvore: a leitura rasgada (observar um objeto pela metade) e a corrida de inicialização (criar algo "só uma vez" sem sincronizar de verdade).
@@ -239,6 +243,8 @@ Repare que três das quatro estratégias da seção anterior *adicionam* algo �
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph SEM["Sem confinamento"]
         T1["Thread 1"] --> E["Estado<br/>compartilhado"]
         T2["Thread 2"] --> E
@@ -250,9 +256,9 @@ flowchart LR
         TB["Thread B"] --> EB["Estado B<br/>(só dela)"]
     end
 
-    style E fill:#fca5a5
-    style EA fill:#86efac
-    style EB fill:#86efac
+    class E falha
+    class EA ok
+    class EB ok
 ```
 
 Leitura do diagrama: à esquerda, duas threads convergem no mesmo estado e por isso precisam de uma trava. À direita, cada thread tem o seu próprio estado, intocável pelas outras — não há ponto de encontro, logo não há nada para travar. O confinamento não resolve a corrida: ele faz a corrida deixar de existir.
@@ -272,6 +278,7 @@ Toda a engenharia de concorrência é, em essência, uma resposta à equação d
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     PROB["Estado mutável + compartilhado + concorrente"] --> Q{"Qual fator<br/>remover?"}
 
     Q -->|"controlar o acesso"| EX["Exclusão mútua<br/>um por vez na seção crítica"]
@@ -284,10 +291,10 @@ flowchart TD
     CONF --> L3["[[13 - O modelo de atores]]"]
     IMUT --> L4["[[08 - Imutabilidade e estado]]"]
 
-    style EX fill:#bfdbfe
-    style AT fill:#bfdbfe
-    style CONF fill:#bfdbfe
-    style IMUT fill:#bfdbfe
+    class EX neutro
+    class AT neutro
+    class CONF neutro
+    class IMUT neutro
 ```
 
 Leitura do diagrama: as quatro famílias não competem — combinam. Exclusão mútua (locks, mutexes, monitores) serializa o acesso à seção crítica. Atômicos e lock-free tornam o read-modify-write indivisível sem trava. Confinamento simplesmente não compartilha — cada ator é dono do seu estado. Imutabilidade remove o "mutável" da equação. Repare como cada folha do diagrama aponta para um fator removido lá da primeira figura deste documento.

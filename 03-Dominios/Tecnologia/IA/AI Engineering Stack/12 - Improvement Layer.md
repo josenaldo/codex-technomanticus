@@ -37,6 +37,8 @@ A Improvement Layer não é uma fase de projeto — é um processo operacional q
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Sem Improvement Layer"
         A1["Sistema em produção\n(estático)"]
         A2["Qualidade degrada\nsilenciosamente"]
@@ -56,8 +58,8 @@ flowchart LR
     B1 --> B2 --> B3 --> B4 --> B5
     B5 -->|"próximo ciclo"| B2
 
-    style A4 fill:#fff5f5,stroke:#ff6b6b
-    style B5 fill:#f0fff4,stroke:#51cf66
+    class A4 falha
+    class B5 ok
 ```
 
 ## O que é esta camada

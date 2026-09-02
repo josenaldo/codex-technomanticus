@@ -82,7 +82,6 @@ A leitura intuitiva — "38 processos querendo CPU" — está errada em Linux. A
 Isso paga a dívida deixada na nota 05: é exatamente por isso que uma máquina pode exibir load altíssimo com CPU ociosa. Um NFS que parou de responder põe dezenas de processos em `D`, e o número sobe sem que ninguém esteja calculando nada.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     L["<b>load average</b> alto"] --> Q{"o que vmstat/mpstat<br/>mostram?"}
     Q -->|"CPU ocupada,<br/>fila de execução alta"| A["disputa por <b>CPU</b>"]

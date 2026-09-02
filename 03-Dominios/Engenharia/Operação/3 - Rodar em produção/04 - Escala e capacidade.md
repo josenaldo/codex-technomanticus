@@ -50,7 +50,6 @@ Se o alvo de CPU é 50% e a média atual está em 100%, o HPA dobra as réplicas
 Um detalhe que evita *flapping* (o HPA oscilando pra cima e pra baixo a cada ciclo): há uma **tolerância** configurável (default 10%) — o controller ignora variações da métrica dentro dessa banda, e não recalcula réplicas a cada ruído estatístico. E há uma segunda defesa, mais visível: a **janela de estabilização** (`stabilizationWindowSeconds`). O default é 0 segundos para *scale up* (reagir na hora que a métrica sobe) e **300 segundos (5 minutos) para *scale down*** — o controller olha o maior valor de réplicas desejado calculado nos últimos 5 minutos antes de reduzir, especificamente pra não desmontar capacidade que acabou de subir só porque a métrica caiu por um instante.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     M["Métrica coletada<br/>a cada ~15s"] --> C{"currentMetricValue<br/>vs desiredMetricValue"}
     C -->|"acima do alvo"| UP["scale up<br/>stabilization: 0s<br/>(reage na hora)"]
@@ -102,7 +101,6 @@ Um nome que aparece com frequência crescente ao lado do Cluster Autoscaler, sob
 Nenhuma das três camadas isoladamente resolve o problema de capacidade em produção — elas resolvem, em conjunto, três perguntas diferentes em cascata: quantos pods? do que tamanho? em quantos nós?
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     subgraph L1["Camada 1 — HPA<br/>quantos PODS"]
         HPA["Observa métrica<br/>(CPU/custom/external)<br/>escala réplicas do Deployment"]
@@ -182,7 +180,6 @@ Mecanicamente, esse ajuste antecipado costuma ser feito de duas formas. A mais s
 O refinamento que separa load shedding ingênuo de load shedding bem feito é **priorização por criticalidade**: o sistema de *adaptive throttling* do Google mantém contadores separados por nível de criticidade da requisição, e quando uma tarefa está sobrecarregada, descarta primeiro as requisições de prioridade mais baixa — tráfego de batch analítico, por exemplo — preservando capacidade para o tráfego crítico, como uma transação de checkout. Requisições derivadas (um fan-out interno gerado a partir de uma requisição original) herdam por padrão a criticalidade da requisição que as originou, para que um sistema de baixa prioridade não acabe consumindo capacidade sob o disfarce de outro de alta prioridade.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 sequenceDiagram
     participant T as Tráfego real
     participant HPA as HPA (segundos)

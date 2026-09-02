@@ -29,6 +29,8 @@ Go trilha um caminho radicalmente mais simples. E a simplicidade não é acident
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph C["C / C++"]
         direction TB
         C1["Seu Mac (macOS/ARM64)"] -->|precisa de| C2["Toolchain cruzado:\ngcc-linux-amd64\n+ libc do alvo\n+ headers do alvo"]
@@ -40,8 +42,8 @@ flowchart TB
         G2 --> G3["Binário Linux/AMD64"]
     end
 
-    style C2 fill:#D0021B,color:#fff
-    style G2 fill:#7ED321,color:#000
+    class C2 falha
+    class G2 destaque
 ```
 
 ## GOOS e GOARCH: as duas variáveis que decidem tudo

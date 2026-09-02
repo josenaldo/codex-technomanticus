@@ -34,7 +34,6 @@ Um serviço interno de e-commerce precisa de uma camada de persistência para o 
 Cada uma dessas versões corrigidas corresponde a uma nota deste galho. O sistema desta capstone é a sexta versão — a que já nasce com as cinco correções embutidas, porque não há razão nenhuma para descobrir cada uma delas de novo em produção depois de já tê-las estudado aqui.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 erDiagram
     CLIENTE ||--o{ PEDIDO : "faz"
     PEDIDO ||--|{ ITEM_PEDIDO : "contém"
@@ -241,7 +240,6 @@ def listar_pedidos_do_cliente(session: Session, cliente_id: int) -> list[Pedido]
 A escolha de `selectinload()` — em vez de `joinedload()` — nas duas relações não é arbitrária: ambas são **one-to-many** ou passam por uma cadeia que termina em one-to-many (`Pedido.itens` é one-to-many; `ItemPedido.produto` é many-to-one, mas está aninhada dentro de uma relação one-to-many). A nota 05 já explicou por que `joinedload()` em relações one-to-many multiplica linhas — um `LEFT JOIN` de 1 pedido com 3 itens retorna 3 linhas repetindo os dados do pedido, exigindo `.unique()` para desduplicar — enquanto `selectinload()` faz uma segunda query com `WHERE pedido_id IN (...)` que não sofre essa explosão. Resultado: **3 queries no total**, não 3 por pedido — uma para os pedidos, uma para todos os itens de todos os pedidos encontrados (via `IN`), uma para todos os produtos referenciados por esses itens (via `IN` novamente) — independente de haver 5 ou 500 pedidos na página.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant App
     participant DB as Banco
@@ -343,7 +341,6 @@ Cada peça deste bloco é uma peça que a nota 06 já justificou isoladamente:
 - **O `except OperationalError` com retry** é a segunda camada de defesa da nota 06, para quando a ordenação consistente não é suficiente sozinha (ou quando o banco detecta um deadlock por outro motivo): o PostgreSQL detecta deadlocks ativamente e mata uma das transações envolvidas com uma mensagem específica (`deadlock detected`); a resposta correta não é propagar esse erro para o usuário como uma falha genérica, é tentar de novo — a transação inteira, do zero, porque o estado em memória (o `produto.estoque` já lido) pode estar desatualizado depois do rollback.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Cliente as criar_pedido()
     participant Tx as Transação (REPEATABLE READ)

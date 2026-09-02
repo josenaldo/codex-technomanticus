@@ -55,8 +55,9 @@ A vantagem prática do SEQ para quem trabalha sozinho: é rápido o suficiente p
 Os quatro instrumentos desta nota — SUS, UMUX-Lite, SUPR-Q, SEQ — junto com tempo de tarefa, taxa de erro e taxa de sucesso, nascem de **estudo moderado ou em laboratório**: você está na sala (física ou virtual) com o usuário, ou pelo menos sabe exatamente quando a tarefa começou e terminou. HEART (categoria Engagement, funil, retenção/coorte) e NPS transacional (ver [[03-Dominios/Engenharia/UX/Medir, Validar e Sustentar/40 - NPS e North Star - promessa, crítica e Goodhart|nota 40]]) nascem de **campo/produção** — telemetria de todos os usuários, sem sessão moderada, sem saber exatamente o contexto de cada evento.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph LAB["Lab / estudo moderado — poucos usuários, contexto controlado"]
         SUS["SUS"]
         UL["UMUX-Lite"]
@@ -70,8 +71,8 @@ graph TD
         FU["Funil de conversão"]
         NP["NPS transacional"]
     end
-    style LAB fill:#4A90D9,color:#fff
-    style CAMPO fill:#F5A623,color:#000
+    class LAB neutro
+    class CAMPO destaque
 ```
 
 "O que você mede num teste com 5 usuários" é fundamentalmente diferente de "o que você mede com telemetria de todos" — e é um erro de categoria comparar diretamente um SUS de laboratório com um NPS de produção como se fossem a mesma régua. **Em uma frase: instrumentos de laboratório medem percepção num momento controlado com poucas pessoas; instrumentos de campo medem comportamento agregado de todo mundo, sem controle de contexto** — e nenhum dos dois substitui o outro.

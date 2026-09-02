@@ -100,6 +100,9 @@ finally:
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["try: executa o bloco"] --> B{"Exceção levantada?"}
     B -- "Não" --> C["else: roda (só se NÃO houve exceção)"]
     B -- "Sim, tipo bate com algum except" --> D["except correspondente: trata a exceção"]
@@ -109,12 +112,12 @@ flowchart TB
     E --> F
     F --> G["exceção não tratada continua propagando, se houver"]
 
-    style A fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
-    style E fill:#D0021B,color:#fff
-    style F fill:#F5A623,color:#000
-    style G fill:#D0021B,color:#fff
+    class A neutro
+    class C neutro
+    class D destaque
+    class E falha
+    class F destaque
+    class G falha
 ```
 
 O papel de cada bloco:
@@ -189,6 +192,9 @@ Todas as exceções em Python descem de `BaseException`. O nível logo abaixo de
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     BE["BaseException"] --> SE["SystemExit — sys.exit()"]
     BE --> KI["KeyboardInterrupt — Ctrl+C"]
     BE --> GE["GeneratorExit — generator.close()"]
@@ -213,27 +219,27 @@ flowchart TB
     EXC --> RE["RuntimeError"]
     RE --> NIE["NotImplementedError"]
 
-    style BE fill:#D0021B,color:#fff
-    style SE fill:#D0021B,color:#fff
-    style KI fill:#D0021B,color:#fff
-    style GE fill:#D0021B,color:#fff
-    style EXC fill:#4A90D9,color:#fff
-    style LE fill:#4A90D9,color:#fff
-    style KE fill:#F5A623,color:#000
-    style IE fill:#F5A623,color:#000
-    style ATE fill:#F5A623,color:#000
-    style TE fill:#F5A623,color:#000
-    style VE fill:#F5A623,color:#000
-    style AE fill:#4A90D9,color:#fff
-    style ZDE fill:#F5A623,color:#000
-    style OFE fill:#F5A623,color:#000
-    style NE fill:#4A90D9,color:#fff
-    style ULE fill:#F5A623,color:#000
-    style OSE fill:#4A90D9,color:#fff
-    style FNF fill:#F5A623,color:#000
-    style SI fill:#F5A623,color:#000
-    style RE fill:#4A90D9,color:#fff
-    style NIE fill:#F5A623,color:#000
+    class BE falha
+    class SE falha
+    class KI falha
+    class GE falha
+    class EXC neutro
+    class LE neutro
+    class KE destaque
+    class IE destaque
+    class ATE destaque
+    class TE destaque
+    class VE destaque
+    class AE neutro
+    class ZDE destaque
+    class OFE destaque
+    class NE neutro
+    class ULE destaque
+    class OSE neutro
+    class FNF destaque
+    class SI destaque
+    class RE neutro
+    class NIE destaque
 ```
 
 (Árvore simplificada — a [hierarquia completa](https://docs.python.org/3/library/exceptions.html) tem mais de 60 classes, incluindo `Warning` e suas subclasses, que não são erros mas avisos.)

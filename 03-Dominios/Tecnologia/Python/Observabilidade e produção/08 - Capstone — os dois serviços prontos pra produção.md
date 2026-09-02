@@ -28,8 +28,9 @@ Volta à cena de abertura da [[01 - Panorama — o que falta pra produção de v
 Avança seis meses. Os dois serviços da trilha — Tarefas e Notificações — passaram pelas sete notas deste galho. Uma sexta-feira comum, 14h32, o time recebe um alerta automático: `p95 de latência em POST /tarefas subiu de 80ms pra 1.4s nos últimos três minutos`. Ninguém precisa esperar um cliente reclamar. Ninguém precisa abrir três milhões de linhas de log com uma regex frágil. O que acontece a partir daqui — e a diferença entre as duas cenas é exatamente o que esta capstone existe para provar — é o assunto da última seção desta nota. Antes de chegar lá, vale percorrer, peça por peça, o que mudou nos dois serviços entre a cena de abertura e a cena de agora.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph Antes["Cena de abertura do galho — sem observabilidade"]
         direction TB
         A1["Processo morre às 3h12"]
@@ -50,8 +51,8 @@ flowchart TB
         D4 --> D5["✅ Causa raiz identificada<br/>em minutos, sem esperar cliente"]
     end
 
-    style A5 fill:#c0392b,color:#fff
-    style D5 fill:#27ae60,color:#fff
+    class A5 falha
+    class D5 ok
 ```
 
 > [!tip] Esta capstone não introduz nada novo — ela integra
@@ -162,8 +163,8 @@ async def enviar_notificacao(payload: NotificacaoCreate):
 A diferença entre os dois handlers é exatamente o que **deveria** diferir: `tarefas-service` tem um gauge de conexões de pool porque escreve em Postgres a cada requisição; `notificacoes-service` não instrumenta esse gauge porque não tem essa dependência — a mesma lógica que a Peça 2 da capstone do Galho 16 já aplicou ao `pyproject.toml` (`notificacoes-service` nunca declarou `sqlalchemy` como dependência, porque nunca usou). O que os dois **compartilham** é o esqueleto: `Counter` de tráfego/erro, `Histogram` de latência, sempre dentro de `finally`, sempre com os mesmos nomes de atributo (`http.method`, `http.route`, `http.status_code`) — o vocabulário comum que faz um dashboard olhando os dois serviços lado a lado fazer sentido sem tradução.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     GS["4 Golden Signals — mesmo vocabulário nos 2 serviços"] --> LAT["Latência<br/>Histogram http.server.duration"]
     GS --> TRAF["Tráfego<br/>Counter http.server.requests"]
     GS --> ERR["Erros<br/>mesmo Counter, filtrado status≥500"]
@@ -177,8 +178,8 @@ graph TD
     ERR -.-> N
     SAT -.->|"só aqui"| T
 
-    style T fill:#4A90D9,color:#fff
-    style N fill:#4A90D9,color:#fff
+    class T neutro
+    class N neutro
 ```
 
 > [!warning] Copiar o handler instrumentado sem revisar as dependências reais do serviço
@@ -310,8 +311,9 @@ async def readiness(response: Response):
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph T["tarefas-service — /ready"]
         direction TB
         T1["/health — sempre 200,<br/>nunca toca dependência"]
@@ -326,10 +328,10 @@ flowchart TB
         N3["provedor de push —<br/>DEGRADÁVEL, fora do /ready,<br/>vira log + métrica de erro"]
     end
 
-    style T2 fill:#4A90D9,color:#fff
-    style T3 fill:#4A90D9,color:#fff
-    style N2 fill:#4A90D9,color:#fff
-    style N3 fill:#F5A623,color:#000
+    class T2 neutro
+    class T3 neutro
+    class N2 neutro
+    class N3 destaque
 ```
 
 > [!question]- Isso não contradiz a consistência que as outras peças defendem?
@@ -414,8 +416,9 @@ O ponto que fecha esta peça: cada imagem, de cada serviço, é o artefato final
 Juntando as cinco peças, o diagrama que resume o que esta capstone entrega:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph T["tarefas-service — imagem Docker própria"]
         direction TB
         T1["structlog + trace_id<br/>(Peça 1 / nota 02)"]
@@ -442,10 +445,10 @@ flowchart TB
 
     REG -.->|"??? — Galho 18<br/>ainda não escrito"| ORQ["Orquestração<br/>(Kubernetes / serverless)"]
 
-    style T fill:#4A90D9,color:#fff
-    style N fill:#4A90D9,color:#fff
-    style REG fill:#7ED321,color:#000
-    style ORQ fill:#F5A623,color:#000
+    class T neutro
+    class N neutro
+    class REG destaque
+    class ORQ destaque
 ```
 
 O diagrama deixa a fronteira explícita: os dois serviços têm, cada um, os três pilares de observabilidade completos e um artefato Docker publicável — mas o retângulo "Orquestração" continua vazio, um ponto de interrogação deliberado. É exatamente aí que este galho para, e onde o [[03-Dominios/Tecnologia/Python/index|Galho 18]] começa.
@@ -471,7 +474,6 @@ O log estruturado, correlacionado pelo mesmo `trace_id` que o trace já isolou, 
 **Minuto 8 — a métrica confirma quando a degradação normalizou.** A migração termina; o mesmo `Histogram` de latência, na mesma consulta PromQL, mostra o p95 voltando a 80ms dentro de segundos — sem precisar de nenhuma ação manual do time além de confirmar que o sintoma desapareceu. É a mesma pergunta que abriu a [[03 - Métricas com OpenTelemetry e Prometheus client|nota 03 deste galho]] — "isso é normal ou não, sem esperar alguém reclamar" — respondida duas vezes na mesma investigação: uma vez para detectar o início, outra para confirmar o fim.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Metrica as Métrica (Peça 2)
     participant Time as Time de plantão

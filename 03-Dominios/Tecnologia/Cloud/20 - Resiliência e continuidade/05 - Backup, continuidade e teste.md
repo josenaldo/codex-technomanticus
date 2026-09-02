@@ -32,6 +32,7 @@ A regra 3-2-1 é o ponto de partida canônico de qualquer estratégia de backup,
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     Original["Dado de produção<br/>(1ª cópia)"]
     Local["Backup local<br/>(2ª cópia, mesma região)"]
     Offsite["Backup offsite<br/>(3ª cópia, outra região/conta)"]
@@ -42,7 +43,7 @@ flowchart TD
     Original -.->|nunca depende de| Local
     Local -.->|nunca depende de| Offsite
 
-    style Offsite fill:#2d5,stroke:#333
+    class Offsite ok
 ```
 
 Na nuvem, "2 mídias diferentes" costuma virar "2 serviços/mecanismos diferentes" (snapshot de bloco + export para object storage, por exemplo), e "offsite" vira cross-region ou cross-account — exatamente o mecanismo que a nota 04 de Bancos gerenciados já mostrou para `copy-db-snapshot`. O ponto que a regra força é simples de enunciar e fácil de pular: **se as três cópias moram na mesma conta AWS, uma credencial de root comprometida ameaça as três ao mesmo tempo**. Isolamento de conta (ou de provedor) é o que transforma "3-2-1" de checklist burocrática em proteção real contra o cenário mais sério — uma conta inteira comprometida.

@@ -40,6 +40,8 @@ O diagrama abaixo situa os três níveis — Deployment, ReplicaSet, Pods — e 
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph DEP["Deployment — gerencia templates ao longo do tempo"]
         DSPEC["spec.template = myapp:1.2.4<br/>spec.replicas = 3<br/>spec.strategy = RollingUpdate"]
         DSTATUS["status: quantas réplicas disponíveis,<br/>atualizadas, prontas"]
@@ -61,8 +63,8 @@ graph TB
     RS -->|"cria e remove"| P2
     RS -->|"cria e remove"| P3
 
-    style DEP fill:#4a3b7a,stroke:#8e6fd6,color:#fff
-    style RS fill:#2e4d7a,stroke:#3498db,color:#fff
+    class DEP marca
+    class RS neutro
 ```
 
 Repare que cada seta representa um loop de reconciliação distinto, rodando de forma independente: o controller de Deployment observa Deployments e ReplicaSets, decide quantas réplicas cada ReplicaSet deveria ter agora, e escreve isso no `spec.replicas` daquele ReplicaSet — ele nunca cria ou remove um Pod diretamente. O controller de ReplicaSet observa ReplicaSets e Pods, compara `spec.replicas` contra a contagem real de Pods correspondentes ao `selector`, e cria ou remove Pods para fechar essa diferença — ele nunca sabe, nem precisa saber, que existe um Deployment acima decidindo esse número. Essa independência é o que a lente deste galho chama de level-triggered: cada controller reage ao estado atual observado, não a um evento específico de "alguém mudou a imagem" — se o controller de Deployment reiniciar no meio de uma atualização, ele recomeça olhando o estado atual do cluster, não uma fila de eventos perdidos, e chega exatamente à mesma decisão que chegaria se nunca tivesse parado.
@@ -347,6 +349,8 @@ A configuração completa de `readinessProbe` e `livenessProbe` — os valores c
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     U["kubectl apply -f deployment.yaml"] --> D["Deployment: myapp<br/>spec.template hash: 7d9f8c6b5"]
     D -->|"cria/ajusta replicas"| RS1["ReplicaSet: myapp-7d9f8c6b5<br/>(revisão atual)"]
     D -.->|"mantido como histórico,<br/>replicas=0"| RS0["ReplicaSet: myapp-5c7b9a4d1<br/>(revisão anterior)"]
@@ -354,9 +358,9 @@ graph TB
     RS1 -->|"cria"| P2["Pod myapp-7d9f8c6b5-c3d4"]
     RS1 -->|"cria"| P3["Pod myapp-7d9f8c6b5-e5f6"]
 
-    style D fill:#4a3b7a,stroke:#8e6fd6,color:#fff
-    style RS1 fill:#2e4d7a,stroke:#3498db,color:#fff
-    style RS0 fill:#3a3a3a,stroke:#777,color:#ccc
+    class D marca
+    class RS1 neutro
+    class RS0 marca
 ```
 
 ## Recapitulando a cadeia inteira numa tabela

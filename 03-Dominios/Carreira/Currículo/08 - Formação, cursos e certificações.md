@@ -58,8 +58,8 @@ A formação **sobe** — aparece logo depois do sumário profissional, antes me
 A formação **desce** — passa para depois da seção de experiência e da seção de projetos, geralmente perto do fim do documento — assim que a experiência profissional já for suficiente para carregar sozinha o peso de convencer o leitor. Isso costuma acontecer a partir do nível júnior avançado ou pleno, e fica cada vez mais inequívoco à medida que a carreira sobe até sênior e staff: o leitor de um currículo de staff, como a nota 03 também já registrou, procura decisão de arquitetura, impacto entre times e mentoria em escala — nenhuma dessas três coisas está na seção de formação, e colocar a graduação concluída há quinze anos no topo do documento de um staff engineer empurra a informação mais relevante para uma posição secundária, atrasando exatamente o momento em que o leitor mais apressado teria acesso ao que de fato importa decidir.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q{"A formação é o<br/>principal contexto<br/>disponível agora?"}
     Q -->|"sim — cursando,<br/>recém-formado,<br/>pouca experiência"| Sobe["Formação SOBE<br/>logo após o sumário"]
     Q -->|"não — experiência<br/>relevante já existe"| Desce["Formação DESCE<br/>após experiência e projetos"]
@@ -69,8 +69,8 @@ flowchart TD
     Desce --> D1["Júnior avançado em diante"]
     Desce --> D2["Sênior / Staff —<br/>formação vira rodapé factual"]
 
-    style Sobe fill:#7ED321,color:#000
-    style Desce fill:#F5A623,color:#000
+    class Sobe destaque
+    class Desce destaque
 ```
 
 O diagrama fixa a régua de decisão numa única pergunta, mas vale nomear a exceção que confirma a regra: a porta de entrada pode fazer a formação subir mesmo quando a experiência já existe, se essa formação for, especificamente, a credencial que abre a porta certa para a vaga em questão — um mestrado recente e diretamente ligado à área da candidatura, por exemplo, pode justificar uma posição mais alta mesmo para quem já tem alguns anos de trabalho, porque nesse caso a formação não está competindo com a experiência por relevância, está complementando-a de um jeito que o leitor da vaga específica vai valorizar. A seção mais adiante sobre pós-graduação em transição de carreira trata esse caso com mais detalhe.

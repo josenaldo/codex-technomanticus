@@ -34,6 +34,7 @@ O API Gateway não força você a escolher um mecanismo único para toda a API �
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q{Quem está chamando?}
     Q -->|Outro serviço AWS,<br/>credencial IAM| IAM["AWS_IAM<br/>(SigV4/SigV4a)"]
     Q -->|Usuário final,<br/>login via Cognito| COG["Cognito user pool<br/>authorizer"]
@@ -45,10 +46,10 @@ flowchart TD
     JWT --> BACK
     LAMBDA --> BACK
 
-    style IAM fill:#e8f4f8
-    style COG fill:#e8f4f8
-    style JWT fill:#e8f4f8
-    style LAMBDA fill:#e8f4f8
+    class IAM neutro
+    class COG neutro
+    class JWT neutro
+    class LAMBDA neutro
 ```
 
 Repare que os quatro não são mutuamente exclusivos com as camadas de rede: mTLS e resource policies se sobrepõem por cima, filtrando *quem chega na porta* antes mesmo de qualquer authorizer rodar.

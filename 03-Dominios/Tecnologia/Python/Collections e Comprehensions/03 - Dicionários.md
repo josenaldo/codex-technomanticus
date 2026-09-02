@@ -178,6 +178,8 @@ print(list(chaves))    # ['maçã', 'pera', 'banana'] — a view "viu" a mudanç
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     D["dict original"] -.->|"view NÃO copia,\nsó referencia"| K["dict_keys"]
     D -.-> V["dict_values"]
     D -.-> I["dict_items"]
@@ -186,11 +188,11 @@ flowchart LR
     V -->|"reflete automaticamente"| D2
     I -->|"reflete automaticamente"| D2
 
-    style D fill:#4A90D9,color:#fff
-    style D2 fill:#4A90D9,color:#fff
-    style K fill:#F5A623,color:#000
-    style V fill:#F5A623,color:#000
-    style I fill:#F5A623,color:#000
+    class D neutro
+    class D2 neutro
+    class K destaque
+    class V destaque
+    class I destaque
 ```
 
 Duas consequências práticas dessa dinamicidade:
@@ -375,6 +377,9 @@ A regra geral: **tipos mutáveis não são hasháveis** (`list`, `dict`, `set` p
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     H["Requisito: chave precisa ser hashável"] --> IM["Tipos imutáveis"]
     H --> MU["Tipos mutáveis"]
     IM -->|"hasháveis, OK como chave"| STR["str, int, float, bool"]
@@ -384,15 +389,15 @@ flowchart TB
     MU -->|"NÃO hasháveis"| DCT["dict"]
     MU -->|"NÃO hasháveis"| ST["set"]
 
-    style H fill:#4A90D9,color:#fff
-    style IM fill:#4A90D9,color:#fff
-    style MU fill:#D0021B,color:#fff
-    style STR fill:#F5A623,color:#000
-    style TUP fill:#F5A623,color:#000
-    style FS fill:#F5A623,color:#000
-    style LST fill:#D0021B,color:#fff
-    style DCT fill:#D0021B,color:#fff
-    style ST fill:#D0021B,color:#fff
+    class H neutro
+    class IM neutro
+    class MU falha
+    class STR destaque
+    class TUP destaque
+    class FS destaque
+    class LST falha
+    class DCT falha
+    class ST falha
 ```
 
 Segundo o [glossário oficial](https://docs.python.org/3/glossary.html#term-hashable), "an object is hashable if it has a hash value which never changes during its lifetime... hashability makes an object usable as a dictionary key and a set member, because these data structures use the hash value internally." A mesma nota vale para chaves de `dict` e para membros de `set` — os dois compartilham a exigência porque ambos são implementados com a mesma estrutura interna de tabela hash. `set` é assunto da [[04 - Sets|próxima nota]] deste galho.

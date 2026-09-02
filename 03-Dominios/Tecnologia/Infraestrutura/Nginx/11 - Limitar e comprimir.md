@@ -54,6 +54,9 @@ A primeira linha é o comportamento cru do balde: uma request cabe na vaga que j
 
 ```mermaid
 graph TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     R["8 requests chegando<br/>simultaneamente em t=0"] --> B["Balde furado<br/>capacidade = 1 + burst<br/>vazamento = 1 vaga a cada 100ms"]
     B --> D1{"Cabe no balde?"}
     D1 -->|"não — excedeu 1+burst"| Rej["Rejeitada na hora<br/>503 (limit_req_status)"]
@@ -61,9 +64,9 @@ graph TB
     D2 -->|"sim"| Imed["Servida imediatamente<br/>balde permanece consumido"]
     D2 -->|"não — sem nodelay,<br/>excedeu o limiar de delay"| Fila["Enfileirada<br/>liberada no ritmo do vazamento"]
 
-    style Rej fill:#7a2e2e,stroke:#c0392b,color:#fff
-    style Imed fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style Fila fill:#8e6fc9,stroke:#5a3f8f,color:#fff
+    class Rej falha
+    class Imed ok
+    class Fila marca
 ```
 
 O ponto que a tabela e o diagrama juntos deixam impossível de ignorar: **a capacidade total do balde é sempre `1 + burst`**, e nenhum dos parâmetros extras — `nodelay`, `delay` — muda esse número. O que muda é só o tratamento das requests que caem dentro dessa capacidade: esperar todas (padrão), não esperar nenhuma (`nodelay`), ou esperar só a partir de um certo ponto (`delay=N`). Confundir "aumentar `burst`" com "aceitar mais tráfego" é meio verdadeiro — aumenta quantas requests cabem antes de rejeitar — mas não muda a taxa sustentada que o backend de fato recebe ao longo do tempo, que continua presa ao `rate` declarado, gota a gota, para sempre, não importa quão generoso seja o `burst`.
@@ -248,6 +251,8 @@ location /app/ {
 
 ```mermaid
 graph TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     Resp["Resposta pronta<br/>na fase CONTENT"] --> Q1{"gzip on?"}
     Q1 -->|"não (padrão)"| Sem["Enviada sem compressão"]
     Q1 -->|"sim"| Q2{"Content-Type está em<br/>gzip_types (+ text/html)?"}
@@ -260,8 +265,8 @@ graph TB
     Q5 -->|"não (padrão off)"| Sem
     Q5 -->|"sim (any ou condição atendida)"| Comp
 
-    style Sem fill:#7a2e2e,stroke:#c0392b,color:#fff
-    style Comp fill:#1e5c3a,stroke:#27ae60,color:#fff
+    class Sem falha
+    class Comp ok
 ```
 
 O diagrama deixa visível por que "liguei `gzip on;`" é necessário mas nunca suficiente: são quatro portões (`gzip`, `gzip_types`, `gzip_min_length`, e — só quando a resposta veio de proxy — `gzip_proxied`) e todos precisam abrir para a compressão de fato acontecer. A causa mais comum de compressão ausente numa borda com `proxy_pass` é o último portão, justamente porque é o único dos quatro cujo padrão surpreende: os outros três têm um padrão que, uma vez ligado `gzip on;`, tende a deixar passar (`gzip_types` já inclui `text/html`; `gzip_min_length` de 20 bytes é baixo o bastante para não filtrar quase nada) — só `gzip_proxied` fecha por padrão justamente o caminho mais comum de uma borda moderna, que é servir como proxy reverso na frente de uma aplicação.

@@ -30,7 +30,6 @@ Imagine que você precisa guardar cinco versões de um documento.
 O CVS e o Subversion adotaram a primeira; o Git adotou a segunda.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
     subgraph D["Baseado em diferenças (SVN, CVS)"]
         V1["v1<br/>completa"] -->|"+3 linhas<br/>-1 linha"| V2["Δ"]
@@ -86,7 +85,6 @@ Os casos possíveis de paternidade:
 | 3+ | merge *octopus*, juntando várias de uma vez (raro) |
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph RL
     E["E (merge)<br/>2 pais"] --> D["D"]
     E --> C["C"]

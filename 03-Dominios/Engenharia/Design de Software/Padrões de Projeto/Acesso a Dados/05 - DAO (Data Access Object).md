@@ -32,8 +32,9 @@ O DAO resolve pondo uma **interface** entre a lógica e a fonte: `UserDao` decla
 ## A ideia
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     S["Lógica de negócio"] -->|"findById(id)"| I{{"«interface» UserDao"}}
     I -.-> J[JpaUserDao]
     I -.-> Jd[JdbcUserDao]
@@ -41,8 +42,8 @@ graph TD
     J --> DB[(banco)]
     W --> WS[web service]
 
-    style I fill:#4A90D9,color:#fff
-    style S fill:#F5A623,color:#000
+    class I neutro
+    class S destaque
 ```
 
 A lógica conhece só `UserDao`. Trocar a fonte (do SOAP legado para JPA, por exemplo) é trocar a implementação — sem tocar no negócio.

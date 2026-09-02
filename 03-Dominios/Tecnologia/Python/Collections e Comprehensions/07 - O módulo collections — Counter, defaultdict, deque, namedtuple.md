@@ -158,6 +158,8 @@ print(c1 | c2)   # Counter({'a': 4, 'c': 3, 'd': 4, 'b': 2})  — união: max(c1
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph c1e["Counter c1"]
         a1["a: 4"]
         b1["b: 2"]
@@ -171,12 +173,12 @@ flowchart LR
     c1e -->|"&"| inter["a: 1, b: 2<br/>(mínimo)"]
     c1e -->|"|"| uniao["a: 4, b: 2<br/>(máximo)"]
 
-    style c1e fill:#4A90D9,color:#fff
-    style c2e fill:#4A90D9,color:#fff
-    style soma fill:#F5A623,color:#000
-    style sub fill:#F5A623,color:#000
-    style inter fill:#F5A623,color:#000
-    style uniao fill:#F5A623,color:#000
+    class c1e neutro
+    class c2e neutro
+    class soma destaque
+    class sub destaque
+    class inter destaque
+    class uniao destaque
 ```
 
 `.update()` e `.subtract()` são as versões *in-place* de `+` e `-` — úteis pra ir acumulando contagem ao longo de várias fontes sem criar um novo Counter a cada passo:

@@ -32,12 +32,14 @@ Um estágio de pipeline é uma função com um formato reconhecível: recebe um 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Gen["generate()\n(1º estágio, sem input)"] -->|"chan int"| Sq["square()\n(2º estágio)"]
     Sq -->|"chan int"| Main["main()\nconsome com range"]
 
-    style Gen fill:#4A90D9,color:#fff
-    style Sq fill:#4A90D9,color:#fff
-    style Main fill:#F5A623,color:#000
+    class Gen neutro
+    class Sq neutro
+    class Main destaque
 ```
 
 O exemplo canônico do próprio Go blog — gerar números e elevar ao quadrado — mostra a forma mínima:
@@ -91,6 +93,8 @@ No pipeline acima, `square` roda numa única goroutine. Se elevar ao quadrado fo
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     In(("in")) --> W1["worker 1"]
     In --> W2["worker 2"]
     In --> W3["worker 3"]
@@ -98,8 +102,8 @@ flowchart LR
     W2 --> Out1
     W3 --> Out1
 
-    style In fill:#4A90D9,color:#fff
-    style Out1 fill:#F5A623,color:#000
+    class In neutro
+    class Out1 destaque
 ```
 
 Um channel Go, por definição (nota 01), entrega cada valor enviado a **exatamente um** receptor — não é broadcast. Então "várias goroutines lendo do mesmo channel" já é, de graça, uma distribuição de carga: cada valor vai para a primeira goroutine que estiver livre para recebê-lo, sem precisar de fila própria nem de round-robin manual.
@@ -141,13 +145,15 @@ Depois do fan-out, você tem `n` channels de saída — mas quem consome o resul
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     C1(("out 1")) --> M["merge()"]
     C2(("out 2")) --> M
     C3(("out 3")) --> M
     M --> Merged(("merged"))
 
-    style Merged fill:#F5A623,color:#000
-    style M fill:#4A90D9,color:#fff
+    class Merged destaque
+    class M neutro
 ```
 
 O detalhe que faz fan-in não ser trivial: `merged` só pode ser fechado depois que **todos** os channels de entrada terminarem — mas cada um termina em momento diferente, imprevisível. É exatamente o problema que `sync.WaitGroup` resolve: uma goroutine por channel de entrada incrementa o grupo, escreve tudo que recebe em `merged`, e avisa `wg.Done()` ao esgotar. Uma goroutine extra espera o grupo inteiro (`wg.Wait()`) e só então fecha `merged`.

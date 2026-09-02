@@ -156,7 +156,6 @@ Esse último comando é o mais subestimado do galho: ele lista o que a unidade *
 ## Parada: o mesmo contrato de sinal do container
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
     A["systemctl stop"] --> B["envia <b>SIGTERM</b><br/>(KillSignal=)"]
     B --> C{"saiu dentro de<br/>TimeoutStopSec?"}

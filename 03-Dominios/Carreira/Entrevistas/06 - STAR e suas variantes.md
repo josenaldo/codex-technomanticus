@@ -37,16 +37,17 @@ O contexto não estava errado; estava **desproporcional**. E a razão é compree
 ## O time-box
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     S["<b>S</b>ituation<br/>10% · ~12s<br/>contexto mínimo"] --> T["<b>T</b>ask<br/>10% · ~12s<br/>sua responsabilidade<br/>+ a restrição"]
     T --> A["<b>A</b>ction<br/><b>60% · ~72s</b><br/>o que VOCÊ fez<br/>e por quê"]
     A --> R["<b>R</b>esult<br/>20% · ~24s<br/>resultado com número<br/>amarrado à Situation"]
 
-    style S fill:#4A90D9,color:#fff
-    style T fill:#4A90D9,color:#fff
-    style A fill:#F5A623,color:#000
-    style R fill:#4A90D9,color:#fff
+    class S neutro
+    class T neutro
+    class A destaque
+    class R neutro
 ```
 
 | Parte | O que entra | O que **não** entra |

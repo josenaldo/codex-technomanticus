@@ -77,6 +77,9 @@ Decode, validação de presença e validação de formato de e-mail viraram uma 
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph stdlib["net/http + ServeMux (1.22+)"]
         A["Servidor, roteamento, middleware por composição"]
     end
@@ -85,10 +88,10 @@ flowchart TB
     stdlib --> Gin["Gin — API própria\nrouter customizado (radix tree)\nbinding + validação + performance"]
     stdlib --> Echo["Echo — API própria\nbaterias inclusas\nbinding + validação + templates + WebSocket"]
 
-    style stdlib fill:#4A90D9,color:#fff
-    style Chi fill:#7ED321,color:#000
-    style Gin fill:#F5A623,color:#000
-    style Echo fill:#BD10E0,color:#fff
+    class stdlib neutro
+    class Chi destaque
+    class Gin destaque
+    class Echo marca
 ```
 
 A diferença mais importante entre os três não é performance — é **quão longe cada um se afasta da assinatura `http.Handler`** que a stdlib define. Isso muda o custo de troca e o quanto do seu código fica acoplado ao framework.

@@ -125,6 +125,8 @@ Repare no que **não** está aqui: nenhuma `Session`, nenhum `db.commit()`, nenh
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Fora["O que o domínio NÃO sabe"]
         HTTP["Requisição HTTP\n(FastAPI)"]
         DB["Sessão de banco\n(SQLAlchemy)"]
@@ -139,8 +141,8 @@ flowchart LR
     DB -.->|"persiste o resultado, mas não é conhecido por"| TAREFA
     JOB -.->|"chama, mas não é conhecido por"| TAREFA
 
-    style Dominio fill:#2d7a4a,color:#fff
-    style Fora fill:#4A90D9,color:#fff
+    class Dominio ok
+    class Fora neutro
 ```
 
 A seta é deliberadamente de mão única: HTTP, banco e job **conhecem** o domínio (importam `Tarefa`, chamam `.concluir()`) — o domínio não conhece nenhum deles de volta. Essa direção de dependência — a camada externa aponta para dentro, nunca o inverso — é o mesmo princípio que sustenta a arquitetura hexagonal que a [[index|nota 07 deste galho]] desenvolve adiante; aqui ela aparece na forma mais simples possível, antes de qualquer nome formal de padrão.
@@ -295,6 +297,9 @@ Voltando ao incidente de abertura — o handler e o job duplicando (ou, no caso 
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Antes["ANTES — regra espalhada em dois lugares"]
         H1["Handler FastAPI\nconcluir_tarefa()"] -->|"checa subtarefas\ninline, com SELECT direto"| DB1[("Banco")]
         J1["Job de fechamento\nfechar_tarefas_vencidas()"] -->|"NÃO checa\nsubtarefas — ninguém lembrou"| DB1
@@ -308,9 +313,9 @@ flowchart TB
         DOM --> DB2[("Banco")]
     end
 
-    style Antes fill:#8b6914,color:#fff
-    style Depois fill:#2d7a4a,color:#fff
-    style DOM fill:#4A90D9,color:#fff
+    class Antes destaque
+    class Depois ok
+    class DOM neutro
 ```
 
 O handler HTTP, depois da extração, para de conter a regra — ele monta um objeto de domínio a partir do que está no banco, delega a decisão pra ele, e só então persiste o resultado (ou traduz a exceção de domínio para uma resposta HTTP):

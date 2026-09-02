@@ -82,7 +82,6 @@ Sob o capô, isso é `useTransition`. A diferença é que você não precisa mai
 ## Fluxo de uma Action
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 sequenceDiagram
     participant U as Usuário
     participant F as <form>
@@ -319,7 +318,6 @@ export function TodoList({ initialTodos }: { initialTodos: Todo[] }) {
 ### Como `useOptimistic` funciona por dentro
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 stateDiagram-v2
     [*] --> Normal: estado inicial
     Normal --> Otimista: addOptimisticTodo() chamado\n(dentro da transição)

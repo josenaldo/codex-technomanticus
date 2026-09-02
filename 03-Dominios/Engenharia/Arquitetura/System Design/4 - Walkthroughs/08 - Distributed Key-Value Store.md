@@ -87,8 +87,9 @@ O "modelo de dados" propriamente dito é deliberadamente burro: `key → bytes`.
 ## Diagrama macro
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Client["Cliente"] --> LB["Load balancer /<br/>qualquer nó pode ser coordenador"]
     LB --> Coord["Nó coordenador<br/>(o nó que recebeu o request)"]
 
@@ -108,11 +109,11 @@ graph TD
     NC -.->|"gossip"| ND
     ND -.->|"gossip"| NA
 
-    style NA fill:#4A90D9,color:#fff
-    style NB fill:#4A90D9,color:#fff
-    style NC fill:#4A90D9,color:#fff
-    style ND fill:#4A90D9,color:#fff
-    style Coord fill:#F5A623,color:#000
+    class NA neutro
+    class NB neutro
+    class NC neutro
+    class ND neutro
+    class Coord destaque
 ```
 
 Repare que **qualquer nó pode ser o coordenador** de qualquer request — não existe um "nó de entrada" especial. O nó que recebe a requisição do cliente calcula `hash(key)`, descobre (via seu conhecimento local do anel, mantido por gossip) quais são os N nós donos daquela chave, e coordena a operação com eles. Essa simetria total — todo nó é igualmente capaz de coordenar, armazenar e participar do gossip — é a base da ausência de ponto único de falha que o requisito de disponibilidade exige.
@@ -120,7 +121,6 @@ Repare que **qualquer nó pode ser o coordenador** de qualquer request — não 
 O **write path** e o **read path**, com quorum, ficam assim:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 sequenceDiagram
     participant Cliente
     participant Coord as Nó coordenador
@@ -169,8 +169,8 @@ $$R + W > N$$
 Essa desigualdade garante que todo conjunto de R réplicas lidas se sobrepõe a pelo menos uma réplica do conjunto de W réplicas escritas — nunca existe uma leitura que erra completamente a escrita mais recente confirmada.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "N = 3 réplicas do KV store"
         A["Réplica A"]
         B["Réplica B"]
@@ -181,7 +181,7 @@ graph TD
     R["Leitura R=2<br/>consulta B, C"] -.-> B
     R -.-> C
     B -->|"interseção garantida<br/>R+W=4 > N=3"| OK["Leitura vê a<br/>escrita mais recente"]
-    style OK fill:#F5A623,color:#000
+    class OK destaque
 ```
 
 No cluster deste walkthrough, com N=3, a configuração default do Dynamo é **N=3, R=2, W=2** — o meio-termo clássico: nem escrita nem leitura esperam todas as réplicas, e ainda assim R+W=4 > N=3 garante interseção. Mas o ponto central do requisito "consistência ajustável" é que **W e R são parâmetros por operação**, não uma constante do cluster:
@@ -195,7 +195,6 @@ No cluster deste walkthrough, com N=3, a configuração default do Dynamo é **N
 **Sloppy quorum** resolve isso relaxando "quem pode aceitar a escrita": se um dos N nós donos da chave está inacessível, a escrita é aceita por **outro nó disponível fora do conjunto original** — o próximo nó saudável no anel, por exemplo. **Hinted handoff** completa o mecanismo: o nó que aceitou a escrita "no lugar" de outro guarda uma **dica** (*hint* — um wrapper indicando "essa escrita pertence ao Nó X") e a entrega ao nó correto assim que ele volta a ficar disponível.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant Cliente
     participant NoDono as Nó dono da chave<br/>(indisponível)
@@ -232,8 +231,10 @@ Dado dois vetores, existem três relações possíveis:
 - **Nenhum domina o outro** (`[A:2,B:0]` vs `[A:0,B:1]`): as duas escritas aconteceram **concorrentemente**, sem que uma soubesse da outra — é um **conflito genuíno**, e o sistema não tem informação suficiente para decidir sozinho qual "vence".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     V0["v0: [A:1, B:1]<br/>(versão original)"]
     V0 --> V1["v1: [A:2, B:1]<br/>escrita no Nó A"]
     V0 --> V2["v2: [A:1, B:2]<br/>escrita concorrente no Nó B"]
@@ -241,11 +242,11 @@ graph TD
     V2 -.-> CONFLITO
     CONFLITO --> RECON["Reconciliação:<br/>merge na aplicação<br/>(ex: união dos itens do carrinho)"]
 
-    style V0 fill:#4A90D9,color:#fff
-    style V1 fill:#4A90D9,color:#fff
-    style V2 fill:#4A90D9,color:#fff
-    style CONFLITO fill:#D0021B,color:#fff
-    style RECON fill:#F5A623,color:#000
+    class V0 neutro
+    class V1 neutro
+    class V2 neutro
+    class CONFLITO falha
+    class RECON destaque
 ```
 
 Quando o conflito é detectado, o sistema **não tenta adivinhar** — ele devolve as duas (ou mais) versões conflitantes no `GET`, e a aplicação decide. Para um carrinho de compras, a resolução é quase sempre trivial: **união dos itens** dos dois carrinhos (é raro perder um item ao mesclar dois carrinhos — o pior caso é um item duplicado, facilmente deduplicado). É por isso que Dynamo escolheu vector clocks e reconciliação na aplicação em vez de LWW: o custo de implementar merge é pago uma vez, no domínio certo; o custo de LWW (perder escritas silenciosamente) é pago a cada conflito, para sempre.
@@ -264,7 +265,6 @@ Dois problemas ainda estão em aberto: **como cada nó sabe quais outros nós ex
 A detecção de falha, especificamente, usa um mecanismo mais sofisticado que "não respondeu, está morto": o **Phi Accrual Failure Detector**. Em vez de um binário vivo/morto com um timeout fixo, cada nó calcula um valor de suspeita (**φ**) contínuo, baseado no histórico de intervalos entre heartbeats daquele nó específico — permitindo que o detector se adapte a nós com latência de rede naturalmente mais alta (outra região geográfica, por exemplo) sem falsos positivos, e a nós historicamente estáveis com detecção mais rápida.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     A["Nó A"] -.->|"gossip a cada 1s<br/>(1-3 nós aleatórios)"| B["Nó B"]
     B -.->|"gossip"| C["Nó C"]
@@ -279,8 +279,8 @@ graph LR
 Comparar réplicas byte a byte seria proibitivamente caro para faixas de dados grandes. A solução é uma **árvore de hashes**: cada folha da árvore é o hash de um pequeno bloco de dados; cada nó pai é o hash da concatenação de seus filhos, até a raiz. Duas réplicas comparam primeiro **a raiz** — se as raízes batem, os dados são idênticos, fim da comparação, sem nunca examinar o conteúdo. Se divergem, a comparação desce recursivamente só pelos ramos onde o hash não bate, até identificar exatamente quais blocos pequenos de dados precisam ser sincronizados.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     R1["Raiz A"] --> P1["hash(esq+dir)"]
     R1 --> P2["hash(esq+dir)"]
     P1 --> L1["hash(bloco 1)"]
@@ -293,9 +293,9 @@ graph TD
     P1B --> L1B["bloco 1<br/>DIVERGE → sincroniza"]
     P1B --> L2B["bloco 2<br/>igual, ignora"]
 
-    style R2 fill:#D0021B,color:#fff
-    style P1B fill:#D0021B,color:#fff
-    style L1B fill:#D0021B,color:#fff
+    class R2 falha
+    class P1B falha
+    class L1B falha
 ```
 
 O Cassandra usa uma versão compacta da árvore — profundidade 15 (32.768 folhas) — deliberadamente pequena, porque a árvore precisa ser transferida pela rede antes da comparação começar: uma árvore grande demais tornaria o próprio processo de anti-entropia um consumidor pesado de banda, o oposto do que a técnica busca evitar. Esse processo roda tipicamente sob demanda (`nodetool repair`) ou agendado, não a cada leitura — é uma camada de fundo que garante convergência eventual mesmo quando nada mais força a sincronização.

@@ -25,15 +25,16 @@ Imagine o Cenário 3 já mencionado na nota de abertura deste domínio, agora co
 Jeff Gothelf e Josh Seiden, em *Lean UX* (2013), propõem a proto-persona como ferramenta de **alinhamento de time**, não de pesquisa: reunir quem está envolvido no projeto (mesmo que seja só você e o cliente) num workshop curto, e escrever as suposições compartilhadas sobre quem é o usuário — nome fictício, objetivo principal, frustração principal, comportamento típico. O valor não está na precisão da persona resultante; está em **tornar visível** o que cada pessoa da sala estava assumindo sozinha na cabeça, muitas vezes de forma diferente uma da outra.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     S["Suposições do time<br/>(implícitas, divergentes)"] -->|"workshop 1h"| PP["Proto-persona<br/>hipótese explícita"]
     PP -->|"testada em<br/>entrevista real"| V{"Confirma?"}
     V -->|"sim, parcialmente"| PV["Persona refinada<br/>ainda não 'de verdade'"]
     V -->|"não"| PP2["Proto-persona<br/>revisada"]
     PV -->|"volume de entrevista<br/>+ segmentação"| PDV["Persona de verdade<br/>qualitativa/estatística"]
-    style PP fill:#F5A623,color:#000
-    style PDV fill:#4A90D9,color:#fff
+    class PP destaque
+    class PDV neutro
 ```
 
 O diagrama mostra a diferença estrutural: a proto-persona nasce de suposição e *deveria* ser sempre um ponto de partida a testar, nunca um ponto de chegada. O erro do cenário de abertura não foi criar a proto-persona — foi pular a seta "testada em entrevista real" e tratar a hipótese como se já estivesse no final do fluxo.

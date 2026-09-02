@@ -63,12 +63,14 @@ Três operadores, todos com a mesma seta `<-`, cuja direção muda o significado
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     G1["Goroutine A"] -->|"ch <- 42"| CH(["chan int"])
     CH -->|"v := <-ch"| G2["Goroutine B"]
 
-    style CH fill:#F5A623,color:#000
-    style G1 fill:#4A90D9,color:#fff
-    style G2 fill:#4A90D9,color:#fff
+    class CH destaque
+    class G1 neutro
+    class G2 neutro
 ```
 
 Não há sintaxe separada para "criar canal" vs "criar canal de int vs de string" — o tipo do elemento é parte do tipo do channel, `chan int` e `chan string` são tipos distintos, incompatíveis entre si, checados em tempo de compilação como qualquer outro tipo Go.

@@ -30,14 +30,15 @@ Um modelo de linguagem generativo, ao gerar código de interface, está fazendo 
 A mesma dinâmica acontece do lado da geração de imagem — o modelo converge para o composicionalmente seguro (rosto centralizado, iluminação uniforme, paleta neutra) na ausência de instrução específica — e por isso a [[03-Dominios/Tecnologia/IA/Image Prompting/index|disciplina de Image Prompting]] deste vault trata exatamente do mesmo problema, só que no domínio visual de imagem em vez de UI: a [[03-Dominios/Tecnologia/IA/Image Prompting/01 - Image prompting como engenharia|nota 01 daquele galho]] já nomeia que tratar geração como "arte" (sem especificação, sem critério de aceite) é o que produz esse tipo de saída difusa. Esta nota é a mesma raiz aplicada à interface: o antídoto não é "pedir de novo" — é dar ao modelo uma restrição que substitua o vácuo de decisão que ele preenche com o padrão médio.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     P["Prompt sem<br/>restrição de identidade"] --> M["Modelo prevê<br/>a média do treino"]
     M --> S["Saída = fingerprint<br/>reconhecível de IA"]
     P2["Prompt com<br/>restrição explícita"] --> D["Modelo é forçado<br/>a escolher, não prever a média"]
     D --> R["Saída = decisão real<br/>de hierarquia e tema"]
-    style S fill:#D0021B,color:#fff
-    style R fill:#4A90D9,color:#fff
+    class S falha
+    class R neutro
 ```
 
 ## O fingerprint reconhecível, em 2026

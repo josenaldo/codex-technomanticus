@@ -47,12 +47,15 @@ Vamos ver esse "o quê → como" como um fluxo. Você entrega uma **descrição*
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Você: descreve<br/>O QUE quer<br/>(a intenção)"] --> B{"O motor<br/>(runtime / planner)"}
     B --> C["Decide O COMO:<br/>algoritmo, ordem,<br/>estruturas de dados"]
     C --> D["Resultado"]
-    style A fill:#2d4a3e,color:#fff
-    style B fill:#3d3a5c,color:#fff
-    style D fill:#4a3a2d,color:#fff
+    class A ok
+    class B neutro
+    class D destaque
 ```
 
 **Leitura do diagrama**: você só ocupa a caixa verde — a declaração da intenção. Tudo de roxo pra dentro (a escolha do algoritmo, da ordem, das estruturas) é responsabilidade do motor. A fronteira entre verde e roxo é exatamente a fronteira entre os dois paradigmas: **o que você controla × o que você delega**.
@@ -80,6 +83,8 @@ Vamos mapear o guarda-chuva inteiro.
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     D["PARADIGMA<br/>DECLARATIVO<br/>(descreva o resultado)"]
     D --> F["Funcional<br/>composição de funções"]
     D --> L["Lógico<br/>fatos e regras"]
@@ -89,8 +94,8 @@ flowchart TD
     DSL --> RE["Regex<br/>qual padrão?"]
     DSL --> IAC["Terraform<br/>qual estado da infra?"]
     DSL --> RX["React<br/>UI = f(estado)"]
-    style D fill:#3d3a5c,color:#fff
-    style DSL fill:#2d4a3e,color:#fff
+    class D neutro
+    class DSL ok
 ```
 
 **Leitura do diagrama**: no topo, a filosofia única ("descreva o resultado"). Embaixo, os três grandes ramos — funcional, lógico e o ramo das DSLs. O ramo DSL se abre numa árvore de domínios concretos. Note que cada folha responde uma pergunta de **"qual"**, nunca de "como": qual linha, qual UI, qual padrão, qual estado. Essa repetição do "qual" é a assinatura do paradigma.
@@ -166,6 +171,8 @@ Vamos ver os dois caminhos lado a lado.
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     P["Problema:<br/>filtrar pares e dobrar"]
     P --> I["IMPERATIVO"]
     P --> D["DECLARATIVO"]
@@ -176,8 +183,8 @@ flowchart TD
     D --> D1["descreve:<br/>'pares, cada um dobrado'"]
     D1 --> D2["motor itera/filtra/transforma"]
     D2 --> D3["resultado"]
-    style I fill:#5c3a3a,color:#fff
-    style D fill:#2d4a3e,color:#fff
+    class I falha
+    class D ok
 ```
 
 **Leitura do diagrama**: a coluna vermelha (imperativa) tem quatro caixas — quatro decisões que **você** toma e mantém. A coluna verde (declarativa) tem três, mas só a primeira é sua: a descrição. As outras duas ("o motor itera" e "resultado") rodam por baixo, fora do seu campo de visão. Menos caixas suas = menos lugares pra errar, mas também menos visibilidade do que acontece.
@@ -222,10 +229,13 @@ Aqui há SQL **declarativo** (a string da consulta) embutido num laço **imperat
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     I["100%<br/>Imperativo<br/>(Assembly, C clássico)"] --> M["Híbrido<br/>(Python, JS, Java:<br/>laços + SQL/regex/streams)"] --> D["100%<br/>Declarativo<br/>(SQL puro, HTML, Prolog)"]
-    style I fill:#5c3a3a,color:#fff
-    style M fill:#3d3a5c,color:#fff
-    style D fill:#2d4a3e,color:#fff
+    class I falha
+    class M neutro
+    class D ok
 ```
 
 **Leitura do diagrama**: nas pontas, os extremos puros — Assembly de um lado, SQL/HTML do outro. O meio, onde vive a maior parte do código profissional, é **híbrido**: linguagens como Python, JavaScript e Java te deixam escrever laços imperativos *e* pipelines declarativos, embutir SQL, usar regex. Você não escolhe um lado da régua — você desliza ao longo dela conforme o problema. Esse deslizar é o tema de `[[14 - Linguagens multi-paradigma]]`.

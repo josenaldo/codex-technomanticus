@@ -31,6 +31,8 @@ Essa oposição de objetivos significa que **a estratégia certa para dev é rui
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph DEV["Ambiente de desenvolvimento"]
         D1["Objetivo: velocidade de feedback\n(ms por mudança)"]
         D2["Aceita: bundle grande, source maps inline,\nnão-minificado, sem tree-shaking"]
@@ -45,8 +47,8 @@ graph LR
         P1 --> P2 --> P3
     end
 
-    style DEV fill:#1e3a5f,color:#fff
-    style PROD fill:#3a1e1e,color:#fff
+    class DEV neutro
+    class PROD falha
 ```
 
 > [!info] Leitura do diagrama
@@ -102,6 +104,8 @@ O Vite resolve isso com o **pré-bundling de dependências**: antes de iniciar o
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     START["vite dev\n(primeira vez)"]
     CRAWL["Rolldown varre seu código\n(descoberta de imports bare)"]
     PREBUNDLE["Pré-bundling de deps\nRolldown converte CJS→ESM\nagrupa arquivos internos"]
@@ -115,8 +119,8 @@ flowchart TD
     CHANGE -->|sim| REBUILD --> CACHE
     CHANGE -->|não| SERVER
 
-    style CACHE fill:#1e3a1e,color:#fff
-    style SERVER fill:#1e3a5f,color:#fff
+    class CACHE ok
+    class SERVER neutro
 ```
 
 > [!info] Leitura do diagrama
@@ -170,6 +174,8 @@ Com o Vite, o browser só precisa buscar **um único arquivo** — o módulo que
 
 ```mermaid
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph WEBPACK["HMR no webpack"]
         W1["Arquivo muda"]
         W2["Re-bundla chunk\n(arquivo + dependências)"]
@@ -186,8 +192,8 @@ graph LR
         V1 --> V2 --> V3 --> V4
     end
 
-    style WEBPACK fill:#3a2a1e,color:#fff
-    style VITE fill:#1e3a1e,color:#fff
+    class WEBPACK destaque
+    class VITE ok
 ```
 
 ### A HMR API: `import.meta.hot`
@@ -238,6 +244,7 @@ Quando você salva um arquivo, o Vite precisa responder a uma pergunta: "quem ma
 
 ```mermaid
 graph TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["App.tsx\n(não tem accept())"]
     B["Layout.tsx\n(não tem accept())"]
     C["Counter.tsx\n✓ self-accepting\n(plugin React injetou accept())"]
@@ -247,7 +254,7 @@ graph TD
     B --> C
     C --> D
 
-    style C fill:#1e3a1e,color:#fff
+    class C ok
 ```
 
 > [!info] Leitura do diagrama
@@ -387,6 +394,9 @@ O campo `mappings` usa o formato **VLQ Base64** (Variable Length Quantity) — u
 
 ```mermaid
 graph TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph INLINE["Inline\n(devSourcemap: true — Vite dev default)"]
         I1["O source map é embutido\nno próprio .js como base64"]
         I2["▶ Um request só\n▶ Ótimo para dev"]
@@ -411,9 +421,9 @@ graph TD
         H1 --> H3
     end
 
-    style INLINE fill:#1e3a1e,color:#fff
-    style EXTERNAL fill:#1e2a3a,color:#fff
-    style HIDDEN fill:#3a2a1e,color:#fff
+    class INLINE ok
+    class EXTERNAL neutro
+    class HIDDEN destaque
 ```
 
 > [!info] Leitura do diagrama
@@ -491,17 +501,20 @@ Com o **Vite 8** (março de 2026), a VoidZero lançou o **Rolldown** como motor 
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph VITE7["Vite ≤ 7 (arquitetura dual)"]
         V7DEV["Dev:\nesbuild (Go)\n• pré-bundling de deps\n• transpila TS/JSX por request"]
         V7PROD["Prod:\nRollup (JS)\n• bundle completo\n• tree-shaking, code splitting\n• plugins do ecossistema"]
         V7DEV -.- V7PROD
-        style V7DEV fill:#2a1e3a,color:#fff
-        style V7PROD fill:#3a2a1e,color:#fff
+        class V7DEV marca
+        class V7PROD destaque
     end
 
     subgraph VITE8["Vite 8 (arquitetura unificada)"]
         V8["Rolldown (Rust)\n• pré-bundling de deps em dev\n• transpila TS/JSX em dev\n• bundle completo em prod\n• mesma semântica, mesma API\n• 10–30× mais rápido em build"]
-        style V8 fill:#1e3a1e,color:#fff
+        class V8 ok
     end
 ```
 

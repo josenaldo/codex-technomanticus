@@ -263,12 +263,14 @@ Onde cada um brilha:
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Console<br/>explorar, aprender, prototipar"] --> B["CLI<br/>operar, automatizar tarefas pontuais"]
     B --> C["SDK<br/>compor lógica, integrar em aplicações"]
     C --> D["IaC<br/>declarar estado, reproduzir, revisar em PR"]
 
-    style A fill:#f9d5d5
-    style D fill:#d5f9d9
+    class A falha
+    class D ok
 ```
 
 Não é uma escada que você sobe uma vez e nunca desce — um operador sênior transita entre as quatro o dia inteiro. A maturidade está em **saber para que serve cada degrau**: console pra debugar um incidente às 3h da manhã (você não vai escrever Terraform sob pressão), CLI pra verificar rapidamente um estado, SDK pra automação que vira produto, IaC pra qualquer coisa que precisa sobreviver ao próximo deploy e ao próximo funcionário que herdar a conta.

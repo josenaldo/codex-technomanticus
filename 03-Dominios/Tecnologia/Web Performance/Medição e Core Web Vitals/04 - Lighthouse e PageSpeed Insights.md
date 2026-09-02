@@ -44,8 +44,9 @@ Três métricas — **TBT, LCP e CLS — respondem por 80% do score**. Se você 
 > Porque o Lighthouse mede **responsividade**, mas não pode medir o INP diretamente — o INP precisa de **interações reais do usuário** (cliques, toques), e o Lighthouse só carrega a página, ninguém clica nela. Então ele usa o **TBT** como *proxy de laboratório* para o INP: quanto mais a thread principal fica bloqueada durante o carregamento, pior tende a ser a responsividade quando o usuário chegar. Guarde essa ponte: **no lab, você melhora o TBT para melhorar o INP do campo**. Isso é aprofundado no Galho 3.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[Lighthouse roda a página] --> B[TBT 30%]
     A --> C[LCP 25%]
     A --> D[CLS 25%]
@@ -57,10 +58,10 @@ graph LR
     E --> G
     F --> G
     B -.proxy de.-> H["INP (campo)"]
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style G fill:#F5A623,color:#000
+    class B neutro
+    class C neutro
+    class D neutro
+    class G destaque
 ```
 
 ## O que o PageSpeed Insights adiciona

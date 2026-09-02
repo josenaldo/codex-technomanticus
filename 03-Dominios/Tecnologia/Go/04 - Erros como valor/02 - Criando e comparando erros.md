@@ -74,12 +74,14 @@ Por baixo, `fmt.Errorf` é equivalente a `errors.New(fmt.Sprintf(...))` — a ú
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["errors.New(texto)"] --> C["error\n(Error() devolve texto)"]
     B["fmt.Errorf(formato, args...)"] --> D["fmt.Sprintf(formato, args...)"] --> C
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
+    class A neutro
+    class B neutro
+    class C destaque
 ```
 
 > [!info] `any` no lugar de `interface{}`
@@ -139,6 +141,8 @@ fmt.Println(err1 == err2) // false!
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Certo["Sentinela compartilhada — comparação funciona"]
         direction TB
         V["var ErrNotFound = errors.New(...)\n(alocado 1x)"] --> C1["retorno da função A"]
@@ -152,9 +156,9 @@ flowchart TB
         R1 -.->|"ponteiros diferentes"| R2
     end
 
-    style V fill:#4A90D9,color:#fff
-    style E1 fill:#D0021B,color:#fff
-    style E2 fill:#D0021B,color:#fff
+    class V neutro
+    class E1 falha
+    class E2 falha
 ```
 
 Isso significa que **qualquer função que crie um erro novo a cada chamada** — inclusive com `fmt.Errorf`, que sofre do mesmo problema — produz um valor incomparável por identidade com qualquer outro erro, mesmo textualmente idêntico. A única forma de comparação por `==` funcionar de verdade é as duas pontas (produtor e consumidor) referenciarem **a mesma variável declarada uma única vez**, tipicamente no nível de pacote.

@@ -29,12 +29,15 @@ Claude Code tem dois tipos de configuração:
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Settings["settings.json\n(runtime)"] -- "bloqueia/permite\nmecanicamente" --> ToolCall["Tool call"]
     CLAUDE["CLAUDE.md\n(modelo)"] -- "instrui o modelo\ncomportamentalmente" --> ToolCall
     ToolCall --> Exec["Execução"]
-    style Settings fill:#e8e8f4
-    style CLAUDE fill:#e8f4e8
-    style ToolCall fill:#f4f0e8
+    class Settings neutro
+    class CLAUDE ok
+    class ToolCall destaque
 ```
 
 Essa distinção importa: um `deny` no settings.json não pode ser "convencido" por uma instrução no prompt. É uma barreira de runtime. Uma instrução no CLAUDE.md ("não faça push diretamente") pode ser ignorada se o modelo avaliar que o contexto justifica. Use `settings.json` para o que deve ser inegociável.

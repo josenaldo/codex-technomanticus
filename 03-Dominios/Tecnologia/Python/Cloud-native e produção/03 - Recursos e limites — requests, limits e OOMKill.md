@@ -88,13 +88,15 @@ spec:
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     LIM["Container excede resources.limits"] --> TIPO{"Qual recurso?"}
     TIPO -->|Memória| MEM["cgroup dispara OOMKill<br/>SIGKILL imediato, sem aviso<br/>processo MORRE"]
     TIPO -->|CPU| CPU["cgroup aplica throttling<br/>processo continua vivo,<br/>só perde ciclos de execução"]
     MEM --> SINTOMA1["Sintoma: Pod reinicia,<br/>Exit Code 137"]
     CPU --> SINTOMA2["Sintoma: latência sobe,<br/>processo continua respondendo"]
-    style MEM fill:#D0021B,color:#fff
-    style CPU fill:#F5A623,color:#000
+    class MEM falha
+    class CPU destaque
 ```
 
 Memória excedida mata o processo. CPU excedida não mata nada — só reduz a fatia de tempo de processador que o container recebe, um mecanismo completamente diferente, coberto adiante nesta nota.

@@ -25,16 +25,18 @@ A resposta, encontrada duas camadas abaixo na arqueologia do histórico ([[07 - 
 O erro de raciocínio aqui é sutil e comum: confundir **valor de uso** com **valor total**. O TIME mede valor de negócio olhando, quase sempre implicitamente, para telemetria — quem chama a API, quem abre a tela, quem consulta a query. Isso captura bem o valor operacional. Mas existe uma segunda categoria de valor que não deixa rastro nenhum de uso porque sua função não é ser usada — é **existir, pronta, para o dia em que for exigida**. Um extintor de incêndio tem valor altíssimo mesmo que jamais tenha sido acionado; um relatório de compliance tem exatamente essa natureza. Ele não serve ao negócio no dia a dia — serve ao negócio no dia da auditoria, do processo, da fiscalização, e nesse dia a ausência dele não é um inconveniente, é uma infração.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[Componente candidato a Retire] --> B{Tem uso operacional?}
     B -->|sim| C[Valor de negocio claro:<br/>nao e candidato a Eliminate]
     B -->|nao, logs mostram zero uso| D{Escavar: existe obrigacao<br/>legal ou regulatoria?}
     D -->|sim| E[NAO deletar:<br/>Retain so a parte exigida]
     D -->|nao, confirmado| F[Retire seguro]
-    style D fill:#F5A623
-    style E fill:#D0021B
-    style F fill:#4A90D9
+    class D destaque
+    class E falha
+    class F neutro
 ```
 
 A escavação que fecha essa lacuna tem três perguntas, na ordem certa, e cada uma delas é um tipo diferente de arqueologia que o galho já ensinou:
@@ -75,13 +77,14 @@ O GDPR (Regulamento UE 2016/679), no seu artigo 17, consagra o **direito ao esqu
 A LGPD (Lei nº 13.709/2018) espelha exatamente essa estrutura no seu **artigo 16**: dados pessoais devem ser eliminados após o fim do tratamento, mas a lei autoriza expressamente a conservação para (I) cumprimento de obrigação legal ou regulatória pelo controlador, além de pesquisa, transferência a terceiros nos termos da lei, e uso exclusivo do controlador com anonimização. Ou seja: LGPD e GDPR, apesar de jurisdições diferentes, chegam à mesma arquitetura — o direito ao esquecimento é a **regra geral**, e a obrigação legal de retenção é a **exceção que a suspende**, dado a dado.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A[Titular pede exclusao<br/>LGPD art. 18 / GDPR art. 17] --> B{Existe obrigacao legal<br/>ou regulatoria de retencao<br/>para ESTE dado?}
     B -->|nao| C[Elimina o dado:<br/>direito ao esquecimento prevalece]
     B -->|sim| D[Retem apenas o necessario<br/>para a obrigacao legal;<br/>restringe uso para outros fins]
-    style B fill:#F5A623
-    style D fill:#D0021B
+    class B destaque
+    class D falha
 ```
 
 Na prática, isso significa que apagar dados de um usuário por causa de uma solicitação LGPD **não é** um `DELETE` único no banco inteiro. É uma decisão dado-a-dado: os campos de perfil, preferências e histórico de navegação podem (e devem) sair; os registros da nota fiscal daquele mesmo usuário, sujeitos a prazo fiscal, ficam — mas com o uso restrito **exclusivamente** ao propósito da obrigação legal que os mantém vivos, não mais disponíveis para marketing, recomendação ou qualquer outro fim.

@@ -25,7 +25,6 @@ publish: true
 Busca binária: cada teste elimina metade do intervalo. Para 800 commits, são cerca de 10 testes (log₂ 800 ≈ 9,6).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
     A["800 commits<br/>suspeitos"] --> B["400"] --> C["200"] --> D["100"] --> E["50"] --> F["..."] --> G["<b>1 commit</b><br/>o culpado"]
 ```

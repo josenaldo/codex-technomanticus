@@ -34,8 +34,9 @@ Esse problema tem um nome: **não-determinismo de build**. E tem solução — n
 Para entender o que está em jogo, pense assim: um build é uma função. Ela recebe código-fonte + dependências + configuração + ambiente e produz um artefato (bundle, container, executável). Se algum desses inputs varia entre duas execuções, o output varia. A questão é: quais inputs você controla, e quais você deixa escapar?
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Inputs controlados"
         S["Código-fonte\n(git commit)"]
         L["Lockfile\n(package-lock.json\npnpm-lock.yaml)"]
@@ -62,10 +63,10 @@ graph LR
 
     B --> A["Artefato\n(bundle/container)"]
 
-    style TS fill:#D0021B,color:#fff
-    style V fill:#D0021B,color:#fff
-    style E fill:#F5A623,color:#000
-    style NV fill:#F5A623,color:#000
+    class TS falha
+    class V falha
+    class E destaque
+    class NV destaque
 ```
 
 ---
@@ -226,7 +227,6 @@ key: build-${{ runner.os }}-${{ hashFiles('src/**', 'public/**', 'vite.config.*'
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant GH as GitHub Actions Runner
     participant C as Cache Store
@@ -321,8 +321,9 @@ O problema: se você quer fazer **um único build** que sirva staging, produçã
 Há três abordagens, cada uma com trade-offs:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Abordagem 1: Build por ambiente (simples, mas ineficiente)"
         BA1["npm run build\n(VITE_API_URL=staging)"]
         BA2["npm run build\n(VITE_API_URL=prod)"]
@@ -344,10 +345,10 @@ flowchart TD
         BU4 --> SRV["Servidor Node/nginx\nproxia para API real"]
     end
 
-    style BA1 fill:#F5A623,color:#000
-    style BA2 fill:#F5A623,color:#000
-    style BC fill:#4A90D9,color:#fff
-    style BS fill:#4A90D9,color:#fff
+    class BA1 destaque
+    class BA2 destaque
+    class BC neutro
+    class BS neutro
 ```
 
 **Abordagem 1 — Build por ambiente:** a mais simples. Você cria um build separado para cada ambiente, usando variáveis `VITE_*` diferentes. Funciona, é fácil de entender, mas você perde o benefício de "testar exatamente o que vai pra produção" — staging testou um bundle diferente do que vai pra prod.
@@ -446,8 +447,9 @@ Nem todas as ferramentas do ecossistema JS respeitam `SOURCE_DATE_EPOCH` ainda (
 **Hermético** significa: o build **não acessa nenhum recurso externo** durante sua execução. Ele opera em sandbox total, com todas as dependências provisionadas antes do início. Se qualquer coisa está faltando, o build falha — não improvisa.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Build não-hermético (típico de npm run build)"
         NB["Build inicia"] --> NPM_REG["❌ npm install acessa registry"]
         NB --> CURL_TOOL["❌ script baixa ferramenta via curl"]
@@ -462,11 +464,11 @@ graph TD
         PRE --> OUT2["Output garantidamente idêntico\n(hash verificável)"]
     end
 
-    style NPM_REG fill:#D0021B,color:#fff
-    style CURL_TOOL fill:#D0021B,color:#fff
-    style API fill:#D0021B,color:#fff
-    style HB fill:#1a6b1a,color:#fff
-    style OUT2 fill:#1a6b1a,color:#fff
+    class NPM_REG falha
+    class CURL_TOOL falha
+    class API falha
+    class HB ok
+    class OUT2 ok
 ```
 
 ### Por que hermeticidade é importante para segurança — não só para determinismo
@@ -732,7 +734,6 @@ jobs:
 O fluxo completo em diagrama:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant CI as CI Pipeline
     participant S as Sentry

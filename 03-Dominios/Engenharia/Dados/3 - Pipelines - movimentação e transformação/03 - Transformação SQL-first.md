@@ -88,8 +88,10 @@ O padrão que resolve isso é organizar os modelos em **camadas**, cada uma com 
 - **Marts** — o produto final, no formato que o consumidor (dashboard, analista, modelo de ML) de fato usa. É aqui que o modelo dimensional da nota 02 desta trilha (fatos e dimensões) ganha vida: `fato_vendas`, `dim_produto`, `dim_cliente` são modelos de mart, construídos a partir de modelos intermediate, que por sua vez vêm de modelos de staging.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Raw["Dado bruto (ELT)"]
         R1[("pedidos_raw")]
         R2[("itens_pedido_raw")]
@@ -126,13 +128,13 @@ graph LR
     M2 --> BI
     M3 --> BI
 
-    style Raw fill:#D0021B,color:#fff
-    style S1 fill:#F5A623,color:#000
-    style S2 fill:#F5A623,color:#000
-    style S3 fill:#F5A623,color:#000
-    style M1 fill:#4A90D9,color:#fff
-    style M2 fill:#4A90D9,color:#fff
-    style M3 fill:#4A90D9,color:#fff
+    class Raw falha
+    class S1 destaque
+    class S2 destaque
+    class S3 destaque
+    class M1 neutro
+    class M2 neutro
+    class M3 neutro
 ```
 
 O ganho de organizar em camadas é o mesmo ganho de qualquer boa separação de responsabilidades em software: cada modelo é fácil de entender isoladamente, a lógica de limpeza existe em um lugar só (princípio DRY aplicado a SQL), e o grafo de referências entre camadas — derivado automaticamente do código, como descrito acima — vira a documentação viva de como um dado bruto vira um número de negócio.
@@ -200,16 +202,17 @@ Mesmo com modelos bem construídos, testados e documentados, um problema persist
 A **semantic layer** (camada semântica, ou camada de métricas) resolve isso definindo métricas de negócio — receita, churn, *lifetime value*, taxa de conversão — **uma vez só**, de forma centralizada e versionada, geralmente por cima dos modelos de mart já transformados. A definição inclui não só a fórmula (como agregar), mas também as dimensões pelas quais a métrica pode ser cortada (por categoria, por região, por mês) e os filtros que fazem parte da definição canônica (por exemplo, "receita" já exclui pedidos cancelados por definição, então ninguém precisa lembrar de filtrar isso de novo em cada query). Todo dashboard, toda ferramenta de BI, todo modelo de ML que precisa de "receita" consulta essa mesma definição — em vez de reimplementá-la, ligeiramente diferente, em cada lugar.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Marts["Marts<br/>(fato_vendas, dim_*)"] --> SL["Semantic layer<br/>(receita, churn, LTV<br/>definidos 1 vez)"]
     SL --> BI1["Dashboard financeiro"]
     SL --> BI2["Dashboard comercial"]
     SL --> BI3["Modelo de ML"]
     SL --> BI4["Agente de IA<br/>respondendo pergunta ad-hoc"]
 
-    style Marts fill:#4A90D9,color:#fff
-    style SL fill:#F5A623,color:#000
+    class Marts neutro
+    class SL destaque
 ```
 
 Em 2026, a semantic layer ganhou um motivo adicional de peso: **agentes de IA que respondem perguntas de negócio em linguagem natural** ("qual foi a receita do trimestre?") precisam de uma fonte confiável e única de definição de métrica para não inventar um número plausível, mas errado. Uma definição de métrica bem-governada na semantic layer é, ao mesmo tempo, a fonte que alimenta o dashboard tradicional e o contexto que um agente consulta antes de responder — o que tornou a camada semântica, na prática, um pré-requisito de qualquer projeto de BI ou de IA analítica que leve governança a sério, e não mais um recurso opcional de ferramentas mais avançadas.

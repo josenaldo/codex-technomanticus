@@ -46,6 +46,7 @@ Repare no padrão: a banda inclusa cresce junto com o tamanho do plano, e em nen
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph DO["Conta DigitalOcean — uma linha por recurso"]
         D1["3x Droplet 4GB<br/>$XX/mês cada<br/>banda inclusa"]
         D2["1x Managed DB<br/>$XX/mês<br/>tier fixo"]
@@ -55,7 +56,7 @@ flowchart LR
     D2 --> T
     D3 --> T
 
-    style T fill:#2d5,stroke:#333
+    class T ok
 ```
 
 ## O terror do egress AWS: mil dimensões, uma fatura ilegível
@@ -66,6 +67,7 @@ O caso mais didático é o egress. Data transfer *para dentro* da AWS é gratuit
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph AWS["Fatura AWS — N dimensões por recurso"]
         E1["EC2 instance-hour"]
         E2["EBS GB-mês"]
@@ -78,7 +80,7 @@ flowchart TD
     end
     E1 & E2 & E3 & E4 & E5 & E6 & E7 & E8 --> Q["? — só o Cost Explorer<br/>reconstrói o total com confiança"]
 
-    style Q fill:#a33,stroke:#333
+    class Q falha
 ```
 
 Nenhuma dessas linhas é cobrança "errada" ou abusiva — cada uma reflete um custo real de infraestrutura que a AWS está repassando de forma granular. O ponto não é que a AWS é desonesta, é que **granularidade de cobrança é o preço que você paga pela granularidade de controle**. Você pode, em tese, escolher exatamente quanto IOPS provisionar, exatamente qual classe de storage usar por objeto, exatamente que tier de NAT evitar. Essa liberdade de ajuste fino é real e valiosa — mas ela tem como contrapartida uma fatura que exige instrumentação para ser entendida.
@@ -141,6 +143,8 @@ Na AWS, a mesma arquitetura — 3 instâncias EC2, 1 RDS, um bucket S3 — nasce
 
 ```mermaid
 flowchart TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Q1["Pergunta: 'quanto vou pagar mês que vem?'"]
         direction TB
     end
@@ -149,8 +153,8 @@ flowchart TB
     DO_R --> DO_C["Confiança: alta,<br/>conhecida no ato da compra"]
     AWS_R --> AWS_C["Confiança: média,<br/>depende de comportamento real de uso"]
 
-    style DO_C fill:#2d5,stroke:#333
-    style AWS_C fill:#da3,stroke:#333
+    class DO_C ok
+    class AWS_C destaque
 ```
 
 Isso não significa que a AWS é imprevisível por incompetência de design — o modelo dela é granular *de propósito*, porque diferentes times têm perfis de uso muito diferentes e granularidade permite que cada um pague só pelo que usa em cada dimensão. O DO, por outro lado, escolheu empacotar essas dimensões em planos fixos, aceitando que alguns clientes vão "pagar um pouco a mais" por capacidade não usada em troca de nunca precisar calcular a fatura com antecedência. É uma troca de design — granularidade por previsibilidade — não um erro de um lado.
@@ -186,6 +190,8 @@ Juntando os fios da nota, o critério de decisão sobre qual modelo de precifica
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Você tem FinOps dedicado<br/>ou tempo de engenharia sobrando<br/>pra otimizar custo continuamente?"] -->|Não| B["Sua carga tem picos previsíveis<br/>ou é majoritariamente estável?"]
     A -->|Sim| C["Sua escala já justifica<br/>negociar desconto por volume?"]
     B -->|Estável/previsível| D["DO: preço de tabela<br/>já perto do ótimo, zero overhead"]
@@ -193,9 +199,9 @@ flowchart TD
     C -->|Sim| F["AWS com RI/Savings Plans:<br/>desconto por volume supera<br/>a simplicidade do DO"]
     C -->|Ainda não| D
 
-    style D fill:#2d5,stroke:#333
-    style F fill:#2d5,stroke:#333
-    style E fill:#da3,stroke:#333
+    class D ok
+    class F ok
+    class E destaque
 ```
 
 O nó que mais times pequenos subestimam é o primeiro: "FinOps dedicado ou tempo sobrando" não significa "alguém vai olhar a fatura de vez em quando" — significa capacidade de instrumentação contínua. Se a resposta honesta é não, o fluxo colapsa rapidamente para DO, exceto no caso específico de carga elástica tolerante a falha, onde vale o risco calculado de usar Spot mesmo sem maturidade de FinOps plena (o desconto de até 90% compensa até um desenho imperfeito).

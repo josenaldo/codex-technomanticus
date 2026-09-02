@@ -95,8 +95,10 @@ O critério que separa as duas respostas é generalizável, e é uma pergunta s�
 Se a resposta honesta é sim — mesmo que a experiência tenha vindo por observação atenta e participação real ao lado de quem operava —, descrever com mais confiança é legítimo. Se é não — se fazer aquilo sozinho amanhã exigiria aprender de novo, com apoio, o que a outra equipe já sabia —, a fala precisa preservar a distinção com a mesma clareza que o bullet preservava por escrito.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     P["Entrevistador pergunta sobre<br/>a tecnologia mencionada no bullet"] --> T{"Se pedirem para eu fazer<br/>isso sozinho amanhã,<br/>eu consigo?"}
 
     T -->|"sim"| OP["Descrevo com confiança —<br/>a competência é real"]
@@ -104,9 +106,9 @@ graph TD
 
     PAR -.evita.-> ERRO["Deixar a resposta vaga<br/>o suficiente para soar<br/>como operação própria"]
 
-    style OP fill:#7ED321,color:#000
-    style PAR fill:#4A90D9,color:#fff
-    style ERRO fill:#D0021B,color:#fff
+    class OP destaque
+    class PAR neutro
+    class ERRO falha
 ```
 
 E isso não vale só para infraestrutura. Vale para metodologia (*"participei de um processo de definição de OKRs conduzido por outra pessoa"* não é *"eu conduzo definição de OKRs"*), para uma linguagem usada num projeto onde outra pessoa escrevia a maior parte do código crítico, para um domínio de negócio inteiro onde você apoiou uma decisão sem ser quem a tomou. O mecanismo é sempre o mesmo: **parceria é real, é valiosa, e merece ser contada com todo o detalhe que sustenta.** O erro nunca é falar sobre a parceria — é deixar a fala escorregar, sem perceber, para o vocabulário que só a operação própria autorizaria.
@@ -132,19 +134,21 @@ Quem **começa pelo adjacente**, sem nomear a lacuna — *"eu tenho uma base mui
 A sequência nomear → adjacente → prazo é a única que corresponde à ordem em que o próprio entrevistador processa a informação: primeiro ele precisa saber o que está em jogo; depois, uma razão para acreditar que a lacuna é fechável; só então o prazo faz sentido como conclusão, e não como fuga.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     N["1. Nomear a lacuna<br/>sem rodeio"] --> A["2. Dizer o adjacente<br/>que sustenta a rampa"]
     A --> P["3. Dar o prazo<br/>realista de rampa"]
 
     N -.pulado.-> E1["Prazo sem lastro<br/>soa evasivo"]
     A -.pulado.-> E2["Adjacente sem<br/>lacuna nomeada<br/>soa como desvio"]
 
-    style N fill:#4A90D9,color:#fff
-    style A fill:#4A90D9,color:#fff
-    style P fill:#7ED321,color:#000
-    style E1 fill:#D0021B,color:#fff
-    style E2 fill:#D0021B,color:#fff
+    class N neutro
+    class A neutro
+    class P destaque
+    class E1 falha
+    class E2 falha
 ```
 
 > [!example] Caso fictício

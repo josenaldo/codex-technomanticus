@@ -49,18 +49,19 @@ E ele existe porque **objeto de domínio não atravessa rede bem**. Três razõe
 3. **Ele muda por motivos internos.** Renomear um campo do domínio quebraria todos os clientes remotos.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph SRV["Servidor"]
         D["Domínio<br/>Pedido · Item · Cliente<br/>comportamento e grafo"] --> A["Assembler<br/>monta o DTO"]
     end
     A -->|"serializa e trafega"| DTO["PedidoDTO<br/>campos planos, sem comportamento"]
     DTO -->|"fronteira de processo"| C["Cliente remoto"]
 
-    style D fill:#4A90D9,color:#fff
-    style A fill:#F5A623,color:#000
-    style DTO fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
+    class D neutro
+    class A destaque
+    class DTO neutro
+    class C neutro
 ```
 
 O âmbar é onde mora o custo: o **assembler**, o código que traduz domínio em DTO e vice-versa. Ele nunca é interessante, precisa acompanhar toda mudança dos dois lados, e é onde os bugs silenciosos de campo esquecido acontecem. Esse custo é aceitável quando há uma fronteira real; é puro desperdício quando não há.

@@ -122,6 +122,9 @@ A proposta padrão de comunicação entre workers é `postMessage` com o algorit
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph "postMessage sem transferList"
         MA1[Main: ArrayBuffer\n100 MB] -->|"serialize + copy\nO(n)"| WA1[Worker: ArrayBuffer\n100 MB copy]
         MA1 -.->|"original intacto"| MA1
@@ -139,15 +142,15 @@ graph TD
         VMT -.->|"Atomics.add\nAtomics.load"| SAB
     end
 
-    style MA1 fill:#4A90D9,color:#fff
-    style MA2 fill:#4A90D9,color:#fff
-    style SAB fill:#4A90D9,color:#fff
-    style WA1 fill:#E8A838,color:#fff
-    style WA2 fill:#E8A838,color:#fff
-    style VMT fill:#E8A838,color:#fff
-    style VW1 fill:#E8A838,color:#fff
-    style VW2 fill:#E8A838,color:#fff
-    style DETACH fill:#D94A4A,color:#fff
+    class MA1 neutro
+    class MA2 neutro
+    class SAB neutro
+    class WA1 destaque
+    class WA2 destaque
+    class VMT destaque
+    class VW1 destaque
+    class VW2 destaque
+    class DETACH falha
 ```
 
 > Pense assim: um `ArrayBuffer` comum é como um documento impresso — você pode fotocopiar para cada pessoa ou entregar o original para uma só. O `SharedArrayBuffer` é como um documento numa nuvem compartilhada — todos editam o mesmo arquivo ao mesmo tempo, e quem não coordenar vai sobrescrever o trabalho do outro.

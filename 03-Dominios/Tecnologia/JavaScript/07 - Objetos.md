@@ -470,8 +470,9 @@ console.log(original.banco.porta); // 9999 — vazou!
 **Por quê?** `banco` é um objeto — o spread copia a *referência* para esse objeto, não o objeto em si. Tanto `original.banco` quanto `copia.banco` apontam para o mesmo endereço de memória.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#F5A623", "tertiaryColor": "#D0021B"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     original["original\nnome: 'Configuração'"]
     copia["copia\nnome: 'Cópia'"]
     banco["banco\nhost: 'localhost'\nporta: 9999"]
@@ -479,9 +480,9 @@ graph TD
     original -->|banco| banco
     copia -->|banco| banco
 
-    style original fill:#4A90D9,color:#fff
-    style copia fill:#4A90D9,color:#fff
-    style banco fill:#F5A623,color:#fff
+    class original neutro
+    class copia neutro
+    class banco destaque
 ```
 
 Para uma cópia verdadeiramente independente, você precisa de **cópia profunda** — tema tratado em `[[20 - Cópia, serialização e imutabilidade]]`.

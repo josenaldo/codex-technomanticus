@@ -48,7 +48,6 @@ iter.next(); // { value: undefined, done: true }
 O diagrama abaixo mostra como os consumidores (`for...of`, spread) interagem com o protocolo:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 sequenceDiagram
     participant Consumer as for...of / spread
     participant Iterable as Iterable (array, Map, custom)

@@ -27,6 +27,11 @@ Cada controle, isolado, cobre uma fatia estreita da superfície de ataque. A per
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Internet(["Internet<br/>tráfego hostil e legítimo misturados"])
 
     subgraph Borda["1. BORDA — galho 10"]
@@ -55,11 +60,11 @@ flowchart TB
     RT --> NACL --> SG --> IAM
     RT -.tráfego p/ S3/DynamoDB/etc.-> EP
 
-    style Borda fill:#3a1f1f
-    style VPCL fill:#1f2f3a
-    style SubL fill:#2a1f3a
-    style InstL fill:#1f3a2a
-    style AppL fill:#3a3a1f
+    class Borda falha
+    class VPCL neutro
+    class SubL marca
+    class InstL ok
+    class AppL destaque
 ```
 
 Repare que cada camada tem um **modelo de decisão diferente** — não é a mesma regra repetida cinco vezes por burocracia. Shield opera em volume de pacotes, sem olhar conteúdo. WAF olha conteúdo (camada 7), mas não sabe nada sobre a topologia interna da VPC. A NACL sabe sobre subnets inteiras, mas é grosseira demais para diferenciar duas instâncias na mesma subnet. O SG resolve exatamente esse ponto cego, granular por instância — mas confia cegamente em qualquer coisa que já esteja dentro da VPC, a menos que uma regra diga o contrário. E o IAM, por fim, não impede conexão nenhuma: ele decide o que a instância pode *fazer* depois de já estar autenticada, o que é uma pergunta ortogonal a "quem alcança o quê".
@@ -116,6 +121,7 @@ Um **VPC endpoint** resolve isso na raiz: o tráfego entre a instância e o serv
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph VPC["VPC — subnet privada"]
         App["Instância de app<br/>sem IP público"]
         EP["Interface Endpoint<br/>(ENI privada, via PrivateLink)"]
@@ -125,8 +131,8 @@ flowchart LR
 
     IGW["Internet Gateway"]
     NAT["NAT Gateway"]
-    style IGW fill:#3a1f1f
-    style NAT fill:#3a1f1f
+    class IGW falha
+    class NAT falha
 ```
 
 O ponto de segurança que o galho 7 não aprofundou: um Interface endpoint aceita uma **endpoint policy** — uma política em formato IAM que restringe *o que* pode ser acessado através daquele endpoint especificamente, independente das permissões IAM da instância. Isso permite, por exemplo, um endpoint que só deixa passar tráfego para um bucket S3 nomeado, mesmo que a role da instância tecnicamente tivesse permissão para outros buckets — uma segunda trava, na camada de rede, sobre uma decisão que o IAM já toma na camada de identidade. É defesa em profundidade dentro da própria defesa em profundidade.

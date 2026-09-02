@@ -35,6 +35,8 @@ No coração de todo `context.Context` está um método, `Done() <-chan struct{}
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Raiz["Contexto raiz"]
         R["context.Background()"]
     end
@@ -52,10 +54,10 @@ flowchart TB
     C1 --> C2
     C2 --> N1
 
-    style R fill:#4A90D9,color:#fff
-    style C1 fill:#F5A623,color:#000
-    style C2 fill:#F5A623,color:#000
-    style N1 fill:#F5A623,color:#000
+    class R neutro
+    class C1 destaque
+    class C2 destaque
+    class N1 destaque
 ```
 
 Cancelar `ctx1` (o timeout de 5s expirando, por exemplo) propaga automaticamente para `ctx2` e `ctx3` — todos os descendentes fecham junto. O caminho inverso não existe: cancelar `ctx3` nunca afeta `ctx1` ou `ctx2`. É uma árvore de propagação estritamente de pai para filho, e é essa garantia que torna seguro passar contextos por dezenas de camadas sem se preocupar com quem cancela o quê.

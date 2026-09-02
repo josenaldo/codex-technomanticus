@@ -95,8 +95,9 @@ Pense no faturamento do e-commerce não como uma tabela de linhas, mas como um c
 Dentro do cubo, em cada célula — na interseção de um produto específico, um mês específico, uma região específica — mora uma **medida**: um número que faz sentido somar, contar ou tirar média. Faturamento, quantidade vendida, número de pedidos. Perguntar "faturamento por categoria por mês" é simplesmente **projetar** o cubo em duas de suas dimensões e somar a medida ao longo da terceira (região, neste caso, é somada por inteiro).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Cubo["Cubo OLAP — vendas do e-commerce"]
         direction TB
         D1["Dimensão: Produto<br/>(Eletrônicos, Roupas, Livros...)"]
@@ -110,10 +111,10 @@ graph TD
     D3 -.->|eixo| Cubo
     Cubo -->|"cada célula = interseção<br/>das 3 dimensões"| M
 
-    style D1 fill:#4A90D9,color:#fff
-    style D2 fill:#4A90D9,color:#fff
-    style D3 fill:#4A90D9,color:#fff
-    style M fill:#F5A623,color:#000
+    class D1 neutro
+    class D2 neutro
+    class D3 neutro
+    class M destaque
 ```
 
 A metáfora do cubo vem acompanhada de um pequeno vocabulário de operações, que aparece com frequência em qualquer discussão de BI ou entrevista de dados:

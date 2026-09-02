@@ -30,7 +30,6 @@ Todo sistema tem partes estáveis e partes que mudam toda semana. Essa distribui
 O cruzamento dessas duas dimensões — **frequência de mudança × complexidade** — é o conceito de **hotspot**, popularizado por Adam Tornhill. É o que responde a pergunta que todo consultor de legado precisa responder na primeira semana: *"com orçamento para refatorar 5% deste sistema, qual 5%?"*.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     A["<b>Complexo</b><br/>+<br/>muda pouco"] --> A1["Feio, mas estável.<br/><b>Deixe quieto.</b>"]
     B["<b>Complexo</b><br/>+<br/>muda muito"] --> B1["<b>HOTSPOT</b><br/>é aqui que dói —<br/>prioridade máxima"]

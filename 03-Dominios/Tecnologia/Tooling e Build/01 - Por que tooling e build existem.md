@@ -83,6 +83,7 @@ Independente de qual ferramenta você usa — Vite, Webpack, esbuild, Rollup —
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     SRC["Código-fonte\n(.ts, .tsx, .js, .css, assets)"]
 
     RESOLVE["1 · RESOLVER\nEncontra onde cada import mora\n(node_modules, aliases, condicionais de export)"]
@@ -97,11 +98,11 @@ flowchart TD
 
     SRC --> RESOLVE --> TRANSPILE --> BUNDLE --> OPTIMIZE --> SERVE
 
-    style RESOLVE fill:#1a1a2e,stroke:#4a90e2,color:#e0e0ff
-    style TRANSPILE fill:#1a1a2e,stroke:#4a90e2,color:#e0e0ff
-    style BUNDLE fill:#1a1a2e,stroke:#4a90e2,color:#e0e0ff
-    style OPTIMIZE fill:#1a1a2e,stroke:#4a90e2,color:#e0e0ff
-    style SERVE fill:#1a1a2e,stroke:#4a90e2,color:#e0e0ff
+    class RESOLVE neutro
+    class TRANSPILE neutro
+    class BUNDLE neutro
+    class OPTIMIZE neutro
+    class SERVE neutro
 ```
 
 Vamos destrinchar cada etapa brevemente — as notas [[07 - O grafo de módulos e o que é bundling]] e [[08 - Transpilação e targets]] cobrem resolução/bundling e transpilação em profundidade. Aqui o objetivo é ter o mapa antes do território.
@@ -175,6 +176,7 @@ Aqui está o mapa do ecossistema atual. O objetivo *desta* nota não é detalhar
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph GERACAO1["Geração 1 — Task runners (2012-2016)"]
         GRUNT["Grunt"]
         GULP["Gulp"]
@@ -197,8 +199,8 @@ graph TD
 
     GERACAO1 --> GERACAO2 --> GERACAO3
 
-    style VITE fill:#646cff,stroke:#646cff,color:#fff
-    style ROLLDOWN fill:#646cff,stroke:#646cff,color:#fff
+    class VITE neutro
+    class ROLLDOWN neutro
 ```
 
 Os números do **State of JS 2024** (com ~11.000 respondentes) revelam o estado de transição que ainda vivemos:

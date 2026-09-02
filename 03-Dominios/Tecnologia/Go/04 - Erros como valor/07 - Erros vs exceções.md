@@ -69,12 +69,14 @@ Quatro chamadas, quatro checagens de `err`. É visivelmente mais texto — e é 
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph EX["Exceção (Java/Python/JS)"]
         direction TB
         E1["chamada 1"] --> E2["chamada 2"]
         E2 -.->|"throw invisível\nno texto local"| E3["salta pilha acima"]
         E3 --> E4["catch, em outro arquivo,\ntalvez outro tipo,\ntalvez genérico demais"]
-        style E3 fill:#D0021B,color:#fff
+        class E3 falha
     end
 
     subgraph GO["Valor de erro (Go)"]
@@ -85,8 +87,8 @@ flowchart TB
         G2 --> G2C{"err != nil?"}
         G2C -->|"sim"| G2R["return err"]
         G2C -->|"não"| G3["continua"]
-        style G1C fill:#F5A623,color:#000
-        style G2C fill:#F5A623,color:#000
+        class G1C destaque
+        class G2C destaque
     end
 ```
 

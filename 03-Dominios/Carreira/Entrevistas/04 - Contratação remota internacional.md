@@ -40,15 +40,16 @@ Sem essas respostas, é impossível saber se a oferta é melhor ou pior que o em
 ## As três modalidades
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     E["Empresa no exterior"] -->|"contrato de serviço<br/>você emite fatura"| C["<b>Contractor</b><br/>flexibilidade máxima<br/>zero proteção"]
     E -->|"intermediária contrata<br/>localmente por ela"| O["<b>EOR</b><br/>benefícios locais<br/>custo de intermediação"]
     E -->|"tem entidade no seu país"| S["<b>Subsidiária local</b><br/>vínculo tradicional<br/>mais raro"]
 
-    style C fill:#F5A623,color:#000
-    style O fill:#4A90D9,color:#fff
-    style S fill:#4A90D9,color:#fff
+    class C destaque
+    class O neutro
+    class S neutro
 ```
 
 | | **Contractor** | **EOR** | **Subsidiária local** |

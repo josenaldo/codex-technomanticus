@@ -133,7 +133,6 @@ A regra prática: para estimativas de entrevista, **aproxime cada potência de 2
 Isso é o que permite fazer a conta "5,48 × 10^12 bytes" virar "5,5 TB" de cabeça, sem parar para converter formalmente.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     REQ["Requisitos<br/>(passo 1)"] --> QPS["QPS médio e de pico<br/>usuários × ações / 86.400"]
     REQ --> STO["Storage<br/>bytes/registro × registros × retenção"]
@@ -178,7 +177,6 @@ O ponto prático: **memória é ~100.000x mais rápida que disco rígido, e ~10x
 É essa proporção que justifica, com número, a frase que aparece em quase toda entrevista de system design: **"eu colocaria um cache aqui"**. Sem a tabela, é uma opinião. Com ela, é uma consequência aritmética: "o SLA pede <100ms; ler do disco a cada request me custa ~20ms só na leitura sequencial, mais latência de rede — está no limite; cache em memória resolve com folga porque memória é ordens de grandeza mais rápida".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
     A["Requisito: redirect<br/>< 100ms p99"] --> B{"Onde o dado<br/>é lido?"}
     B -->|"Disco (~10-20ms<br/>por acesso)"| C["Risco de estourar<br/>o SLA sob carga"]

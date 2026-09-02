@@ -277,6 +277,8 @@ Nenhum padrão sozinho é suficiente. A ordem natural de composição, do mais i
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Requisição chega"] --> B{"Bulkhead:\nvaga disponível?"}
     B -- não --> R["Falha rápido"]
     B -- sim --> C{"Circuit breaker:\ncircuito fechado?"}
@@ -287,10 +289,10 @@ flowchart LR
     E -- sucesso --> G["Retorna resultado"]
     F --> R
 
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#4A90D9,color:#fff
-    style E fill:#F5A623,color:#000
+    class B neutro
+    class C destaque
+    class D neutro
+    class E destaque
 ```
 
 Na prática, um cliente de dependência externa bem construído combina os quatro numa única função. Retomando o `ClientePagamento` da seção de bulkhead, eis a versão completa — o semáforo controla concorrência, o timeout entra dentro da chamada individual, o retry envolve a chamada com backoff, e o circuit breaker envolve o retry inteiro:

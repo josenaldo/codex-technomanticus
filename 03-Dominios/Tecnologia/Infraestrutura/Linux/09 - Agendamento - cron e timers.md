@@ -164,7 +164,6 @@ Isso mostra as próximas ocorrências. Não existe equivalente no cron, onde a �
 ## Por que o timer venceu
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     A["<b>cron</b>"] --> A1["ambiente mínimo"]
     A --> A2["saída vira e-mail<br/>ou desaparece"]

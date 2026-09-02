@@ -33,15 +33,17 @@ Veja o diagrama abaixo: a distinção entre dado e código/controle é a frontei
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Entrada do usuário\n(dado não-confiável)"] --> B{{"Cruza fronteira\nde confiança?"}}
     B -- "Sim, sem validação" --> C["Dado interpretado\ncomo CÓDIGO/COMANDO"]
     B -- "Sim, com validação\n(allowlist, parametrização)" --> D["Dado permanece\ncomo DADO"]
     C --> E["Injection / XSS /\nBuffer Overflow /\nDeserialização"]
     D --> F["Comportamento\nprevisível e seguro"]
-    style C fill:#c0392b,color:#fff
-    style E fill:#922b21,color:#fff
-    style D fill:#1e8449,color:#fff
-    style F fill:#145a32,color:#fff
+    class C falha
+    class E falha
+    class D ok
+    class F ok
 ```
 
 > [!info] Leitura do diagrama
@@ -101,6 +103,7 @@ XSS é injection no contexto HTML/JavaScript. O atacante injeta script que é ex
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     XSS["XSS\n(Cross-Site Scripting)"]
     XSS --> R["Refletido\n(Reflected)"]
     XSS --> A["Armazenado\n(Stored/Persistent)"]
@@ -114,8 +117,8 @@ flowchart TD
     A1 --> DEF
     D1 --> DEF2["Defesa: evitar innerHTML;\nDOMPurify; CSP strict-dynamic"]
 
-    style A fill:#922b21,color:#fff
-    style A1 fill:#c0392b,color:#fff
+    class A falha
+    class A1 falha
 ```
 
 > [!info] Leitura do diagrama
@@ -139,6 +142,7 @@ Em C/C++, arrays não têm verificação de limites por padrão. Se você escrev
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph "Stack Frame (antes do overflow)"
         A["[buffer 8 bytes]"]
         B["[saved RBP]"]
@@ -154,8 +158,8 @@ flowchart TD
     overflow["Input malicioso\n(20 bytes > 8 bytes do buffer)"] --> D
     F --> exec["CPU executa shellcode\nou ROP chain"]
 
-    style F fill:#922b21,color:#fff
-    style exec fill:#922b21,color:#fff
+    class F falha
+    class exec falha
 ```
 
 > [!info] Leitura do diagrama
@@ -360,6 +364,10 @@ O OWASP Top 10 não é checklist de conformidade — é um **mapa de categorias 
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     T10["OWASP Top 10\n(2021)"]
 
     T10 --> A01["A01\nBroken Access Control\n(#1 pela 1a vez)"]
@@ -373,11 +381,11 @@ graph LR
     T10 --> A09["A09\nSecurity Logging and Monitoring Failures"]
     T10 --> A10["A10\nSSRF\n(nova em 2021)"]
 
-    style A01 fill:#922b21,color:#fff
-    style A02 fill:#7d6608,color:#fff
-    style A03 fill:#1a5276,color:#fff
-    style A04 fill:#4a235a,color:#fff
-    style A10 fill:#0e6655,color:#fff
+    class A01 falha
+    class A02 destaque
+    class A03 neutro
+    class A04 marca
+    class A10 marca
 ```
 
 > [!info] Leitura do diagrama

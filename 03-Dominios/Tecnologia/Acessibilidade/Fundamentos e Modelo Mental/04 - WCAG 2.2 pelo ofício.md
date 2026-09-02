@@ -34,15 +34,16 @@ Duas coisas que ela **não** é, e que evitam confusão:
 WCAG é uma pirâmide de quatro camadas. Entender a estrutura é o que permite navegar as 86 exigências sem se perder:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     P["4 Princípios — POUR<br/>Perceptível · Operável · Compreensível · Robusto"]
     P --> G["13 Diretrizes<br/>metas amplas por princípio"]
     G --> SC["86 Critérios de sucesso<br/>testáveis, verificáveis"]
     SC --> L["Cada critério tem um nível<br/>A · AA · AAA"]
-    style P fill:#4A90D9,color:#fff
-    style SC fill:#4A90D9,color:#fff
-    style L fill:#F5A623,color:#000
+    class P neutro
+    class SC neutro
+    class L destaque
 ```
 
 No topo, os **4 princípios (POUR)** — o conteúdo precisa ser **P**erceptível, **O**perável, **C**ompreensível e **R**obusto (detalhados no HTML/07). Abaixo, **diretrizes** que desdobram cada princípio em metas ("forneça alternativas em texto", "torne tudo operável por teclado"). Na base, os **critérios de sucesso** — as afirmações concretas e testáveis que você de fato verifica ("contraste de pelo menos 4.5:1 para texto normal"). Cada critério carrega um **nível de conformidade**.

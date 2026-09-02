@@ -43,13 +43,13 @@ A métrica que mais importa é **branches**: 100% de linhas com 50% de branches 
 ## Os dois provedores: v8 vs istanbul
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["--coverage"] --> B{provider}
     B --> C["v8 (default)<br/>cobertura nativa do motor<br/>rápido, sem instrumentar"]
     B --> D["istanbul<br/>instrumenta o código<br/>mais preciso, mais lento"]
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
+    class C neutro
+    class D neutro
 ```
 
 - **v8** (`@vitest/coverage-v8`): usa a cobertura que o **motor V8** já coleta nativamente. Não instrumenta seu código, então é **rápido** e não distorce o que roda. É o **default** e a escolha da maioria. Historicamente tinha imprecisões em mapear de volta ao código-fonte (via source maps), muito melhoradas ao longo do tempo.

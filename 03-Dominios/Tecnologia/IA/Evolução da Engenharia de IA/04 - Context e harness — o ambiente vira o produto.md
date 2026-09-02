@@ -123,6 +123,9 @@ Nenhuma das duas leituras muda a utilidade prática de conhecer as sete discipli
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph CTX["O QUE O AGENTE VÊ — contexto"]
         direction TB
         C1["System prompt +<br/>instruções persistentes"]
@@ -146,19 +149,19 @@ flowchart TB
     LOOP -->|ação real| MUNDO["Mundo real:<br/>código, sistemas, dados"]
     MUNDO -->|resultado| LOOP
 
-    style CTX fill:#4A90D9,color:#fff
-    style C1 fill:#4A90D9,color:#fff
-    style C2 fill:#4A90D9,color:#fff
-    style C3 fill:#4A90D9,color:#fff
-    style C4 fill:#4A90D9,color:#fff
-    style HARN fill:#F5A623,color:#000
-    style H1 fill:#F5A623,color:#000
-    style H2 fill:#F5A623,color:#000
-    style H3 fill:#F5A623,color:#000
-    style H4 fill:#F5A623,color:#000
-    style H5 fill:#F5A623,color:#000
-    style H6 fill:#F5A623,color:#000
-    style MUNDO fill:#D0021B,color:#fff
+    class CTX neutro
+    class C1 neutro
+    class C2 neutro
+    class C3 neutro
+    class C4 neutro
+    class HARN destaque
+    class H1 destaque
+    class H2 destaque
+    class H3 destaque
+    class H4 destaque
+    class H5 destaque
+    class H6 destaque
+    class MUNDO falha
 ```
 
 > [!info] Como ler o diagrama

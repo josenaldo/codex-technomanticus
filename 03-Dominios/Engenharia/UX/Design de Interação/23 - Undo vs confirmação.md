@@ -30,16 +30,18 @@ O princípio vem de **Don Norman** e é reforçado diretamente pela **heurístic
 O ponto central que a maioria erra: essas duas opções não são intercambiáveis por "prudência" — são a resposta certa a duas situações diferentes de custo de erro. Empilhar confirmação sobre uma ação que já é reversível não adiciona segurança real, porque a segurança já existia na forma de undo; só adiciona fricção, e fricção repetida é exatamente o que causa **alert fatigue**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Ação do usuário"] --> B{"É reversível em segundos<br/>e de custo baixo?"}
     B -->|sim| C["Undo: executa na hora<br/>+ toast 'Desfazer'"]
     B -->|não, é destrutiva<br/>ou cara| D["Confirmação: modal explícito<br/>antes de executar"]
     C -->|clicou desfazer| E["Reverte a ação"]
     D -->|confirmou| F["Executa, sem volta"]
-    style C fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
-    style F fill:#D0021B,color:#fff
+    class C neutro
+    class D destaque
+    class F falha
 ```
 
 **O mecanismo em uma frase:** confirmação e undo são dois mecanismos de segurança para dois tipos de risco diferentes — usar o mecanismo errado, ou os dois ao mesmo tempo, na maioria das vezes só produz fricção sem produzir segurança real.

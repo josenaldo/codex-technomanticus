@@ -107,6 +107,8 @@ Nenhuma linha do código de aplicação mudou. `conta.saldo` continua parecendo 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Antes["Antes: atributo puro"]
         A1["conta.saldo = 100"] --> A2["escreve direto no\n__dict__ da instância"]
         A3["conta.saldo"] --> A4["lê direto do\n__dict__ da instância"]
@@ -117,8 +119,8 @@ flowchart LR
         B3["conta.saldo"] --> B4["chama saldo.getter(conta)\ndevolve conta._saldo"]
     end
 
-    style Antes fill:#4A90D9,color:#fff
-    style Depois fill:#F5A623,color:#000
+    class Antes neutro
+    class Depois destaque
 ```
 
 > [!question]- Como o Python sabe que deve chamar um método em vez de simplesmente ler/gravar um valor, se a sintaxe (`obj.x`) é idêntica nos dois casos?
@@ -245,6 +247,8 @@ Na prática, `@x.deleter` é o menos usado dos três — a [documentação ofici
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["obj.x"] -->|"leitura"| B["@property\n(fget)"]
     C["obj.x = valor"] -->|"escrita"| D["@x.setter\n(fset)"]
     E["del obj.x"] -->|"remoção"| F["@x.deleter\n(fdel)"]
@@ -253,12 +257,12 @@ flowchart TB
     D --> H["Opcional — ausência\nrender o atributo read-only"]
     F --> I["Raro — só quando del\nprecisa de lógica própria"]
 
-    style A fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style D fill:#F5A623,color:#000
-    style F fill:#F5A623,color:#000
+    class A neutro
+    class C neutro
+    class E neutro
+    class B destaque
+    class D destaque
+    class F destaque
 ```
 
 ### A forma funcional (sem decorador): `property()` direto
@@ -360,16 +364,18 @@ Sem o name mangling, `SubMapeamento.update` (com a assinatura nova, incompatíve
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Atributo dentro do corpo da classe"] --> B{"Quantos underscores\niniciais?"}
     B -->|"Zero"| C["Nome normal — parte\nesperada da API pública"]
     B -->|"Um (_nome)"| D["Convenção: não-público.\nZERO mecanismo do interpretador.\nAcessível de fora sem barreira."]
     B -->|"Dois (__nome)"| E["Name mangling: interpretador\nreescreve para _Classe__nome.\nObjetivo = evitar colisão em herança,\nNÃO privacidade."]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
-    style E fill:#F5A623,color:#000
+    class A neutro
+    class B neutro
+    class C neutro
+    class D destaque
+    class E destaque
 ```
 
 > [!warning] Name mangling não é um cofre — é uma trava de gaveta, não de cofre-forte

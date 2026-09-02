@@ -42,8 +42,10 @@ O erro é semântico, não de código. A pergunta que o liveness responde é **"
 ## As três perguntas
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     S["Instância"] --> L["<b>Liveness</b><br/>'estou travado?'<br/>⇒ reiniciar"]
     S --> R["<b>Readiness</b><br/>'posso receber tráfego agora?'<br/>⇒ tirar do balanceador"]
     S --> ST["<b>Startup</b><br/>'já terminei de subir?'<br/>⇒ segurar os outros checks"]
@@ -52,9 +54,9 @@ graph TD
     R --> RN["pode verificar dependências<br/>— o efeito é reversível"]
     ST --> SN["evita reinício em<br/>aplicação de arranque lento"]
 
-    style L fill:#D0021B,color:#fff
-    style R fill:#4A90D9,color:#fff
-    style ST fill:#F5A623,color:#000
+    class L falha
+    class R neutro
+    class ST destaque
 ```
 
 **Liveness — "o processo está irrecuperável?"** A única ação possível é reiniciar, e reiniciar só resolve problemas **internos e permanentes**: deadlock, corrupção de estado, loop travado. Por isso deve ser **raso**: responder que o event loop gira e o processo atende. Verificar dependência externa aqui é o erro da cena de abertura.

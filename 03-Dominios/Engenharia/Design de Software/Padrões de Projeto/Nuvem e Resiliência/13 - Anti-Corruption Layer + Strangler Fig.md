@@ -43,14 +43,15 @@ A Anti-Corruption Layer existe para impedir exatamente isso. O nome é literal: 
 ## ACL: uma fronteira com tradução
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     L["Sistema legado<br/>TIPO_PED · OBS · STATUS='X'"] <-->|"protocolo do legado"| A["<b>Anti-Corruption Layer</b><br/>traduz · normaliza · valida"]
     A <-->|"vocabulário do domínio novo"| N["Sistema novo<br/>Pedido · Situação · Tipo"]
 
-    style L fill:#F5A623,color:#000
-    style A fill:#4A90D9,color:#fff
-    style N fill:#4A90D9,color:#fff
+    class L destaque
+    class A neutro
+    class N neutro
 ```
 
 Toda comunicação atravessa a camada, que converte nos dois sentidos. Do lado de dentro, o domínio novo só conhece **seus próprios conceitos** — nunca vê `TIPO_PED`. Do lado de fora, o legado continua falando como sempre falou.

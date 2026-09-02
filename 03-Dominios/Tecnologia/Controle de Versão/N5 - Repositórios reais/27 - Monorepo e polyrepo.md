@@ -44,7 +44,6 @@ A linha mais importante é a primeira. **Monorepo torna barata a mudança atômi
 Repositório grande dói em três dimensões diferentes, e cada uma tem remédio próprio:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     A{"O que está<br/>grande?"} --> B["<b>Histórico</b><br/>muitos commits, muitos blobs antigos"]
     A --> C["<b>Árvore atual</b><br/>arquivos demais no checkout"]

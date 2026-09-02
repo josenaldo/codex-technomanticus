@@ -91,14 +91,16 @@ Go escolheu uma terceira via, descrita pela equipe do compilador como **dictiona
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Process[int](...)\nProcess[int32](...)\nProcess[*Foo](...)\nProcess[*Bar](...)"] --> B{"Mesmo GC shape?\n(tamanho + layout de ponteiros)"}
     B -->|"int, int32: shapes diferentes\n(tamanhos diferentes)"| C["Stencil separado\npara cada shape"]
     B -->|"*Foo, *Bar: mesmo shape\n(todo ponteiro = 8 bytes,\nmesma posição de GC-scan)"| D["UM ÚNICO stencil\ncompartilhado"]
     D --> E["Dictionary passado\nem runtime diz qual\né o T real (*Foo ou *Bar)\ne quais operações usar"]
 
-    style B fill:#F5A623,color:#000
-    style D fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
+    class B destaque
+    class D neutro
+    class E neutro
 ```
 
 A ideia central: dois tipos concretos diferentes podem ter o **mesmo GC shape** — o mesmo tamanho em bytes e o mesmo layout de onde ficam os ponteiros (que o garbage collector precisa escanear). Todo ponteiro, seja `*Foo` ou `*Bar`, ocupa 8 bytes numa máquina de 64 bits e é, do ponto de vista do GC, "um ponteiro na posição X" — shape idêntico. Quando isso acontece, o compilador gera **uma única cópia de código de máquina** (o *stencil*) para os dois tipos, em vez de duplicar como C++ faria. O que diferencia a chamada `Process[*Foo]` de `Process[*Bar]` em runtime é um **dictionary** — uma estrutura implícita, passada como argumento extra e invisível na assinatura que você escreve, contendo os metadados de tipo e os ponteiros para as operações concretas (o método de comparação certo, o tamanho certo, etc.) que aquela instanciação específica precisa.

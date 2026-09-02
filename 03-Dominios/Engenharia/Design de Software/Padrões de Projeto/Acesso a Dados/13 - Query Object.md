@@ -40,8 +40,9 @@ Isso é um festival de problemas: **SQL injection** pela concatenação, **ilegi
 ## A ideia: critérios como objetos que se combinam
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     C1["nomeContém('ana')"] --> AND{{"combina<br/>(and / or)"}}
     C2["statusÉ(ATIVO)"] --> AND
     C3["valorMaiorQue(100)"] --> AND
@@ -49,8 +50,8 @@ graph LR
     Q -->|"traduz na hora"| SQL["SQL parametrizado"]
     SQL --> DB[("banco")]
 
-    style Q fill:#4A90D9,color:#fff
-    style SQL fill:#F5A623,color:#000
+    class Q neutro
+    class SQL destaque
 ```
 
 Cada condição é um **objeto** (`statusÉ(ATIVO)`), combinável com `and`/`or`. Você só adiciona ao Query Object os filtros que o usuário preencheu — nada de `1=1`, nada de concatenar. Na execução, o objeto se **traduz** em SQL **parametrizado** (adeus injeção), e o compilador valida os nomes de campo (adeus erro de digitação em runtime). O filtro virou dado manipulável, não texto.

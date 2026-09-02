@@ -109,8 +109,9 @@ O requisito de acesso, como na porta 6, é nenhum formal — qualquer pessoa pod
 O requisito de acesso é, mais uma vez, nenhum formal, mas com uma peculiaridade que a distingue de todas as outras nove: a evidência que essa porta produz é **publicamente verificável por qualquer pessoa**, sem depender da palavra de quem contribuiu. Um histórico de commits, pull requests aceitos, discussões técnicas em issues e revisão de código recebida de estranhos — tudo isso fica registrado, com timestamp, em plataformas abertas, sem que o candidato precise convencer ninguém de que aconteceu. A dúvida do leitor não é sobre veracidade, então — é sobre **substância e continuidade**: uma contribuição pontual, um único pull request corrigindo um erro de digitação na documentação, não carrega o mesmo peso que meses de colaboração sustentada, com discussão técnica real e código revisado por mantenedores experientes de um projeto relevante. É essa distinção entre contribuição pontual e colaboração sustentada que separa, na prática, um item decorativo de currículo de uma evidência genuína de capacidade técnica.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     M["Matriculado e frequentando<br/>curso regular (Art. 3º, I)"]
     S["Sem matrícula ativa<br/>em curso regular"]
 
@@ -149,11 +150,11 @@ graph TD
     P9 --> JR
     P10 --> JR
 
-    style FECH fill:#F5A623,color:#000
-    style FECH2 fill:#F5A623,color:#000
-    style JR fill:#7ED321,color:#000
-    style EST fill:#4A90D9,color:#fff
-    style TRA fill:#4A90D9,color:#fff
+    class FECH destaque
+    class FECH2 destaque
+    class JR destaque
+    class EST neutro
+    class TRA neutro
 ```
 
 O diagrama carrega a tese inteira desta nota num único traço: as portas 1, 2 e 3 exigem um vínculo institucional que só quem está matriculado (ou recém-formado, no caso do trainee) consegue satisfazer — e é esse vínculo, não competência técnica, que abre ou fecha a passagem. As portas 5 a 10 estão abertas para qualquer um, matriculado ou não, mas nenhuma delas entrega, por construção, os até dois anos de experiência supervisionada e remunerada que a porta 1 pode entregar. O autodidata puro (porta 6) chega ao mesmo destino final — a vaga de júnior — mas chega direto, sem o intervalo de acúmulo que quem passou por estágio ou trainee teve. Não é uma falha pessoal; é a arquitetura do próprio mercado, e é essa arquitetura, não a falta de talento, que explica boa parte da dificuldade que o autodidata relata na primeira candidatura.

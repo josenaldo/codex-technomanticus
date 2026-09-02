@@ -72,14 +72,16 @@ Repare em `cmdline` e `memstats`: eles aparecem sem você ter registrado nada �
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["expvar.NewInt / NewFloat / NewString / NewMap"] --> B["Var registrada\nno expvar.Map global"]
     C["import _ 'expvar' (init automático)"] --> D["/debug/vars\nhttp.HandleFunc"]
     B --> D
     E["runtime.ReadMemStats\n(automático)"] --> D
     D --> F["Resposta JSON\n(cliente HTTP, curl, browser)"]
 
-    style D fill:#4A90D9,color:#fff
-    style F fill:#F5A623,color:#000
+    class D neutro
+    class F destaque
 ```
 
 `expvar.NewInt`, `NewFloat`, `NewString` e `NewMap` retornam ponteiros para tipos que já são **thread-safe** — todos usam operações atômicas ou mutex internamente, então chamar `.Add()` de várias goroutines concorrentes é seguro sem lock extra do seu lado. Isso importa porque contadores de requisição normalmente são incrementados de handlers concorrentes.
@@ -153,14 +155,16 @@ func main() {
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["runtime interno\n(heap, GC, scheduler)"] --> B["metrics.All()\ncatálogo de nomes"]
     A --> C["metrics.Read(samples)\nvalores atuais"]
     B -.->|"nomes usados para\nmontar samples"| C
     C --> D["metrics.Sample.Value\nKindUint64 / KindFloat64 /\nKindFloat64Histogram"]
     D --> E["seu exporter\n(expvar, Prometheus, log)"]
 
-    style C fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
+    class C neutro
+    class D destaque
 ```
 
 Os nomes seguem um padrão hierárquico com unidade no sufixo — `/memory/classes/heap/objects:bytes`, `/sched/goroutines:goroutines`, `/gc/pauses:seconds` — o que torna o catálogo autodescritivo: dá pra saber o que uma métrica mede e em que unidade só pelo nome, sem consultar documentação externa.

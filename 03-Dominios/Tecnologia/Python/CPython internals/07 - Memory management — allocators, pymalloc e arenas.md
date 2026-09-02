@@ -70,6 +70,8 @@ A ideia central de pymalloc é pedir memória ao SO em **blocos grandes e raros*
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     SO["Sistema Operacional\n(mmap / VirtualAlloc)"] -->|"pedido raro,\nbloco grande"| Arena
 
     subgraph Arena["ARENA — 256 KiB (tradicional) / 1 MiB (64-bit moderno)"]
@@ -87,12 +89,12 @@ flowchart TB
 
     P1 -.->|"subdividido em"| Pool1Detail
 
-    style SO fill:#4A90D9,color:#fff
-    style Arena fill:#4A90D9,color:#fff
-    style P1 fill:#F5A623,color:#000
-    style P2 fill:#F5A623,color:#000
-    style P3 fill:#F5A623,color:#000
-    style Pool1Detail fill:#F5A623,color:#000
+    class SO neutro
+    class Arena neutro
+    class P1 destaque
+    class P2 destaque
+    class P3 destaque
+    class Pool1Detail destaque
 ```
 
 **1. Arenas** — o nível mais grosso, o único que de fato conversa com o sistema operacional. Uma arena é um bloco contíguo de memória obtido via `mmap()`/`VirtualAlloc()`. O tamanho histórico, desde a primeira versão do alocador (fusão em 2001), era **256 KiB** — valor que ainda aparece na maioria dos artigos e cursos sobre o tema, incluindo builds 32-bit atuais. Builds modernas de 64 bits, porém, usam **1 MiB por arena** (a documentação oficial atual do CPython confirma esse valor — ver Fontes), uma mudança motivada por objetos 64-bit serem estruturalmente maiores (mais ponteiros de 8 bytes em vez de 4) e por reduzir a frequência de chamadas de sistema para gerenciar arenas. Cada arena contém até 64 pools.
@@ -144,14 +146,17 @@ A regra de liberação de arena é estrita: **uma arena só é desmapeada e devo
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Processo aloca e libera\nmilhões de objetos pequenos"] --> B{"Algum pool da arena\nainda tem 1+ bloco em uso?"}
     B -- "Sim (o caso comum)" --> C["Arena permanece mapeada\n(RSS não cai)"]
     B -- "Não — TODOS os pools\nda arena estão vazios" --> D["Arena é desmapeada\n(munmap/VirtualFree)\nRSS cai de verdade"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#D0021B,color:#fff
-    style D fill:#F5A623,color:#000
+    class A neutro
+    class B neutro
+    class C falha
+    class D destaque
 ```
 
 Isso não é um defeito de implementação — é uma troca deliberada. Verificar "esta arena ficou vazia?" a cada desalocação individual seria caro (percorrer 64 pools a cada `Py_DECREF` que zera um refcount); e mesmo que fosse barato, devolver e re-obter arenas repetidamente ao SO tem seu próprio custo (`mmap`/`munmap` não são operações grátis). Pymalloc prioriza o caso comum — um programa que continua alocando objetos pequenos, para os quais a arena provavelmente será reutilizada em breve — sobre o caso raro de "esse programa nunca mais vai precisar de memória de novo".

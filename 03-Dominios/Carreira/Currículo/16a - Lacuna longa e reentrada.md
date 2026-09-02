@@ -82,8 +82,10 @@ Repare no que essa operação é de verdade. Não é maquiagem de datas, não é
 > Registrar isso fez duas coisas, e a segunda é a que importa. Encurtou o afastamento de **64 para 36 meses**, porque é em nov/2019 que ele de fato termina. E, sobretudo, **datou a volta**: o trabalho que veio depois — outros projetos, ainda não registrados — pertence a outra categoria da vida, e o documento passa a dizer isso sozinho. Nenhuma data foi alterada. Nenhuma entrada foi inventada. Só parou de existir um trabalho invisível. Os repositórios são privados e não têm link público, no mesmo padrão de fonte já usado pelas notas [[03-Dominios/Carreira/Currículo/05 - Formato e legibilidade de máquina|05]] e [[03-Dominios/Carreira/Currículo/18 - Adaptar por vaga sem reescrever|18]] para ferramental do autor.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph ANTES["Antes — um silêncio de natureza indefinida"]
         A1["Último emprego<br/>até nov/2016"] --> A2["vão de 64 meses<br/>nov/2016 → mar/2022"]
         A2 --> A3["Emprego novo<br/>a partir de mar/2022"]
@@ -96,10 +98,10 @@ graph TD
         B4 --> B5["Emprego novo<br/>a partir de mar/2022"]
     end
 
-    style A2 fill:#D0021B,color:#fff
-    style B2 fill:#F5A623,color:#000
-    style B4 fill:#7ED321,color:#000
-    style B3 fill:#4A90D9,color:#fff
+    class A2 falha
+    class B2 destaque
+    class B4 destaque
+    class B3 neutro
 ```
 
 A mesma vida, os mesmos meses, nenhuma mentira — e duas leituras completamente diferentes. É a lógica que a [[03-Dominios/Carreira/Currículo/16 - A seção de experiência profissional|nota 16]] já usa para passagens curtas: apresentar o mesmo material sob uma estrutura que já explica, sozinha, o que aconteceu.

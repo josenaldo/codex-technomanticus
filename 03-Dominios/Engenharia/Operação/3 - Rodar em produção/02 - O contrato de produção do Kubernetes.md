@@ -31,7 +31,6 @@ Ninguém mudou uma linha de lógica de negócio. O código do checkout está cor
 Esse é o assunto desta nota. O Kubernetes não é hostil por natureza — ele é **literal**. Ele faz exatamente o que as probes, os requests/limits e a resposta a sinais dizem para fazer. O trabalho de operar uma app em produção sobre K8s não é aprender a sintaxe de um `Deployment` (isso é o monólito [[Kubernetes]]) — é aprender a **honrar o contrato** que o orquestrador espera da sua aplicação, para que ele trabalhe a seu favor em vez de contra você.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     APP["Sua aplicação"] -->|"declara via probes"| STATE["Estado observável:<br/>viva? pronta? iniciando?"]
     APP -->|"declara via<br/>requests/limits"| RES["Necessidade de recurso:<br/>mínimo e teto"]
@@ -66,7 +65,6 @@ O terceiro probe, mais recente, existe para resolver uma tensão entre os outros
 O **startup probe** resolve isso desacoplando os dois relógios. Enquanto o startup probe não reportar sucesso, o Kubernetes **não executa nem liveness nem readiness** — a app ganha uma janela de inicialização com seu próprio orçamento de tempo (`failureThreshold × periodSeconds`), sem que isso afete a agressividade do liveness em regime permanente. Assim que o startup probe passa uma vez, ele nunca mais é chamado, e os outros dois assumem.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant K as kubelet
     participant C as Container
@@ -114,7 +112,6 @@ Segundo a [documentação oficial de gerenciamento de recursos](https://kubernet
   - **Memória é incompressível.** Não existe "esperar a memória liberar" — se o container ultrapassa o `limit` de memória, o kernel Linux o mata com um OOM kill (o famoso exit code 137), sem aviso prévio, no meio de qualquer operação que estivesse em andamento.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
     REQ["requests: o que peço<br/>(scheduler decide onde cabe)"] --> LIM["limits: meu teto<br/>(kubelet impõe em runtime)"]
     LIM --> CPU["CPU: compressível<br/>estoura → THROTTLE<br/>(mais lento, não morre)"]
@@ -151,7 +148,6 @@ Quando o Kubernetes decide terminar um Pod — um `rolling update`, um `scale do
 5. Se, ao fim do grace period, o processo ainda estiver rodando, o kubelet manda **SIGKILL** — encerramento imediato, sem chance de limpeza.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant EP as EndpointSlice (Service)
     participant K as kubelet

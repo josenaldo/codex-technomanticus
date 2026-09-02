@@ -48,13 +48,14 @@ O problema é de granularidade. **Enunciados são infinitos; famílias são sete
 **Conflito.** A armadilha está em contar a história como uma disputa que você venceu. O que se mede não é quem tinha razão — é **como você se refere a alguém que não está na sala para se defender**. A resposta forte tem três elementos: qual era o argumento **dele** (enunciado com justiça), o que você concedeu ou incorporou, e como vocês chegaram a uma decisão. Uma história em que você estava certo o tempo todo e o outro simplesmente cedeu é a que mais levanta suspeita.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q["'Conte sobre uma discordância técnica'"] --> A["❌ <b>Resposta fraca</b><br/>'eu estava certo, ele insistia<br/>no jeito antigo, no fim fizemos<br/>do meu jeito e deu certo'"]
     Q --> B["✅ <b>Resposta forte</b><br/>o argumento dele, enunciado com justiça<br/>+ o que você concedeu<br/>+ como decidiram<br/>+ o que aconteceu depois"]
 
-    style A fill:#D0021B,color:#fff
-    style B fill:#4A90D9,color:#fff
+    class A falha
+    class B neutro
 ```
 
 **Fracasso.** Aqui os dois erros são simétricos e igualmente custosos. O **humblebrag** — "meu fracasso foi me dedicar demais" — informa que você não vai admitir erro, o que é péssimo sinal para quem vai trabalhar com você. E o **fracasso terceirizado** — o projeto falhou porque o cliente mudou de ideia, o time anterior deixou um desastre — informa a mesma coisa por outro caminho. A resposta forte tem uma **decisão sua** que se mostrou errada, dita sem rodeio, seguida do que mudou na sua prática.

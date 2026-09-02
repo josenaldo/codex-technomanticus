@@ -30,6 +30,7 @@ Um mapa dos 4 tipos de stream, suas APIs de criação e consumo — antes de ent
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Tipos["Os 4 tipos"]
         R["Readable\nfonte de dados"]
         W["Writable\ndestino de dados"]
@@ -56,10 +57,10 @@ flowchart LR
     D --> DC --> DP
     T --> TC --> TP
 
-    style R fill:#4A90D9,color:#fff
-    style W fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style T fill:#4A90D9,color:#fff
+    class R neutro
+    class W neutro
+    class D neutro
+    class T neutro
 ```
 
 ---

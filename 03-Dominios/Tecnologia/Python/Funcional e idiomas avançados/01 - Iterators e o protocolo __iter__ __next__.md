@@ -55,6 +55,9 @@ O ponto que costuma confundir quem chega vindo da nota do Data Model é: **todo 
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Iteravel["Iterável (implementa __iter__)"]
         A["lista, tupla, dict, str,\narquivo aberto, sua classe..."]
     end
@@ -68,12 +71,12 @@ flowchart TB
 
     C -.->|"quando esgota"| D["StopIteration"]
 
-    style Iteravel fill:#4A90D9,color:#fff
-    style Iterator fill:#F5A623,color:#000
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
-    style D fill:#D0021B,color:#fff
+    class Iteravel neutro
+    class Iterator destaque
+    class A neutro
+    class B destaque
+    class C neutro
+    class D falha
 ```
 
 Um jeito rápido de verificar a distinção no REPL, com a própria lista do exemplo de abertura:

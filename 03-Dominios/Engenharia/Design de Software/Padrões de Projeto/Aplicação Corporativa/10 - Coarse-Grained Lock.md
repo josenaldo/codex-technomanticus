@@ -47,8 +47,9 @@ Se a regra vale para o conjunto, o lock precisa ser do conjunto. Duas implementa
 **Lock da raiz** (*root lock*) — o grupo tem um objeto raiz natural (o pedido, a apólice), e travar a raiz vale por todos. Alterar um item significa verificar e incrementar a versão do **pedido**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph FINO["Lock por registro — a invariante escapa"]
         P1["Pedido v3<br/>desconto 10%"] --- I1["Item A v2"]
         P1 --- I2["Item B v5"]
@@ -61,9 +62,9 @@ graph TD
         N2["qualquer mudança<br/>incrementa Pedido.v<br/>o segundo a salvar conflita"]
     end
 
-    style N1 fill:#D0021B,color:#fff
-    style P2 fill:#4A90D9,color:#fff
-    style N2 fill:#4A90D9,color:#fff
+    class N1 falha
+    class P2 neutro
+    class N2 neutro
 ```
 
 O ganho é que a **fronteira de consistência fica explícita**: existe um lugar no sistema que declara "estas coisas mudam juntas e são verificadas juntas". O custo é contenção — quem mexer em qualquer parte disputa com quem mexer em qualquer outra.

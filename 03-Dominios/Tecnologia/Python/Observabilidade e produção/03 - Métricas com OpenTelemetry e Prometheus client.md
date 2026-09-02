@@ -33,12 +33,12 @@ O primeiro instinto de quem investiga é abrir o log de erros do serviço. Ele e
 A causa raiz, encontrada horas depois, é banal: uma tabela sem índice numa coluna que passou a ser filtrada com mais frequência desde uma feature lançada há dez dias, crescendo linha a linha à medida que o produto ganhava tração. Cada query individual continuava respondendo — nunca deu timeout, nunca lançou exceção —, só ficava marginalmente mais lenta a cada milhares de linhas novas na tabela. Um sintoma clássico de degradação por crescimento de dados, o tipo de problema que **nenhum** log de erro pontual detecta, porque não existe "erro" no sentido estrito — existe uma curva de latência subindo, e só uma métrica coletada continuamente, com histórico, expõe uma curva.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     D1["Seg: p95 = 80ms<br/>0 erros"] --> D2["Qua: p95 = 160ms<br/>0 erros"]
     D2 --> D3["Sex semana seguinte:<br/>p95 = 340ms<br/>0 erros"]
     D3 -->|"log de erro:<br/>nada a reportar"| BLIND["🔴 Ninguém percebeu —<br/>sem métrica de latência,<br/>a curva não existia"]
-    style BLIND fill:#D0021B,color:#fff
+    class BLIND falha
 ```
 
 > [!question]- Por que não bastava um alerta de "latência alta" configurado num limiar fixo?
@@ -229,8 +229,10 @@ A diferença de vocabulário mais visível entre os dois caminhos: `prometheus_c
 Os "4 golden signals" — latência, tráfego, erros, saturação — vêm do *Google SRE Book* como o conjunto mínimo de sinais que, monitorados juntos, cobrem a maior parte dos problemas de saúde de um serviço. Cada um deles mapeia diretamente para um (ou dois) dos três tipos de métrica cobertos acima:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     GS["4 Golden Signals"] --> LAT["Latência<br/>quanto tempo leva?"]
     GS --> TRAF["Tráfego<br/>quanta demanda?"]
     GS --> ERR["Erros<br/>quantos falham?"]
@@ -241,10 +243,10 @@ graph TD
     ERR -->|instrumentado com| CNT2["Counter<br/>http.server.requests<br/>filtrado por status_code≥500"]
     SAT -->|instrumentado com| GAU["Gauge<br/>db.client.connections.usage"]
 
-    style LAT fill:#4A90D9,color:#fff
-    style TRAF fill:#4A90D9,color:#fff
-    style ERR fill:#D0021B,color:#fff
-    style SAT fill:#F5A623,color:#000
+    class LAT neutro
+    class TRAF neutro
+    class ERR falha
+    class SAT destaque
 ```
 
 Repare que **erros** não exige um instrumento novo — é o mesmo Counter de tráfego, fatiado pelo atributo `status_code`. Essa reutilização é deliberada: um único Counter bem rotulado (`http.server.requests`, com labels `method`, `route`, `status_code`) responde tráfego (soma de todas as séries) **e** erros (soma filtrada por `status_code` ∈ `{5xx}`) ao mesmo tempo, sem duplicar instrumentação.

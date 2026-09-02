@@ -113,6 +113,8 @@ Repare no que a frase não diz. Ela não diz "todo sistema precisa de mais camad
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph G1["Grafo fechado — ungrounded"]
         direction TB
         A1((A)) --- B1((B))
@@ -139,20 +141,20 @@ flowchart TB
         HUM --> R
     end
 
-    style G1n fill:#D0021B,color:#fff
-    style A1 fill:#D0021B,color:#fff
-    style B1 fill:#D0021B,color:#fff
-    style C1 fill:#D0021B,color:#fff
-    style D1 fill:#D0021B,color:#fff
-    style E1 fill:#D0021B,color:#fff
-    style F1 fill:#D0021B,color:#fff
-    style H1 fill:#D0021B,color:#fff
+    class G1n falha
+    class A1 falha
+    class B1 falha
+    class C1 falha
+    class D1 falha
+    class E1 falha
+    class F1 falha
+    class H1 falha
 
-    style M fill:#4A90D9,color:#fff
-    style ANC fill:#4A90D9,color:#fff
-    style FRZ fill:#4A90D9,color:#fff
-    style HUM fill:#4A90D9,color:#fff
-    style R fill:#4A90D9,color:#fff
+    class M neutro
+    class ANC neutro
+    class FRZ neutro
+    class HUM neutro
+    class R neutro
 ```
 
 O vermelho, no primeiro subgrafo, não marca um nó defeituoso — marca que **nenhum** nó ali tem uma saída para fora do círculo, por mais consistente que o círculo seja internamente. O azul, no segundo, marca que o mesmo conjunto de operações (MODEL, TEST, JUDGE, WATCH, GOAL, TUNE — os mesmos verbos de melhoria que aparecem em qualquer loop ou grafo deste galho) continua existindo, só que agora com três cordas descendo até uma linha que nenhum desses verbos controla.

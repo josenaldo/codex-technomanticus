@@ -35,16 +35,18 @@ Um trace só é útil se reproduzir o problema **do usuário**, não da sua máq
 ## As trilhas que importam
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[Trace gravado] --> B["Timeline / métricas<br/>LCP, layout shifts, interações"]
     A --> C["Main thread<br/>flame chart das tarefas"]
     A --> D["Rede<br/>cascata de recursos"]
     C --> E["⚠ long task<br/>(triângulo vermelho)"]
     E --> F["Call tree / Bottom-up<br/>→ a função culpada"]
-    style C fill:#4A90D9,color:#fff
-    style E fill:#D0021B,color:#fff
-    style F fill:#F5A623,color:#000
+    class C neutro
+    class E falha
+    class F destaque
 ```
 
 - **Trilha da main thread (flame chart):** o coração do diagnóstico de runtime. Cada barra é uma tarefa; barras aninhadas são a pilha de chamadas. **Long tasks** (>50 ms) aparecem marcadas com um **triângulo/canto vermelho**, e o Chrome sinaliza **"Forced reflow"** quando detecta layout thrashing (G3 nota 05). É onde você vê a função que segura a thread.

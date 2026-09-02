@@ -50,7 +50,6 @@ A ideia central é simples de enunciar e fácil de errar na implementação: **o
 6. Em cada request, o servidor pega o ID do cookie, consulta a store, recupera o estado da sessão, e sabe quem está falando — sem o cliente ter enviado credencial de novo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant U as Navegador
     participant S as Servidor
@@ -97,7 +96,6 @@ Essas definições vêm do [MDN — Set-Cookie](https://developer.mozilla.org/en
 Um detalhe que separa quem decorou a tabela de quem entende o mecanismo: **`HttpOnly` não impede o cookie de ser enviado** — ele só impede o *JavaScript* de lê-lo. O navegador continua anexando o cookie em toda request, inclusive as disparadas por `fetch()`. Essa distinção é exatamente o que abre a porta para CSRF: o atacante não precisa *ler* o cookie, só precisa que o navegador da vítima o *envie* — e `HttpOnly` não impede isso.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
     XSS["Ataque: XSS<br/>(lê o cookie via JS)"] -->|"bloqueado por"| HO["HttpOnly"]
     MITM["Ataque: interceptação<br/>de rede"] -->|"bloqueado por"| SEC["Secure"]
@@ -112,7 +110,6 @@ graph LR
 **Cross-Site Request Forgery** explora exatamente o comportamento que faz sessão ser conveniente: o navegador anexa o cookie **automaticamente**, sem o site que fez o request precisar pedir permissão. Segundo o [OWASP CSRF Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html), um site malicioso — um e-mail, um blog, um anúncio — engana o navegador autenticado da vítima a executar uma ação indesejada no site confiável.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#D0021B", "primaryBorderColor": "#8B0000", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant V as Vítima (navegador, logada em banco.com)
     participant M as site-malicioso.com
@@ -216,7 +213,6 @@ Onde JWT genuinamente ganha: **APIs stateless consumidas por múltiplos clientes
 Em uma frase: **a pergunta certa nunca é "sessão ou JWT é melhor" — é "meu cliente é um navegador que aceita cookie, ou um client que precisa carregar sua própria prova de identidade sem depender de uma store central?"**
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
     Q["Meu cliente é<br/>um navegador same-domain?"] -->|"sim"| S["Sessão + cookie<br/>HttpOnly/Secure/SameSite<br/>+ store compartilhada"]
     Q -->|"não — mobile,<br/>terceiros, microserviços"| J["JWT / token<br/>(ver nota 03)"]

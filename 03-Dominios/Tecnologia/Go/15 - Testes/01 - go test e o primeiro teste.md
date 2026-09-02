@@ -37,6 +37,8 @@ calculadora/
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Pacote["pacote calculadora"]
         A["calculadora.go\n(código de produção)"]
         B["calculadora_test.go\n(testes)"]
@@ -47,8 +49,8 @@ flowchart LR
     D["go test"] -->|"compila e roda"| A
     D -->|"compila e roda"| B
 
-    style B fill:#F5A623,color:#000
-    style A fill:#4A90D9,color:#fff
+    class B destaque
+    class A neutro
 ```
 
 O sufixo `_test.go` não é uma convenção de estilo que alguém poderia ignorar — é reconhecido pelo próprio comando `go build`, que **exclui** esses arquivos do binário final. Isso significa uma coisa concreta: o código de teste nunca engorda o artefato que vai para produção, mesmo morando no mesmo diretório, no mesmo pacote, importando os mesmos símbolos internos (não exportados) do código que testa. `go build` nunca vê `calculadora_test.go`; `go test` vê os dois.
@@ -62,6 +64,8 @@ Uma função de teste em Go segue uma assinatura rígida, reconhecida pelo coman
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["func"] --> B["TestSoma"]
     B --> C["(t *testing.T)"]
     C --> D["{ ... }"]
@@ -69,8 +73,8 @@ flowchart LR
     B -.->|"prefixo Test +\nmaiúscula"| B
     C -.->|"único parâmetro:\nponteiro para testing.T"| C
 
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
+    class B destaque
+    class C neutro
 ```
 
 Três exigências, todas verificadas pelo `go test` antes de considerar a função um teste:

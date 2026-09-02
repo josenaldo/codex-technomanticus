@@ -37,6 +37,7 @@ A documentação oficial descreve `root` com uma frase que vale citar ao pé da 
 
 ```mermaid
 graph TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "root — concatena a URI inteira"
         R0["Request: GET /i/top.gif"] --> R1["location /i/<br/>root /data/w3;"]
         R1 --> R2["Caminho = valor de root<br/>+ URI completa"]
@@ -51,8 +52,8 @@ graph TB
         A3 --> A4["/data/w3/images/top.gif"]
     end
 
-    style R4 fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style A4 fill:#1e5c3a,stroke:#27ae60,color:#fff
+    class R4 ok
+    class A4 ok
 ```
 
 Repare no que o diagrama deixa visível: para a mesma URI de entrada, `/i/top.gif`, e o mesmo prefixo de `location`, `/i/`, os dois caminhos finais diferem só porque um deles carrega o prefixo casado dentro do resultado e o outro não. Isso não é uma diferença cosmética de sintaxe — é uma diferença de modelo mental inteira. Com `root`, o diretório declarado precisa espelhar a estrutura de URIs por baixo dele: se o `location` é `/i/`, o conteúdo físico precisa estar mesmo dentro de um subdiretório `i/` dentro do valor de `root`, porque `root` nunca desconta esse prefixo. Com `alias`, o diretório declarado é livre para ter qualquer nome físico, desconectado do prefixo público — é exatamente o caso de uso que motivou o exemplo de abertura desta nota: servir `/static/` a partir de um diretório chamado `assets`, sem precisar renomear nada no disco nem criar um subdiretório `static/` artificial só para satisfazer `root`.

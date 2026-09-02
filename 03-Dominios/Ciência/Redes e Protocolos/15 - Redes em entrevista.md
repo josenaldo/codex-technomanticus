@@ -36,14 +36,16 @@ A maioria dos candidatos só treina a primeira face. A segunda — debugging de 
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Q["Pergunta de rede<br/>na entrevista"] --> TIPO{"Projetar ou<br/>investigar?"}
     TIPO -->|"&#34;projete a<br/>comunicação&#34;"| SD["System design<br/>escolher trade-offs"]
     TIPO -->|"&#34;está lento,<br/>investigue&#34;"| DBG["Debugging<br/>eliminar suspeitos<br/>camada por camada"]
     SD --> CHK["Checklist: protocolo,<br/>sync/async, cache,<br/>balanceamento, resiliência"]
     DBG --> ARV["Árvore de diagnóstico:<br/>DNS? TLS? TCP?<br/>app? round-trips seriais?"]
 
-    style SD fill:#1e3a5f,color:#fff
-    style DBG fill:#5f1e2e,color:#fff
+    class SD neutro
+    class DBG falha
 ```
 
 **Leitura do diagrama:** a primeira bifurcação que você faz mentalmente é o tipo da pergunta. System design puxa o checklist da seção 3; debugging puxa a árvore de diagnóstico da seção 2. Errar o balde — atacar "está lento" desenhando uma arquitetura nova — é o erro clássico de quem está nervoso.
@@ -65,6 +67,8 @@ A árvore de diagnóstico que eu percorro mentalmente:
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     LENTO["Endpoint lento<br/>(ex.: 1.5s)"] --> APP{"O backend em si<br/>é lento?<br/>(profile, EXPLAIN)"}
     APP -->|"Sim — query,<br/>CPU, GC"| FIXAPP["Otimizar app/banco<br/>(fora da rede)"]
     APP -->|"Não — app<br/>responde em 20ms"| REDE["O custo está na rede"]
@@ -79,8 +83,8 @@ flowchart TD
     SERIAL -->|Sim| FIXPAR["Paralelizar<br/>(CompletableFuture),<br/>cachear respostas"]
     SERIAL -->|Não| POOL["Falta connection<br/>pooling? Timeout?<br/>Retry sem backoff?"]
 
-    style REDE fill:#5f1e2e,color:#fff
-    style FIXPAR fill:#1e5f2e,color:#fff
+    class REDE falha
+    class FIXPAR ok
 ```
 
 **Leitura do diagrama:** a primeira eliminação é separar app de rede — o `EXPLAIN ANALYZE` faz isso. Confirmado que a app é rápida, você desce a pilha: DNS (`[[04 - DNS]]`) é o mais barato de verificar e cachear; depois o TLS handshake numa conexão nova (`[[05 - TLS e HTTPS]]`); depois TCP slow start numa conexão fria (`[[02 - TCP]]`); depois round-trips seriais que dá pra paralelizar (`[[12 - Latência, throughput e os números]]`); e por fim a ausência de connection pooling e timeouts (`[[14 - Resiliência de rede]]`). O caso real cruzou três desses nós de uma vez — DNS não cacheado + TLS repetido + serial — e por isso somava 1.5s.
@@ -95,6 +99,9 @@ Quando a pergunta é "projete a comunicação deste sistema", você não improvi
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     START["&#34;Projete a comunicação<br/>deste sistema&#34;"] --> PROTO["1. Qual protocolo?<br/>REST / gRPC / GraphQL /<br/>mensageria"]
     PROTO --> SYNC["2. Síncrono ou<br/>assíncrono?"]
     SYNC --> PUSH["3. Precisa push<br/>servidor→cliente?<br/>SSE / WebSocket"]
@@ -103,9 +110,9 @@ flowchart TD
     LB --> RESIL["6. Como resistir<br/>a falha? Timeout,<br/>retry, circuit breaker"]
     RESIL --> NUM["7. Os números batem?<br/>RTT, throughput,<br/>round-trips"]
 
-    style PROTO fill:#1e3a5f,color:#fff
-    style RESIL fill:#5f1e2e,color:#fff
-    style NUM fill:#5f4a1e,color:#fff
+    class PROTO neutro
+    class RESIL falha
+    class NUM destaque
 ```
 
 **Leitura do diagrama:** é um pipeline de sete perguntas, da escolha estrutural (protocolo) à validação aritmética (os números). Você não precisa responder todas em toda pergunta, mas tê-las na cabeça impede de esquecer a resiliência ou de propor algo cujos números não fecham.
@@ -263,6 +270,9 @@ Esta nota fecha quinze. As três fases convergem aqui — o capstone é onde a t
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph INI["Iniciado — os fundamentos"]
         N01["01 — Rede e<br/>modelo de camadas"]
         N02["02 — TCP"]
@@ -293,10 +303,10 @@ flowchart TD
     N12 -.peso.-> CAP
     N14 -.peso.-> CAP
 
-    style CAP fill:#5f1e2e,color:#fff
-    style N12 fill:#5f4a1e,color:#fff
-    style N14 fill:#5f4a1e,color:#fff
-    style N10 fill:#1e3a5f,color:#fff
+    class CAP falha
+    class N12 destaque
+    class N14 destaque
+    class N10 neutro
 ```
 
 **Leitura do diagrama:** as três fases (Iniciado → Adepto → Magus) empilham conhecimento e desaguam no capstone. As linhas tracejadas marcam as notas de maior peso para a entrevista: TCP, DNS e TLS (os suspeitos da árvore de debugging), REST/GraphQL/gRPC (a escolha de protocolo), os números de latência, e a resiliência de rede. São essas seis que você quer ter na ponta da língua.

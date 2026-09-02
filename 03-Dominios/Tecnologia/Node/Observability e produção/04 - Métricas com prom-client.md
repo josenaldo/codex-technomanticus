@@ -32,6 +32,9 @@ A aplicação nunca empurra dados: ela apenas mantém estado em memória e respo
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph app["Aplicação Node.js"]
         C["Counter\n(só aumenta)"]
         G["Gauge\n(sobe e desce)"]
@@ -43,14 +46,14 @@ flowchart TB
     P -->|"PromQL"| GF["Grafana\n(Dashboard)"]
     P --> AL["Alertmanager"]
 
-    style R fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style G fill:#4A90D9,color:#fff
-    style H fill:#F5A623,color:#fff
-    style S fill:#D0021B,color:#fff
-    style P fill:#F5A623,color:#fff
-    style GF fill:#4A90D9,color:#fff
-    style AL fill:#D0021B,color:#fff
+    class R neutro
+    class C neutro
+    class G neutro
+    class H destaque
+    class S falha
+    class P destaque
+    class GF neutro
+    class AL falha
 ```
 
 ## O que é

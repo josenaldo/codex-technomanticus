@@ -30,13 +30,14 @@ O ângulo radical aqui não é "agrupar dados com funções". É a ideia de que 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Pedido cliente"] -->|"sacar(100)"| B["Conta<br/>estado: saldo=500<br/>(escondido)"]
     B -->|"resposta: ok"| A
     B -.->|"mensagem"| C["Extrato<br/>estado proprio"]
     A -->|"transferir(50)"| D["Conta destino<br/>estado proprio"]
-    style B fill:#1e3a5f,color:#fff
-    style C fill:#1e3a5f,color:#fff
-    style D fill:#1e3a5f,color:#fff
+    class B neutro
+    class C neutro
+    class D neutro
 ```
 
 Leitura do diagrama: o cliente nunca toca no `saldo` diretamente — ele manda a mensagem `sacar(100)` e recebe uma resposta. Cada objeto (Conta, Extrato, Conta destino) carrega seu próprio estado, blindado. A colaboração acontece pelas setas, não pela memória compartilhada.
@@ -63,6 +64,8 @@ OO é, em grande medida, uma **resposta a esse problema**. A jogada é: pegue o 
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph IMP["Imperativo: estado solto"]
         G["estado global"]
         F1["funcao A"] --> G
@@ -78,9 +81,9 @@ flowchart TB
         O2 -->|"resposta"| O1
     end
     IMP -.->|"domar o estado"| OO
-    style G fill:#5f1e1e,color:#fff
-    style O1 fill:#1e3a5f,color:#fff
-    style O2 fill:#1e3a5f,color:#fff
+    class G falha
+    class O1 neutro
+    class O2 neutro
 ```
 
 Leitura do diagrama: à esquerda, várias funções escrevem e leem o mesmo estado global (vermelho) — ninguém sabe quem mudou o quê. À direita, cada objeto guarda o próprio estado (azul) e só interage via mensagem. A seta tracejada é a tese: OO domar o estado solto do imperativo.
@@ -110,6 +113,8 @@ Nem toda OO é igual. Há dois eixos de divergência que vale pincelar.
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph CLS["Baseado em classes"]
         Classe["Classe Cachorro<br/>(molde)"]
         Classe --> Inst1["rex : Cachorro"]
@@ -120,8 +125,8 @@ flowchart TB
         Proto -.->|"clona/delega"| Obj1["rex"]
         Obj1 -.->|"clona/delega"| Obj2["bob"]
     end
-    style Classe fill:#1e3a5f,color:#fff
-    style Proto fill:#3a1e5f,color:#fff
+    class Classe neutro
+    class Proto marca
 ```
 
 Leitura do diagrama: à esquerda, uma classe-molde gera instâncias. À direita, não há molde — objetos nascem de outros objetos por clonagem/delegação, formando uma cadeia. Mesma intenção (reúso de comportamento), mecanismos diferentes.
@@ -138,6 +143,8 @@ A indústria implementou outra coisa. Na maioria das linguagens de classes mains
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph MSG["Mensagem (Kay / Smalltalk / actors)"]
         direction LR
         S1["objeto A"] -->|"manda 'sacar:100'"| S2["objeto B<br/>decide em runtime<br/>como responder<br/>(pode nem entender)"]
@@ -147,8 +154,8 @@ flowchart TB
         C1["chamador"] -->|"resolve na vtable"| C2["Conta::sacar<br/>(endereco fixado<br/>em compilacao)"]
     end
     MSG -.->|"a industria escolheu o de baixo"| CALL
-    style S2 fill:#3a1e5f,color:#fff
-    style C2 fill:#1e3a5f,color:#fff
+    class S2 marca
+    class C2 neutro
 ```
 
 Leitura do diagrama: em cima, o modelo de mensagem — A lança um pedido e B, autônomo, decide o que fazer (e pode até não entender a mensagem, devolvendo um erro em runtime). Embaixo, a chamada de método — o conjunto de respostas é resolvido pela vtable, fixado em compilação. A seta tracejada registra a tese: o que a indústria chamou de OO foi majoritariamente o modelo de baixo.
@@ -168,6 +175,8 @@ Esta é a comparação mais frutífera — e a que mais cai em conversa de entre
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph OOG["OO: agrupa por DADOS"]
         direction TB
         Ped["Pedido<br/>--- dados ---<br/>itens, status<br/>--- metodos ---<br/>confirmar()<br/>cancelar()<br/>total()"]
@@ -178,9 +187,9 @@ flowchart LR
         Fns["confirmar(pedido)<br/>cancelar(pedido)<br/>total(pedido)"]
         Fns -->|"recebe e devolve novo"| Dados
     end
-    style Ped fill:#1e3a5f,color:#fff
-    style Dados fill:#1e5f3a,color:#fff
-    style Fns fill:#1e5f3a,color:#fff
+    class Ped neutro
+    class Dados ok
+    class Fns ok
 ```
 
 Leitura do diagrama: à esquerda, OO encapsula dados E comportamento na mesma caixa (o Pedido sabe se confirmar). À direita, FP mantém o dado de um lado e as funções de outro; as funções recebem o dado e devolvem um novo, sem mutar. Duas formas de fatiar o mesmo problema.
@@ -219,6 +228,8 @@ Adicionar `perimetro()` é *trivial e isolado*: escreve-se uma função nova com
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph MATRIZ["Matriz tipos x operacoes"]
         direction TB
         H["         | area | render | (nova op)"]
@@ -230,8 +241,8 @@ flowchart TB
     FPaxis["FP: coluna nova = FACIL<br/>(uma funcao nova, isolada)<br/>linha nova = DIFICIL<br/>(mexe em todas as funcoes)"]
     MATRIZ --> OOaxis
     MATRIZ --> FPaxis
-    style OOaxis fill:#1e3a5f,color:#fff
-    style FPaxis fill:#1e5f3a,color:#fff
+    class OOaxis neutro
+    class FPaxis ok
 ```
 
 Leitura do diagrama: pense numa tabela onde as **linhas são tipos** e as **colunas são operações**. Adicionar uma *linha* (novo tipo) é fácil em OO e difícil em FP; adicionar uma *coluna* (nova operação) é fácil em FP e difícil em OO. Cada paradigma deixa um eixo barato e o outro caro — e eles escolhem eixos opostos. Não há almoço grátis: o problema da expressão é precisamente o nome dessa impossibilidade de ter os dois eixos baratos sem maquinário extra (typeclasses, visitor pattern, multimethods).

@@ -52,7 +52,6 @@ Representação serializada da árvore de componentes, usada pelo React para hid
 ## Diagrama: shell → chunks independentes
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 sequenceDiagram
     participant B as Browser
     participant N as Next.js Server

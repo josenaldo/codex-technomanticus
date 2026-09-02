@@ -50,7 +50,6 @@ O init tradicional era uma sequência de scripts numerados executados em ordem. 
 O `systemd` inverte. Você **declara objetos** e as relações entre eles; ele calcula o grafo e executa o que puder ao mesmo tempo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     T["<b>multi-user.target</b><br/>o 'estado desejado' do sistema"] --> A["nginx.service"]
     T --> B["minha-app.service"]

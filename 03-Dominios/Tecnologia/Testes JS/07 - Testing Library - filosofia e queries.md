@@ -38,15 +38,15 @@ Isso conecta direto à [[03-Dominios/Engenharia/Testes/06 - Testar comportamento
 Toda query existe em três formas, e escolher a certa é metade da habilidade:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["preciso do elemento"] --> B{ele já está lá?}
     B -->|sim, deve existir| C["getBy*<br/>falha se não achar"]
     B -->|quero afirmar AUSÊNCIA| D["queryBy*<br/>retorna null"]
     B -->|"aparece depois (async)"| E["findBy*<br/>espera, retorna Promise"]
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
+    class C neutro
+    class D neutro
+    class E neutro
 ```
 
 | Variante | Se **não** acha | Se acha | Assíncrona? | Use para |

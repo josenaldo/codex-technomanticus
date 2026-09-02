@@ -58,6 +58,8 @@ A lógica de matching é estrutural e literal: o TypeScript avalia se a string c
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     TL["'${Method} ${Path}'\n(template literal type)"]
     EX["Expansão em\ntempo de compilação"]
     UN["Union de 12\nstring literals"]
@@ -65,8 +67,8 @@ flowchart LR
 
     TL --> EX --> UN --> CHK
 
-    style EX fill:#2a3a5a,color:#fff
-    style CHK fill:#1a472a,color:#fff
+    class EX neutro
+    class CHK ok
 ```
 
 > [!tip] Padrão aberto com `string`
@@ -144,6 +146,8 @@ O `string & K` é necessário porque `keyof T` pode incluir `symbol` e `number`,
 
 ```mermaid
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     EM["EventMap\n{ click: MouseEvent, focus: FocusEvent }"]
     KY["keyof EventMap\n'click' | 'focus' | 'blur'"]
     TL["'on${Capitalize<K>}'\n'onClick' | 'onFocus' | 'onBlur'"]
@@ -153,8 +157,8 @@ flowchart TD
     KY -->|"key remapping\n(as 'on${...}')"| TL
     TL --> MT
 
-    style TL fill:#4a3000,color:#fff
-    style MT fill:#1a472a,color:#fff
+    class TL destaque
+    class MT ok
 ```
 
 Outro padrão comum é derivar getters e setters de um tipo de modelo:
@@ -228,6 +232,8 @@ type E2 = ParseEndpoint<"DELETE /posts/1">;
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     IN["'${infer Event}:${infer Namespace}'\nEntrada: 'user:created'"]
     M1["Captura: Event = 'user'"]
     M2["Captura: Namespace = 'created'"]
@@ -235,8 +241,8 @@ flowchart LR
 
     IN --> M1 & M2 --> OUT
 
-    style IN fill:#2a1a4a,color:#fff
-    style OUT fill:#1a472a,color:#fff
+    class IN marca
+    class OUT ok
 ```
 
 ---

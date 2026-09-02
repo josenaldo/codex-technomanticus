@@ -62,7 +62,6 @@ Na prática, a indústria constrói três camadas de defesa contra esse erro:
 **3. Resposta — rotacionar, não só remover.** Este é o ponto que mais gente erra na prática, e vale grifar: **remover o segredo do código não neutraliza o vazamento**. A credencial continua válida até que alguém a invalide ativamente no sistema que a emitiu — trocar a senha, revogar a chave de API, reemitir o certificado. A documentação de remediação do GitHub é explícita sobre isso: qualquer segredo vazado deve ser considerado **imediatamente comprometido**, e o passo essencial é revogá-lo/rotacioná-lo no provedor de origem — remover do git é limpeza, não remediação.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant Dev as Desenvolvedor
     participant Git as Push protection
@@ -110,15 +109,16 @@ Um **secret manager** — HashiCorp Vault, AWS Secrets Manager, GCP Secret Manag
 A documentação do Vault descreve a diferença entre secret estático e dinâmico como uma escolha estrutural: um secret estático (uma senha fixa configurada uma vez) exige rotação manual ou agendada — por padrão o Vault pode rotacionar credenciais de banco a cada 24 horas, com granularidade mínima de 5 segundos, ou seguir um cron custom. Um secret dinâmico é gerado *no momento em que a aplicação pede*, com TTL curto, e simplesmente deixa de existir quando expira — não há "rotação" no sentido de trocar um valor por outro, porque o valor nunca teve vida longa o suficiente para precisar disso.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Secret manager<br/>(Vault / AWS Secrets Manager)"] -->|"1. autentica<br/>(IAM role / K8s SA)"| B["Container sobe"]
     B -->|"2. pede o secret<br/>em runtime"| A
     A -->|"3. injeta como<br/>env var ou arquivo montado"| C["Processo da aplicação<br/>já rodando"]
     D["Imagem de container"] -.->|"❌ NUNCA contém<br/>o secret"| C
     E["Repositório git"] -.->|"❌ NUNCA contém<br/>o secret em claro"| A
-    style D fill:#F5A623,color:#000
-    style E fill:#D0021B,color:#fff
+    class D destaque
+    class E falha
 ```
 
 O ponto central desse diagrama — e o requisito explícito desta nota — é que **o segredo entra no processo em runtime, nunca antes**. A imagem de container é um artefato imutável que pode circular por registries, ser copiada, arquivada, inspecionada por qualquer pessoa com acesso ao registry; se um secret estivesse embutido nela via `ARG`/`ENV` no build, ele estaria permanentemente gravado nas layers da imagem — visível até com um simples `docker history` ou extraindo o filesystem da layer. A injeção em runtime — via variável de ambiente populada pelo orquestrador, um arquivo montado por um sidecar/CSI driver, ou uma chamada direta da aplicação ao secret manager na inicialização — garante que o segredo só existe na memória do processo em execução, nunca em um artefato persistido.

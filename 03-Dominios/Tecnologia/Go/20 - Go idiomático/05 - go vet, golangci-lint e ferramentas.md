@@ -32,14 +32,16 @@ Mas formatação é só a camada mais visível. Um nível abaixo, existe uma cla
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["gofmt / goimports<br/>(formatação — lei, não opinião)"] --> B["go vet<br/>(bugs prováveis, alta confiança)"]
     B --> C["staticcheck<br/>(centenas de checks — correção,<br/>simplificação, performance)"]
     C --> D["golangci-lint<br/>(agregador: vet + staticcheck +<br/>dezenas de outros, em paralelo)"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#7ED321,color:#000
+    class A neutro
+    class B neutro
+    class C destaque
+    class D destaque
 ```
 
 Cada camada resolve um problema diferente, e a ordem importa porque cada uma pressupõe a anterior:

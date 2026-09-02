@@ -38,8 +38,9 @@ object                                                           →  o "resto" 
 Funções, arrays, datas, mapas — tudo isso é `object`. A distinção real está entre os 7 [[Dicionário de JavaScript#primitivo|primitivos]] e o `object`.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#fff", "edgeLabelBackground": "#fff"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     JS["Tipos JavaScript"] --> PRIM["Primitivos (7)"]
     JS --> OBJ["object"]
 
@@ -56,9 +57,9 @@ graph TD
     OBJ --> FN["Function"]
     OBJ --> DATE["Date, Map, Set..."]
 
-    style NULL fill:#F5A623,color:#000
-    style OBJ fill:#4A90D9,color:#fff
-    style JS fill:#4A90D9,color:#fff
+    class NULL destaque
+    class OBJ neutro
+    class JS neutro
 ```
 
 > [!question]- Por que `null` está marcado com ⚠️?
@@ -246,8 +247,10 @@ console.log(obj1.nome); // "Bob" — ambas as variáveis apontam para o mesmo ob
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Stack ["Stack (variáveis)"]
         A["obj1"] --> |referência| MEM
         B["obj2"] --> |referência| MEM
@@ -256,9 +259,9 @@ graph LR
         MEM["{ nome: 'Bob' }"]
     end
 
-    style MEM fill:#4A90D9,color:#fff
-    style Stack fill:#f0f4ff
-    style Heap fill:#fff4e0
+    class MEM neutro
+    class Stack marca
+    class Heap destaque
 ```
 
 O mesmo acontece em funções:

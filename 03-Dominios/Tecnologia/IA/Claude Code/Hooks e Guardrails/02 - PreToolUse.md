@@ -540,6 +540,9 @@ Três formas de escrever um hook que *parece* correto no teste manual e falha ju
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Receive["Hook recebe JSON via stdin"]
     Parse["Parse: tool_name + tool_input"]
     Check{"Condição verificada\n(padrão, arquivo, conteúdo)"}
@@ -554,9 +557,9 @@ flowchart TD
     Modify -- "sim" --> ReturnJSON
     Modify -- "não" --> Approve
 
-    style Block fill:#c0392b,color:#fff
-    style Approve fill:#27ae60,color:#fff
-    style ReturnJSON fill:#2980b9,color:#fff
+    class Block falha
+    class Approve ok
+    class ReturnJSON neutro
 ```
 
 ---

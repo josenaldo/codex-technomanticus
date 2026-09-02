@@ -366,6 +366,8 @@ A semelhança com `Blueprint` é deliberada — `prefix` funciona identicamente 
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Flask["Flask — rota no handler"]
         F1["@app.route() no arquivo do handler"] --> F2["Blueprint agrupa rotas relacionadas"]
         F2 --> F3["app.register_blueprint(bp)"]
@@ -382,10 +384,10 @@ flowchart TB
         A1 --> A4["type hint do path param<br/>já valida antes do handler rodar"]
     end
 
-    style F1 fill:#4A90D9,color:#fff
-    style D1 fill:#4A90D9,color:#fff
-    style A1 fill:#4A90D9,color:#fff
-    style A4 fill:#F5A623,color:#000
+    class F1 neutro
+    class D1 neutro
+    class A1 neutro
+    class A4 destaque
 ```
 
 ## O mesmo CRUD, lado a lado

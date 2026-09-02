@@ -48,6 +48,9 @@ A separação é análoga ao trabalho de um médico: exame clínico e exames com
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[Bug reportado] --> B[Descreva comportamento\nobservado vs. esperado]
     B --> C[Agente forma hipóteses\ncom evidências esperadas]
     C --> D[Adicionar logging\nde diagnóstico]
@@ -61,9 +64,9 @@ flowchart TD
     J --> K[Remover logging\ntemporário]
     K --> L[✓ Bug resolvido\ncom prevenção]
 
-    style A fill:#fff5f5,stroke:#ff6b6b
-    style L fill:#f0fff4,stroke:#51cf66
-    style G fill:#fff9db,stroke:#fab005
+    class A falha
+    class L ok
+    class G destaque
 ```
 
 > [!summary] Diagnosticar antes de corrigir não é mais lento — é mais rápido. Um fix direcionado a uma causa confirmada raramente precisa de iterações. Um fix para um sintoma frequentemente esconde o problema e aparece de novo.

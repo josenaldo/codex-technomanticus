@@ -38,7 +38,6 @@ Antes de julgar cada uma individualmente, vale separar o que cada peça realment
 - **ESB** resolve um problema de *topologia de integração*: como conectar N sistemas sem criar N² conexões ponto a ponto, cada uma com sua própria lógica de transformação e roteamento.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TB
     P["Problema geral:<br/>sistemas corporativos<br/>heterogêneos precisam<br/>trocar mensagens de forma confiável"]
     P --> J["JMS (1998)<br/>API portável em Java"]
@@ -94,13 +93,13 @@ Se JMS é a API, **IBM MQ** é, historicamente, o broker mais associado a ela �
 A origem é anterior ao próprio JMS: no final dos anos 1980, engenheiros da IBM em Hursley (Reino Unido) perceberam que precisavam de uma forma de comunicar sistemas transacionais como o CICS com sistemas não-IBM, sem exigir que os dois lados estivessem disponíveis ao mesmo tempo — o mesmo problema de acoplamento temporal que abre toda essa trilha. O resultado, lançado comercialmente em dezembro de 1993, foi o **MQSeries** — um "gerenciador de filas" (queue manager) com um conjunto pequeno de ideias que se tornaram o vocabulário padrão da mensageria enterprise: filas como buffers nomeados, um processo dono dessas filas, uma interface de programação comum (a MQI), e canais para mover mensagens entre queue managers em hosts diferentes. Em 2002 foi renomeado para WebSphere MQ, e em 2014 voltou a se chamar simplesmente **IBM MQ**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Sistema A<br/>(mainframe z/OS)"] -->|"MQPUT"| QA["Queue Manager A"]
     QA -->|"canal MQ<br/>(rede, pode cair)"| QB["Queue Manager B"]
     QB -->|"MQGET"| B["Sistema B<br/>(Linux/x86)"]
-    style QA fill:#4A90D9,color:#fff
-    style QB fill:#4A90D9,color:#fff
+    class QA neutro
+    class QB neutro
 ```
 
 ### Por que confiabilidade extrema, não velocidade, é o critério do MQ
@@ -127,8 +126,8 @@ A terceira peça deste legado é diferente das outras duas em um aspecto crucial
 O conceito de Enterprise Service Bus surgiu no início dos anos 2000 — publicado inicialmente por analistas do Gartner, Roy W. Schulte e Yefim V. Natis — como a resposta prática a um problema real da **SOA (Service-Oriented Architecture)**, o paradigma arquitetural dominante da época. SOA propunha reutilizar serviços de negócio como componentes desacoplados; o ESB era a peça de infraestrutura que fazia essa promessa funcionar na prática. A alternativa que o ESB substituía era pior: conexões ponto a ponto entre cada par de sistemas, que crescem em complexidade quadrática (N sistemas geram até N² conexões, cada uma com sua lógica própria de tradução de formato). O ESB propôs um modelo **hub-and-spoke**: todo sistema conecta a um barramento central, que assume a responsabilidade de rotear, transformar formato de dados, converter protocolo, e (em implementações mais ambiciosas) orquestrar a composição de múltiplas chamadas.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Sem ESB — ponto a ponto (N²)"
         A1[Sistema A] --- B1[Sistema B]
         A1 --- C1[Sistema C]
@@ -147,7 +146,7 @@ graph TB
         ESB --> C2
         ESB --> D2
     end
-    style ESB fill:#F5A623,color:#000
+    class ESB destaque
 ```
 
 Produtos como **TIBCO BusinessWorks**, **IBM WebSphere ESB**, **MuleSoft** (antes de se reposicionar como plataforma iPaaS) e **Oracle Service Bus** dominaram esse mercado ao longo dos anos 2000 e início dos 2010, vendidos como a espinha dorsal de integração de grandes empresas.

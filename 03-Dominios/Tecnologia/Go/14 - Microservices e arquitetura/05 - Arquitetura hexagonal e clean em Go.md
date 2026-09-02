@@ -48,6 +48,8 @@ A ideia central — batizada de *arquitetura hexagonal* por Alistair Cockburn e 
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Fora["Fora — adapters"]
         HTTP["HTTP handler\n(adapter de entrada)"]
         PG["Postgres repository\n(adapter de saída)"]
@@ -66,9 +68,9 @@ flowchart TB
     PG -.->|implementa| PORT1
     MSG -.->|implementa| PORT2
 
-    style SERV fill:#4A90D9,color:#fff
-    style PORT1 fill:#F5A623,color:#000
-    style PORT2 fill:#F5A623,color:#000
+    class SERV neutro
+    class PORT1 destaque
+    class PORT2 destaque
 ```
 
 Duas categorias de *adapter* aparecem no diagrama, e vale nomeá-las porque a distinção evita confusão:

@@ -41,16 +41,17 @@ Separar os dois conceitos dá ao designer — e ao engenheiro que faz esse papel
 2. **Signifier:** o que *comunica* que essa ação é possível, e como fazê-la? (Cor, contraste, sombra, borda, posição, forma do cursor, label.)
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Affordance<br/>o que o elemento permite"] -->|comunicada por| S["Signifier<br/>sombra, borda, cor, posição"]
     S --> U["Modelo mental do usuário<br/>'isso parece clicável'"]
     U -->|ação| R["Resultado"]
     A2["Affordance sem signifier"] -->|nada comunica| X["Usuário não descobre a ação"]
-    style A fill:#4A90D9,color:#fff
-    style S fill:#4A90D9,color:#fff
-    style A2 fill:#D0021B,color:#fff
-    style X fill:#D0021B,color:#fff
+    class A neutro
+    class S neutro
+    class A2 falha
+    class X falha
 ```
 
 O elemento do cenário de abertura tinha affordance (era clicável de verdade) e não tinha signifier (nada sinalizava isso). O erro oposto também existe e é igualmente comum: um elemento com signifier forte de "botão" — sombra, cor de destaque, cantos arredondados — que na verdade não faz nada quando clicado, porque o `onClick` nunca foi implementado ou foi removido num refactor. Os dois erros custam confiança do usuário; o segundo é pior, porque ensina a pessoa a desconfiar de todos os outros signifiers do produto.

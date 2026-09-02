@@ -40,8 +40,9 @@ A pergunta que esta nota responde, então, não é "qual framework de auth usar 
 Antes de entrar no código, vale desenhar o território — porque em Go, ao contrário de Java ou Node, não existe *o* pacote de auth. Existem peças pequenas e ortogonais que você combina.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Framework["Framework HTTP"]
         Gin["Gin — 48%<br/>dominante"]
         Echo["Echo — 16%"]
@@ -67,11 +68,11 @@ graph TD
     Gin -->|"middleware"| Sessao
     Gin -->|"handler de callback"| Social
 
-    style Gin fill:#4A90D9,color:#fff
-    style JWT fill:#4A90D9,color:#fff
-    style OIDC fill:#4A90D9,color:#fff
-    style Gorilla fill:#F5A623,color:#000
-    style GS fill:#F5A623,color:#000
+    class Gin neutro
+    class JWT neutro
+    class OIDC neutro
+    class Gorilla destaque
+    class GS destaque
 ```
 
 **Framework HTTP.** O JetBrains *Go Ecosystem Survey* de 2025-2026 confirma o que a comunidade já sentia: Gin é hoje usado por 48% dos desenvolvedores Go, contra 17% do venerável Gorilla/mux, 16% do Echo e 11% do Fiber[^jetbrains-2025]. A diferença para 2020 (Gin tinha 41%) mostra consolidação, não disputa aberta — Gin ganhou a preferência do mercado como "o Express do Go": leve, com uma API de roteamento ergonômica, middleware chain explícita e desempenho competitivo sem a complexidade de frameworks mais "batteries-included" como Beego. É por isso que esta nota fala especificamente de Gin, e não de "Go" em abstrato — o idioma de auth muda pouco entre frameworks, mas os detalhes de API (como registrar middleware, como passar dados entre handlers) são de Gin.
@@ -90,8 +91,10 @@ graph TD
 Para uma API que serve um SPA ou um app mobile — o caso majoritário em 2026 — o fluxo recomendado é: o cliente autentica contra um IdP (seu próprio serviço, emitindo JWT localmente, ou um Keycloak externo, emitindo via OAuth 2.1 + OIDC como já visto em [[2 - OAuth 2.1 e OpenID Connect/02 - Authorization Code + PKCE — o fluxo canônico|Authorization Code + PKCE]]), e toda requisição subsequente à API Go carrega o token no header `Authorization: Bearer <token>`. O middleware de auth do Gin intercepta **toda** rota protegida, valida o token, e só deixa passar se ele for genuíno.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Requisição chega<br/>Authorization: Bearer token"] --> B{"AuthMiddleware<br/>gin.HandlerFunc"}
     B -->|"header ausente"| C["c.AbortWithStatusJSON 401<br/>c.Abort()"]
     B -->|"header presente"| D{"Parse + Verify<br/>golang-jwt ou go-oidc"}
@@ -100,10 +103,10 @@ graph TD
     E --> F["Handler final<br/>c.Get('claims')"]
     F --> G["200 OK + recurso"]
 
-    style B fill:#4A90D9,color:#fff
-    style C fill:#D0021B,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style G fill:#F5A623,color:#000
+    class B neutro
+    class C falha
+    class E neutro
+    class G destaque
 ```
 
 Repare no ponto crítico do diagrama: **toda saída de erro precisa terminar em `c.Abort()`**, não só num `return`. Isso é a armadilha número um de quem começa em Gin, e voltamos a ela na seção de armadilhas.
@@ -237,7 +240,6 @@ A `RegisteredClaims` embutida traz os campos padrão do RFC 7519 (`exp`, `iat`, 
 O cenário muda quando o token não foi emitido pelo seu serviço, mas por um Identity Provider externo — o caso canônico desta trilha é o Keycloak, coberto em profundidade no sub-galho 5. Aqui você não tem a chave de verificação de antemão: precisa descobrir o emissor, buscar as chaves públicas via JWKS, e mantê-las atualizadas conforme o IdP rotaciona chaves. Reimplementar isso na mão é possível, mas repetitivo e cheio de detalhes fáceis de errar (cache de chave, matching por `kid`, validação de `iss`/`aud`) — exatamente o trabalho que `coreos/go-oidc` automatiza.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant App as App Go (startup)
     participant KC as Keycloak (IdP)

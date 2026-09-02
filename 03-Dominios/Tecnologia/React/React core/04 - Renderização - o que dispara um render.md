@@ -56,20 +56,22 @@ Trigger → Render → Commit → Paint
 ## O fluxo visual completo
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#fff", "primaryBorderColor": "#357ABD", "lineColor": "#999", "secondaryColor": "#F5A623", "tertiaryColor": "#eee"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     T([Trigger\nex: setState]) -->|enfileira render| R[Render\nReact chama\na função]
     R -->|retorna JSX| C{Commit\ndiferenças\nno DOM?}
     C -->|sim, há diff| D[Aplica no DOM]
     C -->|não, output idêntico| S[DOM intacto\nnenhum paint]
     D --> P([Paint\nBrowser\npinta pixels])
 
-    style T fill:#4A90D9,color:#fff,stroke:#357ABD
-    style R fill:#4A90D9,color:#fff,stroke:#357ABD
-    style C fill:#F5A623,color:#fff,stroke:#c97e00
-    style D fill:#4A90D9,color:#fff,stroke:#357ABD
-    style S fill:#aaa,color:#fff,stroke:#888
-    style P fill:#4A90D9,color:#fff,stroke:#357ABD
+    class T neutro
+    class R neutro
+    class C destaque
+    class D neutro
+    class S marca
+    class P neutro
 ```
 
 Observe o detalhe importante: se o JSX que o componente retorna for **idêntico** ao que já está no DOM, o React não toca no DOM e o browser não repinta nada. Render não implica necessariamente paint.
@@ -251,7 +253,6 @@ O `StrictMode` chama a função do componente **duas vezes** em desenvolvimento 
 ## O fluxo completo de ponta a ponta
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#fff", "primaryBorderColor": "#357ABD", "lineColor": "#666"}}}%%
 sequenceDiagram
     participant U as Usuário
     participant C as Componente

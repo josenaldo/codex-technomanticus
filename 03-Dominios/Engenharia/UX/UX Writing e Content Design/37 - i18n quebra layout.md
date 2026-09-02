@@ -42,14 +42,15 @@ Código escrito pensando só em inglês tende a assumir que existem apenas duas 
 A consequência visual mais direta da expansão de string: o botão dimensionado para o comprimento do texto em inglês trunca, quebra em duas linhas de forma inesperada, ou estoura o container quando o texto real (mais longo) chega — exatamente o cenário de abertura desta nota.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     T["Texto original (EN)<br/>'Add to cart'"] -->|"tradução"| E["Texto expandido (DE)<br/>'In den Warenkorb legen'"]
     E --> D{"Layout foi projetado<br/>com folga?"}
     D -->|"não"| Q["Trunca / quebra layout"]
     D -->|"sim"| OK["Se ajusta sem quebrar"]
-    style Q fill:#D0021B,color:#fff
-    style OK fill:#4A90D9,color:#fff
+    class Q falha
+    class OK neutro
 ```
 
 **O mecanismo em uma frase:** todo layout testado com uma única string, num único idioma, carrega uma suposição implícita de comprimento fixo — e essa suposição só é revelada como falsa no momento em que uma string mais longa (ou uma direção de leitura invertida) tenta ocupar o mesmo espaço.

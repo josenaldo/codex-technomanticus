@@ -33,6 +33,8 @@ Ninguém decidiu "vamos vazar a senha". Foi uma consequência de tratar o secret
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Secret nasce\n(provider externo)"] --> B["Entra no processo Go\n(env / arquivo / API do vault)"]
     B --> C["Vive em memória\n(struct, variável)"]
     C --> D{"Onde escapa?"}
@@ -42,12 +44,12 @@ flowchart TB
     D -->|"painel de debug / pprof"| H["Dump de memória / trace"]
     D -->|"git commit"| I["Histórico do repositório — permanente"]
 
-    style A fill:#4A90D9,color:#fff
-    style E fill:#D0021B,color:#fff
-    style F fill:#D0021B,color:#fff
-    style G fill:#D0021B,color:#fff
-    style H fill:#D0021B,color:#fff
-    style I fill:#D0021B,color:#fff
+    class A neutro
+    class E falha
+    class F falha
+    class G falha
+    class H falha
+    class I falha
 ```
 
 Cada seta vermelha nesse diagrama é uma escolha de código que este capítulo mostra como evitar.
@@ -169,6 +171,8 @@ Banido o hardcode e fechada a fuga por log/erro, resta a pergunta de origem: de 
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Env["1. Variável de ambiente"]
         E1["os.Getenv"] --> E2["Simples, universal\nvisível em /proc, painéis de CI"]
     end
@@ -182,9 +186,9 @@ flowchart LR
     Env -.->|"sofisticação crescente"| Mount
     Mount -.-> VaultBox
 
-    style E2 fill:#F5A623,color:#000
-    style M2 fill:#4A90D9,color:#fff
-    style V2 fill:#7ED321,color:#000
+    class E2 destaque
+    class M2 neutro
+    class V2 destaque
 ```
 
 **1. Variável de ambiente** — o padrão mais comum, e o ponto de partida legítimo para a maioria dos serviços:

@@ -49,8 +49,9 @@ document:budget-2026#viewer@group:finance#member
 "Todo membro (`member`) do grupo `finance` é `viewer` do documento `budget-2026`." Agora a pergunta "Alice pode ver o documento?" não é mais um lookup direto — é uma **travessia de grafo**: existe um caminho de `alice` até `document:budget-2026#viewer` passando por `group:finance#member`? Esse mecanismo, que o paper chama de *userset rewrite*, é o que permite expressar herança de pasta, membership de grupo aninhado, e papéis derivados (editor implica viewer) sem duplicar dado — a estrutura organizacional inteira vira grafo, e "autorizado" vira "alcançável"[^zanzibar-userset].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     U["user:alice"] -->|member| G["group:finance"]
     G -->|viewer via #member| D["document:budget-2026"]
     D -->|parent| F["folder:relatorios"]
@@ -64,8 +65,8 @@ graph LR
         Q1 --> Q2 --> Q3
     end
 
-    style D fill:#4A90D9,color:#fff
-    style Q3 fill:#F5A623,color:#000
+    class D neutro
+    class Q3 destaque
 ```
 
 Um **check** — a operação central de Zanzibar — recebe `(objeto, relação, usuário)` e responde `ALLOWED`/`DENIED` fazendo essa travessia. O truque de engenharia que torna isso viável em escala planetária não é o algoritmo do grafo em si (busca em grafo é um problema clássico) — é fazer essa travessia em milissegundos sobre trilhões de tuplas, distribuídas globalmente, com um índice construído sobre o Spanner do Google (banco com consistência forte e relógios sincronizados via TrueTime)[^zanzibar-spanner]. Além do `Check`, o paper define outras operações centrais: `Expand` (lista todos os usuários que satisfazem uma relação, útil para exibir "quem tem acesso" numa UI), `Read` (lê tuplas cruas) e `Write` (escreve/revoga tuplas com garantias transacionais)[^zanzibar-ops].
@@ -79,7 +80,6 @@ Imagine o cenário: Bob está editando um documento compartilhado com Alice. Bob
 A saída ingênua — "sempre leia o estado mais recente, sem cache, direto do banco primário" — resolve a correção mas mata a performance: forçar toda checagem de autorização a esperar a réplica mais atualizada do planeta inteiro elimina justamente a vantagem de ter réplicas geograficamente distribuídas perto do usuário. Zanzibar resolve isso com um mecanismo chamado **zookie**: um token opaco que codifica um **timestamp causal** — não um relógio de parede comum, mas uma marca gerada pelo Spanner que captura "este zookie é posterior a esta escrita específica de ACL, com garantia de ordenação global"[^zookie-def]. Quando o cliente escreve conteúdo novo depois de mudar uma permissão, ele associa esse conteúdo ao zookie daquela escrita de ACL. Quando alguém depois pede para ver o conteúdo, a aplicação passa esse mesmo zookie de volta ao Zanzibar na checagem — instruindo-o: "responda usando um snapshot **pelo menos tão fresco quanto** este momento, nunca mais antigo". Essa semântica de "at-least-as-fresh" é o que permite ao Zanzibar continuar servindo a maioria das checagens de réplicas locais rápidas (sem esperar consenso global toda vez), reservando a espera por consistência forte só para o caso em que existe uma dependência causal explícita a respeitar[^zookie-atleast].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant Bob
     participant App as Aplicação
@@ -207,7 +207,6 @@ Independente de a decisão vir de um grafo de tuplas ou de uma política Rego/Ce
 - **PIP (Policy Information Point)** — a fonte dos **atributos** que faltam para a decisão: se a política precisa saber o cargo do usuário, ou se ele está numa lista de suspensos, e essa informação não veio na requisição original, o PDP consulta um PIP (tipicamente um serviço de identidade, um banco de perfil, ou um cache de atributos) para completar o quadro antes de decidir[^xacml-pip].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant C as Cliente
     participant PEP as PEP<br/>(gateway / middleware)
@@ -242,8 +241,9 @@ Toda essa maquinaria de decisão precisa rodar em algum lugar, e a pergunta de o
 - *Custo*: a política/dado que o sidecar usa é, por definição, uma **cópia** — ela pode estar desatualizada em relação à fonte de verdade central por segundos a minutos, dependendo de quão frequente é o *pull* do bundle. Isso reintroduz exatamente o tipo de problema que o zookie do Zanzibar existe para resolver: se alguém revoga acesso agora, quanto tempo até todo sidecar espalhado pela frota saber disso?
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#F5A623", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Centralizado["PDP centralizado"]
         direction TB
         S1["Serviço A"] -->|"rede, cada check"| PDP1["PDP externo<br/>(fonte única de verdade)"]
@@ -258,8 +258,8 @@ graph TD
         PDP2 -.->|se controle cair,<br/>sidecar segue decidindo| X2["disponibilidade desacoplada"]
     end
 
-    style Centralizado fill:#4A90D9,color:#fff
-    style Embutido fill:#F5A623,color:#000
+    class Centralizado neutro
+    class Embutido destaque
 ```
 
 Na prática, sistemas grandes convergem para um **modelo híbrido**: a fonte de verdade das políticas/tuplas mora centralizada (um plano de controle único, auditável, onde mudanças de acesso são escritas), mas a **avaliação** roda embutida perto de cada serviço, sincronizada por push/pull de bundles ou réplicas locais — exatamente o padrão que o OPA formaliza com seus *bundle servers* e que ferramentas como Permit.io empacotam como PDP distribuído[^permit-hybrid]. É a mesma lógica do CAP theorem aplicada aqui: você escolhe entre **latência baixa com staleness aceitável** (embutido) e **consistência forte com latência de rede** (centralizado) — não existe opção que dá as duas coisas de graça, e a escolha certa depende de quão crítico é "revogar e ver efeito instantâneo" versus "responder em menos de 5ms sempre".

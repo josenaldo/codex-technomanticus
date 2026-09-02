@@ -34,7 +34,6 @@ A resposta é colocar um componente entre o cliente e os serviços — um **gate
 Um **API Gateway** é o ponto único de entrada entre os clientes (web, mobile, parceiros externos) e o conjunto de microserviços de um sistema. Toda requisição externa passa por ele antes de chegar a qualquer serviço interno.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     C1["Cliente Web"] --> GW["API Gateway<br/>(auth · TLS · rate limit ·<br/>roteamento · agregação · observabilidade)"]
     C2["Cliente Mobile"] --> GW
@@ -76,7 +75,6 @@ O Azure Architecture Center nomeia três padrões distintos que, juntos, cobrem 
 **Gateway Offloading.** O gateway assume responsabilidades transversais que, de outra forma, cada serviço teria que reimplementar: certificados TLS, autenticação, rate limiting (throttling), logging/monitoramento mínimo garantido. A motivação da Microsoft aqui é dupla — reduzir a chance de erro operacional (um certificado mal configurado em 1 de 50 serviços) e permitir que times especializados (segurança, plataforma) cuidem dessas preocupações sem que cada time de produto precise reaprender a mesma coisa.[^3]
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
     subgraph P1["Routing"]
         R1["Requisição"] -->|"por path/header"| R2["Serviço certo"]
@@ -101,7 +99,6 @@ O **[[01 - Escalabilidade e load balancing|load balancer]]** distribui tráfego 
 O **API Gateway** roteia entre **serviços diferentes**, cada um com sua própria lógica de negócio, seu próprio banco, seu próprio time dono. Ele opera necessariamente em L7 — porque decidir "essa requisição é sobre catálogo, essa é sobre pagamento" exige ler o conteúdo da requisição (path, corpo, headers) — e faz muito mais do que rotear: autentica, agrega, transforma, limita.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     C["Cliente"] --> GW["API Gateway<br/>(roteia entre SERVIÇOS<br/>por rota/domínio, L7)"]
     GW --> LB1["Load Balancer<br/>(distribui entre RÉPLICAS<br/>de 1 serviço)"]
@@ -138,7 +135,6 @@ Se você tenta atender aos três com **um único gateway genérico**, ele acumul
 A saída, batizada e popularizada por Sam Newman a partir da experiência de times como SoundCloud e REA Group, é o **Backend-for-Frontend (BFF)**: em vez de um gateway genérico, cada tipo de experiência de cliente ganha seu **próprio** backend dedicado, otimizado exatamente para as necessidades daquela experiência.[^4]
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
     CW["Cliente Web"] --> BFFW["BFF Web"]
     CM["Cliente Mobile"] --> BFFM["BFF Mobile"]
@@ -181,7 +177,6 @@ Todo componente que concentra responsabilidade concentra também risco. Um gatew
 **Quem é o dono?** Um problema organizacional, não técnico: se o gateway pertence a um time de plataforma central, toda mudança nele — mesmo uma trivial, como adicionar uma rota — vira uma fila de priorização compartilhada por todos os times de produto. Isso é parte do motivo pelo qual BFFs, com dono descentralizado por experiência de cliente, ganharam popularidade: eles devolvem autonomia aos times sem abrir mão dos cross-cutting concerns genuinamente compartilhados (que continuam num gateway/camada de borda mais fina, atrás da qual os BFFs vivem).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#D0021B", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     G["API Gateway<br/>concentra responsabilidade"] --> R1["SPOF<br/>(mitiga: réplicas + LB)"]
     G --> R2["Gargalo<br/>(mitiga: dimensionar,<br/>testar carga, I/O assíncrono)"]
@@ -199,7 +194,6 @@ Vale fechar uma confusão adjacente antes de seguir: se o gateway já cuida de a
 O API Gateway cuida do tráfego **norte-sul** — o que entra do mundo externo (clientes) para dentro do sistema. O service mesh cuida do tráfego **leste-oeste** — a comunicação *entre* microserviços internos, depois que a requisição já passou pelo gateway. Um mesh injeta um proxy (sidecar) ao lado de cada serviço e resolve, para chamadas serviço-a-serviço, o mesmo tipo de preocupação que o gateway resolve na borda: mTLS automático, retry, circuit breaking, observabilidade — só que peer-to-peer, sem um único componente centralizado no meio.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     C["Cliente externo"] -->|"norte-sul"| GW["API Gateway"]
     GW --> S1["Serviço A"]

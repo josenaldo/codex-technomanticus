@@ -38,6 +38,8 @@ Segundo a documentação do `ngx_http_proxy_module`, o nome do arquivo em cache 
 
 ```mermaid
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Memoria["Zona de memória compartilhada — keys_zone"]
         K1["Chave 1<br/>metadados: tamanho, status,<br/>expiração, $upstream_cache_status"]
         K2["Chave 2<br/>metadados"]
@@ -57,8 +59,8 @@ graph TB
     W["Worker process"] -->|"consulta a chave<br/>(rápido, em memória)"| Memoria
     W -->|"lê o corpo<br/>só se HIT"| Disco
 
-    style Memoria fill:#1e3a5c,stroke:#2980b9,color:#fff
-    style Disco fill:#5a4a1e,stroke:#c9a227,color:#fff
+    class Memoria neutro
+    class Disco destaque
 ```
 
 O que esse diagrama deixa visível: perguntar "esse request está em cache?" nunca toca o disco — é uma consulta contra a zona de memória, rápida por construção, porque a zona inteira é dimensionada para caber na RAM e a documentação garante essa densidade aproximada de oito mil chaves por megabyte. Só quando a resposta é um `HIT` de fato é que o worker lê o corpo do disco para servi-lo. É por isso que uma zona de memória pequena demais para o volume de chaves de um site com catálogo grande produz sintomas de cache "não funcionando" — chaves antigas sendo despejadas da zona antes mesmo do `inactive` mandar, porque a memória acabou primeiro que o tempo.
@@ -235,6 +237,8 @@ Com `proxy_cache_lock on;`, segundo a documentação, apenas um request por vez 
 
 ```mermaid
 graph TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph SemLock["proxy_cache_lock off — padrão"]
         R1a["Request 1"] --> B1["Backend"]
         R2a["Request 2"] --> B1
@@ -252,8 +256,8 @@ graph TB
         C --> R3b
     end
 
-    style N1 fill:#7a2e2e,stroke:#c0392b,color:#fff
-    style C fill:#1e5c3a,stroke:#27ae60,color:#fff
+    class N1 falha
+    class C ok
 ```
 
 `proxy_cache_background_update`, com padrão `off`, resolve um problema adjacente: mesmo com `proxy_cache_use_stale updating` habilitado — servindo a cópia velha para quem chegou depois que a entrada expirou —, alguém ainda precisa, em algum momento, ir ao backend buscar a versão nova. Com `proxy_cache_background_update on;`, essa atualização acontece numa subrequest em background, enquanto o cliente que disparou a checagem já recebeu a resposta stale imediatamente, sem esperar a atualização terminar. A combinação `use_stale updating` mais `background_update on` é o par que produz, na prática, o mesmo efeito que `stale-while-revalidate` descreve como semântica HTTP na nota [[03-Dominios/Ciência/Redes e Protocolos/08 - Caching HTTP|Caching HTTP]] — só que aqui implementado como decisão de configuração do proxy, não como header interpretado por um cache de protocolo genérico.

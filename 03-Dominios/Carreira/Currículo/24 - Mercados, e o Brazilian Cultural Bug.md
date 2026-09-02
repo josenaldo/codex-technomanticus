@@ -92,8 +92,9 @@ A [[03-Dominios/Carreira/Currículo/13 - Responsabilidade, realização e alavan
 O último par aparece com mais força fora do currículo em si — na conversa de negociação salarial que costuma seguir uma candidatura bem-sucedida — mas nasce do mesmo hábito de justificativa que molda o resto do documento. Um candidato brasileiro, ao justificar uma pretensão salarial, tende a ancorar a conversa em **necessidade** — custo de vida, aluguel, o padrão de vida que o salário sustenta —, um raciocínio honesto, mas que fala sobre a vida de quem pede, não sobre o valor que a empresa está comprando. O padrão executivo internacional ancora a mesma conversa em **valor entregue**: o que a contratação vale para a empresa, medido pelo problema resolvido e pelo custo de não ter a pessoa. Um recrutador americano não avalia se o salário pedido basta para o padrão de vida do candidato — avalia se é proporcional ao valor que o mercado já demonstrou pagar por aquele tipo de resultado. O mesmo deslocamento dos cinco pares anteriores — de processo para produto, de grupo para indivíduo — se repete aqui, fora do documento escrito, na conversa que ele existe para provocar.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph BR["Padrão brasileiro de alto contexto"]
         B1["Narrativa em espiral"]
         B2["Verbo de passageiro"]
@@ -117,8 +118,8 @@ graph LR
     B5 -->|"mesmo esforço,<br/>efeito descrito"| E5
     B6 -->|"mesma necessidade,<br/>não é o argumento"| E6
 
-    style BR fill:#F5A623,color:#000
-    style EX fill:#4A90D9,color:#fff
+    class BR destaque
+    class EX neutro
 ```
 
 O diagrama fixa o que os seis pares têm em comum, e é a chave de leitura da nota inteira: nenhuma seta descarta o lado esquerdo como falso ou inferior — cada par descreve **o mesmo fato**, contado por duas convenções diferentes de comunicação. O que muda de um lado para o outro nunca é a honestidade do relato; é a ordem, o sujeito explícito e o que a frase escolhe enfatizar primeiro.

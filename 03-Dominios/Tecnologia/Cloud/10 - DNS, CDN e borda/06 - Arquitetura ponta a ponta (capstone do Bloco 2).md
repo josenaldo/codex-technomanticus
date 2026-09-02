@@ -29,6 +29,11 @@ Este é o diagrama que todo o resto desta nota explica, linha por linha. Uma apl
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     User(("Usuário"))
 
     subgraph Borda["Borda — Galho 10"]
@@ -84,16 +89,16 @@ flowchart TB
     EC2a -.->|"saída p/ internet<br/>(patches, APIs externas)"| NAT
     EC2b -.-> NAT
 
-    style CF fill:#245,color:#fff
-    style R53 fill:#245,color:#fff
-    style WAF fill:#622,color:#fff
-    style Shield fill:#622,color:#fff
-    style RDSPrim fill:#653,color:#fff
-    style RDSStandby fill:#653,color:#fff
-    style Cachea fill:#262,color:#fff
-    style Cacheb fill:#262,color:#fff
-    style S3 fill:#245,color:#fff
-    style NAT fill:#333,color:#fff
+    class CF neutro
+    class R53 neutro
+    class WAF falha
+    class Shield falha
+    class RDSPrim destaque
+    class RDSStandby destaque
+    class Cachea ok
+    class Cacheb ok
+    class S3 neutro
+    class NAT marca
 ```
 
 Vale nomear, de cima para baixo, o que cada camada deste diagrama já foi justificada em detalhe em algum galho anterior — esta nota não reexplica nada, só aponta onde:
@@ -291,6 +296,9 @@ Uma decisão que atravessa a trilha inteira desde a nota 01 do galho 5 vale rele
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     User(("Usuário"))
     DNSdo["DNS (DO ou registrador)"]
     LB["Load Balancer DO<br/>+ Cloud Firewall"]
@@ -314,9 +322,9 @@ flowchart TB
     D2 --> Cachedo
     User -.->|"assets estáticos,<br/>direto"| Spaces
 
-    style DBdo fill:#653,color:#fff
-    style Cachedo fill:#262,color:#fff
-    style Spaces fill:#245,color:#fff
+    class DBdo destaque
+    class Cachedo ok
+    class Spaces neutro
 ```
 
 Três simplificações concretas, cada uma já nomeada em algum galho anterior:

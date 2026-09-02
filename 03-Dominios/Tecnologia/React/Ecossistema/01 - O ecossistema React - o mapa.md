@@ -166,8 +166,9 @@ Gráficos de linha, barras, pizza e scatter têm suas próprias complexidades: e
 ## O mapa do ecossistema
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#fff", "edgeLabelBackground": "#f8f8f8"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     REACT["⚛️ React\n(renderização declarativa)"]
 
     REACT --> SS["🌐 Server State\nTanStack Query · SWR"]
@@ -182,13 +183,13 @@ graph TD
     FM -. "validação schema\nZod" .-> FM
     UI -. "headless → Radix\nopinionated → MUI" .-> UI
 
-    style REACT fill:#4A90D9,color:#fff,stroke:#2c6fad
-    style SS fill:#5BA85A,color:#fff,stroke:#3d7a3c
-    style CS fill:#5BA85A,color:#fff,stroke:#3d7a3c
-    style FM fill:#5BA85A,color:#fff,stroke:#3d7a3c
-    style UI fill:#5BA85A,color:#fff,stroke:#3d7a3c
-    style TB fill:#5BA85A,color:#fff,stroke:#3d7a3c
-    style DV fill:#5BA85A,color:#fff,stroke:#3d7a3c
+    class REACT neutro
+    class SS ok
+    class CS ok
+    class FM ok
+    class UI ok
+    class TB ok
+    class DV ok
 ```
 
 ## A stack típica em 2026
@@ -215,7 +216,6 @@ Essa stack tem uma característica importante: cada lib é *headless* ou *focada
 Um fluxo de "criar usuário" numa app típica passa por três categorias ao mesmo tempo:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     actor U as Usuário
     participant F as Form (RHF + Zod)

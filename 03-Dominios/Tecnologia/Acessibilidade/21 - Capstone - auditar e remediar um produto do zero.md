@@ -136,16 +136,17 @@ E documente, fechando com o SG4:
 Destilando o capstone num procedimento que cabe na cabeça e serve a qualquer tela:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["1. Auditar<br/>axe + teclado/leitor/zoom"] --> B["2. Priorizar<br/>severidade × esforço"]
     B --> C["3. Remediar<br/>semântica primeiro, SG2"]
     C --> D["4. Reverificar<br/>+ teste no CI"]
     D --> E["5. Documentar<br/>ACR honesto"]
     E -.->|processo contínuo| A
-    style A fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style E fill:#F5A623,color:#000
+    class A neutro
+    class C neutro
+    class E destaque
 ```
 
 A seta pontilhada de volta é o ponto que separa o profissional do amador: isto **não é um projeto com fim**, é um **ciclo**. Você não "termina" a acessibilidade; você a incorpora ao processo (nota 17) para que ela se mantenha a cada mudança. O capstone é o loop rodando uma vez; a maturidade é o loop rodando sempre.

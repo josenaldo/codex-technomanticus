@@ -36,8 +36,9 @@ O Spring é, de longe, o ecossistema Java mais maduro em segurança — e o vaul
 Essa distinção de papel — **client** (obtém tokens) vs **resource server** (valida tokens) vs **authorization server** (emite tokens) — já apareceu no vocabulário do [[03-Dominios/Engenharia/Auth e Identidade/2 - OAuth 2.1 e OpenID Connect/01 - OAuth — o problema da delegação|SG2-01]]. As 18 notas de Java/Segurança cobrem os dois primeiros papéis com profundidade. O terceiro — ser o Authorization Server — é uma peça de infraestrutura de identidade genuinamente diferente, com seu próprio projeto Spring (`spring-authorization-server`), seu próprio modelo de dados (`RegisteredClient`), e suas próprias armadilhas. É aqui que esta nota entra.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Existente["Java/Segurança — 18 notas (já cobrem)"]
         R["Resource Server<br/>valida JWT que chega"]
         C["OAuth2/OIDC Client<br/>obtém token de IdP externo"]
@@ -50,8 +51,8 @@ graph TD
         KC["Integração Keycloak<br/>IdP pronto em vez do próprio AS"]
     end
 
-    style Existente fill:#4A90D9,color:#fff
-    style Novo fill:#F5A623,color:#000
+    class Existente neutro
+    class Novo destaque
 ```
 
 ## Mapa das 18 notas de Java/Segurança
@@ -240,7 +241,6 @@ spring:
 Imagine o sistema `orders-api`, um backend Spring que hoje delega toda a identidade a um Keycloak corporativo:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant U as Usuário
     participant App as orders-web-app<br/>(Spring Client)
@@ -266,8 +266,9 @@ Nesse desenho, `orders-api` roda a configuração da nota 09 apontando o `issuer
 Agora o contraste: imagine que a mesma empresa decida que, para um produto interno de baixo volume — digamos, uma ferramenta de automação usada só por outros serviços internos, sem tela de login humana nem necessidade de MFA — não vale a pena provisionar um realm inteiro no Keycloak corporativo (que é operado por outro time, com processo de onboarding lento). Nesse caso pontual, montar um Spring Authorization Server minúsculo, com `client_credentials` apenas, dentro do próprio serviço, é uma decisão de escopo razoável: sem usuário humano, sem UI de consentimento, só `RegisteredClient`s de máquina-a-máquina emitindo tokens curtos para chamadas internas. É o tipo de decisão que aparece no capstone da trilha — build vs buy nunca é binário para o sistema inteiro; pode ser binário *por caso de uso*.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Cenario1["Cenário comum: Keycloak único IdP"]
         A1["Web app<br/>(Client)"] --> KC1["Keycloak<br/>(o único AS)"]
         A2["API<br/>(Resource Server)"] --> KC1
@@ -277,8 +278,8 @@ graph LR
         S2["Serviço interno B<br/>(Resource Server)"] --> SAS
     end
 
-    style Cenario1 fill:#4A90D9,color:#fff
-    style Cenario2 fill:#F5A623,color:#000
+    class Cenario1 neutro
+    class Cenario2 destaque
 ```
 
 ## Armadilhas

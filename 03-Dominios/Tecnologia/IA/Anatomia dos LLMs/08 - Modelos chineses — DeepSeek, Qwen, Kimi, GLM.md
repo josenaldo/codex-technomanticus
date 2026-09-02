@@ -150,6 +150,10 @@ GLM é menos conhecido no Ocidente mas tem adoção significativa em empresas ch
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A{O que você precisa?} --> B[Raciocínio puro\nMatemática/lógica]
     A --> C[Agente autônomo\nTool use / longo contexto]
     A --> D[Multi-arquivo\nSub-agente orchestration]
@@ -160,10 +164,10 @@ graph TD
     D --> H["Kimi K2.6\nAPI only\nOtimizado para sub-agentes"]
     E --> I["DeepSeek V4 ou GLM-5.1\nambos MIT\nself-host com Ollama/vLLM"]
 
-    style F fill:#99ccff,stroke:#0066cc
-    style G fill:#99ff99,stroke:#009900
-    style H fill:#ffcc99,stroke:#cc6600
-    style I fill:#ff99cc,stroke:#cc0066
+    class F neutro
+    class G ok
+    class H destaque
+    class I marca
 ```
 
 ## Na prática

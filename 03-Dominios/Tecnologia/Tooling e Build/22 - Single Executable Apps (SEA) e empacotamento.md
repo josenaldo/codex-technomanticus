@@ -108,8 +108,9 @@ codesign --sign - ./minha-cli
 A diferença: o `postject` usava WebAssembly para manipular o binário. O `--build-sea` usa LIEF (Library to Instrument Executable Formats), uma biblioteca C++ de manipulação de binários, incorporada ao Node. O overhead no tamanho do executável Node foi de ~5 MB — considerado aceitável.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#fff"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Era 1 — fluxo com postject (v19.7–v25.4)"
         A1["sea-config.json"] -->|"--experimental-sea-config"| A2["sea-prep.blob"]
         A2 -->|"cp \$(which node)"| A3["cópia do node"]
@@ -120,8 +121,8 @@ flowchart LR
         B1["sea-config.json"] -->|"node --build-sea"| B2["binário final\n(passo único)"]
     end
 
-    style A4 fill:#4A90D9,color:#fff
-    style B2 fill:#1a6b1a,color:#fff
+    class A4 neutro
+    class B2 ok
 ```
 
 ### A configuração: `sea-config.json`
@@ -224,8 +225,10 @@ codesign --sign - ./minha-cli
 ### Limitações do SEA nativo
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "O que funciona no Node SEA"
         S1["CommonJS ✓"]
         S2["ESM com mainFormat: module ✓"]
@@ -244,18 +247,18 @@ graph TD
         L6["TypeScript direto ✗\n(precisa compilar antes)"]
     end
 
-    style S1 fill:#1a6b1a,color:#fff
-    style S2 fill:#1a6b1a,color:#fff
-    style S3 fill:#1a6b1a,color:#fff
-    style S4 fill:#1a6b1a,color:#fff
-    style S5 fill:#1a6b1a,color:#fff
-    style S6 fill:#1a6b1a,color:#fff
-    style L1 fill:#D0021B,color:#fff
-    style L2 fill:#D0021B,color:#fff
-    style L3 fill:#D0021B,color:#fff
-    style L4 fill:#F5A623,color:#000
-    style L5 fill:#F5A623,color:#000
-    style L6 fill:#D0021B,color:#fff
+    class S1 ok
+    class S2 ok
+    class S3 ok
+    class S4 ok
+    class S5 ok
+    class S6 ok
+    class L1 falha
+    class L2 falha
+    class L3 falha
+    class L4 destaque
+    class L5 destaque
+    class L6 falha
 ```
 
 > [!warning] Módulos nativos (N-API) no SEA
@@ -399,8 +402,8 @@ deno compile \
 Isso é interessante do ponto de vista de segurança para distribuição: o usuário final executa um binário que não pode fazer mais do que o especificado em build time. Para ferramentas corporativas com requisitos de compliance, esse modelo de permissões é um argumento real.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Node.js SEA"
         N1["TypeScript"] -->|"esbuild/tsc"| N2["JS bundle"]
         N2 -->|"sea-config.json"| N3["node --build-sea"]
@@ -417,9 +420,9 @@ flowchart LR
         D2 -->|"permissões\nembutidas"| D3["sandbox\npor design"]
     end
 
-    style N4 fill:#4A90D9,color:#fff
-    style B3 fill:#4A90D9,color:#fff
-    style D3 fill:#4A90D9,color:#fff
+    class N4 neutro
+    class B3 neutro
+    class D3 neutro
 ```
 
 ---
@@ -427,8 +430,9 @@ flowchart LR
 ## Comparação: Node SEA vs Bun vs Deno
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     Q["Qual runtime usar\npara empacotamento?"]
 
     Q --> R1{"Projeto já usa\nNode.js?"}
@@ -442,10 +446,10 @@ graph TD
     R7 -->|"Sim"| R8["Bun --compile\n(ergonomia máxima)"]
     R7 -->|"Não / addons C++"| R9["Node SEA + esbuild\n(mais controle)"]
 
-    style R3 fill:#4A90D9,color:#fff
-    style R4 fill:#4A90D9,color:#fff
-    style R6 fill:#4A90D9,color:#fff
-    style R8 fill:#1a6b1a,color:#fff
+    class R3 neutro
+    class R4 neutro
+    class R6 neutro
+    class R8 ok
 ```
 
 | Aspecto | Node SEA | Bun `--compile` | Deno `compile` |
@@ -520,7 +524,6 @@ Quando o Node gera um SEA, o código do usuário — depois de bundlado — é s
 O **sentinel fuse** (`NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2`) é um marcador de 40 bytes que existe no binário do Node vanilla com o bit de fuse desligado. Ao injetar o blob (tanto via `postject` quanto via `--build-sea`), o bit é ligado. Quando o Node inicia, ele verifica esse fuse antes de carregar o V8 — se estiver ligado, redireciona o bootstrap para o blob embutido ao invés de `process.argv[1]`. Isso é o que permite o mesmo binário do Node funcionar como SEA ou como runtime normal.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant OS as Sistema Operacional
     participant ELF as Loader ELF/PE/Mach-O
@@ -834,7 +837,6 @@ Um SEA tem o código embutido em bytecode/blob — não é trivialmente legível
 O modelo de segurança do Deno (permissões embutidas no binário) é diferente: o binário não pode fazer mais do que foi especificado em build time, independentemente de como é explorado. Isso é relevante para ferramentas corporativas onde você quer garantir que a CLI nunca vai exfiltrar dados para endpoints não autorizados.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
     subgraph "Superfície de segurança"
         SEA_N["Node SEA\nCódigo em blob\nPermissões: ilimitadas"]

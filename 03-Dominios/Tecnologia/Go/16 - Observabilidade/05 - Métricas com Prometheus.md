@@ -60,6 +60,8 @@ Essa inversão tem uma consequência direta no código: instrumentar em Go nunca
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q["Que pergunta você quer responder?"] --> C{"Só cresce,\nnunca some?"}
     C -->|"sim — total de requisições,\nerros acumulados"| Counter["Counter"]
     C -->|"não"| G{"Sobe e desce\nlivremente?"}
@@ -68,10 +70,10 @@ flowchart TD
     D -->|"servidor Prometheus,\nagregável entre réplicas"| Histogram["Histogram"]
     D -->|"o próprio processo,\nsó localmente"| Summary["Summary"]
 
-    style Counter fill:#4A90D9,color:#fff
-    style Gauge fill:#4A90D9,color:#fff
-    style Histogram fill:#F5A623,color:#000
-    style Summary fill:#F5A623,color:#000
+    class Counter neutro
+    class Gauge neutro
+    class Histogram destaque
+    class Summary destaque
 ```
 
 ### Counter — só sobe
@@ -309,6 +311,8 @@ Aqui está o conceito que separa quem instrumenta métricas em produção de que
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Baixa["Cardinalidade baixa — seguro"]
         direction TB
         M1["route: 12 valores possíveis\nstatus: 5 valores possíveis"] --> S1["12 × 5 = 60 séries"]
@@ -318,8 +322,8 @@ flowchart LR
         M2["route: 12 valores\nuser_id: 2 milhões de valores"] --> S2["até 24 milhões de séries"]
     end
 
-    style S1 fill:#4A90D9,color:#fff
-    style S2 fill:#D0021B,color:#fff
+    class S1 neutro
+    class S2 falha
 ```
 
 `requestsTotal.WithLabelValues("/checkout", "200")` e `requestsTotal.WithLabelValues("/checkout", "500")` são duas séries diferentes dentro da mesma métrica `http_requests_total`. Isso é intencional e é o que torna Prometheus útil — você consegue somar, filtrar e agrupar por label depois, na query. O problema aparece quando um label carrega um valor de **alta cardinalidade**: um `user_id`, um `request_id`, um `session_token`, ou — o erro mais comum de todos — o **path literal** de uma URL com parâmetro (`/checkout/8827` em vez do padrão `/checkout/{id}`).

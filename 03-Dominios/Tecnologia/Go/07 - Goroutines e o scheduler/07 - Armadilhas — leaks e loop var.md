@@ -126,6 +126,7 @@ A expectativa ingênua é ver `Ana`, `Bruno`, `Carla` impressos (em alguma ordem
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph PRE["Antes do Go 1.22 — uma variável reaproveitada"]
         direction LR
         V["nome (endereço único)"]
@@ -137,11 +138,12 @@ flowchart TB
         G3a["closure 3"] -->|"referencia o mesmo endereço"| V
     end
 
-    style V fill:#D0021B,color:#fff
+    class V falha
 ```
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph POS["Go 1.22+ — uma variável nova por iteração"]
         direction LR
         V1["nome#1 = Ana"]
@@ -152,9 +154,9 @@ flowchart TB
         G3b["closure 3"] --> V3
     end
 
-    style V1 fill:#4A90D9,color:#fff
-    style V2 fill:#4A90D9,color:#fff
-    style V3 fill:#4A90D9,color:#fff
+    class V1 neutro
+    class V2 neutro
+    class V3 neutro
 ```
 
 Antes da mudança, `nome` era **uma única variável**, alocada uma vez fora do corpo do loop e reatribuída a cada iteração — a especificação da linguagem tratava a variável de controle do `for ... range` (e do `for` com três cláusulas) como pertencente ao escopo do `for` inteiro, não a cada iteração. As três closures (`go func() { fmt.Println(nome) }`) não capturavam "o valor de `nome` na iteração em que nasceram" — capturavam **a variável em si**, por referência. Como as goroutines normalmente só chegam a rodar depois que o `for` já avançou (o `go` statement devolve o controle imediatamente, a nota 02 deste galho já mostrou isso), na hora em que `fmt.Println(nome)` de fato executava, o loop quase sempre já tinha terminado e `nome` já valia `Carla` — o último valor atribuído a essa única variável.

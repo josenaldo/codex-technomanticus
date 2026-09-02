@@ -55,6 +55,8 @@ O ponto central, e o que separa multi-stage de "só ter vários `FROM` por acaso
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph S1["Estágio 1 — builder (descartado após o build)"]
         A["FROM maven:3.9-eclipse-temurin-21"] --> B["COPY pom.xml, src/"]
         B --> C["RUN mvn package"]
@@ -69,8 +71,8 @@ flowchart LR
 
     D -.->|"COPY --from=builder"| F
 
-    style S1 fill:#3a2a2a,stroke:#a55
-    style S2 fill:#2a3a2a,stroke:#5a5
+    class S1 neutro
+    class S2 marca
 ```
 
 O diagrama deixa visível o que importa: o estágio 1 inteiro — a imagem base do Maven, com JDK completo, mais tudo que `mvn package` baixou e gerou — nunca existe na imagem final. Só a seta pontilhada, o `.jar` que atravessa via `COPY --from`, chega ao outro lado. Se essa imagem final for inspecionada com `docker history` ou `docker images`, o Maven simplesmente não aparece em lugar nenhum — não porque foi removido, mas porque nunca foi copiado para lá desde o início.
@@ -143,16 +145,19 @@ Depois que o multi-stage já separou "construir" de "rodar", a pergunta seguinte
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Completa<br/>Debian/Ubuntu<br/>~100-500MB+"] --> B["Slim<br/>Debian mínimo<br/>~50-100MB"]
     B --> C["Alpine<br/>musl + busybox<br/>~5MB base"]
     C --> D["Distroless<br/>sem shell/pkg mgr<br/>~20MB"]
     D --> E["Scratch<br/>vazio<br/>0 bytes"]
 
-    style A fill:#5a3a3a
-    style B fill:#5a4a3a
-    style C fill:#5a5a3a
-    style D fill:#3a5a3a
-    style E fill:#2a5a2a
+    class A falha
+    class B destaque
+    class C destaque
+    class D ok
+    class E ok
 ```
 
 **Imagem completa (Debian, Ubuntu, etc.).** Traz um sistema operacional convencional inteiro: shell completo (`bash`), gerenciador de pacotes (`apt`), utilitários de diagnóstico (`ps`, `curl`, `netcat`, `strace` se instalado), bibliotecas C padrão (glibc). Ganho: máxima conveniência — qualquer ferramenta de debug que se precise instalar via `apt-get install` provavelmente existe no repositório da distro, e o comportamento em runtime é o mais previsível e bem documentado que existe, porque é o ambiente que a maioria das bibliotecas foi testada contra. Perda: centenas de megabytes de pacotes que a aplicação nunca usa, cada um deles uma fonte potencial de CVE, e um tempo de pull/push proporcionalmente maior.

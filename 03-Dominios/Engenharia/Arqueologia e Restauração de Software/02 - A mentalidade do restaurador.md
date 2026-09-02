@@ -25,19 +25,21 @@ As duas sensações são honestas. E as duas, se você as obedecer, arruínam o 
 Elas são imagens espelhadas do mesmo erro: **agir (ou travar) a partir da ignorância**, em vez de agir a partir do entendimento.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     S["Sistema que você<br/>não escreveu"] --> A["Desprezo<br/>'que lixo, refazer tudo'"]
     S --> B["Paralisia<br/>'não entendo, não toco'"]
     S --> C["Mentalidade do restaurador<br/>'entender o porquê, depois agir'"]
     A -->|"apaga a teoria<br/>sem recuperá-la"| X["Reencarna os<br/>mesmos bugs"]
     B -->|"o sistema apodrece<br/>parado"| X
     C -->|"escava, então<br/>intervém com segurança"| V["Restauração"]
-    style A fill:#D0021B,color:#fff
-    style B fill:#F5A623,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style X fill:#D0021B,color:#fff
-    style V fill:#7ED321,color:#000
+    class A falha
+    class B destaque
+    class C neutro
+    class X falha
+    class V destaque
 ```
 
 **O desprezo** é a tentação do júnior confiante e do sênior arrogante. Ele confunde "eu não entendo isto" com "isto não faz sentido" — e conclui que o autor era incompetente. É reconfortante: se o problema é a burrice de quem veio antes, então eu, que sou esperto, resolvo reescrevendo. O desprezo subestima sistematicamente o legado, porque não vê os **anos de casos de borda** que aquele código feio já absorveu. Ele leva direto à reescrita que a [[01 - O que é código legado|nota anterior]] já avisou ser uma armadilha: apagar a teoria sem tê-la recuperado.

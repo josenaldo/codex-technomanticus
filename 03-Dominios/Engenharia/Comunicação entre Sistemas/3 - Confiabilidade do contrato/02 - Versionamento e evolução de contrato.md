@@ -148,8 +148,10 @@ A última regra amarra as outras cinco: toda remoção — de campo, de endpoint
 > **O que acontece:** um time decide remover um campo que nunca apareceu no OpenAPI publicado — foi adicionado ad hoc por algum desenvolvedor, ficou lá, ninguém documentou — assumindo que, por não estar documentado, nenhum cliente pode estar usando. **Por quê:** clientes reais inspecionam respostas reais, não só a documentação. Se o campo aparece no payload, algum integrador — especialmente parceiros B2B com times próprios de engenharia — pode ter escrito código contra ele, documentado ou não. "Não documentado" não é sinônimo de "seguro para remover". **Como evitar:** trate todo campo que já apareceu em produção, documentado ou não, como parte do contrato de fato. Se ele precisa sumir, siga o mesmo processo de deprecation formal — anúncio, prazo, monitoramento de uso — que qualquer outra breaking change.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     M{"Que tipo de<br/>mudança é essa?"}
     M -->|"Adicionar campo<br/>opcional"| S1["Seguro —<br/>sem versão nova"]
     M -->|"Adicionar endpoint<br/>novo"| S1
@@ -160,9 +162,9 @@ graph TD
     M -->|"Mudar default<br/>value"| B1
     M -->|"Tornar campo opcional<br/>em obrigatório"| B1
 
-    style S1 fill:#4A90D9,color:#fff
-    style S2 fill:#F5A623,color:#000
-    style B1 fill:#D0021B,color:#fff
+    class S1 neutro
+    class S2 destaque
+    class B1 falha
 ```
 
 > [!question]- E se a mudança quebra só um consumidor interno, que o próprio time controla?
@@ -185,7 +187,6 @@ Quando uma mudança realmente precisa quebrar o contrato — porque nenhuma das 
 O contraexemplo mais citado do que acontece quando esse processo é ignorado é o desligamento do acesso gratuito à API v1.1/v2 do Twitter, em fevereiro de 2023: a comunicação com desenvolvedores foi mínima — em parte porque boa parte do time de developer relations tinha sido cortada nos meses anteriores — e milhares de aplicativos de terceiros (bots, dashboards, agendadores) pararam de funcionar de uma hora para outra, sem aviso individual e sem janela de transição real ([Engadget, *Twitter shut off its free API and it's breaking a lot of apps*](https://www.engadget.com/twitter-shut-off-its-free-api-and-its-breaking-a-lot-of-apps-222011637.html), acessado 2026-07-09). O próprio fundador do Twitter, anos depois, chamou publicamente o fechamento do acesso à API de "a pior coisa que fizemos" à plataforma ([Hacker News, citando Jack Dorsey](https://news.ycombinator.com/item?id=29664742), acessado 2026-07-09) — um lembrete de que o custo de uma migração malfeita não é só técnico, é reputacional, e dura anos.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Time as Time da API
     participant V1 as v1 (deprecated)

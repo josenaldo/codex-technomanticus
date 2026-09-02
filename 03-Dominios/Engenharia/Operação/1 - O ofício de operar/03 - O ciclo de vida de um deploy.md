@@ -34,8 +34,10 @@ Um deploy maduro não é um evento — é um **pipeline com estágios que produz
 Vale nomear as cinco etapas com precisão, porque a confusão de vocabulário é justamente onde os deploys ruins nascem — "deploy" vira um guarda-chuva que esconde decisões distintas.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     C["Commit"] --> B["1. Build<br/>compila, empacota"]
     B --> A["Artefato<br/>imutável e versionado"]
     A --> R["2. Release<br/>artefato + config do ambiente"]
@@ -45,9 +47,9 @@ graph LR
     O -.->|"sintoma ruim"| RB["Rollback"]
     RB -.-> R
 
-    style A fill:#F5A623,stroke:#2E5C8A,color:#000
-    style O fill:#4A90D9,stroke:#2E5C8A,color:#fff
-    style RB fill:#D0021B,stroke:#2E5C8A,color:#fff
+    class A destaque
+    class O neutro
+    class RB falha
 ```
 
 **1. Build.** O código-fonte de um commit específico é compilado, empacotado e transformado num **artefato**: uma imagem de container, um JAR, um binário. O ponto crítico desta etapa não é a compilação em si — é a **imutabilidade**. O artefato que sai do build recebe um identificador único (uma tag de imagem com o SHA do commit, um número de versão semântico) e, a partir daí, **nunca é recompilado**. Esse é o princípio que Humble e Farley chamam de "build once, deploy many": o mesmo binário testado em staging é, byte a byte, o binário que roda em produção. Se você recompila em cada ambiente, você não sabe mais se um bug é do código ou de uma diferença sutil de toolchain entre as máquinas — o clássico "funciona na minha máquina" institucionalizado em escala.
@@ -74,15 +76,16 @@ A confusão entre os dois termos é tão comum que vale nomear o antipadrão: tr
 O mecanismo mais comum para essa separação são **feature flags**: a versão nova já está deployada, rodando, mas o código que expõe o comportamento novo fica atrás de um toggle. O deploy acontece no ritmo do time de engenharia — várias vezes ao dia, sem coordenação especial. A release acontece no ritmo do negócio: quando o time de produto decide que é hora, ligando a flag para 1%, depois 10%, depois todo mundo — sem precisar de um novo deploy para isso.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     D1["Deploy da v2<br/>(sexta 14h)"] --> FLAG{"Feature flag<br/>'checkout-v2'"}
     FLAG -->|"desligada"| USERS1["100% dos usuários<br/>veem a v1"]
     FLAG -.->|"segunda,<br/>ligada p/ 5%"| USERS2["5% veem a v2<br/>95% veem a v1"]
     USERS2 -.->|"métricas OK,<br/>quarta 100%"| USERS3["100% veem a v2"]
 
-    style D1 fill:#4A90D9,stroke:#2E5C8A,color:#fff
-    style FLAG fill:#F5A623,stroke:#2E5C8A,color:#000
+    class D1 neutro
+    class FLAG destaque
 ```
 
 O ganho prático dessa separação é grande o suficiente para justificar o esforço de implementá-la: **o deploy deixa de ser um evento de risco.** Se subir código já não expõe ninguém a nada, a pergunta "e se der errado?" perde a urgência que tinha — porque "dar errado" agora significa, na pior das hipóteses, uma versão deployada e nunca liberada. O risco migra inteiro para a etapa de liberação de tráfego, que pode ser controlada de forma incremental e monitorada — o assunto central de [[2 - Entrega e release/index|Entrega e release]], em particular canary releases e progressive delivery.
@@ -164,8 +167,8 @@ O mapa desta nota é deliberadamente raso em cada etapa — cada uma delas é gr
 | Observação | [[4 - Observar e responder/index\|Observar e responder]] | os três pilares de observabilidade, SLI/SLO, alerting, incident response |
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph SG1["Este capítulo — o mapa"]
         C1["commit → build →<br/>release → deploy →<br/>tráfego → observação"]
     end
@@ -180,7 +183,7 @@ graph LR
     end
     SG1 --> SG2 --> SG3 --> SG4
 
-    style SG1 fill:#4A90D9,stroke:#2E5C8A,color:#fff
+    class SG1 neutro
 ```
 
 ## Em entrevista

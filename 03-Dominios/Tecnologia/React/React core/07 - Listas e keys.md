@@ -68,17 +68,19 @@ Quando React compara o que estava na tela com o que deve aparecer agora, ele olh
 Sem keys, React usa a posição (índice implícito) — e isso falha quando a ordem muda.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Re-render disparado\n(estado pai mudou)"] --> B["React compara\nVirtualDOM anterior × novo"]
     B --> C{"Elemento tem\nmesma key?"}
     C -->|"Sim"| D["Preserva instância\nAtualiza props\nMantem estado"]
     C -->|"Não — key sumiu"| E["Desmonta\nDestrói estado"]
     C -->|"Não — key nova"| F["Monta do zero\nEstado inicial"]
 
-    style D fill:#4A90D9,color:#fff
-    style E fill:#D0021B,color:#fff
-    style F fill:#F5A623,color:#333
+    class D neutro
+    class E falha
+    class F destaque
 ```
 
 ---

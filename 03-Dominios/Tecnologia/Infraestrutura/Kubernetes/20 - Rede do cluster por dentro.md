@@ -34,6 +34,8 @@ Terceiro: **o agente de cada node consegue falar com todo Pod que roda naquele n
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph Requisito["O que o Kubernetes exige — não como"]
         R1["Todo Pod tem IP próprio"]
         R2["Todo Pod fala com todo Pod,<br/>em qualquer node, sem NAT"]
@@ -41,8 +43,8 @@ graph TB
     end
     Requisito -.->|"implementado por"| CNI["Um plugin CNI<br/>(Calico, Cilium, Flannel, ...)"]
 
-    style Requisito fill:#4a3b7a,stroke:#8e6fd6,color:#fff
-    style CNI fill:#1e5c3a,stroke:#27ae60,color:#fff
+    class Requisito marca
+    class CNI ok
 ```
 
 Vale reter o que esses três requisitos deliberadamente **não** especificam: nenhuma palavra sobre como o roteamento acontece de verdade entre nodes, nenhuma exigência sobre topologia de rede física, nenhuma decisão sobre encapsulamento contra roteamento nativo. O Kubernetes define o contrato — o comportamento observável que qualquer aplicação rodando no cluster pode assumir como verdade — e delega inteiramente a implementação a um componente de fora do próprio projeto. É essa separação entre contrato e implementação, exatamente o mesmo padrão que a nota [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/17 - O kubelet e o nó|O kubelet e o nó]] já descreveu para CRI, entre o kubelet e o container runtime, que a próxima seção nomeia por inteiro.
@@ -126,6 +128,8 @@ A nota [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/05 - Service|Service]]
 
 ```mermaid
 graph LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     ETCD["etcd"] -->|"watch: Services"| KP["kube-proxy (node X)"]
     ETCD -->|"watch: EndpointSlices"| KP
     KP -->|"compara: regras atuais<br/>× Services/Endpoints declarados"| CMP{"Diferença?"}
@@ -133,8 +137,8 @@ graph LR
     CMP -->|"não"| KP
     ACT -->|"iptables / IPVS / nftables"| KERNEL["Kernel Linux do node"]
 
-    style ACT fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style KERNEL fill:#4a3b7a,stroke:#8e6fd6,color:#fff
+    class ACT ok
+    class KERNEL marca
 ```
 
 Existem três modos de operação para o `kube-proxy` em nodes Linux, e cada um traduz o mesmo par Service/EndpointSlice numa estrutura de kernel diferente, com trade-offs próprios de desempenho e de forma de leitura.
@@ -364,6 +368,8 @@ Esse comando abre um túnel autenticado, através do api-server, entre uma porta
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     P1["1. EndpointSlice<br/>tem entradas ready?"] -->|"não"| F1["Causa: selector<br/>ou readinessProbe"]
     P1 -->|"sim"| P2["2. DNS resolve<br/>de dentro de um Pod?"]
     P2 -->|"não"| F2["Causa: CoreDNS,<br/>ou NetworkPolicy bloqueando porta 53"]
@@ -371,10 +377,10 @@ graph LR
     P3 -->|"não"| F3["Causa: kube-proxy,<br/>CNI, ou o próprio Pod"]
     P3 -->|"sim"| OK["Rede funcionando —<br/>problema está fora dela"]
 
-    style F1 fill:#7a2e2e,stroke:#c0392b,color:#fff
-    style F2 fill:#7a2e2e,stroke:#c0392b,color:#fff
-    style F3 fill:#7a2e2e,stroke:#c0392b,color:#fff
-    style OK fill:#1e5c3a,stroke:#27ae60,color:#fff
+    class F1 falha
+    class F2 falha
+    class F3 falha
+    class OK ok
 ```
 
 ## O caminho completo, de Pod a Pod
@@ -383,6 +389,8 @@ Vale fechar o corpo técnico da nota juntando as três camadas que as seções a
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph NodeA["Node A"]
         PodA["Pod cliente<br/>10.244.1.5"] --> VethA["Interface virtual<br/>(par veth, criado pelo CNI<br/>na chamada RunPodSandbox)"]
         VethA --> RouteA["Rota/encapsulamento<br/>programado pelo CNI"]
@@ -396,9 +404,9 @@ flowchart LR
         VethB --> PodB["Pod destino<br/>10.244.2.9"]
     end
 
-    style RouteA fill:#4a3b7a,stroke:#8e6fd6,color:#fff
-    style RouteB fill:#4a3b7a,stroke:#8e6fd6,color:#fff
-    style Regra fill:#1e5c3a,stroke:#27ae60,color:#fff
+    class RouteA marca
+    class RouteB marca
+    class Regra ok
 ```
 
 Repare que o `kube-proxy` só entra nesse caminho quando o pacote é endereçado a um ClusterIP virtual — um Pod que fale diretamente com o IP real de outro Pod, sem passar por um Service no meio, nunca toca nenhuma regra de `kube-proxy`, só a malha de rotas que o CNI já programou entre os nodes. É essa composição de duas camadas independentes — o CNI resolvendo "como um pacote chega de um node a outro", o `kube-proxy` resolvendo "para qual Pod real um ClusterIP deveria traduzir" — que faz o modelo inteiro funcionar sem que nenhum dos dois componentes precise saber os detalhes internos do outro.

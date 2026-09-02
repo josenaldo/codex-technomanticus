@@ -97,6 +97,8 @@ def fatorial(n):
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["chamada f(args, kwargs)"] --> B{"chave já<br/>está no cache?"}
     B -->|"sim (hit)"| C["devolve valor guardado<br/>sem executar f de novo"]
     B -->|"não (miss)"| D["executa f(args, kwargs)"]
@@ -106,10 +108,10 @@ flowchart TD
     F --> G
     G --> C
 
-    style A fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style F fill:#F5A623,color:#000
-    style D fill:#F5A623,color:#000
+    class A neutro
+    class C neutro
+    class F destaque
+    class D destaque
 ```
 
 > [!warning] `lru_cache`/`cache` exigem argumentos hashable — e não protegem contra funções impuras
@@ -260,6 +262,9 @@ O dispatch acontece sobre o **tipo do primeiro argumento** — daí "single" (co
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["processar(dado)"] --> B{"type(dado) tem<br/>implementação registrada?"}
     B -->|"int"| C["implementação para int"]
     B -->|"str"| D["implementação para str"]
@@ -268,12 +273,12 @@ flowchart LR
     F --> G["sem nenhuma<br/>correspondência na MRO"]
     G --> H["implementação genérica<br/>(a função original,<br/>registrada para object)"]
 
-    style A fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style F fill:#F5A623,color:#000
-    style H fill:#D0021B,color:#fff
+    class A neutro
+    class C neutro
+    class D neutro
+    class E neutro
+    class F destaque
+    class H falha
 ```
 
 Quando não existe implementação registrada exatamente para o tipo do argumento, `singledispatch` percorre a **MRO** (Method Resolution Order) do tipo, buscando a implementação registrada mais específica entre as superclasses — e cai na implementação genérica (a função original, decorada com `@singledispatch`, que atua como implementação para `object`) só se nada na MRO tiver registro. Isso significa que registrar uma implementação para uma ABC (`collections.abc.Sequence`, por exemplo) cobre automaticamente qualquer subclasse virtual dela, sem precisar registrar cada tipo concreto individualmente.

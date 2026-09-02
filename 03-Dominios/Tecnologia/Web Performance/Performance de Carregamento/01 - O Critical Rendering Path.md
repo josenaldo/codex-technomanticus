@@ -29,18 +29,19 @@ A resposta é que **receber o HTML é só o começo**. Entre os bytes chegarem e
 ## Os seis passos, um por vez
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[HTML] -->|parse| B[DOM]
     C[CSS] -->|parse| D[CSSOM]
     B --> E[Render Tree]
     D --> E
     E -->|geometria| F[Layout]
     F -->|pixels| G[Paint]
-    style B fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style G fill:#F5A623,color:#000
+    class B neutro
+    class D neutro
+    class E neutro
+    class G destaque
 ```
 
 **1. HTML → DOM.** O browser lê o HTML byte a byte e constrói o **DOM** (Document Object Model), a árvore de nós que representa a estrutura do documento. Ele faz isso **incrementalmente** — não precisa do HTML inteiro para começar. Mas há um porém decisivo: se ele encontra um `<script>` sem `async`/`defer`, ele **para** de construir o DOM até baixar e executar o script (assunto da próxima nota).

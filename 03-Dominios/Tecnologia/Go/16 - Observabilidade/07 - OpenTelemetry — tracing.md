@@ -32,6 +32,8 @@ Tracing distribuído resolve exatamente essa lacuna: cada requisição carrega u
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Trace["Um trace = uma árvore de spans"]
         direction TB
         S1["Span: HTTP POST /orders\n(root span, 4000ms)"]
@@ -43,8 +45,8 @@ flowchart TB
         S2 --> S4
     end
 
-    style S1 fill:#4A90D9,color:#fff
-    style S3 fill:#D0021B,color:#fff
+    class S1 neutro
+    class S3 falha
 ```
 
 Um **span** é a unidade atômica: tem um nome (`"POST /orders"`), um início e um fim, um **span ID** próprio, e um **trace ID** compartilhado por todos os spans da mesma requisição. Um span pode ter um **parent span ID**, formando a árvore acima — o span de `payments-service` é filho do span raiz, porque foi disparado durante o processamento dele.
@@ -58,13 +60,15 @@ O trio `trace ID + span ID + parent span ID` é o **trace context**. É esse con
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Seu código\n(instrumentação manual\nou automática)"] -->|"cria spans via\nTracer"| B["SDK otel-go\n(TracerProvider)"]
     B -->|"batch de spans"| C["Exporter\n(OTLP gRPC/HTTP)"]
     C -->|"OTLP"| D["OpenTelemetry\nCollector"]
     D -->|"roteia"| E["Backend\n(Jaeger / Tempo / Honeycomb)"]
 
-    style B fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
+    class B neutro
+    class D destaque
 ```
 
 Quatro peças, sempre na mesma ordem:

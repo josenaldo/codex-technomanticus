@@ -31,16 +31,19 @@ Antes do simulado em si, vale entender a estrutura que a maioria dos loops de ba
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["Aquecimento\nconceitual\n~5 min"] --> B["Live coding\n~15 min"]
     B --> C["Concorrência\nsob pressão\n~10 min"]
     C --> D["System design\nleve\n~10 min"]
     D --> E["Pergunta\ncomportamental\n~5 min"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#F5A623,color:#000
-    style D fill:#7ED321,color:#000
-    style E fill:#9B59B6,color:#fff
+    class A neutro
+    class B destaque
+    class C destaque
+    class D destaque
+    class E marca
 ```
 
 Cada fase testa uma capacidade diferente, e o entrevistador raramente anuncia a transição — ela acontece pela mudança do tipo de pergunta. Aquecimento é sobre vocabulário compartilhado ("você sabe do que está falando?"); live coding é sobre execução sob observação; concorrência sob pressão é sobre profundidade — geralmente uma pergunta com pegadinha embutida; system design leve é sobre visão de sistema, não sobre resolver o problema inteiro; e a pergunta comportamental técnica fecha pedindo uma história real, não um discurso genérico. As notas 02, 05 e 06 deste galho já cobriram o conteúdo de cada fase em profundidade — esta nota simula a **performance** delas em sequência, com o relógio correndo.

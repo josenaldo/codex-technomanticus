@@ -142,6 +142,7 @@ Quando alguém publica uma imagem multi-arquitetura — o fluxo típico de `dock
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     ML["Manifest list / image index\ntag: minha-api:v2"]
     MA["Manifesto — linux/amd64\ndigest: sha256:aaa..."]
     MB["Manifesto — linux/arm64\ndigest: sha256:bbb..."]
@@ -153,7 +154,7 @@ graph TB
     MA --> LA1
     MB --> LB1
 
-    style ML fill:#4a3b7a,stroke:#8e6fd6,color:#fff
+    class ML marca
 ```
 
 Vale amarrar essa mecânica ao que a nota [[03-Dominios/Tecnologia/Infraestrutura/Docker/10 - BuildKit por dentro|10 — BuildKit por dentro]] já estabeleceu sobre BuildKit e cache exportável: é o mesmo `docker buildx build --push`, com `--cache-to type=registry`, que publica não só as camadas da imagem final mas também um cache de build inteiro dentro do próprio registry, endereçado do mesmo jeito por digest. Um segundo desenvolvedor, ou um segundo runner de CI, fazendo o mesmo build a partir do mesmo commit, consegue reaproveitar esse cache remoto exatamente pelo mesmo mecanismo de "perguntar o que já existe antes de enviar" descrito na seção anterior — o registry, nesse uso, deixa de ser só o destino final da imagem e passa a ser também o repositório do cache de build, compartilhado entre máquinas que nunca se falaram diretamente.
@@ -270,6 +271,7 @@ Vale entrar num nível a mais de detalhe sobre o mecanismo de limpeza, porque "c
 
 ```mermaid
 graph TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph "Manifestos alcançáveis (fase de marcação)"
         M1["Manifesto A — tag ativa"]
         M2["Manifesto B — referenciado só por digest\n(GitOps, sem tag)"]
@@ -287,7 +289,7 @@ graph TB
     M2 --> L2
     M2 --> L3
 
-    style L4 fill:#7a2e2e,stroke:#c0392b,color:#fff
+    class L4 falha
 ```
 
 O blob 4, no diagrama, é exatamente o candidato que a fase de varredura remove — nenhum manifesto ainda alcançável, com ou sem tag, aponta para ele. Os blobs 1, 2 e 3 sobrevivem porque pelo menos um manifesto alcançável ainda os referencia, mesmo que esse manifesto (o B) não tenha nenhuma tag apontando para ele — só uma referência externa por digest, como o exemplo de GitOps da seção anterior descreveu. Note também que o blob 2 é compartilhado entre dois manifestos diferentes — o mesmo princípio de deduplicação por conteúdo da seção sobre camadas compartilhadas, agora visto sob a ótica de quem decide o que pode ser removido com segurança: um blob só vira candidato a remoção quando *nenhum* manifesto alcançável, entre todos os que existem, ainda o referencia.
@@ -324,6 +326,7 @@ Imediatamente depois do push, o próprio pipeline consulta o digest que aquele p
 
 ```mermaid
 graph TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     C["Commit na branch principal"]
     B["Pipeline de CI builda a imagem"]
     P["Push: tag semântica\n+ digest resolvido"]
@@ -337,8 +340,8 @@ graph TB
     T --> O
     G -.->|"referência por digest\nsobrevive à expiração da tag"| O
 
-    style D fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style O fill:#1e5c3a,stroke:#27ae60,color:#fff
+    class D ok
+    class O ok
 ```
 
 Meses depois, uma política de retenção configurada no registry expira tags mais antigas que noventa dias, exceto as que carregam um marcador explícito de release. A tag `2026.08.02-a1b2c3d` desaparece da listagem — mas o digest que ela apontava, ainda referenciado pelo manifesto de deployment gravado por GitOps, continua resolvendo normalmente: a política de retenção remove tags e, na sequência, blobs que nenhum manifesto ainda alcançável referencia; ela não invalida um digest que algo em produção ainda cita explicitamente, porque isso tornaria a fixação por digest inútil na primeira vez que uma política de limpeza rodasse. É essa combinação — publicar sob tag e digest simultaneamente, consumir por digest em produção, deixar a tag livre para expirar — que faz retenção e reprodutibilidade conviverem sem se anular.
@@ -359,6 +362,8 @@ Essa camada de disciplina importa porque muda a pergunta que se pode fazer sobre
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     B["Pipeline de CI\nconstrói e publica a imagem"]
     S["Assina o digest do manifesto\n(chave de longo prazo ou\ncertificado de curta duração)"]
     R["Registry\nguarda manifesto + assinatura\ncomo objetos irmãos"]
@@ -368,8 +373,8 @@ graph LR
     V -->|"assinatura válida"| Run["Container inicia"]
     V -->|"assinatura ausente\nou inválida"| Deny["Execução recusada"]
 
-    style Deny fill:#7a2e2e,stroke:#c0392b,color:#fff
-    style Run fill:#1e5c3a,stroke:#27ae60,color:#fff
+    class Deny falha
+    class Run ok
 ```
 
 Vale nomear, sem detalhar, que a forma dominante desse mecanismo hoje costuma dispensar a gestão manual de chave privada de longo prazo — o modelo chamado de **assinatura sem chave** (*keyless signing*, popularizado pelo projeto Sigstore e sua ferramenta `cosign`), no qual a assinatura é gerada usando um certificado de curtíssima duração, emitido no instante da build a partir da identidade da própria automação de CI (por exemplo, "este workflow específico, deste repositório específico, rodando neste pipeline"), e a verificação depois consulta um log de transparência público para confirmar que aquela assinatura de fato existiu naquele momento, sem que ninguém precise guardar nem proteger uma chave privada permanente. Esse detalhe existe porque gerir chave privada de longo prazo é, historicamente, o ponto mais frágil de qualquer esquema de assinatura — perder a chave, vazar a chave, ou esquecer de revogá-la quando alguém sai do time são falhas humanas recorrentes; tirar a chave de longo prazo da equação fecha essa classe inteira de risco. Esta nota não tem escopo para ensinar a configurar nenhuma dessas ferramentas; a disciplina de assinar, verificar e recusar imagens não assinadas em tempo de execução pertence à nota [[03-Dominios/Tecnologia/Infraestrutura/Docker/13 - Segurança da imagem e do runtime|13 — Segurança da imagem e do runtime]] e ao domínio de Segurança do vault — aqui cabia só deixar registrado que o mecanismo existe, e que ele resolve um problema que digest sozinho, por desenho, não resolve.

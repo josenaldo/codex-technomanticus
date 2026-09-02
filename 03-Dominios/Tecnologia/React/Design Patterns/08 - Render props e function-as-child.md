@@ -79,7 +79,6 @@ Note o que aconteceu: `Toggle` não sabe nada sobre botões, textos ou painéis.
 ## Diagrama: o fluxo de dados no render prop
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 sequenceDiagram
     participant App as Consumidor (App)
     participant Toggle as Toggle (lógica)

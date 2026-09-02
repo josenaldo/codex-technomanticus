@@ -54,6 +54,8 @@ Quatro campos, e os dois que importam para esta nota são `Transport` e `Timeout
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     App["Código da aplicação"] --> Client["http.Client"]
     Client -->|"Timeout: prazo total\n(conexão + envio + resposta)"| Deadline["deadline da chamada"]
     Client -->|"Transport: RoundTripper"| Transport["http.Transport"]
@@ -62,8 +64,8 @@ flowchart TB
     Pool --> Host1["api.exemplo.com:443"]
     Pool --> Host2["outro-servico.com:443"]
 
-    style Client fill:#4A90D9,color:#fff
-    style Transport fill:#F5A623,color:#000
+    class Client neutro
+    class Transport destaque
 ```
 
 `Client.Timeout` é o prazo **fim a fim**: da chamada de `Do`/`Get` até o corpo da resposta terminar de ser lido, incluindo qualquer redirecionamento seguido no caminho. `Transport` é a peça que faz o trabalho pesado por baixo — abrir conexões, negociar TLS, manter um pool para reaproveitar — e tem seus próprios timeouts, mais granulares, que a [documentação de `net/http`](https://pkg.go.dev/net/http#Transport) descreve campo a campo.
@@ -207,6 +209,8 @@ func buscarPedido(id string) (*Pedido, error) {
 
 ```mermaid
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Start["Enviar requisição"] --> Resp{"Resultado?"}
     Resp -->|"erro de rede\nou timeout"| Retryable1["retentável"]
     Resp -->|"5xx (503, 502...)"| Retryable2["retentável"]
@@ -219,10 +223,10 @@ flowchart TD
     Backoff --> Start
     Check -->|sim| Fail["retorna erro final"]
 
-    style Retryable1 fill:#F5A623,color:#000
-    style Retryable2 fill:#F5A623,color:#000
-    style NotRetryable fill:#D0021B,color:#fff
-    style Success fill:#7ED321,color:#000
+    class Retryable1 destaque
+    class Retryable2 destaque
+    class NotRetryable falha
+    class Success destaque
 ```
 
 Uma implementação mínima, mas real, de retry com backoff exponencial:

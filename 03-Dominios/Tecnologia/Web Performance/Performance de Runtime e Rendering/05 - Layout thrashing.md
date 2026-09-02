@@ -31,17 +31,18 @@ O browser sabe que reflow é caro (ver [[03-Dominios/Tecnologia/Web Performance/
 O problema aparece quando você **lê** uma propriedade que *depende* do layout — `offsetHeight`, `offsetWidth`, `getBoundingClientRect()`, `scrollTop`, `getComputedStyle()` — **depois** de ter escrito. O browser não pode te dar um valor desatualizado: ele é forçado a **recalcular o layout imediatamente**, ali, síncrono, para responder à sua leitura. Isso é o **forced synchronous layout**. Uma vez, tudo bem. Num loop que alterna escreve-lê-escreve-lê, você força um reflow a cada iteração.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph BAD["❌ Thrashing: read/write intercalados"]
         W1[escreve] --> R1[lê → reflow!] --> W2[escreve] --> R2[lê → reflow!] --> W3[...]
     end
     subgraph GOOD["✅ Batched: read → write"]
         RA[lê tudo] --> RB[lê tudo] --> WA[escreve tudo] --> WB[1 reflow no fim]
     end
-    style R1 fill:#D0021B,color:#fff
-    style R2 fill:#D0021B,color:#fff
-    style WB fill:#4A90D9,color:#fff
+    class R1 falha
+    class R2 falha
+    class WB neutro
 ```
 
 ## O código com falha e a correção

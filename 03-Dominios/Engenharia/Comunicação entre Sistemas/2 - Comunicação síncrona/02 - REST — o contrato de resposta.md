@@ -114,7 +114,6 @@ Client errors (4xx) raramente se beneficiam de retry — com as exceções espec
 Há uma segunda condição que precisa acompanhar qualquer retry, independente do status code: **idempotência**. Refazer automaticamente uma chamada que já teve efeito colateral (um `POST` que criou um recurso, por exemplo) sem alguma forma de proteção pode duplicar a operação — criar dois pedidos, cobrar duas vezes. A prática recomendada é usar backoff exponencial com jitter para evitar tempestades de retry, garantir que retries sejam seguros através de idempotência (ou de chaves de idempotência), e limitar o volume de retry com um orçamento (retry budget) para não causar falhas em cascata (denalibalser, [Best Practices for Retry](https://denalibalser.medium.com/best-practices-for-retry-685bf58de797), acessado 2026-07-09). O padrão Idempotency-Key, citado na nota-mãe desta trilha e aprofundado no Sub-galho 3, existe exatamente para tornar seguro o retry automático de operações não naturalmente idempotentes como `POST`.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TD
     R["Resposta recebida"] --> Q{"Faixa do<br/>status code?"}
     Q -->|"2xx / 3xx"| OK["Segue o fluxo normal"]

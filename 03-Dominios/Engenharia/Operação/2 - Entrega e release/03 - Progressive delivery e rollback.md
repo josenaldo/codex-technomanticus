@@ -62,7 +62,6 @@ A LaunchDarkly descreve o padrão assim: um kill switch é "um mecanismo de segu
 A diferença prática entre um kill switch e um rollback de deploy tradicional é de ordem de grandeza no tempo de resposta:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     subgraph DEPLOY["Rollback de DEPLOY"]
         D1["Feature quebrou<br/>em produção"] --> D2["Reverter commit /<br/>apontar imagem anterior"]
@@ -107,8 +106,10 @@ Na prática de 2026, o degrau seguinte é implementado por operadores dedicados 
 O padrão de configuração é sempre o mesmo formato: defina um SLI (o quê medir — ver o sub-galho 4 desta trilha para a engenharia por trás de escolher SLIs), um limiar aceitável (ex.: taxa de sucesso ≥ 95%), uma janela de observação (ex.: medições a cada minuto) e um critério de falha (ex.: três medições consecutivas abaixo do limiar). Documentação e casos reais de Argo Rollouts descrevem exatamente esse padrão: se a métrica cair abaixo de 95% em três medições, a análise é marcada como falha, o Rollout aborta automaticamente, o peso do canário volta a zero, e o objeto entra em estado degradado — sem ninguém precisar estar de plantão olhando um gráfico àquela hora exata.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Deploy da versão nova<br/>(canário)"] --> B["Roteia 5% do tráfego<br/>pro canário"]
     B --> C["AnalysisTemplate consulta<br/>Prometheus a cada 1 min:<br/>taxa de erro, p99 latência"]
     C --> D{"Métricas dentro<br/>do limiar?"}
@@ -119,9 +120,9 @@ graph TD
     G -->|Sim| H["✅ Promoção completa,<br/>versão antiga desligada"]
     F --> I["📟 Alerta dispara,<br/>notifica time (Slack/Teams)"]
 
-    style F fill:#D0021B,color:#fff
-    style H fill:#4A90D9,color:#fff
-    style I fill:#F5A623,color:#000
+    class F falha
+    class H neutro
+    class I destaque
 ```
 
 Repare no que mudou em relação à nota 02: lá, canário era uma *estratégia de deploy* — a decisão de rotear tráfego em fatias. Aqui, a promoção e o rollback dessa estratégia deixam de ser um botão apertado por um humano vigiando um dashboard e viram um **loop de controle fechado**, guiado por métrica, sem intervenção manual no caminho feliz. O humano só entra quando o loop falha e alguém precisa investigar a causa raiz — exatamente o padrão de "mitigar o sintoma automaticamente, investigar depois" que a nota 01 do sub-galho 1 já havia esboçado.

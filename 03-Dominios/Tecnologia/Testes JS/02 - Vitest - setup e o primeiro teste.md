@@ -89,13 +89,14 @@ Duas opções que você vai tocar cedo:
 ## Watch mode: a peça que confunde no começo
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["vitest<br/>(watch, DEV)"] -->|salvou arquivo| B[re-roda só o afetado]
     B --> A
     C["vitest run<br/>(uma vez, CI)"] --> D[roda tudo e sai]
-    style A fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
+    class A neutro
+    class C destaque
 ```
 
 Rodar `vitest` (via `npm test`) entra em **modo watch**: ele roda os testes e **fica observando** os arquivos, re-executando *só os testes afetados* por cada mudança que você salvar. Isso é ótimo no desenvolvimento (feedback instantâneo), mas confunde quem espera o comando "terminar" — ele não termina de propósito.

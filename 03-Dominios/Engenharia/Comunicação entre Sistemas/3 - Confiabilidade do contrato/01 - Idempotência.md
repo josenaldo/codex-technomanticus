@@ -35,8 +35,9 @@ Antes de entender o padrão, vale entender por que o problema existe especificam
 - **`POST`**, por definição do protocolo, **não é idempotente** — e essa não-idempotência não é um bug de alguma implementação específica, é a semântica que a RFC 9110 (a especificação atual do HTTP) atribui ao verbo: `POST` significa "processe este dado segundo a semântica do recurso", o que tipicamente significa "crie um novo recurso subordinado". Repetir um `POST` de criação, por definição, cria um novo recurso a cada vez — dois pagamentos, dois pedidos, dois emails enviados.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Idempotentes["Idempotentes por definição"]
         GET["GET<br/>ler não muda nada"]
         PUT["PUT<br/>substitui pelo mesmo valor"]
@@ -47,10 +48,10 @@ graph LR
         POST["POST<br/>cada chamada cria algo novo"]
     end
 
-    style GET fill:#4A90D9,color:#fff
-    style PUT fill:#4A90D9,color:#fff
-    style DELETE fill:#4A90D9,color:#fff
-    style POST fill:#D0021B,color:#fff
+    class GET neutro
+    class PUT neutro
+    class DELETE neutro
+    class POST falha
 ```
 
 > [!question]- Se PUT é idempotente "por definição", isso significa que uma implementação de PUT nunca pode ter bug de duplicação?
@@ -63,7 +64,6 @@ Um detalhe frequentemente esquecido: `PATCH`, o quarto verbo de escrita, **não 
 A reação instintiva de quem nunca lidou com esse problema em produção é "o cliente é que não devia reenviar sem confirmar que falhou de verdade" — mas essa reação ignora que o cliente **não tem informação suficiente para confirmar isso**. Um timeout de rede é fundamentalmente ambíguo: o request pode ter se perdido antes de chegar ao servidor (nesse caso, nada aconteceu, e retentar é seguro e necessário), ou pode ter chegado, sido processado com sucesso, e só a resposta é que se perdeu no caminho de volta (nesse caso, retentar sem proteção duplica o efeito). Do ponto de vista do cliente, os dois cenários são **indistinguíveis** — o socket simplesmente não trouxe resposta dentro do prazo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant App as App mobile
     participant API as API de pagamento
@@ -119,8 +119,10 @@ Content-Type: application/json
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["POST recebido<br/>com Idempotency-Key"] --> B{"Chave já<br/>existe no store?"}
     B -->|"Não"| C["Reserva a chave<br/>(insert atômico)"]
     C --> D["Executa a operação<br/>de negócio"]
@@ -131,11 +133,11 @@ flowchart TD
     B -->|"Sim, com<br/>mesmo request"| I["Retorna resposta<br/>armazenada, SEM reprocessar"]
     B -->|"Sim, mas request<br/>diferente"| J["422/409 —<br/>chave reutilizada indevidamente"]
 
-    style C fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
-    style I fill:#4A90D9,color:#fff
-    style G fill:#F5A623,color:#000
-    style J fill:#D0021B,color:#fff
+    class C neutro
+    class F neutro
+    class I neutro
+    class G destaque
+    class J falha
 ```
 
 Um ponto sutil que a implementação precisa honrar: se a chave já existe mas o **corpo do request é diferente** do que gerou a chave da primeira vez, isso não é um retry legítimo — é reuso indevido de uma chave (bug do cliente, ou nome de variável colidindo com outra operação). A Stripe compara os parâmetros recebidos com os da primeira execução e retorna erro se não baterem, exatamente para blindar contra esse caso ([Stripe Docs, *Idempotent requests*](https://docs.stripe.com/api/idempotent_requests)).

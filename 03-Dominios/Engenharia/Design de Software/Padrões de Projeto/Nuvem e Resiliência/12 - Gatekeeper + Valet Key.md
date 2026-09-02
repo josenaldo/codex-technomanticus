@@ -45,15 +45,15 @@ O Valet Key resolve os três de uma vez. E o Gatekeeper ataca um problema irmão
 ## Valet Key: entregue a chave, não o carro
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     C["Cliente"] -->|"1. peço permissão<br/>para enviar arquivo X"| A["Aplicação<br/><i>autoriza e assina</i>"]
     A -->|"2. URL pré-assinada<br/>escopo: 1 objeto · PUT · 15min"| C
     C ==>|"3. envia direto<br/><b>os bytes não passam por você</b>"| S["Armazenamento"]
 
-    style A fill:#4A90D9,color:#fff
-    style S fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
+    class A neutro
+    class S neutro
+    class C neutro
 ```
 
 A analogia do nome é exata: você entrega ao manobrista uma chave que abre o carro e liga o motor, mas **não abre o porta-malas** e vale só por um tempo. A aplicação mantém a decisão de **autorização** — quem pode, o quê, por quanto tempo — e abre mão de intermediar a **transferência**.

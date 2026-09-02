@@ -44,7 +44,6 @@ Aqui está o conceito que mais confunde quem nunca usou um leitor de tela — e 
 O leitor de tela tenta trocar de modo automaticamente com base no *role* do elemento em foco. Entrou num `<input>`? Vira modo de foco. Saiu? Volta pro modo de navegação. E é exatamente aí que ARIA mal-usado cobra o preço: se você constrói um widget complexo com roles errados, o leitor de tela troca de modo na hora errada — o usuário aperta a seta esperando navegar e a página faz outra coisa, ou digita e o texto não entra. O bug não está "no leitor de tela"; está no fato de que a árvore mentiu sobre o que aquele elemento era.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 stateDiagram-v2
     [*] --> Navegacao
     Navegacao: Modo de navegação (browse)

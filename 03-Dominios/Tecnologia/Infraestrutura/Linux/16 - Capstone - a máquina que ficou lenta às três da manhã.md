@@ -192,7 +192,6 @@ psql -h 10.0.3.44 -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity
 ## O caminho percorrido, e de onde veio cada peça
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     A["load alto e sustentado"] --> B["dmesg limpo<br/>✖ não é OOM nem hardware"]
     B --> C["vmstat: fila alta, wa baixo<br/>✖ não é disco nem memória"]

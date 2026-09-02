@@ -43,6 +43,7 @@ Toda forma de IPC desce de um de dois modelos, os mesmos que estruturam `[[Conco
 
 ```mermaid
 flowchart TB
+    classDef k fill:#2d3748,color:#fff
     subgraph P["Processo A e Processo B isolados"]
         direction LR
         A["Processo A"]
@@ -52,7 +53,6 @@ flowchart TB
     K1 --> B
     A -->|"memoria compartilhada"| SH["Pagina fisica unica mapeada nos dois"]
     B --> SH
-    classDef k fill:#2d3748,color:#fff
     class K1,SH k
 ```
 
@@ -74,10 +74,10 @@ a barra vertical não é mágica de texto. O shell cria um pipe no kernel, faz o
 
 ```mermaid
 flowchart LR
+    classDef k fill:#2d3748,color:#fff
     LS["Processo ls<br/>escreve no stdout"] -->|"bytes"| PIPE["Pipe<br/>(buffer FIFO no kernel)"]
     PIPE -->|"bytes"| GREP["Processo grep<br/>le do stdin"]
     GREP --> OUT["Terminal"]
-    classDef k fill:#2d3748,color:#fff
     class PIPE k
 ```
 
@@ -106,14 +106,14 @@ A beleza é a interface unificada: o mesmo código de `socket`/`bind`/`listen`/`
 
 ```mermaid
 flowchart TB
+    classDef fast fill:#22543d,color:#fff
+    classDef slow fill:#742a2a,color:#fff
     subgraph SAME["Mesma maquina"]
         C1["Cliente"] <-->|"Unix domain socket<br/>sem pilha de rede"| S1["Servidor"]
     end
     subgraph NET["Maquinas diferentes"]
         C2["Cliente"] <-->|"Network socket<br/>pilha TCP/IP"| S2["Servidor remoto"]
     end
-    classDef fast fill:#22543d,color:#fff
-    classDef slow fill:#742a2a,color:#fff
     class S1 fast
     class S2 slow
 ```
@@ -133,6 +133,8 @@ Isso encaixa direto em `[[07 - Memória virtual e paginação]]`: o truque é co
 
 ```mermaid
 flowchart TB
+    classDef k fill:#2d3748,color:#fff
+    classDef sync fill:#744210,color:#fff
     subgraph PA["Espaco virtual de A"]
         VA["Endereco virtual 0x7000"]
     end
@@ -142,8 +144,6 @@ flowchart TB
     VA --> PHYS["Frame fisico unico na RAM"]
     VB --> PHYS
     SEM["Semaforo / mutex"] -.coordena acesso.-> PHYS
-    classDef k fill:#2d3748,color:#fff
-    classDef sync fill:#744210,color:#fff
     class PHYS k
     class SEM sync
 ```

@@ -43,7 +43,6 @@ Mudou uma coisa: apareceu uma pasta oculta chamada **`.git`**. É ali que o hist
 Aqui está o conceito que faz o Git parecer estranho no primeiro dia. Ele não trabalha com dois estados ("salvo" e "não salvo"), e sim com três lugares:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
     A["<b>Diretório de trabalho</b><br/>os arquivos que você<br/>vê e edita"] -->|git add| B["<b>Área de preparação</b><br/>o que vai entrar<br/>no próximo registro"]
     B -->|git commit| C["<b>Repositório</b><br/>histórico permanente<br/>dentro do .git"]
@@ -141,7 +140,6 @@ Repare: o arquivo aparece como **modified**, não como untracked. O Git já conh
 O ciclo diário completo, então:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 stateDiagram-v2
     [*] --> NaoRastreado: arquivo novo na pasta
     NaoRastreado --> Preparado: git add

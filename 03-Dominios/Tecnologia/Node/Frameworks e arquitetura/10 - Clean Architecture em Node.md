@@ -121,6 +121,9 @@ app.post("/users", (req, res) => controller.create(req, res));
 
 ```mermaid
 flowchart LR
+    classDef blue fill:#4A90D9,color:#fff,stroke:#4A90D9
+    classDef amber fill:#F5A623,color:#fff,stroke:#F5A623
+    classDef red fill:#D0021B,color:#fff,stroke:#D0021B
     fw["Frameworks\n& Drivers\nExpress · Postgres · Prisma"]:::red
     adapt["Interface\nAdapters\nControllers · Repositories\nPresenters · Mappers"]:::amber
     app["Use Cases\npolíticas de aplicação"]:::blue
@@ -130,9 +133,6 @@ flowchart LR
     adapt --> app
     app --> domain
 
-    classDef blue fill:#4A90D9,color:#fff,stroke:#4A90D9
-    classDef amber fill:#F5A623,color:#fff,stroke:#F5A623
-    classDef red fill:#D0021B,color:#fff,stroke:#D0021B
 ```
 
 Seta aponta para dentro. `domain/` e `application/` não têm setas saindo para fora. Qualquer import que quebre essa direção é uma violação arquitetural.

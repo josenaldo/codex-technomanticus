@@ -116,6 +116,8 @@ O crescimento de memória com buffer everything é linear no tamanho dos dados. 
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph BE["❌ Buffer everything — O(N) memória"]
         direction LR
         s1["Fonte"] -->|"readFile()\ntudo de uma vez"| m1["RAM: N bytes"]
@@ -127,10 +129,10 @@ flowchart LR
         t -->|"chunk'"| d2["Destino"]
         d2 -..->|"write()=false\nbackpressure"| s2
     end
-    style m1 fill:#D0021B,color:#fff
-    style t fill:#4A90D9,color:#fff
-    style s2 fill:#4A90D9,color:#fff
-    style d2 fill:#4A90D9,color:#fff
+    class m1 falha
+    class t neutro
+    class s2 neutro
+    class d2 neutro
 ```
 
 ### Backpressure — o mecanismo que controla o fluxo

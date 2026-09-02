@@ -37,6 +37,9 @@ Todo modelo de preço de compute na AWS pode ser lido através de um único eixo
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Quanto de compromisso<br/>você aceita assumir?"] --> B["Nenhum<br/>paga por segundo, sem promessa"]
     A --> C["Uso constante,<br/>1 ou 3 anos"]
     A --> D["Nenhum compromisso,<br/>mas aceita ser interrompido"]
@@ -46,10 +49,10 @@ flowchart LR
     C --> C2["Savings Plans<br/>compromisso de gasto ($/h)"]
     D --> D1["Spot<br/>capacidade ociosa,<br/>desconto profundo, sem SLA"]
 
-    style B1 fill:#5b2a2a
-    style C1 fill:#2a4a2a
-    style C2 fill:#2a4a2a
-    style D1 fill:#2a2a5b
+    class B1 falha
+    class C1 ok
+    class C2 ok
+    class D1 neutro
 ```
 
 Repare que não existe um modelo "melhor" no vácuo — existe o modelo certo para a *forma* da carga de trabalho. Uma carga estável e previsível (o banco de dados de produção que roda 24/7 há dois anos e vai continuar rodando) desperdiça dinheiro em on-demand. Uma carga tolerante a falha e interrompível (renderização de vídeo em lote, treinamento de modelo, processamento de fila) desperdiça dinheiro pagando o preço de algo que nunca precisou de garantia de disponibilidade contínua. E um pico de tráfego imprevisível (Black Friday, lançamento de produto) é exatamente o caso para o qual on-demand foi desenhado — pagar mais por hora é o preço de não ter promessa nenhuma sobre volume.

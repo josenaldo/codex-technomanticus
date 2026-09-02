@@ -192,6 +192,9 @@ Este é o ponto exato onde a fronteira entre esta nota e o Galho 10 fica visíve
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Root["Composition root — main.py"]
         DECISAO["get_uow()\ndecide: SqlAlchemyUnitOfWork"]
     end
@@ -219,10 +222,10 @@ flowchart TB
     UOW_ABS -.->|"implementada por"| SQL
     UOW_ABS -.->|"implementada por"| FAKE
 
-    style DECISAO fill:#4A90D9,color:#fff
-    style UOW_ABS fill:#4A90D9,color:#fff
-    style SQL fill:#2d5016,color:#fff
-    style FAKE fill:#F5A623,color:#000
+    class DECISAO neutro
+    class UOW_ABS neutro
+    class SQL ok
+    class FAKE destaque
 ```
 
 Trocar a implementação em teste é exatamente o mesmo mecanismo de `dependency_overrides` que o Galho 10 já ensinou — a diferença é que aqui a substituição troca a **decisão de composição**, não só um valor de query param:

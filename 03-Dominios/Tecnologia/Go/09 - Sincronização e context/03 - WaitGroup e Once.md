@@ -125,6 +125,8 @@ Chame `GetConfig()` de cem goroutines simultâneas: só a primeira chamada a `co
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["goroutine 1: once.Do(f)"] --> B{"f já rodou?"}
     C["goroutine 2: once.Do(f)"] --> B
     D["goroutine 3: once.Do(f)"] --> B
@@ -137,9 +139,9 @@ flowchart TB
     F --> H
     H --> G
 
-    style E fill:#F5A623,color:#000
-    style F fill:#4A90D9,color:#fff
-    style G fill:#7ED321,color:#000
+    class E destaque
+    class F neutro
+    class G destaque
 ```
 
 O caso de uso canônico é inicialização preguiçosa (*lazy init*) de um recurso caro e compartilhado — uma conexão de banco, um cliente HTTP configurado, uma tabela de lookup calculada uma vez — em código que pode ser chamado concorrentemente antes de qualquer garantia de que a inicialização já rodou.

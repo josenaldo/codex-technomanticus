@@ -34,8 +34,9 @@ Mas "um canal" é uma decisão com duas geometrias radicalmente diferentes, e es
 ## Point-to-Point × Publish-Subscribe
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph PP["Point-to-Point (fila)"]
         S1["Produtor"] --> Q["fila"]
         Q --> C1["Consumidor A"]
@@ -48,8 +49,8 @@ graph TD
         T --> D3["Assinante 3"]
     end
 
-    style Q fill:#4A90D9,color:#fff
-    style T fill:#F5A623,color:#000
+    class Q neutro
+    class T destaque
 ```
 
 - **Point-to-Point Channel (fila):** garante que **exatamente um** consumidor processa cada mensagem. Se houver vários consumidores na fila, eles **competem** ([[11 - Competing Consumers]]) e o canal entrega cada mensagem a apenas um — ótimo para **distribuir trabalho** (uma tarefa, um worker). Casa com **Command Message**: uma ordem deve ser executada uma vez.

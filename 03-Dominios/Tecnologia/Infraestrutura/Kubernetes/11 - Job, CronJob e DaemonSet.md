@@ -343,6 +343,8 @@ Repare que, com `maxUnavailable: 1`, nunca mais de um nó fica temporariamente s
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph CJ["CronJob — existe um Job para cada horário passado?"]
         CSPEC["spec.schedule = 0 3 * * *<br/>spec.concurrencyPolicy = Forbid<br/>spec.timeZone = America/Sao_Paulo"]
     end
@@ -365,9 +367,9 @@ graph TB
     J2 -->|"cria"| P1
     J2 -.->|"cria substituto se P1 falhar,<br/>respeitando backoffLimit"| P2
 
-    style CJ fill:#4a3b7a,stroke:#8e6fd6,color:#fff
-    style J2 fill:#2e4d7a,stroke:#3498db,color:#fff
-    style J1 fill:#3a3a3a,stroke:#777,color:#ccc
+    class CJ marca
+    class J2 neutro
+    class J1 marca
 ```
 
 Repare que essa cadeia é a mesma forma da cadeia Deployment → ReplicaSet → Pods já estabelecida na nota 04: dois níveis de controller, cada um reconciliando um pedaço menor e mais simples do problema, delegando para o nível abaixo a mecânica concreta de criar e destruir Pods. O CronJob nunca cria um Pod diretamente — ele cria Jobs; o Job nunca sabe que existe um CronJob acima dele decidindo horários — ele só sabe reconciliar `completions` contra sucessos observados.

@@ -327,7 +327,6 @@ O servidor envia o HTML de `UserHeader` imediatamente. `OrderTable` e `Recommend
 Para um mergulho profundo em Suspense e data fetching, veja [[19 - Suspense e data fetching no cliente]].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#fff", "tertiaryColor": "#f5f5f5"}}}%%
 sequenceDiagram
     participant B as Browser
     participant S as Servidor (RSC Runtime)
@@ -362,8 +361,9 @@ RSC não envia HTML puro nem JavaScript do componente. Ele envia um formato inte
 O cliente reconstrói a árvore a partir desse payload, sem precisar do código dos Server Components. Isso é o que possibilita atualizações parciais da página sem recarregar o HTML inteiro.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#F5A623", "tertiaryColor": "#f5f5f5"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Servidor["Servidor (nunca vai ao cliente)"]
         SC1["ProductList\n(Server Component)"]
         SC2["ProductCard\n(Server Component)"]
@@ -387,9 +387,9 @@ graph TB
     CC --> HYD
     HYD -->|monta DOM final| DOM["DOM interativo"]
 
-    style Servidor fill:#4A90D9,color:#fff
-    style Payload fill:#F5A623,color:#fff
-    style Cliente fill:#7ED321,color:#fff
+    class Servidor neutro
+    class Payload destaque
+    class Cliente destaque
 ```
 
 ---
@@ -399,8 +399,9 @@ graph TB
 Veja como a divisão server/client se manifesta numa árvore de componentes real:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#F5A623"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     APP["App\n[Server]"] --> LAYOUT["Layout\n[Server]"]
     LAYOUT --> NAV["Nav\n[Server]"]
     LAYOUT --> MAIN["Main\n[Server]"]
@@ -410,15 +411,15 @@ graph TD
     PRODUCTLIST --> ADDTOCART["AddToCartButton\n[Client 'use client']"]
     MAIN --> SEARCHBAR["SearchBar\n[Client 'use client']"]
 
-    style APP fill:#4A90D9,color:#fff
-    style LAYOUT fill:#4A90D9,color:#fff
-    style NAV fill:#4A90D9,color:#fff
-    style MAIN fill:#4A90D9,color:#fff
-    style PRODUCTLIST fill:#4A90D9,color:#fff
-    style PRODUCTCARD fill:#4A90D9,color:#fff
-    style NAVLINK fill:#F5A623,color:#fff
-    style ADDTOCART fill:#F5A623,color:#fff
-    style SEARCHBAR fill:#F5A623,color:#fff
+    class APP neutro
+    class LAYOUT neutro
+    class NAV neutro
+    class MAIN neutro
+    class PRODUCTLIST neutro
+    class PRODUCTCARD neutro
+    class NAVLINK destaque
+    class ADDTOCART destaque
+    class SEARCHBAR destaque
 ```
 
 Os nós em azul executam no servidor. Os em âmbar vão ao bundle do cliente. A maioria da árvore fica no servidor — apenas as folhas interativas cruzam a fronteira.

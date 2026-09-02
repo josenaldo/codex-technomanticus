@@ -69,6 +69,11 @@ Ele mesmo recomenda cautela: Gas Town só é indicado pra quem já está em Est�
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     E1["1. Cético<br/>rejeita IA"] --> E2["2. Autocomplete<br/>aceita sugestões inline"]
     E2 --> E3["3. Chat/Stack Overflow<br/>consulta interativa"]
     E3 -. A Grande Fenda .-> E4["4. Delegador de Código<br/>pede unidades completas"]
@@ -77,14 +82,14 @@ flowchart LR
     E6 --> E7["7. Orquestrador Multi-Agent<br/>coordena paralelo"]
     E7 --> E8["8. Arquiteto AI-Native<br/>desenha o sistema de trabalho"]
 
-    style E1 fill:#5c1a1a,color:#fff
-    style E2 fill:#5c3a1a,color:#fff
-    style E3 fill:#5c3a1a,color:#fff
-    style E4 fill:#5c5c1a,color:#fff
-    style E5 fill:#2f5c1a,color:#fff
-    style E6 fill:#1a5c3a,color:#fff
-    style E7 fill:#1a3a5c,color:#fff
-    style E8 fill:#3a1a5c,color:#fff
+    class E1 falha
+    class E2 destaque
+    class E3 destaque
+    class E4 destaque
+    class E5 ok
+    class E6 ok
+    class E7 neutro
+    class E8 marca
 ```
 
 O corte tracejado entre os estágios 3 e 4 marca "A Grande Fenda" (ver callout mais abaixo): antes dela você consome respostas prontas; depois, você define a tarefa e delega a execução inteira. Estágios 1-3 são consumo passivo de IA; 4-5 são delegação de unidades de trabalho cada vez maiores; 6-8 são operação de sistemas autônomos.

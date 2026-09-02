@@ -157,7 +157,6 @@ O consumidor chama `defaultToggleReducer` para o comportamento padrão e interce
 ## Fluxo: como o state reducer intercepta uma ação
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 sequenceDiagram
     participant U as Usuário
     participant H as useToggle
@@ -412,8 +411,9 @@ O consumidor não sabe (nem precisa saber) que existe `aria-expanded`, `role="li
 ## Fluxo: prop getter compondo handlers do consumidor
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#F5A623", "tertiaryColor": "#e8f4fd"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["consumidor chama\ngetToggleButtonProps(\n  { onClick: myHandler }\n)"] --> B["hook compõe\ncallAll(internalHandler, myHandler)"]
     B --> C["retorna objeto de props\n{ role, aria-expanded,\nonClick: composed, onKeyDown: composed }"]
     C --> D["consumidor faz\n{...getToggleButtonProps(...)}"]
@@ -421,11 +421,11 @@ graph TD
     E --> F["internalHandler() executa\n(abre/fecha menu)"]
     E --> G["myHandler() executa\n(log, analytics, etc.)"]
 
-    style A fill:#e8f4fd,stroke:#4A90D9
-    style B fill:#e8f4fd,stroke:#4A90D9
-    style C fill:#e8f4fd,stroke:#4A90D9
-    style F fill:#e8f4fd,stroke:#4A90D9
-    style G fill:#F5A623,stroke:#b87a00,color:#000
+    class A neutro
+    class B neutro
+    class C neutro
+    class F neutro
+    class G destaque
 ```
 
 ---

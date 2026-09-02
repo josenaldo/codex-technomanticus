@@ -60,7 +60,6 @@ HTTP/1.1 200 OK
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant C as Cliente
     participant S as Servidor
@@ -129,8 +128,9 @@ O formato consolidado pela Stripe — que virou referência de fato para pratica
 3. **Validar o timestamp**, rejeitando qualquer evento assinado com mais de alguns minutos de diferença do relógio local — a Stripe usa uma tolerância padrão de 5 minutos no próprio SDK. Isso é o que impede um **replay attack**: sem o timestamp na assinatura, um evento legítimo capturado por qualquer um com acesso à rede (um proxy comprometido, um log vazado) poderia ser reenviado indefinidamente, e a assinatura continuaria válida para sempre — porque nada na assinatura em si expira.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Webhook recebido<br/>com header de assinatura"] --> B["Recalcula HMAC sobre<br/>corpo BRUTO + timestamp"]
     B --> C{"Comparação em<br/>tempo constante bate?"}
     C -->|"Não"| D["Rejeita —<br/>401/400"]
@@ -138,9 +138,9 @@ flowchart TD
     E -->|"Não"| F["Rejeita —<br/>possível replay"]
     E -->|"Sim"| G["Evento autêntico —<br/>segue para dedup"]
 
-    style D fill:#D0021B,color:#fff
-    style F fill:#D0021B,color:#fff
-    style G fill:#4A90D9,color:#fff
+    class D falha
+    class F falha
+    class G neutro
 ```
 
 > [!warning] Verificar a assinatura, mas manter o endpoint em HTTP

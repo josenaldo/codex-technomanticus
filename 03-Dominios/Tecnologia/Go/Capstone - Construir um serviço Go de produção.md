@@ -78,6 +78,7 @@ Essa separação é a mesma arquitetura hexagonal (ports & adapters) que o galho
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Entrada
         HTTP["cmd/api\nnet/http handlers"]
         GRPC["cmd/api\ngRPC server"]
@@ -101,8 +102,8 @@ flowchart TB
     WORKER -->|"interface CalendarValidator"| CAL
     REPO --> PG[(Postgres)]
 
-    style SVC fill:#4A90D9,color:#fff
-    style ENT fill:#4A90D9,color:#fff
+    class SVC neutro
+    class ENT neutro
 ```
 
 ### Por que injeção de dependência manual, sem um container de DI?

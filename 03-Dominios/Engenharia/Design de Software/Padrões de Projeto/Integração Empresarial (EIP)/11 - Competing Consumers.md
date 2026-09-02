@@ -32,18 +32,19 @@ Essa é a força do padrão. A dificuldade — e onde os sistemas quebram — é
 ## A ideia: competir pela próxima mensagem
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     P["Produtor"] --> Q["fila"]
     Q --> C1["Consumidor 1"]
     Q --> C2["Consumidor 2"]
     Q --> C3["Consumidor 3"]
     NOTE["cada mensagem<br/>vai a UM só;<br/>throughput ∝ nº consumidores"]
 
-    style Q fill:#4A90D9,color:#fff
-    style C1 fill:#F5A623,color:#000
-    style C2 fill:#F5A623,color:#000
-    style C3 fill:#F5A623,color:#000
+    class Q neutro
+    class C1 destaque
+    class C2 destaque
+    class C3 destaque
 ```
 
 Os consumidores são intercambiáveis; o broker faz o balanceamento (cada um puxa quando está livre). Isso paraleliza o consumo e ainda dá **resiliência**: se um consumidor cai, os outros continuam, e as mensagens não-confirmadas dele voltam para a fila.

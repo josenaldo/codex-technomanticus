@@ -25,14 +25,15 @@ Este sub-galho fecha a trilha respondendo à pergunta que o SG3 deixou no ar: co
 Há uma curva de custo bem conhecida na engenharia, e a acessibilidade a obedece com rigor: **quanto mais tarde um problema é pego, mais caro é consertá-lo.**
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     D["Design<br/>💲 baratíssimo"] --> C["Código<br/>💲💲 barato"]
     C --> CI["CI / PR<br/>💲💲💲 médio"]
     CI --> Q["QA / release<br/>💲💲💲💲 caro"]
     Q --> P["Produção / litígio<br/>💲💲💲💲💲 caríssimo"]
-    style D fill:#4A90D9,color:#fff
-    style P fill:#D0021B,color:#fff
+    class D neutro
+    class P falha
 ```
 
 Um contraste corrigido no **design token** custa uma mudança de cor. O mesmo contraste descoberto em **produção**, depois de aplicado em 200 componentes, custa um mutirão — e se virou processo judicial (nota 18), custa advogado. *Shift-left* é o nome da estratégia de empurrar a detecção para a **esquerda** dessa linha: pegar no design, no código, no PR — nunca deixar chegar à direita. Cada um dos três mecanismos a seguir é uma forma de shift-left.

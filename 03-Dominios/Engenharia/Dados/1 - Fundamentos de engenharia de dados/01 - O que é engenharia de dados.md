@@ -135,8 +135,9 @@ Voltando ao exemplo do e-commerce: por que não simplesmente otimizar a query, a
 O caminho que a engenharia de dados propõe, em vez de forçar a pergunta analítica dentro do banco errado, é extrair os dados do OLTP, transformá-los num modelo pensado para leitura agregada, e servi-los a partir de um sistema desenhado para isso — o **data warehouse**. O diagrama abaixo contrasta os dois caminhos:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph OLTP["Caminho OLTP — produção"]
         App["App de checkout"] -->|"INSERT/UPDATE<br/>pontual"| PG[("Postgres<br/>normalizado")]
         PG -->|"SELECT pontual"| App
@@ -150,9 +151,9 @@ graph LR
         DW --> ML["Modelos de ML"]
     end
 
-    style PG fill:#4A90D9,color:#fff
-    style DW fill:#4A90D9,color:#fff
-    style Pipe fill:#F5A623,color:#000
+    class PG neutro
+    class DW neutro
+    class Pipe destaque
 ```
 
 Repare no detalhe do diagrama: a extração para o pipeline é uma linha **pontilhada** saindo do Postgres. Ela precisa ser desenhada com cuidado — geralmente via réplica de leitura, captura de mudanças (*change data capture*) ou exportação incremental agendada — justamente para não repetir o mesmo erro de contenção, agora na extração em vez do relatório direto. Esse desenho fino é aprofundado ao longo da trilha, a partir do sub-galho sobre ingestão.
@@ -206,17 +207,18 @@ Nenhuma dessas eras "substitui" a anterior por completo — times ainda operam c
 **Data analyst.** Foca em relatório, dashboard e resposta a perguntas de negócio no dia a dia — "por que as vendas caíram em março?", "qual segmento de cliente cresce mais rápido?". Consome o que o warehouse já entrega modelado, sem tipicamente construir a infraestrutura por trás.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     F["Fontes de dados<br/>(OLTP, eventos, APIs)"] -->|"constrói pipelines,<br/>ingestão, plataforma"| DE["Data engineer"]
     DE -->|"dado bruto<br/>no warehouse"| AE["Analytics engineer<br/>(modela, transforma)"]
     AE -->|"tabelas limpas,<br/>testadas, documentadas"| DA["Data analyst<br/>(relatório, BI)"]
     AE --> DS["Data scientist<br/>(modelos, ML)"]
 
-    style DE fill:#4A90D9,color:#fff
-    style AE fill:#4A90D9,color:#fff
-    style DA fill:#F5A623,color:#000
-    style DS fill:#F5A623,color:#000
+    class DE neutro
+    class AE neutro
+    class DA destaque
+    class DS destaque
 ```
 
 Para fixar a diferença de foco de cada papel numa única tabela:

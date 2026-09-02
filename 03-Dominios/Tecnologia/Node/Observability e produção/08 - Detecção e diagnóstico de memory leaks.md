@@ -45,6 +45,10 @@ O ciclo de diagnóstico de memory leaks segue uma sequência bem definida — da
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     M["heapUsed crescendo\nmonotonicamente"] --> S1["Captura snapshot baseline\nSIGUSR2 → v8.writeHeapSnapshot"]
     S1 --> L["Aplica carga ou aguarda\n(autocannon / operação suspeita)"]
     L --> GC["Force GC\nglobal.gc() com --expose-gc"]
@@ -56,16 +60,16 @@ flowchart TD
     C -->|"Muitos objetos genéricos\nsem contexto claro"| HP["clinic heapprofiler\nVer onde a memória é alocada"]
     HP --> FIX
 
-    style M fill:#D0021B,color:#fff
-    style S1 fill:#4A90D9,color:#fff
-    style L fill:#4A90D9,color:#fff
-    style GC fill:#4A90D9,color:#fff
-    style S2 fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#fff
-    style R fill:#F5A623,color:#fff
-    style HP fill:#F5A623,color:#fff
-    style FIX fill:#27AE60,color:#fff
-    style V fill:#27AE60,color:#fff
+    class M falha
+    class S1 neutro
+    class L neutro
+    class GC neutro
+    class S2 neutro
+    class C destaque
+    class R destaque
+    class HP destaque
+    class FIX ok
+    class V ok
 ```
 
 ### Sinais de vazamento

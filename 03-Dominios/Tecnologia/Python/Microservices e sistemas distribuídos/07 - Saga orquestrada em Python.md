@@ -221,7 +221,6 @@ class LembreteObrigatorioIndisponivelError(Exception):
 Repare no que essa função **não** faz: ela não importa `fastapi`, não levanta `HTTPException`, não sabe se quem a chamou foi um handler `POST /tarefas` ou um script de importação em lote — exatamente a mesma disciplina que a nota 06 do Galho 13 já cravou para `criar_tarefa`. O que ela adiciona ao vocabulário da Service Layer é a orquestração de um passo **remoto**, com a mesma pilha de resiliência (`httpx` + `tenacity` + `pybreaker`) já construída na nota 03 deste galho, decorando a chamada interna `_agendar_lembrete`.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant H as Handler HTTP
     participant O as Orquestrador da Saga

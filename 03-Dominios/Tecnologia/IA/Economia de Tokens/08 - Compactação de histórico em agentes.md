@@ -41,14 +41,16 @@ O paradoxo: o histórico que você acumula é, na maioria, contexto que o modelo
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Turn 1\n700 tokens"] --> B["Turn 10\n4.700 tokens"]
     B --> C["Turn 30\n15.000 tokens"]
     C --> D["Turn 50\n25.000 tokens"]
     
     D -->|"Com compactação"| E["Turn 50\n3.000 tokens\n(resumo + recentes)"]
     
-    style D fill:#f8d7da,stroke:#721c24
-    style E fill:#d4edda,stroke:#28a745
+    class D falha
+    class E ok
 ```
 
 ## Estratégias de compactação

@@ -38,7 +38,6 @@ Adam Tornhill batizou esse cruzamento de **hotspot** em *Your Code as a Crime Sc
 2024) e depois o aprofundou em *Software Design X-Rays* (2018) — o mesmo livro que a [[08 - Engenharia reversa e recuperação de arquitetura|nota 08]] cita para dependências em escala. O procedimento é reproduzível com dados que você já tem: o repositório git.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 quadrantChart
     title Quadrante de hotspots
     x-axis Baixa complexidade --> Alta complexidade
@@ -75,16 +74,18 @@ A [[08 - Engenharia reversa e recuperação de arquitetura|nota 08]] te deu o gr
 Tornhill chama isso de **change coupling** (ou *logical coupling*, *temporal coupling*): a evidência não está na sintaxe, está na **história**. Se `PedidoService.java` e `EmailTemplate.html` aparecem juntos em 80% dos commits nos últimos dois anos, existe um acoplamento real ali — provavelmente "toda vez que muda a regra do pedido, alguém esquece de atualizar o e-mail e depois corrige num commit separado". O grafo estático nunca mostraria essa seta; só o histórico mostra.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Mapa estático<br/>(nota 08)"] -->|"import/chama"| B["Acoplamento<br/>EXPLÍCITO"]
     C["Histórico de commits<br/>(esta nota)"] -->|"mudam juntos"| D["Acoplamento<br/>IMPLÍCITO / oculto"]
     B --> E["Risco visível<br/>ao ler o código"]
     D --> F["Risco invisível<br/>até você minerar o git"]
-    style B fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
-    style E fill:#7ED321,color:#000
-    style F fill:#D0021B,color:#fff
+    class B neutro
+    class D destaque
+    class E destaque
+    class F falha
 ```
 
 O uso mais valioso do acoplamento temporal é **validar (ou refutar) o mapa estático da nota 08**: quando dois módulos que o reflexion model classificou como "independentes" aparecem no topo do ranking de change coupling, você achou exatamente o tipo de acoplamento dinâmico que a análise estática nunca enxergaria — reflection, injeção de dependência, eventos, configuração compartilhada. É o gancho que a própria nota 08 já antecipa na sua terceira armadilha: "cruze o mapa estático com... o acoplamento temporal do histórico".

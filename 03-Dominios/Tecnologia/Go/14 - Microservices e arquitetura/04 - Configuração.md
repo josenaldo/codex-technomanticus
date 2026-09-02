@@ -41,6 +41,8 @@ Em outras palavras: se alguém rodar `grep -r "postgres://" .` no seu repositór
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Errado["Configuração dentro do código"]
         direction TB
         E1["const dbURL = \"postgres://prod-host/app\""] --> E2["binário compilado carrega\no valor de produção"]
@@ -53,8 +55,8 @@ flowchart TB
         C2 --> C3["mesmo binário roda em\ndev/staging/prod, valores diferentes"]
     end
 
-    style E1 fill:#D0021B,color:#fff
-    style C2 fill:#4A90D9,color:#fff
+    class E1 falha
+    class C2 neutro
 ```
 
 Três fontes cobrem praticamente todo caso prático em Go: **variáveis de ambiente** (a fonte primária, segundo 12-factor), **flags de linha de comando** (bons para overrides pontuais, ex.: `--port=9000` num teste local) e **arquivos** (`.yaml`/`.toml`, úteis para configuração estrutural extensa que não faz sentido como dezenas de env vars soltas). A seção seguinte percorre as três, na ordem em que a biblioteca padrão as oferece — antes de chegar em Viper, que unifica tudo.
@@ -145,6 +147,9 @@ A terceira fonte é o arquivo — `.yaml`, `.toml`, `.json` — útil quando a c
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["flag.Parse()\n(prioridade máxima)"] --> E["viper.Get('port')"]
     B["env var\nAPP_PORT"] --> E
     C["arquivo config.yaml\nport: 8080"] --> E
@@ -152,11 +157,11 @@ flowchart TB
 
     E --> F["valor final resolvido\npela primeira fonte que\ntiver o campo definido"]
 
-    style A fill:#D0021B,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
-    style D fill:#7ED321,color:#000
-    style F fill:#4A90D9,color:#fff
+    class A falha
+    class B destaque
+    class C neutro
+    class D destaque
+    class F neutro
 ```
 
 A ordem de precedência do Viper, da mais alta para a mais baixa, é: flag explícita > env var > arquivo de config > default. Um exemplo mínimo:

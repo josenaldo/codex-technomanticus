@@ -46,7 +46,6 @@ Cada nove adicional corta o downtime permitido por um fator de 10 — é aritmé
 O Google SRE Book — a fonte mais citada da indústria sobre esse tema — chama atenção para uma faixa em que aumentar a confiabilidade deixa de ser positivo: *"past a certain point, however, increasing reliability is worse for a service (and its users) rather than better!"* O argumento é de percepção, não de engenharia pura: um usuário rodando um smartphone com 99% de disponibilidade própria simplesmente **não consegue perceber a diferença** entre um backend com 99,99% e um com 99,999% — o elo mais fraco da cadeia (a rede do usuário, o próprio aparelho) já mascara qualquer ganho acima de um certo patamar. Investir engenharia ali é dinheiro queimado em algo que ninguém vai notar.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph LR
     N1["99%<br/>2 noves<br/>💲"] --> N2["99,9%<br/>3 noves<br/>💲💲💲"]
     N2 --> N3["99,99%<br/>4 noves<br/>💲💲💲💲💲💲💲"]
@@ -66,7 +65,6 @@ Por que o custo escala assim? Não é um único fator — são vários se somand
 - **Equipe de plantão.** Cinco noves não se sustentam com um engenheiro checando o Slack de vez em quando — exigem rotação de on-call structured, muitas vezes 24/7 com múltiplos fusos, o que é custo de pessoas, não só de máquina.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph BT
     subgraph EIXO["Custo × Disponibilidade"]
         C1["99%<br/>custo base"] --> C2["99,9%<br/>~10x"]
@@ -115,7 +113,6 @@ O dano mais caro de perseguir 100% não é só o custo de infraestrutura — é 
 Isso cria uma armadilha que a métrica *change failure rate*, apresentada na nota 01 deste sub-galho, já deixou entrever: deploys menos frequentes e maiores tendem a ter *mais* chance de causar falha, não menos, porque cada deploy carrega mais mudança acumulada e é mais difícil de diagnosticar quando quebra. Uma política de "confiabilidade máxima" que reduz frequência de deploy tende, na prática, a piorar exatamente a estabilidade que tentava proteger — e ainda destrói a velocidade de entrega de valor. É perder nos dois lados do trade-off ao mesmo tempo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
     META["Meta: 100% uptime"] -->|"todo deploy<br/>vira ameaça"| FREEZE["Freeze de deploys<br/>+ comitê de aprovação"]
     FREEZE -->|"deploys raros<br/>e grandes"| RISCO["Cada deploy acumula<br/>mais mudança"]
@@ -150,7 +147,6 @@ O SRE Workbook do Google torna isso concreto com um exemplo de ordem de grandeza
 O que esse número muda na prática organizacional é o ponto central desta nota: o error budget converte a tensão entre **velocidade** (deploy, features novas, experimentação) e **estabilidade** (não quebrar produção) de um cabo de guerra político em uma **negociação orçamentária compartilhada**. Enquanto o orçamento tem saldo, o time de produto tem luz verde para deployar rápido, experimentar, arriscar — cada erro consumido é um "gasto" aceitável. Quando o orçamento zera, a prioridade vira, automaticamente e sem drama, estabilizar o sistema até o próximo ciclo recalibrar — deploys de risco pausam, e o esforço de engenharia migra para reduzir a causa dos erros que estouraram o budget.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     SLO["SLO = 99,9%"] -->|"100% − SLO"| BUDGET["Error budget = 0,1%<br/>= 3.000 erros<br/>em 3M requests/28 dias"]
     BUDGET -->|"orçamento<br/>com saldo"| VERDE["🟢 Deploy livre<br/>experimentação liberada"]

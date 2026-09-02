@@ -241,6 +241,8 @@ Faz o compilador emitir `"use strict"` no topo de cada arquivo JavaScript gerado
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph STRICT["strict: true (inclui)"]
         S1[noImplicitAny]
         S2[strictNullChecks]
@@ -265,8 +267,8 @@ flowchart TD
 
     STRICT --> EXTRA
 
-    style STRICT fill:#1a3a5c,color:#fff
-    style EXTRA fill:#3a1a1a,color:#fff
+    class STRICT neutro
+    class EXTRA falha
 ```
 
 ### `noUncheckedIndexedAccess` — o `| undefined` que faltava
@@ -466,13 +468,16 @@ A armadilha comum: usar `module: "ESNext"` com `moduleResolution: "Node10"` (pad
 
 ```mermaid
 graph LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     C1["Bundler (Vite, esbuild)\nmodule: ESNext\nmoduleResolution: Bundler"]
     C2["Node ESM\nmodule: NodeNext\nmoduleResolution: NodeNext"]
     C3["Node CJS legado\nmodule: CommonJS\nmoduleResolution: Node10"]
 
-    style C1 fill:#1a4a1a,color:#fff
-    style C2 fill:#1a3a5c,color:#fff
-    style C3 fill:#3a3a1a,color:#fff
+    class C1 ok
+    class C2 neutro
+    class C3 destaque
 ```
 
 Resolução de módulos a fundo — exports map, subpath patterns, `paths`, monorepos — é território da nota [[21 - Modules - ESM, CJS e type-only imports]].

@@ -59,16 +59,18 @@ Isso funciona — é tecnicamente correto, e é exatamente o padrão que o mantr
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q{"O que várias goroutines\nprecisam fazer?"} --> A["Passar um valor adiante\n(produtor → consumidor,\npipeline, resultado de uma tarefa)"]
     Q --> B["Ler/escrever o MESMO dado\n(contador, cache, config,\nmapa compartilhado)"]
 
     A --> C["channel\n(chan T, select)"]
     B --> D["sync\n(Mutex, RWMutex,\nWaitGroup, Once, atomic)"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
+    class A neutro
+    class B destaque
+    class C neutro
+    class D destaque
 ```
 
 O teste prático: se você consegue desenhar setas de "quem produz" para "quem consome" um valor, é candidato a channel. Se a resposta é "todo mundo lê e escreve a mesma coisa, sem ordem de produção", é candidato a `sync`. Nenhum dos dois lados é "mais Go" que o outro — a [documentação da linguagem](https://go.dev/doc/effective_go#sharing) trata ambos como ferramentas de primeira classe, não como um caminho idiomático e um caminho de fuga.

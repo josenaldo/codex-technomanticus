@@ -33,8 +33,9 @@ Para pouca lógica, isso é uma **virtude**, não um defeito. Não há indireç�
 ## A ideia (e o contraste com Domain Model)
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph TS["Transaction Script"]
         R1["aprovarPedido()"] -->|"faz tudo, linear"| DB1[(banco)]
         R2["cancelarPedido()"] --> DB1
@@ -44,10 +45,10 @@ graph TD
         S["Serviço fino"] --> O["Pedido<br/>(regras nos objetos)"] --> DB2[(banco)]
     end
 
-    style R1 fill:#4A90D9,color:#fff
-    style R2 fill:#4A90D9,color:#fff
-    style R3 fill:#4A90D9,color:#fff
-    style O fill:#F5A623,color:#000
+    class R1 neutro
+    class R2 neutro
+    class R3 neutro
+    class O destaque
 ```
 
 No Transaction Script, a regra vive **em cada roteiro**. No Domain Model, a regra vive **nos objetos** e os roteiros ficam finos. Repare o risco já no diagrama: se "validar se o pedido pode mudar de status" é preciso em `aprovar`, `cancelar` e `faturar`, essa regra tende a ser **reescrita** nos três scripts.

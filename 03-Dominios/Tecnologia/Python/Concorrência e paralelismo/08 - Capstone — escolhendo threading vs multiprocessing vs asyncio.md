@@ -28,8 +28,10 @@ As sete notas deste galho ensinaram quatro ferramentas distintas, cada uma com s
 A pergunta que esta capstone resolve não é "como uso `Lock`" ou "como uso `TaskGroup`" — isso já foi ensinado, nota a nota. A pergunta é: **dado um pedaço de trabalho, qual das quatro ferramentas eu pego, e o que acontece se eu misturar duas delas sem cuidado?**
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Qual é a natureza\ndo trabalho?"] --> B{"Gasta a maior parte\ndo tempo esperando\n(rede, disco, banco)?"}
     B -->|"Sim — I/O-bound"| C{"O código todo pode\nser escrito com\nasync/await?"}
     B -->|"Não — gasta CPU\nfazendo cálculo"| D["CPU-bound\n→ multiprocessing\n(nota 04/05)"]
@@ -39,15 +41,15 @@ flowchart TD
     G -->|"Não"| H["ProcessPoolExecutor\n/multiprocessing.Pool"]
     G -->|"Sim"| I["Fora do escopo deste galho —\narquitetura distribuída\n(fila de tarefas, microservices)"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
-    style E fill:#7ED321,color:#000
-    style F fill:#7ED321,color:#000
-    style G fill:#4A90D9,color:#fff
-    style H fill:#7ED321,color:#000
-    style I fill:#D0021B,color:#fff
+    class A neutro
+    class B neutro
+    class C neutro
+    class D destaque
+    class E destaque
+    class F destaque
+    class G neutro
+    class H destaque
+    class I falha
 ```
 
 ## Etapa 1: recapitulando o critério de cada nota, na ordem em que apareceu
@@ -162,7 +164,6 @@ if __name__ == "__main__":
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Cliente as Cliente HTTP
     participant LoopP as Event loop (asyncio)

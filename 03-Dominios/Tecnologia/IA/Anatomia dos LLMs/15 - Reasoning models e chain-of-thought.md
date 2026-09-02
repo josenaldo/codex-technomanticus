@@ -34,6 +34,9 @@ Reasoning models resolvem isso com uma fase de "rascunho" antes do output: geram
 
 ```mermaid
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     P["Pergunta: debug de race\ncondition em 5 serviços"] --> STD["Modelo standard"]
     P --> RSN["Reasoning model"]
 
@@ -44,9 +47,9 @@ graph TD
     B2 --> B3["Verificação:\ncondição de corrida\nno step 3→5?"]
     B3 --> B4["Síntese da\nresposta correta"]
     
-    style STD fill:#ffcc99,stroke:#cc6600
-    style RSN fill:#99ccff,stroke:#0066cc
-    style B4 fill:#99ff99,stroke:#009900
+    class STD destaque
+    class RSN neutro
+    class B4 ok
 ```
 
 ## O que é

@@ -66,8 +66,9 @@ O que estava acontecendo, camada por camada, é o assunto desta nota: por que um
 O erro de origem do bug acima é conceitual antes de ser técnico: tratar `.delay()` como uma chamada de função comum, que "simplesmente roda em outro lugar" mas continua fazendo parte do mesmo espaço de memória. Não é isso que acontece. Celery tem três papéis distintos, e cada um roda como **processo separado**, geralmente em máquinas separadas:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph P1["Processo da aplicação (ex: API web)"]
         A["Código da aplicação<br/>chama .delay()/.apply_async()"]
     end
@@ -89,10 +90,10 @@ graph LR
     W -.->|"3 . grava resultado<br/>(só se result_backend configurado)"| R
     A -.->|"4 . AsyncResult.get()<br/>consulta o backend (bloqueante)"| R
 
-    style A fill:#4A90D9,color:#fff
-    style W fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style R fill:#4A90D9,color:#fff
+    class A neutro
+    class W neutro
+    class B destaque
+    class R neutro
 ```
 
 O ponto central do diagrama: entre a aplicação e o worker não existe compartilhamento de memória, nem passagem de referência de objeto — existe uma **mensagem**, texto (ou bytes) que atravessa a rede via broker. Tudo que sai da aplicação em direção ao worker precisa, obrigatoriamente, ser transformado nesse formato de mensagem primeiro. É exatamente esse passo — serialização — que o `Session` do bug de abertura não sobrevive de forma segura, mesmo quando alguma biblioteca "consegue" serializá-lo tecnicamente.
@@ -314,7 +315,6 @@ Essa regra generaliza além de `Session`: qualquer objeto que "signifique algo" 
 Recapitulando o ciclo de vida completo de uma task, do disparo à (opcional) leitura do resultado:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant App as Processo da aplicação<br/>(ex: handler HTTP)
     participant Broker as Broker (Redis/RabbitMQ)

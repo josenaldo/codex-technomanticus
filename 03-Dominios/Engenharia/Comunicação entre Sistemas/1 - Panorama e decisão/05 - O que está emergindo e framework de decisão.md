@@ -110,8 +110,10 @@ O padrão que emerge: **quanto mais estreito e concreto o problema que a tecnolo
 Chegou a hora de amarrar as quatro notas anteriores numa única pergunta guiada. Toda decisão de comunicação entre sistemas começa no mesmo lugar — o eixo mestre da [[01 - O que é o contrato de comunicação|nota 01]] — e se ramifica a partir dali.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     START["Preciso de comunicação<br/>entre sistemas"] --> Q1{"O consumer precisa<br/>da resposta AGORA,<br/>ou pode esperar?"}
 
     Q1 -->|"Agora<br/>(síncrono)"| Q2{"Quem é o consumer?"}
@@ -127,13 +129,13 @@ graph TD
     Q4 -->|"Sim — chamadas em<br/>cascata, milhares/s"| GRPC["gRPC<br/>(+ Connect se precisa<br/>de navegador sem proxy)"]
     Q4 -->|"Não — poucas chamadas,<br/>simplicidade > performance"| REST
 
-    style START fill:#4A90D9,color:#fff
-    style Q1 fill:#F5A623,color:#000
-    style Q2 fill:#F5A623,color:#000
-    style Q3 fill:#F5A623,color:#000
-    style Q4 fill:#F5A623,color:#000
-    style ASYNC fill:#D0021B,color:#fff
-    style RT fill:#D0021B,color:#fff
+    class START neutro
+    class Q1 destaque
+    class Q2 destaque
+    class Q3 destaque
+    class Q4 destaque
+    class ASYNC falha
+    class RT falha
 ```
 
 Lendo a árvore de cima para baixo, ela é literalmente o resumo das quatro notas anteriores mais esta:

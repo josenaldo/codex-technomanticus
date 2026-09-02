@@ -184,8 +184,9 @@ function useConfiguracoesApp() {
 Cada camada adiciona um nível de abstração. O componente final só enxerga `useConfiguracoesApp()` — não precisa saber que há `localStorage` por baixo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     C[Componente] -->|"chama"| H1["useConfiguracoesApp()"]
     H1 -->|"compõe"| H2["usePreferenciasUsuario()"]
     H1 -->|"chama"| H3["useLocalStorage&lt;boolean&gt;('notif', true)"]
@@ -195,15 +196,15 @@ graph TD
     H5 -->|"usa"| S2["useState + useEffect"]
     H3 -->|"usa"| S3["useState + useEffect"]
 
-    style C fill:#4A90D9,color:#fff
-    style H1 fill:#4A90D9,color:#fff
-    style H2 fill:#4A90D9,color:#fff
-    style H3 fill:#7B68EE,color:#fff
-    style H4 fill:#7B68EE,color:#fff
-    style H5 fill:#7B68EE,color:#fff
-    style S1 fill:#6c757d,color:#fff
-    style S2 fill:#6c757d,color:#fff
-    style S3 fill:#6c757d,color:#fff
+    class C neutro
+    class H1 neutro
+    class H2 neutro
+    class H3 marca
+    class H4 marca
+    class H5 marca
+    class S1 neutro
+    class S2 neutro
+    class S3 neutro
 ```
 
 ---

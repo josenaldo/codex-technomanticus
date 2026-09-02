@@ -73,7 +73,6 @@ As *claims* — as afirmações que o token carrega. `sub` (subject) diz de quem
 **Signature**: o lacre. Para HS256, é `HMAC-SHA256(base64url(header) + "." + base64url(payload), secret)`. Ou seja: pega o header e o payload *ainda codificados* (a string literal antes do último ponto), concatena, e aplica HMAC com uma chave secreta. Qualquer mudança de um único byte no header ou no payload muda a assinatura resultante — é isso que torna a adulteração detectável, **desde que alguém recompute e compare o HMAC no lado do verificador**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     H["Header<br/>{alg, typ}"] -->|base64url| H2["eyJhbGc..."]
     P["Payload<br/>{claims}"] -->|base64url| P2["eyJzdWI..."]
@@ -127,7 +126,6 @@ O campo `alg` no header determina o algoritmo de assinatura. Eles se dividem em 
 A escolha entre eles não é estética — é uma pergunta sobre **quem precisa confiar em quem**:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
     Q{"Quem emite e quem<br/>consome o token?"} -->|"mesmo serviço<br/>emite e valida"| HS["HS256<br/>(simétrico)"]
     Q -->|"1 emissor,<br/>N consumidores<br/>(microserviços, IdP externo)"| ASSIM{"Assimétrico:<br/>qual?"}
@@ -172,7 +170,6 @@ Aqui mora o erro do exemplo de abertura, generalizado. Existem quatro checagens 
 4. **Checar `exp` (e `nbf` se presente)** — o token não expirou (e já é válido, se houver `nbf`).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant AS as Authorization Server
     participant C as Cliente

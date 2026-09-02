@@ -26,6 +26,7 @@ Questões de múltipla escolha que testam "o que aparece na tela" são baratas d
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Pegadinha Python Institute"] --> B["Referência e mutação"]
     A --> C["Escopo e nomes"]
     A --> D["Avaliação de expressão"]
@@ -50,7 +51,7 @@ flowchart TD
 
     G --> G1["type() vs isinstance() com herança"]
 
-    style A fill:#4a5568,color:#fff
+    class A neutro
 ```
 
 ## Mutação por referência disfarçada de leitura
@@ -312,6 +313,7 @@ print(x, y, z)
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q["Vi uma questão 'o que isso imprime'"] --> R1{"Envolve função<br/>mutando algo?"}
     R1 -->|sim| S1["Checar: mutação in-place<br/>ou reatribuição de nome?"]
     R1 -->|não| R2{"Envolve is/==<br/>com números?"}
@@ -322,7 +324,7 @@ flowchart LR
     R4 -->|sim| S4["Lógico = truthiness/curto-circuito;<br/>bitwise = bit a bit"]
     R4 -->|não| R5["Simular linha a linha,<br/>sem assumir atalho"]
 
-    style Q fill:#4a5568,color:#fff
+    class Q neutro
 ```
 
 ## Vocabulário PT/EN

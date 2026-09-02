@@ -49,8 +49,9 @@ O defeito também é real: **tudo que é transversal se repete**. Autenticação
 Um único ponto recebe **todas** as requisições. Ele resolve o que é comum — autenticar, abrir transação, registrar log, tratar erro — e então **delega** para o handler específico daquela rota, descoberto em configuração ou por convenção.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph PC["Page Controller"]
         R1["/produto"] --> P1["produto.php<br/>+ auth + log"]
         R2["/carrinho"] --> P2["carrinho.php<br/>+ auth + log"]
@@ -66,13 +67,13 @@ graph TD
         F --> H3["CheckoutHandler"]
     end
 
-    style P1 fill:#F5A623,color:#000
-    style P2 fill:#F5A623,color:#000
-    style P3 fill:#F5A623,color:#000
-    style F fill:#4A90D9,color:#fff
-    style H1 fill:#4A90D9,color:#fff
-    style H2 fill:#4A90D9,color:#fff
-    style H3 fill:#4A90D9,color:#fff
+    class P1 destaque
+    class P2 destaque
+    class P3 destaque
+    class F neutro
+    class H1 neutro
+    class H2 neutro
+    class H3 neutro
 ```
 
 O âmbar marca exatamente o custo do Page Controller: aquele `+ auth + log` repetido em cada caixa. O Front Controller o resolve uma vez.

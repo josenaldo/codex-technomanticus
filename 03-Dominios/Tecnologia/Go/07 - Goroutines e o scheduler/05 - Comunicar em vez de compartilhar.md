@@ -64,6 +64,8 @@ Vale desmontar essa frase com cuidado, porque ela é fácil de ler rápido e per
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph A["Compartilhar memória (mutex)"]
         direction TB
         A1["Goroutine 1"] -->|"Lock / acessa / Unlock"| M["variável compartilhada"]
@@ -78,8 +80,8 @@ flowchart TB
         C -->|"recebe, um de cada vez"| B3["Goroutine dona\n(processa em sequência)"]
     end
 
-    style M fill:#D0021B,color:#fff
-    style C fill:#4A90D9,color:#fff
+    class M falha
+    class C neutro
 ```
 
 No modelo da esquerda, três goroutines competem pelo mesmo endereço de memória, e o `Mutex` é o árbitro que impede colisão. No modelo da direita, três goroutines nunca tocam o mesmo endereço — elas enviam valores por um canal, e uma única goroutine processa cada valor recebido, um de cada vez, sem competição nenhuma porque não há nada pra competir.

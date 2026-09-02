@@ -30,6 +30,8 @@ Essa ordem importa porque cada etapa responde a uma pergunta que a anterior não
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     R["Requisição HTTP<br/>(kubectl, controller, operator)"] --> Auth["Autenticação<br/>quem é você?"]
     Auth -->|"identidade resolvida"| Az["Autorização (RBAC)<br/>o que você pode fazer?"]
     Az -->|"permitido"| Ad["Admission<br/>este objeto é aceitável?"]
@@ -38,10 +40,10 @@ graph LR
     Ad -->|"aprovado"| E["etcd<br/>gravação final"]
     Ad -->|"rejeitado"| FAdm["Erro de admission<br/>(webhook nomeado)"]
 
-    style F401 fill:#7a2e2e,stroke:#c0392b,color:#fff
-    style F403 fill:#7a2e2e,stroke:#c0392b,color:#fff
-    style FAdm fill:#7a2e2e,stroke:#c0392b,color:#fff
-    style E fill:#1e5c3a,stroke:#27ae60,color:#fff
+    class F401 falha
+    class F403 falha
+    class FAdm falha
+    class E ok
 ```
 
 ## Duas identidades, uma assimetria que surpreende
@@ -122,6 +124,7 @@ Vale um exemplo concreto para fixar a linha do meio da tabela, porque é o caso 
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph "Papéis — o que é permitido"
         R["Role<br/>(um namespace)"]
         CR["ClusterRole<br/>(cluster inteiro,<br/>ou reutilizável)"]
@@ -146,8 +149,8 @@ graph TB
     CRB --> G
     CRB --> SA
 
-    style R fill:#4a3b7a,stroke:#8e6fd6,color:#fff
-    style CR fill:#4a3b7a,stroke:#8e6fd6,color:#fff
+    class R marca
+    class CR marca
 ```
 
 Note, no diagrama, que só `RoleBinding` aceita as duas origens possíveis de papel — `Role` local ou `ClusterRole` reutilizável —, enquanto `ClusterRoleBinding` só aceita `ClusterRole`, nunca `Role`: não existe combinação onde um papel de escopo namespace seja concedido no cluster inteiro, porque isso equivaleria a inventar regras que nunca foram declaradas com aquele alcance em mente.

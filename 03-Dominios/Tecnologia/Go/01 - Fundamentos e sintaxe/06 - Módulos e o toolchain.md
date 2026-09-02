@@ -74,6 +74,8 @@ A [[05 - Pacotes, imports e visibilidade|nota anterior]] cobriu **pacote**: uma 
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph MOD["módulo — example.com/pedidos<br/>(go.mod na raiz)"]
         direction TB
         subgraph P1["pacote main<br/>(pasta raiz)"]
@@ -91,9 +93,9 @@ flowchart TB
     MOD -.depende de.-> EXT1["módulo externo<br/>github.com/google/uuid<br/>v1.6.0"]
     MOD -.depende de.-> EXT2["módulo externo<br/>github.com/stretchr/testify<br/>v1.9.0"]
 
-    style MOD fill:#4A90D9,color:#fff
-    style EXT1 fill:#F5A623,color:#000
-    style EXT2 fill:#F5A623,color:#000
+    class MOD neutro
+    class EXT1 destaque
+    class EXT2 destaque
 ```
 
 Ou seja: **pacote** organiza código dentro de um repositório; **módulo** organiza *o repositório inteiro* como uma unidade versionada e distribuível, com suas dependências declaradas. Todo módulo tem exatamente um `go.mod` na raiz; um repositório pode, em casos avançados (não cobertos aqui), conter mais de um módulo — mas o caso comum, e o recomendado, é um repositório = um módulo.

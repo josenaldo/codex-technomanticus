@@ -38,7 +38,6 @@ Esse quarto ponto é o que transforma acordo em regra executável, e ele depende
 ## O fluxo
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
     A["git switch -c<br/>minha-mudança"] --> B["commits"]
     B --> C["git push -u<br/>origin minha-mudança"]

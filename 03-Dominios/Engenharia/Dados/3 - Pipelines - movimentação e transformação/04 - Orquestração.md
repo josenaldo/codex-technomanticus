@@ -57,8 +57,10 @@ A nota 01 desta trilha já introduziu o vocabulário: um pipeline é melhor pens
 É essa garantia que o orquestrador explora. Dado o grafo completo, ele calcula uma ordem de execução válida, dispara tarefas independentes em paralelo (as duas extrações que não dependem uma da outra, por exemplo), espera cada dependência ser satisfeita antes de disparar o nó seguinte, e — ponto central para o que vem depois nesta nota — sabe exatamente **quais nós precisam ser reexecutados** quando algo muda, porque essa informação está no próprio grafo: se a extração de produtos precisa rodar de novo, todo nó que depende dela, direta ou transitivamente, também precisa.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     E1["Extrair<br/>pedidos"] --> S1["Staging<br/>pedidos"]
     E2["Extrair<br/>itens de pedido"] --> S2["Staging<br/>itens"]
     E3["Extrair<br/>produtos"] --> S3["Staging<br/>produtos"]
@@ -76,18 +78,18 @@ graph LR
 
     T --> D["Atualizar<br/>dashboard"]
 
-    style E1 fill:#4A90D9,color:#fff
-    style E2 fill:#4A90D9,color:#fff
-    style E3 fill:#4A90D9,color:#fff
-    style E4 fill:#4A90D9,color:#fff
-    style S1 fill:#4A90D9,color:#fff
-    style S2 fill:#4A90D9,color:#fff
-    style S3 fill:#4A90D9,color:#fff
-    style F fill:#F5A623,color:#000
-    style M1 fill:#F5A623,color:#000
-    style M2 fill:#F5A623,color:#000
-    style T fill:#D0021B,color:#fff
-    style D fill:#4A90D9,color:#fff
+    class E1 neutro
+    class E2 neutro
+    class E3 neutro
+    class E4 neutro
+    class S1 neutro
+    class S2 neutro
+    class S3 neutro
+    class F destaque
+    class M1 destaque
+    class M2 destaque
+    class T falha
+    class D neutro
 ```
 
 Repare no paralelismo natural que o grafo expõe: as quatro extrações não dependem umas das outras e podem rodar ao mesmo tempo; as três tarefas de staging também são independentes entre si, e só convergem no nó de fato de vendas. Um orquestrador enxerga essa estrutura e paraleliza automaticamente — algo que "scripts em sequência com sleep" nunca faz, porque não tem noção nenhuma de grafo, só de ordem no arquivo.

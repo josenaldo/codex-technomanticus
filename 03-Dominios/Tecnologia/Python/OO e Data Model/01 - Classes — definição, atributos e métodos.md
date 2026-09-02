@@ -125,15 +125,18 @@ Segundo o [tutorial oficial de classes do Python](https://docs.python.org/3/tuto
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["conta.depositar(50)"] --> B["Python busca 'depositar' na classe Conta"]
     B --> C["Encontra a função; cria um bound method\n(instância 'conta' já embutida)"]
     C --> D["Chama a função original:\nConta.depositar(conta, 50)"]
     D --> E["Dentro do corpo: self == conta"]
 
-    style A fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#F5A623,color:#000
-    style E fill:#D0021B,color:#fff
+    class A neutro
+    class C destaque
+    class D destaque
+    class E falha
 ```
 
 Duas consequências práticas dessa explicitação:
@@ -199,14 +202,16 @@ O mecanismo de busca por trás disso é a mesma cadeia usada para métodos: quan
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["d.kind"] --> B{"'kind' está em\nd.__dict__ (instância)?"}
     B -- não --> C{"'kind' está em\nDog.__dict__ (classe)?"}
     C -- sim --> D["Encontrado: retorna o\nvalor da classe"]
     B -- sim --> E["Encontrado: retorna o\nvalor da instância\n(sombreia a classe)"]
 
-    style A fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
-    style E fill:#F5A623,color:#000
+    class A neutro
+    class D destaque
+    class E destaque
 ```
 
 Essa mesma cadeia de busca é o motivo pelo qual **ler** um atributo de classe através de uma instância funciona sem drama (`d.kind` sobe e acha em `Dog`), mas **mutar via método** — quando o atributo é um objeto mutável — é onde a armadilha do início da nota se materializa.
@@ -354,6 +359,9 @@ Segundo o material da [Real Python sobre os três tipos de método](https://real
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Instancia["Método de instância"]
         direction TB
         I1["def metodo(self, ...)"] --> I2["Acessa e modifica\nestado da instância"]
@@ -367,9 +375,9 @@ flowchart TB
         S1["def metodo(...)"] --> S2["Nem self, nem cls;\nfunção agrupada por namespace"]
     end
 
-    style I1 fill:#4A90D9,color:#fff
-    style C1 fill:#F5A623,color:#000
-    style S1 fill:#D0021B,color:#fff
+    class I1 neutro
+    class C1 destaque
+    class S1 falha
 ```
 
 | | Recebe | Chamado por | Uso típico |

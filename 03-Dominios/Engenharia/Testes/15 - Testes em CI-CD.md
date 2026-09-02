@@ -75,6 +75,10 @@ São quatro postos de inspeção, cada um com um trade-off diferente entre veloc
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["git commit<br/>(máquina local)"] --> B["1. Pre-commit hook<br/>lint + format + testes rápidos<br/>SEGUNDOS"]
     B --> C["git push / abre PR"]
     C --> D["2. Pipeline no PR<br/>unit + integração + análise estática<br/>MINUTOS"]
@@ -83,10 +87,10 @@ flowchart LR
     B -.->|falhou| A
     D -.->|falhou| A
     E -.->|falhou| G["bloqueia release<br/>alerta o time"]
-    style B fill:#d4edda
-    style D fill:#fff3cd
-    style E fill:#f8d7da
-    style F fill:#cce5ff
+    class B ok
+    class D destaque
+    class E falha
+    class F neutro
 ```
 
 **Leitura do diagrama:** quanto mais à esquerda, mais rápido e mais frequente — o pre-commit roda em todo commit e custa segundos. Quanto mais à direita, mais lento, mais caro e mais raro — o E2E completo só roda depois do merge. As setas pontilhadas de volta são o *fail fast*: se um estágio cedo falha, você nem chega a gastar os estágios caros.
@@ -121,6 +125,7 @@ E tem um efeito pior, quase psicológico:
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Pipeline lento<br/>(20+ min)"] --> B["Dev troca de contexto<br/>enquanto espera"]
     B --> C["Feedback chega tarde<br/>e fora de contexto"]
     C --> D["Dev começa a pular testes<br/>'commita e vê depois'"]
@@ -128,9 +133,9 @@ flowchart TD
     E --> F["Testes viram ruído<br/>que se ignora"]
     F --> G["A esteira não protege<br/>mais nada"]
     G -.->|investimento desperdiçado| H["Suíte existe<br/>mas é teatro"]
-    style A fill:#f8d7da
-    style F fill:#f8d7da
-    style H fill:#f8d7da
+    class A falha
+    class F falha
+    class H falha
 ```
 
 **Leitura do diagrama:** a lentidão não causa só atraso — causa *abandono*. Um pipeline lento treina o time a contornar os testes, e a partir daí a suíte vira decoração. Velocidade não é uma otimização opcional; é o que mantém a esteira viva.
@@ -145,15 +150,17 @@ Como manter rápido? As alavancas, da mais barata pra mais cirúrgica:
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     P["PR aberto"] --> S1["Estágio rápido<br/>lint + unit<br/>~1 min"]
     S1 -->|verde| S2["Estágio médio<br/>integração<br/>~5 min"]
     S1 -->|VERMELHO| X1["aborta JÁ<br/>devolve em 1 min"]
     S2 -->|verde| S3["Estágio caro<br/>E2E<br/>~20 min"]
     S2 -->|VERMELHO| X2["aborta<br/>poupou o E2E"]
     S3 -->|verde| OK["pode revisar"]
-    style X1 fill:#f8d7da
-    style X2 fill:#f8d7da
-    style OK fill:#d4edda
+    class X1 falha
+    class X2 falha
+    class OK ok
 ```
 
 **Leitura do diagrama:** o pipeline não roda tudo em bloco. Ele encadeia estágios do mais barato pro mais caro, e qualquer reprovação corta a fila ali mesmo. Se o lint reprova, você recebe a notícia em um minuto, não em vinte e seis.
@@ -170,6 +177,9 @@ Repare na conexão com a [[02 - A pirâmide de testes e suas variações|pirâmi
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Diff["PR abre com um diff"] --> Graph["Grafo de dependência<br/>cobertura → módulo → teste"]
     Graph --> Q{"Que testes tocam<br/>o código mudado?"}
     Q -->|"fronteira clara<br/>(unit, DI estática)"| Direct["Mapeamento direto<br/>alta confiança"]
@@ -178,9 +188,9 @@ flowchart TD
     Fuzzy --> Run
     Run --> Merge["Merge no main"]
     Merge --> Full["Suíte COMPLETA roda<br/>(main / nightly)<br/>rede de segurança"]
-    style Direct fill:#d4edda
-    style Fuzzy fill:#fff3cd
-    style Full fill:#cce5ff
+    class Direct ok
+    class Fuzzy destaque
+    class Full neutro
 ```
 
 **Leitura do diagrama:** o diff entra, o grafo de dependência decide quais testes são candidatos, e a confiança nessa decisão varia — alta onde a dependência é estática e explícita, baixa onde é dinâmica (reflexão, injeção de dependência em runtime, configuração externa). É exatamente essa incerteza que a variante preditiva (PTS) tenta compensar com um modelo de risco em vez de um grafo determinístico. Mas repare que o diagrama nunca termina no "roda só o selecionado": depois do merge, a suíte completa roda de qualquer forma, como rede de segurança para o que o mapeamento pulou.
@@ -202,6 +212,9 @@ Um teste [[11 - Testes flaky|flaky]] é aquele que passa e falha sem nenhuma mud
 
 ```mermaid
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Teste falha no CI"] --> B{"Falha é<br/>reproduzível?"}
     B -->|sim, sempre| C["É bug real<br/>conserta antes de mergear"]
     B -->|não, intermitente| D["Marca como FLAKY<br/>abre ticket com dono"]
@@ -209,9 +222,9 @@ flowchart TD
     E --> F["Time investiga<br/>causa-raiz"]
     F -->|consertado| G["Sai da quarentena<br/>volta a bloquear"]
     F -.->|fica esquecido| H["Quarentena vira lixeira<br/>cobertura real cai"]
-    style C fill:#fff3cd
-    style E fill:#cce5ff
-    style H fill:#f8d7da
+    class C destaque
+    class E neutro
+    class H falha
 ```
 
 **Leitura do diagrama:** ao primeiro sinal de intermitência, o teste sai do caminho crítico (quarentena) mas *não* desaparece — ele continua rodando pra você medir a taxa de falha, e ganha um dono e um ticket. A seta pontilhada é a armadilha: se a quarentena não tem prazo, vira uma lixeira onde testes morrem e a cobertura real despenca sem ninguém perceber.
@@ -255,6 +268,10 @@ A chave do shift-right é **limitar o raio de impacto** (*blast radius*) de uma 
 
 ```mermaid
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Deploy["Artefato pronto<br/>(já passou pela esteira)"] --> Strat{"Estratégia de<br/>exposição"}
     Strat --> Canary["Implantação canário<br/>(canary)<br/>5% → 25% → 100%<br/>observa métricas a cada passo"]
     Strat --> BG["Blue-green<br/>dois ambientes idênticos<br/>chaveia tráfego de uma vez<br/>rollback = chavear de volta"]
@@ -264,11 +281,11 @@ flowchart TD
     Flag --> Mon
     Mon -->|métrica degradou| RB["Rollback / desliga flag<br/>raio de impacto: só os expostos"]
     Mon -->|métrica estável| Full["Promove p/ 100%"]
-    style Canary fill:#fff3cd
-    style BG fill:#cce5ff
-    style Flag fill:#d4edda
-    style RB fill:#f8d7da
-    style Full fill:#d4edda
+    class Canary destaque
+    class BG neutro
+    class Flag ok
+    class RB falha
+    class Full ok
 ```
 
 **Leitura do diagrama:** o artefato que saiu da esteira não vai direto pra todos. A **implantação canário** solta pra uma fração (tipo 5%) e sobe degrau a degrau só se as métricas seguram; o **blue-green** mantém dois ambientes idênticos e chaveia o tráfego de um pro outro (rollback é chavear de volta, instantâneo); a **feature flag** deploya o código desligado e liga por configuração pra uma fatia de usuários. Os três desembocam no mesmo lugar: você **observa produção** — e aqui entram os smoke/[[13 - Além do básico - property-based, snapshot, contract, smoke|synthetic tests]] rodando contra prod de verdade, mais métricas de negócio. Se algo degrada, o rollback atinge só quem foi exposto; se segura, promove pra 100%.
@@ -350,6 +367,8 @@ Tudo que esta nota descreveu — estágios, fail fast, seleção de teste, paral
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Vel["Velocidade"]
         DF["Deployment frequency"]
         LT["Lead time for changes"]
@@ -362,8 +381,8 @@ flowchart LR
     Esteira -->|"integração frequente<br/>+ trunk-based"| DF
     Esteira -->|"quality gates<br/>+ suíte confiável<br/>pega bug antes do deploy"| CFR
     Esteira -->|"smoke tests + rollback<br/>automatizado no deploy"| MTTR
-    style Vel fill:#cce5ff
-    style Est fill:#fff3cd
+    class Vel neutro
+    class Est destaque
 ```
 
 **Leitura do diagrama:** cada peça desta nota empurra uma métrica DORA específica. Uma esteira rápida (o orçamento de dez minutos) reduz o *lead time*; trunk-based e integração diária sustentam a *deployment frequency*; quality gates e uma suíte que de fato pega defeito (não coverage theater) reduzem o *change failure rate*; e smoke tests com rollback automático no estágio 4 encurtam o *MTTR* quando algo escapa. O erro comum é otimizar só velocidade (mais deploys, mais rápido) sem olhar estabilidade — a pesquisa DORA mostra que os times de elite não trocam uma pela outra: eles melhoram as quatro juntas, porque uma esteira bem desenhada é o mecanismo comum às quatro.

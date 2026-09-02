@@ -34,8 +34,10 @@ O corolário prático: antes de escrever o business case, o restaurador faz um m
 O erro mais comum na hora de pedir orçamento é falar a língua errada. "O código é feio", "não tem testes", "usa uma versão descontinuada" — tudo isso é verdadeiro e tudo isso é **irrelevante** para quem decide entre financiar isso ou financiar outra coisa. Executivos não compram qualidade de código; compram redução de risco, redução de custo ou aumento de receita. O trabalho do restaurador, nesta etapa, é de **tradução**, não de engenharia:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Divida tecnica: codigo feio, sem testes, dependencia EOL"] -->|traduzir para| B{Qual metrica de negocio ela ameaca?}
     B -->|toda mudanca demora mais| C["CUSTO: X semanas de velocidade perdidas por trimestre"]
     B -->|o sistema pode quebrar| D["RISCO: probabilidade x impacto de um incidente"]
@@ -46,10 +48,10 @@ graph TD
     F --> G{Orcamento aprovado?}
     G -->|nao| H[Sem mandato: dividia continua rendendo juros]
     G -->|sim| I[Trabalho de restauracao autorizado]
-    style B fill:#F5A623
-    style G fill:#F5A623
-    style H fill:#D0021B
-    style I fill:#4A90D9
+    class B destaque
+    class G destaque
+    class H falha
+    class I neutro
 ```
 
 "O código do faturamento é frágil" vira "cada alíquota nova leva três semanas para entrar no ar, contra três dias no resto do sistema — e isso já causou dois atrasos regulatórios este ano" (custo, com número). "Não tem testes" vira "a última mudança nessa área gerou um incidente de faturamento indevido que consumiu 40 horas de suporte e um crédito ao cliente" (risco, com histórico real). "Usa uma biblioteca EOL" vira "essa dependência para de receber patch de segurança em março; se um CVE crítico aparecer depois disso, não há fornecedor a chamar" (risco, com prazo).
@@ -78,16 +80,18 @@ A [[04 - Os primeiros 30-60-90 dias|nota 04]] já introduziu a mecânica: uma en
 Toda organização opera com um orçamento implícito de confiança em cada pessoa nova. Você chega com saldo zero: ninguém sabe se você vai entender o sistema, se vai quebrar algo, se as recomendações que vai trazer são competentes ou são teoria de quem "não conhece o negócio de verdade". O early win não é sobre o bug corrigido em si — é sobre **depositar prova** nesse saldo. Cada entrega pequena, segura e verificável é um depósito. O pedido estrutural maior — "precisamos de seis meses e três engenheiros para refatorar o faturamento" — é um **saque** contra esse saldo. Pedir o saque antes de ter feito nenhum depósito é pedir a alguém que confie num histórico que não existe.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A[Early win seguro e visivel] -->|deposita| B[Capital politico / confianca]
     B -->|autoriza| C[Pedido estrutural maior]
     C -->|aprovado| D[Entrega visivel em escala]
     D -->|reinveste| B
     C -->|negado: pedido grande demais, sem historico| E[Capital gasto sem retorno]
-    style B fill:#4A90D9
-    style C fill:#F5A623
-    style E fill:#D0021B
+    class B neutro
+    class C destaque
+    class E falha
 ```
 
 Isso explica por que a ordem importa: o protocolo 30-60-90 não coloca o early win no dia 1 nem a proposta estrutural no dia 30 por acaso. É uma sequência de acúmulo deliberado de capital, gasto na hora certa — na reunião do CFO, o consultor da abertura desta nota não estava com as mãos vazias *apenas* de dados; ele já tinha, idealmente, dois ou três meses de entregas pequenas e seguras provando que a promessa de "seis meses sem quebrar nada" é crível vindo dele especificamente.

@@ -27,8 +27,10 @@ A [[03-Dominios/Tecnologia/Python/Microservices e sistemas distribuídos/08 - Ca
 Imagine o cenário, sem exagero: seis meses depois da extração, alguém do time de Tarefas precisa revisar um PR do serviço de Notificações — talvez porque o dono habitual está de férias, talvez porque é uma mudança que atravessa os dois serviços. Abre o repositório e encontra um `pyproject.toml` com `[tool.poetry]` em vez de `[project]`, porque alguém de Notificações preferiu Poetry. O `line-length` do `ruff` é 88, não 100 como em Tarefas — cada função "parece" mais apertada, mais quebrada em linhas menores, mesmo sendo o mesmo estilo de código. O `.python-version` diz `3.11`, não `3.12`. Nenhuma dessas diferenças é um bug. Cada uma, isolada, é uma escolha legítima — a [[06 - uv vs Poetry — trade-offs honestos|nota 06 deste galho]] já mostrou que Poetry é uma escolha racional, não um erro. O problema não é nenhuma escolha individual estar errada. É que a soma de escolhas individuais legítimas, tomadas sem coordenação, produz dois projetos que soam como se tivessem sido escritos por duas empresas diferentes — e cada diferença cosmética consome um segundo de "espera, por que isso é diferente aqui?" antes de qualquer revisão de lógica de negócio poder começar. É exatamente o mesmo tipo de atrito que a [[07 - ruff e black — linting e formatação automática|nota 07]] descreveu dentro de um único projeto — um PR de três dias discutindo vírgula — só que multiplicado pela fronteira entre dois repositórios, onde não existe nem a memória coletiva de um time só para arbitrar a divergência.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Risco["Sem coordenação — seis meses depois da extração"]
         direction TB
         T1["tarefas-service<br/>Poetry ou uv? line-length 100?<br/>Python 3.12? pre-commit próprio?"]
@@ -45,10 +47,10 @@ flowchart TB
         N2 -.-> OK
     end
 
-    style Atrito fill:#c0392b,color:#fff
-    style OK fill:#27ae60,color:#fff
-    style T2 fill:#4A90D9,color:#fff
-    style N2 fill:#4A90D9,color:#fff
+    class Atrito falha
+    class OK ok
+    class T2 neutro
+    class N2 neutro
 ```
 
 > [!tip] Consistência não é sobre a ferramenta "certa" — é sobre uma decisão só
@@ -193,8 +195,8 @@ A [[06 - uv vs Poetry — trade-offs honestos|nota 06 deste galho]] já deixou a
 Mas a razão que importa nomear aqui não é "porque `uv` venceu no benchmark" — é a que a nota 06 chamou de eixo decisivo: **os dois serviços agora têm dois pipelines de CI rodando, não um**. Antes da extração, um único pipeline resolvia dependências uma vez por PR do monólito modular. Depois, cada `push` em cada um dos dois repositórios dispara sua própria resolução de dependências, de forma independente. O ganho de velocidade que a nota 04 mediu — de minutos para segundos — não é mais um ganho "por serviço", é um ganho que se multiplica pelo número de pipelines rodando em paralelo. Dois times, cada um com PRs abertos ao longo do dia, significa que o custo agregado de resolução lenta dobra exatamente no momento em que a extração criou dois pontos de resolução em vez de um.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Antes["Antes da extração (Galho 14) — 1 pipeline"]
         P1["pip/poetry install<br/>1x por PR do monólito"]
     end
@@ -206,8 +208,8 @@ flowchart LR
 
     Antes -->|"extração cria<br/>2º pipeline"| Depois
 
-    style P2 fill:#4A90D9,color:#fff
-    style P3 fill:#4A90D9,color:#fff
+    class P2 neutro
+    class P3 neutro
 ```
 
 A ressalva honesta, para não deixar essa peça soar como propaganda de ferramenta: se os dois serviços já tivessem meses de produção estável em Poetry antes desta capstone — o mesmo cenário que a [[05 - Poetry — a alternativa madura|nota 05]] descreveu com o time do serviço de cobrança de sete anos — o argumento de migrar seria mais fraco, e a árvore de decisão da nota 06 apontaria para "fique em Poetry, meça a dor real antes de trocar". Não é esse o caso aqui: os dois serviços são recentes o suficiente, dentro desta trilha, para que a escolha de `uv` não pague custo de migração nenhum. A decisão que de fato importa nesta capstone **não é** "`uv` em vez de Poetry" — é **"os dois serviços usam o mesmo gerenciador, seja qual for"**. Se este par de serviços já existisse há anos em Poetry, a decisão certa seria manter Poetry nos dois — nunca misturar um serviço em `uv` com o outro em Poetry só porque um time preferiu a ferramenta mais nova.
@@ -299,8 +301,10 @@ Esta é a decisão mais importante desta capstone para nomear com clareza, porqu
 Não é o caso aqui, e a razão é a mesma que motivou a extração inteira no Galho 15: **os dois times querem, deliberadamente, ciclos de deploy independentes**. Um workspace `uv` compartilha um `uv.lock` único entre os pacotes-membro — o que significa que atualizar uma dependência compartilhada (por exemplo, `fastapi`) para um pacote do workspace tipicamente re-resolve e trava a versão para o workspace inteiro. Isso reintroduz, por um caminho técnico diferente, exatamente o acoplamento que a extração do Galho 15 existiu para quebrar: se `notificacoes-service` precisa atualizar `fastapi` para uma versão nova antes de `tarefas-service` estar pronto para validar essa mudança, um `uv.lock` compartilhado força uma negociação entre os dois times antes de qualquer um deles poder avançar — a mesma coordenação de deploy que a cena de abertura do Galho 15 (o code freeze bloqueando o adaptador de push mobile) mostrou como o problema real a resolver.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph WS["Opção rejeitada — workspace uv (monorepo)"]
         direction TB
         WSRoot["repo único<br/>uv.lock COMPARTILHADO"]
@@ -320,10 +324,10 @@ flowchart TB
         RN -.-> Livre
     end
 
-    style Bloqueio fill:#c0392b,color:#fff
-    style Livre fill:#27ae60,color:#fff
-    style RT fill:#4A90D9,color:#fff
-    style RN fill:#4A90D9,color:#fff
+    class Bloqueio falha
+    class Livre ok
+    class RT neutro
+    class RN neutro
 ```
 
 A decisão desta capstone, então, é dupla e deliberadamente em duas camadas diferentes: **consistência de configuração** (Peças 2 a 5 — mesma estrutura de `pyproject.toml`, mesmo gerenciador, mesmo `ruff`, mesma versão de Python) **sem** compartilhar **infraestrutura de repositório** (workspace, `uv.lock` único, `.venv` comum). Os dois eixos são independentes — nada em ter a mesma configuração exige compartilhar o mesmo lockfile físico, e é exatamente por manter os dois separados que cada time preserva a independência de deploy que motivou a extração original.
@@ -372,8 +376,8 @@ O detalhe que faz essa peça valer mais do que "mais um arquivo copiado": a `rev
 Juntando as sete peças, o estado que esta capstone entrega:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph T["tarefas-service (repo próprio)"]
         direction TB
         T1[".venv/ isolado (Peça 1)"]
@@ -396,8 +400,8 @@ flowchart LR
 
     T -.->|"REPOSITÓRIOS SEPARADOS<br/>decisão explícita (Peça 6)<br/>SEM workspace uv, SEM uv.lock comum"| N
 
-    style T fill:#4A90D9,color:#fff
-    style N fill:#4A90D9,color:#fff
+    class T neutro
+    class N neutro
 ```
 
 O diagrama deixa a tensão explícita: as duas colunas são idênticas em **estrutura** — mesmo isolamento, mesma forma de declarar dependências, mesmo gerenciador, mesma configuração de qualidade de código, mesma versão de interpretador, mesmo gancho de pre-commit — mas continuam sendo dois repositórios de verdade, sem nenhuma infraestrutura compartilhada que force os dois times a se coordenar para avançar. É a combinação das duas coisas — consistência de configuração **e** independência de infraestrutura — que faz esta capstone valer a pena: nenhuma das duas sozinha resolveria o problema completo. Consistência sem independência (um workspace único) reintroduziria o acoplamento que o Galho 15 quebrou. Independência sem consistência (cada time escolhendo tooling livremente) é o estado inicial, problemático, que esta capstone existiu para corrigir.

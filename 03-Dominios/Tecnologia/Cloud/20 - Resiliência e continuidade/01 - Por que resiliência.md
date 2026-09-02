@@ -65,16 +65,20 @@ Resiliência na nuvem se constrói em camadas concêntricas, cada uma protegendo
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     N1["Instância única<br/>(sem redundância)"] --> N2["Multi-instância<br/>na mesma AZ"]
     N2 --> N3["Multi-AZ<br/>(mesma região)"]
     N3 --> N4["Multi-region"]
     N4 --> N5["Multi-cloud<br/>(raro)"]
 
-    style N1 fill:#f88,stroke:#333
-    style N2 fill:#fc8,stroke:#333
-    style N3 fill:#ff8,stroke:#333
-    style N4 fill:#8f8,stroke:#333
-    style N5 fill:#8cf,stroke:#333
+    class N1 falha
+    class N2 destaque
+    class N3 destaque
+    class N4 ok
+    class N5 neutro
 ```
 
 **Instância única → Multi-instância na mesma AZ.** O primeiro degrau de todos, e o mais barato: ter duas ou mais cópias do mesmo servidor, mesmo que dentro do mesmo datacenter. Já resolve o failure mode mais comum — o processo trava, o host reinicia, o disco corrompe — mas não protege contra nada que afete o datacenter inteiro. É melhor que nada, mas é o degrau mais frágil da escada.

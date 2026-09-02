@@ -34,18 +34,19 @@ O salto de cidade física para interface digital não é uma analogia frouxa —
 | Borda | Transição clara entre seções (ex: mudança de header ao entrar em configurações) |
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     P1["Onde estou?"] -->|"breadcrumb, título de página,<br/>estado ativo do menu"| M1["Mecanismo"]
     P2["De onde vim?"] -->|"botão voltar funcional,<br/>histórico do navegador coerente"| M2["Mecanismo"]
     P3["Para onde posso ir?"] -->|"menu visível, links contextuais,<br/>URL previsível"| M3["Mecanismo"]
     M1 --> OK["Usuário orientado"]
     M2 --> OK
     M3 --> OK
-    style OK fill:#4A90D9,color:#fff
-    style P1 fill:#F5A623,color:#000
-    style P2 fill:#F5A623,color:#000
-    style P3 fill:#F5A623,color:#000
+    class OK neutro
+    class P1 destaque
+    class P2 destaque
+    class P3 destaque
 ```
 
 > [!tip] Vídeo — Digital Wayfinding, com Kevin Lynch e The Image of the City

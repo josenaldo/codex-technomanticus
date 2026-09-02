@@ -64,6 +64,9 @@ Quando você roda `python app.py`, o CPython percorre uma sequência de etapas. 
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["código-fonte<br/>app.py"] -->|"tokenizer"| B["stream de tokens"]
     B -->|"parser"| C["AST<br/>(Abstract Syntax Tree)"]
     C -->|"compilador"| D["bytecode<br/>(code objects)"]
@@ -71,13 +74,13 @@ flowchart TD
     D -->|"executado por"| F["CPython VM<br/>(ceval.c — stack-based)"]
     F --> G["resultado / efeitos<br/>(stdout, arquivos, rede...)"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
-    style E fill:#F5A623,color:#000
-    style F fill:#D0021B,color:#fff
-    style G fill:#D0021B,color:#fff
+    class A neutro
+    class B neutro
+    class C neutro
+    class D destaque
+    class E destaque
+    class F falha
+    class G falha
 ```
 
 Vamos abrir cada caixa.

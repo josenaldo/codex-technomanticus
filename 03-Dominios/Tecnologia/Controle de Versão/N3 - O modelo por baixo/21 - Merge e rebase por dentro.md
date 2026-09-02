@@ -28,7 +28,6 @@ A informação que falta é o **ponto de partida**. Se a base dizia "linha A" e 
 Por isso a operação se chama *three-way merge*. Os três pontos:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph RL
     M["main (ours)<br/>C5"] --> B["<b>base</b><br/>ancestral comum C3"]
     T["teste (theirs)<br/>C4"] --> B
@@ -71,7 +70,6 @@ Se o ancestral comum **é** o seu commit atual, o seu lado não avançou desde a
 Nesse caso o Git não cria commit algum — ele apenas **move a ref** (nota 19) para frente. Nada é reescrito, nada é combinado, nenhum objeto novo é criado.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph RL
     subgraph A["Antes"]
         M1["main"] --> C3a["C3"]
@@ -108,7 +106,6 @@ Para cada commit seu, na ordem:
 3. **cria um commit novo** com o resultado — mensagem e autoria preservadas, mas **hash diferente**, porque o pai mudou (e, pela nota 17, mudar qualquer campo muda o hash).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph RL
     subgraph A["Antes"]
         M1["main"] --> C5a["C5"] --> C3a["C3"]

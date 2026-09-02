@@ -28,8 +28,9 @@ A teoria da flakiness — por que acontece, o custo, a estratégia de quarentena
 Quase todo flaky em JS cai numa destas categorias — e a boa notícia é que cada uma tem um remédio já visto neste galho:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[Teste flaky] --> B["espera arbitrária<br/>(sleep)"]
     A --> C["estado compartilhado<br/>entre testes"]
     A --> D["timers/datas reais"]
@@ -40,9 +41,9 @@ graph TB
     D -.cura.-> D1["fake timers, data fixa"]
     E -.cura.-> E1["MSW / page.route"]
     F -.cura.-> F1["desligar animações"]
-    style A fill:#D0021B,color:#fff
-    style B1 fill:#4A90D9,color:#fff
-    style C1 fill:#4A90D9,color:#fff
+    class A falha
+    class B1 neutro
+    class C1 neutro
 ```
 
 | Causa | Por que gera flaky | Cura (nota) |

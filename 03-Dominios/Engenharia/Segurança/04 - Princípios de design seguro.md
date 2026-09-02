@@ -80,6 +80,8 @@ A diferença é profunda. Uma denylist enumera o que é proibido — e portanto 
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     R["Requisição de acesso"]
     Q{"Está explicitamente\npermitido?"}
     A["Permite"]
@@ -89,8 +91,8 @@ flowchart TD
     Q -->|"Sim (allowlist)"| A
     Q -->|"Nao ou desconhecido"| D
 
-    style D fill:#c0392b,color:#fff
-    style A fill:#27ae60,color:#fff
+    class D falha
+    class A ok
 ```
 
 > [!info] Leitura do diagrama
@@ -145,6 +147,8 @@ O adversário vai, eventualmente, descobrir como seu sistema funciona. Por rever
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Algoritmo secreto\n('security through obscurity')"]
     B["Algoritmo publico\n(open design)"]
 
@@ -156,8 +160,8 @@ flowchart LR
     B --> B2["Fraquezas detectadas\ne corrigidas"]
     B --> B3["Seguranca depende\nda chave, nao do algoritmo"]
 
-    style A fill:#c0392b,color:#fff
-    style B fill:#27ae60,color:#fff
+    class A falha
+    class B ok
 ```
 
 > [!info] Leitura do diagrama
@@ -186,6 +190,8 @@ Separation of privilege é o fundamento conceitual do MFA — e por isso o princ
 
 ```mermaid
 graph TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     ACCESS["Acesso a recurso critico"]
 
     C1["Condicao 1\n(fator conhecimento: senha)"]
@@ -199,8 +205,8 @@ graph TD
     AND -->|"Sim"| GRANT["Acesso concedido"]
     AND -->|"Nao (qualquer uma)"| DENY["Acesso negado"]
 
-    style GRANT fill:#27ae60,color:#fff
-    style DENY fill:#c0392b,color:#fff
+    class GRANT ok
+    class DENY falha
 ```
 
 > [!info] Leitura do diagrama
@@ -216,6 +222,8 @@ graph TD
 
 ```mermaid
 graph LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     SVC["Servico de pagamento"]
 
     SVC -->|"Least privilege\n(acesso minimo)"| DB1["Tabela: orders\nSELECT, INSERT"]
@@ -225,8 +233,8 @@ graph LR
     SVC2["Conta de servico\ncom root no banco"]
     SVC2 -->|"Acesso total"| DB4["TODOS os dados\nDROP TABLE possivel"]
 
-    style SVC fill:#27ae60,color:#fff
-    style SVC2 fill:#c0392b,color:#fff
+    class SVC ok
+    class SVC2 falha
 ```
 
 > [!info] Leitura do diagrama
@@ -296,6 +304,8 @@ A implicação prática: toda a segurança de um sistema criptográfico deve res
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph OBSCURIDADE ["Security through obscurity (ERRADO)"]
         OA["Algoritmo SECRETO"]
         OK["Chave (qualquer tamanho)"]
@@ -309,10 +319,10 @@ graph LR
         KK --> KSAFE
     end
 
-    style OBSCURIDADE fill:#f8d7da
-    style KERCKHOFFS fill:#d4edda
-    style OBREACH fill:#c0392b,color:#fff
-    style KSAFE fill:#27ae60,color:#fff
+    class OBSCURIDADE falha
+    class KERCKHOFFS ok
+    class OBREACH falha
+    class KSAFE ok
 ```
 
 > [!info] Leitura do diagrama
@@ -328,6 +338,8 @@ O modelo mental clássico é o **modelo do queijo suíço** de James Reason (ori
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     ATK["Atacante"]
 
     ATK --> L1["Perimetro de rede\n(firewall, WAF)"]
@@ -340,8 +352,8 @@ flowchart LR
 
     ATK -.->|"Para chegar ao ativo,\nprecisa vencer TODAS\nas camadas"| ASSET
 
-    style ATK fill:#c0392b,color:#fff
-    style ASSET fill:#27ae60,color:#fff
+    class ATK falha
+    class ASSET ok
 ```
 
 > [!info] Leitura do diagrama

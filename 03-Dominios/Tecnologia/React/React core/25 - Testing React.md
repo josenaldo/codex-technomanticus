@@ -53,8 +53,10 @@ X em uma frase: teste o que o usuário vê e interage, não o que o código faz 
 ## A pirâmide de testes no contexto React
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#F5A623", "tertiaryColor": "#D0021B"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Pirâmide["Pirâmide de Testes — React"]
         E2E["🎭 E2E / Browser\nPlaywright\nPoucos, lentos, alto valor\nFluxos críticos completos"]
         INT["🔗 Integração\nRTL + MSW\nComponentes com API real mockada\nFluxos de feature"]
@@ -64,9 +66,9 @@ graph TB
     UNIT -->|"mais →"| INT
     INT -->|"mais →"| E2E
 
-    style UNIT fill:#4A90D9,color:#fff
-    style INT fill:#F5A623,color:#fff
-    style E2E fill:#D0021B,color:#fff
+    class UNIT neutro
+    class INT destaque
+    class E2E falha
 ```
 
 A pirâmide não é lei — é heurística. Em React, a camada de integração com RTL + MSW dá retorno excelente: você testa o componente inteiro (render → interação → assert) sem precisar de browser real.
@@ -151,18 +153,20 @@ expect(errorMsg).toBeVisible()
 ### Hierarquia de queries por semântica
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["getByRole\n✅ melhor"] -->|"quando sem role"| B["getByLabelText\n✅ ótimo para forms"]
     B -->|"sem label"| C["getByPlaceholderText\n⚠️ aceitável"]
     C -->|"sem placeholder"| D["getByText\n⚠️ frágil"]
     D -->|"último recurso"| E["getByTestId\n❌ evitar"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#fff
-    style D fill:#F5A623,color:#fff
-    style E fill:#D0021B,color:#fff
+    class A neutro
+    class B neutro
+    class C destaque
+    class D destaque
+    class E falha
 ```
 
 ---
@@ -430,8 +434,9 @@ Veja [[18 - Error boundaries]] para a implementação completa e os padrões de 
 Esta seção é tão importante quanto as anteriores. Testes que punem refactoring são piores que nenhum teste.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph NAO["❌ Não testar"]
         A["Estado interno\nuseState value direto"]
         B["Nomes de classe CSS\n.btn-primary, .active"]
@@ -446,8 +451,8 @@ graph LR
         H["Estados de loading/error\no usuário vê spinner?"]
     end
 
-    style NAO fill:#D0021B,color:#fff
-    style SIM fill:#4A90D9,color:#fff
+    class NAO falha
+    class SIM neutro
 ```
 
 ### A regra dos detalhes de implementação

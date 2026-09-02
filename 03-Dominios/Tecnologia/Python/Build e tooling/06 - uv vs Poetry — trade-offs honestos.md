@@ -107,6 +107,8 @@ Para quem está construindo uma aplicação que nunca vai ao PyPI — a maioria 
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     Start["Escolher uv ou Poetry?"] --> Q1{"Projeto já existe<br/>e usa Poetry hoje?"}
 
     Q1 -->|Não — projeto novo| NewProj{"Alguma razão forte<br/>para não usar o padrão<br/>da maioria em 2026?"}
@@ -119,11 +121,11 @@ flowchart TD
     Q3 -->|Não agora| StayFor["Fique em Poetry por ora,<br/>reavalie quando o custo<br/>de não migrar superar o de migrar"]
     Q3 -->|Sim| Migrate["Migre para uv —<br/>revalide testes e CI"]
 
-    style UV1 fill:#4A90D9,color:#fff
-    style Migrate fill:#4A90D9,color:#fff
-    style Stay fill:#2E7D32,color:#fff
-    style StayFor fill:#2E7D32,color:#fff
-    style Poetry1 fill:#2E7D32,color:#fff
+    class UV1 neutro
+    class Migrate neutro
+    class Stay ok
+    class StayFor ok
+    class Poetry1 ok
 ```
 
 O critério honesto, resumido em duas frases: **para um projeto novo em 2026, `uv` é a recomendação padrão da maioria da comunidade** — velocidade, gerenciamento de interpretador embutido e o fato de vir da mesma empresa que já ganhou confiança com `ruff` pesam a favor, e não há custo de migração porque não existe nada para migrar. **Para um projeto existente que já roda em Poetry sem dor perceptível, a migração só se justifica quando o custo de não migrar (CI lento todos os dias, atrito real no ciclo de feedback do time) supera o custo real de migrar (lockfile refeito, scripts reescritos, testes revalidados, time retreinado)** — e esse segundo custo não é hipotético, é trabalho concreto com risco real de regressão.

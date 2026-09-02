@@ -32,16 +32,17 @@ O Chain of Responsibility organiza isso como uma **cadeia**: cada tratador (elo)
 ## A ideia
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     R[Requisição] --> A[Auth] -->|passa| P[Permissão] -->|passa| L[RateLimit] -->|passa| H[Controller]
     A -.barra 401.-> X((fim))
     L -.barra 429.-> X
 
-    style A fill:#4A90D9,color:#fff
-    style P fill:#4A90D9,color:#fff
-    style L fill:#4A90D9,color:#fff
-    style X fill:#F5A623,color:#000
+    class A neutro
+    class P neutro
+    class L neutro
+    class X destaque
 ```
 
 Cada elo processa e **repassa** (seta cheia) ou **interrompe** a cadeia (seta pontilhada). O emissor conhece só a entrada; a decisão de quem trata emerge da cadeia.

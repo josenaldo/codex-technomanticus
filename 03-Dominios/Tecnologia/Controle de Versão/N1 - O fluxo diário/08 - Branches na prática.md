@@ -83,7 +83,6 @@ Dois desfechos possíveis, e vale entender a diferença porque ela explica coisa
 **Merge de verdade.** Se as duas linhas avançaram, o Git combina as duas e cria um **commit de merge**, que é um commit especial com dois pais. Se as mudanças tocaram trechos diferentes, isso acontece automaticamente. Se tocaram o mesmo trecho, você tem um conflito — e é exatamente por isso que a próxima nota existe.
 
 ```mermaid
-%%{init: {"theme": "base"}}%%
 gitGraph
    commit id: "capítulo 1"
    commit id: "capítulo 2"

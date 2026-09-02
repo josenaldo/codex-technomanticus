@@ -108,8 +108,11 @@ Se a entrada do Rafael sobre o rollback tivesse incluído *"hoje mantenho dez re
 A solução é de desenho, não de disciplina extra: a métrica de escopo vive no **dossiê do engajamento** — um documento por vínculo profissional, revisado periodicamente —, nunca dentro da entrada de conquista. É lá que moram "hoje mantenho dez repositórios", "apoio um time de seis pessoas", "sou responsável por três serviços em produção". A entrada de conquista permanece intocada desde o dia em que foi escrita, porque nunca prometeu descrever o presente.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     Evento["Conquista acontece<br/>problema resolvido, decisão tomada"] --> Registro["Registro no brag document<br/>Cheguei · Construí · Resultado ·<br/>Evidência · Aprendizado"]
 
     Registro --> Deriv["Métrica derivada<br/>extraída da entrada, não guardada solta<br/>nível medido ou contado, nunca só lembrado"]
@@ -120,12 +123,12 @@ flowchart TD
 
     Dossie -.contexto, não conquista.-> CV
 
-    style Evento fill:#4A90D9,color:#fff
-    style Registro fill:#7ED321,color:#000
-    style Deriv fill:#F5A623,color:#000
-    style CV fill:#D0021B,color:#fff
-    style Escopo fill:#9013FE,color:#fff
-    style Dossie fill:#9013FE,color:#fff
+    class Evento neutro
+    class Registro destaque
+    class Deriv destaque
+    class CV falha
+    class Escopo marca
+    class Dossie marca
 ```
 
 A distância visual entre as duas rotas não é acidente. A de conquista sobe, evento por evento, até o currículo, sem que ninguém precise voltar e corrigir nada depois. A de escopo entra por outro caminho e **precisa** de manutenção que a primeira nunca precisa — porque descreve um presente que se move, em vez de um passado que já parou.

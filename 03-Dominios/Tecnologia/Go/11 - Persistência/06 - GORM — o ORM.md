@@ -87,6 +87,7 @@ O ponto onde GORM entrega mais valor sobre `database/sql` cru é modelar relacio
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph BelongsTo["Belongs To"]
         Post1["Post"] -->|"AuthorID → users.id"| User1["User"]
     end
@@ -97,9 +98,9 @@ flowchart LR
         Post3["Post"] <-->|"tabela pivô\npost_tags"| Tag3["[]Tag"]
     end
 
-    style BelongsTo fill:#4A90D9,color:#fff
-    style HasMany fill:#4A90D9,color:#fff
-    style Many2Many fill:#4A90D9,color:#fff
+    class BelongsTo neutro
+    class HasMany neutro
+    class Many2Many neutro
 ```
 
 ```go

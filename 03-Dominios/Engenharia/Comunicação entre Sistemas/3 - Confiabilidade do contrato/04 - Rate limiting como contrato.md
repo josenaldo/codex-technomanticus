@@ -30,8 +30,10 @@ Esse incidente não nasceu de rate limiting mal implementado do lado do servidor
 [[03-Dominios/Engenharia/Arquitetura/System Design/3 - Padrões recorrentes/04 - Rate Limiting|A nota de System Design]] já cobriu as cinco famílias de algoritmo — token bucket, leaky bucket, fixed window, sliding window log, sliding window counter — e o desafio de contar de forma consistente entre múltiplos nós via Redis. Esse conhecimento não se repete aqui. O que muda é o observador: system design pergunta "como o rate limiter decide", esta nota pergunta "o que a API comunica sobre essa decisão, e como um cliente bem-comportado reage a ela" — a mesma cerca vista de dentro (quem constrói o limitador) versus de fora (quem consome a API e precisa se comportar diante dela).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph SD["System Design — o mecanismo"]
         ALG["Algoritmo<br/>(token bucket, sliding window...)"]
         DIST["Contagem distribuída<br/>(Redis, Lua atômico)"]
@@ -47,12 +49,12 @@ graph LR
     ALG -.->|"decide bloquear"| RESP
     DIST -.->|"alimenta o estado"| HEAD
 
-    style ALG fill:#4A90D9,color:#fff
-    style DIST fill:#4A90D9,color:#fff
-    style HEAD fill:#F5A623,color:#000
-    style RESP fill:#D0021B,color:#fff
-    style TIER fill:#F5A623,color:#000
-    style CLI fill:#F5A623,color:#000
+    class ALG neutro
+    class DIST neutro
+    class HEAD destaque
+    class RESP falha
+    class TIER destaque
+    class CLI destaque
 ```
 
 > [!question]- Se o algoritmo já está resolvido em outro lugar, por que essa nota precisa existir separadamente — não bastava um parágrafo a mais na nota de System Design?
@@ -121,7 +123,6 @@ Content-Type: application/problem+json
 O corpo do erro no exemplo acima segue o formato `application/problem+json`, definido pela RFC 9457 (*Problem Details for HTTP APIs*, que substitui a RFC 7807 anterior) — um vocabulário padronizado de `type`/`title`/`status`/`detail`/`instance` para erros de API, que evita cada API inventar o próprio formato de erro do zero ([RFC 9457, *Problem Details for HTTP APIs*](https://www.rfc-editor.org/rfc/rfc9457.html)). Não é obrigatório usar esse formato especificamente para rate limiting — mas, dado que a API já precisa comunicar um erro estruturado, alinhar com um padrão existente em vez de inventar `{"error_code": "RATE_LIMITED", "msg": "..."}` do zero reduz o atrito de quem integra com múltiplas APIs ao longo da carreira.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant App as Cliente (integração)
     participant API as API de verificação
@@ -161,8 +162,10 @@ Até aqui, esta nota tratou do que o **servidor** expõe. Mas um contrato tem du
 A resposta correta não é "parar de tentar" nem "tentar de novo imediatamente" — é **backoff exponencial com jitter**: esperar um intervalo que cresce a cada tentativa consecutiva (1s, 2s, 4s, 8s...), com um componente aleatório somado para evitar que múltiplos clientes, todos bloqueados ao mesmo tempo pelo mesmo motivo, sincronizem as próprias tentativas de retry e gerem um novo pico simultâneo no momento exato em que a janela reabre — o problema conhecido como *thundering herd* ([AWS Prescriptive Guidance, *Retry with backoff pattern*](https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/retry-backoff.html)).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Recebe 429"] --> B{"Response tem<br/>Retry-After?"}
     B -->|"Sim"| C["Espera pelo menos<br/>o valor de Retry-After"]
     B -->|"Não"| D["Calcula backoff exponencial<br/>a partir da tentativa atual"]
@@ -174,10 +177,10 @@ flowchart TD
     G -->|"Sucesso"| I["Segue o fluxo normal"]
     G -->|"429 de novo"| A
 
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style H fill:#D0021B,color:#fff
-    style A fill:#F5A623,color:#000
+    class C neutro
+    class D neutro
+    class H falha
+    class A destaque
 ```
 
 Três regras práticas, na ordem de prioridade que um cliente de produção deveria seguir:

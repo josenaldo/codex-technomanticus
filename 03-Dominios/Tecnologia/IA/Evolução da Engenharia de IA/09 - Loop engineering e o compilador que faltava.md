@@ -54,14 +54,15 @@ Reduzido ao essencial, um compilador é três propriedades soldadas em uma coisa
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     C["COMPILADOR"] --> R["Resistência<br/>empurra de volta<br/>sem negociação"]
     C --> I["Inarguabilidade<br/>não pode ser<br/>convencido"]
     C --> V["Veredito<br/>público e repetível<br/>mesmo resultado<br/>em qualquer máquina"]
 
-    style C fill:#4A90D9,color:#fff
-    style R fill:#4A90D9,color:#fff
-    style I fill:#4A90D9,color:#fff
-    style V fill:#4A90D9,color:#fff
+    class C neutro
+    class R neutro
+    class I neutro
+    class V neutro
 ```
 
 O ponto central desta seção — e o que faz o argumento inteiro valer a pena — é que **programação é incomum** porque as três propriedades chegam de graça, embutidas na própria linguagem. Você não constrói a resistência de um type-checker: você a herda ao escolher uma linguagem tipada. Você não negocia com um compilador para que ele aceite um programa malformado: ele simplesmente não aceita, e essa recusa não depende de quem está pedindo, de quanto contexto foi dado, de quão bem articulado é o pedido.
@@ -92,6 +93,8 @@ Um loop, nessa moldura, é o andaime que você embrulha em volta de um agente pa
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph COMP["Compilador — de graça em código"]
         R1["Resistência"]
         I1["Inarguabilidade"]
@@ -107,12 +110,12 @@ flowchart LR
     I1 -.->|reconstrói| I2
     V1 -.->|reconstrói| V2
 
-    style R1 fill:#4A90D9,color:#fff
-    style I1 fill:#4A90D9,color:#fff
-    style V1 fill:#4A90D9,color:#fff
-    style R2 fill:#F5A623,color:#000
-    style I2 fill:#F5A623,color:#000
-    style V2 fill:#F5A623,color:#000
+    class R1 neutro
+    class I1 neutro
+    class V1 neutro
+    class R2 destaque
+    class I2 destaque
+    class V2 destaque
 ```
 
 Boa loop engineering, nesta luz, é só essas três propriedades reconstruídas com fidelidade — testes que de fato resistem, um revisor que de fato não compartilha o enquadramento de quem produziu o trabalho, um audit trail que de fato permite a alguém de fora reconstruir o que aconteceu. E a frase que fecha essa metade do argumento merece ficar isolada, porque é a consequência mais afiada do ensaio inteiro:
@@ -142,6 +145,9 @@ O que muda, degrau a degrau, não é só *o que* é checado — é **o veredito 
 
 ```mermaid
 flowchart BT
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     F["Formatter<br/>julga: whitespace<br/>veredito: ms · automático · externo"]
     L["Linter<br/>julga: estilo, idioma<br/>veredito: ms · automático · externo"]
     T["Type-checker<br/>julga: peças encaixam<br/>veredito: segundos · automático · externo"]
@@ -150,11 +156,11 @@ flowchart BT
 
     F --> L --> T --> TS --> R
 
-    style F fill:#4A90D9,color:#fff
-    style L fill:#4A90D9,color:#fff
-    style T fill:#4A90D9,color:#fff
-    style TS fill:#F5A623,color:#000
-    style R fill:#D0021B,color:#fff
+    class F neutro
+    class L neutro
+    class T neutro
+    class TS destaque
+    class R falha
 ```
 
 O check no topo da escada ainda faz o mesmo essencial que o check embaixo faz — pegar uma afirmação e forçá-la contra algo real, recusar deixá-la passar se não resistir. Mas ele precisa **esticar muito mais para tocar a realidade**, e o toque, quando finalmente chega lá, é menos certeiro do que o toque instantâneo do type-checker embaixo.

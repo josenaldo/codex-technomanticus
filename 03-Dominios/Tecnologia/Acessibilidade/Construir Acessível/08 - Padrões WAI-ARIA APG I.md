@@ -23,14 +23,15 @@ A nota 05 disse "ARIA por último". Este é o "por último" chegando. Você esgo
 Cada padrão do APG é um contrato de três partes, e é útil ter esse esqueleto na cabeça antes dos exemplos:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     R["ROLE<br/>o que o widget é<br/>(tab, dialog...)"] --> E["ESTADO<br/>condição atual<br/>(aria-expanded, aria-selected)"]
     E --> K["TECLADO<br/>as teclas esperadas<br/>(setas, Esc, Enter)"]
     K --> C["Contrato completo<br/>= widget acessível"]
-    style R fill:#4A90D9,color:#fff
-    style K fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
+    class R neutro
+    class K destaque
+    class C neutro
 ```
 
 ## Disclosure: o mostrar/esconder honesto

@@ -88,6 +88,9 @@ Fastify tem um lifecycle com fases nomeadas. A ordem importa para entender onde 
 
 ```mermaid
 flowchart TD
+    classDef blue fill:#4A90D9,color:#fff,stroke:#4A90D9
+    classDef amber fill:#F5A623,color:#fff,stroke:#F5A623
+    classDef red fill:#D0021B,color:#fff,stroke:#D0021B
     req([Incoming Request]):::blue --> onReq[onRequest]:::blue
     onReq --> preP[preParsing]:::blue
     preP --> preV[preValidation]:::blue
@@ -100,9 +103,6 @@ flowchart TD
     preH -->|error| onErr
     handler -->|error| onErr
 
-    classDef blue fill:#4A90D9,color:#fff,stroke:#4A90D9
-    classDef amber fill:#F5A623,color:#fff,stroke:#F5A623
-    classDef red fill:#D0021B,color:#fff,stroke:#D0021B
 ```
 
 `preHandler` é o hook certo para auth em Fastify: body já foi parseado e validado, mas handler ainda não rodou. `onRequest` roda cedo demais para acessar body; `onResponse` roda tarde demais para bloquear o request.

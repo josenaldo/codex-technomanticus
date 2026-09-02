@@ -44,6 +44,8 @@ A [[01 - Panorama — PCEP e PCAP, o que são e pra quem|nota 01]] já registrou
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Prova inicia"] --> B["Primeira passada:<br/>responder só as questões RÁPIDAS"]
     B --> C{"Questão é curta e direta?<br/>('o que este código imprime',<br/>≤5 linhas, sem ambiguidade)"}
     C -->|sim| D["Responder e seguir"]
@@ -59,9 +61,9 @@ flowchart TD
     J --> K
     K --> L["Finalizar prova"]
 
-    style A fill:#4A90D9,color:#fff
-    style L fill:#7ED321,color:#000
-    style E fill:#F5A623,color:#000
+    class A neutro
+    class L destaque
+    class E destaque
 ```
 
 O princípio por trás dessa ordem: **nem toda questão vale o mesmo esforço**. Uma pergunta de bloco Modules and Packages tipo "qual instrução importa só o nome `funcao` de um módulo" tem resposta objetiva, sem ambiguidade, e não deveria consumir mais que alguns segundos. Uma pergunta que pede pra simular mentalmente 15 linhas de código com herança múltipla e overriding de método (bloco OOP, 34% do PCAP) exige mais tempo de raciocínio — e travar nela cedo, sem saber quantas questões rápidas ainda esperam resposta, é o erro mais caro de gestão de tempo numa prova cronometrada.

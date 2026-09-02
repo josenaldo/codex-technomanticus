@@ -194,6 +194,8 @@ O construtor recebe uma `sessionmaker`, não uma `Session` já pronta — a mesm
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph UOW["SqlAlchemyUnitOfWork.__enter__()"]
         SES[("uma única Session")]
         RT["self.tarefas =<br/>SqlAlchemyTarefaRepository(session)"]
@@ -208,8 +210,8 @@ flowchart TB
 
     SES -->|"uow.commit() → session.commit()<br/>UM commit, tudo junto"| DB[("banco relacional")]
 
-    style SES fill:#4A90D9,color:#fff
-    style DB fill:#2d5016,color:#fff
+    class SES neutro
+    class DB ok
 ```
 
 O detalhe que faz o diagrama funcionar: `Repository.add()`, como a [[03 - Repository pattern — abstraindo a persistência|nota 03 deste galho]] já estabeleceu, chama `session.flush()` — nunca `session.commit()`. Isso deixa de ser só uma boa prática isolada do Repository e passa a ser a **precondição** que torna a Unit of Work possível: se `add()` commitasse sozinho, cada Repository fecharia sua própria fatia da transação, e não haveria "um único commit" para coordenar — voltaríamos exatamente ao bug de abertura desta nota, só que escondido um nível mais fundo.

@@ -34,8 +34,10 @@ Fowler é rigoroso numa distinção que, no legado, deixa de ser purismo acadêm
 A segunda contribuição estrutural de Fowler não é uma técnica — é um **ritmo**. Refatorar bem não é reescrever um trecho inteiro de uma vez e torcer para os testes passarem. É uma sequência de **micro-passos**, cada um pequeno o bastante para ser revertido em segundos se algo falhar, cada um seguido imediatamente de "rodar os testes, ver verde, considerar um commit".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Escolha um<br/>micro-passo"] --> B["Aplique a<br/>transformação"]
     B --> C["Rode a rede<br/>(characterization tests)"]
     C --> D{"Verde?"}
@@ -43,11 +45,11 @@ graph LR
     D -->|"não"| F["Reverta ESTE<br/>passo, só ele"]
     E --> A
     F --> A
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style E fill:#7ED321,color:#000
-    style F fill:#D0021B,color:#fff
+    class A neutro
+    class B neutro
+    class C destaque
+    class E destaque
+    class F falha
 ```
 
 Em código com testes rápidos, "pequeno" pode significar renomear uma variável e já rodar a suíte. No terreno hostil, "pequeno" fica **ainda menor**, por duas razões práticas. Primeiro, sua rede de characterization tests é lenta — rodar a suíte inteira a cada linha alterada é inviável, então você aprende a rodar o subconjunto relevante e a manter passos pequenos o bastante para que, se algo quebrar, a causa seja óbvia sem precisar de `git bisect` dentro do próprio commit. Segundo, o acoplamento oculto (o motivo pelo qual a classe é hotspot) significa que uma mudança que parece local pode ter efeito em três lugares que você não vê — quanto menor o passo, menor a superfície de dano por transformação, e mais fácil isolar qual delas causou o efeito colateral.
@@ -133,8 +135,9 @@ O micro-passo extra — deixar o efeito colateral no chamador em vez de arrastá
 A [[12 - Seams e quebra de dependência|nota 12]] descreveu o paradoxo: você precisa de testes para refatorar com segurança, mas às vezes precisa refatorar um pouco só para conseguir instanciar a classe e escrever o primeiro teste. Esta nota assume que o seam já foi aberto — mas vale nomear como a alternância continua acontecendo, agora dentro do próprio trabalho de refatoração:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q1{"Tem rede<br/>(characterization test)<br/>cobrindo este trecho?"}
     Q1 -->|"não"| Q2{"Consigo escrever<br/>o teste SEM<br/>mexer na estrutura?"}
     Q1 -->|"sim"| R["Aplique o catálogo<br/>de Fowler normalmente,<br/>micro-passo a micro-passo"]
@@ -143,10 +146,10 @@ graph TD
     T --> R
     S --> N["Abra o seam (nota 12)"]
     N --> T
-    style R fill:#7ED321,color:#000
-    style S fill:#F5A623,color:#000
-    style T fill:#4A90D9,color:#fff
-    style N fill:#4A90D9,color:#fff
+    class R destaque
+    class S destaque
+    class T neutro
+    class N neutro
 ```
 
 A saída prática: as refatorações **garantidas pelo compilador/IDE** — Rename automatizado, Extract Method automatizado sem tocar em campos compartilhados — são quase sem risco mesmo sem rede, porque a própria ferramenta é uma rede parcial (ela recusa a transformação se detectar ambiguidade). Você usa essas para abrir espaço suficiente para instanciar a classe e escrever o characterization test. Só depois de a rede existir é que o restante do catálogo — Extract Class, mudanças que a IDE não automatiza com segurança total — entra em jogo.

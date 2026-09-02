@@ -74,7 +74,6 @@ Traduzindo linha por linha:
 - **`git push -u origin main`** — envia. O `-u` grava a associação, de modo que daqui em diante basta `git push`.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
     A["Sua máquina<br/>repositório completo"] -->|git push| B["GitHub<br/>repositório completo"]
     B -->|git pull| A

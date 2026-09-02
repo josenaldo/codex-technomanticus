@@ -55,6 +55,8 @@ Antes do código de cada camada, vale ver como elas se encaixam — porque a ord
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Request chega"] --> B{"Tamanho\ndentro do limite?"}
     B -->|não| R1["413 / erro,\ndescartado sem decodificar"]
     B -->|sim| C["Decode\n(json.Decoder / form / multipart)"]
@@ -66,11 +68,11 @@ flowchart TB
     F --> G["Persistido"]
     G --> H["Renderizado depois\nvia html/template\n(escaping automático)"]
 
-    style B fill:#F5A623,color:#000
-    style D fill:#F5A623,color:#000
-    style E fill:#F5A623,color:#000
-    style F fill:#4A90D9,color:#fff
-    style H fill:#4A90D9,color:#fff
+    class B destaque
+    class D destaque
+    class E destaque
+    class F neutro
+    class H neutro
 ```
 
 Cada losango é um ponto de rejeição — e cada um barato *antes* dele evita gastar trabalho num payload que vai ser descartado de qualquer forma. Rejeitar por tamanho antes de decodificar é mais barato que decodificar 2 GB de JSON só para descobrir, no fim, que o campo obrigatório está faltando.

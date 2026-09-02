@@ -51,7 +51,6 @@ Em uma frase: **o quadro branco registra o que você decidiu; sua voz é onde vo
 As rubricas de empresas diferentes usam nomes distintos, mas convergem em quatro dimensões. Vale conhecê-las porque elas dizem, literalmente, onde alocar sua energia nos 45 minutos.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     SD["Sinal avaliado<br/>na entrevista"] --> PN["1. Navegação<br/>do problema"]
     SD --> DS["2. Design<br/>da solução"]
@@ -141,7 +140,6 @@ A mesma feature "postar um tweet" gera arquiteturas radicalmente diferentes conf
 O RF é idêntico nos dois casos. O RNF é que explode a complexidade — e é exatamente onde os pontos da entrevista são ganhos.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
     RF["Requisitos Funcionais<br/>(o QUÊ)"] -->|"definem"| BOX["As caixas<br/>do diagrama"]
     RNF["Requisitos Não-Funcionais<br/>(o QUÃO BEM)"] -->|"definem"| SCALE["A escala,<br/>a topologia,<br/>os trade-offs"]
@@ -170,7 +168,6 @@ A maioria dos guias converge em seis passos, e este sub-galho dedica uma nota a 
 | 6 | Trade-offs & evolução | ~5 min | pontos fracos assumidos e como o sistema evolui | [[05 - Do diagrama macro ao deep dive e trade-offs]] |
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     R["1. Requisitos<br/>~5min"] --> E["2. Estimativas<br/>~5min"]
     E --> A["3. API &<br/>data model<br/>~5min"]

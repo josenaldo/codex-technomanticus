@@ -134,7 +134,6 @@ Isso explica por que arquivo criado por um serviço às vezes não é legível p
 ## Os três bits extras
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     A["<b>setuid</b> (4000)<br/>em binário: roda com o UID do dono"] --> A1["passwd, sudo<br/>⚠ superfície de ataque"]
     B["<b>setgid</b> (2000)<br/>em diretório: o que nasce ali<br/>herda o GRUPO do diretório"] --> B1["o mecanismo certo para<br/>diretório compartilhado"]

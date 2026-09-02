@@ -91,7 +91,6 @@ O nome pode ser o seu nome mesmo, com espaço e acento — ele vai aparecer no h
 O `--global` que aparece nos comandos acima não é decoração. O Git guarda configuração em três camadas, e a mais específica sempre vence:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     A["<b>sistema</b> — todos os usuários da máquina<br/>git config --system"] --> B["<b>global</b> — só você, em todos os projetos<br/>git config --global"]
     B --> C["<b>local</b> — só neste projeto<br/>git config (sem opção)"]

@@ -47,7 +47,6 @@ O dark launch é a etapa de menor risco de todas: como ninguém vê o resultado,
 Este é o momento em que o laço aberto pela [[18 - Strangler Fig|nota 18]] se fecha. O **parallel run** roda os dois sistemas — velho e novo — para a *mesma* requisição, mas **devolve ao cliente sempre a resposta do velho**, porque o velho continua sendo a fonte da verdade até prova em contrário. A resposta do novo é capturada, comparada com a do velho, e qualquer divergência é registrada — silenciosamente, sem que ninguém no outro lado da chamada perceba que dois motores rodaram. Repetido milhares de vezes contra tráfego real, isso produz o que nenhum conjunto de testes manuais consegue produzir sozinho: **evidência empírica, em volume, de que o novo concorda com o velho na distribuição real de entradas** — não na distribuição que você imaginou ao escrever os testes.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Cliente
     participant Facade
@@ -76,8 +75,9 @@ A analogia dá nome à técnica antes de qualquer explicação técnica: mineiro
 A diferença crucial entre canary e parallel run é essa: no parallel run, o resultado do candidato nunca chega ao usuário — o risco real é zero. No canary, o resultado do candidato **é** a resposta que o usuário recebe — o risco real é diluído, não eliminado. É por isso que o canary vem depois, não antes: você só expõe usuários reais ao candidato depois de já ter evidência (dark launch + parallel run) de que a probabilidade de erro é baixa. Pular direto para canary sem as duas etapas anteriores é descer na mina sem o pássaro.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[Codigo novo pronto] --> B[Dark launch<br/>0% exposto, so sobrevivencia]
     B --> C[Parallel run<br/>compara, devolve sempre o velho]
     C --> D{Divergencias<br/>aceitaveis?}
@@ -86,12 +86,12 @@ flowchart LR
     D -->|sim| F[Canary 1-10%<br/>risco real, diluido]
     F --> G[Canary 25-50%]
     G --> H[100% - velho pode<br/>ser removido]
-    style B fill:#4A90D9
-    style C fill:#4A90D9
-    style D fill:#F5A623
-    style F fill:#F5A623
-    style G fill:#F5A623
-    style H fill:#4A90D9
+    class B neutro
+    class C neutro
+    class D destaque
+    class F destaque
+    class G destaque
+    class H neutro
 ```
 
 ## Instrumentar o legado: dar olhos a um sistema cego

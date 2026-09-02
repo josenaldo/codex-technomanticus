@@ -238,8 +238,8 @@ Um Fiber é um objeto JavaScript que representa uma unidade de trabalho. Para ca
 O React mantém **duas árvores de fibers simultaneamente**:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Tela atual (current tree)"
         A1["Fiber: App\n(current)"] --> B1["Fiber: Header\n(current)"]
         A1 --> C1["Fiber: Main\n(current)"]
@@ -257,7 +257,7 @@ graph TB
     C1 -. "alternate" .-> C2
     D1 -. "alternate" .-> D2
 
-    style D2 fill:#F5A623,color:#000
+    class D2 destaque
 ```
 
 A **current tree** é o que está na tela. A **workInProgress tree** é onde o React constrói o próximo estado da UI. Cada fiber tem um ponteiro `alternate` para seu espelho na outra árvore.
@@ -269,8 +269,10 @@ Quando o render termina, o React simplesmente troca os ponteiros — a workInPro
 O trabalho do Fiber se divide em duas fases com características muito diferentes:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph "Render Phase (interruptível)"
         R1["beginWork():\ndesce na árvore,\nchama funções de componente"] --> R2["completeWork():\nretorna para cima,\ncalcula efeitos"]
     end
@@ -283,12 +285,12 @@ graph LR
 
     R2 -->|"lista de efeitos pronta"| C1
 
-    style R1 fill:#4A90D9,color:#fff
-    style R2 fill:#4A90D9,color:#fff
-    style C1 fill:#F5A623,color:#000
-    style C2 fill:#D0021B,color:#fff
-    style C3 fill:#F5A623,color:#000
-    style C4 fill:#4A90D9,color:#fff
+    class R1 neutro
+    class R2 neutro
+    class C1 destaque
+    class C2 falha
+    class C3 destaque
+    class C4 neutro
 ```
 
 **Render phase** (também chamada de reconciliation phase):
@@ -323,8 +325,9 @@ O que dispara o processo todo é descrito em [[04 - Renderização - o que dispa
 ## Diff visual: antes e depois de uma mudança
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph "Árvore ANTERIOR"
         OA["App"] --> OH["Header"]
         OA --> OL["Lista\n[key=1, key=2, key=3]"]
@@ -345,8 +348,8 @@ graph TB
     OI2 -. "reutilizado" .-> NI2
     OI3 -. "REMOVIDO (key=3 sumiu)" .-> NI4
 
-    style NI4 fill:#F5A623,color:#000
-    style OI3 fill:#D0021B,color:#fff
+    class NI4 destaque
+    class OI3 falha
 ```
 
 Neste exemplo:

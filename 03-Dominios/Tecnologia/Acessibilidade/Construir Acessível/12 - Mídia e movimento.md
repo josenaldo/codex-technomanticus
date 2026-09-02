@@ -106,6 +106,9 @@ O fluxo de decisão que evita o erro mais comum — escolher a alternativa errad
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A[Que tipo de mídia é?] --> B{Tem vídeo com fala?}
     B -->|Sim| C[Legendas sincronizadas via track]
     B -->|Não| D{Tem informação só visual?}
@@ -121,13 +124,13 @@ flowchart TD
     M -->|Sim| N[PERIGO — risco de convulsão, remover]
     M -->|Não| O[OK]
 
-    style C fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style G fill:#4A90D9,color:#fff
-    style O fill:#4A90D9,color:#fff
-    style J fill:#F5A623,color:#000
-    style L fill:#F5A623,color:#000
-    style N fill:#D0021B,color:#fff
+    class C neutro
+    class E neutro
+    class G neutro
+    class O neutro
+    class J destaque
+    class L destaque
+    class N falha
 ```
 
 ## Casos práticos

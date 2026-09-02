@@ -28,12 +28,13 @@ O primeiro passo para entender um Service com precisão é desfazer uma suposiç
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     Cliente["Pod cliente<br/>faz requisição para<br/>10.96.14.22:80"] --> Regra["Regra de rede no node<br/>(mantida pelo kube-proxy)<br/>10.96.14.22:80 → ?"]
     Regra -->|"escolhe um destino real"| Pod1["Pod real<br/>10.244.1.5:8080"]
     Regra -.->|"ou"| Pod2["Pod real<br/>10.244.2.9:8080"]
     Regra -.->|"ou"| Pod3["Pod real<br/>10.244.3.3:8080"]
 
-    style Regra fill:#4a3b7a,stroke:#8e6fd6,color:#fff
+    class Regra marca
 ```
 
 Vale reter essa distinção de propósito, porque ela explica um comportamento que costuma soar contraintuitivo na primeira vez que aparece: um `ping` contra um ClusterIP tipicamente não responde nada, mesmo que uma requisição HTTP contra aquele mesmo endereço, na mesma porta, funcione perfeitamente. Não é falha de configuração — é que não existe processo nenhum respondendo a ICMP naquele endereço, porque o endereço não é uma máquina, é uma entrada de tabela que só o tráfego correspondente às regras configuradas (tipicamente TCP/UDP nas portas declaradas) sabe atravessar. Perguntar "quem está escutando em `10.96.14.22`?" é, estruturalmente, a pergunta errada — a pergunta certa é "para onde essa regra está redirecionando agora?", e essa resposta muda o tempo todo, sem que o endereço visível para quem faz a chamada mude nunca.
@@ -64,6 +65,9 @@ O EndpointSlice controller observa, via watch — o mesmo mecanismo de observaç
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph SVC["Service — spec declarada"]
         SEL["selector: app=myapp<br/>ports: 80 → 8080"]
     end
@@ -80,9 +84,9 @@ graph TB
     CTRL -->|"escreve"| ES
     ES -.->|"kube-proxy lê e<br/>monta as regras de rede"| KP["kube-proxy em cada node"]
 
-    style SVC fill:#4a3b7a,stroke:#8e6fd6,color:#fff
-    style CTRL fill:#2e4d7a,stroke:#3498db,color:#fff
-    style ES fill:#1e5c3a,stroke:#27ae60,color:#fff
+    class SVC marca
+    class CTRL neutro
+    class ES ok
 ```
 
 Vale ver esse objeto com as próprias mãos, porque é raro alguém olhar para ele fora de um momento de depuração — e é exatamente por isso que sua existência costuma pegar quem só conhece o Service pelo manifesto:

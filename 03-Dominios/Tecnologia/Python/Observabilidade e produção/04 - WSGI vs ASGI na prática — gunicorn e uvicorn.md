@@ -38,8 +38,9 @@ Funciona. O serviço sobe, responde requisições, os logs estruturados aparecem
 A primeira suspeita do time é que o serviço precisa de "mais máquina" — escalam a instância de 8 vCPUs para 16. A latência não muda em nada. É só quando alguém roda `htop` durante o pico que o problema fica visível: **um** núcleo em 100%, os outros quinze completamente ociosos.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph CPU["Máquina com 8 núcleos"]
         C1["Core 1<br/>100% — uvicorn<br/>event loop único"]
         C2["Core 2<br/>ocioso"]
@@ -49,11 +50,11 @@ graph LR
         C8["Core 8<br/>ocioso"]
     end
     REQ["Fila de requisições<br/>crescendo"] --> C1
-    style C1 fill:#D0021B,color:#fff
-    style C2 fill:#4A90D9,color:#fff
-    style C3 fill:#4A90D9,color:#fff
-    style C4 fill:#4A90D9,color:#fff
-    style C8 fill:#4A90D9,color:#fff
+    class C1 falha
+    class C2 neutro
+    class C3 neutro
+    class C4 neutro
+    class C8 neutro
 ```
 
 A causa raiz não é falta de capacidade de máquina — é que `uvicorn app:app` sozinho é **um processo Python com um event loop**, e um único processo Python, por natureza, roda num único núcleo de CPU por vez para o código Python que ele executa (o `asyncio` dá concorrência dentro desse processo, não paralelismo entre núcleos — a mesma distinção que os Galhos 6/7 desta trilha já fixaram para threading e multiprocessing). Escalar a instância de 8 para 16 núcleos não ajudou em nada porque o processo continuava usando só um deles — o problema nunca foi a quantidade de CPU disponível, era quantos processos estavam competindo por ela.
@@ -79,8 +80,9 @@ A saída, então, é a mesma lógica de `multiprocessing`: **múltiplos processo
 O que faz `gunicorn` valioso além do modo WSGI puro, e o motivo de ele continuar no combo de produção mesmo em serviços 100% assíncronos, é que ele é, antes de mais nada, um **gerenciador de processos** genérico — a parte que fica clara na arquitetura master/worker:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Master["gunicorn — processo MASTER"]
         M["Master process<br/>não atende requisição nenhuma<br/>só gerencia workers"]
     end
@@ -106,11 +108,11 @@ flowchart TB
     SO --> W3
     SO --> W4
 
-    style M fill:#4A90D9,color:#fff
-    style W1 fill:#7ED321,color:#000
-    style W2 fill:#7ED321,color:#000
-    style W3 fill:#7ED321,color:#000
-    style W4 fill:#7ED321,color:#000
+    class M neutro
+    class W1 destaque
+    class W2 destaque
+    class W3 destaque
+    class W4 destaque
 ```
 
 O processo **master** de `gunicorn` não atende requisição nenhuma diretamente — ele existe só para gerenciar o ciclo de vida dos workers: faz `fork()` do número configurado de processos filhos, escuta um sinal de heartbeat de cada um, e **reinicia automaticamente** qualquer worker que morra (por exceção não tratada, por exceder um limite de memória, ou por qualquer outra causa) — exatamente o mecanismo de auto-recuperação que faltou no incidente da [[01 - Panorama — o que falta pra produção de verdade|nota 01 deste galho]], onde o processo `uvicorn` sozinho morreu às 3h e ficou morto até alguém notar às 7h. Os workers compartilham o mesmo socket de escuta (o kernel distribui as conexões entrando entre eles), mas cada um roda de forma independente, com sua própria memória, seu próprio processo do sistema operacional — e, no caso do combo desta nota, seu próprio event loop `asyncio`.
@@ -166,7 +168,6 @@ O trade-off real não é técnico no sentido de "um funciona e o outro não" —
 > Times que já têm `gunicorn` rodando em produção para outros serviços Python (inclusive WSGI puro, Flask/Django tradicional) ganham mais reaproveitando esse conhecimento operacional acumulado — runbooks, configuração de systemd/supervisord, hooks já testados — do que trocando para `uvicorn --workers` só porque é "uma dependência a menos". Times novos, sem esse acúmulo, e com um serviço 100% ASGI desde o início, frequentemente preferem `uvicorn --workers` justamente pela simplicidade de ter um comando e uma dependência a menos para entender. Nenhuma das duas escolhas é "errada" — a pergunta certa é "que ferramenta a equipe já sabe operar bem sob incidente", não "qual é tecnicamente mais moderna".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart LR
     subgraph Combo["gunicorn + UvicornWorker"]
         direction TB

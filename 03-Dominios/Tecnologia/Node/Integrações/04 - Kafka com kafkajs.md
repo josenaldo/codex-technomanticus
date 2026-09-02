@@ -37,6 +37,8 @@ Topic: pedidos
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Producers
         P1["Producer A\n(api-pedidos)"]
         P2["Producer B\n(api-pagamentos)"]
@@ -61,10 +63,10 @@ flowchart LR
     T -->|"eachMessage"| C2
     T -->|"eachBatch"| C3
 
-    style T fill:#4A90D9,color:#fff
-    style C1 fill:#F5A623,color:#fff
-    style C2 fill:#F5A623,color:#fff
-    style C3 fill:#4A90D9,color:#fff
+    class T neutro
+    class C1 destaque
+    class C2 destaque
+    class C3 neutro
 ```
 
 O kafkajs expõe três entidades principais:

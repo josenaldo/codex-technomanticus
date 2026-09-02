@@ -98,6 +98,9 @@ Com só 2 filtros e 3 destinos, já são **6 classes** — cada combinação nov
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Rigida["Herança rígida — explosão de subclasses"]
         direction TB
         L0["Logger"] --> LE["LoggerFiltradoPorErro"]
@@ -119,10 +122,10 @@ flowchart TB
 
     style Rigida fill:none,stroke:#D0021B,stroke-width:2px
     style Flexivel fill:none,stroke:#4A90D9,stroke-width:2px
-    style L0 fill:#D0021B,color:#fff
-    style LOG fill:#4A90D9,color:#fff
-    style F fill:#F5A623,color:#000
-    style D fill:#F5A623,color:#000
+    class L0 falha
+    class LOG neutro
+    class F destaque
+    class D destaque
 ```
 
 A metade direita do diagrama é a resposta: em vez de codificar cada combinação como uma classe, `Logger` **tem** um filtro e **tem** um destino — dois objetos pequenos, cada um resolvendo uma responsabilidade, montados juntos na hora de criar o `Logger`. Trocar o destino de arquivo pra rede é trocar **um objeto membro**, não reescrever ou criar uma classe nova.
@@ -274,18 +277,20 @@ O que torna esse caso diferente do Pato/PatoDeBorracha: a relação não muda de
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q0["Preciso reutilizar/agrupar comportamento"] --> Q1{"A relação é 'é-um'<br/>genuína e ESTÁVEL?"}
     Q1 -->|"sim — ex: exceções,<br/>tipos de erro"| HER["Herança simples<br/>(class X(Base))"]
     Q1 -->|"não, ou varia em<br/>múltiplas dimensões"| Q2{"É UMA capacidade pontual,<br/>sem estado próprio?"}
     Q2 -->|"sim"| MIX["Mixin<br/>(herança múltipla rasa,<br/>super() cooperativo)"]
     Q2 -->|"não — carrega dados,<br/>ou 2+ eixos independentes"| COMP["Composição<br/>(tem-um, delega,<br/>troca em runtime)"]
 
-    style Q0 fill:#4A90D9,color:#fff
-    style Q1 fill:#4A90D9,color:#fff
-    style Q2 fill:#4A90D9,color:#fff
-    style HER fill:#F5A623,color:#000
-    style MIX fill:#F5A623,color:#000
-    style COMP fill:#F5A623,color:#000
+    class Q0 neutro
+    class Q1 neutro
+    class Q2 neutro
+    class HER destaque
+    class MIX destaque
+    class COMP destaque
 ```
 
 > [!question]- O GoF estava dizendo "nunca use herança"?

@@ -31,8 +31,10 @@ O paralelo é direto: a vareta do fundo é o **Mikado Goal** — a mudança gran
 O mecanismo central do método é um ciclo curto, repetido quantas vezes forem necessárias até o grafo de pré-requisitos estar completo:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["1. Escreva o<br/>Mikado Goal"] --> B["2. Tente a mudança<br/>de forma ingênua/direta"]
     B --> C["3. Observe o que QUEBRA<br/>(erros de compilação/teste)"]
     C --> D{"Quebrou<br/>algo?"}
@@ -41,13 +43,13 @@ graph TD
     F --> G["6. Ataque UM pré-requisito<br/>por vez, folha primeiro,<br/>sempre partindo do verde"]
     G --> B
     D -->|"não — compilou<br/>e passou verde"| H["Objetivo alcançado.<br/>Commit final."]
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style E fill:#F5A623,color:#000
-    style F fill:#D0021B,color:#fff
-    style G fill:#7ED321,color:#000
-    style H fill:#7ED321,color:#000
+    class A neutro
+    class B neutro
+    class C destaque
+    class E destaque
+    class F falha
+    class G destaque
+    class H destaque
 ```
 
 Passo a passo:
@@ -69,8 +71,10 @@ Passo a passo:
 Depois de algumas rodadas do ciclo, o que era uma pilha de "descobri isso, descobri aquilo" vira uma estrutura visual — o **grafo Mikado**. É uma árvore de pré-requisitos: o objetivo no topo (ou na raiz, dependendo de como você desenha), e cada nó abaixo dele é algo que precisa estar pronto antes que o nó acima possa avançar sem quebrar. As **folhas** — os nós sem filhos, sem mais pré-requisitos pendurados neles — são exatamente o que você **pode fazer agora, com segurança**, sem depender de mais nada.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph BT
+    classDef folha fill:#7ED321,color:#000
+    classDef pendente fill:#F5A623,color:#000
+    classDef objetivo fill:#D0021B,color:#fff
     L1["Extrair interface<br/>RepositorioPedido"]:::folha
     L2["Isolar helper de<br/>serialização do relatório"]:::folha
     L3["Remover uso direto<br/>de LegacyORM no job agendado"]:::folha
@@ -86,9 +90,6 @@ graph BT
     P2 --> G
     P3 --> G
 
-    classDef folha fill:#7ED321,color:#000
-    classDef pendente fill:#F5A623,color:#000
-    classDef objetivo fill:#D0021B,color:#fff
 ```
 
 O grafo acima é o retrato de três rodadas do ciclo aplicadas ao cenário de abertura: cada tentativa de tocar o objetivo revelou uma quebra, cada quebra virou um nó. As três folhas verdes (extrair a interface, isolar o helper, remover o uso direto no job) são trabalho seguro para começar amanhã de manhã — nenhuma delas depende de mais nada. Resolvidas as folhas, os nós âmbar (adaptar o serviço, migrar o job, migrar o repositório de cliente) tornam-se as novas folhas, e assim por diante, até o objetivo vermelho no topo virar alcançável — e, quando alcançado, verde.

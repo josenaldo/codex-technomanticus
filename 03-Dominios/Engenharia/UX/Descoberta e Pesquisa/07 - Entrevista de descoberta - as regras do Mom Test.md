@@ -35,17 +35,18 @@ A correção é trocar a pergunta de categoria inteira — de opinião sobre o f
 O padrão por trás da coluna da esquerda: toda pergunta pede que o entrevistado avalie uma ideia sua. O padrão da coluna da direita: toda pergunta pede que o entrevistado narre algo que já aconteceu, com detalhe concreto suficiente para ser verificável ("quando foi isso?", "o que você fez depois?", "quanto tempo levou?"). Fatos passados não têm incentivo à cortesia — já aconteceram, o entrevistado só está relatando.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q["Pergunta feita"] --> T{"Sobre o quê?"}
     T -->|"opinião sobre<br/>ideia/futuro"| R["Resposta de cortesia<br/>(o Mom Test)"]
     T -->|"fato sobre<br/>evento passado"| F["Resposta verificável"]
     R -->|"decisão tomada<br/>em cima dela"| E["Erro caro,<br/>descoberto tarde"]
     F -->|"decisão tomada<br/>em cima dela"| D["Decisão informada"]
-    style R fill:#D0021B,color:#fff
-    style E fill:#D0021B,color:#fff
-    style F fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
+    class R falha
+    class E falha
+    class F neutro
+    class D neutro
 ```
 
 **A regra em uma frase:** se a pergunta pede para o entrevistado prever, avaliar ou opinar sobre algo hipotético, ela é uma pergunta ruim disfarçada de pesquisa — troque por uma pergunta que só pede o relato de algo que já aconteceu.

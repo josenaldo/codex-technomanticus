@@ -29,8 +29,9 @@ O time do serviço de Tarefas termina o [[03-Dominios/Tecnologia/Python/Observab
 Nenhuma dessas quatro coisas é responsabilidade do `Dockerfile`. Elas são responsabilidade de quatro objetos do Kubernetes, declarados em YAML, aplicados ao cluster via `kubectl apply` (ou, na prática de produção, via um pipeline de GitOps que este galho não desenvolve). O resto desta nota percorre os quatro, nessa ordem: `Deployment` primeiro, porque é o objeto que de fato faz o Pod existir; `Service` em seguida, porque só faz sentido depois que existe algo para apontar; `ConfigMap` e `Secret` por último, porque ambos são consumidos *de dentro* do `Deployment` — a ordem de leitura reflete a ordem de dependência real entre as peças.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph CFG["Config — lida pelo Deployment"]
         CM["ConfigMap<br/>LOG_LEVEL, ENVIRONMENT"]
         SEC["Secret<br/>DATABASE_URL, OAUTH2_CLIENT_SECRET"]
@@ -53,9 +54,9 @@ flowchart TB
     SVC --> P3
     CLIENT -->|"DNS estável, IPs mudam"| SVC
 
-    style DEP fill:#4A90D9,color:#fff
-    style SVC fill:#7ED321,color:#000
-    style SEC fill:#F5A623,color:#000
+    class DEP neutro
+    class SVC destaque
+    class SEC destaque
 ```
 
 O diagrama acima já entrega a leitura inteira desta nota em uma imagem: `ConfigMap`/`Secret` alimentam o `Deployment`, o `Deployment` mantém um conjunto de Pods vivos, e o `Service` é a fachada estável — o único endereço que qualquer cliente, dentro ou fora do cluster, precisa conhecer — por trás da qual os Pods individuais podem nascer, morrer e ser substituídos sem que ninguém do lado de fora perceba.
@@ -147,7 +148,6 @@ O `spec.selector` — `app: tarefas-service` — é o elo com o `Deployment` da 
 Uma vez aplicado, esse `Service` ganha um nome DNS resolvível dentro do cluster: `tarefas-service.default.svc.cluster.local` (ou, dentro do mesmo namespace `default`, o encurtamento `tarefas-service` já basta). Esse nome não muda nunca, enquanto o objeto `Service` existir — é exatamente o mecanismo que a [[03-Dominios/Tecnologia/Python/Microservices e sistemas distribuídos/05 - Service discovery na prática|nota 05 do Galho 15]] já descreveu em profundidade, do ponto de vista do cliente Python que consome esse DNS.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant Tarefas as tarefas-service<br/>(código Python)
     participant DNS as CoreDNS

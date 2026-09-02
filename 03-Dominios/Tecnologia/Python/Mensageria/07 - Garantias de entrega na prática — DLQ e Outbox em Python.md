@@ -66,8 +66,10 @@ As duas respostas ingênuas são as duas erradas:
 A **Dead Letter Queue** é a terceira via: uma fila separada, dedicada a mensagens que falharam de forma permanente, onde elas ficam paradas — visíveis, investigáveis, sem bloquear a fila principal — até alguém (um humano, ou um job de reprocessamento) decidir o que fazer com elas.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Mensagem entregue ao consumer"] --> B{"Processamento OK?"}
     B -->|"Sim"| C["ack — sai da fila"]
     B -->|"Não, erro transitório"| D{"Tentativas < limite?"}
@@ -78,9 +80,9 @@ flowchart TD
 
     F --> G["Investigação manual<br/>ou reprocessamento dirigido"]
 
-    style C fill:#4A90D9,color:#fff
-    style F fill:#D0021B,color:#fff
-    style E fill:#F5A623,color:#000
+    class C neutro
+    class F falha
+    class E destaque
 ```
 
 **Resumo em uma frase:** DLQ não é sobre evitar a falha — é sobre garantir que uma falha permanente vire um sinal visível e investigável, em vez de um descarte silencioso ou um loop que nunca resolve nada.
@@ -218,7 +220,6 @@ Uma tabela `TaskFalhada` (o padrão manual do Celery, seção anterior) acumula 
 DLQ resolve o que fazer quando o processamento de uma mensagem que **já chegou** falha. O problema do incidente de abertura desta nota é anterior a isso — é sobre garantir que o evento **saia** de forma consistente com a mudança de negócio que o originou. A definição formal do dual-write problem, por que "banco primeiro, broker depois" e "broker primeiro, banco depois" têm as duas uma janela de falha, e por que 2PC não é a resposta em arquitetura de microsserviços já estão em [[03-Dominios/Engenharia/Comunicação entre Sistemas/4 - Comunicação assíncrona/04 - Outbox e Saga|Outbox e Saga]] — esta seção não repete nada disso, só mostra o padrão com SQLAlchemy e a `AbstractUnitOfWork` já estabelecida na [[03-Dominios/Tecnologia/Python/Arquitetura e Design Patterns/04 - Unit of Work — formalizando o padrão que já existia|nota 04 do Galho 13]].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant App as Serviço de Matrículas
     participant DB as Banco (PostgreSQL)
@@ -235,7 +236,6 @@ sequenceDiagram
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant App as Serviço de Matrículas
     participant DB as Banco (PostgreSQL)

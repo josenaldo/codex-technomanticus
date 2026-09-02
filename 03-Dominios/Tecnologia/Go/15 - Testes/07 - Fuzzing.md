@@ -70,6 +70,9 @@ Duas partes distintas, cada uma com um papel:
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["f.Add(seed1)\nf.Add(seed2)\n..."] --> B["corpus semente"]
     B --> C{"go test\n(sem -fuzz)"}
     C -->|"roda só o corpus"| D["rápido, determinístico\nentra no CI normal"]
@@ -82,9 +85,9 @@ flowchart TB
     H -->|sim| I["grava em\ntestdata/fuzz/FuzzXxx/"]
     I --> J["corpus permanente\nvira regressão"]
 
-    style E fill:#F5A623,color:#000
-    style H fill:#D0021B,color:#fff
-    style J fill:#4A90D9,color:#fff
+    class E destaque
+    class H falha
+    class J neutro
 ```
 
 O detalhe que costuma confundir: **o mesmo `FuzzXxx` roda em dois modos**, e o modo depende de como você invoca `go test`, não de nada escrito no código.

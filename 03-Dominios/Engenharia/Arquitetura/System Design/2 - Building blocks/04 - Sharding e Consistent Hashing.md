@@ -34,7 +34,6 @@ Esta nota é sobre os dois problemas — hot spots e rebalanceamento caótico �
 A nota anterior deste sub-galho tratou de [[03 - Bancos de dados em escala - SQL vs NoSQL e replicação|replicação]]: N cópias *completas* do mesmo dado, para escalar leitura e disponibilidade. Sharding ataca um problema diferente — **volume**. Quando o dataset inteiro não cabe (ou não é servido com throughput suficiente) num único nó, ele é dividido em fatias, e cada nó guarda só a sua.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     D["Dataset completo"] --> RepA["Réplica A<br/>(cópia inteira)"]
     D --> RepB["Réplica B<br/>(cópia inteira)"]
@@ -117,8 +116,9 @@ O algoritmo de atribuição é mecânico:
 3. A chave pertence ao **primeiro nó encontrado andando no sentido horário** a partir da posição da chave.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Anel["Anel de hash (0 → 2^32-1, sentido horário)"]
         N1["Nó A<br/>hash=15"]
         N2["Nó B<br/>hash=90"]
@@ -129,12 +129,12 @@ graph TD
     K2["chave Y<br/>hash=180"] -->|"primeiro nó no<br/>sentido horário"| N3
     K3["chave Z<br/>hash=250"] -->|"passa de 2^32,<br/>volta ao início"| N1
 
-    style N1 fill:#4A90D9,color:#fff
-    style N2 fill:#4A90D9,color:#fff
-    style N3 fill:#4A90D9,color:#fff
-    style K1 fill:#F5A623,color:#000
-    style K2 fill:#F5A623,color:#000
-    style K3 fill:#F5A623,color:#000
+    class N1 neutro
+    class N2 neutro
+    class N3 neutro
+    class K1 destaque
+    class K2 destaque
+    class K3 destaque
 ```
 
 Repare no comportamento de `K3`: como o anel é circular, uma chave posicionada depois do último nó "dá a volta" e cai no primeiro nó, fechando o círculo. É por isso que se chama anel, não linha.
@@ -159,7 +159,6 @@ O desenho descrito até aqui — cada nó físico ocupa **um único ponto** no a
 A solução, descrita no paper da Amazon *"Dynamo: Amazon's Highly Available Key-value Store"* (SOSP 2007), é dar a **cada nó físico múltiplos pontos no anel** — dezenas a centenas de "nós virtuais" (`node-A-1`, `node-A-2`, ..., `node-A-100`, cada um hasheado separadamente). Cada nó virtual se comporta como um nó independente para efeito do algoritmo de atribuição; o nó físico é apenas dono de vários pontos espalhados pelo anel, não um só.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
     subgraph SemVN["Sem virtual nodes"]
         A1["Nó A<br/>1 ponto"]
@@ -246,7 +245,6 @@ O padrão mais comum em produção é a **migração online em três fases**, ev
 3. **Cutover e limpeza.** Depois que o backfill termina e os dois lados estão consistentes, as leituras passam a ser servidas só pelo novo shard, e o dual-write é desligado. Os dados antigos, agora redundantes, são removidos do shard de origem.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant App as Aplicação
     participant Old as Shard antigo

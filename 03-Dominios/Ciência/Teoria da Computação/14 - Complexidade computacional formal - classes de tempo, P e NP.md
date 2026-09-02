@@ -120,12 +120,14 @@ A ideia: você talvez sufoque pra ENCONTRAR a solução, mas se um oráculo te e
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     E["Entrada do problema"] --> A{"Achar a solução?"}
     A -->|"pode ser MUITO caro<br/>(talvez exponencial)"| Sol["Solução / certificado"]
     Sol --> V{"Verificar o<br/>certificado?"}
     V -->|"SEMPRE polinomial<br/>em NP"| R["Aceita / Rejeita"]
-    style A fill:#fde2e2,stroke:#c0392b
-    style V fill:#e2f0d9,stroke:#27ae60
+    class A falha
+    class V ok
 ```
 
 **Leitura do diagrama:** os dois losangos têm custos assimétricos. À esquerda (vermelho), ACHAR a solução pode custar caríssimo. À direita (verde), VERIFICAR um certificado entregue é sempre barato (polinomial). NP é definida por essa caixa verde: o que importa é que **conferir** seja fácil. Achar é problema de outro departamento.
@@ -190,12 +192,12 @@ As duas direções juntas dizem: adivinhar-e-conferir e ramificar-e-aceitar são
 
 ```mermaid
 flowchart TB
+    classDef p fill:#e2f0d9,stroke:#27ae60,color:#000
+    classDef np fill:#fef6e0,stroke:#d4a017,color:#000
     NP(("NP<br/>verifico rápido")):::np
     P(("P<br/>resolvo rápido")):::p
     NP --- P
     P -.->|"P = NP ?"| NP
-    classDef p fill:#e2f0d9,stroke:#27ae60,color:#000
-    classDef np fill:#fef6e0,stroke:#d4a017,color:#000
 ```
 
 **Leitura do diagrama:** P está DENTRO de NP — desenhamos P como uma região contida em NP. A inclusão `P ⊆ NP` é **trivial**: se eu resolvo um problema em tempo polinomial, então eu também o VERIFICO em tempo polinomial — basta **ignorar o certificado** e resolver o problema do zero; a resposta da minha solução é a verificação. Todo problema fácil de resolver é fácil de verificar.

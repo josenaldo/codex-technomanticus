@@ -36,8 +36,9 @@ A **main thread** é onde o browser executa a maior parte do trabalho de uma pá
 Tudo isso disputa a **mesma** thread. E o modelo de agendamento é o **event loop**: existe uma fila de tarefas, e o loop pega **uma** tarefa, executa-a **até o fim** (isso se chama *run-to-completion*), e só então volta para pegar a próxima. Não há preempção: uma tarefa não é interrompida no meio para dar vez a outra.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q["Fila de tarefas"] --> L{Event loop}
     L -->|pega 1 tarefa| T[Executa até o FIM]
     T --> R{Precisa renderizar?}
@@ -45,9 +46,9 @@ graph TB
     R -->|não| L
     P --> L
     C["clique do usuário"] -.entra na fila.-> Q
-    style L fill:#4A90D9,color:#fff
-    style T fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
+    class L neutro
+    class T neutro
+    class C destaque
 ```
 
 Repare onde o clique do usuário entra: **na mesma fila**. Se uma tarefa longa de JavaScript está rodando, o clique fica esperando atrás dela — não há como "furar a fila". É exatamente aí que nasce a lentidão percebida.

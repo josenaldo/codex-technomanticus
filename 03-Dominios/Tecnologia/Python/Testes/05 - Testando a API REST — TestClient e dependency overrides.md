@@ -210,7 +210,6 @@ def test_criar_tarefa_retorna_201_com_shape_correto(client):
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Teste as test_criar_tarefa(client)
     participant TC as TestClient
@@ -373,8 +372,9 @@ def test_fluxo_completo_criar_listar_e_negar_acesso_de_outro_usuario(client):
 Este teste único cobre o que o incidente de abertura desta nota mostrou como lacuna: não é "o endpoint devolve 200 para o dono", é "o endpoint devolve **404** para quem não é dono, em GET **e** em DELETE, não só no caminho que alguém lembrou de testar manualmente". Se um refactor futuro remover a chamada à função de checagem de posse num dos quatro verbos — exatamente o incidente do cenário de abertura, onde o quarto endpoint esqueceu de chamar `_buscar_tarefa_do_usuario` — este teste **falha**, imediatamente, no CI, antes do código chegar a produção. É a diferença entre "alguém vai perceber isso no próximo pentest, se sobrar orçamento" e "o pipeline vermelho impede o merge".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Usuário A: POST /tarefas<br/>cria tarefa (id=X)"] --> B["Usuário A: GET /tarefas<br/>tarefa X aparece na lista"]
     B --> C["Troca override para Usuário B"]
     C --> D["Usuário B: GET /tarefas/X"]
@@ -386,8 +386,8 @@ flowchart TD
     I -->|"404 — correto"| F
     I -->|"204/200 — REGRESSÃO"| G
 
-    style F fill:#2d7a4a,color:#fff
-    style G fill:#D0021B,color:#fff
+    class F ok
+    class G falha
 ```
 
 > [!question]- Por que trocar o override DENTRO do teste, em vez de duas fixtures `client_a`/`client_b` separadas?

@@ -31,6 +31,8 @@ Em Go, o profiler é **parte da stdlib**. Não é um add-on — é código que r
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph HTTP["net/http/pprof — serviço vivo"]
         A["import _ \"net/http/pprof\""] --> B["endpoints em /debug/pprof/"]
         B --> C["go tool pprof http://host:port/debug/pprof/profile"]
@@ -43,9 +45,9 @@ flowchart TB
     C --> H["análise: top / list / web / flamegraph"]
     G --> H
 
-    style A fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style H fill:#F5A623,color:#000
+    class A neutro
+    class D neutro
+    class H destaque
 ```
 
 A escolha entre os dois não é sobre qual é "melhor" — é sobre **onde o código vive**. Um serviço HTTP de longa duração (uma API, um worker que fica no ar) usa `net/http/pprof`: você aponta o `go tool pprof` para uma URL, a qualquer momento, sem reiniciar nada. Um programa de vida curta — um script, um job batch, um teste de benchmark — usa `runtime/pprof`: você inicia e para a coleta explicitamente, em volta do trecho que quer medir, e o resultado vira um arquivo.

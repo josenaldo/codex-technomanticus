@@ -45,7 +45,6 @@ A leitura popular — "escolha 2 de 3" — sugere que P é uma opção como as o
 Em outras palavras: CAP não é sobre o funcionamento normal do sistema. É sobre o que ele faz **no exato momento em que a rede quebra**. No dia a dia, sem partição, C e A convivem sem drama — é aí que entra o PACELC, adiante.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Cliente as Cliente (lado A)
     participant NoA as Nó A
@@ -88,7 +87,6 @@ Daniel Abadi resolveu essa lacuna em 2012 com o **PACELC**: se há **P**artiçã
 A intuição do "Else": mesmo com a rede 100% saudável, exigir consistência forte significa esperar a confirmação de réplicas remotas antes de responder ao cliente — e essa espera custa latência, principalmente se as réplicas estão em outra região geográfica. Um sistema pode abrir mão dessa espera (responder rápido, com o valor da réplica mais próxima, potencialmente stale) ou pagar o custo (esperar o quórum, garantir que a leitura reflita a escrita mais recente).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
     Q{"Há partição<br/>de rede agora?"}
     Q -->|"Sim (P)"| CAP["Escolha:<br/>Availability × Consistency"]
@@ -124,7 +122,6 @@ Dentro de "eventual", duas garantias mais finas evitam a experiência mais confu
 - **Monotonic reads:** uma vez que você viu um valor mais novo, você nunca volta a ver um valor mais antigo numa leitura subsequente — mesmo em sistemas eventualmente consistentes, onde diferentes réplicas podem estar em pontos diferentes de propagação.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     L["Linearizável<br/>(forte)"] --> S["Sequencial"]
     S --> C["Causal"]
@@ -159,7 +156,6 @@ Se essa desigualdade vale, todo conjunto de R réplicas lidas necessariamente so
 Exemplo clássico: N=3, W=2, R=2. R+W=4 > N=3. Uma escrita confirma em 2 dos 3 nós; uma leitura consulta 2 dos 3 nós. Não importa quais 2 nós cada operação escolher — pelo menos um nó aparece nos dois conjuntos.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     subgraph "N = 3 réplicas"
         N1["Nó 1"]
@@ -187,7 +183,6 @@ Dois mecanismos completam o quadro quando um nó está temporariamente fora do q
 Esses dois mecanismos, juntos, são o motivo pelo qual sistemas como Dynamo conseguem prometer "sempre aceito uma escrita" mesmo com nós caindo — na prática, é AP levado ao extremo, com a reconciliação empurrada para depois.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 sequenceDiagram
     participant Cliente
     participant NoDono as Nó dono da chave<br/>(indisponível)
@@ -227,7 +222,6 @@ A intuição do Raft, sem entrar no detalhe formal do paper:
 3. **Segurança:** um novo líder eleito nunca sobrescreve entradas já commitadas por um líder anterior — a eleição verifica que o candidato tem o log pelo menos tão atualizado quanto a maioria antes de dar o voto.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     F1["Follower"] -->|"timeout sem líder"| C["Candidate<br/>pede votos"]
     C -->|"maioria vota nele<br/>(termo N)"| L["Leader<br/>(termo N)"]

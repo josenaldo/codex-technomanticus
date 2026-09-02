@@ -60,6 +60,8 @@ A parte que costuma surpreender quem vem de Java, Python ou JavaScript não é a
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["func"] --> B["(p Point)"]
     B --> C["Dist"]
     C --> D["()"]
@@ -71,8 +73,8 @@ flowchart LR
     D -.->|"parâmetros normais\n(nenhum aqui)"| D
     E -.->|"tipo de retorno"| E
 
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
+    class B destaque
+    class C neutro
 ```
 
 A sintaxe completa é `func (receiver Tipo) NomeDoMétodo(parâmetros) retorno { corpo }`. Três peças que valem nomear com precisão, porque a terminologia aparece o tempo todo na documentação oficial e em qualquer discussão sobre Go:
@@ -144,6 +146,8 @@ fmt.Println(boiling.ToF()) // 212
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Struct["Método em struct"]
         direction TB
         S1["type Point struct { X, Y float64 }"] --> S2["func (p Point) Dist() float64"]
@@ -153,10 +157,10 @@ flowchart TB
         N1["type Celsius float64"] --> N2["func (c Celsius) ToF() Fahrenheit"]
     end
 
-    style S1 fill:#4A90D9,color:#fff
-    style N1 fill:#4A90D9,color:#fff
-    style S2 fill:#F5A623,color:#000
-    style N2 fill:#F5A623,color:#000
+    class S1 neutro
+    class N1 neutro
+    class S2 destaque
+    class N2 destaque
 ```
 
 `Celsius` não é um struct — é um `float64` com um nome próprio. Ainda assim, `func (c Celsius) ToF() Fahrenheit` é uma declaração de método perfeitamente válida, porque a única exigência da [especificação](https://go.dev/ref/spec#Method_declarations) é que o tipo receiver seja um **tipo nomeado definido no pacote atual** — não importa se o underlying type é um struct, um `float64`, um `[]string`, ou qualquer outro tipo que possa ser nomeado com `type`.

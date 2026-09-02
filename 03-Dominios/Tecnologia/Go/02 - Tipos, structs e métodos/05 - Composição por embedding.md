@@ -83,6 +83,7 @@ Repare: o campo se chama `Logger` (o nome do tipo, sem o `*` nem o pacote `log`)
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Job["type Job struct"]
         direction TB
         F1["Command string"]
@@ -97,10 +98,10 @@ flowchart TB
     J -->|"job.Logger.Println(...)"| M1
 
     style Job fill:none,stroke:#4A90D9,stroke-width:2px
-    style F2 fill:#F5A623,color:#000
-    style M1 fill:#7ED321,color:#000
-    style M2 fill:#7ED321,color:#000
-    style M3 fill:#7ED321,color:#000
+    class F2 destaque
+    class M1 destaque
+    class M2 destaque
+    class M3 destaque
 ```
 
 ## Promoção de campos e métodos
@@ -187,6 +188,8 @@ A tentação, depois de ver `a.Autenticar()` funcionar "de graça", é concluir 
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Java["Java: extends (é-um)"]
         direction TB
         UJ["class User"] -->|"extends"| AJ["class Admin extends User"]
@@ -201,10 +204,10 @@ flowchart LR
 
     style Java fill:none,stroke:#D0021B,stroke-width:2px
     style Go fill:none,stroke:#4A90D9,stroke-width:2px
-    style UJ fill:#D0021B,color:#fff
-    style AJ fill:#D0021B,color:#fff
-    style UG fill:#4A90D9,color:#fff
-    style AG fill:#4A90D9,color:#fff
+    class UJ falha
+    class AJ falha
+    class UG neutro
+    class AG neutro
 ```
 
 Três diferenças concretas separam embedding de herança de verdade:
@@ -249,13 +252,16 @@ A regra formal, descrita na seção de [seletores da especificação](https://go
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     C0["Cachorro.Descricao()\nprofundidade 0"] -->|"vence — mais raso"| Resultado
     A1["Animal.Descricao()\nprofundidade 1 (via embedding)"] -.->|"escondido"| Resultado
     Resultado["c.Descricao() resolve pra profundidade 0"]
 
-    style C0 fill:#7ED321,color:#000
-    style A1 fill:#999,color:#fff
-    style Resultado fill:#4A90D9,color:#fff
+    class C0 destaque
+    class A1 neutro
+    class Resultado marca
 ```
 
 ## Múltiplos embeds e o "diamond problem" adiado até o acesso
@@ -291,6 +297,8 @@ Isso é exatamente o mecanismo que evita o clássico **diamond problem** de hera
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Car["type Car struct { Wheels; Engine }"]
     Car --> W["Wheels.Count — profundidade 1"]
     Car --> E["Engine.Count — profundidade 1"]
@@ -299,9 +307,9 @@ flowchart TB
     Ambig -->|"acesso direto"| Erro["erro de compilação:\nambiguous selector c.Count"]
     Ambig -.->|"nunca acessado"| OK["compila e roda normalmente"]
 
-    style Ambig fill:#D0021B,color:#fff
-    style Erro fill:#D0021B,color:#fff
-    style OK fill:#7ED321,color:#000
+    class Ambig falha
+    class Erro falha
+    class OK destaque
 ```
 
 > [!question]- Isso não é frágil — o código quebra silenciosamente se eu adicionar um novo embed depois?

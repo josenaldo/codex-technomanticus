@@ -131,7 +131,6 @@ Explica o mecanismo — o por quê. Cada conceito introduzido tem:
 
 ```mermaid
 %% Paleta semântica: azul = ok/normal, âmbar = atenção, vermelho = erro/impossível
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
     A[...] -->|...| B[...]
 ```

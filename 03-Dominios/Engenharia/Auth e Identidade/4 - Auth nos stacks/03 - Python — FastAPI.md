@@ -50,8 +50,9 @@ async def my_orders(current_user: Annotated[User, Depends(get_current_user)]):
 Não existe "registrar um middleware de auth global" — se uma rota não declara `Depends(get_current_user)`, ela simplesmente não passa por nenhuma checagem, e isso é **intencional**: torna óbvio, olhando a assinatura da função, quais rotas são protegidas e quais não são. O preço dessa explicitação é que você escreve a lógica de validação você mesmo; o ganho é que essa lógica é uma função Python testável, mockável via `app.dependency_overrides`, e componível — dependências podem depender de outras dependências, formando uma cadeia que o FastAPI resolve na ordem certa automaticamente[^di-nesting].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     R["Rota: GET /orders/me"] -->|"Depends"| CU["get_current_user(token)"]
     CU -->|"Depends"| OS["oauth2_scheme(request)"]
     OS -->|"extrai"| H["Header Authorization: Bearer ..."]
@@ -60,8 +61,8 @@ graph TD
     JWT -->|"claims válidas"| U["User"]
     JWT -->|"inválido/expirado"| ERR["HTTPException 401"]
 
-    style ERR fill:#D0021B,color:#fff
-    style U fill:#4A90D9,color:#fff
+    class ERR falha
+    class U neutro
 ```
 
 O papel de `fastapi.security` nesse desenho é bem mais estreito do que parece à primeira vista: ele não valida nada, só **descreve o formato esperado da credencial** para o OpenAPI e extrai o valor bruto do request. `OAuth2PasswordBearer(tokenUrl="token")`, por exemplo, diz ao Swagger UI "esta API espera um Bearer token, obtido via `POST /token`" e, em runtime, só faz uma coisa: ler o header `Authorization`, conferir que começa com `Bearer `, e devolver a string do token — ou lançar 401 se o header estiver ausente. Toda a validação de assinatura, expiração, claims — isso é 100% responsabilidade da dependência que você escreve em cima[^oauth2-scheme].
@@ -71,7 +72,6 @@ O papel de `fastapi.security` nesse desenho é bem mais estreito do que parece �
 Para uma API backend consumida por SPA, mobile ou outro serviço, o padrão de mercado em 2026 é: o FastAPI **não emite senha nem gerencia login por conta própria na maioria dos casos modernos** — ele delega a autenticação a um IdP (Keycloak, Auth0, Cognito) via OIDC, e seu único trabalho é **validar** o token que chega em cada request. Isso é o inverso do tutorial oficial do FastAPI (que ensina emitir e assinar seu próprio JWT com senha local, HS256, um segredo simétrico) — útil para entender o mecanismo, mas raramente o desenho de produção em 2026, porque centralizar emissão de token no seu próprio código significa reimplementar login, MFA, recovery de senha e rotação de chave — tudo que um IdP já resolve.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Client as SPA / mobile
     participant IdP as Keycloak (IdP)
@@ -174,7 +174,6 @@ Repare que a dependência resolve `token` via `Depends(oauth2_scheme)` — outra
 Quando o token não é emitido pelo próprio FastAPI, mas por um IdP externo como Keycloak, a única mudança estrutural é **de onde vem a chave pública** usada para verificar a assinatura. Em vez de um segredo simétrico (HS256) guardado nas duas pontas, o IdP assina com uma chave **assimétrica** (RS256 ou ES256) e publica a chave pública correspondente num endpoint JWKS (`/.well-known/jwks.json` ou, no Keycloak, `/realms/<realm>/protocol/openid-connect/certs`)[^skycloak-jwks].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 sequenceDiagram
     participant API as FastAPI
     participant JWKS as Keycloak /certs (JWKS)
@@ -288,8 +287,9 @@ Este é o ponto onde a conversa teórica de [[2 - OAuth 2.1 e OpenID Connect/05 
 **Estratégia 2 — denylist em Redis por `jti`.** Para revogação **imediata** (ex.: logout explícito de "sair de todos os dispositivos", ou resposta a incidente de segurança), cada JWT carrega um `jti` (JWT ID) único; ao revogar, você grava esse `jti` no Redis com TTL igual ao tempo restante até o `exp` do token — e a dependência de validação, antes de aceitar o token, checa se o `jti` está na denylist[^redis-denylist]. Isso reintroduz exatamente o lookup stateful que o JWT existia para evitar — mas é um lookup rápido (um `EXISTS` no Redis, não uma query relacional), e o TTL garante que a entrada se autolimpa quando o token expiraria de qualquer forma.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph S1["Access curto + refresh rotation"]
         A1["access_token: 5-15min"] --> A2["expira sozinho"]
         A3["refresh_token: uso único"] --> A4["reuso detectado →<br/>revoga cadeia inteira"]
@@ -299,8 +299,8 @@ graph LR
         B2 --> B3["revogação imediata,<br/>custa um lookup"]
     end
 
-    style S1 fill:#4A90D9,color:#fff
-    style S2 fill:#F5A623,color:#000
+    class S1 neutro
+    class S2 destaque
 ```
 
 Na prática, os dois não são mutuamente exclusivos: a maioria dos produtos usa access curto + refresh rotation como base, e reserva a denylist Redis para o caso raro de "preciso matar este token específico agora" (conta comprometida, usuário removido no meio de uma sessão ativa) — em vez de pagar o custo de um `EXISTS` em toda validação apenas para cobrir um cenário incomum.

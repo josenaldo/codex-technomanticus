@@ -67,14 +67,16 @@ Isso resolve o requisito — mas reintroduz, com um nome diferente, exatamente o
 A arquitetura hexagonal do Galho 13 resolveu "onde a lógica mora" (acoplamento estrutural). Este galho resolve um problema diferente: "quando a lógica roda" (acoplamento temporal). Os dois são complementares, não concorrentes — e é exatamente por isso que esta capstone não reabre nenhuma decisão do Galho 13: `AbstractNotificador`, `SlackAdapter`, `AbstractUnitOfWork`, `Tarefa` continuam exatamente como estavam. O que muda é **como** o evento "tarefa concluída" sai do processo da API e chega até quem precisa reagir a ele.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Galho 13\nArquitetura hexagonal\n(ONDE a lógica mora)"] --> B["Este galho\nMensageria\n(QUANDO a lógica roda)"]
     B --> C["Handler HTTP\nresponde em milissegundos,\nnão espera o Slack"]
 
-    style A fill:#8b6914,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#2d7a4a,color:#fff
+    class A destaque
+    class B neutro
+    class C ok
 ```
 
 ## Peça 1 — o Domain Event `TarefaConcluida` finalmente sai pro mundo
@@ -418,7 +420,6 @@ Repare que `SlackAdapter` é instanciado exatamente como na nota 07 do Galho 13 
 > Porque o problema aqui é de roteamento e desacoplamento de tempo, não de "execute isto uma vez" — o mesmo eixo de decisão que a nota 01 deste galho já formalizou. Uma task Celery seria acionada por quem publica o evento (`.delay()` chamado de algum lugar), o que reacoplaria o handler HTTP ao broker do Celery. Com aio-pika, o produtor (o worker de outbox da Peça 3) só publica numa exchange, sem saber quem — ou quantos — consumidores existem hoje. Se amanhã um segundo consumer precisar reagir ao mesmo `tarefa.concluida` (um serviço de analytics, por exemplo), ele só declara uma segunda queue com seu próprio binding na mesma exchange — sem tocar em nenhum código já existente, nem no worker que publica, nem no consumer de notificações.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Cliente as Cliente HTTP
     participant API as FastAPI (Peça 1)
@@ -484,8 +485,11 @@ Vale nomear explicitamente o que esta capstone **não** precisou: o cenário atu
 ## A arquitetura completa, todas as sete peças juntas
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Sincrono["CAMINHO SÍNCRONO — o handler HTTP nunca espera além daqui"]
         HTTP["FastAPI\nPATCH /tarefas/id/concluir"]
         SVC["concluir_tarefa()\ntarefa.concluir() gera\nTarefaConcluida (Peça 1)"]
@@ -510,10 +514,10 @@ flowchart TB
     CONSUMER -->|"sucesso: ack()"| SLACK_ADAPTER
     CONSUMER -->|"falha repetida: nack(requeue=False)"| DLQ
 
-    style Sincrono fill:#2d7a4a,color:#fff
-    style Assincrono fill:#4A90D9,color:#fff
-    style DLQ fill:#D0021B,color:#fff
-    style SLACK_ADAPTER fill:#F5A623,color:#000
+    class Sincrono ok
+    class Assincrono neutro
+    class DLQ falha
+    class SLACK_ADAPTER destaque
 ```
 
 O detalhe que resume a capstone inteira, se for preciso escolher só um: a caixa `Sincrono` do diagrama acima é exatamente do mesmo tamanho que era na capstone do Galho 13 — três linhas de handler, uma Unit of Work, um commit. Nada na arquitetura hexagonal precisou crescer para acomodar mensageria. O que cresceu foi tudo o que acontece **depois** que o handler já respondeu — e é justamente esse "depois" que estava faltando para que a API deixasse de tratar o Slack como uma dependência crítica do caminho mais importante do sistema.

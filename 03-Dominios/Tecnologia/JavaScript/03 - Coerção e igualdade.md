@@ -180,8 +180,10 @@ Dados x e y:
 Visualizando as conversões prioritárias:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     START([x == y]) --> SAMETYPE{Mesmo tipo?}
     SAMETYPE -->|sim| STRICT[Compara como ===]
     SAMETYPE -->|não| NULLCHECK{null ou undefined?}
@@ -195,12 +197,12 @@ flowchart TD
     OBJCHECK -->|sim| TOPRIM[ToPrimitive no objeto\nentão recompara]
     OBJCHECK -->|não| FALSE2([false])
 
-    style TRUE fill:#4A90D9,color:#fff
-    style FALSE fill:#D0021B,color:#fff
-    style FALSE2 fill:#D0021B,color:#fff
-    style TONUMBER1 fill:#F5A623,color:#fff
-    style TONUMBER2 fill:#F5A623,color:#fff
-    style TOPRIM fill:#F5A623,color:#fff
+    class TRUE neutro
+    class FALSE falha
+    class FALSE2 falha
+    class TONUMBER1 destaque
+    class TONUMBER2 destaque
+    class TOPRIM destaque
 ```
 
 ---

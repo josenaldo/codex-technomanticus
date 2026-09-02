@@ -33,8 +33,9 @@ O detalhe que separa o Singleton de "só uma variável global" é o **controle d
 ## A ideia, e a raiz do problema
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph oculto["Dependência ESCONDIDA (o problema)"]
         A[PedidoService] -->|chama Config.getInstance| C[Config]
     end
@@ -42,10 +43,10 @@ graph TD
         B[PedidoService] -->|recebe Config no construtor| D[Config única<br/>gerida pelo container]
     end
 
-    style A fill:#F5A623,color:#000
-    style C fill:#F5A623,color:#000
-    style B fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
+    class A destaque
+    class C destaque
+    class B neutro
+    class D neutro
 ```
 
 Repare no contraste, porque ele é o coração de toda a controvérsia. Quando `PedidoService` chama `Config.getInstance()` lá no meio de um método, ele **depende de `Config` sem declarar isso em lugar nenhum**. Quem lê a assinatura de `PedidoService` não faz ideia de que ele fala com `Config`. A dependência é real, mas **invisível** — e o que é invisível não se substitui em teste, não aparece no diagrama, não se rastreia. Guarde essa observação: é dela que saem quase todas as armadilhas lá embaixo.

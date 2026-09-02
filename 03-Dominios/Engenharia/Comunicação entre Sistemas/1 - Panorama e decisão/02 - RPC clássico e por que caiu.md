@@ -37,7 +37,6 @@ O programador que já sabia chamar uma função local — `calcularJuros(valor, 
 Essa promessa — "transparência de localização" — é o fio que conecta CORBA, DCOM, XML-RPC e, em menor grau, SOAP. E é também, como veremos, a raiz do problema que os derrubou.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     P["Problema:<br/>sistemas em<br/>máquinas diferentes"] --> I["Ideia:<br/>chamada remota<br/>parece chamada local"]
     I --> C["CORBA<br/>(1991, multi-linguagem)"]
@@ -240,7 +239,6 @@ Note o padrão: em três das quatro linhas, o motivo de queda é uma combinaçã
 Esta é a parte que mais importa para quem trabalha com sistemas reais: **"legado" não é sinônimo de "morto"**. Reconhecer os lugares onde essas tecnologias seguem vivas evita dois erros opostos — tratá-las como curiosidade histórica inútil, ou tentar "modernizar" algo que está funcionando bem exatamente como é.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
     RPC["RPC clássico"] --> B["Bancos e pagamentos"]
     RPC --> S["Saúde (EDI X12)"]

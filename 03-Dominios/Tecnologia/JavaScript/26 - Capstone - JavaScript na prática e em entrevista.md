@@ -29,7 +29,6 @@ Este capstone não é um resumo. É o mapa que conecta os pontos — o modelo me
 JavaScript tem quatro características que definem *tudo* sobre como a linguagem se comporta. Entender as quatro — e como elas interagem — é o núcleo do que um sênior sabe que um júnior ainda está construindo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 mindmap
   root((JavaScript))
     Dinâmica
@@ -305,8 +304,10 @@ Estas frases são construídas para entrevistas técnicas em inglês — naturai
 ## Mapa mental da trilha
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#F5A623", "tertiaryColor": "#e8f4f8"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     JS[("JavaScript\nCore")]
 
     JS --> FND["🔵 Fundação\n(Iniciado)"]
@@ -348,10 +349,10 @@ graph TD
     F4 -.-> M1
     F6 -.-> M2
 
-    style JS fill:#4A90D9,color:#fff
-    style FND fill:#4A90D9,color:#fff
-    style MEC fill:#F5A623,color:#fff
-    style PRD fill:#D0021B,color:#fff
+    class JS neutro
+    class FND neutro
+    class MEC destaque
+    class PRD falha
 ```
 
 ---

@@ -131,6 +131,8 @@ Depois de `MaxTentativas` falhas, insistir não é mais resiliência — é ruí
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     P["Producer"] --> Q["Fila principal"]
     Q --> C["Consumer"]
     C -->|"sucesso"| Ack["ACK — remove da fila"]
@@ -139,8 +141,8 @@ flowchart LR
     C -->|"falha, tentativa = N"| DLQ["Dead Letter Queue"]
     DLQ --> Op["Operador investiga\n(alerta, replay manual)"]
 
-    style DLQ fill:#D0021B,color:#fff
-    style Q fill:#4A90D9,color:#fff
+    class DLQ falha
+    class Q neutro
 ```
 
 Kafka e NATS JetStream oferecem esse mecanismo de formas distintas, e a diferença vale entender porque muda o que o consumer precisa fazer manualmente:
@@ -255,12 +257,13 @@ Em Go, a ferramenta mais direta para backpressure dentro do processo é o **work
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q["Fila / broker"] -->|"Fetch()"| CH["chan Message\n(buffer=100)"]
     CH --> W1["worker 1"]
     CH --> W2["worker 2"]
     CH --> W3["worker 3"]
 
-    style CH fill:#F5A623,color:#000
+    class CH destaque
 ```
 
 ```go

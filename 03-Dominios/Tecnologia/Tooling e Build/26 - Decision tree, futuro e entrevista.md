@@ -41,7 +41,6 @@ A tese central que um sênior precisa articular:
 O diagrama abaixo responde a pergunta "por onde começar" dado o tipo de projeto. Não é prescritivo no nível de configuração — é a árvore de entrada para chegar à ferramenta certa antes de ler a doc.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#1a1a1a", "primaryBorderColor": "#2E6DA4", "lineColor": "#555", "secondaryColor": "#FFF9E6", "tertiaryColor": "#F0FAF0"}}}%%
 flowchart TD
     Start(["Novo projeto\n— por onde começar?"])
 
@@ -110,7 +109,6 @@ flowchart TD
 ### 3.1 Linha do tempo consolidada
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 timeline
     title Marcos do tooling JS/TS — 2023→2026
     2023 : Bun 1.0 GA — runtime all-in-one (set/2023)
@@ -484,7 +482,6 @@ Para revisar antes de uma call: leia o TL;DR de cada nota, começando pelas nota
 | 26 — esta nota | Decision tree; futuro do ecossistema; bloco de entrevista | ⭐⭐⭐ |
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#1a1a1a"}}}%%
 flowchart LR
     subgraph Iniciado["🟢 Iniciado (01–09)"]
         direction TB
@@ -614,7 +611,6 @@ Referência: [[23 - Build em produção, CI e determinismo]].
 A resposta sênior não é "trocar o `webpack.config.js` por `vite.config.ts`". É um processo em etapas que minimiza risco:
 
 ```mermaid
-%%{init: {"theme": "base"}}%%
 flowchart TD
     A["Auditoria inicial\n(plugins, loaders, Module Federation?)"]
     A --> B{"Tem Module\nFederation?"}

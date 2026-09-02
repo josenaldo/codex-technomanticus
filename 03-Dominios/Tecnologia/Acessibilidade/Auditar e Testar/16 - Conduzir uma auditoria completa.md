@@ -23,15 +23,16 @@ Este é o capstone do SG3: você tem as ferramentas automáticas e o roteiro man
 ## O método em cinco passos
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     E["1. Escopo<br/>telas, fluxos, régua"] --> A["2. Automático<br/>axe / Lighthouse"]
     A --> M["3. Manual<br/>teclado · leitor · zoom"]
     M --> P["4. Priorizar<br/>severidade × esforço"]
     P --> R["5. Relatar<br/>acionável, por critério"]
-    style E fill:#4A90D9,color:#fff
-    style P fill:#F5A623,color:#000
-    style R fill:#4A90D9,color:#fff
+    class E neutro
+    class P destaque
+    class R neutro
 ```
 
 ### Passo 1 — Escopo

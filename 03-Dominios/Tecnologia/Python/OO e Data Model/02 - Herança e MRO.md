@@ -174,6 +174,9 @@ O cenário clássico: duas classes (`B`, `C`) herdam de uma base comum (`A`); um
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Animal<br/>define alimentar()"]
     B["Nadador<br/>sobrescreve alimentar()"]
     C["Voador<br/>sobrescreve alimentar()"]
@@ -184,10 +187,10 @@ flowchart TB
     B --> D
     C --> D
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#F5A623,color:#000
-    style D fill:#D0021B,color:#fff
+    class A neutro
+    class B destaque
+    class C destaque
+    class D falha
 ```
 
 Em linguagens que proíbem herança múltipla de classes concretas (Java, C#), esse diagrama simplesmente **não pode ser desenhado** — o compilador rejeita `class Pato extends Nadador, Voador`. Em C++, que permite (com `virtual inheritance` como paliativo), o diamond problem é uma fonte histórica de bugs e complexidade. Python permite o diagrama, mas resolve a ambiguidade de forma **determinística e visível**: chamar `Pato().alimentar()` sempre produz o mesmo resultado, e esse resultado pode ser consultado antes mesmo de rodar o código, inspecionando a MRO da classe.
@@ -257,16 +260,19 @@ print(NotificacaoCritica.mro())
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     N["NotificacaoCritica"] --> L["Logavel"]
     L --> Au["Auditavel"]
     Au --> R["Registravel"]
     R --> O["object"]
 
-    style N fill:#D0021B,color:#fff
-    style L fill:#F5A623,color:#000
-    style Au fill:#F5A623,color:#000
-    style R fill:#4A90D9,color:#fff
-    style O fill:#4A90D9,color:#fff
+    class N falha
+    class L destaque
+    class Au destaque
+    class R neutro
+    class O neutro
 ```
 
 A MRO explica o resultado do bug de abertura sem margem para dúvida: `NotificacaoCritica().registrar(...)` busca `registrar` seguindo essa sequência exata — encontra em `Logavel` (o segundo item, logo depois da própria classe) e **para ali**, nunca chegando a `Auditavel`. Não é sorte, não é ordem de definição no arquivo — é a ordem declarada em `class NotificacaoCritica(Logavel, Auditavel)`, propagada pelo C3 linearization.

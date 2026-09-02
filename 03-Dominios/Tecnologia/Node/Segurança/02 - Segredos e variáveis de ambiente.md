@@ -25,6 +25,9 @@ aliases:
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph DEV ["Desenvolvimento local"]
         ENV[".env\n(gitignored)"]
         NODEENV["node --env-file=.env"]
@@ -52,10 +55,10 @@ flowchart LR
     SM --> APP
     APP --> ZOD
 
-    style ENV fill:#F5A623,color:#000
-    style SM fill:#4A90D9,color:#fff
-    style ZOD fill:#4A90D9,color:#fff
-    style AUDIT fill:#D0021B,color:#fff
+    class ENV destaque
+    class SM neutro
+    class ZOD neutro
+    class AUDIT falha
 ```
 
 ## O que é

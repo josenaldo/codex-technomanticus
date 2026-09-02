@@ -53,14 +53,16 @@ fmt.Println(contagem) // map[cachorro:1 gato:2]
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["map"] --> B["[string]"]
     B --> C["int"]
 
     B -.->|"tipo da chave\n(precisa ser comparável)"| B
     C -.->|"tipo do valor\n(qualquer tipo)"| C
 
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
+    class B destaque
+    class C neutro
 ```
 
 `map[K]V` declara um tipo map: `K` é o tipo da chave, `V` é o tipo do valor. Ao contrário do array (`[N]T`, tamanho fixo no tipo) e do slice (`[]T`, tamanho variável mas indexado só por posição), o map não carrega tamanho no tipo — cresce e encolhe dinamicamente conforme chaves são inseridas e removidas, exatamente como um slice.
@@ -105,12 +107,14 @@ fmt.Println(v, ok) // 0 true — chave presente, valor zero legítimo
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["v, ok := m[k]"] --> B{"chave k existe\nno map?"}
     B -->|"sim"| C["v = valor associado\nok = true"]
     B -->|"não"| D["v = valor zero de V\nok = false"]
 
-    style C fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
+    class C neutro
+    class D destaque
 ```
 
 > [!warning] Esquecer o comma-ok quando zero é ambíguo
@@ -213,6 +217,7 @@ func main() {
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Stack
         O["original"]
         C["copia"]
@@ -223,7 +228,7 @@ flowchart TB
     O --> T
     C --> T
 
-    style T fill:#4A90D9,color:#fff
+    class T neutro
 ```
 
 Não existe `original :=` versus `original :=` — `original` e `copia` são duas variáveis distintas, mas ambas guardam o mesmo ponteiro interno para a mesma tabela. Mudar o conteúdo através de uma é visível através da outra. Isso é útil (evita cópia cara de tabelas grandes a cada chamada de função) mas surpreende quem espera semântica de valor — o mesmo alerta que já apareceu para slices, agora repetido para maps porque o mecanismo interno é análogo.

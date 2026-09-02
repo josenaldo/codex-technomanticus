@@ -25,6 +25,9 @@ aliases:
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     BEGIN["BEGIN\n(transação iniciada)"]
     OPS["Operações\n(INSERT · UPDATE · SELECT FOR UPDATE)"]
     ERR{"Erro?"}
@@ -44,10 +47,10 @@ flowchart TD
         MM["typeorm QueryRunner\nsequelize startUnmanagedTransaction()"]
     end
 
-    style BEGIN fill:#4A90D9,color:#fff
-    style COMMIT fill:#4A90D9,color:#fff
-    style ROLLBACK fill:#D0021B,color:#fff
-    style OPS fill:#F5A623,color:#000
+    class BEGIN neutro
+    class COMMIT neutro
+    class ROLLBACK falha
+    class OPS destaque
 ```
 
 ## Como funciona

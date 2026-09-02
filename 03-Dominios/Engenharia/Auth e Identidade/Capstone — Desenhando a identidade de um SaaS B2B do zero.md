@@ -34,16 +34,18 @@ publish: true
 Três pessoas fundam o Órbita. Mês 1: MVP para os primeiros dez times beta, todos startups pequenas pagando com cartão de crédito. Mês 8: o primeiro cliente de porte médio assina, mas o time de TI dele manda um questionário de segurança perguntando se o produto suporta SSO. Mês 14: um cliente enterprise de 2.000 funcionários assina um contrato de seis dígitos — com uma cláusula que exige SCIM. Esse arco — de "só precisamos logar alguém" até "identidade como requisito contratual" — é a espinha deste capítulo, e é também, quase sempre, a ordem real em que qualquer B2B SaaS enfrenta essas decisões. Comece pela primeira.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Mês 1: MVP<br/>10 times beta"] --> B["Mês 3: primeiros<br/>100 usuários"]
     B --> C["Mês 8: 1º cliente<br/>pede SSO"]
     C --> D["Mês 14: cliente<br/>enterprise exige SCIM"]
     D --> E["Mês 18+: multi-org,<br/>permissões por recurso"]
 
-    style A fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#D0021B,color:#fff
+    class A neutro
+    class C destaque
+    class D falha
 ```
 
 ## Decisão 1 — Build vs buy do Authorization Server
@@ -80,18 +82,18 @@ O Órbita tem três superfícies: o **app web** (dashboard principal, renderizad
 O problema aparece quando o dashboard do Órbita é uma SPA. Guardar o `access_token` em `localStorage` é acessível a qualquer script rodando na página — incluindo uma dependência de terceiros comprometida. A resposta que o mercado consolidou em 2026 é o **padrão BFF (Backend for Frontend)**: um backend fino, dedicado ao frontend, que conduz o fluxo OAuth inteiro, guarda os tokens no lado do servidor, e devolve ao browser só um cookie de sessão `HttpOnly`/`Secure`/`SameSite`[^bff-2026]. O IETF recomenda esse desenho explicitamente como a forma preferida de proteger SPAs modernas — o token nunca toca o JavaScript da página, então XSS não consegue roubá-lo diretamente[^bff-ietf]. [[2 - OAuth 2.1 e OpenID Connect/05 - Tokens em produção|A nota sobre tokens em produção]] detalha esse padrão e onde ele se encaixa ao lado de refresh rotation.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q{"Que tipo de<br/>cliente é?"}
     Q -->|"Web tradicional<br/>(server-rendered)"| S["Sessão + cookie<br/>HttpOnly"]
     Q -->|"SPA (React/Vue)"| BFF["BFF: OAuth no<br/>servidor + cookie<br/>de sessão pro browser"]
     Q -->|"Mobile / desktop"| M["Authorization Code<br/>+ PKCE direto,<br/>token em secure storage do SO"]
     Q -->|"API pública<br/>third-party"| API["Client credentials<br/>ou OAuth c/ escopo<br/>por integração"]
 
-    style S fill:#4A90D9,color:#fff
-    style BFF fill:#4A90D9,color:#fff
-    style M fill:#4A90D9,color:#fff
-    style API fill:#4A90D9,color:#fff
+    class S neutro
+    class BFF neutro
+    class M neutro
+    class API neutro
 ```
 
 O Órbita decide: dashboard web = sessão server-side clássica no MVP (mais simples de operar com o time pequeno); quando a SPA React chegar (planejada para o mês 6, por causa de uma feature de colaboração em tempo real), o dashboard migra para o padrão BFF, reaproveitando o mesmo Authorization Server; o app mobile, quando existir, usa Authorization Code + PKCE nativo com o token guardado no keychain/keystore do sistema operacional — nunca em `localStorage` equivalente.
@@ -135,16 +137,16 @@ Autenticado não é autorizado. Resolvido *quem* é o usuário, falta decidir *o
 [[3 - Autorização e multi-tenancy/01 - RBAC, ABAC e ReBAC — os três modelos|O modelo consolidado em 2026]] para B2B SaaS é híbrido: **RBAC para políticas grosseiras** (papéis como owner, admin, membro dentro de uma organização) e **ReBAC para permissões no nível do recurso** (quem pode editar *este* projeto específico, quem pode ver *este* board específico)[^rbac-rebac-hybrid]. O ponto chave que evita confusão: RBAC no Órbita opera *dentro* dos limites de cada organização, não globalmente — o mesmo usuário pode ser *owner* na organização A e *membro* somente-leitura na organização B, sem conflito, porque o papel é avaliado no contexto de qual organização o usuário está operando no momento[^rbac-context].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     U["Usuário Maria"] -->|"owner"| OrgA["Organização A<br/>(Acme Corp)"]
     U -->|"membro read-only"| OrgB["Organização B<br/>(Beta Inc)"]
     OrgA --> P1["Projeto Foguete<br/>(edit)"]
     OrgA --> P2["Projeto Satélite<br/>(edit, via role owner)"]
     OrgB --> P3["Projeto Órbita<br/>(view only)"]
 
-    style OrgA fill:#4A90D9,color:#fff
-    style OrgB fill:#4A90D9,color:#fff
+    class OrgA neutro
+    class OrgB neutro
 ```
 
 Quando a base de clientes cresce e aparecem casos como "compartilhar este documento específico com um usuário externo à organização, sem dar acesso a mais nada", RBAC sozinho não modela isso bem — é o momento de olhar para **fine-grained authorization** no estilo Zanzibar (o paper do Google que originou o padrão): tuplas objeto-relação-usuário, avaliadas via um serviço dedicado como OpenFGA, SpiceDB ou Ory Keto[[3 - Autorização e multi-tenancy/02 - Fine-grained authorization — Zanzibar e policy-as-code|aprofundado aqui]]. O corte de organização como fronteira de identidade — convites, membership, isolamento — é o assunto de [[3 - Autorização e multi-tenancy/03 - Multi-tenancy e organizações|multi-tenancy e organizações]], e como esses claims chegam ao token e são checados no gateway ou no serviço é [[3 - Autorização e multi-tenancy/04 - Autorização de API na prática|autorização de API na prática]].
@@ -170,8 +172,9 @@ O Órbita precisa de uma política de recuperação que não reintroduza os prob
 Depois das oito decisões, a arquitetura de identidade do Órbita fica assim:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Browser["Navegador"]
         SPA["Dashboard React (SPA)"]
     end
@@ -209,10 +212,10 @@ graph TB
     API -->|"6. checa RBAC"| RBAC
     API -->|"7. checa ReBAC<br/>por recurso"| ReBAC
 
-    style Realm fill:#4A90D9,color:#fff
-    style BFF fill:#4A90D9,color:#fff
-    style CustomerIdP fill:#F5A623,color:#000
-    style API fill:#4A90D9,color:#fff
+    class Realm neutro
+    class BFF neutro
+    class CustomerIdP destaque
+    class API neutro
 ```
 
 ## Tabela de decisões

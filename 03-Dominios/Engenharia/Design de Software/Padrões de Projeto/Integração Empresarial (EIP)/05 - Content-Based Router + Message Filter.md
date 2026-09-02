@@ -34,17 +34,18 @@ O Content-Based Router resolve pondo um **filtro-decisor** no meio: ele inspecio
 ## A ideia: uma entrada, uma de N saídas
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     IN["pedido"] --> R{{"Content-Based Router<br/>olha pedido.tipo"}}
     R -->|"internacional"| A["fila alfândega"]
     R -->|"prioritário"| B["fila expressa"]
     R -->|"comum"| C["fila padrão"]
 
-    style R fill:#4A90D9,color:#fff
-    style A fill:#F5A623,color:#000
-    style B fill:#F5A623,color:#000
-    style C fill:#F5A623,color:#000
+    class R neutro
+    class A destaque
+    class B destaque
+    class C destaque
 ```
 
 O router examina o conteúdo e escolhe **exatamente um** destino. Repare que ele **não transforma** a mensagem (isso é [[08 - Message Translator + Normalizer|Translator]]) nem a duplica para vários (isso é [[07 - Recipient List + Scatter-Gather + Resequencer|Recipient List]]) — ele só **decide o caminho**. Em Camel: `from("pedidos").choice().when(header("tipo").isEqualTo("intl")).to("alfandega")...`.

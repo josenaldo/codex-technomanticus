@@ -109,6 +109,9 @@ const useCase = container.resolve(CreateUserUseCase);
 
 ```mermaid
 flowchart LR
+    classDef blue fill:#4A90D9,color:#fff,stroke:#4A90D9
+    classDef amber fill:#F5A623,color:#fff,stroke:#F5A623
+    classDef red fill:#D0021B,color:#fff,stroke:#D0021B
     small["App pequeno\n< 20 services\ndependências rasas"]:::blue
     medium["App médio\n20-80 services\nalgunos scopes"]:::amber
     large["App grande\n80+ services\nmúltiplos scopes\nmodular loading"]:::red
@@ -117,9 +120,6 @@ flowchart LR
     medium --> factory["Factory por feature\n+ manual root"]:::amber
     large --> container["Container de DI\nawilix · NestJS · tsyringe"]:::red
 
-    classDef blue fill:#4A90D9,color:#fff,stroke:#4A90D9
-    classDef amber fill:#F5A623,color:#fff,stroke:#F5A623
-    classDef red fill:#D0021B,color:#fff,stroke:#D0021B
 ```
 
 ## Casos práticos

@@ -133,12 +133,13 @@ Três pacotes da biblioteca padrão (`net/http`, `compress/gzip`, `encoding/json
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["*os.File\n(arquivo)"] -->|"satisfaz io.Reader"| D["Contar(r io.Reader)"]
     B["strings.Reader\n(string em memória)"] -->|"satisfaz io.Reader"| D
     C["http.Response.Body\n(socket HTTP)"] -->|"satisfaz io.Reader"| D
     E["bytes.Reader\n(buffer de bytes)"] -->|"satisfaz io.Reader"| D
 
-    style D fill:#4A90D9,color:#fff
+    class D neutro
 ```
 
 ## A frase de Rob Pike, e por que ela é literal

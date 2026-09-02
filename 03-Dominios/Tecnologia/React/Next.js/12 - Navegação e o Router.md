@@ -32,7 +32,6 @@ Mas "navegar sem recarregar" não é magia — é um conjunto de primitivas bem 
 O termo técnico para "trocar de rota sem reload completo" é **soft navigation**. Seu oposto, **hard navigation**, é o modelo tradicional da web: `<a href>` nativo, `location.href = ...`, ou `window.location.replace(...)`.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 flowchart LR
     subgraph Soft["🟢 Soft Navigation (padrão Next.js)"]
         direction TB

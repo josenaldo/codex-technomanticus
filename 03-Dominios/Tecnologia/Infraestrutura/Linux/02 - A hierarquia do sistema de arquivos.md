@@ -82,7 +82,6 @@ Tamanho **zero** — e mesmo assim tem conteúdo. Não há contradição: `/proc
 Isso explica por que quase toda ferramenta de diagnóstico do Linux é, no fundo, um leitor de `/proc` com formatação bonita. `ps`, `top`, `free`, `uptime`, `lsof` — todas buscam ali.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
     K["<b>kernel</b><br/>estado real"] --> P["<b>/proc</b><br/>processos e sistema"]
     K --> S["<b>/sys</b><br/>dispositivos, drivers,<br/>cgroups"]

@@ -31,15 +31,17 @@ O corpo de pesquisa mais citado sobre isso é da **Nielsen Norman Group**, conso
 6. **Marque os campos opcionais**, não os obrigatórios — na maioria dos formulários reais, a maior parte dos campos é obrigatória. Marcar cada um dos obrigatórios com asterisco produz uma tela poluída de símbolos repetidos; marcar só os poucos campos opcionais como "(opcional)" comunica a mesma informação com menos ruído visual.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Usuário termina<br/>de digitar um campo"] -->|"evento blur"| B["Validar agora"]
     B -->|"válido"| C["Sem interrupção,<br/>segue pro próximo campo"]
     B -->|"inválido"| D["Mensagem específica<br/>e acionável, junto ao campo"]
     E["Cada tecla digitada"] -.->|"NÃO validar aqui<br/>(interrompe o raciocínio)"| F["Anti-padrão"]
-    style C fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
-    style F fill:#D0021B,color:#fff
+    class C neutro
+    class D destaque
+    class F falha
 ```
 
 **O mecanismo em uma frase:** cada um desses seis princípios existe para reduzir uma decisão ou movimento desnecessário do usuário — coluna única elimina decisão de leitura, label acima elimina movimento ocular, validação no blur elimina interrupção prematura — a soma é o que a pesquisa chama de menor **carga cognitiva**.

@@ -27,6 +27,8 @@ Isso é exatamente o código que a comunidade Go escreveu tantas vezes que a equ
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Manual["Sem errgroup"]
         direction TB
         M1["WaitGroup.Add(3)"] --> M2["3 goroutines"]
@@ -40,8 +42,8 @@ flowchart TB
         E2 --> E3["g.Wait() retorna\no 1º erro, ctx já cancelado"]
     end
 
-    style E1 fill:#4A90D9,color:#fff
-    style E3 fill:#F5A623,color:#000
+    class E1 neutro
+    class E3 destaque
 ```
 
 ## errgroup na prática
@@ -142,6 +144,8 @@ Outra forma comum do mesmo princípio é o **worker pool**: N goroutines fixas l
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Jobs["canal de jobs\n(buffered)"] --> W1["worker 1"]
     Jobs --> W2["worker 2"]
     Jobs --> W3["worker 3"]
@@ -149,8 +153,8 @@ flowchart LR
     W2 --> Results
     W3 --> Results
 
-    style Jobs fill:#4A90D9,color:#fff
-    style Results fill:#F5A623,color:#000
+    class Jobs neutro
+    class Results destaque
 ```
 
 ```go
@@ -189,6 +193,7 @@ Um **pipeline** encadeia estágios de processamento via canais: o estágio A pro
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Gen["gerar()\nproduz números"] -->|chan int| Sq["quadrado()\neleva ao quadrado"]
     Sq -->|chan int| Filter["filtrar()\nsó pares"]
     Filter -->|chan int| Main["main()\nconsome"]
@@ -197,7 +202,7 @@ flowchart LR
     Ctx -.-> Sq
     Ctx -.-> Filter
 
-    style Ctx fill:#D0021B,color:#fff
+    class Ctx falha
 ```
 
 O problema que o pipeline "ingênuo" (sem cancelamento) tem: se o consumidor final (`main`) parar de ler antes do produtor terminar de gerar — porque achou o que precisava, ou porque algo deu errado adiante — o estágio gerador fica bloqueado para sempre tentando escrever num canal que ninguém mais lê. Isso é uma **goroutine leak**: a goroutine nunca termina, nunca é coletada pelo GC (ela está "viva", só presa em `send` bloqueado), e o processo acumula uma a cada pipeline abandonado.

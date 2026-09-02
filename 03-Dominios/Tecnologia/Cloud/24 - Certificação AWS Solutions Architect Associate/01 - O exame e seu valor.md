@@ -132,6 +132,10 @@ A AWS organiza suas certificações em quatro níveis, e entender essa escada aj
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     F["Foundational<br/>AWS Certified Cloud Practitioner (CLF-C02)<br/>sem pré-requisito"]
     F --> A1["Associate<br/>Solutions Architect (SAA-C03)"]
     F --> A2["Associate<br/>Developer (DVA-C02)"]
@@ -140,13 +144,13 @@ flowchart TB
     A2 --> P2["Professional<br/>DevOps Engineer (DOP-C02)"]
     A1 -.-> Sp["Specialty<br/>(Security, ML, Networking, Data...)"]
 
-    style F fill:#e8f4f8
-    style A1 fill:#fff3cd
-    style A2 fill:#f8f9fa
-    style A3 fill:#f8f9fa
-    style P1 fill:#f8d7da
-    style P2 fill:#f8f9fa
-    style Sp fill:#f8f9fa
+    class F neutro
+    class A1 destaque
+    class A2 marca
+    class A3 marca
+    class P1 falha
+    class P2 marca
+    class Sp marca
 ```
 
 Nenhum desses níveis exige o anterior como pré-requisito formal — você pode, tecnicamente, sentar direto na prova Professional sem nunca ter tirado a Associate. Mas isso é raro e pouco recomendável: o SAA-C03 cobre o vocabulário e os padrões de decisão que a prova Professional (SAP-C02) assume como dados, só que aprofundados e combinados em cenários mais complexos, multi-conta, multi-região. Fazer o SAA primeiro não é burocracia, é sequenciamento pedagógico sensato — o mesmo princípio que estrutura esta trilha inteira, galho por galho.

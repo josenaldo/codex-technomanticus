@@ -64,18 +64,17 @@ Por dentro, o HOC cria um novo componente que:
 3. Repassa `ref` e estáticos quando necessário
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph TD
+    classDef normal fill:#4A90D9,color:#fff,stroke:#3a7bc8
+    classDef decision fill:#F5A623,color:#fff,stroke:#d4901f
+    classDef warning fill:#F5A623,color:#fff,stroke:#d4901f
+    classDef success fill:#7ED321,color:#fff,stroke:#6ab81c
     APP["App / Router"]:::normal --> HOC["withAuth(Dashboard)"]:::normal
     HOC --> |"verifica user, isLoading"| GATE{Autenticado?}:::decision
     GATE -- Não --> NAV["&lt;Navigate to='/login' /&gt;"]:::warning
     GATE -- Carregando --> SPIN["&lt;LoadingScreen /&gt;"]:::warning
     GATE -- Sim --> DASH["&lt;Dashboard user=&#123;user&#125; /&gt;"]:::success
 
-    classDef normal fill:#4A90D9,color:#fff,stroke:#3a7bc8
-    classDef decision fill:#F5A623,color:#fff,stroke:#d4901f
-    classDef warning fill:#F5A623,color:#fff,stroke:#d4901f
-    classDef success fill:#7ED321,color:#fff,stroke:#6ab81c
 ```
 
 ## Convenções obrigatórias
@@ -243,8 +242,11 @@ withRouter(
 No DevTools, isso vira quatro camadas de componentes aninhados para chegar no `Dashboard`. Debugging de qualquer prop ou comportamento exige navegar por quatro níveis. Hooks compostos são chamadas no mesmo componente — árvore plana, zero wrapper.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef normal fill:#4A90D9,color:#fff,stroke:#3a7bc8
+    classDef warning fill:#F5A623,color:#fff,stroke:#d4901f
+    classDef success fill:#7ED321,color:#fff,stroke:#6ab81c
+    classDef hook fill:#9B59B6,color:#fff,stroke:#7d3f9a
     subgraph HOC["Abordagem HOC — wrapper hell"]
       WR["withRouter"]:::warning --> WT["withTheme"]:::warning
       WT --> WA["withAuth"]:::warning
@@ -259,10 +261,6 @@ graph TD
       DASH2 --> H4["useLogging()"]:::hook
     end
 
-    classDef normal fill:#4A90D9,color:#fff,stroke:#3a7bc8
-    classDef warning fill:#F5A623,color:#fff,stroke:#d4901f
-    classDef success fill:#7ED321,color:#fff,stroke:#6ab81c
-    classDef hook fill:#9B59B6,color:#fff,stroke:#7d3f9a
 ```
 
 ### Colisão silenciosa de props

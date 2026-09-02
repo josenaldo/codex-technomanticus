@@ -105,7 +105,6 @@ Cada peça do decorator resolve uma pergunta específica:
 - **`reraise=True`** — quando as três tentativas se esgotam, `tenacity` levanta a **última exceção original** (`httpx.TimeoutException`, `httpx.HTTPStatusError`, o que tiver sido) em vez de embrulhá-la numa `RetryError` genérica própria da biblioteca. Isso importa porque o código que chama `notificar_tarefa_concluida` — e, adiante nesta nota, o circuit breaker que vai envolver essa chamada — precisa reconhecer o tipo real da exceção para decidir o que fazer a seguir.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant W as Worker de Tarefas
     participant N as notificacoes-service
@@ -208,7 +207,6 @@ breaker_notificacoes.fail_counter   # falhas consecutivas na janela atual
 > O pacote [`circuitbreaker`](https://github.com/fabfuel/circuitbreaker) (de Fabian Fuelling) cobre o mesmo caso de uso com uma API ainda mais enxuta — um único decorator `@circuit(failure_threshold=5, recovery_timeout=30, expected_exception=httpx.HTTPStatusError)`, sem objeto `CircuitBreaker` explícito para instanciar à parte. É uma escolha razoável quando o projeto quer só o comportamento básico dos três estados, sem os hooks de listener e sem o controle mais fino de `exclude`/`state_storage` que `pybreaker` oferece. Esta nota usa `pybreaker` como principal por ele expor os estados explicitamente (útil para health checks) e por ser a biblioteca mais citada em produção Python — mas a decisão entre os dois raramente é crítica; o padrão que importa é o mesmo nos dois.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 stateDiagram-v2
     [*] --> Closed
     Closed --> Open: 5 falhas consecutivas<br/>(fail_max=5)<br/>excluindo 4xx
@@ -275,7 +273,6 @@ A leitura dos decorators é de baixo para cima: `@retry` decora a função origi
 3. Quando o circuito está **aberto**, `pybreaker` nem chega a invocar a função decorada por `@retry` — ele levanta `CircuitBreakerError` na hora, e o retry interno nunca roda. É essa a vantagem concreta de "breaker por fora": um circuito aberto barra até a primeira tentativa, sem gastar nenhum orçamento de retry num serviço que o próprio breaker já sabe que está fora do ar.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant W as Worker de Tarefas
     participant B as pybreaker (CLOSED)

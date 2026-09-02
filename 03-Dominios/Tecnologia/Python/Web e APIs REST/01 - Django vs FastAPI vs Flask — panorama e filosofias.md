@@ -218,8 +218,9 @@ Três observações saltam desse comparativo lado a lado, cada uma apontando par
 ## Árvore de decisão
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Start[Novo serviço Python<br/>exposto como API] --> Q1{Precisa de admin<br/>ou CRUD interno pronto<br/>de fábrica?}
 
     Q1 -->|Sim| Q2{Time já conhece<br/>Django/DRF?}
@@ -231,12 +232,12 @@ graph TD
     Q3 -->|Sim| FastAPI[FastAPI<br/>ASGI nativo, Pydantic,<br/>docs OpenAPI de graça]
     Q3 -->|Não — serviço pequeno,<br/>controle total desejado| Flask[Flask<br/>microframework,<br/>você monta o resto]
 
-    style Django fill:#4A90D9,color:#fff
-    style FastAPI fill:#4A90D9,color:#fff
-    style Flask fill:#4A90D9,color:#fff
-    style Q1 fill:#F5A623,color:#000
-    style Q2 fill:#F5A623,color:#000
-    style Q3 fill:#F5A623,color:#000
+    class Django neutro
+    class FastAPI neutro
+    class Flask neutro
+    class Q1 destaque
+    class Q2 destaque
+    class Q3 destaque
 ```
 
 Essa árvore é uma simplificação didática — na prática, os eixos não são binários e frequentemente se combinam (um projeto pode ter admin pesado **e** precisar de I/O concorrente, e nesse caso a resposta comum de mercado é Django + Celery/async tasks, ou até dois serviços separados). Mas ela captura a primeira pergunta que vale fazer antes de qualquer outra: **este serviço precisa de um painel administrativo pronto?** Se sim, o custo de reconstruir isso manualmente em Flask ou FastAPI raramente compensa. Se não, a pergunta seguinte é sobre a natureza do tráfego e a rigidez do contrato.

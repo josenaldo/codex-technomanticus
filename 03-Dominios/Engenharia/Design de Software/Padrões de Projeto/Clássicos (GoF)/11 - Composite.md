@@ -32,8 +32,8 @@ O Composite elimina a pergunta. Arquivo e pasta implementam a **mesma** interfac
 ## A ideia
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     I{{"«interface» Componente<br/>tamanho()"}}
     Pasta["Pasta (Composite)<br/>tamanho = Σ filhos"] -.implementa.-> I
     Arquivo["Arquivo (Leaf)<br/>tamanho = próprio"] -.implementa.-> I
@@ -41,9 +41,9 @@ graph TD
     Pasta --> A1["arquivo.txt"]
     Sub --> A2["foto.jpg"]
 
-    style I fill:#4A90D9,color:#fff
-    style Pasta fill:#4A90D9,color:#fff
-    style Arquivo fill:#4A90D9,color:#fff
+    class I neutro
+    class Pasta neutro
+    class Arquivo neutro
 ```
 
 Folha e composto compartilham a interface `Componente`. O composto guarda filhos (que também são `Componente`) e implementa cada operação **delegando recursivamente** aos filhos. O cliente fala com a raiz sem saber a profundidade.

@@ -25,6 +25,9 @@ tags:
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     DS["DataSource\n(configuração + pool)"]
     EM["EntityManager\n(operações por manager)"]
     REPO["Repository<T>\n(getRepository · extend())"]
@@ -40,13 +43,13 @@ flowchart TD
     ENT --> DS
     MIG --> DS
 
-    style DS fill:#4A90D9,color:#fff
-    style ENT fill:#4A90D9,color:#fff
-    style REPO fill:#F5A623,color:#000
-    style QB fill:#F5A623,color:#000
-    style QR fill:#D0021B,color:#fff
-    style MIG fill:#D0021B,color:#fff
-    style EM fill:#F5A623,color:#000
+    class DS neutro
+    class ENT neutro
+    class REPO destaque
+    class QB destaque
+    class QR falha
+    class MIG falha
+    class EM destaque
 ```
 
 ## O que é

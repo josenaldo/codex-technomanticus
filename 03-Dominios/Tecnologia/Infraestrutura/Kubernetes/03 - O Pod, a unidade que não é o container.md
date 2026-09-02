@@ -44,6 +44,8 @@ A terceira são os **volumes declarados no Pod**. Um volume definido no `spec.vo
 
 ```mermaid
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph POD["Pod — uma unidade de rede e ciclo de vida"]
         direction TB
         NS["Network namespace único<br/>IP: 10.244.1.7 — compartilhado por todos"]
@@ -62,9 +64,9 @@ graph TB
         C2 --- VOL
     end
 
-    style NS fill:#2e4d7a,stroke:#3498db,color:#fff
-    style IPC fill:#2e4d7a,stroke:#3498db,color:#fff
-    style VOL fill:#1e5c3a,stroke:#27ae60,color:#fff
+    class NS neutro
+    class IPC neutro
+    class VOL ok
 ```
 
 Vale nomear, ainda nesta seção, uma via de escape que existe mas que é exceção deliberada, não o caminho comum: um Pod pode declarar `hostNetwork: true`, e nesse caso ele abre mão até do namespace de rede próprio criado pelo `pause`, passando a compartilhar diretamente a pilha de rede do nó onde está agendado — os containers desse Pod enxergam as mesmas interfaces e portas que qualquer processo rodando nativamente naquele nó veria. Existe um par equivalente para os outros dois namespaces mencionados, `hostPID` e `hostIPC`, cada um abrindo mão do respectivo isolamento em favor de visibilidade direta sobre o nó. Esse é um recurso real, usado por ferramentas de infraestrutura que precisam operar no nível do nó (agentes de monitoramento de baixo nível, certos componentes de CNI), mas é uma exceção que abre mão exatamente da propriedade que esta nota descreve como padrão — Pods de aplicação comuns não deveriam declarar nenhuma dessas três flags sem uma razão operacional específica e documentada, porque cada uma delas remove uma camada de isolamento que existe por padrão para proteger o nó de um Pod comprometido.
@@ -252,6 +254,8 @@ Essa diferença explica por que replicar fielmente, em Kubernetes, um `docker-co
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph COMPOSE["docker-compose.yml — cada serviço com IP próprio"]
         direction LR
         CS1["app<br/>172.20.0.2"]
@@ -271,8 +275,8 @@ graph LR
         PC2 --- PNS
     end
 
-    style CBR fill:#4a3b7a,stroke:#8e6fd6,color:#fff
-    style PNS fill:#2e4d7a,stroke:#3498db,color:#fff
+    class CBR marca
+    class PNS neutro
 ```
 
 ## Volumes efêmeros dentro do Pod: além do `emptyDir` básico

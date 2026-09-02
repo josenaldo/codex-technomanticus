@@ -43,6 +43,9 @@ Durante o Vite 1 ao 7, a arquitetura tinha uma divisão que qualquer dev que tra
 
 ```mermaid
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph VITE7["Vite ≤ 7 — Arquitetura Dual"]
         direction TB
 
@@ -62,9 +65,9 @@ graph TB
         DEV -. "Semânticas diferentes\nPlugins diferentes\nInconsistências dev/prod" .- BUILD
     end
 
-    style VITE7 fill:#2a1e1e,color:#fff
-    style DEV fill:#1e1e3a,color:#fff
-    style BUILD fill:#3a1e1e,color:#fff
+    class VITE7 neutro
+    class DEV marca
+    class BUILD falha
 ```
 
 > [!info] Leitura do diagrama
@@ -78,6 +81,9 @@ O **Rolldown** é um bundler escrito em Rust com API compatível com Rollup. Ele
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph VITE8["Vite 8 — Motor Unificado (12 mar 2026)"]
         direction LR
 
@@ -102,9 +108,9 @@ graph LR
         DEV -. "Mesma semântica\nMesma API de plugins\n0 inconsistências" .- BUILD
     end
 
-    style VITE8 fill:#1e2a1e,color:#fff
-    style DEV fill:#1e3a1e,color:#fff
-    style BUILD fill:#1e1e3a,color:#fff
+    class VITE8 neutro
+    class DEV ok
+    class BUILD marca
 ```
 
 > [!info] Leitura do diagrama
@@ -141,6 +147,8 @@ O Vite é, na sua essência, um **servidor HTTP especializado** que entende o gr
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph DEV_FLOW["Fluxo de Dev (vite dev)"]
         direction TB
         A["Browser: GET /index.html"]
@@ -165,8 +173,8 @@ flowchart TD
         H --> I --> J --> K
     end
 
-    style DEV_FLOW fill:#1e1e3a,color:#fff
-    style BUILD_FLOW fill:#1e3a1e,color:#fff
+    class DEV_FLOW neutro
+    class BUILD_FLOW ok
 ```
 
 > [!info] Leitura do diagrama
@@ -838,6 +846,8 @@ Antes da Environment API, o Vite não tinha um modelo formal para isso. Plugins 
 
 ```mermaid
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph ENV_API["Environment API (Vite 6+)"]
         VDS["ViteDevServer\n(HTTP server + WebSocket)"]
 
@@ -859,9 +869,9 @@ graph TB
         EE --> GE
     end
 
-    style ENV_API fill:#1e1e3a,color:#fff
-    style ENVS fill:#1e2a3a,color:#fff
-    style GRAPHS fill:#2a1e3a,color:#fff
+    class ENV_API neutro
+    class ENVS marca
+    class GRAPHS marca
 ```
 
 > [!info] Leitura do diagrama
@@ -989,6 +999,7 @@ Uma das apostas do Vite é ser um bundler de plataforma, não um bundler de fram
 
 ```mermaid
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph VITE_PLATFORM["Vite como plataforma"]
         CORE["Core do Vite\n(ESM server, HMR, asset pipeline,\nRolldown, plugin system)"]
 
@@ -1009,7 +1020,7 @@ graph TB
         CORE --> ASTRO
     end
 
-    style VITE_PLATFORM fill:#1e2a3a,color:#fff
+    class VITE_PLATFORM neutro
 ```
 
 > [!info] Leitura do diagrama
@@ -1056,6 +1067,9 @@ O Vite é uma excelente escolha para a maioria dos projetos, mas não é a respo
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     START["Novo projeto — qual bundler?"]
 
     Q1{"É uma aplicação web\n(SPA, MPA, SSR simples)?"}
@@ -1085,13 +1099,13 @@ flowchart TD
     Q4 -->|sim| TURBO
     Q5 -->|sim| RSPACK
 
-    style VITE fill:#1e3a1e,color:#fff
-    style NEXT fill:#1e1e3a,color:#fff
-    style NUXT fill:#1e1e3a,color:#fff
-    style ASTRO fill:#1e1e3a,color:#fff
-    style ROLLUP fill:#1e3a2a,color:#fff
-    style RSPACK fill:#3a2a1e,color:#fff
-    style TURBO fill:#1e3a1e,color:#fff
+    class VITE ok
+    class NEXT neutro
+    class NUXT neutro
+    class ASTRO neutro
+    class ROLLUP ok
+    class RSPACK destaque
+    class TURBO ok
 ```
 
 > [!info] Leitura do diagrama

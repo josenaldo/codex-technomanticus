@@ -33,8 +33,8 @@ A observação do Canonical Data Model é a mesma dos hubs em redes: em vez de c
 ## A ideia: de malha (N×N) para estrela (N)
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph MESH["Sem canônico — N×N tradutores"]
         A1["A"] --- B1["B"]
         A1 --- C1["C"]
@@ -51,7 +51,7 @@ graph TD
         D2["D"] --- CDM
     end
 
-    style CDM fill:#4A90D9,color:#fff
+    class CDM neutro
 ```
 
 Cada sistema traduz seu formato próprio **para** o canônico na saída e **do** canônico na entrada. Ninguém conhece o formato de ninguém — só o canônico. O número de tradutores cai de N×(N−1) para **N** (dois por sistema: entrada e saída, mas linear no número de sistemas). Um sistema novo se integra escrevendo **um** par de tradutores de/para o canônico, sem tocar nos demais. É desacoplamento de formato de verdade.

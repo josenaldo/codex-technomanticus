@@ -235,6 +235,8 @@ Lindo, lê-se como a definição matemática. E desastroso. O fatorial fazia *um
 
 ```mermaid
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     F5["fib(5)"] --> F4a["fib(4)"]
     F5 --> F3a["fib(3)"]
     F4a --> F3b["fib(3)"]
@@ -249,11 +251,11 @@ graph TD
     F2b --> F0b["fib(0)"]
     F2c --> F1e["fib(1)"]
     F2c --> F0c["fib(0)"]
-    style F3a fill:#f99
-    style F3b fill:#f99
-    style F2a fill:#fc9
-    style F2b fill:#fc9
-    style F2c fill:#fc9
+    class F3a falha
+    class F3b falha
+    class F2a destaque
+    class F2b destaque
+    class F2c destaque
 ```
 
 Leitura do diagrama: conte os nós vermelhos e laranjas. `fib(3)` é calculado **duas vezes** (vermelho); `fib(2)` é calculado **três vezes** (laranja). E isso é só `n = 5` — para `n = 50`, os mesmos subproblemas são recalculados *bilhões* de vezes. O número total de chamadas cresce como **O(2ⁿ)**: cada nível quase dobra a largura da árvore. A recursão não é "lenta" por natureza — ela é lenta *aqui* porque **refaz trabalho que já fez**, sem memória de que já o fez.

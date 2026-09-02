@@ -45,13 +45,15 @@ A nota anterior já usou `http.ServeMux` sem se deter nele. Ele é o tipo que im
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Req["Requisição\nGET /users/42"] --> Mux["http.ServeMux"]
     Mux -->|"casa 'GET /users/{id}'"| H1["userHandler"]
     Mux -->|"casa '/health'"| H2["healthHandler"]
     Mux -->|"nenhum padrão casa"| H3["404 Not Found"]
 
-    style Mux fill:#4A90D9,color:#fff
-    style H1 fill:#F5A623,color:#000
+    class Mux neutro
+    class H1 destaque
 ```
 
 O registro acontece com `Handle` (recebe um `http.Handler`) ou `HandleFunc` (recebe uma função com a assinatura `func(w, r)`, que o Go converte automaticamente para `http.HandlerFunc`):
@@ -92,13 +94,15 @@ Três mecanismos novos, todos na mesma sintaxe de string:
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     P["'GET /users/{id}'"] --> M["GET"]
     P --> Path["/users/{id}"]
     M -.->|"filtra por verbo\nHTTP"| M
     Path -.->|"{id} = wildcard\nde 1 segmento"| Path
 
-    style M fill:#4A90D9,color:#fff
-    style Path fill:#F5A623,color:#000
+    class M neutro
+    class Path destaque
 ```
 
 ## Lendo o valor capturado: `PathValue`

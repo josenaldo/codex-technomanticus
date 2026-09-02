@@ -63,16 +63,19 @@ Go tem, de propósito, um vocabulário pequeno — 25 palavras reservadas, sem `
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Linguagem grande\n(Java/C++/Scala)"] -->|"expressividade no ponto de escrita"| B["1 problema, N formas idiomáticas\nde resolver"]
     B --> C["Custo de leitura sobe:\nprecisa reconhecer QUAL forma\nfoi usada"]
 
     D["Linguagem pequena\n(Go)"] -->|"restrição deliberada"| E["1 problema, ~1 forma\nconvencional de resolver"]
     E --> F["Custo de leitura cai:\ntodo Go se parece com Go"]
 
-    style A fill:#D9534F,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style E fill:#F5A623,color:#000
+    class A falha
+    class D neutro
+    class B destaque
+    class E destaque
 ```
 
 Essa restrição tem uma consequência direta sobre o que "escrever Go idiomático" significa na prática: não é aprender mais uma feature, é **resistir à tentação de simular, com o pouco que Go oferece, o muito que outra linguagem oferecia**. Interfaces em Go não têm `implements` porque a linguagem quer satisfação estrutural, não porque "esqueceram" de implementar a keyword. Não há `Optional<T>` porque zero values e múltiplo retorno (`valor, ok := m[chave]`) já resolvem o problema sem precisar de um tipo genérico wrapper. Não há herança porque composição (`type Server struct { *http.Server; logger *slog.Logger }`) cobre reuso de comportamento sem as armadilhas do diamond problem.
@@ -277,15 +280,18 @@ As seis resistências compartilham uma pergunta de verificação única, que val
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Vou escrever esta abstração\n(interface, builder, hierarquia,\ninterface{}, camada extra)"] --> B{"Existe um problema\nCONCRETO, hoje, que\nsó ela resolve?"}
     B -->|"Não — é\n'para o futuro'"| C["Não escreva.\nStruct simples / função direta\nresolve por agora."]
     B -->|"Sim"| D{"Go já tem uma\nferramenta nativa pra isso?\n(zero value, multi-retorno,\ncomposição, error wrapping)"}
     D -->|"Sim"| E["Use a ferramenta nativa,\nnão a importada de outra\nlinguagem."]
     D -->|"Não"| F["Abstração é justificada —\nescreva a MENOR versão\nque resolve o problema real."]
 
-    style C fill:#D9534F,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style F fill:#7CB342,color:#fff
+    class C falha
+    class E neutro
+    class F destaque
 ```
 
 Esse fluxograma resume, em forma de pergunta, o que as notas 01 a 06 do galho ensinaram em separado: naming correto, composição no lugar de herança, os erros clássicos de quem vem de OO, ferramental que pega parte disso automaticamente (`golangci-lint`), e o julgamento humano de code review para pegar o resto. Um sênior não decora as seis resistências como checklist — ele internaliza a pergunta única e a aplica sem esforço consciente, do mesmo jeito que um revisor experiente "sente" quando um PR tem cheiro de over-engineering antes mesmo de nomear qual regra específica foi violada.

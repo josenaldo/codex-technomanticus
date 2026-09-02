@@ -40,7 +40,6 @@ Voltando ao cenário de abertura: 4000 leituras/s na mesma chave, com um hit rat
 Cache não é uma única caixa — é uma camada que pode existir em vários pontos da jornada de uma requisição, cada um com seu papel:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     C["Cliente<br/>(browser/app)"] -->|"cache local<br/>(HTTP cache, SW)"| DNS["DNS<br/>(cache de resolução)"]
     DNS --> CDN["CDN<br/>(borda)"]
@@ -74,7 +73,6 @@ Aqui está o coração técnico da entrevista: como exatamente a aplicação, o 
 O padrão mais comum, e o default de qualquer resposta de entrevista quando não há restrição especial. A **aplicação** é responsável por orquestrar tudo — o cache não sabe nada sobre o banco.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 flowchart TD
     R["Aplicação recebe<br/>requisição de leitura"] --> Q{"Chave está<br/>no cache?"}
     Q -->|"HIT"| H["Retorna direto<br/>do cache"]
@@ -112,7 +110,6 @@ Read-through esconde esse `if` dentro de uma abstração — a aplicação só c
 Toda escrita passa **primeiro pelo cache**, que a propaga sincronamente para o banco antes de confirmar a operação ao cliente.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant App as Aplicação
     participant Cache
@@ -222,7 +219,6 @@ Então o TTL expira.
 No instante seguinte, **milhares de requests concorrentes** dão miss na mesma chave, ao mesmo tempo. Sem proteção, todas elas caem no branch "recalcular do banco" simultaneamente — é exatamente o cenário do MedEspecialista às 2h da manhã na abertura desta nota. O banco, que estava recebendo zero dessas queries um segundo atrás, agora recebe milhares de cópias idênticas da mesma query cara, ao mesmo tempo. Esse fenômeno tem dois nomes que a literatura usa como sinônimos: **cache stampede** e **thundering herd**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#D0021B", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant Reqs as 4000 requests<br/>concorrentes
     participant Cache
@@ -261,7 +257,6 @@ O núcleo do problema: assim que você cacheia um valor, existe uma janela entre
 Em qualquer um dos três, a pergunta que a entrevista está testando é: **você reconhece que introduziu esse problema, e escolheu conscientemente qual grau de staleness o sistema tolera?** Não existe cache sem essa dívida; existe apenas a decisão informada de quanto dela o sistema pode carregar.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
     W["Escrita muda<br/>a fonte de verdade"] --> S{"Estratégia de<br/>invalidação"}
     S -->|"TTL puro"| T["Cache fica stale até<br/>o relógio expirar"]
@@ -301,7 +296,6 @@ Um cache distribuído normalmente espalha a carga entre vários nós (ver [[04 -
 Mitigações incluem replicar a chave quente em múltiplos nós (lendo de uma réplica escolhida por round-robin) e adicionar uma camada de cache local (em memória, na própria aplicação) na frente do cache distribuído, para as chaves mais acessadas — uma segunda camada que absorve o pico antes mesmo de chegar à rede.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph TD
     subgraph "Cluster de cache — carga bem distribuída no agregado"
         N1["Nó 1"]

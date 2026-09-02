@@ -57,7 +57,6 @@ Sem o index, descobrir o que mudou exigiria ler e hashear cada arquivo do projet
 Com o index, o Git faz uma coisa muito mais barata:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     A["git status"] --> B["Para cada arquivo:<br/>compara metadados do disco<br/>com os guardados no index"]
     B --> C{"tamanho e data<br/>batem?"}

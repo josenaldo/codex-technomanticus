@@ -39,8 +39,9 @@ O **histórico** é o "porquê" em forma narrativa. Cada uma dessas esquisitices
 Poucos comandos, muito subutilizados. O que importa não é decorá-los, é saber **qual pergunta cada um responde**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q1["Quem escreveu ESTA linha,<br/>e quando?"] --> BL["git blame"]
     Q2["Quando este trecho<br/>ENTROU no sistema?"] --> PX["git log -S<br/>(pickaxe)"]
     Q3["Qual a história desta linha,<br/>mesmo através de renames?"] --> LL["git log -L / --follow"]
@@ -49,11 +50,11 @@ graph TD
     PX --> WHY
     LL --> WHY
     MSG --> WHY
-    style BL fill:#4A90D9,color:#fff
-    style PX fill:#4A90D9,color:#fff
-    style LL fill:#4A90D9,color:#fff
-    style MSG fill:#4A90D9,color:#fff
-    style WHY fill:#7ED321,color:#000
+    class BL neutro
+    class PX neutro
+    class LL neutro
+    class MSG neutro
+    class WHY destaque
 ```
 
 | Pergunta | Comando | Cuidado |

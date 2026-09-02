@@ -434,6 +434,8 @@ Ferramentas de depuração mais avançadas — `py-spy dump` (um profiler extern
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Start["Que tipo de coordenação\nvocê precisa?"] --> Q1{"Limitar QUANTAS\nthreads acessam\nalgo ao mesmo tempo?"}
     Q1 -- "Sim, N > 1" --> Sem["Semaphore /\nBoundedSemaphore"]
     Q1 -- "Não, precisa esperar\numa condição mudar" --> Q2{"Há estado\ncompartilhado\nsendo protegido?"}
@@ -441,13 +443,13 @@ flowchart TD
     Q2 -- "Não, só um sinal\nsimples liga/desliga" --> Ev["Event\n(set/clear/wait)"]
     Q1 -- "Não, preciso sincronizar\nN threads no mesmo ponto" --> Bar["Barrier"]
 
-    style Start fill:#4A90D9,color:#fff
-    style Q1 fill:#4A90D9,color:#fff
-    style Q2 fill:#4A90D9,color:#fff
-    style Sem fill:#F5A623,color:#000
-    style Cond fill:#F5A623,color:#000
-    style Ev fill:#F5A623,color:#000
-    style Bar fill:#F5A623,color:#000
+    class Start neutro
+    class Q1 neutro
+    class Q2 neutro
+    class Sem destaque
+    class Cond destaque
+    class Ev destaque
+    class Bar destaque
 ```
 
 ## Armadilhas comuns

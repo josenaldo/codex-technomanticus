@@ -50,6 +50,8 @@ De fora, a chamada fica `user.Repository`, `user.Service`, `user.NewRepository()
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Fora["Fora do package (import)"]
         A["user.Repository"]
         B["user.UserRepository"]
@@ -64,8 +66,8 @@ flowchart LR
     C -->|idiomático| OK
     D -->|redundante| BAD
 
-    style OK fill:#4A90D9,color:#fff
-    style BAD fill:#D9534F,color:#fff
+    class OK neutro
+    class BAD falha
 ```
 
 Essa é a lente que guia todo nome em Go: **um identificador nunca é lido isolado** — ele é sempre lido dentro de um package, seja o próprio (sem prefixo) ou um importado (com prefixo qualificado). Nomear pensando nisso é a diferença entre `io.Reader` (perfeito — "leitor de I/O", conciso e claro no ponto de uso) e um hipotético `io.IOReader` (redundante, ninguém escreve assim na stdlib).
@@ -99,12 +101,14 @@ Aqui está a peça que mais surpreende quem vem de Java, C# ou TypeScript: Go **
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Identificador"] --> B{"Primeira letra\né maiúscula?"}
     B -->|sim| C["Exportado (público)\nvisível fora do package"]
     B -->|não| D["Não exportado (privado)\nvisível só dentro do package"]
 
-    style C fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
+    class C neutro
+    class D destaque
 ```
 
 ```go

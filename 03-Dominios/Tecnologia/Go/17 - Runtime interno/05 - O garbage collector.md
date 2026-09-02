@@ -39,18 +39,20 @@ O algoritmo de marcação usa três "cores" para rastrear o estado de cada objet
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     R["Raízes\nstacks + globais"] -->|marca cinza| A["Objeto A\ncinza"]
     A -->|escaneia campos,\nmarca filhos cinza| B["Objeto B\ncinza"]
     A -->|todos os filhos\nenfileirados| Ap["Objeto A\npreto"]
     B -->|sem filhos pendentes| Bp["Objeto B\npreto"]
     W["Objeto C\nbranco — nunca alcançado"] -.->|fim do ciclo:\nvarrido, memória liberada| Sweep["devolvido ao\nalocador"]
 
-    style R fill:#4A90D9,color:#fff
-    style A fill:#999,color:#000
-    style B fill:#999,color:#000
-    style Ap fill:#333,color:#fff
-    style Bp fill:#333,color:#fff
-    style W fill:#eee,color:#000
+    class R neutro
+    class A marca
+    class B marca
+    class Ap neutro
+    class Bp neutro
+    class W marca
 ```
 
 O ciclo tem três fases lógicas:

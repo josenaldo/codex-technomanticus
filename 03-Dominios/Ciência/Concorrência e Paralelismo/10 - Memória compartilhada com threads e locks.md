@@ -32,6 +32,8 @@ A solução do modelo de memória compartilhada é colocar **cadeados nas pratel
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph HEAP["Heap compartilhado (uma geladeira)"]
         R1["Região A&lt;br/&gt;protegida por Lock A"]
         R2["Região B&lt;br/&gt;protegida por Lock B"]
@@ -42,8 +44,8 @@ flowchart TB
     T3["Thread 3"] --> R2
     T1 -.acesso direto.-> R3
     T2 -.acesso direto.-> R3
-    style R3 fill:#5a1a1a,color:#fff
-    style HEAP fill:#1a2a3a,color:#fff
+    class R3 falha
+    class HEAP neutro
 ```
 
 Lead-in: as setas cheias passam por um lock; as pontilhadas tocam a região C direto.
@@ -82,6 +84,8 @@ Vencida a história, ficam quatro razões técnicas que ainda sustentam a escolh
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     APP["Seu código&lt;br/&gt;(quer paralelismo)"]
     THREADS["Threads&lt;br/&gt;(unidade de execução)"]
     SYNC["Sincronização&lt;br/&gt;locks · atômicos · barreiras"]
@@ -91,8 +95,8 @@ flowchart TB
     THREADS --> SYNC
     SYNC --> MEM
     MEM --> HW
-    style APP fill:#1a3a5a,color:#fff
-    style HW fill:#2a4a2a,color:#fff
+    class APP neutro
+    class HW ok
 ```
 
 Lead-in: a pilha do modelo, do seu código até o silício.
@@ -191,14 +195,16 @@ Pense numa escada. Quanto mais alto o degrau, menos sincronização você escrev
 
 ```mermaid
 flowchart TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     L5["Mais ALTO: paralelismo declarativo&lt;br/&gt;parallel streams · fork/join&lt;br/&gt;você diz O QUÊ, não COMO"]
     L4["Tarefas e executors&lt;br/&gt;ExecutorService · Task/TPL · CompletableFuture&lt;br/&gt;trabalho desacoplado da thread"]
     L3["Coleções concorrentes&lt;br/&gt;ConcurrentHashMap · BlockingQueue&lt;br/&gt;sincronização embutida na estrutura"]
     L2["Atômicos e lock-free&lt;br/&gt;AtomicInteger · CAS · std::atomic&lt;br/&gt;sem lock, mas você raciocina sobre ordenação"]
     L1["Mais BAIXO: locks manuais&lt;br/&gt;synchronized · ReentrantLock · pthread_mutex&lt;br/&gt;você pega e solta cada cadeado"]
     L5 --> L4 --> L3 --> L2 --> L1
-    style L5 fill:#1a4a2a,color:#fff
-    style L1 fill:#5a2a1a,color:#fff
+    class L5 ok
+    class L1 falha
 ```
 
 Lead-in: a escada de abstração; o topo (verde) esconde a sincronização, a base (vermelha) a expõe.
@@ -261,6 +267,8 @@ thread::spawn(move || {
 
 ```mermaid
 flowchart TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     CODE["Código tenta compartilhar&lt;br/&gt;um dado entre threads"]
     CHECK{"O tipo é&lt;br/&gt;Send / Sync?"}
     OK["Compila&lt;br/&gt;(data race impossível)"]
@@ -271,8 +279,8 @@ flowchart TB
     CHECK -->|"não"| FAIL
     FAIL --> FIX
     FIX --> CHECK
-    style OK fill:#1a4a2a,color:#fff
-    style FAIL fill:#5a1a1a,color:#fff
+    class OK ok
+    class FAIL falha
 ```
 
 Lead-in: o caminho de uma tentativa de compartilhamento pelo verificador de tipos do Rust.
@@ -288,13 +296,15 @@ Aqui está a virada de chave conceitual da fase Magus. Memória compartilhada n�
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     PROB["Problema comum:&lt;br/&gt;estado compartilhado mutável&lt;br/&gt;é a raiz dos bugs"]
     PROB --> M1["Memória compartilhada&lt;br/&gt;ABRAÇA o estado,&lt;br/&gt;protege com locks"]
     PROB --> M2["CSP&lt;br/&gt;EVITA: troca dados&lt;br/&gt;por canais"]
     PROB --> M3["Atores&lt;br/&gt;ISOLA: cada ator&lt;br/&gt;tem seu estado"]
     PROB --> M4["Event loop&lt;br/&gt;SERIALIZA: uma thread,&lt;br/&gt;sem disputa"]
-    style PROB fill:#5a3a1a,color:#fff
-    style M1 fill:#1a3a5a,color:#fff
+    class PROB destaque
+    class M1 neutro
 ```
 
 Lead-in: um problema, quatro estratégias.

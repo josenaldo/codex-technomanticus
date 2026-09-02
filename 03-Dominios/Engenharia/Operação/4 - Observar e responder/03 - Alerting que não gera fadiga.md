@@ -64,7 +64,6 @@ Rob Ewaschuk resume essa hierarquia com uma frase que virou princípio canônico
 Isso não significa que causa não importa — importa muito, só que num momento e canal diferente. Informação de causa (qual container está com CPU alta, qual query está lenta) deve **acompanhar** o alerta de sintoma como contexto de diagnóstico, ou viver num dashboard — não ser o gatilho independente que acorda alguém. O padrão prático: o alerta que dispara é "taxa de erro do checkout passou de 5% por 3 minutos" (sintoma); o corpo da notificação ou o runbook linkado então mostra "CPU do pod está a 95%, memória a 88%, latência da dependência X subiu 3x" (causa, para acelerar o diagnóstico depois que o humano já está acordado e olhando).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     subgraph CAUSA["Alertar em causa — ruidoso"]
         C1["CPU > 80%"] -.->|"às vezes"| P1["Problema real"]
@@ -143,7 +142,6 @@ O truque final — e o que faz esse método ser considerado o estado da arte —
 A técnica **multi-window, multi-burn-rate** exige que **as duas janelas estejam de acordo simultaneamente** antes de disparar o page: a janela curta confirma que o problema está acontecendo *agora*, e a janela longa confirma que não é um blip isolado que já passou. Uma diretriz prática comum do próprio Workbook é dimensionar a janela curta como aproximadamente 1/12 da janela longa. Um exemplo de comportamento citado pela documentação: um serviço passando por 15% de taxa de erro sustentada — a janela curta cruza o limiar quase imediatamente, a janela longa confirma cerca de 5 minutos depois, e é nesse ponto que o alerta dispara; quando o erro cessa, a janela curta cai abaixo do limiar em minutos, mas a janela longa só normaliza depois de um período proporcionalmente maior — o que evita o "flap" de abrir e fechar o mesmo incidente repetidamente.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     subgraph WC["Janela curta (~5min)"]
         W1["Confirma:<br/>'está acontecendo AGORA'"]

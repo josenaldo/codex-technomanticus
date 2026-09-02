@@ -33,14 +33,16 @@ Go resolve isso virando o problema de cabeça para baixo: em vez de o binário d
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["go build -ldflags\n'-X main.version=v1.4.2'"] --> B[compilador\ngera .o]
     B --> C[linker]
     D["var version string\n(vazio no código-fonte)"] -.->|"-X sobrescreve\nno binário final"| C
     C --> E["binário: version == 'v1.4.2'"]
 
-    style A fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
-    style E fill:#7ED321,color:#000
+    class A destaque
+    class C neutro
+    class E destaque
 ```
 
 O padrão tem três peças. Primeiro, você declara variáveis `string` de nível de pacote, deixando-as vazias — elas existem só para servir de "alvo" da injeção:
@@ -137,6 +139,8 @@ Um segundo problema, adjacente mas distinto: um serviço web frequentemente prec
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Build["momento do build"]
         A["templates/*.html\nmigrations/*.sql"] -->|"//go:embed lê\nos arquivos"| B["compilador"]
     end
@@ -146,9 +150,9 @@ flowchart TB
         D --> E["assets já estão lá\n— nenhuma pasta extra"]
     end
 
-    style A fill:#F5A623,color:#000
-    style C fill:#7ED321,color:#000
-    style E fill:#4A90D9,color:#fff
+    class A destaque
+    class C destaque
+    class E neutro
 ```
 
 ```go

@@ -334,14 +334,17 @@ Toda vez que uma linha de código referencia um nome, o interpretador precisa de
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     L["L · Local — dentro da função atual"] --> E["E · Enclosing — função(ões) externas, se houver aninhamento"]
     E --> G["G · Global — nível do módulo"]
     G --> B["B · Built-in — namespace nativo do Python (len, print, str, ...)"]
 
-    style L fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style G fill:#F5A623,color:#000
-    style B fill:#D0021B,color:#fff
+    class L neutro
+    class E neutro
+    class G destaque
+    class B falha
 ```
 
 - **Local (L):** o corpo da função (ou lambda) que está executando agora. Nomes atribuídos dentro dessa função — incluindo os parâmetros — vivem aqui.

@@ -33,17 +33,18 @@ Há ainda a questão da **identidade**. Em memória, esperamos que "o cliente 1 
 ## A ideia: um mapa por chave primária
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["find(Cliente, 1)"] --> IM
     B["find(Cliente, 1)<br/>(mais tarde)"] --> IM
     IM{{"Identity Map<br/>{1 → Cliente@a3f}"}}
     IM -->|"1ª vez: busca no banco,<br/>guarda no mapa"| DB[("banco")]
     IM -->|"2ª vez: devolve<br/>a MESMA instância"| SAME["Cliente@a3f"]
 
-    style IM fill:#4A90D9,color:#fff
-    style SAME fill:#4A90D9,color:#fff
-    style DB fill:#F5A623,color:#000
+    class IM neutro
+    class SAME neutro
+    class DB destaque
 ```
 
 A primeira busca por `Cliente 1` vai ao banco, cria o objeto e o **registra no mapa** sob a chave `1`. A segunda busca **encontra a chave no mapa** e devolve a instância existente — sem tocar no banco. Resultado: uma instância só, identidade preservada, e uma ida a menos ao banco. Esse mapa vive dentro do [[10 - Unit of Work|Unit of Work]] e morre com ele — por isso é "por sessão".

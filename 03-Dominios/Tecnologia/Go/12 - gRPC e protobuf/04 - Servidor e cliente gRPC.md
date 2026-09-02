@@ -98,12 +98,14 @@ Um `*grpc.Server` é, por baixo, um multiplexador HTTP/2 que sabe rotear frames 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["net.Listen tcp :50051"] --> B["grpc.NewServer()"]
     C["servidorProduto{}"] -->|"RegisterProdutoServiceServer"| B
     B -->|"Serve(listener)"| D["bloqueia, aceita conexões HTTP/2"]
 
-    style B fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
+    class B neutro
+    class D destaque
 ```
 
 ```go

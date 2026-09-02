@@ -110,8 +110,9 @@ function App() {
 ## Como o Provider injeta na subárvore
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     App["App"]
     Provider["ThemeProvider\n(Context.Provider)"]
     Navbar["Navbar"]
@@ -127,10 +128,10 @@ graph TD
     Navbar --> NavItem
     NavItem --> NavIcon
 
-    style Provider fill:#4A90D9,color:#fff,stroke:#2c6fad
-    style NavIcon fill:#4A90D9,color:#fff,stroke:#2c6fad
-    style Toggle fill:#4A90D9,color:#fff,stroke:#2c6fad
-    style Other fill:#e8e8e8,color:#555,stroke:#aaa
+    class Provider neutro
+    class NavIcon neutro
+    class Toggle neutro
+    class Other marca
 ```
 
 `Navbar` e `NavItem` ficam em cinza: eles não precisam saber que o contexto existe. Apenas os consumidores diretos (`NavIcon`, `ThemeToggle`) se conectam à fiação.

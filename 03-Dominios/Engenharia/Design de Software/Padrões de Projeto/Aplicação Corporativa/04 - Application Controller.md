@@ -43,18 +43,19 @@ São duas responsabilidades diferentes, quase sempre fundidas num objeto só:
 O Application Controller é a segunda, extraída. Ele guarda **o grafo**: os estados possíveis da jornada, as transições, e o que dispara cada uma. O controlador de requisição passa a perguntar em vez de decidir — "terminei o passo `endereco` com sucesso; qual é o próximo?".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     R["Requisição<br/>POST /wizard/endereco"] --> C["Controlador de requisição<br/>valida · chama o domínio"]
     C -->|"passo concluído:<br/>endereco, ok"| AC["Application Controller<br/>o grafo da jornada"]
     AC -->|"consulta estado + regras"| AC
     AC -->|"próximo: analise_credito"| V1["View: análise de crédito"]
     AC -->|"cliente antigo:<br/>pular"| V2["View: plano"]
 
-    style C fill:#4A90D9,color:#fff
-    style AC fill:#4A90D9,color:#fff
-    style V1 fill:#4A90D9,color:#fff
-    style V2 fill:#F5A623,color:#000
+    class C neutro
+    class AC neutro
+    class V1 neutro
+    class V2 destaque
 ```
 
 O ganho não é ter mais uma camada: é que a pergunta **"quais são as regras de navegação deste fluxo?"** passa a ter uma resposta em um lugar — legível, testável sem subir HTTP, e alterável sem caçar `if` por controladores.

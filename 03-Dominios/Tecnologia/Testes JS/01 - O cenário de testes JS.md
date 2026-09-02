@@ -27,17 +27,18 @@ A confusão vem de misturar **camadas**. "Ferramenta de teste" não é uma categ
 ## As camadas do stack
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Unit / Integração<br/>Vitest · Jest"] --> B["+ Componentes<br/>Testing Library"]
     B --> C["+ Mock de rede<br/>MSW"]
     C --> D["E2E / browser real<br/>Playwright"]
     A -.roda em.-> N["Node + jsdom"]
     D -.roda em.-> BR["Chromium/Firefox/WebKit reais"]
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
+    class A neutro
+    class B neutro
+    class C neutro
+    class D destaque
 ```
 
 Cada camada responde a uma pergunta diferente da pirâmide de testes (ver [[03-Dominios/Engenharia/Testes/02 - A pirâmide de testes e suas variações|Engenharia/Testes 02]]):

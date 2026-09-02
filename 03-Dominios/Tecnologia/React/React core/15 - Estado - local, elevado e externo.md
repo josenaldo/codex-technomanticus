@@ -432,8 +432,9 @@ Para projetos novos de porte médio, o overhead de slices, actions e reducers ra
 ## A árvore de decisão
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     START([Tenho um novo estado]) --> Q1{Mais de um componente\nprecisa deste estado?}
 
     Q1 -->|Não| LOCAL[✅ Estado local\nuseState / useReducer]
@@ -452,13 +453,13 @@ flowchart TD
     Q5 -->|Estado muito granular\ncomposável| JOTAI[✅ Jotai]
     Q5 -->|Time grande 10+\nestado enterprise| RTK[✅ Redux Toolkit]
 
-    style LOCAL fill:#4A90D9,color:#fff
-    style SERVER fill:#4A90D9,color:#fff
-    style URL fill:#4A90D9,color:#fff
-    style CTX fill:#F5A623,color:#fff
-    style ZUSTAND fill:#4A90D9,color:#fff
-    style JOTAI fill:#4A90D9,color:#fff
-    style RTK fill:#F5A623,color:#fff
+    class LOCAL neutro
+    class SERVER neutro
+    class URL neutro
+    class CTX destaque
+    class ZUSTAND neutro
+    class JOTAI neutro
+    class RTK destaque
 ```
 
 A árvore de cima para baixo reflete a ordem de preferência: primeiro tente o mais simples. Só escale quando o mais simples não resolver.

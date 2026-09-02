@@ -27,8 +27,10 @@ Essa história — um consumidor lento contamina o sistema inteiro, ou pior, esc
 A nota anterior deste galho já registrou o mecanismo do fan-out — um único evento no SNS entregue a múltiplas assinaturas. O que essa nota acrescenta é a régua de decisão prática: **em qualquer fan-out onde os consumidores têm ritmos, cargas ou disponibilidade diferentes entre si, a assinatura correta não é o consumidor direto — é uma fila SQS entre o tópico e o consumidor.**
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     SNS["Tópico SNS<br/>pedido.criado"]
 
     subgraph DIRETO["Fan-out direto (frágil em escala)"]
@@ -48,11 +50,11 @@ flowchart TD
         Q2 -.->|"esgotou retries"| DLQ2["DLQ Notificação"]
     end
 
-    style X1 fill:#D0021B,color:#fff
-    style DLQ2 fill:#F5A623,color:#000
-    style Q1 fill:#4A90D9,color:#fff
-    style Q2 fill:#4A90D9,color:#fff
-    style Q3 fill:#4A90D9,color:#fff
+    class X1 falha
+    class DLQ2 destaque
+    class Q1 neutro
+    class Q2 neutro
+    class Q3 neutro
 ```
 
 **Por que a fila muda tudo:** sem ela, o SNS entrega direto ao endpoint e retenta segundo a política de entrega daquele protocolo — para SQS e Lambda, isso já é generoso por padrão: 3 tentativas imediatas, mais 2 com 1 segundo de intervalo, mais 10 com backoff exponencial de 1 a 20 segundos, mais até 100.000 tentativas espaçadas em 20 segundos, totalizando mais de 100 mil tentativas ao longo de até 23 dias antes de desistir. Isso parece suficiente — e é, para uma falha transitória de rede. O problema não é a quantidade de tentativas; é que, sem uma fila no meio, **não existe onde a mensagem esperar** enquanto o consumidor está genuinamente indisponível ou saturado — o SNS entrega no ritmo que o SNS decide, não no ritmo que o consumidor consegue absorver, e quando o Lambda de Notificação está com a concorrência no teto, cada nova invocação tentada é mais uma invocação throttled, não uma mensagem esperando pacientemente numa fila.
@@ -126,8 +128,9 @@ O custo de ordenação não é abstrato — é throughput medido em mensagens po
 A nota irmã em Comunicação entre Sistemas já cobriu o Outbox Pattern em profundidade — a tabela `outbox` na mesma transação do dado de negócio, resolvendo o dual-write problem ao mover a atomicidade para dentro do banco. O que muda na encarnação cloud é **quem desempenha o papel do relay** que lê a tabela outbox e publica no broker:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     APP["Serviço<br/>(RDS/Aurora)"] -->|"transação única:<br/>INSERT pedido<br/>INSERT outbox"| DB[("Banco<br/>tabela outbox")]
 
     DB -.->|"CDC via WAL"| DMS["AWS DMS ou<br/>Debezium no MSK Connect"]
@@ -138,9 +141,9 @@ flowchart LR
 
     SNS --> Q["SQS por consumidor"]
 
-    style DB fill:#4A90D9,color:#fff
-    style DMS fill:#F5A623,color:#000
-    style LAMBDA fill:#4A90D9,color:#fff
+    class DB neutro
+    class DMS destaque
+    class LAMBDA neutro
 ```
 
 Duas opções concretas: um **Lambda agendado** (via EventBridge Scheduler, rodando a cada poucos segundos) fazendo o papel do Polling Publisher — simples de montar, mesmo trade-off de latência e carga de leitura já discutido na nota conceitual —, ou **AWS DMS** (Database Migration Service) em modo de replicação contínua, lendo o WAL do RDS/Aurora via CDC e publicando no destino, fazendo o papel que Debezium faz em ambiente self-managed. Uma terceira peça específica da AWS vale nomear: **EventBridge Pipes**, um serviço desenhado justamente para conectar uma fonte (DynamoDB Streams, Kinesis, um SQS de entrada) a um destino (outro SQS, um Step Functions, o próprio EventBridge) com transformação e filtro no meio, sem escrever nenhum código de glue — útil quando a "tabela outbox" é, na verdade, um DynamoDB e a mudança já chega via DynamoDB Streams em vez de precisar de um relay que faz polling.
@@ -152,7 +155,6 @@ A DigitalOcean, aqui, não oferece nenhuma dessas peças gerenciadas — nem um 
 Uma Dead Letter Queue existe para uma pergunta específica: o que fazer com uma mensagem que o consumer tentou processar e falhou, repetidamente, de um jeito que retry não resolve — o **poison message**. Um payload malformado, uma regra de negócio que rejeita aquele pedido especificamente, um bug que só aquela combinação de dados dispara. Sem DLQ, essa mensagem fica presa na fila principal, sendo reentregue para sempre (bloqueando, em filas FIFO, todo o resto do grupo atrás dela) ou sendo descartada silenciosamente ao esgotar a retenção — as duas piores opções.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Q as Fila principal
     participant C as Consumer

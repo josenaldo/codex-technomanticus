@@ -42,17 +42,19 @@ A alternativa é aceitar menos e servir bem. Rejeitar 20% em 5 milissegundos, co
 ## Cota × pressão: os dois critérios
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     R["Requisição chega"] --> RL{"<b>Rate limit</b><br/>este cliente já passou<br/>da cota dele?"}
     RL -->|"sim"| E1["429 + Retry-After<br/><i>previsível, é o contrato</i>"]
     RL -->|"não"| LS{"<b>Load shedding</b><br/>o sistema está<br/>saturado agora?"}
     LS -->|"sim, e isto é<br/>baixa prioridade"| E2["503 · descarte<br/><i>situacional, é emergência</i>"]
     LS -->|"não"| OK["processa"]
 
-    style E1 fill:#F5A623,color:#000
-    style E2 fill:#D0021B,color:#fff
-    style OK fill:#4A90D9,color:#fff
+    class E1 destaque
+    class E2 falha
+    class OK neutro
 ```
 
 **Rate limiting é contratual.** O limite existe antes do problema, é publicado, e o cliente pode se planejar. Serve para proteger contra abuso, para isolar o vizinho barulhento e para monetizar (planos por volume). A recusa é **justa por construção**: quem passou da cota sabia qual era.

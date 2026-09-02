@@ -61,6 +61,9 @@ Essa composição é o que separa uma integração de produção de um `fetch()`
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     START([Nova integração]) --> Q1{Quem é o cliente?}
 
     Q1 -->|Serviço interno\nda mesma equipe| Q2{Streaming\nbidirecional?}
@@ -82,13 +85,13 @@ flowchart TD
     KAFKA --> RES
     BULLMQ --> RES
 
-    style START fill:#4A90D9,color:#fff
-    style GRPC fill:#F5A623,color:#fff
-    style GQL fill:#F5A623,color:#fff
-    style REST fill:#F5A623,color:#fff
-    style KAFKA fill:#F5A623,color:#fff
-    style BULLMQ fill:#F5A623,color:#fff
-    style RES fill:#D0021B,color:#fff
+    class START neutro
+    class GRPC destaque
+    class GQL destaque
+    class REST destaque
+    class KAFKA destaque
+    class BULLMQ destaque
+    class RES falha
 ```
 
 ## Decision Trees

@@ -83,6 +83,8 @@ O `undici` também é o motor por trás do `fetch` global do Node 18+ — quando
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     APP["Código da aplicação"] --> DEC{Critério}
 
     DEC -->|"zero deps\nEdge runtime"| FE["fetch nativo\n(AbortSignal.timeout)"]
@@ -95,9 +97,9 @@ flowchart LR
     GO -->|"HTTP/1.1 ou /2"| SV
     UN -->|"HTTP/1.1 pooled"| SV
 
-    style APP fill:#4A90D9,color:#fff
-    style DEC fill:#F5A623,color:#fff
-    style SV fill:#4A90D9,color:#fff
+    class APP neutro
+    class DEC destaque
+    class SV neutro
 ```
 
 ## Snippets

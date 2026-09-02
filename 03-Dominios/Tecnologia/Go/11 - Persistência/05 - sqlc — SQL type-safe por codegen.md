@@ -31,6 +31,8 @@ sqlc ataca exatamente esse ponto: você continua escrevendo SQL — não uma DSL
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["schema.sql\n(CREATE TABLE)"] --> D["sqlc generate"]
     B["query.sql\n(-- name: GetUser :one\nSELECT ...)"] --> D
     C["sqlc.yaml\n(config: engine, paths,\ndriver de saída)"] --> D
@@ -40,8 +42,8 @@ flowchart LR
     F --> G
     G --> H["database/sql ou pgx\n(driver real, em runtime)"]
 
-    style D fill:#F5A623,color:#000
-    style G fill:#4A90D9,color:#fff
+    class D destaque
+    class G neutro
 ```
 
 Três entradas, um comando, dois arquivos gerados:

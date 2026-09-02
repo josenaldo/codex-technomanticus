@@ -87,12 +87,13 @@ Essa é a peça que torna viável hospedar múltiplos domínios de clientes dife
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     C[Cliente] -->|"TLS #1<br/>cifrado"| E[Edge / CDN]
     E -->|"TLS #2 (re-encrypt)<br/>ou HTTP simples"| L[Load Balancer]
     L -->|"TLS #3 (opcional)<br/>ou HTTP simples"| A[Aplicação]
 
-    style E fill:#4A90D9,color:#fff
-    style L fill:#4A90D9,color:#fff
+    class E neutro
+    class L neutro
 ```
 
 Vale nomear com precisão os três padrões que aparecem nessa cadeia, porque a diferença entre eles é o que muda o risco de segurança:

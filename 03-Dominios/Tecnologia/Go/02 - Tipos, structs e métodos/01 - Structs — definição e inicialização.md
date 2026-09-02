@@ -56,14 +56,16 @@ Um jeito útil de pensar numa struct: é um bloco contíguo de memória, dividid
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph P["Point{X: 3, Y: 4}"]
         direction LR
         X["campo X<br/>tipo int<br/>valor: 3"]
         Y["campo Y<br/>tipo int<br/>valor: 4"]
     end
 
-    style X fill:#4A90D9,color:#fff
-    style Y fill:#F5A623,color:#000
+    class X neutro
+    class Y destaque
 ```
 
 Isso não é só uma analogia — é literalmente como o compilador organiza a struct na memória: os campos ficam lado a lado, na ordem declarada (com possível *padding* para alinhamento, um detalhe de baixo nível que não importa aqui). Quando uma struct é copiada — porque, como visto na [[03-Dominios/Tecnologia/Go/01 - Fundamentos e sintaxe/07 - Ponteiros e o modelo de memória|nota 07 do galho 1]], Go é sempre pass-by-value — todo esse bloco é copiado, campo a campo. Um ponteiro para struct (`&Point{X: 3, Y: 4}`), que a nota de ponteiros já cobriu em profundidade, evita essa cópia; esta nota não repete esse mecanismo, só assume que ele existe.
@@ -184,6 +186,8 @@ c.Endereco.Rua = "Av. Faria Lima, 500" // acesso encadeado, atribuição direta
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Cliente["Cliente"]
         Nome["Nome: 'Ana'"]
         subgraph End["Endereco"]
@@ -192,9 +196,9 @@ flowchart TB
         end
     end
 
-    style Nome fill:#4A90D9,color:#fff
-    style Rua fill:#F5A623,color:#000
-    style Cidade fill:#F5A623,color:#000
+    class Nome neutro
+    class Rua destaque
+    class Cidade destaque
 ```
 
 O acesso encadeado `c.Endereco.Cidade` funciona porque cada `.` desce um nível na estrutura: `c.Endereco` devolve o valor `Endereco` inteiro, e `.Cidade` acessa o campo dentro dele. Repare que isso é **aninhamento por composição de campo nomeado** — `Endereco` é só mais um campo de `Cliente`, chamado `Endereco`, do tipo `Endereco`. Isso é diferente de **embedding** (quando o campo é declarado sem nome, só com o tipo, e seus campos "sobem" para o tipo externo) — embedding é o mecanismo de composição mais idiomático de Go, e tem nota própria mais à frente neste galho; aqui, o campo nomeado é a forma mais simples e explícita de "uma struct dentro da outra".

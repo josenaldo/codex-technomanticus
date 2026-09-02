@@ -103,8 +103,9 @@ Um exemplo curto ajuda a ver as duas metades operando na mesma frase, porque a d
 Vale notar que as duas metades não competem pelo mesmo espaço da mesma forma — um erro comum é achar que "remover motivo de descarte" significa cortar tudo até sobrar o mínimo seguro, e que isso, sozinho, já é suficiente. Não é. Um currículo perfeitamente limpo, sem nenhum erro, sem nenhum cliché, mas também sem nenhum ponto de interesse real, sobrevive à triagem e morre na terceira leitura — a mais lenta e a mais decisiva, segundo a nota 04. As duas metades da formulação precisam acontecer juntas: o documento tem que sobreviver às duas primeiras leituras rápidas **e** merecer a atenção da terceira.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Doc["O documento enviado"] --> R1["1. A máquina<br/>extrai e organiza"]
     R1 --> R2["2. A varredura humana<br/>decide em segundos"]
     R2 --> R3["3. A leitura técnica<br/>decide com atenção"]
@@ -117,14 +118,14 @@ graph LR
     R3 -.motivo de conversa.-> C1["resultado que puxa<br/>uma pergunta de acompanhamento"]
     C1 --> Conv
 
-    style R1 fill:#4A90D9,color:#fff
-    style R2 fill:#4A90D9,color:#fff
-    style R3 fill:#4A90D9,color:#fff
-    style Conv fill:#7ED321,color:#000
-    style C1 fill:#7ED321,color:#000
-    style D1 fill:#F5A623,color:#000
-    style D2 fill:#F5A623,color:#000
-    style D3 fill:#F5A623,color:#000
+    class R1 neutro
+    class R2 neutro
+    class R3 neutro
+    class Conv destaque
+    class C1 destaque
+    class D1 destaque
+    class D2 destaque
+    class D3 destaque
 ```
 
 O diagrama mostra as duas metades operando em pontos diferentes do mesmo caminho: **remover motivo de descarte** age nas três etapas de leitura, evitando as saídas laterais em laranja; **criar motivo de conversa** age concentradamente na última etapa, empurrando o documento para a saída verde — a única que de fato importa no final. Um currículo pode sobreviver às três etapas sem nunca produzir o segundo efeito, e é exatamente esse o retrato do documento "seguro, mas esquecível" que tantas pessoas produzem sem entender por que não recebem retorno.

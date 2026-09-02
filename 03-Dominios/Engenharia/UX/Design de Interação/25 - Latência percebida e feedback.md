@@ -29,16 +29,18 @@ A base de pesquisa é clássica e antecede a web: **Miller (1968)** e, de forma 
 - **Mais de 10 segundos** — exige indicador de progresso com estimativa de tempo. Acima desse ponto, o usuário não consegue mais manter atenção contínua na tarefa; sem uma barra de progresso ou estimativa, ele assume que o sistema travou e abandona a tarefa ou tenta de novo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["0ms"] -->|"< 100ms"| B["Parece instantâneo<br/>sem feedback visível necessário"]
     B -->|"~1s"| C["Limite antes de perder<br/>o fio do pensamento"]
     C -->|"até 10s"| D["Indicador de atividade<br/>necessário (spinner/skeleton)"]
     D -->|"> 10s"| E["Progresso com estimativa<br/>obrigatório"]
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#F5A623,color:#000
-    style E fill:#D0021B,color:#fff
+    class B neutro
+    class C destaque
+    class D destaque
+    class E falha
 ```
 
 O princípio-mãe por trás dos três limiares é a **heurística 1 de Nielsen — visibilidade do status do sistema** (ver [[03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental/03 - As 10 heurísticas de Nielsen|nota 03]]): o sistema deve manter o usuário informado sobre o que está acontecendo, com feedback em tempo razoável. Os limiares desta nota são a versão quantificada dessa heurística — respondem exatamente à pergunta "o que é 'tempo razoável', em milissegundos?".

@@ -74,6 +74,8 @@ Go inverte essa ordem. Não existe cláusula de intenção nenhuma. O compilador
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Java["Java / C# — satisfação explícita"]
         direction TB
         J1["class Email implements Notificador"] --> J2["compilador verifica\nna declaração da classe"]
@@ -86,10 +88,10 @@ flowchart TB
         G2 --> G3["compilador verifica\nno ponto de uso:\nEmail tem Enviar? sim."]
     end
 
-    style J1 fill:#4A90D9,color:#fff
-    style G1 fill:#4A90D9,color:#fff
-    style G2 fill:#F5A623,color:#000
-    style G3 fill:#7ED321,color:#000
+    class J1 neutro
+    class G1 neutro
+    class G2 destaque
+    class G3 destaque
 ```
 
 A verificação em si — "o tipo concreto tem os métodos certos, com a assinatura certa?" — é estática e acontece em tempo de compilação, exatamente como em Java. O que muda é **onde mora a declaração de intenção**: em nenhum lugar. Por isso o termo mais preciso não é "sem tipagem" nem "tipagem fraca" — é **duck typing estático**: "se anda como pato e grasna como pato, é um pato" (o teste clássico de duck typing), mas aqui o "teste" roda no `go build`, não em tempo de execução como faria em Python.

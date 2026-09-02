@@ -98,7 +98,6 @@ O serviço mais usado para checar senha contra vazamentos é o **Pwned Passwords
 O ponto central: o servidor nunca sabe qual hash completo foi consultado — ele só sabe que *algum* cliente pediu um dos ~800 hashes que começam com aquele prefixo de 5 caracteres, o que é matematicamente insuficiente para reconstituir a senha original[^hibp]. É uma forma elegante de terceirizar "essa senha está numa lista de vazamentos conhecidos?" sem nunca centralizar a senha em si num único ponto de risco adicional.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant U as Usuário (define senha)
     participant App as Aplicação
@@ -122,17 +121,18 @@ sequenceDiagram
 Juntando as duas seções anteriores, a vida de uma senha malfeita segue um caminho previsível — e cada etapa é um ponto onde a engenharia certa quebra a cadeia:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Cadastro:<br/>senha fraca/reusada"] -->|"sem checagem HIBP"| B["Hash ruim<br/>(SHA-1/MD5 sem salt)"]
     B -->|"banco vaza"| C["Offline cracking<br/>90% quebrado em 72h"]
     C -->|"senha reusada<br/>em outros sites"| D["Credential<br/>stuffing"]
     D -->|"login automatizado<br/>em massa"| E["Account<br/>Takeover"]
 
-    style B fill:#D0021B,color:#fff
-    style C fill:#D0021B,color:#fff
-    style D fill:#F5A623,color:#000
-    style E fill:#D0021B,color:#fff
+    class B falha
+    class C falha
+    class D destaque
+    class E falha
 ```
 
 Cada seta desse diagrama é um ponto de intervenção: checar contra HIBP no cadastro evita a seta 1; Argon2id evita a seta 2 mesmo que o banco vaze; e MFA — o assunto da próxima seção — evita que a seta 4 (login automatizado) sequer funcione, mesmo com a senha certa em mãos do atacante.
@@ -155,7 +155,6 @@ codigo   = Truncate(HMAC-SHA1(segredo, contador)) % 10^6
 O `tempo_unix_atual / 30` — dividir o relógio por uma janela de 30 segundos — é o que substitui, no TOTP, o papel que um contador incremental teria no HOTP (a variante anterior, baseada em contagem de usos em vez de tempo): tanto servidor quanto cliente calculam o mesmo "contador" de forma independente, desde que os dois relógios estejam razoavelmente sincronizados. O resultado do HMAC passa por uma etapa de **truncamento dinâmico** que extrai um subconjunto dos bits do hash e os converte num número de 6 dígitos — 6 é o padrão recomendado pela RFC, embora 8 dígitos adicionem entropia às custas de usabilidade[^rfc6238].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant U as Usuário (app autenticador)
     participant S as Servidor
@@ -202,8 +201,10 @@ Todo sistema de MFA sério oferece **códigos de recuperação** (recovery codes
 ### A escada de força dos fatores
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph BT
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     SMS["SMS / chamada de voz<br/>76% de bloqueio de ataque<br/>vulnerável a SIM swap e SS7"]
     TOTP["TOTP (RFC 6238)<br/>sem canal de rede no login<br/>vulnerável a phishing em tempo real"]
     PUSH["Push notification<br/>99% de bloqueio<br/>vulnerável a MFA fatigue"]
@@ -211,10 +212,10 @@ graph BT
 
     SMS --> TOTP --> PUSH --> FIDO
 
-    style SMS fill:#D0021B,color:#fff
-    style TOTP fill:#F5A623,color:#000
-    style PUSH fill:#F5A623,color:#000
-    style FIDO fill:#4A90D9,color:#fff
+    class SMS falha
+    class TOTP destaque
+    class PUSH destaque
+    class FIDO neutro
 ```
 
 Note que mesmo TOTP e push, mais fortes que SMS, ainda são vulneráveis a **phishing em tempo real** (o usuário digita o código TOTP num site falso que o repassa instantaneamente ao site real) ou a fadiga de aprovação — nenhum dos dois amarra criptograficamente a autenticação ao domínio exato, o que só o FIDO2/WebAuthn faz de forma estrutural. É essa lacuna final que a nota 05 desta trilha existe para fechar.

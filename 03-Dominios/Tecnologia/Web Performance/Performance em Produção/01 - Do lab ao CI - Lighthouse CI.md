@@ -29,15 +29,16 @@ O problema real não é medir; é medir **no momento certo**. E o momento certo 
 O **Lighthouse CI (LHCI)** é a ferramenta oficial do Google para rodar o Lighthouse dentro de um pipeline de integração contínua. Ele orquestra três etapas, resumidas no comando `lhci autorun`:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A[PR aberto] --> B["collect<br/>build + roda Lighthouse Nx"]
     B --> C["assert<br/>compara com as regras"]
     C -->|passou| D["upload<br/>guarda histórico"]
     C -->|falhou| E[❌ PR bloqueado]
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style E fill:#D0021B,color:#fff
+    class B neutro
+    class C neutro
+    class E falha
 ```
 
 - **collect:** sobe a aplicação (uma build de produção ou um servidor estático) e roda o Lighthouse **várias vezes** na(s) URL(s) escolhida(s). Rodar N vezes e pegar a mediana combate o ruído do lab (lembre de [[03-Dominios/Tecnologia/Web Performance/Medição e Core Web Vitals/03 - Lab vs Field|G1 nota 03]]: uma execução só é uma amostra barulhenta).

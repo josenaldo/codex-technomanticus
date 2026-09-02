@@ -77,6 +77,8 @@ Isso significa que um objeto Python criado no processo principal (a lista de ima
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph P1["Processo principal (PID 1001)"]
         Obj1["Objeto Python\n(lista de imagens)\nendereço: 0x7f2a..."]
         GIL1["GIL próprio"]
@@ -98,13 +100,13 @@ flowchart LR
     Transport --> Unpickle
     Unpickle --> Obj2
 
-    style Obj1 fill:#4A90D9,color:#fff
-    style GIL1 fill:#4A90D9,color:#fff
-    style Pickle fill:#F5A623,color:#000
-    style Transport fill:#F5A623,color:#000
-    style Unpickle fill:#F5A623,color:#000
-    style Obj2 fill:#4A90D9,color:#fff
-    style GIL2 fill:#4A90D9,color:#fff
+    class Obj1 neutro
+    class GIL1 neutro
+    class Pickle destaque
+    class Transport destaque
+    class Unpickle destaque
+    class Obj2 neutro
+    class GIL2 neutro
 ```
 
 Cada seta laranja no diagrama acima é trabalho de CPU que **não existia** na versão com `threading` — porque threads não precisam desse processo inteiro, elas já enxergam o mesmo objeto diretamente. É exatamente esse trabalho extra que consumiu parte do ganho de paralelismo no cenário de abertura desta nota.
@@ -331,6 +333,8 @@ Juntando o que a nota 04 estabeleceu sobre o GIL com o custo de serialização v
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Start["O trabalho é dominado por..."] --> Espera{"Espera de I/O\n(rede, disco, DB, subprocess)?"}
     Espera -- Sim --> Volume{"Muitas conexões\nconcorrentes (milhares)?"}
     Volume -- Sim --> Asyncio["asyncio\n(1 thread, event loop cooperativo,\nmenor overhead por conexão)"]
@@ -341,15 +345,15 @@ flowchart TD
     CPU -- Sim, volume pequeno/médio --> Multiproc["multiprocessing\n(Pool / ProcessPoolExecutor)"]
     CPU -- Trabalho já delegável\na extensão nativa --> ExtC["Extensão C / Rust (PyO3)\nque libera o GIL\n(NumPy, regex, hashing)"]
 
-    style Start fill:#4A90D9,color:#fff
-    style Espera fill:#4A90D9,color:#fff
-    style Volume fill:#4A90D9,color:#fff
-    style Asyncio fill:#4A90D9,color:#fff
-    style Threading fill:#4A90D9,color:#fff
-    style CPU fill:#F5A623,color:#000
-    style SharedMem fill:#F5A623,color:#000
-    style Multiproc fill:#F5A623,color:#000
-    style ExtC fill:#F5A623,color:#000
+    class Start neutro
+    class Espera neutro
+    class Volume neutro
+    class Asyncio neutro
+    class Threading neutro
+    class CPU destaque
+    class SharedMem destaque
+    class Multiproc destaque
+    class ExtC destaque
 ```
 
 | Tipo de trabalho | Ferramenta | Por quê |

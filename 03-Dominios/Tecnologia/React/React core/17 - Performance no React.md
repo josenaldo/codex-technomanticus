@@ -423,8 +423,10 @@ Com o React Compiler ativo, o compilador identifica esse padrão e insere o `use
 ## Fluxo de diagnóstico de performance
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A([UI lenta / travando]) --> B[Abrir React DevTools Profiler]
     B --> C[Gravar a interação lenta]
     C --> D{Onde está o tempo?}
@@ -449,15 +451,15 @@ flowchart TD
     H -->|Não| J([Validar com Profiler])
     I --> J
 
-    style A fill:#D0021B,color:#fff
-    style J fill:#4A90D9,color:#fff
-    style E2 fill:#4A90D9,color:#fff
-    style E3 fill:#4A90D9,color:#fff
-    style E4 fill:#F5A623,color:#000
-    style F2 fill:#4A90D9,color:#fff
-    style F3 fill:#4A90D9,color:#fff
-    style G1 fill:#4A90D9,color:#fff
-    style I fill:#4A90D9,color:#fff
+    class A falha
+    class J neutro
+    class E2 neutro
+    class E3 neutro
+    class E4 destaque
+    class F2 neutro
+    class F3 neutro
+    class G1 neutro
+    class I neutro
 ```
 
 ---

@@ -119,7 +119,6 @@ git filter-repo --to-subdirectory-filter apps/frontend
 Aí todos os commits daquele repositório passam a mexer em `apps/frontend/...`, e o merge encaixa no lugar certo, sem conflito e sem commit de movimentação.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
     A["repo frontend<br/>arquivos na raiz"] -->|"filter-repo<br/>--to-subdirectory-filter"| B["repo frontend<br/>tudo sob apps/frontend/"]
     B -->|"fetch + merge<br/>--allow-unrelated-histories"| C["monorepo<br/>história dos dois preservada"]

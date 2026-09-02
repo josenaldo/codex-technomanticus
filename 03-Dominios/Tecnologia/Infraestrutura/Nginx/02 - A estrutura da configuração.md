@@ -29,6 +29,9 @@ Vale marcar, porque é fonte comum de confusão para quem só conhece o caminho 
 
 ```mermaid
 graph TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Main["main<br/>(topo do arquivo,<br/>fora de qualquer bloco)"]
     Main --> Events["events<br/>(I/O assíncrono dos workers)"]
     Main --> Http["http<br/>(config de tudo que é HTTP)"]
@@ -43,10 +46,10 @@ graph TB
     Server1 --> Loc2["location /api/<br/>(outra rota)"]
     Server2 --> Loc3["location /<br/>(rota do outro site)"]
 
-    style Main fill:#5a4a1e,stroke:#c9a227,color:#fff
-    style Http fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style Server1 fill:#1e3a5c,stroke:#2980b9,color:#fff
-    style Server2 fill:#1e3a5c,stroke:#2980b9,color:#fff
+    class Main destaque
+    class Http ok
+    class Server1 neutro
+    class Server2 neutro
 ```
 
 O contexto **main** merece um parágrafo à parte, porque é o único que não abre com uma palavra reservada seguida de chaves — é literalmente tudo que está fora de qualquer bloco, no topo do arquivo. As diretivas mais comuns encontradas ali dizem respeito ao processo do Nginx como um todo, não a nenhum site específico: `user`, que define sob qual usuário do sistema operacional os workers rodam; `worker_processes`, que decide quantos workers o master lança (a nota [[03-Dominios/Tecnologia/Infraestrutura/Nginx/01 - O problema que o Nginx resolve|01 — O problema que o Nginx resolve]] detalha essa divisão); e `pid`, o caminho do arquivo onde o master grava seu próprio identificador de processo. As três são exclusivas do contexto `main` — a documentação oficial declara `Context: main` para as três, sem exceção, e tentar declará-las dentro de `http` ou de qualquer bloco mais interno é erro de configuração. Uma quarta diretiva comum em `main`, `error_log`, quebra esse padrão de exclusividade: ela aceita `main`, `http`, `mail`, `stream`, `server` e `location` ao mesmo tempo — é possível ter um `error_log` geral em `main` e um `error_log` mais específico, apontando para outro arquivo, dentro de um `server` só para aquele site, e ambos coexistem sem conflito, porque `error_log` não é a diretiva de conjunto multi-instância que a seção sobre herança desta nota discute — é um valor único por contexto, redeclarado independentemente em cada nível.
@@ -154,6 +157,8 @@ Vale marcar precisamente onde a diferença entre "o que o autor esperava" e "o q
 
 ```mermaid
 graph TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph "location / — sem proxy_set_header próprio"
         H1["Herda os 4 do server:<br/>Host, X-Real-IP,<br/>X-Forwarded-For, X-Forwarded-Proto"]
     end
@@ -162,8 +167,8 @@ graph TB
         H2["Os 4 herdados são<br/>DESCARTADOS por inteiro"] --> H3["Só Authorization<br/>chega ao backend"]
     end
 
-    style H1 fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style H3 fill:#7a2e2e,stroke:#c0392b,color:#fff
+    class H1 ok
+    class H3 falha
 ```
 
 > [!info] Baseline de versão

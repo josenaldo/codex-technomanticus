@@ -108,15 +108,17 @@ UI = f(estado)
 Leia assim: a interface do usuário é o *resultado* de aplicar uma função (`f`) sobre um estado. Cada vez que o estado muda, o React recomputa `f(estado)` e atualiza a tela para corresponder ao resultado.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#fff", "primaryBorderColor": "#2171C7", "lineColor": "#4A90D9", "secondaryColor": "#F5F5F5", "tertiaryColor": "#E8F4FD"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     E1["Estado\n{ liked: false }"] -->|"f(estado)"| V1["UI\n[ Curtir ]"]
     E2["Estado\n{ liked: true }"] -->|"f(estado)"| V2["UI\n[ Curtido ✓ ]"]
 
-    style E1 fill:#4A90D9,color:#fff
-    style E2 fill:#4A90D9,color:#fff
-    style V1 fill:#E8F4FD,color:#333
-    style V2 fill:#27AE60,color:#fff
+    class E1 neutro
+    class E2 neutro
+    class V1 marca
+    class V2 ok
 ```
 
 O que torna isso poderoso é que você nunca mais precisa rastrear transições de estado manualmente. Se o estado é `{ liked: true }`, a UI *sempre* mostrará o botão ativo — não importa como chegamos a esse estado.
@@ -161,8 +163,9 @@ function UserCard({ name, role, avatarUrl }: UserCardProps) {
 Componentes são **reutilizáveis**, **composáveis** e **testáveis de forma independente**. Você constrói UIs complexas combinando componentes simples — como montar blocos de Lego.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#fff"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     App["App (raiz)"]
     App --> Header
     App --> Main
@@ -175,9 +178,9 @@ graph TD
     Cart --> CartItem["CartItem (×N)"]
     Cart --> CheckoutBtn["CheckoutButton"]
 
-    style App fill:#4A90D9,color:#fff
-    style ProductCard1 fill:#E8F4FD,color:#333
-    style CartItem fill:#E8F4FD,color:#333
+    class App neutro
+    class ProductCard1 marca
+    class CartItem marca
 ```
 
 Cada caixa no diagrama é uma função. Cada função descreve sua parte da UI. O React compõe tudo isso em uma árvore e renderiza o resultado.
@@ -191,8 +194,10 @@ Você já se perguntou: se React recomputa `f(estado)` cada vez que o estado mud
 A resposta é o **Virtual DOM** — uma representação leve do DOM real, mantida em memória como um objeto JavaScript.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph react["React (em memória)"]
         direction TB
         VDOM_OLD["Virtual DOM\n(antes)"]
@@ -209,9 +214,9 @@ flowchart LR
     State["Mudança\nde Estado"] --> VDOM_NEW
     DIFF -->|"Patch mínimo"| DOM
 
-    style State fill:#F5A623,color:#fff
-    style DIFF fill:#4A90D9,color:#fff
-    style DOM fill:#27AE60,color:#fff
+    class State destaque
+    class DIFF neutro
+    class DOM ok
 ```
 
 O fluxo é:
@@ -284,8 +289,10 @@ No React 18, Concurrent Mode era opt-in. No React 19, é o modo padrão. Isso si
 ## Declarativo vs. imperativo: resumo visual
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph imperativo["Abordagem Imperativa"]
         direction TB
         I1["Evento dispara"]
@@ -305,9 +312,9 @@ flowchart TD
         D1 --> D2 --> D3 --> D4
     end
 
-    style I1 fill:#F5A623,color:#fff
-    style D1 fill:#4A90D9,color:#fff
-    style D4 fill:#27AE60,color:#fff
+    class I1 destaque
+    class D1 neutro
+    class D4 ok
 ```
 
 Na abordagem imperativa, **você** rastreia cada transição. Na abordagem declarativa, **você** descreve o destino; React traça o caminho.

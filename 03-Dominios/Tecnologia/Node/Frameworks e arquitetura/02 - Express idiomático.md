@@ -34,6 +34,9 @@ Express continua aparecendo em entrevistas e projetos reais porque é simples, e
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     R[Request] --> RI[requestId middleware]
     RI --> LG[logger]
     LG --> HM[helmet + cors]
@@ -47,10 +50,10 @@ flowchart TD
 
     H -->|throw / rejeição| EH
 
-    style R fill:#4A90D9,color:#fff
-    style RT fill:#F5A623,color:#fff
-    style EH fill:#D0021B,color:#fff
-    style RS fill:#4A90D9,color:#fff
+    class R neutro
+    class RT destaque
+    class EH falha
+    class RS neutro
 ```
 
 ```typescript

@@ -164,6 +164,9 @@ A implicação é poderosa: **nenhuma camada precisa ser perfeita**. Uma camada 
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     ATK["Atacante"]
     L1["Camada 1: Perímetro de rede<br/>(firewall, WAF, DDoS mitigation, geo-blocking)"]
     L2["Camada 2: Identidade e autenticação<br/>(MFA obrigatório, SSO, certificados de dispositivo)"]
@@ -183,9 +186,9 @@ flowchart TD
     L6 -->|"detecta o breach e aciona resposta"| DETECT
     L6 -.->|"sem detecção: acessa"| ASSET
 
-    style ATK fill:#c0392b,color:#fff
-    style ASSET fill:#27ae60,color:#fff
-    style DETECT fill:#f39c12,color:#fff
+    class ATK falha
+    class ASSET ok
+    class DETECT destaque
 ```
 
 > [!info] Leitura do diagrama
@@ -215,6 +218,9 @@ Pense no design de submarinos: compartimentos estanques. Se um compartimento é 
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     ATK["Atacante"]
 
     subgraph COMPROMETIDO["Segmento comprometido"]
@@ -243,12 +249,12 @@ graph LR
     POL_AC -.->|"barrado"| SEG_C
     POL_AD -.->|"barrado"| SEG_D
 
-    style ATK fill:#c0392b,color:#fff
-    style SEG_A fill:#e67e22,color:#fff
-    style SEG_B fill:#2980b9,color:#fff
-    style SEG_C fill:#2980b9,color:#fff
-    style SEG_D fill:#2980b9,color:#fff
-    style LOG fill:#f39c12,color:#333
+    class ATK falha
+    class SEG_A destaque
+    class SEG_B neutro
+    class SEG_C neutro
+    class SEG_D neutro
+    class LOG destaque
 ```
 
 > [!info] Leitura do diagrama

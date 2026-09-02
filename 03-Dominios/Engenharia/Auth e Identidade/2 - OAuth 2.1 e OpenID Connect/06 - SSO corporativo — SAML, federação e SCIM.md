@@ -34,14 +34,15 @@ Imagine o momento em que um SaaS B2B recebe a primeira proposta de contrato de v
 Esse é o ponto cego que autenticação sozinha nunca resolveu: [[01 - OAuth — o problema da delegação|OAuth]] e [[03 - OpenID Connect — identidade sobre OAuth|OIDC]] respondem "como delego acesso" e "quem é esse usuário", mas nenhum dos dois responde "quem administra essa identidade, e o que acontece com ela quando a pessoa sai da empresa". Para uma empresa grande, a resposta **tem** que ser: o próprio departamento de TI, através do IdP corporativo que já governa e-mail, VPN, badge de prédio e toda a pilha de SaaS que a empresa usa. É essa exigência — "a identidade mora com a gente, não com você" — que dá nome ao problema que esta nota cobre: **federação de identidade** aplicada ao mundo B2B enterprise, com **SAML** como o protocolo que a maioria dos IdPs corporativos ainda fala por padrão, e **SCIM** como a peça que faltava para fechar o ciclo de vida da conta, não só o login.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Login social /<br/>senha própria"] -->|"resolve"| B["Quem é você<br/>agora"]
     A -->|"não resolve"| C["Quem administra<br/>essa identidade"]
     A -->|"não resolve"| D["O que acontece<br/>quando a pessoa sai"]
 
-    style C fill:#F5A623,color:#000
-    style D fill:#D0021B,color:#fff
+    class C destaque
+    class D falha
 ```
 
 ## Federação de identidade: o conceito antes do protocolo
@@ -53,8 +54,8 @@ Essa relação de confiança não nasce sozinha; ela é configurada explicitamen
 O ponto central — que vale tanto para SAML quanto para OIDC quanto para qualquer protocolo de federação — é este: **o SP nunca vê a senha do usuário, nunca gerencia MFA, nunca decide política de expiração de sessão**. Tudo isso é delegado ao IdP. O SP só recebe uma afirmação assinada — "este usuário se autenticou com sucesso, aqui estão os atributos dele" — e decide o que fazer com base nela. É a mesma separação de responsabilidades que já vimos no Authorization Code Flow ([[02 - Authorization Code + PKCE — o fluxo canônico|02]]), só que aqui a "delegação" é de identidade corporativa inteira, não de um escopo de API.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     SaaS["Seu SaaS<br/>(Service Provider)"]
     IdpA["IdP do Cliente A<br/>(Okta)"]
     IdpB["IdP do Cliente B<br/>(Entra ID)"]
@@ -66,7 +67,7 @@ graph TD
     IdpC -->|"ID token via OIDC"| SaaS
     IdpD -->|"assertion assinada<br/>via SAML"| SaaS
 
-    style SaaS fill:#4A90D9,color:#fff
+    class SaaS neutro
 ```
 
 Um único SaaS enterprise, com dezenas de clientes grandes, acaba mantendo **N relações de confiança em paralelo** — uma por organização cliente, cada uma com seu próprio IdP, seu próprio metadata, e frequentemente seu próprio protocolo preferido. Onde exatamente essa configuração "por organização" vive dentro do seu modelo de dados (um `sso_connection_id` amarrado a um `tenant`, tipicamente) é discutido na nota [[3 - Autorização e multi-tenancy/03 - Multi-tenancy e organizações|Multi-tenancy e organizações]] — aqui o foco é o protocolo que cada conexão fala.
@@ -113,7 +114,6 @@ Repare em três campos que carregam a maior parte da segurança do protocolo: `I
 No **SP-initiated flow**, é o seu app que dá o primeiro passo — o usuário digita o e-mail corporativo numa tela de login, o app reconhece o domínio (ou lê de um `tenant` já conhecido) e redireciona para o IdP correto:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant U as Funcionária da Acme (browser)
     participant SP as Seu SaaS (Service Provider)
@@ -145,7 +145,6 @@ Passo 10 é onde a maior parte dos bugs de implementação SAML nasce — valida
 No **IdP-initiated flow**, a dança começa do outro lado: o usuário está logado no portal do IdP (o painel de apps da Okta, por exemplo), clica no ícone do seu SaaS, e o IdP monta e envia uma assertion **sem que o SP jamais tenha pedido nada**:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#F5A623", "primaryBorderColor": "#B36F00", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant U as Usuário (browser)
     participant IdP as IdP do cliente
@@ -173,14 +172,14 @@ A superfície de ataque mais estudada do SAML não está no design do protocolo 
 O ataque de **signature wrapping** explora exatamente esse descompasso: o atacante pega uma assertion legítima e assinada (por exemplo, a sua própria, de uma conta que ele controla), **move** o elemento assinado original para um lugar "morto" do documento (onde a assinatura continua tecnicamente válida, mas ninguém olha ali para tomar decisão), e **insere** um elemento forjado — com o `NameID` de outra pessoa, digamos, um administrador — na posição que o parser de negócio de fato lê[^ibm-xsw]. A assinatura, calculada sobre o elemento original que ainda existe no documento, continua batendo; mas a aplicação, que geralmente busca o primeiro elemento com aquele nome de tag (ou usa um XPath ingênuo), processa o forjado[^jsmon-xsw]. Em resumo: **a assinatura prova que algum conteúdo assinado está presente no documento — não prova que é o conteúdo que a aplicação vai efetivamente usar**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#D0021B", "primaryBorderColor": "#8A0000", "lineColor": "#D0021B"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Assertion legítima<br/>assinada (usuário comum)"] -->|"atacante move o<br/>elemento assinado"| B["Posição 'morta'<br/>do XML<br/>(assinatura OK, ignorada)"]
     A -->|"atacante insere<br/>elemento forjado"| C["Posição que a app<br/>de fato lê<br/>(NameID = admin)"]
     C -->|"parser de negócio<br/>lê daqui"| D["App autentica<br/>como admin"]
 
-    style C fill:#D0021B,color:#fff
-    style D fill:#D0021B,color:#fff
+    class C falha
+    class D falha
 ```
 
 ### O caso Duo Labs 2018: comment injection
@@ -230,7 +229,6 @@ Login sozinho — mesmo via SSO — não resolve nenhum dos dois, porque login s
 **SCIM** (System for Cross-domain Identity Management) 2.0, padronizado nas RFC 7643 (schema) e RFC 7644 (protocolo) em 2015[^rfc7643][^rfc7644], resolve exatamente essa lacuna: ele define um schema padronizado para recursos `User` e `Group`, e uma API REST (`POST`, `PUT`, `PATCH`, `DELETE` sobre `/Users` e `/Groups`) que o IdP usa para manter o seu sistema sincronizado com o diretório da empresa — **independente de qualquer evento de login**[^scim-wiki].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant RH as Sistema de RH da Acme
     participant IdP as IdP da Acme (Okta/Entra ID)

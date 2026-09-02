@@ -71,6 +71,8 @@ O resultado é um treemap interativo onde cada retângulo representa um módulo 
 
 ```mermaid
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     BUILD["npm run build"]
     REPORT["stats.html\n(treemap visual)"]
     IDENTIFY["Identifica os culpados:\n• módulos maiores que ~100KB\n• dependências duplicadas\n• imports de barrel files"]
@@ -78,8 +80,8 @@ graph TD
 
     BUILD --> REPORT --> IDENTIFY --> ACTION
 
-    style REPORT fill:#2d2d00,color:#fff
-    style ACTION fill:#2d4a1e,color:#fff
+    class REPORT destaque
+    class ACTION ok
 ```
 
 > [!note] Leitura do diagrama
@@ -150,6 +152,8 @@ Em ESM, `import` e `export` são declarações de linguagem analisadas em tempo 
 
 ```mermaid
 graph LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph ESM["ESM (estático)"]
         direction TB
         ES_SRC["import { debounce } from 'lodash-es'"]
@@ -166,8 +170,8 @@ graph LR
         CJS_SRC --> CJS_RUNTIME --> CJS_ALL
     end
 
-    style ESM fill:#2d4a1e,color:#fff
-    style CJS fill:#4a1a10,color:#fff
+    class ESM ok
+    class CJS falha
 ```
 
 > [!note] Leitura do diagrama
@@ -314,6 +318,9 @@ const plugin = await import(
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     CHECK{"O módulo usa\nESM estático?"}
 
     CHECK -->|"Não (CJS/AMD)"| BLOCKED["Tree-shaking BLOQUEADO\nIncluir módulo inteiro"]
@@ -327,10 +334,10 @@ flowchart TD
     BARREL -->|"Sem sideEffects: false\nno barrel"| BLOATED["Bundle inchado:\nbundle inclui todos os\nreexports do barrel"]
     BARREL -->|"Com sideEffects: false"| LEAN["Bundle enxuto:\nsó os exports\nusados chegam"]
 
-    style BLOCKED fill:#4a1a10,color:#fff
-    style CONSERVATIVE fill:#3a3a10,color:#fff
-    style LEAN fill:#2d4a1e,color:#fff
-    style BLOATED fill:#4a1a10,color:#fff
+    class BLOCKED falha
+    class CONSERVATIVE destaque
+    class LEAN ok
+    class BLOATED falha
 ```
 
 > [!note] Leitura do diagrama
@@ -504,6 +511,8 @@ A lógica de cache por trás disso:
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Sem manualChunks (ruim para cache)"
         B1["deploy v1.0\nmain.js (300KB)\nInclui React + Charts + código app"]
         B2["deploy v1.1\nmain.js (300KB)\nMudança em 1 componente:\nBrowser REBAIXA TUDO"]
@@ -516,8 +525,8 @@ graph LR
         C1 --> C2
     end
 
-    style B2 fill:#4a1a10,color:#fff
-    style C2 fill:#2d4a1e,color:#fff
+    class B2 falha
+    class C2 ok
 ```
 
 > [!note] Leitura do diagrama
@@ -807,6 +816,7 @@ O browser baixa 96KB, mas ao descomprimir e executar, trabalha com 320KB de JS. 
 
 ```mermaid
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     DL["Download\n96KB (Brotli)\n~0.4s em 3G"]
     DC["Descompressão\n96KB → 320KB\n~5ms (CPU)"]
     PARSE["Parse + AST\n320KB de tokens\n~180ms (CPU mid-range)"]
@@ -815,8 +825,8 @@ graph TD
 
     DL --> DC --> PARSE --> COMPILE --> EXEC
 
-    style PARSE fill:#3a3a10,color:#fff
-    style COMPILE fill:#3a3a10,color:#fff
+    class PARSE destaque
+    class COMPILE destaque
 ```
 
 > [!note] Leitura do diagrama
@@ -998,6 +1008,8 @@ Bundle inicial (depois): 320KB / gzip 110KB / FCP 1.4s
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["ANTES\n1.8MB bundle inicial\n600KB gzip\nFCP: 5.2s"]
     
     B["DIAGNÓSTICO\nrollup-plugin-visualizer\nIdentificou: pdfmake, moment,\nmonaco como culpados"]
@@ -1010,8 +1022,8 @@ flowchart LR
 
     A --> B --> C1 & C2 & C3 --> D
 
-    style A fill:#4a1a10,color:#fff
-    style D fill:#2d4a1e,color:#fff
+    class A falha
+    class D ok
 ```
 
 > [!note] Leitura do diagrama

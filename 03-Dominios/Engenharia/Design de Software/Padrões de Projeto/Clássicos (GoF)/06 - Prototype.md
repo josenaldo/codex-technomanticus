@@ -34,8 +34,9 @@ O detalhe que decide se isso funciona ou vira um pesadelo de debug é **o que "c
 ## Raso versus profundo: o coração da questão
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph raso["Cópia RASA — referências compartilhadas"]
         O1[Original] --> E1[Endereço]
         C1[Cópia] --> E1
@@ -45,10 +46,10 @@ graph TD
         C2[Cópia] --> E3[Endereço copiado]
     end
 
-    style E1 fill:#F5A623,color:#000
-    style C1 fill:#F5A623,color:#000
-    style C2 fill:#4A90D9,color:#fff
-    style E3 fill:#4A90D9,color:#fff
+    class E1 destaque
+    class C1 destaque
+    class C2 neutro
+    class E3 neutro
 ```
 
 Uma **cópia rasa** duplica o objeto de topo, mas os campos que são *referências* (um `Address`, uma lista) continuam **apontando para os mesmos objetos internos**. Resultado: alterar o endereço da cópia altera o do original — eles compartilham o mesmo `Address`. Uma **cópia profunda** clona também tudo o que está pendurado, recursivamente, produzindo um objeto verdadeiramente independente. Qual você quer depende do caso — mas obter a rasa **sem querer** é um dos bugs mais escorregadios que existem.

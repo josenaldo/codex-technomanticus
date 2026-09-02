@@ -31,13 +31,14 @@ A nota [[03-Dominios/Tecnologia/Cloud/24 - Certificação AWS Solutions Architec
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     N1["01 — O exame<br/>e seu valor"] --> N2["02 — Os quatro<br/>domínios"]
     N2 --> N3["03 — Mapa da<br/>trilha ao blueprint"]
     N3 --> N4["04 — Serviços<br/>e pegadinhas"]
     N4 --> N5["05 — Estratégia<br/>de prova"]
     N5 --> N6["06 — Capstone<br/>este plano"]
 
-    style N6 fill:#232f3e,color:#fff
+    class N6 neutro
 ```
 
 ## O problema que este capstone resolve

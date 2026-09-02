@@ -26,6 +26,8 @@ aliases:
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Node.js App"] --> B["ioredis Client"]
     B --> C["Redis Server"]
 
@@ -37,12 +39,12 @@ flowchart TD
     E --> C
     F --> C
 
-    style A fill:#4A90D9,color:#fff,stroke:#3a7bc8
-    style B fill:#4A90D9,color:#fff,stroke:#3a7bc8
-    style C fill:#F5A623,color:#fff,stroke:#d4921e
-    style D fill:#4A90D9,color:#fff,stroke:#3a7bc8
-    style E fill:#4A90D9,color:#fff,stroke:#3a7bc8
-    style F fill:#4A90D9,color:#fff,stroke:#3a7bc8
+    class A neutro
+    class B neutro
+    class C destaque
+    class D neutro
+    class E neutro
+    class F neutro
 ```
 
 ### Conexão básica

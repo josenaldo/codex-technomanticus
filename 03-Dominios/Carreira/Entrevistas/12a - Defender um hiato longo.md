@@ -69,8 +69,10 @@ Ela não passou no primeiro processo. Passou no terceiro, com uma resposta que l
 **E fechou declarando o custo.** Este é o movimento que separa uma resposta boa de uma resposta madura, e é o mais contra-intuitivo dos cinco: Helena disse, sem que ninguém perguntasse, em que tipo de empresa o modelo dela **não** funciona. Trabalho assíncrono, escrito e orientado a resultado vai bem onde se valoriza decisão documentada; vai mal onde se confunde presença com produtividade. Dizer isso em voz alta parece vender contra si mesma. Faz três coisas ao mesmo tempo: sinaliza autoconhecimento, sinaliza que ela não está desesperada por qualquer vaga, e filtra um ambiente onde a contratação daria errado em três meses. É a mesma lógica que a [[03-Dominios/Carreira/Entrevistas/11 - Comunicar trade-offs sob pressão|nota 11]] já fixou para decisões técnicas — admitir o custo é o que torna a afirmação crível.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     P["Pergunta literal:<br/>'o que você fez nesse período?'"] --> R1["1. Definir o quadro<br/>em uma frase"]
     R1 --> R2["2. Nomear a pergunta real:<br/>'você é confiável agora?'"]
     R2 --> R3["3. A restrição forjou<br/>a disciplina operacional"]
@@ -81,14 +83,14 @@ graph TD
     R3 -.sem o 4.-> E2["Afirmação sem lastro:<br/>soa autoajuda"]
     R4 -.sem o 5.-> E3["Venda sem custo:<br/>soa ensaiado demais"]
 
-    style R1 fill:#4A90D9,color:#fff
-    style R2 fill:#4A90D9,color:#fff
-    style R3 fill:#4A90D9,color:#fff
-    style R4 fill:#4A90D9,color:#fff
-    style R5 fill:#7ED321,color:#000
-    style E1 fill:#D0021B,color:#fff
-    style E2 fill:#F5A623,color:#000
-    style E3 fill:#F5A623,color:#000
+    class R1 neutro
+    class R2 neutro
+    class R3 neutro
+    class R4 neutro
+    class R5 destaque
+    class E1 falha
+    class E2 destaque
+    class E3 destaque
 ```
 
 > **Em uma frase:** não explique o período — responda à pergunta que o período fez o entrevistador se fazer.

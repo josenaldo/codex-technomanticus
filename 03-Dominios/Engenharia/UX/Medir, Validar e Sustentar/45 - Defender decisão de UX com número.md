@@ -48,8 +48,9 @@ O *"UX Metrics & ROI"* da Nielsen Norman Group, consolidando **44 case studies**
 4. **Apresentar ROI como faixa com atribuição explícita, nunca como certeza.** Em vez de "essa mudança vai gerar $50.000 de retorno", algo como "com base na redução observada de X% no tempo de tarefa e no volume atual de uso, a estimativa de economia fica entre $20.000 e $40.000 por trimestre — considerando que outras mudanças no mesmo período (nova campanha de marketing, sazonalidade) também podem ter contribuído para o resultado observado". É uma frase mais longa e menos impressionante que "$1 vira $100" — e é a única das duas que sobrevive a uma pergunta cética de acompanhamento.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     D["Decisão de UX<br/>a defender"] --> M["1. Métrica de campo<br/>já instrumentada"]
     D --> Q["2. Teste qualitativo rápido<br/>quando não há tráfego para A/B"]
     D --> H["3. Hipótese declarada<br/>antes de medir"]
@@ -58,8 +59,8 @@ graph TD
     Q --> C
     H --> C
     R --> C
-    style C fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
+    class C neutro
+    class D destaque
 ```
 
 **O mecanismo em uma frase:** um argumento de UX sobrevive a uma pergunta cética não porque o número é grande, mas porque cada passo entre a decisão e o número é rastreável e honesto sobre o que não sabe — e é exatamente essa rastreabilidade, não a magnitude do retorno alegado, que separa um argumento sênior de um número emprestado sem lastro.

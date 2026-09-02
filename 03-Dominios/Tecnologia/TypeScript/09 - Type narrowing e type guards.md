@@ -40,6 +40,8 @@ Isso é narrowing: **estreitar um tipo amplo para um tipo mais específico**, de
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     START["valor: string | number"]
     CHECK{"typeof valor\n=== 'string'?"}
     STR["valor: string\n✓ .toUpperCase()\n✓ .slice()\n✓ .length"]
@@ -49,8 +51,8 @@ flowchart TD
     CHECK -->|"true"| STR
     CHECK -->|"false"| NUM
 
-    style STR fill:#1f6feb,color:#fff
-    style NUM fill:#1a6b1a,color:#fff
+    class STR neutro
+    class NUM ok
 ```
 
 > [!note] Leitura do diagrama
@@ -71,6 +73,9 @@ Imagine que o CFA é um detetive que segue seu código linha por linha, anotando
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["Entrada:\nvalor: string | number"]
     B["if typeof === 'string'"]
     C["true-branch:\nvalor: string"]
@@ -83,9 +88,9 @@ flowchart LR
     C --> E
     D --> E
 
-    style C fill:#1f6feb,color:#fff
-    style D fill:#1a6b1a,color:#fff
-    style E fill:#555,color:#fff
+    class C neutro
+    class D ok
+    class E marca
 ```
 
 O CFA entende não só `if/else`, mas também `switch`, early return, `throw`, operadores `&&` e `||`, e até `?.` (optional chaining). Cada um dessas estruturas pode estreitar tipos — se o compilador consegue provar que uma condição é verdadeira ou falsa em determinado ponto, ele aplica o narrowing.
@@ -263,6 +268,9 @@ function processar(evento: Evento): string {
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     E["evento: Evento\n(criado | editado | removido)"]
     S{"switch(evento.tipo)"}
     C["case 'criado':\nevento.autor ✓"]
@@ -274,9 +282,9 @@ flowchart TD
     S -->|"'editado'"| Ed
     S -->|"'removido'"| R
 
-    style C fill:#1f6feb,color:#fff
-    style Ed fill:#1a6b1a,color:#fff
-    style R fill:#7b2d00,color:#fff
+    class C neutro
+    class Ed ok
+    class R destaque
 ```
 
 A propriedade discriminante deve ser:
@@ -432,6 +440,8 @@ function processarForce(dados: unknown): string {
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     P["processarForce(dados: unknown)"]
     A["asserteProduto(dados)"]
     T["dados: Produto\n✓ dados.nome disponível"]
@@ -441,8 +451,8 @@ flowchart TD
     A -->|"isProduto(dados) === true"| T
     A -->|"isProduto(dados) === false"| E
 
-    style T fill:#1f6feb,color:#fff
-    style E fill:#8a0000,color:#fff
+    class T neutro
+    class E falha
 ```
 
 Assertion functions são especialmente úteis em:
@@ -597,6 +607,9 @@ function parsearEvento(json: string): string {
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     JSON["json: string"]
     PARSE["JSON.parse → unknown"]
     G1{"isPedidoCriado?"}
@@ -611,9 +624,9 @@ flowchart TD
     G2 -->|"true"| PP
     G2 -->|"false"| ERR
 
-    style PC fill:#1f6feb,color:#fff
-    style PP fill:#1a6b1a,color:#fff
-    style ERR fill:#8a0000,color:#fff
+    class PC neutro
+    class PP ok
+    class ERR falha
 ```
 
 Cada passo tem um propósito: `unknown` forçado impede o vazamento do `any`; guards sequenciais verificam a estrutura; o throw final garante que nenhum dado malformado passa silenciosamente.

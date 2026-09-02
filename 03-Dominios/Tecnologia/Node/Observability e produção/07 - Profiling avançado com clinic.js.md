@@ -39,6 +39,9 @@ A filosofia do clinic.js é **não invasiva por padrão**: você passa seu coman
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     P["Problema detectado\n(latência alta, CPU, memória)"] --> D["clinic doctor\nDiagnóstico geral — sempre primeiro"]
     D -->|"CPU spike\nsem I/O correspondente"| F["clinic flame\nFlamegraph de wall time"]
     D -->|"I/O alto\nCPU ociosa"| B["clinic bubbleprof\nAsync / await profiling"]
@@ -47,14 +50,14 @@ flowchart TD
     B --> R2["Await chain desnecessária\nParalelizar com Promise.all"]
     H --> R3["Fonte de alocação identificada\nCorrigir listener leak ou limitar cache"]
 
-    style P fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style F fill:#F5A623,color:#fff
-    style B fill:#F5A623,color:#fff
-    style H fill:#F5A623,color:#fff
-    style R1 fill:#27AE60,color:#fff
-    style R2 fill:#27AE60,color:#fff
-    style R3 fill:#27AE60,color:#fff
+    class P neutro
+    class D neutro
+    class F destaque
+    class B destaque
+    class H destaque
+    class R1 ok
+    class R2 ok
+    class R3 ok
 ```
 
 ### Instalação

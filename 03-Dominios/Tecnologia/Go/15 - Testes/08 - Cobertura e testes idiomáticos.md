@@ -51,14 +51,15 @@ O segundo comando abre o navegador com o código-fonte colorido: verde para stat
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["go test -coverprofile=c.out"] --> B["c.out\n(perfil binário)"]
     B --> C["go tool cover -html=c.out"]
     C --> D["relatório HTML\nverde = executado\nvermelho = não executado"]
     B --> E["go tool cover -func=c.out"]
     E --> F["tabela por função,\ndireto no terminal"]
 
-    style D fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
+    class D neutro
+    class F neutro
 ```
 
 Existe uma terceira variante, mais adequada a rodar no terminal ou num pipeline de CI sem abrir navegador: `-func`, que resume a cobertura função a função.
@@ -143,13 +144,16 @@ O ciclo clássico é **vermelho → verde → refatorar**:
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["1. Vermelho\nescrever teste que falha\n(a função ainda não existe\nou está errada)"] --> B["2. Verde\nescrever o mínimo de código\npra o teste passar"]
     B --> C["3. Refatorar\nlimpar a implementação\nsem quebrar o teste"]
     C --> A
 
-    style A fill:#D0021B,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
+    class A falha
+    class B neutro
+    class C destaque
 ```
 
 Um exemplo concreto: implementar uma função `Dividir` que precisa recusar divisão por zero. Em TDD, o teste vem primeiro — e nasce vazio, sem função nenhuma para chamar ainda:

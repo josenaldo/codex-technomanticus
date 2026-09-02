@@ -56,7 +56,6 @@ O React 19 não quebrou o modelo — estendeu-o em dois eixos:
 ## Mapa mental do galho
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#F5A623", "tertiaryColor": "#27AE60"}}}%%
 mindmap
   root((React Core))
     Fundamentos
@@ -293,7 +292,6 @@ Ver: [[03-Dominios/Tecnologia/React/React core/15 - Estado - local, elevado e ex
 ### Quando memoizar — e quando deixar o React Compiler fazer
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#F5A623"}}}%%
 flowchart TD
     A[Tem o React Compiler ativado?] -->|Sim| B[Não memoize manualmente\nO compiler cuida]
     A -->|Não| C{Qual o problema?}
@@ -446,7 +444,6 @@ A vantagem não é menos código — é **composabilidade**: o loading state sob
 ## Onde o galho se conecta aos vizinhos
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#F5A623", "tertiaryColor": "#E8E8E8"}}}%%
 graph LR
     RC["React Core\n(este galho)"]
 

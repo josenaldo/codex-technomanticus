@@ -41,7 +41,6 @@ Doze regras que, seguidas juntas, produzem uma app que pode ser **build-uma-vez,
 Repare no verbo em cada cláusula: *pode ser*, *sem coordenação*, *sem tocar no código*. O 12-Factor não é sobre arquitetura de negócio — é sobre **remover fricção operacional**. Ele responde à pergunta "o que essa app precisa fazer sozinha, sem que um humano intervenha, pra rodar bem numa plataforma que não conhece os detalhes dela"?
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     CONTRATO["Contrato de<br/>operabilidade"] --> CFG["III Config<br/>no ambiente"]
     CONTRATO --> BS["IV Backing services<br/>trocáveis por URL"]
@@ -82,7 +81,6 @@ O teste prático do 12-Factor pra saber se algo é config: você conseguiria abr
 A forma canônica prescrita é **variáveis de ambiente**. Não porque env vars sejam elegantes — são, na verdade, um formato meio grosseiro (tudo string, sem namespacing nativo) — mas porque são **universalmente suportadas** por qualquer linguagem e qualquer SO, ao contrário de um arquivo de config em formato proprietário que cada framework lê de um jeito.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
     CODE["Código<br/>(mesmo em todo ambiente)"] -->|"lê em runtime"| ENV["Variáveis de ambiente<br/>(diferentes por ambiente)"]
     ENV --> DEV["dev: DB_URL=localhost"]
@@ -111,8 +109,10 @@ Este é o fator que mais estrutura *como* um deploy deveria ser pensado — e a 
 A regra: **build**, **release** e **run** são estágios estritamente separados, e nenhum deploy pode pular ou fundir eles.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph BUILD["BUILD"]
         B1["código-fonte<br/>+ dependências"] --> B2["artefato executável<br/>(jar, imagem OCI)"]
     end
@@ -123,9 +123,9 @@ graph LR
     subgraph RUN["RUN"]
         R2 --> RUN1["processo(s) rodando<br/>essa release"]
     end
-    style BUILD fill:#4A90D9,color:#fff
-    style RELEASE fill:#F5A623,color:#000
-    style RUN fill:#2E5C8A,color:#fff
+    class BUILD neutro
+    class RELEASE destaque
+    class RUN marca
 ```
 
 **Build** transforma o código-fonte num artefato executável — compila, resolve dependências, empacota (um `.jar`, uma imagem de container). O build **não sabe** em que ambiente vai rodar.
@@ -161,7 +161,6 @@ Isso parece contraintuitivo pra quem vem de um mundo onde "configurar logging" s
 Na segunda cena de abertura desta nota, o log sumiu porque foi escrito num arquivo *dentro* do container que morreu. Se em vez disso o processo tivesse escrito no stdout, o coletor de logs da plataforma (o driver de log do Docker, o DaemonSet do Fluent Bit no Kubernetes, o agent do Cloud Run) já teria capturado e encaminhado esse stream pra um destino durável **antes** do container morrer — o container é descartável, mas o stream que ele produziu não precisa ser.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     APP["Processo da app"] -->|"stdout, sem buffer"| STDOUT["stream de eventos"]
     STDOUT --> COLLECTOR["Coletor externo<br/>(Fluent Bit, Vector,<br/>driver do container runtime)"]

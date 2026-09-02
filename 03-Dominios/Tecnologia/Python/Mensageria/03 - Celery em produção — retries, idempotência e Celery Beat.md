@@ -120,8 +120,10 @@ O `self.request.retries` expõe o número da tentativa atual, o que permite impl
 O diagrama abaixo resume o ciclo de vida de uma task com retry automático:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Task disparada pelo worker"] --> B{"Executa sem erro?"}
     B -->|"Sim"| C["SUCCESS"]
     B -->|"Exceção em autoretry_for"| D{"Tentativas < max_retries?"}
@@ -130,9 +132,9 @@ flowchart TD
     D -->|"Não"| F["MaxRetriesExceededError<br/>→ FAILURE"]
     B -->|"Exceção fora de autoretry_for"| F
 
-    style C fill:#4A90D9,color:#fff
-    style F fill:#D0021B,color:#fff
-    style E fill:#F5A623,color:#000
+    class C neutro
+    class F falha
+    class E destaque
 ```
 
 **Resumo em uma frase:** `autoretry_for` + `retry_backoff` automatizam o *quando* tentar de novo de forma resiliente a instabilidade transitória — mas não dizem nada sobre o *o que acontece* quando a segunda tentativa roda em cima de um efeito que a primeira já produziu, que é exatamente o problema que a idempotência resolve.
@@ -238,7 +240,6 @@ def registrar_visualizacao(produto_id: int):
 O diagrama abaixo contrasta os dois caminhos completos, do disparo da task até o efeito observável:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant App as Aplicação
     participant Worker as Celery Worker
@@ -257,7 +258,6 @@ sequenceDiagram
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant App as Aplicação
     participant Worker as Celery Worker

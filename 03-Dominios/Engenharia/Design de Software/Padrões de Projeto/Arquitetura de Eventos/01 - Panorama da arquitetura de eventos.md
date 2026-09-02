@@ -63,8 +63,9 @@ Três propriedades decorrem disso e valem como teste prático:
 Fowler separou os sentidos de "event-driven" em quatro padrões, e eles são o mapa desta família — cada um vira uma nota:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     E["'Somos event-driven'"] --> A["<b>Event Notification</b><br/>o evento avisa<br/>payload magro"]
     E --> B["<b>Event-Carried State Transfer</b><br/>o evento entrega o estado<br/>payload gordo"]
     E --> C["<b>Event Sourcing</b><br/>o evento <b>é</b> o estado<br/>log como fonte da verdade"]
@@ -74,10 +75,10 @@ graph TD
     B -.->|"o histórico passa<br/>a valer mais que o agora"| C
     C -.->|"ler o log é caro →<br/>projeções"| D
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#F5A623,color:#000
+    class A neutro
+    class B neutro
+    class C destaque
+    class D destaque
 ```
 
 As setas pontilhadas indicam a **pressão evolutiva** que leva de um a outro, não uma escada a subir. Nada obriga a chegar ao fim, e a maioria dos sistemas saudáveis para no segundo — o âmbar sinaliza que os dois últimos reorganizam o sistema inteiro e cobram caro por isso.

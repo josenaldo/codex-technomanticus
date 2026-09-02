@@ -34,6 +34,7 @@ Cada padrão desta nota resolve uma variação do mesmo problema: **processar da
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Fonte\n(createReadStream, fetch, DB cursor)"]
     B["Transform 1\n(parse, filter, enrich)"]
     C["Transform 2\n(serialize, compress)"]
@@ -43,10 +44,10 @@ flowchart LR
     B -->|"objetos JS\nou linhas"| C
     C -->|"bytes\nserializados"| D
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
+    class A neutro
+    class B neutro
+    class C neutro
+    class D neutro
 ```
 
 Cada Transform faz **uma única coisa** — o princípio de separação de responsabilidades aplicado a pipelines de dados. `pipeline()` conecta os estágios e garante limpeza automática de recursos em caso de erro.

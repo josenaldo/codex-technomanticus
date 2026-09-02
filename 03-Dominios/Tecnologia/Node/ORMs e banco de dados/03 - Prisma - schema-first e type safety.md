@@ -25,6 +25,9 @@ tags:
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     SCHEMA["schema.prisma\n(fonte de verdade)"]
     GEN["prisma generate\n→ Prisma Client tipado"]
     DEV["prisma migrate dev\n→ migration SQL + apply"]
@@ -40,13 +43,13 @@ flowchart TD
     CLIENT --> ACCEL
     SCHEMA --> STUDIO
 
-    style SCHEMA fill:#4A90D9,color:#fff
-    style GEN fill:#4A90D9,color:#fff
-    style CLIENT fill:#F5A623,color:#000
-    style ACCEL fill:#F5A623,color:#000
-    style DEV fill:#D0021B,color:#fff
-    style PROD fill:#D0021B,color:#fff
-    style STUDIO fill:#4A90D9,color:#fff
+    class SCHEMA neutro
+    class GEN neutro
+    class CLIENT destaque
+    class ACCEL destaque
+    class DEV falha
+    class PROD falha
+    class STUDIO neutro
 ```
 
 ## O que é

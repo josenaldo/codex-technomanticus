@@ -52,8 +52,9 @@ handler = Mangum(app)
 Três linhas — e nenhuma delas toca `notificacoes_service/main.py`. O `app = FastAPI(lifespan=lifespan)` que a [[03-Dominios/Tecnologia/Python/Microservices e sistemas distribuídos/08 - Capstone — extraindo o serviço de Notificações|capstone do Galho 15]] construiu continua definindo `POST /notificacoes` exatamente como antes, com o mesmo `Depends(get_notificador)`, o mesmo `NotificacaoIn`/`NotificacaoOut` do Pydantic. `Mangum(app)` não é um wrapper que reimplementa roteamento ou validação — ele delega o processamento inteiro da requisição para o `app` ASGI, e só cuida da tradução nas duas pontas: evento de entrada vira ASGI scope, resposta ASGI vira o formato de resposta que o serviço invocador (API Gateway, por exemplo) espera receber de volta.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     CLIENT["Cliente HTTP\n(ex: tarefas-service via httpx)"] -->|"POST /notificacoes"| APIGW["API Gateway\n(ou Lambda Function URL)"]
     APIGW -->|"evento JSON\n(formato API Gateway)"| RUNTIME["Runtime Lambda Python\ninvoca lambda_handler(event, context)"]
     RUNTIME --> MANGUM["Mangum(app)\ntraduz evento → ASGI scope"]
@@ -63,8 +64,8 @@ flowchart LR
     RUNTIME --> APIGW
     APIGW -->|"202 Accepted"| CLIENT
 
-    style MANGUM fill:#F5A623,color:#000
-    style APP fill:#4A90D9,color:#fff
+    class MANGUM destaque
+    class APP neutro
 ```
 
 O ponto que vale grifar no diagrama: tudo que fica **dentro** da caixa `app` — roteamento, `Depends`, validação Pydantic, a chamada a `AbstractNotificador.enviar()` — é idêntico ao que já existia desde o Galho 15. `Mangum` só existe nas duas bordas, e é justamente por ficar só nas bordas que a mesma aplicação continua rodando, sem alteração, tanto sob Uvicorn num container ([[02 - Kubernetes na prática — Deployment, Service, ConfigMap e Secret|nota 02 deste galho]]) quanto sob Lambda.
@@ -131,8 +132,10 @@ Com `lifespan="auto"` (o padrão), Mangum roda o `startup` do FastAPI antes de d
 Depois que um ambiente de execução existe e processou pelo menos um evento, a AWS o mantém "morno" por um tempo (minutos, não configurável diretamente) esperando o próximo evento. Se o próximo evento chegar dentro dessa janela, ele reaproveita o mesmo ambiente — sem repetir o init phase, só invocando o handler direto. Essa é a invocação de **warm start**, ordens de grandeza mais rápida que a primeira.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph COLD["Cold start — sem ambiente de execução disponível"]
         direction TB
         C1["Provisionar microVM\n(Firecracker)"]
@@ -147,11 +150,11 @@ flowchart TB
         W1["Invocar handler(event, context)\ndireto — init já rodou antes"]
     end
 
-    style C1 fill:#D0021B,color:#fff
-    style C2 fill:#D0021B,color:#fff
-    style C3 fill:#D0021B,color:#fff
-    style C4 fill:#F5A623,color:#000
-    style W1 fill:#4A90D9,color:#fff
+    class C1 falha
+    class C2 falha
+    class C3 falha
+    class C4 destaque
+    class W1 neutro
 ```
 
 O detalhe que separa esse custo de "irrelevante" para "problema de produção real": tudo dentro da caixa vermelha do diagrama acontece **antes** de qualquer requisição ser efetivamente atendida — e o tempo que isso consome escala com a quantidade e o peso do que o módulo importa no escopo global. `notificacoes-service` importa `mangum`, `fastapi`, o `SlackAdapter` (que só depende de `requests`, relativamente leve) — mas o mesmo padrão de arquitetura aplicado a um serviço que também abre uma engine SQLAlchemy no `lifespan`, ou que carrega dezenas de `BaseModel` do Pydantic no módulo de schemas, paga um init phase proporcionalmente mais longo. Cada import adicional no caminho do cold start é I/O de disco (ler o pacote), bytecode a compilar, e, no caso do Pydantic v2, validadores de schema a construir em cima do núcleo escrito em Rust — trabalho real de CPU, não overhead artificial.

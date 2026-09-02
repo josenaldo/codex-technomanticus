@@ -34,20 +34,21 @@ Uma única preparação, quatro resultados — dois ruins, um neutro, um bom. **
 ## O mapa do funil
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["<b>1. Triagem / Recruiter screen</b><br/>recrutador · 20-30min<br/><i>decide: requisitos e faixa batem?</i>"] --> B["<b>2. Hiring manager</b><br/>seu futuro gestor · 45-60min<br/><i>decide: te quero no meu time?</i>"]
     B --> C["<b>3. Deep dive técnico</b><br/>engenheiros · 60min<br/><i>decide: a profundidade confere?</i>"]
     C --> D["<b>4. System design / painel</b><br/>sênior/staff · 60min<br/><i>decide: julgamento sob ambiguidade</i>"]
     D --> E["<b>5. Cultural / cross-functional</b><br/>pares de outras áreas<br/><i>decide: como você opera com gente</i>"]
     E --> F["<b>6. Executivo · oferta</b><br/>diretoria · RH<br/><i>decide: risco e fechamento</i>"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
+    class A neutro
+    class B destaque
+    class C neutro
+    class D neutro
+    class E neutro
+    class F neutro
 ```
 
 O âmbar não é acaso: **a conversa com o hiring manager é a mais decisiva do processo** e a mais subestimada. É a única pessoa que sai da mesa com o problema — se você for contratado, ela convive com a decisão todo dia. Costuma ter poder de veto e, em muitas empresas, poder de puxar alguém adiante apesar de uma nota morna em outra etapa.

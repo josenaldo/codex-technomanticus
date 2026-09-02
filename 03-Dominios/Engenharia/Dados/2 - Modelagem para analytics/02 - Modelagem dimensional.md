@@ -136,7 +136,6 @@ O contraponto real é volume: grão atômico gera mais linhas, mais espaço em d
 Com fato, dimensão e grão definidos, o desenho físico que emerge naturalmente é o **star schema** (esquema estrela): a tabela-fato no centro, cercada pelas tabelas-dimensão, cada uma ligada à fato por exatamente um `JOIN` — nunca uma dimensão ligada a outra dimensão. Visualmente, com a fato no meio e os "raios" saindo para cada dimensão, o desenho lembra uma estrela — daí o nome.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 erDiagram
     fato_vendas }o--|| dim_produto : "produto_id"
     fato_vendas }o--|| dim_cliente : "cliente_id"

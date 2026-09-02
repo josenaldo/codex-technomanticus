@@ -36,6 +36,8 @@ Log pós-incidente é tão útil quanto airbag depois do acidente. A Logging Lay
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Sem Logging Layer"
         A1["Execução do sistema"]
         A2["Incidente detectado\npelo usuário"]
@@ -53,8 +55,8 @@ flowchart LR
     A1 --> A2 --> A3 --> A4
     B1 --> B2 --> B3 --> B4
 
-    style A4 fill:#fff5f5,stroke:#ff6b6b
-    style B4 fill:#f0fff4,stroke:#51cf66
+    class A4 falha
+    class B4 ok
 ```
 
 ## O que é esta camada

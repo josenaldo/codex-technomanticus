@@ -32,15 +32,16 @@ O erro mais comum não é esquecer o estado vazio — é desenhar **um único** 
 3. **"Erro"** — a requisição falhou. Esse caso já foi tratado com profundidade na [[03-Dominios/Engenharia/UX/UX Writing e Content Design/35 - Erros - fluxo de recuperação e mensagem que não culpa|nota 35]] deste mesmo sub-galho: anatomia de três perguntas, tom que não culpa, e distinção por causa (rede, permissão, servidor). Esta nota não repete esse conteúdo — só registra que "erro" é o terceiro membro da família de estados vazios, e que confundi-lo com os outros dois (mostrar "sem dados ainda" quando na verdade a rede falhou) é o próprio anti-padrão que a nota 20 já nomeou como armadilha de modelagem.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Vazio["Tela sem itens para mostrar"] --> Q{"Por que está vazia?"}
     Q -->|"usuário nunca criou nada"| S1["Sem dados ainda<br/>ensinar + convidar à 1ª ação"]
     Q -->|"filtro/busca sem retorno"| S2["Sem resultados<br/>explicar critério + afrouxar"]
     Q -->|"requisição falhou"| S3["Erro<br/>ver nota 35"]
-    style S1 fill:#4A90D9,color:#fff
-    style S2 fill:#4A90D9,color:#fff
-    style S3 fill:#D0021B,color:#fff
+    class S1 neutro
+    class S2 neutro
+    class S3 falha
 ```
 
 **O mecanismo em uma frase:** os três casos parecem visualmente idênticos (uma tela sem itens), mas pedem ações opostas do usuário — criar, afrouxar filtro, ou tentar de novo — então tratar os três com o mesmo texto genérico é, na prática, dar a ação errada em dois dos três casos.

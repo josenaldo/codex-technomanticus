@@ -40,8 +40,9 @@ Duas cenas do mesmo sistema, com um mês de diferença.
 ## A ideia e seu ponto cego
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Aplicação"] --> C{"está no cache?"}
     C -->|"acerto"| R["responde<br/><i>origem nem é tocada</i>"]
     C -->|"falta"| O["busca na origem"]
@@ -49,9 +50,9 @@ graph TD
     P --> R
     O -.->|"origem fora?"| F["sem cache, sem resposta<br/>⇒ a falta é o momento frágil"]
 
-    style R fill:#4A90D9,color:#fff
-    style F fill:#D0021B,color:#fff
-    style C fill:#4A90D9,color:#fff
+    class R neutro
+    class F falha
+    class C neutro
 ```
 
 O nome *aside* vem de o cache ficar **ao lado**: a aplicação fala com os dois e coordena. Ela decide quando ler, quando popular, quando invalidar — o que dá controle e coloca a responsabilidade no seu código, diferente de estratégias em que o cache fica no caminho e cuida disso sozinho.

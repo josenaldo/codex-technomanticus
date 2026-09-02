@@ -147,6 +147,7 @@ Isso não é uma otimização de cache que poderia "dar errado" — é uma garan
 
 ```mermaid
 flowchart TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph Session["Session (uma instância)"]
         IM["Identity Map<br/>(Usuario, 42) → objeto #A"]
     end
@@ -157,7 +158,7 @@ flowchart TB
     Q2["session.get(Usuario, 42)<br/>chamada 2"] -->|"checa o mapa"| IM
     IM -->|"JÁ EXISTE — devolve #A<br/>SEM rodar SELECT de novo*"| OBJ
 
-    style OBJ fill:#2d5016,color:#fff
+    class OBJ ok
 ```
 
 > [!question]- A segunda chamada a `session.get()` sempre evita o `SELECT` completamente?

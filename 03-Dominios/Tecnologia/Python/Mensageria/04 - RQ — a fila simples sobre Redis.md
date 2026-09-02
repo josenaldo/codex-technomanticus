@@ -100,8 +100,9 @@ rq worker relatorios --url redis://localhost:6379/0
 A diferença estrutural relevante em relação ao pool de processos/threads configurável do Celery: por padrão, RQ dá **fork de um processo filho por job**. Cada job roda isolado, num processo próprio, que morre ao terminar — se um job travar toda a memória disponível ou corromper algum estado global do interpretador, o processo seguinte nasce limpo, sem carregar esse estranho. O custo é o oposto do ganho: fork tem overhead de sistema operacional (criar processo é mais caro que reaproveitar uma thread ou um worker de pool já quente), o que torna RQ menos indicado para volumes muito altos de jobs pequenos e rápidos — o cenário onde o modelo de pool do Celery (`--pool=prefork`/`gevent`/`eventlet`, reaproveitando processos) tende a escalar melhor.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Celery["Celery"]
         A1["Handler HTTP<br/>.delay()"] --> B1["Broker<br/>Redis OU RabbitMQ"]
         B1 --> C1["Pool de workers<br/>(processos/threads reaproveitados)"]
@@ -115,10 +116,10 @@ flowchart LR
         C2 -.-> D2["Resultado guardado<br/>no próprio Redis, TTL curto"]
     end
 
-    style B1 fill:#F5A623,color:#000
-    style B2 fill:#4A90D9,color:#fff
-    style C1 fill:#4A90D9,color:#fff
-    style C2 fill:#4A90D9,color:#fff
+    class B1 destaque
+    class B2 neutro
+    class C1 neutro
+    class C2 neutro
 ```
 
 O diagrama resume a diferença de topologia: Celery tem até quatro peças móveis (broker, pool de workers, result backend opcional, Beat opcional), cada uma configurável e substituível — RQ tem duas (Redis, worker), e o "resultado" de um job, quando existe, é gravado no mesmo Redis que já serve de fila, sem infraestrutura adicional para decidir.

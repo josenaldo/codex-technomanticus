@@ -51,6 +51,8 @@ A sintaxe `[K in keyof T]` funciona como um `for...of` sobre as chaves: `K` perc
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     T["T (tipo-fonte)\n{ id: number; name: string; email: string }"]
     KOF["keyof T\n'id' | 'name' | 'email'"]
     MAP["[K in keyof T]: T[K]\n(iteração sobre as chaves)"]
@@ -58,8 +60,8 @@ flowchart LR
 
     T --> KOF --> MAP --> R
 
-    style MAP fill:#2a3a4a,color:#fff
-    style KOF fill:#1a3a2a,color:#fff
+    class MAP neutro
+    class KOF ok
 ```
 
 ---
@@ -320,6 +322,8 @@ O que torna esse exemplo poderoso: se `CreateUserDto` ganhar uma propriedade `ph
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     DTO["CreateUserDto\n{ name: string; email: string;\n  password: string; role: 'admin'|'viewer' }"]
     MAP["FormFields<T>\n[K in keyof T]: FieldState<T[K]>"]
     FORM["CreateUserForm\n{ name: FieldState<string>;\n  email: FieldState<string>;\n  password: FieldState<string>;\n  role: FieldState<'admin'|'viewer'> }"]
@@ -328,8 +332,8 @@ flowchart TD
     DTO --> MAP --> FORM
     FIELD -.-> MAP
 
-    style MAP fill:#2a3a2a,color:#fff
-    style FIELD fill:#1a2a3a,color:#fff
+    class MAP neutro
+    class FIELD marca
 ```
 
 ---
@@ -359,6 +363,8 @@ Esse padrão aparece em bibliotecas como `react-hook-form` e `zod` para derivar 
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     T["T (tipo-fonte)"]
     COND["T[K] extends Target ?"]
     K_YES["K → mantém a chave"]
@@ -368,8 +374,8 @@ flowchart LR
     COND -- "sim" --> K_YES
     COND -- "não" --> NEVER
 
-    style K_YES fill:#1a3a1a,color:#fff
-    style NEVER fill:#3a1a1a,color:#fff
+    class K_YES ok
+    class NEVER falha
 ```
 
 ---
@@ -426,6 +432,7 @@ A nota [[18 - Utility types - e como reconstruí-los]] reconstrói todos esses d
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     MT["Mapped types\n[K in keyof T]: ..."]
 
     P["Partial<T>\n[K in keyof T]?"]
@@ -437,7 +444,7 @@ flowchart TD
 
     MT --> P & Req & RO & Pi & Om & Rec
 
-    style MT fill:#3a2a4a,color:#fff
+    class MT marca
 ```
 
 ---

@@ -38,13 +38,14 @@ Fielding propôs outra coisa: em vez de inventar um protocolo por cima do HTTP, 
 O resultado prático: um cliente REST podia ser "tão simples quanto um navegador ou uma biblioteca HTTP em qualquer linguagem". Um cliente SOAP precisava fazer parsing de XML seguindo regras estritas descritas em WSDL. Essa assimetria de custo de entrada — não uma superioridade teórica de REST sobre SOAP — foi o que decidiu a corrida.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     HTTP["HTTP como ele já era<br/>(verbos, URLs, cache, status)"] -->|"Fielding formaliza, 2000"| REST["REST"]
     SOAP["SOAP + WS-*<br/>(envelope XML, WSDL,<br/>segurança, transação)"] -->|"peso corporativo"| ENTERPRISE["Enterprise pesado<br/>(bancos, ERPs, EDI B2B)"]
     REST -->|"barreira de entrada baixa"| WEB2["Web 2.0<br/>(Amazon, Yahoo, Google,<br/>Twitter, Flickr)"]
-    style REST fill:#4A90D9,color:#fff
-    style SOAP fill:#D0021B,color:#fff
+    class REST neutro
+    class SOAP falha
 ```
 
 Não foi uma virada da noite para o dia. Nos primeiros anos dos 2000, SOAP dominava ambientes corporativos — Oracle, HP, Sun rodavam suas integrações sobre ele. Mas conforme a web amadurecia para o que ficou conhecido como "Web 2.0" — mashups, APIs públicas, apps que consumiam dados de terceiros — empresas como **Amazon, Yahoo e Google** foram migrando ou lançando suas APIs públicas diretamente em REST, o que acelerou a adoção em cascata: onde a empresa líder ia, o ecossistema seguia.
@@ -111,13 +112,13 @@ Em março de 2015, o Google decidiu não apenas modernizar o Stubby internamente
 2. **HTTP/2** — o gRPC não inventou um transporte próprio; ele adotou o HTTP/2, recém-padronizado, que resolve um problema estrutural do HTTP/1.1: o **head-of-line blocking**, onde requisições em uma mesma conexão TCP precisam esperar a resposta da requisição anterior antes de prosseguir. O HTTP/2 introduz **multiplexação** — múltiplos streams de requisição/resposta compartilhando a mesma conexão TCP, intercalados e reconstruídos de forma independente, sem que uma chamada lenta bloqueie as rápidas atrás dela.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#F5A623", "primaryBorderColor": "#B87A1A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     STUBBY["Stubby<br/>(interno, ~2001)"] -->|"nova geração, aberta"| GRPC["gRPC<br/>(open source, mar/2015)"]
     PROTO["Protocol Buffers<br/>(interno 2001,<br/>open source 2008)"] -->|"formato de contrato"| GRPC
     HTTP2["HTTP/2<br/>(padronizado 2015)"] -->|"transporte, multiplexação"| GRPC
     GRPC --> STREAM["4 modos de streaming:<br/>unary, server, client, bidi"]
-    style GRPC fill:#F5A623,color:#000
+    class GRPC destaque
 ```
 
 O resultado prático: gRPC entrega, em benchmarks recentes, latência sensivelmente menor e throughput sensivelmente maior que REST/JSON para comunicação serviço-a-serviço — medições de 2025 chegam a reportar conexões gRPC cerca de 7x mais rápidas para receber dados e cerca de 10x para enviar, em cargas específicas de payload. O ganho vem de duas fontes combinadas: payload binário menor (menos bytes na rede) e multiplexação HTTP/2 (menos tempo de espera por conexão).

@@ -23,8 +23,9 @@ Imagine o projeto mais comum de quem trabalha como engenheiro fractional: uma di
 ## O percurso, de ponta a ponta
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     SG1["SG1 — Fundamentos<br/>heurísticas, affordances, leis<br/>(base transversal)"]
     E1["1. Descobrir<br/>com o cliente<br/>SG2"] --> E2["2. Definir<br/>e estruturar<br/>SG3"]
     E2 --> E3["3. Desenhar fluxo<br/>e telas<br/>SG4"]
@@ -38,9 +39,9 @@ graph LR
     SG1 -.-> E4
     SG1 -.-> E5
     SG1 -.-> E6
-    style E1 fill:#4A90D9,color:#fff
-    style E6 fill:#F5A623,color:#000
-    style SG1 fill:#7ED321,color:#000
+    class E1 neutro
+    class E6 destaque
+    class SG1 destaque
 ```
 
 O SG1 não aparece como uma etapa isolada porque ele não é uma — é o vocabulário que sustenta uma decisão em qualquer um dos seis passos: as [[03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental/03 - As 10 heurísticas de Nielsen|10 heurísticas de Nielsen]] informam tanto a entrevista de descoberta quanto a revisão de tela; as [[03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental/04 - Leis de UX - Fitts, Hick, Jakob, Miller, Peak-End|leis de UX]] explicam por que um formulário de 14 campos assusta antes mesmo de o usuário ler o primeiro; a distinção entre [[03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental/02 - Affordances e signifiers|affordance e signifier]] é o motivo pelo qual um `<div onclick>` "parece" clicável mas não se comporta como tal. Ele não tem seção própria abaixo porque atravessa todas as outras.

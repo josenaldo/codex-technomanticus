@@ -60,6 +60,8 @@ O heap é outra história. Alocar no heap passa pelo alocador de memória do run
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Stack["Alocação na stack"]
         direction TB
         S1["mover stack pointer"] --> S2["usar"]
@@ -72,11 +74,11 @@ flowchart LR
         H3 --> H4["GC libera, depois"]
     end
 
-    style S1 fill:#4A90D9,color:#fff
-    style S3 fill:#4A90D9,color:#fff
-    style H1 fill:#F5A623,color:#000
-    style H3 fill:#F5A623,color:#000
-    style H4 fill:#F5A623,color:#000
+    class S1 neutro
+    class S3 neutro
+    class H1 destaque
+    class H3 destaque
+    class H4 destaque
 ```
 
 A diferença de custo não é sutil: alocação de stack é medida em nanosegundos e não deixa rastro para o GC visitar depois; alocação de heap soma ao trabalho do alocador **e** ao trabalho futuro do coletor. Um programa que aloca compulsivamente no heap onde a stack bastaria não está "errado" — continua correto — mas está pagando um imposto de performance evitável. Escape analysis é a ferramenta que decide, automaticamente, qual imposto se aplica a cada valor.
@@ -251,6 +253,8 @@ Como `dobro` é trivial, o compilador a inlineia dentro de `calcular` antes mesm
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Chamada de função"] --> B{"Compilador consegue\ninlinear?"}
     B -->|"Sim: função pequena,\nchamada direta"| C["Corpo fundido no\nponto de chamada"]
     C --> D["Escape analysis vê\no fluxo completo"]
@@ -258,10 +262,10 @@ flowchart TB
     B -->|"Não: função grande,\nchamada indireta/interface"| F["Fronteira opaca\npara a análise"]
     F --> G["Menos chance de provar\n'não escapa'"]
 
-    style D fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style F fill:#F5A623,color:#000
-    style G fill:#F5A623,color:#000
+    class D neutro
+    class E neutro
+    class F destaque
+    class G destaque
 ```
 
 É por isso que funções muito pequenas — *getters*, *setters*, wrappers finos — tendem a ser boas candidatas a inlining, e por extensão, a manter seus valores na stack: o compilador consegue "ver através" delas. Funções grandes, ou que escondem a lógica atrás de uma interface, empurram valores para o heap com mais frequência — não porque o valor em si seja mais complexo, mas porque a fronteira opaca impede a prova.

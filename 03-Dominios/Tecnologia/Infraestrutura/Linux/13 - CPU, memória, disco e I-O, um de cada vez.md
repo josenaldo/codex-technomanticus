@@ -162,7 +162,6 @@ O que costuma passar despercebido é `sar -n EDEV`: pacote descartado e erro de 
 ## Os quatro eixos, lado a lado
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     A["<b>CPU</b>"] --> A1["utilização: %usr/%sys<br/>saturação: fila (r no vmstat)<br/>erro: %steal"]
     B["<b>memória</b>"] --> B1["utilização: available<br/>saturação: si/so<br/>erro: OOM (nota 14)"]

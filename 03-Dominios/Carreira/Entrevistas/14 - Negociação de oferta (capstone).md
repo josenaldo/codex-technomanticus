@@ -50,8 +50,8 @@ O que **não** fazer é ancorar no seu salário atual. Ele reflete o mercado em 
 **BATNA** — *best alternative to a negotiated agreement* — é a melhor coisa que acontece com você **se esta negociação fracassar**. É o conceito central de negociação, e ele reorganiza a percepção da etapa:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     B["<b>Sua BATNA</b>"] --> B1["outra oferta em andamento"]
     B --> B2["emprego atual que você<br/>não odeia"]
     B --> B3["reserva financeira"]
@@ -59,7 +59,7 @@ graph TD
     B2 --> P
     B3 --> P
 
-    style P fill:#4A90D9,color:#fff
+    class P neutro
 ```
 
 Duas implicações práticas.

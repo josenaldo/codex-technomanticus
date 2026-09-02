@@ -132,6 +132,9 @@ Esta nota não reexplica `Mapped[]`, `mapped_column()` nem o ciclo `transient �
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Dominio["Domínio / Service Layer"]
         SVC["concluir_tarefa(repo, id, usuario_id)"]
         ENT["Tarefa<br/>(dataclass Python puro)"]
@@ -158,9 +161,9 @@ flowchart TB
     SQL --> DB
     FAKE --> MEM
 
-    style ABS fill:#4A90D9,color:#fff
-    style SQL fill:#2d5016,color:#fff
-    style FAKE fill:#F5A623,color:#000
+    class ABS neutro
+    class SQL ok
+    class FAKE destaque
 ```
 
 A Service Layer (`concluir_tarefa`) e o domínio (`Tarefa`) só enxergam o retângulo azul — `AbstractRepository`. Qual implementação concreta está por trás dele (SQL de verdade ou dicionário em memória) é uma decisão que acontece **fora** desse código, no ponto de composição da aplicação — o mesmo princípio que a [[05 - Injeção de dependência como princípio — sem framework pesado|nota 05 deste galho]] vai desenvolver como DI.
@@ -333,6 +336,8 @@ Compare este teste com o do início da nota. Nenhuma linha aqui sabe que `SqlAlc
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph MockAntigo["Antes: mockando a Session"]
         T1["teste"] -->|"MagicMock().query()<br/>.filter().filter()<br/>.join().filter_by()<br/>.one_or_none()"| M["cadeia de mocks<br/>acoplada à FORMA da query"]
     end
@@ -341,8 +346,8 @@ flowchart LR
         T2["teste"] -->|"repo.get(1)<br/>repo.add(tarefa)"| F["FakeRepository<br/>dict real, comportamento real"]
     end
 
-    style M fill:#D0021B,color:#fff
-    style F fill:#2d5016,color:#fff
+    class M falha
+    class F ok
 ```
 
 > [!question]- `FakeRepository` não é só "mais um tipo de mock" com outro nome?

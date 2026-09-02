@@ -57,12 +57,14 @@ fmt.Println(notas) // [40 61 72 88 95]
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["slices.Sort(s)"] --> B{"E satisfaz cmp.Ordered?\n(int, float, string...)"}
     B -->|sim| C["ordena in-place\nusando pdqsort"]
     B -->|não, ex: struct| D["não compila —\nuse SortFunc"]
 
-    style C fill:#4A90D9,color:#fff
-    style D fill:#D0021B,color:#fff
+    class C neutro
+    class D falha
 ```
 
 A ordenação é **in-place** — `slices.Sort` recebe o slice e reordena os elementos no array subjacente, sem alocar um novo slice. Se dois slices compartilham o mesmo array (aliasing, [[05 - O modelo de memória de slices — len, cap e aliasing|nota 05]]), ordenar um afeta a visão do outro. Internamente, o algoritmo é uma variante de *pattern-defeating quicksort* (pdqsort), **não estável**: elementos "iguais" segundo a comparação podem trocar de posição relativa entre si.
@@ -137,13 +139,15 @@ fmt.Println(pontos) // [{0 1} {1 1} {3 4}]
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["slices.SortFunc(s, cmp)"] --> B["cmp(a, b) int"]
     B -->|"< 0"| C["a vem antes de b"]
     B -->|"= 0"| D["ordem entre elas\nnão importa (SortFunc)\nou é preservada (SortStableFunc)"]
     B -->|"> 0"| E["a vem depois de b"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
+    class A neutro
+    class B destaque
 ```
 
 Um segundo caso comum: ordenar por múltiplos critérios, com desempate. `cmp.Or` (também do pacote `cmp`) encadeia comparações, retornando a primeira que não for zero — útil para "ordene por sobrenome, e em caso de empate, por nome":
@@ -262,13 +266,15 @@ fmt.Println(chaves) // ordem NÃO determinística — ex: [pera maçã uva]
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     M["map[string]int"] --> K["maps.Keys(m)\niter.Seq[string]"]
     K --> C["slices.Collect(...)"]
     C --> S["[]string"]
     S --> SORT["slices.Sort(s)"]
 
-    style K fill:#F5A623,color:#000
-    style SORT fill:#4A90D9,color:#fff
+    class K destaque
+    class SORT neutro
 ```
 
 O padrão "extrair chaves, ordenar, iterar em ordem" é tão comum — porque a ordem de iteração de um `map` é deliberadamente [randomizada](https://go.dev/blog/maps#iteration-order) desde o Go 1 — que vale fixar como idioma:

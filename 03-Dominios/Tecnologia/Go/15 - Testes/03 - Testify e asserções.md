@@ -67,6 +67,8 @@ Testify não é um test runner alternativo — ele não substitui `go test` nem 
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Stdlib["testing (stdlib)"]
         T["*testing.T"]
         TE["t.Errorf() — marca falha, continua"]
@@ -80,10 +82,10 @@ flowchart TB
     A -->|"por baixo, chama"| TE
     R -->|"por baixo, chama"| TF
 
-    style A fill:#4A90D9,color:#fff
-    style R fill:#F5A623,color:#000
-    style TE fill:#4A90D9,color:#fff
-    style TF fill:#F5A623,color:#000
+    class A neutro
+    class R destaque
+    class TE neutro
+    class TF destaque
 ```
 
 Cada chamada de `assert.X` ou `require.X` recebe `t` explicitamente — sem mágica de reflection encontrando o `*testing.T` do escopo, sem *global test context* como em alguns frameworks de outras linguagens. Isso é consistente com o resto de Go: nada implícito, tudo passado como valor.

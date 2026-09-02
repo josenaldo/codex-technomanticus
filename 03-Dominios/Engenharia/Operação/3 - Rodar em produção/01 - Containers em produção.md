@@ -63,8 +63,9 @@ CMD ["dist/server.js"]
 Essa imagem final não tem shell, não tem `apt`, não tem `curl`, não tem `npm` — só o runtime do Node e o código compilado. Ela roda como usuário não-root por padrão (a tag `:nonroot` do distroless já vem configurada assim). Ela pesa uma fração do Container A — imagens `distroless/static` chegam a ~2MiB de base, e mesmo a variante com runtime de linguagem fica ordens de grandeza menor que uma `ubuntu` completa. E, o mais importante do ponto de vista de quem opera: se um atacante encontrar uma RCE na aplicação dentro do Container B, ele ganha execução de código — mas não ganha um shell pra explorar a partir dali. Não tem `bash` pra invocar. Não tem `apt install nmap` pra reconhecer a rede. O container vira um beco sem saída.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph GORDA["Container A — imagem 'gorda'"]
         G1["ubuntu:latest completo"]
         G2["shell (bash), curl, vim, git"]
@@ -81,8 +82,8 @@ graph TD
     end
     GORDA -.->|"RCE na app"| SHELL["🔓 atacante ganha shell,<br/>reconhece rede,<br/>escala lateralmente"]
     MINIMA -.->|"RCE na app"| DEADEND["🔒 atacante ganha exec,<br/>mas sem shell —<br/>beco sem saída"]
-    style GORDA fill:#D0021B,stroke:#8B0000,color:#fff
-    style MINIMA fill:#4A90D9,stroke:#2E5C8A,color:#fff
+    class GORDA falha
+    class MINIMA neutro
 ```
 
 O resto desta nota destrincha, uma por uma, as decisões que separam A de B.
@@ -134,16 +135,17 @@ Reduzir o que está *dentro* da imagem é metade do trabalho. A outra metade é 
 **Assinar a imagem (supply chain).** Um passo além do scan é garantir que a imagem que está rodando em produção é *exatamente* a que passou pelo pipeline — não uma versão adulterada entre o build e o deploy. **Cosign** (parte do projeto Sigstore) assina a imagem no CI usando um certificado de curta duração emitido via OIDC (sem gerenciar chave privada manualmente — "keyless signing"), e registra a assinatura num log de transparência imutável (Rekor). O deploy, então, pode exigir verificação dessa assinatura antes de rodar a imagem — fechando o elo entre "o que foi buildado" e "o que está rodando".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Código-fonte"] -->|"CI build"| B["Imagem candidata"]
     B -->|"Trivy/Snyk<br/>scan de CVE"| C{"CVE crítica<br/>sem patch?"}
     C -->|"sim"| BLOQUEIA["🚫 build barrado"]
     C -->|"não"| D["Cosign assina<br/>(Sigstore/Rekor)"]
     D --> E["Push pro registry<br/>com tag imutável/digest"]
     E -->|"deploy verifica<br/>assinatura"| F["Roda em produção"]
-    style BLOQUEIA fill:#D0021B,stroke:#8B0000,color:#fff
-    style D fill:#F5A623,stroke:#B37400,color:#000
+    class BLOQUEIA falha
+    class D destaque
 ```
 
 > [!question]- Isso não é excesso de processo pra um time pequeno?

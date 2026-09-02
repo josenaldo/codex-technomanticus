@@ -30,8 +30,9 @@ Você começa simples: em três lugares do código, `new EmailNotification()`. U
 O problema não é criar objetos; é que a **decisão de qual criar** está grudada em quem só queria "uma notificação para enviar". O Factory Method extrai essa decisão para um lugar único — a fábrica — e devolve ao chamador algo que ele trata pela **interface** (`Notification`), sem saber (nem se importar com) a classe concreta por baixo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     C[Cliente] -->|"create(tipo)"| F[Factory]
     F -->|"a decisão vive só aqui"| E[EmailNotification]
     F --> S[SmsNotification]
@@ -41,9 +42,9 @@ graph TD
     P --> I
     C -.->|só conhece a interface| I
 
-    style F fill:#4A90D9,color:#fff
-    style I fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
+    class F neutro
+    class I neutro
+    class C destaque
 ```
 
 O cliente (âmbar) toca apenas a interface; os tipos concretos e a lógica que escolhe entre eles ficam do lado da fábrica. Trocar ou acrescentar um concreto não encosta no cliente.

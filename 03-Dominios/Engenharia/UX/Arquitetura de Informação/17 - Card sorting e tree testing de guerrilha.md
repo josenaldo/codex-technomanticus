@@ -35,17 +35,18 @@ A ordem importa: rodar um closed card sort antes de ter feito um open card sort 
 O motivo de remover toda a interface visual não é economia de esforço — é **controle experimental deliberado**: um bom visual pode disfarçar uma hierarquia ruim (o usuário acha por pistas visuais, não por lógica de estrutura), e um teste com UI completa não separa os dois efeitos. Tree testing isola exatamente a variável que interessa: a estrutura, sozinha, é achável ou não?
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q["Conteúdo já<br/>existe, sem estrutura"] -->|"open card sort"| M["Modelo mental<br/>revelado pelo usuário"]
     M -->|"você desenha"| H["Hipótese de<br/>hierarquia"]
     H -->|"closed card sort"| V1["Valida agrupamento"]
     H -->|"tree test"| V2["Valida achabilidade<br/>(sem UI)"]
     V1 --> D["Estrutura pronta<br/>para virar tela"]
     V2 --> D
-    style M fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style H fill:#F5A623,color:#000
+    class M neutro
+    class D neutro
+    class H destaque
 ```
 
 > [!tip] Vídeo — Card sorting e tree testing: como os dois se encaixam

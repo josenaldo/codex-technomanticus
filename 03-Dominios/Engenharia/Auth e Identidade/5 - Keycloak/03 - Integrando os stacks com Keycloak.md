@@ -33,8 +33,9 @@ publish: true
 Cada nota do [[4 - Auth nos stacks/index|sub-galho 4]] tratou a integração com um Identity Provider externo como uma peça isolada — "a nota do Spring integra com Keycloak", "a nota do FastAPI valida via JWKS" — mas nunca colocou as cinco lado a lado. Isso é deliberado: cada stack merece ser entendido em seus próprios termos antes de compará-los. Mas na prática, uma organização raramente roda só um stack. Um SaaS B2B típico em 2026 tem times diferentes escolhendo frameworks diferentes por motivos legítimos — o time de dados prefere FastAPI, o time de plataforma roda Spring, um squad novo escolheu NestJS — e todos eles, se a decisão de identidade foi feita direito, apontam para o **mesmo** Keycloak.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     KC["Keycloak — 1 realm<br/>Authorization Server + IdP"]
 
     KC -->|"issuer-uri + JWKS"| SP["Spring Boot<br/>Resource Server"]
@@ -42,11 +43,11 @@ graph TD
     KC -->|"openid-client<br/>OIDC client"| NE["NestJS / Express<br/>BFF + Resource Server"]
     KC -->|"go-oidc<br/>Verifier"| GI["Gin<br/>Resource Server"]
 
-    style KC fill:#4A90D9,color:#fff
-    style SP fill:#F5A623,color:#000
-    style FA fill:#F5A623,color:#000
-    style NE fill:#F5A623,color:#000
-    style GI fill:#F5A623,color:#000
+    class KC neutro
+    class SP destaque
+    class FA destaque
+    class NE destaque
+    class GI destaque
 ```
 
 O que esses quatro consumidores têm em comum não é biblioteca — é **contrato**. Todos falam contra o mesmo `/.well-known/openid-configuration`, todos buscam a mesma chave pública no `/certs` (o endpoint JWKS do Keycloak), e todos precisam decidir a mesma coisa: este token foi assinado por quem eu acho que assinou, ainda é válido, e é para mim que ele foi emitido? A resposta técnica difere por stack — issuer-uri declarativo no Spring, uma função explícita no FastAPI, um verifier construído à mão no Gin — mas a pergunta é idêntica em todos. É essa pergunta única, respondida de quatro formas, que esta nota organiza.
@@ -61,7 +62,6 @@ A pergunta que este fluxo resolve já apareceu, de lados diferentes, em [[2 - OA
 A premissa: uma SPA rodando inteiramente no navegador **não tem onde guardar um token com segurança**. `localStorage` é legível por qualquer script — inclusive um script malicioso injetado via XSS ou uma dependência de terceiros comprometida — e mesmo `sessionStorage` não resolve o problema de fundo, só limita o escopo temporal. A resposta que RFC 9700 recomenda explicitamente, e que virou o padrão de mercado em 2026, é **nunca deixar o token tocar o JavaScript da SPA**: um servidor fino — o **BFF** — fica entre a SPA e o Keycloak, conduz a dança OAuth inteira, e devolve à SPA só um cookie de sessão `HttpOnly` — inacessível a JavaScript, portanto imune a roubo via XSS[^bff-rfc9700].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant SPA as SPA (browser)
     participant BFF as BFF (Node/NestJS/Spring)
@@ -249,16 +249,17 @@ Todo trecho de código acima tropeça na mesma decisão de modelagem, então val
 - **`resource_access.<client_id>.roles`** — roles **por client** (Keycloak chama de "client roles"). Um usuário pode ser `viewer` no client `reports-api` e `editor` no client `orders-api`, ao mesmo tempo, no mesmo token — porque cada client tem seu próprio namespace de roles.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     JWT["access_token (JWT)"] --> RA["realm_access.roles<br/>['admin', 'default-roles-saas-b2b']"]
     JWT --> RSA["resource_access"]
     RSA --> C1["orders-api.roles<br/>['editor']"]
     RSA --> C2["reports-api.roles<br/>['viewer']"]
 
-    style JWT fill:#4A90D9,color:#fff
-    style RA fill:#F5A623,color:#000
-    style RSA fill:#F5A623,color:#000
+    class JWT neutro
+    class RA destaque
+    class RSA destaque
 ```
 
 A decisão prática que cada stack precisa tomar — e que a tabela de trechos-chave acima já resolveu de facto — é **qual dos dois usar para autorização fina** dentro daquela API específica. A resposta que se repete: roles de `realm_access` funcionam bem para papéis amplos e transversais ("é admin da organização"), enquanto `resource_access.<client_id>` é o lugar certo para permissões que só fazem sentido dentro daquele serviço ("pode editar pedidos", só relevante para a `orders-api`). Misturar os dois sem critério — jogar tudo em `realm_access` porque é mais simples de ler no código — tende a produzir uma explosão de roles genéricas no realm inteiro, o mesmo *role explosion* já discutido em [[3 - Autorização e multi-tenancy/01 - RBAC, ABAC e ReBAC — os três modelos|SG3-01]].

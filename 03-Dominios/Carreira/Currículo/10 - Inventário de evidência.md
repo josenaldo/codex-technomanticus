@@ -83,8 +83,9 @@ A evidência mais forte desta porta costuma estar esquecida em **analytics do pr
 A evidência desta porta é, por construção, a mais verificável das dez — mas costuma estar esquecida mesmo assim, porque a pessoa não separa **contribuição pontual** de **colaboração sustentada** dentro do próprio histórico. Um pull request de correção de digitação e seis meses de revisão de código recebida de mantenedores experientes ficam, na cabeça de quem contribuiu, com o mesmo peso informal de "coisas que fiz no GitHub" — e é justamente essa mistura que a dúvida do leitor, nomeada pela nota 02 como substância e continuidade, cobra separar. A evidência que responde a essa dúvida está nas próprias discussões de issue e nos comentários de revisão de pull request — não no número de contribuições, e sim na profundidade da conversa técnica registrada ali, publicamente, com timestamp.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Portas["Porta de entrada (nota 02)"]
         direction TB
         P1["1. Estágio"]
@@ -138,9 +139,9 @@ flowchart LR
     P9-->E9-->D9
     P10-->E10-->D10
 
-    style Portas fill:#4A90D9,color:#fff
-    style Evidencia fill:#7ED321,color:#000
-    style Duvida fill:#F5A623,color:#000
+    class Portas neutro
+    class Evidencia destaque
+    class Duvida destaque
 ```
 
 O diagrama fixa o mapa completo desta nota num único traço: cada porta produz um tipo de evidência com endereço próprio, e cada endereço responde a uma dúvida com nome próprio. Nenhuma das três colunas é opcional — um currículo que só sabe a porta, sem localizar a evidência, chega a uma frase genérica; um currículo que localiza a evidência mas não sabe que dúvida ela responde desperdiça a chance de mirar exatamente no que o leitor está se perguntando.

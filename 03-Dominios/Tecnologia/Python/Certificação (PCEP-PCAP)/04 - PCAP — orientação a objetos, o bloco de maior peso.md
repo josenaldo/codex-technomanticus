@@ -28,6 +28,10 @@ O PCAP-31-03 tem 40 itens em 5 blocos, nota de corte 70% cumulativo. As três pr
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     PCAP["PCAP-31-03 — 40 itens, 5 blocos"] --> B1["Bloco 1: Modules<br/>12% · 6 itens"]
     PCAP --> B2["Bloco 2: Exceptions<br/>14% · 5 itens"]
     PCAP --> B3["Bloco 3: Strings<br/>18% · 8 itens"]
@@ -41,18 +45,18 @@ flowchart TB
     B4 --> I5["Introspecção"]
     B4 --> I6["Construtores"]
 
-    style PCAP fill:#4A90D9,color:#fff
-    style B4 fill:#D0021B,color:#fff
-    style B1 fill:#7ED321,color:#000
-    style B2 fill:#7ED321,color:#000
-    style B3 fill:#7ED321,color:#000
-    style B5 fill:#9013FE,color:#fff
-    style I1 fill:#F5A623,color:#000
-    style I2 fill:#F5A623,color:#000
-    style I3 fill:#F5A623,color:#000
-    style I4 fill:#F5A623,color:#000
-    style I5 fill:#F5A623,color:#000
-    style I6 fill:#F5A623,color:#000
+    class PCAP neutro
+    class B4 falha
+    class B1 destaque
+    class B2 destaque
+    class B3 destaque
+    class B5 marca
+    class I1 destaque
+    class I2 destaque
+    class I3 destaque
+    class I4 destaque
+    class I5 destaque
+    class I6 destaque
 ```
 
 > [!tip] Por que este bloco pesa tanto
@@ -111,6 +115,9 @@ Herança simples (`class Cachorro(Animal)`) funciona como em qualquer linguagem 
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Animal<br/>define emitir_som()"]
     B["Nadador<br/>sobrescreve emitir_som()"]
     C["Voador<br/>sobrescreve emitir_som()"]
@@ -121,10 +128,10 @@ flowchart TB
     B --> D
     C --> D
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#F5A623,color:#000
-    style D fill:#D0021B,color:#fff
+    class A neutro
+    class B destaque
+    class C destaque
+    class D falha
 ```
 
 Python resolve a ambiguidade de forma determinística com o algoritmo **C3 linearization**, que produz a **MRO** (Method Resolution Order) — consultável via `Classe.__mro__` ou `Classe.mro()`. A regra prática mais testável: **a ordem declarada das classes-mãe é o primeiro critério** que a MRO respeita.

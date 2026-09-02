@@ -50,14 +50,14 @@ Repare quem **não** está na lista: o mundo **Java** enterprise, que seguiu maj
 ## A fusão que cobra o preço
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     AR["Objeto User (Active Record)"] --> D["dados (colunas)"]
     AR --> B["regras de negócio"]
     AR --> P["persistência (save/find)"]
     AR --> V["validação"]
 
-    style AR fill:#F5A623,color:#000
+    class AR destaque
 ```
 
 Tudo num objeto só. Isso é conveniente — e é exatamente a raiz das fraquezas: como o objeto **conhece o banco** (o esquema, a persistência), o **domínio fica acoplado à tabela**; e como ele acumula dados + regra + persistência + validação, tende a inchar. Daí os *fat models* de Rails, e a dificuldade de testar a regra de negócio sem subir um banco. Esse é o ponto onde a balança vira a favor do [[08 - Data Mapper]] — que separa o domínio da persistência ao custo de mais cerimônia.

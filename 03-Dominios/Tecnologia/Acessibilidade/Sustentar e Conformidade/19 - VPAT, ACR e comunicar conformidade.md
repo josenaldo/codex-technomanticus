@@ -52,15 +52,16 @@ A confusão de nomes é comum, então vale fixar: o **VPAT** é o **template vaz
 Produzir um ACR honesto **depende inteiramente do SG3**: você não consegue dizer "Partially Supports, falha no critério 2.1.1 no widget de calendário" sem ter feito a auditoria automática e manual que descobriu isso. O ACR é, literalmente, a auditoria da nota 16 traduzida para o formato que o comprador entende. Auditoria ruim gera ACR falso; auditoria boa gera ACR confiável.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     T["VPAT<br/>(template vazio)"] --> A["Auditoria real do SG3<br/>(automática + manual)"]
     A --> P["Preenche critério a critério<br/>Supports / Partially / Does Not / N/A"]
     P --> R["ACR<br/>(entregável assinado)"]
     R --> B["Abre porta B2B<br/>e licitação de governo"]
-    style T fill:#F5A623,color:#000
-    style R fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
+    class T destaque
+    class R neutro
+    class B neutro
 ```
 
 ## O accessibility statement: a versão pública

@@ -87,14 +87,16 @@ if err := fazerAlgo(); err != nil {
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["init statement roda<br/>(f, err := os.Open(...))"] --> B{"condição avaliada<br/>(err != nil)"}
     B -->|true| C["bloco if executa"]
     B -->|false| D["bloco else executa<br/>(se houver)"]
     C --> E["fim do escopo do if<br/>f e err deixam de existir aqui"]
     D --> E
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
+    class A neutro
+    class B destaque
 ```
 
 ## `for`: o único laço de Go, em quatro formas
@@ -158,16 +160,18 @@ Esta é a forma que substitui o `foreach`/`for...of` de Java/JavaScript e o `for
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subj["for — um único comando"] --> f1["Forma 1: clássica<br/>for init; cond; post { }"]
     subj --> f2["Forma 2: só condição<br/>for cond { } — o 'while'"]
     subj --> f3["Forma 3: infinita<br/>for { } — precisa de break"]
     subj --> f4["Forma 4: for range<br/>for i, v := range coisa { }"]
 
-    style subj fill:#4A90D9,color:#fff
-    style f1 fill:#7ED321,color:#000
-    style f2 fill:#7ED321,color:#000
-    style f3 fill:#7ED321,color:#000
-    style f4 fill:#7ED321,color:#000
+    class subj neutro
+    class f1 destaque
+    class f2 destaque
+    class f3 destaque
+    class f4 destaque
 ```
 
 > [!info] Cross-stack: de onde vem cada forma

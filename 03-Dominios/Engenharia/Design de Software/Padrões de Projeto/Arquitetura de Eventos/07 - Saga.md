@@ -43,8 +43,9 @@ A resposta da Saga é honesta e desconfortável: **não se desfaz — compensa-s
 ## As duas formas de conduzir
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph CO["Coreografia — cada um reage"]
         P1["Pedidos"] -->|"PedidoConfirmado"| E1["Estoque"]
         E1 -->|"EstoqueReservado"| F1["Pagamento"]
@@ -61,8 +62,8 @@ graph TD
         O -.->|"compensa 2 e 1"| O
     end
 
-    style O fill:#4A90D9,color:#fff
-    style L1 fill:#F5A623,color:#000
+    class O neutro
+    class L1 destaque
 ```
 
 **Coreografia.** Cada serviço escuta eventos e reage. Não há coordenador; o fluxo é emergente. É simples com três passos e vira ilegível com sete — e repare no lado esquerdo do diagrama: para compensar, o serviço de logística precisa emitir um evento que **alguém** vai tratar, o que significa que os serviços passam a conhecer, ainda que indiretamente, o lugar deles na sequência. O desacoplamento aparente esconde um acoplamento distribuído em muitas cabeças.

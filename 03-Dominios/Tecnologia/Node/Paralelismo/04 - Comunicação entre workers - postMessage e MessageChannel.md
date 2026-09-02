@@ -56,6 +56,8 @@ O canal padrão de um worker (via `parentPort`) é simples e suficiente para mui
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Main["Main Thread"]
         M1[Dados\norig]
         M2[buf\noriginal]
@@ -73,12 +75,12 @@ flowchart LR
     M2 -.->|"buf.byteLength = 0\ndetached"| M2
     M3 <-->|"MessageChannel\nbidirecional"| W3
 
-    style M1 fill:#4A90D9,color:#fff
-    style M2 fill:#4A90D9,color:#fff
-    style M3 fill:#4A90D9,color:#fff
-    style W1 fill:#E8A838,color:#000
-    style W2 fill:#E8A838,color:#000
-    style W3 fill:#E8A838,color:#000
+    class M1 neutro
+    class M2 neutro
+    class M3 neutro
+    class W1 destaque
+    class W2 destaque
+    class W3 destaque
 ```
 
 ### Algoritmo de clone estruturado

@@ -52,11 +52,13 @@ O softmax obriga os pesos de atenção a **somarem 1** para cada token. Quando a
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     Q["Query do\ntokens atual"] --> T0["Tokens 0-3\n⬆ Attention Sinks\n(peso alto 'estacionado')"]
     Q --> TM["Tokens 4-N-1000\n(pesos baixos,\njá fora da janela)"]
     Q --> TR["Tokens recentes N-1000-N\n(pesos altos\ne relevantes)"]
-    style T0 fill:#ff9999,stroke:#cc0000
-    style TR fill:#99ff99,stroke:#009900
+    class T0 falha
+    class TR ok
 ```
 
 A consequência de produção é contraintuitiva: **remover os primeiros tokens do KV cache** (como faria uma sliding window ingênua) **destrói a qualidade** — não por perder contexto antigo, mas por remover o destino padrão da atenção sobrando. Sem os sinks, o softmax fica instável.
@@ -72,13 +74,15 @@ A GPU tem duas hierarquias de memória radicalmente diferentes:
 
 ```mermaid
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "GPU Memory Hierarchy"
         SRAM["SRAM (on-chip)\n~50 MB (H100)\nBandwidth: ~20 TB/s\n✅ Extremamente rápida"]
         HBM["HBM (off-chip)\n~80 GB (H100)\nBandwidth: ~3.35 TB/s\n⚠️ 6× mais lenta que SRAM"]
     end
     SRAM -- "10-20× mais rápida" --> HBM
-    style SRAM fill:#99ccff,stroke:#0066cc
-    style HBM fill:#ffcc99,stroke:#cc6600
+    class SRAM neutro
+    class HBM destaque
 ```
 
 A **atenção ingênua** usa a HBM liberalmente:
@@ -94,6 +98,8 @@ O **FlashAttention** elimina esse tráfego com dois insights:
 
 ```mermaid
 graph TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "FlashAttention: processamento em blocos"
         Q["Q completo\n(HBM)"] --> |"carrega bloco Qi"| SRAM_Q["Bloco Qi\n(SRAM)"]
         K["K completo\n(HBM)"] --> |"carrega bloco Kj"| SRAM_K["Bloco Kj\n(SRAM)"]
@@ -104,8 +110,8 @@ graph TD
         CALC --> ACC["Acumula resultado\nno bloco de output Oi"]
         ACC --> OUT["Escreve Oi final\nna HBM\n(uma única vez por bloco)"]
     end
-    style CALC fill:#99ff99,stroke:#009900
-    style OUT fill:#99ccff,stroke:#0066cc
+    class CALC ok
+    class OUT neutro
 ```
 
 A matriz N×N **nunca é materializada** — ela é calculada um bloco de cada vez, inteiramente dentro da SRAM rápida.
@@ -132,6 +138,9 @@ O FlashAttention baixa a *constante* do O(n²), mas o expoente permanece. Para q
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Atenção full (O(n²))"
         A1[Token 1] --> B1[atende a todos]
         A2[Token 2] --> B1
@@ -143,9 +152,9 @@ graph LR
         C2[Token N] --> D1
         C2 --> D2
     end
-    style B1 fill:#ff9999
-    style D1 fill:#99ff99
-    style D2 fill:#99ccff
+    class B1 falha
+    class D1 ok
+    class D2 neutro
 ```
 
 | Otimização             | O que faz                                             | Complexidade     |
@@ -166,6 +175,8 @@ Uma rota paralela à esparsidade pura: em vez de toda camada pagar O(n²), o mod
 
 ```mermaid
 graph TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph "Arquitetura Híbrida (ex: Gemma 2)"
         L1["Camada 1 — Local\nSliding window 4096 tokens\n💰 O(n·w), barata"]
         L2["Camada 2 — Global\nAtenção full O(n²)\n💸 Cara mas abrangente"]
@@ -173,10 +184,10 @@ graph TD
         L4["Camada 4 — Global"]
         L1 --> L2 --> L3 --> L4
     end
-    style L1 fill:#99ff99,stroke:#009900
-    style L2 fill:#ff9999,stroke:#cc0000
-    style L3 fill:#99ff99,stroke:#009900
-    style L4 fill:#ff9999,stroke:#cc0000
+    class L1 ok
+    class L2 falha
+    class L3 ok
+    class L4 falha
 ```
 
 A maior parte do trabalho fica local e barata (O(n·w), onde w é o tamanho da janela). Só as camadas globais pagam O(n²) — e são minorias. O **Gemma 2** alterna 1:1 (janela de 4096 tokens nas camadas locais). O **GPT-OSS** usa janelas menores (128 tokens) com menos camadas globais ainda.

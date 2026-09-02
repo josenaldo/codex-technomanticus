@@ -59,17 +59,17 @@ Servir uma imagem de 1600 px para um celular de 400 px de largura é desperdíci
 O `srcset` com descritores `w` lista as larguras reais dos arquivos; o `sizes` descreve o layout (aqui: tela cheia no mobile, metade no desktop). Boa prática: **pelo menos 3 larguras** para imagens de conteúdo (400/800/1200), mais uma extra (1600/2000) para heroes de largura total.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[Uma imagem lógica] --> B{Browser escolhe}
     B -->|celular 400px| C[foto-400.jpg]
     B -->|tablet 800px| D[foto-800.jpg]
     B -->|desktop retina| E[foto-1200.jpg]
     A -.formato.-> F["&lt;picture&gt;: AVIF → WebP → JPEG"]
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
+    class B neutro
+    class C neutro
+    class D neutro
+    class E neutro
 ```
 
 ### Frente 3: prioridade — lazy no lugar certo

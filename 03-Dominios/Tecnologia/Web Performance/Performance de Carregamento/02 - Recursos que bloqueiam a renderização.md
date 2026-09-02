@@ -68,8 +68,9 @@ O resultado é brutal: um `<script src>` de terceiros lento no `<head>` pode seg
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph SYNC["&lt;script&gt; (síncrono)"]
         S1[Parse DOM] --> S2[⏸ PARA] --> S3[baixa+executa] --> S4[retoma parse]
     end
@@ -79,9 +80,9 @@ graph TB
     subgraph ASYNC["async"]
         A1[Parse DOM segue] -.baixa em paralelo.-> A2[executa ao chegar, fora de ordem]
     end
-    style S2 fill:#D0021B,color:#fff
-    style D1 fill:#4A90D9,color:#fff
-    style A1 fill:#4A90D9,color:#fff
+    class S2 falha
+    class D1 neutro
+    class A1 neutro
 ```
 
 Como escolher:

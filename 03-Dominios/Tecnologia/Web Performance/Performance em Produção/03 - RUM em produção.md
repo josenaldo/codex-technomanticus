@@ -27,17 +27,18 @@ Mas "instrumentar com `web-vitals`" é só o primeiro dos quatro passos. Um RUM 
 ## Os quatro estágios do pipeline
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["1. Coletar<br/>web-vitals no cliente"] --> B["2. Transportar<br/>sendBeacon + rótulos"]
     B --> C["3. Armazenar<br/>backend agregável"]
     C --> D["4. Visualizar<br/>dashboards por p75"]
     D --> E[decisão acionável]
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#F5A623,color:#000
+    class A neutro
+    class B neutro
+    class C neutro
+    class D neutro
+    class E destaque
 ```
 
 **1. Coletar.** A biblioteca `web-vitals` mede LCP/INP/CLS/TTFB/FCP no cliente e já classifica o `rating` (recap da G1 nota 06). A build de **attribution** ainda te dá o culpado (o seletor do elemento LCP), ouro para diagnóstico.

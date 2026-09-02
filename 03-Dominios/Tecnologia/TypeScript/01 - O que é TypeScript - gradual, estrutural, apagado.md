@@ -48,6 +48,9 @@ Antes de ir às três propriedades, precisa fixar o modelo arquitetural. TypeScr
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph TS["TypeScript (você escreve)"]
         CODE["código .ts com anotações de tipo"]
     end
@@ -65,9 +68,9 @@ flowchart TD
     CODE --> TC
     EMIT --> JSOUT
 
-    style TS fill:#1e3a5f,color:#fff
-    style TSC fill:#3d2b00,color:#fff
-    style JS fill:#1a3a1a,color:#fff
+    class TS neutro
+    class TSC destaque
+    class JS ok
 ```
 
 > [!note] Leitura do diagrama
@@ -142,13 +145,15 @@ O `tsc` aceitou `Coordenada` onde esperava `Ponto` porque `Coordenada` tem `x: n
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph NOM["Tipagem Nominal (Java/C#)"]
         direction TB
         N1["class Coordenada\n{ x, y, z }"]
         N2["interface Ponto\n{ x, y }"]
         N1 -.->|"sem 'implements':\nINCOMPATÍVEL"| N2
         N1 -.->|"mesmo com x e y\niguais: RECUSADO"| N2
-        style N2 fill:#5a1a1a,color:#fff
+        class N2 falha
     end
 
     subgraph EST["Tipagem Estrutural (TypeScript)"]
@@ -157,7 +162,7 @@ flowchart TB
         S2["type Ponto\n{ x, y }"]
         S1 ==>|"tem x e y:\nCOMPATÍVEL"| S2
         S1 ==>|"nome é irrelevante"| S2
-        style S2 fill:#1a3a1a,color:#fff
+        class S2 ok
     end
 ```
 
@@ -212,12 +217,14 @@ renderizar(c); // OK — structural typing normal
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph LIT["Objeto literal direto"]
         L1["renderizar(&#123; x:1, y:2, z:3 &#125;)"]
         L2["Excess property check\nativa do literal"]
         L3["ERRO: z não existe\nem Ponto"]
         L1 --> L2 --> L3
-        style L3 fill:#5a1a1a,color:#fff
+        class L3 falha
     end
 
     subgraph VAR["Via variável"]
@@ -225,7 +232,7 @@ flowchart LR
         V2["Structural check\nnormal"]
         V3["OK: Coordenada\ntem x e y"]
         V1 --> V2 --> V3
-        style V3 fill:#1a3a1a,color:#fff
+        class V3 ok
     end
 ```
 

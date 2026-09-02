@@ -146,8 +146,9 @@ Sobra a pergunta prática: **qual aprofundar?**
 O projeto certo não é o mais recente nem o mais ambicioso na ideia original. É o que já tem, ainda que embrionariamente, pelo menos um dos dois componentes da seção anterior. E a direção do trabalho depende de qual dos dois já existe: se há uso real mas o histórico é raso, torne as decisões visíveis — commits em etapas daqui em diante, escolhas documentadas, os testes que faltavam. Se há decisão técnica interessante mas nenhum uso além do seu, busque o primeiro usuário real — publique, peça a um colega para experimentar, resolva o problema de alguém que não seja você.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Start["Entre os projetos<br/>do seu perfil"] --> Q1{"Já tem uso real,<br/>além de você?"}
     Q1 -->|"sim"| Q2{"O histórico de commits<br/>mostra decisão, não só entrega?"}
     Q1 -->|"não"| Q3{"Há uma decisão técnica<br/>que você defenderia numa entrevista?"}
@@ -158,10 +159,10 @@ flowchart TD
     Q3 -->|"sim"| C["Busque o primeiro usuário real:<br/>publique, peça para alguém testar"]
     Q3 -->|"não"| D["Este não é o projeto a aprofundar.<br/>Escolha outro, ou pare de gerar mais um clone"]
 
-    style A fill:#7ED321,color:#000
-    style B fill:#F5A623,color:#000
-    style C fill:#F5A623,color:#000
-    style D fill:#D0021B,color:#fff
+    class A destaque
+    class B destaque
+    class C destaque
+    class D falha
 ```
 
 Repare no único caminho vermelho. Um projeto sem nenhum dos dois sinais não é candidato a aprofundamento — é candidato a ser abandonado com honestidade, no espírito com que a nota 10 trata o abandono nomeado como evidência válida, ou substituído por um que já nasça resolvendo um problema real em vez de preencher espaço.

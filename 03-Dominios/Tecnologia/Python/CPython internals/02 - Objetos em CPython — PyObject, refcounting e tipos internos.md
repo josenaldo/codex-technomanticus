@@ -75,6 +75,8 @@ typedef struct {
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph PO["PyObject — cabeçalho de TODO objeto Python"]
         A["ob_refcnt: Py_ssize_t\n(contagem de referências)"]
         B["ob_type: PyTypeObject*\n(ponteiro pro tipo)"]
@@ -93,9 +95,9 @@ flowchart TB
     PO -->|"toda struct de objeto\ncomeça com isto"| PVO
     PVO -->|"list, str, tuple, bytes..."| Concreto
 
-    style PO fill:#4A90D9,color:#fff
-    style PVO fill:#4A90D9,color:#fff
-    style Concreto fill:#F5A623,color:#000
+    class PO neutro
+    class PVO neutro
+    class Concreto destaque
 ```
 
 `ob_type` é o que responde a `type(obj)`: um ponteiro para um `PyTypeObject`, uma struct maior ainda que descreve tudo sobre o tipo — seu nome, o tamanho de suas instâncias, e ponteiros de função para cada operação que o [[03-Dominios/Tecnologia/Python/OO e Data Model/03 - O Data Model — dunder methods essenciais|Data Model]] expõe (`tp_repr` para `__repr__`, `tp_hash` para `__hash__`, e por aí vai). Em outras palavras: os dunders que a nota irmã sobre Data Model descreve como "protocolo" não são mágica — são, no nível C, ponteiros de função dentro do `PyTypeObject` apontado por `ob_type`, e o interpretador os invoca via esse ponteiro sempre que uma operação de linguagem precisa deles.
@@ -182,14 +184,17 @@ print(c is d)     # False (na maioria dos casos) — cada um é um objeto NOVO
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["int criado (literal, aritmética, etc.)"] --> B{"Valor está entre -5 e 256?"}
     B -- "Sim" --> C["Devolve ponteiro pro objeto\njá pré-alocado no cache\n(is == True para valores iguais)"]
     B -- "Não" --> D["Aloca um NOVO objeto PyLongObject\n(is pode ser True ou False —\nNÃO confiar nisso)"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#D0021B,color:#fff
+    class A neutro
+    class B neutro
+    class C destaque
+    class D falha
 ```
 
 O CPython não documenta o intervalo exato como parte da especificação da linguagem — é um **detalhe de implementação** do CPython especificamente (código-fonte em [`Objects/longobject.c`](https://github.com/python/cpython/blob/main/Objects/longobject.c), macro `_PY_NSMALLPOSINTS`/`_PY_NSMALLNEGINTS`), não uma garantia da linguagem Python em geral. Outras implementações (PyPy, por exemplo) têm estratégias de cache diferentes ou inexistentes. Depender do comportamento de `is` para inteiros é, portanto, depender de um detalhe de implementação não-portável — mais um motivo, além da correção lógica, para nunca fazer isso em código de produção.

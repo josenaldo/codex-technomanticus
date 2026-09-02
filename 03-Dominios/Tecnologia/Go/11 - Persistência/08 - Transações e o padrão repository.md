@@ -106,6 +106,9 @@ Repare em três detalhes de desenho que não são acidentais:
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["BeginTx(ctx, nil)"] --> B["defer: rollback se err != nil no retorno"]
     B --> C["ExecContext #1"]
     C -->|erro| E["return err"]
@@ -117,9 +120,9 @@ flowchart TD
     E --> H["defer dispara: tx.Rollback()"]
     G --> I["defer dispara: err é nil, Rollback não roda"]
 
-    style A fill:#4A90D9,color:#fff
-    style F fill:#F5A623,color:#000
-    style H fill:#D9534F,color:#fff
+    class A neutro
+    class F destaque
+    class H falha
 ```
 
 > [!info] `Tx.Commit`/`Tx.Rollback` liberam a conexão de volta ao pool
@@ -264,6 +267,8 @@ Essa linha não faz nada em tempo de execução — `_` descarta o valor — mas
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "pacote conta (negócio)"
         I["interface Repository"]
         S["Servico usa Repository"]
@@ -279,9 +284,9 @@ flowchart LR
     F -.satisfaz.-> I
     S --> I
 
-    style I fill:#4A90D9,color:#fff
-    style P fill:#F5A623,color:#000
-    style F fill:#7ED321,color:#000
+    class I neutro
+    class P destaque
+    class F destaque
 ```
 
 Essa inversão — a interface pertence a quem consome, não a quem implementa — é o que a comunidade Go chama de "aceite interfaces, retorne structs concretos" (*accept interfaces, return structs*, do [Go Proverbs](https://go-proverbs.github.io/) de Rob Pike). `NovoServico` aceita `Repository` (interface, pequena, definida por ele mesmo); `NovoContaRepository` retorna `*ContaRepository` (struct concreto, sem interface nenhuma na assinatura de retorno). Quem decide que interface aquele struct precisa satisfazer é sempre o lado que consome.

@@ -37,6 +37,8 @@ O fluxo de decisão abaixo captura quando streams são a escolha certa:
 
 ```mermaid
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A{"Payload > 10 MB\nou tamanho indeterminado?"}
     B["Buffer everything\n(readFile + processamento em array)"]
     C{"Memória disponível\né limitada?"}
@@ -53,12 +55,12 @@ flowchart TD
     F -->|Sim| D
     F -->|Não| B
 
-    style A fill:#F5A623,color:#fff
-    style C fill:#F5A623,color:#fff
-    style E fill:#F5A623,color:#fff
-    style F fill:#F5A623,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
+    class A destaque
+    class C destaque
+    class E destaque
+    class F destaque
+    class B neutro
+    class D neutro
 ```
 
 Se nenhuma das condições que levam a "Stream" for verdadeira, `readFile` + processamento em array é mais simples, mais rápido, e mais fácil de testar.

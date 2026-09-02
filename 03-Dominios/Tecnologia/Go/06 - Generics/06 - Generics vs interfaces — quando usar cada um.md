@@ -52,6 +52,8 @@ O contrário também acontece: alguém escreve uma interface `Ordenavel` com um 
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q["Você precisa que o<br/>MESMO código funcione<br/>para tipos diferentes?"]
     Q --> A["O que varia é o<br/>DADO manipulado<br/>(a estrutura é idêntica)"]
     Q --> B["O que varia é o<br/>COMPORTAMENTO<br/>(a lógica interna difere)"]
@@ -62,8 +64,8 @@ flowchart TB
     A1 --> A2["Pilha[int], Pilha[string]:<br/>mesma lógica de push/pop"]
     B1 --> B2["io.Writer: arquivo, rede,<br/>buffer — lógica diferente cada um"]
 
-    style A1 fill:#4A90D9,color:#fff
-    style B1 fill:#F5A623,color:#000
+    class A1 neutro
+    class B1 destaque
 ```
 
 A pergunta que corta o problema ao meio: **o tipo concreto é conhecido e fixo em cada ponto de uso, ou pode mudar em runtime — inclusive vir de configuração, de plugin, de decisão de negócio?**

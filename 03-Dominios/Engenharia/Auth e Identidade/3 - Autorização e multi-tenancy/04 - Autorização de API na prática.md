@@ -41,16 +41,16 @@ A primeira decisão, e a mais mal-compreendida, é o que colocar dentro do acces
 A resposta curta é: porque isso não escala em nenhuma das três dimensões que importam. Primeiro, **tamanho**: um JWT viaja tipicamente no header HTTP `Authorization`, e a maioria dos servidores web e proxies impõe limites de tamanho de header — Apache por padrão em 8KB, Nginx entre 4-8KB, AWS API Gateway em 10KB[^size-limits]. Um token que tenta carregar uma lista de permissões por recurso, ou um mapeamento completo de URL-para-permissão, cresce até estourar esse limite — e a falha resultante (um `431 Request Header Fields Too Large`) acontece na camada de infraestrutura, antes mesmo de chegar ao código da aplicação, o que a torna especialmente dolorosa de depurar[^large-token-fail]. Segundo, **staleness**: mesmo que o token coubesse, ele é assinado no momento da emissão e vale até expirar — normalmente minutos. Se um admin revoga o acesso de alguém a um documento específico *agora*, essa mudança só teria efeito quando o token atual expirasse, porque o conjunto de permissões ficou congelado dentro da assinatura[^stale-scopes]. Terceiro, **redundância conceitual**: a nota 02 já resolveu "como responder rápido a 'este usuário pode editar este recurso específico'" — é exatamente o que Zanzibar/OpenFGA ou uma política OPA/Cedar fazem, em milissegundos, sem precisar que o token carregue a resposta pré-computada.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Token com 500 permissions<br/>listadas (IDs de recurso)"] --> B["Estoura limite de header<br/>(8-10KB) → 431"]
     A --> C["Congela no momento da emissão<br/>revogação não tem efeito até expirar"]
     A --> D["Duplica o que o PDP<br/>já resolve em ms"]
 
-    style A fill:#D0021B,color:#fff
-    style B fill:#D0021B,color:#fff
-    style C fill:#D0021B,color:#fff
-    style D fill:#D0021B,color:#fff
+    class A falha
+    class B falha
+    class C falha
+    class D falha
 ```
 
 > [!warning] Cramming — a progressão típica do anti-padrão
@@ -82,8 +82,9 @@ No **Projeta**, o access token que a Ana (editora na organização Acme) recebe 
 Repare no que **não** está aqui: nenhuma lista de documentos específicos que a Ana pode editar. Esse token diz "a Ana está autenticada, atua na organização Acme, tem o role `org_member`, e a aplicação que emitiu este token tem permissão de ler/escrever documentos e comentários em nome dela" — tudo isso é coarse, estável, e cabe folgado dentro de qualquer limite de header. A pergunta fina — "a Ana pode editar *este* documento específico, `doc_9f31`?" — não vive no token. Vive no PDP, como a nota 02 já desenhou: uma checagem Zanzibar/OpenFGA (`document:doc_9f31#editor@user:ana`, resolvido via herança de pasta/organização) ou uma política OPA que avalia atributos do documento contra o contexto da requisição.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Token["No token — coarse, estável"]
         T1["sub, org_id"]
         T2["scope: categorias amplas"]
@@ -97,8 +98,8 @@ graph LR
     Token -->|"scope autoriza a<br/>categoria de ação"| PDP
     PDP -->|"decisão final,<br/>por recurso"| Allow["ALLOW / DENY"]
 
-    style Token fill:#4A90D9,color:#fff
-    style PDP fill:#F5A623,color:#000
+    class Token neutro
+    class PDP destaque
 ```
 
 > [!question]- E se eu realmente precisar de uma permissão fina disponível offline, sem chamar o PDP a cada request?
@@ -117,7 +118,6 @@ O **API gateway** (ou um BFF, dependendo da topologia) é o primeiro ponto que t
 Só que o gateway não sabe — e não deveria saber — os detalhes de negócio de cada domínio. Ele não sabe que o documento `doc_9f31` pertence à pasta "Financeiro Q3", que essa pasta herda permissões de um grupo, ou que a política da organização Acme proíbe edição de documentos arquivados. Essa é uma checagem **fine-grained e contextual**, que só o serviço dono daquele domínio de dados tem contexto suficiente para fazer corretamente — geralmente delegando a decisão em si para o PDP (Zanzibar/OpenFGA ou OPA/Cedar), mas aplicando (enforce) a decisão ali, no ponto de acesso ao dado real.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant C as Cliente
     participant GW as API Gateway<br/>(PEP coarse)
@@ -162,7 +162,6 @@ A resposta ingênua é "propaga o mesmo access token da Ana para cada chamada in
 A resposta padronizada é o **OAuth 2.0 Token Exchange**, RFC 8693: um serviço que recebeu um token pode apresentá-lo ao authorization server e pedir, em troca, um **novo** token — preservando a identidade original do usuário (a Ana continua sendo o sujeito), mas com `audience` e `scope` recalculados para exatamente o que o próximo hop precisa[^rfc8693-exchange]. O serviço de documentos, ao chamar o serviço de notificações, troca seu token amplo por um token com `aud: notifications-service` e scope reduzido a `notifications:send` — o serviço de notificações nunca vê, e não pode usar, nenhuma permissão que a Ana tinha sobre documentos.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Ana
     participant GW as Gateway
@@ -190,8 +189,9 @@ Existe uma variante desse problema quando o *primeiro* token — o que o navegad
 O custo do phantom token é uma chamada extra de rede (a introspecção) a cada requisição que chega na borda — relevante quando o gateway está distribuído globalmente e cada instância precisa bater no token service para cada checagem[^phantom-cost]. O padrão **split token**, mais recente, ataca esse custo: em vez de emitir um token opaco genérico, o authorization server entrega ao cliente só a **assinatura** do JWT (a terceira parte, separada de header+payload) como o "token" que ele usa, enquanto header e payload completos ficam num cache no próprio gateway, indexados pelo hash dessa assinatura. O gateway recompõe o JWT localmente comparando a assinatura recebida contra o cache — sem precisar de uma chamada de rede ao token service a cada requisição, preservando a mesma propriedade de "o cliente nunca vê os claims internos"[^split-token].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#F5A623", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Phantom["Phantom token"]
         direction TB
         P1["Cliente recebe<br/>token opaco"] --> P2["Gateway introspecciona<br/>(chamada de rede)"]
@@ -203,8 +203,8 @@ graph TD
         S2 --> S3["Recompõe JWT<br/>repassado ao serviço"]
     end
 
-    style Phantom fill:#4A90D9,color:#fff
-    style Split fill:#F5A623,color:#000
+    class Phantom neutro
+    class Split destaque
 ```
 
 ### Zero-trust interno: mTLS e SPIFFE como base, não como substituto

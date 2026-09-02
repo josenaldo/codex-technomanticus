@@ -341,8 +341,10 @@ O Radix cuidou de: `role="dialog"`, `aria-modal="true"`, `aria-labelledby` apont
 ## Diagrama: arquitetura headless
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#ffffff", "primaryBorderColor": "#3A7BC8", "secondaryColor": "#F5F5F5", "tertiaryColor": "#E8F4FD"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph HEADLESS ["Camada Headless (biblioteca)"]
         direction TB
         L["Lógica & Estado\n(useState, useReducer)"]
@@ -361,16 +363,16 @@ graph TB
 
     HEADLESS -->|"prop getters\nou componentes\nsem estilo"| SEU
 
-    style HEADLESS fill:#4A90D9,color:#ffffff
-    style SEU fill:#27AE60,color:#ffffff
-    style L fill:#3A7BC8,color:#ffffff
-    style A fill:#3A7BC8,color:#ffffff
-    style K fill:#3A7BC8,color:#ffffff
-    style I fill:#3A7BC8,color:#ffffff
-    style M fill:#219653,color:#ffffff
-    style E fill:#219653,color:#ffffff
-    style T fill:#219653,color:#ffffff
-    style B fill:#219653,color:#ffffff
+    class HEADLESS neutro
+    class SEU ok
+    class L marca
+    class A marca
+    class K marca
+    class I marca
+    class M ok
+    class E ok
+    class T ok
+    class B ok
 ```
 
 ---

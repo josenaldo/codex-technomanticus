@@ -80,17 +80,20 @@ list([1, 2, 3])      # [1, 2, 3] -- copia uma lista existente (cópia RASA — v
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["list()"] -->|sem args| B["[] vazia"]
     A -->|"list(iterável)"| C["consome o iterável,<br/>1 elemento por item entregue"]
     C --> D["list('abc') → ['a','b','c']"]
     C --> E["list((1,2,3)) → [1,2,3]"]
     C --> F["list(range(3)) → [0,1,2]"]
 
-    style A fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#fff,color:#000
-    style E fill:#fff,color:#000
-    style F fill:#fff,color:#000
+    class A neutro
+    class C destaque
+    class D marca
+    class E marca
+    class F marca
 ```
 
 ### `.append()` vs `.extend()`: a confusão mais comum de métodos de lista
@@ -276,6 +279,9 @@ print(copia_profunda)    # [1, 2, [3, 4, 5]]
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Rasa["Cópia RASA — .copy() / list(x) / x[:]"]
         O1["original"] --> L1["lista externa (objeto A)"]
         C1["cópia"] --> L2["lista externa (objeto B, NOVO)"]
@@ -290,13 +296,13 @@ flowchart TD
         M2 -->|elemento 2| N3["[3, 4] (objeto G, TAMBÉM NOVO)"]
     end
 
-    style L1 fill:#4A90D9,color:#fff
-    style L2 fill:#4A90D9,color:#fff
-    style N1 fill:#D0021B,color:#fff
-    style M1 fill:#4A90D9,color:#fff
-    style M2 fill:#4A90D9,color:#fff
-    style N2 fill:#F5A623,color:#000
-    style N3 fill:#F5A623,color:#000
+    class L1 neutro
+    class L2 neutro
+    class N1 falha
+    class M1 neutro
+    class M2 neutro
+    class N2 destaque
+    class N3 destaque
 ```
 
 > [!warning] A armadilha do `[[0]*3]*3`: multiplicação de lista NÃO cria N objetos independentes

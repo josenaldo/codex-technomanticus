@@ -109,7 +109,6 @@ O versionamento semântico dá significado a cada parte de `MAJOR.MINOR.PATCH`:
 A promessa é para quem consome: subir de `2.3.1` para `2.3.4` deveria ser seguro; subir para `3.0.0` exige ler o que mudou.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
     A["fix: ..."] --> P["PATCH<br/>2.3.1 → 2.3.2"]
     B["feat: ..."] --> M["MINOR<br/>2.3.1 → 2.4.0"]

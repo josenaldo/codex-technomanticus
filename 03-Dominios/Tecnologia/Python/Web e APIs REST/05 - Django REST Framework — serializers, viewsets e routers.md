@@ -345,8 +345,11 @@ Essas seis linhas geram, sozinhas, todo o mapeamento URL → ação que a seçã
 > Não substitui — compõe com eles. `router.urls` é uma lista de `path()` normal, do mesmo tipo que a nota 02 mostrou sendo construída manualmente; o `Router` só automatiza a *geração* dessa lista a partir do `ViewSet`, mas o resultado final ainda é consumido pelo mecanismo padrão de `urls.py`/`include()` do Django. Para rotas que não vêm de um `ViewSet` (uma view isolada, um endpoint de autenticação customizado), a mistura de `router.urls` com `path()` manual no mesmo `urlpatterns` é normal e documentada — não é um "ou isso, ou aquilo".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Cliente["Requisição HTTP"]
         REQ["POST /api/tarefas/\n{titulo: 'Comprar leite'}"]
     end
@@ -369,13 +372,13 @@ flowchart TB
     SER_IN -.->|"dado inválido"| ERRO
     MODEL --> SER_OUT --> JSON_OUT
 
-    style REQ fill:#4A90D9,color:#fff
-    style ROUTER fill:#4A90D9,color:#fff
-    style SER_IN fill:#4A90D9,color:#fff
-    style MODEL fill:#8b6914,color:#fff
-    style SER_OUT fill:#2d7a4a,color:#fff
-    style JSON_OUT fill:#2d7a4a,color:#fff
-    style ERRO fill:#D0021B,color:#fff
+    class REQ neutro
+    class ROUTER neutro
+    class SER_IN neutro
+    class MODEL destaque
+    class SER_OUT ok
+    class JSON_OUT ok
+    class ERRO falha
 ```
 
 ## `permission_classes`/`authentication_classes` — onde o pipeline se encaixa

@@ -35,6 +35,9 @@ aliases:
 
 ```mermaid
 flowchart LR
+    classDef app fill:#4A90D9,color:#fff,stroke:#2d6fa8
+    classDef client fill:#F5A623,color:#000,stroke:#c4841b
+    classDef db fill:#D0021B,color:#fff,stroke:#9e0114
     App["Aplicação Node.js"]:::app
 
     subgraph Pool["pg.Pool (max: N conexões)"]
@@ -55,9 +58,6 @@ flowchart LR
     C1 -. "BEGIN / COMMIT\n/ ROLLBACK" .-> PG
     C1 -. "client.release()" .-> Pool
 
-    classDef app fill:#4A90D9,color:#fff,stroke:#2d6fa8
-    classDef client fill:#F5A623,color:#000,stroke:#c4841b
-    classDef db fill:#D0021B,color:#fff,stroke:#9e0114
 ```
 
 ### `pg.Pool` vs `pg.Client`

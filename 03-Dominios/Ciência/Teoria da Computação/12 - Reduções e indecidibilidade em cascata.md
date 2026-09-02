@@ -86,6 +86,8 @@ Antes de mais reduções, fixe o esqueleto. Toda redução de mapeamento tem est
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph A["Problema A (conhecido-difícil)"]
         w["instância w"]
     end
@@ -96,8 +98,8 @@ flowchart LR
     fw -->|"decisor de B?"| ans["sim / não"]
     ans -.->|"mesma resposta que w em A"| w
 
-    style A fill:#2d2d3a,stroke:#888,color:#eee
-    style B fill:#3a2d2d,stroke:#888,color:#eee
+    class A neutro
+    class B marca
 ```
 
 Leitura do diagrama: a função `f` empurra a instância `w` de A para uma instância `f(w)` de B. Se houvesse um decisor de B, ele responderia sobre `f(w)`, e por construção essa é exatamente a resposta de `w` em A (a seta tracejada). Resultado: decidir B decidiria A. Se A é indecidível, o decisor de B não pode existir.
@@ -106,6 +108,8 @@ Leitura do diagrama: a função `f` empurra a instância `w` de A para uma inst�
 
 ```mermaid
 flowchart TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph CERTO["CERTO: dificuldade sobe"]
         direction LR
         P1["parada<br/>(indecidível)"] -->|"≤ₘ"| Bc["B (novo)"]
@@ -117,8 +121,8 @@ flowchart TB
         P2 --> C2["só diz: B é fácil<br/>SE a parada fosse fácil"]
     end
 
-    style CERTO fill:#1e3a1e,stroke:#5a5,color:#eee
-    style ERRADO fill:#3a1e1e,stroke:#a55,color:#eee
+    class CERTO ok
+    class ERRADO falha
 ```
 
 Leitura do diagrama: em cima, o caminho correto — a parada (difícil) reduz ao novo B, então B herda a dificuldade. Embaixo, a inversão clássica — reduzir B à parada não diz nada útil, porque a parada nunca é fácil, então a hipótese "se a parada fosse fácil" nunca se realiza. **Sempre coloque o problema já-difícil na cauda da seta `≤ₘ`.**
@@ -229,6 +233,8 @@ Agora dá pra ver o desenho de cima.
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     HALT["PARADA<br/>(diagonalização — a semente)"]
     HALT -->|"reduz a"| ATM["Aₜₘ<br/>M aceita w?"]
     ATM -->|"reduz a"| ETM["Eₜₘ<br/>L(M) = ∅?"]
@@ -240,8 +246,8 @@ flowchart TD
     REG -.-> RICE
     EQTM -.-> RICE
 
-    style HALT fill:#4a2a2a,stroke:#c66,color:#fff
-    style RICE fill:#2a2a4a,stroke:#66c,color:#fff
+    class HALT falha
+    class RICE neutro
 ```
 
 Leitura do diagrama: a parada está na raiz, vermelha — é a única coisa provada *do zero*, com diagonalização. Todo o resto pendura dela por reduções (setas sólidas = "reduz a", a dificuldade descendo pela árvore). E perceba o nó azul: praticamente toda pergunta interessante sobre o **comportamento** de uma máquina (sua linguagem é vazia? é regular? é igual à de outra?) acaba indecidível. Não é coincidência — o [[13 - O teorema de Rice]] **generaliza** isso de uma vez: *qualquer* propriedade não-trivial da linguagem de uma máquina é indecidível. Rice é a cascata inteira provada num teorema só.

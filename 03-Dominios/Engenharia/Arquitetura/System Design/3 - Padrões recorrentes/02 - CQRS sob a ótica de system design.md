@@ -46,7 +46,6 @@ Na prática, isso significa dois caminhos de código (e frequentemente dois esqu
 - **Query side (read model):** recebe apenas leituras, serve dados já formatados para exibição. Desnormalizado, replicado, cacheado — otimizado para latência e throughput de leitura, não para integridade transacional (porque ele não *decide* nada, só reflete uma decisão já tomada).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     U["Usuário"] -->|"Command:<br/>CriarPedido"| WM["Write Model<br/>(normalizado, ACID)"]
     U -->|"Query:<br/>ver produtos"| RM["Read Model<br/>(desnormalizado,<br/>otimizado p/ leitura)"]
@@ -68,7 +67,6 @@ Essa assimetria já é resolvida, em parte, por **read replicas** (ver [[03 - Ba
 CQRS vai um passo além: além de replicar, ele **transforma a forma do dado**. O read model não é uma cópia idêntica do write model — é uma versão já achatada, pré-agregada, moldada exatamente para as queries que a aplicação faz. É a diferença entre "ter mais cópias do mesmo mapa complicado" e "desenhar um mapa mais simples para quem só precisa de uma rota".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
     A["Padrão de carga<br/>read-heavy assimétrico"] --> B{"O que escalar?"}
     B -->|"só volume"| C["Read replicas<br/>(mesmo schema)"]
@@ -106,7 +104,6 @@ Volte ao e-commerce da abertura. Suponha que o time decide resolver o gargalo da
 **5. A leitura acontece.** A home page consulta só o Elasticsearch: um `GET` por facetas (categoria, faixa de preço, frete grátis), sem tocar o Postgres, sem `JOIN`, respondendo em poucos milissegundos mesmo sob 50 mil req/s — porque o índice foi desenhado exatamente para essa pergunta.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Op as Operador/Checkout
     participant WM as Write Model (Postgres)
@@ -142,7 +139,6 @@ CQRS não é binário — é um espectro de quanto você separa. Vale reconhecer
 **Nível D — CQRS + Event Sourcing.** O write model deixa de guardar apenas o estado atual e passa a guardar a **sequência de eventos** que o produziu — o read model deixa de ser um "extra" e passa a ser a *única* forma prática de consultar o sistema, já que o event store bruto não é feito para servir queries. Greg Young resume a relação de forma direta: **"you can use CQRS without Event Sourcing, but with Event Sourcing you must use CQRS"** — porque, uma vez que o estado só existe como replay de eventos, alguma camada precisa materializar esse replay em algo consultável, e essa camada é, por definição, um read model CQRS. Trade-off: máxima flexibilidade (você pode gerar quantos read models quiser, reconstruir o passado, auditar cada mudança) ao custo operacional mais alto do espectro — é o assunto da próxima nota.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     NA["Nível A<br/>Read replica<br/>(mesmo schema)"] --> NB["Nível B<br/>Read model desnormalizado<br/>(mesmo banco)"] --> NC["Nível C<br/>Stores separados<br/>(ex: SQL + Elasticsearch)"] --> ND["Nível D<br/>CQRS + Event Sourcing<br/>(estado = replay de eventos)"]
     NA -.->|"complexidade e desacoplamento crescentes"| ND
@@ -193,7 +189,6 @@ Como o write model efetivamente atualiza o read model? Três abordagens dominam,
 **Eventos de domínio explícitos.** O código de negócio, ao processar um comando, publica deliberadamente um evento ("PedidoCriado", "EstoqueAtualizado") — não é um efeito colateral observado por fora, é uma decisão do próprio domínio. Isso dá controle fino sobre a semântica do evento (nomes de negócio, não deltas de linha de banco), ao custo de o write model precisar saber que precisa publicar. É a ponte natural para Event Sourcing (Nível D).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
     C["Comando processado<br/>no write model"] --> M{"Mecanismo de<br/>sincronização"}
     M -->|"acoplado,<br/>sem garantia atômica"| DW["Dual write direto"]

@@ -130,8 +130,10 @@ NomeArquivoEntrada(nome="../../../etc/passwd")  # VALIDA — o regex aceita pont
 O regex acima parece razoável à primeira leitura — letras, números, ponto, hífen, barra — mas admite exatamente a sequência `../` que compõe um ataque de path traversal, porque ponto e barra são caracteres legítimos em nomes de arquivo comuns e o regex não distingue "um ponto isolado" de "dois pontos seguidos formando `..`". A seção sobre upload de arquivo, mais à frente, desenvolve a defesa real — que não é "escrever um regex melhor", é não usar o nome fornecido pelo cliente para nada que toque o sistema de arquivos.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     INPUT["Input do cliente\n(str, URL, nome de arquivo, JSON)"]
 
     subgraph L1["Camada 1 — Forma"]
@@ -156,12 +158,12 @@ flowchart TB
     CONTEUDO -->|"conteúdo OK, mas destino\nde rede não foi examinado ainda"| DESTINO
     DESTINO --> PREVINE3
 
-    style TIPO fill:#4A90D9,color:#fff
-    style CONTEUDO fill:#8b6914,color:#fff
-    style DESTINO fill:#2d7a4a,color:#fff
-    style PREVINE1 fill:#4A90D9,color:#fff
-    style PREVINE2 fill:#8b6914,color:#fff
-    style PREVINE3 fill:#2d7a4a,color:#fff
+    class TIPO neutro
+    class CONTEUDO destaque
+    class DESTINO ok
+    class PREVINE1 neutro
+    class PREVINE2 destaque
+    class PREVINE3 ok
 ```
 
 Cada camada do diagrama resolve um problema que a camada anterior **não** resolve — e é comum um sistema parar na primeira camada (só Pydantic) achando que cobriu as três, porque as três produzem o mesmo sintoma superficial de "o campo foi validado".

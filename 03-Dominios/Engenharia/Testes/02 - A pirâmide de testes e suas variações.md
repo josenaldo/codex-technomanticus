@@ -56,13 +56,13 @@ Pense na **pirâmide do Egito**: base larga e estável, topo estreito. A base la
 
 ```mermaid
 flowchart BT
+    classDef base fill:#d5f5e3,stroke:#27ae60,color:#000
+    classDef mid fill:#fcf3cf,stroke:#f1c40f,color:#000
+    classDef top fill:#fadbd8,stroke:#e74c3c,color:#000
     U["Unitários<br/>MUITOS &middot; rápidos &middot; baratos<br/>base larga e estável"]
     I["Integração<br/>ALGUNS &middot; médios<br/>testam colaboração"]
     E["E2E<br/>POUCOS &middot; lentos &middot; caros<br/>topo estreito"]
     U --> I --> E
-    classDef base fill:#d5f5e3,stroke:#27ae60,color:#000
-    classDef mid fill:#fcf3cf,stroke:#f1c40f,color:#000
-    classDef top fill:#fadbd8,stroke:#e74c3c,color:#000
     class U base
     class I mid
     class E top
@@ -90,15 +90,15 @@ Por que a forma muda? Dois motivos.
 
 ```mermaid
 flowchart BT
+    classDef est fill:#d6eaf8,stroke:#2980b9,color:#000
+    classDef base fill:#d5f5e3,stroke:#27ae60,color:#000
+    classDef mid fill:#fcf3cf,stroke:#f1c40f,color:#000
+    classDef top fill:#fadbd8,stroke:#e74c3c,color:#000
     S["Análise estática<br/>TypeScript &middot; ESLint &middot; Zod<br/>de graça, antes de rodar"]
     U["Unitários<br/>lógica pura complexa"]
     I["Integração<br/>O CENTRO DE GRAVIDADE<br/>componentes colaborando"]
     E["E2E<br/>jornadas críticas"]
     S --> U --> I --> E
-    classDef est fill:#d6eaf8,stroke:#2980b9,color:#000
-    classDef base fill:#d5f5e3,stroke:#27ae60,color:#000
-    classDef mid fill:#fcf3cf,stroke:#f1c40f,color:#000
-    classDef top fill:#fadbd8,stroke:#e74c3c,color:#000
     class S est
     class U base
     class I mid
@@ -132,6 +132,8 @@ A pirâmide **de cabeça pra baixo**. Topo gigante (muito E2E, frequentemente **
 
 ```mermaid
 flowchart TB
+    classDef bad fill:#fadbd8,stroke:#e74c3c,color:#000
+    classDef gap fill:#f5b7b1,stroke:#c0392b,color:#000,stroke-dasharray: 5 5
     subgraph AMP["AMPULHETA &mdash; miolo afundado"]
         direction BT
         AU["Unitários<br/>MUITOS"]
@@ -146,8 +148,6 @@ flowchart TB
         CE["E2E manual<br/>ENORME &middot; lento &middot; frágil"]
         CU --> CI --> CE
     end
-    classDef bad fill:#fadbd8,stroke:#e74c3c,color:#000
-    classDef gap fill:#f5b7b1,stroke:#c0392b,color:#000,stroke-dasharray: 5 5
     class AU,AE,CU,CI,CE bad
     class AI gap
 ```
@@ -186,6 +186,9 @@ Cada bug que você teme tem um nível natural onde ele se manifesta. Deixe o bug
 
 ```mermaid
 flowchart TD
+    classDef start fill:#d6eaf8,stroke:#2980b9,color:#000
+    classDef dec fill:#fcf3cf,stroke:#f1c40f,color:#000
+    classDef leaf fill:#d5f5e3,stroke:#27ae60,color:#000
     START["Surgiu um bug.<br/>Onde ele mora?"]
     Q1{"É lógica pura,<br/>isolada?"}
     Q2{"É fiação entre<br/>camadas / contrato<br/>com banco/fila/HTTP?"}
@@ -201,9 +204,6 @@ flowchart TD
     Q2 -- não --> Q3
     Q3 -- sim --> E2E
     Q3 -- não --> REV
-    classDef start fill:#d6eaf8,stroke:#2980b9,color:#000
-    classDef dec fill:#fcf3cf,stroke:#f1c40f,color:#000
-    classDef leaf fill:#d5f5e3,stroke:#27ae60,color:#000
     class START start
     class Q1,Q2,Q3 dec
     class UNIT,INT,E2E,REV leaf

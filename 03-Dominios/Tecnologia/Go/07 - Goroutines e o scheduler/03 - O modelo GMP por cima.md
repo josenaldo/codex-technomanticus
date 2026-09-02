@@ -31,6 +31,8 @@ Para orquestrar esse mapeamento, o runtime precisa de três peças, não duas. S
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Runtime["Runtime do Go"]
         G1["G: goroutine 1"]
         G2["G: goroutine 2"]
@@ -55,14 +57,14 @@ flowchart TB
     M1 --> OS
     M2 --> OS
 
-    style G1 fill:#4A90D9,color:#fff
-    style G2 fill:#4A90D9,color:#fff
-    style G3 fill:#4A90D9,color:#fff
-    style G4 fill:#4A90D9,color:#fff
-    style P1 fill:#F5A623,color:#000
-    style P2 fill:#F5A623,color:#000
-    style M1 fill:#7ED321,color:#000
-    style M2 fill:#7ED321,color:#000
+    class G1 neutro
+    class G2 neutro
+    class G3 neutro
+    class G4 neutro
+    class P1 destaque
+    class P2 destaque
+    class M1 destaque
+    class M2 destaque
 ```
 
 - **G (goroutine)** — a unidade de trabalho: uma pilha própria (que cresce e encolhe, como a nota anterior detalhou), um ponto de execução, e o código que a `go` statement lançou. Existem tipicamente aos milhares; são baratas de criar e destruir porque vivem inteiramente no espaço do runtime, sem envolver o kernel.
@@ -141,14 +143,16 @@ A situação mais reveladora do papel de P aparece quando uma goroutine faz uma 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["M1 + P1 executando G"] -->|"G faz syscall\nbloqueante"| B["G entra em syscall\nM1 fica presa no kernel"]
     B -->|"runtime detecta\nM1 bloqueada"| C["P1 se desacopla de M1"]
     C -->|"P1 procura M ociosa\nou cria M2 nova"| D["M2 assume P1,\nfila local continua rodando"]
     B -.->|"quando syscall retorna"| E["G tenta retomar um P\n(o antigo ou outro livre)"]
 
-    style A fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#7ED321,color:#000
+    class A neutro
+    class C destaque
+    class D destaque
 ```
 
 Quando o runtime detecta que uma M está prestes a entrar (ou já entrou) numa chamada de sistema bloqueante, ele destaca o P daquela M e o entrega a outra M — reaproveitando uma que esteja ociosa, ou criando uma nova via `clone`/`CreateThread` se não houver nenhuma disponível. Isso é o motivo pelo qual o número de M num processo Go pode facilmente superar `GOMAXPROCS` — dezenas ou centenas de threads podem existir, a maioria dormindo, esperando ou presa em syscalls, enquanto só `GOMAXPROCS` delas efetivamente seguram um P e executam código Go num dado instante.

@@ -41,6 +41,7 @@ Um peso de rede neural é um número de ponto flutuante. Em FP32, ele ocupa 32 b
 
 ```mermaid
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "FP16: 65.536 valores possíveis"
         F1["...0.124, 0.125, 0.126, 0.127..."]
     end
@@ -48,7 +49,7 @@ graph LR
         I1["-8, -7, -6, -5, -4, -3, -2, -1,\n0, 1, 2, 3, 4, 5, 6, 7"]
     end
     F1 -- "arredonda ao bin mais próximo" --> I1
-    style I1 fill:#ffcc99,stroke:#cc6600
+    class I1 destaque
 ```
 
 Quantizar é "arredondar" os pesos para os bins disponíveis. O custo: um peso que valia 0.3271 pode virar 0.33 (INT8) ou 0.25 (INT4). Acumule esses erros de arredondamento em 70 bilhões de pesos e você terá alguma degradação de qualidade — mas surpreendentemente pouca nas precisões moderadas (INT8, Q5).
@@ -114,6 +115,9 @@ A destilação faz o aluno aprender a *imitar a distribuição completa* do prof
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     D["Dataset de treino\n(inputs)"] --> T["Modelo Professor\n(grande, ex: 70B)"]
     T --> ST["Soft targets\n(distribuição completa\nde probabilidades)"]
     D --> S["Modelo Aluno\n(menor, ex: 7B)"]
@@ -121,9 +125,9 @@ graph TD
     S --> LOSS
     LOSS --> TRAIN["Treino do aluno\ncom gradientes"]
     TRAIN --> S
-    style T fill:#99ccff,stroke:#0066cc
-    style S fill:#99ff99,stroke:#009900
-    style ST fill:#ffe0b3,stroke:#ff9800
+    class T neutro
+    class S ok
+    class ST destaque
 ```
 
 Para expor melhor a dark knowledge (suavizar picos de probabilidade), os logits do professor são divididos por uma **temperatura T > 1** antes do softmax. Com T=4, uma distribuição `[0.95, 0.04, 0.01]` se torna `[0.60, 0.28, 0.12]` — muito mais informativa para o aluno treinar.
@@ -146,11 +150,14 @@ As duas técnicas não são concorrentes — são camadas de um mesmo pipeline:
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Modelo Flagship\n(ex: 600B, FP16)"] -->|"Destilação"| B["Modelo Aluno\n(ex: 7B, FP16)\n— genuinamente menor"]
     B -->|"Quantização (PTQ)"| C["Modelo Final\n(ex: 7B, INT4)\n— menor e mais barato por token"]
-    style A fill:#ff9999,stroke:#cc0000
-    style B fill:#ffcc99,stroke:#cc6600
-    style C fill:#99ff99,stroke:#009900
+    class A falha
+    class B destaque
+    class C ok
 ```
 
 Primeiro reduz a *arquitetura* (menos parâmetros via destilação), depois reduz a *precisão* (menos bits via quantização). É assim que se chega a modelos que rodam em celular ou no navegador — e por que Phi-3 Mini (3.8B, INT4) funciona razoavelmente num laptop de consumo.

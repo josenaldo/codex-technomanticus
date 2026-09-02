@@ -144,6 +144,8 @@ Abaixo, o desenho do information hiding em uma fronteira: o chamador depende só
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     C1[Chamador A] --> I
     C2[Chamador B] --> I
     C3[Chamador C] --> I
@@ -151,8 +153,8 @@ flowchart LR
         I[Interface\nestável e pequena]
         I -.protege.-> S[(Segredo:\ndecisão volátil\nformato / algoritmo /\nlayout interno)]
     end
-    style S fill:#3b2f1e,stroke:#b8860b,color:#f5deb3
-    style I fill:#1e2a3b,stroke:#4682b4,color:#d6e4f0
+    class S destaque
+    class I neutro
 ```
 
 *Leitura do diagrama:* os chamadores tocam apenas a interface (caixa azul); o segredo (caixa âmbar) — a decisão que vai mudar — fica selado atrás dela, de modo que trocá-lo não chega a ninguém de fora.
@@ -195,13 +197,15 @@ Cada nível **assume** que o de baixo funciona e fala um vocabulário mais próx
 
 ```mermaid
 flowchart TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     D[Domínio do negócio\n'criar pedido', 'cobrar cliente'] --> L
     L[Biblioteca / framework\nList, HttpClient, ORM] --> P
     P[Linguagem de alto nível\nfunções, tipos, objetos] --> I
     I[Instruções / bytecode\nADD, LOAD, JMP] --> H
     H[Hardware\nregistradores, portas lógicas]
-    style D fill:#1e3b2a,stroke:#2e8b57,color:#d6f0e4
-    style H fill:#3b1e1e,stroke:#a0522d,color:#f0d6d6
+    class D ok
+    class H falha
 ```
 
 *Leitura do diagrama:* cada nível depende do de baixo, mas só pela interface — quem escreve regra de negócio (topo) raciocina com "pedido" e "cliente" e legitimamente ignora registradores (base); a torre só funciona porque cada andar esconde o anterior.
@@ -244,6 +248,9 @@ O diagrama abaixo desenha as barreiras como o próprio SICP as desenha: camadas 
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     U["Programa que usa números racionais\nsoma_rac, imprime_rac"]
     B1{{"— barreira: só usa numerador / denominador / fazer_racional —"}}
     S["Operações racionais (interface)\nnumerador(r) · denominador(r) · fazer_racional(n,d)"]
@@ -252,11 +259,11 @@ flowchart TB
     B3{{"— barreira: só usa cons / car / cdr —"}}
     H["Pares primitivos da linguagem\ncons · car · cdr"]
     U --> B1 --> S --> B2 --> P --> B3 --> H
-    style B1 fill:#3b2f1e,stroke:#b8860b,color:#f5deb3
-    style B2 fill:#3b2f1e,stroke:#b8860b,color:#f5deb3
-    style B3 fill:#3b2f1e,stroke:#b8860b,color:#f5deb3
-    style S fill:#1e2a3b,stroke:#4682b4,color:#d6e4f0
-    style P fill:#1e3b2a,stroke:#2e8b57,color:#d6f0e4
+    class B1 destaque
+    class B2 destaque
+    class B3 destaque
+    class S neutro
+    class P ok
 ```
 
 *Leitura do diagrama:* cada faixa âmbar é uma **barreira** — uma linha que só deixa passar a interface, nunca a implementação. Quem soma racionais (topo) chama `numerador`/`denominador` e legitimamente ignora que `r` é um par; quem implementa o par (meio) chama `cons`/`car` e ignora como a linguagem guarda pares (base). Trocar qualquer camada por outra equivalente não atravessa as barreiras vizinhas — é a torre de Dijkstra com as fronteiras explicitamente marcadas.
@@ -443,6 +450,10 @@ Abstrair cedo é apostar no escuro. A duplicação temporária é o preço de es
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[Vejo código duplicado] --> B{Quantas ocorrências?}
     B -->|1ª ou 2ª| C[Duplique de propósito\nespere mais evidência]
     B -->|3ª| D{Elas mudam pela\nMESMA razão?}
@@ -452,10 +463,10 @@ flowchart TD
     F -->|Encaixa limpo| G[Ótimo: era a abstração certa]
     F -->|Só com flag + if| H[ALERTA: abstração errada]
     H --> I[Re-inline em cada chamador\napague o que sobra\nre-extraia se fizer sentido]
-    style C fill:#1e2a3b,stroke:#4682b4,color:#d6e4f0
-    style E fill:#1e3b2a,stroke:#2e8b57,color:#d6f0e4
-    style H fill:#3b1e1e,stroke:#c0392b,color:#f0d6d6
-    style I fill:#3b2f1e,stroke:#b8860b,color:#f5deb3
+    class C neutro
+    class E ok
+    class H falha
+    class I destaque
 ```
 
 *Leitura do diagrama:* o caminho seguro hesita (duplica) até a terceira ocorrência **e** confirma que os trechos mudam pela mesma razão; quando um requisito novo só entra com flag e `if`, isso é o sinal de abstração errada — e a saída é desfazer (re-inline), não empilhar mais condicionais.

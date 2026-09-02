@@ -66,7 +66,6 @@ spec:
 O laço de controle do HPA não roda em tempo real, evento a evento — ele consulta métricas periodicamente (a cada 15 segundos, por padrão, configurável via `--horizontal-pod-autoscaler-sync-period` no `kube-controller-manager`), calcula o número desejado de réplicas, e aplica a mudança se ela ultrapassar uma tolerância mínima (10% de diferença, por padrão — evitando reescalar por flutuações minúsculas de 1-2% que não significam nada).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant MS as metrics-server
     participant HPA as HPA controller<br/>(loop a cada 15s)
@@ -101,8 +100,9 @@ O `metrics-server` da seção anterior resolve exatamente um problema: CPU e mem
 O Kubernetes resolve essa lacuna com um segundo conjunto de APIs, que o HPA também sabe consultar — não só `metrics.k8s.io`, mas também `custom.metrics.k8s.io` (métricas associadas a um objeto do cluster, como um Pod ou um Deployment) e `external.metrics.k8s.io` (métricas que não vêm de nenhum objeto do Kubernetes — o tamanho de uma fila num broker externo é o exemplo canônico). Nenhuma dessas duas APIs vem implementada por padrão em um cluster comum — alguém precisa rodar um **adapter** que as implemente, traduzindo de uma fonte de métricas real (quase sempre Prometheus, na prática de mercado) para o formato que essas APIs exigem.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph APP["notificacoes-service"]
         M["ObservableGauge/Counter<br/>fila.tamanho, latencia p99"]
     end
@@ -118,8 +118,8 @@ flowchart LR
     HPA -->|"consulta a cada sync period"| K8SAPI
     HPA -->|"ajusta replicas"| DEP
 
-    style ADP fill:#F5A623,color:#000
-    style HPA fill:#4A90D9,color:#fff
+    class ADP destaque
+    class HPA neutro
 ```
 
 O papel do **Prometheus Adapter** (`k8s-prometheus-adapter`) é exatamente essa camada de tradução: um administrador de cluster configura, no adapter, uma regra que mapeia um nome de métrica customizada (ex.: `notificacoes_fila_tamanho`) para uma consulta PromQL real (ex.: `rabbitmq_queue_messages_ready{queue="notificacoes.fila"}`), e o adapter passa a responder, na `custom.metrics.k8s.io` API, com o resultado dessa consulta sempre que alguém — nesse caso, o HPA — perguntar por aquela métrica. Do ponto de vista do HPA, não existe diferença estrutural entre consultar `metrics.k8s.io` para CPU ou `custom.metrics.k8s.io` para tamanho de fila — as duas são só APIs Kubernetes que devolvem um número; a diferença inteira está em quem implementa cada uma por trás.
@@ -191,14 +191,15 @@ spec:
 `target.type: AverageValue` com `averageValue: "50"` diz: "mantenha, em média, 50 mensagens não processadas por réplica" — não um percentual (que não faz sentido aqui; não existe "100% de fila"), um **valor absoluto** dividido pelo número de réplicas atuais. Se a fila tem 500 mensagens `ready` e existem 2 réplicas rodando, a razão é `500/2 = 250` mensagens por réplica — bem acima do alvo de 50 — e o HPA calcula quantas réplicas trariam essa razão de volta perto de 50: `ceil(2 × (250/50)) = 10` réplicas (respeitando o teto de `maxReplicas: 15`).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     E1["Fila cresce:<br/>500 mensagens ready"] --> E2["2 réplicas ativas<br/>250 msgs/réplica"]
     E2 -->|"alvo: 50 msgs/réplica"| CALC["HPA calcula:<br/>ceil(2 × 250/50) = 10"]
     CALC --> E3["Deployment escalado<br/>para 10 réplicas"]
     E3 --> E4["10 réplicas ativas<br/>~50 msgs/réplica cada"]
-    style E1 fill:#D0021B,color:#fff
-    style E4 fill:#4A90D9,color:#fff
+    class E1 falha
+    class E4 neutro
 ```
 
 Uma alternativa igualmente válida — e às vezes mais correta que tamanho de fila puro — é escalar pela **latência p99** do processamento de cada evento, a mesma métrica que o `Histogram` da [[03-Dominios/Tecnologia/Python/Observabilidade e produção/03 - Métricas com OpenTelemetry e Prometheus client|nota 03 do Galho 17]] e a comparação de throttling da [[03 - Recursos e limites — requests, limits e OOMKill|nota 03 deste galho]] já usaram como sinal de saúde:
@@ -283,8 +284,9 @@ spec:
 `scaleDown.stabilizationWindowSeconds: 300` é o parâmetro que resolve o flapping diretamente: em vez de reduzir réplicas assim que a métrica cair momentaneamente, o HPA olha para a **janela inteira** dos últimos 300 segundos (5 minutos) e usa o maior número de réplicas recomendado dentro dessa janela — não o valor mais recente. Se a fila cai para zero por 40 segundos e volta a crescer no minuto seguinte (um padrão comum quando o tráfego chega em rajadas curtas, não uma queda sustentada), o HPA nunca chega a remover réplicas no meio dessa oscilação, porque a janela de 5 minutos ainda contém a recomendação alta de minutos atrás.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     SEM["Sem stabilizationWindow:<br/>reage ao valor mais recente"] --> F1["Fila cai 40s → reduz réplicas"]
     F1 --> F2["Fila sobe de novo → aumenta réplicas"]
     F2 --> F3["Repete a cada minuto:<br/>FLAPPING"]
@@ -292,8 +294,8 @@ graph TD
     COM["Com scaleDown.stabilizationWindowSeconds: 300"] --> J["Usa o MAIOR valor<br/>recomendado nos últimos 5min"]
     J --> ESTAVEL["Queda momentânea não<br/>dispara scale-down isolado"]
 
-    style F3 fill:#D0021B,color:#fff
-    style ESTAVEL fill:#4A90D9,color:#fff
+    class F3 falha
+    class ESTAVEL neutro
 ```
 
 > [!warning] Flapping não é só desconfortável de assistir — tem custo real

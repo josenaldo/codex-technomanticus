@@ -44,18 +44,18 @@ O contexto importa: GUI gráfica era novidade, e o problema que ele atacava era 
 **Sincronização por observação** (*observer synchronization*) — se o model não conhece a view, como a view fica sabendo que mudou? Ela **observa**. Todas as views e controllers observam o model; quando o model muda, ele notifica, e as views reagem.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     C["Controller<br/>traduz o gesto do usuário"] -->|"altera"| M["Model<br/>ignorante da UI"]
     M -.->|"notifica: mudei"| V1["View: planilha"]
     M -.->|"notifica: mudei"| V2["View: gráfico"]
     V1 -->|"lê estado"| M
     V2 -->|"lê estado"| M
 
-    style M fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style V1 fill:#4A90D9,color:#fff
-    style V2 fill:#4A90D9,color:#fff
+    class M neutro
+    class C neutro
+    class V1 neutro
+    class V2 neutro
 ```
 
 As setas pontilhadas são o padrão inteiro. Sem elas, sobra uma divisão de arquivos em três pastas. **O MVC original é [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Clássicos (GoF)/13 - Observer|Observer]] aplicado à consistência de telas** — o Observer do GoF, aliás, cita explicitamente essa origem.

@@ -46,14 +46,17 @@ O alçapão é a chave privada. A descrição pública da função — sem o al�
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Entrada clara\n(mensagem ou chave de sessão)"] --> B["Função de mão única\nf(x) — microsssegundos"]
     B --> C["Saída cifrada f(x)"]
     C --> D{"Inverter f(x)?"}
     D -->|"Sem alçapão\n(só a chave pública)"| E["Inviável computacionalmente\nbilhões de anos com hardware clássico"]
     D -->|"Com alçapão\n(chave privada)"| F["Recuperação direta\nmicrosssegundos"]
-    style E fill:#c0392b,color:#fff
-    style F fill:#27ae60,color:#fff
-    style B fill:#2980b9,color:#fff
+    class E falha
+    class F ok
+    class B neutro
 ```
 
 > [!info] Leitura do diagrama
@@ -78,13 +81,15 @@ A relação matemática entre as duas é unidirecional: é possível derivar a p
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     GEN["Gerador de par\nalgoritmo + CSRNG"]
     GEN -->|"deriva (trivial)"| PUB["Chave Pública\ndistribuída livremente\npode estar em DNS, e-mail, web"]
     GEN -->|"guarda em segredo"| PRIV["Chave Privada\nsó você\nnunca sai da máquina"]
     PUB -. "impossível sem o alçapão" .-> PRIV
-    style PRIV fill:#2c3e50,color:#fff
-    style PUB fill:#2980b9,color:#fff
-    style GEN fill:#7f8c8d,color:#fff
+    class PRIV neutro
+    class PUB marca
+    class GEN neutro
 ```
 
 > [!info] Leitura do diagrama
@@ -209,6 +214,8 @@ Chaves menores significam: menos banda em handshakes, menos memória, operaçõe
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph RSA["RSA — dificuldade de fatoração"]
         R1["n = p × q\nprimos com centenas de dígitos"]
         R2["Multiplicar p × q: trivial\nFatorar n: inviável"]
@@ -220,8 +227,8 @@ graph LR
         E1 --> E2
     end
     RSA -->|"ECC-256 &asymp; RSA-3072\nchave 12× menor"| ECC
-    style RSA fill:#8e44ad,color:#fff
-    style ECC fill:#16a085,color:#fff
+    class RSA marca
+    class ECC neutro
 ```
 
 > [!info] Leitura do diagrama

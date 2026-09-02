@@ -46,6 +46,8 @@ case msg := <-urgentes:
 
 ```mermaid
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["select {}"] --> B{"algum case\npronto?"}
     B -- "nenhum, sem default" --> C["bloqueia até\num ficar pronto"]
     C --> B
@@ -53,8 +55,8 @@ flowchart TD
     D --> E["executa o corpo\ndesse case"]
     B -- "nenhum, COM default" --> F["executa default\nimediatamente"]
 
-    style D fill:#F5A623,color:#000
-    style F fill:#4A90D9,color:#fff
+    class D destaque
+    class F neutro
 ```
 
 `select` avalia todos os `case` ao mesmo tempo — não em ordem, de cima para baixo, como um `switch` comum faria com suas comparações. Se **nenhum** estiver pronto, o `select` bloqueia a goroutine inteira até que pelo menos um fique disponível. Se **um** estiver pronto, executa esse. Se **vários** estiverem prontos simultaneamente — por exemplo, tanto `pedidos` quanto `urgentes` já têm valor esperando — o runtime escolhe **um deles ao acaso**, com distribuição uniforme, segundo a [especificação da linguagem](https://go.dev/ref/spec#Select_statements): "if one or more of the communications can proceed, a single one that can proceed is chosen via a uniform pseudo-random selection".

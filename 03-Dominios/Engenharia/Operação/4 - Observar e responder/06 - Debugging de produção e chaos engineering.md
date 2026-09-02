@@ -36,7 +36,6 @@ O livro *Site Reliability Engineering* do Google dedica um capítulo inteiro (["
 O ponto prático que interessa aqui: **o método reduz o espaço de busca de forma sistemática**, em vez de depender de memória de incidentes passados ou palpite. Com 40 serviços candidatos, não existe atalho mágico — existe um funil.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     A["Sintoma observável<br/>(p99 subiu, taxa de erro subiu)"] --> B["Observabilidade:<br/>métricas amplas<br/>(RED por serviço)"]
     B --> C{"Onde está<br/>o desvio?"}
@@ -110,7 +109,6 @@ A prática ganhou forma canônica no site [Principles of Chaos Engineering](http
 6. **Automatize os experimentos para rodar continuamente.** Um experimento manual, rodado uma vez, prova que o sistema aguentou aquela falha *naquele momento* — não que ele continua aguentando depois que o código, a topologia e a carga mudaram na semana seguinte.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
     A["1. Hipótese sobre<br/>steady state<br/>(RED continua normal)"] --> B["2. Blast radius<br/>mínimo<br/>(1 pod, 1 AZ, 1%)"]
     B --> C["3. Injetar falha<br/>real (matar instância,<br/>latência, dependência off)"]

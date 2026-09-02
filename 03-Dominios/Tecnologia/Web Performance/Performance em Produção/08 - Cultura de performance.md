@@ -37,17 +37,18 @@ A cultura ataca exatamente esse mecanismo: torna o custo **visível**, o ownersh
 ## Os quatro pilares
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     G["Cultura de performance<br/>= ser rápido para sempre"] --> A["Ownership<br/>de todos, não de um herói"]
     G --> B["No processo<br/>budget no CI, PR review, DoD"]
     G --> C["Visibilidade<br/>dashboards que o time vê"]
     G --> D["Business case<br/>manter o investimento (nota 07)"]
-    style G fill:#F5A623,color:#000
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
+    class G destaque
+    class A neutro
+    class B neutro
+    class C neutro
+    class D neutro
 ```
 
 **1. Ownership compartilhado.** Performance é responsabilidade de **todo dev**, como qualidade e segurança — não de um especialista isolado. O especialista vira *facilitador* (ferramentas, guias, educação), não o único que se importa. Um "herói de performance" é um ponto único de falha: quando ele sai de férias ou da empresa, a performance despenca.
@@ -72,16 +73,17 @@ graph TB
 Este é o fim da trilha Web Performance. O arco completo:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["G1 · MEDIR<br/>CWV, lab/field, RUM"] --> B["G2 · CARREGAR<br/>CRP, imagens, cache, HTTP/3"]
     B --> C["G3 · RESPONDER<br/>main thread, INP, layout, offload"]
     C --> D["G4 · SUSTENTAR<br/>CI, RUM, regressão, cultura"]
     D -.retroalimenta.-> A
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
+    class A neutro
+    class B neutro
+    class C neutro
+    class D destaque
 ```
 
 - **Medir** (G1): você não otimiza o que não mede — CWV, lab vs. field, RUM, budgets, diagnóstico.

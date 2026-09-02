@@ -94,8 +94,10 @@ O runtime automatic usa duas funções distintas:
 O compilador decide qual usar com base na estrutura do JSX. Como usuário, você nunca chama essas funções diretamente — só precisa saber que elas existem por baixo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Você escreve JSX\n&lt;div&gt;&lt;p&gt;A&lt;/p&gt;&lt;p&gt;B&lt;/p&gt;&lt;/div&gt;"]
     B["Compilador\n(Babel / SWC / tsc)"]
     C{"Quantos filhos?"}
@@ -111,11 +113,11 @@ graph TD
     E --> F
     F --> G
 
-    style A fill:#4A90D9,color:#fff
-    style G fill:#4A90D9,color:#fff
-    style F fill:#7B68EE,color:#fff
-    style D fill:#5BA85A,color:#fff
-    style E fill:#5BA85A,color:#fff
+    class A neutro
+    class G neutro
+    class F marca
+    class D ok
+    class E ok
 ```
 
 > [!info] O que o React faz com esse objeto?
@@ -490,8 +492,10 @@ function Botao({ label, icone, children }: BotaoProps) {
 ## Diagrama: JSX → árvore de elementos
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "nodeBorder": "#2C5F8A", "lineColor": "#555"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["JSX no seu .tsx\n&lt;Card titulo='Olá'&gt;\n  &lt;p&gt;Texto&lt;/p&gt;\n&lt;/Card&gt;"]
     B["Compilador\nBabel / SWC / tsc"]
     C["jsxs(Card,\n  { titulo: 'Olá',\n    children: jsx('p', { children: 'Texto' })\n  }\n)"]
@@ -509,10 +513,10 @@ graph TD
     F --> G
     G --> H
 
-    style A fill:#4A90D9,color:#fff
-    style D fill:#7B68EE,color:#fff
-    style G fill:#5BA85A,color:#fff
-    style H fill:#5BA85A,color:#fff
+    class A neutro
+    class D marca
+    class G ok
+    class H ok
 ```
 
 ---

@@ -32,14 +32,15 @@ Outro caso: uma **fila de tarefas**. O produtor cria "envie este e-mail" e enfil
 ## A ideia
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Inv[Invoker<br/>botão / fila] -->|"execute()"| Cmd{{"«Command»<br/>execute() · undo()"}}
     Cmd -->|opera sobre| Rec[Receiver<br/>documento / serviço]
     Hist[Histórico] -.guarda.-> Cmd
 
-    style Cmd fill:#4A90D9,color:#fff
-    style Inv fill:#F5A623,color:#000
+    class Cmd neutro
+    class Inv destaque
 ```
 
 O invoker dispara `execute()` sem saber os detalhes; o command sabe qual receiver chamar e como. Como o command é um objeto, o histórico pode **guardá-lo** para desfazer, e uma fila pode **transportá-lo**.

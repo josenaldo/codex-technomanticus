@@ -180,8 +180,11 @@ function CadastroForm() {
 ## Fluxo de dados: do input ao submit
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph DOM["DOM (sem re-render)"]
         A[Input não-controlado]
     end
@@ -212,10 +215,10 @@ graph LR
     D --> I
     G -.->|type inference| H
 
-    style DOM fill:#E8F4FD,stroke:#4A90D9
-    style RHF fill:#E8F8E8,stroke:#27AE60
-    style ZOD fill:#FFF8E8,stroke:#F5A623
-    style APP fill:#F5F5F5,stroke:#888
+    class DOM neutro
+    class RHF ok
+    class ZOD destaque
+    class APP marca
 ```
 
 O DOM guarda os valores; o RHF orquestra o ciclo de vida; o Zod valida e o TypeScript sabe o tipo antes mesmo do runtime.

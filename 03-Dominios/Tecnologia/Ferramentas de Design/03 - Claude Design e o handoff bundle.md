@@ -34,15 +34,16 @@ Segundo a página oficial do produto (`claude.com/product/claude-design`), Claud
 **Exportação:** URL interna (link com escopo de organização), pasta, Canva, PDF, PPTX, HTML standalone, ou **handoff para o Claude Code**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     IN["Prompt, imagens, docs,<br/>codebase, captura web"] --> CD["Claude Design<br/>chat + canvas"]
     CD -->|refina| CD
     CD -->|"/design"| CD
     CD -->|handoff| CC["Claude Code<br/>continua a implementação"]
     CD -->|export| OUT["PPTX / PDF / HTML / Canva"]
-    style CD fill:#4A90D9,color:#fff
-    style CC fill:#F5A623,color:#000
+    class CD neutro
+    class CC destaque
 ```
 
 ## O comando `/design-sync`: o não-confirmado que se confirmou

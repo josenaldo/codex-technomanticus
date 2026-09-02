@@ -187,8 +187,10 @@ function ArticlePage() {
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#fff"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["ArticlePage"] --> B["Suspense\n(SidebarSkeleton)"]
     A --> C["Suspense\n(ArticleSkeleton)"]
     B --> D["Sidebar"]
@@ -196,12 +198,12 @@ graph TD
     C --> F["Suspense\n(CommentsSkeleton)"]
     F --> G["Comments"]
 
-    style D fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style G fill:#F5A623,color:#fff
-    style B fill:#e8f4fd
-    style C fill:#e8f4fd
-    style F fill:#e8f4fd
+    class D neutro
+    class E neutro
+    class G destaque
+    class B marca
+    class C marca
+    class F marca
 ```
 
 > [!info] Azul = carregado, âmbar = ainda suspendendo
@@ -235,7 +237,6 @@ function UserSection() {
 Quando a promise passada para `use()` rejeita, o React lança o erro para o Error Boundary mais próximo. Se não houver Error Boundary, a exceção sobe até o root e pode quebrar toda a aplicação.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant C as Componente
     participant S as Suspense
@@ -373,16 +374,18 @@ function UserPage({ userId }: { userId: number }) {
 `useSuspenseQuery` garante que `data` nunca é `undefined` dentro do componente — TypeScript recebe isso corretamente. O `isLoading` e o `isError` desaparecem do componente e migram para o Suspense e o ErrorBoundary respectivamente.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Componente\n(usa useSuspenseQuery)"] -->|"data sempre definida\n(sem isLoading/error)"| B["UI renderizada"]
     A -->|suspende| C["Suspense\n→ fallback skeleton"]
     A -->|erro| D["ErrorBoundary\n→ fallback de erro"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#D0021B,color:#fff
+    class A neutro
+    class B neutro
+    class C destaque
+    class D falha
 ```
 
 ### Render-as-you-fetch vs Fetch-on-render

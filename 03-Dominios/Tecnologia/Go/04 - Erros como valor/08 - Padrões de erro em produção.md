@@ -38,14 +38,16 @@ Esse é o ângulo que faltava nas seis notas anteriores. Elas ensinaram o mecani
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Erro interno da função"] --> B{"Vai atravessar\na fronteira do pacote?"}
     B -->|"Sim — é API pública"| C["Projete: tipo exportado?\nsentinel exportado?\nsó string?"]
     B -->|"Não — fica interno"| D["Livre para mudar\nsem quebrar ninguém"]
     C --> E["Documente no godoc\ncomo parte do contrato"]
     C --> F["Mudar depois =\nbreaking change"]
 
-    style C fill:#F5A623,color:#000
-    style F fill:#D0021B,color:#fff
+    class C destaque
+    class F falha
 ```
 
 ## Erro como parte da API pública
@@ -123,6 +125,8 @@ if errors.Is(err, ErrCampoObrigatorio) {
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     J["errors.Join(e1, e2, e3)"]
     J --> E1["e1: campo nome"]
     J --> E2["e2: campo email"]
@@ -133,8 +137,8 @@ flowchart TB
 
     Q["errors.Is(err, ErrCampoObrigatorio)"] -.->|"percorre todos os ramos"| J
 
-    style J fill:#F5A623,color:#000
-    style Q fill:#4A90D9,color:#fff
+    class J destaque
+    class Q neutro
 ```
 
 O segundo caso de uso clássico — múltiplos `Close()` — aparece direto na própria [documentação do pacote `errors`](https://pkg.go.dev/errors#Join):

@@ -36,7 +36,6 @@ Portanto, a lição de segurança do nível 0 é curta: **commite com frequênci
 ## As quatro situações
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     A{"O que você<br/>quer desfazer?"} --> B["Uma edição no arquivo<br/><i>ainda não commitada</i>"]
     A --> C["Um git add<br/><i>arquivo já na caixa</i>"]

@@ -41,17 +41,18 @@ A resposta comum é contaminar o modelo: acrescentam-se campos desnormalizados a
 ## A ideia: dois modelos
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     C["Comando<br/>confirmarPedido"] --> W["<b>Modelo de escrita</b><br/>agregado rico<br/>invariantes e transições"]
     W --> DB[("armazenamento<br/>de escrita")]
     DB -->|"eventos / sincronização"| P["Projeção"]
     P --> R[("modelo de leitura<br/>plano, desnormalizado")]
     Q["Consulta<br/>listarPedidos"] --> R
 
-    style W fill:#4A90D9,color:#fff
-    style R fill:#4A90D9,color:#fff
-    style P fill:#F5A623,color:#000
+    class W neutro
+    class R neutro
+    class P destaque
 ```
 
 A distinção de fundo é entre **comando** (muda estado, não devolve dados) e **consulta** (devolve dados, não muda estado) — a separação command-query de Meyer, elevada de método para **modelo**.

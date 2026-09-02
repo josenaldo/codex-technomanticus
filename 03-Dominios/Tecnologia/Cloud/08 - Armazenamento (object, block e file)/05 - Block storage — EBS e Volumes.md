@@ -38,6 +38,8 @@ Além do volume raiz, uma instância pode ter zero ou mais **volumes de dados** 
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Instancia["Instância EC2 (i-0abc123...)"]
         direction TB
     end
@@ -49,9 +51,9 @@ flowchart TB
     Instancia -->|"anexado depois,<br/>via attach-volume"| Data1
     Instancia -->|"opcional"| Data2
 
-    style Root fill:#f9d5a7
-    style Data1 fill:#a7d5f9
-    style Data2 fill:#a7d5f9
+    class Root destaque
+    class Data1 neutro
+    class Data2 neutro
 ```
 
 Essa distinção entre volume raiz e volume de dados não é só organizacional — ela tem consequência prática direta no ciclo de vida, que a seção de armadilhas desta nota examina com cuidado: o comportamento padrão do volume raiz **ao terminar a instância** é diferente do comportamento padrão de um volume de dados.

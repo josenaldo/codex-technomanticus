@@ -121,15 +121,17 @@ O modelo correto: um **objeto** é criado na memória (com sua identidade, tipo 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Memória
         obj1["objeto: lista<br/>[1, 2, 3]<br/>id: 0x7f...a0"]
     end
     a["a"] -->|referencia| obj1
     b["b"] -->|referencia| obj1
 
-    style obj1 fill:#4A90D9,color:#fff
-    style a fill:#F5A623,color:#000
-    style b fill:#F5A623,color:#000
+    class obj1 neutro
+    class a destaque
+    class b destaque
 ```
 
 ```python

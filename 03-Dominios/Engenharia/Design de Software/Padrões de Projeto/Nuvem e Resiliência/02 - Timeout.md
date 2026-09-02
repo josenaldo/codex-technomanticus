@@ -57,8 +57,9 @@ O terceiro é o que mais surpreende: configurar timeout por tentativa **não** l
 Numa cadeia A → B → C, cada serviço normalmente tem seu próprio timeout, escolhido isoladamente. Isso produz o desperdício mais comum e menos notado dos sistemas distribuídos:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph I["Timeouts independentes"]
         A1["A — timeout 2s"] -->|"chama"| B1["B — timeout 10s"]
         B1 -->|"chama"| C1["C — lento"]
@@ -71,9 +72,9 @@ graph TD
         N2["C sabe que não vale a pena começar<br/>algo que leva 3s. Cancela cedo."]
     end
 
-    style N1 fill:#D0021B,color:#fff
-    style N2 fill:#4A90D9,color:#fff
-    style A2 fill:#4A90D9,color:#fff
+    class N1 falha
+    class N2 neutro
+    class A2 neutro
 ```
 
 Em vez de cada serviço perguntar "quanto **eu** espero?", a requisição carrega **quanto tempo ainda resta** — e cada salto passa adiante o saldo. Quem recebe um prazo já vencido nem começa o trabalho.

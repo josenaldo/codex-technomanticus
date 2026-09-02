@@ -31,8 +31,9 @@ Next.js não é uma biblioteca que você só serve com um `npm run build && node
 ## Dois mundos de deploy
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#fff"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["next build"] --> B[".next/ artifacts"]
 
     subgraph Vercel["☁️ Vercel (gerenciado)"]
@@ -47,8 +48,8 @@ graph TD
         F --> H["Cache: disco local\n→ Redis (multi-pod)"]
     end
 
-    style Vercel fill:#EBF5FB,stroke:#4A90D9
-    style SelfHost fill:#FEF9E7,stroke:#F5A623
+    class Vercel neutro
+    class SelfHost destaque
 ```
 
 O `next build` produz o mesmo conjunto de artefatos independentemente de onde você vai deployar. O que muda é **quem** serve esses artefatos e com quais garantias.

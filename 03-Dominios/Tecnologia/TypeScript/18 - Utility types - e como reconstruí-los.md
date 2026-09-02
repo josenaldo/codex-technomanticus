@@ -33,6 +33,10 @@ A boa notícia: todos os utility types da lib padrão cabem em três famílias, 
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph mapped["Baseados em Mapped Types (nota 16)"]
         P["Partial&lt;T&gt;"]
         R["Required&lt;T&gt;"]
@@ -58,10 +62,10 @@ flowchart TD
         OM["Omit&lt;T, K&gt;"]
     end
 
-    style mapped fill:#1a3a1a,color:#fff
-    style conditional fill:#1a1a3a,color:#fff
-    style infer_based fill:#3a1a1a,color:#fff
-    style combo fill:#2a2a1a,color:#fff
+    class mapped ok
+    class conditional neutro
+    class infer_based falha
+    class combo destaque
 ```
 
 `Omit` é o único que combina duas famílias — e por isso é o mais interessante de reconstruir.
@@ -315,6 +319,7 @@ type SuccessData<R> = NonNullable<R extends ApiResponse<infer D> ? D : never>;
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph "Conditional types — o filtro via never"
         EX["Exclude&lt;T, U&gt;\nT extends U ? never : T\n→ Descarta quem BATE"]
         ET["Extract&lt;T, U&gt;\nT extends U ? T : never\n→ Mantém quem BATE"]
@@ -326,7 +331,7 @@ flowchart TD
     ET --> NEVER
     NN --> NEVER
 
-    style NEVER fill:#4a0000,color:#fff
+    class NEVER falha
 ```
 
 ---
@@ -499,15 +504,18 @@ type UserViaPick = Pick<User, "id" | "name" | "email" | "role">;  // precisa de 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     K["keyof T\n'id'|'name'|'email'|'passwordHash'|'role'"]
     EX["Exclude&lt;keyof T, 'passwordHash'&gt;\n'id'|'name'|'email'|'role'"]
     PK["Pick&lt;T, resultado&gt;\n{ id, name, email, role }"]
 
     K --> EX --> PK
 
-    style K fill:#1a1a3a,color:#fff
-    style EX fill:#3a1a1a,color:#fff
-    style PK fill:#1a3a1a,color:#fff
+    class K neutro
+    class EX falha
+    class PK ok
 ```
 
 ---
@@ -516,6 +524,10 @@ flowchart LR
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph MT["Mapped Types"]
         PA["Partial&lt;T&gt;\n[K in keyof T]?"]
         RQ["Required&lt;T&gt;\n[K in keyof T]-?"]
@@ -544,10 +556,10 @@ flowchart TD
     MT -.-> COMBO
     CT -.-> COMBO
 
-    style MT fill:#1a3a1a,color:#fff
-    style CT fill:#1a1a3a,color:#fff
-    style INF fill:#3a1a1a,color:#fff
-    style COMBO fill:#2a2a1a,color:#fff
+    class MT ok
+    class CT neutro
+    class INF falha
+    class COMBO destaque
 ```
 
 ---
@@ -603,6 +615,10 @@ Note o que aconteceu: `PublicUser` e `PatchUserBody` foram derivados de `User` �
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     User["User\n{ id, name, email,\npasswordHash, role,\ncreatedAt, updatedAt }"]
 
     Omit1["Omit&lt;User, 'id'|'passwordHash'|\n'role'|'createdAt'|'updatedAt'&gt;"]
@@ -621,10 +637,10 @@ flowchart LR
     User --> Omit2 --> PublicUser
     PatchBody --> Required1 --> FormValues
 
-    style User fill:#3a2a1a,color:#fff
-    style PatchBody fill:#1a3a1a,color:#fff
-    style PublicUser fill:#1a1a3a,color:#fff
-    style FormValues fill:#2a1a3a,color:#fff
+    class User destaque
+    class PatchBody ok
+    class PublicUser neutro
+    class FormValues marca
 ```
 
 ---

@@ -25,6 +25,8 @@ aliases:
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     APP["Aplicação Node.js\n(TypeScript)"]
 
     APP --> SEQ["Sequelize v7\nActive Record\n~3 MB"]
@@ -42,12 +44,12 @@ flowchart LR
     TOR_USE --> DB
     DRI_USE --> DB
 
-    style APP fill:#4A90D9,color:#fff
-    style SEQ fill:#F5A623,color:#fff
-    style PRI fill:#4A90D9,color:#fff
-    style TOR fill:#4A90D9,color:#fff
-    style DRI fill:#4A90D9,color:#fff
-    style DB fill:#4A90D9,color:#fff
+    class APP neutro
+    class SEQ destaque
+    class PRI neutro
+    class TOR neutro
+    class DRI neutro
+    class DB neutro
 ```
 
 ## Decision tree

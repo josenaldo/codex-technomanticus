@@ -335,6 +335,8 @@ A ordem de avaliação importa: primeiro o padrão estrutural (`n` — uma captu
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subj["subject: valor a testar"] --> c1{"case 1: padrão casa?"}
     c1 -->|não| c2{"case 2: padrão casa?"}
     c1 -->|sim| g1{"guard do case 1<br/>(se houver)"}
@@ -346,12 +348,12 @@ flowchart TD
     g2 -->|False| c3
     c3 --> execW["executa bloco wildcard"]
 
-    style subj fill:#4A90D9,color:#fff
-    style g1 fill:#F5A623,color:#000
-    style g2 fill:#F5A623,color:#000
-    style c1 fill:#4A90D9,color:#fff
-    style c2 fill:#4A90D9,color:#fff
-    style c3 fill:#4A90D9,color:#fff
+    class subj neutro
+    class g1 destaque
+    class g2 destaque
+    class c1 neutro
+    class c2 neutro
+    class c3 neutro
 ```
 
 ### `match`/`case` vs `if`/`elif`: o debate

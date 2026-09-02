@@ -29,6 +29,9 @@ aliases:
 
 ```mermaid
 flowchart TD
+    classDef primary fill:#4A90D9,color:#fff,stroke:#2c6fad
+    classDef worker fill:#F5A623,color:#000,stroke:#c47d0e
+    classDef client fill:#eee,color:#333,stroke:#999
     A(["`**primary**
     process.pid`"]):::primary
     B(["`**Worker 1**
@@ -51,9 +54,6 @@ flowchart TD
     A -- "round-robin (SCHED_RR)" --> D
     A -- "round-robin (SCHED_RR)" --> E
 
-    classDef primary fill:#4A90D9,color:#fff,stroke:#2c6fad
-    classDef worker fill:#F5A623,color:#000,stroke:#c47d0e
-    classDef client fill:#eee,color:#333,stroke:#999
 ```
 
 ---

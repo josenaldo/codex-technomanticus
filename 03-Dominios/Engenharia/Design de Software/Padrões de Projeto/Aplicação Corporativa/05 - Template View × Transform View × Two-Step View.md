@@ -62,8 +62,9 @@ No livro o veículo é XSLT, o que hoje soa datado — mas o que define o padrã
 O custo, em 2002, era que XSLT tem curva íngreme e o arquivo não se parece com a tela.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     D["Dados do domínio"] --> T1["Template View<br/>documento com buracos"]
     T1 --> H1["HTML"]
 
@@ -74,10 +75,10 @@ graph LR
     S1 --> S2["2º passo: formatador<br/>aplica a aparência global"]
     S2 --> H3["HTML"]
 
-    style T1 fill:#4A90D9,color:#fff
-    style T2 fill:#4A90D9,color:#fff
-    style S1 fill:#F5A623,color:#000
-    style S2 fill:#F5A623,color:#000
+    class T1 neutro
+    class T2 neutro
+    class S1 destaque
+    class S2 destaque
 ```
 
 ## Two-Step View: passar por uma tela lógica

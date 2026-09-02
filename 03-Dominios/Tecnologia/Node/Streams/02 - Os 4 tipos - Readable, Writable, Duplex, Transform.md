@@ -83,6 +83,8 @@ Essa hierarquia tem consequências práticas:
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     EE["EventEmitter"]
     S["Stream"]
     R["Readable\n— fonte de dados\nex: fs.createReadStream"]
@@ -97,10 +99,10 @@ flowchart TD
     W --> D
     D --> T
 
-    style R fill:#4A90D9,color:#fff
-    style W fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
-    style T fill:#4A90D9,color:#fff
+    class R neutro
+    class W neutro
+    class D destaque
+    class T neutro
 ```
 
 A distinção visual mais importante: Duplex tem duas setas de herança (Readable e Writable) porque mantém dois buffers independentes. Transform herda de Duplex mas conecta os dois lados via `_transform()` — o que entra pelo lado Writable sai transformado pelo lado Readable.

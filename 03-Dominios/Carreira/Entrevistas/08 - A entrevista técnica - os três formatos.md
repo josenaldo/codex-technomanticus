@@ -35,15 +35,15 @@ O retorno é morno. Do outro lado, o que foi observado: ele não perguntou se a 
 ## Live coding: o processo é o produto
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["<b>1. Clarificar</b><br/>2-3min<br/>entrada, saída, limites<br/>casos de borda"] --> B["<b>2. Exemplo</b><br/>~2min<br/>um caso pequeno,<br/>na mão"]
     B --> C["<b>3. Abordagem</b><br/>3-5min<br/>ingênua → melhor<br/>+ complexidade"]
     C --> D["<b>4. Codar</b><br/>15-20min<br/>narrando"]
     D --> E["<b>5. Testar</b><br/>~5min<br/>borda primeiro"]
 
-    style A fill:#F5A623,color:#000
-    style E fill:#F5A623,color:#000
+    class A destaque
+    class E destaque
 ```
 
 O âmbar marca as duas etapas que os candidatos mais pulam — e são justamente as que mais pesam.

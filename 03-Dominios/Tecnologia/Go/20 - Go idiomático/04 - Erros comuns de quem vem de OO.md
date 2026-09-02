@@ -102,6 +102,9 @@ Agora todo código que só precisa *ler* um usuário — um handler HTTP, por ex
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph errado["Reflexo de OO — interface grande, no pacote do produtor"]
         direction TB
         I1["user.Service\n(7 métodos)"] --> H1["Handler HTTP\n(só precisa de GetUser)"]
@@ -114,10 +117,10 @@ flowchart TB
         C2["worker define:\nUserNotifier { NotifyUser }"] -.satisfeita implicitamente por.-> S1
     end
 
-    style I1 fill:#D0021B,color:#fff
-    style C1 fill:#4A90D9,color:#fff
-    style C2 fill:#4A90D9,color:#fff
-    style S1 fill:#F5A623,color:#000
+    class I1 falha
+    class C1 neutro
+    class C2 neutro
+    class S1 destaque
 ```
 
 A forma idiomática inverte as duas decisões ao mesmo tempo: a interface fica **pequena** — só os métodos que aquele consumidor específico usa — e é **declarada por quem consome**, não por quem produz. Isso é possível porque satisfação de interface em Go é implícita (o galho de interfaces já cobriu isso a fundo): o struct `service` nem precisa saber que `UserGetter` existe.
@@ -239,6 +242,8 @@ u, err := s.Get(id) // "user.Store.Get" — sem redundância, o pacote já conte
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph ruim["package manager"]
         direction TB
         M["manager.NewUserManager()"] --> R["m.GetUser(id)\n— 'user' repetido 2x no call site"]
@@ -248,8 +253,8 @@ flowchart LR
         U["user.NewStore()"] --> S["s.Get(id)\n— pacote já contextualiza"]
     end
 
-    style M fill:#D0021B,color:#fff
-    style U fill:#4A90D9,color:#fff
+    class M falha
+    class U neutro
 ```
 
 > [!warning] `util`/`common`/`shared` são sintomas de responsabilidade não descoberta ainda

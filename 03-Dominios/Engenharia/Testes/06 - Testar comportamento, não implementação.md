@@ -40,15 +40,17 @@ Quando o teste fica vermelho numa refatoração pura, ele acabou de te dar um **
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Você refatora<br/>(comportamento preservado)"] --> B{"O teste<br/>fica vermelho?"}
     B -->|"Não — continua verde"| C["Teste de comportamento<br/>Confiavel"]
     B -->|"Sim — quebrou"| D["Teste de implementacao<br/>Fragil — falso positivo"]
     D --> E["Voce perde confianca no vermelho"]
     E --> F["Voce passa a ignorar testes<br/>ou deletar quando incomodam"]
 
-    style C fill:#1b4332,color:#fff
-    style D fill:#660708,color:#fff
-    style F fill:#660708,color:#fff
+    class C ok
+    class D falha
+    class F falha
 ```
 
 Leitura do diagrama: o ramo da esquerda é o objetivo. O da direita é a espiral — um teste frágil não só te incomoda, ele corrói a sua confiança no suite inteiro. E um suite em que ninguém confia é pior que nenhum suite, porque custa manutenção sem dar segurança.
@@ -84,6 +86,8 @@ Fowler, em **"Mocks Aren't Stubs"**, formaliza essa divisão: *state verificatio
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     SUT["Sistema sob teste"]
 
     subgraph SB["State-based"]
@@ -102,8 +106,8 @@ flowchart LR
     S2 --> R1["Acoplado ao RESULTADO<br/>Sobrevive a refatoracao"]
     I2 --> R2["Acoplado a COMO<br/>Quebra se a ordem/forma muda"]
 
-    style R1 fill:#1b4332,color:#fff
-    style R2 fill:#7f5539,color:#fff
+    class R1 ok
+    class R2 destaque
 ```
 
 Leitura do diagrama: os dois começam igual — exercitam o SUT. A diferença está na pergunta final. State-based pergunta sobre o *resultado* e por isso tolera mudanças internas. Interaction-based pergunta sobre o *processo* e por isso fica refém dele. Não é que interaction-based seja sempre errado — é que ele cobra um preço (acoplamento) que nem sempre vale a pena.
@@ -136,6 +140,7 @@ A consequência de todos esses sintomas é a mesma frase: **você acaba testando
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Mockar tudo<br/>(colaboradores, value objects, ...)"] --> B["Setup cheio de<br/>when().thenReturn()"]
     B --> C["Teste codifica a ORDEM<br/>e a FORMA das chamadas"]
     C --> D{"Refatoracao interna<br/>muda alguma chamada"}
@@ -144,8 +149,8 @@ flowchart TD
     F --> G["'Vou so ajustar o mock'<br/>(toda refatoracao)"]
     G --> H["Custo de manutencao alto<br/>+ confianca baixa"]
 
-    style F fill:#660708,color:#fff
-    style H fill:#660708,color:#fff
+    class F falha
+    class H falha
 ```
 
 Leitura do diagrama: cada seta é um degrau na ladeira. Mockar demais leva a setup pesado, que codifica o "como", que quebra na refatoração, que vira falso positivo, que vira retrabalho a cada mudança. O destino é um suite caro e em quem ninguém confia — exatamente o oposto do que um teste deveria entregar. (Os testes que quebram por causa de timing, e não de acoplamento, são outro animal: ver `[[11 - Testes flaky]]`.)
@@ -242,15 +247,17 @@ A seção seguinte formaliza o caso concreto que motivou essa tese. Antes disso,
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Preciso isolar uma dependencia<br/>no teste"] --> B{"O efeito e observavel<br/>de outro jeito alem da chamada?<br/>(retorno, estado, leitura posterior)"}
     B -->|"Sim — da pra ler o estado depois"| C{"Consigo escrever uma<br/>implementacao real e simples?<br/>(HashMap, lista, arquivo temp)"}
     B -->|"Nao — o efeito SO existe<br/>como a chamada em si"| D["mock/spy<br/>(interaction-based e a unica opcao)"]
     C -->|"Sim"| E["fake<br/>(state-based, reutilizavel, robusto)"]
     C -->|"Nao — dependencia complexa<br/>demais pra fingir"| F["stub minimo<br/>(so o necessario pro cenario)"]
 
-    style E fill:#1b4332,color:#fff
-    style D fill:#7f5539,color:#fff
-    style F fill:#7f5539,color:#fff
+    class E ok
+    class D destaque
+    class F destaque
 ```
 
 Leitura do diagrama: a primeira pergunta é a que a seção anterior já fez — o efeito é observável além da própria chamada? Se não, mock é a única ferramenta honesta. Se sim, a segunda pergunta decide entre fake (quando dá pra escrever uma implementação real barata) e stub (quando não dá, mas você só precisa de um retorno fixo pontual). O caminho verde — fake — é o que esta nota defende como *default*, não como regra absoluta.
@@ -333,6 +340,9 @@ Testar comportamento *empurra* o código na direção certa: interfaces pequenas
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Tento testar<br/>o comportamento"] --> B{"E facil?"}
     B -->|"Sim"| C["Design ja esta bom<br/>(fronteiras claras)"]
     B -->|"Nao — preciso mockar tudo"| D["Sinal de design ruim"]
@@ -342,9 +352,9 @@ flowchart TD
     F --> G
     G --> A
 
-    style C fill:#1b4332,color:#fff
-    style D fill:#7f5539,color:#fff
-    style G fill:#1d3557,color:#fff
+    class C ok
+    class D destaque
+    class G neutro
 ```
 
 Leitura do diagrama: o teste difícil não é um problema a contornar com mais mocks — é um *diagnóstico* gratuito do seu design. O loop de volta para "tento testar" é o ponto: você refatora o código, tenta testar de novo, e agora é fácil. Código testável e código bem desenhado são, na prática, a mesma coisa vista por ângulos diferentes. (A aplicação concreta disso em Java aparece em `[[Testes em Java]]`, e a anatomia de uma asserção sobre comportamento está em `[[03 - Anatomia de um bom teste]]` e `[[04 - Testes unitários]]`.)

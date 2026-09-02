@@ -340,8 +340,10 @@ O ponto-chave: `Stack`, `Split` e `CardFull` são **genéricos de layout**, não
 ## Diagrama — composição vs configuração
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph CONFIG["❌ Abordagem: Configuração via props"]
         C1["&lt;Card
   showHeader
@@ -363,15 +365,15 @@ decide tudo"]
 nas regiões certas"]
     end
 
-    style CONFIG fill:#fff0f0,stroke:#D0021B,color:#333
-    style COMP fill:#f0fff4,stroke:#4A90D9,color:#333
-    style C1 fill:#ffe0e0,stroke:#D0021B,color:#333
-    style C2 fill:#ffe0e0,stroke:#D0021B,color:#333
-    style P1 fill:#ddf4ff,stroke:#4A90D9,color:#333
-    style S1 fill:#ddf4ff,stroke:#4A90D9,color:#333
-    style S2 fill:#ddf4ff,stroke:#4A90D9,color:#333
-    style S3 fill:#ddf4ff,stroke:#4A90D9,color:#333
-    style R1 fill:#ddf4ff,stroke:#4A90D9,color:#333
+    class CONFIG falha
+    class COMP ok
+    class C1 falha
+    class C2 falha
+    class P1 neutro
+    class S1 neutro
+    class S2 neutro
+    class S3 neutro
+    class R1 neutro
 ```
 
 ## Composição vs configuração — trade-offs

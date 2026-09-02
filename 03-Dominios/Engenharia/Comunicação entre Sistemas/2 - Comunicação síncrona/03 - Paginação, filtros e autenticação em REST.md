@@ -128,8 +128,9 @@ A Stripe pagina suas listas com `starting_after`/`ending_before` — o cliente p
 O GitHub foi na direção oposta há anos — oferecia ambos os estilos em endpoints diferentes — mas em outubro de 2025 removeu explicitamente os parâmetros de paginação por offset (`page`, `first`, `last`) da API de alertas do Dependabot, deixando **apenas** os parâmetros de cursor (`before`, `after`, `per_page`) ([GitHub Changelog, *Dependabot alerts API offset-based pagination parameters deprecated*](https://github.blog/changelog/2025-10-14-dependabot-alerts-api-pagination-parameters-deprecated/)). É um sinal de mercado concreto: mesmo APIs enormes e já estabelecidas estão migrando de offset para cursor conforme o volume de dados cresce, não o contrário.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q{"Dataset grande<br/>ou crescendo rápido?"}
     Q -->|Não| OFF["Offset-based<br/>(page/size)"]
     Q -->|Sim| Q2{"Cliente precisa<br/>pular pra página N?"}
@@ -138,9 +139,9 @@ graph TD
     OFF --> NOTE1["Simples, total_pages grátis,<br/>degrada com offset alto"]
     CUR --> NOTE2["Índice composto obrigatório,<br/>performance O(log n) constante"]
 
-    style OFF fill:#4A90D9,color:#fff
-    style OFF2 fill:#F5A623,color:#000
-    style CUR fill:#4A90D9,color:#fff
+    class OFF neutro
+    class OFF2 destaque
+    class CUR neutro
 ```
 
 > [!question]- Dá para oferecer os dois estilos na mesma API?
@@ -265,8 +266,8 @@ Repare no padrão por trás da tabela: cada método não é "melhor" ou "pior" q
 Um padrão de produção citado com frequência confirma que essas escolhas não são mutuamente exclusivas: sistemas maduros combinam camadas — mTLS no transporte entre serviços internos, JWT na camada de aplicação para identidade de usuário, API Key para identificar a aplicação cliente e OAuth para o consentimento do usuário — porque cada camada resolve uma preocupação diferente, e a autenticação single-method está cada vez mais rara em produção séria ([Zuplo, *Top 7 API Authentication Methods Compared*](https://zuplo.com/learning-center/top-7-api-authentication-methods-compared)).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q{"Quem está<br/>do outro lado?"}
     Q -->|"Usuário final,<br/>via app/browser"| U{"Precisa de<br/>identidade (quem é)<br/>ou só autorização?"}
     U -->|Identidade também| OIDC["OIDC<br/>(login social, SSO)"]
@@ -276,11 +277,11 @@ graph TD
     M -->|Acesso delegado, escopo| CC["OAuth<br/>Client Credentials"]
     Q -->|"Serviço interno,<br/>malha que controlo"| MTLS["mTLS<br/>+ JWT de aplicação"]
 
-    style OIDC fill:#4A90D9,color:#fff
-    style OAUTH fill:#4A90D9,color:#fff
-    style APIKEY fill:#4A90D9,color:#fff
-    style CC fill:#4A90D9,color:#fff
-    style MTLS fill:#4A90D9,color:#fff
+    class OIDC neutro
+    class OAUTH neutro
+    class APIKEY neutro
+    class CC neutro
+    class MTLS neutro
 ```
 
 ### JWT: por que aparece tanto, e por que a revogação é o preço que se paga

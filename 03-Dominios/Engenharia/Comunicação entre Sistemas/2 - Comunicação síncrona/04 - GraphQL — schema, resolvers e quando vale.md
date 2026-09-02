@@ -145,17 +145,19 @@ const resolvers = {
 Repare a assinatura: todo resolver recebe `(parent, args, context, info)` — o valor do campo pai (`parent`), os argumentos passados na query (`args`), um objeto `context` compartilhado por toda a requisição (tipicamente carregando a conexão de banco, o usuário autenticado, e — crucial pro próximo tópico — instâncias de DataLoader), e `info` com metadados da própria query (raramente usado fora de casos avançados). Se um campo do schema tem o mesmo nome de uma propriedade que já existe no objeto pai (`cart.total`), a maioria das implementações usa um **resolver trivial padrão** automaticamente — você só escreve resolver explícito quando o campo precisa buscar dado de outro lugar (outra tabela, outro serviço, cálculo derivado).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Q["Query.cart(id)"] -->|"resolver 1"| CART["Cart { id, total, ... }"]
     CART -->|"resolver 2"| BUYER["Cart.buyer → User"]
     CART -->|"resolver 3"| ITEMS["Cart.items → [CartItem]"]
     ITEMS -->|"resolver 4 (por item)"| PROD["CartItem.product → Product"]
     ITEMS -->|"resolver 5 (por item)"| INV["CartItem.inventory → Inventory"]
-    style Q fill:#4A90D9,color:#fff
-    style ITEMS fill:#F5A623,color:#000
-    style PROD fill:#D0021B,color:#fff
-    style INV fill:#D0021B,color:#fff
+    class Q neutro
+    class ITEMS destaque
+    class PROD falha
+    class INV falha
 ```
 
 O diagrama já denuncia o problema: se `Cart.items` devolve 10 itens, os resolvers `CartItem.product` e `CartItem.inventory` rodam **uma vez para cada item** — 10 chamadas ao resolver de produto, 10 ao de estoque, cada uma potencialmente disparando uma query SQL individual. É exatamente aqui que mora o problema mais citado (e mais mal-compreendido) de GraphQL em produção.
@@ -240,17 +242,18 @@ O contrapeso, igualmente importante, e o motivo de REST continuar em 93% de uso 
 - **Rate limiting fica genuinamente mais complexo.** Numa API REST, `GET /products` tem um custo previsível — o servidor sabe de antemão o que vai custar antes de processar. Numa API GraphQL, o cliente pode compor uma query arbitrariamente profunda e cara (`products { reviews { author { posts { comments { author { ... } } } } } }`, aninhando relações repetidamente) — o mesmo endpoint pode custar 10ms ou 10 segundos, dependendo só da forma da query recebida. A resposta padrão da indústria é **query complexity analysis** (cada campo recebe um peso no schema, a query inteira precisa caber num orçamento — o modelo que a Shopify usa, já citado na nota anterior) ou **limite de profundidade** (rejeitar queries acima de N níveis de aninhamento) — nenhum dos dois é automático; ambos exigem desenho deliberado que REST simplesmente não precisa.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Múltiplos clientes,<br/>recortes diferentes?"] -->|sim| B["BFF ou grafo<br/>genuinamente conectado?"]
     A -->|não| REST1["REST simples<br/>resolve"]
     B -->|sim| C["Equipe tem maturidade<br/>p/ DataLoader + rate limit?"]
     B -->|não| REST1
     C -->|sim| GQL["GraphQL vale a pena"]
     C -->|não| REST2["REST + investir em<br/>maturidade primeiro"]
-    style GQL fill:#4A90D9,color:#fff
-    style REST1 fill:#F5A623,color:#000
-    style REST2 fill:#F5A623,color:#000
+    class GQL neutro
+    class REST1 destaque
+    class REST2 destaque
 ```
 
 ## GraphQL em Java e Node — citação, não tutorial

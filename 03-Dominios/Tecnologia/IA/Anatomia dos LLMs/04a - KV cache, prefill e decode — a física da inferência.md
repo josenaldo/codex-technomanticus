@@ -59,6 +59,8 @@ A inferência de um LLM não é um processo único. Ela tem dois atos, com garga
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "PREFILL — processa o prompt inteiro"
         A["Prompt: 'Explique a relatividade geral\nem termos simples...\n(2000 tokens)'"] --> B["Atenção em paralelo\n sobre todos os 2000 tokens\n(matmuls densos, GPU quase 100%)"]
         B --> C["KV cache populado\n+ primeiro token gerado\n'A'"]
@@ -70,8 +72,8 @@ graph TD
         G --> E
     end
     C --> D
-    style B fill:#99ccff,stroke:#0066cc
-    style F fill:#ffcc99,stroke:#cc6600
+    class B neutro
+    class F destaque
 ```
 
 | Fase | O que acontece | Gargalo | GPU utilization (H100) |
@@ -112,13 +114,15 @@ Quando 8 usuários fazem decode simultaneamente, a GPU carrega o KV cache dos 8 
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Infraestrutura moderna de LLM serving"
         U["Request do\nusuário"] --> P["GPU de Prefill\nOtimizada para compute\n(H100 SXM, NVLink)"]
         P -- "KV cache transferido" --> D["GPU de Decode\nOtimizada para memory bandwidth\n(H100 NVL, HBM3)"]
         D --> R["Tokens gerados\n→ usuário"]
     end
-    style P fill:#99ccff,stroke:#0066cc
-    style D fill:#ffcc99,stroke:#cc6600
+    class P neutro
+    class D destaque
 ```
 
 Separar as duas fases em GPUs distintas (cada uma otimizada para seu gargalo) é a direção da infraestrutura de produção de 2025-2026. O custo: transferência do KV cache entre GPUs (que pode ser GBs por request).

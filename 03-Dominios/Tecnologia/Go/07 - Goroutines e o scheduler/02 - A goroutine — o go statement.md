@@ -95,12 +95,14 @@ Uma thread de SO reserva sua stack inteira no momento da criação porque o kern
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["goroutine nasce\nstack ~2KB"] -->|"chamada de função\nprofunda / recursão"| B{"stack\nchegando\nao limite?"}
     B -->|não| C["continua normal"]
     B -->|sim| D["runtime aloca stack maior\ncopia dados existentes"]
     D --> A
-    style A fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
+    class A neutro
+    class D destaque
 ```
 
 Esse crescimento sob demanda é o que torna abrir 10.000 goroutines algo rotineiro em Go — 10.000 × 2KB são só ~20MB, uma fração do que 10.000 threads de SO custariam em stacks reservadas (potencialmente dezenas de gigabytes, mesmo que a maioria nunca use quase nada da stack alocada). Some a isso que criar uma goroutine não passa por uma syscall — é trabalho interno do runtime — e trocar de contexto entre goroutines é ordens de magnitude mais barato que uma troca de contexto de thread pelo kernel.

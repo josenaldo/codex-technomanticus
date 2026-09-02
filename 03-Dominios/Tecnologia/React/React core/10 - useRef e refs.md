@@ -169,7 +169,6 @@ function Contador({ count }: { count: number }) {
 ## Diagrama — ciclo de vida do ref
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 sequenceDiagram
     participant React
     participant Componente
@@ -375,8 +374,9 @@ const setRef = useCallback((node: HTMLInputElement | null) => {
 ## Diagrama — árvore de decisão de refs
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#F5A623", "tertiaryColor": "#D0021B"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[Preciso acessar algo\nentre renders?] -->|sim| B{Precisa\nre-renderizar?}
     A -->|não| Z[Variável local\ndentro do useEffect]
 
@@ -394,10 +394,10 @@ graph TD
     J -->|sim| K[useImperativeHandle]
     J -->|não| L[Passa ref direto]
 
-    style C fill:#4A90D9,color:#fff
-    style H fill:#F5A623,color:#fff
-    style I fill:#4A90D9,color:#fff
-    style K fill:#4A90D9,color:#fff
+    class C neutro
+    class H destaque
+    class I neutro
+    class K neutro
 ```
 
 ---

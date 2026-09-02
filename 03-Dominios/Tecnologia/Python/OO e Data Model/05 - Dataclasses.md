@@ -87,6 +87,8 @@ Segundo a [documentação oficial](https://docs.python.org/3/library/dataclasses
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Classe com campos anotados\n(nome: str, idade: int, ...)"] --> B["@dataclass\n(decorator)"]
     B --> C["Lê __annotations__\nem tempo de importação"]
     C --> D["Injeta __init__\n(um parâmetro por campo, na ordem)"]
@@ -94,13 +96,13 @@ flowchart LR
     C --> F["Injeta __eq__\n(compara tupla de campos)"]
     C --> G["Opcional: __hash__, __lt__,\netc. via frozen=/order="]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
-    style G fill:#4A90D9,color:#fff
+    class A neutro
+    class B destaque
+    class C neutro
+    class D neutro
+    class E neutro
+    class F neutro
+    class G neutro
 ```
 
 Um ponto que costuma confundir quem chega de outras linguagens: `@dataclass` **não** cria um tipo novo nem um sistema de checagem em runtime. A anotação `nome: str` não impede `Funcionario(nome=123, ...)` de funcionar — Python continua sem checagem de tipo em tempo de execução (o [[03-Dominios/Tecnologia/Python/Core/02 - Tipos e variáveis|Core 02]] já cobriu essa característica da linguagem). As anotações servem só para o decorator descobrir **quais atributos existem** e **em que ordem**; checagem de tipo de verdade é trabalho de ferramentas externas (mypy, pyright) ou, em runtime, de bibliotecas como Pydantic — assunto do [[03-Dominios/Tecnologia/Python/Tipagem moderna/index|Galho 5]].
@@ -194,18 +196,21 @@ print(t2.jogadores)   # [] — instância independente, o bug não acontece
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Campo com default"] --> B{"Default é list/dict/set literal?"}
     B -- "Sim" --> C["ValueError em tempo de importação\n(dataclass recusa a classe)"]
     B -- "Não (int/str/float/tuple/None/imutável)" --> D["Default simples funciona\n(mesmo valor reaproveitado é seguro,\nporque é imutável)"]
     A --> E["field(default_factory=callable)"]
     E --> F["callable() chamado 1x\nPOR INSTÂNCIA, dentro do __init__"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#D0021B,color:#fff
-    style D fill:#F5A623,color:#000
-    style E fill:#4A90D9,color:#fff
-    style F fill:#F5A623,color:#000
+    class A neutro
+    class B neutro
+    class C falha
+    class D destaque
+    class E neutro
+    class F destaque
 ```
 
 `field()` aceita outros parâmetros além de `default_factory`, entre os mais usados: `default` (equivalente a escrever o valor direto, útil quando outros parâmetros de `field()` também são necessários), `repr=False` (exclui o campo do `__repr__` gerado — útil para senhas, tokens, campos derivados grandes), `compare=False` (exclui o campo de `__eq__` e da ordenação de `order=True`), e `init=False` (campo não entra no `__init__` gerado — precisa ser setado depois, tipicamente dentro de `__post_init__`).
@@ -353,18 +358,20 @@ A pergunta "qual estrutura usar pra um registro de dados nomeado" já apareceu d
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Preciso de uma classe\npra guardar dados nomeados"] --> B{"Precisa ser literalmente\numa tuple / API espera tuple?"}
     B -- "Sim" --> C["namedtuple\n(ou typing.NamedTuple)"]
     B -- "Não" --> D{"Precisa de controle total\nsobre cada dunder,\nlógica não-trivial de __eq__?"}
     D -- "Sim" --> E["Classe manual\n(nota 03)"]
     D -- "Não" --> F["@dataclass\n(mutável por padrão,\nfrozen=True se precisar imutável)"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#4A90D9,color:#fff
-    style E fill:#F5A623,color:#000
-    style F fill:#F5A623,color:#000
+    class A neutro
+    class B neutro
+    class C destaque
+    class D neutro
+    class E destaque
+    class F destaque
 ```
 
 A [Real Python](https://realpython.com/python-data-classes/) resume o consenso da comunidade de forma direta: `dataclass` é hoje "a escolha default para classes que existem principalmente para guardar dados" — não porque `namedtuple` ou a classe manual estejam obsoletas, mas porque `dataclass` cobre o caso comum (mutável, com métodos, tipado) sem abrir mão do caso raro (`frozen=True` recupera a imutabilidade de `namedtuple`, com o bônus de ainda ser uma classe comum, não uma tupla).

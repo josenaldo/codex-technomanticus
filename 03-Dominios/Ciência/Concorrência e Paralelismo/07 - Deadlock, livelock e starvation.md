@@ -87,10 +87,10 @@ O grafo de espera abaixo ("wait-for graph") mostra a quarta condição materiali
 
 ```mermaid
 flowchart LR
+    classDef cyc fill:#fdd,stroke:#b00,stroke-width:2px
     T1((T1)) -->|espera R2| T2((T2))
     T2 -->|espera R3| T3((T3))
     T3 -->|espera R1| T1
-    classDef cyc fill:#fdd,stroke:#b00,stroke-width:2px
     class T1,T2,T3 cyc
 ```
 
@@ -122,12 +122,12 @@ A regra de detecção segue daí, e tem duas camadas:
 
 ```mermaid
 flowchart LR
+    classDef proc fill:#dde,stroke:#449,stroke-width:1px
+    classDef res fill:#fdd,stroke:#b00,stroke-width:2px
     P1(("P1")) -->|requisita| R2["R2 (1 inst.)"]
     R2 -->|atribuído a| P2(("P2"))
     P2 -->|requisita| R1["R1 (1 inst.)"]
     R1 -->|atribuído a| P1
-    classDef proc fill:#dde,stroke:#449,stroke-width:1px
-    classDef res fill:#fdd,stroke:#b00,stroke-width:2px
     class P1,P2 proc
     class R1,R2 res
 ```
@@ -199,6 +199,8 @@ Agora `transfer(conta1, conta2)` e `transfer(conta2, conta1)` travam **ambas** `
 
 ```mermaid
 flowchart TB
+    classDef bad fill:#fdd,stroke:#b00,stroke-width:2px
+    classDef good fill:#dfd,stroke:#080,stroke-width:2px
     subgraph SEM["Sem ordem · por argumento"]
         direction LR
         A1["A: transfer(c1, c2)<br/>trava c1, quer c2"] -.->|espera c2| B1["B: transfer(c2, c1)<br/>trava c2, quer c1"]
@@ -210,8 +212,6 @@ flowchart TB
         B2["B: espera c1<br/>(A a tem)"] -->|depois| OK
     end
     SEM -->|impor ordem global| COM
-    classDef bad fill:#fdd,stroke:#b00,stroke-width:2px
-    classDef good fill:#dfd,stroke:#080,stroke-width:2px
     class A1,B1 bad
     class A2,B2,OK good
 ```

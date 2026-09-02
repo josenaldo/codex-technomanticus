@@ -340,6 +340,8 @@ Com a descontinuação do CRA, o React formalizou sua recomendação em dois cam
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q["Novo projeto React"]
     Q --> A{"Precisa de\nroteamento?"}
 
@@ -355,9 +357,9 @@ flowchart TD
     BT --> PC["Parcel\n(zero-config)"]
     BT --> RS["Rsbuild\n(webpack-compat, Rust)"]
 
-    style NX fill:#1a3a1a,color:#fff
-    style RR fill:#1a3a1a,color:#fff
-    style VT fill:#1a2a3a,color:#fff
+    class NX ok
+    class RR ok
+    class VT neutro
 ```
 
 ### Caminho 1: Framework (recomendação principal)

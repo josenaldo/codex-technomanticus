@@ -40,8 +40,9 @@ O quarto é o **trabalho invisível e ingrato**. Marianne Bellotti nomeia isso c
 > A diferença não é a existência do desconforto, é a **falta de válvula de escape estrutural**. No trabalho greenfield, a válvula existe: você entrega uma feature, ela é demonstrada, aplaudida, encerrada — um ciclo completo de esforço-reconhecimento-fechamento que recarrega a motivação. No trabalho de legado, os quatro fatores acima removem, um a um, os pontos dessa válvula: não há folha em branco (frustração), o esforço não conta como produção (culpa), o resultado bom é silêncio e o resultado ruim é holofote (medo e ingratidão), e não há fim visível (exaustão sem recarga). Não é que o trabalho seja mais difícil tecnicamente — é que ele é estruturado de um jeito que drena sem devolver. Reconhecer esse mecanismo é o que separa "estou fraco" de "este trabalho tem uma física específica, e existem contramedidas para ela".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A[Trabalho de legado] --> B[Sem folha em branco:<br/>reconstruir teoria a cada mudanca]
     A --> C[Metricas medem novidade,<br/>nao reducao de risco]
     A --> D[Cada deploy carrega<br/>cauda de risco desconhecida]
@@ -55,9 +56,9 @@ graph TD
     H --> K
     I --> K
     J --> K
-    style D fill:#F5A623
-    style E fill:#F5A623
-    style K fill:#D0021B
+    class D destaque
+    class E destaque
+    class K falha
 ```
 
 ## Fechando o laço: o spike como ferramenta de estimativa honesta
@@ -76,15 +77,17 @@ O spike resolve isso trocando a pergunta impossível ("quanto tempo leva?") por 
 Mesmo depois do spike, a estimativa em legado continua sendo uma faixa, não um número — e há uma razão formal para isso que Steve McConnell batizou de **cone da incerteza**. A ideia, em poucas palavras: a precisão possível de uma estimativa de software cresce ao longo do projeto, na medida em que você acumula conhecimento real sobre o problema. No início, quando você sabe menos, a variação honesta entre o pior e o melhor cenário é enorme; perto do fim, quando quase tudo já foi descoberto, a variação encolhe para quase zero. O cone não é uma opinião — é a forma geométrica da própria curva de aprendizado do projeto.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Antes do spike<br/>faixa: 0.25x a 4x"] --> B["Spike concluido<br/>faixa: 0.5x a 2x"]
     B --> C["Metade do trabalho feita<br/>faixa: 0.8x a 1.25x"]
     C --> D["Perto do fim<br/>faixa: 0.9x a 1.15x"]
-    style A fill:#D0021B
-    style B fill:#F5A623
-    style C fill:#4A90D9
-    style D fill:#4A90D9
+    class A falha
+    class B destaque
+    class C neutro
+    class D neutro
 ```
 
 Em legado, esse cone começa mais largo e mais assimétrico do que em greenfield, porque a incerteza não é só "quanto código escrever" — é "quanto do sistema eu ainda não entendo, e o que vou descobrir que vai mudar tudo". Um `if` esquisito escondido numa função de 300 linhas pode virar, ao ser investigado, uma regra de negócio inteira não documentada que multiplica o escopo por três. É por isso que dar um número único no primeiro dia é sempre uma mentira, mesmo quando dita de boa-fé: nenhuma quantidade de talento compensa a largura real do cone naquele ponto do projeto.

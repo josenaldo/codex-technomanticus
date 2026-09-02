@@ -31,8 +31,9 @@ A segunda, mais silenciosa: **o serviço de pagamento, depois de receber a requi
 Você já sabe operar Nginx como proxy reverso de um monólito, e já viu o load balancer como conceito abstrato em System Design — uma caixa que distribui requisições entre réplicas. O que muda em produção, num cluster real, é que essas duas perguntas passam a ter **nomes técnicos, ferramentas dedicadas e uma fronteira nítida entre elas**: tudo que entra e sai do cluster é tráfego **north-south**; tudo que os serviços trocam entre si, dentro do cluster, é tráfego **east-west**. E, ao contrário do que a intuição sugere, é o segundo que domina o volume — em arquiteturas de microserviços, o tráfego east-west tipicamente excede o north-south em ordens de grandeza, porque uma única requisição de usuário pode disparar dezenas de chamadas internas antes de voltar uma resposta.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     CLIENT["🌐 Cliente externo<br/>(browser, app mobile)"]
 
     subgraph EDGE["Borda do cluster — NORTH-SOUTH"]
@@ -52,8 +53,8 @@ graph TB
     SVCA -.->|"mTLS<br/>retry/timeout"| SVCB
     SVCB -.->|"mTLS"| SVCC
 
-    style EDGE fill:#4A90D9,color:#fff
-    style MESH fill:#F5A623,color:#000
+    class EDGE neutro
+    class MESH destaque
 ```
 
 Esta nota separa as duas dimensões deliberadamente. A borda é onde você aplica **um** conjunto de controles — TLS, roteamento, rate limiting, health checks do LB. O interno é onde você aplica **outro** — descoberta de serviço, criptografia mútua, observabilidade de chamadas, políticas de firewall. Confundir os dois é o erro mais comum de quem chega em produção vindo só do mundo do monólito: tentar resolver segurança east-west com uma regra de Ingress, ou tentar debugar latência north-south olhando métricas de sidecar.
@@ -91,7 +92,6 @@ Terminar TLS na borda em vez de em cada pod da aplicação tem uma razão práti
 O Kubernetes armazena o material do certificado como um `Secret` do tipo `kubernetes.io/tls`, referenciado pelo objeto Ingress ou Gateway. O problema prático que isso levanta é: **quem gera esse certificado, e quem o renova antes de expirar?** Fazer isso manualmente — pedir certificado, colar no Secret, lembrar de renovar em 90 dias — é exatamente o tipo de trabalho manual e repetitivo que a nota 01 desta trilha chamou de *toil*. A resposta padrão da indústria é o **cert-manager**: um controller que roda no cluster, observa recursos `Certificate`/`ClusterIssuer`, e fala com autoridades certificadoras — o mais comum sendo **Let's Encrypt** via protocolo ACME — para emitir e renovar certificados automaticamente, sem intervenção humana. Let's Encrypt emite certificados de 90 dias (deliberadamente curtos, para forçar automação); o cert-manager cuida de pedir a renovação bem antes do vencimento, e o Ingress simplesmente aponta para o Secret que o cert-manager mantém atualizado.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 sequenceDiagram
     participant U as Usuário
     participant ING as Ingress/Gateway<br/>(TLS termination)
@@ -152,8 +152,8 @@ Três capacidades justificam essa camada extra:
 **Traffic management no sidecar.** Retry, timeout e circuit breaking (o assunto detalhado de [[06 - Resiliência operacional]]) podem ser configurados **no proxy**, fora do código da aplicação. No Istio, por exemplo, os sidecars Envoy já vêm com retry configurado por padrão — até duas tentativas com intervalo base de 25ms — e um `retryBudget` que limita a concorrência de retries a uma fração das requisições ativas, evitando que uma tentativa de recuperação vire uma avalanche de tráfego (retry storm) sobre um serviço já sobrecarregado. Timeout e circuit breaker (via objetos como `DestinationRule` no Istio) seguem a mesma lógica: política declarada uma vez, aplicada uniformemente, sem cada time reimplementar a mesma lógica de resiliência em cada linguagem.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph PodA["Pod: Pagamento"]
         AppA["App"] -->|"localhost"| SideA["Sidecar<br/>(Envoy/Linkerd-proxy)"]
     end
@@ -162,8 +162,8 @@ graph LR
     end
     SideA -.->|"mTLS<br/>retry/timeout<br/>métricas"| SideB
 
-    style PodA fill:#4A90D9,color:#fff
-    style PodB fill:#4A90D9,color:#fff
+    class PodA neutro
+    class PodB neutro
 ```
 
 ### O custo do mesh: quando não usar

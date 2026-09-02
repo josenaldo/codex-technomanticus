@@ -29,8 +29,9 @@ Esse é o limite do dashboard: ele é **passivo**. Depende de um humano abrir, o
 Detectar regressão é sempre comparar dois estados. As estratégias comuns:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[Métrica atual p75] --> B{Comparar com...}
     B --> C["Linha de base fixa<br/>(ex: LCP alvo 2,5s)"]
     B --> D["Janela anterior<br/>(hoje vs. semana passada)"]
@@ -40,8 +41,8 @@ graph TB
     E --> F
     F -->|sim + significativo| G[🚨 alerta]
     F -->|não / ruído| H[ok]
-    style G fill:#D0021B,color:#fff
-    style H fill:#4A90D9,color:#fff
+    class G falha
+    class H neutro
 ```
 
 - **Contra uma linha de base fixa:** alerta se o p75 cruza um limiar absoluto (LCP > 2,5 s). Simples, mas não pega uma piora *dentro* do verde (de 1,2 s para 2,3 s continua "bom", mas dobrou).

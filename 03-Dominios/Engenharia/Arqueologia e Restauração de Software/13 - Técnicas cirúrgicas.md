@@ -36,8 +36,9 @@ A nota 12 já te deu o vocabulário de **seam** — um ponto onde você pode alt
 3. Insira **uma única linha** no método velho, chamando o método/classe novo. É a única mudança que o código legado sofre.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph VELHO["Método legado — 300 linhas, sem testes"]
         L1["... linha 139 ..."]
         CHAMA["linha 140: calcularDescontoVip(pedido)<br/>← ÚNICA linha inserida"]
@@ -53,10 +54,10 @@ graph TD
     T1 -.cobre.-> M
     T2 -.cobre.-> M
     T3 -.cobre.-> M
-    style VELHO fill:#D0021B,color:#fff
-    style CHAMA fill:#F5A623,color:#000
-    style NOVO fill:#7ED321,color:#000
-    style M fill:#7ED321,color:#000
+    class VELHO falha
+    class CHAMA destaque
+    class NOVO destaque
+    class M destaque
 ```
 
 Repare no que o diagrama mostra: o retângulo vermelho (o método velho, arriscado) recebe uma única linha âmbar — o ponto de sutura. Tudo o que é verde nasceu testado, isolado, TDD do início ao fim. Se você errar a lógica do desconto, o teste do método novo acusa em segundos. Se você quebrar alguma das outras 299 linhas do método velho... bem, essa é justamente a aposta: você não tocou nelas, então a probabilidade de quebrá-las despenca.
@@ -123,8 +124,10 @@ O procedimento:
 3. Todo o resto do sistema continua chamando `salvar()` sem saber que algo mudou — exceto que agora o comportamento novo acontece sempre.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph ANTES["Antes"]
         C1["Chamador A"] --> S1["salvar()<br/>lógica original"]
         C2["Chamador B"] --> S1
@@ -137,10 +140,10 @@ graph TD
         W --> AD["invalidarCache()<br/>comportamento adicional"]
         W --> SI["salvarInterno()<br/>= lógica original renomeada"]
     end
-    style S1 fill:#D0021B,color:#fff
-    style W fill:#7ED321,color:#000
-    style AD fill:#7ED321,color:#000
-    style SI fill:#4A90D9,color:#fff
+    class S1 falha
+    class W destaque
+    class AD destaque
+    class SI neutro
 ```
 
 Note a diferença estrutural em relação ao sprout: lá, o ponto de sutura era uma linha nova **dentro** do método velho. Aqui, o método velho inteiro (renomeado) passa a ser **chamado por dentro** do novo — a intercepção acontece no nome, não no corpo. Ninguém fora da classe precisa saber que `salvar()` hoje é outro método.
@@ -152,16 +155,17 @@ Note a diferença estrutural em relação ao sprout: lá, o ponto de sutura era 
 A pergunta que decide entre as duas técnicas é sempre a mesma, e vale a pena tê-la memorizada antes de abrir o editor:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q["O comportamento novo precisa<br/>acontecer TODA VEZ que um<br/>ponto de chamada existente<br/>é acionado?"]
     Q -->|"Não — é uma<br/>adição pontual,<br/>um lugar só"| SPROUT["SPROUT<br/>Method/Class<br/>brota um ponto novo"]
     Q -->|"Sim — precisa<br/>interceptar TODOS<br/>os pontos existentes"| WRAP["WRAP<br/>Method/Class<br/>intercepta o ponto existente"]
     SPROUT --> SNOTE["Ex.: desconto VIP<br/>só no fluxo de checkout"]
     WRAP --> WNOTE["Ex.: log/cache/validação<br/>em TODA chamada a salvar()"]
-    style Q fill:#4A90D9,color:#fff
-    style SPROUT fill:#7ED321,color:#000
-    style WRAP fill:#7ED321,color:#000
+    class Q neutro
+    class SPROUT destaque
+    class WRAP destaque
 ```
 
 Em uma frase: **brotar adiciona; embrulhar intercepta.** Se você se pegar tentando embrulhar algo que só precisa acontecer numa chamada específica, está complicando à toa — um sprout simples resolveria com menos superfície de mudança. Se você se pegar tentando brotar algo que precisa valer em todos os chamadores, vai esquecer um dos pontos de chamada mais cedo ou mais tarde — é exatamente o cenário que o wrap existe para eliminar.

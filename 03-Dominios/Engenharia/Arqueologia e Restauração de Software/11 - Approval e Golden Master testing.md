@@ -49,8 +49,10 @@ Golden master resolve o problema de escala, mas na forma original (scripts casei
 5. Você olha o diff com os olhos de quem entende a mudança que acabou de fazer. Se é a mudança esperada, você **aprova**: copia (ou a ferramenta copia) o `.received` por cima do `.approved`, e ele vira a nova referência. Se não era esperada, é uma regressão — você conserta o código, não o teste.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Rodar o código<br/>com a entrada de teste"] --> B["Gerar received<br/>(saída atual)"]
     B --> C{"received ==<br/>approved?"}
     C -->|"sim"| P["PASSA<br/>received descartado"]
@@ -58,11 +60,11 @@ flowchart TD
     D --> H["Humano revisa<br/>o diff"]
     H -->|"mudança intencional"| AP["Aprova:<br/>received vira approved"]
     H -->|"regressão"| FIX["Conserta o código,<br/>não o teste"]
-    style P fill:#7ED321,color:#000
-    style D fill:#F5A623,color:#000
-    style AP fill:#7ED321,color:#000
-    style FIX fill:#D0021B,color:#fff
-    style H fill:#4A90D9,color:#fff
+    class P destaque
+    class D destaque
+    class AP destaque
+    class FIX falha
+    class H neutro
 ```
 
 A vantagem sobre `assertEquals` manual é dupla: você nunca **digita** o esperado (elimina erro de transcrição, e funciona pra qualquer tamanho de saída), e a **aprovação vira o ato de revisão** — o diff é a interface que te obriga a olhar exatamente o que mudou, campo a campo, formatado de um jeito legível, em vez de adivinhar lendo o código do teste.

@@ -245,6 +245,7 @@ TypeScript, Babel, SWC, esbuild — todos são compiladores. A diferença é que
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     TS["TypeScript\n.ts / .tsx"]
     Parse["Front-end\n(lexer + parser + AST)"]
     Check["Type checker\n(analise semantica)"]
@@ -256,7 +257,7 @@ flowchart LR
     Emit --> JS
     Emit --> Map
 
-    style Map fill:#555,color:#fff
+    class Map neutro
 ```
 
 > [!info] Leitura do diagrama

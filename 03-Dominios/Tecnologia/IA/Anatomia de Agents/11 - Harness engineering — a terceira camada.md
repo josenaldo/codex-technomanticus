@@ -46,9 +46,10 @@ O survey de abril/2026 que unificou esse vocabulário (*Externalization in LLM A
 
 ```mermaid
 graph LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["<b>Weights Era</b><br/>ganho = parâmetros<br/>scaling · RLHF · fine-tuning"] --> B["<b>Context Era</b><br/>ganho = design do input<br/>prompting · RAG · CoT"]
     B --> C["<b>Harness Era</b><br/>ganho = o runtime em volta<br/>memória externa · tool registries<br/>protocolos · sandboxes<br/>sub-agentes · compressão"]
-    style C fill:#2d4a3e,stroke:#4a8,color:#fff
+    class C ok
 ```
 
 Por que isso não é só renomear "engenharia de software de agentes"? Porque cada era esgotou o retorno marginal da anterior. Empilhar parâmetros tem custo crescente e retorno decrescente; refinar o prompt resolve muito, mas bate num teto quando a tarefa é longa e o estado não cabe na janela. O que sobra — e é onde 2025-2026 concentrou o avanço — é **a engenharia do que cerca o modelo**. Martin Fowler resumiu na forma mais curta possível: *"Agent = Model + Harness"*.
@@ -73,6 +74,8 @@ Entre o núcleo-harness e os três módulos ficam os **mediadores** — *sandbox
 
 ```mermaid
 graph TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     LLM["<b>LLM</b><br/>os pesos — raciocínio puro<br/>(a parte pequena)"]
     subgraph HARNESS["HARNESS — camada de runtime"]
         direction TB
@@ -87,8 +90,8 @@ graph TB
     end
     LLM -->|"pede ação"| HARNESS
     HARNESS -->|"contexto curado + feedback"| LLM
-    style HARNESS fill:#1f3a2e,stroke:#4a8,color:#fff
-    style LLM fill:#3a2e1f,stroke:#a84,color:#fff
+    class HARNESS ok
+    class LLM destaque
 ```
 
 A pergunta de projeto que esse mapa destrava: **para qualquer capacidade nova, onde ela mora?** Conhecimento estável vai pra Memory; playbook aprendido vira Skill; contrato de comunicação vira Protocol; governança de loop vira mediador. *Harness design becomes a question of what to externalize, and how to mediate it.*

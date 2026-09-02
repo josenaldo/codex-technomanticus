@@ -114,7 +114,6 @@ O Next.js oferece quatro estratégias combináveis por rota:
 O **PPR** é o mais recente desses padrões — consolidado no Next 15 como experimental estável. A ideia é servir imediatamente um shell HTML pré-renderizado (sem esperar dados dinâmicos), enquanto as partes que precisam de dados chegam via streaming como fragmentos. O resultado é um TTFB baixo mesmo para páginas parcialmente dinâmicas.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#fff"}}}%%
 sequenceDiagram
     participant B as Browser
     participant N as Next.js Server
@@ -240,13 +239,14 @@ Esses otimizadores são explorados em [[03-Dominios/Tecnologia/React/Next.js/14 
 ## App Router: a virada de paradigma
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#fff"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph PR["Pages Router (legado — ainda suportado)"]
         PR1["pages/produtos.tsx"] --> PR2["getServerSideProps()"]
         PR2 --> PR3["props serializadas → componente"]
         PR3 --> PR4["Bundle completo no cliente\nHidratação total"]
-        style PR fill:#F5A623,color:#000,stroke:#d4891a
+        class PR destaque
     end
 
     subgraph AR["App Router (padrão — Next 13+)"]
@@ -255,7 +255,7 @@ graph TD
         AR2 -->|'use client'| AR4["Client Component\nHidratação seletiva\nInteratividade"]
         AR3 --> AR5["RSC Payload + HTML"]
         AR4 --> AR5
-        style AR fill:#4A90D9,color:#fff,stroke:#2d6fa8
+        class AR neutro
     end
 ```
 

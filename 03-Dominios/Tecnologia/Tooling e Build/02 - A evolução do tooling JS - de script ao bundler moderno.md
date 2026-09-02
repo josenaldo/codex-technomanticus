@@ -602,6 +602,7 @@ Olhando para trás, é tentador ver a evolução como um progresso linear óbvio
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     P1["Escopo global\npoluído"] -->|"IIFEs + namespaces"| P2
     P2["Dependências\nimplícitas"] -->|"CommonJS + AMD"| P3
     P3["Browser não\nentende módulos"] -->|"Browserify + webpack"| P4
@@ -610,7 +611,7 @@ flowchart LR
     P6["Produção ainda\nlenta (Rollup/JS)"] -->|"Rolldown + Rust/Go"| P7
     P7["Toolchain unificado\n(2026)"]
 
-    style P7 fill:#1a3a1a,color:#fff
+    class P7 ok
 ```
 
 > [!note] A ironia do progresso

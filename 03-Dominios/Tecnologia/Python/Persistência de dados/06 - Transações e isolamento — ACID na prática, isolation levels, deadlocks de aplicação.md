@@ -135,14 +135,17 @@ Isolation regula uma tensão direta: quanto mais uma transação é isolada das 
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     RU["READ UNCOMMITTED<br/>permite tudo"] --> RC["READ COMMITTED<br/>proíbe dirty read"]
     RC --> RR["REPEATABLE READ<br/>proíbe non-repeatable read"]
     RR --> SER["SERIALIZABLE<br/>proíbe phantom read"]
 
-    style RU fill:#5c1a1a,color:#fff
-    style RC fill:#5c4a1a,color:#fff
-    style RR fill:#2d4a1a,color:#fff
-    style SER fill:#1a4a2d,color:#fff
+    class RU falha
+    class RC destaque
+    class RR ok
+    class SER ok
 ```
 
 | Nível | Dirty read | Non-repeatable read | Phantom read | Uso típico |

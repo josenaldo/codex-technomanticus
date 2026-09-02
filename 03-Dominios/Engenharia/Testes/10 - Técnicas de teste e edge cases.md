@@ -100,6 +100,8 @@ A receita de Myers para uma faixa: teste o **mínimo**, logo **acima do mínimo*
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     L1["17<br/>(fora, inválido)"] --> L2["18<br/>(limite inferior)"]
     L2 --> L3["19<br/>(dentro)"]
     L3 --> M["..."]
@@ -107,10 +109,10 @@ flowchart LR
     L4 --> L5["120<br/>(limite superior)"]
     L5 --> L6["121<br/>(fora, inválido)"]
 
-    style L2 fill:#2d6a4f,color:#fff
-    style L5 fill:#2d6a4f,color:#fff
-    style L1 fill:#9d0208,color:#fff
-    style L6 fill:#9d0208,color:#fff
+    class L2 ok
+    class L5 ok
+    class L1 falha
+    class L6 falha
 ```
 
 Lead-in: a mesma faixa de idade (18 a 120), agora vista pela lente das fronteiras.
@@ -245,6 +247,9 @@ Aqui está o conselho que mais economiza noites de plantão: **o caminho de erro
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Start["Requisição chega"] --> Valid{"Entrada<br/>válida?"}
     Valid -->|sim| Process["Processa pedido"]
     Valid -->|não| Err1["Retorna 400<br/>(testar!)"]
@@ -253,10 +258,10 @@ flowchart TD
     Save -->|não| Rollback["Rollback +<br/>compensação<br/>(testar!)"]
     Rollback --> Err2["Retorna 500<br/>(testar!)"]
 
-    style Happy fill:#2d6a4f,color:#fff
-    style Err1 fill:#9d0208,color:#fff
-    style Err2 fill:#9d0208,color:#fff
-    style Rollback fill:#bb3e03,color:#fff
+    class Happy ok
+    class Err1 falha
+    class Err2 falha
+    class Rollback destaque
 ```
 
 Lead-in: o fluxo de uma requisição, com o caminho feliz (verde) e os caminhos de erro (vermelho/laranja) lado a lado.

@@ -36,6 +36,8 @@ O erro mais frequente: construir agent porque o domínio parece "complexo" ou po
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Workflow (caminho fixo)"
         A1["Input"]
         A2["Nó A\npré-definido"]
@@ -56,8 +58,8 @@ flowchart LR
     B4 -->|"continua"| B2
     B4 -->|"para"| B5
 
-    style A4 fill:#f0fff4,stroke:#51cf66
-    style B5 fill:#fff9e6,stroke:#f59f00
+    class A4 ok
+    class B5 destaque
 ```
 
 ## O que é esta camada
@@ -147,6 +149,8 @@ Isso leva a um padrão de arquitetura híbrida cada vez mais comum: **Temporal (
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph macro ["Camada macro — Temporal / Prefect"]
         direction LR
         M1["Job de longa duração\nrecebido"] --> M2["Checkpoint\npersistido"]
@@ -164,8 +168,8 @@ flowchart TB
         A3 -->|"conclui"| A4["Retorna à camada macro"]
     end
 
-    style macro fill:#f0f4ff,stroke:#4263eb
-    style micro fill:#fff9e6,stroke:#f59f00
+    class macro neutro
+    class micro destaque
 ```
 
 O diagrama deixa explícito o que a tabela só descreve: a camada macro não substitui a decisão desta nota — ela só garante que, uma vez que você decidiu que uma etapa é agent (o grafo cíclico do LangGraph), essa etapa sobrevive a falhas de infraestrutura sem perder o progresso já feito.

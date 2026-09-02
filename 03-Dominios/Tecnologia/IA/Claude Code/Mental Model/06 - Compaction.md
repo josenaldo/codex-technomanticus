@@ -222,6 +222,8 @@ Quando Claude Code usa subagentes (Agent tool), cada subagente tem seu próprio 
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     O[Orquestrador\n contexto principal] --> SA1[Subagente 1\n contexto próprio]
     O --> SA2[Subagente 2\n contexto próprio]
     O --> SA3[Subagente 3\n contexto próprio]
@@ -230,10 +232,10 @@ graph TD
     SA2 -->|retorna resultado| O
     SA3 -->|retorna resultado| O
 
-    style O fill:#4a90d9,color:#fff
-    style SA1 fill:#7b7b7b,color:#fff
-    style SA2 fill:#7b7b7b,color:#fff
-    style SA3 fill:#7b7b7b,color:#fff
+    class O neutro
+    class SA1 marca
+    class SA2 marca
+    class SA3 marca
 ```
 
 O orquestrador recebe os resultados dos subagentes. Se o orquestrador sofre compaction, os resultados dos subagentes (que já foram incorporados ao histórico) são incluídos no resumo — mas de forma condensada. Se um subagente individualmente atinge o limite, ele pode sofrer compaction internamente, transparente para o orquestrador.

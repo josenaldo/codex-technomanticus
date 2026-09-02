@@ -55,13 +55,14 @@ Há ainda uma armadilha específica de quem trabalha em B2B/consultoria: o NPS, 
 - **Pressupor que uma métrica resume sucesso** — simplista demais para produto multidimensional; a mesma crítica estrutural que atravessa esta nota inteira.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     M["Métrica escolhida<br/>(NPS, North Star)"] -->|"vira alvo<br/>explícito do time"| O["Otimização direta<br/>da métrica"]
     O -->|"caminho legítimo"| V["Valor real entregue<br/>sobe junto com o número"]
     O -->|"caminho de menor esforço<br/>(Lei de Goodhart)"| G["Número sobe<br/>valor real não sobe<br/>ou até cai"]
-    style V fill:#4A90D9,color:#fff
-    style G fill:#D0021B,color:#fff
+    class V neutro
+    class G falha
 ```
 
 O diagrama mostra a bifurcação que a Lei de Goodhart prevê: uma vez que a métrica vira alvo explícito, existem dois caminhos para movê-la, e o caminho de menor esforço nem sempre é o que gera o valor original que a métrica pretendia representar. Isso não significa "nunca escolha uma métrica principal" — significa **nunca trate a métrica como o objetivo em si**; ela é um proxy, e proxy tem prazo de validade até alguém aprender a jogar contra ele.

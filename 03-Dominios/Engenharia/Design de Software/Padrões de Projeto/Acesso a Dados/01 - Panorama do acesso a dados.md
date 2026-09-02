@@ -35,8 +35,9 @@ Esse atrito tem nome: **descasamento objeto-relacional** (*object-relational imp
 ## O mapa da família
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Acesso a Dados"] --> L["Onde mora a lógica"]
     A --> F["Como o objeto fala com a tabela"]
     A --> M["Maquinaria de ORM"]
@@ -47,11 +48,11 @@ graph TD
     M --> M1["Unit of Work · Identity Map · Lazy Load · Query Object"]
     N --> N1["Agregado / single-table · Polyglot persistence"]
 
-    style A fill:#4A90D9,color:#fff
-    style L fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
-    style M fill:#4A90D9,color:#fff
-    style N fill:#F5A623,color:#000
+    class A neutro
+    class L neutro
+    class F neutro
+    class M neutro
+    class N destaque
 ```
 
 - **Onde mora a lógica** — antes de acessar o banco, você decide *onde a regra de negócio vive*: espalhada por scripts de caso de uso (Transaction Script), rica dentro dos objetos (Domain Model) ou concentrada num objeto por tabela (Table Module). Essa escolha condiciona todo o resto.

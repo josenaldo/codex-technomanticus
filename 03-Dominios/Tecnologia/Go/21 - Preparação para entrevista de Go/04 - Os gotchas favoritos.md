@@ -56,6 +56,8 @@ Mas `fazAlgo()` não devolve isso. Devolve `p`, que é um ponteiro nil — só q
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph NilReal["interface nil de verdade"]
         T1["tipo: nil"]
         V1["valor: nil"]
@@ -67,8 +69,8 @@ flowchart LR
     NilReal -->|"== nil"| R1["true"]
     TypedNil -->|"== nil"| R2["false"]
 
-    style T1 fill:#4A90D9,color:#fff
-    style T2 fill:#F5A623,color:#000
+    class T1 neutro
+    class T2 destaque
 ```
 
 > [!warning] A regra prática que resolve isso
@@ -107,6 +109,7 @@ fmt.Println(original) // [1 2 99] — original[2] foi sobrescrito!
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Array["array subjacente: [1, 2, 3, _, _]"]
     Original["original → len=3, cap=5"]
     Fatia["fatia := original[:2] → len=2, cap=5"]
@@ -117,7 +120,7 @@ flowchart TB
     Append -->|"mesma memória"| Array
     Array -->|"original[2] agora é 99"| Original
 
-    style Array fill:#F5A623,color:#000
+    class Array destaque
 ```
 
 > [!warning] "Copiei o slice, então é seguro mexer nele" — não necessariamente

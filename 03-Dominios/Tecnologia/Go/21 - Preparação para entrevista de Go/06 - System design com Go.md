@@ -33,6 +33,7 @@ O argumento técnico central para Go em system design não é sintaxe — é **c
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Go["Go: goroutines sobre M:N scheduler"]
         direction TB
         G1["goroutine (~2KB stack)"] --> GR["Go runtime scheduler"]
@@ -50,7 +51,7 @@ flowchart TB
         J3["thread (~1MB stack)"] --> JOS3["thread OS"]
     end
 
-    style GR fill:#F5A623,color:#000
+    class GR destaque
 ```
 
 O Go runtime multiplexa milhares de goroutines sobre um número pequeno de threads de SO (controlado por `GOMAXPROCS`, por padrão igual ao número de CPUs) — um scheduler M:N cooperativo que suspende uma goroutine automaticamente quando ela bloqueia em I/O, canal ou mutex, e retoma outra no mesmo thread. Isso é o que torna barato escrever `go fazAlgo()` doze vezes num loop sem pensar em pool de threads.
@@ -153,6 +154,8 @@ Numa entrevista de system design que não é "escreva o backend inteiro em Go", 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Client["Cliente"] --> GW["API Gateway\n(Go — alta concorrência,\nlow-latency, roteamento)"]
     GW --> Domain["Serviço de domínio\n(Java/Kotlin — regras de\nnegócio ricas)"]
     GW --> Agg["Serviço de agregação\n(Go — fan-out concorrente\npara N fontes externas)"]
@@ -163,10 +166,10 @@ flowchart LR
     GW --> Worker["Worker de fila\n(Go — consome mensagens\nem alta taxa)"]
     Worker --> Queue[("Fila de mensagens")]
 
-    style GW fill:#4A90D9,color:#fff
-    style Agg fill:#4A90D9,color:#fff
-    style Worker fill:#4A90D9,color:#fff
-    style Domain fill:#F5A623,color:#000
+    class GW neutro
+    class Agg neutro
+    class Worker neutro
+    class Domain destaque
 ```
 
 O padrão que se repete em desenhos reais: Go nas bordas de alta concorrência (gateway, agregação, workers de fila, sidecars) e a linguagem de domínio (Java, Kotlin, ou até Go mesmo, se o time já está confortável) no núcleo de regras de negócio. Reconhecer esse padrão numa entrevista — em vez de propor "tudo em Go" ou "tudo em Java" — é o que sinaliza pensamento de arquitetura, não preferência de linguagem.

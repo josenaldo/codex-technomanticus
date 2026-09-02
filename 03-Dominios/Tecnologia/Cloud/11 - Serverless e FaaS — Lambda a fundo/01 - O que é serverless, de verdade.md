@@ -63,16 +63,19 @@ O jeito mais direto de situar serverless é olhar para trás, para tudo que este
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     BM["Bare metal<br/>(servidor físico dedicado)"] --> VM["VM<br/>Galho 5<br/>(EC2 / Droplet)"]
     VM --> EL["VM elástica<br/>Galho 6<br/>(ASG + Load Balancer)"]
     EL --> CT["Container gerenciado<br/>Galho 12<br/>(ECS/Fargate, Kubernetes gerenciado)"]
     CT --> FN["Função serverless<br/>este galho<br/>(Lambda / DO Functions)"]
 
-    style BM fill:#D0021B,color:#fff
-    style VM fill:#F5A623,color:#000
-    style EL fill:#F5A623,color:#000
-    style CT fill:#4A90D9,color:#fff
-    style FN fill:#4A90D9,color:#fff
+    class BM falha
+    class VM destaque
+    class EL destaque
+    class CT neutro
+    class FN neutro
 ```
 
 Em cada passo à direita, uma fatia do trabalho operacional que era sua vira trabalho do provedor:

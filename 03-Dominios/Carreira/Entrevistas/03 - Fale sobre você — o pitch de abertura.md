@@ -38,14 +38,15 @@ O problema não foi falta de conteúdo — foi **ordem e seleção**. E o diagn�
 Ordem cronológica é a organização mais natural e a pior possível, porque coloca o menos relevante primeiro e obriga o ouvinte a esperar. A inversão resolve:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     P["<b>Presente</b> ~30s<br/>quem você é hoje<br/>papel · escopo · stack"] --> Q["<b>Passado</b> ~60s<br/>2-3 marcos que EXPLICAM<br/>o presente — com resultado"]
     Q --> F["<b>Futuro</b> ~30s<br/>o que procura<br/>e por que ESTA vaga"]
 
-    style P fill:#4A90D9,color:#fff
-    style Q fill:#4A90D9,color:#fff
-    style F fill:#F5A623,color:#000
+    class P neutro
+    class Q neutro
+    class F destaque
 ```
 
 **Presente** — o que você faz hoje, em uma ou duas frases, com escopo: não "sou desenvolvedor", mas o que você tem sob responsabilidade e em que contexto.

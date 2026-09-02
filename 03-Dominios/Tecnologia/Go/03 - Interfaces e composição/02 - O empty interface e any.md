@@ -45,6 +45,7 @@ Todo tipo, sem exceção, "contém" o conjunto vazio de métodos exigidos — po
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     I["interface{} — zero métodos exigidos"]
     A["int"] -->|"satisfaz\n(nada a implementar)"| I
     B["string"] -->|"satisfaz\n(nada a implementar)"| I
@@ -52,7 +53,7 @@ flowchart TB
     D["[]byte"] -->|"satisfaz\n(nada a implementar)"| I
     E["qualquer outro tipo"] -->|"satisfaz\n(nada a implementar)"| I
 
-    style I fill:#4A90D9,color:#fff
+    class I neutro
 ```
 
 `interface{}` é literalmente a sintaxe para "interface sem corpo" — abre e fecha chave sem nada dentro. Uma variável desse tipo pode guardar qualquer valor, porque a única exigência para guardar ali é "ser um tipo Go válido" — e todo tipo é.

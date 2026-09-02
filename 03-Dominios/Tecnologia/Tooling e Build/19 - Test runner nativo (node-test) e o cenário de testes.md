@@ -38,6 +38,7 @@ A *estratégia* de testes — o que testar, qual proporção de unitários vs. i
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "O que esta nota cobre (TOOLING)"
         D["Descoberta de arquivos\n*.test.ts glob"]
         L["Carregamento\nESM/TS/JSX transform"]
@@ -53,9 +54,9 @@ flowchart LR
         DO["Test doubles\nstub vs mock vs fake"]
     end
 
-    style S fill:#333,color:#aaa
-    style T fill:#333,color:#aaa
-    style DO fill:#333,color:#aaa
+    class S neutro
+    class T neutro
+    class DO neutro
 ```
 
 ---
@@ -219,6 +220,8 @@ node --test --test-isolation=process
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph "none — processo único"
         P0["Processo principal"]
         F0a["arquivo-a.test.ts"] --> P0
@@ -242,10 +245,10 @@ graph LR
         PP --> C2
     end
 
-    style W1 fill:#1a5b5b,color:#fff
-    style W2 fill:#1a5b5b,color:#fff
-    style C1 fill:#5b1a1a,color:#fff
-    style C2 fill:#5b1a1a,color:#fff
+    class W1 neutro
+    class W2 neutro
+    class C1 falha
+    class C2 falha
 ```
 
 O trade-off: `worker` é mais rápido (menos overhead de fork), mas módulos com estado singleton podem vazar se o worker for reusado. `process` é mais caro, mas o isolamento é absoluto — cada arquivo começa em um processo limpo.
@@ -329,6 +332,8 @@ Mas há algo mais fundamental: o Vitest foi desenhado para ESM e TypeScript de v
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Jest (arquitetura legada)"
         JF["Arquivo .ts"]
         JB["Babel/SWC\n(transform separado)"]
@@ -345,8 +350,8 @@ graph LR
         VF --> VE --> VESM --> VW
     end
 
-    style JCJ fill:#553333,color:#eee
-    style VESM fill:#335533,color:#eee
+    class JCJ falha
+    class VESM ok
 ```
 
 Esse diagrama explica por que o Jest tem problemas com ESM: ele converte tudo para CJS internamente antes de executar, o que quebra com pacotes ESM-only (como `p-limit@5+`, `chalk@5+`, `node-fetch@3+`). O Vitest simplesmente não faz essa conversão — ESM é o formato nativo.
@@ -567,6 +572,8 @@ Existem dois mecanismos para coletar coverage em Node.js:
 
 ```mermaid
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Istanbul (instrumentation-based)"
         IS["Código fonte original"]
         IT["Babel/SWC injeta contadores\nem cada branch/statement"]
@@ -583,8 +590,8 @@ graph TD
         VS --> VR --> VM --> VO
     end
 
-    style IT fill:#553333,color:#eee
-    style VR fill:#1a5b5b,color:#fff
+    class IT falha
+    class VR neutro
 ```
 
 **Istanbul** (usado pelo `@vitest/coverage-istanbul` e historicamente pelo Jest com `babel-jest`) injeta contadores no AST do código antes de executar. Vantagem: preciso ao nível de statement, suporta bem TypeScript após transform. Desvantagem: transforma o código — o que você testa não é exatamente o que roda.
@@ -790,6 +797,9 @@ describe('math', () => {
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     START["Novo projeto ou\nmigrar um existente?"]
 
     N["Novo projeto"]
@@ -828,10 +838,10 @@ flowchart TD
     ESM_PAIN -->|Sim| MIG
     ESM_PAIN -->|Não| KEEP
 
-    style VT fill:#1a6b1a,color:#fff
-    style NT fill:#1a5b5b,color:#fff
-    style BT fill:#4a4a1a,color:#fff
-    style MIG fill:#1a6b1a,color:#fff
+    class VT ok
+    class NT neutro
+    class BT destaque
+    class MIG ok
 ```
 
 ---

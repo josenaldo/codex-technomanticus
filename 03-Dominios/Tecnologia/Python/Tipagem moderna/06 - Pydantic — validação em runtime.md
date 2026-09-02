@@ -246,8 +246,9 @@ O padrão de nomenclatura é simétrico e vale memorizar como par:
 | String JSON → objeto validado | `model_validate_json(texto)` | aceita `str`/`bytes` de JSON |
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Entrada["Dados externos (sem tipo Python)"]
         JSON["JSON / dict cru\n(request HTTP, arquivo, env var)"]
     end
@@ -264,10 +265,10 @@ flowchart LR
     OBJ -->|"model_dump()\nmodel_dump_json()"| JSON2
     JSON -.->|"tipo errado\n→ ValidationError"| ERRO["exceção estruturada\ncampo a campo"]
 
-    style JSON fill:#4A90D9,color:#fff
-    style OBJ fill:#4A90D9,color:#fff
-    style JSON2 fill:#4A90D9,color:#fff
-    style ERRO fill:#D0021B,color:#fff
+    class JSON neutro
+    class OBJ neutro
+    class JSON2 neutro
+    class ERRO falha
 ```
 
 **Pydantic em uma frase**: `BaseModel` transforma type hints num contrato checado de fato em runtime — validando na entrada (`model_validate`/construtor) e serializando na saída (`model_dump`) de forma simétrica, com `pydantic-core` (Rust) fazendo o trabalho pesado por baixo.

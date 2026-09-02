@@ -123,6 +123,9 @@ var (
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     T["Tipos básicos"] --> N["Numéricos"]
     T --> B["bool"]
     T --> S["string"]
@@ -134,15 +137,15 @@ flowchart TD
 
     S --> RUNE["rune = alias de int32<br/>1 ponto de código Unicode"]
 
-    style T fill:#4A90D9,color:#fff
-    style N fill:#F5A623,color:#000
-    style B fill:#7ED321,color:#000
-    style S fill:#7ED321,color:#000
-    style INT fill:#fff,color:#000
-    style UINT fill:#fff,color:#000
-    style FLOAT fill:#fff,color:#000
-    style CPLX fill:#fff,color:#000
-    style RUNE fill:#fff,color:#000
+    class T neutro
+    class N destaque
+    class B destaque
+    class S destaque
+    class INT marca
+    class UINT marca
+    class FLOAT marca
+    class CPLX marca
+    class RUNE marca
 ```
 
 Os tipos que você vai usar 90% do tempo são só quatro: `int`, `float64`, `bool`, `string`. O resto da árvore acima existe para quando o tamanho exato em bits importa de verdade — protocolos binários, hardware, interoperabilidade com C, otimização de memória em struct grande. Fora desses casos, usar `int32` "porque parece mais preciso" é, na cultura Go, visto como ruído — `int` é o padrão e o idiomático.

@@ -51,17 +51,19 @@ Agora o coração desta nota. A pesquisa da própria Deque — criadora do axe �
 Por quê? Porque a máquina verifica o *computável*, não o *significativo*:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[Imagem] --> B{Tem alt?}
     B -->|não| C["❌ axe detecta:<br/>'imagem sem alt'"]
     B -->|sim| D["✅ axe aprova"]
     D --> E{"O alt DESCREVE<br/>a imagem?"}
     E -->|"alt='imagem123.jpg'"| F["😱 axe não vê:<br/>alt inútil, mas presente"]
     E -->|"alt='gráfico de vendas subindo'"| G[de fato acessível]
-    style C fill:#D0021B,color:#fff
-    style F fill:#F5A623,color:#000
-    style G fill:#4A90D9,color:#fff
+    class C falha
+    class F destaque
+    class G neutro
 ```
 
 O diagrama mostra o buraco. O axe verifica que o `alt` **existe**; ele não tem como saber se o `alt` **descreve** a imagem. `alt="DSC_0042.jpg"` passa na automação e é inútil para quem usa leitor de tela. Os casos que só o humano pega:

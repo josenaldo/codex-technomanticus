@@ -90,6 +90,8 @@ func main() {
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph main["main() — o 'container' manual"]
         direction TB
         DB["sql.Open(...)"] --> Repo["postgres.NewOrderRepository(db)"]
@@ -101,8 +103,8 @@ flowchart TB
 
     Svc -.->|"depende só de\nOrderRepository, Notifier\n(interfaces)"| Iface["interfaces definidas\nem order/"]
 
-    style Svc fill:#4A90D9,color:#fff
-    style Iface fill:#F5A623,color:#000
+    class Svc neutro
+    class Iface destaque
 ```
 
 Repare no que esse diagrama revela: as setas de construção (`main()` chamando `New*`) apontam numa direção; a dependência de tipo (`Service` dependendo de `OrderRepository`) aponta para uma interface local, não para `postgres`. É exatamente a **inversão de dependência** — o pacote de alto nível (`order`) não depende do pacote de baixo nível (`postgres`); os dois dependem de uma abstração que `order` possui. `main()` é o único lugar do programa que conhece ambos os lados concretos e faz a ponte.
@@ -196,12 +198,14 @@ func InitializeApp(dbURL string) (*App, error) {
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["wire.go\n(wireinject build tag)\ndeclara construtores"] -->|"wire gen"| B["ferramenta wire\nresolve o grafo\nem compile-time"]
     B --> C["wire_gen.go\ncódigo Go comum,\nversionado, sem reflection"]
     C --> D["go build\nbinário final"]
 
-    style A fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
+    class A neutro
+    class C destaque
 ```
 
 A vantagem sobre DI manual pura não é poder fazer algo novo — é **eliminar o trabalho mecânico** de encadear dezenas de construtores à mão, mantendo os mesmos erros de tipo detectáveis em tempo de compilação (se `NewService` mudar de assinatura, `wire gen` falha imediatamente, com uma mensagem apontando exatamente qual dependência falta). Vale a pena introduzir Wire quando o `main()` manual passa de umas 30-40 linhas de fiação repetitiva — não antes. Para serviços pequenos e médios, DI manual continua sendo o padrão mais lido pela comunidade: menos uma dependência de build, menos um arquivo `wireinject` para os novatos entenderem.

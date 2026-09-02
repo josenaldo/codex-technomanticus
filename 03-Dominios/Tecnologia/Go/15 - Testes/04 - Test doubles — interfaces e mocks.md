@@ -48,6 +48,8 @@ Chame de *seam* (costura) o ponto onde você consegue trocar uma implementação
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Producao["Produção"]
         NS["NotificationService"] -->|usa| I["Sender (interface)"]
         I -.->|satisfeita por| Real["SMTPSender (real)"]
@@ -57,10 +59,10 @@ flowchart TB
         I2 -.->|satisfeita por| Fake["FakeSender (test double)"]
     end
 
-    style I fill:#4A90D9,color:#fff
-    style I2 fill:#4A90D9,color:#fff
-    style Real fill:#F5A623,color:#000
-    style Fake fill:#7ED321,color:#000
+    class I neutro
+    class I2 neutro
+    class Real destaque
+    class Fake destaque
 ```
 
 Reescrevendo `NotificationService` para depender de uma interface, não do pacote `net/smtp` diretamente:

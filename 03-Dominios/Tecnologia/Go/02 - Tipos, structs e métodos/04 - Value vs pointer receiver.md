@@ -66,6 +66,8 @@ Repare que a *chamada* `origem.Move(3, 4)` não mudou nada — nem `&origem`, ne
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Value["Value receiver — func (p Point) Move(...)"]
         direction TB
         V1["origem := Point{X:0, Y:0}"] --> V2["origem.Move(3, 4)"]
@@ -84,8 +86,8 @@ flowchart TD
         P5 --> P6["origem vira {3 4}"]
     end
 
-    style V6 fill:#D0021B,color:#fff
-    style P6 fill:#7ED321,color:#000
+    class V6 falha
+    class P6 destaque
 ```
 
 O mecanismo por trás não é novo: é o mesmíssimo pass-by-value da nota de ponteiros, só que agora o "argumento" copiado é o receiver, não um parâmetro comum. `func (p Point) Move(...)` é, por baixo, indistinguível de `func Move(p Point, dx, dy int)` — a nota 03 já mostrou essa equivalência via *method expression* (`Point.Move(p, 3, 4)`). Trocar para `*Point` é trocar o tipo desse "primeiro parâmetro implícito" de `Point` para `*Point` — e tudo que já vale para ponteiros em funções comuns vale aqui, sem exceção nova.
@@ -165,6 +167,8 @@ O motivo não é estético — é sobre **method set** (a próxima seção defin
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph MST["Method set de T (Point)"]
         M1["métodos com\nreceiver T\n(value receiver)"]
     end
@@ -176,8 +180,8 @@ flowchart LR
 
     MST -.->|"subconjunto de"| MSP
 
-    style MST fill:#4A90D9,color:#fff
-    style MSP fill:#F5A623,color:#000
+    class MST neutro
+    class MSP destaque
 ```
 
 | Método declarado com | Está no method set de `T` | Está no method set de `*T` |

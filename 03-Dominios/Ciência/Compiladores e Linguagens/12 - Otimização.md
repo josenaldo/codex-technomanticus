@@ -46,12 +46,15 @@ Pense na otimização como uma lente com três amplitudes de zoom.
 
 ```mermaid
 graph TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Otimização LOCAL<br/>(dentro de um basic block)"] --> B["Otimização GLOBAL<br/>(dentro de uma função — usa CFG)"]
     B --> C["Otimização INTERPROCEDURAL<br/>(entre funções — inlining, análise de chamada)"]
 
-    style A fill:#2d4a22,color:#fff
-    style B fill:#3a3a10,color:#fff
-    style C fill:#4a1a10,color:#fff
+    class A ok
+    class B destaque
+    class C falha
 ```
 
 > [!info] Leitura do diagrama

@@ -38,7 +38,6 @@ A confusão mais comum de quem chega de um mundo só-métricas é tratar "observ
 **Observability** — termo emprestado da teoria de controle (um sistema é "observável" se seu estado interno pode ser inferido a partir das saídas que ele expõe) — foi popularizado em engenharia de software por Charity Majors e a equipe da Honeycomb a partir de meados dos anos 2010, com uma definição operacional bem específica: **"a capacidade de fazer perguntas novas sobre o seu sistema sem precisar deployar código novo ou coletar dados novos para responder essa pergunta"**. O que ela ataca são os **unknown-unknowns** — os modos de falha que ninguém previu, porque não dá pra prever tudo num sistema distribuído com dezenas de serviços, dependências externas e clientes reais fazendo coisas imprevisíveis.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     subgraph MON["Monitoring — known-unknowns"]
         M1["Você prevê o modo de falha"]
@@ -81,7 +80,6 @@ Você já conhece métricas, logs e traces — o monólito [[Observabilidade]] c
 Nenhum pilar sozinho responde "por que o Acme está vendo timeout no checkout agora". A métrica te diz que, na agregação, nada mudou. O log de um request específico do Acme, se estruturado, te diz *o que* aconteceu naquele request. O trace te diz *onde*, na cadeia de chamadas daquele request, o tempo foi gasto. A resposta real vem de **correlacionar os três** — e a cola que permite essa correlação é um identificador único que atravessa todos eles: o `trace_id`.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant C as Cliente Acme
     participant GW as API Gateway
@@ -134,7 +132,6 @@ O padrão que a indústria consolidou pra isso tem vários nomes — **canonical
 Esse registro único carrega o máximo de contexto que você conseguir agregar durante o processamento: quem é o cliente, qual plano ele está em, qual versão do serviço atendeu, quanto tempo cada etapa interna levou, qual foi o resultado, qual dependência externa foi chamada e com que latência. Serviços maduros na Stripe e na Honeycomb citam registros com **dezenas a mais de cem campos** por evento — não porque alguém precisa olhar todos eles o tempo todo, mas porque **você não sabe hoje qual desses campos vai ser exatamente o que resolve o incidente de daqui a três meses**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     subgraph OLD["Padrão antigo: logs soltos"]
         L1["log: 'iniciando checkout'"]
@@ -171,7 +168,6 @@ Um segundo componente estrutural são as **semantic conventions** do OTel: um vo
 Em 2026, o padrão de fato para instrumentação de sistema novo é: **auto-instrumentação OTel** para o caminho comum (HTTP, banco, filas — cobre 80% do valor sem escrever uma linha de instrumentação manual) mais **instrumentação manual OTel** para os campos de domínio que só o seu código sabe (o `customer_id`, o `plan_tier`, o resultado de negócio) — os campos que tornam um wide event realmente útil pra investigação, não só um trace genérico de infraestrutura.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     APP["Seu serviço<br/>(auto + manual instrumentation)"] -->|"OTLP"| SDK["OpenTelemetry SDK"]
     SDK -->|"OTLP"| COL["OTel Collector<br/>(opcional: buffer,<br/>sampling, processamento)"]

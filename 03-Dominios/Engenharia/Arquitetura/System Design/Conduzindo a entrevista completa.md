@@ -29,14 +29,14 @@ A diferença não é conhecimento. É condução. Esta nota é sobre isso — a 
 O erro de gestão de tempo mais comum não é falta de conteúdo — é **má alocação**. O framework da trilha (revisto em [[05 - Do diagrama macro ao deep dive e trade-offs]]) reserva o maior bloco pro deep dive por um motivo: é lá que os pontos de senioridade moram. Perder esse bloco desenhando caixas é o suicídio silencioso da entrevista.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     R["Requisitos<br/>~5min"] --> E["Estimativas<br/>~5min"]
     E --> A["API & dados<br/>~5min"]
     A --> D["Diagrama<br/>macro ~10min"]
     D --> DD["Deep dive<br/>~15-20min"]
     DD --> T["Trade-offs<br/>& evolução ~5min"]
-    style DD fill:#F5A623,stroke:#2E5C8A,color:#000
+    class DD destaque
 ```
 
 O bloco em âmbar é onde você ganha ou perde a entrevista. Trate os primeiros quatro passos como *preparação para chegar bem nele* — não como a entrega principal.

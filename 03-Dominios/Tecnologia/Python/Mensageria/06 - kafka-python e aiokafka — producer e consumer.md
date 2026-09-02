@@ -143,8 +143,9 @@ async def consumir_para_analytics():
 O detalhe que faz tudo funcionar sem nenhuma coordenação central: `group_id="servico-notificacao"` e `group_id="servico-analytics"` são strings diferentes, então o broker trata os dois consumers como pertencendo a grupos diferentes — cada grupo tem seu próprio offset guardado no tópico interno `__consumer_offsets`, e ler um não afeta o outro em nada. O terceiro serviço, auditoria, entra da mesma forma — outro `group_id`, outro processo, zero linha de código mudada em quem publica.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     P["Producer<br/>tarefa concluída"] -->|"send()"| T["Tópico: tarefas.eventos<br/>(3 partições)"]
 
     subgraph GN["Consumer group: servico-notificacao"]
@@ -165,10 +166,10 @@ flowchart LR
     T -->|"grupo lê tudo, offset independente"| CA1
     T -->|"grupo lê tudo, offset independente"| CD1
 
-    style T fill:#F5A623,color:#000
-    style GN fill:#e8f0fa
-    style GA fill:#e8f0fa
-    style GD fill:#e8f0fa
+    class T destaque
+    class GN neutro
+    class GA neutro
+    class GD neutro
 ```
 
 Note a assimetria dentro de cada grupo: o grupo `servico-notificacao` tem dois consumers dividindo as três partições do tópico entre si — cada partição vai para exatamente um consumer daquele grupo, então mais consumers naquele grupo significa mais paralelismo (até o limite do número de partições). Já `servico-analytics` e `servico-auditoria` rodam com um consumer só cada, lendo o tópico inteiro sozinhos. Isso é decisão de cada serviço, independente dos outros — nada no Kafka exige que os três grupos tenham o mesmo número de consumers. A mecânica completa de como partições são atribuídas dentro de um grupo, o que é rebalance e por que ele pausa o processamento, mora em [[03-Dominios/Engenharia/Comunicação entre Sistemas/Mensageria/Kafka|Comunicação entre Sistemas — Kafka]] — esta nota assume esse modelo mental já formado e mostra só o parâmetro Python (`group_id`) que o aciona.

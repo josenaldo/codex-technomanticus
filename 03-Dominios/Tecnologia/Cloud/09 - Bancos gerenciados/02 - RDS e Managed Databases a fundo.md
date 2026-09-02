@@ -36,6 +36,9 @@ Um DB instance da RDS não é um conceito único — é a composição visível 
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph DBInstance["DB Instance: loja-postgres-prod"]
         direction TB
         Engine["Engine: PostgreSQL 16.4<br/>versão do motor relacional"]
@@ -48,10 +51,10 @@ flowchart TB
     Storage --> DBInstance
     ParamGroup -.->|"aplica configuração<br/>ao processo do engine"| Engine
 
-    style Engine fill:#a7d5f9
-    style Class fill:#f9d5a7
-    style Storage fill:#d5f9a7
-    style ParamGroup fill:#f9a7d5
+    class Engine neutro
+    class Class destaque
+    class Storage destaque
+    class ParamGroup marca
 ```
 
 Cada peça dessa composição é gerenciada de forma independente — você troca a classe de instância sem recriar o storage, aumenta o storage sem trocar o engine, e edita o parameter group sem tocar em nenhuma das outras três. É essa independência, multiplicada por "a AWS cuida do patch do SO e do engine", que faz a RDS valer a troca em relação a rodar o mesmo PostgreSQL numa EC2 crua.
@@ -150,6 +153,8 @@ O segundo desafio que a nota 01 deste galho já havia adiantado: como mudar `max
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph PG["Parameter group: loja-pg16-tuned"]
         direction TB
         P1["max_connections = 300<br/>(estático)"]
@@ -161,9 +166,9 @@ flowchart LR
     P1 -.->|"aplica só após REBOOT"| Instance
     P3 -.->|"aplica só após REBOOT"| Instance
 
-    style P1 fill:#f9a7a7
-    style P3 fill:#f9a7a7
-    style P2 fill:#a7f9a7
+    class P1 falha
+    class P3 falha
+    class P2 ok
 ```
 
 A distinção que mais surpreende quem está aprendendo é a de **parâmetros estáticos vs. dinâmicos**: segundo a documentação oficial, mudanças em parâmetros **dinâmicos** são aplicadas à instância imediatamente, sem reboot; mudanças em parâmetros **estáticos** só entram em vigor depois que a instância é reiniciada — e até lá, o console mostra o parameter group com status `pending-reboot`. `max_connections` e `shared_buffers`, no Postgres, são exemplos clássicos de parâmetro estático — mudar o valor e não reiniciar a instância é a forma nº 1 de achar, na prática, que "a mudança não fez nada".
@@ -245,6 +250,8 @@ O que decide se esse endpoint é alcançável só de dentro da rede ou também p
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Internet(("Internet"))
     subgraph VPC["VPC"]
         subgraph Public["Subnet pública"]
@@ -260,8 +267,8 @@ flowchart TB
     SG --> RDS
     Internet -.->|"BLOQUEADO"| RDS
 
-    style RDS fill:#a7d5f9
-    style SG fill:#f9d5a7
+    class RDS neutro
+    class SG destaque
 ```
 
 O primeiro ajuste é o **DB subnet group** — a lista de subnets (cobrindo ao menos duas zonas de disponibilidade) onde a instância pode ser colocada, escolhida entre subnets privadas para produção. O segundo é o atributo **`publicly-accessible`**: quando `false`, a instância só recebe um IP privado dentro da VPC, e nenhum endereço IP público é atribuído ao endpoint, não importa o que o security group permita.

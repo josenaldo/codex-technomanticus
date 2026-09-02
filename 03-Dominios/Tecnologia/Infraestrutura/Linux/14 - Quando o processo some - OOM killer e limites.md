@@ -47,7 +47,6 @@ O Linux permite que processos reservem mais memória do que existe — o *overco
 A consequência é que a conta não fecha na **reserva**, e sim no **uso**: a alocação é aceita, e quando as páginas são de fato tocadas e não há mais memória física nem swap, alguém precisa morrer. Esse alguém é escolhido pelo *OOM killer*.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     A["processo reserva memória<br/>(overcommit permite)"] --> B["processo TOCA as páginas"]
     B --> C{"há memória física<br/>ou swap?"}

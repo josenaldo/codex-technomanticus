@@ -47,8 +47,8 @@ Num layout de duas colunas, a ordem de desenho depende inteiramente de como o so
 O diagrama abaixo isola os dois caminhos lado a lado, porque é a comparação entre eles — não qualquer um dos dois isolado — que explica por que a mesma tecnologia de extração produz um resultado perfeito num layout e um resultado inutilizável no outro.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph UNICA["Coluna única"]
         U1["Bloco 1: Nome e cargo"] --> U2["Bloco 2: Sumário"] --> U3["Bloco 3: Experiência"] --> U4["Bloco 4: Formação"]
         U4 --> UOUT["Ordem de desenho = ordem visual<br/>texto extraído íntegro"]
@@ -61,8 +61,8 @@ graph TD
         D4 --> DOUT["Ordem de desenho ≠ ordem visual<br/>frases intercaladas, sentido perdido"]
     end
 
-    style UOUT fill:#7ED321,color:#000
-    style DOUT fill:#F5A623,color:#000
+    class UOUT destaque
+    class DOUT destaque
 ```
 
 O ponto que o diagrama fixa não é "duas colunas são feias" — é que a mesma tecnologia de extração, sem nenhuma falha nela mesma, produz saídas de qualidade radicalmente diferente dependendo só de uma decisão de layout tomada antes de qualquer software de triagem entrar em cena. Isso também explica por que o problema é praticamente impossível de perceber olhando o próprio PDF na tela: a página parece perfeita, porque o olho humano faz o trabalho de reconstrução espacial que o extrator não faz — e é exatamente por essa discrepância entre o que o humano vê e o que a máquina lê que o teste descrito mais adiante nesta nota existe.

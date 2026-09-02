@@ -144,8 +144,9 @@ O ponto que vale narrar: nenhuma dessas quatro estruturas é um simples banco re
 Com o loop e o modelo de dados fixados, a visão consolidada — do seed até o conteúdo armazenado, com o ciclo de realimentação que faz o crawler se auto-alimentar:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Seeds["Seed URLs"] --> Frontier[("URL Frontier<br/>(filas priorizadas + por host)")]
     Frontier --> Fetchers["Fetchers<br/>(workers, pool distribuído)"]
 
@@ -162,10 +163,10 @@ graph TD
     UrlFilter -->|"não"| Frontier
     UrlFilter -->|"sim"| Drop["Descarta"]
 
-    style Frontier fill:#4A90D9,color:#fff
-    style ContentStore fill:#4A90D9,color:#fff
-    style ContentSeen fill:#F5A623,color:#000
-    style UrlFilter fill:#F5A623,color:#000
+    class Frontier neutro
+    class ContentStore neutro
+    class ContentSeen destaque
+    class UrlFilter destaque
 ```
 
 Repare no ciclo: **a saída do parser realimenta o frontier**, o que torna este sistema, estruturalmente, um grafo que se descobre em tempo real — diferente dos walkthroughs anteriores, aqui não existe um conjunto fixo de entidades para paginar ou cachear; o próprio espaço de trabalho cresce enquanto o sistema roda. É esse detalhe que justifica por que a URL Frontier — o próximo deep dive — é a peça mais crítica do design inteiro: ela não é só uma fila, é o componente que decide, a cada instante, **qual fração desse grafo infinito o sistema olha primeiro**.
@@ -183,8 +184,9 @@ Resposta: o sistema derruba servidores. Se mil links de um mesmo domínio (imagi
 A solução canônica — descrita no paper seminal de **Heydon & Najork sobre o crawler Mercator (1999)**, ainda a referência-âncora para este problema — separa o frontier em **duas camadas de filas**, resolvendo prioridade e politeness como dois problemas distintos:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     New["URL nova<br/>(do parser)"] --> Prioritizer["Prioritizador<br/>(pontua a URL)"]
     Prioritizer --> F1["Front Queue 1<br/>(alta prioridade)"]
     Prioritizer --> F2["Front Queue 2<br/>(média)"]
@@ -204,9 +206,9 @@ graph TD
 
     HT --> W["Worker livre<br/>puxa a back queue<br/>cujo horário já chegou"]
 
-    style F1 fill:#4A90D9,color:#fff
-    style B1 fill:#4A90D9,color:#fff
-    style HT fill:#F5A623,color:#000
+    class F1 neutro
+    class B1 neutro
+    class HT destaque
 ```
 
 **Front queues — resolvem prioridade.** Cada URL nova recebe uma pontuação (PageRank estimado, frequência histórica de mudança, profundidade a partir do seed, ou simplesmente uma heurística de importância do domínio) e é roteada para uma das *N* filas front, uma por faixa de prioridade. Um seletor com viés (*biased front-queue selector*) escolhe de qual front queue puxar a seguir, favorecendo as de prioridade mais alta com maior frequência — sem nunca deixar as de prioridade baixa passarem fome indefinidamente.
@@ -283,18 +285,19 @@ Cada componente discutido introduz um ponto de fragilidade que vale nomear proat
 **Storage — tiering por idade e acesso.** Dos ~6 PB/ano estimados, a fração efetivamente "quente" (conteúdo recém-baixado, ainda sendo processado por um indexador a jusante) é pequena frente ao volume histórico acumulado. A prática padrão é um **storage em camadas** — dados recentes em tiers rápidos (SSD-backed), dados antigos migrados automaticamente para tiers mais baratos e mais lentos (cold storage), com o metadata (URL, timestamp, hash, localização do blob) sempre acessível rapidamente independente de onde o blob em si esteja fisicamente.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     DNS_B["DNS lookup<br/>(até 70% do tempo<br/>sem cache dedicado)"] -->|"mitigado por"| DNS_M["Resolver próprio<br/>+ cache + prefetch"]
     Frontier_B["Frontier centralizado<br/>(satura em I/O/memória)"] -->|"mitigado por"| Frontier_M["Sharding por host<br/>(consistent hashing)"]
     Fresh_B["Budget de fetch finito<br/>vs cobertura crescente"] -->|"mitigado por"| Fresh_M["Priorização de recrawl<br/>(crawl demand)"]
 
-    style DNS_B fill:#D0021B,color:#fff
-    style Frontier_B fill:#D0021B,color:#fff
-    style Fresh_B fill:#D0021B,color:#fff
-    style DNS_M fill:#4A90D9,color:#fff
-    style Frontier_M fill:#4A90D9,color:#fff
-    style Fresh_M fill:#4A90D9,color:#fff
+    class DNS_B falha
+    class Frontier_B falha
+    class Fresh_B falha
+    class DNS_M neutro
+    class Frontier_M neutro
+    class Fresh_M neutro
 ```
 
 ## Variações de follow-up

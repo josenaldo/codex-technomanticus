@@ -75,15 +75,17 @@ O caso que *não* se beneficia é justamente o do exemplo acima: CPU-bound, mas 
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["O trabalho é I/O-bound\n(rede, disco, banco)?"] -->|Sim| B["Concorrência quase sempre ajuda —\nespera em paralelo, não CPU"]
     A -->|Não, é CPU-bound| C["As unidades de trabalho\nsão grandes e independentes?"]
     C -->|Sim, poucas e grandes| D["Dividir entre GOMAXPROCS\nnúcleos — ganho real"]
     C -->|Não, muitas e pequenas,\ncom sincronização frequente| E["Overhead de scheduling +\ncontention pode dominar —\nmeça antes de assumir ganho"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#7ED321,color:#000
-    style D fill:#7ED321,color:#000
-    style E fill:#F5A623,color:#000
+    class A neutro
+    class B destaque
+    class D destaque
+    class E destaque
 ```
 
 Essa árvore não substitui medição — é um filtro de bom senso antes de gastar tempo escrevendo (e depurando) a versão concorrente. Se a resposta cai no ramo laranja, o próximo passo não é "otimizar o código concorrente" — é perguntar se ele deveria existir.
@@ -194,6 +196,8 @@ O exemplo acima já mostrou uma faceta de contention — disputa por um mutex co
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Baixo["Poucas goroutines, pouca contention"]
         direction LR
         G1["goroutine"] --> R1["recurso"]
@@ -211,8 +215,8 @@ flowchart LR
     Baixo -->|"throughput sobe\ncom mais workers"| Ideal["ponto ótimo"]
     Ideal -->|"throughput cai —\nfila de espera domina"| Alto
 
-    style Ideal fill:#7ED321,color:#000
-    style Alto fill:#D0021B,color:#fff
+    class Ideal destaque
+    class Alto falha
 ```
 
 Esse formato — throughput sobe, atinge um pico, depois cai conforme mais concorrência é adicionada — é conhecido informalmente como o *ponto de retorno decrescente* da concorrência. Não existe fórmula fixa para onde ele fica; depende do recurso disputado, do hardware, e do que cada goroutine faz entre uma seção crítica e outra. É por isso que a resposta certa para "quantos workers eu uso?" quase sempre é "meça com valores diferentes de `numWorkers` e veja onde o benchmark para de melhorar" — não um número cravado na cabeça.

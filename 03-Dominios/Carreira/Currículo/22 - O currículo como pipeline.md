@@ -153,8 +153,11 @@ Três peças, cada uma o correspondente em miniatura de uma das quatro acima:
 E vale dizer isto explicitamente, porque depois de ler sobre template e guarda automatizada é fácil concluir o contrário: **quem para nessa versão não está fazendo currículo de segunda categoria.** Ela já resolve o problema central — ter uma fonte da verdade em vez de cópias competindo entre si. O que o ferramental acrescenta não é o princípio; é **escala**. Ele mantém o mesmo princípio funcionando sem esforço extra quando o número de variantes ativas passa de duas ou três para uma dezena. Ferramental é otimização, nunca requisito.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     Conquista["Conquista acontece<br/>registrada no brag document<br/>(nota 21)"] --> Deriv["Métrica derivada<br/>medido/contado/lembrado (nota 14)"]
 
     Deriv --> Fonte["Fonte única, texto puro,<br/>versionada"]
@@ -176,16 +179,16 @@ flowchart TD
     Base -.correção posterior.-> Base
     Registro -.nunca muda junto.-> Base
 
-    style Conquista fill:#4A90D9,color:#fff
-    style Deriv fill:#4A90D9,color:#fff
-    style Fonte fill:#7ED321,color:#000
-    style Base fill:#7ED321,color:#000
-    style Var fill:#F5A623,color:#000
-    style Guarda fill:#D0021B,color:#fff
-    style Bloqueio fill:#D0021B,color:#fff
-    style Template fill:#F5A623,color:#000
-    style PDF fill:#9013FE,color:#fff
-    style Registro fill:#9013FE,color:#fff
+    class Conquista neutro
+    class Deriv neutro
+    class Fonte destaque
+    class Base destaque
+    class Var destaque
+    class Guarda falha
+    class Bloqueio falha
+    class Template destaque
+    class PDF marca
+    class Registro marca
 ```
 
 Duas setas pontilhadas carregam o argumento inteiro. A que volta da base para ela mesma é a correção contínua, que o sistema espera e absorve sem esforço. A que liga o registro à base marca o oposto: a correção **não** alcança o que já foi entregue, porque o registro, uma vez congelado, parou de escutar o que acontece com a fonte dali em diante.

@@ -44,8 +44,9 @@ A nota [[03-Dominios/Engenharia/Operação/4 - Observar e responder/01 - Observa
 O que muda aqui, em relação à nota de Operação, é a lente: lá, a pergunta era "por que cardinalidade importa, o que separa monitoring de observability, como pensar em wide events". Aqui, a pergunta é mais estreita e mais concreta: "dado que eu já sei o que é um log estruturado e uma métrica, que biblioteca Python eu instalo, que código eu escrevo, em que porta eu exponho isso, hoje, nos dois serviços desta trilha". Este galho não reabre a teoria — ele aplica.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph PILARES["Os 3 pilares de observabilidade"]
         direction LR
         L["LOGS<br/>evento discreto,<br/>rico em detalhe"]
@@ -60,12 +61,12 @@ flowchart TB
     M2["opentelemetry-api /<br/>prometheus_client<br/>(nota 03 — A FAZER)"] --> M
     T2["opentelemetry-instrumentation-*<br/>(Galho 15 nota 06 — FEITO ✓)"] --> T
 
-    style T2 fill:#4A90D9,color:#fff
-    style L2 fill:#F5A623,color:#000
-    style M2 fill:#F5A623,color:#000
-    style T fill:#4A90D9,color:#fff
-    style L fill:#F5A623,color:#000
-    style M fill:#F5A623,color:#000
+    class T2 neutro
+    class L2 destaque
+    class M2 destaque
+    class T neutro
+    class L destaque
+    class M destaque
 ```
 
 O diagrama acima é literalmente o placar deste galho: tracing está pronto (azul), logging e métricas estão pendentes (âmbar) — e é isso que as notas 02 e 03 resolvem, uma de cada vez, sobre os mesmos dois serviços que o resto da trilha já construiu.

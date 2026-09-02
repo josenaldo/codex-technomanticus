@@ -105,8 +105,9 @@ A pergunta que você deve fazer toda vez que encontrar um novo pedaço de estado
 Se sim → server state → TanStack Query. Se não → client state → `useState`, Context, Zustand ou similar.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#fff", "edgeLabelBackground": "#fff"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     PERGUNTA["🤔 Onde vive a fonte da verdade\ndesse estado?"]
 
     PERGUNTA -->|"Num servidor externo\n(API, banco, GraphQL)"| SERVER["SERVER STATE"]
@@ -121,14 +122,14 @@ flowchart TD
     CGLOBAL --> CCONT["Simples / poucos níveis\n→ Context API"]
     CGLOBAL --> CZUST["Complexo / muitos consumers\n→ Zustand / Jotai"]
 
-    style SERVER fill:#4A90D9,color:#fff
-    style CLIENT fill:#7B68EE,color:#fff
-    style SQ fill:#4A90D9,color:#fff
-    style RSCS fill:#4A90D9,color:#fff
-    style CLOCAL fill:#7B68EE,color:#fff
-    style CGLOBAL fill:#7B68EE,color:#fff
-    style CCONT fill:#7B68EE,color:#fff
-    style CZUST fill:#7B68EE,color:#fff
+    class SERVER neutro
+    class CLIENT marca
+    class SQ neutro
+    class RSCS neutro
+    class CLOCAL marca
+    class CGLOBAL marca
+    class CCONT marca
+    class CZUST marca
 ```
 
 > [!example] RSC é outra abordagem de server state

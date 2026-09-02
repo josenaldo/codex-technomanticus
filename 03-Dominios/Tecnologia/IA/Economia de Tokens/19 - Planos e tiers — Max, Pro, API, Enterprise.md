@@ -33,6 +33,9 @@ A árvore de decisão não é complicada — o problema é que a maioria das pes
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Qual é o perfil de uso?"] --> B{"Uso intensivo\n(4h+/dia agente)?"}
     B -->|"Sim"| C{"Produto em produção\nou uso pessoal?"}
     C -->|"Uso pessoal"| D["Max $100-200/mês\n(flat-rate, Opus incluído)"]
@@ -43,10 +46,10 @@ flowchart TD
     H -->|"Sim"| I["API ou Free\n(pagar pelo que usa)"]
     H -->|"Não — time grande"| J["Enterprise\n(contrato, SLA, compliance)"]
 
-    style D fill:#d4edda,stroke:#155724
-    style E fill:#d4edda,stroke:#155724
-    style G fill:#fff3cd,stroke:#856404
-    style J fill:#cce5ff,stroke:#004085
+    class D ok
+    class E ok
+    class G destaque
+    class J neutro
 ```
 
 ## Comparativo de modelos de cobrança

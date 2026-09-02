@@ -79,6 +79,9 @@ Com ≤ₚ na mão, definimos as duas classes que confundem todo mundo:
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     P["P<br/>(tratáveis)"]
     NP["NP<br/>(verificáveis em tempo poli)"]
     NPC["NP-completo<br/>(o teto interno de NP)"]
@@ -88,10 +91,10 @@ flowchart TB
     NP --> NPC
     NPC --> NPH
 
-    style P fill:#cde,stroke:#369
-    style NP fill:#dfd,stroke:#393
-    style NPC fill:#fdd,stroke:#933
-    style NPH fill:#fee,stroke:#c33
+    class P neutro
+    class NP ok
+    class NPC falha
+    class NPH falha
 ```
 
 > [!note] Leitura do diagrama
@@ -169,6 +172,8 @@ Karp aplicou isso em cascata pra **21 problemas** combinatórios e de grafos —
 
 ```mermaid
 flowchart TB
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     SAT["SAT<br/>(Cook-Levin)"]
     SAT3["3-SAT"]
     CLIQUE["CLIQUE"]
@@ -194,8 +199,8 @@ flowchart TB
     PART -->|"reduz poli a"| BIN
     HC -->|"reduz poli a"| TSP
 
-    style SAT fill:#fdd,stroke:#933
-    style SAT3 fill:#fef,stroke:#939
+    class SAT falha
+    class SAT3 marca
 ```
 
 > [!note] Leitura do diagrama

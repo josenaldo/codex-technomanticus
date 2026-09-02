@@ -112,6 +112,7 @@ pytest --cov=src --cov-report=html
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["pytest --cov=src"] --> B["coverage.py instrumenta<br/>a execução via trace function"]
     B --> C["Suíte roda normalmente"]
     C --> D["Cada linha executada<br/>é registrada"]
@@ -120,7 +121,7 @@ flowchart LR
     E -->|"html"| G["htmlcov/index.html:<br/>código com highlight"]
     E -->|"xml"| H["coverage.xml:<br/>consumido por CI/SonarQube"]
 
-    style D fill:#4A90D9,color:#fff
+    class D neutro
 ```
 
 > [!question]- `coverage.py` instrumenta bytecode como o PIT do Java, ou é diferente?
@@ -188,15 +189,17 @@ Rodando `pytest --cov=src --cov-report=term-missing`, o resultado é **100% de c
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["test_aplica_desconto_para_cliente_vip<br/>(cliente_vip=True)"] --> B{"if cliente_vip?"}
     B -->|"ramo True — COBERTO"| C["valor = valor * 0.90"]
     B -.->|"ramo False — NUNCA EXECUTADO"| D["pula a atribuição"]
     C --> E["return valor"]
     D -.-> E
 
-    style C fill:#4A90D9,color:#fff
-    style D fill:#D0021B,color:#fff
-    style E fill:#4A90D9,color:#fff
+    class C neutro
+    class D falha
+    class E neutro
 ```
 
 Line coverage enxerga o nó `E` (`return valor`) como coberto — ele de fato rodou, no caminho `True`. O que ele não enxerga é que existem **dois caminhos diferentes** chegando até `E`, e só um foi exercitado. Isso não é uma falha de implementação de `coverage.py` — é uma limitação estrutural da própria métrica de linha: ela conta linhas, não caminhos.
@@ -251,6 +254,9 @@ Vale sintetizar os três níveis numa escala só, porque cada um responde a uma 
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph L1["Nível 1 — Line coverage"]
         direction TB
         A1["Pergunta:<br/>a linha EXECUTOU?"]
@@ -275,9 +281,9 @@ flowchart LR
     L1 -->|"mais rigoroso"| L2
     L2 -->|"mais rigoroso"| L3
 
-    style L1 fill:#D0021B,color:#fff
-    style L2 fill:#F5A623,color:#000
-    style L3 fill:#4A90D9,color:#fff
+    class L1 falha
+    class L2 destaque
+    class L3 neutro
 ```
 
 Cada degrau pressupõe o anterior sem substituí-lo: não faz sentido medir mutation score numa linha que nem sequer executou durante a suíte (`coverage.py` já reportaria essa lacuna, mais barato). E branch coverage 100% não é um passo perdido rumo a mutation testing — é o filtro rápido e barato que roda a cada commit, encontrando o tipo de lacuna óbvia (caminho não testado) antes de investir no filtro caro e lento que encontra a lacuna sutil (caminho testado, mas com assert fraco).

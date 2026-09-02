@@ -50,15 +50,17 @@ Go resolve isso com **channels direcionais**: tipos que restringem, na assinatur
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["chan T"] -->|"restringe a envio"| B["chan&lt;- T"]
     A -->|"restringe a recepção"| C["&lt;-chan T"]
 
     B -.->|"só aceita"| B2["ch &lt;- v"]
     C -.->|"só aceita"| C2["v := &lt;-ch"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#F5A623,color:#000
+    class A neutro
+    class B destaque
+    class C destaque
 ```
 
 Três formas de escrever o tipo de um channel de `int`, lado a lado:
@@ -116,14 +118,16 @@ func consumer(in <-chan int) {
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Bi["chan T\n(bidirecional)"] -->|"conversão implícita"| Send["chan&lt;- T\n(só envio)"]
     Bi -->|"conversão implícita"| Recv["&lt;-chan T\n(só recepção)"]
     Send -.->|"✗ sem volta"| Bi
     Recv -.->|"✗ sem volta"| Bi
 
-    style Bi fill:#4A90D9,color:#fff
-    style Send fill:#F5A623,color:#000
-    style Recv fill:#F5A623,color:#000
+    class Bi neutro
+    class Send destaque
+    class Recv destaque
 ```
 
 Essa assimetria é proposital: a garantia que a direção oferece só vale enquanto for impossível "escapar" dela. Se fosse possível reconverter `<-chan T` de volta para `chan T` dentro da própria função, a restrição da assinatura seria só um obstáculo cosmético — qualquer código poderia contorná-la com um cast. Go fecha essa porta: uma vez restrito, o valor permanece restrito até sair de cena.

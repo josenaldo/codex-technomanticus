@@ -61,14 +61,15 @@ O `crossorigin` é obrigatório mesmo no mesmo domínio (fontes são buscadas em
 Uma fonte completa carrega centenas de glifos — alfabetos cirílico, grego, símbolos — que seu site em português nunca usa. **Subsetting** gera uma versão só com os caracteres necessários (por exemplo, Latin básico), cortando o arquivo pela metade ou mais. E o formato deve ser **`woff2`**, o mais comprimido e universalmente suportado hoje — não sirva `ttf`/`otf` crus na web.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[Fonte completa<br/>~300 KB, todos os glifos] -->|subset Latin| B[~30 KB]
     B -->|woff2| C[Servida na web]
     D[preload] -.descoberta cedo.-> C
     E[font-display: swap] -.sem FOIT.-> C
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
+    class B neutro
+    class C destaque
 ```
 
 ## Frente 4: self-host vs Google Fonts

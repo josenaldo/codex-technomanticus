@@ -89,6 +89,8 @@ O `with` garante que o pool é fechado (`close()`, sinalizando que nenhuma taref
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Main["Processo principal"]
         Tasks["range(10)\n(10 tarefas)"]
     end
@@ -110,9 +112,9 @@ flowchart LR
     W3 -->|"resultado"| Collect
     W4 -->|"resultado"| Collect
 
-    style Main fill:#4A90D9,color:#fff
-    style Pool fill:#F5A623,color:#000
-    style Collect fill:#4A90D9,color:#fff
+    class Main neutro
+    class Pool destaque
+    class Collect neutro
 ```
 
 **`Pool` em uma frase:** um conjunto fixo e reaproveitável de processos-trabalhadores, com uma API de distribuição de tarefas que esconde a criação/destruição de processos e a serialização por baixo — pagando o custo de inicialização uma vez, amortizado ao longo de muitas tarefas.
@@ -300,6 +302,8 @@ Por baixo, `Manager()` inicia um **processo servidor separado** que hospeda os o
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Manager["Processo do Manager"]
         RealDict["dict real\n{0: 0, 1: 1, 2: 4, ...}"]
     end
@@ -315,10 +319,10 @@ flowchart TD
     Proxy1 -->|"proxy[0] = 0\n(chamada IPC)"| RealDict
     Proxy2 -->|"proxy[1] = 1\n(chamada IPC)"| RealDict
 
-    style Manager fill:#4A90D9,color:#fff
-    style RealDict fill:#4A90D9,color:#fff
-    style W1 fill:#F5A623,color:#000
-    style W2 fill:#F5A623,color:#000
+    class Manager neutro
+    class RealDict neutro
+    class W1 destaque
+    class W2 destaque
 ```
 
 O preço dessa flexibilidade é latência: **cada operação** no objeto proxy — mesmo uma leitura simples de chave — é uma volta completa de IPC até o processo servidor e de volta, não um acesso de memória local. Para leituras/escritas frequentes em loop apertado, isso pode ser ordens de magnitude mais lento que a alternativa mais crua a seguir.
@@ -374,6 +378,8 @@ Voltando ao bug de abertura — a causa raiz é a diferença de comportamento en
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph ForkFlow["fork (Linux, padrão histórico)"]
         direction TB
         F1["Processo pai\nCONFIG já populada"] -->|"copy-on-write\n(rápido, sem reimportar)"| F2["Processo filho\nCONFIG JÁ populada\n(herdada automaticamente)"]
@@ -384,8 +390,8 @@ flowchart TD
         S1["Processo pai\nCONFIG já populada"] -->|"novo interpretador,\nreimporta o módulo"| S2["Processo filho\nCONFIG vazia até o\nmódulo rodar de novo"]
     end
 
-    style ForkFlow fill:#4A90D9,color:#fff
-    style SpawnFlow fill:#F5A623,color:#000
+    class ForkFlow neutro
+    class SpawnFlow destaque
 ```
 
 > [!warning] `if __name__ == "__main__":` não é estilo — é exigido sob `spawn`
@@ -440,6 +446,8 @@ Juntando as peças desta nota numa árvore de decisão prática:
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Start["Preciso paralelizar trabalho\nCPU-bound entre processos"] --> Existing{"Já uso\nThreadPoolExecutor\nna mesma base de código?"}
     Existing -- Sim --> PPE["ProcessPoolExecutor\n(troca direta de classe,\nmesma interface Executor)"]
     Existing -- Não --> Precisa{"Preciso de imap_unordered\nou starmap especificamente?"}
@@ -454,16 +462,16 @@ flowchart TD
     Shared -- "Sim, valor/array numérico,\nacesso frequente" --> ValueArray["Value / Array"]
     Shared -- Não --> Direto["Argumentos de entrada +\nvalores de retorno bastam"]
 
-    style Start fill:#4A90D9,color:#fff
-    style Existing fill:#4A90D9,color:#fff
-    style Precisa fill:#4A90D9,color:#fff
-    style Shared fill:#4A90D9,color:#fff
-    style PPE fill:#F5A623,color:#000
-    style Pool fill:#F5A623,color:#000
-    style PPE2 fill:#F5A623,color:#000
-    style Manager fill:#F5A623,color:#000
-    style ValueArray fill:#F5A623,color:#000
-    style Direto fill:#F5A623,color:#000
+    class Start neutro
+    class Existing neutro
+    class Precisa neutro
+    class Shared neutro
+    class PPE destaque
+    class Pool destaque
+    class PPE2 destaque
+    class Manager destaque
+    class ValueArray destaque
+    class Direto destaque
 ```
 
 ## Armadilhas comuns

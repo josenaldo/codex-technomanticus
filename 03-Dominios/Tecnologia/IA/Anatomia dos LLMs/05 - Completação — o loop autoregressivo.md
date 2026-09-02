@@ -152,6 +152,8 @@ Mantém o **menor conjunto de tokens cuja probabilidade acumulada ≥ `p`** (ex.
 
 ```mermaid
 graph LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Top-p adaptativo"
         A["Distribuição concentrada\n(modelo confiante)"] --> B["Núcleo pequeno\n(2-3 tokens cobrem 90%)"]
         C["Distribuição espalhada\n(modelo incerto)"] --> D["Núcleo grande\n(20+ tokens cobrem 90%)"]
@@ -159,9 +161,9 @@ graph LR
     subgraph "Top-k fixo"
         E["Qualquer distribuição"] --> F["Sempre k tokens\n(pode ser demais\nou de menos)"]
     end
-    style B fill:#99ff99,stroke:#009900
-    style D fill:#99ff99,stroke:#009900
-    style F fill:#ffcc99,stroke:#cc6600
+    class B ok
+    class D ok
+    class F destaque
 ```
 
 > [!tip] Como pensar nos três juntos

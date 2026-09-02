@@ -44,7 +44,6 @@ Um teste unitário valida uma função contra entradas que você antecipou. Prod
 Historicamente, a indústria de software resolveu esse gap organizando o trabalho em dois times separados. **Desenvolvimento** escreve features e as joga por cima do muro. **Operações** recebe o artefato, sobe em produção e lida com o que quebrar — sem ter escrito uma linha do código, e frequentemente sem entender por que ele se comporta do jeito que se comporta.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph LR
     DEV["Desenvolvimento<br/>escreve o código,<br/>quer velocidade"] -->|"joga por cima<br/>do muro"| WALL["🧱 O muro<br/>da confusão"]
     WALL -->|"herda o problema<br/>sem contexto"| OPS["Operações<br/>sobe e mantém,<br/>quer estabilidade"]
@@ -68,7 +67,6 @@ Esse "muro da confusão" (termo cunhado por Patrick Debois, um dos criadores do 
 As três vias não são uma lista — são um ciclo que se retroalimenta. Fluxo sem feedback rápido é uma esteira cega, entregando rápido sem saber se está entregando certo. Feedback sem aprendizado institucionalizado é ruído que se repete: o time descobre o mesmo problema mês após mês e nunca constrói a defesa permanente contra ele. E aprendizado sem fluxo de volta ao trabalho do dia a dia vira slide de retrospectiva que ninguém aplica.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     F1["1ª Via: Fluxo<br/>otimizar o sistema<br/>todo, esquerda→direita"] --> F2["2ª Via: Feedback<br/>loops rápidos,<br/>direita→esquerda"]
     F2 --> F3["3ª Via: Aprendizado<br/>contínuo<br/>experimentar com<br/>segurança"]
@@ -123,7 +121,6 @@ Com a cultura estabelecida, vale nomear o escopo concreto do ofício — o que e
 Repare no padrão: cada um desses itens é uma prática contínua, não um evento único. Deploy não é "terminou quando o CI ficou verde" — release e deploy são coisas diferentes, como a nota 03 deste sub-galho vai detalhar. Observabilidade não é "temos um Grafana" — é a capacidade de fazer perguntas novas sem reimplantar código. Confiabilidade não é um estado ("está no ar") — é um orçamento que se gasta e se repõe.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     subgraph DEV["Preocupações de Desenvolvimento"]
         D1["Corretude da lógica"]

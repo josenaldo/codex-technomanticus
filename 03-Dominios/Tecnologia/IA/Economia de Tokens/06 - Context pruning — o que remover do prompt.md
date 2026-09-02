@@ -34,6 +34,9 @@ O fenômeno tem nome: **lost in the middle** — modelos tendem a ignorar inform
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Token no contexto"] --> B{{"Contribui para\na tarefa atual?"}}
     B -- "Sim" --> C["Manter"]
     B -- "Não" --> D{{"Pode ser\nresumed?"}}
@@ -46,9 +49,9 @@ flowchart TD
     
     G --> H["Menos custo\nMelhor qualidade\nMenor latência"]
 
-    style G fill:#d4edda,stroke:#28a745
-    style H fill:#cce5ff,stroke:#004085
-    style F fill:#f8d7da,stroke:#721c24
+    class G ok
+    class H neutro
+    class F falha
 ```
 
 ## O que remover — taxonomia de poluição
@@ -252,6 +255,10 @@ A pergunta não é "isso pode ser útil?", mas **"o modelo precisa disso para re
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Candidato a inclusão\nno contexto"] --> B{{"O modelo precisa\npara a tarefa atual?"}}
     B -- "Sim, claramente" --> C["Incluir"]
     B -- "Talvez" --> D{{"Pode ser\nbuscado sob demanda?"}}
@@ -261,10 +268,10 @@ flowchart TD
     G -- "Sim" --> H["Sumarizar"]
     G -- "Não" --> I["Incluir com aviso\nde custo"]
 
-    style C fill:#d4edda,stroke:#28a745
-    style E fill:#f8d7da,stroke:#721c24
-    style F fill:#fff3cd,stroke:#856404
-    style H fill:#cce5ff,stroke:#004085
+    class C ok
+    class E falha
+    class F destaque
+    class H neutro
 ```
 
 ## Impacto em custo e qualidade

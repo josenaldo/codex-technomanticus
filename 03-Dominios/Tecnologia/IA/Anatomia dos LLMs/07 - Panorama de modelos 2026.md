@@ -122,6 +122,7 @@ Por que a Anthropic vende Haiku, Sonnet e Opus em vez de "um modelo"? Por que n�
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph "Tarefa simples: completar uma linha de código"
         S1["Haiku: $0.001\nResultado: correto"]
         S2["Opus: $0.025\nResultado: correto"]
@@ -130,8 +131,8 @@ graph LR
         H1["Haiku: $0.15\nResultado: frequentemente errado"]
         H2["Opus: $3.75\nResultado: correto na 1a tentativa"]
     end
-    style S2 fill:#ff9999,stroke:#cc0000
-    style H1 fill:#ff9999,stroke:#cc0000
+    class S2 falha
+    class H1 falha
     note["Escolha errada em ambos os casos:\nm modelo caro para tarefa simples\nbudget para tarefa difícil"]
 ```
 

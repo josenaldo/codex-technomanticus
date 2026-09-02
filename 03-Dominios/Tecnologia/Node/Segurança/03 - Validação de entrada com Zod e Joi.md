@@ -27,6 +27,9 @@ aliases:
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph ENTRADA ["Input externo"]
         HTTP["HTTP Request\nbody / query / params"]
         QUEUE["Mensagem de fila\nSQS / RabbitMQ"]
@@ -51,10 +54,10 @@ flowchart LR
     OK -->|"success: true"| LOGIC
     OK -->|"success: false"| ERR422
 
-    style SAFE fill:#4A90D9,color:#fff
-    style OK fill:#F5A623,color:#000
-    style ERR422 fill:#D0021B,color:#fff
-    style LOGIC fill:#4A90D9,color:#fff
+    class SAFE neutro
+    class OK destaque
+    class ERR422 falha
+    class LOGIC neutro
 ```
 
 ## O que é

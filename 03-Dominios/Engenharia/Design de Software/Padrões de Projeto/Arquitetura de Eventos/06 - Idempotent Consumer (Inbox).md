@@ -42,8 +42,9 @@ O cliente foi cobrado duas vezes e recebeu duas confirmações. E note onde esta
 A forma mais geral é o **inbox** — o espelho do outbox, do lado do consumidor:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     M["Mensagem chega<br/>id: e-9f31"] --> Q{"id já está<br/>na inbox?"}
     Q -->|"sim"| S["descarta<br/>(já processado)"]
     Q -->|"não"| T["<b>Uma transação</b>"]
@@ -51,9 +52,9 @@ graph TD
     T --> I["INSERT inbox<br/>id: e-9f31"]
     T --> C["commit — atômico"]
 
-    style S fill:#F5A623,color:#000
-    style T fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
+    class S destaque
+    class T neutro
+    class C neutro
 ```
 
 O ponto crítico é a atomicidade entre **aplicar o efeito** e **registrar que foi aplicado**. Se fossem duas transações, a falha entre elas produziria exatamente o problema que se quer evitar — efeito aplicado sem registro, e reaplicação na retentativa.

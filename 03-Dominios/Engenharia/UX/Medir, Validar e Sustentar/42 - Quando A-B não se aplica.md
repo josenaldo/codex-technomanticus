@@ -34,8 +34,9 @@ O A/B testing clássico depende de premissas estatísticas que a maioria da lite
 **Mudança de alto impacto/risco.** Quando a mudança candidata é grande o suficiente para que metade dos usuários ficar numa variante pior seja inaceitável — um fluxo financeiro crítico, uma mudança regulatória — expor 50% da base a uma variante não testada é um risco que nenhum A/B "vale a pena" absorver, independente do tamanho da amostra disponível.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q["Quero validar<br/>uma mudança de UX"] --> D1{"Tráfego ≥ ~50<br/>conversões/semana?"}
     D1 -->|"Não"| ALT["Alternativas —<br/>método, não consolo"]
     D1 -->|"Sim"| D2{"Usuários são<br/>i.i.d.?<br/>(não é B2B<br/>concentrado)"}
@@ -43,8 +44,8 @@ graph TD
     D2 -->|"Sim"| D3{"Mudança é de<br/>baixo risco/impacto?"}
     D3 -->|"Não"| ALT
     D3 -->|"Sim"| AB["A/B formal<br/>se aplica"]
-    style AB fill:#4A90D9,color:#fff
-    style ALT fill:#F5A623,color:#000
+    class AB neutro
+    class ALT destaque
 ```
 
 ## Amostra, MDE e peeking: os três conceitos que sustentam a decisão
@@ -75,16 +76,17 @@ Este é o ponto que separa esta nota de um lamento sobre limitação: as quatro 
 **Pesquisa qualitativa como método de primeira classe.** Não "o que fazer quando não dá para medir" — um instrumento com seu próprio rigor: entrevista estruturada, teste de usabilidade com roteiro consistente, SEQ pós-tarefa (ver [[03-Dominios/Engenharia/UX/Medir, Validar e Sustentar/39 - SUS, UMUX-Lite, SUPR-Q e SEQ|nota 39]]) aplicado a 5-8 usuários reais de um cliente B2B. Numa base de 40-60 usuários totais, entrevistar 5-8 pessoas não é "amostra pequena de um estudo maior que não coube no orçamento" — é uma fração substancial e representativa da população inteira do produto, algo que nenhum A/B de uma empresa com milhões de usuários jamais conseguiria dizer sobre sua própria amostra de teste.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     T["Tráfego baixo /<br/>B2B concentrado"] --> P["Painted door<br/>(demanda)"]
     T --> S["Sequencial/bayesiano<br/>(checagem contínua)"]
     T --> M["Micro-conversões<br/>(volume maior)"]
     T --> F["Rollout progressivo<br/>1%→5%→25%→100%<br/>(kill switch)"]
     T --> Q["Qualitativo rigoroso<br/>(5-8 de 40-60 = amostra ampla)"]
-    style T fill:#F5A623,color:#000
-    style F fill:#4A90D9,color:#fff
-    style Q fill:#4A90D9,color:#fff
+    class T destaque
+    class F neutro
+    class Q neutro
 ```
 
 > [!warning] Tratar A/B como substituto de pensar

@@ -30,6 +30,8 @@ Go escolheu o caminho do JDBC: um pacote da biblioteca padrão, `database/sql`, 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph App["Seu código"]
         A["sql.Open('postgres', dsn)"] --> B["*sql.DB"]
         B --> C["db.Query / db.Exec"]
@@ -50,9 +52,9 @@ flowchart LR
     F --> G
     B -."abre conexões via".-> F
 
-    style D fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style F fill:#F5A623,color:#000
+    class D neutro
+    class E neutro
+    class F destaque
 ```
 
 `database/sql` define duas coisas: a API pública que você chama (`sql.DB`, `sql.Rows`, `sql.Stmt`) e um segundo conjunto de interfaces, em `database/sql/driver`, que qualquer driver precisa implementar (`driver.Driver`, `driver.Conn`, `driver.Stmt`) para se plugar nesse contrato. Um driver como `lib/pq` implementa `driver.Driver` e, no `init()` do seu pacote, se registra:

@@ -164,12 +164,15 @@ Toda linguagem de programação de uso geral precisa de um jeito de montar uma s
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["%-formatting<br/>(herdado de C, desde sempre)"] -->|"PEP 3101<br/>Python 2.6 / 3.0"| B[".format()<br/>mais flexível, mais verboso"]
     B -->|"PEP 498<br/>Python 3.6+"| C["f-strings<br/>padrão atual"]
 
-    style A fill:#D0021B,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
+    class A falha
+    class B destaque
+    class C neutro
 ```
 
 #### Geração 1: `%`-formatting (estilo C, legado)
@@ -338,11 +341,13 @@ print(de_volta == texto)     # True
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     S["str<br/>(texto, pontos de código Unicode)"] -->|".encode('utf-8')"| B["bytes<br/>(dados binários crus)"]
     B -->|".decode('utf-8')"| S
 
-    style S fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
+    class S neutro
+    class B destaque
 ```
 
 > [!warning] `UnicodeDecodeError` é sempre um problema de codificação incompatível, nunca um bug de lógica

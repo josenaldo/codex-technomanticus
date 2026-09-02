@@ -39,6 +39,7 @@ Por que Zig — e não C, Rust ou Go? A resposta está no que Zig *elimina*: gar
 
 ```mermaid
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Stack Node tradicional (2020)"
         N["node (V8)"]
         NM["npm / pnpm"]
@@ -63,7 +64,7 @@ graph TD
         BUN --- BT
     end
 
-    style BUN fill:#f5a623,color:#000
+    class BUN destaque
 ```
 
 > [!info] Bun como package manager: nota irmã
@@ -713,6 +714,7 @@ console.log(`Rodando em ${app.server?.url}`);
 
 ```mermaid
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Express no Bun — camadas extra"
         EXP["Express\n(middleware)"]
         HTTP_MOD["módulo http do Node\n(binding)"]
@@ -726,7 +728,7 @@ graph LR
         ELY --> BUNSERVE2
     end
 
-    style BUNSERVE2 fill:#f5a623,color:#000
+    class BUNSERVE2 destaque
 ```
 
 **Quando escolher Elysia sobre Bun.serve puro:**
@@ -931,6 +933,8 @@ curl -X POST http://localhost:3000/tarefas -H "content-type: application/json" -
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Novo projeto ou\nmigrando o tooling?"]
 
     A -->|"Novo projeto"| B["Tem native addons\n(sharp, bcrypt-C++, canvas)?"]
@@ -970,9 +974,9 @@ flowchart TD
     G --> G2
     G --> G3
 
-    style H fill:#1a6b1a,color:#fff
-    style C fill:#8b1a1a,color:#fff
-    style G fill:#8b1a1a,color:#fff
+    class H ok
+    class C falha
+    class G falha
 ```
 
 ### A perspectiva de 2026

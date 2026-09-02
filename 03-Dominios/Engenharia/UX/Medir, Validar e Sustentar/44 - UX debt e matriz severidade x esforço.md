@@ -34,7 +34,6 @@ A origem da dívida de UX segue o mesmo padrão da dívida técnica: um formulá
 Priorizar UX debt (ou qualquer backlog de melhoria de UX, na verdade) usando **impacto/severidade contra esforço** organiza a decisão em quatro quadrantes:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 quadrantChart
     title Matriz severidade x esforço
     x-axis "Esforço baixo" --> "Esforço alto"
@@ -70,8 +69,9 @@ O desafio central, e o motivo de essa fonte não ser trivial de usar direto: **s
 Quatro problemas de UX completamente diferentes, uma única tag de suporte. **Reclassificar por tipo de fricção** — ler uma amostra de tickets com essa tag e categorizar manualmente qual dos quatro (ou mais) padrões cada um representa — é o trabalho que transforma dado de suporte, categorizado para resolução, em dado de pesquisa, categorizado para priorização de UX debt.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     T["Tag de suporte:<br/>'erro de login'"] --> R["Reclassificação manual<br/>por tipo de fricção"]
     R --> F1["Recuperação de senha<br/>confusa"]
     R --> F2["SSO vs. e-mail<br/>ambíguo"]
@@ -81,8 +81,8 @@ graph TD
     F2 --> M
     F3 --> M
     F4 --> M
-    style T fill:#F5A623,color:#000
-    style M fill:#4A90D9,color:#fff
+    class T destaque
+    class M neutro
 ```
 
 **O mecanismo em uma frase:** o volume de ticket já mede severidade de negócio (quanto custa em suporte); a reclassificação por tipo de fricção é o que converte esse volume em item específico e acionável na matriz, em vez de um agregado genérico demais para decidir o que fazer.

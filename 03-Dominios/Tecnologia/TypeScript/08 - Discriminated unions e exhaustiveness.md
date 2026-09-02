@@ -108,6 +108,8 @@ Cada `case` restringe o tipo de `estado` — isso é o narrowing pelo discrimina
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     EU["EstadoRequisicao\nidle | loading | success | error"]
     CI["case 'idle'\nEstadoRequisicao restante:\nloading | success | error"]
     CL["case 'loading'\nEstadoRequisicao restante:\nsuccess | error"]
@@ -116,8 +118,8 @@ flowchart TD
 
     EU --> CI --> CL --> CS --> CE
 
-    style CE fill:#1f6feb,color:#fff
-    style EU fill:#333,color:#fff
+    class CE neutro
+    class EU marca
 ```
 
 > [!note] Leitura do diagrama
@@ -194,6 +196,8 @@ A vantagem do helper: em vez de uma atribuição silenciosa a `never`, você lan
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     DU["Discriminated union\nadiciona novo estado"]
     SW["Switch sem o\nnovo case"]
     DEF["default:\nassertNever(estado)"]
@@ -204,8 +208,8 @@ flowchart LR
     DEF -->|"compile time"| CE
     DEF -->|"runtime (cast externo)"| RTF
 
-    style CE fill:#8a0000,color:#fff
-    style RTF fill:#8a6d00,color:#fff
+    class CE falha
+    class RTF destaque
 ```
 
 ---

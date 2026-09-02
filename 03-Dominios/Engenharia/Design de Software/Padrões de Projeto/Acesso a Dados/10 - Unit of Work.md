@@ -32,8 +32,9 @@ A pergunta que o padrão responde é: *e se ninguém gravasse nada até o fim?* 
 ## A ideia: registrar agora, gravar no commit
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph UoW["Unit of Work (Session / EntityManager)"]
         N["novos: Pedido, Log"]
         D["alterados: Cliente, Estoque×3"]
@@ -43,8 +44,8 @@ graph TD
     UoW -->|"commit()"| TX["1 transação<br/>SQL na ordem certa"]
     TX --> DB[("banco")]
 
-    style UoW fill:#4A90D9,color:#fff
-    style TX fill:#F5A623,color:#000
+    class UoW neutro
+    class TX destaque
 ```
 
 Durante a operação, o Unit of Work classifica cada objeto: **novo** (vai virar `INSERT`), **dirty** (`UPDATE`), **removido** (`DELETE`) ou limpo (nada a fazer). No `commit`, ele calcula a ordem que respeita as dependências (chaves estrangeiras) e emite tudo numa transação. Se algo falhar, *rollback* — nada foi gravado pela metade.

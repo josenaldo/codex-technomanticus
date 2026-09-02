@@ -28,6 +28,9 @@ Vale nomear com precisão máxima, porque é o coração desta nota: um objeto `
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph Decl["Camada declarativa — spec, sem poder de execução"]
         ING["Objeto Ingress<br/>host: app.exemplo.com<br/>path: / → frontend<br/>path: /api → api"]
     end
@@ -40,9 +43,9 @@ graph TB
     ING -.->|"watch — observa mudanças"| CTRL
     CTRL -->|"reconfigura"| PROXY
 
-    style ING fill:#4a3b7a,stroke:#8e6fd6,color:#fff
-    style CTRL fill:#2e4d7a,stroke:#3498db,color:#fff
-    style PROXY fill:#1e5c3a,stroke:#27ae60,color:#fff
+    class ING marca
+    class CTRL neutro
+    class PROXY ok
 ```
 
 Essa é a lente do galho aplicada de novo, no seu ponto mais literal: declarar não é executar. É exatamente o mesmo argumento que a nota [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/02 - O loop de reconciliação|02 — O loop de reconciliação]] estabeleceu para `kubectl apply` terminando no etcd, e que a nota [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/05 - Service|05 — Service]] repetiu para o `type: LoadBalancer` — um Service `LoadBalancer` também não provisiona nada sozinho, depende de um *cloud controller manager* observando e agindo. Ingress é a mesma peça de novo, um andar acima na pilha HTTP: uma `spec` sem poder de execução própria, um controller externo que observa e converge.
@@ -313,6 +316,10 @@ A documentação oficial confirma que a Gateway API atingiu **Estabilidade Geral
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph GW["Gateway API — três papéis, três objetos"]
         GC["GatewayClass<br/>(infraestrutura provê)"]
         GT["Gateway<br/>(operador do cluster cria)"]
@@ -324,10 +331,10 @@ graph TB
         I["Ingress<br/>(host + path + TLS + annotations,<br/>tudo no mesmo objeto)"]
     end
 
-    style GC fill:#4a3b7a,stroke:#8e6fd6,color:#fff
-    style GT fill:#2e4d7a,stroke:#3498db,color:#fff
-    style HR fill:#1e5c3a,stroke:#27ae60,color:#fff
-    style I fill:#5a4a1e,stroke:#c9a227,color:#fff
+    class GC marca
+    class GT neutro
+    class HR ok
+    class I destaque
 ```
 
 > [!info] Baseline de versão

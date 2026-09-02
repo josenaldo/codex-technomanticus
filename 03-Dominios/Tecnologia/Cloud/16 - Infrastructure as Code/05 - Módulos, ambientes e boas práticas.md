@@ -34,6 +34,8 @@ Um módulo Terraform é, na essência, um diretório com arquivos `.tf` que voc�
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Root["Root module (ambiente prod)"]
         Call["module 'vpc' {\n  source = '../../modules/vpc'\n  cidr_block = '10.0.0.0/16'\n  az_count = 3\n}"]
     end
@@ -48,8 +50,8 @@ flowchart TB
     Outs -->|"retorna outputs"| Root
     Root -->|"usa module.vpc.vpc_id\nem outro recurso"| Consumo["aws_instance,\naws_ecs_service..."]
 
-    style ModVPC fill:#f9d5a7
-    style Root fill:#a7d5f9
+    class ModVPC destaque
+    class Root neutro
 ```
 
 O root module — o diretório de onde você roda `terraform apply` — chama o módulo `vpc` passando `cidr_block` e `az_count` como argumentos. O módulo, por dentro, cria a VPC, as subnets, as tabelas de rota; nada disso o root module precisa saber em detalhe. O que o root module recebe de volta são os **outputs** declarados em `outputs.tf` — `vpc_id`, a lista de `subnet_ids` — que ele reusa para criar o cluster ECS, o load balancer, o banco, todos dentro da VPC que o módulo acabou de montar. Um módulo bem desenhado tem uma interface pequena e estável: poucos inputs obrigatórios, defaults sensatos para o resto, outputs que cobrem o que qualquer consumidor razoável vai precisar.
@@ -153,6 +155,8 @@ A mesma disciplina de GitOps que se aplica a código de aplicação se aplica a 
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     Dev["Dev abre PR\ncom mudança no .tf"] --> Val["CI: terraform validate\n+ tflint + checkov"]
     Val -->|"passa"| Plan["CI: terraform plan\n(comentado no PR)"]
     Val -->|"falha"| Block["PR bloqueado"]
@@ -161,8 +165,8 @@ flowchart LR
     Merge --> Apply["CI: terraform apply\n(pipeline separado, gatilho de merge)"]
     Apply --> Prod["Infraestrutura\natualizada"]
 
-    style Block fill:#f9a7a7
-    style Apply fill:#a7f9a7
+    class Block falha
+    class Apply ok
 ```
 
 O ponto central é que **`plan` e `apply` rodam em pipelines diferentes, com gatilhos diferentes**. `terraform plan` roda automaticamente a cada push num PR aberto, e o resultado — a lista de recursos a criar/alterar/destruir — é publicado como comentário no próprio PR, para quem revisa ver exatamente o que vai acontecer antes de aprovar. `terraform apply` só roda depois do merge na branch principal, e normalmente exige uma aprovação adicional (um "gate" manual no pipeline) antes de tocar em produção — a mesma lógica de política de aprovação que qualquer deploy de aplicação segue.

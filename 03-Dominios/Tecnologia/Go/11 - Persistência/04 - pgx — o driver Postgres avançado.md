@@ -33,6 +33,8 @@ O mesmo vale para JSONB nativo, tipos compostos (`CREATE TYPE endereco AS (rua t
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     App["Seu código"] --> Choice{"Qual API?"}
     Choice -->|"via database/sql"| Stdlib["pgx/v5/stdlib\n(sql.DB comum)"]
     Choice -->|"nativo"| Native["pgxpool.Pool\n(API própria do pgx)"]
@@ -44,8 +46,8 @@ flowchart TB
     Full --> Driver
     Driver --> PG[("Postgres")]
 
-    style Native fill:#4A90D9,color:#fff
-    style Full fill:#F5A623,color:#000
+    class Native neutro
+    class Full destaque
 ```
 
 `pgx` oferece as duas portas, e a escolha não é ideológica — é sobre quanto do banco você quer expor:
@@ -171,6 +173,7 @@ Isso funciona porque o pgx registra, por baixo, um `pgtype.Codec` para `jsonb` q
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph PG["Tipos Postgres"]
         A1["int[] / text[]"]
         A2["jsonb"]
@@ -193,7 +196,7 @@ flowchart LR
     A3 --> C3
     A4 --> C4
 
-    style PgxNative fill:#4A90D9,color:#fff
+    class PgxNative neutro
 ```
 
 > [!info] pgtype é opt-in, não obrigatório

@@ -45,17 +45,18 @@ Num sistema distribuído, "chamar outro serviço" atravessa a rede. E a rede int
 O nome técnico para o padrão de propagação que abriu esta nota é **cascading failure**: a falha de um nó satura um recurso finito (threads, conexões, memória) em quem o chama, o que faz esse chamador também falhar, o que propaga a saturação para quem depende *dele*. Michael Nygard descreveu esse mecanismo em detalhe no livro *Release It!* (2007), e é de lá que vem o vocabulário que o resto desta nota usa — inclusive o nome "circuit breaker".
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     PS["payment-service<br/>fica lento<br/>(não caiu — 8-15s por call)"] -->|"order-service espera<br/>síncrono, bloqueante"| OS["order-service<br/>threads presas esperando"]
     OS -->|"pool de threads<br/>esgota (200/200)"| OSDOWN["order-service<br/>para de responder"]
     OSDOWN -->|"cart-service espera<br/>order-service"| CS["cart-service<br/>também trava"]
     CS -.->|"efeito dominó continua"| REST["...próximos serviços<br/>na cadeia de dependência"]
 
-    style PS fill:#F5A623,stroke:#2E5C8A,color:#000
-    style OS fill:#F5A623,stroke:#2E5C8A,color:#000
-    style OSDOWN fill:#D0021B,stroke:#2E5C8A,color:#fff
-    style CS fill:#D0021B,stroke:#2E5C8A,color:#fff
+    class PS destaque
+    class OS destaque
+    class OSDOWN falha
+    class CS falha
 ```
 
 Em uma frase: **uma lentidão localizada, sem isolamento, vira uma indisponibilidade sistêmica** — e cada padrão desta nota existe para cortar um elo dessa corrente.
@@ -98,7 +99,6 @@ O texto de referência aqui é o artigo da AWS Architecture Blog "Exponential Ba
 O artigo mais recente do Amazon Builders' Library, "Timeouts, retries, and backoff with jitter", do mesmo autor, reforça a mesma conclusão em produção AWS: **backoff sem jitter reduz throughput e ainda cria picos correlacionados**; full jitter e equal jitter empiricamente reduzem o número de chamadas totais ao serviço com problema de forma parecida, enquanto decorrelated jitter tende a gerar mais chamadas totais, mas com menos sincronização.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
     F["Falha na chamada"] --> T1["Tentativa 1<br/>espera ~100ms + jitter"]
     T1 -->|"falhou de novo"| T2["Tentativa 2<br/>espera ~200ms + jitter"]
@@ -128,7 +128,6 @@ A analogia é literal: um disjuntor elétrico desarma diante de um curto-circuit
 ### Os três estados
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 stateDiagram-v2
     [*] --> Closed
     Closed --> Open: taxa de falha ultrapassa o limiar<br/>(ex.: 50% em 100 chamadas)
@@ -164,8 +163,10 @@ Se `order-service` chama tanto `payment-service` (lento) quanto `inventory-servi
 O **bulkhead** (anteparo, em referência aos compartimentos estanques do casco de um navio) resolve isso isolando pools de recursos por dependência. Cada chamada externa tem seu próprio pool de threads (ou semáforo limitando concorrência) — se `payment-service` afunda o pool dedicado a ele, o pool de `inventory-service` continua intacto, e `order-service` continua respondendo para as partes do sistema que não dependem do serviço doente.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Sem bulkhead — pool compartilhado"
         POOL["Pool único: 200 threads"] --> PAY1["payment-service<br/>(lento, prende ~190)"]
         POOL --> INV1["inventory-service<br/>(saudável, mas sem<br/>threads livres)"]
@@ -175,10 +176,10 @@ graph TD
         POOLINV["Pool inventory: 50 threads"] --> INV2["inventory-service<br/>(continua respondendo normal)"]
     end
 
-    style PAY1 fill:#D0021B,stroke:#2E5C8A,color:#fff
-    style INV1 fill:#D0021B,stroke:#2E5C8A,color:#fff
-    style PAY2 fill:#F5A623,stroke:#2E5C8A,color:#000
-    style INV2 fill:#4A90D9,stroke:#2E5C8A,color:#fff
+    class PAY1 falha
+    class INV1 falha
+    class PAY2 destaque
+    class INV2 neutro
 ```
 
 Na implementação de referência (Resilience4j), o bulkhead existe em duas variantes: um **semáforo** limitando quantas chamadas concorrentes passam na thread atual, e um **pool de threads dedicado**, que efetivamente executa a chamada arriscada num pool à parte do resto da aplicação. A escolha entre os dois é um trade-off de overhead (thread pool dedicado custa mais memória e context-switching) contra isolamento mais forte (thread pool dedicado impede até que a *duração* de uma chamada lenta contamine a thread que fez a chamada).

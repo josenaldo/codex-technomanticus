@@ -38,6 +38,8 @@ Embedding search entende intenção, não texto. A query `"how is JWT token vali
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Sem indexação"
         A1["Grep('validateToken')"]
         A2["Read('auth/middleware.ts')"]
@@ -55,8 +57,8 @@ flowchart LR
         B4["Agente resolve a tarefa"]
     end
 
-    style A7 fill:#fff5f5,stroke:#ff6b6b
-    style B3 fill:#f0fff4,stroke:#51cf66
+    class A7 falha
+    class B3 ok
 ```
 
 > [!summary] Indexação semântica muda o paradigma de "explorar para encontrar" para "consultar e chegar". Em repos grandes, a diferença é entre passar 30 minutos de tokens em descoberta ou 2 minutos.
@@ -91,6 +93,9 @@ A diferença não é só volume — é **qualidade de busca**: semantic search e
 
 ```mermaid
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     codebase["Codebase completo"]
     treesitter["Chunking AST-aware\n(Tree-sitter)"]
     chunks["Chunks\n50-200 linhas cada\nfronteiras de função/classe"]
@@ -106,9 +111,9 @@ flowchart TD
     vectordb -->|"serve"| mcp
     mcp -->|"search_code(query)"| agente
 
-    style chunks fill:#fff3e0,stroke:#ff9800
-    style vectordb fill:#e8f4f8,stroke:#339af0
-    style mcp fill:#f3f0ff,stroke:#7950f2
+    class chunks destaque
+    class vectordb neutro
+    class mcp marca
 ```
 
 ### Tipos de chunking
@@ -315,13 +320,15 @@ O padrão que a pesquisa mais recente confirma — e que a seção de hybrid sea
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     query["Query"] --> recall["Recall: bi-encoder<br/>+ BM25 (barato)"]
     recall --> pool["Pool de candidatos<br/>(ex: top-50)"]
     pool --> rerank["Rerank: cross-encoder<br/>(caro, mas só 50 docs)"]
     rerank --> final["Top-5 final"]
 
-    style recall fill:#e8f4f8,stroke:#339af0
-    style rerank fill:#fff3e0,stroke:#ff9800
+    class recall neutro
+    class rerank destaque
 ```
 
 Um exemplo concreto dessa estratégia de fusão é o sistema **TOSS**, que combina múltiplos sinais de retrieval (incluindo BM25) e atinge MRR (Mean Reciprocal Rank) de 0.763 com latência bem menor do que reranking puro sobre o corpus inteiro — evidência empírica de que hybrid search não é só "mais robusto", é também mais barato em produção, porque a etapa cara opera sobre um pool pequeno.

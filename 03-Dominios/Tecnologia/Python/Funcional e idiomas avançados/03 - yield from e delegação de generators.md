@@ -67,7 +67,6 @@ Troca de `for folha in percorrer(sub): yield folha` por `yield from percorrer(su
 A [PEP 380](https://peps.python.org/pep-0380/) formaliza isso descrevendo o que `yield from EXPR` **expande para**, em pseudocódigo — cerca de 30 linhas de tratamento de protocolo que cobrem: obter o iterador de `EXPR`, fazer o primeiro `next()`, entrar num loop que trata separadamente "o consumidor chamou `send()`", "o consumidor chamou `throw()`" e "o consumidor chamou `close()`" (via `GeneratorExit`), repassando cada caso para o método correspondente do subiterador, e finalmente capturando `StopIteration` para extrair `.value`. Ninguém escreve esse pseudocódigo à mão — é exatamente o trabalho que `yield from` poupa.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant C as Consumidor<br/>(chama next/send/throw)
     participant D as Generator delegador<br/>(yield from sub)

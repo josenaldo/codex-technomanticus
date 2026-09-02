@@ -56,15 +56,17 @@ A última costuma render mais que todas as outras juntas — porque é a única 
 ## Como ler as respostas
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     P["'Qual foi o último incidente<br/>e o que mudou depois?'"] --> A["✅ conta o incidente,<br/>a causa e a mudança<br/><i>cultura de aprendizado</i>"]
     P --> B["🟡 conta o incidente,<br/>nada mudou<br/><i>apaga fogo, não corrige</i>"]
     P --> C["❌ 'não temos incidentes'<br/><i>ou não mede, ou não conta</i>"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#D0021B,color:#fff
+    class A neutro
+    class B destaque
+    class C falha
 ```
 
 O conteúdo da resposta importa menos que a **forma** dela. Três leituras que raramente falham:

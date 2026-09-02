@@ -31,6 +31,8 @@ Quando surge uma pergunta de a11y, raramente o objetivo é checar se você sabe 
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q["Pergunta de a11y<br/>na entrevista"] --> A["Modelo mental<br/>como a AT funciona?"]
     Q --> B["Julgamento<br/>quando ARIA, quando não?"]
     Q --> C["Empatia informada<br/>espectro, não só cegueira?"]
@@ -41,12 +43,12 @@ flowchart TD
     C --> R
     D --> R
 
-    style Q fill:#4A90D9,color:#fff
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style R fill:#F5A623,color:#000
+    class Q neutro
+    class A neutro
+    class B neutro
+    class C neutro
+    class D neutro
+    class R destaque
 ```
 
 O entrevistador não soma pontos por critério citado — ele testa se as quatro dimensões colapsam numa única resposta coerente. É exatamente a estrutura de três camadas (construir → testar → sustentar) que aparece na resposta-modelo abaixo.

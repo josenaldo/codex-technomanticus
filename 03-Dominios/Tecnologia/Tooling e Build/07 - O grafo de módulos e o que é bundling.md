@@ -110,6 +110,8 @@ O grafo resultante fica assim:
 
 ```mermaid
 graph TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     MAIN["main.js\n(entry point)"]
     RENDER["ui/render.js"]
     CLIENT["api/client.js"]
@@ -121,9 +123,9 @@ graph TD
     RENDER -->|"import formatName"| FORMAT
     CLIENT -->|"import BASE_URL"| CONFIG
 
-    style MAIN fill:#2d4a1e,color:#fff
-    style FORMAT fill:#1a2e3d,color:#fff
-    style CONFIG fill:#1a2e3d,color:#fff
+    class MAIN ok
+    class FORMAT neutro
+    class CONFIG neutro
 ```
 
 > [!note] Leitura do diagrama
@@ -183,6 +185,8 @@ Quando o bundler encontra `import { render } from "./ui/render.js"`, a resoluç�
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     BARE["import X from 'react'"]
     CHECK_CORE{"É módulo\nbuilt-in do Node?\n(path, fs, url...)"}
     CHECK_NM["Procura em node_modules/react/"]
@@ -203,8 +207,8 @@ flowchart TD
     MAIN -->|"Sim"| MAIN_RESOLVE
     MAIN -->|"Não"| INDEX
 
-    style RESOLVED fill:#2d4a1e,color:#fff
-    style EXP_COND fill:#1a2e3d,color:#fff
+    class RESOLVED ok
+    class EXP_COND neutro
 ```
 
 > [!note] Leitura do diagrama
@@ -273,11 +277,12 @@ export const b = `B usa: ${a}`;
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["a.js"] -->|"import b"| B["b.js"]
     B -->|"import a"| A
 
-    style A fill:#3d2020,color:#fff
-    style B fill:#3d2020,color:#fff
+    class A falha
+    class B falha
 ```
 
 > [!note] Leitura do diagrama
@@ -502,6 +507,8 @@ document.getElementById("open-editor").addEventListener("click", async () => {
 
 ```mermaid
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     ENTRY["main.js\n(entry)"]
     HOME["home.js\n(initial chunk)"]
     EDITOR["editor.js\n(non-initial chunk)\ncarregado sob demanda"]
@@ -509,8 +516,8 @@ graph LR
     ENTRY -->|"import estático"| HOME
     ENTRY -.->|"import() dinâmico\n(lazy)"| EDITOR
 
-    style EDITOR fill:#3d2b00,color:#fff
-    style HOME fill:#2d4a1e,color:#fff
+    class EDITOR destaque
+    class HOME ok
 ```
 
 > [!note] Leitura do diagrama
@@ -528,6 +535,8 @@ Vamos acompanhar o exemplo do app mínimo do início desta nota e ver o que um b
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Grafo de módulos (source)"
         MAIN["main.js"]
         RENDER["ui/render.js"]
@@ -547,8 +556,8 @@ flowchart TD
 
     MAIN -->|"bundler\npercorre o grafo"| BUNDLE
 
-    style MAIN fill:#2d4a1e,color:#fff
-    style BUNDLE fill:#1a2e3d,color:#fff
+    class MAIN ok
+    class BUNDLE neutro
 ```
 
 > [!note] Leitura do diagrama
@@ -641,6 +650,8 @@ O import map é essencialmente o `package.json` do browser: um dicionário que m
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     CODE["import _ from 'lodash'\n(bare import)"]
     MAP["Import Map\n{ 'lodash': 'https://esm.sh/...' }"]
     URL["https://esm.sh/lodash@4.17.21"]
@@ -651,8 +662,8 @@ flowchart LR
     MAP -->|"retorna URL"| URL
     URL --> NET --> MOD
 
-    style MAP fill:#2d2d00,color:#fff
-    style MOD fill:#2d4a1e,color:#fff
+    class MAP destaque
+    class MOD ok
 ```
 
 > [!note] Leitura do diagrama
@@ -707,6 +718,9 @@ A decisão não é binária. Alguns cenários onde bundler é questionável ou d
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     START{Preciso de bundler?}
 
     START -->|"App pequeno\n< 50 módulos\nHTTP/2 disponível\nsem TypeScript/JSX"| NO["Provavelmente não.\nESM nativo + import maps\né suficiente."]
@@ -717,10 +731,10 @@ flowchart TD
 
     START -->|"Ferramentas internas\nprotótipos\nambiente controlado"| ALSO_NO["Provavelmente não.\nVite dev mode sem build\nou CDN ESM."]
 
-    style YES fill:#2d4a1e,color:#fff
-    style NO fill:#1a2e3d,color:#fff
-    style MAYBE fill:#2d2d00,color:#fff
-    style ALSO_NO fill:#1a2e3d,color:#fff
+    class YES ok
+    class NO neutro
+    class MAYBE destaque
+    class ALSO_NO neutro
 ```
 
 > [!note] Leitura do diagrama
@@ -740,6 +754,8 @@ Em **produção**, o objetivo é performance de entrega: você quer o menor núm
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph DEV["Desenvolvimento (ex: Vite dev server)"]
         direction TB
         SRC_D["src/main.ts"]
@@ -762,8 +778,8 @@ flowchart LR
         SRC_P --> BUNDLE_P --> DIST
     end
 
-    style DEV fill:#1a2e3d,color:#fff
-    style PROD fill:#2d4a1e,color:#fff
+    class DEV neutro
+    class PROD ok
 ```
 
 > [!note] Leitura do diagrama

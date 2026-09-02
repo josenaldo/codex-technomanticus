@@ -134,8 +134,10 @@ Em linha do tempo resumida, os três paradigmas não se substituem — eles se a
 Nenhuma das três arquiteturas é estritamente superior — cada uma otimiza para uma combinação diferente de custo, estrutura e maturidade organizacional. O diagrama abaixo contrasta o caminho que o mesmo conjunto de fontes de dados percorre em cada uma:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Fontes["Fontes de dados"]
         OLTP["Postgres<br/>(vendas modeladas)"]
         Eventos["Eventos de clique<br/>(JSON)"]
@@ -173,10 +175,10 @@ graph LR
     Files --> ML1["ML exploratório"]
     Base --> BI2["BI + ML,<br/>mesma base"]
 
-    style DW fill:#4A90D9,color:#fff
-    style Base fill:#4A90D9,color:#fff
-    style Files fill:#F5A623,color:#000
-    style Swamp fill:#D0021B,color:#fff
+    class DW neutro
+    class Base neutro
+    class Files destaque
+    class Swamp falha
 ```
 
 Repare no vermelho: o data swamp não é uma quarta arquitetura — é o **destino padrão** de um data lake quando ninguém assume a governança que a caixa laranja do diagrama (object storage sem catálogo nem dono) exige. É esse risco, mais do que qualquer limitação técnica, que empurra times maduros em direção ao lakehouse ou a um lake fortemente governado.

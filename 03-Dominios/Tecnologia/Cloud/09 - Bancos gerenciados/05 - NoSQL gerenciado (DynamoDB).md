@@ -41,6 +41,8 @@ A chave primária vem em duas formas:
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Tabela["Tabela: Carrinhos"]
         direction TB
     end
@@ -52,9 +54,9 @@ flowchart TB
     Tabela --> Item2
     Tabela --> Item3
 
-    style Item1 fill:#a7d5f9
-    style Item2 fill:#a7d5f9
-    style Item3 fill:#f9d5a7
+    class Item1 neutro
+    class Item2 neutro
+    class Item3 destaque
 ```
 
 Repare que `sessao#123` aparece em dois itens (Item1 e Item2) — isso é a **item collection** da sessão 123: dois produtos diferentes no mesmo carrinho, cada um com sua própria sort key (`item#001`, `item#002`). Uma única operação `Query` por `sessao#123` devolve o carrinho inteiro, ordenado pela sort key — é essa mecânica que substitui o `JOIN` entre `carrinhos` e `itens_carrinho` do modelo relacional.
@@ -86,15 +88,17 @@ A AWS distribui os itens de uma tabela entre **partições físicas** — armaze
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     PK1["PK: sessao#123"] -->|hash| P1["Partição A"]
     PK2["PK: sessao#456"] -->|hash| P2["Partição B"]
     PK3["PK: sessao#789"] -->|hash| P1
     PK4["PK: sessao#PROMO2026"] -->|hash| P3["Partição C<br/>(HOT — tráfego<br/>concentrado aqui)"]
     PK5["PK: sessao#PROMO2026"] -->|hash| P3
 
-    style P3 fill:#f9a7a7
-    style P1 fill:#a7d5f9
-    style P2 fill:#a7d5f9
+    class P3 falha
+    class P1 neutro
+    class P2 neutro
 ```
 
 A documentação é explícita sobre a recomendação de design: escolher uma partition key com **muitos valores distintos em relação ao número de itens** da tabela, para que o DynamoDB consiga distribuir uniformemente. O erro clássico — a **hot partition** — acontece quando uma fração desproporcional das leituras/escritas mira o mesmo valor de partition key (por exemplo, usar `data_do_dia` como partition key para eventos de todos os usuários naquele dia): todo esse tráfego cai na mesma partição física, que tem um teto de throughput próprio, enquanto as outras partições ficam ociosas. O sintoma é *throttling* mesmo com capacidade sobrando na tabela como um todo — porque a capacidade agregada não ajuda uma partição individual sobrecarregada.
@@ -146,6 +150,8 @@ A chave primária resolve exatamente um padrão de acesso: buscar por partition 
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Base["Tabela base: Carrinhos<br/>PK: SessaoId · SK: ItemId"]
     GSI["GSI: por-produto<br/>PK: ProdutoId · SK: SessaoId<br/>capacidade PRÓPRIA<br/>consulta a tabela INTEIRA"]
     LSI["LSI: por-data<br/>PK: SessaoId (igual à base)<br/>SK: DataAdicionado<br/>capacidade da TABELA BASE<br/>consulta só a MESMA partição"]
@@ -153,8 +159,8 @@ flowchart TB
     Base -->|"criado a qualquer momento"| GSI
     Base -->|"só na criação da tabela"| LSI
 
-    style GSI fill:#a7d5f9
-    style LSI fill:#f9d5a7
+    class GSI neutro
+    class LSI destaque
 ```
 
 | Característica | GSI (Global) | LSI (Local) |

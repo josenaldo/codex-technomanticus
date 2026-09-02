@@ -104,28 +104,33 @@ A razão de contraste é uma reta contínua — 1:1 é invisível, 21:1 é o ext
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["1:1<br/>invisível<br/>(mesma cor)"] --> B["3:1<br/>mínimo AA<br/>texto grande / não-textual"]
     B --> C["4.5:1<br/>mínimo AA<br/>texto normal"]
     C --> D["7:1<br/>AAA<br/>texto normal"]
     D --> E["21:1<br/>máximo<br/>preto puro / branco puro"]
 
-    style A fill:#D0021B,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#F5A623,color:#000
+    class A falha
+    class B destaque
+    class C neutro
+    class D neutro
+    class E destaque
 ```
 
 E antes mesmo de medir contraste, uma pergunta binária resolve boa parte dos casos do 1.4.1:
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Q["A cor é o único<br/>sinal da informação?"] -->|Sim| R["❌ Falha 1.4.1<br/>adicione texto, ícone,<br/>forma ou padrão"]
     Q -->|Não, já tem<br/>outro sinal| S["✅ Verifique agora<br/>o contraste do sinal<br/>(1.4.3 / 1.4.11)"]
 
-    style Q fill:#4A90D9,color:#fff
-    style R fill:#D0021B,color:#fff
-    style S fill:#4A90D9,color:#fff
+    class Q neutro
+    class R falha
+    class S neutro
 ```
 
 ## Casos práticos

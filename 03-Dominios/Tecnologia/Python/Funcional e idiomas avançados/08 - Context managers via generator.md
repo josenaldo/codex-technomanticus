@@ -116,8 +116,10 @@ Duas funções, um `yield` cada, zero `self`. O comportamento observável — o 
 A regra central, e a única coisa que realmente precisa ser internalizada: **tudo antes do `yield` é o corpo de `__enter__`; o valor passado ao `yield` é o que `__enter__` devolveria (e que vira o `as`); tudo depois do `yield` é o corpo de `__exit__`.**
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["@contextmanager\ndef gerenciador():"] --> B["código ANTES do yield\n= corpo de __enter__"]
     B --> C["yield valor\n= valor devolvido por __enter__\n= o que vira 'as'"]
     C --> D["corpo do with executa"]
@@ -128,11 +130,11 @@ flowchart TB
     H -- "Sim" --> I["exceção SUPRIMIDA\n(equivale a __exit__ devolver True)"]
     H -- "Não (relança ou\nsó tem finally)" --> J["exceção continua propagando\n(equivale a __exit__ devolver False)"]
 
-    style A fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style G fill:#F5A623,color:#000
-    style I fill:#D0021B,color:#fff
-    style J fill:#4A90D9,color:#fff
+    class A neutro
+    class C neutro
+    class G destaque
+    class I falha
+    class J neutro
 ```
 
 O mapeamento é direto o suficiente para memorizar numa frase: **"antes do yield, `__enter__`; depois do yield, `__exit__`; o que passa pelo yield é o `as`."** O único ponto que exige mais cuidado — e que é a fonte de quase todo bug em código escrito com `@contextmanager` — é o que acontece quando o corpo do `with` levanta uma exceção, e é o assunto da próxima seção.

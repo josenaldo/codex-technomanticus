@@ -50,8 +50,10 @@ No modelo de streaming, popularizado pelo Apache Kafka e formalizado na literatu
 A diferença estrutural mais citada na literatura técnica: em mensageria estilo AMQP/JMS clássico, receber uma mensagem é **destrutivo** — ela é apagada do broker ao ser recebida, então rodar o mesmo consumer de novo nunca reproduz o mesmo resultado. Um broker log-based inverte essa premissa: a mensagem persiste no armazenamento, então reprocessar o mesmo trecho do log é uma operação de primeira classe, não uma exceção ([Kleppmann, *Designing Data-Intensive Applications*, cap. 11]).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Fila["Message Queue — mensagem é tarefa"]
         P1["Producer"] --> Q["Queue: msg1, msg2, msg3"]
         Q -->|"msg1"| C1["Consumer A"]
@@ -66,10 +68,10 @@ graph TB
         L -->|"offset=0 (replay)"| G3["Consumer Group C (novo, lê tudo)"]
     end
 
-    style Q fill:#4A90D9,color:#fff
-    style L fill:#4A90D9,color:#fff
-    style X fill:#D0021B,color:#fff
-    style G3 fill:#F5A623,color:#000
+    class Q neutro
+    class L neutro
+    class X falha
+    class G3 destaque
 ```
 
 > [!question]- Se o log é persistido, ele não cresce para sempre e não fica caro?
@@ -100,8 +102,8 @@ graph TB
 A pergunta que resolve a maior parte dos casos, antes de qualquer benchmark:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Alguém vai precisar reler<br/>este dado depois,<br/>ou múltiplos consumer groups<br/>independentes reagem ao mesmo fato?"] -->|"Sim"| B["Event Streaming — Kafka / Pulsar / Redpanda"]
     A -->|"Não, é trabalho a distribuir"| C{"Precisa de routing<br/>complexo (topics,<br/>fanout, priority)?"}
     C -->|"Sim"| D["RabbitMQ"]
@@ -111,11 +113,11 @@ flowchart TD
     G -->|"Sim"| H["SQS + SNS"]
     G -->|"Não"| I["NATS / Redis Streams<br/>(baixa latência, leve)"]
 
-    style B fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
-    style H fill:#4A90D9,color:#fff
-    style I fill:#4A90D9,color:#fff
+    class B neutro
+    class D neutro
+    class F neutro
+    class H neutro
+    class I neutro
 ```
 
 **A regra em uma frase:** se a pergunta do sistema é "como processo esta tarefa em background?", é fila; se a pergunta é "como múltiplos serviços reagem, hoje e no futuro, a este fato que aconteceu?", é streaming — e só depois de responder essa pergunta vale abrir a segunda conversa, sobre qual produto específico dentro do modelo escolhido.

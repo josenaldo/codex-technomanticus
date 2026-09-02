@@ -41,15 +41,17 @@ Esse é o problema que logging **não estruturado** empurra pro futuro: texto li
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["slog.Logger"] -->|"Info/Warn/Error(msg, attrs...)"| B["slog.Record\n(evento estruturado:\ntempo, nível, msg, atributos)"]
     B --> C["Handler"]
     C -->|"TextHandler"| D["chave=valor chave2=valor2\n(terminal, humano)"]
     C -->|"JSONHandler"| E["{&quot;chave&quot;:&quot;valor&quot;, ...}\n(Loki/ELK/CloudWatch, máquina)"]
 
-    style A fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#7ED321,color:#000
-    style E fill:#7ED321,color:#000
+    class A neutro
+    class C destaque
+    class D destaque
+    class E destaque
 ```
 
 - **`Logger`** — o objeto que você chama (`logger.Info(...)`, `logger.Error(...)`). Não sabe formatar nada sozinho; monta um `Record` e repassa pro `Handler`.

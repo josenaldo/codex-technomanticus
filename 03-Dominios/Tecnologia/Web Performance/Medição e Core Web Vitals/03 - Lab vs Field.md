@@ -27,8 +27,9 @@ Nenhum. Eles estão medindo mundos diferentes. O Lighthouse mediu **uma** visita
 Confundir esses dois números é a causa nº 1 de times "otimizarem" performance e não verem o ranking melhorar. Entender a diferença é o que separa medir para *si mesmo* de medir para o *usuário*.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph LAB["🧪 LAB — sintético"]
         L1[Ambiente controlado]
         L2[1 dispositivo, 1 rede]
@@ -41,8 +42,8 @@ graph TB
         F3[Ruidoso, não reprodutível]
         F4[Verdade do usuário + ranking]
     end
-    style LAB fill:#4A90D9,color:#fff
-    style FIELD fill:#F5A623,color:#000
+    class LAB neutro
+    class FIELD destaque
 ```
 
 ## Lab: o laboratório estéril

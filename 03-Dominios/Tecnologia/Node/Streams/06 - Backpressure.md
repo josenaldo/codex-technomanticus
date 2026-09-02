@@ -51,6 +51,10 @@ Backpressure **não é**:
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["producer chama .write(chunk)"] --> B{"write() retorna?"}
     B -->|"true\nbuffer OK"| A
     B -->|"false\nbuffer cheio"| C["PARAR de escrever"]
@@ -61,14 +65,14 @@ flowchart TD
     G --> H["retomar: chamar .write() novamente"]
     H --> A
 
-    style A fill:#1e2d4a,stroke:#4A90D9,color:#ccc
-    style B fill:#3a2800,stroke:#F5A623,color:#ccc
-    style C fill:#3a1a1a,stroke:#D0021B,color:#ccc
-    style D fill:#3a1a1a,stroke:#D0021B,color:#ccc
-    style E fill:#1e2d4a,stroke:#4A90D9,color:#ccc
-    style F fill:#1e2d4a,stroke:#4A90D9,color:#ccc
-    style G fill:#1e3a1a,stroke:#4A90D9,color:#ccc
-    style H fill:#1e3a1a,stroke:#4A90D9,color:#ccc
+    class A neutro
+    class B destaque
+    class C falha
+    class D falha
+    class E neutro
+    class F neutro
+    class G ok
+    class H ok
 ```
 
 O ciclo completo de backpressure: produzir → sinalizar → pausar → aguardar → retomar. `pipeline()` executa esse ciclo internamente; código manual precisa implementá-lo explicitamente.

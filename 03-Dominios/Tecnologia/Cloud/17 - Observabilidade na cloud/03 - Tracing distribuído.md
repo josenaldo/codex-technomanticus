@@ -66,13 +66,15 @@ O X-Ray é o produto da AWS pra esse problema. Ele se encaixa nas três peças d
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     GW["API Gateway<br/>p50: 45ms"] --> V["Lambda: validar<br/>p50: 120ms ✅"]
     V --> P["Lambda: pagamento<br/>p50: 800ms ⚠️"]
     P --> E["Lambda: estoque<br/>erro 12% 🔴"]
     E -.->|nunca chamado| M["Lambda: e-mail"]
 
-    style E fill:#f88
-    style M fill:#ddd,stroke-dasharray: 5 5
+    class E falha
+    class M neutro
 ```
 
 ### Sampling: por que nem todo pedido vira trace
@@ -175,6 +177,7 @@ A peça central da arquitetura OTel é o **Collector**: um processo (rodando com
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Apps["Aplicações instrumentadas com OTel SDK"]
         A1[Serviço A]
         A2[Serviço B]
@@ -189,7 +192,7 @@ flowchart LR
     OC --> JG[Jaeger self-hosted]
     OC --> DD[Datadog / outro SaaS]
 
-    style OC fill:#8cf
+    class OC neutro
 ```
 
 A AWS reconheceu essa direção e criou o **ADOT** (AWS Distro for OpenTelemetry) — não é um produto separado do OTel, é uma *distribuição* da AWS do próprio projeto open-source: os mesmos SDKs e o mesmo Collector, testados, otimizados e suportados pela AWS, com configuração pronta pra mandar dados pro X-Ray, CloudWatch, OpenSearch ou Amazon Managed Service for Prometheus. Para Lambda especificamente, existe uma layer gerenciada do ADOT que instrumenta a função automaticamente sem mudar código — mesma filosofia do Active Tracing, mas usando o formato OTel por baixo.

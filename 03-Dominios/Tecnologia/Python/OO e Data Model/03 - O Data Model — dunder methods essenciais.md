@@ -80,6 +80,8 @@ A documentação chama o conjunto de dunders necessários para emular um determi
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Sintaxe["Sintaxe que o desenvolvedor escreve"]
         A["print(obj) / str(obj)"]
         B["repr(obj)"]
@@ -111,8 +113,8 @@ flowchart LR
     G --> G2
     H --> H2
 
-    style Sintaxe fill:#4A90D9,color:#fff
-    style Dunders fill:#F5A623,color:#000
+    class Sintaxe neutro
+    class Dunders destaque
 ```
 
 ## Por que importa
@@ -214,16 +216,19 @@ Até aqui, tudo funciona. O problema aparece quando esse mesmo objeto tenta entr
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Classe define __eq__?"] -->|"Não"| B["Herda __eq__ e __hash__ de object\n(identidade — sempre hashable)"]
     A -->|"Sim"| C["Classe também define __hash__?"]
     C -->|"Sim"| D["Hashable — desde que __hash__\nuse os mesmos campos de __eq__"]
     C -->|"Não"| E["Python zera __hash__ = None\nObjeto vira UNHASHABLE"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
-    style E fill:#D0021B,color:#fff
+    class A neutro
+    class B neutro
+    class C neutro
+    class D destaque
+    class E falha
 ```
 
 Há também a direção oposta da regra, menos discutida mas igualmente importante: objetos que participam de igualdade de valor **deveriam ser imutáveis** — se um objeto muda depois de já estar dentro de um `set`, seu hash muda, mas o `set` não reindexa; o objeto fica "perdido" no bucket errado, efetivamente inacessível por busca, mesmo continuando fisicamente dentro da coleção. Por isso classes que implementam `__eq__` customizado e pretendem ser usadas em `set`/`dict` geralmente também tratam seus campos relevantes como somente-leitura após a construção (padrão que a [[05 - Dataclasses|nota 05, sobre `frozen=True`]], formaliza).
@@ -314,18 +319,21 @@ O segredo por trás do `for` e do `in` funcionarem sem `__iter__`: o Python tem 
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["for x in obj / iter(obj)"] --> B{"obj tem __iter__?"}
     B -- "Sim" --> C["usa __iter__() diretamente\n(protocolo moderno de iteradores)"]
     B -- "Não" --> D{"obj tem __getitem__?"}
     D -- "Sim" --> E["fallback: chama obj[0], obj[1], obj[2]...\naté IndexError (protocolo antigo)"]
     D -- "Não" --> F["TypeError: object is not iterable"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style D fill:#4A90D9,color:#fff
-    style E fill:#F5A623,color:#000
-    style F fill:#D0021B,color:#fff
+    class A neutro
+    class B neutro
+    class C destaque
+    class D neutro
+    class E destaque
+    class F falha
 ```
 
 Esse fallback é útil para entender código legado — e explica por que classes antigas em bibliotecas Python funcionam com `for` mesmo sem `__iter__` visível — mas **não é recomendado** para código novo: ele é, nas palavras usadas pela comunidade, "um hack" de compatibilidade. Uma classe que pretende ser genuinamente iterável (não só "acidentalmente iterável" por ter `__getitem__`) deveria implementar `__iter__` explicitamente — sinaliza intenção, funciona com `iter()` chamado diretamente em contextos onde o fallback via índice não se aplica (iteradores infinitos, por exemplo, não têm "índice"), e evita o [[04 - Properties e encapsulamento|acoplamento involuntário]] entre "ser indexável" e "ser iterável", que às vezes precisam divergir.

@@ -29,17 +29,22 @@ Este playbook tem sequência deliberada:
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["📊 Fase 0\nMonitorar"] --> B["⚡ Fase 1\nQuick wins"]
     B --> C["🔧 Fase 2\nEstrutural"]
     C --> D["🎯 Fase 3\nAjuste fino"]
     D --> E["🔄 Fase 4\nManutenção"]
     E --> A
 
-    style A fill:#d4edda,stroke:#155724
-    style B fill:#fff3cd,stroke:#856404
-    style C fill:#cce5ff,stroke:#004085
-    style D fill:#f8d7da,stroke:#721c24
-    style E fill:#e2e3e5,stroke:#6c757d
+    class A ok
+    class B destaque
+    class C neutro
+    class D falha
+    class E marca
 ```
 
 **Regra de ouro:** não avance para a próxima fase sem ter completado pelo menos 70% da anterior. Fase 2 sem dados de baseline (Fase 0) é otimização cega.

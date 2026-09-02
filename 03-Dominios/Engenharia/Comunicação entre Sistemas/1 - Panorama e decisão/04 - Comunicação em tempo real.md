@@ -40,7 +40,6 @@ Antes de qualquer protocolo dedicado existir, a única ferramenta disponível pa
 O problema estrutural de toda essa geração, resumido pela documentação de referência do próprio protocolo que viria depois: aplicações que precisam de comunicação bidirecional (mensagens instantâneas, jogos) historicamente exigiam "abusar" do HTTP para fazer *polling* do servidor por atualizações enquanto enviavam notificações de subida como chamadas HTTP separadas. O servidor era forçado a usar várias conexões TCP subjacentes diferentes por cliente — uma para enviar informação ao cliente, e uma nova a cada mensagem recebida — e o protocolo em si tinha overhead alto, com cada mensagem cliente-servidor carregando um cabeçalho HTTP inteiro ([RFC 6455](https://www.rfc-editor.org/rfc/rfc6455.html)).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     P["Polling simples<br/>(pergunta a cada N segundos)"] -->|"reduz desperdício"| LP["Long polling<br/>(servidor segura a resposta)"]
     LP -->|"formaliza o modelo Comet"| C["Comet<br/>(2006, guarda-chuva de técnicas)"]
@@ -84,7 +83,6 @@ O `Sec-WebSocket-Accept` não é decorativo: o servidor concatena o `Sec-WebSock
 Depois desse handshake, os dois lados **param de falar HTTP**. Todo byte que segue usa o formato de frame binário do próprio WebSocket — mais compacto, com muito menos overhead por mensagem do que um cabeçalho HTTP inteiro repetido a cada troca. E, crucialmente, por ter nascido de dentro de uma requisição HTTP comum, a conexão WebSocket trafega pelas mesmas portas (80 e 443) e pela mesma infraestrutura — proxies, load balancers, CDNs — que qualquer tráfego web normal, sem exigir liberação especial de firewall ([MDN, *Protocol upgrade mechanism*](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Protocol_upgrade_mechanism)).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant C as Cliente
     participant S as Servidor
@@ -180,13 +178,13 @@ A diferença de desenho mais relevante do WebTransport em relação a WebSocket 
 Essa dualidade tem impacto mensurável em cenários de latência crítica: em benchmarks de jogos multiplayer, a latência média de atualizações de estado não-confiáveis caiu de 75ms (usando WebSocket) para 49ms (usando datagramas WebTransport), com cerca de 40% menos atualizações de estado obsoletas chegando ao cliente. Em sistemas de streaming de jogo em nuvem, um stream unidirecional carrega o vídeo codificado do servidor ao cliente, enquanto mensagens de controle e métricas de stream trafegam como datagramas — adicionando apenas 1 a 3ms de latência extra para o canal de controle ([ACM, *A WebTransport-based System for Real-Time Game Streaming*, 2025](https://dl.acm.org/doi/10.1145/3744725.3744726)).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#F5A623", "primaryBorderColor": "#B87A1A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     WT["Sessão WebTransport<br/>(sobre HTTP/3 + QUIC)"] --> ST["Streams<br/>(confiável, ordenado)"]
     WT --> DG["Datagramas<br/>(não confiável, tipo UDP)"]
     ST --> ST1["Chat, transferência de<br/>arquivo, dados transacionais"]
     DG --> DG1["Estado de jogo,<br/>telemetria, video de baixa latência"]
-    style WT fill:#F5A623,color:#000
+    class WT destaque
 ```
 
 ### Onde o WebTransport está — de verdade — em 2026

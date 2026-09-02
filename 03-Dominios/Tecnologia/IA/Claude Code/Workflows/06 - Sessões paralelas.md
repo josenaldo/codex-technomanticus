@@ -30,6 +30,8 @@ Worktrees + sessões paralelas resolvem isso por partição: cada sessão tem se
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     repo[(Repositório git\n~/projeto)]
 
     worktreeA[Worktree A\n~/projeto-feat-a\nbranch: feat/payments]
@@ -46,10 +48,10 @@ flowchart TB
     sessaoA -.->|merge eventual| repo
     sessaoB -.->|merge eventual| repo
 
-    style worktreeA fill:#e8f4f8,stroke:#339af0
-    style worktreeB fill:#fff3e0,stroke:#ff9800
-    style sessaoA fill:#e8f4f8,stroke:#339af0
-    style sessaoB fill:#fff3e0,stroke:#ff9800
+    class worktreeA neutro
+    class worktreeB destaque
+    class sessaoA neutro
+    class sessaoB destaque
 ```
 
 Cada worktree aponta para o mesmo objeto `.git` — commits, histórico, objetos são compartilhados. Só o *working directory* (árvore de arquivos editáveis) é separado.
@@ -303,6 +305,9 @@ git worktree prune
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A[git worktree add] --> B[trabalho na branch]
     B --> C{branch mergeada?}
     C -->|sim| D[git worktree remove]
@@ -311,9 +316,9 @@ flowchart LR
     C -->|não, descartar| G[commit WIP antes de remover]
     G --> D
 
-    style A fill:#e8f4f8,stroke:#339af0
-    style D fill:#fff3e0,stroke:#ff9800
-    style F fill:#f3e8f8,stroke:#9c27b0
+    class A neutro
+    class D destaque
+    class F marca
 ```
 
 O diagrama acima resume o ciclo de vida completo: criar → trabalhar → (se mergeada) remover worktree → apagar branch → `prune` como rede de segurança final. Pular a etapa de commit antes de remover é a causa mais comum de perda de trabalho em sessões paralelas — veja o [!warning] logo abaixo.

@@ -36,6 +36,8 @@ Isso é consequência direta de duas coisas que a nota 02 já estabeleceu: a ima
 
 ```mermaid
 graph TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph "Build anterior (cache válido)"
         A1["FROM node:20-slim<br/>hash: base"] --> A2["COPY package.json .<br/>hash: h1"]
         A2 --> A3["RUN npm ci<br/>hash: h2"]
@@ -48,9 +50,9 @@ graph TB
         B3 -->|"reexecuta"| B4["COPY . .<br/>hash: h3' (diferente)"]
     end
 
-    style B2 fill:#2d5,stroke:#333
-    style B3 fill:#2d5,stroke:#333
-    style B4 fill:#d52,stroke:#333
+    class B2 ok
+    class B3 ok
+    class B4 falha
 ```
 
 Repare no diagrama: a mudança aconteceu só na última instrução, e só ela foi reconstruída — porque nada depois dela existia para ser invalidado. Agora inverta a ordem: se o `COPY . .` estivesse antes do `RUN npm ci`, qualquer mudança em qualquer arquivo do projeto (inclusive um `README.md`) invalidaria a camada do `COPY`, e a partir dali o `npm ci` — que pode levar minutos — reexecutaria inteiro, mesmo que nenhuma dependência tenha mudado. É exatamente esse erro, multiplicado em centenas de builds de CI por semana, que consome o tempo do time do início desta nota.

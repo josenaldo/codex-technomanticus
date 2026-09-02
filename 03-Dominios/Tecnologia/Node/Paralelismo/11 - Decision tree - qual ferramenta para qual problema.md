@@ -27,6 +27,9 @@ aliases:
 
 ```mermaid
 flowchart TD
+    classDef question fill:#4A90D9,color:#fff,stroke:#2c6fad
+    classDef decision fill:#F5A623,color:#000,stroke:#c47d0e
+    classDef solution fill:#e8f4e8,color:#000,stroke:#4A90D9
     START(["`**Qual é o problema?**`"]):::question
 
     CPU{"`CPU-bound
@@ -61,9 +64,6 @@ flowchart TD
     ISO -->|isolamento total| FORK
     ISO -->|CPU-bound puro| WT
 
-    classDef question fill:#4A90D9,color:#fff,stroke:#2c6fad
-    classDef decision fill:#F5A623,color:#000,stroke:#c47d0e
-    classDef solution fill:#e8f4e8,color:#000,stroke:#4A90D9
 ```
 
 ## O que é

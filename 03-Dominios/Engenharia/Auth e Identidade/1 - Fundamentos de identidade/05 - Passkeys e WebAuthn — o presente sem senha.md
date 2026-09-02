@@ -43,14 +43,14 @@ Nenhuma etapa desse ataque exigiu que o funcionário fosse descuidado. Ele fez e
 A distinção importa porque explica uma pergunta comum de quem está aprendendo o assunto: "authenticator" pode ser interno (o Secure Enclave de um iPhone, o TPM de um notebook Windows, o chip de segurança de um Android) ou externo (uma chave física). Quando é interno, o navegador conversa com ele por uma API de plataforma (Windows Hello, Face ID/Touch ID); quando é externo, a conversa passa por CTAP2. O desenvolvedor do site nunca precisa saber qual dos dois está por trás — WebAuthn abstrai essa diferença.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     RP["Relying Party<br/>(o site)"] <-->|"WebAuthn API<br/>(W3C)"| Cli["Client<br/>(navegador/SO)"]
     Cli <-->|"CTAP2<br/>(FIDO Alliance)"| Auth["Authenticator<br/>(YubiKey, Secure Enclave,<br/>TPM, telefone)"]
 
-    style RP fill:#4A90D9,color:#fff
-    style Cli fill:#4A90D9,color:#fff
-    style Auth fill:#4A90D9,color:#fff
+    class RP neutro
+    class Cli neutro
+    class Auth neutro
 ```
 
 Três papéis, três responsabilidades:
@@ -76,16 +76,17 @@ Isso resolve, de uma vez, dois problemas que assombram senhas há décadas:
 E a peça que fecha o círculo contra phishing é o **origin binding**: durante tanto o registro quanto a autenticação, o client (o navegador) inclui a origem exata da página — o domínio, não uma string que o usuário digitou — nos dados que serão assinados. O authenticator assina sobre esses dados; o servidor, ao verificar, confirma que a assinatura foi produzida *para aquele domínio específico*[^webauthnguide]. Um par de chaves registrado para `banco.com` estruturalmente **não pode** produzir uma assinatura válida para `evil-banco.com` — não porque o usuário seja cuidadoso, mas porque o navegador nunca vai pedir ao authenticator para assinar com a chave de `banco.com` estando numa página cujo domínio é outro. A checagem acontece na camada do navegador, fora do alcance de qualquer engenharia social.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     U["Usuário cai na<br/>página falsa evil-banco.com"] --> S["Senha + TOTP:<br/>segredos portáveis"]
     S -->|"digitados na página falsa,<br/>repassados pelo proxy AiTM"| ATO1["Conta comprometida"]
 
     U2["Mesmo usuário,<br/>mesma página falsa"] --> P["Passkey de banco.com"]
     P -->|"navegador vê origin =<br/>evil-banco.com ≠ banco.com"| Block["Authenticator recusa assinar<br/>— nada para roubar"]
 
-    style ATO1 fill:#D0021B,color:#fff
-    style Block fill:#4A90D9,color:#fff
+    class ATO1 falha
+    class Block neutro
 ```
 
 > [!info] A criptografia assimétrica em si é conceito de outro domínio
@@ -98,7 +99,6 @@ Em uma frase: **a chave privada nunca sai do authenticator e o navegador amarra 
 O termo oficial da especificação para "o processo de registrar ou usar uma credencial" é **cerimônia** (*ceremony*) — não é acidente de vocabulário: enfatiza que várias partes (usuário, RP, client, authenticator) precisam agir em conjunto e na ordem certa, diferente de uma simples chamada de função. Vamos seguir o registro passo a passo.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant U as Usuário
     participant Nav as Navegador (client)
@@ -134,7 +134,6 @@ Desmontando cada peça:
 Login segue uma coreografia espelhada, trocando "criar chave" por "provar posse da chave existente":
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant U as Usuário
     participant Nav as Navegador (client)
@@ -192,8 +191,9 @@ Aqui mora a decisão de produto mais consequente sobre passkeys, e a que o termo
 | Caso de uso típico | Consumidor comum, CIAM, baixa fricção | Contas privilegiadas, compliance regulatório, admins |
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     PK["Passkey"] --> Sy["Synced<br/>(iCloud, Google PM, 1Password)"]
     PK --> DB["Device-bound<br/>(YubiKey, alguns TPMs)"]
 
@@ -203,10 +203,10 @@ graph TD
     DB -->|"trade-off"| DBPro["+ nunca sai do hardware<br/>+ AAL3 possível"]
     DB -->|"trade-off"| DBCon["- perdeu o device,<br/>perdeu a credencial"]
 
-    style SyPro fill:#4A90D9,color:#fff
-    style DBPro fill:#4A90D9,color:#fff
-    style SyCon fill:#F5A623,color:#000
-    style DBCon fill:#F5A623,color:#000
+    class SyPro neutro
+    class DBPro neutro
+    class SyCon destaque
+    class DBCon destaque
 ```
 
 A leitura pragmática de 2026: a maioria das plataformas oferece um modelo em camadas — passkeys sincronizadas liberadas para acesso de risco baixo/médio (a maioria das contas de consumidor, CIAM), reservando device-bound (chaves de hardware) para papéis elevados ou fluxos regulados que exigem AAL3, como acesso administrativo ou setores sob compliance rígido[^syncdevice]. Não existe "a opção certa" universal — existe a pergunta "o que essa conta específica precisa: recuperabilidade ou garantia de não-exportabilidade?".
@@ -243,7 +243,6 @@ A janela típica citada pela indústria para esse ciclo completo é de **12 a 24
 Aqui está a armadilha central de qualquer rollout gradual, documentada por pesquisadores da Proofpoint em 2025/2026 como um **downgrade attack** contra autenticação FIDO[^downgrade]: um proxy de phishing adversary-in-the-middle detecta que o navegador da vítima suporta passkey e **simula um navegador incompatível** (por exemplo, um Safari em Windows, combinação que legitimamente não suporta certos fluxos WebAuthn). O provedor de identidade, ao ver essa combinação, **desabilita a opção de passkey** e oferece automaticamente um fallback mais fraco — SMS, código TOTP, push notification. A vítima, sem saber que está sendo manipulada, segue o fallback; o proxy intercepta a senha e o segundo fator mais fraco, e captura o cookie de sessão emitido no final — account takeover completo, exatamente como no phishing clássico descrito na abertura desta nota, apesar da conta ter passkey habilitada.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant V as Vítima
     participant Proxy as Proxy AiTM

@@ -33,8 +33,9 @@ Esse cenário não é ficção científica. É uma variante fiel do que acontece
 O paradoxo central é este: o modelo de confiança do npm é por padrão **transitivo e implícito**. Quando você `npm install` um pacote com 5 dependências diretas, você está instalando silenciosamente tudo o que essas 5 dependências dependem — frequentemente 200 a 800 pacotes. Você confiou explicitamente em 5. Você executou código de 800.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#fff"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     APP["seu app\n(package.json)"]
 
     D1["dep direta A"]
@@ -62,8 +63,8 @@ graph TD
     D3 --> T6
     T4 --> EVIL
 
-    style EVIL fill:#D0021B,color:#fff
-    style APP fill:#4A90D9,color:#fff
+    class EVIL falha
+    class APP neutro
 ```
 
 A pergunta não é "meu projeto direto é seguro?" É "algum dos 800 pacotes que eu instalei indiretamente foi comprometido?"
@@ -138,8 +139,9 @@ A distinção é crítica em CI: `npm install` pode silenciosamente atualizar um
 Typosquatting é publicar um pacote com nome propositalmente similar ao de um pacote popular, esperando que alguém cometa um erro de digitação.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Pacotes legítimos populares"
         L1["lodash\n150M downloads/semana"]
         L2["react\n25M downloads/semana"]
@@ -166,12 +168,12 @@ graph LR
     T2 --> M2
     T3 --> M3
 
-    style T1 fill:#D0021B,color:#fff
-    style T2 fill:#D0021B,color:#fff
-    style T3 fill:#D0021B,color:#fff
-    style M1 fill:#F5A623,color:#000
-    style M2 fill:#F5A623,color:#000
-    style M3 fill:#F5A623,color:#000
+    class T1 falha
+    class T2 falha
+    class T3 falha
+    class M1 destaque
+    class M2 destaque
+    class M3 destaque
 ```
 
 A defesa mais direta é revisão humana ao adicionar uma nova dependência (`npm install <nome>` — confirme o nome antes de pressionar Enter). Ferramentas como Socket.dev e Snyk fazem análise automática de nomes suspeitos.
@@ -185,7 +187,6 @@ O cenário: muitas empresas usam um registry interno privado para pacotes intern
 O ataque funciona assim:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant DEV as Desenvolvedor
     participant PM as package manager
@@ -363,7 +364,6 @@ O campo `integrity` no lockfile garante que você tem *a tarball correta*. Mas n
 Disponível desde outubro de 2023 (GA), o npm provenance conecta criptograficamente um pacote publicado ao commit exato de source code e ao pipeline de CI que o produziu.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant GIT as GitHub Actions CI
     participant FULCIO as Sigstore Fulcio CA
@@ -502,7 +502,6 @@ Uma limitação importante que a nota precisa ser honesta sobre: **o `npm sbom` 
 Manter dependências atualizadas não é apenas conforto — é segurança. A maioria dos pacotes comprometidos por vulnerabilidade tinha versão corrigida disponível há semanas antes do ataque se tornar público.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart LR
     REG["npm registry\n(nova versão)"]
 
@@ -669,7 +668,6 @@ O problema com `NPM_TOKEN` clássico em CI: é um token de longa duração, com 
 O Trusted Publishing elimina o token permanente:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant GHA as GitHub Actions
     participant OIDC as GitHub OIDC Provider
@@ -780,7 +778,6 @@ packages:
 Toda dependência que você adiciona é uma superfície de ataque. Antes de `npm install <pacote>`:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
     Q1["Preciso realmente de um pacote?\nOu dá para implementar em 10 linhas?"]
     Q2["A Node.js standard library já tem?"]

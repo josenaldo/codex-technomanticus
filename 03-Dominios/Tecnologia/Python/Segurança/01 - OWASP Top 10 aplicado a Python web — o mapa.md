@@ -76,7 +76,6 @@ A tabela abaixo é o núcleo desta nota. Ela cruza categoria OWASP × significad
 ## O mapa em diagrama
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 mindmap
   root((OWASP<br/>Top 10:2021))
     A01 Broken Access Control

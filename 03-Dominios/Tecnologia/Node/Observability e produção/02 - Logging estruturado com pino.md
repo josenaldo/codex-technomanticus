@@ -70,6 +70,8 @@ Pino é o logger mais rápido do ecossistema Node.js. Em benchmarks independente
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["logger.info(obj, msg)"] --> B["fast-json-stringify\n(serialização síncrona)"]
     B --> C{pino.transport\nconfigurado?}
     C -->|"Não — padrão\nde produção"| D["stdout\nmain thread\nJSON puro"]
@@ -77,12 +79,12 @@ flowchart LR
     E --> F["Arquivo / Rede /\npino-pretty (dev)"]
     D --> G["Docker · k8s · systemd\ncaptura e encaminha"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style E fill:#F5A623,color:#000
-    style F fill:#F5A623,color:#000
-    style D fill:#4A90D9,color:#fff
-    style G fill:#4A90D9,color:#fff
+    class A neutro
+    class B neutro
+    class E destaque
+    class F destaque
+    class D neutro
+    class G neutro
 ```
 
 ---

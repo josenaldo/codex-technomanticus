@@ -25,6 +25,9 @@ aliases:
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     DEV["fa:fa-user Desenvolvedor\nnpm install"] --> RESOLVE{"Resolução\nde nome"}
 
     RESOLVE --> PUB["Registry público\nnpmjs.com"]
@@ -42,11 +45,11 @@ flowchart TD
 
     EVIL --> IMPACT["Impacto\nCredenciais · CI tokens\nRansomware"]
 
-    style EVIL fill:#D0021B,color:#fff
-    style SAFE fill:#4A90D9,color:#fff
-    style IMPACT fill:#D0021B,color:#fff
-    style DEV fill:#F5A623,color:#000
-    style RESOLVE fill:#F5A623,color:#000
+    class EVIL falha
+    class SAFE neutro
+    class IMPACT falha
+    class DEV destaque
+    class RESOLVE destaque
 ```
 
 ## O que é

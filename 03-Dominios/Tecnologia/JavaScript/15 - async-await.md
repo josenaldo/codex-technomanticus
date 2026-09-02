@@ -102,7 +102,6 @@ A analogia útil: pense em `await` como um "pino de pausa" que diz ao event loop
 ## Diagrama: fluxo de execução
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 sequenceDiagram
     participant CL as Chamador
     participant AF as função async
@@ -294,7 +293,6 @@ Por que `Promise.race` e não `Promise.all`? `Promise.race` resolve assim que **
 ### Visualizando a diferença
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 gantt
     title Sequencial vs Paralelo (3 requests independentes)
     dateFormat  X

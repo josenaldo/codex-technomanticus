@@ -44,14 +44,17 @@ O **PersistentVolume** é o objeto do outro lado dessa relação: o recurso de a
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     Dev["Quem escreve a aplicação<br/>declara um PVC"] --> PVC["PersistentVolumeClaim<br/>10Gi, ReadWriteOnce,<br/>storageClassName: fast-ssd"]
     PVC -->|"referencia"| SC["StorageClass<br/>fast-ssd<br/>(receita de provisionamento)"]
     SC -->|"provisiona"| PV["PersistentVolume<br/>disco real de 10Gi<br/>criado no backend"]
     PVC <-.->|"binding<br/>um-para-um"| PV
 
-    style PVC fill:#4a3b7a,stroke:#8e6fd6,color:#fff
-    style SC fill:#2e4d7a,stroke:#3498db,color:#fff
-    style PV fill:#1e5c3a,stroke:#27ae60,color:#fff
+    class PVC marca
+    class SC neutro
+    class PV ok
 ```
 
 Vale marcar o contraste com o modelo que a nota [[03-Dominios/Tecnologia/Infraestrutura/Docker/06 - Dados que sobrevivem ao container|Dados que sobrevivem ao container]] já descreveu para o Docker isolado, porque a semelhança superficial esconde uma diferença estrutural relevante. Um volume nomeado do Docker é criado e gerenciado por um único daemon, numa única máquina — não existe conceito de "onde fisicamente aquele volume mora dentro de um cluster de várias máquinas", porque não há cluster nenhum, só um host. O Kubernetes precisa resolver um problema que o Docker isolado nunca enfrentou: o Pod que vai consumir o disco pode nascer em qualquer node, e o disco físico, dependendo do backend, pode estar preso a uma zona ou a uma máquina específica — a separação em PVC, PV e StorageClass, com um controller de binding e um scheduler que leva em conta a topologia do armazenamento, é a resposta a essa complexidade adicional que só aparece quando "onde o dado mora" e "onde o processo roda" deixam de ser garantidamente a mesma máquina.

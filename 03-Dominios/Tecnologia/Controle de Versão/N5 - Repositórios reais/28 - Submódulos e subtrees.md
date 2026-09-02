@@ -36,7 +36,6 @@ Duas consequências que explicam tudo o que vem depois:
 2. **O ponteiro é fixo.** O pai não diz "use a versão mais recente de `comum`" — ele diz "use exatamente o commit `7g8h9i0`". Isso é uma vantagem real: você tem reprodutibilidade perfeita.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     subgraph P["repositório pai"]
         T["tree"] --> B1["blob README.md"]

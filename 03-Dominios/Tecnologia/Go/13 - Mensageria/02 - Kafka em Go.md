@@ -33,15 +33,18 @@ Kafka, diferente de RabbitMQ ou NATS, não tem um protocolo simples o bastante p
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["Preciso falar Kafka em Go"] --> B{"Aceito depender de C/cgo?"}
     B -->|"Não — build simples,\ncross-compile fácil"| C{"Preciso do máximo\nde performance/features novos?"}
     B -->|"Sim — já tenho\ntoolchain C, quero\nmaturidade testada"| D["confluent-kafka-go\n(bindings sobre librdkafka)"]
     C -->|"Sim"| E["franz-go\n(protocolo puro em Go)"]
     C -->|"Não — projeto simples,\nAPI minimalista"| F["segmentio/kafka-go\n(manutenção reduzida\ndesde 2024)"]
 
-    style E fill:#4A90D9,color:#fff
-    style D fill:#F5A623,color:#000
-    style F fill:#999,color:#fff
+    class E neutro
+    class D destaque
+    class F marca
 ```
 
 **franz-go** (`github.com/twmb/franz-go`) reimplementa o protocolo Kafka do zero, em Go puro — sem cgo, sem dependência de `librdkafka`. É o cliente mais recente dos três e, por design, o que mais se aproxima do desempenho da `librdkafka` em benchmarks, além de suportar as features mais novas do protocolo (KIP-848 consumer group protocol, transações, compressão zstd) sem esperar um wrapper de terceiros. Por não depender de C, compila e faz cross-compile com a mesma simplicidade de qualquer binário Go — sem `CGO_ENABLED=1`, sem toolchain C na imagem Docker.

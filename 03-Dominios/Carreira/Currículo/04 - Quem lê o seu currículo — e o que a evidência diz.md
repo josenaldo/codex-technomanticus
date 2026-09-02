@@ -227,8 +227,9 @@ O galho inteiro usa este vocabulário para etiquetar o que afirma:
 | **Caixa-preta declarada** | Não há informação confiável disponível publicamente, ponto final — inferir seria inventar | Algoritmo do LinkedIn Recruiter Search, market share de ATS |
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     CV["Seu currículo enviado"] --> ATS["1. A máquina<br/>ATS extrai e organiza o texto"]
     ATS --> SCAN["2. A varredura humana<br/>recrutador decide continuar ou descartar"]
     SCAN --> READ["3. A leitura técnica<br/>hiring manager / par lê com atenção"]
@@ -241,12 +242,12 @@ graph TD
     SCAN -.evidência.-> E2["plausível mas não medido<br/>padrão em F sobrevive, '6s' não"]
     READ -.evidência.-> E3["evidência sólida<br/>viés medido em estudo peer-reviewed"]
 
-    style ATS fill:#4A90D9,color:#fff
-    style SCAN fill:#4A90D9,color:#fff
-    style READ fill:#4A90D9,color:#fff
-    style E1 fill:#F5A623,color:#000
-    style E2 fill:#F5A623,color:#000
-    style E3 fill:#7ED321,color:#000
+    class ATS neutro
+    class SCAN neutro
+    class READ neutro
+    class E1 destaque
+    class E2 destaque
+    class E3 destaque
 ```
 
 O diagrama carrega a tese inteira desta nota: **os três leitores têm certeza decrescente do primeiro para o terceiro sobre o que eles decidem, e certeza crescente sobre a qualidade da evidência que temos a respeito deles.** É o oposto do que o folclore de mercado sugere — o folclore trata o primeiro leitor (a máquina) como o mais determinante e o mais bem entendido, quando na verdade é o mais superestimado e o mais mal documentado dos três.

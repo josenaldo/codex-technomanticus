@@ -41,12 +41,13 @@ A ponte é literal, não metafórica: os mesmos critérios que fazem uma API de 
 A maioria dessas combinações nunca é intencional — são efeitos colaterais de props independentes se cruzando sem que ninguém tenha decidido o que deveria acontecer. O componente "funciona" para os casos que alguém testou manualmente e falha silenciosamente (renderiza algo visualmente errado, sem erro de console) para o resto.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Bad["isPrimary + isDanger + isFullWidth<br/>3 booleans independentes"] -->|"8 combinações,<br/>maioria não testada"| X["❌ estado indefinido<br/>depende de ordem de classe CSS"]
     Good["variant: 'primary' | 'danger'<br/>fullWidth: boolean"] -->|"2 dimensões ortogonais,<br/>cada uma clara"| Y["✅ todo estado é<br/>intencional e testável"]
-    style X fill:#D0021B,color:#fff
-    style Y fill:#4A90D9,color:#fff
+    class X falha
+    class Y neutro
 ```
 
 ## As duas correções que carregam peso real

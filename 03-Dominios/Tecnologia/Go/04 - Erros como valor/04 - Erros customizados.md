@@ -66,15 +66,17 @@ func (e *ErroValidacao) Error() string {
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["struct ErroValidacao\nCampo, Valor, Min, Max"] --> B["método Error() string"]
     B --> C["satisfaz a interface error"]
     C --> D["função retorna *ErroValidacao\ncomo error"]
     D --> E["chamador recebe error\n(mensagem pronta via .Error())"]
     D -.->|"errors.As"| F["chamador recupera *ErroValidacao\n(campos estruturados)"]
 
-    style A fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
-    style F fill:#7ED321,color:#000
+    class A neutro
+    class C destaque
+    class F destaque
 ```
 
 `ErroValidacao` agora tem duas vidas simultâneas: para quem só quer imprimir, `err.Error()` (chamado implicitamente por `fmt.Println(err)`, por exemplo) devolve uma frase pronta. Para quem quer **decidir algo** com base no erro — destacar o campo `Campo`, comparar `Valor` com `Max` de novo, montar uma resposta JSON estruturada — os campos estão ali, acessíveis, sem nenhum parsing de string.

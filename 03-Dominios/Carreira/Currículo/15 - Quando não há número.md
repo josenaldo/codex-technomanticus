@@ -58,8 +58,10 @@ A terceira família não descreve um fluxo ao longo do tempo — descreve quanta
 A quarta família mede quantas vezes algo acontece num intervalo — incidentes por mês, releases por semana, chamados por dia, execuções por hora. É a família mais próxima de um segundo derivado das duas anteriores: uma vez que se sabe **quantos** eventos aconteceram e **em que período**, a frequência é uma divisão simples entre os dois, não uma medição nova. Um sistema de rastreamento de incidentes guarda, por padrão, a data de abertura de cada um, o que permite calcular quantos aconteceram por mês antes e depois de uma mudança de arquitetura. O histórico de tags de um repositório guarda a data de cada versão publicada, permitindo contar releases por semana com um comando, não com memória. Um sistema de chamados de suporte guarda, da mesma forma, a data de abertura de cada chamado, o que permite calcular a média diária antes e depois de uma mudança que reduziu o volume de dúvidas.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q["'Não tenho número<br/>para esta realização'"] --> T{"Existe um registro<br/>que eu ainda<br/>não consultei?"}
     T -->|"Tempo"| F1["deploy · incidente ·<br/>onboarding · suíte de testes ·<br/>espera do usuário"]
     T -->|"Volume"| F2["requisições · usuários ·<br/>registros · tamanho do dado ·<br/>mensagens"]
@@ -72,9 +74,9 @@ graph TD
     C -->|"sim"| CO["Cite como CONTADO<br/>nomeando a fonte<br/>(nota 14)"]
     C -->|"não, de verdade"| CS["Sirva CONSEQUÊNCIA<br/>em vez de percentual<br/>ou superlativo"]
 
-    style Q fill:#D0021B,color:#fff
-    style CO fill:#F5A623,color:#000
-    style CS fill:#4A90D9,color:#fff
+    class Q falha
+    class CO destaque
+    class CS neutro
 ```
 
 O diagrama fixa a sequência que as quatro subseções anteriores descreveram em prosa: a pergunta "não tenho número" nunca deveria ser a última pergunta feita — deveria ser a primeira de uma busca curta e específica pelas quatro famílias, antes de se render à consequência que a próxima seção desta nota trata em profundidade. E vale nomear, com a mesma precisão que a nota 14 já aplicou aos três níveis de confiança, o que esse tipo de busca produz quando dá certo: um número achado revisando um histórico de tickets, contando linhas de um arquivo de rotas ou somando entradas de um log de incidentes é, quase sempre, **contado** — não **medido**, porque raramente existe um comando pronto que produza o resultado sozinho sem que alguém precise olhar, filtrar e decidir o que entra na contagem. Isso não diminui o valor do número; só decide a frase que ele autoriza, exatamente como a nota 14 já ensinou: nomear a fonte na própria linha, e declarar a limitação antes de alguém perguntar. "Revisei os tickets de onboarding dos últimos dois trimestres e contei uma queda de catorze para cinco dúvidas por novo contratado, depois de reescrever o guia de onboarding" é uma linha contada, com fonte nomeada, e vale mais do que qualquer percentual que a mesma busca, feita com pressa, poderia ter transformado num número redondo demais para ser verdade.

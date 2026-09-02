@@ -30,8 +30,8 @@ Isso muda a habilidade que importa. Em 1994, o valor era saber **implementar** o
 ## O mapa: anotação → padrão
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     T["@Transactional / @Cacheable"] --> Proxy
     S["@Service orquestrador"] --> Facade
     E["@EventListener"] --> Observer
@@ -39,9 +39,9 @@ graph LR
     J["JdbcTemplate / RestTemplate"] --> TemplateMethod["Template Method"]
     D["Injeção de construtor"] --> IoC["DI / IoC"]
 
-    style Proxy fill:#4A90D9,color:#fff
-    style Facade fill:#4A90D9,color:#fff
-    style Observer fill:#4A90D9,color:#fff
+    class Proxy neutro
+    class Facade neutro
+    class Observer neutro
 ```
 
 A tabela completa, para consulta:

@@ -76,6 +76,9 @@ Juntando as três passadas num checklist de bolso que você roda em qualquer tel
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4A90D9,color:#fff,stroke:#2d5f8f
+    classDef atencao fill:#F5A623,color:#000,stroke:#b8790f
+    classDef erro fill:#D0021B,color:#fff,stroke:#8a0112
     Start([Tela pronta<br/>para auditar]) --> P1
 
     subgraph P1["Passada 1 — Teclado"]
@@ -99,9 +102,6 @@ flowchart LR
     P3 -->|"passou"| Ok(["Tela aprovada<br/>no manual"]):::ok
     P3 -->|"falhou"| Bug3["Bug: overflow,<br/>texto cortado"]:::atencao
 
-    classDef ok fill:#4A90D9,color:#fff,stroke:#2d5f8f
-    classDef atencao fill:#F5A623,color:#000,stroke:#b8790f
-    classDef erro fill:#D0021B,color:#fff,stroke:#8a0112
 ```
 
 > [!warning] Auditar só com automação e pular o manual

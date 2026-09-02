@@ -304,6 +304,8 @@ Quando um hook está configurado mas não parece executar, siga este fluxo:
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Start["Hook configurado mas não executa"]
 
     A["settings.json é JSON válido?"]
@@ -340,10 +342,10 @@ flowchart TD
     F -- "executa" --> G
     G --> H
 
-    style H fill:#27ae60,color:#fff
-    style A_fix fill:#e67e22,color:#fff
-    style B_fix fill:#e67e22,color:#fff
-    style C_fix fill:#e67e22,color:#fff
+    class H ok
+    class A_fix destaque
+    class B_fix destaque
+    class C_fix destaque
 ```
 
 **Passo a passo:**

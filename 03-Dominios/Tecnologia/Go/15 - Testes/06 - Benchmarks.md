@@ -43,6 +43,8 @@ func BenchmarkConcatPlus(b *testing.B) {
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["go test -bench=."] --> B["runtime chama\nBenchmarkConcatPlus(b)"]
     B --> C["roda com b.N pequeno\n(ex: 1)"]
     C --> D{"tempo total\nconfiável?"}
@@ -50,8 +52,8 @@ flowchart LR
     E --> C
     D -->|"sim"| F["reporta ns/op\n= tempo total / b.N"]
 
-    style B fill:#4A90D9,color:#fff
-    style F fill:#F5A623,color:#000
+    class B neutro
+    class F destaque
 ```
 
 O detalhe que costuma confundir quem lê `b.N` pela primeira vez: **você não escolhe o valor de `b.N`**. O framework de testing começa com um valor pequeno, mede quanto tempo o laço levou, e recalibra — dobrando `b.N` repetidamente — até que a execução total dure tempo suficiente (por padrão, cerca de 1 segundo) para produzir uma medida estável. Isso resolve um problema real de benchmarking manual: rodar o código uma vez só e cronometrar é ruído puro, porque overhead de startup, cache miss e scheduling dominam medições curtas. Rodar `b.N` vezes até acumular um segundo de execução dilui esse ruído.

@@ -43,16 +43,16 @@ Dois cuidados que quebram CIs ingênuas:
 ## As técnicas que fazem a diferença
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[CI de testes rápida e confiável] --> B["Cache<br/>deps + browsers Playwright"]
     A --> C["Sharding<br/>dividir a suíte em N máquinas"]
     A --> D["Matriz<br/>Node 20/22, browsers"]
     A --> E["Reporters + artefatos<br/>JUnit, HTML, traces"]
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
+    class B neutro
+    class C neutro
+    class D neutro
+    class E neutro
 ```
 
 ### Cache

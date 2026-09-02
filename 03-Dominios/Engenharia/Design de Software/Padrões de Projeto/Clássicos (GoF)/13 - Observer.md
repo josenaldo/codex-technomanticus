@@ -33,15 +33,16 @@ O Observer inverte a direção do conhecimento. O `PedidoService` só **anuncia*
 ## A ideia
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     S[PedidoService<br/>«subject»] -->|"publica: PedidoCriado"| E((evento))
     E --> O1[EstoqueListener]
     E --> O2[EmailListener]
     E --> O3[BuscaListener]
 
-    style S fill:#4A90D9,color:#fff
-    style E fill:#F5A623,color:#000
+    class S neutro
+    class E destaque
 ```
 
 O subject publica o evento sem referência aos ouvintes. Cada observer registrou interesse; o mecanismo de notificação entrega a todos. Acrescentar um quarto ouvinte não toca no subject.

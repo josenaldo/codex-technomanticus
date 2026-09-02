@@ -56,10 +56,11 @@ Em um dense, o FFN ativa **todos os seus neurônios** para cada token:
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Token: 'entanglement'"] --> B["Self-Attention\n(todos os heads)"]
     B --> C["FFN Dense\n100% dos neurônios\n~70B parâmetros"]
     C --> D["Representação\natualizada"]
-    style C fill:#ff9999,stroke:#cc0000
+    class C falha
 ```
 
 Se o modelo tem 70B de parâmetros e ~65% deles estão nas FFNs, cada token ativa ~45B de parâmetros só no FFN. Simples, previsível, mas linearmente caro com o tamanho do modelo.
@@ -73,6 +74,8 @@ No MoE, cada FFN é substituída por um **banco de experts** — múltiplas FFNs
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Token: 'entanglement'"] --> B["Self-Attention\n(igual ao dense)"]
     B --> C["Router\nrede linear pequena"]
     C -- "score: 0.81" --> D["Expert 7\n(ciência/física)"]
@@ -84,9 +87,9 @@ graph TD
     H --> I["Representação\natualizada"]
     F -. "NÃO ativado\n(top-2 only)" .-> H
     G -. "NÃO ativado" .-> H
-    style F stroke-dasharray: 5 5,fill:#f5f5f5
-    style G stroke-dasharray: 5 5,fill:#f5f5f5
-    style H fill:#99ff99,stroke:#00cc00
+    class F neutro
+    class G neutro
+    class H ok
 ```
 
 **Como o router decide?** É uma multiplicação de matriz: ele pega o vetor de representação do token (dimensão `d_model`, tipicamente 4096–8192) e multiplica por uma matriz de pesos `W_router` de dimensão `d_model × num_experts`. O resultado é um vetor de scores, um por expert. Os `top-K` experts (tipicamente K=2) são selecionados. Os outros são ignorados completamente — zero computação.
@@ -154,14 +157,15 @@ Isso é chamado de **expert collapse** — o modelo colapsa de volta para o comp
 
 ```mermaid
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Treinamento MoE"] --> B["Loss principal\nqualidade do output"]
     A --> C["Auxiliary loss\nload balancing"]
     C --> D["Penaliza distribuição\ndesbalanceada de tokens"]
     D --> E["Router aprende a\ndistribuir uniformemente"]
     B --> F["Gradiente total\n= Loss + λ × Aux_Loss"]
     E --> F
-    style C fill:#ffe0b3,stroke:#ff9800
-    style D fill:#ffe0b3,stroke:#ff9800
+    class C destaque
+    class D destaque
 ```
 
 A **auxiliary loss** (ou *load balancing loss*) é adicionada durante o treinamento:
@@ -192,14 +196,16 @@ O maior equívoco sobre MoE: "como ativa poucos parâmetros por token, precisa d
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph "Dense 70B"
         A["VRAM usada:\n~40GB\nComputação/token:\n~70B params"]
     end
     subgraph "MoE 600B (ativo ~50B)"
         B["VRAM necessária:\n~120GB TOTAL\nComputação/token:\n~50B params ativos\n(outros 550B\ncaram na VRAM,\nnão computados)"]
     end
-    style A fill:#99ccff,stroke:#0066cc
-    style B fill:#ff9999,stroke:#cc0000
+    class A neutro
+    class B falha
 ```
 
 | Aspecto                  | Dense 70B                  | MoE 600B (ativo ~50B)                           |

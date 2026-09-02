@@ -34,12 +34,13 @@ Cinco notas, uma progressão: **por quê** (01) → **o que importa** (02) → *
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     N1["01 · Por quê<br/>ansiedade de amplitude"] --> N2["02 · O que importa<br/>sinal vs ruído"]
     N2 --> N3["03 · Como opero<br/>4 portas de entrada"]
     N3 --> N4["04 · O que eu não vi<br/>big rocks"]
     N4 --> N5["05 · Como componho<br/>7 correntes idiomáticas"]
     N5 --> N6["06 · Como decido<br/>este capstone"]
-    style N6 fill:#f9a825,color:#000
+    class N6 destaque
 ```
 
 ## O checklist mental do arquiteto AWS

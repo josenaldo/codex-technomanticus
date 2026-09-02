@@ -38,8 +38,11 @@ Isso não é acidente. É sintoma de uma API com quase 30 anos de decisões ruin
 Antes de mergulhar nas propostas, vale entender o mecanismo. O TC39 é o comitê que padroniza o JavaScript (ECMAScript). Toda nova feature passa por 5 estágios antes de entrar na especificação:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "secondaryColor": "#F5A623", "tertiaryColor": "#D0021B"}}}%%
 graph LR
+    classDef ok fill:#27ae60,color:#fff,stroke:#1e8449
+    classDef blue fill:#4A90D9,color:#fff,stroke:#2c6fad
+    classDef amber fill:#F5A623,color:#000,stroke:#c47d0e
+    classDef red fill:#D0021B,color:#fff,stroke:#a50115
     S0["Stage 0\nStrawperson\nIdeia inicial"]:::amber
     S1["Stage 1\nProposal\nProblema definido\nChampion designado"]:::amber
     S2["Stage 2\nDraft\nEspecificação inicial\nalgorithms"]:::amber
@@ -48,10 +51,6 @@ graph LR
 
     S0 --> S1 --> S2 --> S3 --> S4
 
-    classDef ok fill:#27ae60,color:#fff,stroke:#1e8449
-    classDef blue fill:#4A90D9,color:#fff,stroke:#2c6fad
-    classDef amber fill:#F5A623,color:#000,stroke:#c47d0e
-    classDef red fill:#D0021B,color:#fff,stroke:#a50115
 ```
 
 **Stage 3** significa: "spec estável, implementações experimentais existem, só falta feedback de engines reais". Features em stage 3 já podem ser usadas com transpilers (Babel, TypeScript). **Stage 4** é o sinal verde definitivo — a feature entra na spec anual.
@@ -138,8 +137,9 @@ const diff = (new Date('2026-06-25') - new Date('2026-01-01')) / (1000 * 60 * 60
 Temporal introduz um **namespace global** com tipos especializados, todos **imutáveis**. Cada tipo resolve um problema específico:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef blue fill:#4A90D9,color:#fff,stroke:#2c6fad
+    classDef ok fill:#27ae60,color:#fff,stroke:#1e8449
     T["Temporal namespace"]:::blue
 
     T --> I["Temporal.Instant\nMomento exato no tempo\n(timestamp UTC)"]:::ok
@@ -152,8 +152,6 @@ graph TB
     T --> Dur["Temporal.Duration\nIntervalo de tempo"]:::ok
     T --> TZ["Temporal.TimeZone\nRepresenta um tz"]:::ok
 
-    classDef blue fill:#4A90D9,color:#fff,stroke:#2c6fad
-    classDef ok fill:#27ae60,color:#fff,stroke:#1e8449
 ```
 
 **A regra de ouro para escolher o tipo:**

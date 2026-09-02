@@ -399,8 +399,10 @@ print(payload_cru.keys())
 Cada linha desse bloco de uso passa por uma peça diferente do galho: `ApiClient[Transacao]` fixa `TModelo` (Generics); `.com_header(...).com_timeout(...)` encadeia graças a `Self`; `cliente.buscar("/transacoes/42")` casa contra o segundo `@overload` e infere `Transacao | ErroApi`; `isinstance(resultado, ErroApi)` faz o narrowing que separa os dois braços do `Union`; e `cliente.buscar(..., bruto=True)` casa contra o primeiro `@overload`, inferindo `dict[str, object]` sem união nenhuma — tudo isso sem que `mypy` precise executar uma linha sequer, só ler as assinaturas.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["ApiClient(base_url, modelo=Transacao)"] -->|"TModelo fixado como Transacao"| B["ApiClient[Transacao]"]
     B -->|".com_header(...) -> Self"| C["ApiClient[Transacao]\n(mesma instância)"]
     C -->|".com_timeout(...) -> Self"| D["ApiClient[Transacao]\n(builder pronto)"]
@@ -411,16 +413,16 @@ flowchart TD
     H -->|"sim"| I["ErroApi.model_validate(...)"]
     H -->|"não"| J["TModelo.model_validate(...)\n= Transacao.model_validate(...)"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
-    style G fill:#F5A623,color:#000
-    style H fill:#F5A623,color:#000
-    style I fill:#D0021B,color:#fff
-    style J fill:#4A90D9,color:#fff
+    class A neutro
+    class B neutro
+    class C neutro
+    class D neutro
+    class E neutro
+    class F neutro
+    class G destaque
+    class H destaque
+    class I falha
+    class J neutro
 ```
 
 Repare, no diagrama, que só o nó `G` (o `payload` cru, ainda um `dict[str, object]`) e o nó `H` (a decisão de narrowing) representam informação que só existe **em runtime** — todo o resto (fixação de `TModelo`, `Self`, `@overload`) já está resolvido estaticamente, antes de qualquer requisição HTTP de fato acontecer.
@@ -428,7 +430,6 @@ Repare, no diagrama, que só o nó `G` (o `payload` cru, ainda um `dict[str, obj
 O segundo diagrama detalha a sequência de chamadas quando a rede falha uma vez e se recupera na segunda tentativa — o momento em que `com_retry`/`ParamSpec` entram em ação de verdade:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant U as cliente.buscar("/transacoes/42")
     participant B as ApiClient.buscar

@@ -48,8 +48,9 @@ A decisão real depende de escala de usuários, exigência de residência de dad
 Um jeito útil de pensar em Keycloak é como um **banco de identidade multi-inquilino**: um único servidor Keycloak pode hospedar dezenas de "universos" completamente separados, cada um chamado de **realm**. Dentro de cada realm vivem as outras quatro peças.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     KC["Servidor Keycloak"] --> R1["Realm: acme-corp"]
     KC -.->|"isolado, sem dado<br/>compartilhado"| R2["Realm: outro-cliente"]
 
@@ -64,9 +65,9 @@ graph TD
     G1 -->|"herda"| RL1
     U1 -->|"atribuída direto"| CR1
 
-    style R1 fill:#4A90D9,color:#fff
-    style R2 fill:#4A90D9,color:#fff,opacity:0.4
-    style KC fill:#F5A623,color:#000
+    class R1 neutro
+    class R2 neutro
+    class KC destaque
 ```
 
 ### Realm — a fronteira de isolamento
@@ -154,8 +155,10 @@ Cada execution tem um **requirement** que controla como o flow reage ao seu resu
 - **CONDITIONAL** — um tipo especial que só se aplica a *subflows*: o subflow inteiro age como REQUIRED se as condições internas forem verdadeiras, ou como DISABLED se forem falsas[^skycloak-conditional].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Start["Início do browser flow"] --> Cookie["Cookie authenticator<br/>(REQUIRED alternative)"]
     Cookie -->|"sessão já existe"| Success["Login concluído"]
     Cookie -->|"sem sessão"| UPForm["Username + Password<br/>(REQUIRED)"]
@@ -164,9 +167,9 @@ graph TD
     Cond -->|"condição verdadeira<br/>(subflow vira REQUIRED)"| OTP["OTP / WebAuthn<br/>(REQUIRED dentro do subflow)"]
     OTP --> Success
 
-    style Cond fill:#F5A623,color:#000
-    style OTP fill:#D0021B,color:#fff
-    style Success fill:#4A90D9,color:#fff
+    class Cond destaque
+    class OTP falha
+    class Success neutro
 ```
 
 Isso é o que permite construir um **step-up authentication**: o usuário faz login normal (senha), mas ao tentar uma ação sensível — transferência de valor alto, alteração de dados de pagamento — o client pede reautenticação com um `acr_values` mais alto (o *Authentication Context Class Reference*, um claim padrão do OIDC), e um subflow CONDITIONAL detecta esse pedido e força um segundo fator antes de liberar. Na primeira autenticação de um usuário, o subflow do nível mínimo sempre roda (o usuário ainda não tem nenhum "level"), por isso a recomendação é que esse primeiro nível já contenha os autenticadores mínimos necessários[^redhat-stepup].

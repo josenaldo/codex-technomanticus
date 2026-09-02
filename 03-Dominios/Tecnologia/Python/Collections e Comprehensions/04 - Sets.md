@@ -133,6 +133,9 @@ times_a.symmetric_difference(times_b)   # mesmo resultado
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Uniao["União A | B"]
         direction TB
         U1["ana"] & U2["bruno"] & U3["carla"] & U4["diego"]
@@ -150,10 +153,10 @@ flowchart LR
         S1["ana"] & S2["diego"]
     end
 
-    style Uniao fill:#4A90D9,color:#fff
-    style Intersecao fill:#F5A623,color:#000
-    style Diferenca fill:#D0021B,color:#fff
-    style DifSimetrica fill:#D0021B,color:#fff
+    class Uniao neutro
+    class Intersecao destaque
+    class Diferenca falha
+    class DifSimetrica falha
 ```
 
 A diferença prática entre operador e método fica clara quando o lado direito **não** é já um `set`:
@@ -204,14 +207,17 @@ Um `set`, por ser uma tabela hash, funciona diferente: para checar `x in conjunt
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q["x in colecao"] --> L{"colecao é list?"}
     L -->|"sim"| SC["Percorre item a item\naté achar ou esgotar\nO(n)"]
     L -->|"não, é set"| HS["hash(x) aponta direto\npra posição na tabela\nO(1) amortizado"]
 
-    style Q fill:#4A90D9,color:#fff
-    style L fill:#4A90D9,color:#fff
-    style SC fill:#D0021B,color:#fff
-    style HS fill:#F5A623,color:#000
+    class Q neutro
+    class L neutro
+    class SC falha
+    class HS destaque
 ```
 
 Benchmarks reais confirmam a magnitude dessa diferença. Sebastian Witowski, medindo membership testing com `timeit` em coleções de 1 milhão de elementos, encontrou que checar um elemento **presente no início** da coleção tem custo parecido entre `list` e `set` (~117 ns vs ~102-121 ns) — mas checar um elemento **ausente**, ou próximo do fim, é onde a diferença explode: cerca de **11,4 ms numa lista** contra **107 ns num set** — mais de **100.000× mais rápido**. Isso bate com o esperado pela teoria: o pior caso de uma busca linear (elemento não encontrado, tem que varrer tudo) é exatamente onde O(n) dói mais, enquanto o set nem sente a diferença, porque não importa onde o elemento "estaria" — o hash aponta direto.

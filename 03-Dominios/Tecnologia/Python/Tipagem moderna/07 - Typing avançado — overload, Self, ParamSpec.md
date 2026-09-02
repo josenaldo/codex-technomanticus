@@ -69,6 +69,9 @@ Um checador estático (`mypy`, `pyright` — ver [[04 - mypy e pyright — checa
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["carregar_config(origem)"] --> B{"checador estático<br/>casa origem contra<br/>as assinaturas @overload,<br/>em ordem"}
     B -->|"origem: str"| C["retorno inferido:<br/>dict[str, Any]"]
     B -->|"origem: dict[str, Any]"| D["retorno inferido:<br/>list[tuple[str, Any]]"]
@@ -78,12 +81,12 @@ flowchart TD
     D -.-> F
     E -.->|"em runtime, se rodasse"| F
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#D0021B,color:#fff
-    style F fill:#4A90D9,color:#fff
+    class A neutro
+    class B destaque
+    class C neutro
+    class D neutro
+    class E falha
+    class F neutro
 ```
 
 > [!warning] A implementação final NÃO leva `@overload`, e sua assinatura precisa cobrir todos os overloads
@@ -151,12 +154,13 @@ consulta = ConstrutorDeQueryComCache().filtrar("ativo = true").usar_cache(60)
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["ConstrutorDeQueryComCache()"] -->|".filtrar('ativo')"| B["Self resolvido como<br/>ConstrutorDeQueryComCache<br/>(não a classe-mãe)"]
     B -->|".usar_cache(60)"| C["ainda ConstrutorDeQueryComCache —<br/>encadeamento preservado<br/>através da herança"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
+    class A neutro
+    class B neutro
+    class C neutro
 ```
 
 `Self` também funciona em `@classmethod` — outro padrão comum, construtores alternativos (`from_config`, `from_json`) que precisam devolver o tipo exato da subclasse chamada, não a classe-base:
@@ -270,10 +274,11 @@ tratar_pedido(42)
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["func original:<br/>Callable[Concatenate[Requisicao, P], R]<br/>exige Requisicao + resto (P)"] -->|"com_requisicao(func)"| B["wrapper devolvido:<br/>Callable[P, R]<br/>só exige o resto (P) —<br/>Requisicao já foi injetada"]
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
+    class A neutro
+    class B neutro
 ```
 
 > [!warning] `ParamSpec` e `Concatenate` têm suporte real, mas ainda mais frágil que `TypeVar`/`Generic`
@@ -330,6 +335,8 @@ contar_pernas(cachorros)   # ok — Sequence é covariante e read-only, sem risc
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Invariante["Invariante — list[T]"]
         direction TB
         I1["list[Cachorro]"] -.->|"NÃO substitui"| I2["list[Animal]"]
@@ -343,12 +350,12 @@ flowchart LR
         V1["Callable[[Animal], None]"] -->|"substitui, direção invertida"| V2["Callable[[Cachorro], None]"]
     end
 
-    style I1 fill:#D0021B,color:#fff
-    style I2 fill:#D0021B,color:#fff
-    style C1 fill:#4A90D9,color:#fff
-    style C2 fill:#4A90D9,color:#fff
-    style V1 fill:#4A90D9,color:#fff
-    style V2 fill:#4A90D9,color:#fff
+    class I1 falha
+    class I2 falha
+    class C1 neutro
+    class C2 neutro
+    class V1 neutro
+    class V2 neutro
 ```
 
 > [!question]- E a sintaxe PEP 695 (`class Pilha[T]:`), que a nota 03 disse que "infere variância"? Como isso se encaixa aqui?

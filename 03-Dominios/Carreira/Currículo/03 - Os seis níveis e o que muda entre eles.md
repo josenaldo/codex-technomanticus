@@ -58,8 +58,8 @@ No nível sênior, o leitor deixa de perguntar "essa pessoa entrega o que pedimo
 No topo da escada tratada por este galho, o leitor de um currículo de staff procura algo que os outros cinco níveis não pedem: **influência organizacional que se sustenta sem autoridade formal de gestão**. É o nível mais difícil de descrever em uma frase porque é o mais fácil de descrever errado — staff não é "sênior com mais anos de experiência", é uma mudança de eixo, não de grau. O documento precisa provar que a pessoa moldou uma decisão que várias equipes vão sentir por anos (um padrão de arquitetura adotado além do próprio time, uma prática que se tornou norma na engenharia inteira), que ela exerce mentoria em escala — não um pleno, mas vários sêniores ou vários times ao mesmo tempo —, e que ela é procurada, não escalada por hierarquia, quando uma decisão técnica de peso trava em algum lugar da organização. É o nível em que a lista de tecnologias e a certificação básica quase desaparecem do documento — não porque deixaram de existir na prática, mas porque, neste ponto da escada, elas deixaram de ser o que o leitor precisa que o currículo prove.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Est["Estagiário"] --> Tra["Trainee"] --> Jr["Júnior"] --> Pl["Pleno"] --> Sr["Sênior"] --> St["Staff"]
 
     Jr -.aparece.-> S1["impacto<br/>organizacional"]
@@ -74,13 +74,13 @@ graph LR
     Sr -.quase some.-> D1
     St -.quase some.-> D2
 
-    style S1 fill:#7ED321,color:#000
-    style S2 fill:#7ED321,color:#000
-    style S3 fill:#7ED321,color:#000
-    style S4 fill:#7ED321,color:#000
-    style D1 fill:#F5A623,color:#000
-    style D2 fill:#F5A623,color:#000
-    style D3 fill:#F5A623,color:#000
+    class S1 destaque
+    class S2 destaque
+    class S3 destaque
+    class S4 destaque
+    class D1 destaque
+    class D2 destaque
+    class D3 destaque
 ```
 
 O diagrama fixa a régua da próxima seção num único traço: cada seta verde é algo que só ganha peso no currículo à medida que a carreira sobe a escada, e cada seta laranja é algo que ocupa espaço generoso nos primeiros níveis e vai sendo deslocado do documento à medida que outra coisa passa a valer mais como prova.

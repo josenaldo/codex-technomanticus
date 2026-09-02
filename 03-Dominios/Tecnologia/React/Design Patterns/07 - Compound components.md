@@ -78,8 +78,10 @@ A analogia: pense em peças de Lego que se encaixam porque têm conectores compa
 O que diferencia esse pattern da composição simples via `children` (que você viu em [[06 - Composição - slots, layout e children-as-API]]) é exatamente isso: aqui há **estado compartilhado implicitamente**, não apenas JSX passado como prop. O consumidor monta a estrutura; o pai cuida do comportamento.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     Consumer["Consumidor\nmonta o JSX"]
     Parent["&lt;Tabs&gt; — Pai\ncria TabsContext\nwraps com Provider"]
     Context["TabsContext\nactiveTab · setActiveTab"]
@@ -93,12 +95,12 @@ graph TD
     Wrapper -->|"pode envolver"| Tab
     Context -->|"consome"| Panel
 
-    style Parent fill:#4A90D9,color:#fff
-    style Context fill:#F5A623,color:#333
-    style Tab fill:#4A90D9,color:#fff
-    style Panel fill:#4A90D9,color:#fff
-    style Consumer fill:#eeeeee,color:#333
-    style Wrapper fill:#eeeeee,color:#333
+    class Parent neutro
+    class Context destaque
+    class Tab neutro
+    class Panel neutro
+    class Consumer marca
+    class Wrapper marca
 ```
 
 > [!question]- Por que Context e não `React.Children.map` + `cloneElement`?

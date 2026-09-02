@@ -135,8 +135,9 @@ Além disso, arrow functions **não podem ser usadas como construtoras** (chamar
 ## O diagrama do hoisting
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[Arquivo JS carregado] --> B[Fase 1: Parsing e criação de escopo]
     B --> C{Tipo de definição?}
     C -->|Function Declaration| D["🔵 Hoisted com corpo completo\nDisponível imediatamente"]
@@ -145,8 +146,8 @@ graph TD
     E --> F
     F --> G[Expressão alcançada\n→ função criada e atribuída]
 
-    style D fill:#4A90D9,color:#fff
-    style E fill:#F5A623,color:#000
+    class D neutro
+    class E destaque
 ```
 
 ---
@@ -288,8 +289,9 @@ dobrarTodos(1, 2, 3); // [2, 4, 6]
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph arguments["arguments (legado)"]
         A1["objeto array-like\n❌ sem .map/.filter\n❌ não funciona em arrow\n✅ acessa todos os args"]
     end
@@ -299,8 +301,8 @@ graph LR
 
     arguments -->|moderno substitui| rest
 
-    style arguments fill:#F5A623,color:#000
-    style rest fill:#4A90D9,color:#fff
+    class arguments destaque
+    class rest neutro
 ```
 
 > [!warning] Arrow functions não têm `arguments`

@@ -254,6 +254,8 @@ Esta é a parte mais prática para código Node.js existente. Node fornece conve
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Node["Ecossistema Node.js"]
         NR["Readable\n(fs, http, net)"]
         NW["Writable\n(fs, crypto)"]
@@ -271,12 +273,12 @@ flowchart LR
     ND -- "Duplex.toWeb()" --> WT
     WT -- "Duplex.fromWeb()" --> ND
 
-    style NR fill:#4A90D9,color:#fff
-    style NW fill:#4A90D9,color:#fff
-    style ND fill:#4A90D9,color:#fff
-    style WR fill:#F5A623,color:#fff
-    style WW fill:#F5A623,color:#fff
-    style WT fill:#F5A623,color:#fff
+    class NR neutro
+    class NW neutro
+    class ND neutro
+    class WR destaque
+    class WW destaque
+    class WT destaque
 ```
 
 ### `Readable.toWeb` / `Readable.fromWeb`

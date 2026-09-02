@@ -39,15 +39,18 @@ TTFT e velocidade de geração são dois gargalos separados, com causas físicas
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["📊 O trilemma da inferência"] --> B["⏱️ Latência\n(velocidade por request)"]
     A --> C["📈 Throughput\n(requests por segundo)"]
     A --> D["💰 Custo\n(compute por request)"]
     B -. "otimizar um\ndegrada outro" .-> C
     C -. "otimizar um\ndegrada outro" .-> D
     D -. "otimizar um\ndegrada outro" .-> B
-    style B fill:#99ccff,stroke:#0066cc
-    style C fill:#99ff99,stroke:#009900
-    style D fill:#ffcc99,stroke:#cc6600
+    class B neutro
+    class C ok
+    class D destaque
 ```
 
 Otimizar uma frequentemente degrada outra. O trabalho do engenheiro é encontrar o equilíbrio certo para cada caso de uso.
@@ -56,6 +59,8 @@ Otimizar uma frequentemente degrada outra. O trabalho do engenheiro é encontrar
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Input: N tokens"] --> B["Fase Prefill\n(compute-bound)\nTodos os tokens\nprocessados em paralelo"]
     B --> C["Primeiro token\n← TTFT medido aqui"]
     C --> D["Fase Decode\n(memory-bound)\nUm token por vez\nKV cache inteiro relido"]
@@ -63,8 +68,8 @@ graph LR
     D --> F["Token 3"]
     D --> G["..."]
     D --> H["Último token"]
-    style B fill:#99ccff,stroke:#0066cc
-    style D fill:#ffcc99,stroke:#cc6600
+    class B neutro
+    class D destaque
 ```
 
 | Fase | O que faz | Bottleneck | Métrica |
@@ -139,6 +144,9 @@ Speculative decoding é uma das otimizações mais engenhosas de 2024-2026. A id
 
 ```mermaid
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Decode tradicional — 5 tokens em 5 steps"
         M1["Modelo 70B\nStep 1 → 'O'"]
         M2["Modelo 70B\nStep 2 → ' código'"]
@@ -152,9 +160,9 @@ graph TD
         V1["Modelo 70B verifica\ntodos em paralelo\n→ aceita 4, rejeita ':'\n→ gera o token correto"]
         D1 --> V1
     end
-    style M1 fill:#ff9999,stroke:#cc0000
-    style D1 fill:#99ccff,stroke:#0066cc
-    style V1 fill:#99ff99,stroke:#009900
+    class M1 falha
+    class D1 neutro
+    class V1 ok
 ```
 
 Se o draft model especula bem (taxa de aceitação alta), o throughput pode dobrar ou triplicar sem mudar a distribuição de probabilidade do modelo principal — a verificação garante que o resultado seja matematicamente idêntico ao que o modelo principal geraria.
@@ -175,6 +183,8 @@ Em 2026, a técnica mais avançada é **separar prefill e decode em hardware dif
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Cluster Prefill (Compute-heavy)"
         A["GPU H100 SXM\n(alto FLOP/s)\nProcessar input tokens\n→ TTFT otimizado"]
         B["Gerar KV Cache"]
@@ -184,8 +194,8 @@ graph LR
         C["GPU H100 NVL\n(alto HBM bandwidth)\nGerar tokens autoregressivamente\n→ throughput otimizado"]
     end
     B -->|"Transferir KV Cache\n(pode ser GBs)"| C
-    style A fill:#99ccff,stroke:#0066cc
-    style C fill:#ffcc99,stroke:#cc6600
+    class A neutro
+    class C destaque
 ```
 
 Benefício: cada cluster é otimizado para seu bottleneck específico. Custo: a transferência do KV cache entre GPUs adiciona latência e usa largura de banda de rede.

@@ -25,6 +25,10 @@ Um cenário concreto guia o resto da nota: uma API de checkout de e-commerce, `P
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     User(("Cliente / app"))
 
     subgraph Rede["Borda de rede — Galho 10"]
@@ -68,12 +72,12 @@ flowchart TB
     EB -.-> Fatura["consumidor:<br/>faturamento"]
     EB -.-> Notif["consumidor:<br/>e-mail de confirmação"]
 
-    style GW fill:#245,color:#fff
-    style AUTH fill:#622,color:#fff
-    style THR fill:#622,color:#fff
-    style LAM fill:#653,color:#fff
-    style DB fill:#653,color:#fff
-    style EB fill:#262,color:#fff
+    class GW neutro
+    class AUTH falha
+    class THR falha
+    class LAM destaque
+    class DB destaque
+    class EB ok
 ```
 
 Repare na linha divisória mais importante do diagrama: os passos 1 a 8 são **síncronos** — o cliente está esperando uma resposta HTTP, e cada milissegundo nessa cadeia é latência que ele sente. O que sai do EventBridge para os três consumidores é **assíncrono** — o cliente já recebeu `201 Created` antes de qualquer um deles rodar. Essa é exatamente a fronteira entre este galho (a borda síncrona) e o galho de mensageria (o resto do sistema reagindo, sem que ninguém precise esperar por ele). A nota 05 do galho de mensageria já formalizou esse padrão sob o nome de escrita síncrona + notificação assíncrona; aqui você está vendo o lado que faltava daquele padrão — o request HTTP que dispara tudo.

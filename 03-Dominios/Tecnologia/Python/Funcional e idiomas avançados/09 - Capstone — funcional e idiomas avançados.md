@@ -82,18 +82,20 @@ Nenhuma dessas quatro chamadas lê, valida ou enriquece nada — cada uma só de
 Por baixo, `pipeline_etl(...)` **é** um objeto que implementa `__iter__` (devolvendo a si mesmo) e `__next__` (retomando a execução no ponto do último `yield`) — exatamente o [[01 - Iterators e o protocolo __iter__ __next__|protocolo iterator]] da nota 01, só que gerado automaticamente pelo compilador a partir da presença de `yield`/`yield from` no corpo. Um `for pedido in pipeline_etl(...):`, no fim das contas, faz a mesma coisa que faria sobre a classe `_ContadorRegressivoIterator` escrita à mão na nota 01: chama `iter()` uma vez, depois `next()` repetidamente, capturando `StopIteration` para saber quando parar — só que aqui não existe nenhuma classe escrita à mão, porque `yield`/`yield from` geram essa implementação de graça.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     L["ler_pedidos\n(parseia linha crua)"] -->|"yield dict"| V["validar_pedidos\n(closure validadora)"]
     V -->|"yield dict validado"| E["enriquecer_com_cotacao\n(lru_cache + retry)"]
     E -->|"yield dict + valor_usd"| P["pipeline_etl\n(yield from compõe os 3)"]
     P -->|"consumido 1 registro por vez"| C["for pedido in pipeline_etl(...):"]
 
-    style L fill:#4A90D9,color:#fff
-    style V fill:#4A90D9,color:#fff
-    style E fill:#F5A623,color:#000
-    style P fill:#4A90D9,color:#fff
-    style C fill:#D0021B,color:#fff
+    class L neutro
+    class V neutro
+    class E destaque
+    class P neutro
+    class C falha
 ```
 
 Repare que só um registro está "vivo" em memória a qualquer instante — o mesmo princípio de laziness que a nota 02 mediu em bytes (200 bytes contra 8 MB), aqui aplicado a um arquivo de pedidos que pode ter dezenas de milhões de linhas sem que o processo jamais precise de memória proporcional ao arquivo inteiro.
@@ -341,7 +343,6 @@ Repare no que cada mecanismo contribuiu, na ordem em que este pipeline os usa:
 5. **Context manager via generator** ([[08 - Context managers via generator|08]]) — a conexão é aberta uma vez, e fechada **de qualquer forma**, mesmo quando o pipeline aborta no meio por causa de um `ValueError`.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant M as with conexao_destino(...)
     participant CG as cronometrar_generator(pipeline_etl)

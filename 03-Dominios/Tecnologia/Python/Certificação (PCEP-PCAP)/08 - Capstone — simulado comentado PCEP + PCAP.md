@@ -26,6 +26,9 @@ Resolva cada questão mentalmente antes de abrir o gabarito — a prova real nã
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     SIM["Simulado — 18 questões"] --> PCEP["Aquecimento PCEP<br/>4 questões<br/>1 por bloco"]
     SIM --> PCAP["Corpo PCAP<br/>11 questões<br/>peso proporcional"]
     SIM --> ARM["Armadilhas transversais<br/>3 questões<br/>combinam tópicos"]
@@ -36,10 +39,10 @@ flowchart LR
     PCAP --> O["OOP 5<br/>MAIOR PESO"]
     PCAP --> MI["Miscellaneous 2"]
 
-    style SIM fill:#4A90D9,color:#fff
-    style O fill:#D0021B,color:#fff
-    style PCEP fill:#7ED321,color:#000
-    style ARM fill:#F5A623,color:#000
+    class SIM neutro
+    class O falha
+    class PCEP destaque
+    class ARM destaque
 ```
 
 A nota de corte real é **70% cumulativo** — no PCAP-31-03, isso significa acertar pelo menos 28 de 40 itens (documentado na [[01 - Panorama — PCEP e PCAP, o que são e pra quem|nota 01]]). Aplicando a mesma régua a este simulado de 18 questões: 13 acertos ou mais é o sinal de prontidão equivalente. Errar uma questão aqui não é motivo de alarme — é o roteiro exato de qual nota-fonte reabrir antes da prova real.
@@ -416,6 +419,10 @@ Chegar até aqui significa ter percorrido as oito notas deste galho — mas tamb
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph NUCLEO["Núcleo da linguagem — Galhos 1-6"]
         G1["1. Core<br/>sintaxe, tipos, controle de fluxo"]
         G2["2. Collections e Comprehensions"]
@@ -452,12 +459,12 @@ flowchart TB
 
     NUCLEO --> CONC --> BACK --> PROD --> CERT
 
-    style NUCLEO fill:#4A90D9,color:#fff
-    style CONC fill:#7ED321,color:#000
-    style BACK fill:#F5A623,color:#000
-    style PROD fill:#9013FE,color:#fff
-    style CERT fill:#D0021B,color:#fff
-    style G19 fill:#D0021B,color:#fff
+    class NUCLEO neutro
+    class CONC destaque
+    class BACK destaque
+    class PROD marca
+    class CERT falha
+    class G19 falha
 ```
 
 A jornada, em cinco frases: os [[03-Dominios/Tecnologia/Python/index|Galhos 1-6]] construíram o **núcleo da linguagem** — do `if`/`for` mais básico até os internals do CPython (GIL, GC geracional, ceval loop), passando por OO completa, idiomas funcionais (generators, closures, decorators) e tipagem moderna com generics. Os [[03-Dominios/Tecnologia/Python/Concorrência e paralelismo/index|Galhos 7-8]] resolveram **concorrência e execução assíncrona** — threading, multiprocessing, e o mergulho fundo em `asyncio`/ASGI que a maioria dos devs Python nunca faz por completo. Os [[03-Dominios/Tecnologia/Python/Persistência de dados/index|Galhos 9-13]] viraram a chave para **backend e arquitetura** — persistência, APIs REST, segurança, testes, e os padrões de design (Repository, Unit of Work, hexagonal) que separam scripts de sistemas. Os [[03-Dominios/Tecnologia/Python/Mensageria/index|Galhos 14-18]] elevaram tudo isso a **plataforma distribuída e produção** — mensageria, microservices, tooling de build, observabilidade e Kubernetes/serverless. E este [[03-Dominios/Tecnologia/Python/Certificação (PCEP-PCAP)/index|Galho 19]] fecha com **certificação**: não conteúdo novo, mas a conversão formal de tudo isso — 18 galhos de aprendizado real — num selo verificável por terceiros, com a honestidade documentada logo na primeira nota deste galho de que PCAP-31-03 testa uma fração conservadora do que a trilha inteira ensinou.

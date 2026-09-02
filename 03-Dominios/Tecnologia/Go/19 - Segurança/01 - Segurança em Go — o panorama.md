@@ -37,6 +37,8 @@ A pergunta natural, vindo de C ou C++, é: isso não custa caro, checar limites 
 
 ```mermaid
 flowchart TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Runtime["Garantido pelo runtime Go — memory safety"]
         A["Bounds checking\nem todo acesso a slice/array"]
         B["Strings imutáveis\n(sem write-through)"]
@@ -56,8 +58,8 @@ flowchart TB
 
     Runtime -.->|"não cobre nada disso"| Dev
 
-    style Runtime fill:#2E7D32,color:#fff
-    style Dev fill:#C62828,color:#fff
+    class Runtime ok
+    class Dev falha
 ```
 
 A distinção que este panorama existe para cravar: **memory safety** é uma propriedade da linguagem e do runtime — algo que Go garante estruturalmente, sem esforço extra do dev, para todo programa que compila. **Segurança da aplicação** é uma propriedade do que você constrói em cima — depende inteiramente das decisões que você toma linha a linha. Go zera a primeira categoria quase por completo (com uma ressalva: pacotes que usam `unsafe` ou `cgo` reabrem essa porta deliberadamente, fora do escopo desta nota). A segunda categoria, Go não zera nada — só te dá ferramentas melhores ou piores pra lidar com ela, que é justamente o assunto das próximas sete notas deste galho.

@@ -53,15 +53,17 @@ A pergunta que este capítulo responde: como estruturar handlers para que cada u
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Req["HTTP Request"] --> H["Handler\n(decodifica + valida input)"]
     H --> S["Service\n(regra de negócio,\nretorna valor ou erro de domínio)"]
     S --> R["Repository\n(SQL, cache, gRPC...)"]
     S -.->|"erro de domínio\n(ErrNotFound, ErrValidacao...)"| H
     H --> Resp["HTTP Response\n(status + JSON)"]
 
-    style H fill:#4A90D9,color:#fff
-    style S fill:#F5A623,color:#000
-    style R fill:#7ED321,color:#000
+    class H neutro
+    class S destaque
+    class R destaque
 ```
 
 A ideia central é separar **transporte** (HTTP: parsing de path/query/body, status codes, `Content-Type`) de **domínio** (regras de negócio, que não sabem — e não deveriam saber — que existe um `http.ResponseWriter` no mundo). O handler é a fronteira: converte HTTP em chamada de service, e converte o retorno do service de volta em HTTP. O service devolve `(Order, error)` sem ideia nenhuma de status code; quem decide "esse erro vira 404" é o handler, numa função central, não em cada rota.

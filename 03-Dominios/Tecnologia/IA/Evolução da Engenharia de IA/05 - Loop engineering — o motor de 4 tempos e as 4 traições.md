@@ -46,15 +46,16 @@ Três situações, três domínios completamente diferentes — biologia pessoal
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["PICK<br/>escolha a métrica"] --> B["SET<br/>fixe o alvo"]
     B --> C["MEASURE<br/>meça o gap"]
     C --> D["ACT<br/>encolha o gap"]
     D --> A
 
-    style A fill:#4A90D9,color:#fff
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
+    class A neutro
+    class B neutro
+    class C neutro
+    class D neutro
 ```
 
 Nada disso nasceu com o LLM. O mesmo esqueleto de quatro tempos é o ciclo clássico de gestão ensinado há **setenta anos** como *plan-do-check-act* (PDCA) — e o motor de 4 tempos tem uma linhagem moderna que o debate de "loop engineering" de 2026 raramente para para nomear: OKRs, retrospectivas de sprint, testes A/B, e os próprios training loops que fazem machine learning aprender. Um eval loop de LLM não inventou o padrão; é só a peça mais recente a rodar dentro dele.
@@ -84,6 +85,8 @@ E só então, em **junho de 2026**, o nome. Addy Osmani e Peter Steinberger (@st
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["ReAct — 2022<br/>pensar → agir → observar"] --> B["AutoGPT — 2023<br/>objetivo alto nível, sem roteiro"]
     B --> C["AlphaCodium — jan/2024<br/>flow test-driven, etapas fixas"]
     C --> D["Ralph Wiggum — jul/2025<br/>Geoffrey Huntley, prompt fixo repetido"]
@@ -91,9 +94,9 @@ flowchart TD
     E --> F["Hermes + Claude Code — mai/2026"]
     F --> G["'Loop engineering' — jun/2026<br/>Osmani + Steinberger, sobre Cherny"]
 
-    style A fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style G fill:#F5A623,color:#000
+    class A neutro
+    class D neutro
+    class G destaque
 ```
 
 Vale citar Osmani com precisão, porque a frase dele resume o que há de real na virada — nem tudo é rebranding vazio:
@@ -152,6 +155,7 @@ Em 30 de junho de 2026, Andrew Ng acrescentou uma camada à conversa que vale ca
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph U["Timescale de usuário — meses"]
         direction TB
         U1["Produto evolui com<br/>base em uso real"]
@@ -170,9 +174,9 @@ flowchart TB
     A1 -.->|"sinal agregado"| D1
     D1 -.->|"sinal agregado"| U1
 
-    style A1 fill:#4A90D9,color:#fff
-    style D1 fill:#4A90D9,color:#fff
-    style U1 fill:#4A90D9,color:#fff
+    class A1 neutro
+    class D1 neutro
+    class U1 neutro
 ```
 
 O ponto de Ng não é só "existem três velocidades diferentes" — é que cada loop mais lento é, em relação ao mais rápido dentro dele, quem faz o SET do motor de 4 tempos. O timescale de desenvolvedor não mede o mesmo gap que o timescale agêntico mede: ele mede se o *alvo* que o timescale agêntico está perseguindo continua sendo o alvo certo. Guarda essa relação — ela é exatamente o mecanismo que falta no loop isolado, e a próxima seção mostra por quê.

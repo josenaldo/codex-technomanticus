@@ -64,6 +64,8 @@ A pergunta central: `EmailNotifier` "é um" `Notifier`, no sentido de Java? A re
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Java["Java: herança (is-a)"]
         direction TB
         J1["EmailNotifier extends Notifier"] --> J2["Notifier email = new EmailNotifier()\n✓ compila — EmailNotifier É-UM Notifier"]
@@ -74,9 +76,9 @@ flowchart TB
         G1 --> G3["e.FormatMessage(x)\n✓ compila — açúcar p/ e.Notifier.FormatMessage(x)"]
     end
 
-    style J2 fill:#4A90D9,color:#fff
-    style G2 fill:#D9534F,color:#fff
-    style G3 fill:#4A90D9,color:#fff
+    class J2 neutro
+    class G2 falha
+    class G3 neutro
 ```
 
 A consequência prática mais direta: em Java, você pode passar um `EmailNotifier` para qualquer lugar que espera `Notifier` — polimorfismo de subtipo, garantido pelo `extends`. Em Go, isso **não existe** por embedding:
@@ -158,6 +160,7 @@ func processar(e Enviador, destino, texto string) error {
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Java: contrato explícito"
         direction TB
         JI["interface Notifier"] -.implements.-> JE["EmailNotifier"]
@@ -170,8 +173,8 @@ flowchart LR
         GS["SMSNotifier\n(idem)"] -.satisfaz\nautomaticamente.-> GI
     end
 
-    style JI fill:#F5A623,color:#000
-    style GI fill:#F5A623,color:#000
+    class JI destaque
+    class GI destaque
 ```
 
 Repare no detalhe que costuma escapar: `EmailNotifier` **nem precisa importar o pacote onde `Enviador` está declarado**. A satisfação de interface não é uma decisão do tipo que implementa — é uma constatação de quem *consome*. Isso inverte o fluxo de dependência de Java, onde a classe concreta precisa declarar `implements Notifier` e, portanto, depender do pacote da interface.

@@ -93,6 +93,8 @@ Vale notar um detalhe de engenharia que passa despercebido numa leitura rápida:
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[Enunciado do problema] --> B["Pré-processamento:<br/>auto-reflexão semântica"]
     B --> C["Raciocínio sobre<br/>testes públicos"]
     C --> D["Gera N soluções<br/>candidatas"]
@@ -104,10 +106,10 @@ flowchart TD
     I --> H
     H -- sim --> J[Solução final]
 
-    style A fill:#4A90D9,color:#fff
-    style J fill:#4A90D9,color:#fff
-    style H fill:#F5A623,color:#000
-    style I fill:#F5A623,color:#000
+    class A neutro
+    class J neutro
+    class H destaque
+    class I destaque
 ```
 
 > [!warning] Isto é uma iteração *test-driven*, não uma iteração livre
@@ -163,6 +165,8 @@ No loop, é o modelo. O agente que hoje resolve um bug, roda o teste, e decide s
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Flow["Flow engineering — 2024"]
         direction TB
         F1["Engenheiro desenha<br/>o pipeline"] --> F2["Etapas fixas,<br/>ordem conhecida"]
@@ -174,12 +178,12 @@ flowchart LR
         L2 --> L3["Sequência emerge<br/>em tempo de execução"]
     end
 
-    style F1 fill:#4A90D9,color:#fff
-    style F2 fill:#4A90D9,color:#fff
-    style F3 fill:#4A90D9,color:#fff
-    style L1 fill:#4A90D9,color:#fff
-    style L2 fill:#F5A623,color:#000
-    style L3 fill:#F5A623,color:#000
+    class F1 neutro
+    class F2 neutro
+    class F3 neutro
+    class L1 neutro
+    class L2 destaque
+    class L3 destaque
 ```
 
 > [!question]- Isso não é só semântica — "flow" e "loop" parecem quase sinônimos?

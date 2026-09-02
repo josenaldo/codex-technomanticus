@@ -133,13 +133,14 @@ soma        → 0.3000000000000000444... ≠ 0.30000000000000004...
 **Visualização — por que 1/10 não cabe em binário:**
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["0.1 decimal"] -->|"÷2 repetido"| B["0.0001100110011... binário\n(dízima periódica)"]
     B -->|"arredonda em 52 bits"| C["aproximação IEEE 754"]
     C -->|"soma com approx(0.2)"| D["0.30000000000000004\nnão é approx(0.3)"]
-    style A fill:#4A90D9,color:#fff
-    style D fill:#D0021B,color:#fff
+    class A neutro
+    class D falha
 ```
 
 **Regra prática:**
@@ -177,8 +178,9 @@ preco + taxa === 30;   // true — inteiros são exatos
 **Visualização comparativa:**
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Lexicográfico["Sem comparador (strings)"]
         direction TB
         L1["10"] --> L2["100"] --> L3["2"] --> L4["21"] --> L5["9"]
@@ -187,8 +189,8 @@ graph LR
         direction TB
         N1["2"] --> N2["9"] --> N3["10"] --> N4["21"] --> N5["100"]
     end
-    style Lexicográfico fill:#F5A623,color:#000
-    style Numérico fill:#4A90D9,color:#fff
+    class Lexicográfico destaque
+    class Numérico neutro
 ```
 
 **Regra prática:**
@@ -246,8 +248,9 @@ Esta é a quirk mais frequente em entrevistas, e a mais reveladora: quem entende
 **Passo a passo da especificação Abstract Equality Comparison:**
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["[] == ![]"] --> B["1. Avaliar ![] primeiro\n[] é truthy → ![] = false"]
     B --> C["[] == false"]
     C --> D["2. Regra: se um lado é Boolean\n→ ToNumber(boolean)\nfalse → 0"]
@@ -256,8 +259,8 @@ flowchart TD
     F --> G["'' == 0"]
     G --> H["4. Regra: se String == Number\n→ ToNumber(string)\n'' → 0"]
     H --> I["0 == 0 → true ✓"]
-    style A fill:#F5A623,color:#000
-    style I fill:#4A90D9,color:#fff
+    class A destaque
+    class I neutro
 ```
 
 **Por quê existe:** O operador `==` segue a *Abstract Equality Comparison Algorithm* da especificação, que define um conjunto de regras de coerção automática. O objetivo original (anos 90) era tornar comparações "convenientes". O resultado foi um sistema de regras complexo que ninguém memoriza corretamente.
@@ -378,17 +381,18 @@ timer.iniciar();
 **Visualização dos quatro modos de `this`:**
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[/"Quem chama a função?"/] --> B{"Call site"}
     B -->|"obj.metodo()"| C["this = obj\n✓ implícito"]
     B -->|"fn() ou callback"| D["this = globalThis / undefined\n⚠️ perdido"]
     B -->|"fn.call(ctx)"| E["this = ctx\n✓ explícito"]
     B -->|"new Fn()"| F["this = novo objeto\n✓ new binding"]
-    style D fill:#F5A623,color:#000
-    style C fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
+    class D destaque
+    class C neutro
+    class E neutro
+    class F neutro
 ```
 
 **Soluções:**
@@ -439,16 +443,17 @@ let y = 5;
 **Visualização do hoisting:**
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Var["var — hoisting clássico"]
         V1["Fase compilação:\nvar x = undefined"] --> V2["Execução linha 1:\nconsole.log(x) → undefined"] --> V3["Execução linha 2:\nx = 5"]
     end
     subgraph Let["let/const — TDZ"]
         L1["Fase compilação:\nregistra y (TDZ)"] --> L2["Execução linha 1:\nconsole.log(y) → ❌ ReferenceError"] --> L3["Execução linha 2:\ny = 5 (sai da TDZ)"]
     end
-    style Var fill:#F5A623,color:#000
-    style Let fill:#4A90D9,color:#fff
+    class Var destaque
+    class Let neutro
 ```
 
 **Hoisting de funções (surpresa extra):**

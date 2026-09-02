@@ -35,6 +35,8 @@ A Evaluation Layer cria o **sinal** que permite iterar com objetividade. Sem ela
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Sem Evaluation Layer"
         A1["Mudança no sistema\n(prompt/modelo/retrieval)"]
         A2["Teste manual\npor 2-3 pessoas"]
@@ -52,8 +54,8 @@ flowchart LR
     A1 --> A2 --> A3 --> A4
     B1 --> B2 --> B3 --> B4
 
-    style A4 fill:#fff5f5,stroke:#ff6b6b
-    style B4 fill:#f0fff4,stroke:#51cf66
+    class A4 falha
+    class B4 ok
 ```
 
 ## O que é esta camada

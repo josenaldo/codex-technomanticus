@@ -61,6 +61,8 @@ const s = primeiro(["a", "b"]);    // s: string | undefined ✓
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     CALL["primeiro([1, 2, 3])"]
     INF["TypeScript infere\nT = number"]
     SIG["Assinatura instanciada:\nprimeiro(arr: number[]): number | undefined"]
@@ -68,8 +70,8 @@ flowchart LR
 
     CALL --> INF --> SIG --> RET
 
-    style INF fill:#1a3a1a,color:#afffaf
-    style SIG fill:#333,color:#fff
+    class INF ok
+    class SIG neutro
 ```
 
 ---
@@ -165,6 +167,8 @@ const precos = pluck(produtos, "preco"); // number[]   ✓
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     T["T = Produto\n{ id: number; nome: string; preco: number }"]
     K["K extends keyof T\nK = 'nome' (inferido do argumento)"]
     TK["T[K] = Produto['nome'] = string"]
@@ -172,8 +176,8 @@ flowchart TD
 
     T --> K --> TK --> RET
 
-    style K fill:#1a2a3a,color:#afd8ff
-    style TK fill:#2a1a2a,color:#ffafd8
+    class K neutro
+    class TK marca
 ```
 
 ---
@@ -287,6 +291,8 @@ const porCliente = groupBy(pedidos, "cliente");
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     ARR["pedidos: Pedido[]"]
     KEY["'status'\ninferido como K = 'status'"]
     GBY["groupBy&lt;Pedido, 'status'&gt;\n(T=Pedido, K='status')"]
@@ -296,8 +302,8 @@ flowchart LR
     KEY --> GBY
     GBY --> OUT
 
-    style GBY fill:#333,color:#fff
-    style OUT fill:#1a3a1a,color:#afffaf
+    class GBY neutro
+    class OUT ok
 ```
 
 ---
@@ -375,6 +381,8 @@ Essa é a propriedade mais valiosa de generics em funções utilitárias: eles p
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph SemG["Sem generics"]
         I1["Usuario[]"] -->|"ordenarSemGeneric"| O1["Entidade[]\n(nome sumiu)"]
     end
@@ -382,8 +390,8 @@ flowchart LR
         I2["Usuario[]"] -->|"ordenarPorData"| O2["Usuario[]\n(nome preservado ✓)"]
     end
 
-    style O1 fill:#3a1a1a,color:#ffafaf
-    style O2 fill:#1a3a1a,color:#afffaf
+    class O1 falha
+    class O2 ok
 ```
 
 ---

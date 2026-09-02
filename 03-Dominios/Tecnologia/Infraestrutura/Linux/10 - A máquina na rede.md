@@ -92,7 +92,6 @@ ip link show eth0
 Aqui está a parte que mais consome tempo em diagnóstico, e o motivo é que **existe mais de um caminho de resolução na mesma máquina**.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     A["aplicação pede<br/>getaddrinfo('api.exemplo.com')"] --> B["<b>nsswitch.conf</b><br/>a ordem das fontes"]
     B --> C["/etc/hosts"]

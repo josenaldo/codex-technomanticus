@@ -177,7 +177,6 @@ Cada peça resolve um risco específico do incidente de abertura:
 - **`expires_in` com `.get(..., 300)`**: o padrão OAuth2 (RFC 6749 §5.1) recomenda que o authorization server inclua `expires_in` na resposta, mas não é estritamente obrigatório em toda implementação — um default conservador evita que a ausência do campo resulte num cache que nunca expira.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant O as orders-service<br/>(GatewayTokenClient)
     participant AS as Authorization Server
@@ -364,7 +363,6 @@ def buscar_preco(cliente: httpx.Client, item_id: int) -> dict:
 A função `_extrair_espera` recebe o `retry_state` do próprio `tenacity` — o mesmo objeto que carrega a exceção da última tentativa — e decide, chamada a chamada, se existe um `Retry-After` explícito para respeitar ou se cai de volta no backoff exponencial padrão. O resultado é um retry que se comporta de forma **diferente** dependendo da causa: uma falha de rede transitória usa o mesmo backoff exponencial já estabelecido na nota 03; um `429` explícito usa exatamente o tempo que o gateway pediu, nem mais nem menos.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 sequenceDiagram
     participant O as orders-service<br/>(tenacity)
     participant GW as API Gateway

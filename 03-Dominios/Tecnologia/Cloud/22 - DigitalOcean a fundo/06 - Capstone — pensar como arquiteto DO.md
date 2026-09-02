@@ -52,6 +52,8 @@ Vamos usar o mesmo perfil que a nota 05 já validou no Caso A — um SaaS B2B co
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     User((Usuário)) -->|HTTPS| LB["Load Balancer<br/>TLS termination"]
 
     subgraph VPC["VPC privada — região nyc3"]
@@ -68,12 +70,12 @@ flowchart TB
 
     FW["Cloud Firewall<br/>443 externo · 5432/Redis só interno"] -.protege.-> VPC
 
-    style LB fill:#0080ff,color:#fff
-    style Web fill:#0080ff,color:#fff
-    style Worker fill:#0080ff,color:#fff
-    style PG fill:#003366,color:#fff
-    style Redis fill:#003366,color:#fff
-    style Spaces fill:#003366,color:#fff
+    class LB neutro
+    class Web neutro
+    class Worker neutro
+    class PG marca
+    class Redis marca
+    class Spaces marca
 ```
 
 ### Por que sete peças bastam
@@ -182,6 +184,8 @@ Depois de desenhar o caso acima, vale extrair o checklist que um arquiteto sêni
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Start([Novo projeto SaaS<br/>pequeno-médio]) --> Q1{Kit curado cobre<br/>a forma do problema?}
     Q1 -->|Não| AWS1[Considerar AWS<br/>ou meio-termo — nota 05]
     Q1 -->|Sim| Q2{Pricing fecha sem<br/>FinOps dedicado?}
@@ -190,8 +194,8 @@ flowchart TD
     Q3 -->|Sim| Meio[Meio-termo:<br/>DO + peça específica na AWS]
     Q3 -->|Não| DO["DO BASTA —<br/>desenhe com o kit curado"]
 
-    style DO fill:#0080ff,color:#fff
-    style Meio fill:#da3,stroke:#333
+    class DO neutro
+    class Meio destaque
 ```
 
 ## Um segundo caso: quando um gatilho acende no meio do caminho
@@ -208,6 +212,8 @@ A resposta não é "reescrever tudo em AWS". Seguindo o framework de meio-termo 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph DO["DigitalOcean — a maioria dos clientes"]
         App["App Platform<br/>web + worker"]
         PG[("Managed PostgreSQL")]
@@ -223,8 +229,8 @@ flowchart LR
     ClienteBanco(["Cliente do setor<br/>financeiro"]) --> IAM --> App
     IAM -.audita.-> CT
 
-    style AWSLayer fill:#232f3e,color:#fff
-    style DO fill:#0080ff,color:#fff
+    class AWSLayer neutro
+    class DO marca
 ```
 
 Migração completa só entraria em cena se o contrato exigisse que a infraestrutura *inteira* estivesse sob o guarda-chuva de auditoria da AWS — o que, na prática, costuma ser negociável com o time jurídico do cliente antes de virar exigência técnica literal. O ponto deste segundo caso não é o desenho específico — é o hábito mental: um gatilho aceso pede uma resposta do tamanho do gatilho, não do tamanho do medo de "não ser sério o bastante" num provedor só.

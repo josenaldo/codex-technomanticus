@@ -221,8 +221,9 @@ Note que `ProdutoCard` não sabe nada sobre como `ImagemProduto` funciona intern
 ## Diagrama: árvore de componentes e fluxo de props
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#fff", "primaryBorderColor": "#2c6fad", "lineColor": "#555", "secondaryColor": "#F5A623", "tertiaryColor": "#eaf3fb"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     App["App\n(raiz)"]
     Cabecalho["Cabecalho"]
     GradeProdutos["GradeProdutos\nproducts={lista}"]
@@ -242,10 +243,10 @@ graph TD
     PC2 -->|src, alt| Imagem2
     PC2 -->|label| Botao2
 
-    style App fill:#4A90D9,color:#fff
-    style GradeProdutos fill:#4A90D9,color:#fff
-    style PC1 fill:#eaf3fb,color:#333
-    style PC2 fill:#eaf3fb,color:#333
+    class App neutro
+    class GradeProdutos neutro
+    class PC1 marca
+    class PC2 marca
 ```
 
 As props sempre descem: o `App` passa dados para `GradeProdutos`, que os fragmenta e repassa para cada `ProdutoCard`. Nenhum filho sabe o que o irmão recebeu.

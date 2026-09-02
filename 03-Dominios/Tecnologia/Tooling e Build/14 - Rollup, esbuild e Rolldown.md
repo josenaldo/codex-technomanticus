@@ -135,6 +135,8 @@ Com `"sideEffects": false` no `package.json`, você está prometendo que nenhum 
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     ENTRY["entry: index.ts"]
     A["módulo A\nexporta: foo, bar, baz"]
     B["módulo B\nexporta: qux"]
@@ -146,11 +148,11 @@ flowchart TD
     A -.->|"não usado"| BAZ["baz — removido 🪓"]
     C -.->|"sem importador"| CDEAD["módulo C inteiro — removido 🪓"]
 
-    style BAR fill:#5a0000,color:#fff
-    style BAZ fill:#5a0000,color:#fff
-    style CDEAD fill:#5a0000,color:#fff
-    style A fill:#003a1f,color:#fff
-    style B fill:#003a1f,color:#fff
+    class BAR falha
+    class BAZ falha
+    class CDEAD falha
+    class A ok
+    class B ok
 ```
 
 > [!warning] O que quebra o tree-shaking
@@ -324,6 +326,8 @@ O Vite usa esbuild em **dois momentos distintos** no seu pipeline:
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "DEV (esbuild domina)"
         REQ["Browser requisita\n/src/App.tsx"]
         EB_DEV["esbuild transpila\nem <10ms"]
@@ -338,8 +342,8 @@ flowchart LR
         ENTRY --> RD --> BUNDLE
     end
 
-    style EB_DEV fill:#003a1f,color:#fff
-    style RD fill:#1a1a5e,color:#fff
+    class EB_DEV ok
+    class RD neutro
 ```
 
 No dev server, cada arquivo TypeScript ou JSX é transpilado individualmente por esbuild quando o browser o requisita — sem bundle, sem grafo completo, sem espera. É por isso que o Vite inicia em milissegundos.
@@ -405,6 +409,7 @@ Com o Vite 8, a arquitetura de dois motores acabou:
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Vite 7 e anteriores"
         V7DEV["DEV\nesbuild\n(transpile por request)"]
         V7PROD["PROD\nRollup\n(bundle completo)"]
@@ -416,7 +421,7 @@ flowchart LR
     V7DEV -.->|"substituído"| V8ALL
     V7PROD -.->|"substituído"| V8ALL
 
-    style V8ALL fill:#1a1a5e,color:#fff
+    class V8ALL neutro
 ```
 
 O benefício vai além da velocidade: com um único motor, configurações de `resolve`, `alias`, e plugins se aplicam identicamente em dev e prod. Um bug que aparecia só em prod (porque Rollup resolvia diferente do esbuild) simplesmente não existe mais. E otimizações como barrel file inlining — que precisam do grafo completo — agora podem acontecer mesmo durante o dev.
@@ -557,6 +562,9 @@ Antes de escolher qualquer ferramenta desse espaço, a pergunta que determina o 
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q1{"O que você está\nconstruindo?"}
 
     Q1 -->|"App (React, Vue,\nNext.js, SPA)"| APP
@@ -570,12 +578,12 @@ flowchart TD
     LIB -->|"Ecossistema Nuxt\nou stub mode"| UNBUILD["unbuild\n(wrapper Rollup/Rolldown)"]
     LIB -->|"Controle total\ncasos complexos"| ROLLUP["Rollup direto\n(config manual)"]
 
-    style FRAMEWORK fill:#003a1f,color:#fff
-    style VITE fill:#1a1a5e,color:#fff
-    style TSUP fill:#1a1a5e,color:#fff
-    style TSDOWN fill:#3a1a00,color:#fff
-    style UNBUILD fill:#1a1a5e,color:#fff
-    style ROLLUP fill:#1a1a5e,color:#fff
+    class FRAMEWORK ok
+    class VITE neutro
+    class TSUP neutro
+    class TSDOWN destaque
+    class UNBUILD neutro
+    class ROLLUP neutro
 ```
 
 A confusão mais comum é tentar usar Rollup (ou tsup) para construir uma aplicação. Você vai perder code splitting automático, HMR, assets pipeline, e todas as otimizações que Vite/webpack fazem para apps. A segunda confusão é usar Vite para publicar uma lib — o Vite tem um [library mode](https://vite.dev/guide/build.html#library-mode) que funciona, mas é um atalho, não a ferramenta principal.
@@ -659,6 +667,9 @@ O pipeline do Rollup é dividido em duas fases distintas:
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Fase de Build (input)"
         BS["buildStart\n(inicializa o build)"]
         RI["resolveId\n(resolve caminhos de import)"]
@@ -681,9 +692,9 @@ flowchart LR
 
     BE --> OO
 
-    style BS fill:#003a1f,color:#fff
-    style GB fill:#1a1a5e,color:#fff
-    style RC fill:#3a1a00,color:#fff
+    class BS ok
+    class GB neutro
+    class RC destaque
 ```
 
 **Hooks da fase de build** — executam enquanto o grafo de módulos é construído:
@@ -911,6 +922,9 @@ O **Oxc** (criado pela VoidZero) é a base que une toda a stack: um único parse
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     OXC["Oxc Core\n(Rust)"]
     PARSER["Parser"]
     RESOLVER["Module Resolver"]
@@ -931,9 +945,9 @@ flowchart TD
 
     ROLLDOWN --> VITE8["Vite 8\n(dev + prod)"]
 
-    style OXC fill:#5a0000,color:#fff
-    style ROLLDOWN fill:#1a1a5e,color:#fff
-    style VITE8 fill:#003a1f,color:#fff
+    class OXC falha
+    class ROLLDOWN neutro
+    class VITE8 ok
 ```
 
 ### tsdown v0.x → consolidação em 2026

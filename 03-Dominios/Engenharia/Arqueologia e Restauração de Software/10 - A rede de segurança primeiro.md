@@ -47,8 +47,9 @@ Isso tem uma consequência desconfortável e libertadora ao mesmo tempo: **se o 
 Feathers descreve um procedimento quase mecânico para escrever o primeiro characterization test de um método que você não entende — e a graça dele é não exigir que você entenda o método *antes*:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["1. Escolha um caminho<br/>de entrada conhecido"] --> B["2. Escreva uma asserção<br/>que você SABE que vai falhar<br/>(ex.: assertEquals 0)"]
     B --> C["3. Rode o teste"]
     C --> D{"Falhou?"}
@@ -61,10 +62,10 @@ graph TD
     I --> J["7. Repita para o<br/>próximo caminho/caso"]
     J -.itera.-> B
     I --> K["8. AGORA você tem rede<br/>para refatorar/quebrar seams"]
-    style B fill:#F5A623,color:#000
-    style E fill:#4A90D9,color:#fff
-    style I fill:#7ED321,color:#000
-    style K fill:#7ED321,color:#000
+    class B destaque
+    class E neutro
+    class I destaque
+    class K destaque
 ```
 
 O passo que mais surpreende quem vê isso pela primeira vez é o 2: você escreve uma asserção **deliberadamente errada** — `assertEquals(0, resultado)` quando você não faz ideia se o resultado é 0. Você não está adivinhando o valor certo; está usando o próprio *test runner* como instrumento de medição. O teste falha, e a mensagem de falha ("esperado 0, mas foi 847.32") te entrega o valor real que o código produz *agora*, para *aquela* entrada. Você copia esse valor para a asserção, roda de novo, o teste passa — e a partir desse instante, aquele valor está pinado: se algum dia o código passar a devolver outra coisa para a mesma entrada, o teste vai gritar.

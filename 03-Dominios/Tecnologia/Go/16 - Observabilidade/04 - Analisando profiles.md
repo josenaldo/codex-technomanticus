@@ -67,12 +67,14 @@ Duas colunas decidem tudo: **flat** e **cum** (cumulative). A diferença entre e
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["ParseEvento\ncum: 1.98s"] --> B["json.Unmarshal\n(chamado por dentro)"]
     B --> C["decodeState.object\nflat: 1.34s"]
     A -.->|"flat: 0.52s\n(trabalho próprio de ParseEvento,\nfora das chamadas)"| A
 
-    style A fill:#4A90D9,color:#fff
-    style C fill:#F5A623,color:#000
+    class A neutro
+    class C destaque
 ```
 
 A regra prática: **ordenar por `flat`** (o padrão de `top`) responde "qual função específica é o hotspot?" — útil quando o gargalo é uma rotina isolada, tipo um regex mal otimizado. **Ordenar por `cum`** (`top -cum`) responde "qual *caminho* de chamada é o mais caro?" — útil quando o custo está espalhado por uma árvore de chamadas pequenas, nenhuma delas cara sozinha, mas juntas dominam o tempo. No exemplo acima, `flat` já entrega o vilão direto: `decodeState.object`, 27% do tempo total, é o `encoding/json` fazendo *reflection-based decoding* de structs grandes — candidato clássico a virar `encoding/json/v2` ou um decoder gerado (`easyjson`, `ffjson`), fora do escopo desta nota, mas é exatamente esse tipo de decisão que `top` habilita.
@@ -117,6 +119,7 @@ Abre um SVG no navegador — um grafo de chamadas onde cada caixa é uma funçã
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Call graph (simplificado)"
         main["main.handler\ncum: 3.2s"] --> parse["ParseEvento\ncum: 1.98s"]
         main --> valid["validar.Campo\ncum: 0.65s"]
@@ -125,8 +128,8 @@ flowchart TB
         valid --> regex["regexp.doExecute\nflat: 0.31s"]
     end
 
-    style json fill:#F5A623,color:#000
-    style regex fill:#F5A623,color:#000
+    class json destaque
+    class regex destaque
 ```
 
 A alternativa mais popular hoje, e é bom saber que existe, é o **flame graph** interativo embutido:

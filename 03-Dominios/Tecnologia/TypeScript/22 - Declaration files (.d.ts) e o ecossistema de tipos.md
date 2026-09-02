@@ -31,6 +31,8 @@ Pense assim: um mapa de cidade não é a cidade. Você não pode morar num mapa,
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Desenvolvimento (compile time)"
         TS["Seu código .ts"]
         DTS[".d.ts\n(mapa de tipos)"]
@@ -44,8 +46,8 @@ flowchart LR
         JS --> NODE
     end
     CHK -->|"emite"| JS
-    style DTS fill:#2a1a4a,color:#fff
-    style CHK fill:#1a3a1a,color:#fff
+    class DTS marca
+    class CHK ok
 ```
 
 O `.d.ts` existe *apenas para o compilador*. Em runtime, ele some. É um artefato de compile time — assim como os tipos em geral no TypeScript (nota [[01 - O que é TypeScript - gradual, estrutural, apagado]]).
@@ -196,6 +198,7 @@ Depois disso, em qualquer handler Express, `req.user` e `req.correlationId` est�
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Módulo original (@types/express)"
         REQ_ORIG["interface Request {\n  method: string\n  path: string\n  body: any\n  ...centenas de propriedades\n}"]
     end
@@ -207,7 +210,7 @@ flowchart TD
     end
     REQ_ORIG --> REQ_MERGED
     REQ_AUG --> REQ_MERGED
-    style REQ_MERGED fill:#1a3a1a,color:#fff
+    class REQ_MERGED ok
 ```
 
 ---
@@ -279,6 +282,8 @@ Esse é o padrão usado por bibliotecas como `styled-components`, `Jest` e `Moch
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph "Merging possível"
         I1["interface A {}"] --- I2["interface A {}"] -->|"✅ funde"| IM["interface A { tudo junto }"]
         N1["namespace B {}"] --- N2["namespace B {}"] -->|"✅ funde"| NM["namespace B { tudo junto }"]
@@ -288,11 +293,11 @@ flowchart LR
     subgraph "Merging impossível"
         T1["type E = {}"] --->|"❌ erro"| TERR["Duplicate identifier"]
     end
-    style IM fill:#1a3a1a,color:#fff
-    style NM fill:#1a3a1a,color:#fff
-    style FM fill:#1a3a1a,color:#fff
-    style CLM fill:#1a3a1a,color:#fff
-    style TERR fill:#5a0000,color:#fff
+    class IM ok
+    class NM ok
+    class FM ok
+    class CLM ok
+    class TERR falha
 ```
 
 Há um link direto com a nota [[06 - Objetos - interface vs type]]: a razão prática de existir `interface` além de `type alias` é exatamente o declaration merging. Você escolhe `interface` quando está definindo algo que outras partes do sistema (incluindo você mesmo, via augmentação) podem precisar estender.
@@ -317,6 +322,8 @@ O TypeScript resolve automaticamente: quando você `import _ from 'lodash'`, o c
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     IMPORT["import _ from 'lodash'"]
     PKG["node_modules/lodash/package.json\n{ types: './index.d.ts' }?"]
     FOUND_BUNDLED["Usa tipos bundled\n✅"]
@@ -330,9 +337,9 @@ flowchart TD
     ATYPES -- sim --> FOUND_DT
     ATYPES -- não --> NOTFOUND
 
-    style FOUND_BUNDLED fill:#1a3a1a,color:#fff
-    style FOUND_DT fill:#1a3a1a,color:#fff
-    style NOTFOUND fill:#4a2a00,color:#fff
+    class FOUND_BUNDLED ok
+    class FOUND_DT ok
+    class NOTFOUND destaque
 ```
 
 ### `skipLibCheck: true` — e quando ativá-lo
@@ -659,6 +666,8 @@ Se `@minha-empresa/domain` emitiu apenas `dist/index.d.ts` (sem `declarationMap`
 
 ```mermaid
 flowchart LR
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     DEV["Desenvolvedor\npressiona F12\nem UserCard.tsx"]
     DTS["dist/index.d.ts\n(mapa compilado)"]
     MAP["dist/index.d.ts.map\n(source map do .d.ts)"]
@@ -667,8 +676,8 @@ flowchart LR
     DEV -->|"sem declarationMap"| DTS
     DEV -->|"com declarationMap"| MAP --> SRC
 
-    style SRC fill:#1a3a1a,color:#fff
-    style DTS fill:#3a1a00,color:#fff
+    class SRC ok
+    class DTS destaque
 ```
 
 ---

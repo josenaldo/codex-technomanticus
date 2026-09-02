@@ -209,6 +209,9 @@ Cada função tem seu **stack frame** (quadro de pilha): uma fatia da pilha com 
 
 ```mermaid
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Endereços altos"] --> B
     B["Argumentos extras\n(7º, 8º... argumento)"]
     B --> C["Endereço de retorno\n(empilhado por 'call')"]
@@ -218,9 +221,9 @@ graph TD
     F --> G["rsp (topo atual)"]
     G --> H["Endereços baixos"]
 
-    style C fill:#f9a,stroke:#c33
-    style D fill:#adf,stroke:#33c
-    style E fill:#afa,stroke:#3a3
+    class C falha
+    class D neutro
+    class E ok
 ```
 
 *Leitura do diagrama:* a pilha cresce de cima para baixo. `rbp` fica no meio como âncora estável. Variáveis locais ficam abaixo de `rbp` (offsets negativos). O endereço de retorno fica logo acima de `rbp` (empilhado pelo `call` antes do prólogo).
@@ -294,13 +297,14 @@ ret                        ; POP endereço de retorno; JMP para lá
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["main:\ncall add"] -->|"push ret addr\njmp add"| B["add:\nprólogo"]
     B --> C["corpo\neax = x + y"]
     C --> D["epílogo\nret"]
     D -->|"pop ret addr\njmp ret addr"| E["main:\nmovl eax, r"]
 
-    style A fill:#ffd,stroke:#aa0
-    style D fill:#ffd,stroke:#aa0
+    class A destaque
+    class D destaque
 ```
 
 *Leitura do diagrama:* `call` faz duas coisas atomicamente — empilha o PC da próxima instrução e pula para a função. `ret` faz o inverso — desempilha e pula para lá. O mecanismo inteiro depende da pilha ser LIFO.

@@ -138,6 +138,9 @@ Uma linha do tempo plana (A → B → C → D → E → F) sugere substituição
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph G["Graph engineering — a rede de loops (jul/2026)"]
         direction TB
         subgraph L["Loop engineering — o ciclo que repete (jun/2026)"]
@@ -155,12 +158,12 @@ flowchart TB
         end
     end
 
-    style P fill:#4A90D9,color:#fff
-    style F fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style H fill:#F5A623,color:#000
-    style L fill:#F5A623,color:#000
-    style G fill:#D0021B,color:#fff
+    class P neutro
+    class F neutro
+    class C neutro
+    class H destaque
+    class L destaque
+    class G falha
 ```
 
 Leia de dentro para fora. No centro, a frase — ainda existe, ainda importa, ainda é a coisa que efetivamente toca o modelo em cada chamada individual. Ao redor dela, o fluxo que decide quando e como reformular a frase com base em teste. Ao redor do fluxo, a janela de contexto que decide o que o fluxo *vê* a cada passo. Ao redor da janela, o ambiente executável que decide o que o agente pode *fazer*, não só o que sabe. Ao redor do ambiente, o loop que decide *quantas vezes* rodar esse ambiente inteiro, ajustando parâmetros a cada volta. E ao redor de tudo, a rede de loops, onde a pergunta não é mais "este loop está otimizando bem sua métrica" — é "os loops, juntos, estão se enganando coletivamente, ou um vigia o outro?"

@@ -26,13 +26,16 @@ Quando você pensa em "proteger dados", o erro clássico é pensar só em um dos
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Dado em Repouso<br/>(disco, banco, bucket)"] -->|"leitura / deserialização"| B["Dado em Uso<br/>(memória RAM, CPU)"]
     B -->|"escrita / persistência"| A
     B -->|"envio via rede"| C["Dado em Trânsito<br/>(pacotes TCP/IP)"]
     C -->|"recepção"| B
-    style A fill:#1a4a6b,color:#fff
-    style B fill:#6b1a1a,color:#fff
-    style C fill:#1a6b2a,color:#fff
+    class A neutro
+    class B falha
+    class C ok
 ```
 
 > [!info] Leitura do diagrama
@@ -199,14 +202,16 @@ A solução adotada por AWS KMS, Google Cloud KMS, Azure Key Vault, e qualquer H
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     DADO["Dado em texto claro\n(ex.: registro do banco)"] -->|"cifrado com DEK"| OBJ_DEC["Dado cifrado\n(ciphertext)"]
     DEK["DEK — Data Encryption Key\n(AES-256, gerada aleatoriamente,\numa por objeto/registro)"] -->|"cifra os dados"| OBJ_DEC
     DEK -->|"enviada ao KMS para cifrar"| KMS["KMS / HSM\n(contém a KEK — master key)"]
     KMS -->|"retorna DEK cifrada"| DEK_C["DEK cifrada\n(WrappedDEK)"]
     OBJ_DEC -->|"armazenados juntos"| STORAGE["Storage\n(disco, banco, bucket)"]
     DEK_C -->|"armazenada com o objeto"| STORAGE
-    style KMS fill:#6b1a1a,color:#fff
-    style DEK fill:#1a4a6b,color:#fff
+    class KMS falha
+    class DEK neutro
 ```
 
 > [!info] Leitura do diagrama

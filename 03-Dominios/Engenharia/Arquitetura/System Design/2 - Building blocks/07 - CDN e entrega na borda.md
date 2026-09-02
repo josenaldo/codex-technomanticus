@@ -36,7 +36,6 @@ Fazendo a conta para o par Tóquio↔Virgínia: a distância em linha reta é de
 Compare com a [[03 - Estimativas de escala (back-of-envelope)|nota de estimativas]] deste sub-galho: um round-trip de rede dentro do mesmo datacenter custa ~0,5ms. Um round-trip intercontinental custa **200x mais**, e essa diferença é inteiramente geográfica — nenhuma otimização de software a reduz.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph LR
     U["Usuário<br/>em Tóquio"] -->|"~10.800 km<br/>~100ms+ RTT"| S["Servidor único<br/>em Virgínia"]
     S -->|"resposta"| U
@@ -56,7 +55,6 @@ A escala dessas redes já não é pequena: a AWS CloudFront reportou, em 2025, m
 O passo que decide *qual* PoP atende cada usuário é o roteamento — e esse mecanismo já foi coberto na [[01 - Escalabilidade e load balancing|nota de Escalabilidade e load balancing]] deste sub-galho: **anycast** (o mesmo IP anunciado de vários PoPs, e o roteador de borda da internet decide qual é topologicamente mais perto) ou **geo-DNS** (o resolver DNS devolve o IP do PoP mais próximo com base na localização geográfica do cliente). Esta nota assume que esse roteamento já resolveu "qual PoP" — o foco aqui é o que acontece *dentro* daquele PoP quando o pedido chega.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant U as Usuário (Tóquio)
     participant PoP as PoP mais próximo (Tóquio)
@@ -165,7 +163,6 @@ Três granularidades de purge, da mais grosseira à mais fina:
 A velocidade desses purges é um número que vale ter na manga em entrevista: a Fastly documenta que seus purges começam a se propagar em ~5ms e completam globalmente em torno de 150ms na maioria dos PoPs, quase todos abaixo de 250ms[^2] — usando um protocolo do tipo *gossip* (cada PoP que recebe o purge o retransmite para outros dois, propagação exponencial em vez de um comando central falando com cada PoP individualmente). A Cloudflare reporta números semelhantes para seu "Instant Purge", abaixo de 150ms[^3].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#F5A623", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph TD
     P["Purge disparado<br/>por tag: produto-123"] --> A["PoP São Paulo"]
     P --> B["PoP Frankfurt"]
@@ -193,7 +190,6 @@ A solução é a mesma lógica de tudo o resto nesta nota: fazer o handshake **n
 A AWS documenta essa arquitetura explicitamente: CloudFront termina TLS nos PoPs, próximos ao usuário, e mantém conexões persistentes e seguras até o origin, incluindo TLS 1.3 nessa perna desde 2025 — reduzindo ainda mais o número de round-trips necessários para estabelecer cada conexão[^4].
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant U as Usuário (Tóquio)
     participant PoP as PoP (Tóquio)

@@ -35,6 +35,8 @@ Um cache gerenciado é uma camada de armazenamento **em memória**, colocada ent
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     App["Aplicação"]
     Cache[("Cache gerenciado<br/>ElastiCache / Redis-Valkey<br/>em memória")]
     DB[("Banco primário<br/>RDS ou DynamoDB<br/>fonte de verdade")]
@@ -45,8 +47,8 @@ flowchart LR
     App -.->|"3. lê do banco"| DB
     App -.->|"4. grava no cache<br/>com TTL"| Cache
 
-    style Cache fill:#622,color:#fff
-    style DB fill:#245,color:#fff
+    class Cache falha
+    class DB neutro
 ```
 
 O ponto central: o cache **não é durável por design de uso**, mesmo quando o engine por trás dele suporta persistência em disco (o Redis suporta; o Memcached não). A pergunta que decide se algo pertence ao cache não é "esse engine pode gravar em disco?" — é "se este dado sumir agora, a aplicação perde alguma coisa que não consegue reconstruir a partir do banco primário?". Se a resposta for "sim, perde", o dado não pertence só ao cache — ele pertence ao banco primário, e o cache é, na melhor das hipóteses, uma cópia descartável dele.
@@ -272,6 +274,10 @@ As cinco notas anteriores e a Parte A desta deram profundidade a cada resposta i
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q1{"O dado é volátil por design —<br/>pode sumir sem perda real?"}
     Q1 -->|"Sim"| Cache["CACHE GERENCIADO<br/>ElastiCache Redis/Valkey<br/>(Parte A desta nota)"]
 
@@ -282,10 +288,10 @@ flowchart TD
     Q3 -->|"Sim"| Object["OBJECT STORAGE<br/>S3 / Spaces<br/>(galho 8)"]
     Q3 -->|"Não — é dado estruturado<br/>com relações"| Relacional["RELACIONAL GERENCIADO<br/>RDS / Aurora<br/>(notas 02-04)"]
 
-    style Cache fill:#622,color:#fff
-    style NoSQL fill:#262,color:#fff
-    style Object fill:#245,color:#fff
-    style Relacional fill:#653,color:#fff
+    class Cache falha
+    class NoSQL ok
+    class Object neutro
+    class Relacional destaque
 ```
 
 Uma frase por ramo: cache vence quando o dado é descartável e a exigência é velocidade pura; NoSQL vence quando o acesso é sempre por chave e a escala é horizontal massiva; object storage vence quando o dado é um blob sem necessidade de query estruturada; relacional vence quando o dado tem relações reais entre entidades e precisa de consulta flexível com garantias transacionais fortes. Nenhum dos quatro é "o melhor banco" em geral — cada um é o melhor banco **para um formato e um padrão de acesso específicos**.
@@ -322,6 +328,10 @@ A nota 01 do galho 8 e as notas deste galho já tocaram partes desse cenário is
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     User(("Cliente"))
     ALB["ALB"]
     App["Frota de aplicação"]
@@ -338,10 +348,10 @@ flowchart TB
     App -->|"upload/GET imagem"| S3
     User -.->|"GET direto de imagem"| S3
 
-    style RDS fill:#653,color:#fff
-    style Dynamo fill:#262,color:#fff
-    style Cache fill:#622,color:#fff
-    style S3 fill:#245,color:#fff
+    class RDS destaque
+    class Dynamo ok
+    class Cache falha
+    class S3 neutro
 ```
 
 Cada seta é uma decisão justificada, não um gosto pessoal:

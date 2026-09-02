@@ -70,6 +70,8 @@ Internamente, um valor de interface não-vazia é representado por duas palavras
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph NilLiteral["error(nil) — interface realmente vazia"]
         direction LR
         T1["tipo: nil"]
@@ -82,10 +84,10 @@ flowchart TB
         V2["valor: nil"]
     end
 
-    style T1 fill:#4A90D9,color:#fff
-    style V1 fill:#4A90D9,color:#fff
-    style T2 fill:#F5A623,color:#000
-    style V2 fill:#F5A623,color:#000
+    class T1 neutro
+    class V1 neutro
+    class T2 destaque
+    class V2 destaque
 ```
 
 A comparação `err != nil` verifica **as duas metades** do par. `error(nil)` — a interface nunca atribuída, ou explicitamente atribuída ao literal `nil` — tem tipo `nil` e valor `nil`: essa sim é `== nil`. Mas quando `processar` faz `return err` com `err` do tipo `*ValidationError` e valor `nil`, o compilador converte esse ponteiro *typed* para a interface `error`, preenchendo a metade do tipo com `*ValidationError` — mesmo o ponteiro em si sendo `nil`. O par resultante é `(*ValidationError, nil)`, e um par onde a metade do tipo não é `nil` **nunca** é igual a `nil`, não importa o que a metade do valor contenha.

@@ -155,6 +155,9 @@ def dado_d():
 
 ```mermaid
 flowchart TB
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph SESSION["scope=session — roda 1x pra suíte inteira"]
         S1["conexão de banco de teste"]
     end
@@ -178,9 +181,9 @@ flowchart TB
     F1 -->|"objeto NOVO"| T2
     F1 -->|"objeto NOVO"| T3
 
-    style SESSION fill:#2d7a4a,color:#fff
-    style MODULE fill:#4A90D9,color:#fff
-    style FUNCTION fill:#b5651d,color:#fff
+    class SESSION ok
+    class MODULE neutro
+    class FUNCTION destaque
 ```
 
 A regra prática que resolve a maioria das decisões de escopo, e que resolve o bug de abertura: **pergunte se o dado é mutado pelo teste, e se essa mutação pode legitimamente afetar outro teste**. Se a resposta é "o teste vai modificar isso, e cada teste precisa começar do mesmo estado inicial" → `function` (ou, na pior hipótese, um escopo mais amplo mas com um passo de reset explícito, seção seguinte). Se a resposta é "isso é caro de criar, ninguém modifica o objeto em si (só usa ele pra fazer outra coisa, como abrir uma transação nova a cada teste em cima de uma conexão compartilhada)" → `session` ou `module` é seguro e economiza tempo de execução real.
@@ -333,6 +336,7 @@ def test_criar_pedido(sessao_db):
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     C1["tests/conftest.py\n(engine_db, sessao_db)"]
     C2["tests/integracao/conftest.py\n(cliente_http_real)"]
 
@@ -345,8 +349,8 @@ flowchart TB
     C1 -->|"herdado + somado ao local"| C2
     C2 -->|"visível só em integracao/"| T3
 
-    style C1 fill:#4A90D9,color:#fff
-    style C2 fill:#4A90D9,color:#fff
+    class C1 neutro
+    class C2 neutro
 ```
 
 Isso é o que torna `conftest.py` genuinamente poderoso — uma fixture de setup caro, escrita uma vez, fica automaticamente acessível a cada arquivo de teste novo que alguém criar naquele diretório, sem nenhuma cerimônia de import. É também exatamente o motivo pelo qual `conftest.py` confunde quem chega numa suíte pela primeira vez: abrir `test_pedidos.py` e ver `sessao_db` como parâmetro de um teste, sem NENHUMA pista visual de onde `sessao_db` vem (nenhum import no topo do arquivo), é desorientador até alguém explicar que existe um arquivo especial, com nome mágico, que o pytest varre sozinho.

@@ -40,6 +40,8 @@ if err != nil {
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph App["Sua aplicação"]
         R1["Request 1"] --> DB
         R2["Request 2"] --> DB
@@ -56,8 +58,8 @@ flowchart TB
 
     DB --> PG[("Postgres")]
 
-    style DB fill:#4A90D9,color:#fff
-    style PG fill:#F5A623,color:#000
+    class DB neutro
+    class PG destaque
 ```
 
 `*sql.DB` é seguro para uso concorrente — projetado, segundo a [documentação oficial do pacote](https://pkg.go.dev/database/sql#DB), para ser criado **uma vez** e compartilhado por goroutines à vontade, tipicamente como um valor global ou injetado via struct de dependências. Chamar `sql.Open` a cada request, ou fazer `db.Close()` depois de cada query, destrói o propósito inteiro do pool — e é a armadilha número um de quem só copiou um exemplo de tutorial sem ler a letra miúda.
@@ -71,6 +73,7 @@ flowchart TB
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Config["Configuração do pool"]
         A["SetMaxOpenConns(n)"]
         B["SetMaxIdleConns(n)"]
@@ -85,7 +88,7 @@ flowchart LR
 
     Pool[("Pool de conexões")]
 
-    style Pool fill:#4A90D9,color:#fff
+    class Pool neutro
 ```
 
 ### `SetMaxOpenConns` — o teto

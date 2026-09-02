@@ -32,12 +32,12 @@ Formulada por **Paul Fitts em 1954**, num estudo sobre movimento humano: o tempo
 Em interface, a tradução é direta: a **ação primária de uma tela deve ser grande e estar próxima do fluxo natural do olhar/mão do usuário** — isso é ainda mais crítico em touch, onde o "alvo" é literalmente o dedo tocando a tela, sem a precisão de um cursor de mouse. Um botão de "Confirmar" minúsculo no canto de uma tela mobile não é só uma escolha estética ruim — é uma fricção mensurável, prevista por um estudo de 1954, décadas antes de existir touchscreen.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     D["Distância até o alvo"] -->|aumenta| T["Tempo para atingir"]
     Tam["Tamanho do alvo"] -->|diminui| T
     T -->|Fitts, 1954| R["Ação primária:<br/>grande e perto do fluxo"]
-    style R fill:#4A90D9,color:#fff
+    class R neutro
 ```
 
 ## Hick's Law — mais opções, mais tempo

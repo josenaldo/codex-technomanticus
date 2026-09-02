@@ -88,6 +88,8 @@ Depois de `del a` e `del b`, não existe **nenhuma** referência externa a esses
 
 ```mermaid
 graph LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Depois de del a; del b"
         A["No 'a'<br/>ob_refcnt = 1"] -->|"a.proximo"| B["No 'b'<br/>ob_refcnt = 1"]
         B -->|"b.proximo"| A
@@ -96,9 +98,9 @@ graph LR
     ext["Escopo local<br/>(variáveis a, b)"] -.->|"referência removida"| A
     ext -.->|"referência removida"| B
 
-    style A fill:#F5A623,color:#000
-    style B fill:#F5A623,color:#000
-    style ext fill:#4A90D9,color:#fff
+    class A destaque
+    class B destaque
+    class ext neutro
 ```
 
 Isso não é um caso de laboratório artificial. Estruturas de dados naturalmente bidirecionais criam ciclos o tempo todo, sem que ninguém escreva `a.x = b; b.x = a` de propósito:
@@ -150,6 +152,9 @@ Na prática: a geração 0 é varrida com frequência (a cada ~700 alocações l
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Alloc["Objeto rastreável alocado<br/>(list, dict, instância, etc.)"] --> Gen0["Geração 0"]
     Gen0 -->|"threshold0 excedido"| Coleta0["Coleta geração 0"]
     Coleta0 -->|"sobreviveu"| Gen1["Geração 1"]
@@ -160,11 +165,11 @@ flowchart TD
     Gen2 -->|"a cada threshold2 coletas de gen1"| Coleta2["Coleta geração 2<br/>(coleta completa)"]
     Coleta2 -->|"ciclo inalcançável"| Dealloc
 
-    style Alloc fill:#4A90D9,color:#fff
-    style Gen0 fill:#4A90D9,color:#fff
-    style Gen1 fill:#F5A623,color:#000
-    style Gen2 fill:#D0021B,color:#fff
-    style Dealloc fill:#D0021B,color:#fff
+    class Alloc neutro
+    class Gen0 neutro
+    class Gen1 destaque
+    class Gen2 falha
+    class Dealloc falha
 ```
 
 > [!question]- E se meu objeto nunca faz parte de um ciclo — ele "sobe" de geração à toa?

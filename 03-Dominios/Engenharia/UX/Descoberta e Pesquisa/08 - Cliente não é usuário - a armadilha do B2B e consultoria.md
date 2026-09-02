@@ -25,15 +25,17 @@ Imagine o roteiro mais comum de um projeto fractional em B2B: você é contratad
 O conflito não é um acidente de comunicação corrigível com "perguntar melhor" — é estrutural ao arranjo B2B/consultoria. Quem contrata está resolvendo um problema de **negócio** ("preciso que esse processo pare de ser manual", "preciso mostrar progresso para o meu chefe"); quem usa está resolvendo um problema de **tarefa** ("preciso terminar isso e sair da tela o mais rápido possível"). Os dois problemas são reais, mas nem sempre coincidem — e quando um deles precisa ceder espaço ao outro, o poder de decisão está do lado de quem assina o contrato, não de quem sofre com a interface todo dia.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     C["Cliente (paga, aprova)<br/>problema de negócio"] -->|"aprova orçamento<br/>e escopo"| P["Produto construído"]
     U["Usuário real (opera)<br/>problema de tarefa"] -->|"raramente<br/>consultado"| P
     P -->|"satisfaz quem<br/>aprovou"| S["Sucesso na demo"]
     P -->|"ignora quem<br/>opera"| F["Rejeição na adoção real"]
-    style C fill:#4A90D9,color:#fff
-    style U fill:#F5A623,color:#000
-    style F fill:#D0021B,color:#fff
+    class C neutro
+    class U destaque
+    class F falha
 ```
 
 O diagrama mostra o padrão do cenário de abertura: as duas setas de aprovação e consulta não têm o mesmo peso. Enquanto o acesso ao usuário real for opcional — "se der tempo, eu falo com o time" — ele vai perder para qualquer pressão de prazo, porque falar com o cliente que paga é obrigatório e falar com quem usa não é.

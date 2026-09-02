@@ -54,6 +54,8 @@ A partir dessas raízes, o GC percorre o **grafo de objetos**: cada objeto pode 
 
 ```mermaid
 graph TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     R1["Root: thread stack"] --> A["Objeto A"]
     R2["Root: variável global"] --> B["Objeto B"]
     A --> C["Objeto C"]
@@ -63,10 +65,10 @@ graph TD
     F["Objeto F (lixo)"] --> G["Objeto G (lixo)"]
     G --> F
 
-    style F fill:#ff6b6b,color:#fff
-    style G fill:#ff6b6b,color:#fff
-    style R1 fill:#4caf50,color:#fff
-    style R2 fill:#4caf50,color:#fff
+    class F falha
+    class G falha
+    class R1 ok
+    class R2 ok
 ```
 
 > [!info] Leitura do diagrama
@@ -116,6 +118,7 @@ del b          # refcount(b) = 1 — ainda não zero!
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     ROOT["Root (variável 'a')"] --> ObjA["Objeto A\nrefcount=2"]
     ROOT2["Root (variável 'b')"] --> ObjB["Objeto B\nrefcount=2"]
     ObjA -- "a.other" --> ObjB
@@ -124,8 +127,8 @@ flowchart LR
     DEL1["del a"] -.->|"refcount A = 1"| ObjA
     DEL2["del b"] -.->|"refcount B = 1"| ObjB
 
-    style ObjA fill:#ff6b6b,color:#fff
-    style ObjB fill:#ff6b6b,color:#fff
+    class ObjA falha
+    class ObjB falha
 ```
 
 > [!info] Leitura do diagrama
@@ -187,6 +190,8 @@ C. J. Cheney publicou em 1970 (*Communications of the ACM*, vol. 13, n. 11) um a
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph FROM["From-space (cheio)"]
         FA["Obj A (vivo)"]
         FB["Obj B (lixo)"]
@@ -205,11 +210,11 @@ graph LR
     FC -- "copia" --> TC
     FE -- "copia" --> TE
 
-    style FB fill:#ff6b6b,color:#fff
-    style FD fill:#ff6b6b,color:#fff
-    style TA fill:#4caf50,color:#fff
-    style TC fill:#4caf50,color:#fff
-    style TE fill:#4caf50,color:#fff
+    class FB falha
+    class FD falha
+    class TA ok
+    class TC ok
+    class TE ok
 ```
 
 > [!info] Leitura do diagrama

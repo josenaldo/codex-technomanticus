@@ -130,6 +130,7 @@ A lição: **o target controla o custo do downleveling**. Quanto mais antigo o t
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Código-fonte\n(.ts, .tsx, .js)"]
     B["Parse\nAST"]
     C["Transform\ndownleveling,\nstrip types,\nstrip JSX"]
@@ -138,9 +139,9 @@ flowchart LR
 
     A --> B --> C --> D --> E
 
-    style B fill:#1e3a5f,color:#fff
-    style C fill:#1e3a5f,color:#fff
-    style D fill:#1e3a5f,color:#fff
+    class B neutro
+    class C neutro
+    class D neutro
 ```
 
 > [!note] Parse → Transform → Generate
@@ -253,6 +254,8 @@ Usar `baseline 2020` com Babel pode reduzir o bundle em 80–90% comparado a `ta
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Hierarquia de targets"
         ES5["ES5\n(IE 11 legacy)\nBundle pesado"]
         ES2017["ES2017\nasync/await nativo\nBundle médio"]
@@ -264,8 +267,8 @@ graph LR
     ES2017 --> ES2020
     ES2020 --> ESN
 
-    style ES5 fill:#5a0000,color:#fff
-    style ESN fill:#004d20,color:#fff
+    class ES5 falha
+    class ESN ok
 ```
 
 ---
@@ -355,6 +358,8 @@ O Rolldown — o futuro bundler Rust que deve substituir o Rollup no Vite — us
 
 ```mermaid
 flowchart TB
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Geração 1 (JS)\n~2014-2018"
         BA["Babel\n(JS, plugins)"]
     end
@@ -370,8 +375,8 @@ flowchart TB
     SWC2 -->|"parser compartilhado"| OXC
     OXC -->|"alimenta"| RD["Rolldown\n(bundler do Vite 7+)"]
 
-    style OXC fill:#5a2d00,color:#fff
-    style RD fill:#004d20,color:#fff
+    class OXC destaque
+    class RD ok
 ```
 
 Para 2026, o oxc ainda não é o padrão para transpilação TypeScript em projetos novos — use SWC ou esbuild. Mas é o nome a observar para 2027: se o Rolldown for adotado pelo Vite e o oxc-transform amadurecer, pode deslocar esbuild do papel de transpilador padrão do ecossistema.
@@ -390,6 +395,8 @@ A solução moderna é **separar as duas responsabilidades**:
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     SRC["Código-fonte\n(.ts / .tsx)"]
 
     subgraph "Paralelo"
@@ -405,8 +412,8 @@ flowchart TD
     TC --> ERR
     TR --> OUT
 
-    style TC fill:#1e3a5f,color:#fff
-    style TR fill:#004d20,color:#fff
+    class TC neutro
+    class TR ok
 ```
 
 No dev server (Vite, por exemplo): esbuild transpila cada módulo em milissegundos — você salva o arquivo e o browser atualiza antes de piscar. O tsc roda em watch mode no background e reporta erros de tipo para o editor via LSP, sem bloquear o servidor.
@@ -540,6 +547,8 @@ sentry-cli releases files "$RELEASE" upload-sourcemaps ./dist
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     TS["UserCard.tsx\n(source original)"]
     JS["UserCard.js\n(transpilado)"]
     MAP[".js.map\n(sourcemap)"]
@@ -552,8 +561,8 @@ flowchart LR
     MAP -->|"DevTools lê"| BROWSER
     MAP -->|"upload CI"| SENTRY
 
-    style MAP fill:#1e3a5f,color:#fff
-    style SENTRY fill:#4a0e6e,color:#fff
+    class MAP neutro
+    class SENTRY marca
 ```
 
 > [!note] Hidden sourcemaps

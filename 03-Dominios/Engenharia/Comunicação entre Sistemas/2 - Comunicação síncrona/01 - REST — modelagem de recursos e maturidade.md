@@ -71,13 +71,13 @@ GET  /appointments/456                  ← acesso direto por ID, sem precisar d
 A razão prática por trás disso não é só estética. Um path profundamente aninhado cria dois problemas concretos: (1) o cliente precisa conhecer toda a cadeia de IDs pais só para acessar um recurso-folha, mesmo quando ele já tem o ID direto do recurso que quer; e (2) atualizações e remoções em paths aninhados ficam ambíguas — um `DELETE /patients/123/appointments/456` deveria falhar se a consulta 456 não pertence ao paciente 123, ou deveria ignorar o paciente e deletar mesmo assim? Nenhuma resposta é obviamente certa, e é exatamente esse tipo de ambiguidade que erros de API mal desenhada geram. Guias de mercado convergem para a mesma prática: nesting pode fazer sentido para *listar* uma coleção no contexto do pai, mas acessar, atualizar ou remover um recurso individual — especialmente um que tem identidade e ciclo de vida próprios — é mais claro por um path flat ([Khaled Al-Taheri, *Flat vs Nested REST Endpoints: Why Error Clarity Favors Flat Design*](https://medium.com/@kh.taheri/flat-vs-nested-rest-endpoints-why-error-clarity-favors-flat-design-599e77054fa3)). O guia de API da Zalando formaliza isso como limite explícito: no máximo 3 sub-recursos (nested paths) por API inteira, e cuidado redobrado além do segundo nível ([Zalando RESTful API Guidelines](https://opensource.zalando.com/restful-api-guidelines/)).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["/patients/123/appointments"] -->|"1 nível: OK"| B["Lista consultas<br/>do paciente 123"]
     C["/patients/123/appointments/456/notes"] -->|"2 níveis: já pesa"| D["⚠️ Considere flat"]
     E["/appointments/456?"] -->|"acesso direto"| F["ID já basta —<br/>não precisa do pai"]
 
-    style D fill:#F5A623,color:#000
+    class D destaque
 ```
 
 ## Ações que não encaixam em CRUD
@@ -166,16 +166,18 @@ Esse é o bug clássico de quem trata `PUT` como "update parcial": um front-end 
 Até aqui, tudo o que esta nota cobriu — recursos como substantivos, nesting controlado, verbos com semântica correta — já coloca uma API num patamar razoável. Mas existe um framework formal, proposto por Leonard Richardson e popularizado por Martin Fowler, que organiza o quanto uma API realmente adota os princípios REST em quatro níveis progressivos — do "quase não é REST" até o que Roy Fielding, na definição original de 2000, chamaria de REST completo ([Martin Fowler, *Richardson Maturity Model*](https://martinfowler.com/articles/richardsonMaturityModel.html)).
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     L0["Nível 0<br/>Swamp of POX<br/>1 URL, tudo POST"] --> L1["Nível 1<br/>Recursos<br/>várias URLs"]
     L1 --> L2["Nível 2<br/>Verbos HTTP<br/>GET/POST/PUT/DELETE corretos"]
     L2 --> L3["Nível 3<br/>HATEOAS<br/>links guiam o cliente"]
 
-    style L0 fill:#D0021B,color:#fff
-    style L1 fill:#F5A623,color:#000
-    style L2 fill:#4A90D9,color:#fff
-    style L3 fill:#4A90D9,color:#fff
+    class L0 falha
+    class L1 destaque
+    class L2 neutro
+    class L3 neutro
 ```
 
 ### Nível 0 — Swamp of POX (Plain Old XML)

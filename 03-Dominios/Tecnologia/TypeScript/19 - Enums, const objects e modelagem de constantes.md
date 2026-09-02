@@ -107,6 +107,8 @@ Isso viola a garantia fundamental que você espera de uma constante tipada: que 
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     EN["enum numérico\nStatusPedido"]
     GEN["Gera IIFE no JS\nruntime object"]
     RM["Reverse mapping\nStatusPedido[0] = 'Pendente'\nStatusPedido['Pendente'] = 0"]
@@ -116,8 +118,8 @@ flowchart TD
     EN --> RM
     EN --> BH
 
-    style BH fill:#8a0000,color:#fff
-    style EN fill:#333,color:#fff
+    class BH falha
+    class EN neutro
 ```
 
 ---
@@ -185,6 +187,8 @@ O TypeScript apaga o objeto e substitui os usos por valores literais inline. Zer
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     CE["const enum"]
     ISO["isolatedModules: true\n(Vite, Next, esbuild)"]
     LIB["Exportado de lib\n→ consumidor sem TS"]
@@ -197,9 +201,9 @@ flowchart LR
     CE --> LIB --> ERRO2
     CE --> DTS --> ERRO3
 
-    style ERRO1 fill:#8a0000,color:#fff
-    style ERRO2 fill:#8a0000,color:#fff
-    style ERRO3 fill:#8a6d00,color:#fff
+    class ERRO1 falha
+    class ERRO2 falha
+    class ERRO3 destaque
 ```
 
 A recomendação da comunidade (e do TypeScript team) é evitar `const enum` exceto em cenários muito controlados (código não-público, sem ferramentas alternativas).
@@ -294,6 +298,7 @@ Você viu esse mecanismo em detalhe na nota [[15 - keyof, typeof e indexed acces
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     OBJ["const StatusPedido = {\n  Pendente: 'pending',\n  ...\n} as const"]
     TOF["typeof StatusPedido\n→ tipo do objeto com\n   literais readonly"]
     KOF["keyof typeof StatusPedido\n→ 'Pendente' | 'Processando' | ..."]
@@ -305,8 +310,8 @@ flowchart TD
     KOF --> IDA
     IDA --> TYPE
 
-    style OBJ fill:#1f6feb,color:#fff
-    style TYPE fill:#1f6feb,color:#fff
+    class OBJ neutro
+    class TYPE neutro
 ```
 
 ---
@@ -417,7 +422,6 @@ if (ehPrioridade(raw)) {
 ## Tabela comparativa honesta
 
 ```mermaid
-%%{init: {"theme": "dark"}}%%
 quadrantChart
     title Abordagens para conjuntos de constantes em TS
     x-axis "Overhead de runtime" --> "Zero runtime"

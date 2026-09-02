@@ -66,13 +66,17 @@ Toda a tabela abaixo é uma forma diferente de mexer no n_kv — ou de atacar o 
 
 ```mermaid
 graph LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["MHA\n1 K/V por head\nn_kv = 32\nQualidade máxima\nCache máximo"] --> B["MQA\n1 K/V para todos\nn_kv = 1\nCache mínimo\nQualidade cai"]
     B --> C["GQA\nGrupos de heads\nn_kv = 2–8\nEquilíbrio\nO padrão atual"]
     C --> D["MLA\nCompressão low-rank\nn_kv = latente\nCache menor que MQA\nQualidade acima MHA"]
-    style A fill:#ff9999,stroke:#cc0000
-    style B fill:#ffeb99,stroke:#cc9900
-    style C fill:#99ff99,stroke:#009900
-    style D fill:#99ccff,stroke:#0066cc
+    class A falha
+    class B destaque
+    class C ok
+    class D neutro
 ```
 
 ### MHA — Multi-Head Attention (2017)
@@ -88,6 +92,7 @@ Primeira grande pancada: e se *todos* os heads compartilhassem **um único** par
 
 ```mermaid
 graph TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "MQA: 4 heads, 1 K/V"
         KV["K/V único\n(único par no cache)"]
         Q1["Query 1"] --> KV
@@ -96,7 +101,7 @@ graph TD
         Q4["Query 4"] --> KV
         KV --> O["Outputs\ncombinados"]
     end
-    style KV fill:#99ff99,stroke:#00cc00
+    class KV ok
 ```
 
 O cache encolhe de n_heads × (K+V) para apenas 1 × (K+V). Para 32 heads: **32× menor**. De 52 GB → 1,6 GB.
@@ -112,6 +117,7 @@ O meio-termo que venceu. Em vez de 1 K/V para todos ou n_heads K/Vs distintos, G
 
 ```mermaid
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "GQA: 8 heads, 2 grupos (G=2)"
         KV1["K/V Grupo 1"]
         KV2["K/V Grupo 2"]
@@ -124,8 +130,8 @@ graph TD
         Q7["Q head 7"] --> KV2
         Q8["Q head 8"] --> KV2
     end
-    style KV1 fill:#ffe0b3,stroke:#ff9800
-    style KV2 fill:#ffe0b3,stroke:#ff9800
+    class KV1 destaque
+    class KV2 destaque
 ```
 
 Com G=8 grupos (de 32 heads), o cache encolhe 4× comparado ao MHA — de 52 GB → 13 GB para 100k tokens. A perda de qualidade é mínima: os heads dentro de um grupo ainda têm Queries independentes; só o K/V é compartilhado.
@@ -144,12 +150,14 @@ MLA muda a estratégia completamente. Em vez de reduzir o número de K/V (dial M
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["K, V originais\nd_model × n_heads\n(dados no forward pass)"] --> B["Projeção de compressão\nW_DKV: down-projection"]
     B --> C["Vetor latente c_KV\n~512 dims\n← APENAS ISSO vai pro cache"]
     C --> D["Projeção de reconstrução\nW_UK, W_UV: up-projection"]
     D --> E["K, V reconstruídos\npara calcular atenção"]
-    style C fill:#99ccff,stroke:#0066cc
-    style A fill:#ff9999,stroke:#cc0000
+    class C neutro
+    class A falha
 ```
 
 O cache armazena apenas o vetor comprimido (~512 dimensões) em vez dos K/V completos (n_heads × d_head = 32 × 128 = 4096 por camada). Na hora de calcular a atenção, o vetor latente é "descomprimido" via up-projection.

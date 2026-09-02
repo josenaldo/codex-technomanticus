@@ -97,6 +97,10 @@ Vale encaixar "container gerenciado" no mesmo espectro que a nota 01 do Galho 11
 
 ```mermaid
 flowchart LR
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     VM["VM crua<br/>você instala Docker,<br/>gerencia tudo à mão"]
     VMOp["Container numa VM<br/>que você opera<br/>(docker-compose, systemd)"]
     Gerenciado["Container GERENCIADO<br/>provedor cuida do<br/>scheduler/nós/scaling"]
@@ -104,10 +108,10 @@ flowchart LR
 
     VM --> VMOp --> Gerenciado --> Serverless
 
-    style VM fill:#D0021B,color:#fff
-    style VMOp fill:#F5A623,color:#000
-    style Gerenciado fill:#4A90D9,color:#fff
-    style Serverless fill:#262,color:#fff
+    class VM falha
+    class VMOp destaque
+    class Gerenciado neutro
+    class Serverless ok
 ```
 
 O primeiro degrau — **VM crua com Docker instalado** — é o que qualquer pessoa faz ao aprender container: uma instância EC2 ou um Droplet, você mesmo instala o Docker, roda `docker run` manualmente ou com um `docker-compose.yml`, e se a instância reiniciar ou o container travar, é você quem percebe e resolve. Todo o trabalho que a seção anterior listou — scheduling, health check, restart, escala, service discovery — é seu, mesmo que o container em si já esteja "empacotado" corretamente.
@@ -136,6 +140,9 @@ Aqui é onde AWS e DigitalOcean divergem de forma mais visível do que em qualqu
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Start(["Preciso rodar um container<br/>gerenciado em produção"])
 
     Start --> AWS_Q{"AWS"}
@@ -150,11 +157,11 @@ flowchart TD
     DO_Q --> AppPlat["App Platform<br/>caminho PaaS: git push ou imagem,<br/>DO decide tudo"]
     DO_Q --> DOKS["DOKS<br/>Kubernetes gerenciado,<br/>API k8s padrão"]
 
-    style Fargate fill:#262,color:#fff
-    style EC2LT fill:#245,color:#fff
-    style AppPlat fill:#262,color:#fff
-    style DOKS fill:#245,color:#fff
-    style EKS fill:#653,color:#fff
+    class Fargate ok
+    class EC2LT neutro
+    class AppPlat ok
+    class DOKS neutro
+    class EKS destaque
 ```
 
 Do lado **AWS**, o caminho central é o **Amazon ECS** (Elastic Container Service): um scheduler proprietário da AWS, mais simples de operar do que Kubernetes, organizado em torno de **task definitions** (o blueprint de um container — imagem, CPU, memória, variáveis de ambiente), **tasks** (uma execução, que roda e para — bom para jobs) e **services** (uma quantidade desejada de tasks rodando continuamente, com auto-scaling). Dentro do ECS você escolhe **onde** essas tasks efetivamente rodam: no **modelo EC2**, você ainda provisiona e gerencia as instâncias que compõem o cluster (o ECS agenda os containers nelas, mas as máquinas são suas); no **AWS Fargate**, você não vê nem escolhe nenhuma instância — Fargate é, segundo a própria documentação da AWS, "uma tecnologia serverless, paga pelo uso" que remove completamente a escolha de tipo de servidor e o dimensionamento de cluster. Existe ainda um terceiro caminho — **Amazon EKS** (Elastic Kubernetes Service) — que troca o scheduler proprietário da AWS pelo Kubernetes de verdade, com a mesma API que roda em qualquer nuvem ou datacenter, ao custo de mais complexidade operacional.

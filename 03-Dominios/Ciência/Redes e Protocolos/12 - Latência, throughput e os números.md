@@ -89,6 +89,9 @@ O diagrama abaixo desenha a pirâmide. Note como cada degrau abaixo é dramatica
 
 ```mermaid
 flowchart TD
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     L1["Cache L1<br/>~1 ns"] --> RAM["RAM<br/>~100 ns<br/>(100&times; mais lento)"]
     RAM --> SSD["SSD random read<br/>~16-100 &mu;s<br/>(100-1000&times;)"]
     SSD --> DC["Rede no datacenter<br/>~0,5 ms<br/>(salto p/ a rede)"]
@@ -96,13 +99,13 @@ flowchart TD
     DC --> REG["Inter-regiao<br/>~30-100 ms<br/>(100&times; a rede local)"]
     REG --> INTER["Intercontinental<br/>~100-300 ms<br/>(limite fisico: luz)"]
 
-    style L1 fill:#1b5e20,color:#fff
-    style RAM fill:#2e7d32,color:#fff
-    style SSD fill:#f9a825,color:#000
-    style DC fill:#ef6c00,color:#fff
-    style HDD fill:#c62828,color:#fff
-    style REG fill:#b71c1c,color:#fff
-    style INTER fill:#6a1b1c,color:#fff
+    class L1 ok
+    class RAM ok
+    class SSD destaque
+    class DC destaque
+    class HDD falha
+    class REG falha
+    class INTER falha
 ```
 
 Leitura do diagrama: descendo a pirâmide, a cor esquenta e o custo dispara. O verde (memória) é o reino dos nanossegundos; o amarelo (SSD) salta para microssegundos; o laranja/vermelho (rede e disco mecânico) entra nos milissegundos. Cada transição de cor é pelo menos uma ordem de grandeza. O fundo da pirâmide — intercontinental — é onde a física, não a engenharia, manda.
@@ -132,6 +135,8 @@ Isso é o **fan-out amplificando a cauda**. Quanto mais subsistemas uma request 
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     REQ["1 request do usuario<br/>espera por TODOS"] --> B1["Backend 1<br/>p50: 5 ms"]
     REQ --> B2["Backend 2<br/>p50: 5 ms"]
     REQ --> B3["Backend 3<br/>p50: 5 ms"]
@@ -144,9 +149,9 @@ flowchart TD
     DOTS --> JOIN
     B100 --> JOIN
 
-    style B100 fill:#c62828,color:#fff
-    style JOIN fill:#b71c1c,color:#fff
-    style REQ fill:#1565c0,color:#fff
+    class B100 falha
+    class JOIN falha
+    class REQ neutro
 ```
 
 Leitura do diagrama: a request abre em 100 chamadas paralelas. Quase todas voltam rápido (5 ms), mas basta UMA cair na cauda lenta (vermelho, 800 ms) para a resposta final — que precisa de todos — ficar travada nesse pior caso. Com 100 backends, a probabilidade de ao menos um estar na cauda é alta. Por isso o p99 de um backend vira a experiência típica do agregado.
@@ -217,6 +222,8 @@ Ou seja: para sustentar esse tráfego, **200 requests** estão sendo processadas
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     IN["Chegam<br/>1000 req/s<br/>(throughput &lambda;)"] --> SYS
 
     subgraph SYS["Sistema em regime"]
@@ -225,9 +232,9 @@ flowchart LR
 
     SYS --> OUT["Saem<br/>1000 req/s"]
 
-    style IN fill:#1565c0,color:#fff
-    style FLIGHT fill:#2e7d32,color:#fff
-    style OUT fill:#1565c0,color:#fff
+    class IN neutro
+    class FLIGHT ok
+    class OUT neutro
 ```
 
 Leitura do diagrama: o que entra (1000 req/s) tem que sair (1000 req/s) em regime estável — senão a fila explode. O que fica "preso" no meio, em voo, é a concorrência: throughput vezes latência, aqui 200 requests. Aumente a latência sem mexer no resto e a caixa do meio incha; o sistema precisa de mais capacidade simultânea só para manter o mesmo throughput.
@@ -266,6 +273,8 @@ A mecânica: quando o gargalo do caminho é um link lento (seu upload doméstico
 
 ```mermaid
 flowchart TD
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     SRC["Trafego chega rapido<br/>(download saturando)"] --> BUF
 
     subgraph BUF["Buffer GIGANTE no roteador/modem"]
@@ -277,10 +286,10 @@ flowchart TD
     Q -. "nada descartado<br/>=> TCP nao ve perda<br/>=> nao desacelera" .-> Q
     LINK --> RTT["RTT de TODO o trafego<br/>incha: ping de 20 ms vira 1-2 s"]
 
-    style BUF fill:#c62828,color:#fff
-    style Q fill:#b71c1c,color:#fff
-    style RTT fill:#6a1b1c,color:#fff
-    style LINK fill:#ef6c00,color:#fff
+    class BUF falha
+    class Q falha
+    class RTT falha
+    class LINK destaque
 ```
 
 Leitura do diagrama: o tráfego chega mais rápido do que o link lento consegue escoar. Num mundo são, o excesso seria descartado e o TCP frearia. Aqui o buffer gigante (vermelho) absorve tudo e a fila só cresce — sem descarte, o TCP nunca recebe o sinal de "pare". A conta é paga por **todo** o tráfego que atravessa essa fila: o RTT de coisas que nem têm a ver com o download (ping, VoIP) incha junto.

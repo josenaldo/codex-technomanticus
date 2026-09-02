@@ -103,6 +103,8 @@ A tupla, como objeto, nunca trocou de identidade nem de quantas/quais referênci
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph tup["tupla t (estrutura imutável)"]
         direction LR
         e0["t[0] = 1"]
@@ -111,9 +113,9 @@ flowchart LR
     end
     e2 --> lst["lista mutável<br/>[3, 4, 5]"]
 
-    style tup fill:#4A90D9,color:#fff
-    style e2 fill:#4A90D9,color:#fff
-    style lst fill:#F5A623,color:#000
+    class tup neutro
+    class e2 neutro
+    class lst destaque
 ```
 
 ### A consequência prática: hashability

@@ -58,8 +58,10 @@ A regra prática: **use `const` por padrão. Use `let` quando precisar reatribui
 **Escopo** é a região do código onde uma variável pode ser acessada. JavaScript tem três zonas de escopo:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     G["🌐 Escopo Global\n(fora de tudo)"]
     F["📦 Escopo de Função\n(dentro de function)"]
     B["🔒 Escopo de Bloco\n(dentro de {} com let/const)"]
@@ -67,9 +69,9 @@ graph TD
     G -->|contém| F
     F -->|contém| B
 
-    style G fill:#4A90D9,color:#fff
-    style F fill:#F5A623,color:#fff
-    style B fill:#7B68EE,color:#fff
+    class G neutro
+    class F destaque
+    class B marca
 ```
 
 ### Escopo global
@@ -210,7 +212,6 @@ O shadowing não modifica a variável do escopo externo — cria uma nova variá
 Quando o JavaScript precisa resolver um nome de variável, percorre a **scope chain** (cadeia de escopos — ver [[Dicionário de JavaScript#scope chain (cadeia de escopos)|Dicionário]]) do escopo mais interno para o mais externo até encontrar a declaração — ou lançar `ReferenceError` se chegar ao global sem encontrar.
 
 ```mermaid
-%%{init: {"theme": "base"}}%%
 graph LR
     A["Escopo do bloco\n(busca aqui primeiro)"]
     B["Escopo da função\n(se não achou)"]
@@ -286,7 +287,6 @@ A **TDZ** (Zona Morta Temporal) é o período entre o início do bloco e a linha
 Veja o fluxo:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Motor
     participant Código

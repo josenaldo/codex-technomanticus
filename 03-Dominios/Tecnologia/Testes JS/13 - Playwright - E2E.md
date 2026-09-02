@@ -45,16 +45,16 @@ A fixture **`page`** é uma aba de browser isolada, entregue pronta a cada teste
 ## As quatro colunas do Playwright
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[Playwright] --> B["Locators<br/>resilientes, user-centric"]
     A --> C["Auto-wait<br/>espera acionável, sem sleep"]
     A --> D["Web-first expect<br/>retry embutido"]
     A --> E["Trace viewer<br/>caixa-preta do teste"]
-    style B fill:#4A90D9,color:#fff
-    style C fill:#4A90D9,color:#fff
-    style D fill:#4A90D9,color:#fff
-    style E fill:#4A90D9,color:#fff
+    class B neutro
+    class C neutro
+    class D neutro
+    class E neutro
 ```
 
 ### Locators e auto-waiting

@@ -36,6 +36,7 @@ O trade-off é real: se você precisa de um nicho muito específico — um servi
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph GCP["GCP — engenharia Google exportada"]
         Rede["Rede global<br/>(VPC single, backbone próprio)"]
         Dados["Dados/Analytics<br/>(BigQuery, Spanner)"]
@@ -48,7 +49,7 @@ flowchart TD
     K8s -.->|roda cargas de| ML
     Dados -.->|alimenta| ML
 
-    style GCP fill:#4285F4,color:#fff,stroke:#333
+    class GCP neutro
 ```
 
 ## O núcleo traduzido: compute, storage, dados, rede

@@ -42,6 +42,8 @@ Rob Pike resume a relação com uma frase que fecha o raciocínio: paralelismo �
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Conc["Concorrência — estrutura do código"]
         direction LR
         T1[Tarefa 1] ~~~ T2[Tarefa 2] ~~~ T3[Tarefa 3]
@@ -56,9 +58,9 @@ flowchart TB
     ao mesmo tempo
     (concorrente E paralelo)"]
 
-    style Conc fill:#4A90D9,color:#fff
-    style Seq fill:#F5A623,color:#000
-    style Par fill:#7ED321,color:#000
+    class Conc neutro
+    class Seq destaque
+    class Par destaque
 ```
 
 O diagrama é o resumo visual do argumento inteiro: a caixa "Conc" — a estrutura em tarefas independentes — não muda. O que muda, dependendo do hardware disponível em tempo de execução, é se essas tarefas acabam intercaladas num núcleo só ou espalhadas em vários ao mesmo tempo. O mesmo código-fonte produz os dois resultados, sem alteração nenhuma.

@@ -33,18 +33,19 @@ Em todos, o Factory Method sozinho não basta, porque ele cria um objeto de cada
 ## A ideia
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Cliente -->|usa| AF{{«interface» UIFactory}}
     AF -.implementada por.-> Claro[TemaClaroFactory]
     AF -.implementada por.-> Escuro[TemaEscuroFactory]
     Claro --> BC[BotãoClaro] & JC[JanelaClara]
     Escuro --> BE[BotãoEscuro] & JE[JanelaEscura]
 
-    style AF fill:#4A90D9,color:#fff
-    style Claro fill:#4A90D9,color:#fff
-    style Escuro fill:#4A90D9,color:#fff
-    style Cliente fill:#F5A623,color:#000
+    class AF neutro
+    class Claro neutro
+    class Escuro neutro
+    class Cliente destaque
 ```
 
 O cliente recebe **uma** `UIFactory` e chama `criarBotão()`, `criarJanela()`. Qual família ele obtém foi decidido num único ponto (na inicialização); dali em diante, tudo o que ele cria é automaticamente coerente.

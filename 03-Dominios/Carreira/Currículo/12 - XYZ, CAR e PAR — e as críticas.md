@@ -38,8 +38,8 @@ A formulação mais citada da fórmula XYZ é curta o bastante para caber numa f
 Vale reparar, antes de seguir, que a fórmula XYZ e a fórmula da nota 11 descrevem a mesma linha por ângulos ligeiramente diferentes, sem serem incompatíveis. A nota 11 organiza a frase pela ordem em que ela deve ser lida: verbo primeiro, o que foi feito em seguida, resultado por último. A fórmula XYZ organiza a mesma frase pela função de cada parte, não pela posição — e, na prática, quem escreve uma linha seguindo XYZ costuma reordenar os três elementos na hora de redigir, porque "accomplished X as measured by Y by doing Z" soa correto em inglês formal de gabarito, mas rígido demais se copiado literalmente frase por frase. É comum, e recomendável, inverter Z para o início da linha em português — "automatizei o pipeline de CI/CD, reduzindo o tempo de deploy de uma hora para três minutos" — porque isso alinha a fórmula XYZ com a fórmula da nota 11: o Z vira o verbo de ação que abre a frase, o X e o Y juntos viram o resultado que a fecha. As duas fórmulas não competem; XYZ é uma forma de nomear e lembrar os mesmos três ingredientes que a nota 11 já tinha descrito sem dar nome a cada um.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph XYZ["XYZ — accomplished X as measured by Y, by doing Z"]
         X["X<br/>a realização"] 
         Y["Y<br/>a métrica"]
@@ -55,9 +55,9 @@ graph LR
     X -.junto com.-> R
     Y -.junto com.-> R
 
-    style X fill:#4A90D9,color:#fff
-    style Y fill:#4A90D9,color:#fff
-    style Z fill:#4A90D9,color:#fff
+    class X neutro
+    class Y neutro
+    class Z neutro
 ```
 
 O diagrama fixa o que a seção anterior descreveu em prosa: o Z da fórmula XYZ carrega o mesmo trabalho que o verbo de ação mais "o que foi feito" carregam na nota 11, e o par X-Y junto carrega o mesmo trabalho que o resultado carrega lá. É a mesma linha, vista de dois ângulos — um que nomeia por função (X, Y, Z), outro que nomeia por posição na frase (verbo, o que foi feito, resultado).
@@ -88,8 +88,9 @@ O que importa mais do que a origem, para efeito prático desta nota, é que CAR 
 É neste ponto que vale marcar, com clareza que quase nenhum guia de mercado se dá ao trabalho de marcar, uma distinção que muda o que cada acrônimo serve para fazer: **STAR** — *Situation, Task, Action, Result* — não é uma quarta irmã de XYZ, CAR e PAR. STAR é estrutura de **resposta falada numa entrevista comportamental**, não de linha escrita num documento, e a diferença entre os dois gêneros não é sutil — é a diferença entre uma frase que precisa caber numa única linha de página e uma resposta oral que ocupa cerca de dois minutos, com proporção de tempo declarada entre as quatro partes. A [[03-Dominios/Carreira/Entrevistas/06 - STAR e suas variantes|nota 06 de Entrevistas]] trata do STAR a fundo — o time-box de 10%/10%/60%/20%, a variante STAR-L para histórias de fracasso, o hábito de dizer "eu" em vez de "a gente" — e esta nota não repete nada disso; ela existe só para fixar a fronteira que impede alguém de confundir os dois gêneros.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TD
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Escrito["Escrito — uma linha de currículo"]
         XYZb["XYZ<br/>X · Y · Z"]
         CARb["CAR<br/>Challenge · Action · Result"]
@@ -103,10 +104,10 @@ graph TD
     CARb -.mesma lógica de.-> PARb
     STARb -.NÃO é a mesma coisa que.-> XYZb
 
-    style STARb fill:#F5A623,color:#000
-    style XYZb fill:#4A90D9,color:#fff
-    style CARb fill:#4A90D9,color:#fff
-    style PARb fill:#4A90D9,color:#fff
+    class STARb destaque
+    class XYZb neutro
+    class CARb neutro
+    class PARb neutro
 ```
 
 O motivo estrutural para a diferença é simples de nomear: uma linha de currículo é lida em segundos por um leitor que já sabe, pelo cargo e pela seção do documento, boa parte do contexto — ele não precisa que a pessoa reconstrua a situação antes de chegar à ação, porque não há tempo de página nem paciência de leitor para isso. Uma resposta comportamental falada, ao contrário, é a única chance que o entrevistador tem de ouvir o contexto da boca de quem viveu a história, e é por isso que STAR reserva 10% do tempo, de propósito, para a *Situation* — algo que uma linha de bullet, no formato XYZ, CAR ou PAR, simplesmente não tem espaço para fazer, e não deveria tentar fazer. Uma linha de currículo que tenta abrir com "situação" da mesma forma que uma resposta falada abre normalmente fica pesada demais para o gênero — é o erro inverso do que a nota 06 já descreveu como o erro mais comum do lado falado, que é gastar tempo demais em contexto e pouco na ação.

@@ -189,8 +189,9 @@ export const usersSlice = createSlice({
 O Redux implementa um ciclo estritamente unidirecional. Nenhum componente modifica o state diretamente — ele dispara uma action, que passa pelo middleware, chega ao reducer, gera um novo state, e o store notifica quem está assinando via `useSelector`:
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "edgeLabelBackground": "#ffffff", "fontSize": "14px"}}}%%
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     UI["Componente React\nuseSelector / useDispatch"]
     MW["Middleware\nThunk · Logger · Saga"]
     R["Reducer\ncreateSlice"]
@@ -201,10 +202,10 @@ graph LR
     R -->|"novo state imutável"| S
     S -->|"notifica subscribers"| UI
 
-    style UI fill:#4A90D9,color:#fff,stroke:#2d6aa0
-    style MW fill:#F5A623,color:#fff,stroke:#c47d0e
-    style R fill:#4A90D9,color:#fff,stroke:#2d6aa0
-    style S fill:#4A90D9,color:#fff,stroke:#2d6aa0
+    class UI neutro
+    class MW destaque
+    class R neutro
+    class S neutro
 ```
 
 A unidirecionalidade é o que torna o Redux auditável: em qualquer momento, você pode abrir o Redux DevTools e ver exatamente qual action foi disparada, em qual ordem, com qual payload, e qual era o state antes e depois. Isso é *time-travel debugging* — e é o trunfo que Zustand ainda não conseguiu replicar com a mesma fidelidade.

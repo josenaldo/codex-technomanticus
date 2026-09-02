@@ -93,7 +93,6 @@ A ordem importa: as regras são aplicadas de cima para baixo, e a última que ca
 ## Onde a regra pode morar
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph TB
     A["<b>.gitignore</b> na raiz do projeto<br/>versionado, vale para todo o grupo"] --> D["O que o Git ignora"]
     B["<b>.gitignore</b> numa subpasta<br/>vale dali para baixo"] --> D

@@ -34,8 +34,9 @@ O pentest está marcado para sexta-feira. Esta nota é o trabalho de terça a qu
 > Porque isso esconderia exatamente o que esta nota existe para mostrar: quais decisões específicas do Galho 10 precisam mudar, e por quê. Reescrever do zero produziria uma API segura, mas sem o rastro que liga cada correção a um incidente concreto — o mesmo raciocínio que fez as capstones dos Galhos 9 e 10 evoluírem código existente em vez de apresentar a versão final pronta. Segurança se aprende vendo o "antes" quebrar e o "depois" resistir, não só lendo a versão final.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     G10["API do Galho 10\n(funcional, ingênua)"] --> E1["Etapa 1\nAuth real (N05)"]
     E1 --> E2["Etapa 2\nBroken Access Control (N05)"]
     E2 --> E3["Etapa 3\nSSTI corrigida (N02)"]
@@ -44,8 +45,8 @@ flowchart LR
     E5 --> E6["Etapa 6\nValidação revisitada (N04)"]
     E6 --> API["API blindada\npronta para pentest"]
 
-    style G10 fill:#8b6914,color:#fff
-    style API fill:#2d7a4a,color:#fff
+    class G10 destaque
+    class API ok
 ```
 
 ## Etapa 0: o que muda no modelo — `Usuario` ganha uma senha
@@ -283,7 +284,6 @@ def remover_tarefa(
 Repare que `TarefaNaoPertenceAoUsuario` — a segunda exceção que a capstone do Galho 10 já tinha registrado, com seu próprio exception handler devolvendo 404 — deixa de ser necessária nesta versão: como a própria query já filtra por `usuario_id == current_user.id`, uma tarefa de outro usuário simplesmente **não existe** do ponto de vista da consulta, então `TarefaNaoEncontrada` sozinha já cobre os dois casos. É a mesma economia que a nota 05 nomeou como vantagem estrutural: filtrar na query, em vez de buscar e comparar depois, torna estruturalmente impossível esquecer a checagem de posse — não existe uma segunda etapa para alguém remover por engano numa refatoração futura.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#D0021B", "primaryBorderColor": "#8B0000", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant Atacante
     participant API_Antes as API (Galho 10)
@@ -596,8 +596,11 @@ Repare que este endpoint reusa `_buscar_tarefa_do_usuario` da Etapa 2 — a chec
 ## O sistema completo, com as seis etapas amarradas
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
+    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Entrada["Camada transversal"]
         MW["Middleware de correlation ID\n(Galho 10, N07)"]
         RL["slowapi — rate limit\nem /usuarios e /token\n(N08)"]
@@ -626,12 +629,12 @@ flowchart TB
     SET -.->|"lido por"| TOKEN
     SET -.->|"lido por"| RL
 
-    style RL fill:#4A90D9,color:#fff
-    style DEP_AUTH fill:#4A90D9,color:#fff
-    style FILTRO fill:#2d7a4a,color:#fff
-    style SSTI fill:#8b6914,color:#fff
-    style DEST fill:#8b6914,color:#fff
-    style SET fill:#c0392b,color:#fff
+    class RL neutro
+    class DEP_AUTH neutro
+    class FILTRO ok
+    class SSTI destaque
+    class DEST destaque
+    class SET falha
 ```
 
 ## Antes e depois: quatro ataques que passavam a não passar mais

@@ -35,7 +35,6 @@ Bancos em escala respondem a duas perguntas independentes, e misturá-las é a f
 2. **Como eu tenho mais de uma cópia do dado, em mais de uma máquina?** — é a pergunta de *replicação*, e ela se aplica a **qualquer** modelo. Postgres replica. MongoDB replica. Cassandra replica.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#4A90D9"}}}%%
 graph TD
     Q["Escalar o banco"] --> M["Eixo 1: Modelo de dado<br/>(SQL vs NoSQL)"]
     Q --> R["Eixo 2: Cópias do dado<br/>(Replicação)"]
@@ -143,7 +142,6 @@ Voltando ao fio condutor da nota. Antes de sharding, antes de trocar de modelo d
 A ideia: um nó — o **leader** — recebe todas as escritas. Ele registra cada mudança num log de replicação e transmite esse log para um ou mais **followers** (réplicas), que aplicam as mesmas mudanças, na mesma ordem. Leituras podem ir para o leader ou para qualquer follower.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#F5A623"}}}%%
 graph LR
     App["Aplicação"] -->|"escreve"| L["Leader"]
     App -->|"lê"| F1["Follower 1<br/>(réplica de leitura)"]
@@ -199,7 +197,6 @@ Como o log de replicação viaja pela rede e o follower precisa processá-lo, ex
 Esse lag produz um sintoma clássico: **read-your-own-writes** quebrado. Um usuário atualiza a própria foto de perfil (escrita vai para o leader), a página recarrega e lê de uma réplica que ainda não recebeu a atualização — a foto antiga reaparece por um instante. Não é bug de aplicação; é a física da replicação assíncrona se manifestando na UI.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 sequenceDiagram
     participant U as Usuário
     participant L as Leader
@@ -271,7 +268,6 @@ O processo de failover em si tem três passos, e cada um é uma fonte de bug em 
 O risco central é o **split brain**: dois nós acreditando, ao mesmo tempo, que são o leader — geralmente porque o "antigo" leader não caiu de verdade, só ficou isolado por uma partição de rede, e continua aceitando escritas enquanto um novo leader já foi eleito do outro lado. As duas metades divergem, e reconciliar depois pode significar perder escritas de um dos lados.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryBorderColor": "#2E5C8A", "lineColor": "#D0021B"}}}%%
 graph TD
     L0["Leader original"] -->|"partição de rede<br/>isola o leader"| ISOL["Leader isolado ainda<br/>aceita escritas (achando<br/>que está tudo normal)"]
     F["Followers (maioria)<br/>não recebem heartbeat"] -->|"timeout"| ELECT["Elegem novo leader<br/>via quórum"]

@@ -44,7 +44,6 @@ O Process Manager cria essa entidade. Para cada instância — cada pedido, cada
 - **o que fazer** quando cada resposta chegar, quando o prazo estourar, ou quando um passo falhar.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 stateDiagram-v2
     [*] --> Iniciado
     Iniciado --> AguardandoEstoque: reservar

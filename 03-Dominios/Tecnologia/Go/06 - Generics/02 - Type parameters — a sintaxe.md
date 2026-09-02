@@ -55,6 +55,8 @@ func Map[T, U any](s []T, f func(T) U) []U {
 
 ```mermaid
 flowchart LR
+    classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["func"] --> B["Map"]
     B --> C["[T, U any]"]
     C --> D["(s []T, f func(T) U)"]
@@ -65,8 +67,8 @@ flowchart LR
     D -.->|"parâmetros normais,\nusando T e U como tipos"| D
     E -.->|"tipo de retorno,\ntambém usa U"| E
 
-    style C fill:#F5A623,color:#000
-    style B fill:#4A90D9,color:#fff
+    class C destaque
+    class B neutro
 ```
 
 Comparado a uma declaração de função comum, existe exatamente uma peça nova: o colchete `[T, U any]` entre o nome da função e a lista de parâmetros normais. Vale nomear cada parte com precisão — é a terminologia que a [especificação da linguagem](https://go.dev/ref/spec#Type_parameter_declarations) usa e que reaparece nas próximas notas do galho:
