@@ -1,6 +1,6 @@
 {
-  "cssTheme": "Obuntu",
-  "accentColor": "#0b9b9d",
+  "cssTheme": "Codex Technomanticus",
+  "accentColor": "#be73f0",
   "theme": "obsidian",
   "enabledCssSnippets": [
     "mermaid-tema"

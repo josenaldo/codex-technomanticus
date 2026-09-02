@@ -1,0 +1,690 @@
+/* ==========================================================================
+   Codex Technomanticus — tema Obsidian
+   Mesma pele do Codex publicado (Quartz) e de josenaldo.com.br.
+   Contrato de tokens: handoff-codex-v2/spec/01-tokens.md
+   Dark permanente: o modo claro recebe os MESMOS valores (igual ao Quartz).
+   ========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap");
+
+/* --------------------------------------------------------------------------
+   1. Tokens do domínio (--jm-*)
+   -------------------------------------------------------------------------- */
+.theme-dark,
+.theme-light {
+  --jm-bg: #0B0E13;
+  --jm-surface: #14181F;
+  --jm-band: #0E1218;
+  --jm-result: #191233;
+  --jm-brand: #8855DF;
+  --jm-brand-text: #B69BF0;
+  --jm-accent: #FFAA00;
+
+  --jm-ink: #E9ECF2;
+  --jm-body: #C6CCD8;
+  --jm-nav: #98A0B0;
+  --jm-dim: #7C8494;
+  --jm-marker: #4E5666;
+  --jm-sep: #333B4A;
+
+  --jm-line: rgba(255, 255, 255, .06);
+  --jm-fill: rgba(255, 255, 255, .05);
+  --jm-fill-hover: rgba(255, 255, 255, .09);
+  --jm-shadow-card: 0 1px 2px rgba(0, 0, 0, .4), 0 18px 40px -28px rgba(0, 0, 0, 1);
+  --jm-shadow-overlay: 0 30px 70px -30px rgba(0, 0, 0, 1);
+  --jm-radius-card: 16px;
+  --jm-radius-control: 10px;
+
+  --jm-success: #4ADE80;
+  --jm-success-bg: rgba(74, 222, 128, .13);
+  --jm-danger: #FF6B6B;
+  --jm-danger-bg: rgba(255, 107, 107, .14);
+
+  --jm-font-head: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --jm-font-body: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --jm-font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+
+/* --------------------------------------------------------------------------
+   2. Mapeamento para as variáveis do Obsidian
+   -------------------------------------------------------------------------- */
+.theme-dark,
+.theme-light {
+  /* tipografia */
+  --font-text-theme: var(--jm-font-body);
+  --font-interface-theme: var(--jm-font-body);
+  --font-monospace-theme: var(--jm-font-mono);
+  --font-text-size: 17px;
+  --line-height-normal: 1.75;
+  --line-height-tight: 1.4;
+  --p-spacing: 1rem;
+  --file-line-width: 68ch;
+  --font-smallest: .72rem;
+
+  /* superfícies */
+  --background-primary: var(--jm-bg);
+  --background-primary-alt: var(--jm-band);
+  --background-secondary: var(--jm-band);
+  --background-secondary-alt: var(--jm-surface);
+  --background-modifier-hover: var(--jm-fill);
+  --background-modifier-active-hover: var(--jm-fill-hover);
+  --background-modifier-border: var(--jm-line);
+  --background-modifier-border-hover: rgba(255, 255, 255, .10);
+  --background-modifier-border-focus: var(--jm-accent);
+  --background-modifier-form-field: var(--jm-band);
+  --background-modifier-box-shadow: rgba(0, 0, 0, .5);
+  --background-modifier-success: var(--jm-success-bg);
+  --background-modifier-error: var(--jm-danger-bg);
+  --background-modifier-error-hover: rgba(255, 107, 107, .22);
+  --background-modifier-message: var(--jm-surface);
+  --divider-color: var(--jm-line);
+  --divider-color-hover: rgba(136, 85, 223, .5);
+
+  /* texto */
+  --text-normal: var(--jm-body);
+  --text-muted: var(--jm-nav);
+  --text-faint: var(--jm-dim);
+  --text-accent: var(--jm-brand-text);
+  --text-accent-hover: var(--jm-accent);
+  --text-on-accent: #FFFFFF;
+  --text-selection: rgba(136, 85, 223, .28);
+  --text-highlight-bg: rgba(255, 170, 0, .35);
+  --text-highlight-bg-active: rgba(255, 170, 0, .5);
+  --text-error: var(--jm-danger);
+  --text-success: var(--jm-success);
+  --text-warning: var(--jm-accent);
+  --bold-color: var(--jm-ink);
+  --bold-weight: 600;
+  --italic-color: inherit;
+
+  /* ação / marca */
+  --interactive-normal: var(--jm-fill);
+  --interactive-hover: var(--jm-fill-hover);
+  --interactive-accent: var(--jm-brand);
+  --interactive-accent-hover: #9A6CE6;
+  --icon-color: var(--jm-nav);
+  --icon-color-hover: var(--jm-ink);
+  --icon-color-active: var(--jm-accent);
+  --icon-color-focused: var(--jm-ink);
+
+  /* forma */
+  --radius-s: 6px;
+  --radius-m: var(--jm-radius-control);
+  --radius-l: 14px;
+  --radius-xl: var(--jm-radius-card);
+  --input-radius: var(--jm-radius-control);
+  --modal-radius: 18px;
+  --modal-background: var(--jm-surface);
+  --modal-border-color: transparent;
+  --modal-border-width: 0;
+  --prompt-border-width: 0;
+  --shadow-s: 0 1px 2px rgba(0, 0, 0, .4);
+  --shadow-l: var(--jm-shadow-card);
+  --input-shadow: none;
+  --input-shadow-hover: none;
+
+  /* links (spec/03) */
+  --link-color: var(--jm-body);
+  --link-color-hover: var(--jm-ink);
+  --link-decoration: none;
+  --link-decoration-hover: none;
+  --link-weight: inherit;
+  --link-external-color: var(--jm-brand-text);
+  --link-external-color-hover: var(--jm-accent);
+  --link-external-decoration: none;
+  --link-external-decoration-hover: none;
+  --link-unresolved-color: var(--jm-dim);
+  --link-unresolved-opacity: 1;
+  --link-unresolved-decoration-style: dashed;
+  --link-unresolved-decoration-color: rgba(124, 132, 148, .6);
+
+  /* títulos */
+  --heading-formatting: var(--jm-sep);
+  --inline-title-font: var(--jm-font-head);
+  --inline-title-size: clamp(2rem, 1.2rem + 2.4vw, 2.9rem);
+  --inline-title-weight: 700;
+  --inline-title-line-height: 1.06;
+  --inline-title-letter-spacing: -.03em;
+  --inline-title-color: var(--jm-ink);
+  --h1-font: var(--jm-font-head);
+  --h2-font: var(--jm-font-head);
+  --h3-font: var(--jm-font-head);
+  --h4-font: var(--jm-font-head);
+  --h5-font: var(--jm-font-mono);
+  --h6-font: var(--jm-font-mono);
+  --h1-size: 2.1rem;
+  --h2-size: 1.7rem;
+  --h3-size: 1.3rem;
+  --h4-size: 1.1rem;
+  --h5-size: .78rem;
+  --h6-size: .72rem;
+  --h1-weight: 700;
+  --h2-weight: 700;
+  --h3-weight: 600;
+  --h4-weight: 600;
+  --h5-weight: 600;
+  --h6-weight: 600;
+  --h1-color: var(--jm-ink);
+  --h2-color: var(--jm-ink);
+  --h3-color: var(--jm-ink);
+  --h4-color: var(--jm-ink);
+  --h5-color: var(--jm-dim);
+  --h6-color: var(--jm-dim);
+  --h1-line-height: 1.1;
+  --h2-line-height: 1.15;
+  --h1-letter-spacing: -.03em;
+  --h2-letter-spacing: -.02em;
+
+  /* código */
+  --code-background: var(--jm-band);
+  --code-size: .875rem;
+  --code-normal: #D4D4D4;
+  --code-comment: #6A9955;
+  --code-keyword: #C586C0;
+  --code-function: #DCDCAA;
+  --code-string: #CE9178;
+  --code-value: #B5CEA8;
+  --code-property: #9CDCFE;
+  --code-operator: #D4D4D4;
+  --code-punctuation: #D4D4D4;
+  --code-tag: #569CD6;
+  --code-important: #4EC9B0;
+
+  /* tags (pílula âmbar) */
+  --tag-color: var(--jm-accent);
+  --tag-color-hover: var(--jm-bg);
+  --tag-background: rgba(255, 170, 0, .12);
+  --tag-background-hover: var(--jm-accent);
+  --tag-border-width: 0;
+  --tag-border-color: transparent;
+  --tag-radius: 999px;
+  --tag-padding-x: 12px;
+  --tag-padding-y: 4px;
+  --tag-size: .7rem;
+  --tag-weight: 600;
+  --tag-decoration: none;
+  --tag-decoration-hover: none;
+
+  /* citação e regra */
+  --blockquote-background-color: var(--jm-result);
+  --blockquote-border-color: transparent;
+  --blockquote-border-thickness: 0;
+  --blockquote-color: #E5DEF7;
+  --hr-color: var(--jm-line);
+  --hr-thickness: 1px;
+  --list-marker-color: var(--jm-marker);
+  --list-marker-color-collapsed: var(--jm-accent);
+  --checkbox-color: var(--jm-brand);
+  --checkbox-color-hover: var(--jm-brand-text);
+  --checkbox-border-color: rgba(255, 255, 255, .2);
+  --checkbox-border-color-hover: var(--jm-brand-text);
+  --checkbox-marker-color: #FFFFFF;
+  --checklist-done-color: var(--jm-dim);
+
+  /* callout */
+  --callout-padding: 18px 22px;
+  --callout-radius: var(--jm-radius-card);
+  --callout-border-width: 0;
+  --callout-border-opacity: 1;
+  --callout-blend-mode: normal;
+  --callout-title-size: 16px;
+  --callout-title-weight: 600;
+  --callout-default: 136, 85, 223;
+  --callout-info: 182, 155, 240;
+  --callout-summary: 182, 155, 240;
+  --callout-todo: 182, 155, 240;
+  --callout-example: 136, 85, 223;
+  --callout-tip: 74, 222, 128;
+  --callout-success: 74, 222, 128;
+  --callout-question: 255, 170, 0;
+  --callout-warning: 255, 170, 0;
+  --callout-important: 255, 170, 0;
+  --callout-fail: 255, 107, 107;
+  --callout-error: 255, 107, 107;
+  --callout-bug: 255, 107, 107;
+  --callout-quote: 124, 132, 148;
+
+  /* tabela */
+  --table-header-background: var(--jm-band);
+  --table-header-background-hover: var(--jm-band);
+  --table-header-color: var(--jm-nav);
+  --table-header-size: .72rem;
+  --table-header-weight: 600;
+  --table-border-color: var(--jm-line);
+  --table-border-width: 1px;
+  --table-row-alt-background: transparent;
+  --table-row-background-hover: var(--jm-fill);
+  --table-white-space: normal;
+
+  /* navegação lateral */
+  --nav-item-size: 14px;
+  --nav-item-weight: 400;
+  --nav-item-weight-active: 500;
+  --nav-item-color: var(--jm-body);
+  --nav-item-color-hover: var(--jm-ink);
+  --nav-item-color-active: var(--jm-accent);
+  --nav-item-color-selected: var(--jm-accent);
+  --nav-item-background-hover: var(--jm-fill);
+  --nav-item-background-active: rgba(255, 170, 0, .10);
+  --nav-item-background-selected: rgba(255, 170, 0, .10);
+  --nav-item-padding: 3px 8px;
+  --nav-item-radius: 8px;
+  --nav-indentation-guide-color: var(--jm-line);
+  --nav-indentation-guide-width: 1px;
+  --indentation-guide-color: var(--jm-line);
+  --collapse-icon-color: var(--jm-dim);
+  --collapse-icon-color-collapsed: var(--jm-accent);
+
+  /* casca do app */
+  --titlebar-background: var(--jm-band);
+  --titlebar-background-focused: var(--jm-band);
+  --titlebar-text-color: var(--jm-nav);
+  --titlebar-text-color-focused: var(--jm-ink);
+  --ribbon-background: var(--jm-band);
+  --ribbon-background-collapsed: var(--jm-band);
+  --status-bar-background: var(--jm-band);
+  --status-bar-text-color: var(--jm-dim);
+  --status-bar-border-width: 0;
+  --tab-container-background: var(--jm-band);
+  --tab-background-active: var(--jm-bg);
+  --tab-text-color: var(--jm-dim);
+  --tab-text-color-active: var(--jm-nav);
+  --tab-text-color-focused-active-current: var(--jm-ink);
+  --tab-radius-active: var(--jm-radius-control);
+  --tab-outline-color: transparent;
+  --tab-outline-width: 0;
+  --tab-divider-color: transparent;
+  --header-height: 44px;
+
+  /* grafo (canvas — vem das 9 variáveis do Quartz) */
+  --graph-line: var(--jm-line);
+  --graph-node: var(--jm-brand-text);
+  --graph-node-unresolved: var(--jm-dim);
+  --graph-node-focused: var(--jm-accent);
+  --graph-node-tag: var(--jm-accent);
+  --graph-node-attachment: var(--jm-nav);
+
+  /* scrollbar */
+  --scrollbar-bg: transparent;
+  --scrollbar-thumb-bg: rgba(255, 255, 255, .12);
+  --scrollbar-active-thumb-bg: rgba(255, 255, 255, .2);
+
+  /* metadados (properties) */
+  --metadata-background: transparent;
+  --metadata-divider-color: var(--jm-line);
+  --metadata-label-text-color: var(--jm-dim);
+  --metadata-input-text-color: var(--jm-body);
+  --metadata-sidebar-label-text-color: var(--jm-dim);
+}
+
+/* --------------------------------------------------------------------------
+   3. Laterais como cartões (spec/02 §2 e §3)
+   -------------------------------------------------------------------------- */
+.workspace-split.mod-left-split,
+.workspace-split.mod-right-split {
+  background: var(--jm-bg);
+}
+
+.workspace-split.mod-left-split .workspace-tabs,
+.workspace-split.mod-right-split .workspace-tabs {
+  padding: 8px;
+  background: transparent;
+}
+
+.workspace-split.mod-left-split .workspace-leaf-content,
+.workspace-split.mod-right-split .workspace-leaf-content {
+  background: var(--jm-surface);
+  border-radius: var(--jm-radius-card);
+  box-shadow: var(--jm-shadow-card);
+}
+
+.workspace-split.mod-left-split .workspace-tab-header-container,
+.workspace-split.mod-right-split .workspace-tab-header-container {
+  background: transparent;
+  border: none;
+}
+
+/* rótulo de painel: mono, caixa alta — a assinatura do sistema */
+.mod-left-split .view-header-title,
+.mod-right-split .view-header-title,
+.mod-left-split .nav-header .nav-buttons-container ~ .view-header-title {
+  font-family: var(--jm-font-mono);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--jm-dim);
+}
+
+.mod-left-split .view-header,
+.mod-right-split .view-header {
+  background: transparent;
+  border: none;
+}
+
+/* pasta em Space Grotesk, arquivo em Plex Sans */
+.nav-folder-title .nav-folder-title-content {
+  font-family: var(--jm-font-head);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--jm-ink);
+}
+
+/* --------------------------------------------------------------------------
+   4. Nota: título, tags, corpo
+   -------------------------------------------------------------------------- */
+.markdown-rendered h2,
+.markdown-source-view.mod-cm6 .HyperMD-header-2 {
+  margin-top: 2.6rem;
+}
+
+.markdown-rendered strong {
+  font-weight: 600;
+  color: var(--jm-ink);
+}
+
+.markdown-rendered li {
+  margin: .35rem 0;
+}
+
+.markdown-rendered hr {
+  margin: 2.4rem 0;
+  border-color: var(--jm-line);
+}
+
+.tag,
+a.tag,
+.cm-hashtag {
+  font-family: var(--jm-font-mono);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+/* rótulos de propriedade em mono/caixa alta */
+.metadata-property-key,
+.metadata-property-key .metadata-property-key-input {
+  font-family: var(--jm-font-mono);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--jm-dim);
+}
+
+.metadata-container {
+  border: none;
+  box-shadow: inset 0 -1px 0 var(--jm-line);
+  padding-bottom: .6rem;
+}
+
+/* --------------------------------------------------------------------------
+   5. Links: o wikilink é texto (spec/03)
+   -------------------------------------------------------------------------- */
+.markdown-rendered a.internal-link,
+.markdown-source-view .cm-hmd-internal-link .cm-underline {
+  font-weight: inherit;
+  color: var(--jm-body);
+  text-decoration: none;
+  box-shadow: inset 0 -1px 0 rgba(136, 85, 223, .55);
+}
+
+.markdown-rendered a.internal-link:hover,
+.markdown-source-view .cm-hmd-internal-link:hover .cm-underline {
+  color: var(--jm-ink);
+  box-shadow: inset 0 -1px 0 var(--jm-accent);
+  text-decoration: none;
+}
+
+.markdown-rendered a.internal-link.is-unresolved {
+  color: var(--jm-dim);
+  box-shadow: none;
+  border-bottom: 1px dashed rgba(124, 132, 148, .6);
+}
+
+.markdown-rendered a.external-link,
+.markdown-source-view .cm-link .cm-underline,
+.markdown-source-view .cm-url {
+  font-weight: inherit;
+  color: var(--jm-brand-text);
+  box-shadow: none;
+  text-decoration: none;
+}
+
+.markdown-rendered a.external-link:hover {
+  color: var(--jm-accent);
+  box-shadow: inset 0 -1px 0 var(--jm-accent);
+}
+
+.markdown-rendered a:has(> img) {
+  box-shadow: none;
+  border-bottom: none;
+}
+
+/* código inline: caixa neutra = literal; cor = clicável */
+.markdown-rendered code:not(pre code),
+.markdown-source-view .cm-inline-code {
+  background: rgba(255, 255, 255, .06);
+  border-radius: 6px;
+  padding: .1rem .36rem;
+  color: var(--jm-ink);
+  font-size: .9em;
+  font-weight: 500;
+}
+
+.markdown-rendered a code:not(pre code) {
+  color: inherit;
+  background: rgba(136, 85, 223, .16);
+}
+
+/* --------------------------------------------------------------------------
+   6. Blocos: citação, callout, código, tabela
+   -------------------------------------------------------------------------- */
+.markdown-rendered blockquote {
+  background: var(--jm-result);
+  border-radius: var(--jm-radius-card);
+  border: none;
+  border-left: none;
+  padding: 22px 26px;
+  margin: 1.6rem 0;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #E5DEF7;
+}
+
+.markdown-source-view.mod-cm6 .HyperMD-quote {
+  background: var(--jm-result);
+  border-left: none;
+  padding-left: 26px;
+  color: #E5DEF7;
+}
+
+.markdown-rendered .callout {
+  background: var(--jm-surface);
+  border: none;
+  box-shadow: inset 3px 0 0 rgb(var(--callout-color));
+  margin: 1.6rem 0;
+  mix-blend-mode: normal;
+}
+
+.markdown-rendered .callout-title {
+  font-family: var(--jm-font-head);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--jm-ink);
+}
+
+.markdown-rendered .callout-icon .svg-icon {
+  color: rgb(var(--callout-color));
+}
+
+/* bloco de código (spec/04) */
+.markdown-rendered pre:not(.frontmatter) {
+  background: var(--jm-band);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin: 1.6rem 0;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .04);
+  border: none;
+  tab-size: 2;
+}
+
+.markdown-rendered pre code {
+  font-family: var(--jm-font-mono);
+  font-size: .875rem;
+  line-height: 1.7;
+  color: #D4D4D4;
+}
+
+.markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  background: var(--jm-band);
+  border: none;
+  font-family: var(--jm-font-mono);
+  font-size: .875rem;
+  line-height: 1.7;
+  color: #D4D4D4;
+}
+
+.markdown-source-view.mod-cm6 .HyperMD-codeblock-begin {
+  border-radius: 14px 14px 0 0;
+  padding-top: 12px;
+}
+
+.markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  border-radius: 0 0 14px 14px;
+  padding-bottom: 12px;
+}
+
+/* botão de copiar só no hover do bloco */
+.markdown-rendered pre .copy-code-button {
+  opacity: 0;
+  background: rgba(255, 255, 255, .06);
+  border-radius: 8px;
+  color: var(--jm-nav);
+  transition: opacity 120ms ease;
+}
+
+.markdown-rendered pre:hover .copy-code-button,
+.markdown-rendered pre .copy-code-button:focus-visible {
+  opacity: 1;
+}
+
+/* gutter de números (plugins de line numbers e editor) */
+.cm-lineNumbers .cm-gutterElement {
+  color: var(--jm-marker);
+  user-select: none;
+}
+
+.markdown-rendered table {
+  background: var(--jm-surface);
+  border-radius: var(--jm-radius-card);
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border: none;
+}
+
+.markdown-rendered th {
+  font-family: var(--jm-font-mono);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  background: var(--jm-band);
+  border: none;
+  border-bottom: 1px solid var(--jm-line);
+}
+
+.markdown-rendered td {
+  border: none;
+  border-bottom: 1px solid var(--jm-line);
+}
+
+.markdown-rendered tr:last-child td {
+  border-bottom: none;
+}
+
+/* --------------------------------------------------------------------------
+   7. Busca, popover, modais
+   -------------------------------------------------------------------------- */
+.prompt,
+.modal {
+  background: var(--jm-surface);
+  border: none;
+  border-radius: 18px;
+  box-shadow: var(--jm-shadow-overlay);
+}
+
+.prompt-input,
+input[type="text"],
+input[type="search"],
+textarea {
+  background: var(--jm-band);
+  border: none;
+  border-radius: 12px;
+}
+
+.prompt-input {
+  padding: 14px 16px;
+  font-family: var(--jm-font-body);
+}
+
+.suggestion-item,
+.search-result-file-title,
+.search-result-file-match {
+  border-radius: 12px;
+}
+
+.suggestion-item.is-selected,
+.search-result-file-match:hover {
+  background: var(--jm-fill);
+}
+
+.popover.hover-popover {
+  background: var(--jm-surface);
+  border: none;
+  border-radius: var(--jm-radius-card);
+  box-shadow: var(--jm-shadow-overlay);
+}
+
+.tooltip .tooltip-content,
+.tooltip {
+  font-family: var(--jm-font-mono);
+  font-size: .72rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.graph-view.color-fill-focused,
+.workspace-leaf-content[data-type="graph"] .view-content {
+  background: var(--jm-band);
+  border-radius: 12px;
+}
+
+/* botão primário: marca + sombra projetada (igual ao CTA do site) */
+button.mod-cta,
+.mod-cta {
+  background: var(--jm-brand);
+  color: #FFFFFF;
+  font-family: var(--jm-font-head);
+  font-weight: 600;
+  border-radius: var(--jm-radius-control);
+  box-shadow: 0 6px 18px -8px rgba(136, 85, 223, .9);
+}
+
+button.mod-cta:hover {
+  background: #9A6CE6;
+}
+
+/* --------------------------------------------------------------------------
+   8. Foco visível — acessibilidade, não decoração (spec/02 §7)
+   -------------------------------------------------------------------------- */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+.clickable-icon:focus-visible,
+.nav-file-title:focus-visible,
+.suggestion-item:focus-visible {
+  outline: 2px solid var(--jm-accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+  box-shadow: none;
+}
