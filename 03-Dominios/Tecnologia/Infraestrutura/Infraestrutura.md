@@ -29,7 +29,7 @@ Docker, Kubernetes, WSL, cloud e configuração de ambientes.
 
 - [[Linux]] — shell, permissions, systemd, networking, debugging
 - [[Terminal]]
-- **Git e GitHub** → saíram desta estante em 2026-07-31 para [[03-Dominios/Tecnologia/Controle de Versão/index|Controle de Versão]]; a referência do `gh` mora lá.
+- **Git e GitHub** → estão em [[03-Dominios/Tecnologia/Controle de Versão/index|Controle de Versão]]; a referência do `gh` mora lá.
 - [[Configurando Ambiente Linux no WSL]]
 
 ## Cloud

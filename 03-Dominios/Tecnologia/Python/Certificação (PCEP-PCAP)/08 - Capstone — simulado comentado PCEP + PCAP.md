@@ -495,6 +495,5 @@ Se a pergunta em entrevista técnica for algo como "como você valida seu conhec
 - Python Software Foundation. *Python 3 Documentation*, versão 3.14. docs.python.org. https://docs.python.org/3/ (acessado em 2026-07-12) — árbitro de verificação para cada questão do simulado.
 - [[01 - Panorama — PCEP e PCAP, o que são e pra quem|01 deste galho]] até [[07 - Estratégia de prova e plano de estudo|07 deste galho]] — todas as sete notas anteriores, fonte direta de cada questão deste simulado.
 - [[03-Dominios/Tecnologia/Python/index|Trilha Python]] (MOC central) — os 19 galhos completos recapitulados na seção de fechamento.
-- [[03-Dominios/Tecnologia/Python/Certificação (PCEP-PCAP)/roadmap|Roadmap deste galho]] — pesquisa consolidada dos pesos oficiais usada para calibrar a distribuição das 18 questões.
 
 Consultado em 2026-07-12. Esta é a última nota da trilha Python — Galho 19/19, nota 8/8.

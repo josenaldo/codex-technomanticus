@@ -18,7 +18,7 @@ aliases:
 > [!abstract] TL;DR
 > Galho 8 da trilha [[03-Dominios/Tecnologia/Go/index|Go]] — o mecanismo que dá nome ao lema "não comunique compartilhando memória; compartilhe memória comunicando". 8 notas em 3 fases: o channel como tubo entre goroutines e buffered vs unbuffered (Iniciado); fechamento com `range`, direções de channel e `select` (Adepto); padrões de composição (fan-in/fan-out/pipeline), worker pools e as armadilhas clássicas — deadlock, leak, panic de close duplo (Magus). Ao fim, você orquestra goroutines com channels em vez de mutexes.
 
-Depois de dominar goroutines no galho anterior, este galho entra no meio de comunicação idiomático do Go: o channel. É a estrutura que sincroniza, transporta dados e sinaliza término entre goroutines concorrentes, e o `select` é o multiplexador que espera em vários channels ao mesmo tempo. Ver [[roadmap]] pro estado das notas.
+Depois de dominar goroutines no galho anterior, este galho entra no meio de comunicação idiomático do Go: o channel. É a estrutura que sincroniza, transporta dados e sinaliza término entre goroutines concorrentes, e o `select` é o multiplexador que espera em vários channels ao mesmo tempo.
 
 ## Notas por fase
 

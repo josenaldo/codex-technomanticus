@@ -38,8 +38,6 @@ O domínio segue a **progressão do ofício** — *entender → construir → au
 | 4 | [[03-Dominios/Tecnologia/Acessibilidade/Sustentar e Conformidade/index\|SG4 — Sustentar e Conformidade]] | a11y no CI/design system, cenário legal (ADA/EAA/EN 301 549), VPAT/ACR, a11y em entrevista | Magus |
 | — | [[03-Dominios/Tecnologia/Acessibilidade/21 - Capstone - auditar e remediar um produto do zero\|Capstone — auditar e remediar um produto do zero]] | audita → prioriza → remedia → documenta; costura os 4 sub-galhos | Magus |
 
-> **Estado (2026-07-28):** **domínio 100% COMPLETO — 21/21 notas escritas + enriquecidas** (4 sub-galhos + capstone, padrão capítulo, 3 fases). Cada nota traz vídeo YouTube verificado (legenda via yt-dlp), seção "Como explicar em inglês" + tabela PT↔EN, armadilhas `[!warning]`, casos práticos e diagramas Mermaid. Ver [[00-Meta/specs/2026-07-27-dominio-acessibilidade-design|design do domínio]], o [[00-Meta/specs/2026-07-27-dominio-acessibilidade-plano|plano]] e o [[03-Dominios/Tecnologia/Acessibilidade/roadmap|roadmap]].
-
 ---
 
 ## Fronteiras — a11y que já mora em outras trilhas
@@ -56,6 +54,5 @@ Este domínio é a **lente do ofício**; ele **linka** as notas abaixo como refo
 
 ## Veja também
 
-- [[00-Meta/Roadmap|Roadmap de Trilhas]] — Acessibilidade sai de 🚫 (Tier 1, construção nova) para domínio próprio.
 - [[03-Dominios/Tecnologia/HTML/index|HTML]] — onde a a11y começa como fase.
 - [[03-Dominios/Carreira/Entrevistas/index|Entrevistas]] — a11y como diferencial em entrevista sênior.

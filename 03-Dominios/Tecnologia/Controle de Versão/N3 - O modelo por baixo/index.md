@@ -44,8 +44,6 @@ Depois de três níveis de uso, a mesma frase responde perguntas que você já t
 | 20 | [[03-Dominios/Tecnologia/Controle de Versão/N3 - O modelo por baixo/20 - O index por dentro\|O index por dentro]] | o que `add` realmente faz, e por que a área de preparação existe |
 | 21 | [[03-Dominios/Tecnologia/Controle de Versão/N3 - O modelo por baixo/21 - Merge e rebase por dentro\|Merge e rebase por dentro]] | three-way merge, ancestral comum, e por que rebase reescreve |
 
-> **Estado (2026-07-31):** **escrita completa — 5/5 notas.** Falta enriquecimento de mídia (M1). Ver o [[03-Dominios/Tecnologia/Controle de Versão/N3 - O modelo por baixo/roadmap|roadmap do nível]].
-
 ---
 
 ## Veja também

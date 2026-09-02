@@ -31,15 +31,6 @@ O domínio se organiza **por disciplina de UX** (pesquisa, arquitetura de inform
 
 ---
 
-## Política de mídia (M1 obrigatório)
-
-> [!info] Mídia verificada é obrigatória em toda nota (2026-07-28)
-> Diferente do padrão default de `verificar-nota` — que isenta M1 (vídeo/podcast embutido) na fase Iniciado — este domínio segue o padrão de [[03-Dominios/Tecnologia/Acessibilidade/index|Tecnologia/Acessibilidade]] (vídeo verificado em 21 de 21 notas): **M1 é obrigatório em toda nota, de qualquer fase**. Isso sobrepõe tanto a isenção de fase da skill `verificar-nota` quanto a regra de `diagnosticar-galho` que fecharia uma nota em `➖` só por score alto sem mídia. Uma nota sem mídia verificada **não fecha**.
->
-> "Verificada" significa que a URL foi de fato conferida (WebFetch ou `yt-dlp`, lendo transcrição/descrição) e que o conteúdo corresponde ao que a nota afirma — nunca um link plausível, não conferido. Preferência por vídeo (YouTube); podcast/talk é aceitável quando não há vídeo bom e verificável para o tema. Ver a skill `.claude/skills/adicionar-midia/SKILL.md` para o formato do callout.
->
-> **Exceção deliberada:** se, após busca extensiva, nenhuma mídia boa e verificável for encontrada, a nota fica sem mídia e o roadmap do sub-galho registra isso explicitamente como buraco honesto — nunca forçar um link fraco só para fechar o gate. Ver [[03-Dominios/Engenharia/UX/Descoberta e Pesquisa/roadmap|roadmap de SG2]], nota 06, para um exemplo real dessa exceção.
-
 ## Sub-galhos
 
 | # | Sub-galho | O quê | Fase |
@@ -53,8 +44,6 @@ O domínio se organiza **por disciplina de UX** (pesquisa, arquitetura de inform
 | 7 | [[03-Dominios/Engenharia/UX/Medir, Validar e Sustentar/index\|SG7 — Medir, Validar e Sustentar]] | HEART/GSM, SUS/UMUX-Lite/SUPR-Q/SEQ, NPS e North Star, event taxonomy, quando A/B não se aplica, session replay, UX debt, defender decisão com número | Magus |
 | 8 | [[03-Dominios/Engenharia/UX/Ética e Ofício/index\|SG8 — Ética e Ofício]] | dark patterns e regulação, UX no ciclo de dev, UX em entrevista sênior/staff | Magus |
 | — | [[03-Dominios/Engenharia/UX/49 - Capstone - do requisito ao produto validado\|Capstone — Do requisito ao produto validado]] | ciclo completo: descobrir com o cliente, definir, desenhar, construir, instrumentar, medir, priorizar a dívida | Magus |
-
-> **Estado (2026-07-29):** domínio **COMPLETO**. 8/8 sub-galhos ✅ + capstone escrito, **49/49 notas**. Junto com o galho-irmão [[03-Dominios/Tecnologia/Ferramentas de Design/index|Ferramentas de Design]] (9/9), o par fecha em **58 notas**. Ver [[00-Meta/specs/2026-07-28-dominio-ux-design|design do domínio]], o plano em `.superpowers/sdd/2026-07-28-dominio-ux-plano/` e o [[03-Dominios/Engenharia/UX/roadmap|roadmap]].
 
 ---
 
@@ -150,7 +139,5 @@ O domínio se organiza **por disciplina de UX** (pesquisa, arquitetura de inform
 
 ## Veja também
 
-- [[00-Meta/Roadmap|Roadmap de Trilhas]] — UX entra como construção nova em andamento (Tier 1).
 - [[03-Dominios/Tecnologia/Ferramentas de Design/index|Ferramentas de Design]] — a metade volátil/tecnológica deste mesmo domínio.
 - [[03-Dominios/Tecnologia/Acessibilidade/index|Acessibilidade]] — o vizinho mais próximo: a camada técnica que precede este domínio.
-- [[00-Meta/specs/2026-07-28-dominio-ux-design|Design do domínio]] — decisões, roster completo e fronteiras.

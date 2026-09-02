@@ -14,7 +14,7 @@ publish: false
 # API Design
 
 > [!info] Conteúdo migrado para a trilha
-> Este arquivo era um monólito e virou **tronco podado**: o conteúdo de desenho de API foi reescrito, aprofundado e reorganizado na trilha [[03-Dominios/Engenharia/Comunicação entre Sistemas/index|Comunicação entre Sistemas]] (4 sub-galhos, 22 notas + capstone). Os links abaixo apontam pra casa canônica de cada tema. O que não migrou (file upload) e a seção "Na prática" do autor permanecem aqui verbatim.
+> O conteúdo de desenho de API foi reescrito e aprofundado na trilha [[03-Dominios/Engenharia/Comunicação entre Sistemas/index|Comunicação entre Sistemas]] (4 sub-galhos, 22 notas + capstone). Os links abaixo apontam pra casa de cada tema. O que não migrou (file upload) e a seção "Na prática" do autor continuam aqui.
 
 A arte de projetar interfaces de comunicação entre sistemas que sejam **intuitivas para o consumidor**, **consistentes**, **seguras** e **evoluíveis sem quebrar clientes existentes**. Enquanto [[Redes e Protocolos]] cobre o "como" da comunicação (HTTP, TCP, TLS) e [[System Design]] cobre o "quanto" (escala, cache, rate limiting em alto nível), a trilha [[03-Dominios/Engenharia/Comunicação entre Sistemas/index|Comunicação entre Sistemas]] foca no **contrato**: o que sua API promete, como ela responde, e como ela evolui.
 

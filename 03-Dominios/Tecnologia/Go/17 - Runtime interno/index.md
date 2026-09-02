@@ -19,7 +19,7 @@ aliases:
 > [!abstract] TL;DR
 > Galho 17 da trilha [[03-Dominios/Tecnologia/Go/index|Go]] — o que roda por baixo do seu binário. É o par do "CPython internals": um diferencial sênior que cai em entrevista. 8 notas em 3 fases: o runtime não é uma VM (Iniciado); scheduler GMP a fundo, stacks que crescem, escape analysis e o garbage collector (Adepto); tuning de GC, memory model e otimização guiada por entendimento (Magus). Ao fim, você raciocina sobre custo e desempenho a partir de como Go de fato funciona.
 
-Aqui o galho 7 (visão de topo do scheduler) vira detalhe: work stealing, write barriers, stacks contíguas e a decisão stack-vs-heap. Ver [[roadmap]] pro estado das notas.
+Aqui o galho 7 (visão de topo do scheduler) vira detalhe: work stealing, write barriers, stacks contíguas e a decisão stack-vs-heap.
 
 ## Notas por fase
 

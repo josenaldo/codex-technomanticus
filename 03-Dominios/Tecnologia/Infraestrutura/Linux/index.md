@@ -53,8 +53,6 @@ A espinha do galho é o **contrato de execução** apresentado na nota 01: ident
 | 15 | [[03-Dominios/Tecnologia/Infraestrutura/Linux/15 - Ver o que o processo pede ao kernel\|Ver o que o processo pede ao kernel]] | `strace` com recorte, `lsof` sem custo, `dmesg` como testemunha |
 | 16 | [[03-Dominios/Tecnologia/Infraestrutura/Linux/16 - Capstone - a máquina que ficou lenta às três da manhã\|Capstone]] | investigação completa, do primeiro `uptime` à decisão |
 
-> **Estado (2026-08-16):** **escrita completa — 16/16 notas.** Falta enriquecimento de mídia (M1). Ver o [[03-Dominios/Tecnologia/Infraestrutura/Linux/roadmap|roadmap]] e o [[00-Meta/specs/2026-08-12-galho-linux-design|design]].
-
 ---
 
 ## Referência do galho
@@ -76,4 +74,4 @@ Este galho **linka** e não reescreve:
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Infraestrutura/index|Infraestrutura]] — o domínio e o sanduíche de quatro camadas
-- [[03-Dominios/Tecnologia/Infraestrutura/Linux|Linux (tronco podado)]] — o monólito de origem, hoje com o mapa de redirecionamento e as seções de entrevista
+- [[03-Dominios/Tecnologia/Infraestrutura/Linux|Linux (referência)]] — o guia de origem, hoje com o mapa de redirecionamento e as seções de entrevista

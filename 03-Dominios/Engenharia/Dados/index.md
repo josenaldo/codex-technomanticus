@@ -21,7 +21,7 @@ Trata da engenharia de dados como disciplina, distinta da **teoria de banco de d
 
 ## Conteúdo
 
-Trilha em 4 sub-galhos (3 fases Iniciado/Adepto/Magus) + capstone. Estado em [[03-Dominios/Engenharia/Dados/roadmap|roadmap]].
+Trilha em 4 sub-galhos (3 fases Iniciado/Adepto/Magus) + capstone.
 
 1. [[03-Dominios/Engenharia/Dados/1 - Fundamentos de engenharia de dados/index|Fundamentos de engenharia de dados]] *(Iniciado)* — OLTP vs OLAP, o ciclo de vida dos dados, warehouse/lake/lakehouse, armazenamento colunar e formatos.
 2. [[03-Dominios/Engenharia/Dados/2 - Modelagem para analytics/index|Modelagem para analytics]] *(Adepto)* — modelagem dimensional, star vs snowflake, Slowly Changing Dimensions, além de Kimball.

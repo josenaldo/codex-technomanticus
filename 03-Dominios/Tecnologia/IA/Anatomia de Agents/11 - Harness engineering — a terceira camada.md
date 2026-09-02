@@ -223,7 +223,7 @@ O fio que amarra os três: harness é a camada que hospeda e governa; Context En
 - **Anthropic Applied AI** — [*Effective harnesses for long-running agents*](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents) (nov/2025). Claude Agent SDK como *"general-purpose agent harness"*; "build to delete".
 - **Pan et al.** — [*Natural-Language Agent Harnesses*](https://arxiv.org/pdf/2603.25723) (arXiv:2603.25723, mar/2026). Os 11 aspectos da engenharia de harness. *Preprint.*
 - **Harness Engineering for Language Agents: The Harness Layer as Control, Agency, and Runtime** — [preprint 10.20944/preprints202603.1756](https://www.preprints.org/manuscript/202603.1756) (abr/2026). Decomposição CAR; tese "harness-sensitive gains"; proposta HarnessCard. *Preprint, não peer-reviewed.*
-- [[02-Glosas/2026-ai-agent-harness-5-core-pillars|What is an AI Agent Harness? 5 Core Pillars]] — Duc Nguyen (AIQuinta, abr/2026). A analogia CPU/SO e os 5 pilares operacionais.
+- [What is an AI Agent Harness? 5 Core Pillars](https://aiquinta.ai/blog/agent-harness-5-core-pillars-and-how-to-build/) — Duc Nguyen (AIQuinta, abr/2026). A analogia CPU/SO e os 5 pilares operacionais.
 
 ## Veja também
 

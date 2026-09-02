@@ -27,11 +27,9 @@ Testar é a engenharia de provar que o código faz o que diz — e de proteger e
 
 **Audiência primária:** dev pleno/sênior que vai encarar **entrevista internacional de backend Java/Spring** e precisa explicar a pirâmide, os slices e o que mockar (e o que não mockar) com critério. **Secundária:** quem desenha a estratégia de testes de uma app Spring e precisa decidir entre unitário e integração, mock e infra real, cobertura de linha e cobertura honesta.
 
-É um **galho híbrido**: combina a **poda integral do tronco** `Testes em Java.md` (a nota monolítica antiga, agora dissolvida em notas atômicas) com **pesquisa version-specific** nas docs do JUnit 5, Mockito, AssertJ, Spring Boot Test e Testcontainers.
+É um galho de **convergência**: ele testa o que os Galhos 1-12 construíram. Cada técnica linka de volta ao galho dono — a web testada vem do Galho 9, a persistência do Galho 10, o reativo do Galho 11, a segurança do Galho 12. Esse retorno paga **três dívidas** deixadas pra trás: o `@DataJpaTest` prometido no Galho 10, o `StepVerifier` adiado no Galho 11 e o `@WithMockUser` apontado no Galho 12 — todos quitados aqui.
 
-E é um galho de **convergência**: ele testa o que os Galhos 1-12 construíram. Cada técnica linka de volta ao galho dono — a web testada vem do Galho 9, a persistência do Galho 10, o reativo do Galho 11, a segurança do Galho 12. Esse retorno paga **três dívidas** deixadas pra trás: o `@DataJpaTest` prometido no Galho 10, o `StepVerifier` adiado no Galho 11 e o `@WithMockUser` apontado no Galho 12 — todos quitados aqui.
-
-Galhos 14 (Mensageria), 16 (Microservices) e 17 (Cloud) são planejados e ficam fora do escopo deste galho.
+Mensageria (Galho 14), Microservices (Galho 16) e Cloud (Galho 17) ficam fora do escopo daqui.
 
 ## Iniciado
 

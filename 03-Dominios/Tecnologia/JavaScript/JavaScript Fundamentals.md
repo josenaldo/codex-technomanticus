@@ -16,10 +16,8 @@ aliases:
 
 # JavaScript Fundamentals
 
-> [!info] Esta nota foi atomizada na trilha JavaScript core
-> O conteúdo monolítico deste guia foi reescrito do zero e dividido em **26 notas atômicas em 3 fases** (Iniciado/Adepto/Magus), no padrão capítulo de livro. Comece pelo índice: [[03-Dominios/Tecnologia/JavaScript/index|trilha JavaScript core]].
->
-> Este arquivo permanece apenas como ponto de entrada para os links antigos que apontam para `[[JavaScript Fundamentals]]`. A história do guia original está no git.
+> [!info] O conteúdo deste guia está na trilha JavaScript core
+> Reescrito do zero em **26 notas em 3 fases** (Iniciado/Adepto/Magus). Comece pelo índice: [[03-Dominios/Tecnologia/JavaScript/index|trilha JavaScript core]]. Esta página fica como ponto de entrada e mapa rápido.
 
 ## Mapa rápido da trilha
 

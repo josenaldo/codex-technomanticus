@@ -19,7 +19,7 @@ aliases:
 > [!abstract] TL;DR
 > Galho 9 da trilha [[03-Dominios/Tecnologia/Go/index|Go]] — o outro lado da concorrência: quando channels não são a ferramenta certa, e como cancelar e coordenar trabalho de forma disciplinada. 8 notas em 3 fases: `sync.Mutex`/`RWMutex` (Iniciado); `WaitGroup`, `Once`, `atomic`, o race detector e `context.Context` (Adepto); padrões de cancelamento/timeout e concorrência idiomática (Magus). Ao fim, você sabe escolher entre memória compartilhada protegida e comunicação por canal — e propagar cancelamento pela árvore de goroutines sem vazar nenhuma.
 
-Depois dos galhos 7 e 8 (goroutines, channels e select), este galho completa o ferramental de concorrência do Go: o pacote `sync` para proteger estado compartilhado quando um channel seria overkill, e `context.Context` — o mecanismo canônico do Go para propagar deadline, cancelamento e valores através de chamadas concorrentes. Ver [[roadmap]] pro estado das notas.
+Depois dos galhos 7 e 8 (goroutines, channels e select), este galho completa o ferramental de concorrência do Go: o pacote `sync` para proteger estado compartilhado quando um channel seria overkill, e `context.Context` — o mecanismo canônico do Go para propagar deadline, cancelamento e valores através de chamadas concorrentes.
 
 ## Notas por fase
 

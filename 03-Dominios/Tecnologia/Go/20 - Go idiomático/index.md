@@ -19,7 +19,7 @@ aliases:
 > [!abstract] TL;DR
 > Galho 20 da trilha [[03-Dominios/Tecnologia/Go/index|Go]] — a síntese de tudo: escrever Go que não parece Java (ou Python, ou Node) escrito em Go. 7 notas em 3 fases: Effective Go, a cultura do "less is more" e naming (Iniciado); composição na prática, anti-patterns de quem vem de OO e as ferramentas (go vet/golangci-lint) (Adepto); code review e o "Go way" (Magus). Este galho não reintroduz conceitos — releva os galhos anteriores pela lente da idiomaticidade.
 
-Não é um galho de features novas: é onde interfaces pequenas, erros como valor, composição e simplicidade viram cultura. Ver [[roadmap]] pro estado das notas.
+Não é um galho de features novas: é onde interfaces pequenas, erros como valor, composição e simplicidade viram cultura.
 
 ## Notas por fase
 

@@ -17,10 +17,8 @@ aliases:
 
 # React
 
-> [!info] Esta nota foi atomizada no galho React core
-> O conteúdo monolítico deste guia foi reescrito do zero (React 19-era, TS-first) e dividido em **26 notas atômicas em 3 fases** (Iniciado/Adepto/Magus), no padrão capítulo de livro. Comece pelo índice do galho: [[03-Dominios/Tecnologia/React/React core/index|React core]].
->
-> Este arquivo permanece apenas como ponto de entrada para os links antigos que apontam para `[[React]]`. A história do guia original está no git.
+> [!info] O conteúdo deste guia está no galho React core
+> Reescrito do zero (React 19, TS-first) em **26 notas em 3 fases** (Iniciado/Adepto/Magus). Comece pelo índice: [[03-Dominios/Tecnologia/React/React core/index|React core]]. Esta página fica como ponto de entrada e mapa rápido.
 
 ## Mapa rápido do galho React core
 

@@ -18,7 +18,7 @@ aliases:
 > [!abstract] TL;DR
 > Galho 4 da trilha [[03-Dominios/Tecnologia/Go/index|Go]] — o modelo de tratamento de erros que dispensa exceções. 8 notas em 3 fases: o tipo `error`, criação e comparação de erros (Iniciado); wrapping e a cadeia de erros, erros customizados e o par `panic`/`recover` (Adepto); estratégias de tratamento, o contraste com exceções e padrões usados em produção (Magus). Ao fim, você trata erro como valor de retorno explícito — não como fluxo de controle escondido.
 >
-> Aqui o Go mostra outra aposta central de design: **erro é valor, não exceção** — `if err != nil` é o idioma, não um smell, e `panic`/`recover` existe para falhas irrecuperáveis, não para controle de fluxo comum. Ver [[roadmap]] pro estado das notas.
+> Aqui o Go mostra outra aposta central de design: **erro é valor, não exceção** — `if err != nil` é o idioma, não um smell, e `panic`/`recover` existe para falhas irrecuperáveis, não para controle de fluxo comum.
 
 ## Notas por fase
 

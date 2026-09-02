@@ -19,7 +19,7 @@ aliases:
 > [!abstract] TL;DR
 > Galho 15 da trilha [[03-Dominios/Tecnologia/Go/index|Go]] — testar é cidadão de primeira classe da toolchain, não um add-on. 8 notas em 3 fases: o primeiro `_test.go` e o idioma table-driven (Iniciado); testify, test doubles via interface e testes de integração (Adepto); benchmarks, fuzzing e cobertura idiomática (Magus). Ao fim, você escreve testes que a comunidade Go reconhece como idiomáticos — table-driven, sem framework pesado, apoiados nas interfaces do galho 3.
 
-O `go test` vem na caixa, e a cultura de testes de Go é enxuta: table-driven por padrão, mocks via interface, e ceticismo saudável com frameworks. Ver [[roadmap]] pro estado das notas.
+O `go test` vem na caixa, e a cultura de testes de Go é enxuta: table-driven por padrão, mocks via interface, e ceticismo saudável com frameworks.
 
 ## Notas por fase
 

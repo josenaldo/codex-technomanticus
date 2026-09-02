@@ -30,9 +30,9 @@ Três sub-temas organizam o galho:
 Como a IA corrói o entendimento e a habilidade — em nível de projeto e de carreira.
 
 - [[Débito cognitivo]] — erosão do entendimento compartilhado em nível de projeto (Storey)
-- TODO: **Débito de compreensão** — gap entre volume de código e o quanto alguém entende (Osmani) · glosa: [[02-Glosas/2026-comprehension-debt-hidden-cost-ai-generated-code|Comprehension debt]]
-- TODO: **Rendição cognitiva** — aceitar a saída da IA como resposta própria, sem juízo independente (Osmani) · glosa: [[02-Glosas/2026-cognitive-surrender|Cognitive surrender]]
-- TODO: **Deskilling — o impacto na formação de júniors** · glosa: [[02-Glosas/2026-how-ai-assistance-impacts-formation-coding-skills|How AI assistance impacts the formation of coding skills]]
+- TODO: **Débito de compreensão** — gap entre volume de código e o quanto alguém entende (Osmani) · glosa: [Comprehension debt](https://addyosmani.com/blog/comprehension-debt/)
+- TODO: **Rendição cognitiva** — aceitar a saída da IA como resposta própria, sem juízo independente (Osmani) · glosa: [Cognitive surrender](https://addyosmani.com/blog/cognitive-surrender/)
+- TODO: **Deskilling — o impacto na formação de júniors** · glosa: [How AI assistance impacts the formation of coding skills](https://www.anthropic.com/research/AI-assistance-coding-skills)
 
 ## Saúde psicológica
 
@@ -46,8 +46,8 @@ O custo da IA sobre o bem-estar de quem desenvolve.
 
 Externalidades da IA sobre a comunidade e os bens comuns do software.
 
-- TODO: **Erosão do open source** — abandonware gerado por IA esvaziando projetos abertos · glosa: [[02-Glosas/2026-ai-generated-abandonware-is-hollowing-out-open-source|AI-generated abandonware is hollowing out open source]]
-- TODO: **The AI vampire** · glosa: [[02-Glosas/2026-the-ai-vampire|The AI vampire]]
+- TODO: **Erosão do open source** — abandonware gerado por IA esvaziando projetos abertos · glosa: [AI-generated abandonware is hollowing out open source](https://leaddev.com/software-quality/ai-generated-abandonware-is-hollowing-out-open-source)
+- TODO: **The AI vampire** · glosa: [The AI vampire](https://steve-yegge.medium.com/the-ai-vampire-eda6e4f07163)
 
 ## Fundamento
 

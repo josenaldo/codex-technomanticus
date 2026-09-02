@@ -15,9 +15,9 @@ aliases:
 # Go
 
 > [!abstract] TL;DR
-> Trilha Go organizada em **21 galhos + capstone**, do zero até produção — construída como se Go fosse a primeira linguagem (sem suposições), no mesmo padrão das trilhas [[03-Dominios/Tecnologia/Java/index|Java]] e [[03-Dominios/Tecnologia/Python/index|Python]]. Cada galho é um conjunto de notas atômicas em 3 fases (Iniciado/Adepto/Magus), padrão capítulo, com uma **lente cross-stack** ("vindo de Java/Node/Python, em Go é assim") como recurso didático. Fecha o último backend sem trilha do grimório. **TRILHA COMPLETA (2026-07-18)** — 21 galhos + capstone escritos (163 notas); ver [[00-Meta/specs/2026-07-16-trilha-go-design|Design]] + [[00-Meta/specs/2026-07-16-trilha-go-plano|Plano]]. Passada futura: enriquecimento de mídia (M1) via `/enriquecer-galho`.
+> Trilha Go organizada em **21 galhos + capstone**, do zero até produção — construída como se Go fosse a primeira linguagem (sem suposições), no mesmo padrão das trilhas [[03-Dominios/Tecnologia/Java/index|Java]] e [[03-Dominios/Tecnologia/Python/index|Python]]. Cada galho é um conjunto de notas atômicas em 3 fases (Iniciado/Adepto/Magus), com uma **lente cross-stack** ("vindo de Java/Node/Python, em Go é assim") como recurso didático.
 
-Go aparece aqui como linguagem compilada, estaticamente tipada e orientada a concorrência, com binários autocontidos e stdlib forte — a linguagem do mundo cloud-native (Docker, Kubernetes, Terraform são escritos nela). Ver [[roadmap]] pro estado de cada galho.
+Go aparece aqui como linguagem compilada, estaticamente tipada e orientada a concorrência, com binários autocontidos e stdlib forte — a linguagem do mundo cloud-native (Docker, Kubernetes, Terraform são escritos nela).
 
 ## Galhos da trilha
 

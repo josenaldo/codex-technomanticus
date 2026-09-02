@@ -32,8 +32,6 @@ aliases:
 | 29 | [[03-Dominios/Tecnologia/Controle de Versão/N5 - Repositórios reais/29 - Cirurgia de repositório\|Cirurgia de repositório]] | migrar de SVN, dividir um monólito, fundir dois repositórios |
 | 30 | [[03-Dominios/Tecnologia/Controle de Versão/N5 - Repositórios reais/30 - Git no CI-CD e GitOps\|Git no CI/CD e GitOps]] | o pipeline se comporta diferente da sua máquina |
 
-> **Estado (2026-07-31):** **escrita completa — 4/4 notas.** Falta enriquecimento de mídia (M1). Ver o [[03-Dominios/Tecnologia/Controle de Versão/N5 - Repositórios reais/roadmap|roadmap do nível]].
-
 ---
 
 ## Veja também

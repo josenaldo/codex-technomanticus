@@ -19,7 +19,7 @@ aliases:
 > [!abstract] TL;DR
 > Galho 11 da trilha [[03-Dominios/Tecnologia/Go/index|Go]] — como programas Go conversam com bancos de dados. 8 notas em 3 fases: o contrato `database/sql` (Iniciado); pool de conexões, o padrão manual de Query/Scan, e os três caminhos mais usados em produção — pgx, sqlc e GORM (Adepto); migrations e o padrão repository sobre transações (Magus). Ao fim, você escolhe entre driver puro, codegen ou ORM com critério, e sabe orquestrar transações sem vazar `*sql.DB` pelo código.
 
-Go não tem ORM embutido na stdlib — tem um contrato mínimo, `database/sql`, sobre o qual o ecossistema construiu camadas de conveniência com trade-offs bem diferentes entre si. Ver [[roadmap]] pro estado das notas.
+Go não tem ORM embutido na stdlib — tem um contrato mínimo, `database/sql`, sobre o qual o ecossistema construiu camadas de conveniência com trade-offs bem diferentes entre si.
 
 ## Notas por fase
 

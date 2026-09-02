@@ -39,7 +39,7 @@ Os padrões estão organizados em **famílias**, por fonte e por escala. **As se
 | 5 | [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Arquitetura de Eventos/index\|Arquitetura de Eventos]] | Fowler (4 estilos) + Richardson | ✅ **completa** — 10 notas |
 | 6 | [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Nuvem e Resiliência/index\|Nuvem e Resiliência]] | Azure Cloud Design Patterns + Nygard | ✅ **completa** — 14 notas |
 
-Estado detalhado e rosters em [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/roadmap|roadmap do galho-pai]].
+
 
 ## A lente do catálogo
 

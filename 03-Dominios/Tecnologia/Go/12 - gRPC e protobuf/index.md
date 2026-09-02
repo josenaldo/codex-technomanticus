@@ -19,7 +19,7 @@ aliases:
 > [!abstract] TL;DR
 > Galho 12 da trilha [[03-Dominios/Tecnologia/Go/index|Go]] — RPC binário e tipado como alternativa ao REST/JSON. 7 notas em 3 fases: por que gRPC e Protocol Buffers como IDL (Iniciado); geração de código, servidor/cliente e os 4 modos de streaming (Adepto); interceptors/metadata/erros e operar gRPC em produção (Magus). Ao fim, você desenha e opera serviços gRPC em Go com contrato versionado e streaming bidirecional.
 
-Go é a linguagem nativa do gRPC — o próprio framework nasceu no Google lado a lado com Go, e o ecossistema (protoc-gen-go, grpc-go) é o mais maduro entre todas as linguagens. Este galho troca o contrato solto de JSON/REST por um contrato forte em `.proto`, com serialização binária eficiente e streaming de primeira classe. Ver [[roadmap]] pro estado das notas.
+Go é a linguagem nativa do gRPC — o próprio framework nasceu no Google lado a lado com Go, e o ecossistema (protoc-gen-go, grpc-go) é o mais maduro entre todas as linguagens. Este galho troca o contrato solto de JSON/REST por um contrato forte em `.proto`, com serialização binária eficiente e streaming de primeira classe.
 
 ## Notas por fase
 

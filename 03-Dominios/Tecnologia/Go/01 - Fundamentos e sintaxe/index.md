@@ -18,7 +18,7 @@ aliases:
 > [!abstract] TL;DR
 > Galho 1 da trilha [[03-Dominios/Tecnologia/Go/index|Go]] — a fundação da linguagem, do "por que o Go existe" até escrever código idiomático desde a primeira linha. 8 notas em 3 fases: dos fundamentos de compilação e sintaxe (Iniciado), passando por funções, pacotes e módulos (Adepto), até ponteiros/modelo de memória e o idioma do Go (Magus).
 
-Este galho constrói o alicerce: ao fim dele, você compila e roda Go, entende zero values e conversões, domina o único loop e o idioma `if err != nil`, escreve funções com múltiplos retornos e closures, organiza código em pacotes e módulos, entende ponteiros sem aritmética, e sabe escrever Go que não parece "Java disfarçado". Ver [[roadmap]] pro estado das notas.
+Este galho constrói o alicerce: ao fim dele, você compila e roda Go, entende zero values e conversões, domina o único loop e o idioma `if err != nil`, escreve funções com múltiplos retornos e closures, organiza código em pacotes e módulos, entende ponteiros sem aritmética, e sabe escrever Go que não parece "Java disfarçado".
 
 ## Notas por fase
 

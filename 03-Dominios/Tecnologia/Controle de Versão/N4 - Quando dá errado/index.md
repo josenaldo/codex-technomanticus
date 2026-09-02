@@ -33,8 +33,6 @@ Este é o nível que você procura em pânico, às onze da noite, com um `push -
 | 25 | [[03-Dominios/Tecnologia/Controle de Versão/N4 - Quando dá errado/25 - Segredos no histórico\|Segredos no histórico]] | vazou senha, chave ou dado sensível |
 | 26 | [[03-Dominios/Tecnologia/Controle de Versão/N4 - Quando dá errado/26 - Configurar o Git a seu favor\|Configurar o Git a seu favor]] | parar de sofrer as mesmas coisas todo dia |
 
-> **Estado (2026-07-31):** **escrita completa — 5/5 notas.** Falta enriquecimento de mídia (M1). Ver o [[03-Dominios/Tecnologia/Controle de Versão/N4 - Quando dá errado/roadmap|roadmap do nível]].
-
 ---
 
 ## A regra que atravessa o nível inteiro

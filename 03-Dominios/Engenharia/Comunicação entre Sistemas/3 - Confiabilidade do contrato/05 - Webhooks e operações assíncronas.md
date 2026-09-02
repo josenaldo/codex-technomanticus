@@ -293,7 +293,7 @@ Vale nomear com precisão a diferença entre os dois padrões desta nota: "202 A
 
 ## O que vem a seguir
 
-Este sub-galho tratou de como o contrato síncrono se sustenta sob falha, retry e o tempo — idempotência, evolução de versão, caching, rate limiting, e agora os três padrões para quando a resposta simplesmente não cabe num request-response imediato. O fio que webhooks deixaram amarrado — a mesma disciplina de garantia de entrega, deduplicação e ordenação que aparece aqui reaparece, com infraestrutura de verdade por trás, em filas e streams de eventos — é exatamente o ponto de entrada do próximo sub-galho da trilha: **Comunicação assíncrona**, um mergulho em message queue vs event streaming, garantias de entrega formais, o padrão Outbox para transações distribuídas, e o legado de ESB/JMS que a indústria foi deixando para trás. Esse sub-galho ainda não existe como notas escritas nesta trilha — é o próximo passo do roteiro.
+Este sub-galho tratou de como o contrato síncrono se sustenta sob falha, retry e o tempo — idempotência, evolução de versão, caching, rate limiting, e agora os três padrões para quando a resposta simplesmente não cabe num request-response imediato. O fio que webhooks deixaram amarrado — a mesma disciplina de garantia de entrega, deduplicação e ordenação que aparece aqui reaparece, com infraestrutura de verdade por trás, em filas e streams de eventos — é exatamente o ponto de entrada do próximo sub-galho da trilha: **Comunicação assíncrona**, um mergulho em message queue vs event streaming, garantias de entrega formais, o padrão Outbox para transações distribuídas, e o legado de ESB/JMS que a indústria foi deixando para trás.
 
 ## Veja também
 

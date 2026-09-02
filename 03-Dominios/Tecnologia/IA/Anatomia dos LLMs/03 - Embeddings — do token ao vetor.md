@@ -193,7 +193,7 @@ An **embedding** converts a token ID (just a number with no semantic content) in
 
 ## Fontes
 
-- [[2026-embeddings-gpt-processa-palavras|Você Não Sabe Como o GPT Processa Cada Palavra — Sandeco]] (glosa de vídeo)
+- [Você Não Sabe Como o GPT Processa Cada Palavra — Sandeco](https://youtube.com/watch?v=_G_--YC5Xd4) (glosa de vídeo)
 
 ## Referências
 

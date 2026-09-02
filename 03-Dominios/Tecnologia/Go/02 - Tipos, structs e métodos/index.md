@@ -18,7 +18,7 @@ aliases:
 > [!abstract] TL;DR
 > Galho 2 da trilha [[03-Dominios/Tecnologia/Go/index|Go]] — o modelo de tipos que substitui a "classe". 8 notas em 3 fases: structs, tipos nomeados e métodos (Iniciado); a decisão value vs pointer receiver, composição por embedding e o idioma do construtor (Adepto); struct tags/reflection e design de tipos idiomático (Magus). Ao fim, você modela dados e comportamento em Go sem herança — só composição.
 
-Aqui o Go mostra sua aposta central de design: **sem classes, sem herança** — dados vivem em structs, comportamento vem de métodos com receiver, e reúso vem de composição por embedding. Ver [[roadmap]] pro estado das notas.
+Aqui o Go mostra sua aposta central de design: **sem classes, sem herança** — dados vivem em structs, comportamento vem de métodos com receiver, e reúso vem de composição por embedding.
 
 ## Notas por fase
 

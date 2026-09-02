@@ -25,7 +25,7 @@ Este galho cobre o **toolkit de UI desktop moderno do ecossistema Java de ponta 
 
 **Audiência primária:** dev senior em preparação para entrevista internacional — cada nota expõe o "porquê" das decisões e as perguntas mais cobradas, com vocabulário preciso em inglês. O mesmo dev que precisa construir ou manter uma aplicação desktop Java e quer dominar não apenas a API, mas os trade-offs arquiteturais (MVC vs. MVVM, compor vs. estender controls, Canvas vs. scene graph). **Audiência secundária:** o dev que conhece Swing e está avaliando ou migrando para JavaFX, ou que precisa decidir entre desktop e web com argumentos sólidos.
 
-Este galho é um **refator com poda integral** do tronco [[JavaFX]] (`Frontend/JavaFX.md`): a seção JavaFX foi extraída, aprofundada e reorganizada em notas atômicas por fase. Fecha o **par desktop** da trilha Java junto com [[03-Dominios/Tecnologia/Java/Swing/index|Swing (Galho 5)]].
+Este galho fecha o **par desktop** da trilha Java junto com [[03-Dominios/Tecnologia/Java/Swing/index|Swing (Galho 5)]].
 
 **Fronteiras importantes:** a teoria geral de UI thread — single-thread model, Event Dispatch Thread, deadlock AWT — está no Galho 5 ([[03-Dominios/Tecnologia/Java/Swing/05 - A Event Dispatch Thread|EDT]]); o sistema de módulos JPMS como conceito (requires/exports, classpath vs. module path) está no Galho 3 ([[03-Dominios/Tecnologia/Java/JVM/08 - JPMS — o sistema de módulos|JPMS]]); concorrência de baixo nível (locks, executors, Java Memory Model) está no Galho 4.
 

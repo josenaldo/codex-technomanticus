@@ -19,7 +19,7 @@ aliases:
 > [!abstract] TL;DR
 > Galho 18 da trilha [[03-Dominios/Tecnologia/Go/index|Go]] — por que Go é a linguagem nativa da era dos containers. 8 notas em 3 fases: o binário estático e cross-compilation (Iniciado); build flags/embed, imagens Docker mínimas, graceful shutdown e o contrato com Kubernetes (Adepto); secrets em produção e o pipeline do commit ao deploy (Magus). Ao fim, você empacota e opera um serviço Go como um sênior — imagem de poucos MB, shutdown limpo, probes honestas.
 
-Docker, Kubernetes e Terraform são escritos em Go por um motivo: um binário autocontido de poucos MB é o cidadão perfeito de um container. Ver [[roadmap]] pro estado das notas.
+Docker, Kubernetes e Terraform são escritos em Go por um motivo: um binário autocontido de poucos MB é o cidadão perfeito de um container.
 
 ## Notas por fase
 

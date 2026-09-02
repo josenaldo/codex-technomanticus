@@ -19,7 +19,7 @@ aliases:
 > [!abstract] TL;DR
 > Galho 10 da trilha [[03-Dominios/Tecnologia/Go/index|Go]] — como Go vira servidor web. 8 notas em 3 fases: o servidor HTTP embutido na stdlib e roteamento (Iniciado); request/response, middleware, os três frameworks de mercado (Gin, Chi, Echo) e o idioma REST em Go (Adepto); clientes HTTP e como servir em produção com timeouts e limites (Magus). Ao fim, você sabe por que Go dispensa framework pra montar um servidor decente — e quando escolher um mesmo assim.
 
-Aqui o Go mostra outra aposta de design: `net/http` já é um servidor web completo e idiomático, sem depender de terceiros — os frameworks existem pra conveniência (roteamento com parâmetros, agrupamento de middleware), não pra suprir uma lacuna estrutural. Ver [[roadmap]] pro estado das notas.
+Aqui o Go mostra outra aposta de design: `net/http` já é um servidor web completo e idiomático, sem depender de terceiros — os frameworks existem pra conveniência (roteamento com parâmetros, agrupamento de middleware), não pra suprir uma lacuna estrutural.
 
 ## Notas por fase
 
@@ -45,4 +45,3 @@ Aqui o Go mostra outra aposta de design: `net/http` já é um servidor web compl
 - [[03-Dominios/Tecnologia/Go/index|Trilha Go]] — índice geral (21 galhos + capstone)
 - Próximo galho: **Persistência** (galho 11) — `database/sql`, pool, pgx, sqlc, GORM, migrations
 
-[[roadmap]]

@@ -134,7 +134,6 @@ Se a pergunta em entrevista for "você tem alguma certificação de Python", a r
 
 - Python Institute. *PCEP-30-02 Exam Syllabus*. pythoninstitute.org. https://pythoninstitute.org/pcep-exam-syllabus (acessado em 2026-07-12) — 30 itens, 4 blocos, nota de corte 70% cumulativo, status Live & Active.
 - Python Institute. *PCAP-31-03 Exam Syllabus*. pythoninstitute.org. https://pythoninstitute.org/pcap-exam-syllabus (acessado em 2026-07-12) — 40 itens, 5 blocos, nota de corte 70% cumulativo, status Live & Active.
-- [[03-Dominios/Tecnologia/Python/Certificação (PCEP-PCAP)/roadmap|Roadmap deste galho]] — pesquisa consolidada (2026-07-12) que fundamenta os números desta nota.
 - [[03-Dominios/Tecnologia/Python/index|Trilha Python]] — MOC central; este é o galho 19/19, último da trilha.
 
 Consultado em 2026-07-12.

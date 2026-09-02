@@ -70,7 +70,6 @@ Não foque apenas em "gigs". Procure **Retainers** (mensalidades):
 
 ## Veja também
 
-- [[00-Meta/guia/Dicionario de Magia Tecnomante]] (Para termos de automação)
 - [[03-Dominios/Carreira/Empreendedorismo/Fator R — tributação para devs PJ]] (Para quando o dinheiro entrar)
 - [[03-Dominios/Tecnologia/Ferramentas/Prompts]] (Para refinar suas propostas)
 

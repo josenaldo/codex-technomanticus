@@ -30,6 +30,4 @@ Os domínios se organizam em **quatro camadas** — três técnicas (o *porquê*
 
 ## Veja também
 
-- [[02-Glosas/index|Glosas]] — fichamentos que alimentam os domínios
 - [[04-Sendas/index|Sendas]] — trilhas que cruzam vários domínios
-- [[00-Meta/index|Meta]] — convenções e pipeline do Codex

@@ -43,8 +43,6 @@ Nada mais no projeto tem essa propriedade. O código diz *o que é hoje*. Os tes
 | 33 | [[03-Dominios/Tecnologia/Controle de Versão/N6 - O repositório como testemunha/33 - Forense de repositório\|Forense de repositório]] | "onde dói mais?" · "quem sabe o quê?" · "o que muda sempre junto?" |
 | 34 | [[03-Dominios/Tecnologia/Controle de Versão/34 - Capstone - assumir um repositório desconhecido\|Capstone — assumir um repositório desconhecido]] | as primeiras quatro horas num repositório alheio |
 
-> **Estado (2026-07-31):** **escrita completa — 3/3 notas + capstone.** Falta enriquecimento de mídia (M1). Ver o [[03-Dominios/Tecnologia/Controle de Versão/N6 - O repositório como testemunha/roadmap|roadmap do nível]].
-
 ---
 
 ## Veja também

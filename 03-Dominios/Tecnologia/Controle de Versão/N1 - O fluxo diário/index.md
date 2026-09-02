@@ -36,8 +36,6 @@ O público continua sendo amplo — os exemplos ainda são de documentos e proje
 | 10 | [[03-Dominios/Tecnologia/Controle de Versão/N1 - O fluxo diário/10 - Guardar trabalho pela metade - stash e worktrees\|Guardar trabalho pela metade — stash e worktrees]] | interromper sem perder o meio do caminho |
 | 11 | [[03-Dominios/Tecnologia/Controle de Versão/N1 - O fluxo diário/11 - Sincronizar com o time\|Sincronizar com o time]] | `fetch` × `pull`, push recusado, múltiplos remotos |
 
-> **Estado (2026-07-31):** **escrita completa — 6/6 notas.** Falta enriquecimento de mídia (M1). Ver o [[03-Dominios/Tecnologia/Controle de Versão/N1 - O fluxo diário/roadmap|roadmap do nível]].
-
 ---
 
 ## Veja também

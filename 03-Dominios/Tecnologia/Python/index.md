@@ -14,9 +14,9 @@ aliases:
 # Python
 
 > [!abstract] TL;DR
-> Trilha Python organizada em **19 galhos** progressivos, do zero até produção — passando por data model, tipagem, concorrência, persistência, web/APIs, arquitetura, mensageria, microservices e certificação. Cada galho é um conjunto de notas atômicas em 3 fases de aprendizado (Iniciado/Adepto/Magus), no mesmo padrão da trilha [[03-Dominios/Tecnologia/Java/index|Java]]. POV fullstack backend — IA com Python fica pra uma trilha futura cross-language. **TRILHA COMPLETA em 2026-07-12** — 19/19 galhos, do Core à Certificação PCEP/PCAP.
+> Trilha Python organizada em **19 galhos** progressivos, do zero até produção — passando por data model, tipagem, concorrência, persistência, web/APIs, arquitetura, mensageria, microservices e certificação. Cada galho é um conjunto de notas atômicas em 3 fases de aprendizado (Iniciado/Adepto/Magus), no mesmo padrão da trilha [[03-Dominios/Tecnologia/Java/index|Java]]. POV fullstack backend — IA com Python fica pra uma trilha futura cross-language.
 
-Python aparece aqui como linguagem de propósito geral com foco em desenvolvimento backend fullstack. Semeando a partir do spec [[00-Meta/specs/2026-07-09-python-trilha-design]] — ver [[roadmap]] pro estado de cada galho.
+Python aparece aqui como linguagem de propósito geral com foco em desenvolvimento backend fullstack.
 
 ## Galhos da trilha
 

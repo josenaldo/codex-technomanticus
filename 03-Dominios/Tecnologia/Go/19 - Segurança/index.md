@@ -19,7 +19,7 @@ aliases:
 > [!abstract] TL;DR
 > Galho 19 da trilha [[03-Dominios/Tecnologia/Go/index|Go]] — o que Go dá de graça (memory safety) e o que continua sendo sua responsabilidade. 8 notas em 3 fases: o panorama de segurança (Iniciado); crypto na stdlib, TLS, validação de input e govulncheck/supply chain (Adepto); secrets, secure coding patterns e AuthN/AuthZ em serviços (Magus). Ao fim, você escreve serviços Go que resistem aos ataques comuns e faz a ponte com a trilha Auth e Identidade.
 
-Go elimina classes inteiras de bug de memória, mas validação, cripto correta, TLS e supply chain seguem por sua conta. Ver [[roadmap]] pro estado das notas.
+Go elimina classes inteiras de bug de memória, mas validação, cripto correta, TLS e supply chain seguem por sua conta.
 
 ## Notas por fase
 

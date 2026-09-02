@@ -117,6 +117,3 @@ Ver *onde* e *o que* aconteceu ainda deixa uma lacuna prática: como transformar
 - **Mouseflow / FullSession / Lucky Orange** — literatura de mercado consolidada sobre a distinção prática entre heatmap ("o quê" agregado) e session replay ("por quê" individual), e a recomendação padrão de usá-los em conjunto, nunca isolados.
 - **Webeyez / Lokker / JustAnalytics** — guias de compliance de session replay sob GDPR/CCPA, base da seção de mascaramento de PII e consentimento desta nota.
 - **CXL** — literatura sobre limitações e uso responsável de heatmap em otimização de conversão — a advertência de que heatmap isolado é, na melhor das hipóteses, limitado, e na pior, enganoso.
-
-> [!warning] Buraco honesto de mídia (M1)
-> Nenhum vídeo ou podcast verificável e pedagogicamente sólido foi encontrado especificamente sobre a distinção "o que session replay e heatmap provam versus o que só parecem provar" — as buscas retornaram apenas conteúdo promocional de ferramentas comerciais (Hotjar, Mouseflow, Clarity) sem profundidade analítica equivalente ao resto desta nota, ou material sem transcrição verificável via `yt-dlp`. Seguindo o precedente já aceito no domínio (notas 06, 16 e 31 de SG2, SG3 e SG5), esta nota fica sem mídia embutida em vez de aceitar um link fraco. Se um vídeo/podcast pertinente e verificável surgir depois, adicionar via `/adicionar-midia`.

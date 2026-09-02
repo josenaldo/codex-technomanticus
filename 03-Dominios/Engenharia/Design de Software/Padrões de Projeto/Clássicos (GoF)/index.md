@@ -20,7 +20,7 @@ aliases:
 # Clássicos (GoF)
 
 > [!abstract] TL;DR
-> Os **23 padrões do Gang of Four** (1994) — criacionais, estruturais e comportamentais — tratados como **catálogo de consulta** para o sênior, com uma lente que a maioria dos tutoriais ignora: cada padrão em **Java, TypeScript, Python e Go**, mostrando como os recursos da linguagem mudam (ou **dissolvem**) a implementação, e uma seção **Armadilhas** reforçada sobre **quando NÃO usar**. Primeira família do galho-pai [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/roadmap|Padrões de Projeto]].
+> Os **23 padrões do Gang of Four** (1994) — criacionais, estruturais e comportamentais — tratados como **catálogo de consulta** para o sênior, com uma lente que a maioria dos tutoriais ignora: cada padrão em **Java, TypeScript, Python e Go**, mostrando como os recursos da linguagem mudam (ou **dissolvem**) a implementação, e uma seção **Armadilhas** reforçada sobre **quando NÃO usar**. Primeira família do galho-pai [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/index|Padrões de Projeto]].
 
 ## Sobre esta família
 
@@ -79,6 +79,5 @@ Este não é um curso linear: é um **repertório**. Cada nota é autocontida �
 
 ## Veja também
 
-- [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/roadmap|Padrões de Projeto]] — o galho-pai e as outras cinco famílias.
 - [[03-Dominios/Engenharia/Design de Software/index|Design de Software]] — o domínio.
 - [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]] · [[03-Dominios/Engenharia/Design de Software/Orientação a Objetos/index|Orientação a Objetos]]

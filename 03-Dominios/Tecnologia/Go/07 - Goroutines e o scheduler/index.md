@@ -19,7 +19,7 @@ aliases:
 > [!abstract] TL;DR
 > Galho 7 da trilha [[03-Dominios/Tecnologia/Go/index|Go]] — a unidade de concorrência que faz do Go um caso à parte entre linguagens de backend. 8 notas em 3 fases: o vocabulário concorrência-vs-paralelismo e o `go` statement (Iniciado); o modelo GMP por baixo do capô, o ciclo de vida de uma goroutine e o mantra "compartilhe memória comunicando" comparado a threads/event loop/GIL (Adepto); as armadilhas clássicas de leak e captura de variável de loop, e o julgamento de quando goroutines são a ferramenta certa (Magus). Ao fim, você entende não só como lançar uma goroutine, mas por que o scheduler do Go faz isso ser barato — e onde isso ainda pode dar errado.
 
-Goroutines são a resposta do Go para "como fazer concorrência sem forçar o programador a orquestrar threads do SO". Custam ~2KB de stack, o runtime multiplexa milhares delas sobre um punhado de threads via o scheduler M:N, e o idioma da linguagem empurra você a comunicar por canais em vez de proteger memória compartilhada com locks. Ver [[roadmap]] pro estado das notas.
+Goroutines são a resposta do Go para "como fazer concorrência sem forçar o programador a orquestrar threads do SO". Custam ~2KB de stack, o runtime multiplexa milhares delas sobre um punhado de threads via o scheduler M:N, e o idioma da linguagem empurra você a comunicar por canais em vez de proteger memória compartilhada com locks.
 
 ## Notas por fase
 

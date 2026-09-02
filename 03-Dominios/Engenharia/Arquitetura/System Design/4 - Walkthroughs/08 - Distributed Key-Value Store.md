@@ -377,7 +377,7 @@ Concurrent writes that can't be ordered by a simple timestamp are detected with 
 
 ## O que vem a seguir
 
-Este walkthrough fecha o sub-galho **4 - Walkthroughs** — e, com ele, a escrita completa da trilha **System Design**. As oito notas deste sub-galho não foram oito sistemas isolados: foram oito exercícios do mesmo método, cada um recombinando um subconjunto diferente dos building blocks (SG2) e padrões (SG3) sob restrições novas. Este último, deliberadamente, foi o que menos introduziu conceito novo e mais **sintetizou** — sharding, CAP, quorum e replicação, vistos juntos, num sistema onde nenhum deles é opcional.
+Este walkthrough fecha o sub-galho **4 - Walkthroughs** — e, com ele, a trilha **System Design**. As oito notas deste sub-galho não foram oito sistemas isolados: foram oito exercícios do mesmo método, cada um recombinando um subconjunto diferente dos building blocks (SG2) e padrões (SG3) sob restrições novas. Este último, deliberadamente, foi o que menos introduziu conceito novo e mais **sintetizou** — sharding, CAP, quorum e replicação, vistos juntos, num sistema onde nenhum deles é opcional.
 
 O ponto de partida certo para revisitar a trilha inteira é o galho-pai:
 

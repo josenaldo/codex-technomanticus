@@ -326,7 +326,6 @@ Esta é uma nota de síntese — a pesquisa de fundo já está nas 22 notas dos 
 - Stripe Docs — [*Receive Stripe events in your webhook endpoint*](https://docs.stripe.com/webhooks) — modelo de retry/assinatura aplicado ao webhook do parceiro de logística (seção 7).
 - Netflix TechBlog — [*Beyond REST: Rapid Development With GraphQL Microservices*](https://netflixtechblog.com/beyond-rest-1b76f7c20ef6) — precedente de arquitetura híbrida REST/GraphQL/gRPC, referenciado na decisão da seção 1.
 - Maesn — [*QuickBooks Webhooks to CloudEvents Migration Guide*](https://www.maesn.com/blog/quickbooks-webhooks-cloudevents) — caso da Intuit usado como referência do ponto de virada para adoção de CloudEvents (seção 9).
-- [[00-Meta/specs/2026-07-09-comunicacao-entre-sistemas-trilha-design|Spec de design desta trilha]] — roster completo das 22 notas e fronteiras anti-duplicação que esta síntese respeita.
 - [[03-Dominios/Engenharia/Arquitetura/System Design/Conduzindo a entrevista completa|Conduzindo a entrevista completa]] — capstone-modelo da trilha irmã, cuja estrutura de walkthrough único esta nota replica.
 
 ## A trilha completa: as 22 notas, por sub-galho

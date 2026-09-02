@@ -63,4 +63,3 @@ Galho de Tecnologia sobre o **ferramental de testes JavaScript/TypeScript** — 
 ## Veja também
 
 - [[03-Dominios/Engenharia/Testes/index|Engenharia/Testes]] — a teoria que este galho instrumenta.
-- [[00-Meta/specs/2026-07-06-galho-testes-js-design|Design do galho]] — decisões e roster.

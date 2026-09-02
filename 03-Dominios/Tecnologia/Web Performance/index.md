@@ -34,8 +34,6 @@ O domínio segue a **linha do tempo da experiência do usuário** — *medir →
 | 3 | [[03-Dominios/Tecnologia/Web Performance/Performance de Runtime e Rendering/index\|G3 — Performance de Runtime & Rendering]] | main thread, long tasks, INP a fundo, reflow/repaint, layout thrashing, compositing, Workers | INP, CLS |
 | 4 | [[03-Dominios/Tecnologia/Web Performance/Performance em Produção/index\|G4 — Performance em Produção]] | budgets no CI, RUM/monitoramento, detecção de regressão, DevTools Performance panel, cultura de perf | — |
 
-> **Estado (2026-07-06):** os 4 galhos estão **escritos — 32/32 notas** (falta a rodada de enriquecimento de mídia, M1). Construído galho a galho, ponta a ponta. Ver [[00-Meta/specs/2026-07-05-dominio-web-performance-design|design do domínio]] e o [[03-Dominios/Tecnologia/Web Performance/roadmap|roadmap]].
-
 ---
 
 ## Fronteiras — performance que já mora em outras trilhas
@@ -53,6 +51,5 @@ Este domínio é a **lente de medição**; ele **linka** as notas abaixo como re
 
 ## Veja também
 
-- [[00-Meta/Roadmap|Roadmap de Trilhas]] — Web Performance sai de 🚫 (sem cobertura) para trilha própria.
 - [[03-Dominios/Engenharia/Operação/index|Engenharia — Operação]] — onde budgets no CI e monitoramento de regressão (Galho 4) tocam DevOps/SRE.
 - [[03-Dominios/Ciência/Redes e Protocolos/index|Redes e Protocolos]] — fundamentos de rede que a performance de carregamento explora.

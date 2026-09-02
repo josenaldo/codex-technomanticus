@@ -95,7 +95,7 @@ Depois de 23 notas, o resumo cabe numa linha: **os design patterns são vocabul�
 
 ## O que vem a seguir
 
-Esta nota **fecha a família Clássicos (GoF)** — os 23 padrões, mais a síntese de reconhecimento e discernimento. O galho-pai [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/roadmap|Padrões de Projeto]] segue com as próximas famílias do catálogo, começando pelos padrões que a orientação a objetos por si só não cobre: como o código conversa com o banco.
+Esta nota **fecha a família Clássicos (GoF)** — os 23 padrões, mais a síntese de reconhecimento e discernimento. O galho-pai [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/index|Padrões de Projeto]] segue com as próximas famílias do catálogo, começando pelos padrões que a orientação a objetos por si só não cobre: como o código conversa com o banco.
 
 - **Próxima família — Acesso a Dados:** DAO, Active Record, Data Mapper, Repository, Unit of Work e o impacto de NoSQL/cloud.
 - [[01 - O que são Design Patterns]] — reveja o mapa das seis famílias e a lente do catálogo.

@@ -53,8 +53,6 @@ O **N3 é o ponto de virada**: ele não ensina comando novo, reexplica os anteri
 - [[03-Dominios/Tecnologia/Controle de Versão/GitHub CLI|GitHub CLI]] — **referência de consulta** do `gh` (2006 linhas, por área), migrada de `Infraestrutura/` em 2026-07-31. O capítulo que ensina o fluxo é a nota 16.
 - [[03-Dominios/Tecnologia/Controle de Versão/Biblioteca de Controle de Versão|Biblioteca de Controle de Versão]] — recursos externos curados, **com peso em simuladores interativos** (Learn Git Branching, Visualizing Git, Oh My Git!, Git Exercises, git-katas) e **bloco PT-BR** herdado do repositório [`aprendendo-git-e-github`](https://github.com/josenaldo/aprendendo-git-e-github) do autor. É a peça que permite às notas explicarem o *modelo* e delegarem a *repetição*.
 
-> **Estado (2026-07-31):** **ESCRITA COMPLETA — 34/34 notas**, 7 níveis + capstone. Roster, lente e progressão por níveis fechados no [[00-Meta/specs/2026-07-31-dominio-controle-de-versao-design|design]] — que inclui a análise dos 4 repositórios de workshop do autor e o mapa de aproveitamento item a item. Construção sequencial **N0 → N6 → capstone**, com validação a cada nível. **N0 escrito para público geral** — estudante/acadêmico que precisa parar de perder arquivos, sem pressupor programação; do N1 em diante o público estreita gradualmente pro perfil dev.
-
 ---
 
 ## Fronteiras — versionamento que já mora em outras trilhas
@@ -71,6 +69,4 @@ Este domínio **linka** as notas abaixo como reforço, **nunca as reescreve**.
 
 ## Veja também
 
-- [[00-Meta/Roadmap|Roadmap de Trilhas]] — Controle de Versão entra como **Tier 0**.
-- [[00-Meta/specs/2026-07-31-dominio-controle-de-versao-design|Design do domínio]] — roster completo, análise do material próprio e justificativa das fronteiras.
 - [[03-Dominios/Carreira/Entrevistas/index|Entrevistas]] — fluxo de trabalho com Git é pergunta recorrente de entrevista sênior.

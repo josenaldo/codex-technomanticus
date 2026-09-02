@@ -49,7 +49,7 @@ Leia na ordem 1 → 2 → 3 → 4 se está construindo o mapa mental: o panorama
 
 ## Referência
 
-- [[03-Dominios/Engenharia/Comunicação entre Sistemas/API Design|API Design]] — tronco podado (redireciona pra trilha; preserva file upload e "Na prática" do autor)
+- [[03-Dominios/Engenharia/Comunicação entre Sistemas/API Design|API Design]] — redireciona pra trilha; guarda file upload e a seção "Na prática" do autor
 - [[03-Dominios/Engenharia/Comunicação entre Sistemas/Mensageria/index|Mensageria]] — ferramenta específica (Kafka, RabbitMQ, BullMQ, Event Streaming)
 
 ## Veja também

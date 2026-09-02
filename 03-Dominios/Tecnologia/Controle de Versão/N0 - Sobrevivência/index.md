@@ -35,8 +35,6 @@ Quem programa é servido pelo mesmo texto: o fluxo é exatamente o mesmo. Do [[0
 | 04 | [[03-Dominios/Tecnologia/Controle de Versão/N0 - Sobrevivência/04 - Desfazer sem susto\|Desfazer sem susto]] | descartar uma edição, tirar da fila, corrigir o último commit, puxar um arquivo do passado |
 | 05 | [[03-Dominios/Tecnologia/Controle de Versão/N0 - Sobrevivência/05 - GitHub - colocar o repositório na nuvem\|GitHub — colocar o repositório na nuvem]] | backup remoto, acesso de outra máquina, público × privado |
 
-> **Estado (2026-07-31):** **escrita completa — 5/5 notas.** Falta enriquecimento de mídia (M1). Ver o [[03-Dominios/Tecnologia/Controle de Versão/N0 - Sobrevivência/roadmap|roadmap do nível]].
-
 ---
 
 ## Veja também

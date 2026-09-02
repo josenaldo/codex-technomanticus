@@ -19,7 +19,7 @@ aliases:
 > [!abstract] TL;DR
 > Galho 5 da trilha [[03-Dominios/Tecnologia/Go/index|Go]] — como Go representa coleções e texto sem generics de biblioteca nem classes de coleção. 8 notas em 3 fases: arrays, slices e maps (Iniciado); strings/runes/bytes, o modelo de memória de slices (len/cap/aliasing) e alocação com make/new (Adepto); ordenação/busca idiomáticas e o critério pra escolher a estrutura certa (Magus). Ao fim, você entende por que slice não é array, por que passar slice por valor ainda pode mutar o backing array, e quando isso importa.
 
-Go não tem `List`, `Set` ou `ArrayList` — tem arrays de tamanho fixo, slices (a estrutura que você usa 95% do tempo) e maps, todos com semânticas de memória bem específicas que mordem quem vem de linguagens com coleções mais opacas. Ver [[roadmap]] pro estado das notas.
+Go não tem `List`, `Set` ou `ArrayList` — tem arrays de tamanho fixo, slices (a estrutura que você usa 95% do tempo) e maps, todos com semânticas de memória bem específicas que mordem quem vem de linguagens com coleções mais opacas.
 
 ## Notas por fase
 

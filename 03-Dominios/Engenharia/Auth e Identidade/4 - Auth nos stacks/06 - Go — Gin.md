@@ -27,9 +27,6 @@ publish: true
 > - Quando ainda faz sentido usar sessão (`gorilla/sessions`/`scs`) em vez de token em Go?
 > - Por que o Go não tem (e provavelmente nunca terá) um framework de auth "completo" no estilo Spring Security ou Passport?
 
-> [!info] Cobertura inédita — a trilha Go ainda não existe no vault
-> Diferente de Java (18 notas de Spring Security), Node (JWT/OIDC/RBAC em Node/Segurança) ou até Python (que ganhou cobertura de auth aqui mesmo, nas notas 02-03 deste sub-galho), **Go não tem uma trilha própria no domínio Tecnologia** — hoje é um stub. Esta nota, por enquanto, é o único lugar do vault onde auth em Go é tratado com profundidade; o [[00-Meta/Roadmap|Roadmap]] sinaliza essa cobertura pontual até que uma trilha Go completa exista.
-
 ## O problema: Go não empresta magia de ninguém
 
 Se você vem de Spring Boot, Express ou Django, a primeira coisa que estranha em Go é o que **não** existe. Não tem um `@PreAuthorize` decorando um método. Não tem um container de injeção de dependência resolvendo um `AuthenticationManager` nos bastidores. Não tem um arquivo de configuração central onde você declara "esta rota exige papel ADMIN" e um framework interpreta isso em tempo de execução. Em Go, auth é **código que você escreve e lê linha por linha**, porque essa é a filosofia da linguagem inteira: erros são valores retornados explicitamente, não exceções que sobem escondidas pela pilha; dependências são passadas como parâmetros ou campos de struct, resolvidas manualmente, não injetadas por um container mágico[^glukhov-di]. A citação que resume o espírito: "you always know where a dependency comes from, and nothing is hidden behind a framework"[^glukhov-di-quote].

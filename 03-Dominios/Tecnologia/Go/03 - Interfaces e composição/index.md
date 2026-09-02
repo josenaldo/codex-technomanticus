@@ -18,7 +18,7 @@ aliases:
 > [!abstract] TL;DR
 > Galho 3 da trilha [[03-Dominios/Tecnologia/Go/index|Go]] — como Go faz polimorfismo sem herança: interfaces implícitas (satisfação estrutural), o `any`/type assertions e o idioma "accept interfaces, return structs" (Iniciado/Adepto); embedding de interfaces e as pegadinhas de `io.Reader`/`io.Writer` (Adepto); o nil interface/typed-nil e design idiomático de interfaces pequenas (Magus). Ao fim, você projeta contratos desacoplados do tipo concreto — o jeito Go de fazer abstração.
 
-Aqui o Go completa a aposta do galho 2: comportamento vem de métodos, e contratos vêm de interfaces satisfeitas implicitamente — sem `implements`, sem hierarquia declarada. Ver [[roadmap]] pro estado das notas.
+Aqui o Go completa a aposta do galho 2: comportamento vem de métodos, e contratos vêm de interfaces satisfeitas implicitamente — sem `implements`, sem hierarquia declarada.
 
 ## Notas por fase
 

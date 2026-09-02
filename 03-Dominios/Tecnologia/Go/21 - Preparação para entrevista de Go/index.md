@@ -19,7 +19,7 @@ aliases:
 > [!abstract] TL;DR
 > Galho 21 da trilha [[03-Dominios/Tecnologia/Go/index|Go]] — a consolidação para o loop de entrevista internacional remota. 7 notas em 3 fases: o formato da entrevista de Go (Iniciado); perguntas conceituais clássicas, concorrência e os gotchas favoritos (Adepto); live coding, system design com Go e um simulado comentado (Magus). Este galho aponta de volta para toda a trilha e alimenta o capstone.
 
-Não introduz conteúdo novo: transforma os 20 galhos anteriores em respostas afiadas, drills de concorrência e defesa dos gotchas que entrevistadores adoram. Ver [[roadmap]] pro estado das notas.
+Não introduz conteúdo novo: transforma os 20 galhos anteriores em respostas afiadas, drills de concorrência e defesa dos gotchas que entrevistadores adoram.
 
 ## Notas por fase
 

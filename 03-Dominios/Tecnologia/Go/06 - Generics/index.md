@@ -18,7 +18,7 @@ aliases:
 > [!abstract] TL;DR
 > Galho 6 da trilha [[03-Dominios/Tecnologia/Go/index|Go]] — o recurso mais recente e mais debatido da linguagem. 7 notas em 3 fases: o problema que existia antes do Go 1.18 e a sintaxe de type parameters (Iniciado); constraints, tipos genéricos e type inference (Adepto); a fronteira generics vs interfaces e os padrões/limites reais de uso em produção (Magus). Ao fim, você sabe quando generics resolve algo que interface não resolve — e quando é só complexidade extra.
 
-Generics chegou tarde ao Go (1.18, 2022) de propósito: a linguagem preferiu esperar por um design que não sacrificasse simplicidade de leitura por abstração. Este galho cobre a sintaxe, as constraints que substituem `interface{}` com segurança de tipo, e — o mais importante — o julgamento de quando usar generics em vez do idioma de interfaces já visto no galho 3. Ver [[roadmap]] pro estado das notas.
+Generics chegou tarde ao Go (1.18, 2022) de propósito: a linguagem preferiu esperar por um design que não sacrificasse simplicidade de leitura por abstração. Este galho cobre a sintaxe, as constraints que substituem `interface{}` com segurança de tipo, e — o mais importante — o julgamento de quando usar generics em vez do idioma de interfaces já visto no galho 3.
 
 ## Notas por fase
 

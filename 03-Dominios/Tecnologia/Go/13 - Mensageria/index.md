@@ -19,7 +19,7 @@ aliases:
 > [!abstract] TL;DR
 > Galho 13 da trilha [[03-Dominios/Tecnologia/Go/index|Go]] — comunicação assíncrona entre serviços via filas e tópicos. 7 notas em 3 fases: por que desacoplar com mensageria (Iniciado); Kafka em Go, NATS em Go e o padrão de consumers/workers (Adepto); garantias de entrega/idempotência, retry/DLQ/backpressure e padrões de processamento (Magus). Ao fim, você projeta pipelines assíncronos resilientes em Go, sabendo quando trocar chamada síncrona por mensagem.
 
-Mensageria é a resposta de Go pra desacoplamento temporal entre serviços: produtor e consumidor não precisam estar de pé ao mesmo tempo, e falhas de um lado não derrubam o outro. Ver [[roadmap]] pro estado das notas.
+Mensageria é a resposta de Go pra desacoplamento temporal entre serviços: produtor e consumidor não precisam estar de pé ao mesmo tempo, e falhas de um lado não derrubam o outro.
 
 ## Notas por fase
 

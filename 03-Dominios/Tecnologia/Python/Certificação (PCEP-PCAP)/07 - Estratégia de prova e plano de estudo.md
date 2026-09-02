@@ -235,6 +235,5 @@ Com a estratégia de prova e o plano de estudo definidos, a [[08 - Capstone — 
 - Python Institute. *Practice Tests*. pythoninstitute.org. https://pythoninstitute.org/practice-tests (acessado em 2026-07-12) — simulados gratuitos oficiais, formato e estilo alinhados à prova real.
 - OpenEDG Python Institute. *OpenEDG Python Institute — Home*. openedg.org / pythoninstitute.org (acessado em 2026-07-12) — organização-mãe da Python Institute, materiais de apoio estruturados no mesmo syllabus oficial.
 - Python Software Foundation. *Python 3 Documentation* (referência definitiva em caso de dúvida técnica durante a preparação). docs.python.org, versão 3.14. https://docs.python.org/3/ (acessado em 2026-07-12)
-- [[03-Dominios/Tecnologia/Python/Certificação (PCEP-PCAP)/roadmap|Roadmap deste galho]] — pesos oficiais dos blocos, pesquisa consolidada 2026-07-12.
 
 Consultado em 2026-07-12.

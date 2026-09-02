@@ -125,7 +125,7 @@ Em conversas técnicas em inglês (code review, standup, discussão em RFC), est
 
 ## Fontes
 
-- [[02-Glosas/2026-cognitive-debt-hidden-risk-ai-driven-software-development|Cognitive debt: The hidden risk in AI-driven software development — Margaret-Anne Storey (DX)]] — [*Cognitive debt: The hidden risk in AI-driven software development*](https://newsletter.getdx.com/p/cognitive-debt-the-hidden-risk-in), Margaret-Anne Storey, Engineering Enablement / DX (abr. 2026). Artigo original que cunha e desenvolve o conceito.
+- [Cognitive debt: The hidden risk in AI-driven software development — Margaret-Anne Storey (DX)](https://newsletter.getdx.com/p/cognitive-debt-the-hidden-risk-in) — [*Cognitive debt: The hidden risk in AI-driven software development*](https://newsletter.getdx.com/p/cognitive-debt-the-hidden-risk-in), Margaret-Anne Storey, Engineering Enablement / DX (abr. 2026). Artigo original que cunha e desenvolve o conceito.
 
 ## Veja também
 
@@ -133,5 +133,5 @@ Em conversas técnicas em inglês (code review, standup, discussão em RFC), est
 - [[03-Dominios/Engenharia/Complexidade de Software/04 - O programa como teoria]] — a base teórica (Naur): o que exatamente se perde quando há débito cognitivo
 - [[03 - O comprehension gate|Comprehension gate]] — a barreira de code review que defende a teoria mudança a mudança
 - [[02 - Vibe coding vs engenharia disciplinada|Vibe coding vs engenharia disciplinada]] — o contexto que gera o débito
-- [[02-Glosas/2026-comprehension-debt-hidden-cost-ai-generated-code|Comprehension debt — Addy Osmani]] — conceito vizinho (gap código × entendimento)
-- [[02-Glosas/2026-cognitive-surrender|Cognitive surrender — Addy Osmani]] — a postura individual que alimenta o débito
+- [Comprehension debt — Addy Osmani](https://addyosmani.com/blog/comprehension-debt/) — conceito vizinho (gap código × entendimento)
+- [Cognitive surrender — Addy Osmani](https://addyosmani.com/blog/cognitive-surrender/) — a postura individual que alimenta o débito

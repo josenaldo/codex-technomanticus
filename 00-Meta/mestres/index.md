@@ -16,7 +16,7 @@ aliases:
 > [!abstract] TL;DR
 > Notas curtas sobre referências humanas — autores, criadores de conteúdo e profissionais brasileiros e internacionais que aparecem como fonte em várias trilhas do vault.
 
-Esta pasta agrupa perfis enxutos de pessoas cujo trabalho é citado recorrentemente nas notas de domínio. Cada nota traz uma descrição breve, áreas de atuação e links para os materiais mais relevantes — o objetivo é ter um ponto único de referência para evitar duplicar contexto em cada glosa ou nota que mencionar o mestre. Use o template [[Template - Mestre]] para criar novos perfis.
+Esta pasta agrupa perfis enxutos de pessoas cujo trabalho é citado recorrentemente nas notas de domínio. Cada nota traz uma descrição breve, áreas de atuação e links para os materiais mais relevantes — o objetivo é ter um ponto único de referência para evitar duplicar contexto em cada glosa ou nota que mencionar o mestre.
 
 ## Conteúdo
 
@@ -46,8 +46,3 @@ Esta pasta agrupa perfis enxutos de pessoas cujo trabalho é citado recorrenteme
 - [[Vaughn Vernon]] — referência internacional em DDD
 - [[Wesley Williams]] — referência brasileira em desenvolvimento
 - [[Willian Justen]] — referência brasileira em frontend
-
-## Veja também
-
-- [[Template - Mestre]]
-- [[00-Meta/guia/index|Guia]]

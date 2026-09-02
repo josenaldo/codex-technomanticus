@@ -71,7 +71,7 @@ Bloco herdado e reverificado do repositório [`aprendendo-git-e-github`](https:/
 
 ## Material próprio (workshops do autor)
 
-Cursos e workshops que o autor ministrou e compartilha. São a base pedagógica deste domínio — a análise de aproveitamento item a item está no [[00-Meta/specs/2026-07-31-dominio-controle-de-versao-design|design]].
+Cursos e workshops que o autor ministrou e compartilha. São a base pedagógica deste domínio.
 
 - **[workshop-git](https://github.com/josenaldo/workshop-git)** (2016, 9 tomos) — o mais completo tecnicamente; a sequência de diagramas de branching é a melhor parte.
 - **[curso-git-github](https://github.com/josenaldo/curso-git-github)** (2017, 6 tomos) — com GitKraken; o "Tomo 6 — Subindo de nível" é a ponte tutorial→modelo.

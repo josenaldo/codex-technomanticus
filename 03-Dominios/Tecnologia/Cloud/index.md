@@ -19,7 +19,7 @@ aliases:
 > [!abstract] TL;DR
 > Trilha Cloud organizada em **24 galhos + capstone**, com espinha conceitual-neutra: cada nota ensina o conceito e aplica a **lente dupla AWS↔DigitalOcean** — o serviço "canônico" da AWS ao lado do equivalente pragmático da DigitalOcean, que o autor usa há ~2 anos. Azure e Google Cloud entram só como camada de tradução (mapeamento de nomes), não como trilhas próprias. O **Well-Architected Framework** (os 6 pilares) é a bússola conceitual que atravessa o domínio inteiro.
 
-Cloud aqui é a **plataforma e seus serviços gerenciados** — compute, rede, armazenamento, bancos, serverless, mensageria — e o modelo mental pra raciocinar sobre eles (responsabilidade compartilhada, elasticidade, plano de controle vs plano de dados). Não é a disciplina de operar em produção (isso é [[03-Dominios/Engenharia/Operação/index|Operação]]) nem a arte de desenhar sistemas (isso é [[03-Dominios/Engenharia/Arquitetura/index|Arquitetura]]) — é a base sobre a qual as duas se apoiam. Ver [[03-Dominios/Tecnologia/Cloud/roadmap|roadmap]] pro estado de cada galho.
+Cloud aqui é a **plataforma e seus serviços gerenciados** — compute, rede, armazenamento, bancos, serverless, mensageria — e o modelo mental pra raciocinar sobre eles (responsabilidade compartilhada, elasticidade, plano de controle vs plano de dados). Não é a disciplina de operar em produção (isso é [[03-Dominios/Engenharia/Operação/index|Operação]]) nem a arte de desenhar sistemas (isso é [[03-Dominios/Engenharia/Arquitetura/index|Arquitetura]]) — é a base sobre a qual as duas se apoiam.
 
 ## Galhos da trilha
 
@@ -80,7 +80,6 @@ Se preferir uma ordem de *leitura* mais grossa que a de construção, agrupe os 
 
 - [[03-Dominios/Tecnologia/Cloud/Dicionário|Dicionário]] — glossário provider-neutro dos termos do domínio.
 - [[03-Dominios/Tecnologia/Cloud/Biblioteca|Biblioteca]] — recursos externos (AWS, DigitalOcean, Azure, GCP).
-- [[03-Dominios/Tecnologia/Cloud/roadmap|Roadmap]] — estado de construção dos 24 galhos.
 
 ## Veja também
 

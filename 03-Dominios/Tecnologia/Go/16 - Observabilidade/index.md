@@ -19,7 +19,7 @@ aliases:
 > [!abstract] TL;DR
 > Galho 16 da trilha [[03-Dominios/Tecnologia/Go/index|Go]] — como enxergar o que um serviço Go está fazendo em produção. 8 notas em 3 fases: os três pilares e logging estruturado com `slog` (Iniciado); profiling com `pprof`, métricas Prometheus e `expvar` (Adepto); tracing distribuído com OpenTelemetry e a prática de observar em produção (Magus). Ao fim, você sabe instrumentar, coletar e interpretar sinais de um serviço Go rodando de verdade.
 
-Observabilidade em Go tem uma vantagem rara: o runtime já vem instrumentado — `pprof` e `expvar` são biblioteca padrão, não dependência externa. Este galho parte desse alicerce nativo e sobe até o ecossistema padrão de produção (Prometheus, OpenTelemetry). Ver [[roadmap]] pro estado das notas.
+Observabilidade em Go tem uma vantagem rara: o runtime já vem instrumentado — `pprof` e `expvar` são biblioteca padrão, não dependência externa. Este galho parte desse alicerce nativo e sobe até o ecossistema padrão de produção (Prometheus, OpenTelemetry).
 
 ## Notas por fase
 

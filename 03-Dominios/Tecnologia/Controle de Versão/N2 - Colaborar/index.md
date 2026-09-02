@@ -36,8 +36,6 @@ Este é também o nível mais **político** do domínio. Metade do conteúdo nã
 | 15 | [[03-Dominios/Tecnologia/Controle de Versão/N2 - Colaborar/15 - GitHub como plataforma\|GitHub como plataforma]] | issues e projects · rulesets e CODEOWNERS · Actions como contrato · segurança do repositório |
 | 16 | [[03-Dominios/Tecnologia/Controle de Versão/N2 - Colaborar/16 - gh CLI e automação do fluxo\|`gh` CLI e automação do fluxo]] | o fluxo inteiro sem sair do terminal · `gh pr checkout` · `gh api` para o que não tem comando |
 
-> **Estado (2026-07-31):** **escrita completa — 5/5 notas.** Falta enriquecimento de mídia (M1). Ver o [[03-Dominios/Tecnologia/Controle de Versão/N2 - Colaborar/roadmap|roadmap do nível]].
-
 ---
 
 ## Veja também
