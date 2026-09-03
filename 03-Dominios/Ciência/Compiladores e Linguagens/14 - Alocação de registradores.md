@@ -312,9 +312,9 @@ quadrantChart
     quadrant-2 "Compiladores AOT"
     quadrant-3 "Compiladores lentos"
     quadrant-4 "JITs"
-    Graph coloring: [0.25, 0.85]
-    Linear scan: [0.80, 0.60]
-    Linear scan SSA: [0.70, 0.75]
+    "Graph coloring": [0.25, 0.85]
+    "Linear scan": [0.80, 0.60]
+    "Linear scan SSA": [0.70, 0.75]
 ```
 
 > [!info] Leitura do diagrama

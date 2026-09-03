@@ -161,7 +161,7 @@ O circuit breaker resolve isso copiando a metáfora do disjuntor elétrico: depo
 stateDiagram-v2
     [*] --> Closed
     Closed --> Open: falhas consecutivas\nultrapassam o limite
-    Open --> HalfOpen: timeout expira\n(ex.: 30s)
+    Open --> HalfOpen: timeout expira\n(ex. 30s)
     HalfOpen --> Closed: chamada de teste\ntem sucesso
     HalfOpen --> Open: chamada de teste\nfalha
 

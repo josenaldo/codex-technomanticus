@@ -39,13 +39,13 @@ Adam Tornhill batizou esse cruzamento de **hotspot** em *Your Code as a Crime Sc
 
 ```mermaid
 quadrantChart
-    title Quadrante de hotspots
-    x-axis Baixa complexidade --> Alta complexidade
-    y-axis Baixa frequência --> Alta frequência de mudança
-    quadrant-1 HOTSPOT — prioridade máxima
-    quadrant-2 Vigiar — simples mas volátil
-    quadrant-3 Dormente — ignorar por ora
-    quadrant-4 Armadilha latente — complexo e parado
+    title "Quadrante de hotspots"
+    x-axis "Baixa complexidade" --> "Alta complexidade"
+    y-axis "Baixa frequência" --> "Alta frequência de mudança"
+    quadrant-1 "HOTSPOT — prioridade máxima"
+    quadrant-2 "Vigiar — simples mas volátil"
+    quadrant-3 "Dormente — ignorar por ora"
+    quadrant-4 "Armadilha latente — complexo e parado"
     "ServicoFaturamento.java": [0.85, 0.9]
     "ConfigApp.yml": [0.15, 0.75]
     "MotorLegadoCalculo.java": [0.9, 0.15]

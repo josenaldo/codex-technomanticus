@@ -52,7 +52,7 @@ Cruzar esses dois eixos produz quatro quadrantes, e cada quadrante prescreve um 
 
 ```mermaid
 quadrantChart
-    title TIME — valor de negocio x qualidade tecnica
+    title "TIME — valor de negocio x qualidade tecnica"
     x-axis "Qualidade tecnica BAIXA" --> "Qualidade tecnica ALTA"
     y-axis "Valor de negocio BAIXO" --> "Valor de negocio ALTO"
     quadrant-1 "INVEST: evoluir, e a joia"

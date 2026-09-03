@@ -423,18 +423,18 @@ if (ehPrioridade(raw)) {
 
 ```mermaid
 quadrantChart
-    title Abordagens para conjuntos de constantes em TS
+    title "Abordagens para conjuntos de constantes em TS"
     x-axis "Overhead de runtime" --> "Zero runtime"
     y-axis "Menos type-safe" --> "Totalmente type-safe"
     quadrant-1 "Ideal"
     quadrant-2 "Leve mas inseguro"
     quadrant-3 "Pesado e inseguro"
     quadrant-4 "Pesado mas seguro"
-    enum numérico: [0.1, 0.1]
-    enum string: [0.25, 0.6]
-    const enum: [0.75, 0.65]
-    union pura: [0.95, 0.85]
-    as const object: [0.85, 0.95]
+    "enum numérico": [0.1, 0.1]
+    "enum string": [0.25, 0.6]
+    "const enum": [0.75, 0.65]
+    "union pura": [0.95, 0.85]
+    "as const object": [0.85, 0.95]
 ```
 
 | Critério | enum numérico | enum string | const enum | union pura | as const object |

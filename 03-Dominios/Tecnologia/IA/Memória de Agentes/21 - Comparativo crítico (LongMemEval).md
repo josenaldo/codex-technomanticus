@@ -104,18 +104,18 @@ Pensar em sistemas de memória apenas pelo eixo de acurácia é uma leitura inco
 
 ```mermaid
 quadrantChart
-    title Trade-offs de sistemas de memória (abril 2026)
-    x-axis Custo baixo --> Custo alto
-    y-axis Acurácia baixa --> Acurácia alta
-    quadrant-1 Alto custo, alta acurácia
-    quadrant-2 Baixo custo, alta acurácia
-    quadrant-3 Baixo custo, baixa acurácia
-    quadrant-4 Alto custo, baixa acurácia
-    MemPalace: [0.1, 0.97]
-    Mem0: [0.4, 0.93]
-    Zep: [0.6, 0.71]
-    Letta: [0.55, 0.60]
-    basic-memory: [0.05, 0.55]
+    title "Trade-offs de sistemas de memória (abril 2026)"
+    x-axis "Custo baixo" --> "Custo alto"
+    y-axis "Acurácia baixa" --> "Acurácia alta"
+    quadrant-1 "Alto custo, alta acurácia"
+    quadrant-2 "Baixo custo, alta acurácia"
+    quadrant-3 "Baixo custo, baixa acurácia"
+    quadrant-4 "Alto custo, baixa acurácia"
+    "MemPalace": [0.1, 0.97]
+    "Mem0": [0.4, 0.93]
+    "Zep": [0.6, 0.71]
+    "Letta": [0.55, 0.60]
+    "basic-memory": [0.05, 0.55]
 ```
 
 O diagrama acima é ilustrativo (posições de Letta e basic-memory são estimativas sem score publicado), mas captura a lógica central: MemPalace é o ponto ótimo em custo × acurácia se a configuração local-first funcionar para o caso de uso; Mem0 é o segundo melhor; Zep sacrifica acurácia absoluta mas entrega governança temporal que os outros não têm.

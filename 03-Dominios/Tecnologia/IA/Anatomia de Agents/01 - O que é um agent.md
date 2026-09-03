@@ -89,18 +89,18 @@ flowchart LR
 
 ```mermaid
 quadrantChart
-    title Autonomia vs Previsibilidade por padrão
-    x-axis Baixa Autonomia --> Alta Autonomia
-    y-axis Baixa Previsibilidade --> Alta Previsibilidade
-    quadrant-1 Ideal para produção crítica
-    quadrant-2 Evitar — risco sem controle
-    quadrant-3 Protótipos / exploração
-    quadrant-4 Workflows bem definidos
-    Chat: [0.1, 0.9]
-    RAG: [0.2, 0.85]
-    Workflow: [0.3, 0.95]
-    Agent simples: [0.65, 0.55]
-    Multi-agent: [0.9, 0.3]
+    title "Autonomia vs Previsibilidade por padrão"
+    x-axis "Baixa Autonomia" --> "Alta Autonomia"
+    y-axis "Baixa Previsibilidade" --> "Alta Previsibilidade"
+    quadrant-1 "Ideal para produção crítica"
+    quadrant-2 "Evitar — risco sem controle"
+    quadrant-3 "Protótipos / exploração"
+    quadrant-4 "Workflows bem definidos"
+    "Chat": [0.1, 0.9]
+    "RAG": [0.2, 0.85]
+    "Workflow": [0.3, 0.95]
+    "Agent simples": [0.65, 0.55]
+    "Multi-agent": [0.9, 0.3]
 ```
 
 ## Quando NÃO usar agent

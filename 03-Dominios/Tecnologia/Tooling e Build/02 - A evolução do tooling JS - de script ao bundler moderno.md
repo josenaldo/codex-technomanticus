@@ -483,22 +483,22 @@ A sétima geração não é uma ruptura conceitual com a sexta — é a mesma id
 
 ```mermaid
 quadrantChart
-    title Bundlers 2026: velocidade vs maturidade de ecossistema
-    x-axis Ecossistema pequeno --> Ecossistema maduro
-    y-axis Lento --> Rápido
-    quadrant-1 Lento e maduro
-    quadrant-2 Lento e novo
-    quadrant-3 Rápido e novo
-    quadrant-4 Rápido e maduro
-    webpack: [0.90, 0.15]
-    Rollup — puro: [0.65, 0.25]
-    Parcel: [0.35, 0.40]
-    Vite 7 — esbuild+Rollup: [0.75, 0.55]
-    esbuild: [0.50, 0.85]
-    Vite 8 — Rolldown+oxc: [0.80, 0.80]
-    Turbopack: [0.45, 0.88]
-    Rspack: [0.70, 0.78]
-    Rolldown: [0.55, 0.87]
+    title "Bundlers 2026: velocidade vs maturidade de ecossistema"
+    x-axis "Ecossistema pequeno" --> "Ecossistema maduro"
+    y-axis "Lento" --> "Rápido"
+    quadrant-1 "Lento e maduro"
+    quadrant-2 "Lento e novo"
+    quadrant-3 "Rápido e novo"
+    quadrant-4 "Rápido e maduro"
+    "webpack": [0.90, 0.15]
+    "Rollup — puro": [0.65, 0.25]
+    "Parcel": [0.35, 0.40]
+    "Vite 7 — esbuild+Rollup": [0.75, 0.55]
+    "esbuild": [0.50, 0.85]
+    "Vite 8 — Rolldown+oxc": [0.80, 0.80]
+    "Turbopack": [0.45, 0.88]
+    "Rspack": [0.70, 0.78]
+    "Rolldown": [0.55, 0.87]
 ```
 
 ### SWC — o transpilador em Rust (2019)

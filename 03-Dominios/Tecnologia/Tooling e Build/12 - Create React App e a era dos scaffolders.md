@@ -290,19 +290,19 @@ O problema é que o React evoluiu em direções que o CRA nunca acompanhou.
 
 ```mermaid
 quadrantChart
-    title CRA vs. alternativas: DX e capacidades (2022-2025)
-    x-axis Recursos limitados --> Recursos completos
-    y-axis DX lenta --> DX rápida
-    quadrant-1 Completo e rápido
-    quadrant-2 Completo e lento
-    quadrant-3 Limitado e lento
-    quadrant-4 Limitado e rápido
+    title "CRA vs. alternativas: DX e capacidades (2022-2025)"
+    x-axis "Recursos limitados" --> "Recursos completos"
+    y-axis "DX lenta" --> "DX rápida"
+    quadrant-1 "Completo e rápido"
+    quadrant-2 "Completo e lento"
+    quadrant-3 "Limitado e lento"
+    quadrant-4 "Limitado e rápido"
 
-    CRA: [0.25, 0.20]
-    Vite: [0.55, 0.90]
-    Next.js: [0.90, 0.80]
-    React Router v7: [0.80, 0.85]
-    Parcel: [0.45, 0.70]
+    "CRA": [0.25, 0.20]
+    "Vite": [0.55, 0.90]
+    "Next.js": [0.90, 0.80]
+    "React Router v7": [0.80, 0.85]
+    "Parcel": [0.45, 0.70]
 ```
 
 ---

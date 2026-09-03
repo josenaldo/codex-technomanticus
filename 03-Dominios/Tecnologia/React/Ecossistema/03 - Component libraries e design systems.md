@@ -46,15 +46,15 @@ Pense em duas dimensões: **componentes prontos** (quanto a lib entrega de graç
 
 ```mermaid
 quadrantChart
-    title Component Libraries — componentes prontos × controle visual
-    x-axis Menos controle visual --> Mais controle visual
-    y-axis Menos componentes prontos --> Mais componentes prontos
-    quadrant-1 Opção enterprise completa
-    quadrant-2 Flexível e completa
-    quadrant-3 Minimalista
-    quadrant-4 Controle total
-    MUI: [0.15, 0.90]
-    Mantine: [0.42, 0.85]
+    title "Component Libraries — componentes prontos × controle visual"
+    x-axis "Menos controle visual" --> "Mais controle visual"
+    y-axis "Menos componentes prontos" --> "Mais componentes prontos"
+    quadrant-1 "Opção enterprise completa"
+    quadrant-2 "Flexível e completa"
+    quadrant-3 "Minimalista"
+    quadrant-4 "Controle total"
+    "MUI": [0.15, 0.90]
+    "Mantine": [0.42, 0.85]
     "shadcn/ui": [0.70, 0.60]
     "Radix UI": [0.90, 0.30]
     "Tailwind puro": [0.95, 0.10]

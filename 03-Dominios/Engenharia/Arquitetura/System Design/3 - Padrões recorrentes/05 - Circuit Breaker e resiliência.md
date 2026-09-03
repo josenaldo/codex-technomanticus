@@ -130,8 +130,8 @@ A analogia é literal: um disjuntor elétrico desarma diante de um curto-circuit
 ```mermaid
 stateDiagram-v2
     [*] --> Closed
-    Closed --> Open: taxa de falha ultrapassa o limiar<br/>(ex.: 50% em 100 chamadas)
-    Open --> HalfOpen: waitDuration expira<br/>(ex.: 60s depois)
+    Closed --> Open: taxa de falha ultrapassa o limiar<br/>(ex. 50% em 100 chamadas)
+    Open --> HalfOpen: waitDuration expira<br/>(ex. 60s depois)
     HalfOpen --> Closed: chamadas de teste<br/>têm sucesso
     HalfOpen --> Open: chamadas de teste<br/>falham de novo
 

@@ -246,20 +246,20 @@ xychart-beta
 
 ```mermaid
 quadrantChart
-    title Controle vs Velocidade de prototipagem — por framework
-    x-axis Baixo Controle --> Alto Controle
-    y-axis Lenta Prototipagem --> Rápida Prototipagem
-    quadrant-1 Melhor dos dois mundos
-    quadrant-2 Velocidade, pouco controle
-    quadrant-3 Evitar
-    quadrant-4 Controle, mas lento
-    CrewAI: [0.35, 0.85]
-    AutoGen: [0.3, 0.7]
-    LangGraph: [0.5, 0.75]
-    Pydantic_AI: [0.65, 0.7]
-    Claude_SDK: [0.7, 0.65]
-    SDK_raw: [0.95, 0.3]
-    Vercel_AI: [0.45, 0.9]
+    title "Controle vs Velocidade de prototipagem — por framework"
+    x-axis "Baixo Controle" --> "Alto Controle"
+    y-axis "Lenta Prototipagem" --> "Rápida Prototipagem"
+    quadrant-1 "Melhor dos dois mundos"
+    quadrant-2 "Velocidade, pouco controle"
+    quadrant-3 "Evitar"
+    quadrant-4 "Controle, mas lento"
+    "CrewAI": [0.35, 0.85]
+    "AutoGen": [0.3, 0.7]
+    "LangGraph": [0.5, 0.75]
+    "Pydantic_AI": [0.65, 0.7]
+    "Claude_SDK": [0.7, 0.65]
+    "SDK_raw": [0.95, 0.3]
+    "Vercel_AI": [0.45, 0.9]
 ```
 
 ## Anti-patterns

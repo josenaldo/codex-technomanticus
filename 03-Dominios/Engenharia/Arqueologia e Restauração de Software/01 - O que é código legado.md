@@ -76,7 +76,7 @@ As definições de Feathers e Bellotti não competem — elas medem **eixos dife
 
 ```mermaid
 quadrantChart
-    title Os dois eixos do legado
+    title "Os dois eixos do legado"
     x-axis "Sem testes (medo de mudar)" --> "Com testes (rede de seguranca)"
     y-axis "Teoria perdida (ninguem entende)" --> "Teoria viva (alguem sabe o porque)"
     quadrant-1 "Saudavel: mude a vontade"

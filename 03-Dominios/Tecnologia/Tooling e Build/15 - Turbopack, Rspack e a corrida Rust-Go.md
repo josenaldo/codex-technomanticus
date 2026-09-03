@@ -436,13 +436,13 @@ Reescrever em Rust não é só "mesmo algoritmo, outra linguagem". É a oportuni
 
 ```mermaid
 quadrantChart
-    title Bundlers nativos — Rust/Go em 2026: velocidade vs. alcance
-    x-axis Nicho — framework-specific --> Universal — qualquer projeto
-    y-axis Menor comunidade/maturidade --> Maior comunidade/maturidade
-    Turbopack: [0.15, 0.60]
-    Rspack v2: [0.85, 0.75]
-    Rolldown/Vite 8: [0.75, 0.80]
-    esbuild: [0.55, 0.85]
+    title "Bundlers nativos — Rust/Go em 2026: velocidade vs. alcance"
+    x-axis "Nicho — framework-specific" --> "Universal — qualquer projeto"
+    y-axis "Menor comunidade/maturidade" --> "Maior comunidade/maturidade"
+    "Turbopack": [0.15, 0.60]
+    "Rspack v2": [0.85, 0.75]
+    "Rolldown/Vite 8": [0.75, 0.80]
+    "esbuild": [0.55, 0.85]
 ```
 
 | Critério | Turbopack | Rspack 2.0 | Rolldown/Vite 8 |

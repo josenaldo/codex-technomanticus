@@ -166,24 +166,24 @@ Sessão resultante:
 
 ```mermaid
 quadrantChart
-    title Risco × Frequência de uso
-    x-axis Baixo risco --> Alto risco
-    y-axis Baixa frequência --> Alta frequência
-    quadrant-1 Liberar com allow
-    quadrant-2 Liberar com allow — monitorar
-    quadrant-3 Deixar pedir confirmação
-    quadrant-4 Bloquear com deny
-    Read — *: [0.1, 0.9]
-    git status: [0.1, 0.8]
-    git log: [0.1, 0.7]
-    npm test: [0.2, 0.85]
-    Edit — *: [0.3, 0.9]
-    git add: [0.3, 0.7]
-    git commit: [0.4, 0.6]
-    npm install: [0.5, 0.5]
-    git push: [0.6, 0.4]
-    rm -rf: [0.95, 0.1]
-    git push force: [0.98, 0.05]
+    title "Risco × Frequência de uso"
+    x-axis "Baixo risco" --> "Alto risco"
+    y-axis "Baixa frequência" --> "Alta frequência"
+    quadrant-1 "Liberar com allow"
+    quadrant-2 "Liberar com allow — monitorar"
+    quadrant-3 "Deixar pedir confirmação"
+    quadrant-4 "Bloquear com deny"
+    "Read — *": [0.1, 0.9]
+    "git status": [0.1, 0.8]
+    "git log": [0.1, 0.7]
+    "npm test": [0.2, 0.85]
+    "Edit — *": [0.3, 0.9]
+    "git add": [0.3, 0.7]
+    "git commit": [0.4, 0.6]
+    "npm install": [0.5, 0.5]
+    "git push": [0.6, 0.4]
+    "rm -rf": [0.95, 0.1]
+    "git push force": [0.98, 0.05]
 ```
 
 ---

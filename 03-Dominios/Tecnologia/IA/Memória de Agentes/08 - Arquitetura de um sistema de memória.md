@@ -92,17 +92,17 @@ A decisão central é o trade-off entre **custo de write** e **custo de read**. 
 
 ```mermaid
 quadrantChart
-    title Trade-off custo write vs custo read
+    title "Trade-off custo write vs custo read"
     x-axis "Custo de write baixo" --> "Custo de write alto"
     y-axis "Custo de read alto" --> "Custo de read baixo"
-    quadrant-1 Ideal — raro
-    quadrant-2 Indexação rica
-    quadrant-3 Append-only simples
-    quadrant-4 Indexação cara sem retrieval
-    Markdown append-only: [0.15, 0.2]
-    Vetor + grafo — Mem0/Zep: [0.7, 0.75]
-    Hierárquico — Letta: [0.6, 0.65]
-    Memory palace — MemPalace: [0.55, 0.85]
+    quadrant-1 "Ideal — raro"
+    quadrant-2 "Indexação rica"
+    quadrant-3 "Append-only simples"
+    quadrant-4 "Indexação cara sem retrieval"
+    "Markdown append-only": [0.15, 0.2]
+    "Vetor + grafo — Mem0/Zep": [0.7, 0.75]
+    "Hierárquico — Letta": [0.6, 0.65]
+    "Memory palace — MemPalace": [0.55, 0.85]
 ```
 
 ### 3. Retrieval (read)

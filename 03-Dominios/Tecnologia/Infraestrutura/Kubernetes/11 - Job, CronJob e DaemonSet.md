@@ -321,7 +321,7 @@ sequenceDiagram
     participant N2 as Nó 2 (Pod antigo)
     participant N3 as Nó 3 (Pod antigo)
 
-    Note over D: spec.template muda;<br/>maxUnavailable=1, maxSurge=0
+    Note over D: spec.template muda,<br/>maxUnavailable=1, maxSurge=0
     D->>N1: remove Pod antigo
     Note over N1: nó 1 fica sem Pod<br/>por um instante (maxUnavailable=1)
     D->>N1: cria Pod novo

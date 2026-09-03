@@ -980,19 +980,19 @@ A razão mais profunda pela qual task runners perderam sentido:
 
 ```mermaid
 quadrantChart
-    title Estado das ferramentas legadas em 2026
+    title "Estado das ferramentas legadas em 2026"
     x-axis "Funcional mas morto" --> "Ainda mantido ativamente"
     y-axis "Downloads baixos (nicho/zero)" --> "Downloads altos (inércia/transitivo)"
-    quadrant-1 Inércia ativa
-    quadrant-2 Nicho mantido
-    quadrant-3 Arquivado
-    quadrant-4 Legado com suporte
+    quadrant-1 "Inércia ativa"
+    quadrant-2 "Nicho mantido"
+    quadrant-3 "Arquivado"
+    quadrant-4 "Legado com suporte"
 
-    RequireJS: [0.2, 0.85]
-    Browserify: [0.25, 0.72]
-    Gulp: [0.55, 0.78]
-    Grunt: [0.50, 0.45]
-    Bower: [0.10, 0.15]
+    "RequireJS": [0.2, 0.85]
+    "Browserify": [0.25, 0.72]
+    "Gulp": [0.55, 0.78]
+    "Grunt": [0.50, 0.45]
+    "Bower": [0.10, 0.15]
 ```
 
 | Ferramenta | Downloads/semana (jun/2026) | Última versão | Status real |

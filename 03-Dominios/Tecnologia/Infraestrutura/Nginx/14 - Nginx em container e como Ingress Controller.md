@@ -363,7 +363,7 @@ sequenceDiagram
     Ctrl->>Ctrl: renderiza o template Go → nginx.conf novo
     Ctrl->>Ngx: escreve o arquivo no sistema de arquivos do Pod
     Ctrl->>Ngx: sinal HUP (reload gracioso)
-    Note over Ngx: workers novos sobem com a config nova;<br/>antigos drenam e saem — nota 01
+    Note over Ngx: workers novos sobem com a config nova,<br/>antigos drenam e saem — nota 01
     Ngx-->>Ctrl: reload concluído (log/health check interno)
 ```
 

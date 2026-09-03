@@ -57,7 +57,7 @@ A matriz abaixo torna a ortogonalidade tangível: cada célula é uma combinaç�
 
 ```mermaid
 quadrantChart
-    title Matriz de ortogonalidade — serviço × implantação
+    title "Matriz de ortogonalidade — serviço × implantação"
     x-axis "Você gerencia mais" --> "Provedor gerencia mais"
     y-axis "Implantação privada/dedicada" --> "Implantação pública/compartilhada"
     quadrant-1 "PaaS/SaaS público"

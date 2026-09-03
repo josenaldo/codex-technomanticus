@@ -54,13 +54,13 @@ Os dois números não vêm de uma tabela genérica de mercado — vêm de conver
 
 ```mermaid
 quadrantChart
-    title Criticidade x custo aceito de DR
-    x-axis Barato --> Caro
-    y-axis RTO/RPO frouxo --> RTO/RPO agressivo
-    quadrant-1 Multi-Site Active/Active
-    quadrant-2 Warm Standby
-    quadrant-3 Backup and Restore
-    quadrant-4 Pilot Light
+    title "Criticidade x custo aceito de DR"
+    x-axis "Barato" --> "Caro"
+    y-axis "RTO/RPO frouxo" --> "RTO/RPO agressivo"
+    quadrant-1 "Multi-Site Active/Active"
+    quadrant-2 "Warm Standby"
+    quadrant-3 "Backup and Restore"
+    quadrant-4 "Pilot Light"
     "Autorização de pagamento (Tier 0)": [0.9, 0.95]
     "Checkout (Tier 1)": [0.6, 0.7]
     "Catálogo/API interna (Tier 2)": [0.3, 0.4]

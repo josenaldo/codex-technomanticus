@@ -279,17 +279,17 @@ Em 2026, quatro ferramentas dividem o mercado de transpilação. Elas não são 
 
 ```mermaid
 quadrantChart
-    title Players de transpilação em 2026
+    title "Players de transpilação em 2026"
     x-axis "Só transpila" --> "Transpila + Bundle"
     y-axis "Lento" --> "Rápido"
     quadrant-1 "Faz tudo, rápido"
     quadrant-2 "Rápido, só transpila"
     quadrant-3 "Lento, só transpila"
     quadrant-4 "Faz tudo, lento"
-    esbuild: [0.8, 0.95]
-    SWC: [0.2, 0.9]
-    Babel: [0.15, 0.2]
-    tsc: [0.1, 0.35]
+    "esbuild": [0.8, 0.95]
+    "SWC": [0.2, 0.9]
+    "Babel": [0.15, 0.2]
+    "tsc": [0.1, 0.35]
 ```
 
 ### Babel — o veterano que conhece tudo

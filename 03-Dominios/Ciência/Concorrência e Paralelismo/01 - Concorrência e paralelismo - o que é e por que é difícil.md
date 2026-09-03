@@ -120,7 +120,7 @@ sequenceDiagram
     T2->>T2: calcula 0 + 1 = 1
     T1->>Mem: escreve x = 1
     T2->>Mem: escreve x = 1
-    Note over Mem: x = 1  ❌ &#40;esperado: 2&#41;
+    Note over Mem: x = 1  ❌ &#40,esperado: 2&#41,
 ```
 
 Leitura do diagrama: as duas threads leem `0` **antes** de qualquer uma escrever. Cada uma calcula `1` e escreve `1`. Um incremento foi **perdido** — o resultado é `1`, não `2`. E o ponto perturbador: noutra execução, a Thread 1 poderia terminar *antes* de a Thread 2 começar, e aí o resultado seria `2`, **correto**. O bug aparece ou some dependendo da ordem da intercalação. Isso é uma [[03 - Estado compartilhado e race conditions|race condition]].

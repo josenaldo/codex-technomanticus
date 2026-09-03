@@ -881,20 +881,20 @@ O risco de migrar hoje: Rolldown 1.0 tem compatibilidade alta mas não perfeita.
 
 ```mermaid
 quadrantChart
-    title Rollup vs esbuild vs Rolldown — posicionamento 2026
+    title "Rollup vs esbuild vs Rolldown — posicionamento 2026"
     x-axis "Controle / Flexibilidade" --> "Velocidade / DX"
     y-axis "Libs" --> "Apps"
-    quadrant-1 Apps rápidas
-    quadrant-2 Apps flexíveis
-    quadrant-3 Libs com controle total
-    quadrant-4 Libs zero-config
-    Rollup: [0.15, 0.15]
-    esbuild: [0.80, 0.50]
-    Rolldown: [0.65, 0.50]
-    tsup: [0.85, 0.20]
-    tsdown: [0.90, 0.25]
-    Vite 8: [0.70, 0.90]
-    webpack: [0.10, 0.80]
+    quadrant-1 "Apps rápidas"
+    quadrant-2 "Apps flexíveis"
+    quadrant-3 "Libs com controle total"
+    quadrant-4 "Libs zero-config"
+    "Rollup": [0.15, 0.15]
+    "esbuild": [0.80, 0.50]
+    "Rolldown": [0.65, 0.50]
+    "tsup": [0.85, 0.20]
+    "tsdown": [0.90, 0.25]
+    "Vite 8": [0.70, 0.90]
+    "webpack": [0.10, 0.80]
 ```
 
 ---

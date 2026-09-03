@@ -35,7 +35,7 @@ Priorizar UX debt (ou qualquer backlog de melhoria de UX, na verdade) usando **i
 
 ```mermaid
 quadrantChart
-    title Matriz severidade x esforço
+    title "Matriz severidade x esforço"
     x-axis "Esforço baixo" --> "Esforço alto"
     y-axis "Severidade baixa" --> "Severidade alta"
     quadrant-1 "Big bets — deliberado"

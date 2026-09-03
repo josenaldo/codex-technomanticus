@@ -503,17 +503,17 @@ npx oxlint --import-plugin src/
 
 ```mermaid
 quadrantChart
-    title Linters e formatadores em 2026
+    title "Linters e formatadores em 2026"
     x-axis "Só formata" --> "Lint + Format"
     y-axis "Lento (Node.js)" --> "Rápido (Rust/Go)"
     quadrant-1 "Rápido e completo"
     quadrant-2 "Rápido, mas só lint"
     quadrant-3 "Lento, só formata"
     quadrant-4 "Lento, mas extensível"
-    Biome: [0.75, 0.90]
-    oxlint: [0.25, 0.95]
-    ESLint: [0.35, 0.15]
-    Prettier: [0.05, 0.40]
+    "Biome": [0.75, 0.90]
+    "oxlint": [0.25, 0.95]
+    "ESLint": [0.35, 0.15]
+    "Prettier": [0.05, 0.40]
     "ESLint+Prettier": [0.55, 0.12]
 ```
 

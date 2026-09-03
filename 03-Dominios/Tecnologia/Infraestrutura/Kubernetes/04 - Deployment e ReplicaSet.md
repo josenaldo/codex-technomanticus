@@ -117,7 +117,7 @@ sequenceDiagram
     participant RSold as ReplicaSet antigo (v1.2.3)
     participant RSnew as ReplicaSet novo (v1.2.4)
 
-    Note over D: spec.template muda para v1.2.4;<br/>maxSurge=1, maxUnavailable=0
+    Note over D: spec.template muda para v1.2.4,<br/>maxSurge=1, maxUnavailable=0
     D->>RSnew: cria com replicas=0
     D->>RSnew: replicas=1 (surge — acima das 3 originais)
     Note over RSnew: novo Pod fica Ready

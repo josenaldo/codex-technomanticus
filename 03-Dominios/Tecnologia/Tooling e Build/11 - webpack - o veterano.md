@@ -1221,19 +1221,19 @@ Roadmap webpack 6 (previsão 2026-2027):
 
 ```mermaid
 quadrantChart
-    title Bundlers em 2026: Velocidade vs. Compatibilidade com ecossistema webpack
-    x-axis Baixa compatibilidade --> Alta compatibilidade webpack
-    y-axis Lento --> Rápido
-    quadrant-1 Ideal para migração
-    quadrant-2 Novo projeto
-    quadrant-3 Legacy lock-in
-    quadrant-4 Drop-in upgrade
-    webpack: [0.9, 0.2]
-    Rspack: [0.85, 0.75]
-    Vite: [0.2, 0.85]
-    Turbopack: [0.5, 0.88]
-    esbuild: [0.15, 0.95]
-    Rollup: [0.2, 0.5]
+    title "Bundlers em 2026: Velocidade vs. Compatibilidade com ecossistema webpack"
+    x-axis "Baixa compatibilidade" --> "Alta compatibilidade webpack"
+    y-axis "Lento" --> "Rápido"
+    quadrant-1 "Ideal para migração"
+    quadrant-2 "Novo projeto"
+    quadrant-3 "Legacy lock-in"
+    quadrant-4 "Drop-in upgrade"
+    "webpack": [0.9, 0.2]
+    "Rspack": [0.85, 0.75]
+    "Vite": [0.2, 0.85]
+    "Turbopack": [0.5, 0.88]
+    "esbuild": [0.15, 0.95]
+    "Rollup": [0.2, 0.5]
 ```
 
 > [!note] Leitura do quadrante

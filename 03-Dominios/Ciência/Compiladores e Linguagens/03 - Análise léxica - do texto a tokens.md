@@ -287,7 +287,7 @@ stateDiagram-v2
     [*] --> S0
     S0 --> S1 : dígito
     S1 --> S1 : dígito
-    S1 --> S2 : ponto (lookahead: dígito à frente)
+    S1 --> S2: ponto (lookahead — dígito à frente)
     S2 --> S3 : dígito
     S3 --> S3 : dígito
     S1 --> [*] : outro (emite INT)

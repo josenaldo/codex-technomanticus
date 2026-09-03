@@ -83,8 +83,8 @@ Esse é o RED — não um erro de sintaxe, não um `ImportError`, mas o teste ro
 ```mermaid
 stateDiagram-v2
     [*] --> RED
-    RED: RED — test_criar_tarefa_com_prazo_no_passado_retorna_422\nfalha: API devolve 201, esperado 422
-    GREEN: GREEN — if data_limite < date.today(): raise HTTPException(422)\ndentro do handler; teste passa
+    RED: RED — test_criar_tarefa_com_prazo_no_passado_retorna_422\nfalha — API devolve 201, esperado 422
+    GREEN: GREEN — if data_limite < date.today() — raise HTTPException(422)\ndentro do handler; teste passa
     REFACTOR: REFACTOR — @field_validator("data_limite") em TarefaCreate\nteste continua verde, sem mudar uma linha
     RED --> GREEN: escreve o código mínimo
     GREEN --> REFACTOR: teste verde dá segurança pra mudar a forma

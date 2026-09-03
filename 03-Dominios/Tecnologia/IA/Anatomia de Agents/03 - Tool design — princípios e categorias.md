@@ -204,21 +204,21 @@ xychart-beta
 
 ```mermaid
 quadrantChart
-    title Risco vs Reversibilidade por categoria de tool
-    x-axis Baixo Risco --> Alto Risco
-    y-axis Difícil Reverter --> Fácil Reverter
-    quadrant-1 Sem proteção necessária
-    quadrant-2 Monitorar e logar
-    quadrant-3 Human-in-the-loop obrigatório
-    quadrant-4 Sandboxing + allowlist
-    read_file: [0.1, 0.95]
-    web_search: [0.15, 0.9]
-    query_db SELECT: [0.2, 0.85]
-    write_file: [0.4, 0.7]
-    run_shell: [0.6, 0.5]
-    git_push: [0.75, 0.35]
-    send_email: [0.8, 0.15]
-    deploy: [0.9, 0.1]
+    title "Risco vs Reversibilidade por categoria de tool"
+    x-axis "Baixo Risco" --> "Alto Risco"
+    y-axis "Difícil Reverter" --> "Fácil Reverter"
+    quadrant-1 "Sem proteção necessária"
+    quadrant-2 "Monitorar e logar"
+    quadrant-3 "Human-in-the-loop obrigatório"
+    quadrant-4 "Sandboxing + allowlist"
+    "read_file": [0.1, 0.95]
+    "web_search": [0.15, 0.9]
+    "query_db SELECT": [0.2, 0.85]
+    "write_file": [0.4, 0.7]
+    "run_shell": [0.6, 0.5]
+    "git_push": [0.75, 0.35]
+    "send_email": [0.8, 0.15]
+    "deploy": [0.9, 0.1]
 ```
 
 ```mermaid
