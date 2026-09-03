@@ -39,9 +39,9 @@ O trabalho desta capstone não introduz nenhum conceito novo — cada peça do r
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     G12["API do Galho 12\n(blindada, testada,\nhandler ainda gordo)"] --> P1["Passo 1\nDomínio puro (N02)"]
     P1 --> P2["Passo 2\nRepository (N03)"]
     P2 --> P3["Passo 3\nUnit of Work (N04)"]
@@ -52,8 +52,8 @@ flowchart LR
     P7 --> DONE["Arquitetura hexagonal\ncompleta"]
 
     class G12 destaque
-    class P7 falha
-    class DONE ok
+    class P7 neutro
+    class DONE marca
 ```
 
 > [!question]- Por que refatorar algo que já está em produção, testado e blindado? Não é risco desnecessário?
@@ -65,10 +65,9 @@ Antes do código, vale nomear a estrutura de diretório que o refactor produz �
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Antes["ANTES — capstone do Galho 12"]
         A1["src/main.py"]
         A2["src/routers/tarefas.py\nHandler + regra + SQL, tudo junto"]
@@ -88,9 +87,9 @@ flowchart TB
     end
 
     class Antes destaque
-    class Depois ok
+    class Depois marca
     class D1 neutro
-    class D7 falha
+    class D7 marca
 ```
 
 A pasta `tests/` do lado direito não tem asterisco nenhum de "adaptada" — é a mesma árvore, os mesmos arquivos, o mesmo conteúdo da capstone do Galho 12. Esse é o ponto que a última seção desta nota prova em detalhe: o refactor inteiro acontece **por trás** da fronteira que `TestClient` já exercitava, e por isso nenhum teste de integração ou de segurança precisa mudar uma linha para continuar válido.
@@ -578,7 +577,7 @@ E o diagrama final da arquitetura, com os seis passos deste refactor sobrepostos
 
 ```mermaid
 flowchart TB
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph DrivingAdapters["Driving Adapters — entrada (Passo 5)"]
@@ -619,8 +618,8 @@ flowchart TB
     MAIN -->|instancia e injeta| SQL
     MAIN -->|instancia e injeta| EMAIL
 
-    class Core ok
-    class ENT ok
+    class Core marca
+    class ENT marca
     class DrivingPorts neutro
     class DrivenPorts neutro
     class Root destaque
@@ -666,9 +665,9 @@ Esse teste nunca importou `_buscar_tarefa_do_usuario`. Nunca importou `AbstractR
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph Teste["test_usuario_b_nao_acessa_tarefa_de_usuario_a (Galho 12, inalterado)"]
         T["client.get(f'/tarefas/{id}')\nassert status == 404"]
     end
@@ -684,9 +683,9 @@ flowchart TB
     T -.->|"exercitava"| A
     T -.->|"continua exercitando,\nSEM MUDAR UMA LINHA"| D
 
-    class Teste falha
+    class Teste neutro
     class Antes destaque
-    class Depois ok
+    class Depois marca
 ```
 
 Isso não é coincidência de sorte — é a consequência direta e previsível de duas decisões que a [[03-Dominios/Tecnologia/Python/Testes/05 - Testando a API REST — TestClient e dependency overrides|nota 05 do Galho 12]] já cravou e que esta capstone só herdou: `TestClient` testa através da fronteira HTTP, nunca importando implementação interna; e a [[06 - Service Layer — orquestrando casos de uso#Contraste com TestClient: regra de negócio vs. integração fim a fim|nota 06 deste galho]] já nomeou essa mesma distinção do outro lado — testes de comportamento (via `TestClient`) provam que o **fio** está montado, não como ele está montado por dentro.

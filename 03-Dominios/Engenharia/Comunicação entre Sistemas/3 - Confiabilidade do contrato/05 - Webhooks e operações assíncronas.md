@@ -129,7 +129,7 @@ O formato consolidado pela Stripe — que virou referência de fato para pratica
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Webhook recebido<br/>com header de assinatura"] --> B["Recalcula HMAC sobre<br/>corpo BRUTO + timestamp"]
     B --> C{"Comparação em<br/>tempo constante bate?"}
@@ -138,8 +138,8 @@ flowchart TD
     E -->|"Não"| F["Rejeita —<br/>possível replay"]
     E -->|"Sim"| G["Evento autêntico —<br/>segue para dedup"]
 
-    class D falha
-    class F falha
+    class D marca
+    class F marca
     class G neutro
 ```
 

@@ -52,12 +52,12 @@ Vamos ver o contraste num diagrama. Numa função pura, tudo entra pelos argumen
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["entrada (args)"] --> F["função pura"]
     F --> B["saída (retorno)"]
 
-    class F ok
+    class F marca
     class A neutro
     class B neutro
 ```
@@ -96,7 +96,6 @@ A mesma caixa, agora com vazamentos:
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["entrada (args)"] --> F["função impura"]
@@ -106,7 +105,7 @@ flowchart LR
     REL["relógio / random"] -->|entrada oculta| F
     G["estado global"] <-->|lê e muta| F
 
-    class F falha
+    class F marca
     class A neutro
     class B neutro
     class DB marca
@@ -143,8 +142,8 @@ const a = adicionar(5); // depende de quantas vezes adicionar já rodou
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph Antes
         E1["resultado = soma(2,3) * 4"]
     end
@@ -155,8 +154,8 @@ flowchart TB
     E2 --> R["mesmo programa, mesmo resultado"]
 
     class E1 neutro
-    class E2 ok
-    class R ok
+    class E2 marca
+    class R marca
 ```
 
 Leitura do diagrama: porque `soma(2,3)` é referencialmente transparente, troco a chamada pelo valor `5` e o programa não percebe diferença. É como simplificar uma conta de matemática no papel.
@@ -204,8 +203,7 @@ A resposta clássica é o padrão **functional core, imperative shell**, popular
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph SHELL["casca imperativa (borda)"]
         IN["lê entrada / banco / rede"] --> CORE
@@ -217,11 +215,11 @@ flowchart TB
         end
     end
 
-    class SHELL falha
-    class CORE ok
-    class L ok
-    class C ok
-    class T ok
+    class SHELL marca
+    class CORE marca
+    class L marca
+    class C marca
+    class T marca
     class IN neutro
     class OUT neutro
 ```

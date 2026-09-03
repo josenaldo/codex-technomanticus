@@ -30,8 +30,8 @@ Essa ordem importa porque cada etapa responde a uma pergunta que a anterior não
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     R["Requisição HTTP<br/>(kubectl, controller, operator)"] --> Auth["Autenticação<br/>quem é você?"]
     Auth -->|"identidade resolvida"| Az["Autorização (RBAC)<br/>o que você pode fazer?"]
     Az -->|"permitido"| Ad["Admission<br/>este objeto é aceitável?"]
@@ -40,10 +40,10 @@ graph LR
     Ad -->|"aprovado"| E["etcd<br/>gravação final"]
     Ad -->|"rejeitado"| FAdm["Erro de admission<br/>(webhook nomeado)"]
 
-    class F401 falha
-    class F403 falha
-    class FAdm falha
-    class E ok
+    class F401 neutro
+    class F403 marca
+    class FAdm marca
+    class E marca
 ```
 
 ## Duas identidades, uma assimetria que surpreende

@@ -217,13 +217,13 @@ O navegador só interpreta uma resposta como HTML executável se o `Content-Type
 
 ```mermaid
 graph LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Payload malicioso salvo:<br/>'&lt;script&gt;roubo&lt;/script&gt;'"] --> B{"Como a resposta<br/>é servida?"}
     B -->|"Content-Type: application/json<br/>(FastAPI/DRF puro)"| C["Navegador trata como STRING<br/>dentro de um objeto — não executa"]
     B -->|"Content-Type: text/html<br/>(template server-rendered)"| D["Navegador PODE executar,<br/>se não estiver escapado"]
-    class C ok
-    class D falha
+    class C neutro
+    class D marca
 ```
 
 ### Onde o risco reaparece — e de quem é a responsabilidade

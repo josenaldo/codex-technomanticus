@@ -159,9 +159,9 @@ Esta é a seção que separa quem decorou "o GIL trava tudo" de quem entende o m
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Start["Thread quer executar código"] --> HasGIL{"Segura o GIL?"}
     HasGIL -- Não --> Wait["Espera na fila do GIL"]
     Wait --> HasGIL
@@ -178,7 +178,7 @@ flowchart TB
     class Bytecode neutro
     class Blocking destaque
     class Release destaque
-    class External falha
+    class External marca
     class Reacquire destaque
 ```
 

@@ -29,7 +29,7 @@ Go trilha um caminho radicalmente mais simples. E a simplicidade não é acident
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph C["C / C++"]
         direction TB
@@ -42,7 +42,7 @@ flowchart TB
         G2 --> G3["Binário Linux/AMD64"]
     end
 
-    class C2 falha
+    class C2 neutro
     class G2 destaque
 ```
 

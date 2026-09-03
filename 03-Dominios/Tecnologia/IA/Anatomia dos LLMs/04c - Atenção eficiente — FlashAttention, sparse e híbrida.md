@@ -52,13 +52,13 @@ O softmax obriga os pesos de atenção a **somarem 1** para cada token. Quando a
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q["Query do\ntokens atual"] --> T0["Tokens 0-3\n⬆ Attention Sinks\n(peso alto 'estacionado')"]
     Q --> TM["Tokens 4-N-1000\n(pesos baixos,\njá fora da janela)"]
     Q --> TR["Tokens recentes N-1000-N\n(pesos altos\ne relevantes)"]
-    class T0 falha
-    class TR ok
+    class T0 neutro
+    class TR marca
 ```
 
 A consequência de produção é contraintuitiva: **remover os primeiros tokens do KV cache** (como faria uma sliding window ingênua) **destrói a qualidade** — não por perder contexto antigo, mas por remover o destino padrão da atenção sobrando. Sem os sinks, o softmax fica instável.
@@ -98,7 +98,7 @@ O **FlashAttention** elimina esse tráfego com dois insights:
 
 ```mermaid
 graph TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "FlashAttention: processamento em blocos"
         Q["Q completo\n(HBM)"] --> |"carrega bloco Qi"| SRAM_Q["Bloco Qi\n(SRAM)"]
@@ -110,7 +110,7 @@ graph TD
         CALC --> ACC["Acumula resultado\nno bloco de output Oi"]
         ACC --> OUT["Escreve Oi final\nna HBM\n(uma única vez por bloco)"]
     end
-    class CALC ok
+    class CALC marca
     class OUT neutro
 ```
 
@@ -138,8 +138,7 @@ O FlashAttention baixa a *constante* do O(n²), mas o expoente permanece. Para q
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Atenção full (O(n²))"
         A1[Token 1] --> B1[atende a todos]
@@ -152,8 +151,8 @@ graph LR
         C2[Token N] --> D1
         C2 --> D2
     end
-    class B1 falha
-    class D1 ok
+    class B1 marca
+    class D1 marca
     class D2 neutro
 ```
 
@@ -175,8 +174,8 @@ Uma rota paralela à esparsidade pura: em vez de toda camada pagar O(n²), o mod
 
 ```mermaid
 graph TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Arquitetura Híbrida (ex: Gemma 2)"
         L1["Camada 1 — Local\nSliding window 4096 tokens\n💰 O(n·w), barata"]
         L2["Camada 2 — Global\nAtenção full O(n²)\n💸 Cara mas abrangente"]
@@ -184,10 +183,10 @@ graph TD
         L4["Camada 4 — Global"]
         L1 --> L2 --> L3 --> L4
     end
-    class L1 ok
-    class L2 falha
-    class L3 ok
-    class L4 falha
+    class L1 neutro
+    class L2 marca
+    class L3 marca
+    class L4 marca
 ```
 
 A maior parte do trabalho fica local e barata (O(n·w), onde w é o tamanho da janela). Só as camadas globais pagam O(n²) — e são minorias. O **Gemma 2** alterna 1:1 (janela de 4096 tokens nas camadas locais). O **GPT-OSS** usa janelas menores (128 tokens) com menos camadas globais ainda.

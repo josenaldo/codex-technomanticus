@@ -262,9 +262,9 @@ O dispatch acontece sobre o **tipo do primeiro argumento** — daí "single" (co
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["processar(dado)"] --> B{"type(dado) tem<br/>implementação registrada?"}
     B -->|"int"| C["implementação para int"]
     B -->|"str"| D["implementação para str"]
@@ -278,7 +278,7 @@ flowchart LR
     class D neutro
     class E neutro
     class F destaque
-    class H falha
+    class H marca
 ```
 
 Quando não existe implementação registrada exatamente para o tipo do argumento, `singledispatch` percorre a **MRO** (Method Resolution Order) do tipo, buscando a implementação registrada mais específica entre as superclasses — e cai na implementação genérica (a função original, decorada com `@singledispatch`, que atua como implementação para `object`) só se nada na MRO tiver registro. Isso significa que registrar uma implementação para uma ABC (`collections.abc.Sequence`, por exemplo) cobre automaticamente qualquer subclasse virtual dela, sem precisar registrar cada tipo concreto individualmente.

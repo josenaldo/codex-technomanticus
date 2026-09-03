@@ -83,7 +83,7 @@ Repare no que essa operação é de verdade. Não é maquiagem de datas, não é
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph ANTES["Antes — um silêncio de natureza indefinida"]
@@ -98,7 +98,7 @@ graph TD
         B4 --> B5["Emprego novo<br/>a partir de mar/2022"]
     end
 
-    class A2 falha
+    class A2 marca
     class B2 destaque
     class B4 destaque
     class B3 neutro

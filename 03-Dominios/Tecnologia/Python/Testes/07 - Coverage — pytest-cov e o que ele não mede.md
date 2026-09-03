@@ -189,8 +189,8 @@ Rodando `pytest --cov=src --cov-report=term-missing`, o resultado é **100% de c
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["test_aplica_desconto_para_cliente_vip<br/>(cliente_vip=True)"] --> B{"if cliente_vip?"}
     B -->|"ramo True — COBERTO"| C["valor = valor * 0.90"]
     B -.->|"ramo False — NUNCA EXECUTADO"| D["pula a atribuição"]
@@ -198,7 +198,7 @@ flowchart TD
     D -.-> E
 
     class C neutro
-    class D falha
+    class D marca
     class E neutro
 ```
 
@@ -254,7 +254,7 @@ Vale sintetizar os três níveis numa escala só, porque cada um responde a uma 
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph L1["Nível 1 — Line coverage"]
@@ -281,7 +281,7 @@ flowchart LR
     L1 -->|"mais rigoroso"| L2
     L2 -->|"mais rigoroso"| L3
 
-    class L1 falha
+    class L1 marca
     class L2 destaque
     class L3 neutro
 ```

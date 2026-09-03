@@ -314,9 +314,9 @@ O `PageLayout` não sabe nada sobre navegação ou rodapé — ele apenas declar
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     App["App"]
     App --> Layout["PageLayout\n(header / children / footer)"]
 
@@ -333,9 +333,9 @@ graph TD
     class H destaque
     class M destaque
     class F destaque
-    class Nav ok
-    class Content ok
-    class FooterComp ok
+    class Nav marca
+    class Content marca
+    class FooterComp marca
 ```
 
 O `PageLayout` é o "gabarito" — define a estrutura. Os nós verdes são o conteúdo que o usuário do componente injeta via slots. A árvore pode crescer para qualquer profundidade sem que o `PageLayout` precise saber o que está dentro.

@@ -31,7 +31,7 @@ O que esta capstone faz — como toda capstone desta trilha — não é introduz
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Antes["Cena de abertura do galho — imagem parada"]
         direction TB
@@ -50,7 +50,7 @@ flowchart TB
         D2 --> D3
     end
 
-    class A3 falha
+    class A3 neutro
     class D3 destaque
 ```
 

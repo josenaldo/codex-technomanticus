@@ -310,8 +310,9 @@ const u: User = createUser('Ana');
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     IMP["import { Foo } from './mod'"]
     VM{{"verbatimModuleSyntax\nativo?"}}
     USE{{"Foo é usado\ncomo valor?"}}
@@ -328,8 +329,8 @@ flowchart TD
     USE2 -- não --> ERROR
 
     class ERROR falha
-    class EMIT ok
-    class EMIT2 ok
+    class EMIT neutro
+    class EMIT2 marca
 ```
 
 ### Por que usar `verbatimModuleSyntax`?
@@ -435,8 +436,8 @@ Quando o `tsc` emite JavaScript, ele mantém `@ui/Button` como está. O runtime 
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     SRC["import { Button } from '@ui/Button'"]
 
@@ -463,7 +464,7 @@ flowchart LR
     RT --> TSPATH
 
     class NODE falha
-    class VITE ok
+    class VITE marca
     class TSPATH neutro
 ```
 
@@ -586,8 +587,8 @@ class User {
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     TS_FILE["arquivo.ts"]
 
     subgraph NODE24["Node 24+ (type stripping)"]
@@ -606,7 +607,7 @@ flowchart LR
     TS_FILE --> TSC
 
     class NODE24 neutro
-    class TSC ok
+    class TSC marca
 ```
 
 > [!warning] Type stripping não substitui o type-checker

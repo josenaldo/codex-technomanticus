@@ -35,14 +35,14 @@ Esse é o ponto cego que autenticação sozinha nunca resolveu: [[01 - OAuth —
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Login social /<br/>senha própria"] -->|"resolve"| B["Quem é você<br/>agora"]
     A -->|"não resolve"| C["Quem administra<br/>essa identidade"]
     A -->|"não resolve"| D["O que acontece<br/>quando a pessoa sai"]
 
     class C destaque
-    class D falha
+    class D neutro
 ```
 
 ## Federação de identidade: o conceito antes do protocolo
@@ -173,13 +173,14 @@ O ataque de **signature wrapping** explora exatamente esse descompasso: o atacan
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Assertion legítima<br/>assinada (usuário comum)"] -->|"atacante move o<br/>elemento assinado"| B["Posição 'morta'<br/>do XML<br/>(assinatura OK, ignorada)"]
     A -->|"atacante insere<br/>elemento forjado"| C["Posição que a app<br/>de fato lê<br/>(NameID = admin)"]
     C -->|"parser de negócio<br/>lê daqui"| D["App autentica<br/>como admin"]
 
-    class C falha
-    class D falha
+    class C neutro
+    class D marca
 ```
 
 ### O caso Duo Labs 2018: comment injection

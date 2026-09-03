@@ -94,9 +94,9 @@ Um fluxo de eventos é, por definição, infinito — não existe "somar todas a
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Stream["Fluxo contínuo de eventos"]
         E1(("e1")) --> E2(("e2")) --> E3(("e3")) --> E4(("e4")) --> E5(("e5")) --> E6(("e6"))
     end
@@ -118,7 +118,7 @@ graph TB
     class T3 neutro
     class S1 destaque
     class S2 destaque
-    class Gap falha
+    class Gap marca
 ```
 
 ### Dado atrasado e watermarks de streaming

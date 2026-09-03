@@ -155,8 +155,8 @@ A mesma disciplina de GitOps que se aplica a código de aplicação se aplica a 
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Dev["Dev abre PR\ncom mudança no .tf"] --> Val["CI: terraform validate\n+ tflint + checkov"]
     Val -->|"passa"| Plan["CI: terraform plan\n(comentado no PR)"]
     Val -->|"falha"| Block["PR bloqueado"]
@@ -165,8 +165,8 @@ flowchart LR
     Merge --> Apply["CI: terraform apply\n(pipeline separado, gatilho de merge)"]
     Apply --> Prod["Infraestrutura\natualizada"]
 
-    class Block falha
-    class Apply ok
+    class Block neutro
+    class Apply marca
 ```
 
 O ponto central é que **`plan` e `apply` rodam em pipelines diferentes, com gatilhos diferentes**. `terraform plan` roda automaticamente a cada push num PR aberto, e o resultado — a lista de recursos a criar/alterar/destruir — é publicado como comentário no próprio PR, para quem revisa ver exatamente o que vai acontecer antes de aprovar. `terraform apply` só roda depois do merge na branch principal, e normalmente exige uma aprovação adicional (um "gate" manual no pipeline) antes de tocar em produção — a mesma lógica de política de aprovação que qualquer deploy de aplicação segue.

@@ -79,8 +79,8 @@ Se `NovoServico` devolve `Notificador` (uma interface), o chamador só enxerga o
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph certo["accept interfaces, return structs"]
         direction LR
         C1["chamador"] -->|"passa qualquer Sender"| C2["NovoServico(Sender) *NotificationService"]
@@ -93,7 +93,7 @@ flowchart LR
     end
 
     class C2 neutro
-    class E2 falha
+    class E2 marca
 ```
 
 Há um segundo custo, mais sutil: retornar interface obriga quem *escreve* a função a **adivinhar de antemão** toda operação que qualquer consumidor futuro vai precisar, e cravar isso na interface de retorno. Se a previsão falhar — e ela falha, porque requisitos mudam — a correção exige alterar a assinatura pública da interface, o que é uma mudança *breaking* para todo mundo que já depende dela. Retornar o struct concreto adia essa decisão: o consumidor pega o tipo completo e decide sozinho, no seu próprio código, que subconjunto de comportamento ele quer tratar como abstrato (declarando a própria interface local — assunto da [[03-Dominios/Tecnologia/Go/03 - Interfaces e composição/08 - Design idiomático de interfaces|nota 08]]).

@@ -62,9 +62,9 @@ Vale nomear, aqui, um erro comum e compreensível: tratar "lembrado" como sinôn
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     F1["Fonte reproduzível<br/>git log · painel de CI ·<br/>suíte de testes · log de incidente"] --> M["MEDIDO"]
     F2["Registro que existe,<br/>contado à mão<br/>histórico de mensagens · Kanban fechado · planilha"] --> C["CONTADO"]
     F3["Memória sem<br/>registro recuperável"] --> L["LEMBRADO"]
@@ -75,10 +75,10 @@ graph TD
 
     class M neutro
     class C destaque
-    class L falha
+    class L marca
     class MA neutro
     class CA destaque
-    class LA falha
+    class LA marca
 ```
 
 O diagrama fixa a regra que as três seções acima descreveram em prosa: o comprimento da cadeia entre o fato e a fonte decide o nível, e o nível decide o que a frase final tem autorização para dizer. Não existe atalho de um nível mais frágil para um mais forte — só existe a decisão honesta de qual dos três, hoje, descreve de verdade a origem do número que está prestes a virar uma linha de currículo.

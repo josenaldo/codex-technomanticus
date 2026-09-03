@@ -188,7 +188,7 @@ A tentação, depois de ver `a.Autenticar()` funcionar "de graça", é concluir 
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Java["Java: extends (é-um)"]
         direction TB
@@ -204,8 +204,8 @@ flowchart LR
 
     style Java fill:none,stroke:#D0021B,stroke-width:2px
     style Go fill:none,stroke:#4A90D9,stroke-width:2px
-    class UJ falha
-    class AJ falha
+    class UJ marca
+    class AJ marca
     class UG neutro
     class AG neutro
 ```
@@ -297,7 +297,8 @@ Isso é exatamente o mecanismo que evita o clássico **diamond problem** de hera
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Car["type Car struct { Wheels; Engine }"]
     Car --> W["Wheels.Count — profundidade 1"]
@@ -307,8 +308,8 @@ flowchart TB
     Ambig -->|"acesso direto"| Erro["erro de compilação:\nambiguous selector c.Count"]
     Ambig -.->|"nunca acessado"| OK["compila e roda normalmente"]
 
-    class Ambig falha
-    class Erro falha
+    class Ambig neutro
+    class Erro marca
     class OK destaque
 ```
 

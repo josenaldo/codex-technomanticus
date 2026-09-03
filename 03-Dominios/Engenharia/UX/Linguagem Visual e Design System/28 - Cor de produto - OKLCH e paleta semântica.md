@@ -53,6 +53,7 @@ A regra que o cenário de abertura desta nota viola: **nunca reusar o vermelho d
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Brand["Cor de marca/ação<br/>1 cor, ação primária"] --> Pal["Paleta de produto"]
@@ -61,7 +62,7 @@ graph TD
     Pal -->|"nunca reaproveitar"| X["❌ vermelho de erro<br/>usado como destaque decorativo"]
     class Sem falha
     class Pal neutro
-    class X falha
+    class X marca
 ```
 
 ## As duas fronteiras: contraste e dados

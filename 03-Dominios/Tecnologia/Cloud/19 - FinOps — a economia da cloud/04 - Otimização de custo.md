@@ -26,17 +26,17 @@ Pense em otimização de custo como uma escada: cada degrau economiza mais, mas 
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Degrau 1<br/>Eliminar desperdício<br/><i>esforço: baixo · risco: ~zero</i>"] --> B["Degrau 2<br/>Right-sizing<br/><i>esforço: baixo-médio · risco: baixo</i>"]
     B --> C["Degrau 3<br/>Comprar melhor<br/><i>compromisso RI/Savings/Spot</i><br/><i>esforço: médio · risco: médio</i>"]
     C --> D["Degrau 4<br/>Data transfer<br/><i>o custo escondido</i><br/><i>esforço: médio · risco: baixo</i>"]
     D --> E["Degrau 5<br/>Arquitetura consciente de custo<br/><i>esforço: alto · retorno: o maior</i>"]
 
-    class A ok
-    class B ok
-    class C ok
-    class D ok
+    class A marca
+    class B marca
+    class C marca
+    class D marca
     class E neutro
 ```
 

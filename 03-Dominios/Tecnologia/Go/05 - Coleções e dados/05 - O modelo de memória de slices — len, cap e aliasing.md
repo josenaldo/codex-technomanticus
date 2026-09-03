@@ -131,13 +131,13 @@ Aqui mora a armadilha que abriu esta nota. `append(s, x)` tem dois comportamento
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["append(s, x)"] --> B{"len(s) < cap(s)?"}
     B -->|"sim — sobra espaço"| C["escreve x na posição s[len(s)]\ndo MESMO backing array\nretorna slice com len+1, cap igual"]
     B -->|"não — array cheio"| D["aloca um backing array NOVO\n(maior, geralmente 2x)\ncopia todos os elementos\nescreve x no array novo\nretorna slice apontando pro array novo"]
 
-    class C falha
+    class C neutro
     class D destaque
 ```
 

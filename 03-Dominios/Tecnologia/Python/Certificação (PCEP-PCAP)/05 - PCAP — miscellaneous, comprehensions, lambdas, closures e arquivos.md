@@ -30,7 +30,6 @@ flowchart TB
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     PCAP["PCAP-31-03 — 40 itens, 5 blocos"] --> B1["Bloco 1: Modules and Packages<br/>12% · 6 itens"]
     PCAP --> B2["Bloco 2: Exceptions<br/>14% · 5 itens"]
     PCAP --> B3["Bloco 3: Strings<br/>18% · 8 itens"]
@@ -51,7 +50,7 @@ flowchart TB
     class S1 neutro
     class S2 neutro
     class S3 neutro
-    class S4 falha
+    class S4 marca
 ```
 
 | Item do syllabus | Peso relativo dentro do bloco | Nota-fonte |
@@ -203,15 +202,15 @@ Todas as três lambdas compartilham a **mesma** variável `i`, e só consultam o
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["for i in range(3):<br/>cria 3 lambdas"] --> B["Todas as 3 lambdas<br/>referenciam a MESMA célula 'i'"]
     B --> C["Loop termina<br/>i = 2 (valor final)"]
     C --> D["m(10) é chamada:<br/>lê 'i' AGORA → 2"]
     D --> E["20, 20, 20<br/>não 0, 10, 20"]
 
     class B destaque
-    class E falha
+    class E neutro
 ```
 
 ## File I/O — conteúdo novo
@@ -318,9 +317,9 @@ A diferença prática entre as duas formas é exatamente a mesma razão de exist
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["with open('arquivo.txt') as f:"] --> B["__enter__() roda<br/>devolve o objeto arquivo"]
     B --> C["bloco indentado executa<br/>(leitura/escrita)"]
     C --> D{"exceção dentro<br/>do bloco?"}
@@ -331,7 +330,7 @@ flowchart TB
     class A neutro
     class E destaque
     class F destaque
-    class D falha
+    class D marca
 ```
 
 > [!question]- `with` fecha o arquivo mesmo se eu der `return` no meio da função?

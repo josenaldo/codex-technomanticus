@@ -153,8 +153,8 @@ O segundo desafio que a nota 01 deste galho já havia adiantado: como mudar `max
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph PG["Parameter group: loja-pg16-tuned"]
         direction TB
         P1["max_connections = 300<br/>(estático)"]
@@ -166,9 +166,9 @@ flowchart LR
     P1 -.->|"aplica só após REBOOT"| Instance
     P3 -.->|"aplica só após REBOOT"| Instance
 
-    class P1 falha
-    class P3 falha
-    class P2 ok
+    class P1 neutro
+    class P3 marca
+    class P2 marca
 ```
 
 A distinção que mais surpreende quem está aprendendo é a de **parâmetros estáticos vs. dinâmicos**: segundo a documentação oficial, mudanças em parâmetros **dinâmicos** são aplicadas à instância imediatamente, sem reboot; mudanças em parâmetros **estáticos** só entram em vigor depois que a instância é reiniciada — e até lá, o console mostra o parameter group com status `pending-reboot`. `max_connections` e `shared_buffers`, no Postgres, são exemplos clássicos de parâmetro estático — mudar o valor e não reiniciar a instância é a forma nº 1 de achar, na prática, que "a mudança não fez nada".

@@ -116,7 +116,7 @@ O crescimento de memória com buffer everything é linear no tamanho dos dados. 
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph BE["❌ Buffer everything — O(N) memória"]
         direction LR
@@ -129,7 +129,7 @@ flowchart LR
         t -->|"chunk'"| d2["Destino"]
         d2 -..->|"write()=false\nbackpressure"| s2
     end
-    class m1 falha
+    class m1 marca
     class t neutro
     class s2 neutro
     class d2 neutro

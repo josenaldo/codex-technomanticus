@@ -37,7 +37,7 @@ A regra prática para quem decide sozinho: pergunte pelas **restrições do proj
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q["Novo projeto, precisa<br/>de componentes de UI"] --> R{"3+ usos reais<br/>repetidos já existem?"}
     R -->|"Não"| N["❌ Não extraia sistema<br/>ainda — construa direto na tela"]
@@ -45,7 +45,7 @@ graph TD
     S -->|"Sim"| SH["shadcn/ui<br/>código copiado, você é dono"]
     S -->|"Não, dashboard denso"| AD["MUI ou Ant Design"]
     S -->|"Não, greenfield flexível"| MA["Mantine"]
-    class N falha
+    class N marca
     class Q neutro
 ```
 

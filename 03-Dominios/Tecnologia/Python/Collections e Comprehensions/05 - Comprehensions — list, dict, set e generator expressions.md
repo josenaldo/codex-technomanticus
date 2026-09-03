@@ -65,9 +65,9 @@ Toda list comprehension tem a mesma estrutura, só que compactada numa ordem que
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["iterável<br/>precos_centavos"] --> B{"for c in ...<br/>percorre cada item"}
     B --> C{"if c > 0<br/>filtro (opcional)"}
     C -->|"passa"| D["expressão<br/>f'R$ {c/100:.2f}'"]
@@ -78,7 +78,7 @@ flowchart LR
     class D neutro
     class F neutro
     class C destaque
-    class E falha
+    class E marca
 ```
 
 A ordem de leitura em voz alta é a chave para nunca se confundir: "**crie** `f"R$ {c/100:.2f}"` **para** cada `c` **em** `precos_centavos` **se** `c > 0`" — a mesma ordem das cláusulas na expressão, da esquerda pra direita. É essa correspondência 1:1 com a fala natural que fez o PEP 202, de 2000, descrever a sintaxe como inspirada na notação de conjuntos da matemática (`{x² | x ∈ ℕ}`) e em construções equivalentes de linguagens funcionais como Haskell — não foi um capricho estético, foi uma escolha deliberada de legibilidade.

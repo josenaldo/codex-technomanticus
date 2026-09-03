@@ -232,8 +232,8 @@ Dado dois vetores, existem três relações possíveis:
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     V0["v0: [A:1, B:1]<br/>(versão original)"]
     V0 --> V1["v1: [A:2, B:1]<br/>escrita no Nó A"]
@@ -245,7 +245,7 @@ graph TD
     class V0 neutro
     class V1 neutro
     class V2 neutro
-    class CONFLITO falha
+    class CONFLITO marca
     class RECON destaque
 ```
 
@@ -280,7 +280,8 @@ Comparar réplicas byte a byte seria proibitivamente caro para faixas de dados g
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     R1["Raiz A"] --> P1["hash(esq+dir)"]
     R1 --> P2["hash(esq+dir)"]
     P1 --> L1["hash(bloco 1)"]
@@ -293,9 +294,9 @@ graph TD
     P1B --> L1B["bloco 1<br/>DIVERGE → sincroniza"]
     P1B --> L2B["bloco 2<br/>igual, ignora"]
 
-    class R2 falha
-    class P1B falha
-    class L1B falha
+    class R2 neutro
+    class P1B marca
+    class L1B marca
 ```
 
 O Cassandra usa uma versão compacta da árvore — profundidade 15 (32.768 folhas) — deliberadamente pequena, porque a árvore precisa ser transferida pela rede antes da comparação começar: uma árvore grande demais tornaria o próprio processo de anti-entropia um consumidor pesado de banda, o oposto do que a técnica busca evitar. Esse processo roda tipicamente sob demanda (`nodetool repair`) ou agendado, não a cada leitura — é uma camada de fundo que garante convergência eventual mesmo quando nada mais força a sincronização.

@@ -674,10 +674,9 @@ O que a nota 07 nomeou como "a decisão de negócio explícita" — compensar qu
 
 ```mermaid
 flowchart TB
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph TS["tarefas-service — deploy e pipeline PRÓPRIOS"]
         direction TB
         TH["FastAPI\nPATCH /concluir · POST /tarefas"]
@@ -709,10 +708,10 @@ flowchart TB
     TBEAT -->|publish| MQ
     MQ -->|"binding tarefa.concluida"| NCONS
 
-    class TS ok
+    class TS marca
     class NS neutro
     class NSLACK destaque
-    class NDLQ falha
+    class NDLQ marca
 ```
 
 O detalhe que resume a capstone inteira, se for preciso escolher só um: a caixa verde (`tarefas-service`) e a caixa azul (`notificacoes-service`) são, hoje, **dois deployáveis, dois pipelines, dois times** — mas o núcleo hexagonal de cada uma continua exatamente do tamanho que era. `AbstractNotificador`/`SlackAdapter` não cresceram uma linha para acomodar a extração; o que cresceu foi tudo que existe **na fronteira** entre as duas caixas — o cliente HTTP, a resiliência, a autenticação, a configuração, o tracing. É exatamente esse o "preço" que a nota 01 nomeou desde a abertura do galho, agora visível como código real, não mais como uma tabela abstrata de trade-offs.

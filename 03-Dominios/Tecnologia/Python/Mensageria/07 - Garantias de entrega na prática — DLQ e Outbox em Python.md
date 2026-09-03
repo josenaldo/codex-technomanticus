@@ -67,8 +67,8 @@ A **Dead Letter Queue** é a terceira via: uma fila separada, dedicada a mensage
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Mensagem entregue ao consumer"] --> B{"Processamento OK?"}
     B -->|"Sim"| C["ack — sai da fila"]
@@ -81,7 +81,7 @@ flowchart TD
     F --> G["Investigação manual<br/>ou reprocessamento dirigido"]
 
     class C neutro
-    class F falha
+    class F marca
     class E destaque
 ```
 

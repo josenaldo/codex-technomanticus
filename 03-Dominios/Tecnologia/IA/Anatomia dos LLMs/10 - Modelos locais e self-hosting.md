@@ -128,8 +128,8 @@ vllm serve meta-llama/Llama-3-70b-Instruct \
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A{Objetivo do\nself-hosting?} --> B[Prototipagem /\naprendizado]
     A --> C[Produção /\nmúltiplos usuários]
@@ -140,7 +140,7 @@ graph TD
     D --> G["llama.cpp\n→ GGUF quantization\n→ Apple MLX\n→ kernels SIMD otimizados"]
 
     class E neutro
-    class F ok
+    class F marca
     class G destaque
 ```
 

@@ -49,9 +49,9 @@ Confundir os modelos leva a escolhas caras. Usar NestJS em um microserviço simp
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph EX["Express — middleware chain"]
         E1[req] --> E2[mw1] --> E3[mw2] --> E4[handler] --> E5[res]
     end
@@ -69,7 +69,7 @@ graph LR
     class E3 neutro
     class F2 destaque
     class F4 destaque
-    class N2 falha
+    class N2 marca
     class N3 destaque
     class H2 neutro
 ```

@@ -123,9 +123,9 @@ Nenhuma das duas leituras muda a utilidade prática de conhecer as sete discipli
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph CTX["O QUE O AGENTE VÊ — contexto"]
         direction TB
         C1["System prompt +<br/>instruções persistentes"]
@@ -161,7 +161,7 @@ flowchart TB
     class H4 destaque
     class H5 destaque
     class H6 destaque
-    class MUNDO falha
+    class MUNDO marca
 ```
 
 > [!info] Como ler o diagrama

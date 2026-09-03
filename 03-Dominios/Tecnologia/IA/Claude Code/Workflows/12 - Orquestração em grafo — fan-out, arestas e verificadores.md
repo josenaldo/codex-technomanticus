@@ -342,8 +342,8 @@ A forma do grafo não é cosmética — é a maior alavanca isolada sobre tempo 
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph B["Barreira — parallel(): espera o mais lento"]
         direction LR
@@ -373,7 +373,7 @@ flowchart TB
     class bA neutro
     class bB neutro
     class bD neutro
-    class bC falha
+    class bC marca
     class bIdleA destaque
     class bIdleB destaque
     class bIdleD destaque
@@ -381,7 +381,7 @@ flowchart TB
     class pA neutro
     class pB neutro
     class pD neutro
-    class pC falha
+    class pC marca
 ```
 
 O diagrama mostra o custo real de uma barreira: no cenário de cima, os itens A, B e D terminam o próprio trabalho em 2 unidades de tempo, mas ficam **ociosos** esperando o item C (lento, 8 unidades) até a barreira liberar o próximo estágio em 8. No cenário de baixo, sem barreira, A, B e D avançam para o estágio seguinte assim que terminam o seu — o item C ainda está atrasando *ele mesmo*, mas não está mais segurando os outros três.

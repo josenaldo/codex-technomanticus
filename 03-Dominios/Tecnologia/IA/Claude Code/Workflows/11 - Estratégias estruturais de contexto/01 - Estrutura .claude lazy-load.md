@@ -34,8 +34,8 @@ Além do custo direto, há o custo de qualidade: o agente pondera todo o context
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "CLAUDE.md inflado"
         A1[10k tokens no startup]
         A2[ADRs antigos]
@@ -52,8 +52,8 @@ flowchart LR
         B5["Custo: $\nem toda sessão"]
     end
 
-    class A5 falha
-    class B5 ok
+    class A5 neutro
+    class B5 marca
 ```
 
 > [!summary] A regra é simples: arquivo carregado por default custa tokens em toda sessão. Arquivo ignorado custa zero até ser pedido. Tudo que não muda o comportamento do agente em *toda* sessão deve sair do default.

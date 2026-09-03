@@ -36,7 +36,7 @@ O erro mais frequente: construir agent porque o domínio parece "complexo" ou po
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Workflow (caminho fixo)"
         A1["Input"]
@@ -58,7 +58,7 @@ flowchart LR
     B4 -->|"continua"| B2
     B4 -->|"para"| B5
 
-    class A4 ok
+    class A4 neutro
     class B5 destaque
 ```
 

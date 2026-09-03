@@ -57,7 +57,8 @@ Uma requisição HTTP sobre TCP não é uma operação isolada e barata — ante
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph SemPool["Sem reutilizar sessão — uma ClientSession por requisição"]
         R1["Requisição 1"] --> H1["TCP handshake<br/>+ TLS handshake"]
@@ -77,10 +78,10 @@ flowchart TB
         Pool --> DC["dados"]
     end
 
-    class H1 falha
-    class H2 falha
-    class H3 falha
-    class HA falha
+    class H1 neutro
+    class H2 marca
+    class H3 marca
+    class HA marca
     class Pool destaque
 ```
 

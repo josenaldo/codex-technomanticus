@@ -39,8 +39,8 @@ TTFT e velocidade de geração são dois gargalos separados, com causas físicas
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["📊 O trilemma da inferência"] --> B["⏱️ Latência\n(velocidade por request)"]
     A --> C["📈 Throughput\n(requests por segundo)"]
@@ -49,7 +49,7 @@ graph TD
     C -. "otimizar um\ndegrada outro" .-> D
     D -. "otimizar um\ndegrada outro" .-> B
     class B neutro
-    class C ok
+    class C marca
     class D destaque
 ```
 
@@ -144,9 +144,8 @@ Speculative decoding é uma das otimizações mais engenhosas de 2024-2026. A id
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Decode tradicional — 5 tokens em 5 steps"
         M1["Modelo 70B\nStep 1 → 'O'"]
         M2["Modelo 70B\nStep 2 → ' código'"]
@@ -160,9 +159,9 @@ graph TD
         V1["Modelo 70B verifica\ntodos em paralelo\n→ aceita 4, rejeita ':'\n→ gera o token correto"]
         D1 --> V1
     end
-    class M1 falha
+    class M1 marca
     class D1 neutro
-    class V1 ok
+    class V1 marca
 ```
 
 Se o draft model especula bem (taxa de aceitação alta), o throughput pode dobrar ou triplicar sem mudar a distribuição de probabilidade do modelo principal — a verificação garante que o resultado seja matematicamente idêntico ao que o modelo principal geraria.

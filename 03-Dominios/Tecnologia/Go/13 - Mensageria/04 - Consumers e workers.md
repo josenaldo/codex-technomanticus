@@ -196,7 +196,7 @@ O erro sutil é achar que dá para paralelizar **dentro** da mesma partição se
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph OK["Paralelo entre partições — OK"]
         direction TB
         PA["Partição 0: msg 1,2,3..."] --> WA["worker A"]
@@ -209,7 +209,7 @@ flowchart LR
         WD -.->|"pode terminar\nantes de WC"| X["ordem perdida"]
     end
 
-    class X falha
+    class X neutro
 ```
 
 A regra prática, portanto: o `jobs` channel do worker pool pode misturar mensagens de partições diferentes livremente — isso é paralelismo saudável, é literalmente para isso que consumer group divide partições entre instâncias. O que não deve acontecer, a menos que a aplicação explicitamente não se importe com ordem, é ter **duas goroutines processando mensagens consecutivas da mesma partição ao mesmo tempo**. Uma forma comum de garantir isso num worker pool que precisa de mais paralelismo do que "uma goroutine por partição" é fazer *hashing* da chave da mensagem para um worker fixo — a mesma chave sempre cai no mesmo worker, preservando ordem por chave sem serializar o processo inteiro:

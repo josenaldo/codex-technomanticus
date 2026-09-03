@@ -31,7 +31,7 @@ Essa é a ideia central deste bloco: **assincronismo é uma ferramenta de desaco
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph SYNC["Síncrono — acoplado"]
         C1["Checkout"] -->|"chama e espera"| P1["Cobrar cartão"]
@@ -46,7 +46,7 @@ graph TD
         C2 -->|"responde na hora"| U["Usuário"]
         MQ -->|"consome quando puder"| Q3["Enviar e-mail"]
     end
-    class P3 falha
+    class P3 neutro
     class MQ destaque
 ```
 
@@ -152,15 +152,15 @@ Por isso, na prática de design de sistemas, a resposta madura não é "implemen
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     G["Garantias de entrega"] --> AM["At-most-once<br/>pode perder"]
     G --> AL["At-least-once<br/>pode duplicar"]
     G --> EO["Exactly-once<br/>caro / limitado ao broker"]
     AL --> ID["Consumidor idempotente<br/>= efeito prático de exactly-once"]
     EO -.->|"quebra ao sair<br/>do ecossistema do broker"| SIDE["Chamada externa<br/>(API de pagamento, e-mail)"]
     class EO destaque
-    class SIDE falha
+    class SIDE neutro
 ```
 
 > [!question]- Por que não simplesmente sempre pagar o preço do exactly-once?

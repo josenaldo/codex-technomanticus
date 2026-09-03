@@ -146,15 +146,15 @@ A causa pode ser qualquer valor — outro `Error`, uma string, um objeto de resp
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["AppError\n'Falha ao buscar usuário 42'"] -->|cause| B["FetchError\n'Failed to fetch'"]
     B -->|cause| C["TypeError\n'network error'"]
 
     class A neutro
     class B destaque
-    class C falha
+    class C marca
 ```
 
 > [!info] Suporte

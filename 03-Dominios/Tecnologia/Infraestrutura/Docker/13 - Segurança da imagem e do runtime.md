@@ -303,20 +303,18 @@ Nenhuma dessas flags exige mudança no código da aplicação — são inteirame
 ```mermaid
 flowchart TD
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Imagem mínima<br/>menos inventário herdado, menos pacotes vulneráveis"] --> B["Usuário não-root<br/>USER na imagem, sem UID 0 no processo principal"]
     B --> C["Capabilities reduzidas<br/>--cap-drop=ALL, --cap-add só do necessário"]
     C --> D["Sistema de arquivos somente leitura<br/>--read-only + tmpfs para o que precisa escrever"]
     D --> E["Política de runtime<br/>sem --privileged, sem socket do daemon montado"]
 
     class A neutro
-    class B ok
+    class B marca
     class C destaque
     class D marca
-    class E falha
+    class E marca
 ```
 
 Nenhuma dessas camadas, isolada, é suficiente — uma imagem mínima ainda pode rodar como root; um usuário não-root ainda pode ter capabilities demais; capabilities reduzidas ainda deixam o sistema de arquivos gravável para um invasor plantar algo. A defesa real é a composição das cinco, cada uma fechando uma porta que a anterior deixou aberta.

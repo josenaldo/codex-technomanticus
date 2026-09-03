@@ -211,14 +211,14 @@ Um race detectado localmente, numa máquina de desenvolvimento, já é sorte —
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["push / PR"] --> B["CI roda\ngo test -race ./..."]
     B -->|"sem race"| C["merge liberado"]
     B -->|"data race\ndetectada"| D["build falha\nantes de chegar em produção"]
 
     class B neutro
-    class D falha
+    class D marca
 ```
 
 O custo de rodar com `-race` no CI é aceitável mesmo com o overhead de 2-20x: os testes ficam mais lentos, mas ainda terminam em segundos ou poucos minutos — um preço trivial comparado ao custo de um bug de concorrência descoberto em produção, sob carga, sem stack trace nenhum apontando a causa. A observabilidade de goroutines em produção (detectar leaks, inspecionar o que está rodando via `pprof`) é assunto de outro galho, mais à frente na trilha — o race detector não substitui isso; ele é a linha de defesa **antes** do deploy, pega o bug enquanto ainda é barato corrigir.

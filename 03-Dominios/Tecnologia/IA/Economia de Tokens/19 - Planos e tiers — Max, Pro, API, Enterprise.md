@@ -33,7 +33,7 @@ A árvore de decisão não é complicada — o problema é que a maioria das pes
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Qual é o perfil de uso?"] --> B{"Uso intensivo\n(4h+/dia agente)?"}
@@ -46,8 +46,8 @@ flowchart TD
     H -->|"Sim"| I["API ou Free\n(pagar pelo que usa)"]
     H -->|"Não — time grande"| J["Enterprise\n(contrato, SLA, compliance)"]
 
-    class D ok
-    class E ok
+    class D marca
+    class E marca
     class G destaque
     class J neutro
 ```

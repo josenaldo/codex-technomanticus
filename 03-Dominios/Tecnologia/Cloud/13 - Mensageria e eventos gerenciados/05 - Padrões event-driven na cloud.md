@@ -28,7 +28,7 @@ A nota anterior deste galho já registrou o mecanismo do fan-out — um único e
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     SNS["Tópico SNS<br/>pedido.criado"]
@@ -50,7 +50,7 @@ flowchart TD
         Q2 -.->|"esgotou retries"| DLQ2["DLQ Notificação"]
     end
 
-    class X1 falha
+    class X1 marca
     class DLQ2 destaque
     class Q1 neutro
     class Q2 neutro

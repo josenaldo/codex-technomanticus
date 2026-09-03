@@ -35,7 +35,7 @@ Um cache gerenciado é uma camada de armazenamento **em memória**, colocada ent
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     App["Aplicação"]
     Cache[("Cache gerenciado<br/>ElastiCache / Redis-Valkey<br/>em memória")]
@@ -47,7 +47,7 @@ flowchart LR
     App -.->|"3. lê do banco"| DB
     App -.->|"4. grava no cache<br/>com TTL"| Cache
 
-    class Cache falha
+    class Cache marca
     class DB neutro
 ```
 
@@ -274,8 +274,7 @@ As cinco notas anteriores e a Parte A desta deram profundidade a cada resposta i
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q1{"O dado é volátil por design —<br/>pode sumir sem perda real?"}
@@ -288,8 +287,8 @@ flowchart TD
     Q3 -->|"Sim"| Object["OBJECT STORAGE<br/>S3 / Spaces<br/>(galho 8)"]
     Q3 -->|"Não — é dado estruturado<br/>com relações"| Relacional["RELACIONAL GERENCIADO<br/>RDS / Aurora<br/>(notas 02-04)"]
 
-    class Cache falha
-    class NoSQL ok
+    class Cache marca
+    class NoSQL marca
     class Object neutro
     class Relacional destaque
 ```
@@ -328,9 +327,8 @@ A nota 01 do galho 8 e as notas deste galho já tocaram partes desse cenário is
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     User(("Cliente"))
     ALB["ALB"]
@@ -349,8 +347,8 @@ flowchart TB
     User -.->|"GET direto de imagem"| S3
 
     class RDS destaque
-    class Dynamo ok
-    class Cache falha
+    class Dynamo marca
+    class Cache marca
     class S3 neutro
 ```
 

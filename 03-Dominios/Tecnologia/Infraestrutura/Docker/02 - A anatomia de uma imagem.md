@@ -101,7 +101,7 @@ O diagrama abaixo mostra essa pilha para um container único, da base até o top
 
 ```mermaid
 graph TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Visão única do processo (union mount)"
@@ -124,7 +124,7 @@ graph TB
     P["Processo da aplicação\n(lê e escreve como se fosse\num filesystem comum)"]
     M --> P
 
-    class W falha
+    class W marca
     class M neutro
     class P destaque
 ```
@@ -142,7 +142,8 @@ Considere duas imagens: `minha-api:v1`, construída sobre `python:3.12-slim`, e 
 
 ```mermaid
 graph TB
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Imagem minha-api:v1"
         A4["Camada — código da API\nsha256:api999..."]
         A3["Camada — dependências da API\nsha256:dep777..."]
@@ -164,8 +165,8 @@ graph TB
     S2 --> B3
     S1 --> S2
 
-    class S1 ok
-    class S2 ok
+    class S1 neutro
+    class S2 marca
 ```
 
 O armazenamento local do Docker guarda cada camada uma única vez, indexada pelo seu hash, dentro de `/var/lib/docker/overlay2/` (no Linux, com o driver padrão). Não existe duplicação de disco para camadas idênticas, e não existe re-download de camadas que já estão lá — a única coisa que amarra `minha-api:v1` e `minha-worker:v1` à mesma camada de base é o fato de ambas terem, em algum ponto do manifesto, uma referência ao mesmo hash `sha256:py333...`. Isso é economia de banda e de disco como efeito colateral de uma decisão de endereçamento, não como uma feature de deduplicação implementada à parte.

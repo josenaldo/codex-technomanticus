@@ -54,17 +54,17 @@ Essa é a mecânica de quase toda red flag desta nota: um comportamento que faz 
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["O que você diz<br/>sobre o passado"] --> B["<b>O que o entrevistador<br/>infere sobre o futuro</b>"]
     B --> C["'vai falar assim de nós'"]
     B --> D["'vai brigar com decisão<br/>já tomada'"]
     B --> E["'vai reescrever antes<br/>de entender'"]
 
     class B neutro
-    class C falha
-    class D falha
-    class E falha
+    class C marca
+    class D marca
+    class E marca
 ```
 
 Note a origem comum de quase todas: **a experiência que produz competência também produz convicção**. Depois de quinze anos, você viu microsserviços falharem, sabe que aquele framework dá problema e reconhece um sistema mal projetado em cinco minutos. Tudo isso é conhecimento legítimo — e, dito sem condicionar ao contexto, chega como rigidez.

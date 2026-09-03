@@ -134,13 +134,13 @@ soma        → 0.3000000000000000444... ≠ 0.30000000000000004...
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["0.1 decimal"] -->|"÷2 repetido"| B["0.0001100110011... binário\n(dízima periódica)"]
     B -->|"arredonda em 52 bits"| C["aproximação IEEE 754"]
     C -->|"soma com approx(0.2)"| D["0.30000000000000004\nnão é approx(0.3)"]
     class A neutro
-    class D falha
+    class D marca
 ```
 
 **Regra prática:**

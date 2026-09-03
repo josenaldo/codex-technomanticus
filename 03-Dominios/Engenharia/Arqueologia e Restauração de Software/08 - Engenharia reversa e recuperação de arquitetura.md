@@ -53,8 +53,8 @@ O grafo cru é grande e ruidoso demais para ler direto. É aqui que entra a idei
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     H["Seu mapa esperado<br/>(hipótese / teoria)"] --> C{"Reflexion<br/>model"}
     S["Grafo extraído<br/>do código real"] --> C
     C --> CV["CONVERGÊNCIA<br/>esperei e existe ✓"]
@@ -65,7 +65,7 @@ graph LR
     class CV destaque
     class DV destaque
     class AB destaque
-    class R falha
+    class R neutro
 ```
 
 - **Convergências** (verde): você esperava a dependência e ela existe. Sua teoria estava certa ali.

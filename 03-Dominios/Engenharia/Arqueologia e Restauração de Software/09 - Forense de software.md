@@ -75,9 +75,9 @@ Tornhill chama isso de **change coupling** (ou *logical coupling*, *temporal cou
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Mapa estático<br/>(nota 08)"] -->|"import/chama"| B["Acoplamento<br/>EXPLÍCITO"]
     C["Histórico de commits<br/>(esta nota)"] -->|"mudam juntos"| D["Acoplamento<br/>IMPLÍCITO / oculto"]
     B --> E["Risco visível<br/>ao ler o código"]
@@ -85,7 +85,7 @@ graph LR
     class B neutro
     class D destaque
     class E destaque
-    class F falha
+    class F marca
 ```
 
 O uso mais valioso do acoplamento temporal é **validar (ou refutar) o mapa estático da nota 08**: quando dois módulos que o reflexion model classificou como "independentes" aparecem no topo do ranking de change coupling, você achou exatamente o tipo de acoplamento dinâmico que a análise estática nunca enxergaria — reflection, injeção de dependência, eventos, configuração compartilhada. É o gancho que a própria nota 08 já antecipa na sua terceira armadilha: "cruze o mapa estático com... o acoplamento temporal do histórico".

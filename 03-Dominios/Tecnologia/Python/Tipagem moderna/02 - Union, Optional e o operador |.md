@@ -122,9 +122,9 @@ Fora do `if`, ou no ramo `else`, `usuario` continua sendo `Usuario | None` do po
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["usuario: Usuario | None"] -->|"if usuario is not None:"| B["dentro do if<br/>usuario: Usuario<br/>(narrowed)"]
     A -->|"else / fora do if"| C["usuario: Usuario | None<br/>(tipo original)"]
     B -->|"usuario.nome — OK"| D["sem erro de tipo"]
@@ -134,7 +134,7 @@ flowchart TD
     class B neutro
     class C destaque
     class D neutro
-    class E falha
+    class E marca
 ```
 
 Narrowing não é exclusivo de `is not None`. Qualquer construção que o type checker reconheça como "prova de tipo" estreita — `isinstance(x, int)`, `assert x is not None`, `if not isinstance(x, str): return`, comparações de `Literal`, entre outras. Para uniões com mais de dois membros, o checker vai eliminando alternativas ramo a ramo:

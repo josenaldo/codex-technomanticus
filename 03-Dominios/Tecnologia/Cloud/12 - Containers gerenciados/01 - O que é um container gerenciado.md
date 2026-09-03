@@ -97,10 +97,9 @@ Vale encaixar "container gerenciado" no mesmo espectro que a nota 01 do Galho 11
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     VM["VM crua<br/>você instala Docker,<br/>gerencia tudo à mão"]
     VMOp["Container numa VM<br/>que você opera<br/>(docker-compose, systemd)"]
     Gerenciado["Container GERENCIADO<br/>provedor cuida do<br/>scheduler/nós/scaling"]
@@ -108,10 +107,10 @@ flowchart LR
 
     VM --> VMOp --> Gerenciado --> Serverless
 
-    class VM falha
+    class VM marca
     class VMOp destaque
     class Gerenciado neutro
-    class Serverless ok
+    class Serverless marca
 ```
 
 O primeiro degrau — **VM crua com Docker instalado** — é o que qualquer pessoa faz ao aprender container: uma instância EC2 ou um Droplet, você mesmo instala o Docker, roda `docker run` manualmente ou com um `docker-compose.yml`, e se a instância reiniciar ou o container travar, é você quem percebe e resolve. Todo o trabalho que a seção anterior listou — scheduling, health check, restart, escala, service discovery — é seu, mesmo que o container em si já esteja "empacotado" corretamente.
@@ -140,7 +139,7 @@ Aqui é onde AWS e DigitalOcean divergem de forma mais visível do que em qualqu
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Start(["Preciso rodar um container<br/>gerenciado em produção"])
@@ -157,9 +156,9 @@ flowchart TD
     DO_Q --> AppPlat["App Platform<br/>caminho PaaS: git push ou imagem,<br/>DO decide tudo"]
     DO_Q --> DOKS["DOKS<br/>Kubernetes gerenciado,<br/>API k8s padrão"]
 
-    class Fargate ok
+    class Fargate marca
     class EC2LT neutro
-    class AppPlat ok
+    class AppPlat marca
     class DOKS neutro
     class EKS destaque
 ```

@@ -67,7 +67,6 @@ O EndpointSlice controller observa, via watch — o mesmo mecanismo de observaç
 graph TB
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph SVC["Service — spec declarada"]
         SEL["selector: app=myapp<br/>ports: 80 → 8080"]
     end
@@ -86,7 +85,7 @@ graph TB
 
     class SVC marca
     class CTRL neutro
-    class ES ok
+    class ES marca
 ```
 
 Vale ver esse objeto com as próprias mãos, porque é raro alguém olhar para ele fora de um momento de depuração — e é exatamente por isso que sua existência costuma pegar quem só conhece o Service pelo manifesto:

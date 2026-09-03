@@ -147,8 +147,8 @@ O projeto certo não é o mais recente nem o mais ambicioso na ideia original. �
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Start["Entre os projetos<br/>do seu perfil"] --> Q1{"Já tem uso real,<br/>além de você?"}
     Q1 -->|"sim"| Q2{"O histórico de commits<br/>mostra decisão, não só entrega?"}
     Q1 -->|"não"| Q3{"Há uma decisão técnica<br/>que você defenderia numa entrevista?"}
@@ -162,7 +162,7 @@ flowchart TD
     class A destaque
     class B destaque
     class C destaque
-    class D falha
+    class D neutro
 ```
 
 Repare no único caminho vermelho. Um projeto sem nenhum dos dois sinais não é candidato a aprofundamento — é candidato a ser abandonado com honestidade, no espírito com que a nota 10 trata o abandono nomeado como evidência válida, ou substituído por um que já nasça resolvendo um problema real em vez de preencher espaço.

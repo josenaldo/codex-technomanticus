@@ -77,17 +77,18 @@ A consulta por prefixo é a que move o autocomplete: digite `ca`, desça até o 
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     R(("raiz")) -->|c| C["c"]
     C -->|a| CA["ca · ponto de partida"]
     CA -->|t| CAT(["cat ✓"])
     CA -->|r| CAR(["car ✓"])
     CAT -->|s| CATS(["cats ✓"])
     class CA destaque
-    class CAT ok
-    class CAR ok
-    class CATS ok
+    class CAT neutro
+    class CAR marca
+    class CATS marca
 ```
 
 > [!example] Leitura do diagrama

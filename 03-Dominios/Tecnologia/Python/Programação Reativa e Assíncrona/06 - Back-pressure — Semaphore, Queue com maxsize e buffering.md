@@ -61,7 +61,7 @@ Back-pressure é o nome que sistemas de streaming e de mensageria dão a um prob
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph SemLimite["Sem back-pressure"]
         P1["Produtor\n(rápido)"] -->|"gera trabalho\nsem controle"| Buf1["Buffer implícito\n(memória, sockets, conexões)"]
@@ -76,7 +76,7 @@ flowchart LR
         Cons -.->|"libera espaço"| Freio
     end
 
-    class Falha falha
+    class Falha neutro
     class Freio destaque
 ```
 

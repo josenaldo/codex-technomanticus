@@ -39,7 +39,7 @@ Cinco passos, sempre nessa ordem, mesmo que o passo 3 leve minutos e o passo 4 l
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[Alerta dispara] --> B[Detectar:<br/>confirmar o incidente]
@@ -47,7 +47,7 @@ flowchart LR
     C --> D[Diagnosticar:<br/>achar a causa]
     D --> E[Resolver:<br/>corrigir de verdade]
     E --> F[Post-mortem<br/>sem culpa]
-    class B falha
+    class B marca
     class C destaque
     class D neutro
     class E neutro

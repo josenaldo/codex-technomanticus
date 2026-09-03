@@ -132,8 +132,8 @@ Diagrama 3 — Pipeline OoO com ROB (fluxo completo)
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Fetch\n(em ordem)"] --> B["Decode /\nRename"]
     B --> C["Dispatch p/\nReservation\nStations"]
     C --> D["Execute\n(fora de ordem)"]
@@ -142,7 +142,7 @@ flowchart LR
     F --> G["Registradores\narquiteturais"]
 
     class D destaque
-    class F ok
+    class F neutro
 ```
 
 **Leitura do diagrama:** o estágio amarelo (Execute) é onde a ordem do programa é quebrada. O estágio verde (Commit) restaura a ordem. Entre os dois, o ROB serve de "sala de espera" onde resultados aguardam sua vez de serem tornados permanentes.

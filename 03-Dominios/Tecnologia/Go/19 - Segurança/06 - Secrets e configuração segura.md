@@ -33,8 +33,8 @@ Ninguém decidiu "vamos vazar a senha". Foi uma consequência de tratar o secret
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Secret nasce\n(provider externo)"] --> B["Entra no processo Go\n(env / arquivo / API do vault)"]
     B --> C["Vive em memória\n(struct, variável)"]
     C --> D{"Onde escapa?"}
@@ -45,11 +45,11 @@ flowchart TB
     D -->|"git commit"| I["Histórico do repositório — permanente"]
 
     class A neutro
-    class E falha
-    class F falha
-    class G falha
-    class H falha
-    class I falha
+    class E marca
+    class F marca
+    class G marca
+    class H marca
+    class I marca
 ```
 
 Cada seta vermelha nesse diagrama é uma escolha de código que este capítulo mostra como evitar.

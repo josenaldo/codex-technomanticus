@@ -135,8 +135,8 @@ Com `"sideEffects": false` no `package.json`, você está prometendo que nenhum 
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     ENTRY["entry: index.ts"]
     A["módulo A\nexporta: foo, bar, baz"]
     B["módulo B\nexporta: qux"]
@@ -148,11 +148,11 @@ flowchart TD
     A -.->|"não usado"| BAZ["baz — removido 🪓"]
     C -.->|"sem importador"| CDEAD["módulo C inteiro — removido 🪓"]
 
-    class BAR falha
-    class BAZ falha
-    class CDEAD falha
-    class A ok
-    class B ok
+    class BAR neutro
+    class BAZ marca
+    class CDEAD marca
+    class A marca
+    class B marca
 ```
 
 > [!warning] O que quebra o tree-shaking
@@ -326,7 +326,7 @@ O Vite usa esbuild em **dois momentos distintos** no seu pipeline:
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "DEV (esbuild domina)"
         REQ["Browser requisita\n/src/App.tsx"]
@@ -342,7 +342,7 @@ flowchart LR
         ENTRY --> RD --> BUNDLE
     end
 
-    class EB_DEV ok
+    class EB_DEV marca
     class RD neutro
 ```
 
@@ -562,7 +562,7 @@ Antes de escolher qualquer ferramenta desse espaço, a pergunta que determina o 
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q1{"O que você está\nconstruindo?"}
@@ -578,7 +578,7 @@ flowchart TD
     LIB -->|"Ecossistema Nuxt\nou stub mode"| UNBUILD["unbuild\n(wrapper Rollup/Rolldown)"]
     LIB -->|"Controle total\ncasos complexos"| ROLLUP["Rollup direto\n(config manual)"]
 
-    class FRAMEWORK ok
+    class FRAMEWORK marca
     class VITE neutro
     class TSUP neutro
     class TSDOWN destaque
@@ -667,7 +667,7 @@ O pipeline do Rollup é dividido em duas fases distintas:
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Fase de Build (input)"
@@ -692,7 +692,7 @@ flowchart LR
 
     BE --> OO
 
-    class BS ok
+    class BS marca
     class GB neutro
     class RC destaque
 ```
@@ -922,9 +922,8 @@ O **Oxc** (criado pela VoidZero) é a base que une toda a stack: um único parse
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     OXC["Oxc Core\n(Rust)"]
     PARSER["Parser"]
     RESOLVER["Module Resolver"]
@@ -945,9 +944,9 @@ flowchart TD
 
     ROLLDOWN --> VITE8["Vite 8\n(dev + prod)"]
 
-    class OXC falha
+    class OXC marca
     class ROLLDOWN neutro
-    class VITE8 ok
+    class VITE8 marca
 ```
 
 ### tsdown v0.x → consolidação em 2026

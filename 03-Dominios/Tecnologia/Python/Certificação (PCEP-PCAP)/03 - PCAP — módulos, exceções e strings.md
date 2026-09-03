@@ -29,7 +29,6 @@ flowchart TB
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     PCAP["PCAP-31-03 — 40 itens, 5 blocos"] --> B1["Bloco 1: Modules and Packages<br/>12% · 6 itens"]
     PCAP --> B2["Bloco 2: Exceptions<br/>14% · 5 itens"]
     PCAP --> B3["Bloco 3: Strings<br/>18% · 8 itens<br/>ESTA NOTA"]
@@ -50,7 +49,7 @@ flowchart TB
     class N09 neutro
     class N08 neutro
     class N07 neutro
-    class NOVO falha
+    class NOVO marca
 ```
 
 > [!tip] Ordem de estudo sugerida

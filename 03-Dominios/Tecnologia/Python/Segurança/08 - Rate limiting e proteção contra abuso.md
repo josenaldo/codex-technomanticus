@@ -60,10 +60,9 @@ Antes de entrar em código específico de framework, vale visualizar onde essa d
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     REQ["Requisição\nPOST /login"] --> LIMITER{"Rate limiter\nchave já excedeu\no limite na janela?"}
 
     LIMITER -->|"não excedeu"| HANDLER["Handler de login\nvalida schema Pydantic"]
@@ -74,9 +73,9 @@ flowchart TB
     LIMITER -->|"excedeu"| REJ["429 Too Many Requests\nRetry-After: N segundos"]
 
     class LIMITER neutro
-    class REJ falha
+    class REJ marca
     class HASH destaque
-    class RESP200 ok
+    class RESP200 marca
 ```
 
 A requisição rejeitada por `429` nunca chega ao hash de senha nem à consulta ao banco — é justamente esse curto-circuito que evita a saturação de CPU vista no incidente de abertura. Um rate limiter mal posicionado (por exemplo, checado só depois de já ter feito o hash) perde boa parte do benefício, porque o custo caro já foi pago antes da rejeição.
@@ -93,8 +92,8 @@ A diferença prática aparece exatamente na borda entre dois blocos:
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph FW["Fixed window — limite 5/minuto"]
         direction TB
         FW1["23:59:58 → 5 requisições\n(dentro do bloco 23:59)"]
@@ -109,8 +108,8 @@ flowchart LR
         SW1 --> SW2
     end
 
-    class FW2 falha
-    class SW2 ok
+    class FW2 neutro
+    class SW2 marca
 ```
 
 No fixed window, um cliente pode disparar 5 requisições no último segundo de um bloco e mais 5 no primeiro segundo do bloco seguinte — 10 requisições em poucos segundos, mesmo com um limite nominal de "5 por minuto". Cada bloco individualmente respeitou o limite; a borda entre eles não. Isso é conhecido como o problema de **burst na borda** (*boundary burst*), e é a razão pela qual o sliding window é considerado mais justo: ele nunca permite que uma janela de 60 segundos qualquer, medida a partir de qualquer ponto no tempo, exceda o limite — não só as janelas alinhadas ao relógio.

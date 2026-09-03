@@ -44,8 +44,8 @@ O mecanismo é direto: o broker **grava a mensagem em disco** (armazenamento dur
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q["fila"] --> C["Consumidor processa"]
     C -->|"sucesso → ack"| OK["removida da fila"]
@@ -54,7 +54,7 @@ graph TD
     RT -->|"não (poison)"| DLQ["Dead Letter Channel<br/>(necrotério + alarme)"]
 
     class Q neutro
-    class DLQ falha
+    class DLQ marca
     class OK destaque
 ```
 

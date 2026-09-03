@@ -94,8 +94,8 @@ Note a sutileza: a generalizada com k = n recupera a versão básica, porque n +
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     P["n + 1 pombos"] --> D{"distribuir em n casas"}
     D --> C1["casa 1"]
     D --> C2["casa 2"]
@@ -107,7 +107,7 @@ flowchart TD
     LIMITE --> CONTRA["mas temos n + 1 pombos<br/>n + 1 maior que n"]
     CONTRA --> COL["logo: alguma casa tem 2 ou mais<br/>COLISAO GARANTIDA"]
     class COL destaque
-    class CONTRA falha
+    class CONTRA neutro
 ```
 
 **Leitura do diagrama**: n + 1 pombos entram, mas a capacidade "sem colisão" do pombal é apenas n (uma vaga por casa). Como n + 1 ultrapassa n, o excesso força um empilhamento. A seta vermelha é a conclusão: a colisão não é provável, é **certa**.
@@ -243,8 +243,8 @@ Com três conjuntos a coisa fica mais bonita. Você soma os três, mas agora as 
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph TRES["Tres conjuntos sobrepostos"]
         AA["A"]
         BB["B"]
@@ -258,7 +258,7 @@ flowchart TD
     SUB --> ADD["+ ABC<br/>devolve o centro"]
     ADD --> OK["contagem exata de A ∪ B ∪ C"]
     class ABC destaque
-    class OK ok
+    class OK neutro
 ```
 
 **Leitura do diagrama**: a região central (A ∩ B ∩ C) é a vilã. Ao somar A, B, C ela entra 3 vezes; ao subtrair os três pares ela sai 3 vezes — zerando. Por isso o `+ ABC` no fim devolve a única cópia que ela merecia. O ritmo "soma, subtrai, soma" não é arbitrário: cada termo conserta o excesso do anterior.

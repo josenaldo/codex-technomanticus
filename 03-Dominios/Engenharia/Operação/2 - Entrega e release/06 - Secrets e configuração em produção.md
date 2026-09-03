@@ -110,15 +110,15 @@ A documentação do Vault descreve a diferença entre secret estático e dinâmi
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Secret manager<br/>(Vault / AWS Secrets Manager)"] -->|"1. autentica<br/>(IAM role / K8s SA)"| B["Container sobe"]
     B -->|"2. pede o secret<br/>em runtime"| A
     A -->|"3. injeta como<br/>env var ou arquivo montado"| C["Processo da aplicação<br/>já rodando"]
     D["Imagem de container"] -.->|"❌ NUNCA contém<br/>o secret"| C
     E["Repositório git"] -.->|"❌ NUNCA contém<br/>o secret em claro"| A
     class D destaque
-    class E falha
+    class E neutro
 ```
 
 O ponto central desse diagrama — e o requisito explícito desta nota — é que **o segredo entra no processo em runtime, nunca antes**. A imagem de container é um artefato imutável que pode circular por registries, ser copiada, arquivada, inspecionada por qualquer pessoa com acesso ao registry; se um secret estivesse embutido nela via `ARG`/`ENV` no build, ele estaria permanentemente gravado nas layers da imagem — visível até com um simples `docker history` ou extraindo o filesystem da layer. A injeção em runtime — via variável de ambiente populada pelo orquestrador, um arquivo montado por um sidecar/CSI driver, ou uma chamada direta da aplicação ao secret manager na inicialização — garante que o segredo só existe na memória do processo em execução, nunca em um artefato persistido.

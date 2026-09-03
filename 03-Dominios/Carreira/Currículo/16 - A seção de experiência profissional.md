@@ -85,9 +85,9 @@ Vale ser explícito sobre o terceiro: omitir uma entrada muito antiga, sem criar
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Cargo atual /<br/>mais recente"] --> B["4-6 bullets<br/>detalhe completo"]
     C["Cargo de<br/>5-8 anos atrás"] --> D["2-3 bullets<br/>menos contexto"]
     E["Experiência inicial<br/>de carreira"] --> F{"Ainda relevante<br/>para a vaga?"}
@@ -97,7 +97,7 @@ graph TD
 
     class A neutro
     class C destaque
-    class E falha
+    class E marca
 ```
 
 ## As seis situações que os guias evitam

@@ -66,16 +66,15 @@ Toda a tabela abaixo é uma forma diferente de mexer no n_kv — ou de atacar o 
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["MHA\n1 K/V por head\nn_kv = 32\nQualidade máxima\nCache máximo"] --> B["MQA\n1 K/V para todos\nn_kv = 1\nCache mínimo\nQualidade cai"]
     B --> C["GQA\nGrupos de heads\nn_kv = 2–8\nEquilíbrio\nO padrão atual"]
     C --> D["MLA\nCompressão low-rank\nn_kv = latente\nCache menor que MQA\nQualidade acima MHA"]
-    class A falha
+    class A marca
     class B destaque
-    class C ok
+    class C marca
     class D neutro
 ```
 
@@ -92,7 +91,7 @@ Primeira grande pancada: e se *todos* os heads compartilhassem **um único** par
 
 ```mermaid
 graph TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "MQA: 4 heads, 1 K/V"
         KV["K/V único\n(único par no cache)"]
         Q1["Query 1"] --> KV
@@ -101,7 +100,7 @@ graph TD
         Q4["Query 4"] --> KV
         KV --> O["Outputs\ncombinados"]
     end
-    class KV ok
+    class KV neutro
 ```
 
 O cache encolhe de n_heads × (K+V) para apenas 1 × (K+V). Para 32 heads: **32× menor**. De 52 GB → 1,6 GB.
@@ -150,14 +149,14 @@ MLA muda a estratégia completamente. Em vez de reduzir o número de K/V (dial M
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["K, V originais\nd_model × n_heads\n(dados no forward pass)"] --> B["Projeção de compressão\nW_DKV: down-projection"]
     B --> C["Vetor latente c_KV\n~512 dims\n← APENAS ISSO vai pro cache"]
     C --> D["Projeção de reconstrução\nW_UK, W_UV: up-projection"]
     D --> E["K, V reconstruídos\npara calcular atenção"]
     class C neutro
-    class A falha
+    class A marca
 ```
 
 O cache armazena apenas o vetor comprimido (~512 dimensões) em vez dos K/V completos (n_heads × d_head = 32 × 128 = 4096 por camada). Na hora de calcular a atenção, o vetor latente é "descomprimido" via up-projection.

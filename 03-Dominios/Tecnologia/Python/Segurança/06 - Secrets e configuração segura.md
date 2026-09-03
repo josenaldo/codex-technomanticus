@@ -167,7 +167,7 @@ Quando a prevenção falha e um segredo aparece num commit — seja porque o `.g
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Secret detectado em um commit\n(scanner, revisão manual, alerta de bot)"] --> B{"O segredo já foi\npush para um remoto\ncompartilhado?"}
     B -->|"Não — só local,\nainda não commitado"| C["git reset / edita o arquivo\nantes de commitar"]
@@ -179,7 +179,7 @@ flowchart TD
     G --> I["Notifica o time,\nregistra o incidente"]
     H --> I
 
-    class D falha
+    class D neutro
     class A destaque
 ```
 

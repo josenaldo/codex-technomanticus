@@ -235,7 +235,7 @@ A diferença fundamental em relação à memória — explicada com a tipologia 
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Map (referência forte)"
         M[Map] -->|chave forte| OBJ1[Objeto]
@@ -250,7 +250,7 @@ graph LR
         GC2 -->|entrada removida| WM
     end
 
-    class GC1 falha
+    class GC1 marca
     class GC2 neutro
 ```
 

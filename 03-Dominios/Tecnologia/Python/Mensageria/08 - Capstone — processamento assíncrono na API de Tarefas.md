@@ -68,15 +68,15 @@ A arquitetura hexagonal do Galho 13 resolveu "onde a lógica mora" (acoplamento 
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Galho 13\nArquitetura hexagonal\n(ONDE a lógica mora)"] --> B["Este galho\nMensageria\n(QUANDO a lógica roda)"]
     B --> C["Handler HTTP\nresponde em milissegundos,\nnão espera o Slack"]
 
     class A destaque
     class B neutro
-    class C ok
+    class C marca
 ```
 
 ## Peça 1 — o Domain Event `TarefaConcluida` finalmente sai pro mundo
@@ -486,9 +486,8 @@ Vale nomear explicitamente o que esta capstone **não** precisou: o cenário atu
 
 ```mermaid
 flowchart TB
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Sincrono["CAMINHO SÍNCRONO — o handler HTTP nunca espera além daqui"]
         HTTP["FastAPI\nPATCH /tarefas/id/concluir"]
@@ -514,9 +513,9 @@ flowchart TB
     CONSUMER -->|"sucesso: ack()"| SLACK_ADAPTER
     CONSUMER -->|"falha repetida: nack(requeue=False)"| DLQ
 
-    class Sincrono ok
+    class Sincrono marca
     class Assincrono neutro
-    class DLQ falha
+    class DLQ marca
     class SLACK_ADAPTER destaque
 ```
 

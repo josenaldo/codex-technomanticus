@@ -63,9 +63,9 @@ Pense no event loop como um atendente único em um balcão: incrivelmente eficie
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A([Request chega]) --> B{Trabalho\né CPU-bound?}
     B -->|Não - I/O-bound| C[async/await\nEvent loop resolve]
     B -->|Sim| D{API async\ndisponível?}
@@ -78,7 +78,7 @@ flowchart TD
     class C neutro
     class E neutro
     class G destaque
-    class H falha
+    class H marca
 ```
 
 ### CPU-bound vs I/O-bound: a distinção central

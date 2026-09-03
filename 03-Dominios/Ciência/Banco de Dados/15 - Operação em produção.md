@@ -55,14 +55,15 @@ A razão é mecânica. O Flyway guarda um **checksum** de cada migration aplicad
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["V1: cria tabela"] --> B["V2: add coluna"]
     B --> C["V3: cria indice"]
     C --> D["V4: corrige V3<br/>(nova migration)"]
-    class A ok
-    class B ok
-    class C ok
+    class A neutro
+    class B marca
+    class C marca
     class D destaque
 ```
 
@@ -82,7 +83,6 @@ A solução é nunca fazer uma mudança incompatível de uma vez. Você a quebra
 flowchart TD
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph F1["1 - EXPAND"]
         A["Adiciona a estrutura NOVA<br/>(mantem a antiga intacta)"]
     end
@@ -96,7 +96,7 @@ flowchart TD
     F1 --> F2 --> F3
     class F1 neutro
     class F2 marca
-    class F3 ok
+    class F3 marca
 ```
 
 Leitura do diagrama: cada fase é um **deploy separado**, com tempo de estabilização entre elas. Em nenhum momento existe um estado onde uma versão do código não consiga funcionar. O segredo é a fase do meio: um período em que **as duas estruturas coexistem** e o código sabe lidar com as duas.
@@ -161,7 +161,6 @@ Backup comum te dá um ponto: "tenho o estado das 3h da manhã". Mas e se o `DEL
 ```mermaid
 flowchart LR
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     BB["Backup base<br/>(03h00)"] --> W1["WAL"]
     W1 --> W2["WAL"]
@@ -169,7 +168,7 @@ flowchart LR
     W3 --> T["replay para aqui:<br/>14h36 (1 min antes<br/>do DELETE de 14h37)"]
     W3 -.-> X["WAL alem do alvo<br/>(NAO aplicado)"]
     class BB neutro
-    class T ok
+    class T marca
     class X marca
 ```
 
@@ -207,8 +206,6 @@ Se o primary morre, alguém precisa **promover um standby a primary** — e faze
 ```mermaid
 flowchart TD
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     P["Primary (vivo)"] -->|WAL| S1["Standby 1<br/>lag 2s"]
     P -->|WAL| S2["Standby 2<br/>lag 50s"]
@@ -216,8 +213,8 @@ flowchart TD
     S1 -->|Patroni promove<br/>menor lag, abaixo do limite| NP["Standby 1 -> NOVO PRIMARY"]
     S2 -.->|lag acima de<br/>maximum_lag_on_failover<br/>NAO elegivel| BLOCK["barrado"]
     class P neutro
-    class X falha
-    class NP ok
+    class X marca
+    class NP marca
     class BLOCK marca
 ```
 
@@ -259,7 +256,6 @@ Uma vez identificado o top ofensor, o ciclo fecha em [[08 - EXPLAIN e otimizaç�
 flowchart LR
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q["queries em<br/>producao"] --> SL["slow query log<br/>(eventos > 500ms)"]
     Q --> PSS["pg_stat_statements<br/>(ranking agregado)"]
@@ -270,7 +266,7 @@ flowchart LR
     MET["metricas do sistema:<br/>conexoes, cache hit ratio,<br/>locks, bloat, lag"] --> DASH
     class Q neutro
     class PSS marca
-    class EX ok
+    class EX marca
     class DASH destaque
 ```
 

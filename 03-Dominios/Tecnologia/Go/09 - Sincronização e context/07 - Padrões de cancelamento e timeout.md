@@ -47,8 +47,8 @@ func BuscarPedido(ctx context.Context, id string) (*Pedido, error) {
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Certo["Propagação correta"]
         direction TB
         A1["Handler HTTP\nctx do request"] --> A2["Service.Buscar(ctx, id)"]
@@ -64,7 +64,7 @@ flowchart TB
     end
 
     class A4 neutro
-    class B3 falha
+    class B3 marca
 ```
 
 O teste mental é simples: se você está prestes a escrever `context.Background()` ou `context.TODO()` em qualquer lugar que não seja o ponto de entrada do processo (`main`, o início de um handler HTTP, o worker que consome de uma fila), pare — quase certamente existe um `ctx` de verdade subindo pela pilha de chamadas que você deveria estar usando.

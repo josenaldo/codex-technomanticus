@@ -194,7 +194,7 @@ Essa mensagem é uma **poison message** — e o efeito colateral dela, sem trata
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Mensagem #100\nJSON malformado"] -->|"retry 1... 2... 3..."| B{"Ainda falha?"}
     B -->|"sim, indefinidamente"| C["Offset trava em #100"]
@@ -202,7 +202,7 @@ flowchart TB
     B -->|"não — reconhecida como poison"| E["Move pra DLQ\ncommit do offset segue"]
     E --> F["Mensagens #101+ processam normalmente"]
 
-    class C falha
+    class C neutro
     class E destaque
 ```
 
@@ -273,16 +273,16 @@ Lag baixo e estável é saudável — o consumer processa aproximadamente na mes
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Lag estável\n~baixo, oscila pouco"] -->|"saudável"| B["Nada a fazer"]
     C["Lag crescendo\nlinearmente"] -->|"consumer mais lento\nque produtor"| D["Escalar workers\nou partições"]
     E["Lag travado\nnum valor fixo"] -->|"consumer parado\nou preso em poison message"| F["Investigar:\nprocesso vivo? DLQ?"]
 
     class A neutro
     class C destaque
-    class E falha
+    class E marca
 ```
 
 Sem observar lag, você só descobre que um consumer parou de processar quando um humano do lado de negócio reclama que um pedido de três dias atrás nunca chegou — tarde demais para ser um incidente tratado com calma. Com lag exposto como métrica, é um alerta automático muito antes disso.

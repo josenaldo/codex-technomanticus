@@ -43,14 +43,14 @@ O diagrama abaixo mostra os três ingredientes que você fornece (fatos, regras,
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     F["Fatos<br/>(verdades do domínio)"] --> M["Motor de<br/>inferência"]
     R["Regras<br/>(verdades condicionais)"] --> M
     Q["Query<br/>(a pergunta)"] --> M
     M --> A["Resposta derivada<br/>(sim / não / valores)"]
     class M neutro
-    class A ok
+    class A marca
 ```
 
 Leitura do diagrama: você só alimenta as três caixas da esquerda. A caixa escura — o motor — é onde mora toda a lógica de busca, e você nunca a escreve. A resposta sai pronta à direita. Note que **nenhuma seta** representa um passo de algoritmo que você codificou.
@@ -112,8 +112,8 @@ O diagrama abaixo mostra a unificação ligando variáveis a valores para casar 
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph alvo["Termo da query"]
         A1["progenitor"]
         A2["tom"]
@@ -128,7 +128,7 @@ flowchart TB
     A2 -. "constante casa" .- B2
     A3 == "liga Y = bob" ==> B3
     class A3 destaque
-    class B3 ok
+    class B3 neutro
 ```
 
 Leitura do diagrama: o nome da relação (`progenitor`) e a constante (`tom`) precisam ser iguais nos dois lados. A variável `Y`, em destaque, é o ponto flexível — o motor a **liga** ao valor `bob` para que os termos fiquem idênticos. Esse vínculo é o que faz a regra "avançar".
@@ -148,8 +148,7 @@ A árvore abaixo mostra o motor tentando alternativas e recuando quando um galho
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q["?- avo(tom, Quem)"] --> Y1["Y = bob<br/>(progenitor de tom)"]
     Q --> Y2["Y = liz<br/>(progenitor de tom)"]
@@ -159,9 +158,9 @@ flowchart TD
     N1 --> S1["Quem = ana"]
     N2 --> S2["Quem = pat"]
     F -. "backtrack" .-> Q
-    class F falha
-    class S1 ok
-    class S2 ok
+    class F marca
+    class S1 marca
+    class S2 marca
     class Q neutro
 ```
 

@@ -29,8 +29,8 @@ Avança seis meses. Os dois serviços da trilha — Tarefas e Notificações —
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Antes["Cena de abertura do galho — sem observabilidade"]
         direction TB
         A1["Processo morre às 3h12"]
@@ -51,8 +51,8 @@ flowchart TB
         D4 --> D5["✅ Causa raiz identificada<br/>em minutos, sem esperar cliente"]
     end
 
-    class A5 falha
-    class D5 ok
+    class A5 neutro
+    class D5 marca
 ```
 
 > [!tip] Esta capstone não introduz nada novo — ela integra

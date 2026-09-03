@@ -25,9 +25,9 @@ aliases:
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph DEV ["Desenvolvimento local"]
         ENV[".env\n(gitignored)"]
         NODEENV["node --env-file=.env"]
@@ -58,7 +58,7 @@ flowchart LR
     class ENV destaque
     class SM neutro
     class ZOD neutro
-    class AUDIT falha
+    class AUDIT marca
 ```
 
 ## O que é

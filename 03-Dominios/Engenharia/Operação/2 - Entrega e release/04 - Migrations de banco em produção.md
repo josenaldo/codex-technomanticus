@@ -69,9 +69,9 @@ Aplicado a schema de banco, o padrão vira três fases, cada uma um **deploy sep
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph E["1. EXPAND (deploy A)"]
         E1["Adiciona coluna nova<br/>Schema = velho + novo"]
     end
@@ -85,8 +85,8 @@ graph LR
     E1 --> M1 --> C1 --> C2
     class E1 neutro
     class M1 destaque
-    class C1 falha
-    class C2 falha
+    class C1 marca
+    class C2 marca
 ```
 
 Repare no detalhe estrutural: **são três deploys, não um.** Cada fase só avança depois que a anterior foi confirmada estável em produção — geralmente com dias de intervalo entre elas, não minutos. É o oposto do impulso natural de "resolver tudo numa migration só, de uma vez, e seguir em frente".

@@ -40,17 +40,17 @@ Quando o teste fica vermelho numa refatoração pura, ele acabou de te dar um **
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Você refatora<br/>(comportamento preservado)"] --> B{"O teste<br/>fica vermelho?"}
     B -->|"Não — continua verde"| C["Teste de comportamento<br/>Confiavel"]
     B -->|"Sim — quebrou"| D["Teste de implementacao<br/>Fragil — falso positivo"]
     D --> E["Voce perde confianca no vermelho"]
     E --> F["Voce passa a ignorar testes<br/>ou deletar quando incomodam"]
 
-    class C ok
-    class D falha
-    class F falha
+    class C neutro
+    class D marca
+    class F marca
 ```
 
 Leitura do diagrama: o ramo da esquerda é o objetivo. O da direita é a espiral — um teste frágil não só te incomoda, ele corrói a sua confiança no suite inteiro. E um suite em que ninguém confia é pior que nenhum suite, porque custa manutenção sem dar segurança.
@@ -86,7 +86,7 @@ Fowler, em **"Mocks Aren't Stubs"**, formaliza essa divisão: *state verificatio
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     SUT["Sistema sob teste"]
 
@@ -106,7 +106,7 @@ flowchart LR
     S2 --> R1["Acoplado ao RESULTADO<br/>Sobrevive a refatoracao"]
     I2 --> R2["Acoplado a COMO<br/>Quebra se a ordem/forma muda"]
 
-    class R1 ok
+    class R1 neutro
     class R2 destaque
 ```
 
@@ -140,7 +140,8 @@ A consequência de todos esses sintomas é a mesma frase: **você acaba testando
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Mockar tudo<br/>(colaboradores, value objects, ...)"] --> B["Setup cheio de<br/>when().thenReturn()"]
     B --> C["Teste codifica a ORDEM<br/>e a FORMA das chamadas"]
     C --> D{"Refatoracao interna<br/>muda alguma chamada"}
@@ -149,8 +150,8 @@ flowchart TD
     F --> G["'Vou so ajustar o mock'<br/>(toda refatoracao)"]
     G --> H["Custo de manutencao alto<br/>+ confianca baixa"]
 
-    class F falha
-    class H falha
+    class F neutro
+    class H marca
 ```
 
 Leitura do diagrama: cada seta é um degrau na ladeira. Mockar demais leva a setup pesado, que codifica o "como", que quebra na refatoração, que vira falso positivo, que vira retrabalho a cada mudança. O destino é um suite caro e em quem ninguém confia — exatamente o oposto do que um teste deveria entregar. (Os testes que quebram por causa de timing, e não de acoplamento, são outro animal: ver `[[11 - Testes flaky]]`.)
@@ -247,7 +248,7 @@ A seção seguinte formaliza o caso concreto que motivou essa tese. Antes disso,
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Preciso isolar uma dependencia<br/>no teste"] --> B{"O efeito e observavel<br/>de outro jeito alem da chamada?<br/>(retorno, estado, leitura posterior)"}
     B -->|"Sim — da pra ler o estado depois"| C{"Consigo escrever uma<br/>implementacao real e simples?<br/>(HashMap, lista, arquivo temp)"}
@@ -255,7 +256,7 @@ flowchart TD
     C -->|"Sim"| E["fake<br/>(state-based, reutilizavel, robusto)"]
     C -->|"Nao — dependencia complexa<br/>demais pra fingir"| F["stub minimo<br/>(so o necessario pro cenario)"]
 
-    class E ok
+    class E neutro
     class D destaque
     class F destaque
 ```
@@ -340,7 +341,7 @@ Testar comportamento *empurra* o código na direção certa: interfaces pequenas
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Tento testar<br/>o comportamento"] --> B{"E facil?"}
@@ -352,7 +353,7 @@ flowchart TD
     F --> G
     G --> A
 
-    class C ok
+    class C marca
     class D destaque
     class G neutro
 ```

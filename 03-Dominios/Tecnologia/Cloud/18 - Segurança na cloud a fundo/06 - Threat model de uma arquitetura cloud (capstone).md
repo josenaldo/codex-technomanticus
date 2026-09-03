@@ -31,7 +31,7 @@ Vamos usar a mesma arquitetura serverless de referência construída no capstone
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Borda["Borda pública"]
         Client[Cliente]
@@ -78,8 +78,8 @@ flowchart TB
     CFG -.->|checa drift| S3
     GD -.->|monitora| Compute
 
-    class WAF falha
-    class SM falha
+    class WAF marca
+    class SM marca
     class CT neutro
     class CFG neutro
     class GD neutro

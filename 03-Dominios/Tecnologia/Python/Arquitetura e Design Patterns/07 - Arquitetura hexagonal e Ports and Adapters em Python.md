@@ -277,7 +277,7 @@ Juntando tudo que este galho construiu — domínio (nota 02), Repository/UoW (n
 
 ```mermaid
 flowchart TB
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph DrivingAdapters["Driving Adapters — entrada (acionam a aplicação)"]
@@ -331,8 +331,8 @@ flowchart TB
     EMAIL --> SMTP
     SLACK --> SLACKAPI
 
-    class Core ok
-    class ENT ok
+    class Core marca
+    class ENT marca
     class DrivingPorts neutro
     class DrivenPorts neutro
     class DrivingAdapters destaque

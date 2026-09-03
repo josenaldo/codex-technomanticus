@@ -131,7 +131,7 @@ Depois de `MaxTentativas` falhas, insistir não é mais resiliência — é ruí
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     P["Producer"] --> Q["Fila principal"]
     Q --> C["Consumer"]
@@ -141,7 +141,7 @@ flowchart LR
     C -->|"falha, tentativa = N"| DLQ["Dead Letter Queue"]
     DLQ --> Op["Operador investiga\n(alerta, replay manual)"]
 
-    class DLQ falha
+    class DLQ marca
     class Q neutro
 ```
 

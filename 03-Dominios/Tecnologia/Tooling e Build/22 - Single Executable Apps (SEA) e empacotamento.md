@@ -109,8 +109,8 @@ A diferença: o `postject` usava WebAssembly para manipular o binário. O `--bui
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Era 1 — fluxo com postject (v19.7–v25.4)"
         A1["sea-config.json"] -->|"--experimental-sea-config"| A2["sea-prep.blob"]
         A2 -->|"cp \$(which node)"| A3["cópia do node"]
@@ -122,7 +122,7 @@ flowchart LR
     end
 
     class A4 neutro
-    class B2 ok
+    class B2 marca
 ```
 
 ### A configuração: `sea-config.json`
@@ -226,8 +226,8 @@ codesign --sign - ./minha-cli
 
 ```mermaid
 graph TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "O que funciona no Node SEA"
         S1["CommonJS ✓"]
@@ -247,18 +247,18 @@ graph TD
         L6["TypeScript direto ✗\n(precisa compilar antes)"]
     end
 
-    class S1 ok
-    class S2 ok
-    class S3 ok
-    class S4 ok
-    class S5 ok
-    class S6 ok
-    class L1 falha
-    class L2 falha
-    class L3 falha
+    class S1 neutro
+    class S2 marca
+    class S3 marca
+    class S4 marca
+    class S5 marca
+    class S6 marca
+    class L1 marca
+    class L2 marca
+    class L3 marca
     class L4 destaque
     class L5 destaque
-    class L6 falha
+    class L6 marca
 ```
 
 > [!warning] Módulos nativos (N-API) no SEA
@@ -431,8 +431,8 @@ flowchart LR
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     Q["Qual runtime usar\npara empacotamento?"]
 
     Q --> R1{"Projeto já usa\nNode.js?"}
@@ -449,7 +449,7 @@ graph TD
     class R3 neutro
     class R4 neutro
     class R6 neutro
-    class R8 ok
+    class R8 marca
 ```
 
 | Aspecto | Node SEA | Bun `--compile` | Deno `compile` |

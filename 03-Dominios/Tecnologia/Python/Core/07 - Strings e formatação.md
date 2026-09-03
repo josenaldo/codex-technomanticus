@@ -164,13 +164,13 @@ Toda linguagem de programação de uso geral precisa de um jeito de montar uma s
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["%-formatting<br/>(herdado de C, desde sempre)"] -->|"PEP 3101<br/>Python 2.6 / 3.0"| B[".format()<br/>mais flexível, mais verboso"]
     B -->|"PEP 498<br/>Python 3.6+"| C["f-strings<br/>padrão atual"]
 
-    class A falha
+    class A marca
     class B destaque
     class C neutro
 ```

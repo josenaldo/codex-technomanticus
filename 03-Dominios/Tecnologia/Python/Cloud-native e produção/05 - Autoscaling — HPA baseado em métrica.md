@@ -285,7 +285,7 @@ spec:
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     SEM["Sem stabilizationWindow:<br/>reage ao valor mais recente"] --> F1["Fila cai 40s → reduz réplicas"]
     F1 --> F2["Fila sobe de novo → aumenta réplicas"]
@@ -294,7 +294,7 @@ graph TD
     COM["Com scaleDown.stabilizationWindowSeconds: 300"] --> J["Usa o MAIOR valor<br/>recomendado nos últimos 5min"]
     J --> ESTAVEL["Queda momentânea não<br/>dispara scale-down isolado"]
 
-    class F3 falha
+    class F3 marca
     class ESTAVEL neutro
 ```
 

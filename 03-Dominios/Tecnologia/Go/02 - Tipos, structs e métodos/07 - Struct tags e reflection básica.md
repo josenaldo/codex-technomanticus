@@ -80,9 +80,9 @@ O conteúdo entre as crases segue uma convenção — não uma regra imposta pel
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["campo do struct\nNome string"] --> B["tag literal\n`json:'name,omitempty' db:'product_name'`"]
     B --> C["reflect.TypeOf(x)\n.Field(i).Tag"]
     C --> D["Tag.Get('json')\n→ 'name,omitempty'"]
@@ -95,8 +95,8 @@ flowchart LR
     class C neutro
     class D neutro
     class E neutro
-    class F falha
-    class G falha
+    class F marca
+    class G marca
 ```
 
 O ponto central deste diagrama, e desta nota inteira: **a tag por si só não faz nada.** É uma string parada no metadado do tipo. O comportamento observável — chave JSON diferente, coluna de banco diferente — só existe porque *alguma biblioteca, em algum lugar, escreveu código que lê essa string e reage a ela.* Sem essa leitura, `json:"name,omitempty"` é indistinguível, para o Go runtime, de qualquer outro comentário-string sem sentido.
@@ -170,9 +170,9 @@ Dois tipos nomeados diferentes (`CodigoPostal`, `Telefone`) podem ter o mesmo `K
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["any recebido em runtime\n(tipo concreto desconhecido em compile-time)"] --> B["reflect.TypeOf(x)\nreflect.Type"]
     A --> C["reflect.ValueOf(x)\nreflect.Value"]
     B --> D["Name() → 'Produto'\n(identidade nomeada)"]
@@ -184,7 +184,7 @@ flowchart TB
     class A neutro
     class B destaque
     class C destaque
-    class G falha
+    class G marca
 ```
 
 ### Percorrendo campos e lendo tags manualmente
@@ -396,9 +396,9 @@ A diferença mais marcante entre os três: Go **não valida a tag em compile-tim
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Go["Go"]
         G1["struct tag\n(string livre, sem validação)"] --> G2["reflect.StructTag.Get\n(parsing manual, runtime)"]
     end
@@ -411,7 +411,7 @@ flowchart LR
 
     class G1 neutro
     class J1 destaque
-    class P1 falha
+    class P1 marca
 ```
 
 ## Em entrevista

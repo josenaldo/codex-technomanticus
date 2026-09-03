@@ -26,8 +26,8 @@ Resolva cada questão mentalmente antes de abrir o gabarito — a prova real nã
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     SIM["Simulado — 18 questões"] --> PCEP["Aquecimento PCEP<br/>4 questões<br/>1 por bloco"]
     SIM --> PCAP["Corpo PCAP<br/>11 questões<br/>peso proporcional"]
@@ -40,7 +40,7 @@ flowchart LR
     PCAP --> MI["Miscellaneous 2"]
 
     class SIM neutro
-    class O falha
+    class O marca
     class PCEP destaque
     class ARM destaque
 ```
@@ -422,7 +422,6 @@ flowchart TB
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph NUCLEO["Núcleo da linguagem — Galhos 1-6"]
         G1["1. Core<br/>sintaxe, tipos, controle de fluxo"]
         G2["2. Collections e Comprehensions"]
@@ -463,8 +462,8 @@ flowchart TB
     class CONC destaque
     class BACK destaque
     class PROD marca
-    class CERT falha
-    class G19 falha
+    class CERT marca
+    class G19 marca
 ```
 
 A jornada, em cinco frases: os [[03-Dominios/Tecnologia/Python/index|Galhos 1-6]] construíram o **núcleo da linguagem** — do `if`/`for` mais básico até os internals do CPython (GIL, GC geracional, ceval loop), passando por OO completa, idiomas funcionais (generators, closures, decorators) e tipagem moderna com generics. Os [[03-Dominios/Tecnologia/Python/Concorrência e paralelismo/index|Galhos 7-8]] resolveram **concorrência e execução assíncrona** — threading, multiprocessing, e o mergulho fundo em `asyncio`/ASGI que a maioria dos devs Python nunca faz por completo. Os [[03-Dominios/Tecnologia/Python/Persistência de dados/index|Galhos 9-13]] viraram a chave para **backend e arquitetura** — persistência, APIs REST, segurança, testes, e os padrões de design (Repository, Unit of Work, hexagonal) que separam scripts de sistemas. Os [[03-Dominios/Tecnologia/Python/Mensageria/index|Galhos 14-18]] elevaram tudo isso a **plataforma distribuída e produção** — mensageria, microservices, tooling de build, observabilidade e Kubernetes/serverless. E este [[03-Dominios/Tecnologia/Python/Certificação (PCEP-PCAP)/index|Galho 19]] fecha com **certificação**: não conteúdo novo, mas a conversão formal de tudo isso — 18 galhos de aprendizado real — num selo verificável por terceiros, com a honestidade documentada logo na primeira nota deste galho de que PCAP-31-03 testa uma fração conservadora do que a trilha inteira ensinou.

@@ -42,7 +42,7 @@ Porque as duas coisas — buscar o produto e buscar as recomendações — usam 
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph S["Pool compartilhado"]
         R1["Requisições"] --> P1["Pool único<br/>50 threads"]
@@ -59,8 +59,8 @@ graph TD
         N2["recomendação satura seu limite de 10<br/>⇒ catálogo segue com suas 40"]
     end
 
-    class N1 falha
-    class P1 falha
+    class N1 marca
+    class P1 marca
     class N2 neutro
     class P2 neutro
 ```

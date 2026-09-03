@@ -186,8 +186,8 @@ Na teoria de [[03-Dominios/Ciência/Paradigmas/10 - Tipos algébricos, pattern m
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph SOMA["Union = Soma de tipos"]
         S["A | B\nm + n possibilidades\nrecebo UM de dois"]
     end
@@ -200,7 +200,7 @@ graph TD
 
     class S neutro
     class P neutro
-    class V falha
+    class V marca
 ```
 
 Essa intuição de soma/produto guia o design: quando você quer "A ou B", use `|`. Quando quer "A e B juntos", use `&` — mas entre objetos, não entre primitivos.
@@ -282,8 +282,8 @@ O tipo `C` é tecnicamente válido como definição, mas nenhum valor pode ser a
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     TA["Tipo A\nx: string"]
     TB["Tipo B\nx: number"]
     TC["A & B\nx: string & number\n= x: never"]
@@ -294,7 +294,7 @@ flowchart TD
     TC --> ERR
 
     class TC destaque
-    class ERR falha
+    class ERR neutro
 ```
 
 > [!warning] Conflito silencioso

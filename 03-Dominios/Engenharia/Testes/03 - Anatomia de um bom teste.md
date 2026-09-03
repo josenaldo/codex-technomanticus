@@ -55,14 +55,14 @@ Repare nos três blocos separados por linhas em branco. Você lê de cima a baix
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Arrange<br/>monta o cenario"] --> B["Act<br/>executa a acao"]
     B --> C["Assert<br/>verifica o resultado"]
     class A neutro
     class B destaque
-    class C ok
+    class C marca
 ```
 
 **Leitura do diagrama:** as três fases acontecem em ordem fixa e sem volta. Você nunca arruma de novo no meio do verificar. Se precisar, é sinal de que o teste está fazendo coisa demais.
@@ -133,8 +133,8 @@ Imagine um teste gigante com 20 verificações cobrindo 5 comportamentos diferen
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Gigante["Um teste gigante"]
         T1["testTudo()"] --> C1["comportamento 1"]
         T1 --> C2["comportamento 2"]
@@ -146,10 +146,10 @@ flowchart TB
         TB["deve_Y..."] --> CB["comportamento 2"] --> FB["FALHOU<br/>e o 2"]
         TC["deve_Z..."] --> CC["comportamento 3"] --> FC["passa"]
     end
-    class F1 falha
-    class FB falha
-    class FA ok
-    class FC ok
+    class F1 neutro
+    class FB marca
+    class FA marca
+    class FC marca
 ```
 
 **Leitura do diagrama:** no teste gigante, a falha é ambígua — sabe-se que algo quebrou, não o quê. Nos testes focados, dois passam (verde) e um falha (vermelho): o diagnóstico vem de graça, sem abrir o código. Cada teste é um fusível: queima o que estourou, deixa o resto aceso.

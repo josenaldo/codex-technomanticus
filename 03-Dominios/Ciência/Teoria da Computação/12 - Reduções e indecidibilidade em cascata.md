@@ -108,8 +108,8 @@ Leitura do diagrama: a função `f` empurra a instância `w` de A para uma inst�
 
 ```mermaid
 flowchart TB
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph CERTO["CERTO: dificuldade sobe"]
         direction LR
         P1["parada<br/>(indecidível)"] -->|"≤ₘ"| Bc["B (novo)"]
@@ -121,8 +121,8 @@ flowchart TB
         P2 --> C2["só diz: B é fácil<br/>SE a parada fosse fácil"]
     end
 
-    class CERTO ok
-    class ERRADO falha
+    class CERTO neutro
+    class ERRADO marca
 ```
 
 Leitura do diagrama: em cima, o caminho correto — a parada (difícil) reduz ao novo B, então B herda a dificuldade. Embaixo, a inversão clássica — reduzir B à parada não diz nada útil, porque a parada nunca é fácil, então a hipótese "se a parada fosse fácil" nunca se realiza. **Sempre coloque o problema já-difícil na cauda da seta `≤ₘ`.**
@@ -233,7 +233,7 @@ Agora dá pra ver o desenho de cima.
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     HALT["PARADA<br/>(diagonalização — a semente)"]
     HALT -->|"reduz a"| ATM["Aₜₘ<br/>M aceita w?"]
@@ -246,7 +246,7 @@ flowchart TD
     REG -.-> RICE
     EQTM -.-> RICE
 
-    class HALT falha
+    class HALT marca
     class RICE neutro
 ```
 

@@ -45,9 +45,9 @@ A quarta linha é a que mais surpreende porque não é um erro de configuração
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     R["Request de entrada<br/>GET /api/users"] --> L{"location /api/<br/>casa o prefixo /api/"}
     L --> SU["proxy_pass http://backend;<br/>(sem URI)"]
     L --> CU["proxy_pass http://backend/;<br/>(URI = /)"]
@@ -59,7 +59,7 @@ graph LR
 
     class SU neutro
     class CU destaque
-    class CU2 ok
+    class CU2 marca
 ```
 
 Vale nomear o caso que produz o sintoma `/api/api/users` da abertura desta nota, porque é a combinação inversa da segunda linha da tabela: um `location /api/` com `proxy_pass http://backend;` **sem URI**, apontando para um backend cujas próprias rotas já começam com `/api`. Nesse caso a request inteira, prefixo incluído, é repassada sem alteração — o backend recebe `/api/users`, e se ele só sabe responder a `/users`, a rota simplesmente não existe do lado de lá, gerando um `404` que parece bug de roteamento mas é, de novo, a mesma regra da barra, só que aplicada ao lado errado do problema: a correção nesse cenário não é mexer no `location`, é adicionar a URI de substituição que falta no `proxy_pass` — `proxy_pass http://backend/;` — para que o prefixo `/api/` seja consumido antes de sair.
@@ -274,16 +274,16 @@ Três diretivas de timeout cobrem fases diferentes da conversa entre o Nginx e o
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     C["Nginx conecta<br/>ao backend"] -->|"proxy_connect_timeout<br/>60s default"| E["Conexão TCP<br/>estabelecida"]
     E -->|"proxy_send_timeout<br/>60s default,<br/>entre escritas"| S["Request enviada<br/>por completo"]
     S -->|"proxy_read_timeout<br/>60s default,<br/>entre leituras"| R["Resposta recebida<br/>por completo"]
 
     class C neutro
     class S destaque
-    class R falha
+    class R marca
 ```
 
 ## WebSocket: o upgrade que o proxy precisa deixar passar

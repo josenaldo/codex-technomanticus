@@ -30,9 +30,9 @@ BuildKit muda a unidade de análise: em vez de ler instrução por instrução, 
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     F1["FROM node:22-alpine AS frontend"] --> C1["COPY web/ ."]
     C1 --> R1["RUN npm run build"]
 
@@ -44,7 +44,7 @@ graph TB
 
     class F1 neutro
     class F2 destaque
-    class M ok
+    class M marca
 ```
 
 O diagrama mostra os dois ramos — `frontend` e `backend` — sem nenhuma aresta entre si: nada no ramo do frontend depende de qualquer coisa produzida pelo ramo do backend, e vice-versa. Sob o construtor legado, esses dois ramos seriam construídos em sequência, na ordem em que aparecem no arquivo. Sob BuildKit, o motor identifica essa independência a partir do grafo e os constrói em paralelo, convergindo só no estágio final `M`, que de fato depende dos dois. O tempo total de build, nesse cenário, tende ao tempo do ramo mais lento entre os dois, não à soma dos dois — um ganho que cresce proporcionalmente ao número de estágios independentes que um Dockerfile mais complexo acumula.

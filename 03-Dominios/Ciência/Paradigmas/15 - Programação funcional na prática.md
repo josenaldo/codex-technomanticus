@@ -142,8 +142,8 @@ Como introduzir FP num time que vive de classes e loops sem provocar revolta? Pe
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Time imperativo / OO"] --> B["1. map / filter / reduce<br/>substituir loops"]
     B --> C["2. Imutabilidade<br/>record / const / freeze"]
     C --> D["3. Funções puras<br/>extrair lógica testável"]
@@ -152,8 +152,8 @@ flowchart TD
     F --> G{"o time entende<br/>e mantém?"}
     G -->|sim| H["pode subir mais"]
     G -->|não| I["PARE aqui — currying,<br/>composição point-free,<br/>monads ficam de fora"]
-    class I falha
-    class H ok
+    class I neutro
+    class H marca
 ```
 
 Leitura do diagrama: a coluna sobe do trivial (passos 1–2, ninguém reclama) ao estrutural (passos 3–4, o **núcleo funcional**) e só então toca em tipos de erro. O losango é o freio: se o time já está no limite cognitivo, você *não* avança pra currying, point-free ou mônadas. Esses não estão errados — estão *adiante demais* pra esse time, agora.
@@ -200,15 +200,15 @@ Visualizando a fronteira entre abstração útil e esperteza ilegível:
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Trecho de código FP"] --> B{"o time inteiro<br/>lê sem explicação?"}
     B -->|sim| C{"reduz complexidade<br/>vs. a versão imperativa?"}
     B -->|não| X["ESPERTEZA<br/>refatore pra explícito"]
     C -->|sim| OK["ABSTRAÇÃO ÚTIL<br/>mantenha"]
     C -->|não| X
-    class OK ok
-    class X falha
+    class OK neutro
+    class X marca
 ```
 
 Leitura do diagrama: dois portões em série. Primeiro, legibilidade — se o time precisa de um seminário, já reprovou. Segundo, simplicidade — se a versão funcional não diminui a complexidade frente à imperativa, ela é enfeite. Só passa quem responde "sim" às duas.
@@ -217,8 +217,8 @@ Leitura do diagrama: dois portões em série. Primeiro, legibilidade — se o ti
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Devo usar FP aqui?"] --> B{"deixa mais<br/>legível?"}
     B -->|não| N["não use"]
     B -->|sim| C{"deixa mais<br/>correto / testável?"}
@@ -226,8 +226,8 @@ flowchart TD
     C -->|sim| Y["use"]
     D -->|sim| Y
     D -->|não| N
-    class Y ok
-    class N falha
+    class Y neutro
+    class N marca
 ```
 
 Leitura do diagrama: FP entra quando aumenta legibilidade *ou* correção (idealmente as duas) e nunca quando piora alguma das duas só pra satisfazer pureza. Pureza é meio, não fim. Esse é o mesmo veredito pragmático de `[[16 - Paradigmas na prática e em entrevista]]`.

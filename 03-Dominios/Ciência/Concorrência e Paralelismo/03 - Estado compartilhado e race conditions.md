@@ -27,16 +27,16 @@ Um bug de concorrência por estado compartilhado precisa de três ingredientes s
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Estado MUTÁVEL<br/>(pode mudar)"] --> X{"Os três<br/>juntos?"}
     B["COMPARTILHADO<br/>(visível a vários)"] --> X
     C["Acesso CONCORRENTE<br/>(em paralelo)"] --> X
     X -->|sim| BUG["Bug em potencial<br/>(race condition)"]
     X -->|"falta 1+"| OK["Seguro por construção"]
 
-    class BUG falha
-    class OK ok
+    class BUG neutro
+    class OK marca
 ```
 
 Leitura do diagrama: os três fatores entram juntos no losango. Só quando os três coexistem há perigo. Remova um único deles e você cai no ramo verde — seguro, sem precisar de nenhuma trava.
@@ -179,7 +179,7 @@ Read-modify-write e check-then-act (TOCTOU) são os dois rostos mais famosos da 
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     R["Race condition<br/>(resultado depende do timing)"] --> RMW["Read-modify-write<br/>(lost update)"]
     R --> CTA["Check-then-act<br/>(TOCTOU)"]
@@ -191,7 +191,7 @@ flowchart TD
     TORN --> TORNex["ler {x, y} no meio<br/>de uma escrita de ambos"]
     INIT --> INITex["double-checked locking quebrado"]
 
-    class R falha
+    class R neutro
     class RMWex destaque
     class CTAex destaque
     class TORNex destaque
@@ -243,8 +243,8 @@ Repare que três das quatro estratégias da seção anterior *adicionam* algo �
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph SEM["Sem confinamento"]
         T1["Thread 1"] --> E["Estado<br/>compartilhado"]
         T2["Thread 2"] --> E
@@ -256,9 +256,9 @@ flowchart LR
         TB["Thread B"] --> EB["Estado B<br/>(só dela)"]
     end
 
-    class E falha
-    class EA ok
-    class EB ok
+    class E neutro
+    class EA marca
+    class EB marca
 ```
 
 Leitura do diagrama: à esquerda, duas threads convergem no mesmo estado e por isso precisam de uma trava. À direita, cada thread tem o seu próprio estado, intocável pelas outras — não há ponto de encontro, logo não há nada para travar. O confinamento não resolve a corrida: ele faz a corrida deixar de existir.

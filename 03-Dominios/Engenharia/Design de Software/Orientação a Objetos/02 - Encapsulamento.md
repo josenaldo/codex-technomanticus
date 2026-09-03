@@ -27,7 +27,7 @@ Por que isso importa de verdade? Pergunte a si mesmo: se ninguém de fora depend
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     Cliente([Cliente]) -->|chama| API
 
@@ -38,7 +38,7 @@ flowchart LR
 
     Cliente -.x NÃO acessa.-x Estado
 
-    class API ok
+    class API neutro
     class Estado marca
 ```
 
@@ -82,8 +82,8 @@ Repare: não existe nenhuma forma, de fora, de deixar `saldoCentavos` abaixo de 
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A[Cliente chama sacar 100] --> B{valor positivo?}
     B -->|não| X1[lança exceção]
     B -->|sim| C{saldo menos valor<br/>respeita o limite?}
@@ -92,7 +92,7 @@ flowchart TD
     D --> E[objeto continua válido]
 
     class C marca
-    class E ok
+    class E neutro
 ```
 
 **Leitura do diagrama:** todo caminho que muta o estado (a caixa final) só é alcançado **depois** de passar pelos dois portões de validação (losangos). Não há atalho. O cliente nunca consegue empurrar o objeto para um estado inválido — as exceções barram as rotas ruins antes de qualquer mutação acontecer.

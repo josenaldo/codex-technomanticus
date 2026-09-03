@@ -45,7 +45,7 @@ A resposta operacional a um risco que cresce sozinho não pode ser manual — ni
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[SBOM: inventario de dependencias] --> B[SCA: cruza com NVD/CVE]
@@ -56,7 +56,7 @@ graph LR
     D --> F[Atualizar dependencia]
     E --> F
     F --> A
-    class E falha
+    class E marca
     class D destaque
     class F neutro
 ```
@@ -72,8 +72,8 @@ A resposta está no contrato que o **Semantic Versioning** (SemVer) estabelece: 
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph sg9025["Incremental - um major por vez, testado a cada passo"]
     A1[v1] --> A2[v2] --> A3[v3] --> A4[v4]
     end
@@ -85,7 +85,7 @@ graph LR
     class A3 neutro
     class A4 neutro
     class B1 neutro
-    class B2 falha
+    class B2 marca
 ```
 
 Há uma segunda razão, mais mecânica, para subir um major de cada vez: o **transitive dependency hell**. Cada pacote direto que você usa depende de outros pacotes, que dependem de outros — e cada um deles avança no tempo, ganhando suas próprias majors, enquanto o seu fica parado. Quanto mais tempo passa, maior o **gap de versão** em cada ramo dessa árvore, e maior a chance de dois pacotes exigirem versões incompatíveis de uma terceira dependência compartilhada — o resolvedor de pacotes (npm, Maven, pip) não consegue satisfazer ambos e ou falha, ou instala duplicatas silenciosamente. Adiar não congela o problema: **alarga a árvore inteira ao mesmo tempo**, tornando a eventual migração exponencialmente mais cara do que teria sido se feita major a major, ano a ano.

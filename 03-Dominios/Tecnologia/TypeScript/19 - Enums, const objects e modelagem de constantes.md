@@ -107,7 +107,7 @@ Isso viola a garantia fundamental que você espera de uma constante tipada: que 
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     EN["enum numérico\nStatusPedido"]
     GEN["Gera IIFE no JS\nruntime object"]
@@ -118,7 +118,7 @@ flowchart TD
     EN --> RM
     EN --> BH
 
-    class BH falha
+    class BH marca
     class EN neutro
 ```
 
@@ -187,6 +187,7 @@ O TypeScript apaga o objeto e substitui os usos por valores literais inline. Zer
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     CE["const enum"]
@@ -202,7 +203,7 @@ flowchart LR
     CE --> DTS --> ERRO3
 
     class ERRO1 falha
-    class ERRO2 falha
+    class ERRO2 neutro
     class ERRO3 destaque
 ```
 

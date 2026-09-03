@@ -933,8 +933,8 @@ curl -X POST http://localhost:3000/tarefas -H "content-type: application/json" -
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Novo projeto ou\nmigrando o tooling?"]
 
     A -->|"Novo projeto"| B["Tem native addons\n(sharp, bcrypt-C++, canvas)?"]
@@ -974,9 +974,9 @@ flowchart TD
     G --> G2
     G --> G3
 
-    class H ok
-    class C falha
-    class G falha
+    class H neutro
+    class C marca
+    class G marca
 ```
 
 ### A perspectiva de 2026

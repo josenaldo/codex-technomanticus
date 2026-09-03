@@ -301,8 +301,8 @@ export default async function OgImage({ params }: Props) {
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["app/layout.tsx\n— title.template: '%s | Corp'\n— metadataBase\n— openGraph global"]
     B["app/blog/layout.tsx\n— title: 'Blog | Corp'\n— openGraph do blog"]
@@ -315,7 +315,7 @@ graph TD
 
     class A neutro
     class B neutro
-    class C ok
+    class C marca
     class D destaque
 ```
 

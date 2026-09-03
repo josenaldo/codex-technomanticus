@@ -27,7 +27,6 @@ aliases:
 ```mermaid
 flowchart TD
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     P1["① Purpose\n(escopo + sucesso)"]
@@ -42,7 +41,7 @@ flowchart TD
     P1 --> P7 --> P4 --> P2 --> P5 --> P8 --> P10 --> P11
 
     class P1 neutro
-    class P7 ok
+    class P7 marca
     class P8 destaque
     class P11 marca
 ```

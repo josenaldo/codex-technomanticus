@@ -131,9 +131,9 @@ O regex acima parece razoável à primeira leitura — letras, números, ponto, 
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     INPUT["Input do cliente\n(str, URL, nome de arquivo, JSON)"]
 
     subgraph L1["Camada 1 — Forma"]
@@ -160,10 +160,10 @@ flowchart TB
 
     class TIPO neutro
     class CONTEUDO destaque
-    class DESTINO ok
+    class DESTINO marca
     class PREVINE1 neutro
     class PREVINE2 destaque
-    class PREVINE3 ok
+    class PREVINE3 marca
 ```
 
 Cada camada do diagrama resolve um problema que a camada anterior **não** resolve — e é comum um sistema parar na primeira camada (só Pydantic) achando que cobriu as três, porque as três produzem o mesmo sintoma superficial de "o campo foi validado".

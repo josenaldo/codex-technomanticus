@@ -182,7 +182,6 @@ function CadastroForm() {
 ```mermaid
 graph LR
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph DOM["DOM (sem re-render)"]
@@ -216,7 +215,7 @@ graph LR
     G -.->|type inference| H
 
     class DOM neutro
-    class RHF ok
+    class RHF marca
     class ZOD destaque
     class APP marca
 ```

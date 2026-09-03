@@ -54,8 +54,7 @@ A primeira linha é o comportamento cru do balde: uma request cabe na vaga que j
 
 ```mermaid
 graph TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     R["8 requests chegando<br/>simultaneamente em t=0"] --> B["Balde furado<br/>capacidade = 1 + burst<br/>vazamento = 1 vaga a cada 100ms"]
     B --> D1{"Cabe no balde?"}
@@ -64,8 +63,8 @@ graph TB
     D2 -->|"sim"| Imed["Servida imediatamente<br/>balde permanece consumido"]
     D2 -->|"não — sem nodelay,<br/>excedeu o limiar de delay"| Fila["Enfileirada<br/>liberada no ritmo do vazamento"]
 
-    class Rej falha
-    class Imed ok
+    class Rej neutro
+    class Imed marca
     class Fila marca
 ```
 
@@ -251,8 +250,8 @@ location /app/ {
 
 ```mermaid
 graph TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Resp["Resposta pronta<br/>na fase CONTENT"] --> Q1{"gzip on?"}
     Q1 -->|"não (padrão)"| Sem["Enviada sem compressão"]
     Q1 -->|"sim"| Q2{"Content-Type está em<br/>gzip_types (+ text/html)?"}
@@ -265,8 +264,8 @@ graph TB
     Q5 -->|"não (padrão off)"| Sem
     Q5 -->|"sim (any ou condição atendida)"| Comp
 
-    class Sem falha
-    class Comp ok
+    class Sem neutro
+    class Comp marca
 ```
 
 O diagrama deixa visível por que "liguei `gzip on;`" é necessário mas nunca suficiente: são quatro portões (`gzip`, `gzip_types`, `gzip_min_length`, e — só quando a resposta veio de proxy — `gzip_proxied`) e todos precisam abrir para a compressão de fato acontecer. A causa mais comum de compressão ausente numa borda com `proxy_pass` é o último portão, justamente porque é o único dos quatro cujo padrão surpreende: os outros três têm um padrão que, uma vez ligado `gzip on;`, tende a deixar passar (`gzip_types` já inclui `text/html`; `gzip_min_length` de 20 bytes é baixo o bastante para não filtrar quase nada) — só `gzip_proxied` fecha por padrão justamente o caminho mais comum de uma borda moderna, que é servir como proxy reverso na frente de uma aplicação.

@@ -47,14 +47,13 @@ spec:
 graph LR
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     CRD["CRD<br/>vocabulário<br/>(kind: PostgresCluster)"] --> OP["Operator"]
     CTRL["Controller<br/>laço observar-comparar-agir"] --> OP
     OP --> Res["Sistema que se opera sozinho:<br/>provisiona, faz backup,<br/>promove réplica, restaura"]
 
     class CRD marca
     class CTRL neutro
-    class OP ok
+    class OP marca
 ```
 
 Vale nomear com a mesma precisão que a nota anterior aplicou ao CRD: o vocabulário sozinho é estático, uma forma; o laço sozinho, sem um tipo para observar, não tem o que reconciliar. É a soma das duas peças — nunca uma isolada — que produz o que a comunidade chama de operator. A documentação oficial do Kubernetes descreve exatamente essa combinação: operators são extensões de software que usam recursos customizados para gerenciar aplicações e seus componentes, seguindo o princípio do control loop — clientes da API que atuam como controllers para Custom Resources.
@@ -273,8 +272,8 @@ Um **validating webhook** intercepta a requisição depois da autorização (RBA
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Req["kubectl apply<br/>PostgresCluster"] --> Auth["Autenticação + RBAC<br/>(nota 13)"]
     Auth -->|"autorizado"| CEL["Validação estrutural<br/>+ regras CEL (nota 18)"]
     CEL -->|"schema válido"| MW["Mutating webhook<br/>do operator"]
@@ -284,7 +283,7 @@ graph LR
 
     class MW marca
     class VW marca
-    class Err falha
+    class Err neutro
 ```
 
 O custo dessa camada extra é o mesmo já nomeado na nota sobre CRDs para a estratégia `Webhook` de conversão: um serviço HTTP a mais, mantido e monitorado à parte, com sua própria disponibilidade — se o webhook cair e a política de falha estiver configurada como `Fail` (em vez de `Ignore`), toda escrita contra aquele tipo passa a falhar até o webhook voltar, mesmo que a intenção do usuário fosse perfeitamente válida. `controller-runtime` oferece o mesmo tipo de andaime para webhooks que oferece para o `Reconcile` — Kubebuilder gera o esqueleto de ambos a partir da mesma anotação no tipo Go — o que reduz, mas não elimina, o esforço de manter essa peça adicional funcionando de forma confiável.

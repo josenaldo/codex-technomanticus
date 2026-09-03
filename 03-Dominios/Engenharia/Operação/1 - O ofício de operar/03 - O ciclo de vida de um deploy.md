@@ -35,9 +35,9 @@ Vale nomear as cinco etapas com precisão, porque a confusão de vocabulário é
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     C["Commit"] --> B["1. Build<br/>compila, empacota"]
     B --> A["Artefato<br/>imutável e versionado"]
     A --> R["2. Release<br/>artefato + config do ambiente"]
@@ -49,7 +49,7 @@ graph LR
 
     class A destaque
     class O neutro
-    class RB falha
+    class RB marca
 ```
 
 **1. Build.** O código-fonte de um commit específico é compilado, empacotado e transformado num **artefato**: uma imagem de container, um JAR, um binário. O ponto crítico desta etapa não é a compilação em si — é a **imutabilidade**. O artefato que sai do build recebe um identificador único (uma tag de imagem com o SHA do commit, um número de versão semântico) e, a partir daí, **nunca é recompilado**. Esse é o princípio que Humble e Farley chamam de "build once, deploy many": o mesmo binário testado em staging é, byte a byte, o binário que roda em produção. Se você recompila em cada ambiente, você não sabe mais se um bug é do código ou de uma diferença sutil de toolchain entre as máquinas — o clássico "funciona na minha máquina" institucionalizado em escala.

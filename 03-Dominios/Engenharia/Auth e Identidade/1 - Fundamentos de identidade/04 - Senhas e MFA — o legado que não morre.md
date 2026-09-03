@@ -122,17 +122,18 @@ Juntando as duas seções anteriores, a vida de uma senha malfeita segue um cami
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Cadastro:<br/>senha fraca/reusada"] -->|"sem checagem HIBP"| B["Hash ruim<br/>(SHA-1/MD5 sem salt)"]
     B -->|"banco vaza"| C["Offline cracking<br/>90% quebrado em 72h"]
     C -->|"senha reusada<br/>em outros sites"| D["Credential<br/>stuffing"]
     D -->|"login automatizado<br/>em massa"| E["Account<br/>Takeover"]
 
-    class B falha
-    class C falha
+    class B neutro
+    class C marca
     class D destaque
-    class E falha
+    class E marca
 ```
 
 Cada seta desse diagrama é um ponto de intervenção: checar contra HIBP no cadastro evita a seta 1; Argon2id evita a seta 2 mesmo que o banco vaze; e MFA — o assunto da próxima seção — evita que a seta 4 (login automatizado) sequer funcione, mesmo com a senha certa em mãos do atacante.
@@ -202,7 +203,7 @@ Todo sistema de MFA sério oferece **códigos de recuperação** (recovery codes
 
 ```mermaid
 graph BT
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     SMS["SMS / chamada de voz<br/>76% de bloqueio de ataque<br/>vulnerável a SIM swap e SS7"]
@@ -212,7 +213,7 @@ graph BT
 
     SMS --> TOTP --> PUSH --> FIDO
 
-    class SMS falha
+    class SMS marca
     class TOTP destaque
     class PUSH destaque
     class FIDO neutro

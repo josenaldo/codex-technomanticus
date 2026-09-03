@@ -75,8 +75,8 @@ HTTP/2 resolve isso com **multiplexação**: múltiplos *streams* (cada um repre
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph HTTP1["HTTP/1.1 — conexões seriais/paralelas"]
         C1["Cliente"] -->|"conexão TCP 1"| S1["Requisição A"]
         C1 -->|"conexão TCP 2"| S2["Requisição B"]
@@ -89,7 +89,7 @@ graph TD
         MUX --> ST3["Stream 3 (C)"]
     end
     class HTTP2 neutro
-    class HTTP1 falha
+    class HTTP1 marca
 ```
 
 O segundo ganho, menos falado mas igualmente relevante para gRPC, é a compressão de cabeçalhos via **HPACK**. Em chamadas gRPC de alto volume, os mesmos cabeçalhos (`content-type: application/grpc`, tokens de autenticação, metadados de tracing) se repetem em praticamente toda chamada dentro da mesma conexão. HPACK mantém uma **tabela dinâmica** de cabeçalhos já vistos e, depois da primeira transmissão, referencia repetições por índice em vez de reenviar o texto completo — reduzindo o overhead de cabeçalho em [até 85-90% em aplicações reais](https://jadhavsaurabh037.medium.com/grpc-deep-dive-efficient-network-communication-using-http-2-11bb97151b09), com estudos independentes registrando economias de banda de cabeçalho por volta de 76%. Para uma única chamada isolada isso não muda nada perceptível; para centenas de chamadas por segundo entre checkout e estoque, é banda e CPU de parsing que deixam de ser gastos repetidamente.
@@ -103,9 +103,9 @@ A palavra "streaming" no nome gRPC não é acidental — é a parte do modelo qu
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph U["Unary"]
         U1["Cliente"] -->|"1 request"| U2["Servidor"]
         U2 -->|"1 response"| U1
@@ -125,7 +125,7 @@ graph LR
     class U neutro
     class SS destaque
     class CS destaque
-    class BD falha
+    class BD marca
 ```
 
 ### Unary — a chamada de função comum
@@ -220,12 +220,12 @@ A solução é **gRPC-Web** — um protocolo companheiro (não o mesmo protocolo
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Browser["Navegador<br/>(gRPC-Web via fetch/XHR)"] -->|"HTTP/1.1 ou HTTP/2<br/>sem controle de frame"| Proxy["Proxy<br/>(Envoy, tradução)"]
     Proxy -->|"gRPC nativo<br/>HTTP/2 completo"| Backend["Serviço backend gRPC"]
-    class Browser falha
+    class Browser marca
     class Proxy destaque
     class Backend neutro
 ```

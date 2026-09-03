@@ -39,13 +39,13 @@ O resultado prático: um cliente REST podia ser "tão simples quanto um navegado
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     HTTP["HTTP como ele já era<br/>(verbos, URLs, cache, status)"] -->|"Fielding formaliza, 2000"| REST["REST"]
     SOAP["SOAP + WS-*<br/>(envelope XML, WSDL,<br/>segurança, transação)"] -->|"peso corporativo"| ENTERPRISE["Enterprise pesado<br/>(bancos, ERPs, EDI B2B)"]
     REST -->|"barreira de entrada baixa"| WEB2["Web 2.0<br/>(Amazon, Yahoo, Google,<br/>Twitter, Flickr)"]
     class REST neutro
-    class SOAP falha
+    class SOAP marca
 ```
 
 Não foi uma virada da noite para o dia. Nos primeiros anos dos 2000, SOAP dominava ambientes corporativos — Oracle, HP, Sun rodavam suas integrações sobre ele. Mas conforme a web amadurecia para o que ficou conhecido como "Web 2.0" — mashups, APIs públicas, apps que consumiam dados de terceiros — empresas como **Amazon, Yahoo e Google** foram migrando ou lançando suas APIs públicas diretamente em REST, o que acelerou a adoção em cascata: onde a empresa líder ia, o ecossistema seguia.

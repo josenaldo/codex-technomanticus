@@ -34,6 +34,8 @@ Antes de entrar em cada padrão, vale visualizar a cadeia de propagação inteir
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["payment-service fica lento<br/>8-15s por chamada"] -->|"1) TIMEOUT mal calibrado<br/>(30s em vez de ~500ms)<br/>deixa a espera continuar"| B["order-service<br/>threads presas esperando"]
@@ -45,8 +47,8 @@ graph TD
     class A destaque
     class B destaque
     class C destaque
-    class D falha
-    class E falha
+    class D neutro
+    class E marca
     class F falha
 ```
 
@@ -76,12 +78,12 @@ O problema que a pergunta ataca chama-se **retry amplification**, e o mecanismo 
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     G["Gateway<br/>1 requisição"] -->|"retry x3<br/>se falhar"| OS["order-service<br/>até 3 chamadas"]
     OS -->|"retry x3<br/>por chamada"| PS["payment-service<br/>até 9 chamadas"]
     PS -->|"retry x3<br/>por chamada"| BG["bank-gateway<br/>até 27 chamadas<br/>de 1 requisição original"]
 
-    class BG falha
+    class BG neutro
 ```
 
 A defesa operacional para isso tem nome: **retry budget** (também chamado de orçamento de retry, ou implementado como um token bucket dedicado a retries). A regra prática, adotada em bibliotecas de resiliência de produção, limita retries a uma fração pequena do tráfego normal — algo na faixa de 10 a 20%: a cada 100 chamadas bem-sucedidas, o sistema "ganha" 10 a 20 tokens de retry; quando o orçamento esgota, novas tentativas de retry são recusadas e a chamada falha rápido em vez de insistir. O efeito mensurado é dramático: numa simulação de falha de 50% numa dependência, retry sem orçamento gera até 3,5x de amplificação de tráfego e impede a recuperação; com um orçamento de 20%, o tráfego total fica em torno de 1,2x do normal — o suficiente para a dependência doente respirar e se recuperar, em vez de ser enterrada por retries bem-intencionados.
@@ -108,13 +110,13 @@ Não existe um número universal — o ponto de equilíbrio depende de quão cr�
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Threshold baixo<br/>+ wait curto"] -->|"abre cedo,<br/>fecha cedo"| B["Falsos positivos:<br/>recusa tráfego saudável"]
     C["Threshold alto<br/>+ wait longo"] -->|"abre tarde,<br/>fecha tarde"| D["Falsos negativos:<br/>não protege a tempo /<br/>recupera devagar"]
 
     class B destaque
-    class D falha
+    class D neutro
 ```
 
 > [!question]- Como decidir os números sem esperar um incidente real acontecer?

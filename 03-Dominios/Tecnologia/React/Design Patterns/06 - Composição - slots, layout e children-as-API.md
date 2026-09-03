@@ -341,6 +341,7 @@ O ponto-chave: `Stack`, `Split` e `CardFull` são **genéricos de layout**, não
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
@@ -367,8 +368,8 @@ nas regiões certas"]
 
     class CONFIG falha
     class COMP ok
-    class C1 falha
-    class C2 falha
+    class C1 marca
+    class C2 marca
     class P1 neutro
     class S1 neutro
     class S2 neutro

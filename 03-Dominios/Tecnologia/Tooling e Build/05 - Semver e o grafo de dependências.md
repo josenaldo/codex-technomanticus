@@ -338,8 +338,8 @@ Esses dois comandos fazem coisas fundamentalmente diferentes — e confundi-los 
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "npm install — desenvolvimento"
         direction TB
         I1["Lê package.json\n(ranges)"]
@@ -360,7 +360,7 @@ flowchart LR
     end
 
     class C2 falha
-    class I3 ok
+    class I3 neutro
 ```
 
 | Característica | `npm install` | `npm ci` |

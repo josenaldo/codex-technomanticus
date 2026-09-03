@@ -67,8 +67,8 @@ Em português, sem o texto formal: **uma leitura só tem garantia de ver uma esc
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph G1["Goroutine A"]
         direction TB
         A1["resultado = 42"] --> A2["pronto = true"]
@@ -83,8 +83,8 @@ flowchart LR
 
     class A1 neutro
     class A2 neutro
-    class B1 falha
-    class B2 falha
+    class B1 marca
+    class B2 marca
 ```
 
 O trabalho de projetar código concorrente correto em Go, visto por essa lente, é sempre a mesma pergunta: **"que mecanismo estou usando para fabricar a aresta happens-before entre esta escrita e esta leitura?"** `chan`, `Mutex`, `WaitGroup` e `atomic` são, cada um à sua maneira, geradores dessa aresta. Sem um deles no meio, a resposta é "nenhuma garantia" — não importa quão improvável pareça o problema na prática.
@@ -366,8 +366,8 @@ O memory model é explícito sobre a consequência de acessar memória compartil
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     R["Acesso concorrente a memória\nsem happens-before"] --> Q{"Existe sincronização\n(chan/Mutex/atomic/WaitGroup)?"}
     Q -->|Sim| OK["Comportamento definido\ngarantido pelo memory model"]
     Q -->|Não| UB["Data race = UB"]
@@ -376,8 +376,8 @@ flowchart TD
     UB --> U3["panic em runtime\n(map concorrente)"]
     UB --> U4["Comportamento diferente\nentre builds/arquiteturas"]
 
-    class UB falha
-    class OK ok
+    class UB neutro
+    class OK marca
 ```
 
 > [!warning] "Rodei com -race e não deu nada" não prova ausência de data race

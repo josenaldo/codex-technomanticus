@@ -31,9 +31,9 @@ O diagrama a seguir é o coração desta nota — ele mostra exatamente onde o p
 
 ```mermaid
 flowchart TB
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph provedor["Gerenciado pelo provedor (control plane)"]
         api["API server<br/>(kubectl fala com isso)"]
         etcd["etcd<br/>(estado do cluster)"]
@@ -54,9 +54,9 @@ flowchart TB
     nodes -->|roda| pods
     pods --> helm
 
-    class provedor ok
+    class provedor neutro
     class compartilhado destaque
-    class seu falha
+    class seu marca
 ```
 
 Repare que existe uma zona do meio: os **nós** (as máquinas que efetivamente rodam seus pods). Em Kubernetes gerenciado com *managed node groups* (EKS) ou *node pools* (DOKS), o provedor cuida do provisionamento da máquina, da instalação do `kubelet` (o agente que fala com o control plane) e — em boa parte dos casos — dos patches de sistema operacional e da substituição automática de nós não saudáveis. Mas o nó ainda é uma VM sua rodando na sua conta, cobrada como instância normal. Ele não desaparece como no Fargate.
@@ -187,7 +187,8 @@ No DOKS, o control plane padrão roda numa configuração enxuta — e é justam
 
 ```mermaid
 flowchart TB
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph eks["EKS — padrão"]
         eks_api1["API server<br/>AZ-1"]
@@ -209,9 +210,9 @@ flowchart TB
         doks_api3["API server<br/>réplica 3"]
     end
 
-    class eks ok
+    class eks neutro
     class doks_std destaque
-    class doks_ha ok
+    class doks_ha marca
 ```
 
 Essa é a pergunta certa pra levar pra entrevista ou pra decisão de arquitetura: não "qual control plane é mais barato", mas "qual nível de resiliência do control plane eu realmente preciso, e quanto isso custa em cada provedor".

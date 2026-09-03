@@ -115,8 +115,8 @@ A destilação faz o aluno aprender a *imitar a distribuição completa* do prof
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     D["Dataset de treino\n(inputs)"] --> T["Modelo Professor\n(grande, ex: 70B)"]
     T --> ST["Soft targets\n(distribuição completa\nde probabilidades)"]
@@ -126,7 +126,7 @@ graph TD
     LOSS --> TRAIN["Treino do aluno\ncom gradientes"]
     TRAIN --> S
     class T neutro
-    class S ok
+    class S marca
     class ST destaque
 ```
 
@@ -150,14 +150,14 @@ As duas técnicas não são concorrentes — são camadas de um mesmo pipeline:
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Modelo Flagship\n(ex: 600B, FP16)"] -->|"Destilação"| B["Modelo Aluno\n(ex: 7B, FP16)\n— genuinamente menor"]
     B -->|"Quantização (PTQ)"| C["Modelo Final\n(ex: 7B, INT4)\n— menor e mais barato por token"]
-    class A falha
+    class A neutro
     class B destaque
-    class C ok
+    class C marca
 ```
 
 Primeiro reduz a *arquitetura* (menos parâmetros via destilação), depois reduz a *precisão* (menos bits via quantização). É assim que se chega a modelos que rodam em celular ou no navegador — e por que Phi-3 Mini (3.8B, INT4) funciona razoavelmente num laptop de consumo.

@@ -32,9 +32,9 @@ A resposta não é intuitiva: você não mede o valor da IA medindo a IA — voc
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["💰 Custo de tokens\n(visível na fatura)"] --> B["ROI = Valor / Custo"]
     C["⚡ Horas economizadas"] --> D["Valor capturado"]
     E["🐛 Defeitos evitados"] --> D
@@ -46,9 +46,9 @@ flowchart LR
     G -->|"Sim mas qualidade caiu"| I["⚠️ Revisar guardrails"]
     G -->|"Não"| J["❌ Otimizar ou descontinuar"]
     
-    class H ok
+    class H neutro
     class I destaque
-    class J falha
+    class J marca
 ```
 
 ## A equação básica
@@ -162,8 +162,8 @@ A decisão de investimento em IA não é binária — é um portfólio com múlt
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Considerando expandir uso de IA"] --> B{"Baseline de métricas\nestabelecido?"}
     B -->|"Não"| C["Estabelecer baseline\nantesd de qualquer decisão"]
     B -->|"Sim"| D{"Economia líquida\n(horas - overhead)\n> custo de tokens?"}
@@ -176,8 +176,8 @@ flowchart TD
     J -->|"Não"| K["Manter volume atual,\nnão expandir"]
     J -->|"Sim"| L["✅ Expandir"]
 
-    class L ok
-    class G falha
+    class L neutro
+    class G marca
 ```
 
 ## ROI por tipo de task — onde IA realmente ajuda

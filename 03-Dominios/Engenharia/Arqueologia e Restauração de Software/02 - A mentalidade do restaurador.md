@@ -26,7 +26,7 @@ Elas são imagens espelhadas do mesmo erro: **agir (ou travar) a partir da ignor
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     S["Sistema que você<br/>não escreveu"] --> A["Desprezo<br/>'que lixo, refazer tudo'"]
@@ -35,10 +35,10 @@ graph TD
     A -->|"apaga a teoria<br/>sem recuperá-la"| X["Reencarna os<br/>mesmos bugs"]
     B -->|"o sistema apodrece<br/>parado"| X
     C -->|"escava, então<br/>intervém com segurança"| V["Restauração"]
-    class A falha
+    class A marca
     class B destaque
     class C neutro
-    class X falha
+    class X marca
     class V destaque
 ```
 

@@ -186,8 +186,8 @@ O detalhamento de como transformar esses limiares em alertas configurados de ver
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     START["Início do período<br/>orçamento = 100%"] --> D1["Dia 5: incidente pequeno<br/>burn rate 3x por 20min"]
     D1 -->|"orçamento cai<br/>~2%"| D2["Dia 12: normal<br/>burn rate ~1x"]
     D2 --> D3["Dia 22: incidente grande<br/>burn rate 15x por 35min"]
@@ -196,7 +196,7 @@ graph TD
     D5 -->|"orçamento<br/>zera"| RED["🔴 Dia 28: SLO violado<br/>error budget policy ativa"]
     class D3 destaque
     class D5 destaque
-    class RED falha
+    class RED neutro
 ```
 
 ## Error budget como política: transformando número em decisão

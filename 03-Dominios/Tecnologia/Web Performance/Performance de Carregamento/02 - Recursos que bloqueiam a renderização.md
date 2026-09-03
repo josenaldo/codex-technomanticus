@@ -69,7 +69,7 @@ O resultado é brutal: um `<script src>` de terceiros lento no `<head>` pode seg
 
 ```mermaid
 graph TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph SYNC["&lt;script&gt; (síncrono)"]
         S1[Parse DOM] --> S2[⏸ PARA] --> S3[baixa+executa] --> S4[retoma parse]
@@ -80,7 +80,7 @@ graph TB
     subgraph ASYNC["async"]
         A1[Parse DOM segue] -.baixa em paralelo.-> A2[executa ao chegar, fora de ordem]
     end
-    class S2 falha
+    class S2 marca
     class D1 neutro
     class A1 neutro
 ```

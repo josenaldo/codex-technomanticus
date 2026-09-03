@@ -33,9 +33,7 @@ O resultado é o que você vê: o comportamento do agente na sessão atual. Cada
 ```mermaid
 flowchart TD
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     S["🔒 Sistema — system prompt\n(built-in do Claude Code)"]
     G["🌍 Global — ~/.claude/\n(suas preferências pessoais)"]
     P["📁 Projeto — .claude/\n(contexto do projeto, versionado)"]
@@ -45,9 +43,9 @@ flowchart TD
     S --> G --> P --> L --> A
 
     class S neutro
-    class G ok
+    class G marca
     class P marca
-    class L falha
+    class L marca
     class A neutro
 ```
 
@@ -261,7 +259,6 @@ Resultado (precedência crescente):
 ```mermaid
 flowchart LR
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph Entrada["Início de sessão"]
         U["Usuário abre\nClaude Code"]
@@ -289,7 +286,7 @@ flowchart LR
     Settings --> CTX
 
     class Entrada neutro
-    class CLAUDE_mds ok
+    class CLAUDE_mds marca
     class Settings marca
     class Resultado neutro
 ```

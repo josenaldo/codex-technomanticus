@@ -60,9 +60,9 @@ Adaptado ao vocabulário de pipeline moderno (GitHub Actions, GitLab CI), a mesm
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     COMMIT["Commit /<br/>Pull Request"] --> BUILD["🔵 Build<br/>compila, lint<br/>segundos"]
     BUILD --> UNIT["🔵 Testes<br/>unitários<br/>segundos-minutos"]
     UNIT --> INTEG["🔵 Testes de<br/>integração<br/>minutos"]
@@ -75,7 +75,7 @@ graph LR
     class INTEG neutro
     class SCAN destaque
     class ART neutro
-    class DEPLOY falha
+    class DEPLOY marca
 ```
 
 Cada seta nesse diagrama esconde uma decisão de gate: o estágio anterior *precisa* passar para o próximo rodar, ou eles podem rodar em paralelo? A resposta certa depende do custo relativo. Build e lint são baratos e determinam se vale a pena rodar qualquer outra coisa — sempre bloqueantes, sempre primeiro. Testes unitários são baratos o suficiente para rodar sempre, e caros o bastante em falso-negativo (um bug óbvio passando) para também bloquear. Já testes de integração e scan de segurança frequentemente **podem rodar em paralelo** entre si, já que um não depende logicamente do resultado do outro — a única razão para serializá-los seria economizar recursos de CI compartilhados, não uma dependência real.

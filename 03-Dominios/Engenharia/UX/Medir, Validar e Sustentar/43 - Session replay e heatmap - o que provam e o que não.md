@@ -38,9 +38,9 @@ Um heatmap agrega o comportamento de clique, movimento de mouse (proxy imperfeit
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     HM["Heatmap<br/>agregado de N sessões"] -->|"mostra"| ONDE["ONDE a atenção<br/>se concentra"]
     HM -.->|"NÃO mostra"| PORQUE["por quê"]
     SR["Session Replay<br/>1 sessão por vez"] -->|"mostra"| OQUE["O QUE aconteceu<br/>passo a passo"]
@@ -48,7 +48,7 @@ graph TD
     ONDE -->|"gera hipótese para"| SR
     class HM destaque
     class ONDE neutro
-    class PORQUE falha
+    class PORQUE marca
     class SR neutro
 ```
 

@@ -38,8 +38,8 @@ Esse é o ângulo que faltava nas seis notas anteriores. Elas ensinaram o mecani
 
 ```mermaid
 flowchart TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Erro interno da função"] --> B{"Vai atravessar\na fronteira do pacote?"}
     B -->|"Sim — é API pública"| C["Projete: tipo exportado?\nsentinel exportado?\nsó string?"]
     B -->|"Não — fica interno"| D["Livre para mudar\nsem quebrar ninguém"]
@@ -47,7 +47,7 @@ flowchart TB
     C --> F["Mudar depois =\nbreaking change"]
 
     class C destaque
-    class F falha
+    class F neutro
 ```
 
 ## Erro como parte da API pública

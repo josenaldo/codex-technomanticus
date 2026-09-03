@@ -107,7 +107,7 @@ O padrão de configuração é sempre o mesmo formato: defina um SLI (o quê med
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Deploy da versão nova<br/>(canário)"] --> B["Roteia 5% do tráfego<br/>pro canário"]
@@ -120,7 +120,7 @@ graph TD
     G -->|Sim| H["✅ Promoção completa,<br/>versão antiga desligada"]
     F --> I["📟 Alerta dispara,<br/>notifica time (Slack/Teams)"]
 
-    class F falha
+    class F marca
     class H neutro
     class I destaque
 ```

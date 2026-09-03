@@ -33,15 +33,15 @@ O erro mais comum não é esquecer o estado vazio — é desenhar **um único** 
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Vazio["Tela sem itens para mostrar"] --> Q{"Por que está vazia?"}
     Q -->|"usuário nunca criou nada"| S1["Sem dados ainda<br/>ensinar + convidar à 1ª ação"]
     Q -->|"filtro/busca sem retorno"| S2["Sem resultados<br/>explicar critério + afrouxar"]
     Q -->|"requisição falhou"| S3["Erro<br/>ver nota 35"]
     class S1 neutro
     class S2 neutro
-    class S3 falha
+    class S3 marca
 ```
 
 **O mecanismo em uma frase:** os três casos parecem visualmente idênticos (uma tela sem itens), mas pedem ações opostas do usuário — criar, afrouxar filtro, ou tentar de novo — então tratar os três com o mesmo texto genérico é, na prática, dar a ação errada em dois dos três casos.

@@ -64,7 +64,7 @@ OO é, em grande medida, uma **resposta a esse problema**. A jogada é: pegue o 
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph IMP["Imperativo: estado solto"]
         G["estado global"]
@@ -81,7 +81,7 @@ flowchart TB
         O2 -->|"resposta"| O1
     end
     IMP -.->|"domar o estado"| OO
-    class G falha
+    class G marca
     class O1 neutro
     class O2 neutro
 ```
@@ -175,8 +175,8 @@ Esta é a comparação mais frutífera — e a que mais cai em conversa de entre
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph OOG["OO: agrupa por DADOS"]
         direction TB
         Ped["Pedido<br/>--- dados ---<br/>itens, status<br/>--- metodos ---<br/>confirmar()<br/>cancelar()<br/>total()"]
@@ -188,8 +188,8 @@ flowchart LR
         Fns -->|"recebe e devolve novo"| Dados
     end
     class Ped neutro
-    class Dados ok
-    class Fns ok
+    class Dados marca
+    class Fns marca
 ```
 
 Leitura do diagrama: à esquerda, OO encapsula dados E comportamento na mesma caixa (o Pedido sabe se confirmar). À direita, FP mantém o dado de um lado e as funções de outro; as funções recebem o dado e devolvem um novo, sem mutar. Duas formas de fatiar o mesmo problema.
@@ -228,8 +228,8 @@ Adicionar `perimetro()` é *trivial e isolado*: escreve-se uma função nova com
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph MATRIZ["Matriz tipos x operacoes"]
         direction TB
         H["         | area | render | (nova op)"]
@@ -242,7 +242,7 @@ flowchart TB
     MATRIZ --> OOaxis
     MATRIZ --> FPaxis
     class OOaxis neutro
-    class FPaxis ok
+    class FPaxis marca
 ```
 
 Leitura do diagrama: pense numa tabela onde as **linhas são tipos** e as **colunas são operações**. Adicionar uma *linha* (novo tipo) é fácil em OO e difícil em FP; adicionar uma *coluna* (nova operação) é fácil em FP e difícil em OO. Cada paradigma deixa um eixo barato e o outro caro — e eles escolhem eixos opostos. Não há almoço grátis: o problema da expressão é precisamente o nome dessa impossibilidade de ter os dois eixos baratos sem maquinário extra (typeclasses, visitor pattern, multimethods).

@@ -111,14 +111,13 @@ Leia assim: a interface do usuário é o *resultado* de aplicar uma função (`f
 flowchart LR
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     E1["Estado\n{ liked: false }"] -->|"f(estado)"| V1["UI\n[ Curtir ]"]
     E2["Estado\n{ liked: true }"] -->|"f(estado)"| V2["UI\n[ Curtido ✓ ]"]
 
     class E1 neutro
     class E2 neutro
     class V1 marca
-    class V2 ok
+    class V2 marca
 ```
 
 O que torna isso poderoso é que você nunca mais precisa rastrear transições de estado manualmente. Se o estado é `{ liked: true }`, a UI *sempre* mostrará o botão ativo — não importa como chegamos a esse estado.
@@ -195,9 +194,9 @@ A resposta é o **Virtual DOM** — uma representação leve do DOM real, mantid
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph react["React (em memória)"]
         direction TB
         VDOM_OLD["Virtual DOM\n(antes)"]
@@ -216,7 +215,7 @@ flowchart LR
 
     class State destaque
     class DIFF neutro
-    class DOM ok
+    class DOM marca
 ```
 
 O fluxo é:
@@ -290,9 +289,9 @@ No React 18, Concurrent Mode era opt-in. No React 19, é o modo padrão. Isso si
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph imperativo["Abordagem Imperativa"]
         direction TB
         I1["Evento dispara"]
@@ -314,7 +313,7 @@ flowchart TD
 
     class I1 destaque
     class D1 neutro
-    class D4 ok
+    class D4 marca
 ```
 
 Na abordagem imperativa, **você** rastreia cada transição. Na abordagem declarativa, **você** descreve o destino; React traça o caminho.

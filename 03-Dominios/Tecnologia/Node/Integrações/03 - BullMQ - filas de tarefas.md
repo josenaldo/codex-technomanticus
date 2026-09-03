@@ -34,9 +34,9 @@ BullMQ separa responsabilidades em três entidades principais:
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     P["Producer\n(Queue.add)"] -->|"LMOVE (Lua)"| W["waiting\nlist Redis"]
     W -->|"BLMOVE worker"| A["active\nsorted set"]
     A -->|"sucesso"| C["completed\nsorted set"]
@@ -49,7 +49,7 @@ flowchart LR
     class A destaque
     class C neutro
     class F destaque
-    class DL falha
+    class DL marca
 ```
 
 A camada de persistência é 100% Redis. Não há banco de dados SQL envolvido. Todos os estados de job são armazenados em chaves Redis com prefixo `bull:<queue-name>:`.

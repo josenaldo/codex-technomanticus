@@ -83,7 +83,7 @@ Eric Evans, em *Domain-Driven Design*, batizou a defesa contra isso de **Anti-Co
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph SC["Sem ACL - modelo contaminado"]
     NS1[Modelo novo] -->|chamada/leitura direta| LEG1[Modelo legado]
@@ -93,7 +93,7 @@ graph TD
     NS2[Modelo novo] --> ACL{"Anti-Corruption Layer<br/>traduz conceitos"}
     ACL --> LEG2[Modelo legado]
     end
-    class LEG1 falha
+    class LEG1 neutro
     class ACL destaque
 ```
 

@@ -40,8 +40,8 @@ Isso é narrowing: **estreitar um tipo amplo para um tipo mais específico**, de
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     START["valor: string | number"]
     CHECK{"typeof valor\n=== 'string'?"}
     STR["valor: string\n✓ .toUpperCase()\n✓ .slice()\n✓ .length"]
@@ -52,7 +52,7 @@ flowchart TD
     CHECK -->|"false"| NUM
 
     class STR neutro
-    class NUM ok
+    class NUM marca
 ```
 
 > [!note] Leitura do diagrama
@@ -74,7 +74,6 @@ Imagine que o CFA é um detetive que segue seu código linha por linha, anotando
 ```mermaid
 flowchart LR
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["Entrada:\nvalor: string | number"]
     B["if typeof === 'string'"]
@@ -89,7 +88,7 @@ flowchart LR
     D --> E
 
     class C neutro
-    class D ok
+    class D marca
     class E marca
 ```
 
@@ -268,8 +267,8 @@ function processar(evento: Evento): string {
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     E["evento: Evento\n(criado | editado | removido)"]
     S{"switch(evento.tipo)"}
@@ -283,7 +282,7 @@ flowchart TD
     S -->|"'removido'"| R
 
     class C neutro
-    class Ed ok
+    class Ed marca
     class R destaque
 ```
 
@@ -607,8 +606,8 @@ function parsearEvento(json: string): string {
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     JSON["json: string"]
     PARSE["JSON.parse → unknown"]
@@ -625,7 +624,7 @@ flowchart TD
     G2 -->|"false"| ERR
 
     class PC neutro
-    class PP ok
+    class PP marca
     class ERR falha
 ```
 

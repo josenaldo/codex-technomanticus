@@ -35,14 +35,14 @@ Antes das ferramentas, vale nomear por que esse problema é genuinamente difíci
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     T1[Teoria viva na cabeca<br/>do time original] -->|equipe sai, teoria some| L[LEGADO: so sobra codigo]
     L -->|voce reconstroi por arqueologia| T2[Teoria reconstruida<br/>na sua cabeca]
     T2 -->|voce sai sem documentar| L
     T2 -->|voce externaliza de proposito| E[ADR + Living Docs + C4<br/>+ pairing]
     E --> T3[Proximo consultor<br/>reconstroi mais rapido]
-    class L falha
+    class L marca
     class T2 neutro
     class E neutro
     class T3 neutro

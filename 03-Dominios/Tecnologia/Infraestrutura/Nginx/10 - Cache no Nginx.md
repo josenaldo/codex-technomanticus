@@ -237,8 +237,8 @@ Com `proxy_cache_lock on;`, segundo a documentação, apenas um request por vez 
 
 ```mermaid
 graph TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph SemLock["proxy_cache_lock off — padrão"]
         R1a["Request 1"] --> B1["Backend"]
         R2a["Request 2"] --> B1
@@ -256,8 +256,8 @@ graph TB
         C --> R3b
     end
 
-    class N1 falha
-    class C ok
+    class N1 neutro
+    class C marca
 ```
 
 `proxy_cache_background_update`, com padrão `off`, resolve um problema adjacente: mesmo com `proxy_cache_use_stale updating` habilitado — servindo a cópia velha para quem chegou depois que a entrada expirou —, alguém ainda precisa, em algum momento, ir ao backend buscar a versão nova. Com `proxy_cache_background_update on;`, essa atualização acontece numa subrequest em background, enquanto o cliente que disparou a checagem já recebeu a resposta stale imediatamente, sem esperar a atualização terminar. A combinação `use_stale updating` mais `background_update on` é o par que produz, na prática, o mesmo efeito que `stale-while-revalidate` descreve como semântica HTTP na nota [[03-Dominios/Ciência/Redes e Protocolos/08 - Caching HTTP|Caching HTTP]] — só que aqui implementado como decisão de configuração do proxy, não como header interpretado por um cache de protocolo genérico.

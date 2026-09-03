@@ -29,8 +29,8 @@ A pergunta que este cenário força é: config e secret deveriam viajar pelo mes
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph K8s["Kubernetes"]
         CM["ConfigMap\n(config não sensível)"]
         Secret["Secret\n(credenciais)"]
@@ -53,9 +53,9 @@ flowchart TB
     File --> ReadFile
 
     class CM neutro
-    class Secret falha
+    class Secret marca
     class EnvVar neutro
-    class File falha
+    class File marca
 ```
 
 O Kubernetes deixa você injetar um `Secret` como env var também (`env.valueFrom.secretKeyRef`) — a API permite, mas a prática recomendada evita esse caminho pelos motivos do cenário acima. Um `Secret` montado como **volume** vira um arquivo no filesystem do container, legível só por quem tem acesso ao container em si — não aparece em `describe pod`, não vaza em trace de observabilidade que captura `os.Environ()`, e pode ser **atualizado sem recriar o pod** (o kubelet reescreve o arquivo quando o `Secret` muda — voltamos nisso na seção de recarga).

@@ -114,7 +114,7 @@ Access tokens de curta duração criam um problema prático óbvio — o usuári
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     P["Password<br/>anti-pattern<br/>(pré-2007)"] -->|"delegação<br/>com assinatura"| V1["OAuth 1.0<br/>out/2007<br/>RFC 5849 (2010)"]
@@ -122,7 +122,7 @@ graph LR
     V2 -->|"fragmentação:<br/>RFCs satélite<br/>(PKCE, BCP...)"| SAT["Grants inseguros<br/>+ pilha de RFCs<br/>corretivos"]
     SAT -->|"consolida e poda"| V21["OAuth 2.1<br/>draft, em revisão<br/>(2020–2026)"]
 
-    class P falha
+    class P marca
     class SAT destaque
     class V21 neutro
 ```

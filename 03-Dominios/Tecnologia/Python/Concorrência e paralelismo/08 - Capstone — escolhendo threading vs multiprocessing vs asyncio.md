@@ -29,9 +29,9 @@ A pergunta que esta capstone resolve não é "como uso `Lock`" ou "como uso `Tas
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Qual é a natureza\ndo trabalho?"] --> B{"Gasta a maior parte\ndo tempo esperando\n(rede, disco, banco)?"}
     B -->|"Sim — I/O-bound"| C{"O código todo pode\nser escrito com\nasync/await?"}
     B -->|"Não — gasta CPU\nfazendo cálculo"| D["CPU-bound\n→ multiprocessing\n(nota 04/05)"]
@@ -49,7 +49,7 @@ flowchart TD
     class F destaque
     class G neutro
     class H destaque
-    class I falha
+    class I marca
 ```
 
 ## Etapa 1: recapitulando o critério de cada nota, na ordem em que apareceu

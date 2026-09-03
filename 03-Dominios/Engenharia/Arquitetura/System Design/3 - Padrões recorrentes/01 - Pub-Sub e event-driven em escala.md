@@ -38,8 +38,8 @@ Essa é a dor que o pub/sub resolve. Em vez de o produtor chamar cada consumidor
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph RR["Request-response — produtor conhece N consumidores"]
         P1["Serviço de<br/>Pedidos"] -->|"chama"| E1["Estoque"]
@@ -57,7 +57,7 @@ graph TD
         B -.->|"5º consumidor?<br/>só se inscreve"| S5["Recomendação"]
     end
     class B destaque
-    class E5 falha
+    class E5 marca
     class S5 neutro
 ```
 

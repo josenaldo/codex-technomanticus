@@ -53,8 +53,7 @@ O output verboso não é um bug — é o modelo funcionando como treinado. Sua r
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Prompt sem instrução\nde output"] --> B["Modelo verboso\n~3000 tokens"]
     C["Prompt com format\nconstraint + concisão"] --> D["Modelo conciso\n~600 tokens"]
@@ -64,8 +63,8 @@ flowchart LR
     
     F --> G["Economia: 80%\nMesma informação útil"]
 
-    class B falha
-    class D ok
+    class B marca
+    class D marca
     class G neutro
 ```
 

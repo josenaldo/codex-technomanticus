@@ -69,9 +69,9 @@ print(type(Produto))  # <class 'type'>
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph N1["Nível metaclasse"]
         T["type"]
     end
@@ -87,7 +87,7 @@ flowchart TB
 
     class T neutro
     class P destaque
-    class I falha
+    class I marca
 ```
 
 A cadeia se repete em cada nível: `type` está para `Produto` assim como `Produto` está para `p`. `type` cria classes; classes criam instâncias. E, curiosamente, `type` também é instância de si mesma — `type(type)` devolve `type` — o ponto onde a cadeia de "tipo do tipo do tipo..." para, por definição da linguagem.
@@ -183,9 +183,9 @@ O ponto central — e a resposta pra confusão mais comum de quem vê isso pela 
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Def["Definição da classe (uma vez, na leitura do 'class Servico:')"]
         direction TB
         D1["MetaLogger.__new__(mcs, name, bases, namespace)"] --> D2["MetaLogger.__init__(cls, name, bases, namespace)"]
@@ -202,7 +202,7 @@ flowchart TB
     class D2 neutro
     class I1 destaque
     class I2 destaque
-    class I3 falha
+    class I3 marca
 ```
 
 > [!question]- `__new__` vs `__init__` numa metaclasse — qual a diferença prática de usar um ou outro?

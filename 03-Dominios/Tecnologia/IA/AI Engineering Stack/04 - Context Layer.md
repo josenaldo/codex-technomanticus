@@ -31,8 +31,8 @@ Esse é o problema fundamental da Context Layer: o modelo precisa tomar decisõe
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Sem Context Layer"
         A1["Mesma chamada\npara usuários A e B"]
         A2["Sistema não sabe:\ngoal / audience /\nrestrições"]
@@ -52,9 +52,9 @@ flowchart LR
     B1 --> B3 --> B5
     B2 --> B4 --> B6
 
-    class A3 falha
-    class B5 ok
-    class B6 ok
+    class A3 neutro
+    class B5 marca
+    class B6 marca
 ```
 
 A Context Layer é a camada que resolve isso: define **o que vai no contexto de cada chamada** — e, igualmente importante, o que não vai. Uma janela de contexto cheia de informação irrelevante é tecnicamente igual a uma janela vazia do ponto de vista do modelo. *Context rot* — contexto que já era relevante mas não é mais — é a forma mais comum de degradar a qualidade de um sistema em produção.
@@ -199,8 +199,8 @@ Saber que "context rot existe" não é suficiente para evitá-lo — é preciso 
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     T["Turno N chega"] --> C{"Compressão\nperiódica?"}
     C -->|"a cada K turnos"| S["Resume turnos antigos\nem sumário condensado"]
     C -->|"não é a vez"| E{"Algum campo\nexpirou?"}
@@ -215,7 +215,7 @@ flowchart TD
     class S destaque
     class R destaque
     class Z destaque
-    class M ok
+    class M neutro
 ```
 
 **1. Compressão periódica.** A cada K turnos (K costuma ficar entre 15 e 30 em assistentes conversacionais), o pipeline substitui os turnos antigos por um sumário condensado — a mesma lógica do `/compact` do Claude Code. Um assistente de codificação que roda há 20 turnos pode ter ~4.000 tokens de histórico bruto nos primeiros 15 turnos; a compressão os reduz a um sumário de ~200 tokens do tipo: "decisões tomadas: usar Postgres em vez de SQLite (turno 3); abordagens rejeitadas: cache em memória por simplicidade (turno 7); arquivos tocados: `db.py`, `models.py`". O modelo perde os detalhes literais da conversa, mas mantém o que efetivamente orienta decisões futuras — que é o único motivo pelo qual aquele histórico estava no contexto.

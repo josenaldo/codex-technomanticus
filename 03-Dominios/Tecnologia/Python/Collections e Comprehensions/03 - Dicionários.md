@@ -377,8 +377,8 @@ A regra geral: **tipos mutáveis não são hasháveis** (`list`, `dict`, `set` p
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     H["Requisito: chave precisa ser hashável"] --> IM["Tipos imutáveis"]
     H --> MU["Tipos mutáveis"]
@@ -391,13 +391,13 @@ flowchart TB
 
     class H neutro
     class IM neutro
-    class MU falha
+    class MU marca
     class STR destaque
     class TUP destaque
     class FS destaque
-    class LST falha
-    class DCT falha
-    class ST falha
+    class LST marca
+    class DCT marca
+    class ST marca
 ```
 
 Segundo o [glossário oficial](https://docs.python.org/3/glossary.html#term-hashable), "an object is hashable if it has a hash value which never changes during its lifetime... hashability makes an object usable as a dictionary key and a set member, because these data structures use the hash value internally." A mesma nota vale para chaves de `dict` e para membros de `set` — os dois compartilham a exigência porque ambos são implementados com a mesma estrutura interna de tabela hash. `set` é assunto da [[04 - Sets|próxima nota]] deste galho.

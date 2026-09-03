@@ -36,9 +36,9 @@ Antes de entrar em cada um, vale visualizar o fluxo completo. Uma request passa 
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Browser["🌐 Browser\n(usuário navega)"]
     RC["Router Cache\n(client-side, in-memory)\nLayouts sempre / Pages opt-in"]
     FRC["Full Route Cache\n(servidor, disco)\nHTML + RSC payload estático"]
@@ -61,7 +61,7 @@ graph TD
     class FRC neutro
     class DC neutro
     class RM neutro
-    class DB falha
+    class DB marca
 ```
 
 Cada camada tem escopo, duração e regras de invalidação diferentes. Confundi-las é o erro número 1 ao debugar comportamento inesperado.

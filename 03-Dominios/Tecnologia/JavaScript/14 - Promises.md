@@ -242,9 +242,9 @@ Quando você chama `.then(fn)`:
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Promise P1\n(fulfilled)"] -->|"then(fn)"| B["fn() executa\ncomo microtask"]
     B -->|"retorna valor"| C["P2 fulfilled\ncom valor"]
     B -->|"retorna Promise"| D["P2 adota estado\nda Promise retornada"]
@@ -253,7 +253,7 @@ flowchart LR
     class A neutro
     class C neutro
     class D destaque
-    class E falha
+    class E marca
 ```
 
 Isso explica o flattening automático — se você retorna um `fetch(url)` dentro de `.then`, a próxima `.then` na cadeia recebe a resposta HTTP, não o objeto Promise.

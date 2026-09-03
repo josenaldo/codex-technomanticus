@@ -268,8 +268,8 @@ poetry publish --repository empresa-privado
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["poetry add fastapi"] --> B["pyproject.toml atualizado<br/>+ poetry.lock atualizado"]
     B --> C["poetry install<br/>(lê poetry.lock)"]
     C --> D[".venv populado<br/>com versões travadas"]
@@ -278,7 +278,7 @@ flowchart LR
     F --> G["poetry publish<br/>envia ao PyPI"]
 
     class A neutro
-    class G ok
+    class G marca
 ```
 
 Cada seta é reversível ou reexecutável sem efeito colateral perigoso — exceto a última. `poetry add` pode ser desfeito com `poetry remove`; `poetry lock` pode ser regenerado; `poetry install` pode ser rodado quantas vezes for preciso. `poetry publish`, como já visto, não.

@@ -29,9 +29,9 @@ Vale nomear de saída a arquitetura da resposta, porque o erro mais comum de que
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     C["Conexão TCP chega<br/>(IP:porta de destino)"] --> S1["Etapa 1 — listen<br/>Qual socket escuta este IP:porta?"]
     S1 --> G["Grupo de server blocks<br/>que compartilham este socket"]
     G --> TLS{"É HTTPS?"}
@@ -43,7 +43,7 @@ graph TB
     class S1 neutro
     class S2 neutro
     class SNI destaque
-    class R ok
+    class R marca
 ```
 
 Repare que o TLS não é um passo extra depois da etapa 2 — ele se intromete **entre** as duas, e roda com informação mais pobre do que a etapa 2 vai ter disponível segundos depois. É essa intromissão, mais do que qualquer detalhe de sintaxe, que explica por que "certificado errado" é uma categoria de bug diferente de "fui parar no `server` errado". A seção sobre TLS e SNI, mais adiante nesta nota, desenvolve essa consequência com profundidade; por ora, o que importa reter é que ela existe e que acontece antes da etapa 2, nunca depois.
@@ -115,7 +115,8 @@ O Nginx para na primeira categoria que produzir um match: se existe um `server_n
 
 ```mermaid
 graph TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     H["Host da request"] --> E{"Bate com um<br/>server_name exato?"}
     E -->|"sim"| M1["Usa este server block"]
@@ -127,10 +128,10 @@ graph TD
     RE -->|"sim"| M4["Usa a PRIMEIRA regex<br/>que bateu, na ordem do arquivo"]
     RE -->|"não"| DEF["Usa o default_server<br/>deste socket"]
 
-    class M1 ok
-    class M2 ok
-    class M3 ok
-    class M4 ok
+    class M1 neutro
+    class M2 marca
+    class M3 marca
+    class M4 marca
     class DEF destaque
 ```
 

@@ -29,7 +29,7 @@ Antes de entrar no caso, vale ver o mapa inteiro de uma vez. As três fases do g
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     START[Modo: due diligence, heranca ou resgate] --> I1
@@ -55,7 +55,7 @@ graph TD
     I3 --> AD1
     AD4 --> M1
 
-    class I1 falha
+    class I1 marca
     class M1 destaque
     class M5 neutro
 ```
@@ -70,15 +70,15 @@ A [[03 - A lente do consultor|nota 03]] avisa: due diligence, herança e resgate
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     DD[Due diligence] -->|negocio fechado| HE[Heranca]
     HE -->|incidente em producao| RE[Resgate]
     RE -->|paciente estabilizado| HE
     class DD destaque
     class HE neutro
-    class RE falha
+    class RE marca
 ```
 
 Guarde esse diagrama — os dois cenários a seguir são exatamente essa sequência acontecendo, na mesma plataforma de logística que abriu as notas 17 e 18.

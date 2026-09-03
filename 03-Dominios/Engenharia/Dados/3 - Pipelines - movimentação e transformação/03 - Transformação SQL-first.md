@@ -89,7 +89,7 @@ O padrão que resolve isso é organizar os modelos em **camadas**, cada uma com 
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Raw["Dado bruto (ELT)"]
@@ -128,7 +128,7 @@ graph LR
     M2 --> BI
     M3 --> BI
 
-    class Raw falha
+    class Raw marca
     class S1 destaque
     class S2 destaque
     class S3 destaque

@@ -61,9 +61,9 @@ O diagrama abaixo é a linha divisória que vale a pena gravar: tudo que fica à
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph LIB["Biblioteca headless entrega"]
         direction TB
         A["Navegação por teclado<br/>(setas, Home/End, typeahead)"]
@@ -88,7 +88,7 @@ flowchart LR
     class D neutro
     class E destaque
     class F destaque
-    class G falha
+    class G marca
     class H destaque
 ```
 

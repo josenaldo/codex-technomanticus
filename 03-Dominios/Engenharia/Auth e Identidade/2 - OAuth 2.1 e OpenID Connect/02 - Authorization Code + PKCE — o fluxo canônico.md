@@ -36,12 +36,13 @@ A pergunta que o design do OAuth moderno responde é: **como delegar acesso sem 
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Implicit flow<br/>(morto no 2.1)"] -->|"token no fragment<br/>da URL"| B["Histórico do browser<br/>Logs / Referer<br/>Scripts de 3ºs"]
     B -->|"vazamento"| C["Token roubado<br/>sem precisar<br/>de segredo algum"]
 
-    class A falha
-    class C falha
+    class A neutro
+    class C marca
 ```
 
 Em uma frase: **o token nunca deveria tocar o navegador — só um código descartável deveria, e mesmo esse código precisa de proteção extra.**
@@ -200,7 +201,7 @@ Já vimos por que o implicit flow (`response_type=token`) expõe o token ao fron
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Implicit["Implicit flow — morto no OAuth 2.1"]
         I1["Front channel único"] --> I2["Token no fragment da URL"]
@@ -213,7 +214,7 @@ graph TD
         C3 --> C4["Refresh token rotation possível"]
     end
 
-    class Implicit falha
+    class Implicit marca
     class Code neutro
 ```
 

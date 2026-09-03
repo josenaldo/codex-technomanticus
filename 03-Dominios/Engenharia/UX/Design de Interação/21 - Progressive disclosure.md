@@ -27,12 +27,12 @@ O racional não é estético, é cognitivo, e vem direto da **Lei de Hick** (já
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Tela com tudo visível<br/>(40 campos)"] -->|"tempo de decisão ∝ log(N)<br/>Lei de Hick"| B["Todo usuário paga<br/>o custo dos 37 irrelevantes"]
     C["Tela com disclosure<br/>(3 campos + 'avançado')"] -->|"maioria decide rápido"| D["90% dos usuários<br/>nunca pagam esse custo"]
     C -->|"clique explícito"| E["10% que precisam<br/>acessam os 37 restantes"]
-    class B falha
+    class B marca
     class D neutro
     class E neutro
 ```

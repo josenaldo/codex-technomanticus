@@ -70,9 +70,9 @@ Ela não passou no primeiro processo. Passou no terceiro, com uma resposta que l
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     P["Pergunta literal:<br/>'o que você fez nesse período?'"] --> R1["1. Definir o quadro<br/>em uma frase"]
     R1 --> R2["2. Nomear a pergunta real:<br/>'você é confiável agora?'"]
     R2 --> R3["3. A restrição forjou<br/>a disciplina operacional"]
@@ -88,7 +88,7 @@ graph TD
     class R3 neutro
     class R4 neutro
     class R5 destaque
-    class E1 falha
+    class E1 marca
     class E2 destaque
     class E3 destaque
 ```

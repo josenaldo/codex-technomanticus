@@ -35,9 +35,7 @@ E aí vêm os **dois muros**. O primeiro é o muro do **incomputável**: existem
 ```mermaid
 flowchart TD
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["Linguagens REGULARES<br/>(sem memória)<br/>autômato finito · regex"] --> B["Linguagens LIVRES DE CONTEXTO<br/>(memória = pilha)<br/>autômato de pilha · parser"]
     B --> C["RECONHECÍVEL POR TURING<br/>(memória = fita infinita)<br/>máquina de Turing · qualquer linguagem"]
@@ -46,9 +44,9 @@ flowchart TD
     D --> F["MURO 2: CARO<br/>P, NP, NP-difícil<br/>resolve, mas tempo proibitivo"]
 
     class A neutro
-    class B ok
+    class B marca
     class C destaque
-    class E falha
+    class E marca
     class F marca
 ```
 
@@ -132,9 +130,7 @@ Antes de seguir, o resumo em forma de mapa. Imprima na cabeça:
 ```mermaid
 flowchart TD
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Start{"Que tipo de problema é esse?"}
     Start --> Q1{"É casamento de padrão<br/>PLANO?<br/>(e-mail, CEP, token)"}
@@ -148,9 +144,9 @@ flowchart TD
     Q4 -->|Não| R5["talvez tratável<br/>→ procure o algoritmo eficiente"]
 
     class R1 neutro
-    class R2 ok
+    class R2 marca
     class R3 marca
-    class R4 falha
+    class R4 marca
     class R5 destaque
 ```
 

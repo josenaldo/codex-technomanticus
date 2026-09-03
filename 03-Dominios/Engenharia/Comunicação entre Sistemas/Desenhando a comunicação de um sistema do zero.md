@@ -214,7 +214,7 @@ Juntando as nove decisões anteriores numa única imagem — cada seta rotulada 
 
 ```mermaid
 graph TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Clientes["Clientes"]
@@ -266,7 +266,7 @@ graph TB
     FILA --> FIS
     STREAM --> AN
 
-    class PAG falha
+    class PAG marca
     class OUT destaque
     class FILA destaque
     class WH destaque

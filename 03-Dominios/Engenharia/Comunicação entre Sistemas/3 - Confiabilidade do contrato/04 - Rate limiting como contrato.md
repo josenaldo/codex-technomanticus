@@ -163,8 +163,8 @@ A resposta correta não é "parar de tentar" nem "tentar de novo imediatamente" 
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Recebe 429"] --> B{"Response tem<br/>Retry-After?"}
     B -->|"Sim"| C["Espera pelo menos<br/>o valor de Retry-After"]
@@ -179,7 +179,7 @@ flowchart TD
 
     class C neutro
     class D neutro
-    class H falha
+    class H marca
     class A destaque
 ```
 

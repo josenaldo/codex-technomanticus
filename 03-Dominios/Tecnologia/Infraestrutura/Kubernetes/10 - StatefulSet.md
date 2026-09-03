@@ -92,8 +92,8 @@ O mecanismo que torna essa associação estável através de recriações é o c
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph Antes["Antes: banco-1 rodando no node-a"]
         Pod1a["Pod banco-1"] --> PVC1["PVC data-banco-1"] --> PV1["PV real<br/>(disco com dados)"]
     end
@@ -106,8 +106,8 @@ graph TB
 
     class PVC1 neutro
     class PVC1b neutro
-    class PV1 ok
-    class PV1b ok
+    class PV1 marca
+    class PV1b marca
 ```
 
 Repare no que essa garantia resolve exatamente, sem prometer nada além disso: ela amarra um PVC a um **ordinal**, não a uma **máquina física**. Se o backend de armazenamento em uso for restrito a uma zona (o mesmo tipo de restrição de topologia que a nota anterior deste galho já descreveu para discos de bloco comuns), o Pod recriado só pode nascer num node daquela mesma zona — a mesma dinâmica de `volumeBindingMode` e afinidade de zona já se aplica aqui, sem nenhuma exceção especial só porque o PVC agora vem de um StatefulSet.
@@ -358,7 +358,6 @@ spec:
 graph TB
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     HS["Service headless: banco<br/>clusterIP: None"]
 
     subgraph SS["StatefulSet: banco (OrderedReady)"]
@@ -380,9 +379,9 @@ graph TB
     class PVC0 neutro
     class PVC1 neutro
     class PVC2 neutro
-    class PV0 ok
-    class PV1 ok
-    class PV2 ok
+    class PV0 marca
+    class PV1 marca
+    class PV2 marca
 ```
 
 Repare que cada réplica carrega três identidades amarradas simultaneamente — o nome ordinal do Pod, o endereço DNS individual via headless Service, e o PVC próprio — e é a soma das três, não qualquer uma isolada, que produz a identidade estável completa que motivou a existência deste objeto. Um StatefulSet que só tivesse a ordem, sem o `volumeClaimTemplates`, ainda deixaria réplicas competindo por um disco compartilhado; um que só tivesse os PVCs individuais, sem o Service headless, ainda deixaria os membros do cluster sem um jeito confiável de se encontrarem uns aos outros pelo nome.

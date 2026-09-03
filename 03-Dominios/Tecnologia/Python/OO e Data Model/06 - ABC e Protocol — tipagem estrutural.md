@@ -155,9 +155,9 @@ Segundo a [documentação oficial](https://docs.python.org/3/library/abc.html), 
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Nominal["Tipagem nominal — abc.ABC"]
         direction TB
         A1["class Desenhavel(ABC):\n    @abstractmethod\n    def draw(self): ..."]
@@ -180,8 +180,8 @@ flowchart TB
 
     class Nominal neutro
     class Estrutural destaque
-    class A5 falha
-    class B6 falha
+    class A5 marca
+    class B6 marca
     class A6 neutro
     class B5 destaque
 ```

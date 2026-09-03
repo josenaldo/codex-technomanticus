@@ -220,7 +220,7 @@ Com o `Dockerfile` e o `.dockerignore` prontos, falta o mecanismo que garante qu
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["push / PR"] --> B["uv sync --frozen<br/>(Galho 16)"]
     B --> C["ruff check<br/>(Galho 16)"]
@@ -229,7 +229,7 @@ flowchart LR
     E --> F["docker push<br/>pro registry"]
     D -->|"algo falhou"| G["pipeline para,<br/>imagem NUNCA é construída"]
 
-    class G falha
+    class G neutro
     class F destaque
 ```
 

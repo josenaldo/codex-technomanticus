@@ -289,15 +289,14 @@ O diagrama a seguir situa onde cada camada de conhecimento se aplica, da unidade
 
 ```mermaid
 flowchart TB
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     Img["Imagem — camadas imutáveis,<br/>endereçadas por hash<br/>(já conhecido de Docker)"] --> Cont["Container em execução —<br/>nasce da imagem, escreve numa<br/>camada efêmera própria<br/>(já conhecido de Docker)"]
     Cont --> Node["Nó — uma máquina do cluster,<br/>roda vários containers agendados<br/>nela pelo orquestrador"]
     Node --> Cluster["Cluster — conjunto de nós,<br/>observado e reconciliado<br/>continuamente por um controlador"]
 
-    class Img ok
-    class Cont ok
+    class Img marca
+    class Cont marca
     class Node neutro
     class Cluster marca
 ```

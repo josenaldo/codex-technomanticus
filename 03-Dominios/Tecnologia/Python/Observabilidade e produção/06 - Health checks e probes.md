@@ -116,7 +116,7 @@ Duas peças fazem esse endpoint funcionar corretamente. Primeiro, `SELECT 1` —
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph LIVE["liveness — /health"]
@@ -131,7 +131,7 @@ flowchart LR
     R1 -->|"falha"| ACT2["Kubernetes REMOVE<br/>do balanceador,<br/>pod continua vivo"]
     R2 -->|"falha"| ACT2
 
-    class ACT1 falha
+    class ACT1 marca
     class ACT2 destaque
     class L1 neutro
     class R1 neutro

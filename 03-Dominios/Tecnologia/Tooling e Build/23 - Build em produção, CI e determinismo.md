@@ -35,7 +35,8 @@ Para entender o que está em jogo, pense assim: um build é uma função. Ela re
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Inputs controlados"
         S["Código-fonte\n(git commit)"]
@@ -63,8 +64,8 @@ graph LR
 
     B --> A["Artefato\n(bundle/container)"]
 
-    class TS falha
-    class V falha
+    class TS neutro
+    class V marca
     class E destaque
     class NV destaque
 ```
@@ -448,8 +449,8 @@ Nem todas as ferramentas do ecossistema JS respeitam `SOURCE_DATE_EPOCH` ainda (
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Build não-hermético (típico de npm run build)"
         NB["Build inicia"] --> NPM_REG["❌ npm install acessa registry"]
         NB --> CURL_TOOL["❌ script baixa ferramenta via curl"]
@@ -464,11 +465,11 @@ graph TD
         PRE --> OUT2["Output garantidamente idêntico\n(hash verificável)"]
     end
 
-    class NPM_REG falha
-    class CURL_TOOL falha
-    class API falha
-    class HB ok
-    class OUT2 ok
+    class NPM_REG neutro
+    class CURL_TOOL marca
+    class API marca
+    class HB marca
+    class OUT2 marca
 ```
 
 ### Por que hermeticidade é importante para segurança — não só para determinismo

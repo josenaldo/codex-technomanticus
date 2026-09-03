@@ -33,17 +33,17 @@ Veja o diagrama abaixo: a distinção entre dado e código/controle é a frontei
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Entrada do usuário\n(dado não-confiável)"] --> B{{"Cruza fronteira\nde confiança?"}}
     B -- "Sim, sem validação" --> C["Dado interpretado\ncomo CÓDIGO/COMANDO"]
     B -- "Sim, com validação\n(allowlist, parametrização)" --> D["Dado permanece\ncomo DADO"]
     C --> E["Injection / XSS /\nBuffer Overflow /\nDeserialização"]
     D --> F["Comportamento\nprevisível e seguro"]
-    class C falha
-    class E falha
-    class D ok
-    class F ok
+    class C neutro
+    class E marca
+    class D marca
+    class F marca
 ```
 
 > [!info] Leitura do diagrama
@@ -103,7 +103,8 @@ XSS é injection no contexto HTML/JavaScript. O atacante injeta script que é ex
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     XSS["XSS\n(Cross-Site Scripting)"]
     XSS --> R["Refletido\n(Reflected)"]
     XSS --> A["Armazenado\n(Stored/Persistent)"]
@@ -117,8 +118,8 @@ flowchart TD
     A1 --> DEF
     D1 --> DEF2["Defesa: evitar innerHTML;\nDOMPurify; CSP strict-dynamic"]
 
-    class A falha
-    class A1 falha
+    class A neutro
+    class A1 marca
 ```
 
 > [!info] Leitura do diagrama
@@ -142,7 +143,8 @@ Em C/C++, arrays não têm verificação de limites por padrão. Se você escrev
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Stack Frame (antes do overflow)"
         A["[buffer 8 bytes]"]
         B["[saved RBP]"]
@@ -158,8 +160,8 @@ flowchart TD
     overflow["Input malicioso\n(20 bytes > 8 bytes do buffer)"] --> D
     F --> exec["CPU executa shellcode\nou ROP chain"]
 
-    class F falha
-    class exec falha
+    class F neutro
+    class exec marca
 ```
 
 > [!info] Leitura do diagrama
@@ -364,7 +366,6 @@ O OWASP Top 10 não é checklist de conformidade — é um **mapa de categorias 
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
@@ -381,7 +382,7 @@ graph LR
     T10 --> A09["A09\nSecurity Logging and Monitoring Failures"]
     T10 --> A10["A10\nSSRF\n(nova em 2021)"]
 
-    class A01 falha
+    class A01 marca
     class A02 destaque
     class A03 neutro
     class A04 marca

@@ -28,8 +28,7 @@ Imagine o cenário, sem exagero: seis meses depois da extração, alguém do tim
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Risco["Sem coordenação — seis meses depois da extração"]
         direction TB
@@ -47,8 +46,8 @@ flowchart TB
         N2 -.-> OK
     end
 
-    class Atrito falha
-    class OK ok
+    class Atrito marca
+    class OK marca
     class T2 neutro
     class N2 neutro
 ```
@@ -302,8 +301,7 @@ Não é o caso aqui, e a razão é a mesma que motivou a extração inteira no G
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph WS["Opção rejeitada — workspace uv (monorepo)"]
         direction TB
@@ -324,8 +322,8 @@ flowchart TB
         RN -.-> Livre
     end
 
-    class Bloqueio falha
-    class Livre ok
+    class Bloqueio marca
+    class Livre marca
     class RT neutro
     class RN neutro
 ```

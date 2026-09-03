@@ -32,17 +32,16 @@ O erro mais comum é aplicar **nível zero** (vibe) onde deveria ser pelo menos 
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["⚪ Vibe<br/>(sem spec)"] --> B["📄 Spec-first<br/>static"]
     B --> C["📐 Spec-anchored<br/>living"]
     C --> D["🏛️ Spec-as-source<br/>código derivado"]
 
-    class A falha
+    class A marca
     class B destaque
-    class C ok
+    class C marca
     class D neutro
 ```
 

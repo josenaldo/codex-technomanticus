@@ -32,8 +32,8 @@ A segunda fase, que só roda sobre os nodes que sobreviveram à primeira, é a *
 
 ```mermaid
 graph TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     P["Pod novo<br/>spec.nodeName vazio"] --> F["Fase 1 — Filtragem<br/>elimina nodes inviáveis"]
     F --> F1["recursos insuficientes?"]
     F --> F2["taint não tolerado?"]
@@ -49,8 +49,8 @@ graph TB
     W --> B["Bind — escreve spec.nodeName<br/>e cria o objeto Binding"]
     B --> K["kubelet do node escolhido<br/>observa via watch e materializa o Pod"]
 
-    class PEND falha
-    class B ok
+    class PEND neutro
+    class B marca
 ```
 
 O ato final desse ciclo é o que dá nome a esta seção inteira, e vale nomeá-lo com precisão porque é aqui que a lente deste galho se aplica sem exceção: o scheduler não move o Pod para lugar nenhum — ele **escreve**. Ele cria um objeto `Binding`, que o api-server traduz numa atualização de `spec.nodeName` no Pod, e é só isso. Não existe transporte, não existe cópia, não existe nenhum processo que "leve" o Pod até o node escolhido — existe um campo de texto, antes vazio, agora preenchido com o nome de um node. O agendamento é uma **atribuição declarada**, não uma execução. A execução de fato — puxar a imagem, criar o container, montar o volume — é obra do `kubelet` daquele node, que está fazendo, ele mesmo, exatamente o mesmo tipo de laço: observar via watch se existe algum Pod atribuído a ele que ele ainda não colocou para rodar, e agir sobre a diferença que encontrar. O scheduler nunca fala com o `kubelet` diretamente, e o `kubelet` nunca pede permissão ao scheduler para agir — os dois se comunicam exclusivamente através do mesmo api-server e do mesmo etcd que sustentam todo o resto deste galho, cada um lendo e escrevendo o mesmo objeto Pod, de ângulos diferentes.
@@ -234,7 +234,7 @@ O cluster aplica alguns taints automaticamente, sem intervenção manual, como p
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Afinidade — o Pod escolhe"
         A1["Pod declara<br/>nodeAffinity / podAffinity"] --> A2["Atrai o Pod<br/>para certos nodes"]
     end
@@ -245,7 +245,7 @@ graph LR
         T3 -->|"PreferNoSchedule"| T5["Evita, mas agenda<br/>se não houver alternativa"]
         T3 -->|"NoExecute"| T6["Bloqueia + despeja<br/>Pods já rodando"]
     end
-    class T6 falha
+    class T6 neutro
 ```
 
 Vale reconectar este mecanismo com a nota anterior deste galho: o DaemonSet `coletor-de-log` que precisou de uma `toleration` explícita para `node-role.kubernetes.io/control-plane` — mostrado na nota [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/11 - Job, CronJob e DaemonSet|Job, CronJob e DaemonSet]] — não era um detalhe acidental daquele exemplo, era exatamente este mecanismo em ação: os nodes de control plane carregam, por padrão, um taint `NoSchedule` que repele qualquer Pod sem a toleration correspondente, e um DaemonSet que promete "todo nó, sem exceção" precisa furar esse taint explicitamente, ou a promessa quebra silenciosamente.

@@ -241,8 +241,8 @@ Faz o compilador emitir `"use strict"` no topo de cada arquivo JavaScript gerado
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph STRICT["strict: true (inclui)"]
         S1[noImplicitAny]
         S2[strictNullChecks]
@@ -268,7 +268,7 @@ flowchart TD
     STRICT --> EXTRA
 
     class STRICT neutro
-    class EXTRA falha
+    class EXTRA marca
 ```
 
 ### `noUncheckedIndexedAccess` — o `| undefined` que faltava
@@ -468,14 +468,14 @@ A armadilha comum: usar `module: "ESNext"` com `moduleResolution: "Node10"` (pad
 
 ```mermaid
 graph LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     C1["Bundler (Vite, esbuild)\nmodule: ESNext\nmoduleResolution: Bundler"]
     C2["Node ESM\nmodule: NodeNext\nmoduleResolution: NodeNext"]
     C3["Node CJS legado\nmodule: CommonJS\nmoduleResolution: Node10"]
 
-    class C1 ok
+    class C1 marca
     class C2 neutro
     class C3 destaque
 ```

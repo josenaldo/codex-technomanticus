@@ -110,7 +110,7 @@ O grafo resultante fica assim:
 
 ```mermaid
 graph TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     MAIN["main.js\n(entry point)"]
     RENDER["ui/render.js"]
@@ -123,7 +123,7 @@ graph TD
     RENDER -->|"import formatName"| FORMAT
     CLIENT -->|"import BASE_URL"| CONFIG
 
-    class MAIN ok
+    class MAIN marca
     class FORMAT neutro
     class CONFIG neutro
 ```
@@ -185,7 +185,7 @@ Quando o bundler encontra `import { render } from "./ui/render.js"`, a resoluç�
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     BARE["import X from 'react'"]
     CHECK_CORE{"É módulo\nbuilt-in do Node?\n(path, fs, url...)"}
@@ -207,7 +207,7 @@ flowchart TD
     MAIN -->|"Sim"| MAIN_RESOLVE
     MAIN -->|"Não"| INDEX
 
-    class RESOLVED ok
+    class RESOLVED marca
     class EXP_COND neutro
 ```
 
@@ -277,12 +277,13 @@ export const b = `B usa: ${a}`;
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["a.js"] -->|"import b"| B["b.js"]
     B -->|"import a"| A
 
-    class A falha
-    class B falha
+    class A neutro
+    class B marca
 ```
 
 > [!note] Leitura do diagrama
@@ -507,8 +508,8 @@ document.getElementById("open-editor").addEventListener("click", async () => {
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     ENTRY["main.js\n(entry)"]
     HOME["home.js\n(initial chunk)"]
     EDITOR["editor.js\n(non-initial chunk)\ncarregado sob demanda"]
@@ -517,7 +518,7 @@ graph LR
     ENTRY -.->|"import() dinâmico\n(lazy)"| EDITOR
 
     class EDITOR destaque
-    class HOME ok
+    class HOME neutro
 ```
 
 > [!note] Leitura do diagrama
@@ -535,7 +536,7 @@ Vamos acompanhar o exemplo do app mínimo do início desta nota e ver o que um b
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Grafo de módulos (source)"
         MAIN["main.js"]
@@ -556,7 +557,7 @@ flowchart TD
 
     MAIN -->|"bundler\npercorre o grafo"| BUNDLE
 
-    class MAIN ok
+    class MAIN marca
     class BUNDLE neutro
 ```
 
@@ -650,8 +651,8 @@ O import map é essencialmente o `package.json` do browser: um dicionário que m
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     CODE["import _ from 'lodash'\n(bare import)"]
     MAP["Import Map\n{ 'lodash': 'https://esm.sh/...' }"]
     URL["https://esm.sh/lodash@4.17.21"]
@@ -663,7 +664,7 @@ flowchart LR
     URL --> NET --> MOD
 
     class MAP destaque
-    class MOD ok
+    class MOD neutro
 ```
 
 > [!note] Leitura do diagrama
@@ -718,7 +719,7 @@ A decisão não é binária. Alguns cenários onde bundler é questionável ou d
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     START{Preciso de bundler?}
@@ -731,7 +732,7 @@ flowchart TD
 
     START -->|"Ferramentas internas\nprotótipos\nambiente controlado"| ALSO_NO["Provavelmente não.\nVite dev mode sem build\nou CDN ESM."]
 
-    class YES ok
+    class YES marca
     class NO neutro
     class MAYBE destaque
     class ALSO_NO neutro
@@ -754,8 +755,8 @@ Em **produção**, o objetivo é performance de entrega: você quer o menor núm
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph DEV["Desenvolvimento (ex: Vite dev server)"]
         direction TB
         SRC_D["src/main.ts"]
@@ -779,7 +780,7 @@ flowchart LR
     end
 
     class DEV neutro
-    class PROD ok
+    class PROD marca
 ```
 
 > [!note] Leitura do diagrama

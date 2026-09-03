@@ -316,7 +316,8 @@ Voltando ao bug de abertura — `legacy_pricing_sdk.consultar_preco()` chamado s
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph WSGI["Worker WSGI síncrono (ex: Gunicorn sync, Flask clássico)"]
         W1["Worker 1<br/>trava em legacy_sdk.consultar_preco()"] -.->|"só esta requisição afetada"| X1["req. de outro cliente,<br/>atendida por Worker 2"]
@@ -328,8 +329,8 @@ flowchart TB
         H1 -.->|"BLOQUEIA a thread inteira"| Travado["TODAS as outras conexões<br/>ficam paradas — /health, /produtos/2, etc."]
     end
 
-    class H1 falha
-    class Travado falha
+    class H1 neutro
+    class Travado marca
     class R1 destaque
 ```
 

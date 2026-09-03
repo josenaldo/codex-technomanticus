@@ -100,8 +100,8 @@ A nota [[03-Dominios/Tecnologia/Infraestrutura/Kubernetes/13 - RBAC e ServiceAcc
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     Req["Requisição HTTP<br/>(POST/PATCH/PUT)"] --> Auth["Autenticação<br/>quem é você?"]
     Auth --> Az["Autorização — RBAC<br/>o que você pode fazer?"]
@@ -111,7 +111,7 @@ graph LR
     VA --> ETCD["etcd<br/>persistência final"]
 
     class Req destaque
-    class ETCD ok
+    class ETCD neutro
     class MA marca
     class VA marca
 ```
@@ -207,7 +207,8 @@ O `kube-apiserver` é **sem estado**: cada requisição HTTP que ele recebe já 
 
 ```mermaid
 graph TB
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "kube-apiserver — sem estado, réplicas ativas"
         A1["Réplica 1<br/>(ativa)"]
@@ -228,10 +229,10 @@ graph TB
         S3 -.->|"tenta assumir<br/>se o lease expirar"| Lease
     end
 
-    class A1 ok
-    class A2 ok
-    class A3 ok
-    class S1 ok
+    class A1 neutro
+    class A2 marca
+    class A3 marca
+    class S1 marca
     class S2 destaque
     class S3 destaque
 ```

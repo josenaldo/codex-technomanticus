@@ -26,8 +26,8 @@ O erro de raciocínio aqui é sutil e comum: confundir **valor de uso** com **va
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[Componente candidato a Retire] --> B{Tem uso operacional?}
     B -->|sim| C[Valor de negocio claro:<br/>nao e candidato a Eliminate]
@@ -35,7 +35,7 @@ graph TD
     D -->|sim| E[NAO deletar:<br/>Retain so a parte exigida]
     D -->|nao, confirmado| F[Retire seguro]
     class D destaque
-    class E falha
+    class E marca
     class F neutro
 ```
 
@@ -78,13 +78,13 @@ A LGPD (Lei nº 13.709/2018) espelha exatamente essa estrutura no seu **artigo 1
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A[Titular pede exclusao<br/>LGPD art. 18 / GDPR art. 17] --> B{Existe obrigacao legal<br/>ou regulatoria de retencao<br/>para ESTE dado?}
     B -->|nao| C[Elimina o dado:<br/>direito ao esquecimento prevalece]
     B -->|sim| D[Retem apenas o necessario<br/>para a obrigacao legal;<br/>restringe uso para outros fins]
     class B destaque
-    class D falha
+    class D neutro
 ```
 
 Na prática, isso significa que apagar dados de um usuário por causa de uma solicitação LGPD **não é** um `DELETE` único no banco inteiro. É uma decisão dado-a-dado: os campos de perfil, preferências e histórico de navegação podem (e devem) sair; os registros da nota fiscal daquele mesmo usuário, sujeitos a prazo fiscal, ficam — mas com o uso restrito **exclusivamente** ao propósito da obrigação legal que os mantém vivos, não mais disponíveis para marketing, recomendação ou qualquer outro fim.

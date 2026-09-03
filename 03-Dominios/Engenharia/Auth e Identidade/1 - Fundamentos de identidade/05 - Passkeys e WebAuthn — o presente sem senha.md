@@ -77,7 +77,7 @@ E a peça que fecha o círculo contra phishing é o **origin binding**: durante 
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     U["Usuário cai na<br/>página falsa evil-banco.com"] --> S["Senha + TOTP:<br/>segredos portáveis"]
     S -->|"digitados na página falsa,<br/>repassados pelo proxy AiTM"| ATO1["Conta comprometida"]
@@ -85,7 +85,7 @@ graph TD
     U2["Mesmo usuário,<br/>mesma página falsa"] --> P["Passkey de banco.com"]
     P -->|"navegador vê origin =<br/>evil-banco.com ≠ banco.com"| Block["Authenticator recusa assinar<br/>— nada para roubar"]
 
-    class ATO1 falha
+    class ATO1 marca
     class Block neutro
 ```
 

@@ -194,8 +194,8 @@ spec:
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     START["Kubernetes decide<br/>desligar o Pod"] --> PS["preStop hook<br/>(5s)"]
     PS --> SIG["SIGTERM enviado"]
     SIG --> DRAIN["gunicorn drena<br/>(--graceful-timeout)"]
@@ -204,7 +204,7 @@ flowchart LR
     FIM -->|"não, prazo total<br/>de 60s esgotou"| KILL["kubelet manda<br/>SIGKILL forçado"]
 
     class OK destaque
-    class KILL falha
+    class KILL neutro
 ```
 
 A regra prática, direta: `preStop.sleep` + `--graceful-timeout` do gunicorn precisa ser **menor** que `terminationGracePeriodSeconds` — com margem, não no limite exato. No exemplo desta nota, `5s` de `preStop` mais `40s` de `--graceful-timeout` (um valor calibrado pelo p99 real de latência do serviço, seguindo a orientação já dada na [[03-Dominios/Tecnologia/Python/Observabilidade e produção/05 - Configuração de servidor de produção — workers, timeouts e graceful shutdown|nota 05 do Galho 17]]) soma `45s`, deixando `15s` de margem dentro do `terminationGracePeriodSeconds: 60`. Foi exatamente essa conta que faltou no incidente de abertura: `--graceful-timeout: 45` contra um `terminationGracePeriodSeconds` que ainda estava no padrão de `30` — o kubelet forçava `SIGKILL` 15 segundos antes do gunicorn ter chance de terminar de drenar sozinho, cortando exatamente as requisições mais lentas em voo naquele instante.

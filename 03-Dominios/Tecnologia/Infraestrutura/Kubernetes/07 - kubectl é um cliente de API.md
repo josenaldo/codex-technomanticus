@@ -64,8 +64,8 @@ O cluster aceita, valida e cria esse Pod exatamente como aceitaria um `kubectl a
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     K["kubectl"] -->|"HTTP"| AS["api-server"]
     Cu["curl / script"] -->|"HTTP"| AS
     CG["client-go / client-python"] -->|"HTTP"| AS
@@ -74,7 +74,7 @@ graph LR
     AS --> ETCD["etcd"]
 
     class AS marca
-    class ETCD ok
+    class ETCD neutro
 ```
 
 Vale levar essa demonstração um passo além e reproduzir, com `curl` puro, o próprio mecanismo de *watch* que a nota anterior descreveu como o jeito pelo qual controllers observam mudanças sem fazer polling. A URL é a mesma coleção de sempre, só que com um parâmetro extra, `watch=true`, e a resposta chega em *streaming*, uma linha JSON por evento, em vez de uma lista fechada de uma vez só:

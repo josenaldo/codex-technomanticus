@@ -31,9 +31,9 @@ O span não existe sozinho: ele percorre um pipeline de processamento antes de c
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     CL["Cliente HTTP\n(sem traceparent)"] -->|"dispara req"| SA
 
     subgraph SA["Serviço A — NodeSDK"]
@@ -58,7 +58,7 @@ flowchart LR
     class PB neutro
     class COL destaque
     class BE neutro
-    class CL falha
+    class CL marca
 ```
 
 O header `traceparent` é o fio condutor: Serviço A gera o trace ID, propaga via header para Serviço B, que cria um span filho usando o mesmo trace ID. No backend, os dois spans aparecem como uma única árvore. Se o `traceparent` for perdido ou malformado em qualquer hop, o trace se parte em fragmentos órfãos.

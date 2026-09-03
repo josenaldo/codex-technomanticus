@@ -102,7 +102,7 @@ Agora todo código que só precisa *ler* um usuário — um handler HTTP, por ex
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph errado["Reflexo de OO — interface grande, no pacote do produtor"]
@@ -117,7 +117,7 @@ flowchart TB
         C2["worker define:\nUserNotifier { NotifyUser }"] -.satisfeita implicitamente por.-> S1
     end
 
-    class I1 falha
+    class I1 marca
     class C1 neutro
     class C2 neutro
     class S1 destaque
@@ -242,7 +242,7 @@ u, err := s.Get(id) // "user.Store.Get" — sem redundância, o pacote já conte
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph ruim["package manager"]
         direction TB
@@ -253,7 +253,7 @@ flowchart LR
         U["user.NewStore()"] --> S["s.Get(id)\n— pacote já contextualiza"]
     end
 
-    class M falha
+    class M marca
     class U neutro
 ```
 

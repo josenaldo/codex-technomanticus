@@ -133,7 +133,7 @@ Depois que um ambiente de execução existe e processou pelo menos um evento, a 
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph COLD["Cold start — sem ambiente de execução disponível"]
@@ -150,9 +150,9 @@ flowchart TB
         W1["Invocar handler(event, context)\ndireto — init já rodou antes"]
     end
 
-    class C1 falha
-    class C2 falha
-    class C3 falha
+    class C1 marca
+    class C2 marca
+    class C3 marca
     class C4 destaque
     class W1 neutro
 ```

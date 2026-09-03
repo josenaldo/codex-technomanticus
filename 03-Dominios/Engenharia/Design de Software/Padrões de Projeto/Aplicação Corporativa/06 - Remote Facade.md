@@ -52,7 +52,7 @@ A resposta não é piorar o design do domínio. É colocar, **na fronteira**, um
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph SEM["Sem Remote Facade — chatty"]
         C1["Cliente"] -.->|"getNumero()"| O1["Pedido"]
@@ -66,9 +66,9 @@ graph LR
         RF --> P["Pedido · Item · Produto<br/>(chamadas locais, baratas)"]
     end
 
-    class O1 falha
-    class O2 falha
-    class O3 falha
+    class O1 marca
+    class O2 marca
+    class O3 marca
     class RF neutro
     class P neutro
 ```

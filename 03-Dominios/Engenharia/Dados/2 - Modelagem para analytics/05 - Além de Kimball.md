@@ -76,9 +76,9 @@ A ideia central do Data Vault é separar, em tabelas distintas, três coisas que
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     HP["Hub Produto<br/>(chave de negócio)"] --- LK["Link<br/>Pedido-Produto"]
     HD["Hub Pedido<br/>(chave de negócio)"] --- LK
     HP --- SP["Satellite Produto<br/>(nome, categoria, preço,<br/>histórico completo)"]
@@ -88,9 +88,9 @@ graph LR
     class HP neutro
     class HD neutro
     class LK destaque
-    class SP falha
-    class SD falha
-    class SL falha
+    class SP marca
+    class SD marca
+    class SL marca
 ```
 
 Repare no que essa separação compra. Quando um novo marketplace começa a mandar o catálogo de produto num formato diferente, você não precisa re-modelar `hub_produto` — a chave de negócio (o SKU) continua a mesma. Você só adiciona um novo Satellite (ou estende o existente) para os atributos que essa fonte específica traz, sem tocar no que já existe. Cada Hub, Link e Satellite pode ser carregado de forma **independente e em paralelo**, porque a chave de negócio no Hub não depende de nenhum outro objeto ter sido carregado primeiro — uma propriedade valiosa quando o volume de ingestão é alto e vem de múltiplas fontes simultâneas. E como cada Satellite guarda proveniência (de onde veio, quando chegou) junto com o histórico completo de mudança, responder "de onde veio esse dado, e o que ele dizia em qualquer ponto do passado" é uma consulta direta ao modelo, não uma reconstrução forense.
@@ -168,7 +168,7 @@ A ideia é simples de enunciar e poderosa na prática: o dado entra bruto e vai 
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     F["Fontes<br/>(OLTP, APIs, eventos,<br/>marketplaces)"] --> B["Bronze<br/>raw, append-only"]
@@ -177,7 +177,7 @@ graph LR
     G --> BI["Dashboard de BI"]
     G --> ML["Modelos de ML"]
 
-    class B falha
+    class B marca
     class S neutro
     class G destaque
 ```

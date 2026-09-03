@@ -35,8 +35,8 @@ O erro mais comum na hora de pedir orçamento é falar a língua errada. "O cód
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Divida tecnica: codigo feio, sem testes, dependencia EOL"] -->|traduzir para| B{Qual metrica de negocio ela ameaca?}
     B -->|toda mudanca demora mais| C["CUSTO: X semanas de velocidade perdidas por trimestre"]
@@ -50,7 +50,7 @@ graph TD
     G -->|sim| I[Trabalho de restauracao autorizado]
     class B destaque
     class G destaque
-    class H falha
+    class H marca
     class I neutro
 ```
 
@@ -81,9 +81,9 @@ Toda organização opera com um orçamento implícito de confiança em cada pess
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A[Early win seguro e visivel] -->|deposita| B[Capital politico / confianca]
     B -->|autoriza| C[Pedido estrutural maior]
     C -->|aprovado| D[Entrega visivel em escala]
@@ -91,7 +91,7 @@ graph LR
     C -->|negado: pedido grande demais, sem historico| E[Capital gasto sem retorno]
     class B neutro
     class C destaque
-    class E falha
+    class E marca
 ```
 
 Isso explica por que a ordem importa: o protocolo 30-60-90 não coloca o early win no dia 1 nem a proposta estrutural no dia 30 por acaso. É uma sequência de acúmulo deliberado de capital, gasto na hora certa — na reunião do CFO, o consultor da abertura desta nota não estava com as mãos vazias *apenas* de dados; ele já tinha, idealmente, dois ou três meses de entregas pequenas e seguras provando que a promessa de "seis meses sem quebrar nada" é crível vindo dele especificamente.

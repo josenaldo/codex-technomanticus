@@ -33,9 +33,9 @@ Cada uma dessas versões corrigidas corresponde a uma nota deste galho. O progra
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Lista de URLs"] --> B["Loop de disparo\n(1 task por URL)"]
     B -->|"await asyncio.sleep(0)\nentre disparos"| B
     B --> C{"SIGINT recebido?"}
@@ -57,9 +57,9 @@ flowchart TD
     class A neutro
     class D destaque
     class G neutro
-    class H falha
+    class H marca
     class J destaque
-    class M falha
+    class M marca
     class O destaque
     class P destaque
 ```

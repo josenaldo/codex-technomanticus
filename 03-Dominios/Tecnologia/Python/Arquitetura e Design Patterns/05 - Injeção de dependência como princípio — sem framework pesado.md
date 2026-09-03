@@ -192,8 +192,8 @@ Este é o ponto exato onde a fronteira entre esta nota e o Galho 10 fica visíve
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Root["Composition root — main.py"]
         DECISAO["get_uow()\ndecide: SqlAlchemyUnitOfWork"]
@@ -224,7 +224,7 @@ flowchart TB
 
     class DECISAO neutro
     class UOW_ABS neutro
-    class SQL ok
+    class SQL marca
     class FAKE destaque
 ```
 

@@ -46,8 +46,9 @@ O nome técnico para o padrão de propagação que abriu esta nota é **cascadin
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     PS["payment-service<br/>fica lento<br/>(não caiu — 8-15s por call)"] -->|"order-service espera<br/>síncrono, bloqueante"| OS["order-service<br/>threads presas esperando"]
     OS -->|"pool de threads<br/>esgota (200/200)"| OSDOWN["order-service<br/>para de responder"]
     OSDOWN -->|"cart-service espera<br/>order-service"| CS["cart-service<br/>também trava"]
@@ -55,8 +56,8 @@ graph TD
 
     class PS destaque
     class OS destaque
-    class OSDOWN falha
-    class CS falha
+    class OSDOWN neutro
+    class CS marca
 ```
 
 Em uma frase: **uma lentidão localizada, sem isolamento, vira uma indisponibilidade sistêmica** — e cada padrão desta nota existe para cortar um elo dessa corrente.
@@ -164,7 +165,7 @@ O **bulkhead** (anteparo, em referência aos compartimentos estanques do casco d
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Sem bulkhead — pool compartilhado"
@@ -176,8 +177,8 @@ graph TD
         POOLINV["Pool inventory: 50 threads"] --> INV2["inventory-service<br/>(continua respondendo normal)"]
     end
 
-    class PAY1 falha
-    class INV1 falha
+    class PAY1 marca
+    class INV1 marca
     class PAY2 destaque
     class INV2 neutro
 ```

@@ -33,9 +33,9 @@ Pensa em lock-in como um espectro, não como uma dicotomia binária. Numa ponta,
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["IaaS puro<br/>VM + K8s auto-gerenciado<br/>(EC2 + kubeadm)"] --> B["Serviços gerenciados<br/>abertos<br/>(RDS Postgres, EKS)"]
     B --> C["Serviços gerenciados<br/>proprietários com API aberta<br/>(S3, Aurora)"]
     C --> D["Serviços 100%<br/>proprietários<br/>(DynamoDB, Lambda, BigQuery)"]
@@ -43,10 +43,10 @@ flowchart LR
     A -.->|"máxima portabilidade<br/>mínima produtividade"| A
     D -.->|"mínima portabilidade<br/>máxima produtividade"| D
 
-    class A ok
-    class B ok
+    class A neutro
+    class B marca
     class C destaque
-    class D falha
+    class D marca
 ```
 
 Repara na progressão:
@@ -82,7 +82,7 @@ Se existe uma tecnologia que ganhou fama de "solução para lock-in", é Kuberne
 
 ```mermaid
 flowchart TB
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph App["Sua aplicação em containers"]
         M["Deployment, Service, ConfigMap<br/>(manifests YAML padrão)"]
     end
@@ -97,7 +97,7 @@ flowchart TB
     GKE -.->|"mas o LB é do GCP LB,<br/>o storage é Persistent Disk"| GCPDeps["Dependências GCP"]
     DOKS -.->|"mas o LB é do DO LB,<br/>o storage é DO Volumes"| DODeps["Dependências DO"]
 
-    class M ok
+    class M neutro
 ```
 
 Repara no detalhe do diagrama: a caixa verde (seus manifests) é portável. As caixas pontilhadas (dependências) não são. Um Deployment que expõe um Service do tipo `LoadBalancer` dispara a criação de um Application Load Balancer na AWS, um Azure Load Balancer no Azure, um Google Cloud Load Balancer no GCP, ou o Load Balancer da DigitalOcean — quatro produtos diferentes, com quirks, limites e modelos de precificação diferentes, escondidos atrás da mesma primitiva Kubernetes. O mesmo vale para `PersistentVolumeClaim`: o volume que ele provisiona por trás é EBS, Azure Disk, GCP Persistent Disk ou um DO Volume — cada um com seu próprio ciclo de vida e limites de IOPS.
@@ -141,16 +141,16 @@ Uma forma de testar, na prática, quanto de portabilidade seu uso de Kubernetes 
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Start["Novo componente de arquitetura"] --> Q1{"Qual a chance real<br/>de trocar de nuvem<br/>nos próximos anos?"}
     Q1 -->|"Baixa"| Q2{"O serviço proprietário<br/>economiza semanas<br/>de engenharia?"}
     Q1 -->|"Alta ou contratual<br/>(compliance)"| Portable["Escolha a versão portável<br/>(Postgres gerenciado, K8s, API S3)"]
     Q2 -->|"Sim, muito"| Proprietary["Abrace o proprietário<br/>(DynamoDB, Lambda, BigQuery)"]
     Q2 -->|"Não, é equivalente"| Portable
 
-    class Proprietary falha
-    class Portable ok
+    class Proprietary neutro
+    class Portable marca
 ```
 
 O teste é revelador na prática: times que rodam GitOps limpo, com manifests que não referenciam nada específico do provedor (sem `annotations` de LoadBalancer proprietárias hardcoded, sem `StorageClass` amarrada a um único CSI driver), descobrem que a portabilidade de compute é real — o cluster de destino sobe, os manifests aplicam, a aplicação roda. Times que acumularam anos de customizações específicas de provedor dentro dos manifests (o que é extremamente comum, porque é o caminho de menor resistência no dia a dia) descobrem, geralmente tarde demais, que a portabilidade que achavam ter era teórica.

@@ -50,8 +50,8 @@ Agora, hipoteticamente, se o mesmo volume de tráfego de `tarefas-service` — c
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph EIXO["Custo em função da taxa de utilização"]
         direction LR
         BAIXA["Utilização baixa<br/>(rajadas, vales longos)<br/>notificacoes-service"]
@@ -66,8 +66,8 @@ flowchart LR
 
     class LAMBDA neutro
     class K8S neutro
-    class K8S2 falha
-    class LAMBDA2 falha
+    class K8S2 marca
+    class LAMBDA2 marca
 ```
 
 > [!tip] A pergunta certa não é "qual é mais barato", é "em que ponto da curva de utilização meu serviço está"

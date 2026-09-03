@@ -106,9 +106,9 @@ Repare em três detalhes de desenho que não são acidentais:
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["BeginTx(ctx, nil)"] --> B["defer: rollback se err != nil no retorno"]
     B --> C["ExecContext #1"]
     C -->|erro| E["return err"]
@@ -122,7 +122,7 @@ flowchart TD
 
     class A neutro
     class F destaque
-    class H falha
+    class H marca
 ```
 
 > [!info] `Tx.Commit`/`Tx.Rollback` liberam a conexão de volta ao pool

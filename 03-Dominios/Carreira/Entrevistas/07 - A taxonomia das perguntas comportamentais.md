@@ -49,12 +49,12 @@ O problema é de granularidade. **Enunciados são infinitos; famílias são sete
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q["'Conte sobre uma discordância técnica'"] --> A["❌ <b>Resposta fraca</b><br/>'eu estava certo, ele insistia<br/>no jeito antigo, no fim fizemos<br/>do meu jeito e deu certo'"]
     Q --> B["✅ <b>Resposta forte</b><br/>o argumento dele, enunciado com justiça<br/>+ o que você concedeu<br/>+ como decidiram<br/>+ o que aconteceu depois"]
 
-    class A falha
+    class A marca
     class B neutro
 ```
 

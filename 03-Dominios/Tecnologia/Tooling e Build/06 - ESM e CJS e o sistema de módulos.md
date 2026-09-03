@@ -210,7 +210,7 @@ keys.forEach(k => { exports[k] = () => k; });
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     CJS["módulo CJS\nmodule.exports = { ... }"]
     LEXER["cjs-module-lexer\n(análise estática do texto)"]
@@ -221,7 +221,7 @@ flowchart LR
     LEXER -->|"exports.foo = ...\nmodule.exports = { foo }"| NAMED
     LEXER -->|"exports computados\ndinâmicos / Proxy"| DEFAULT_ONLY
 
-    class NAMED ok
+    class NAMED neutro
     class DEFAULT_ONLY destaque
 ```
 

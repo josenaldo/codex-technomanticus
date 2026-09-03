@@ -152,9 +152,9 @@ Na prática: a geração 0 é varrida com frequência (a cada ~700 alocações l
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Alloc["Objeto rastreável alocado<br/>(list, dict, instância, etc.)"] --> Gen0["Geração 0"]
     Gen0 -->|"threshold0 excedido"| Coleta0["Coleta geração 0"]
     Coleta0 -->|"sobreviveu"| Gen1["Geração 1"]
@@ -168,8 +168,8 @@ flowchart TD
     class Alloc neutro
     class Gen0 neutro
     class Gen1 destaque
-    class Gen2 falha
-    class Dealloc falha
+    class Gen2 marca
+    class Dealloc marca
 ```
 
 > [!question]- E se meu objeto nunca faz parte de um ciclo — ele "sobe" de geração à toa?

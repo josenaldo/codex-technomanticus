@@ -235,7 +235,8 @@ Se o hash bateu com uma execução anterior (local em `.turbo/` ou remoto), ele 
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     CHG["git push\n(mudou packages/utils)"]
     HASH["Turborepo\ncalcula hashes"]
@@ -252,8 +253,8 @@ flowchart LR
     HASH -->|"não afetado"| COMP
     HASH -->|"não afetado"| DOCS
 
-    class COMP ok
-    class DOCS ok
+    class COMP neutro
+    class DOCS marca
     class UTILS destaque
     class UI destaque
     class APP destaque
@@ -621,8 +622,8 @@ Sem boundaries, a promessa do monorepo se degrada: eventualmente, todo pacote im
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     START["Escolhendo o orquestrador"]
 
     START --> Q1["Time pequeno, JS/TS puro,\nquer adoção rápida?"]
@@ -638,7 +639,7 @@ graph TD
     Q3 -->|"Não"| TURBO
 
     class TURBO neutro
-    class NX ok
+    class NX marca
 ```
 
 | Aspecto | Turborepo 2.10 | Nx 23 |

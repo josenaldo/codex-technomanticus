@@ -91,7 +91,7 @@ A composição que o próprio slide de Perez cita como exemplo de arquitetura de
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph T["A traição — nota 05"]
         direction TB
@@ -114,10 +114,10 @@ flowchart LR
     C -.->|contida por| ARB
     D -.->|contida por| AUD
 
-    class G falha
-    class B falha
-    class C falha
-    class D falha
+    class G marca
+    class B marca
+    class C marca
+    class D marca
     class PAIR neutro
     class HIER neutro
     class ARB neutro

@@ -86,7 +86,6 @@ A regra é simples: **estado deve morar o mais perto possível de quem o usa**.
 ```mermaid
 graph TD
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["App (AuthContext, ThemeContext)"] --> B["FeatureDashboard"]
     A --> C["FeatureProfile"]
@@ -100,8 +99,8 @@ graph TD
     class D neutro
     class E neutro
     class F neutro
-    class G ok
-    class H ok
+    class G marca
+    class H marca
     class B marca
     class C marca
 ```
@@ -435,7 +434,7 @@ Um erro comum é tratar Suspense e Error Boundaries como detalhes de implementa�
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["<ErrorBoundary fallback=AppCrash>"] --> B["<Suspense fallback=AppSkeleton>"]
@@ -446,7 +445,7 @@ graph TD
     E --> G["<UserList>"]
     B --> H["<Sidebar>"]
 
-    class A falha
+    class A marca
     class D destaque
     class B neutro
     class E neutro

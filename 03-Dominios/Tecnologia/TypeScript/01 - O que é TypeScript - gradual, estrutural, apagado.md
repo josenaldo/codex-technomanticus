@@ -48,9 +48,9 @@ Antes de ir às três propriedades, precisa fixar o modelo arquitetural. TypeScr
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph TS["TypeScript (você escreve)"]
         CODE["código .ts com anotações de tipo"]
     end
@@ -70,7 +70,7 @@ flowchart TD
 
     class TS neutro
     class TSC destaque
-    class JS ok
+    class JS marca
 ```
 
 > [!note] Leitura do diagrama
@@ -145,15 +145,15 @@ O `tsc` aceitou `Coordenada` onde esperava `Ponto` porque `Coordenada` tem `x: n
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph NOM["Tipagem Nominal (Java/C#)"]
         direction TB
         N1["class Coordenada\n{ x, y, z }"]
         N2["interface Ponto\n{ x, y }"]
         N1 -.->|"sem 'implements':\nINCOMPATÍVEL"| N2
         N1 -.->|"mesmo com x e y\niguais: RECUSADO"| N2
-        class N2 falha
+        class N2 neutro
     end
 
     subgraph EST["Tipagem Estrutural (TypeScript)"]
@@ -162,7 +162,7 @@ flowchart TB
         S2["type Ponto\n{ x, y }"]
         S1 ==>|"tem x e y:\nCOMPATÍVEL"| S2
         S1 ==>|"nome é irrelevante"| S2
-        class S2 ok
+        class S2 marca
     end
 ```
 
@@ -217,8 +217,8 @@ renderizar(c); // OK — structural typing normal
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph LIT["Objeto literal direto"]
         L1["renderizar(&#123; x:1, y:2, z:3 &#125;)"]
         L2["Excess property check\nativa do literal"]
@@ -232,7 +232,7 @@ flowchart LR
         V2["Structural check\nnormal"]
         V3["OK: Coordenada\ntem x e y"]
         V1 --> V2 --> V3
-        class V3 ok
+        class V3 neutro
     end
 ```
 

@@ -28,8 +28,8 @@ Quase sempre, uma de duas coisas: ou o budget **só avisava** (nunca quebrou o b
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A[PR aberto] --> B["Budget de QUANTIDADE<br/>size-limit / bundlesize"]
     A --> C["Budget de MÉTRICA<br/>Lighthouse CI"]
     B -->|bundle > limite| D[❌ falha]
@@ -38,7 +38,7 @@ graph TB
     C -->|ok| E
     class B neutro
     class C neutro
-    class D falha
+    class D marca
 ```
 
 ### Budget de quantidade: o early warning barato

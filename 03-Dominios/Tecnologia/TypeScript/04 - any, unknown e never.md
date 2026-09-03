@@ -29,8 +29,8 @@ No TypeScript, esse reticulado tem dois extremos bem definidos:
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     UNK["<b>unknown</b><br/>topo — aceita qualquer valor"]
     OBJ["object"]
     STR["string"]
@@ -56,7 +56,7 @@ graph TD
     UNDEF --> NEV
 
     class UNK neutro
-    class NEV falha
+    class NEV marca
 ```
 
 > [!note] Leitura do diagrama
@@ -105,14 +105,15 @@ No trecho acima, `port` e `doubled` viraram `any` silenciosamente. Se `port` vie
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     F["parseConfig(): any"] --> A["config: any"]
     A --> B["port: any"]
     A --> C["host: any"]
     B --> D["doubled: any"]
     D --> E["É number? string? NaN?<br/>TS não sabe — você também não."]
-    class F falha
-    class E falha
+    class F neutro
+    class E marca
 ```
 
 ### Quando `any` é legítimo
@@ -266,8 +267,8 @@ Esse padrão — atribuir o valor restante a `never` no `default` — é chamado
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     F["Forma: circulo | quadrado | triangulo"]
     C["case 'circulo'<br/>Forma restante: quadrado | triangulo"]
     Q["case 'quadrado'<br/>Forma restante: triangulo"]
@@ -277,7 +278,7 @@ flowchart TD
     F --> C --> Q --> T --> D
 
     class D neutro
-    class T falha
+    class T marca
 ```
 
 > [!note] Leitura do diagrama
@@ -319,7 +320,6 @@ vals[0] = "surpresa";         // runtime: corrompe o array
 
 ```mermaid
 graph TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     UNK["unknown (topo)"]
@@ -341,7 +341,7 @@ graph TB
     STR -.->|"é subtipo de"| ANY
     NUM -.->|"é subtipo de"| ANY
 
-    class ANY falha
+    class ANY marca
     class UNK neutro
     class NEV marca
 ```

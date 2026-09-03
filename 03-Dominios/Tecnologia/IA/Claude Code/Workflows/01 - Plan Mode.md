@@ -49,8 +49,7 @@ O que muda tecnicamente:
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[Tarefa recebida] --> B{Plan Mode ativo?}
 
@@ -68,8 +67,8 @@ flowchart TD
     J -- Corrige --> I
     J -- Cancela --> L[Tarefa descartada<br/>sem dano]
 
-    class G falha
-    class H ok
+    class G marca
+    class H marca
     class L neutro
 ```
 

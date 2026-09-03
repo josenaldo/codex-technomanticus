@@ -46,10 +46,10 @@ O survey de abril/2026 que unificou esse vocabulário (*Externalization in LLM A
 
 ```mermaid
 graph LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["<b>Weights Era</b><br/>ganho = parâmetros<br/>scaling · RLHF · fine-tuning"] --> B["<b>Context Era</b><br/>ganho = design do input<br/>prompting · RAG · CoT"]
     B --> C["<b>Harness Era</b><br/>ganho = o runtime em volta<br/>memória externa · tool registries<br/>protocolos · sandboxes<br/>sub-agentes · compressão"]
-    class C ok
+    class C neutro
 ```
 
 Por que isso não é só renomear "engenharia de software de agentes"? Porque cada era esgotou o retorno marginal da anterior. Empilhar parâmetros tem custo crescente e retorno decrescente; refinar o prompt resolve muito, mas bate num teto quando a tarefa é longa e o estado não cabe na janela. O que sobra — e é onde 2025-2026 concentrou o avanço — é **a engenharia do que cerca o modelo**. Martin Fowler resumiu na forma mais curta possível: *"Agent = Model + Harness"*.
@@ -74,7 +74,7 @@ Entre o núcleo-harness e os três módulos ficam os **mediadores** — *sandbox
 
 ```mermaid
 graph TB
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     LLM["<b>LLM</b><br/>os pesos — raciocínio puro<br/>(a parte pequena)"]
     subgraph HARNESS["HARNESS — camada de runtime"]
@@ -90,7 +90,7 @@ graph TB
     end
     LLM -->|"pede ação"| HARNESS
     HARNESS -->|"contexto curado + feedback"| LLM
-    class HARNESS ok
+    class HARNESS neutro
     class LLM destaque
 ```
 

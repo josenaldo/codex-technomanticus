@@ -196,8 +196,8 @@ O exemplo acima já mostrou uma faceta de contention — disputa por um mutex co
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Baixo["Poucas goroutines, pouca contention"]
         direction LR
         G1["goroutine"] --> R1["recurso"]
@@ -216,7 +216,7 @@ flowchart LR
     Ideal -->|"throughput cai —\nfila de espera domina"| Alto
 
     class Ideal destaque
-    class Alto falha
+    class Alto neutro
 ```
 
 Esse formato — throughput sobe, atinge um pico, depois cai conforme mais concorrência é adicionada — é conhecido informalmente como o *ponto de retorno decrescente* da concorrência. Não existe fórmula fixa para onde ele fica; depende do recurso disputado, do hardware, e do que cada goroutine faz entre uma seção crítica e outra. É por isso que a resposta certa para "quantos workers eu uso?" quase sempre é "meça com valores diferentes de `numWorkers` e veja onde o benchmark para de melhorar" — não um número cravado na cabeça.

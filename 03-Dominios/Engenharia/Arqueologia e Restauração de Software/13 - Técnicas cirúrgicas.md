@@ -37,7 +37,7 @@ A nota 12 já te deu o vocabulário de **seam** — um ponto onde você pode alt
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph VELHO["Método legado — 300 linhas, sem testes"]
         L1["... linha 139 ..."]
@@ -54,7 +54,7 @@ graph TD
     T1 -.cobre.-> M
     T2 -.cobre.-> M
     T3 -.cobre.-> M
-    class VELHO falha
+    class VELHO neutro
     class CHAMA destaque
     class NOVO destaque
     class M destaque
@@ -125,7 +125,7 @@ O procedimento:
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph ANTES["Antes"]
@@ -140,7 +140,7 @@ graph TD
         W --> AD["invalidarCache()<br/>comportamento adicional"]
         W --> SI["salvarInterno()<br/>= lógica original renomeada"]
     end
-    class S1 falha
+    class S1 marca
     class W destaque
     class AD destaque
     class SI neutro

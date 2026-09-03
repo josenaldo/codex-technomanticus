@@ -34,11 +34,11 @@ A causa raiz, encontrada horas depois, é banal: uma tabela sem índice numa col
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     D1["Seg: p95 = 80ms<br/>0 erros"] --> D2["Qua: p95 = 160ms<br/>0 erros"]
     D2 --> D3["Sex semana seguinte:<br/>p95 = 340ms<br/>0 erros"]
     D3 -->|"log de erro:<br/>nada a reportar"| BLIND["🔴 Ninguém percebeu —<br/>sem métrica de latência,<br/>a curva não existia"]
-    class BLIND falha
+    class BLIND neutro
 ```
 
 > [!question]- Por que não bastava um alerta de "latência alta" configurado num limiar fixo?
@@ -230,8 +230,8 @@ Os "4 golden signals" — latência, tráfego, erros, saturação — vêm do *G
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     GS["4 Golden Signals"] --> LAT["Latência<br/>quanto tempo leva?"]
     GS --> TRAF["Tráfego<br/>quanta demanda?"]
@@ -245,7 +245,7 @@ graph TD
 
     class LAT neutro
     class TRAF neutro
-    class ERR falha
+    class ERR marca
     class SAT destaque
 ```
 

@@ -279,8 +279,8 @@ print(copia_profunda)    # [1, 2, [3, 4, 5]]
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Rasa["Cópia RASA — .copy() / list(x) / x[:]"]
         O1["original"] --> L1["lista externa (objeto A)"]
@@ -298,7 +298,7 @@ flowchart TD
 
     class L1 neutro
     class L2 neutro
-    class N1 falha
+    class N1 marca
     class M1 neutro
     class M2 neutro
     class N2 destaque

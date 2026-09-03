@@ -69,8 +69,8 @@ Sem keys, React usa a posição (índice implícito) — e isso falha quando a o
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Re-render disparado\n(estado pai mudou)"] --> B["React compara\nVirtualDOM anterior × novo"]
     B --> C{"Elemento tem\nmesma key?"}
@@ -79,7 +79,7 @@ flowchart TD
     C -->|"Não — key nova"| F["Monta do zero\nEstado inicial"]
 
     class D neutro
-    class E falha
+    class E marca
     class F destaque
 ```
 

@@ -193,7 +193,7 @@ Um **pipeline** encadeia estágios de processamento via canais: o estágio A pro
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Gen["gerar()\nproduz números"] -->|chan int| Sq["quadrado()\neleva ao quadrado"]
     Sq -->|chan int| Filter["filtrar()\nsó pares"]
     Filter -->|chan int| Main["main()\nconsome"]
@@ -202,7 +202,7 @@ flowchart LR
     Ctx -.-> Sq
     Ctx -.-> Filter
 
-    class Ctx falha
+    class Ctx neutro
 ```
 
 O problema que o pipeline "ingênuo" (sem cancelamento) tem: se o consumidor final (`main`) parar de ler antes do produtor terminar de gerar — porque achou o que precisava, ou porque algo deu errado adiante — o estágio gerador fica bloqueado para sempre tentando escrever num canal que ninguém mais lê. Isso é uma **goroutine leak**: a goroutine nunca termina, nunca é coletada pelo GC (ela está "viva", só presa em `send` bloqueado), e o processo acumula uma a cada pipeline abandonado.

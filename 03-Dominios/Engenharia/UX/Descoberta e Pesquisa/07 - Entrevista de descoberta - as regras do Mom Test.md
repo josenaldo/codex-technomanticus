@@ -36,15 +36,15 @@ O padrão por trás da coluna da esquerda: toda pergunta pede que o entrevistado
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q["Pergunta feita"] --> T{"Sobre o quê?"}
     T -->|"opinião sobre<br/>ideia/futuro"| R["Resposta de cortesia<br/>(o Mom Test)"]
     T -->|"fato sobre<br/>evento passado"| F["Resposta verificável"]
     R -->|"decisão tomada<br/>em cima dela"| E["Erro caro,<br/>descoberto tarde"]
     F -->|"decisão tomada<br/>em cima dela"| D["Decisão informada"]
-    class R falha
-    class E falha
+    class R marca
+    class E marca
     class F neutro
     class D neutro
 ```

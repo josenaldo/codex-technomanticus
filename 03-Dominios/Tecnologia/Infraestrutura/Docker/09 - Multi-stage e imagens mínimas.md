@@ -145,19 +145,19 @@ Depois que o multi-stage já separou "construir" de "rodar", a pergunta seguinte
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Completa<br/>Debian/Ubuntu<br/>~100-500MB+"] --> B["Slim<br/>Debian mínimo<br/>~50-100MB"]
     B --> C["Alpine<br/>musl + busybox<br/>~5MB base"]
     C --> D["Distroless<br/>sem shell/pkg mgr<br/>~20MB"]
     D --> E["Scratch<br/>vazio<br/>0 bytes"]
 
-    class A falha
+    class A neutro
     class B destaque
     class C destaque
-    class D ok
-    class E ok
+    class D marca
+    class E marca
 ```
 
 **Imagem completa (Debian, Ubuntu, etc.).** Traz um sistema operacional convencional inteiro: shell completo (`bash`), gerenciador de pacotes (`apt`), utilitários de diagnóstico (`ps`, `curl`, `netcat`, `strace` se instalado), bibliotecas C padrão (glibc). Ganho: máxima conveniência — qualquer ferramenta de debug que se precise instalar via `apt-get install` provavelmente existe no repositório da distro, e o comportamento em runtime é o mais previsível e bem documentado que existe, porque é o ambiente que a maioria das bibliotecas foi testada contra. Perda: centenas de megabytes de pacotes que a aplicação nunca usa, cada um deles uma fonte potencial de CVE, e um tempo de pull/push proporcionalmente maior.

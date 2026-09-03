@@ -68,8 +68,8 @@ Vamos ver o que entra em jogo num teste de endpoint HTTP de ponta a ponta dentro
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     REQ["Requisição HTTP\n(POST /pedidos)"] --> CTRL["Controller\n(desserializa JSON,\nvalida)"]
     CTRL --> SVC["Service\n(regra de negócio,\nabre transação)"]
     SVC --> REPO["Repositório\n(JPA → SQL)"]
@@ -80,8 +80,8 @@ flowchart TD
     CTRL --> RESP["Resposta HTTP\n(serializa JSON,\nstatus 201)"]
 
     class DB neutro
-    class REQ ok
-    class RESP ok
+    class REQ marca
+    class RESP marca
 ```
 
 Leitura do diagrama: o teste manda uma requisição de verdade e inspeciona a resposta de verdade. No caminho, ele exercita a desserialização, a validação, a regra de negócio, a transação, o SQL gerado pelo JPA e a serialização da volta. Um único teste cobre **seis fronteiras**. Se qualquer cola estiver torta, ele quebra — e te diz onde.
@@ -130,17 +130,17 @@ Dois detalhes técnicos separam esse teste de um teste unitário que finge ser i
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Dois objetos reais\n(sem mock entre eles)"] --> B["Narrow integration\n(sistema + 1 dependência,\nvia test double remoto\nou container leve)"]
     B --> C["Broad integration\n(várias services reais,\ndados trafegando\nentre elas)"]
     C --> D["E2E\n(fluxo de usuário\nponta a ponta,\ngeralmente via UI)"]
 
-    class A ok
-    class B ok
+    class A neutro
+    class B marca
     class C destaque
-    class D falha
+    class D marca
 ```
 
 Leitura do diagrama: da esquerda pra direita, cresce o escopo, cresce o custo e cai a velocidade. À esquerda, dois objetos reais colaborando — quase um unitário sociável. No meio, **narrow integration** (Fowler): você testa só a fatia do código que conversa com um serviço externo, usando um substituto controlado daquele serviço. À direita, **broad integration**: versões reais de vários serviços, exigindo ambiente de teste robusto e acesso de rede.
@@ -179,9 +179,9 @@ A cura é não negociar com a realidade: rode o teste contra **o mesmo banco, na
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph DRIFT["Cenário com drift"]
         T1["Teste roda contra H2\n(in-memory)"] --> V1["Verde ✓"]
         P1["Produção roda contra\nPostgreSQL 16"] --> X1["Bug de dialeto\nem produção ✗"]
@@ -194,10 +194,10 @@ flowchart TB
         V2 ==>|"mesma engine,\nmesma versão"| V3
     end
 
-    class X1 falha
+    class X1 neutro
     class V1 destaque
-    class V2 ok
-    class V3 ok
+    class V2 marca
+    class V3 marca
 ```
 
 Leitura do diagrama: em cima, o teste valida um banco e a produção usa outro — a linha pontilhada é a "confiança" que não se sustenta, porque o verde do H2 não diz nada sobre o Postgres. Embaixo, teste e produção usam a **mesma engine na mesma versão**; o verde do teste de fato prevê o verde da produção. É a diferença entre testar o seu sistema e testar uma fantasia dele.

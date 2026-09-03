@@ -415,8 +415,8 @@ exit 0
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     Tool["Tool call completa\n(Edit, Write, Bash, Read...)"]
     Hook["PostToolUse hook executa\nrecebe input + output"]
 
@@ -436,7 +436,7 @@ flowchart TD
     Hook --> Other --> Exit
 
     class Tool neutro
-    class Exit ok
+    class Exit marca
 ```
 
 ---

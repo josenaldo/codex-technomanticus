@@ -59,7 +59,7 @@ A quarta família mede quantas vezes algo acontece num intervalo — incidentes 
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q["'Não tenho número<br/>para esta realização'"] --> T{"Existe um registro<br/>que eu ainda<br/>não consultei?"}
@@ -74,7 +74,7 @@ graph TD
     C -->|"sim"| CO["Cite como CONTADO<br/>nomeando a fonte<br/>(nota 14)"]
     C -->|"não, de verdade"| CS["Sirva CONSEQUÊNCIA<br/>em vez de percentual<br/>ou superlativo"]
 
-    class Q falha
+    class Q marca
     class CO destaque
     class CS neutro
 ```

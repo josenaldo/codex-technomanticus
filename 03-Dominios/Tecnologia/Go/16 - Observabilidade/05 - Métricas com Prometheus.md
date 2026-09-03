@@ -311,8 +311,8 @@ Aqui está o conceito que separa quem instrumenta métricas em produção de que
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Baixa["Cardinalidade baixa — seguro"]
         direction TB
         M1["route: 12 valores possíveis\nstatus: 5 valores possíveis"] --> S1["12 × 5 = 60 séries"]
@@ -323,7 +323,7 @@ flowchart LR
     end
 
     class S1 neutro
-    class S2 falha
+    class S2 marca
 ```
 
 `requestsTotal.WithLabelValues("/checkout", "200")` e `requestsTotal.WithLabelValues("/checkout", "500")` são duas séries diferentes dentro da mesma métrica `http_requests_total`. Isso é intencional e é o que torna Prometheus útil — você consegue somar, filtrar e agrupar por label depois, na query. O problema aparece quando um label carrega um valor de **alta cardinalidade**: um `user_id`, um `request_id`, um `session_token`, ou — o erro mais comum de todos — o **path literal** de uma URL com parâmetro (`/checkout/8827` em vez do padrão `/checkout/{id}`).

@@ -27,11 +27,9 @@ Essa distinção — que a nota [[03-Dominios/Tecnologia/Cloud/13 - Mensageria e
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Start["Preciso comunicar<br/>componentes de forma assíncrona"] --> Q1{"É trabalho a<br/>distribuir entre<br/>workers, com<br/>garantia de<br/>'só um processa'?"}
 
     Q1 -->|Sim| Q1b{"Preciso de<br/>ordem estrita<br/>e sem duplicata?"}
@@ -54,14 +52,14 @@ flowchart TD
 
     Q4 -->|Não, é request-response<br/>síncrono disfarçado| Anti["🚫 Nenhum destes —<br/>use API síncrona<br/>(REST/gRPC)"]
 
-    class SQSFIFO ok
-    class SQSSTD ok
+    class SQSFIFO marca
+    class SQSSTD marca
     class SNS neutro
     class SNSSQS neutro
     class EB destaque
     class Kinesis marca
     class MSK marca
-    class Anti falha
+    class Anti marca
 ```
 
 Repare que a árvore tem quatro perguntas, não uma — e as três primeiras já foram respondidas em detalhe pelas notas [[03-Dominios/Tecnologia/Cloud/13 - Mensageria e eventos gerenciados/02 - SQS a fundo|SQS a fundo]], [[03-Dominios/Tecnologia/Cloud/13 - Mensageria e eventos gerenciados/03 - SNS e pub-sub|SNS e pub/sub]] e [[03-Dominios/Tecnologia/Cloud/13 - Mensageria e eventos gerenciados/04 - EventBridge e o event bus|EventBridge e o event bus]]. A quarta pergunta — streaming — é nova neste capstone, porque ela pertence a uma família de serviço com modelo mental diferente: não é fila (mensagem sai quando processada), é **log** (mensagem fica, cada leitor guarda sua própria posição de leitura).

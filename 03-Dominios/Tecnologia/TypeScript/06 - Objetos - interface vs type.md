@@ -172,8 +172,7 @@ moverPara(destino);                   // OK — via variável, sem excess check
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     LIT["Object literal<br/>{ x:1, y:2, z:3 }"]
     VAR["Variável<br/>const p = { x:1, y:2, z:3 }"]
@@ -186,9 +185,9 @@ flowchart TD
     EPC -->|"sem extras"| OK1["OK"]
     STRUCT -->|"tem x e y? Sim."| OK2["OK — z ignorado"]
 
-    class ERR falha
-    class OK1 ok
-    class OK2 ok
+    class ERR marca
+    class OK1 marca
+    class OK2 marca
     class EPC neutro
 ```
 
@@ -273,18 +272,19 @@ const d: Derivada2 = { x: ??? }; // x: never — impossível de satisfazer
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph EXT["interface extends"]
         A["interface Base { x: string }"] --> B["interface Derivada extends Base { x: number }"]
         B --> EERR["ERRO na declaração\nTypes of property 'x' are incompatible"]
-        class EERR falha
+        class EERR neutro
     end
     subgraph INT["type &"]
         C["type Base2 = { x: string }"] --> D["type Derivada2 = Base2 & { x: number }"]
         D --> ENEV["x: string & number = never"]
         ENEV --> IUSE["Erro só aparece\nquando tenta usar x"]
-        class ENEV falha
+        class ENEV marca
         class IUSE destaque
     end
 ```
@@ -537,7 +537,7 @@ Isso não é dogma — é heurística. O que importa em equipes reais é **consi
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q{"O que estou modelando?"}
 
@@ -550,9 +550,9 @@ flowchart TD
     Q -->|"Tipo computado\n(Omit, Pick, mapeado)"| T4["Use type\nmais natural"]
     Q -->|"Estender lib externa\n(Window, Request)"| I3["Use interface\ndeclaration merging"]
 
-    class I ok
-    class I2 ok
-    class I3 ok
+    class I marca
+    class I2 marca
+    class I3 marca
     class T neutro
     class T2 neutro
     class T3 neutro

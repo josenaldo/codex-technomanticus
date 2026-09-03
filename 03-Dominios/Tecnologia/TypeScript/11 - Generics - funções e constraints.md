@@ -61,7 +61,7 @@ const s = primeiro(["a", "b"]);    // s: string | undefined ✓
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     CALL["primeiro([1, 2, 3])"]
     INF["TypeScript infere\nT = number"]
@@ -70,7 +70,7 @@ flowchart LR
 
     CALL --> INF --> SIG --> RET
 
-    class INF ok
+    class INF marca
     class SIG neutro
 ```
 
@@ -291,8 +291,8 @@ const porCliente = groupBy(pedidos, "cliente");
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     ARR["pedidos: Pedido[]"]
     KEY["'status'\ninferido como K = 'status'"]
     GBY["groupBy&lt;Pedido, 'status'&gt;\n(T=Pedido, K='status')"]
@@ -303,7 +303,7 @@ flowchart LR
     GBY --> OUT
 
     class GBY neutro
-    class OUT ok
+    class OUT marca
 ```
 
 ---
@@ -381,8 +381,8 @@ Essa é a propriedade mais valiosa de generics em funções utilitárias: eles p
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph SemG["Sem generics"]
         I1["Usuario[]"] -->|"ordenarSemGeneric"| O1["Entidade[]\n(nome sumiu)"]
     end
@@ -390,8 +390,8 @@ flowchart LR
         I2["Usuario[]"] -->|"ordenarPorData"| O2["Usuario[]\n(nome preservado ✓)"]
     end
 
-    class O1 falha
-    class O2 ok
+    class O1 neutro
+    class O2 marca
 ```
 
 ---

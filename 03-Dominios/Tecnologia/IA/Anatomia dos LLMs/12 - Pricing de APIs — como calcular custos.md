@@ -45,7 +45,7 @@ A assimetria input/output é estrutural — output é mais caro porque **o decod
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Custo por chamada"
         I["Input tokens\n(50k × $3/MTok)\n= $0.15"]
@@ -55,7 +55,7 @@ graph LR
     I --> T
     O --> T
     note1["⚠️ Output é 5× mais caro\npor token que input"]
-    class O falha
+    class O neutro
     class note1 destaque
 ```
 
@@ -123,8 +123,8 @@ A sessão de 50 turns que "parecia barata" custou $13.50 — e escala linearment
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Chamada ao modelo"] --> B["Input tokens visíveis\n(prompt + contexto)"]
     A --> C["Tool definitions ocultos\n(schemas JSON: 2-5k tokens por call)"]
     A --> D["Histórico acumulado\n(turns anteriores reenviados como input)"]
@@ -132,7 +132,7 @@ graph TD
     A --> F["Retries por falha\n(paga-se duas vezes)"]
     class C destaque
     class D destaque
-    class E falha
+    class E neutro
     class F destaque
 ```
 

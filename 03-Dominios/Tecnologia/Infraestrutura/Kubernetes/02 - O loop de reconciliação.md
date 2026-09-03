@@ -229,8 +229,8 @@ Um sistema level-triggered reage ao **fato observável, persistente**: não "o P
 
 ```mermaid
 graph TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Edge-triggered — reage ao evento pontual"
         E1["Pod morre"] --> E2["Evento disparado uma vez"]
         E2 --> E3["Se ninguém escutar<br/>agora, a ação nunca acontece"]
@@ -241,8 +241,8 @@ graph TB
         L2 --> L3["Qualquer reavaliação futura<br/>encontra a mesma diferença<br/>e corrige"]
     end
 
-    class E3 falha
-    class L3 ok
+    class E3 neutro
+    class L3 marca
 ```
 
 É essa escolha de design — nada mais exótico do que isso — que produz as três garantias de resiliência que costumam ser vendidas como mágica do Kubernetes: recuperação de **evento perdido** (se o watch caiu no instante exato em que um Pod morreu, a relist de segurança encontra a diferença de qualquer forma, porque a diferença é um fato do presente, não um evento do passado); recuperação de **reinício do controller** (quando o `kube-controller-manager` reinicia — por upgrade, por crash, por manutenção — ele não precisa recuperar uma fila de eventos pendentes de antes de cair; ele simplesmente relista o estado atual e o estado desejado, e a lógica de comparação funciona exatamente igual, porque ela nunca dependeu de histórico, só do presente); e recuperação de **partição de rede** (se o node onde um Pod rodava ficou inalcançável por alguns minutos e depois voltou, não existe um evento "partição terminou" que alguém precisasse ter escutado — o controller volta a enxergar aquele node e reavalia a diferença entre o que existe e o que deveria existir, exatamente como faria em qualquer outra rodada do laço).
@@ -358,9 +358,9 @@ Vale fechar o corpo técnico da nota consolidando, num único diagrama, as duas 
 
 ```mermaid
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     U["Você / pipeline<br/>kubectl apply -f deployment.yaml"] -->|"HTTP síncrono"| AS["api-server<br/>valida e grava"]
     AS -->|"grava spec"| ETCD["etcd<br/>(fonte da verdade)"]
     AS -.->|"200 OK — prompt volta aqui"| U
@@ -377,7 +377,7 @@ graph TB
 
     class U destaque
     class ETCD marca
-    class RT ok
+    class RT neutro
 ```
 
 Note a estrutura que se repete três vezes nesse diagrama, uma para cada participante depois do api-server: `ReplicaSet controller`, `kube-scheduler` e `kubelet` fazem, cada um, exatamente o mesmo tipo de coisa — observar via watch, comparar contra o que já sabem, agir sobre a diferença que sobrar — só que cada um respondendo por uma fatia diferente do problema. O `ReplicaSet controller` responde a "faltam Pods para bater a contagem?"; o `kube-scheduler` responde a "existe algum Pod sem node atribuído ainda?"; o `kubelet` responde a "existe algum Pod atribuído a mim que eu ainda não coloquei para rodar?". Nenhum desses três processos manda diretamente no outro, e nenhum deles chama o outro por uma API própria e exclusiva — todos conversam exclusivamente através do mesmo api-server e do mesmo etcd, cada um lendo e escrevendo objetos, cada um vendo apenas o pedaço do estado do cluster que lhe interessa. É esse desacoplamento — três laços independentes, cada um convergindo sua própria fatia da diferença entre spec e status — que permite ao Kubernetes escalar de um cluster de três nodes para um de milhares sem que a lógica de nenhum controller precise mudar uma linha.

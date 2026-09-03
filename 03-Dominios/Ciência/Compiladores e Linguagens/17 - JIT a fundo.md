@@ -176,17 +176,17 @@ O nome "inline" vem da ideia original: o endereço do destino é colocado **inli
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Call site\nobj.metodo()"] --> B{"tipos vistos?"}
     B -->|"1 tipo (Dog)"| C["Monomorphic IC\n1 check, jump direto\notimizavel"]
     B -->|"2-4 tipos"| D["Polymorphic IC\nlista curta\naceitavel"]
     B -->|"5+ tipos"| E["Megamorphic IC\ndispatch generica\nsem otimizacao"]
 
-    class C ok
+    class C neutro
     class D destaque
-    class E falha
+    class E marca
 ```
 
 > [!info] Leitura do diagrama
@@ -237,8 +237,8 @@ Para cada aposta, o JIT emite um **guard**: uma instrução de verificação rá
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Perfil maduro:\n'variavel X sempre int,\nmetodo M nunca sobrescrito'"] --> B["JIT gera codigo otimizado\ncom guards embutidos"]
     B --> C{"Guard verifica\nhipotese em runtime"}
     C -->|"guard passa - caso normal"| D["Executa codigo nativo\nultra-otimizado"]
@@ -251,9 +251,9 @@ flowchart TD
     I --> J["Recompila com hipoteses\nmais conservadoras"]
     J --> B
 
-    class D ok
-    class E falha
-    class F falha
+    class D neutro
+    class E marca
+    class F marca
 ```
 
 > [!info] Leitura do diagrama
@@ -288,7 +288,6 @@ Um programa JIT não roda no seu melhor desempenho desde o início. Precisa **es
 flowchart LR
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["t=0\nInicio cold"] --> B["Fase: Interpretador\nstart rapido, throughput baixo"]
     B --> C["Fase: Baseline JIT\nthroughput moderado"]
     C --> D["Fase: Mid-tier JIT\nthroughput bom"]
@@ -300,7 +299,7 @@ flowchart LR
     class C neutro
     class D marca
     class E neutro
-    class F ok
+    class F marca
 ```
 
 > [!info] Leitura do diagrama

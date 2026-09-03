@@ -26,19 +26,19 @@ Antes de julgar se "multi-cloud" é bom ou ruim, vale separar o que as pessoas r
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Single-cloud\n(tudo numa nuvem)"] --> B["Single-cloud +\nserviço pontual\n(ex: BigQuery p/ analytics)"]
     B --> C["Multi-cloud passivo\n(DR frio numa 2ª nuvem,\nquase nunca ativo)"]
     C --> D["Multi-cloud ativo-passivo\n(failover testado,\nreplicação contínua)"]
     D --> E["Multi-cloud ativo-ativo\n(tráfego de produção\nem 2+ nuvens, sempre)"]
 
-    class A ok
-    class B ok
+    class A neutro
+    class B marca
     class C destaque
     class D destaque
-    class E falha
+    class E marca
 ```
 
 Repare no gradiente de cor: verde é barato e comum, vermelho é caro e raro. A esmagadora maioria das empresas que dizem "somos multi-cloud" estão no ponto B — uma nuvem principal (digamos, AWS) rodando 95% da carga, mais um serviço específico de outro provedor (BigQuery no GCP pra analytics, por exemplo) porque ele é objetivamente melhor naquele nicho. Isso é ótimo. É pragmático, tem escopo limitado, e o custo operacional extra é contido — você mantém uma conta, um pipeline de dados, talvez uma VPN ou peering, e pronto.

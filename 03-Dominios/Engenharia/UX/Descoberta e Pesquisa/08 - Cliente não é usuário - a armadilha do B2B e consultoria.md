@@ -26,16 +26,16 @@ O conflito não é um acidente de comunicação corrigível com "perguntar melho
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     C["Cliente (paga, aprova)<br/>problema de negócio"] -->|"aprova orçamento<br/>e escopo"| P["Produto construído"]
     U["Usuário real (opera)<br/>problema de tarefa"] -->|"raramente<br/>consultado"| P
     P -->|"satisfaz quem<br/>aprovou"| S["Sucesso na demo"]
     P -->|"ignora quem<br/>opera"| F["Rejeição na adoção real"]
     class C neutro
     class U destaque
-    class F falha
+    class F marca
 ```
 
 O diagrama mostra o padrão do cenário de abertura: as duas setas de aprovação e consulta não têm o mesmo peso. Enquanto o acesso ao usuário real for opcional — "se der tempo, eu falo com o time" — ele vai perder para qualquer pressão de prazo, porque falar com o cliente que paga é obrigatório e falar com quem usa não é.

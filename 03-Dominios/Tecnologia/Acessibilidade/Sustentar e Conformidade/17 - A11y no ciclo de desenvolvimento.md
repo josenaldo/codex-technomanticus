@@ -26,14 +26,14 @@ Há uma curva de custo bem conhecida na engenharia, e a acessibilidade a obedece
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     D["Design<br/>💲 baratíssimo"] --> C["Código<br/>💲💲 barato"]
     C --> CI["CI / PR<br/>💲💲💲 médio"]
     CI --> Q["QA / release<br/>💲💲💲💲 caro"]
     Q --> P["Produção / litígio<br/>💲💲💲💲💲 caríssimo"]
     class D neutro
-    class P falha
+    class P marca
 ```
 
 Um contraste corrigido no **design token** custa uma mudança de cor. O mesmo contraste descoberto em **produção**, depois de aplicado em 200 componentes, custa um mutirão — e se virou processo judicial (nota 18), custa advogado. *Shift-left* é o nome da estratégia de empurrar a detecção para a **esquerda** dessa linha: pegar no design, no código, no PR — nunca deixar chegar à direita. Cada um dos três mecanismos a seguir é uma forma de shift-left.

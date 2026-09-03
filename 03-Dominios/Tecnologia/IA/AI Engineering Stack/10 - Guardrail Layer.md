@@ -36,8 +36,8 @@ A Guardrail Layer é o **sistema imunológico** do stack: intercepta antes, vali
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Sem Guardrail Layer"
         A1["Input do usuário\n(pode conter PII/injection)"]
         A2["LLM processa\nbaseado em prompt"]
@@ -55,8 +55,8 @@ flowchart LR
     A1 --> A2 --> A3
     B1 --> B2 --> B3 --> B4 --> B5
 
-    class A3 falha
-    class B5 ok
+    class A3 neutro
+    class B5 marca
 ```
 
 ## O que é esta camada

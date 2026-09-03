@@ -135,9 +135,9 @@ Nenhuma das três arquiteturas é estritamente superior — cada uma otimiza par
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Fontes["Fontes de dados"]
         OLTP["Postgres<br/>(vendas modeladas)"]
         Eventos["Eventos de clique<br/>(JSON)"]
@@ -178,7 +178,7 @@ graph LR
     class DW neutro
     class Base neutro
     class Files destaque
-    class Swamp falha
+    class Swamp marca
 ```
 
 Repare no vermelho: o data swamp não é uma quarta arquitetura — é o **destino padrão** de um data lake quando ninguém assume a governança que a caixa laranja do diagrama (object storage sem catálogo nem dono) exige. É esse risco, mais do que qualquer limitação técnica, que empurra times maduros em direção ao lakehouse ou a um lake fortemente governado.

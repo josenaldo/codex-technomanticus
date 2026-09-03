@@ -38,7 +38,7 @@ A reação mais comum, e a mais cara em tempo perdido, é tratar isso como "vaza
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["RSS sobe de 300MB → 2.4GB\nlatência sobe de 40ms → 180ms"] --> B{"RSS crescente é\nvazamento real?"}
@@ -55,13 +55,13 @@ flowchart TD
     L --> M["cProfile em dev / py-spy em prod\nconfirmam o ganho (nota 08)"]
     M --> N["Motor por trás de tudo:\nceval loop + frames (nota 01)"]
 
-    class A falha
+    class A marca
     class B neutro
     class C destaque
     class D neutro
-    class E falha
+    class E marca
     class F neutro
-    class G falha
+    class G marca
     class H neutro
     class I neutro
     class J destaque

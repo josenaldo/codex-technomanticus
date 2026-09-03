@@ -117,9 +117,9 @@ A regra central, e a única coisa que realmente precisa ser internalizada: **tud
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["@contextmanager\ndef gerenciador():"] --> B["código ANTES do yield\n= corpo de __enter__"]
     B --> C["yield valor\n= valor devolvido por __enter__\n= o que vira 'as'"]
     C --> D["corpo do with executa"]
@@ -133,7 +133,7 @@ flowchart TB
     class A neutro
     class C neutro
     class G destaque
-    class I falha
+    class I marca
     class J neutro
 ```
 

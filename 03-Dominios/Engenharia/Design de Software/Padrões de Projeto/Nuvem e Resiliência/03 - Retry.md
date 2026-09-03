@@ -47,15 +47,15 @@ Esse é o modo de falha característico do padrão, e ele tem nome: **tempestade
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     F["Falha atinge<br/>1000 clientes ao mesmo tempo"] --> S["<b>Sem jitter</b><br/>todos esperam exatamente 200ms"]
     F --> J["<b>Com jitter</b><br/>cada um espera 0-200ms<br/>aleatoriamente"]
     S --> P["1000 requisições<br/>no MESMO instante<br/>⇒ novo pico, nova falha"]
     J --> D["carga distribuída<br/>no intervalo<br/>⇒ alvo consegue drenar"]
 
-    class S falha
-    class P falha
+    class S marca
+    class P marca
     class J neutro
     class D neutro
 ```

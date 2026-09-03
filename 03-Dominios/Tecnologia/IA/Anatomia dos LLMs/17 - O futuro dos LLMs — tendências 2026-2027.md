@@ -91,7 +91,7 @@ State Space Models (SSMs) como Mamba estão sendo integrados em arquiteturas Tra
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Transformer puro"
         T1["Token 1"] --> A["Atenção full O(n²)\nVê tudo, custa tudo"]
@@ -103,7 +103,7 @@ graph LR
         AT --> MIX["Combina\nlocal + global"]
         SM --> MIX
     end
-    class A falha
+    class A marca
     class MIX neutro
 ```
 

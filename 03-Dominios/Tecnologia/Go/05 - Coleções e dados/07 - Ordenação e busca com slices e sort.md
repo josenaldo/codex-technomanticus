@@ -57,14 +57,14 @@ fmt.Println(notas) // [40 61 72 88 95]
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["slices.Sort(s)"] --> B{"E satisfaz cmp.Ordered?\n(int, float, string...)"}
     B -->|sim| C["ordena in-place\nusando pdqsort"]
     B -->|não, ex: struct| D["não compila —\nuse SortFunc"]
 
     class C neutro
-    class D falha
+    class D marca
 ```
 
 A ordenação é **in-place** — `slices.Sort` recebe o slice e reordena os elementos no array subjacente, sem alocar um novo slice. Se dois slices compartilham o mesmo array (aliasing, [[05 - O modelo de memória de slices — len, cap e aliasing|nota 05]]), ordenar um afeta a visão do outro. Internamente, o algoritmo é uma variante de *pattern-defeating quicksort* (pdqsort), **não estável**: elementos "iguais" segundo a comparação podem trocar de posição relativa entre si.

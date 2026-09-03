@@ -32,7 +32,7 @@ O problema aparece quando você **lê** uma propriedade que *depende* do layout 
 
 ```mermaid
 graph TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph BAD["❌ Thrashing: read/write intercalados"]
         W1[escreve] --> R1[lê → reflow!] --> W2[escreve] --> R2[lê → reflow!] --> W3[...]
@@ -40,8 +40,8 @@ graph TB
     subgraph GOOD["✅ Batched: read → write"]
         RA[lê tudo] --> RB[lê tudo] --> WA[escreve tudo] --> WB[1 reflow no fim]
     end
-    class R1 falha
-    class R2 falha
+    class R1 marca
+    class R2 marca
     class WB neutro
 ```
 

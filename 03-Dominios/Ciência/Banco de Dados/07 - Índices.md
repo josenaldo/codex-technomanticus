@@ -39,7 +39,7 @@ Vamos ver a busca acontecer. Este diagrama é uma **ilustração** da busca, nã
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q["Query: WHERE id = 42"] --> R["Raiz: id &lt; 50?"]
     R -->|"sim, vai à esquerda"| N1["Nó: id &lt; 25?"]
@@ -49,7 +49,7 @@ flowchart TD
     N2 --> F3["Folha: 55, 60, 70"]
     N2 --> F4["Folha: 80, 90, 99"]
     F2 -.->|"achou 42"| T["Vai à tabela buscar a linha completa (heap fetch)"]
-    class F2 ok
+    class F2 marca
     class T neutro
 ```
 
@@ -112,8 +112,8 @@ Essa é a **regra do leftmost prefix**: um índice em `(a, b, c)` serve qualquer
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     IDX["Índice em (a, b, c)"]
     IDX --> Q1["WHERE a = ?<br/>USA o índice"]
@@ -121,10 +121,10 @@ flowchart LR
     IDX --> Q3["WHERE a = ? AND b = ? AND c = ?<br/>USA totalmente"]
     IDX --> Q4["WHERE b = ?<br/>NÃO usa (pulou 'a')"]
     IDX --> Q5["WHERE a = ? AND c = ?<br/>USA SÓ 'a', depois filtra 'c' linha a linha"]
-    class Q1 ok
-    class Q2 ok
-    class Q3 ok
-    class Q4 falha
+    class Q1 neutro
+    class Q2 marca
+    class Q3 marca
+    class Q4 marca
     class Q5 destaque
 ```
 
@@ -153,16 +153,16 @@ Aqui está a sacada que muita gente não tem: **o otimizador pode ignorar um ín
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Q["WHERE ativo = true<br/>(50% das linhas casam)"] --> D{"Otimizador decide"}
     D -->|"via índice"| I["Para cada linha que casa:<br/>ler índice + heap fetch aleatório<br/>= 500k saltos pela tabela"]
     D -->|"via Seq Scan"| S["Ler a tabela inteira em sequência<br/>= leitura sequencial, cache-friendly"]
     I --> C["Custo ALTO (I/O aleatório)"]
     S --> CH["Custo MENOR (I/O sequencial)"]
     CH --> WIN["Otimizador escolhe Seq Scan<br/>e IGNORA o índice"]
-    class WIN ok
-    class C falha
+    class WIN neutro
+    class C marca
 ```
 
 Leitura do diagrama: quando metade da tabela casa o filtro, usar o índice significa fazer centenas de milhares de **saltos aleatórios** entre o índice e a tabela — e I/O aleatório é muito mais caro que ler a tabela inteira de forma sequencial. O otimizador calcula isso pelas estatísticas e decide, corretamente, varrer a tabela. Você criou o índice, pagou o custo de escrita e espaço, e o índice fica ali sem ser usado. **Pior dos dois mundos.**
@@ -193,8 +193,8 @@ Para fechar o modelo mental, vale ver lado a lado as duas estratégias que o oti
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     START["Query com filtro em coluna C"] --> EST{"Quantas linhas o filtro<br/>deve retornar? (estatísticas)"}
     EST -->|"muitas (baixa seletividade)"| SEQ["Seq Scan<br/>lê a tabela inteira<br/>em ordem física"]
@@ -205,7 +205,7 @@ flowchart TD
     COVER -->|sim| IOS["Index Only Scan<br/>nem toca a tabela<br/>(o mais rápido)"]
     COVER -->|não| DONE["Index Scan normal"]
     class SEQ destaque
-    class IDX ok
+    class IDX marca
     class IOS neutro
 ```
 

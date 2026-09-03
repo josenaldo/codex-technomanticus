@@ -54,8 +54,8 @@ O default só entra em cena quando o TypeScript **não consegue inferir** o type
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     CALL["criarLista(...)"]
     INF{"TypeScript consegue\ninferir T?"}
     USE_INF["Usa o tipo inferido\nex: T = number"]
@@ -70,7 +70,7 @@ flowchart TD
     DEF -->|não| ERR
 
     class USE_DEF neutro
-    class ERR falha
+    class ERR marca
 ```
 
 ### Defaults combinados com constraints
@@ -552,7 +552,7 @@ emitter.on("usuario:logado", ({ codigo }) => {});          // ERRO: codigo não 
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     AE["AppEvents\n{ usuario:logado: ...\n  erro:api: ... }"]
     EE["EventEmitter~AppEvents~\nEvents = AppEvents"]
     ON["on('usuario:logado', handler)\nK = 'usuario:logado'\npayload = { id, nome }"]
@@ -564,7 +564,7 @@ flowchart LR
     EE --> EMIT
     EE --> ERR
 
-    class ERR falha
+    class ERR neutro
 ```
 
 O `K extends keyof Events` nos métodos é um **generic method dentro de classe genérica** — K é inferido do nome do evento em cada chamada, e `Events[K]` é o tipo do payload correspondente. O compilador faz o casamento automaticamente.

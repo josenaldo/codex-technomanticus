@@ -84,7 +84,7 @@ O diagrama abaixo mostra o que acontece quando `cart` muda em cada abordagem:
 
 ```mermaid
 graph TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph CTX["Context — re-render universal"]
         direction TB
@@ -108,7 +108,7 @@ graph TB
         S -->|"✅ sem mudança, skip"| Z3
     end
 
-    class CTX falha
+    class CTX marca
     class ZST neutro
 ```
 

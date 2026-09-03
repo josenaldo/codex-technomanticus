@@ -201,9 +201,8 @@ def buscar_produto(produto_id: int, db=Depends(get_db)):
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph Rota["Camada de API"]
         REQ["GET /produtos/42"] --> HANDLER["função de rota\nbuscar_produto()"]
     end
@@ -225,9 +224,9 @@ flowchart TB
     RESP --> CLIENTE["Cliente HTTP\nrecebe 404 estruturado"]
 
     class REQ neutro
-    class EXC falha
-    class EH ok
-    class RESP ok
+    class EXC marca
+    class EH marca
+    class RESP marca
 ```
 
 ### `RequestValidationError`: sobrescrevendo o formato do 422

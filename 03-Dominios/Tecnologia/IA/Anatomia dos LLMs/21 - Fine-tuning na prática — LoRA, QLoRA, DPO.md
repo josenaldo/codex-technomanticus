@@ -76,8 +76,8 @@ W_efetivo = W_congelado + (alpha/r)·B·A
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Camada de atenção com LoRA"
         X["Input x"] --> W["W original\n4096×4096\n(16.7M params)\n🔒 congelado"]
@@ -89,8 +89,8 @@ graph LR
     end
     note1["Total treinável: 64k params\nvs 16.7M do original\n= 0.38%"]
     class W neutro
-    class A ok
-    class B ok
+    class A marca
+    class B marca
     class note1 destaque
 ```
 
@@ -109,8 +109,8 @@ QLoRA (Dettmers et al., 2023) leva LoRA ao extremo: **quantiza o base congelado 
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "QLoRA: arquitetura de memória"
         BASE["Modelo base\n65B params\nQuantizado NF4 (4 bits)\n~33 GB na GPU\n🔒 congelado"]
@@ -122,7 +122,7 @@ graph TD
     RESULT["🎯 Resultado:\nFine-tuning de 65B\nem 1 GPU de 48GB\n(ex: A6000)"]
     LORA --> RESULT
     class BASE destaque
-    class LORA ok
+    class LORA marca
     class PAGED neutro
 ```
 
@@ -134,8 +134,8 @@ Depois do SFT, você quer ajustar **julgamento**. O caminho clássico, o RLHF ([
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "RLHF (clássico) — 3 etapas"
         SFT_A["1. SFT"]
         RM["2. Reward Model\n(treinar separado)"]
@@ -149,8 +149,8 @@ graph TD
         DATA --> DPO_LOSS
         SFT_B -- "KL regularization" --> DPO_LOSS
     end
-    class PPO falha
-    class DPO_LOSS ok
+    class PPO neutro
+    class DPO_LOSS marca
 ```
 
 Um **modelo de referência** congelado (o próprio SFT) segura a rédea (um termo de KL) para o modelo não desandar. Variantes que você vai encontrar:
@@ -163,8 +163,8 @@ Um **modelo de referência** congelado (o próprio SFT) segura a rédea (um term
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     BASE["Base pré-treinado\n(Llama 4 / Qwen 3 / Mistral)"]
     SFT["SFT com QLoRA\n→ Aprende formato, tom, jargão\nDados: pares entrada→saída\n~1k-100k exemplos"]
@@ -176,7 +176,7 @@ flowchart TD
 
     BASE --> SFT --> INST --> DPO --> ALIGN --> MERGE --> DEPLOY
     class SFT neutro
-    class DPO ok
+    class DPO marca
     class MERGE destaque
 ```
 

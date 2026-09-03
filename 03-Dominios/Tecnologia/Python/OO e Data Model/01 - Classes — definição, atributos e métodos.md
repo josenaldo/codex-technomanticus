@@ -125,9 +125,9 @@ Segundo o [tutorial oficial de classes do Python](https://docs.python.org/3/tuto
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["conta.depositar(50)"] --> B["Python busca 'depositar' na classe Conta"]
     B --> C["Encontra a função; cria um bound method\n(instância 'conta' já embutida)"]
     C --> D["Chama a função original:\nConta.depositar(conta, 50)"]
@@ -136,7 +136,7 @@ flowchart LR
     class A neutro
     class C destaque
     class D destaque
-    class E falha
+    class E marca
 ```
 
 Duas consequências práticas dessa explicitação:
@@ -359,9 +359,9 @@ Segundo o material da [Real Python sobre os três tipos de método](https://real
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Instancia["Método de instância"]
         direction TB
         I1["def metodo(self, ...)"] --> I2["Acessa e modifica\nestado da instância"]
@@ -377,7 +377,7 @@ flowchart TB
 
     class I1 neutro
     class C1 destaque
-    class S1 falha
+    class S1 marca
 ```
 
 | | Recebe | Chamado por | Uso típico |

@@ -235,8 +235,8 @@ Documentar o contrato resolve metade do problema — a outra metade é garantir 
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     C["Consumidor<br/>(ex.: app mobile)"] -->|"1. gera expectativa<br/>do que usa"| PB["Pact Broker"]
     PB -->|"2. provedor busca<br/>contratos publicados"| P["Provedor<br/>(ex.: serviço de agenda)"]
     P -->|"3. roda testes contra<br/>cada contrato"| V{"Contrato<br/>satisfeito?"}
@@ -244,7 +244,7 @@ graph LR
     V -->|"Não"| FAIL["Bloqueia deploy —<br/>quebraria o consumidor"]
 
     class OK neutro
-    class FAIL falha
+    class FAIL marca
 ```
 
 Um desenho de mercado, para 2026, combina as três ferramentas em momentos diferentes do ciclo: Prism cedo, quando o backend ainda não existe e o front-end precisa de algo para integrar; Pact continuamente, entre serviços internos, como gate de CI antes de qualquer deploy; Dredd (ou seu sucessor mais ativo, Schemathesis) como verificação periódica de que a documentação pública não mentiu ([The Chaos and Order Blog, *API Contract Testing & API Tooling 2026 Deep-Dive*](https://www.youngju.dev/blog/culture/2026-05-25-api-contract-testing-pact-bruno-hoppscotch-msw-karate-schemathesis-2026-deep-dive.en)). GraphQL tem seu próprio ecossistema de validação de schema (linters de breaking change, como o GraphQL Inspector), e gRPC se beneficia de checagem de compatibilidade em nível de `.proto` (o `buf breaking` da Buf detecta mudanças que quebrariam clientes gerados) — mas o princípio por trás de todos é o mesmo: o contrato só vale alguma coisa se alguma automação garante, continuamente, que ninguém o violou silenciosamente.

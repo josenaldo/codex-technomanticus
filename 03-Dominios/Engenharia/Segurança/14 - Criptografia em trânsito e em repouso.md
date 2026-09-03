@@ -26,16 +26,15 @@ Quando você pensa em "proteger dados", o erro clássico é pensar só em um dos
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Dado em Repouso<br/>(disco, banco, bucket)"] -->|"leitura / deserialização"| B["Dado em Uso<br/>(memória RAM, CPU)"]
     B -->|"escrita / persistência"| A
     B -->|"envio via rede"| C["Dado em Trânsito<br/>(pacotes TCP/IP)"]
     C -->|"recepção"| B
     class A neutro
-    class B falha
-    class C ok
+    class B marca
+    class C marca
 ```
 
 > [!info] Leitura do diagrama
@@ -202,7 +201,7 @@ A solução adotada por AWS KMS, Google Cloud KMS, Azure Key Vault, e qualquer H
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     DADO["Dado em texto claro\n(ex.: registro do banco)"] -->|"cifrado com DEK"| OBJ_DEC["Dado cifrado\n(ciphertext)"]
     DEK["DEK — Data Encryption Key\n(AES-256, gerada aleatoriamente,\numa por objeto/registro)"] -->|"cifra os dados"| OBJ_DEC
@@ -210,7 +209,7 @@ flowchart TD
     KMS -->|"retorna DEK cifrada"| DEK_C["DEK cifrada\n(WrappedDEK)"]
     OBJ_DEC -->|"armazenados juntos"| STORAGE["Storage\n(disco, banco, bucket)"]
     DEK_C -->|"armazenada com o objeto"| STORAGE
-    class KMS falha
+    class KMS marca
     class DEK neutro
 ```
 

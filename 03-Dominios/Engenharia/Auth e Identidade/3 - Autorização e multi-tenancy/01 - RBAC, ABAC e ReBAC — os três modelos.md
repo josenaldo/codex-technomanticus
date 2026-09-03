@@ -72,9 +72,9 @@ O problema aparece quando o "quem pode o quê" deixa de ser uniforme por organiz
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["10 papéis por produto"] --> B["× 1.000 tenants B2B"]
     B --> C["~10.000 definições de papel"]
     C --> D["Admin, Admin v2, Super Admin<br/>por tenant — quase-duplicados"]
@@ -82,7 +82,7 @@ graph TD
 
     class A neutro
     class C destaque
-    class E falha
+    class E marca
 ```
 
 > [!warning] Criar um papel novo pra cada exceção de acesso
@@ -162,9 +162,9 @@ No nosso SaaS de documentos, o desenho ReBAC ficaria assim: `documento:X#owner@b
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph RBAC["RBAC — papel"]
         R1["Pergunta: que papel<br/>esse usuário tem?"]
         R2["Rápido, auditável,<br/>fácil de explicar"]
@@ -183,7 +183,7 @@ graph TD
 
     class RBAC neutro
     class ABAC destaque
-    class ReBAC falha
+    class ReBAC marca
 ```
 
 | Dimensão | RBAC | ABAC | ReBAC |

@@ -135,7 +135,6 @@ flowchart TB
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     F["Foundational<br/>AWS Certified Cloud Practitioner (CLF-C02)<br/>sem pré-requisito"]
     F --> A1["Associate<br/>Solutions Architect (SAA-C03)"]
     F --> A2["Associate<br/>Developer (DVA-C02)"]
@@ -148,7 +147,7 @@ flowchart TB
     class A1 destaque
     class A2 marca
     class A3 marca
-    class P1 falha
+    class P1 marca
     class P2 marca
     class Sp marca
 ```

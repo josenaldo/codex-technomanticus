@@ -29,14 +29,14 @@ Claude Code tem dois tipos de configuração:
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Settings["settings.json\n(runtime)"] -- "bloqueia/permite\nmecanicamente" --> ToolCall["Tool call"]
     CLAUDE["CLAUDE.md\n(modelo)"] -- "instrui o modelo\ncomportamentalmente" --> ToolCall
     ToolCall --> Exec["Execução"]
     class Settings neutro
-    class CLAUDE ok
+    class CLAUDE marca
     class ToolCall destaque
 ```
 

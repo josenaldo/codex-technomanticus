@@ -52,7 +52,7 @@ Por quê? Porque a máquina verifica o *computável*, não o *significativo*:
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[Imagem] --> B{Tem alt?}
@@ -61,7 +61,7 @@ graph TD
     D --> E{"O alt DESCREVE<br/>a imagem?"}
     E -->|"alt='imagem123.jpg'"| F["😱 axe não vê:<br/>alt inútil, mas presente"]
     E -->|"alt='gráfico de vendas subindo'"| G[de fato acessível]
-    class C falha
+    class C marca
     class F destaque
     class G neutro
 ```

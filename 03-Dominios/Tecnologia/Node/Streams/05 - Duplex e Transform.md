@@ -65,7 +65,6 @@ Exemplos da biblioteca padrão: `zlib.createGzip()` comprime o que você escreve
 flowchart LR
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph DUPLEX ["stream.Duplex — dois buffers independentes"]
         direction TB
         WA["write(chunk)\n[buffer de escrita]"]
@@ -83,7 +82,7 @@ flowchart LR
     class WA marca
     class RA marca
     class WB marca
-    class TR ok
+    class TR marca
     class RB marca
 ```
 

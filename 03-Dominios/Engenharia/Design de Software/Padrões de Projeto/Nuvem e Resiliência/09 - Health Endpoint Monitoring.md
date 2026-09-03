@@ -43,7 +43,7 @@ O erro é semântico, não de código. A pergunta que o liveness responde é **"
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     S["Instância"] --> L["<b>Liveness</b><br/>'estou travado?'<br/>⇒ reiniciar"]
@@ -54,7 +54,7 @@ graph TD
     R --> RN["pode verificar dependências<br/>— o efeito é reversível"]
     ST --> SN["evita reinício em<br/>aplicação de arranque lento"]
 
-    class L falha
+    class L marca
     class R neutro
     class ST destaque
 ```

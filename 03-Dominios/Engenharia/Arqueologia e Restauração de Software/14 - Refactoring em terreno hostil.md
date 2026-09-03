@@ -35,9 +35,9 @@ A segunda contribuição estrutural de Fowler não é uma técnica — é um **r
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Escolha um<br/>micro-passo"] --> B["Aplique a<br/>transformação"]
     B --> C["Rode a rede<br/>(characterization tests)"]
     C --> D{"Verde?"}
@@ -49,7 +49,7 @@ graph LR
     class B neutro
     class C destaque
     class E destaque
-    class F falha
+    class F marca
 ```
 
 Em código com testes rápidos, "pequeno" pode significar renomear uma variável e já rodar a suíte. No terreno hostil, "pequeno" fica **ainda menor**, por duas razões práticas. Primeiro, sua rede de characterization tests é lenta — rodar a suíte inteira a cada linha alterada é inviável, então você aprende a rodar o subconjunto relevante e a manter passos pequenos o bastante para que, se algo quebrar, a causa seja óbvia sem precisar de `git bisect` dentro do próprio commit. Segundo, o acoplamento oculto (o motivo pelo qual a classe é hotspot) significa que uma mudança que parece local pode ter efeito em três lugares que você não vê — quanto menor o passo, menor a superfície de dano por transformação, e mais fácil isolar qual delas causou o efeito colateral.

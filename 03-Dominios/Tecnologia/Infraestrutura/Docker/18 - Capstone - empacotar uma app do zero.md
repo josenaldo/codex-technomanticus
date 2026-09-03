@@ -300,21 +300,21 @@ Duas ausências deliberadas valem nota, porque um revisor atento perguntaria por
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Decisão 1<br/>FROM node:22, COPY . . primeiro<br/>~1,1GB · build 50s · rebuild 45s"] --> B["Decisão 2<br/>manifestos antes do código<br/>rebuild cai para ~6s"]
     B --> C["Decisão 3<br/>multi-stage: builder + runtime<br/>tsc/jest somem da imagem final"]
     C --> D["Decisão 4<br/>base distroless nonroot<br/>~120MB · sem shell"]
     D --> E["Decisão 5-6<br/>CMD exec + usuário nonroot<br/>PID 1 correto, sem privilégio"]
     E --> F["Decisão 7-8<br/>HEALTHCHECK + LABEL + digest<br/>imagem auto-descritiva e rastreável"]
 
-    class A falha
+    class A neutro
     class B destaque
     class C destaque
-    class D ok
-    class E ok
-    class F ok
+    class D marca
+    class E marca
+    class F marca
 ```
 
 ## O Dockerfile final, comentado

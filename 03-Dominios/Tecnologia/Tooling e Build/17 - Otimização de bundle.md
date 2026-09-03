@@ -71,8 +71,8 @@ O resultado é um treemap interativo onde cada retângulo representa um módulo 
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     BUILD["npm run build"]
     REPORT["stats.html\n(treemap visual)"]
     IDENTIFY["Identifica os culpados:\n• módulos maiores que ~100KB\n• dependências duplicadas\n• imports de barrel files"]
@@ -81,7 +81,7 @@ graph TD
     BUILD --> REPORT --> IDENTIFY --> ACTION
 
     class REPORT destaque
-    class ACTION ok
+    class ACTION neutro
 ```
 
 > [!note] Leitura do diagrama
@@ -152,8 +152,8 @@ Em ESM, `import` e `export` são declarações de linguagem analisadas em tempo 
 
 ```mermaid
 graph LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph ESM["ESM (estático)"]
         direction TB
         ES_SRC["import { debounce } from 'lodash-es'"]
@@ -170,8 +170,8 @@ graph LR
         CJS_SRC --> CJS_RUNTIME --> CJS_ALL
     end
 
-    class ESM ok
-    class CJS falha
+    class ESM neutro
+    class CJS marca
 ```
 
 > [!note] Leitura do diagrama
@@ -318,9 +318,9 @@ const plugin = await import(
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     CHECK{"O módulo usa\nESM estático?"}
 
     CHECK -->|"Não (CJS/AMD)"| BLOCKED["Tree-shaking BLOQUEADO\nIncluir módulo inteiro"]
@@ -334,10 +334,10 @@ flowchart TD
     BARREL -->|"Sem sideEffects: false\nno barrel"| BLOATED["Bundle inchado:\nbundle inclui todos os\nreexports do barrel"]
     BARREL -->|"Com sideEffects: false"| LEAN["Bundle enxuto:\nsó os exports\nusados chegam"]
 
-    class BLOCKED falha
+    class BLOCKED neutro
     class CONSERVATIVE destaque
-    class LEAN ok
-    class BLOATED falha
+    class LEAN marca
+    class BLOATED marca
 ```
 
 > [!note] Leitura do diagrama
@@ -511,8 +511,8 @@ A lógica de cache por trás disso:
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Sem manualChunks (ruim para cache)"
         B1["deploy v1.0\nmain.js (300KB)\nInclui React + Charts + código app"]
         B2["deploy v1.1\nmain.js (300KB)\nMudança em 1 componente:\nBrowser REBAIXA TUDO"]
@@ -525,8 +525,8 @@ graph LR
         C1 --> C2
     end
 
-    class B2 falha
-    class C2 ok
+    class B2 neutro
+    class C2 marca
 ```
 
 > [!note] Leitura do diagrama
@@ -1008,8 +1008,8 @@ Bundle inicial (depois): 320KB / gzip 110KB / FCP 1.4s
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["ANTES\n1.8MB bundle inicial\n600KB gzip\nFCP: 5.2s"]
     
     B["DIAGNÓSTICO\nrollup-plugin-visualizer\nIdentificou: pdfmake, moment,\nmonaco como culpados"]
@@ -1022,8 +1022,8 @@ flowchart LR
 
     A --> B --> C1 & C2 & C3 --> D
 
-    class A falha
-    class D ok
+    class A neutro
+    class D marca
 ```
 
 > [!note] Leitura do diagrama

@@ -185,9 +185,9 @@ width, height, margin, padding, top, left, font-size
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     CHANGE["Mudança de CSS"]
     LAYOUT["Layout\n(reflow toda a árvore)"]
     PAINT["Paint\n(repinta pixels)"]
@@ -201,9 +201,9 @@ flowchart LR
 
     CHANGE -->|transform/opacity| COMPOSITE
 
-    class COMPOSITE ok
+    class COMPOSITE neutro
     class PAINT destaque
-    class LAYOUT falha
+    class LAYOUT marca
 ```
 
 ### `will-change` — dica para o browser

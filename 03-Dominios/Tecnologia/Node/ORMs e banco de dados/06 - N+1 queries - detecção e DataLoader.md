@@ -26,7 +26,7 @@ aliases:
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     REQ["Requisição\n/posts?limit=50"]
@@ -47,12 +47,12 @@ flowchart TD
     EL --> SOL
     DL --> SOL
 
-    class PROB falha
+    class PROB marca
     class EL neutro
     class DL destaque
     class SOL neutro
     class Q1 destaque
-    class N_Q falha
+    class N_Q marca
 ```
 
 ## O que é

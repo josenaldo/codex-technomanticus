@@ -149,9 +149,9 @@ A última regra amarra as outras cinco: toda remoção — de campo, de endpoint
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     M{"Que tipo de<br/>mudança é essa?"}
     M -->|"Adicionar campo<br/>opcional"| S1["Seguro —<br/>sem versão nova"]
     M -->|"Adicionar endpoint<br/>novo"| S1
@@ -164,7 +164,7 @@ graph TD
 
     class S1 neutro
     class S2 destaque
-    class B1 falha
+    class B1 marca
 ```
 
 > [!question]- E se a mudança quebra só um consumidor interno, que o próprio time controla?

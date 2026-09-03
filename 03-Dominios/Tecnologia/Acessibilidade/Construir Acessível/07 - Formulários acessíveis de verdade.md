@@ -124,7 +124,7 @@ O texto acima descreve `aria-describedby`/`aria-invalid` campo a campo e o resum
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4A90D9,color:#fff,stroke:#2A5A8A
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef atencao fill:#F5A623,color:#1a1a1a,stroke:#B67A10
     classDef erro fill:#D0021B,color:#fff,stroke:#8A0112
     A["Usuário clica em Enviar"] --> B{"Validação passou?"}
@@ -137,7 +137,7 @@ flowchart TD
     H --> I["'E-mail, inválido,<br/>Digite um e-mail válido...'"]
 
 
-    class C ok
+    class C neutro
     class D,E,F atencao
     class B,G,H,I erro
 ```

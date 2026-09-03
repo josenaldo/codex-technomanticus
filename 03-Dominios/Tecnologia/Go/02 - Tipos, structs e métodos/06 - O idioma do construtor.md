@@ -71,9 +71,9 @@ s := NewServer("localhost:8080")
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["type Server struct {...}\n(só dados, sem inicialização)"] --> B["func NewServer(addr string) *Server"]
     B --> C{"addr é válido?"}
     C -- "não, e a fábrica valida" --> D["retorna nil + erro\n(seção seguinte)"]
@@ -84,7 +84,7 @@ flowchart TB
     class B destaque
     class E neutro
     class F destaque
-    class D falha
+    class D marca
 ```
 
 O que essa função ganha, que o `struct` literal cru não tinha: um **lugar único** para aplicar defaults (`timeout: 5 * time.Second` sempre que o chamador não decidir diferente — a próxima nota mostra como tornar isso configurável), validar entradas antes de devolver um valor, e mudar a implementação interna de `Server` no futuro sem quebrar quem já chama `NewServer`. Nada disso é imposto pelo compilador — é imposto pela convenção de que ninguém, dentro do pacote que expõe `Server`, deveria montar um `Server{}` literal fora de `NewServer` quando essa função existe. Campos não exportados (minúsculos, como `addr` e `timeout` aqui) já ajudam a reforçar isso: código de **fora** do pacote não consegue nem escrever um struct literal com esses campos — só `NewServer` tem acesso a eles, porque mora no mesmo pacote.
@@ -219,9 +219,9 @@ Não existe `sync.NewMutex()` na biblioteca padrão — e a ausência é deliber
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Util["Zero value útil"]
         direction TB
         A1["var mu sync.Mutex"] --> A2["mu já destravado\npronto para Lock()"]
@@ -235,7 +235,7 @@ flowchart LR
     class A1 neutro
     class A2 destaque
     class B1 neutro
-    class B2 falha
+    class B2 marca
     class B3 destaque
     class B4 destaque
 ```

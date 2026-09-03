@@ -123,8 +123,8 @@ Percival e Gregory, em *Architecture Patterns with Python*, chamam essa camada d
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Entrada["Camadas de entrada — cada uma sabe traduzir SUA forma de chegada"]
         HTTP["Handler HTTP (FastAPI)\nparse do request → Comando → serializa resposta"]
@@ -154,7 +154,7 @@ flowchart TB
     REPO --> DB[("Banco / Fake em memória")]
 
     class SVC neutro
-    class ENT ok
+    class ENT marca
     class UOW destaque
 ```
 
@@ -330,8 +330,8 @@ O worker não reimplementa a checagem de quota — ele chama `criar_tarefa`, rec
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Antes["ANTES — lógica presa no handler"]
         H1["Handler FastAPI\ncriar_tarefa()"] -->|"checa quota inline\nquery + commit direto"| DB1[("Banco")]
@@ -347,7 +347,7 @@ flowchart LR
     end
 
     class Antes destaque
-    class Depois ok
+    class Depois marca
     class SVC neutro
 ```
 

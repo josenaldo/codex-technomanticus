@@ -60,8 +60,9 @@ Todas as vulnerabilidades desta nota compartilham a mesma estrutura causal, só 
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     U["Input do usuário<br/>(query param, form, header, JSON)"] -->|concatenado sem separação| I{"Interpretador"}
     I -->|SQL| S["Banco de dados<br/>executa como consulta"]
     I -->|Template| T["Motor de template<br/>avalia como expressão"]
@@ -73,8 +74,8 @@ graph TD
     D -.->|"__reduce__ executa<br/>durante o unpickling"| R2
 
     class U destaque
-    class R2 falha
-    class R1 falha
+    class R2 neutro
+    class R1 marca
 ```
 
 O padrão em comum, em uma frase: **sempre que dado de fora do código-fonte pode alterar a estrutura sintática (não só o valor) do que um interpretador executa, existe uma vulnerabilidade de injeção** — a única pergunta é qual interpretador, e qual o raio de dano quando ele é enganado.

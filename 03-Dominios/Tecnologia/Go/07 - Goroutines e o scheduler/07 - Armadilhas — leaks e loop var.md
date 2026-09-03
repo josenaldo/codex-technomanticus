@@ -126,7 +126,7 @@ A expectativa ingênua é ver `Ana`, `Bruno`, `Carla` impressos (em alguma ordem
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph PRE["Antes do Go 1.22 — uma variável reaproveitada"]
         direction LR
         V["nome (endereço único)"]
@@ -138,7 +138,7 @@ flowchart TB
         G3a["closure 3"] -->|"referencia o mesmo endereço"| V
     end
 
-    class V falha
+    class V neutro
 ```
 
 ```mermaid

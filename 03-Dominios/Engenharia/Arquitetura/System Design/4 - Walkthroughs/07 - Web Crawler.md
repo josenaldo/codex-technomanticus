@@ -286,15 +286,15 @@ Cada componente discutido introduz um ponto de fragilidade que vale nomear proat
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     DNS_B["DNS lookup<br/>(até 70% do tempo<br/>sem cache dedicado)"] -->|"mitigado por"| DNS_M["Resolver próprio<br/>+ cache + prefetch"]
     Frontier_B["Frontier centralizado<br/>(satura em I/O/memória)"] -->|"mitigado por"| Frontier_M["Sharding por host<br/>(consistent hashing)"]
     Fresh_B["Budget de fetch finito<br/>vs cobertura crescente"] -->|"mitigado por"| Fresh_M["Priorização de recrawl<br/>(crawl demand)"]
 
-    class DNS_B falha
-    class Frontier_B falha
-    class Fresh_B falha
+    class DNS_B marca
+    class Frontier_B marca
+    class Fresh_B marca
     class DNS_M neutro
     class Frontier_M neutro
     class Fresh_M neutro

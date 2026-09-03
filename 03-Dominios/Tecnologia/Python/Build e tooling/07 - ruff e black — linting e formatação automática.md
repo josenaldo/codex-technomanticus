@@ -49,8 +49,8 @@ Quatro ferramentas, quatro arquivos de configuração (ou quatro seções `[tool
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     F["flake8<br/>(estilo, erros óbvios)"] --> R["ruff"]
     I["isort<br/>(ordenação de imports)"] --> R
     P["pylint<br/>(parte das regras)"] --> R
@@ -59,7 +59,7 @@ flowchart TD
     R --> OUT["Um binário, um comando,<br/>um arquivo de config"]
 
     class R neutro
-    class OUT ok
+    class OUT marca
 ```
 
 O ganho não é só "menos arquivos de configuração" — é o mesmo ganho de velocidade que a [[04 - uv — o gerenciador moderno|nota 04 deste galho]] já descreveu para `uv`: `ruff` roda ordens de magnitude mais rápido que a soma das quatro ferramentas que substitui, porque é código nativo, sem overhead de interpretador Python a cada invocação, com paralelismo real entre arquivos.
@@ -165,8 +165,8 @@ A consequência prática é que hoje existem dois caminhos igualmente válidos, 
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph A["Caminho 1 — ferramentas separadas"]
         A1["ruff check<br/>(lint)"] 
         A2["black<br/>(format)"]
@@ -183,7 +183,7 @@ flowchart LR
     B2 -.-> RESULT_B
 
     class B2 neutro
-    class RESULT_B ok
+    class RESULT_B marca
 ```
 
 **Caminho 1 — `ruff` + `black` separados.** Continua sendo uma escolha razoável, especialmente em projetos que já tinham `black` adotado há anos, com o time acostumado ao nome e ao comando. `black` também tem, por ser mais antigo e mais amplamente usado historicamente, uma superfície de casos-extremos testada por mais tempo em produção — o que pesa para times conservadores que preferem não trocar uma ferramenta madura só porque existe uma alternativa mais nova.

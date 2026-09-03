@@ -80,8 +80,8 @@ A diferença é profunda. Uma denylist enumera o que é proibido — e portanto 
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     R["Requisição de acesso"]
     Q{"Está explicitamente\npermitido?"}
     A["Permite"]
@@ -91,8 +91,8 @@ flowchart TD
     Q -->|"Sim (allowlist)"| A
     Q -->|"Nao ou desconhecido"| D
 
-    class D falha
-    class A ok
+    class D neutro
+    class A marca
 ```
 
 > [!info] Leitura do diagrama
@@ -147,8 +147,8 @@ O adversário vai, eventualmente, descobrir como seu sistema funciona. Por rever
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Algoritmo secreto\n('security through obscurity')"]
     B["Algoritmo publico\n(open design)"]
 
@@ -160,8 +160,8 @@ flowchart LR
     B --> B2["Fraquezas detectadas\ne corrigidas"]
     B --> B3["Seguranca depende\nda chave, nao do algoritmo"]
 
-    class A falha
-    class B ok
+    class A neutro
+    class B marca
 ```
 
 > [!info] Leitura do diagrama
@@ -190,8 +190,8 @@ Separation of privilege é o fundamento conceitual do MFA — e por isso o princ
 
 ```mermaid
 graph TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     ACCESS["Acesso a recurso critico"]
 
     C1["Condicao 1\n(fator conhecimento: senha)"]
@@ -205,8 +205,8 @@ graph TD
     AND -->|"Sim"| GRANT["Acesso concedido"]
     AND -->|"Nao (qualquer uma)"| DENY["Acesso negado"]
 
-    class GRANT ok
-    class DENY falha
+    class GRANT neutro
+    class DENY marca
 ```
 
 > [!info] Leitura do diagrama
@@ -222,8 +222,8 @@ graph TD
 
 ```mermaid
 graph LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     SVC["Servico de pagamento"]
 
     SVC -->|"Least privilege\n(acesso minimo)"| DB1["Tabela: orders\nSELECT, INSERT"]
@@ -233,8 +233,8 @@ graph LR
     SVC2["Conta de servico\ncom root no banco"]
     SVC2 -->|"Acesso total"| DB4["TODOS os dados\nDROP TABLE possivel"]
 
-    class SVC ok
-    class SVC2 falha
+    class SVC neutro
+    class SVC2 marca
 ```
 
 > [!info] Leitura do diagrama
@@ -304,8 +304,8 @@ A implicação prática: toda a segurança de um sistema criptográfico deve res
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph OBSCURIDADE ["Security through obscurity (ERRADO)"]
         OA["Algoritmo SECRETO"]
         OK["Chave (qualquer tamanho)"]
@@ -319,10 +319,10 @@ graph LR
         KK --> KSAFE
     end
 
-    class OBSCURIDADE falha
-    class KERCKHOFFS ok
-    class OBREACH falha
-    class KSAFE ok
+    class OBSCURIDADE neutro
+    class KERCKHOFFS marca
+    class OBREACH marca
+    class KSAFE marca
 ```
 
 > [!info] Leitura do diagrama
@@ -338,8 +338,8 @@ O modelo mental clássico é o **modelo do queijo suíço** de James Reason (ori
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     ATK["Atacante"]
 
     ATK --> L1["Perimetro de rede\n(firewall, WAF)"]
@@ -352,8 +352,8 @@ flowchart LR
 
     ATK -.->|"Para chegar ao ativo,\nprecisa vencer TODAS\nas camadas"| ASSET
 
-    class ATK falha
-    class ASSET ok
+    class ATK neutro
+    class ASSET marca
 ```
 
 > [!info] Leitura do diagrama

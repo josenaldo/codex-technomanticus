@@ -30,9 +30,9 @@ O problema aparece seis meses depois. O pacote de config do serviço A, pensado 
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Root["meu-servico/ (raiz do módulo)"]
         direction TB
         CMD["cmd/\nbinários — pontos de entrada finos"]
@@ -51,7 +51,7 @@ flowchart TB
     class INT destaque
     class CMD neutro
     class PKG destaque
-    class OUT falha
+    class OUT marca
 ```
 
 ### `cmd/` — os pontos de entrada

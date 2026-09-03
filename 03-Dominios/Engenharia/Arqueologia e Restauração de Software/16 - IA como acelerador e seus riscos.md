@@ -44,8 +44,8 @@ Por isso a rede não é burocracia — é o único instrumento que consegue resp
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["1. Entender<br/>(IA ajuda: resumir, mapear,<br/>notas 06/07/08)"] --> B{"2. Existe rede de<br/>caracterização aqui?"}
     B -->|"NÃO"| C["Construir a rede PRIMEIRO<br/>(notas 10/11 — IA pode<br/>ajudar no boilerplate)"]
@@ -62,8 +62,8 @@ flowchart TD
     class C destaque
     class D destaque
     class E destaque
-    class F falha
-    class I falha
+    class F marca
+    class I marca
     class G neutro
     class H neutro
     class J destaque

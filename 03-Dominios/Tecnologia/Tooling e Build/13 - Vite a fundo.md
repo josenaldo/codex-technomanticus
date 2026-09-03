@@ -45,7 +45,6 @@ Durante o Vite 1 ao 7, a arquitetura tinha uma divisão que qualquer dev que tra
 graph TB
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph VITE7["Vite ≤ 7 — Arquitetura Dual"]
         direction TB
 
@@ -67,7 +66,7 @@ graph TB
 
     class VITE7 neutro
     class DEV marca
-    class BUILD falha
+    class BUILD marca
 ```
 
 > [!info] Leitura do diagrama
@@ -82,7 +81,6 @@ O **Rolldown** é um bundler escrito em Rust com API compatível com Rollup. Ele
 ```mermaid
 graph LR
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph VITE8["Vite 8 — Motor Unificado (12 mar 2026)"]
         direction LR
@@ -109,7 +107,7 @@ graph LR
     end
 
     class VITE8 neutro
-    class DEV ok
+    class DEV marca
     class BUILD marca
 ```
 
@@ -147,8 +145,8 @@ O Vite é, na sua essência, um **servidor HTTP especializado** que entende o gr
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph DEV_FLOW["Fluxo de Dev (vite dev)"]
         direction TB
         A["Browser: GET /index.html"]
@@ -174,7 +172,7 @@ flowchart TD
     end
 
     class DEV_FLOW neutro
-    class BUILD_FLOW ok
+    class BUILD_FLOW marca
 ```
 
 > [!info] Leitura do diagrama

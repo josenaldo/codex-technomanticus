@@ -78,8 +78,8 @@ Esta é a confusão mais cara do OIDC, e a que abriu a vulnerabilidade do Sign i
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     TE["Token Endpoint"] -->|"emite"| IDT["ID Token<br/>(JWT sempre)"]
     TE -->|"emite"| AT["Access Token<br/>(opaco ou JWT)"]
 
@@ -93,7 +93,7 @@ graph LR
 
     class IDT neutro
     class AT neutro
-    class X falha
+    class X marca
 ```
 
 A distinção tem raiz técnica, não é só convenção de nomes. O claim `aud` (audience) do ID token, segundo a **OpenID Connect Core 1.0**, "deve conter o `client_id` da Relying Party" que solicitou o token[^oidccore] — ou seja, o próprio token diz, criptograficamente, "eu fui emitido *para este client específico*, não para uma API qualquer". Uma API que aceitasse um ID token estaria, na prática, ignorando esse `aud` (porque o `aud` nunca vai bater com o identificador da API) ou aceitando tokens cujo público-alvo declarado nunca foi ela. O Auth0 resume três problemas concretos dessa confusão: descasamento de audiência (o `aud` do ID token é o `client_id`, não o identificador da API); ausência de sender-constraining (nada amarra o ID token ao canal client-API, então um ID token roubado funciona para qualquer atacante que o capture); e o fato de o ID token ser assinado com uma chave conhecida do próprio client, o que significa que a API não tem como saber se o client modificou o token antes de reenviá-lo[^auth0idvsat].

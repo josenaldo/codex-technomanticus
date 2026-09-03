@@ -130,7 +130,7 @@ Esta é a regra mais importante da nota, e vale repetir sem meias-palavras: **to
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph SemPonteiro["Passagem por valor (sem ponteiro)"]
         A1["minhaConta.Saldo = 100"] --> A2["depositar(minhaConta, 50)"]
@@ -146,7 +146,7 @@ flowchart TD
         B4 --> B5["minhaConta.Saldo vira 150"]
     end
 
-    class A5 falha
+    class A5 neutro
     class B5 destaque
 ```
 
@@ -336,9 +336,9 @@ Em Go, esse código é perfeitamente seguro, e a razão é o **escape analysis**
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["compilador analisa criarConta"] --> B{"'conta' é referenciada\nfora da função?"}
     B -->|"Não — só usada\ndentro de criarConta"| C["aloca 'conta' no STACK\n(barato, some no retorno)"]
     B -->|"Sim — &conta escapa\nvia return"| D["aloca 'conta' no HEAP\n(sobrevive ao retorno,\nliberada pelo GC depois)"]
@@ -346,7 +346,7 @@ flowchart TD
     class A neutro
     class B destaque
     class C destaque
-    class D falha
+    class D marca
 ```
 
 O ponto central para reter desta nota: **você nunca escreve código para decidir stack ou heap** — não existe `malloc`/`free` em Go, não existe uma palavra-chave "aloque isso no heap". A decisão é inteiramente do compilador, automática, baseada em análise estática do fluxo do ponteiro. Isso é parte do que torna ponteiros em Go seguros por padrão: o mesmo padrão que seria um bug garantido em C ("retornar ponteiro para local") é simplesmente correto em Go, porque a linguagem foi desenhada para que a "intenção óbvia" do programador (devolver um ponteiro utilizável) sempre funcione.

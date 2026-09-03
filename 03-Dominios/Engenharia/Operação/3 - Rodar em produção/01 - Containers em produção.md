@@ -64,7 +64,7 @@ Essa imagem final não tem shell, não tem `apt`, não tem `curl`, não tem `npm
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph GORDA["Container A — imagem 'gorda'"]
         G1["ubuntu:latest completo"]
@@ -82,7 +82,7 @@ graph TD
     end
     GORDA -.->|"RCE na app"| SHELL["🔓 atacante ganha shell,<br/>reconhece rede,<br/>escala lateralmente"]
     MINIMA -.->|"RCE na app"| DEADEND["🔒 atacante ganha exec,<br/>mas sem shell —<br/>beco sem saída"]
-    class GORDA falha
+    class GORDA marca
     class MINIMA neutro
 ```
 
@@ -136,7 +136,7 @@ Reduzir o que está *dentro* da imagem é metade do trabalho. A outra metade é 
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Código-fonte"] -->|"CI build"| B["Imagem candidata"]
     B -->|"Trivy/Snyk<br/>scan de CVE"| C{"CVE crítica<br/>sem patch?"}
@@ -144,7 +144,7 @@ graph LR
     C -->|"não"| D["Cosign assina<br/>(Sigstore/Rekor)"]
     D --> E["Push pro registry<br/>com tag imutável/digest"]
     E -->|"deploy verifica<br/>assinatura"| F["Roda em produção"]
-    class BLOQUEIA falha
+    class BLOQUEIA neutro
     class D destaque
 ```
 

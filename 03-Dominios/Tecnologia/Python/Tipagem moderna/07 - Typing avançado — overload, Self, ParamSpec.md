@@ -69,9 +69,9 @@ Um checador estático (`mypy`, `pyright` — ver [[04 - mypy e pyright — checa
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["carregar_config(origem)"] --> B{"checador estático<br/>casa origem contra<br/>as assinaturas @overload,<br/>em ordem"}
     B -->|"origem: str"| C["retorno inferido:<br/>dict[str, Any]"]
     B -->|"origem: dict[str, Any]"| D["retorno inferido:<br/>list[tuple[str, Any]]"]
@@ -85,7 +85,7 @@ flowchart TD
     class B destaque
     class C neutro
     class D neutro
-    class E falha
+    class E marca
     class F neutro
 ```
 
@@ -335,7 +335,7 @@ contar_pernas(cachorros)   # ok — Sequence é covariante e read-only, sem risc
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Invariante["Invariante — list[T]"]
         direction TB
@@ -350,8 +350,8 @@ flowchart LR
         V1["Callable[[Animal], None]"] -->|"substitui, direção invertida"| V2["Callable[[Cachorro], None]"]
     end
 
-    class I1 falha
-    class I2 falha
+    class I1 marca
+    class I2 marca
     class C1 neutro
     class C2 neutro
     class V1 neutro

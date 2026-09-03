@@ -304,7 +304,7 @@ Quando um hook está configurado mas não parece executar, siga este fluxo:
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Start["Hook configurado mas não executa"]
 
@@ -342,7 +342,7 @@ flowchart TD
     F -- "executa" --> G
     G --> H
 
-    class H ok
+    class H neutro
     class A_fix destaque
     class B_fix destaque
     class C_fix destaque

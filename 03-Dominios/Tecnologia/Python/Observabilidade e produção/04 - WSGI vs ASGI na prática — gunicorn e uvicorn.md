@@ -39,7 +39,7 @@ A primeira suspeita do time é que o serviço precisa de "mais máquina" — esc
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph CPU["Máquina com 8 núcleos"]
         C1["Core 1<br/>100% — uvicorn<br/>event loop único"]
@@ -50,7 +50,7 @@ graph LR
         C8["Core 8<br/>ocioso"]
     end
     REQ["Fila de requisições<br/>crescendo"] --> C1
-    class C1 falha
+    class C1 marca
     class C2 neutro
     class C3 neutro
     class C4 neutro

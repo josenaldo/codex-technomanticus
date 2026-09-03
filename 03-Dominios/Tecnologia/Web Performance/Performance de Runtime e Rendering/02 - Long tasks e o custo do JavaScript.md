@@ -30,7 +30,7 @@ O browser define uma **long task** como qualquer tarefa que segura a main thread
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph BAD["Long task: 250 ms"]
         A[Tarefa gigante roda] -->|clique espera 250ms| B[⛔ página travada]
@@ -39,7 +39,7 @@ graph LR
         C[50ms] -->|cede| D[50ms] -->|cede| E[50ms]
         D -.clique processado aqui.-> F[✓ responde]
     end
-    class B falha
+    class B marca
     class F neutro
 ```
 

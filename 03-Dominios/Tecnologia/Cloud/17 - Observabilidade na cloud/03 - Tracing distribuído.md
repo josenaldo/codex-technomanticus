@@ -66,14 +66,14 @@ O X-Ray é o produto da AWS pra esse problema. Ele se encaixa nas três peças d
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     GW["API Gateway<br/>p50: 45ms"] --> V["Lambda: validar<br/>p50: 120ms ✅"]
     V --> P["Lambda: pagamento<br/>p50: 800ms ⚠️"]
     P --> E["Lambda: estoque<br/>erro 12% 🔴"]
     E -.->|nunca chamado| M["Lambda: e-mail"]
 
-    class E falha
+    class E marca
     class M neutro
 ```
 

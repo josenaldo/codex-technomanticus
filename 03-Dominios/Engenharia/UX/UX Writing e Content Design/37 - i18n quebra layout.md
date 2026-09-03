@@ -43,13 +43,13 @@ A consequência visual mais direta da expansão de string: o botão dimensionado
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     T["Texto original (EN)<br/>'Add to cart'"] -->|"tradução"| E["Texto expandido (DE)<br/>'In den Warenkorb legen'"]
     E --> D{"Layout foi projetado<br/>com folga?"}
     D -->|"não"| Q["Trunca / quebra layout"]
     D -->|"sim"| OK["Se ajusta sem quebrar"]
-    class Q falha
+    class Q marca
     class OK neutro
 ```
 

@@ -39,7 +39,8 @@ O problema não está na lógica — está no **tempo**. O operador `==` de stri
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph errado["== (vazamento de tempo)"]
         direction LR
@@ -56,8 +57,8 @@ flowchart TB
         B2 --> B3["retorna 1 ou 0\n(tempo idêntico em qualquer caso)"]
     end
 
-    class A3 falha
-    class A6 falha
+    class A3 neutro
+    class A6 marca
     class B3 destaque
 ```
 
@@ -182,13 +183,13 @@ Go não faz *bounds checking* em aritmética de inteiros. Somar `MaxInt32 + 1` n
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["MaxInt32\n2147483647"] -->|"+1"| B["overflow"]
     B --> C["MinInt32\n-2147483648"]
 
     class A neutro
-    class B falha
+    class B marca
     class C neutro
 ```
 
@@ -251,7 +252,7 @@ As três armadilhas acima têm um padrão em comum: cada uma, isolada, parece um
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Atacante((Atacante)) --> L1
 
@@ -275,7 +276,7 @@ flowchart TB
     end
     L4 --> Sistema[("Dado protegido")]
 
-    class Atacante falha
+    class Atacante neutro
     class Sistema destaque
 ```
 

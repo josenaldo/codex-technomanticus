@@ -39,7 +39,7 @@ Nota de corte: **70% cumulativo** sobre os 30 itens (dado confirmado no [[01 - P
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph PCEP["PCEP-30-02 — 30 itens, corte 70%"]
@@ -64,7 +64,7 @@ flowchart TB
     B4 --> N06["Core 06<br/>funções"]
     B4 --> N08["Core 08<br/>exceções"]
 
-    class B2 falha
+    class B2 marca
     class B4 destaque
     class B1 neutro
     class B3 neutro

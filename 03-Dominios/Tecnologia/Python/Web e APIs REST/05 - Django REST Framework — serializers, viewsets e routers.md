@@ -346,9 +346,9 @@ Essas seis linhas geram, sozinhas, todo o mapeamento URL → ação que a seçã
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Cliente["Requisição HTTP"]
         REQ["POST /api/tarefas/\n{titulo: 'Comprar leite'}"]
@@ -376,8 +376,8 @@ flowchart TB
     class ROUTER neutro
     class SER_IN neutro
     class MODEL destaque
-    class SER_OUT ok
-    class JSON_OUT ok
+    class SER_OUT marca
+    class JSON_OUT marca
     class ERRO falha
 ```
 

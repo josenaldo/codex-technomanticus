@@ -27,7 +27,7 @@ Um arquiteto sênior nunca escolhe compute por moda. A pergunta certa não é "s
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Start(["Novo workload de compute<br/>a arquitetar"])
@@ -53,7 +53,7 @@ flowchart TD
     Q6 -->|"Sim"| Serverless["SERVERLESS / FaaS<br/>Lambda / DO Functions<br/>(este galho)<br/>pay-per-use vence"]
     Q6 -->|"Não, precisa manter<br/>conexão/cache em memória"| Container
 
-    class Serverless ok
+    class Serverless marca
     class Container neutro
     class VM destaque
 ```
@@ -160,7 +160,7 @@ Vale aplicar a árvore inteira a um cenário concreto, com quatro workloads da m
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Upload["Cliente sobe foto<br/>de avaliação de produto"] -->|"evento S3"| Thumb["Função: gera thumbnail<br/>SERVERLESS — evento, curto, rajada"]
@@ -168,8 +168,8 @@ flowchart LR
     API["App mobile consulta<br/>catálogo, o dia inteiro"] -->|"HTTP constante"| Catalogo["Serviço de catálogo<br/>CONTAINER — throughput alto e constante"]
     Recom["Motor de recomendação<br/>batch noturno, 2h de processamento"] -->|"cron"| Batch["Job batch<br/>VM/instância spot — excede 15 min"]
 
-    class Thumb ok
-    class Fatura ok
+    class Thumb marca
+    class Fatura marca
     class Catalogo neutro
     class Batch destaque
 ```
@@ -216,7 +216,7 @@ A carga real que "explode" não é o exemplo isolado — é o produto que cresce
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Brilha["Onde serverless BRILHA"]
         direction TB
@@ -238,7 +238,7 @@ flowchart LR
         A6["Monolito lift-and-shift"]
     end
 
-    class Brilha ok
+    class Brilha neutro
     class Anti falha
 ```
 
@@ -310,7 +310,7 @@ Isso muda a árvore de decisão na prática, não só no detalhe: um caso de uso
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q1{"Caso de uso"}
@@ -323,8 +323,8 @@ flowchart TD
     DO_Choice -->|"Não — complexidade<br/>não compensa"| AppPlatform["APP PLATFORM (container)<br/>ou droplet dedicado<br/>a árvore pende mais cedo<br/>pra container/VM na DO"]
     DO_Choice -->|"Sim — volume baixo,<br/>simplicidade aceitável"| DOFunctions["DO Functions<br/>com trigger manual via HTTP"]
 
-    class Lambda ok
-    class Ambos ok
+    class Lambda marca
+    class Ambos marca
     class AppPlatform neutro
     class DOFunctions destaque
 ```

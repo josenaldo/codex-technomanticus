@@ -42,15 +42,17 @@ A resposta curta é: porque isso não escala em nenhuma das três dimensões que
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Token com 500 permissions<br/>listadas (IDs de recurso)"] --> B["Estoura limite de header<br/>(8-10KB) → 431"]
     A --> C["Congela no momento da emissão<br/>revogação não tem efeito até expirar"]
     A --> D["Duplica o que o PDP<br/>já resolve em ms"]
 
     class A falha
-    class B falha
-    class C falha
-    class D falha
+    class B neutro
+    class C marca
+    class D marca
 ```
 
 > [!warning] Cramming — a progressão típica do anti-padrão

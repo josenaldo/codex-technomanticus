@@ -58,9 +58,9 @@ A nota 01 desta trilha já introduziu o vocabulário: um pipeline é melhor pens
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     E1["Extrair<br/>pedidos"] --> S1["Staging<br/>pedidos"]
     E2["Extrair<br/>itens de pedido"] --> S2["Staging<br/>itens"]
     E3["Extrair<br/>produtos"] --> S3["Staging<br/>produtos"]
@@ -88,7 +88,7 @@ graph LR
     class F destaque
     class M1 destaque
     class M2 destaque
-    class T falha
+    class T marca
     class D neutro
 ```
 

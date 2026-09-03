@@ -29,10 +29,8 @@ Este playbook tem sequência deliberada:
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["📊 Fase 0\nMonitorar"] --> B["⚡ Fase 1\nQuick wins"]
     B --> C["🔧 Fase 2\nEstrutural"]
@@ -40,10 +38,10 @@ flowchart LR
     D --> E["🔄 Fase 4\nManutenção"]
     E --> A
 
-    class A ok
+    class A marca
     class B destaque
     class C neutro
-    class D falha
+    class D marca
     class E marca
 ```
 

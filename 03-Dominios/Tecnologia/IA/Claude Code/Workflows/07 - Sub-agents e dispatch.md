@@ -33,7 +33,6 @@ flowchart TB
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     orquestrador["Agente orquestrador\n(planeja e coordena)"]
 
     sub1["Sub-agent A\nPaymentService\ncontexto: payment interfaces\n+ Stripe config"]
@@ -52,7 +51,7 @@ flowchart TB
     class orquestrador marca
     class sub1 neutro
     class sub2 destaque
-    class sub3 ok
+    class sub3 marca
     class resultado marca
 ```
 

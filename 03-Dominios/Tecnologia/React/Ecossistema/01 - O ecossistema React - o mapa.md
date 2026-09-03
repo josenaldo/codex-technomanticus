@@ -167,8 +167,8 @@ Gráficos de linha, barras, pizza e scatter têm suas próprias complexidades: e
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     REACT["⚛️ React\n(renderização declarativa)"]
 
     REACT --> SS["🌐 Server State\nTanStack Query · SWR"]
@@ -184,12 +184,12 @@ graph TD
     UI -. "headless → Radix\nopinionated → MUI" .-> UI
 
     class REACT neutro
-    class SS ok
-    class CS ok
-    class FM ok
-    class UI ok
-    class TB ok
-    class DV ok
+    class SS marca
+    class CS marca
+    class FM marca
+    class UI marca
+    class TB marca
+    class DV marca
 ```
 
 ## A stack típica em 2026

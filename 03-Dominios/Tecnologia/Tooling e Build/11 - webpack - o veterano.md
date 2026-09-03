@@ -54,7 +54,6 @@ Antes de ver config, você precisa ter o mapa mental do webpack. Ele tem quatro 
 flowchart TD
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph INPUT["Entrada"]
         E["Entry point(s)\n(src/index.js, src/admin.js...)"]
@@ -81,7 +80,7 @@ flowchart TD
     class INPUT neutro
     class RESOLVE destaque
     class TRANSFORM destaque
-    class ORCHESTRATE ok
+    class ORCHESTRATE marca
     class OUTPUT marca
 ```
 
@@ -121,7 +120,7 @@ Com múltiplos entry points, o webpack gera um chunk principal para cada um, mai
 
 ```mermaid
 graph TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     HOME_E["entry: home.js"]
     CHECK_E["entry: checkout.js"]
     ADMIN_E["entry: admin.js"]
@@ -139,7 +138,7 @@ graph TD
     CHECK_C -.->|"depende de"| VENDOR_C
     ADMIN_C -.->|"depende de"| VENDOR_C
 
-    class VENDOR_C ok
+    class VENDOR_C neutro
 ```
 
 > [!note] Leitura do diagrama
@@ -210,8 +209,8 @@ A cadeia de loaders para um arquivo `.module.css` fica assim:
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     CSS["Button.module.css\n(arquivo original)"]
     POSTCSS["postcss-loader\n(autoprefixer, nesting)\n↓\n.btn { color: red }"]
     CSSLOADER["css-loader\n(resolve imports, CSS Modules)\n↓\nJS com objeto de classes\n{ btn: '_abc123_btn' }"]
@@ -221,7 +220,7 @@ flowchart LR
     CSS --> POSTCSS --> CSSLOADER --> EXTRACT --> IMPORT
 
     class CSS neutro
-    class IMPORT ok
+    class IMPORT marca
 ```
 
 > [!note] Leitura do diagrama
@@ -448,8 +447,8 @@ module.exports = {
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Build 1 (cold)"
         B1_SRC["src/**\n(600 módulos)"]
         B1_PROC["processamento completo\nbabel, ts, css, assets"]
@@ -469,7 +468,7 @@ flowchart LR
     B1_CACHE -.->|"cache read"| B2_CHECK
 
     class B1_TIME destaque
-    class B2_TIME ok
+    class B2_TIME neutro
 ```
 
 > [!note] Leitura do diagrama
@@ -858,8 +857,8 @@ A solução pré-Module Federation era iframe (funciona mas é preso) ou build e
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph "Shell App (container)"
         SHELL["shell/\n(entry do usuário)\nwww.empresa.com"]
         SHELL_MF["ModuleFederationPlugin\nremotes:\n  checkout: 'checkout@https://checkout.empresa.com/mf.js'\n  catalog: 'catalog@https://catalog.empresa.com/mf.js'"]
@@ -880,8 +879,8 @@ flowchart LR
     CHECK_BUILD -.->|"shared react@18\n(se shell já carregou, reutiliza)"| SHELL
 
     class SHELL neutro
-    class CHECK_BUILD ok
-    class CAT_BUILD ok
+    class CHECK_BUILD marca
+    class CAT_BUILD marca
 ```
 
 > [!note] Leitura do diagrama

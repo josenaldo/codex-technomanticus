@@ -36,8 +36,8 @@ Antes de entender o padrão, vale entender por que o problema existe especificam
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Idempotentes["Idempotentes por definição"]
         GET["GET<br/>ler não muda nada"]
         PUT["PUT<br/>substitui pelo mesmo valor"]
@@ -51,7 +51,7 @@ graph LR
     class GET neutro
     class PUT neutro
     class DELETE neutro
-    class POST falha
+    class POST marca
 ```
 
 > [!question]- Se PUT é idempotente "por definição", isso significa que uma implementação de PUT nunca pode ter bug de duplicação?
@@ -120,9 +120,9 @@ Content-Type: application/json
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["POST recebido<br/>com Idempotency-Key"] --> B{"Chave já<br/>existe no store?"}
     B -->|"Não"| C["Reserva a chave<br/>(insert atômico)"]
     C --> D["Executa a operação<br/>de negócio"]
@@ -137,7 +137,7 @@ flowchart TD
     class F neutro
     class I neutro
     class G destaque
-    class J falha
+    class J marca
 ```
 
 Um ponto sutil que a implementação precisa honrar: se a chave já existe mas o **corpo do request é diferente** do que gerou a chave da primeira vez, isso não é um retry legítimo — é reuso indevido de uma chave (bug do cliente, ou nome de variável colidindo com outra operação). A Stripe compara os parâmetros recebidos com os da primeira execução e retorna erro se não baterem, exatamente para blindar contra esse caso ([Stripe Docs, *Idempotent requests*](https://docs.stripe.com/api/idempotent_requests)).

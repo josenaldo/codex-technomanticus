@@ -66,7 +66,7 @@ Repare que a *chamada* `origem.Move(3, 4)` não mudou nada — nem `&origem`, ne
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Value["Value receiver — func (p Point) Move(...)"]
         direction TB
@@ -86,7 +86,7 @@ flowchart TD
         P5 --> P6["origem vira {3 4}"]
     end
 
-    class V6 falha
+    class V6 neutro
     class P6 destaque
 ```
 

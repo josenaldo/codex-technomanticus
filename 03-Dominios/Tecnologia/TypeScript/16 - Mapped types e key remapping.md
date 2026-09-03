@@ -51,8 +51,8 @@ A sintaxe `[K in keyof T]` funciona como um `for...of` sobre as chaves: `K` perc
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     T["T (tipo-fonte)\n{ id: number; name: string; email: string }"]
     KOF["keyof T\n'id' | 'name' | 'email'"]
     MAP["[K in keyof T]: T[K]\n(iteração sobre as chaves)"]
@@ -61,7 +61,7 @@ flowchart LR
     T --> KOF --> MAP --> R
 
     class MAP neutro
-    class KOF ok
+    class KOF marca
 ```
 
 ---
@@ -363,8 +363,8 @@ Esse padrão aparece em bibliotecas como `react-hook-form` e `zod` para derivar 
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     T["T (tipo-fonte)"]
     COND["T[K] extends Target ?"]
     K_YES["K → mantém a chave"]
@@ -374,8 +374,8 @@ flowchart LR
     COND -- "sim" --> K_YES
     COND -- "não" --> NEVER
 
-    class K_YES ok
-    class NEVER falha
+    class K_YES neutro
+    class NEVER marca
 ```
 
 ---

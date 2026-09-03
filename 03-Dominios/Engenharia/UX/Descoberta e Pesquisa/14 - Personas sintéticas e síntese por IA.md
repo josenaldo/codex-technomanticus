@@ -24,15 +24,15 @@ Imagine que você está sob pressão de prazo e alguém te mostra uma ferramenta
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     IA["'IA na pesquisa de UX'"]
     IA --> S["Síntese assistida por LLM<br/>de entrevistas REAIS"]
     IA --> P["Personas sintéticas<br/>respostas SIMULADAS"]
     S -->|"acelera análise<br/>de dado real"| OK["Uso consolidado,<br/>defensável"]
     P -->|"substitui a coleta<br/>de dado, não só a análise"| RISK["Crítica acadêmica forte<br/>(2026)"]
     class OK neutro
-    class RISK falha
+    class RISK marca
 ```
 
 **Síntese assistida por LLM** entra depois que a entrevista de descoberta (nota 07) ou a switch interview (nota 09) já aconteceu, com gente real. O LLM processa a transcrição e ajuda a extrair temas recorrentes e citações relevantes — o mesmo trabalho que, feito manualmente, consome horas por entrevista. É análise de dado que já existe, não geração de dado novo. Esse uso é o mais consolidado e defensável do momento: acelera um gargalo real sem mudar a natureza do que está sendo analisado.

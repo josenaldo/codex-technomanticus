@@ -27,10 +27,8 @@ Cada controle, isolado, cobre uma fatia estreita da superfície de ataque. A per
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Internet(["Internet<br/>tráfego hostil e legítimo misturados"])
 
@@ -60,10 +58,10 @@ flowchart TB
     RT --> NACL --> SG --> IAM
     RT -.tráfego p/ S3/DynamoDB/etc.-> EP
 
-    class Borda falha
+    class Borda marca
     class VPCL neutro
     class SubL marca
-    class InstL ok
+    class InstL marca
     class AppL destaque
 ```
 
@@ -121,7 +119,8 @@ Um **VPC endpoint** resolve isso na raiz: o tráfego entre a instância e o serv
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph VPC["VPC — subnet privada"]
         App["Instância de app<br/>sem IP público"]
         EP["Interface Endpoint<br/>(ENI privada, via PrivateLink)"]
@@ -131,8 +130,8 @@ flowchart LR
 
     IGW["Internet Gateway"]
     NAT["NAT Gateway"]
-    class IGW falha
-    class NAT falha
+    class IGW neutro
+    class NAT marca
 ```
 
 O ponto de segurança que o galho 7 não aprofundou: um Interface endpoint aceita uma **endpoint policy** — uma política em formato IAM que restringe *o que* pode ser acessado através daquele endpoint especificamente, independente das permissões IAM da instância. Isso permite, por exemplo, um endpoint que só deixa passar tráfego para um bucket S3 nomeado, mesmo que a role da instância tecnicamente tivesse permissão para outros buckets — uma segunda trava, na camada de rede, sobre uma decisão que o IAM já toma na camada de identidade. É defesa em profundidade dentro da própria defesa em profundidade.

@@ -32,7 +32,7 @@ A solução do modelo de memória compartilhada é colocar **cadeados nas pratel
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph HEAP["Heap compartilhado (uma geladeira)"]
         R1["Região A&lt;br/&gt;protegida por Lock A"]
@@ -44,7 +44,7 @@ flowchart TB
     T3["Thread 3"] --> R2
     T1 -.acesso direto.-> R3
     T2 -.acesso direto.-> R3
-    class R3 falha
+    class R3 marca
     class HEAP neutro
 ```
 
@@ -84,8 +84,8 @@ Vencida a história, ficam quatro razões técnicas que ainda sustentam a escolh
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     APP["Seu código&lt;br/&gt;(quer paralelismo)"]
     THREADS["Threads&lt;br/&gt;(unidade de execução)"]
     SYNC["Sincronização&lt;br/&gt;locks · atômicos · barreiras"]
@@ -96,7 +96,7 @@ flowchart TB
     SYNC --> MEM
     MEM --> HW
     class APP neutro
-    class HW ok
+    class HW marca
 ```
 
 Lead-in: a pilha do modelo, do seu código até o silício.
@@ -195,16 +195,16 @@ Pense numa escada. Quanto mais alto o degrau, menos sincronização você escrev
 
 ```mermaid
 flowchart TB
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     L5["Mais ALTO: paralelismo declarativo&lt;br/&gt;parallel streams · fork/join&lt;br/&gt;você diz O QUÊ, não COMO"]
     L4["Tarefas e executors&lt;br/&gt;ExecutorService · Task/TPL · CompletableFuture&lt;br/&gt;trabalho desacoplado da thread"]
     L3["Coleções concorrentes&lt;br/&gt;ConcurrentHashMap · BlockingQueue&lt;br/&gt;sincronização embutida na estrutura"]
     L2["Atômicos e lock-free&lt;br/&gt;AtomicInteger · CAS · std::atomic&lt;br/&gt;sem lock, mas você raciocina sobre ordenação"]
     L1["Mais BAIXO: locks manuais&lt;br/&gt;synchronized · ReentrantLock · pthread_mutex&lt;br/&gt;você pega e solta cada cadeado"]
     L5 --> L4 --> L3 --> L2 --> L1
-    class L5 ok
-    class L1 falha
+    class L5 neutro
+    class L1 marca
 ```
 
 Lead-in: a escada de abstração; o topo (verde) esconde a sincronização, a base (vermelha) a expõe.
@@ -267,7 +267,7 @@ thread::spawn(move || {
 
 ```mermaid
 flowchart TB
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     CODE["Código tenta compartilhar&lt;br/&gt;um dado entre threads"]
     CHECK{"O tipo é&lt;br/&gt;Send / Sync?"}
@@ -279,7 +279,7 @@ flowchart TB
     CHECK -->|"não"| FAIL
     FAIL --> FIX
     FIX --> CHECK
-    class OK ok
+    class OK neutro
     class FAIL falha
 ```
 

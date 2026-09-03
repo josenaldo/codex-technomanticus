@@ -33,15 +33,15 @@ Hierarquia visual é a resposta à pergunta "o que o olho vê primeiro, e é a c
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Ação primária<br/>botão preenchido, cor de marca, peso bold"] --> D["Decisão da tela"]
     B["Ação secundária<br/>outline ou texto, peso medium"] --> D
     C["Ação terciária/destrutiva<br/>texto discreto, cor neutra ou de alerta"] --> D
     class A neutro
     class B destaque
-    class C falha
+    class C marca
     class D destaque
 ```
 

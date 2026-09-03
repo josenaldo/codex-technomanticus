@@ -175,15 +175,15 @@ A peça que faz essa cadeia funcionar de verdade — e que a nota 04 nomeia com 
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Internet(("Internet")) -->|"443/80"| ALBSG["alb-sg<br/>fonte: 0.0.0.0/0"]
     ALBSG -->|"8080"| WebSG["web-sg<br/>fonte: alb-sg"]
     WebSG -->|"9090"| AppSG["app-sg<br/>fonte: web-sg"]
     AppSG -->|"5432"| DbSG["db-sg<br/>fonte: app-sg"]
 
     class Internet neutro
-    class DbSG falha
+    class DbSG marca
 ```
 
 Vale nomear a consequência prática dessa cadeia: se um atacante compromete o web tier e tenta, a partir dali, falar diretamente com o `db-sg` pulando o `app-sg`, a regra de entrada do banco simplesmente não confere permissão a `web-sg` — só a `app-sg`. O caminho mais curto entre "web comprometido" e "banco de dados" não é uma conexão direta; é atravessar, também, o app tier — o que, na prática, exige comprometer uma segunda camada de aplicação, não só a primeira.
@@ -237,8 +237,8 @@ Repare na regra de negação explícita no final — algo que security group **n
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Req["Requisição chega na subnet<br/>de dados, porta 5432,<br/>origem: 10.0.10.5 (app tier)"] --> R1{"Route table da<br/>subnet de dados tem<br/>rota até a origem?"}
     R1 -->|"Sim — local route"| N1{"NACL da subnet:<br/>regra permite essa<br/>origem/porta?"}
     N1 -->|"Não"| Deny1["Descartado na borda<br/>da subnet — nem chega<br/>a avaliar o SG"]
@@ -246,9 +246,9 @@ flowchart TD
     S1 -->|"Não"| Deny2["Descartado no<br/>nível da instância"]
     S1 -->|"Sim"| Allow["Pacote entregue à<br/>instância de banco"]
 
-    class Deny1 falha
-    class Deny2 falha
-    class Allow ok
+    class Deny1 neutro
+    class Deny2 marca
+    class Allow marca
 ```
 
 O diagrama acima é a essência da defesa em profundidade desta arquitetura: **três checagens independentes — rota, NACL, security group — cada uma capaz de barrar sozinha, e nenhuma delas sabe da existência das outras duas.** Um erro de configuração numa camada não derruba a proteção completa, porque as outras duas continuam de pé, avaliadas de forma totalmente alheia ao que aconteceu na primeira.

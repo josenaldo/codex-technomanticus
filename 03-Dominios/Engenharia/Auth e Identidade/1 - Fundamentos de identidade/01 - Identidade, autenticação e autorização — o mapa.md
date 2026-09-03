@@ -125,7 +125,7 @@ A resposta da indústria a esse problema tem nome: **phishing-resistant MFA**. O
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     F["Fatores de<br/>autenticação"] --> K["Something you know<br/>(senha, PIN)"]
     F --> H["Something you have<br/>(SMS, app, chave FIDO2)"]
@@ -135,7 +135,7 @@ graph TD
     K -->|"+ H de categoria diferente"| MFA["MFA real<br/>AAL2"]
     H -->|"chave de hardware<br/>FIDO2/WebAuthn"| PR["Phishing-resistant<br/>AAL2/AAL3"]
 
-    class SF falha
+    class SF marca
     class MFA neutro
     class PR neutro
 ```
@@ -177,14 +177,15 @@ O DBIR 2026 também traz um dado sobre a economia por trás disso: **73% das ví
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     L["Vazamento em<br/>Serviço A"] -->|"reuso de senha"| CS["Credential<br/>stuffing"]
     IS["Infostealer<br/>no dispositivo"] -->|"rouba sessão/senha"| CS
     CS -->|"login automatizado<br/>em massa"| ATO["Account<br/>Takeover"]
     ATO -->|"acesso válido"| RW["Ransomware /<br/>exfiltração"]
 
-    class CS falha
-    class ATO falha
+    class CS neutro
+    class ATO marca
 ```
 
 Do lado da autorização, o quadro é igualmente concentrado: o **OWASP Top 10:2025** manteve *Broken Access Control* na posição A01 — o topo da lista — pelo segundo ciclo consecutivo, com o dado já citado de 100% das aplicações testadas apresentando alguma falha de controle de acesso[^owasp]. Junte os dois relatórios e a conclusão é direta: **quem ataca sistemas modernos ataca identidade — seja roubando a credencial (AuthN), seja explorando a ausência de checagem de permissão depois que a credencial já é válida (AuthZ)**. Isso não é uma tendência passageira de um ano; é a razão estrutural pela qual esta trilha existe como disciplina própria, e não como um apêndice de "segurança geral".

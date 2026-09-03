@@ -51,11 +51,11 @@ Esse vazamento não é um detalhe estético: **é o sintoma direto de que o mode
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     M["Modelo de domínio<br/>status: PENDING_REVIEW"] -->|"sem tradução"| UI1["Tela do usuário<br/>'PENDING_REVIEW'"]
     M -->|"com camada de tradução<br/>(microcopy deliberada)"| UI2["Tela do usuário<br/>'Em análise'"]
-    class UI1 falha
+    class UI1 marca
     class UI2 neutro
 ```
 

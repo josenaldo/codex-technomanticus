@@ -34,8 +34,8 @@ O trabalho desta capstone não introduz nenhum mecanismo novo. Cada peça da su�
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     G11["API do Galho 11\n(blindada, zero teste)"] --> P1["Peça 1\nUnit tests (N01, N04)"]
     P1 --> P2["Peça 2\nFixtures em conftest.py (N02, N03)"]
     P2 --> P3["Peça 3\nIntegração via TestClient (N05)"]
@@ -45,7 +45,7 @@ flowchart LR
     P6 --> SUITE["Suíte completa\npronta pra CI"]
 
     class G11 destaque
-    class SUITE ok
+    class SUITE neutro
 ```
 
 > [!question]- Por que não bastava a nota 05 já ter mostrado o teste de Broken Access Control?
@@ -366,8 +366,8 @@ Chegando à peça que dá sentido ao resto: transformar cada correção manual d
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     E2["Etapa 2 do Galho 11\nBroken Access Control corrigido"] --> T1["test_broken_access_control.py"]
     E3["Etapa 3 do Galho 11\nSSTI corrigida"] --> T2["test_ssti.py"]
     E5["Etapa 5 do Galho 11\nRate limiting"] --> T3["test_rate_limiting.py"]
@@ -383,8 +383,8 @@ flowchart TD
     R2 -->|"não"| OK
     R3 -->|"não"| OK
 
-    class F falha
-    class OK ok
+    class F neutro
+    class OK marca
 ```
 
 ### (a) Broken Access Control: 404 para quem não é dono
@@ -524,8 +524,8 @@ TOTAL                                  198      9      42       6     91%
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph CI["Pipeline de CI, a cada push"]
         A["git push"] --> B["pytest tests/unit tests/integration<br/>~200ms, roda sempre"]
         B --> C["pytest tests/security<br/>~400ms, roda sempre — NUNCA opcional"]
@@ -534,9 +534,9 @@ flowchart LR
         D -->|"≥ 85%"| F["Build passa"]
     end
 
-    class C falha
-    class E falha
-    class F ok
+    class C neutro
+    class E marca
+    class F marca
 ```
 
 O detalhe que essa figura torna explícito: `tests/security/` não é um subconjunto opcional, marcado `slow` ou `integration`, filtrado do dia a dia pela técnica de marks que a [[03 - Parametrização e organização de suíte|nota 03]] ensinou para separar pre-commit rápido de CI completo. Os três testes de regressão de segurança desta capstone rodam sempre, em toda execução — o custo de rodá-los (milissegundos, contra `TestClient` e SQLite em memória) é irrelevante perto do custo de uma regressão de Broken Access Control chegar a produção sem ninguém notar.
@@ -547,9 +547,8 @@ Somando as peças, uma suíte real para esta API teria uma forma próxima desta 
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Piramide["Pirâmide de testes da API de Tarefas"]
         direction TB
         SEG["tests/security/\n8 testes\nBAC, SSTI, rate limiting"]
@@ -559,9 +558,9 @@ flowchart TD
 
     UNIT --> INTEG --> SEG
 
-    class UNIT ok
+    class UNIT marca
     class INTEG neutro
-    class SEG falha
+    class SEG marca
 ```
 
 42 testes ao todo — não é um número grande para uma API de quatro recursos, dois endpoints de autenticação e um endpoint de busca, e é exatamente o tamanho que a pirâmide de testes ([[03-Dominios/Engenharia/Testes/index|Engenharia/Testes]], não reexplicada aqui) prevê: mais testes unitários (baratos, rápidos, muitos casos de borda) do que testes de integração (mais caros, cobrindo fluxos), e um punhado pequeno mas não-negociável de testes de segurança — não porque segurança importe menos, mas porque cada teste de segurança, bem escrito, já cobre uma classe inteira de ataque de uma vez (o teste de Broken Access Control cobre quatro verbos num só; não precisa de quatro testes de segurança separados para isso).

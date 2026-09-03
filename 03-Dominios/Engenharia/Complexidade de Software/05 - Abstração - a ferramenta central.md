@@ -197,15 +197,15 @@ Cada nível **assume** que o de baixo funciona e fala um vocabulário mais próx
 
 ```mermaid
 flowchart TB
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     D[Domínio do negócio\n'criar pedido', 'cobrar cliente'] --> L
     L[Biblioteca / framework\nList, HttpClient, ORM] --> P
     P[Linguagem de alto nível\nfunções, tipos, objetos] --> I
     I[Instruções / bytecode\nADD, LOAD, JMP] --> H
     H[Hardware\nregistradores, portas lógicas]
-    class D ok
-    class H falha
+    class D neutro
+    class H marca
 ```
 
 *Leitura do diagrama:* cada nível depende do de baixo, mas só pela interface — quem escreve regra de negócio (topo) raciocina com "pedido" e "cliente" e legitimamente ignora registradores (base); a torre só funciona porque cada andar esconde o anterior.
@@ -248,9 +248,9 @@ O diagrama abaixo desenha as barreiras como o próprio SICP as desenha: camadas 
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     U["Programa que usa números racionais\nsoma_rac, imprime_rac"]
     B1{{"— barreira: só usa numerador / denominador / fazer_racional —"}}
     S["Operações racionais (interface)\nnumerador(r) · denominador(r) · fazer_racional(n,d)"]
@@ -263,7 +263,7 @@ flowchart TB
     class B2 destaque
     class B3 destaque
     class S neutro
-    class P ok
+    class P marca
 ```
 
 *Leitura do diagrama:* cada faixa âmbar é uma **barreira** — uma linha que só deixa passar a interface, nunca a implementação. Quem soma racionais (topo) chama `numerador`/`denominador` e legitimamente ignora que `r` é um par; quem implementa o par (meio) chama `cons`/`car` e ignora como a linguagem guarda pares (base). Trocar qualquer camada por outra equivalente não atravessa as barreiras vizinhas — é a torre de Dijkstra com as fronteiras explicitamente marcadas.
@@ -450,9 +450,8 @@ Abstrair cedo é apostar no escuro. A duplicação temporária é o preço de es
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[Vejo código duplicado] --> B{Quantas ocorrências?}
     B -->|1ª ou 2ª| C[Duplique de propósito\nespere mais evidência]
@@ -464,8 +463,8 @@ flowchart TD
     F -->|Só com flag + if| H[ALERTA: abstração errada]
     H --> I[Re-inline em cada chamador\napague o que sobra\nre-extraia se fizer sentido]
     class C neutro
-    class E ok
-    class H falha
+    class E marca
+    class H marca
     class I destaque
 ```
 

@@ -188,9 +188,8 @@ Notas de rodapé que separam quem decorou de quem entendeu:
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     RU["READ<br/>UNCOMMITTED"] --> RC["READ<br/>COMMITTED"]
     RC --> RR["REPEATABLE<br/>READ"]
@@ -198,9 +197,9 @@ flowchart LR
     RU -.->|"+ bloqueia dirty"| RC
     RC -.->|"+ bloqueia non-repeatable"| RR
     RR -.->|"+ bloqueia phantom e write skew"| SER
-    class RU falha
+    class RU marca
     class RC destaque
-    class RR ok
+    class RR marca
     class SER neutro
 ```
 
@@ -218,17 +217,17 @@ A regra de ouro que cai em entrevista: **writers não bloqueiam readers, e reade
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     W["T2 escreve:<br/>cria versão v2 da linha"] --> V2["Versão v2<br/>(visível p/ snapshots novos)"]
     V1["Versão v1<br/>(ainda visível p/ snapshot antigo)"] -.->|preservada| V1
     R1["T1 (snapshot antigo)<br/>lê a linha"] --> V1
     R2["T3 (snapshot novo)<br/>lê a linha"] --> V2
     GC["Coletor de lixo:<br/>VACUUM (PG) /<br/>purge do undo (InnoDB)"] -.->|"remove v1 quando<br/>nenhum snapshot a usa"| V1
     class V1 destaque
-    class V2 ok
-    class GC falha
+    class V2 neutro
+    class GC marca
 ```
 
 **Leitura do diagrama:** quando T2 escreve, ela **não destrói** a versão antiga (v1) — cria uma v2 ao lado. T1, que começou antes, continua lendo v1 (seu snapshot a aponta) **sem esperar T2**. T3, que começou depois, já vê v2. As duas leituras acontecem em paralelo com a escrita, cada uma na sua versão. O preço aparece embaixo: as versões antigas **acumulam** e precisam de um faxineiro — `VACUUM` no PostgreSQL, purge do undo log no InnoDB — que só pode remover v1 quando **nenhum snapshot vivo** ainda a referencia. É por isso que uma **transação longa segura lixo**: enquanto ela existe, seu snapshot pode precisar de versões antigas, e o coletor não pode limpá-las. Transação longa = bloat acumulando. (Esse custo reaparece em [[10 - Performance e armadilhas]].)

@@ -526,8 +526,8 @@ Rodar `uvicorn main:app --reload` contra um Postgres local (ou o SQLite de teste
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Entrada["Camada transversal — roda em toda requisição"]
         MW["middleware_de_correlation_id_e_tempo\n(nota 07)"]
@@ -558,7 +558,7 @@ flowchart TB
 
     class MW neutro
     class DEP neutro
-    class EH ok
+    class EH marca
     class OPENAPI destaque
 ```
 

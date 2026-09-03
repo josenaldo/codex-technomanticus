@@ -34,9 +34,9 @@ Express continua aparecendo em entrevistas e projetos reais porque é simples, e
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     R[Request] --> RI[requestId middleware]
     RI --> LG[logger]
     LG --> HM[helmet + cors]
@@ -52,7 +52,7 @@ flowchart TD
 
     class R neutro
     class RT destaque
-    class EH falha
+    class EH marca
     class RS neutro
 ```
 

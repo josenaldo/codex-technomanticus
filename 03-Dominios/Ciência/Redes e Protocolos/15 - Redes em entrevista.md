@@ -36,8 +36,8 @@ A maioria dos candidatos só treina a primeira face. A segunda — debugging de 
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Q["Pergunta de rede<br/>na entrevista"] --> TIPO{"Projetar ou<br/>investigar?"}
     TIPO -->|"&#34;projete a<br/>comunicação&#34;"| SD["System design<br/>escolher trade-offs"]
     TIPO -->|"&#34;está lento,<br/>investigue&#34;"| DBG["Debugging<br/>eliminar suspeitos<br/>camada por camada"]
@@ -45,7 +45,7 @@ flowchart TD
     DBG --> ARV["Árvore de diagnóstico:<br/>DNS? TLS? TCP?<br/>app? round-trips seriais?"]
 
     class SD neutro
-    class DBG falha
+    class DBG marca
 ```
 
 **Leitura do diagrama:** a primeira bifurcação que você faz mentalmente é o tipo da pergunta. System design puxa o checklist da seção 3; debugging puxa a árvore de diagnóstico da seção 2. Errar o balde — atacar "está lento" desenhando uma arquitetura nova — é o erro clássico de quem está nervoso.
@@ -67,8 +67,8 @@ A árvore de diagnóstico que eu percorro mentalmente:
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     LENTO["Endpoint lento<br/>(ex.: 1.5s)"] --> APP{"O backend em si<br/>é lento?<br/>(profile, EXPLAIN)"}
     APP -->|"Sim — query,<br/>CPU, GC"| FIXAPP["Otimizar app/banco<br/>(fora da rede)"]
     APP -->|"Não — app<br/>responde em 20ms"| REDE["O custo está na rede"]
@@ -83,8 +83,8 @@ flowchart TD
     SERIAL -->|Sim| FIXPAR["Paralelizar<br/>(CompletableFuture),<br/>cachear respostas"]
     SERIAL -->|Não| POOL["Falta connection<br/>pooling? Timeout?<br/>Retry sem backoff?"]
 
-    class REDE falha
-    class FIXPAR ok
+    class REDE neutro
+    class FIXPAR marca
 ```
 
 **Leitura do diagrama:** a primeira eliminação é separar app de rede — o `EXPLAIN ANALYZE` faz isso. Confirmado que a app é rápida, você desce a pilha: DNS (`[[04 - DNS]]`) é o mais barato de verificar e cachear; depois o TLS handshake numa conexão nova (`[[05 - TLS e HTTPS]]`); depois TCP slow start numa conexão fria (`[[02 - TCP]]`); depois round-trips seriais que dá pra paralelizar (`[[12 - Latência, throughput e os números]]`); e por fim a ausência de connection pooling e timeouts (`[[14 - Resiliência de rede]]`). O caso real cruzou três desses nós de uma vez — DNS não cacheado + TLS repetido + serial — e por isso somava 1.5s.
@@ -99,8 +99,8 @@ Quando a pergunta é "projete a comunicação deste sistema", você não improvi
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     START["&#34;Projete a comunicação<br/>deste sistema&#34;"] --> PROTO["1. Qual protocolo?<br/>REST / gRPC / GraphQL /<br/>mensageria"]
     PROTO --> SYNC["2. Síncrono ou<br/>assíncrono?"]
@@ -111,7 +111,7 @@ flowchart TD
     RESIL --> NUM["7. Os números batem?<br/>RTT, throughput,<br/>round-trips"]
 
     class PROTO neutro
-    class RESIL falha
+    class RESIL marca
     class NUM destaque
 ```
 
@@ -270,7 +270,7 @@ Esta nota fecha quinze. As três fases convergem aqui — o capstone é onde a t
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph INI["Iniciado — os fundamentos"]
@@ -303,7 +303,7 @@ flowchart TD
     N12 -.peso.-> CAP
     N14 -.peso.-> CAP
 
-    class CAP falha
+    class CAP marca
     class N12 destaque
     class N14 destaque
     class N10 neutro

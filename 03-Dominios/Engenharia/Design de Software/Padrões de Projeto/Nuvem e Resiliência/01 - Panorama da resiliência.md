@@ -57,7 +57,7 @@ O terceiro é o que dá origem a esta família inteira: **não há como saber se
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     U["Usuário"] --> A["Seu serviço"]
@@ -70,7 +70,7 @@ graph TD
     F["<b>Fallback</b><br/>respondo pior"] -.->|"salva a resposta"| A
     L["<b>Rate limit / shedding</b><br/>recuso na entrada"] -.->|"protege da carga"| A
 
-    class D falha
+    class D marca
     class A neutro
     class T neutro
     class R destaque

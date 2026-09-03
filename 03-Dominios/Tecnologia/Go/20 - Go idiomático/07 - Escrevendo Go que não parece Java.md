@@ -63,7 +63,7 @@ Go tem, de propósito, um vocabulário pequeno — 25 palavras reservadas, sem `
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Linguagem grande\n(Java/C++/Scala)"] -->|"expressividade no ponto de escrita"| B["1 problema, N formas idiomáticas\nde resolver"]
@@ -72,7 +72,7 @@ flowchart TD
     D["Linguagem pequena\n(Go)"] -->|"restrição deliberada"| E["1 problema, ~1 forma\nconvencional de resolver"]
     E --> F["Custo de leitura cai:\ntodo Go se parece com Go"]
 
-    class A falha
+    class A marca
     class D neutro
     class B destaque
     class E destaque
@@ -280,7 +280,7 @@ As seis resistências compartilham uma pergunta de verificação única, que val
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Vou escrever esta abstração\n(interface, builder, hierarquia,\ninterface{}, camada extra)"] --> B{"Existe um problema\nCONCRETO, hoje, que\nsó ela resolve?"}
@@ -289,7 +289,7 @@ flowchart TD
     D -->|"Sim"| E["Use a ferramenta nativa,\nnão a importada de outra\nlinguagem."]
     D -->|"Não"| F["Abstração é justificada —\nescreva a MENOR versão\nque resolve o problema real."]
 
-    class C falha
+    class C marca
     class E neutro
     class F destaque
 ```

@@ -92,9 +92,9 @@ Isso explica por que a queda do título "Prompt Engineer" e o boom da skill "pro
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["2023 — Modelo instável<br/>fraseados diferentes → qualidade diferente"] --> B["Truque explora a instabilidade<br/>implorar / ameaçar / persona genérica"]
     B --> C["Ganho real e mensurável<br/>enquanto a instabilidade existe"]
     D["2024-2025 — Modelo melhora<br/>interpreta intenção direta de forma robusta"] --> E["Variância que o truque explorava<br/>encolhe até virar ruído"]
@@ -104,7 +104,7 @@ graph TD
     class A destaque
     class B destaque
     class D neutro
-    class F falha
+    class F marca
 ```
 
 > [!question]- E se o modelo piorar de novo, ou um domínio específico continuar instável?
@@ -193,7 +193,7 @@ Isso explica, com precisão, o número de 250% de crescimento na skill: mais sis
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph M["Morreu — discurso descartado"]
         T1["Implorar / ameaçar"]
@@ -210,10 +210,10 @@ graph LR
     end
     S -.->|"vira componente de"| C["Flow / Context / Harness / Loop / Graph engineering"]
 
-    class T1 falha
-    class T2 falha
-    class T3 falha
-    class T4 falha
+    class T1 marca
+    class T2 marca
+    class T3 marca
+    class T4 marca
     class F1 neutro
     class F2 neutro
     class F3 neutro

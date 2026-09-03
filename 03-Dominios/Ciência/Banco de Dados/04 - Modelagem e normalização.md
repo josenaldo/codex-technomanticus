@@ -56,7 +56,7 @@ Normalizar é decompor uma tabela larga em tabelas menores, ligadas por chaves, 
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     NF0["Tabela larga<br/>(não-normalizada)<br/>fatos repetidos, listas em colunas"]
     NF1["1NF<br/>valores atômicos<br/>uma linha por combinação"]
     NF2["2NF<br/>nenhum atributo depende<br/>de PARTE da chave composta"]
@@ -68,7 +68,7 @@ flowchart TD
     NF2 -->|"move dependências transitivas<br/>p/ tabela própria"| NF3
     NF3 -->|"caso raro de<br/>chave sobreposta"| BCNF
 
-    class NF3 ok
+    class NF3 neutro
 ```
 
 **Leitura do diagrama:** cada seta é uma operação de decomposição que remove um tipo específico de redundância. A caixa verde, 3NF, é o alvo prático — é onde 99% dos schemas de produção devem parar. Subir até BCNF é raro; ficar abaixo de 3NF é quase sempre um defeito esperando para virar bug.
@@ -145,7 +145,7 @@ Vamos ver a progressão dessa decomposição num diagrama, porque é o coração
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph A["Não-normalizada"]
         T0["consultas<br/>paciente_nome<br/>medico_nome, medico_crm<br/>medico_especialidade<br/>clinica_nome, clinica_cidade"]
@@ -161,7 +161,7 @@ flowchart LR
     CO --> M
     M --> C
 
-    class T0 falha
+    class T0 marca
     class P neutro
     class M neutro
     class C neutro
@@ -346,8 +346,8 @@ Com **UUID v4 aleatório**, cada `INSERT` cai numa página **aleatória** do mei
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph seq["Chave ordenada (v7 / ULID / serial)"]
         direction TB
         I1["INSERT chega"] --> END["sempre na última página"]
@@ -364,9 +364,9 @@ flowchart TD
         SPLIT --> BLOAT["fragmentação + bloat:<br/>páginas meio-vazias,<br/>I/O e cache desperdiçados"]
     end
 
-    class GOOD ok
-    class BLOAT falha
-    class SPLIT falha
+    class GOOD neutro
+    class BLOAT marca
+    class SPLIT marca
 ```
 
 **Leitura do diagrama:** os dois caminhos partem do mesmo `INSERT` e divergem por **onde** a chave aterrissa. À esquerda, a chave ordenada sempre vai para o fim — as páginas enchem em sequência e o índice fica denso. À direita, o UUID v4 cai num ponto aleatório; quando bate numa página cheia, dispara o **page split**, que deixa páginas meio-vazias espalhadas (o **bloat**). O resultado medido em benchmarks de Postgres com tabelas grandes é dramático: UUID v7 chega a **2–5× mais throughput de INSERT** e **60–80% menos bloat de índice** que UUID v4. O índice fragmentado também é maior, então cabe menos dele em memória — você paga de novo em cache miss e I/O nas *leituras*.

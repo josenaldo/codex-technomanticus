@@ -36,7 +36,7 @@ Fargate é a resposta da AWS pra essa pergunta especificamente para containers: 
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Preciso rodar código na nuvem"] --> B{"Unidade de execução?"}
     B -->|"Função, evento único,\nvida curta"| C["Serverless / FaaS\n(Lambda — Galho 11)"]
     B -->|"Container, processo\nlongo, controle de imagem"| D{"Quem gerencia\na capacidade?"}
@@ -44,7 +44,7 @@ flowchart TD
     D -->|"A nuvem provisiona\npor task, sob demanda"| F["Fargate\n(esta nota)"]
     B -->|"Preciso da máquina inteira,\nkernel customizado"| G["EC2 puro"]
 
-    class F ok
+    class F neutro
 ```
 
 Fargate não substitui o ECS — ele é *um jeito de rodar* as tasks que o ECS agenda. A task definition continua sendo a mesma peça central que você viu na nota 02; a única coisa que muda é o valor do parâmetro `requiresCompatibilities` e alguns campos obrigatórios que passam a existir por causa disso.

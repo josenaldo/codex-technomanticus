@@ -146,8 +146,8 @@ A regra de liberação de arena é estrita: **uma arena só é desmapeada e devo
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Processo aloca e libera\nmilhões de objetos pequenos"] --> B{"Algum pool da arena\nainda tem 1+ bloco em uso?"}
     B -- "Sim (o caso comum)" --> C["Arena permanece mapeada\n(RSS não cai)"]
@@ -155,7 +155,7 @@ flowchart TB
 
     class A neutro
     class B neutro
-    class C falha
+    class C marca
     class D destaque
 ```
 

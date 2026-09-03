@@ -104,15 +104,15 @@ Escolher a ferramenta certa resolve só metade do problema. A outra metade é o 
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     S1["Estágio 1\nUma pessoa,\napply do laptop"] --> S2["Estágio 2\nTime pequeno,\nCI roda plan/apply,\nmódulos compartilhados"]
     S2 --> S3["Estágio 3\nMúltiplos times,\nplataforma interna,\nself-service com guardrails"]
 
-    class S1 falha
+    class S1 neutro
     class S2 destaque
-    class S3 ok
+    class S3 marca
 ```
 
 No **estágio 1**, uma pessoa escreve o `.tf`, roda `apply` do próprio laptop, e o state mora onde ela colocou — geralmente sem locking, geralmente sem revisão. Funciona para um projeto pessoal ou um protótipo; é exatamente o estágio que os anti-padrões abaixo descrevem quando ele não evolui.
@@ -318,8 +318,8 @@ O Bloco 4 desta trilha trata do que vem depois de desenhar a arquitetura: observ
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     IaC["IaC\n(este galho)"] --> Obs["Observabilidade\n(próximo galho)"]
     IaC --> Sec["Segurança\n(Bloco 4)"]
     IaC --> Res["Resiliência\n(Bloco 4)"]
@@ -327,7 +327,7 @@ flowchart LR
     IaC -.->|"sem isto,\nas três viram\nconfig manual"| Manual["Dashboards, alarmes e\npolíticas criados no console,\nsem histórico nem revisão"]
 
     class IaC neutro
-    class Manual falha
+    class Manual marca
 ```
 
 Pense no que cada disciplina do Bloco 4 exige, concretamente, como pré-condição:

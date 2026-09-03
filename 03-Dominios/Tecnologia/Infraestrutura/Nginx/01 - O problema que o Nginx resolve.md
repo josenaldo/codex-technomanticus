@@ -288,8 +288,8 @@ Esse é o motivo concreto pelo qual leitura de arquivo em disco é um problema d
 
 ```mermaid
 graph TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Sem aio threads — leitura de disco bloqueia o laço"
         A1["Worker recebe request<br/>para um arquivo grande"] --> A2["Chama read() no disco"]
         A2 --> A3["Laço de eventos INTEIRO<br/>fica parado até o disco responder"]
@@ -302,9 +302,9 @@ graph TB
         B3 --> B4["Thread avisa quando termina;<br/>worker retoma só aquela conexão"]
     end
 
-    class A3 falha
-    class A4 falha
-    class B3 ok
+    class A3 neutro
+    class A4 marca
+    class B3 marca
 ```
 
 A resposta do Nginx para esse problema específico é a diretiva `aio`, e em particular a variante `aio threads`, disponível desde a versão 1.7.11: em vez de o worker fazer a leitura de disco diretamente na sua própria thread, ele delega a operação a um **pool de threads** dedicado, e o laço de eventos principal continua livre para atender outras conexões enquanto aquela leitura acontece em paralelo, numa thread à parte. Quando a leitura termina, o worker é notificado e retoma o processamento daquela conexão específica — exatamente o mesmo padrão de "não bloquear o laço principal, delegar o trabalho pesado e ser notificado quando terminar" que rege o resto da arquitetura, só que aplicado ao único tipo de I/O que o modelo puramente orientado a eventos não conseguia resolver sozinho:

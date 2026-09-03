@@ -54,9 +54,9 @@ X em uma frase: teste o que o usuário vê e interage, não o que o código faz 
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Pirâmide["Pirâmide de Testes — React"]
         E2E["🎭 E2E / Browser\nPlaywright\nPoucos, lentos, alto valor\nFluxos críticos completos"]
         INT["🔗 Integração\nRTL + MSW\nComponentes com API real mockada\nFluxos de feature"]
@@ -68,7 +68,7 @@ graph TB
 
     class UNIT neutro
     class INT destaque
-    class E2E falha
+    class E2E marca
 ```
 
 A pirâmide não é lei — é heurística. Em React, a camada de integração com RTL + MSW dá retorno excelente: você testa o componente inteiro (render → interação → assert) sem precisar de browser real.
@@ -154,9 +154,9 @@ expect(errorMsg).toBeVisible()
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["getByRole\n✅ melhor"] -->|"quando sem role"| B["getByLabelText\n✅ ótimo para forms"]
     B -->|"sem label"| C["getByPlaceholderText\n⚠️ aceitável"]
     C -->|"sem placeholder"| D["getByText\n⚠️ frágil"]
@@ -166,7 +166,7 @@ graph LR
     class B neutro
     class C destaque
     class D destaque
-    class E falha
+    class E marca
 ```
 
 ---

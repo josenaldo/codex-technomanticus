@@ -277,9 +277,9 @@ Lendo de dentro para fora: primeiro `retry(tentativas=3)` (a factory) roda e dev
 
 ```mermaid
 flowchart BT
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Definicao["Ordem de APLICAÇÃO (definição) — de baixo para cima"]
         direction BT
         F["def buscar_cotacao(simbolo): ..."] -->|"1º: retry(tentativas=3)(...)"| W1["w1 = retry-wrapper"]
@@ -290,7 +290,7 @@ flowchart BT
     class F neutro
     class W1 destaque
     class W2 destaque
-    class W3 falha
+    class W3 marca
 ```
 
 Já a **execução** — o que roda quando alguém chama `buscar_cotacao("PETR4")` — segue a ordem oposta, de fora para dentro, exatamente como esperado de qualquer chamada de função aninhada: chamar `w3` (o wrapper de `cronometrar`, o mais externo) é o primeiro código a rodar; ele, em algum ponto do seu corpo, chama `w2` (o de `log_chamada`); que, por sua vez, chama `w1` (o de `retry`); que finalmente chama a função original `buscar_cotacao`. Se cada wrapper tem lógica antes *e* depois da chamada que ele envolve (como `cronometrar`, que mede tempo antes e depois), o efeito visual é o de **camadas de cebola**: entra de fora para dentro, sai de dentro para fora.
@@ -351,9 +351,9 @@ Essa lente também explica por que decorators são chamados de **funções de or
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["retry(tentativas, espera)<br/>fixa 2 argumentos"] -->|"currying — nível 1→2"| B["decorator(func)<br/>fixa 1 argumento"]
     B -->|"currying — nível 2→3"| C["wrapper(*args, **kwargs)<br/>processa os últimos argumentos"]
     C --> D["resultado final"]
@@ -361,7 +361,7 @@ flowchart LR
     class A neutro
     class B neutro
     class C destaque
-    class D falha
+    class D marca
 ```
 
 Vale conectar isso também ao **Decorator Pattern** do catálogo clássico de padrões de projeto (GoF — *Gang of Four*, *Design Patterns*, 1994): o padrão descreve "anexar responsabilidades adicionais a um objeto dinamicamente, oferecendo uma alternativa flexível a subclasses para estender funcionalidade". A ideia central — envolver um comportamento existente com uma camada adicional, sem alterar o código original, de forma componível (várias camadas empilhadas) — é exatamente o que decorators de função fazem em Python, só que a linguagem tem sintaxe dedicada (`@`) e closures para implementar isso com funções, em vez de exigir a hierarquia de classes/interfaces que o padrão GoF original descreve para linguagens orientadas a objetos sem funções de primeira classe (a versão clássica do padrão usa uma interface comum entre o objeto decorado e o decorador, com composição via referência a objeto — muito mais cerimônia do que três `def`s aninhados). É por isso que "decorator", em Python, carrega o mesmo nome do padrão de design: a linguagem incorporou a ideia central do padrão como recurso sintático de primeira classe, em vez de deixá-la como uma convenção de arquitetura orientada a objetos que o desenvolvedor precisa reimplementar à mão a cada vez.

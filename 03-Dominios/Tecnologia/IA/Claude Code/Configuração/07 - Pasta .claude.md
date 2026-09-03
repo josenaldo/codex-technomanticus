@@ -48,8 +48,7 @@ A `.claude/` tem o mesmo papel, mas para o Claude Code. Ela configura o comporta
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Git["Versionado no repositório"]
         CM["CLAUDE.md\nContexto do projeto\n(lido pelo modelo)"]
@@ -70,8 +69,8 @@ flowchart TD
     CMD --> CTX
     SL --> CTX
 
-    class Git ok
-    class Local falha
+    class Git marca
+    class Local marca
     class Agent neutro
 ```
 

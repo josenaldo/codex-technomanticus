@@ -81,8 +81,8 @@ Quando a engine recebe código JavaScript, ela passa por quatro fases. Abaixo, o
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["📄 Código-fonte\n(texto .js)"] -->|"Lexer + Parser"| B["🌳 AST\n(Abstract Syntax Tree)"]
     B -->|"Ignition"| C["⚙️ Bytecode\n(Ignition interpreter)"]
     C -->|"código frio\nexecuta linha a linha"| E["🖥️ Resultado"]
@@ -92,7 +92,7 @@ flowchart LR
     class A neutro
     class B neutro
     class C neutro
-    class D ok
+    class D marca
     class E neutro
 ```
 

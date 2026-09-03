@@ -61,10 +61,9 @@ Simples é uma pergunta que você faz **ao design**. Fácil é uma pergunta que 
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph M["Simples × Fácil — duas réguas, quatro quadrantes"]
         direction TB
         A["SIMPLES + FÁCIL<br/>desentrelaçado e à mão<br/>ex: uma função pura que você já conhece"]
@@ -76,10 +75,10 @@ flowchart TD
     C -.->|"eixo de quem usa (relativo)"| D
     A === C
     B === D
-    class A ok
+    class A marca
     class B neutro
     class C destaque
-    class D falha
+    class D marca
 ```
 
 *Leitura do diagrama*: o eixo horizontal (objetivo) mede **estrutura** — entrelaçado ou não; o eixo vertical (relativo) mede **distância** — perto ou longe de quem usa. O perigo mora no quadrante laranja: "complexo + fácil" parece confortável porque é familiar, e é justamente aí que a gente contrai dívida sem perceber.
@@ -108,8 +107,8 @@ Cada trança dessas adiciona um eixo a mais que você precisa segurar na cabeça
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph CX["Complected — trançado"]
         direction LR
         c1(("Auth")) --- c2(("Negócio"))
@@ -125,7 +124,7 @@ flowchart LR
     end
     CX ==>|"des-trançar = simplificar"| SI
     class CX marca
-    class SI ok
+    class SI neutro
 ```
 
 *Leitura do diagrama*: à esquerda, três preocupações **trançadas** — para mexer numa, você arrasta as outras juntas; nenhum fio sai inteiro. À direita, os mesmos três conceitos como **fios paralelos**: cada um pode ser puxado, entendido e trocado sozinho. Simplificar não é apagar fios; é desfazer as tranças.
@@ -223,10 +222,9 @@ A ferramenta fácil te deixa produtivo no minuto zero e te entrega um sistema en
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     START([início do projeto]) --> SPLIT{escolha}
     SPLIT -->|"otimizar pelo FÁCIL"| E1["arranque veloz<br/>(zero atrito)"]
     E1 --> E2["complexidade acumula"]
@@ -237,9 +235,9 @@ flowchart LR
     S2 --> S3["ainda rápido no longo prazo"]
     S3 --> S4(["você passa pelo outro"])
     class E1 destaque
-    class E4 falha
+    class E4 marca
     class S1 neutro
-    class S4 ok
+    class S4 marca
 ```
 
 *Leitura do diagrama*: as duas trajetórias largam juntas. A de cima (fácil) dispara na frente e desacelera à medida que o emaranhado cobra juros; a de baixo (simples) larga devagar — você teve que *pensar* — mas mantém o ritmo e ultrapassa. O cruzamento das curvas é a tese inteira da palestra.
@@ -356,10 +354,9 @@ Ou seja: as duas escolas concordam que simplicidade importa — e discordam de t
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     Q{"Quem deve sofrer<br/>pela simplicidade?"}
     Q -->|"a implementação sofre"| RT["THE RIGHT THING<br/>(MIT / Stanford)"]
     Q -->|"a interface sofre"| WB["WORSE IS BETTER<br/>(New Jersey)"]
@@ -371,8 +368,8 @@ flowchart TD
     WB --> WB3["sai rápido, espalha, vence"]
     class RT neutro
     class WB destaque
-    class RT3 falha
-    class WB3 ok
+    class RT3 marca
+    class WB3 marca
 ```
 
 *Leitura do diagrama*: a pergunta de cima divide o mundo. À esquerda, o ideal do MIT empurra a complexidade pra dentro da implementação e entrega uma interface impecável — mas demora tanto que perde mercado. À direita, o pragmatismo de New Jersey simplifica o núcleo, vaza a complexidade pra interface, e justamente por ser fácil de portar e shippar, **vence**.

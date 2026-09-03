@@ -32,8 +32,8 @@ Tracing distribuído resolve exatamente essa lacuna: cada requisição carrega u
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Trace["Um trace = uma árvore de spans"]
         direction TB
         S1["Span: HTTP POST /orders\n(root span, 4000ms)"]
@@ -46,7 +46,7 @@ flowchart TB
     end
 
     class S1 neutro
-    class S3 falha
+    class S3 marca
 ```
 
 Um **span** é a unidade atômica: tem um nome (`"POST /orders"`), um início e um fim, um **span ID** próprio, e um **trace ID** compartilhado por todos os spans da mesma requisição. Um span pode ter um **parent span ID**, formando a árvore acima — o span de `payments-service` é filho do span raiz, porque foi disparado durante o processamento dele.

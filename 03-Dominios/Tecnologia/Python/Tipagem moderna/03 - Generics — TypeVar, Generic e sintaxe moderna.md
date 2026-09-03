@@ -129,9 +129,9 @@ pedido.aprovar()   # ok — checador sabe que "pedido" é Pedido, não Any
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Pilha genérica<br/>(Generic[T] ou Pilha[T])"] -->|"instanciada com<br/>Pilha[Pedido]"| B["T resolvido como Pedido<br/>nesta instância"]
     A -->|"instanciada com<br/>Pilha[int]"| C["T resolvido como int<br/>nesta instância"]
     A -->|"sem parametrizar,<br/>equivalente a Any implícito"| D["checador não rastreia<br/>o tipo do conteúdo"]
@@ -146,7 +146,7 @@ flowchart TD
     class D destaque
     class E neutro
     class F neutro
-    class G falha
+    class G marca
 ```
 
 Repare que `Pilha[Pedido]` não cria uma classe nova em runtime — é a mesma classe `Pilha`, com metadados extras (uma `_GenericAlias`) que o checador estático consulta. Em runtime, `Pilha[Pedido]().empilhar("texto")` **não** levanta exceção nenhuma — type hints, como visto em [[01 - Type hints — fundamentos e gradual typing|01 — Type hints: fundamentos e gradual typing]], não mudam o comportamento do interpretador. O ganho é inteiramente do checador estático para trás (`mypy`/`pyright`, cobertos na [[04 - mypy e pyright — checagem estática na prática|nota 04]] deste galho) — a checagem acontece **antes** de rodar, não durante.

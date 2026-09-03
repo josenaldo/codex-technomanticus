@@ -40,7 +40,7 @@ A [[01 - OWASP Top 10 aplicado a Python web — o mapa|nota 01]] já apontou pra
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Dev roda pip install pacote-x"] --> B{"Lockfile com hash\nespecifica versão exata?"}
     B -->|"Não — range solto\n(pacote-x>=2.0)"| C["Resolver escolhe a versão\nmais recente disponível\nno momento da instalação"]
@@ -55,7 +55,7 @@ flowchart TD
     J -->|"Sim"| K["Build falha —\natualiza versão\nantes de mergear"]
     J -->|"Não"| L["Segue pro deploy"]
 
-    class D falha
+    class D neutro
     class G destaque
     class K destaque
 ```

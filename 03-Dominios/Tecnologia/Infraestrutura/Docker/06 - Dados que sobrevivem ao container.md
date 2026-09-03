@@ -129,9 +129,8 @@ O diagrama a seguir mostra um container único convivendo com as três fontes de
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph Imagem["Imagem — camadas somente-leitura"]
         L1["Camada base: SO / runtime"]
         L2["Camada: dependências"]
@@ -160,9 +159,9 @@ flowchart TB
     B -.mesmo inode.-> HostPath
     T -.nunca persiste.-> RAM
 
-    class RW falha
+    class RW marca
     class T neutro
-    class V ok
+    class V marca
 ```
 
 Note que as três montagens (`V`, `B`, `T`) vivem *ao lado* da camada de escrita, não dentro dela — são pontos de montagem que interceptam a escrita naquele caminho específico e a redirecionam para fora do union filesystem da imagem. É por isso que um `docker rm` remove a camada de escrita inteira, mas os três (volume, bind mount, tmpfs backing) seguem cada um o próprio destino, descrito na tabela acima.
@@ -291,18 +290,18 @@ O caminho que um volume percorre, do nascimento ao desaparecimento, pode ser res
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["docker volume create<br/>(ou VOLUME sem nome → anônimo)"] --> B["Referenciado<br/>por 1+ containers"]
     B -->|"docker rm (sem -v)"| C["Órfão<br/>(nenhum container referencia)"]
     B -->|"docker rm -v<br/>(só anônimos)"| D["Removido"]
     C -->|"docker volume prune"| D
     C -->|"docker run -v mesmo-nome"| B
 
-    class D falha
+    class D neutro
     class C destaque
-    class B ok
+    class B marca
 ```
 
 O estado que mais surpreende quem não conhece esse ciclo é o "órfão": um volume nesse estado não está quebrado, não está marcado para remoção automática, e não dá nenhum sinal de alerta espontâneo — ele só existe, silenciosamente, até alguém rodar `prune` ou reconectá-lo a um novo container pelo mesmo nome. É esse silêncio que faz volumes órfãos se acumularem ao longo de meses sem que ninguém perceba, até o dia em que `docker system df` revela quantos gigabytes estavam parados ali.

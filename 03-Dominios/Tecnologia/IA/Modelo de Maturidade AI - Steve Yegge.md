@@ -69,9 +69,7 @@ Ele mesmo recomenda cautela: Gas Town só é indicado pra quem já está em Est�
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     E1["1. Cético<br/>rejeita IA"] --> E2["2. Autocomplete<br/>aceita sugestões inline"]
@@ -82,12 +80,12 @@ flowchart LR
     E6 --> E7["7. Orquestrador Multi-Agent<br/>coordena paralelo"]
     E7 --> E8["8. Arquiteto AI-Native<br/>desenha o sistema de trabalho"]
 
-    class E1 falha
+    class E1 marca
     class E2 destaque
     class E3 destaque
     class E4 destaque
-    class E5 ok
-    class E6 ok
+    class E5 marca
+    class E6 marca
     class E7 neutro
     class E8 marca
 ```

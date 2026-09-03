@@ -29,7 +29,7 @@ Quase todo flaky em JS cai numa destas categorias — e a boa notícia é que ca
 
 ```mermaid
 graph TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[Teste flaky] --> B["espera arbitrária<br/>(sleep)"]
     A --> C["estado compartilhado<br/>entre testes"]
@@ -41,7 +41,7 @@ graph TB
     D -.cura.-> D1["fake timers, data fixa"]
     E -.cura.-> E1["MSW / page.route"]
     F -.cura.-> F1["desligar animações"]
-    class A falha
+    class A marca
     class B1 neutro
     class C1 neutro
 ```

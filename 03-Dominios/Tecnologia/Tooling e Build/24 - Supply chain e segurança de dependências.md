@@ -34,7 +34,7 @@ O paradoxo central é este: o modelo de confiança do npm é por padrão **trans
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     APP["seu app\n(package.json)"]
 
@@ -63,7 +63,7 @@ graph TD
     D3 --> T6
     T4 --> EVIL
 
-    class EVIL falha
+    class EVIL marca
     class APP neutro
 ```
 
@@ -140,7 +140,8 @@ Typosquatting é publicar um pacote com nome propositalmente similar ao de um pa
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Pacotes legítimos populares"
         L1["lodash\n150M downloads/semana"]
@@ -168,9 +169,9 @@ graph LR
     T2 --> M2
     T3 --> M3
 
-    class T1 falha
-    class T2 falha
-    class T3 falha
+    class T1 neutro
+    class T2 marca
+    class T3 marca
     class M1 destaque
     class M2 destaque
     class M3 destaque

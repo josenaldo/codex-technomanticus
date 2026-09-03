@@ -35,8 +35,8 @@ O pentest está marcado para sexta-feira. Esta nota é o trabalho de terça a qu
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     G10["API do Galho 10\n(funcional, ingênua)"] --> E1["Etapa 1\nAuth real (N05)"]
     E1 --> E2["Etapa 2\nBroken Access Control (N05)"]
     E2 --> E3["Etapa 3\nSSTI corrigida (N02)"]
@@ -46,7 +46,7 @@ flowchart LR
     E6 --> API["API blindada\npronta para pentest"]
 
     class G10 destaque
-    class API ok
+    class API neutro
 ```
 
 ## Etapa 0: o que muda no modelo — `Usuario` ganha uma senha
@@ -597,10 +597,9 @@ Repare que este endpoint reusa `_buscar_tarefa_do_usuario` da Etapa 2 — a chec
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Entrada["Camada transversal"]
         MW["Middleware de correlation ID\n(Galho 10, N07)"]
         RL["slowapi — rate limit\nem /usuarios e /token\n(N08)"]
@@ -631,10 +630,10 @@ flowchart TB
 
     class RL neutro
     class DEP_AUTH neutro
-    class FILTRO ok
+    class FILTRO marca
     class SSTI destaque
     class DEST destaque
-    class SET falha
+    class SET marca
 ```
 
 ## Antes e depois: quatro ataques que passavam a não passar mais

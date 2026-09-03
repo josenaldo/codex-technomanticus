@@ -247,8 +247,8 @@ O padrão de nomenclatura é simétrico e vale memorizar como par:
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Entrada["Dados externos (sem tipo Python)"]
         JSON["JSON / dict cru\n(request HTTP, arquivo, env var)"]
     end
@@ -268,7 +268,7 @@ flowchart LR
     class JSON neutro
     class OBJ neutro
     class JSON2 neutro
-    class ERRO falha
+    class ERRO marca
 ```
 
 **Pydantic em uma frase**: `BaseModel` transforma type hints num contrato checado de fato em runtime — validando na entrada (`model_validate`/construtor) e serializando na saída (`model_dump`) de forma simétrica, com `pydantic-core` (Rust) fazendo o trabalho pesado por baixo.

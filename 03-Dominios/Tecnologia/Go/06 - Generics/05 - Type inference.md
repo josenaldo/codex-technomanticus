@@ -65,9 +65,9 @@ A especificação da linguagem descreve **dois mecanismos** distintos, que rodam
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Chamada: Max(3, 5)"] --> B{"Type arguments\nexplícitos na chamada?"}
     B -->|"sim, ex. Max[int](3,5)"| Z["Usa o que foi escrito.\nInferência não roda."]
     B -->|"não"| C["1. Function argument\ntype inference"]
@@ -83,7 +83,7 @@ flowchart TB
 
     class C neutro
     class F destaque
-    class K falha
+    class K marca
 ```
 
 1. **Function argument type inference** — olha os argumentos *de valor* passados na chamada (`3` e `5`) e tenta casar o tipo de cada um com o type parameter que aparece naquela posição da assinatura. É o mecanismo que resolveu `Max(3, 5)` acima.

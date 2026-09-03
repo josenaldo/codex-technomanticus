@@ -36,8 +36,8 @@ Um trace só é útil se reproduzir o problema **do usuário**, não da sua máq
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[Trace gravado] --> B["Timeline / métricas<br/>LCP, layout shifts, interações"]
     A --> C["Main thread<br/>flame chart das tarefas"]
@@ -45,7 +45,7 @@ graph TB
     C --> E["⚠ long task<br/>(triângulo vermelho)"]
     E --> F["Call tree / Bottom-up<br/>→ a função culpada"]
     class C neutro
-    class E falha
+    class E marca
     class F destaque
 ```
 

@@ -89,9 +89,9 @@ O diagrama abaixo desenha a pirâmide. Note como cada degrau abaixo é dramatica
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     L1["Cache L1<br/>~1 ns"] --> RAM["RAM<br/>~100 ns<br/>(100&times; mais lento)"]
     RAM --> SSD["SSD random read<br/>~16-100 &mu;s<br/>(100-1000&times;)"]
     SSD --> DC["Rede no datacenter<br/>~0,5 ms<br/>(salto p/ a rede)"]
@@ -99,13 +99,13 @@ flowchart TD
     DC --> REG["Inter-regiao<br/>~30-100 ms<br/>(100&times; a rede local)"]
     REG --> INTER["Intercontinental<br/>~100-300 ms<br/>(limite fisico: luz)"]
 
-    class L1 ok
-    class RAM ok
+    class L1 neutro
+    class RAM marca
     class SSD destaque
     class DC destaque
-    class HDD falha
-    class REG falha
-    class INTER falha
+    class HDD marca
+    class REG marca
+    class INTER marca
 ```
 
 Leitura do diagrama: descendo a pirâmide, a cor esquenta e o custo dispara. O verde (memória) é o reino dos nanossegundos; o amarelo (SSD) salta para microssegundos; o laranja/vermelho (rede e disco mecânico) entra nos milissegundos. Cada transição de cor é pelo menos uma ordem de grandeza. O fundo da pirâmide — intercontinental — é onde a física, não a engenharia, manda.
@@ -135,7 +135,7 @@ Isso é o **fan-out amplificando a cauda**. Quanto mais subsistemas uma request 
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     REQ["1 request do usuario<br/>espera por TODOS"] --> B1["Backend 1<br/>p50: 5 ms"]
     REQ --> B2["Backend 2<br/>p50: 5 ms"]
@@ -149,8 +149,8 @@ flowchart TD
     DOTS --> JOIN
     B100 --> JOIN
 
-    class B100 falha
-    class JOIN falha
+    class B100 marca
+    class JOIN marca
     class REQ neutro
 ```
 
@@ -273,7 +273,8 @@ A mecânica: quando o gargalo do caminho é um link lento (seu upload doméstico
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     SRC["Trafego chega rapido<br/>(download saturando)"] --> BUF
 
@@ -286,9 +287,9 @@ flowchart TD
     Q -. "nada descartado<br/>=> TCP nao ve perda<br/>=> nao desacelera" .-> Q
     LINK --> RTT["RTT de TODO o trafego<br/>incha: ping de 20 ms vira 1-2 s"]
 
-    class BUF falha
-    class Q falha
-    class RTT falha
+    class BUF neutro
+    class Q marca
+    class RTT marca
     class LINK destaque
 ```
 

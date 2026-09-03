@@ -30,7 +30,7 @@ O método desta nota é, por isso, uma sequência fixa de perguntas, cada uma re
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["Sintoma: algo não funciona"] --> B{"O objeto existe?<br/>kubectl get"}
@@ -46,9 +46,9 @@ flowchart TD
     F -->|"não"| F1["Cadeia do Service<br/>EndpointSlice, selector, targetPort"]
     F -->|"sim, mas o problema persiste"| G["Não é o Pod —<br/>ver o nó e o control plane"]
 
-    class B1 falha
-    class D1 falha
-    class D2 falha
+    class B1 neutro
+    class D1 marca
+    class D2 marca
     class E1 destaque
     class F1 destaque
     class G marca
@@ -156,8 +156,9 @@ Na maioria dos casos reais, `kubectl describe deployment` mostra o rollout trava
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     D["Deployment<br/>describe: Progressing=False"] -->|"ownerReference"| RS1["ReplicaSet antigo<br/>3/3 prontos"]
     D -->|"ownerReference"| RS2["ReplicaSet novo<br/>0/3 prontos"]
     RS2 -->|"ownerReference"| P1["Pod novo #1<br/>describe: causa real aqui"]
@@ -165,8 +166,8 @@ graph TB
     RS2 -->|"ownerReference"| P3["Pod novo #3"]
 
     class D destaque
-    class RS2 falha
-    class P1 falha
+    class RS2 neutro
+    class P1 marca
 ```
 
 ## O catálogo de sintomas

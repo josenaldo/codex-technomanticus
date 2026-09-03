@@ -113,7 +113,7 @@ Repare no que a frase não diz. Ela não diz "todo sistema precisa de mais camad
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph G1["Grafo fechado — ungrounded"]
         direction TB
@@ -141,14 +141,14 @@ flowchart TB
         HUM --> R
     end
 
-    class G1n falha
-    class A1 falha
-    class B1 falha
-    class C1 falha
-    class D1 falha
-    class E1 falha
-    class F1 falha
-    class H1 falha
+    class G1n marca
+    class A1 marca
+    class B1 marca
+    class C1 marca
+    class D1 marca
+    class E1 marca
+    class F1 marca
+    class H1 marca
 
     class M neutro
     class ANC neutro

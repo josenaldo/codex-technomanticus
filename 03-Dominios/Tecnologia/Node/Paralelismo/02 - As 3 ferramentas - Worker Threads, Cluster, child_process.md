@@ -88,9 +88,9 @@ Os três modelos de paralelismo do Node são como três formas distintas de expa
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph "Worker Threads"
         direction TB
         MT["Main Thread\nEvent Loop"] <-->|postMessage\nSharedArrayBuffer| WT1["Worker 1\nV8 Isolate"]
@@ -115,7 +115,7 @@ graph LR
     class WT2 destaque
     class W1 destaque
     class W2 destaque
-    class EXT falha
+    class EXT marca
 ```
 
 ### Tabela canônica

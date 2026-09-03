@@ -51,7 +51,7 @@ A [[04 - Accept interfaces, return structs|nota 04]] já estabeleceu a metade "a
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Errado["Reflexo Java/C#: interface no producer"]
         direction TB
@@ -67,7 +67,7 @@ flowchart LR
         D2 -.->|"pequena, moldada\npelo que billing precisa"| D1
     end
 
-    class P2 falha
+    class P2 neutro
     class D2 destaque
 ```
 

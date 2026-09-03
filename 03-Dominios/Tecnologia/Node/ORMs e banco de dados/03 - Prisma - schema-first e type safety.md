@@ -25,9 +25,9 @@ tags:
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     SCHEMA["schema.prisma\n(fonte de verdade)"]
     GEN["prisma generate\n→ Prisma Client tipado"]
     DEV["prisma migrate dev\n→ migration SQL + apply"]
@@ -47,8 +47,8 @@ flowchart TD
     class GEN neutro
     class CLIENT destaque
     class ACCEL destaque
-    class DEV falha
-    class PROD falha
+    class DEV marca
+    class PROD marca
     class STUDIO neutro
 ```
 

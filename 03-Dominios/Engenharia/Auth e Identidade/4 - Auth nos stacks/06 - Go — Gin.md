@@ -92,8 +92,8 @@ Para uma API que serve um SPA ou um app mobile — o caso majoritário em 2026 �
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Requisição chega<br/>Authorization: Bearer token"] --> B{"AuthMiddleware<br/>gin.HandlerFunc"}
     B -->|"header ausente"| C["c.AbortWithStatusJSON 401<br/>c.Abort()"]
@@ -104,7 +104,7 @@ graph TD
     F --> G["200 OK + recurso"]
 
     class B neutro
-    class C falha
+    class C marca
     class E neutro
     class G destaque
 ```

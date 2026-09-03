@@ -58,7 +58,7 @@ Numa cadeia A → B → C, cada serviço normalmente tem seu próprio timeout, e
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph I["Timeouts independentes"]
         A1["A — timeout 2s"] -->|"chama"| B1["B — timeout 10s"]
@@ -72,7 +72,7 @@ graph TD
         N2["C sabe que não vale a pena começar<br/>algo que leva 3s. Cancela cedo."]
     end
 
-    class N1 falha
+    class N1 marca
     class N2 neutro
     class A2 neutro
 ```

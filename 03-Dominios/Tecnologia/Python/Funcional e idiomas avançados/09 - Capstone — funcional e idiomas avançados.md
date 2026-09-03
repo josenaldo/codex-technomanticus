@@ -83,9 +83,9 @@ Por baixo, `pipeline_etl(...)` **é** um objeto que implementa `__iter__` (devol
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     L["ler_pedidos\n(parseia linha crua)"] -->|"yield dict"| V["validar_pedidos\n(closure validadora)"]
     V -->|"yield dict validado"| E["enriquecer_com_cotacao\n(lru_cache + retry)"]
     E -->|"yield dict + valor_usd"| P["pipeline_etl\n(yield from compõe os 3)"]
@@ -95,7 +95,7 @@ flowchart LR
     class V neutro
     class E destaque
     class P neutro
-    class C falha
+    class C marca
 ```
 
 Repare que só um registro está "vivo" em memória a qualquer instante — o mesmo princípio de laziness que a nota 02 mediu em bytes (200 bytes contra 8 MB), aqui aplicado a um arquivo de pedidos que pode ter dezenas de milhões de linhas sem que o processo jamais precise de memória proporcional ao arquivo inteiro.

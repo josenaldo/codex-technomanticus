@@ -231,13 +231,13 @@ Cada closure captura a **referência** ao binding, não uma **cópia** do valor 
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     B1["callback #0\n[[Environment]] →"] --> S["binding i: 3"]
     B2["callback #1\n[[Environment]] →"] --> S
     B3["callback #2\n[[Environment]] →"] --> S
 
-    class S falha
+    class S neutro
     class B1 destaque
     class B2 destaque
     class B3 destaque

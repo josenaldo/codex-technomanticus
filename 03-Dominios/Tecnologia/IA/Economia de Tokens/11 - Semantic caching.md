@@ -55,7 +55,7 @@ São **complementares**, não concorrentes: semantic cache evita a chamada; se a
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Query do usuário\n'Esqueci minha senha'"] --> B["Embedding da query\n(text-embedding-3-small)"]
     B --> C["Vector DB: busca por\nsimilaridade cosine"]
@@ -65,7 +65,7 @@ flowchart TD
     F --> G["Armazena (query_embedding, resposta)\nno vector DB com TTL"]
     G --> H["Retorna resposta ao usuário\nLatência: 500-3000ms\nCusto LLM: normal"]
 
-    class E ok
+    class E neutro
     class F destaque
 ```
 

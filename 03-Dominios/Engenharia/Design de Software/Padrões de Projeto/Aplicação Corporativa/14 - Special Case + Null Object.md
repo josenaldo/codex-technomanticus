@@ -58,7 +58,7 @@ class ClienteDesconhecido extends Cliente {
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph N["Com null — o chamador decide, 47 vezes"]
@@ -71,7 +71,7 @@ graph TD
         C2 --> OK["chamador não testa nada"]
     end
 
-    class X falha
+    class X marca
     class C1 destaque
     class C2 neutro
     class OK neutro

@@ -306,13 +306,13 @@ O perigo do retry mal configurado tem nome: **retry storm**. Se um serviço down
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Serviço B fica lento\nsob carga alta"] --> B["Clientes recebem\nUNAVAILABLE / timeout"]
     B --> C["Retry automático\ndispara em todos"]
     C --> D["Volume de requisições\naumenta sobre B"]
     D --> A
 
-    class D falha
+    class D neutro
 ```
 
 `backoffMultiplier` (backoff exponencial) e `maxAttempts` limitado mitigam isso, mas a defesa mais robusta é combinar retry com um **circuit breaker** no lado do cliente — parar de tentar de vez, por um tempo, quando a taxa de falha passa de um limiar, em vez de continuar martelando. gRPC-go não traz circuit breaker embutido; isso é território de bibliotecas complementares ou de um *service mesh* (Istio, Linkerd) operando na camada de rede.
@@ -328,7 +328,8 @@ Isso quebra o pressuposto de load balancers L4 (nível de conexão/TCP) tradicio
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Balanceamento L4 (por conexão) — problema"
         C1["Cliente"] -->|"1 conexão TCP\nmantida"| R1["Réplica 1"]
         R2b["Réplica 2"]
@@ -344,8 +345,8 @@ flowchart TB
         P --> R3c["Réplica 3"]
     end
 
-    class R2b falha
-    class R3b falha
+    class R2b neutro
+    class R3b marca
 ```
 
 Duas soluções práticas, e é comum combinar as duas:

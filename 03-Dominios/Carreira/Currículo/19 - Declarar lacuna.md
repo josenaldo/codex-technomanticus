@@ -96,9 +96,9 @@ Se a resposta honesta é sim — mesmo que a experiência tenha vindo por observ
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     P["Entrevistador pergunta sobre<br/>a tecnologia mencionada no bullet"] --> T{"Se pedirem para eu fazer<br/>isso sozinho amanhã,<br/>eu consigo?"}
 
     T -->|"sim"| OP["Descrevo com confiança —<br/>a competência é real"]
@@ -108,7 +108,7 @@ graph TD
 
     class OP destaque
     class PAR neutro
-    class ERRO falha
+    class ERRO marca
 ```
 
 E isso não vale só para infraestrutura. Vale para metodologia (*"participei de um processo de definição de OKRs conduzido por outra pessoa"* não é *"eu conduzo definição de OKRs"*), para uma linguagem usada num projeto onde outra pessoa escrevia a maior parte do código crítico, para um domínio de negócio inteiro onde você apoiou uma decisão sem ser quem a tomou. O mecanismo é sempre o mesmo: **parceria é real, é valiosa, e merece ser contada com todo o detalhe que sustenta.** O erro nunca é falar sobre a parceria — é deixar a fala escorregar, sem perceber, para o vocabulário que só a operação própria autorizaria.
@@ -135,9 +135,9 @@ A sequência nomear → adjacente → prazo é a única que corresponde à ordem
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     N["1. Nomear a lacuna<br/>sem rodeio"] --> A["2. Dizer o adjacente<br/>que sustenta a rampa"]
     A --> P["3. Dar o prazo<br/>realista de rampa"]
 
@@ -147,8 +147,8 @@ graph LR
     class N neutro
     class A neutro
     class P destaque
-    class E1 falha
-    class E2 falha
+    class E1 marca
+    class E2 marca
 ```
 
 > [!example] Caso fictício

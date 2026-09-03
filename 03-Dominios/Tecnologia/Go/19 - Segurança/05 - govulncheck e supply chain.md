@@ -36,8 +36,8 @@ A maioria dos scanners de dependência (o `npm audit` do Node, o `pip-audit` do 
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["go.mod declara\nmodule-x v1.2.0"] --> B{"módulo-x tem CVE\ncadastrada no\nGo Vuln DB?"}
     B -->|não| C["silêncio — nada a reportar"]
     B -->|sim| D["quais símbolos\nsão afetados?"]
@@ -45,9 +45,9 @@ flowchart TB
     E -->|não| F["reportado como\n'não chamada' —\nsem risco de exploração"]
     E -->|sim| G["VULNERÁVEL —\nreportado com\ncaminho de chamada"]
 
-    class G falha
-    class F ok
-    class C ok
+    class G neutro
+    class F marca
+    class C marca
 ```
 
 Isso é o diferencial declarado explicitamente pelo próprio time do Go no [blog de anúncio](https://go.dev/blog/govulncheck): a ferramenta "só reporta vulnerabilidades que afetam de verdade seu código", reduzindo o ruído de vulnerabilidades presentes na dependência mas inalcançáveis no seu uso específico dela.
@@ -219,14 +219,15 @@ A saída lê como uma cadeia de chamadas de import: `seuprojeto` importa `outral
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["go list -m all"] -->|"o que está\nna árvore?"| B["visão plana:\nmódulo + versão"]
     C["go mod graph"] -->|"quem depende\nde quem?"| D["arestas do grafo\ncompleto"]
     E["go mod why X"] -->|"por que X\nestá aqui?"| F["cadeia de imports\naté X"]
     G["govulncheck"] -->|"é seguro\nusar isso?"| H["vulnerabilidades\nalcançáveis"]
 
-    class G falha
-    class H falha
+    class G neutro
+    class H marca
 ```
 
 Um hábito periódico simples — rodar `go list -m all`, `go mod graph` e `govulncheck ./...` como parte de revisão de dependências, não só de CI — pega tanto dependências transitivas inchando o binário à toa quanto vulnerabilidades novas publicadas depois do último deploy.

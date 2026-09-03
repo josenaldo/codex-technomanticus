@@ -41,7 +41,7 @@ Em outras palavras: se alguém rodar `grep -r "postgres://" .` no seu repositór
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Errado["Configuração dentro do código"]
         direction TB
@@ -55,7 +55,7 @@ flowchart TB
         C2 --> C3["mesmo binário roda em\ndev/staging/prod, valores diferentes"]
     end
 
-    class E1 falha
+    class E1 marca
     class C2 neutro
 ```
 
@@ -147,7 +147,7 @@ A terceira fonte é o arquivo — `.yaml`, `.toml`, `.json` — útil quando a c
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["flag.Parse()\n(prioridade máxima)"] --> E["viper.Get('port')"]
@@ -157,7 +157,7 @@ flowchart TB
 
     E --> F["valor final resolvido\npela primeira fonte que\ntiver o campo definido"]
 
-    class A falha
+    class A marca
     class B destaque
     class C neutro
     class D destaque

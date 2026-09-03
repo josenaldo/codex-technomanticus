@@ -31,8 +31,8 @@ Monitoramento agrega. Auditoria disseca. A diferença é a diferença entre "alg
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Alerta de custo\nou cadência mensal"] --> B["Filtrar top 1%\nsessões por custo"]
     B --> C["Amostrar 5-10\nsessões representativas"]
     C --> D["Drill-down turn-a-turn\nno trace do Langfuse/Phoenix"]
@@ -45,7 +45,7 @@ flowchart LR
     J --> A
 
     class F destaque
-    class I ok
+    class I neutro
 ```
 
 ## Auditoria vs monitoramento

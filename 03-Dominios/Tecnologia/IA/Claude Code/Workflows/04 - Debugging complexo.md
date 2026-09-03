@@ -48,8 +48,8 @@ A separação é análoga ao trabalho de um médico: exame clínico e exames com
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[Bug reportado] --> B[Descreva comportamento\nobservado vs. esperado]
     B --> C[Agente forma hipóteses\ncom evidências esperadas]
@@ -64,8 +64,8 @@ flowchart TD
     J --> K[Remover logging\ntemporário]
     K --> L[✓ Bug resolvido\ncom prevenção]
 
-    class A falha
-    class L ok
+    class A neutro
+    class L marca
     class G destaque
 ```
 

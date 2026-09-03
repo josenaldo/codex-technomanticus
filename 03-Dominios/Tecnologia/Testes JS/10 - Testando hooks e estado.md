@@ -64,12 +64,12 @@ O `act(...)` diz ao React "estou prestes a causar uma atualização; processe-a 
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[disparo update fora de evento] --> B{envolvido em act?}
     B -->|não| C["⚠ warning + estado inconsistente"]
     B -->|sim| D["React processa tudo<br/>→ asserção confiável"]
-    class C falha
+    class C marca
     class D neutro
 ```
 

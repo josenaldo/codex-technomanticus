@@ -79,9 +79,9 @@ A régua que separa as duas colunas é sempre a mesma, e vale nomeá-la de forma
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph CV["Currículo — leitura reativa"]
         App["Candidatura enviada<br/>(alguém já decidiu olhar)"] --> Ler1["Leitura acontece<br/>(nota 04: três leitores)"]
     end
@@ -96,7 +96,7 @@ flowchart TD
     class Ler1 destaque
     class Filtro neutro
     class Busca destaque
-    class Nada falha
+    class Nada marca
     class Ler2 destaque
 ```
 

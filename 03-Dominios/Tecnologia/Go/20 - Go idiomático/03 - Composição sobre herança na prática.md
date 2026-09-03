@@ -64,8 +64,8 @@ A pergunta central: `EmailNotifier` "é um" `Notifier`, no sentido de Java? A re
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Java["Java: herança (is-a)"]
         direction TB
         J1["EmailNotifier extends Notifier"] --> J2["Notifier email = new EmailNotifier()\n✓ compila — EmailNotifier É-UM Notifier"]
@@ -77,7 +77,7 @@ flowchart TB
     end
 
     class J2 neutro
-    class G2 falha
+    class G2 marca
     class G3 neutro
 ```
 

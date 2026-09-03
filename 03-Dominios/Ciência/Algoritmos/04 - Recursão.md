@@ -235,7 +235,8 @@ Lindo, lê-se como a definição matemática. E desastroso. O fatorial fazia *um
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     F5["fib(5)"] --> F4a["fib(4)"]
     F5 --> F3a["fib(3)"]
@@ -251,8 +252,8 @@ graph TD
     F2b --> F0b["fib(0)"]
     F2c --> F1e["fib(1)"]
     F2c --> F0c["fib(0)"]
-    class F3a falha
-    class F3b falha
+    class F3a neutro
+    class F3b marca
     class F2a destaque
     class F2b destaque
     class F2c destaque

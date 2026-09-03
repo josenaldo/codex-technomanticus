@@ -30,15 +30,15 @@ O **Lighthouse CI (LHCI)** é a ferramenta oficial do Google para rodar o Lighth
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A[PR aberto] --> B["collect<br/>build + roda Lighthouse Nx"]
     B --> C["assert<br/>compara com as regras"]
     C -->|passou| D["upload<br/>guarda histórico"]
     C -->|falhou| E[❌ PR bloqueado]
     class B neutro
     class C neutro
-    class E falha
+    class E marca
 ```
 
 - **collect:** sobe a aplicação (uma build de produção ou um servidor estático) e roda o Lighthouse **várias vezes** na(s) URL(s) escolhida(s). Rodar N vezes e pegar a mediana combate o ruído do lab (lembre de [[03-Dominios/Tecnologia/Web Performance/Medição e Core Web Vitals/03 - Lab vs Field|G1 nota 03]]: uma execução só é uma amostra barulhenta).

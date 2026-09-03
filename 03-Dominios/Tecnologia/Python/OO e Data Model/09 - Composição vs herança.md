@@ -98,7 +98,7 @@ Com só 2 filtros e 3 destinos, já são **6 classes** — cada combinação nov
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Rigida["Herança rígida — explosão de subclasses"]
@@ -122,7 +122,7 @@ flowchart TB
 
     style Rigida fill:none,stroke:#D0021B,stroke-width:2px
     style Flexivel fill:none,stroke:#4A90D9,stroke-width:2px
-    class L0 falha
+    class L0 marca
     class LOG neutro
     class F destaque
     class D destaque

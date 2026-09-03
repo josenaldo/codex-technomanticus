@@ -36,12 +36,13 @@ O OAuth reconhece que **máquina falando com máquina é um cenário estrutural 
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Usuário-robô<br/>(senha compartilhada)"] -->|"login humano<br/>reaproveitado"| B["Sem MFA possível<br/>Sem revogação granular<br/>Indistinguível de humano nos logs"]
     B -->|"credencial vaza"| C["Todo processo<br/>que usa essa senha<br/>fica comprometido"]
 
-    class A falha
-    class C falha
+    class A neutro
+    class C marca
 ```
 
 Em uma frase: **quando não há usuário no fluxo, o protocolo não deveria fingir que há um — ele deveria ter um grant que trata a máquina como o que ela é: uma identidade de primeira classe.**

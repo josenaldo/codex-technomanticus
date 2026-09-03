@@ -50,8 +50,6 @@ flowchart TB
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph stdlib["crypto/* — stdlib"]
         direction TB
         SHA["crypto/sha256\ncrypto/sha512\nhashing de dados"]
@@ -75,8 +73,8 @@ flowchart TB
     class TLS marca
     class BCRYPT destaque
     class ARGON destaque
-    class X falha
-    class OK ok
+    class X marca
+    class OK marca
 ```
 
 Repare na fronteira: tudo que fica embaixo de `crypto/` na stdlib é primitiva **genérica** — hash, MAC, aleatoriedade, TLS. Hash de senha propositalmente **não está na stdlib**. Isso não é descuido dos mantenedores — é uma escolha deliberada, porque algoritmos de hash de senha evoluem (o padrão de mercado de 2010 não é o de hoje) e a equipe do Go prefere manter esse território em `x/crypto`, onde pode iterar sem o compromisso de compatibilidade eterna que a stdlib carrega. `crypto/tls`, o outro morador de peso deste pacote, fica reservado para a [[03 - TLS em Go|próxima nota]] — aqui o foco é hashing, HMAC e senha.

@@ -209,9 +209,8 @@ Cada função tem seu **stack frame** (quadro de pilha): uma fatia da pilha com 
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Endereços altos"] --> B
     B["Argumentos extras\n(7º, 8º... argumento)"]
     B --> C["Endereço de retorno\n(empilhado por 'call')"]
@@ -221,9 +220,9 @@ graph TD
     F --> G["rsp (topo atual)"]
     G --> H["Endereços baixos"]
 
-    class C falha
+    class C marca
     class D neutro
-    class E ok
+    class E marca
 ```
 
 *Leitura do diagrama:* a pilha cresce de cima para baixo. `rbp` fica no meio como âncora estável. Variáveis locais ficam abaixo de `rbp` (offsets negativos). O endereço de retorno fica logo acima de `rbp` (empilhado pelo `call` antes do prólogo).

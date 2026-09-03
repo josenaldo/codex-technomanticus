@@ -54,8 +54,8 @@ A partir dessas raízes, o GC percorre o **grafo de objetos**: cada objeto pode 
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     R1["Root: thread stack"] --> A["Objeto A"]
     R2["Root: variável global"] --> B["Objeto B"]
     A --> C["Objeto C"]
@@ -65,10 +65,10 @@ graph TD
     F["Objeto F (lixo)"] --> G["Objeto G (lixo)"]
     G --> F
 
-    class F falha
-    class G falha
-    class R1 ok
-    class R2 ok
+    class F neutro
+    class G marca
+    class R1 marca
+    class R2 marca
 ```
 
 > [!info] Leitura do diagrama
@@ -118,7 +118,8 @@ del b          # refcount(b) = 1 — ainda não zero!
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     ROOT["Root (variável 'a')"] --> ObjA["Objeto A\nrefcount=2"]
     ROOT2["Root (variável 'b')"] --> ObjB["Objeto B\nrefcount=2"]
     ObjA -- "a.other" --> ObjB
@@ -127,8 +128,8 @@ flowchart LR
     DEL1["del a"] -.->|"refcount A = 1"| ObjA
     DEL2["del b"] -.->|"refcount B = 1"| ObjB
 
-    class ObjA falha
-    class ObjB falha
+    class ObjA neutro
+    class ObjB marca
 ```
 
 > [!info] Leitura do diagrama
@@ -190,8 +191,8 @@ C. J. Cheney publicou em 1970 (*Communications of the ACM*, vol. 13, n. 11) um a
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph FROM["From-space (cheio)"]
         FA["Obj A (vivo)"]
         FB["Obj B (lixo)"]
@@ -210,11 +211,11 @@ graph LR
     FC -- "copia" --> TC
     FE -- "copia" --> TE
 
-    class FB falha
-    class FD falha
-    class TA ok
-    class TC ok
-    class TE ok
+    class FB neutro
+    class FD marca
+    class TA marca
+    class TC marca
+    class TE marca
 ```
 
 > [!info] Leitura do diagrama

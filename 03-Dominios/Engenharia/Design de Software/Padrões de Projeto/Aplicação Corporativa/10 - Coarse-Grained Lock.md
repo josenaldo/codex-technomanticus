@@ -48,7 +48,7 @@ Se a regra vale para o conjunto, o lock precisa ser do conjunto. Duas implementa
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph FINO["Lock por registro — a invariante escapa"]
         P1["Pedido v3<br/>desconto 10%"] --- I1["Item A v2"]
@@ -62,7 +62,7 @@ graph TD
         N2["qualquer mudança<br/>incrementa Pedido.v<br/>o segundo a salvar conflita"]
     end
 
-    class N1 falha
+    class N1 marca
     class P2 neutro
     class N2 neutro
 ```

@@ -37,8 +37,7 @@ Todo modelo de preço de compute na AWS pode ser lido através de um único eixo
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Quanto de compromisso<br/>você aceita assumir?"] --> B["Nenhum<br/>paga por segundo, sem promessa"]
     A --> C["Uso constante,<br/>1 ou 3 anos"]
@@ -49,9 +48,9 @@ flowchart LR
     C --> C2["Savings Plans<br/>compromisso de gasto ($/h)"]
     D --> D1["Spot<br/>capacidade ociosa,<br/>desconto profundo, sem SLA"]
 
-    class B1 falha
-    class C1 ok
-    class C2 ok
+    class B1 marca
+    class C1 marca
+    class C2 marca
     class D1 neutro
 ```
 

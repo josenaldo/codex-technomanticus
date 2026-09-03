@@ -36,7 +36,7 @@ Depois de listar as premissas nas três categorias, o passo seguinte é posicion
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Q["Importância x Evidência"]
@@ -46,7 +46,7 @@ graph TD
         C["Baixa importância<br/>Baixa evidência<br/>= ignorar por ora"]
         D["Baixa importância<br/>Alta evidência<br/>= não gasta mais tempo"]
     end
-    class A falha
+    class A marca
     class B neutro
     class C destaque
     class D neutro

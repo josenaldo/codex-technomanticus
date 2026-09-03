@@ -44,14 +44,14 @@ Isso não é peculiaridade de Kafka ou NATS — é a mesma physics que a [[03-Do
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A[At-most-once] -->|"ACK antes\nde processar"| A2["risco: perde mensagem"]
     B[At-least-once] -->|"ACK depois\nde processar"| B2["risco: duplica mensagem"]
     C[Exactly-once] -->|"transação distribuída\nproduzir+consumir"| C2["risco: custo/latência/\nescopo limitado"]
 
-    class A falha
+    class A marca
     class B destaque
     class C neutro
 ```

@@ -59,8 +59,8 @@ Para 8: pega 5 (sobra 3), pega 2 (sobra 1), pega 1 (sobra 0). Três cédulas. A 
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     Inicio["Falta dar: R$ 8"] --> P5["Pega R$ 5 (maior que cabe)"]
     P5 --> R3["Falta: R$ 3"]
     R3 --> P2["Pega R$ 2"]
@@ -68,7 +68,7 @@ flowchart LR
     R1 --> P1["Pega R$ 1"]
     P1 --> Fim["Falta: R$ 0 — total: 3 cedulas"]
     class Inicio neutro
-    class Fim ok
+    class Fim marca
 ```
 
 **Leitura do diagrama:** cada caixa é um passo do algoritmo. A cada passo, a única decisão é "qual a maior cédula que ainda cabe no valor restante?" — a escolha localmente ótima. O fluxo é uma linha reta sem ramificações: greedy nunca abre uma árvore de possibilidades, ele segue um único caminho do início ao fim. Compare mentalmente com a árvore exponencial que a recursão ingênua de DP abriria para o mesmo problema (`[[10 - Programação dinâmica]]`): é a diferença entre uma estrada e um labirinto.
@@ -104,17 +104,16 @@ A relação entre as duas técnicas fica clara aqui:
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Problema["Problema de otimização"] --> SubOtima{"Tem subestrutura ótima?"}
     SubOtima -- Não --> NemUm["Nem greedy nem DP simples<br/>(talvez NP-difícil)"]
     SubOtima -- Sim --> Escolha{"Tem a propriedade<br/>da escolha gulosa?"}
     Escolha -- "Sim (provado!)" --> Greedy["GREEDY: rápido e simples"]
     Escolha -- "Não / não sei provar" --> DP["DP: mais geral e seguro"]
-    class Greedy ok
+    class Greedy marca
     class DP neutro
-    class NemUm falha
+    class NemUm marca
 ```
 
 **Leitura do diagrama:** as duas técnicas compartilham o pré-requisito da subestrutura ótima (o primeiro losango). O que as separa é o segundo losango: se você consegue **provar** a propriedade da escolha gulosa, desce pelo ramo verde (greedy, barato). Se não consegue, o caminho seguro é o ramo azul (DP, caro mas geral). Repare na palavra "provado" — é o pedágio do ramo guloso. Sem prova, você não tem o direito de descer ali, mesmo que pareça que funciona. A próxima seção é justamente sobre como pagar esse pedágio.
@@ -153,16 +152,16 @@ Por indução, `O` vira `G` mantendo o tamanho — logo `G` tem tantas atividade
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Otima["Solução ótima O (qualquer)"] --> Diff["Acha a 1ª escolha onde O ≠ greedy"]
     Diff --> Troca["Troca o elemento de O pela escolha gulosa g₁"]
     Troca --> Valida{"A nova solução O' ainda é válida<br/>e tem o mesmo tamanho?"}
     Valida -- "Sim (sem piorar)" --> Repete["O' é ótima e concorda + 1 passo<br/>→ repete"]
     Valida -- Não --> Falha["Argumento falha:<br/>greedy NÃO é provado correto"]
     Repete --> Conclui["Por indução, O vira G sem piorar<br/>→ G é ótima ∎"]
-    class Conclui ok
-    class Falha falha
+    class Conclui neutro
+    class Falha marca
 ```
 
 **Leitura do diagrama:** o argumento parte da *direita do alvo* — assume que já existe uma solução ótima — e caminha *em direção* à solução gulosa, mostrando que cada troca preserva a otimalidade. O losango "sem piorar" é o coração: se você conseguir provar que a troca nunca degrada a solução, o ramo verde se fecha e o greedy está provado. Se a troca *pode* piorar (ramo vermelho), o argumento desmorona — e isso costuma ser o sinal de que greedy realmente não funciona para aquele problema.
@@ -197,8 +196,8 @@ O greedy usou 3 moedas onde 2 bastavam. Ele errou porque, ao pegar a moeda de 4 
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Alvo["Alvo: 6 — moedas {1, 3, 4}"]
     Alvo --> G["GREEDY: pega a maior que cabe"]
     Alvo --> O["ÓTIMO: considera todas"]
@@ -212,8 +211,8 @@ flowchart TD
     O1 --> O2["Pega 3 → sobra 0"]
     O2 --> OR["2 moedas (3+3) ✓"]
 
-    class GR falha
-    class OR ok
+    class GR neutro
+    class OR marca
 ```
 
 **Leitura do diagrama:** os dois ramos partem do mesmo alvo. O ramo esquerdo (greedy) é míope: ele agarra a moeda de 4 porque é a maior que cabe, sem perceber que isso o encurrala num resto ruim. O ramo direito (ótimo) "abre mão" da moeda grande, escolhe duas de 3, e ganha. A lição visual: a escolha localmente ótima (pegar a 4) **não** estava no caminho da solução globalmente ótima — a aposta gulosa foi furada. Só uma busca que considera todas as combinações (DP) descobre o ramo da direita.
@@ -308,12 +307,12 @@ Este é o contraste mais bonito de todos, porque dois problemas quase idênticos
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Knap["Problema da mochila (knapsack)"] --> Frac{"Posso pegar FRAÇÕES de um item?"}
     Frac -- "Sim (fractional)" --> Greedy["GREEDY por valor/peso<br/>→ ÓTIMO ✓"]
     Frac -- "Não — item inteiro ou nada (0/1)" --> DP["Greedy FALHA<br/>→ precisa de DP ✓"]
-    class Greedy ok
+    class Greedy marca
     class DP neutro
 ```
 

@@ -88,7 +88,7 @@ A AWS distribui os itens de uma tabela entre **partições físicas** — armaze
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     PK1["PK: sessao#123"] -->|hash| P1["Partição A"]
     PK2["PK: sessao#456"] -->|hash| P2["Partição B"]
@@ -96,7 +96,7 @@ flowchart LR
     PK4["PK: sessao#PROMO2026"] -->|hash| P3["Partição C<br/>(HOT — tráfego<br/>concentrado aqui)"]
     PK5["PK: sessao#PROMO2026"] -->|hash| P3
 
-    class P3 falha
+    class P3 marca
     class P1 neutro
     class P2 neutro
 ```

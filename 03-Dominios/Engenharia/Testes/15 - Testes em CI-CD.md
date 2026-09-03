@@ -75,9 +75,8 @@ São quatro postos de inspeção, cada um com um trade-off diferente entre veloc
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["git commit<br/>(máquina local)"] --> B["1. Pre-commit hook<br/>lint + format + testes rápidos<br/>SEGUNDOS"]
     B --> C["git push / abre PR"]
@@ -87,9 +86,9 @@ flowchart LR
     B -.->|falhou| A
     D -.->|falhou| A
     E -.->|falhou| G["bloqueia release<br/>alerta o time"]
-    class B ok
+    class B marca
     class D destaque
-    class E falha
+    class E marca
     class F neutro
 ```
 
@@ -125,7 +124,8 @@ E tem um efeito pior, quase psicológico:
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Pipeline lento<br/>(20+ min)"] --> B["Dev troca de contexto<br/>enquanto espera"]
     B --> C["Feedback chega tarde<br/>e fora de contexto"]
     C --> D["Dev começa a pular testes<br/>'commita e vê depois'"]
@@ -133,9 +133,9 @@ flowchart TD
     E --> F["Testes viram ruído<br/>que se ignora"]
     F --> G["A esteira não protege<br/>mais nada"]
     G -.->|investimento desperdiçado| H["Suíte existe<br/>mas é teatro"]
-    class A falha
-    class F falha
-    class H falha
+    class A neutro
+    class F marca
+    class H marca
 ```
 
 **Leitura do diagrama:** a lentidão não causa só atraso — causa *abandono*. Um pipeline lento treina o time a contornar os testes, e a partir daí a suíte vira decoração. Velocidade não é uma otimização opcional; é o que mantém a esteira viva.
@@ -150,17 +150,17 @@ Como manter rápido? As alavancas, da mais barata pra mais cirúrgica:
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     P["PR aberto"] --> S1["Estágio rápido<br/>lint + unit<br/>~1 min"]
     S1 -->|verde| S2["Estágio médio<br/>integração<br/>~5 min"]
     S1 -->|VERMELHO| X1["aborta JÁ<br/>devolve em 1 min"]
     S2 -->|verde| S3["Estágio caro<br/>E2E<br/>~20 min"]
     S2 -->|VERMELHO| X2["aborta<br/>poupou o E2E"]
     S3 -->|verde| OK["pode revisar"]
-    class X1 falha
-    class X2 falha
-    class OK ok
+    class X1 neutro
+    class X2 marca
+    class OK marca
 ```
 
 **Leitura do diagrama:** o pipeline não roda tudo em bloco. Ele encadeia estágios do mais barato pro mais caro, e qualquer reprovação corta a fila ali mesmo. Se o lint reprova, você recebe a notícia em um minuto, não em vinte e seis.
@@ -177,7 +177,7 @@ Repare na conexão com a [[02 - A pirâmide de testes e suas variações|pirâmi
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Diff["PR abre com um diff"] --> Graph["Grafo de dependência<br/>cobertura → módulo → teste"]
@@ -188,7 +188,7 @@ flowchart TD
     Fuzzy --> Run
     Run --> Merge["Merge no main"]
     Merge --> Full["Suíte COMPLETA roda<br/>(main / nightly)<br/>rede de segurança"]
-    class Direct ok
+    class Direct marca
     class Fuzzy destaque
     class Full neutro
 ```
@@ -212,9 +212,9 @@ Um teste [[11 - Testes flaky|flaky]] é aquele que passa e falha sem nenhuma mud
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Teste falha no CI"] --> B{"Falha é<br/>reproduzível?"}
     B -->|sim, sempre| C["É bug real<br/>conserta antes de mergear"]
     B -->|não, intermitente| D["Marca como FLAKY<br/>abre ticket com dono"]
@@ -224,7 +224,7 @@ flowchart TD
     F -.->|fica esquecido| H["Quarentena vira lixeira<br/>cobertura real cai"]
     class C destaque
     class E neutro
-    class H falha
+    class H marca
 ```
 
 **Leitura do diagrama:** ao primeiro sinal de intermitência, o teste sai do caminho crítico (quarentena) mas *não* desaparece — ele continua rodando pra você medir a taxa de falha, e ganha um dono e um ticket. A seta pontilhada é a armadilha: se a quarentena não tem prazo, vira uma lixeira onde testes morrem e a cobertura real despenca sem ninguém perceber.
@@ -268,10 +268,9 @@ A chave do shift-right é **limitar o raio de impacto** (*blast radius*) de uma 
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Deploy["Artefato pronto<br/>(já passou pela esteira)"] --> Strat{"Estratégia de<br/>exposição"}
     Strat --> Canary["Implantação canário<br/>(canary)<br/>5% → 25% → 100%<br/>observa métricas a cada passo"]
     Strat --> BG["Blue-green<br/>dois ambientes idênticos<br/>chaveia tráfego de uma vez<br/>rollback = chavear de volta"]
@@ -283,9 +282,9 @@ flowchart TD
     Mon -->|métrica estável| Full["Promove p/ 100%"]
     class Canary destaque
     class BG neutro
-    class Flag ok
-    class RB falha
-    class Full ok
+    class Flag marca
+    class RB marca
+    class Full marca
 ```
 
 **Leitura do diagrama:** o artefato que saiu da esteira não vai direto pra todos. A **implantação canário** solta pra uma fração (tipo 5%) e sobe degrau a degrau só se as métricas seguram; o **blue-green** mantém dois ambientes idênticos e chaveia o tráfego de um pro outro (rollback é chavear de volta, instantâneo); a **feature flag** deploya o código desligado e liga por configuração pra uma fatia de usuários. Os três desembocam no mesmo lugar: você **observa produção** — e aqui entram os smoke/[[13 - Além do básico - property-based, snapshot, contract, smoke|synthetic tests]] rodando contra prod de verdade, mais métricas de negócio. Se algo degrada, o rollback atinge só quem foi exposto; se segura, promove pra 100%.

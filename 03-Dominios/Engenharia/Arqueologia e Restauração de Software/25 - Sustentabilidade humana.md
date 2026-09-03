@@ -41,8 +41,8 @@ O quarto é o **trabalho invisível e ingrato**. Marianne Bellotti nomeia isso c
 
 ```mermaid
 graph TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A[Trabalho de legado] --> B[Sem folha em branco:<br/>reconstruir teoria a cada mudanca]
     A --> C[Metricas medem novidade,<br/>nao reducao de risco]
     A --> D[Cada deploy carrega<br/>cauda de risco desconhecida]
@@ -58,7 +58,7 @@ graph TD
     J --> K
     class D destaque
     class E destaque
-    class K falha
+    class K neutro
 ```
 
 ## Fechando o laço: o spike como ferramenta de estimativa honesta
@@ -78,13 +78,13 @@ Mesmo depois do spike, a estimativa em legado continua sendo uma faixa, não um 
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Antes do spike<br/>faixa: 0.25x a 4x"] --> B["Spike concluido<br/>faixa: 0.5x a 2x"]
     B --> C["Metade do trabalho feita<br/>faixa: 0.8x a 1.25x"]
     C --> D["Perto do fim<br/>faixa: 0.9x a 1.15x"]
-    class A falha
+    class A marca
     class B destaque
     class C neutro
     class D neutro

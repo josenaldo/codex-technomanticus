@@ -66,14 +66,14 @@ A composição encaixa três estações; o valor atravessa uma de cada vez.
 
 ```mermaid
 flowchart LR
+  classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
   classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-  classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
   X["entrada x"] --> G["g(x)"]
   G --> H["h(...)"]
   H --> F["f(...)"]
   F --> R["resultado"]
   class X neutro
-  class R ok
+  class R marca
 ```
 
 **Leitura do diagrama:** o valor `x` entra à esquerda e passa por `g`, depois `h`, depois `f`, sem nunca voltar. Cada caixa recebe a saída da anterior. Não há variável compartilhada entre as estações — só o dado fluindo. Isso é `pipe(g, h, f)`.
@@ -132,8 +132,8 @@ A diferença não é estética. No loop, "filtrar", "transformar" e "acumular" e
 
 ```mermaid
 flowchart LR
+  classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
   classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-  classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
   L["[1,2,3,4,5,6]"] --> FILT["filter<br/>(pares)"]
   FILT --> M["[2,4,6]"]
   M --> MAP["map<br/>(quadrado)"]
@@ -141,7 +141,7 @@ flowchart LR
   Q --> RED["reduce<br/>(soma)"]
   RED --> S["56"]
   class L neutro
-  class S ok
+  class S marca
 ```
 
 **Leitura do diagrama:** a coleção entra à esquerda. `filter` reduz aos pares, `map` transforma cada um, `reduce` colapsa tudo num único número. Cada estágio produz uma coleção nova (imutabilidade) e a entrega à próxima. O `56` no fim é o resultado do pipeline inteiro.
@@ -183,16 +183,16 @@ A recursão empilha chamadas até o caso base; aí desempilha multiplicando.
 
 ```mermaid
 flowchart TD
+  classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
   classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
   classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-  classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
   A["fatorial(3)<br/>retorna 3 * fatorial(2)"] --> B["fatorial(2)<br/>retorna 2 * fatorial(1)"]
   B --> C["fatorial(1)<br/>caso base: retorna 1"]
   C -.->|"1"| B2["3 * (2 * 1) = 6"]
   B -.->|"2 * 1 = 2"| B2
   class A neutro
   class C destaque
-  class B2 ok
+  class B2 marca
 ```
 
 **Leitura do diagrama:** descendo (setas cheias), cada chamada *adia* o resultado e chama uma versão menor — a pilha cresce. Em `fatorial(1)` bate o caso base (amarelo). Subindo (setas tracejadas), os valores adiados são resolvidos: `1`, depois `2 * 1`, depois `3 * 2`. O resultado `6` só existe depois que toda a pilha desempilha.
@@ -269,8 +269,8 @@ A diferença entre eles é só a combinadora: `map` sempre adiciona `f(x)`; `fil
 
 ```mermaid
 flowchart TD
-  classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-  classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+  classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+  classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
   subgraph IMP["Loop mutável"]
     direction TB
     I1["acc = 0"] --> I2["i = 0"]
@@ -284,8 +284,8 @@ flowchart TD
     F1["reduce(soma, 0, arr)"] --> F2["combina elemento<br/>a elemento"]
     F2 --> F3["retorna acúmulo<br/>(sem mutação)"]
   end
-  class I4 falha
-  class F3 ok
+  class I4 neutro
+  class F3 marca
 ```
 
 **Leitura do diagrama:** à esquerda, o loop mutável mantém duas variáveis (`acc` e `i`) que mudam a cada volta — a caixa vermelha é a mutação explícita. À direita, o fold declara a mesma intenção numa linha: combinadora, inicial, estrutura. O *como* (percorrer, parar, acumular) some dentro do `reduce`. Mesmo resultado, sem estado mutável à mostra.

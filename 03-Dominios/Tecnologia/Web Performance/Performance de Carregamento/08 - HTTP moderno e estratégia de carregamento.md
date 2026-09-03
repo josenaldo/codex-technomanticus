@@ -36,7 +36,7 @@ O **HTTP/3** troca o transporte: em vez de TCP, roda sobre **QUIC**, um protocol
 
 ```mermaid
 graph TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph H2["HTTP/2 sobre TCP"]
         T1[stream JS] --> TCP[TCP entrega em ordem]
@@ -49,7 +49,7 @@ graph TB
         Q2[stream CSS] --> OK2[✓ flui]
         Q3[stream IMG perde pacote] --> WAIT[só IMG espera]
     end
-    class BLOCK falha
+    class BLOCK marca
     class OK1 neutro
     class OK2 neutro
 ```

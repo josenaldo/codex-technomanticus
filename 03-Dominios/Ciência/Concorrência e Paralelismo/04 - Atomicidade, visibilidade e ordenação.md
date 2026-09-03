@@ -77,8 +77,8 @@ O hardware moderno é assim por design: cada core tem seu próprio cache, e mant
 
 ```mermaid
 flowchart LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph CoreA["Core A (thread escritora)"]
         RA["registrador / store buffer"] --> CA["cache L1 de A<br/>flag = true"]
     end
@@ -88,7 +88,7 @@ flowchart LR
     CA -. "propagação adiada<br/>(pode demorar)" .-> MEM["memória principal"]
     MEM -. "B nunca reconsulta" .-> CB
     class CA destaque
-    class CB falha
+    class CB neutro
 ```
 
 Leitura do diagrama: a escrita de A vive no cache L1 dele. A memória principal demora a receber a atualização, e B continua lendo seu próprio cache velho. As setas pontilhadas são o ponto: nada força a sincronização. B pode ler `false` por muito tempo depois de A ter escrito `true`.
@@ -182,8 +182,8 @@ O problema é o preço. Garantir consistência sequencial obrigaria a CPU a torn
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     I["O que você IMAGINA<br/>(consistência sequencial)"] --> I1["uma ordem global única"]
     I --> I2["toda escrita visível na hora"]
     I --> I3["nenhum reordenamento observável"]
@@ -191,8 +191,8 @@ flowchart TD
     H --> H2["escritas adiadas em buffers/caches"]
     H --> H3["reordenamento livre (as-if-serial só p/ 1 thread)"]
     I1 -. "a lacuna" .- H1
-    class I ok
-    class H falha
+    class I neutro
+    class H marca
 ```
 
 Leitura do diagrama: a coluna verde é a fantasia confortável; a vermelha é a realidade. As primitivas de sincronização (`volatile`, locks, barreiras) existem para, **localmente e sob demanda**, recuperar pedaços da garantia sequencial onde você precisa dela — pagando o custo só ali, não no programa inteiro. Diferentes arquiteturas relaxam diferente: x86-64 tem ordem forte (relaxa pouco); ARM e PowerPC são bem mais fracos.
@@ -214,7 +214,6 @@ A regra de ouro: escrever só é permitido em `Modified` ou `Exclusive`. Estando
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph C1["Core 1 — cache da linha X"]
@@ -228,7 +227,7 @@ flowchart LR
         S2 -->|"recebe invalidação"| I2
     end
     M1 -. "barramento de coerência:<br/>mensagem de invalidação" .-> I2
-    class M1 falha
+    class M1 marca
     class I2 neutro
     class S1 marca
     class S2 marca
@@ -247,9 +246,9 @@ Suponha duas variáveis independentes, `a` e `b`, que por azar do layout caíram
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph linha["Uma linha de cache (64 bytes)"]
         VA["var a<br/>(só a thread 1 escreve)"]
         VB["var b<br/>(só a thread 2 escreve)"]
@@ -259,7 +258,7 @@ flowchart TD
     linha -.->|"ping-pong de invalidação<br/>pelo barramento"| custo["throughput despenca,<br/>mesmo sem dado compartilhado"]
     class VA neutro
     class VB destaque
-    class custo falha
+    class custo marca
 ```
 
 Leitura do diagrama: `a` e `b` moram na mesma linha. Como o MESI invalida por linha e não por variável, a escrita de uma thread derruba a cópia da outra, embora elas nunca toquem o mesmo dado. O resultado é serialização disfarçada — duas threads que deveriam escalar de forma independente travam uma à outra.

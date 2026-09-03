@@ -199,9 +199,9 @@ Isso é exatamente o que faz esse tipo de fato ser tão bom para medir **lead ti
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph T["Transaction fact"]
         T1["fato_vendas<br/>1 linha por item vendido<br/>grão máximo, imutável"]
     end
@@ -218,7 +218,7 @@ graph TB
 
     class T1 neutro
     class P1 destaque
-    class A1 falha
+    class A1 marca
 ```
 
 | Tipo de fato | Granularidade | Atualização | Pergunta que responde bem | Exemplo no e-commerce |

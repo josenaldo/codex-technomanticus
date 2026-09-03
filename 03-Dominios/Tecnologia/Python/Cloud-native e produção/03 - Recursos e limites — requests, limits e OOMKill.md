@@ -88,14 +88,14 @@ spec:
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     LIM["Container excede resources.limits"] --> TIPO{"Qual recurso?"}
     TIPO -->|Memória| MEM["cgroup dispara OOMKill<br/>SIGKILL imediato, sem aviso<br/>processo MORRE"]
     TIPO -->|CPU| CPU["cgroup aplica throttling<br/>processo continua vivo,<br/>só perde ciclos de execução"]
     MEM --> SINTOMA1["Sintoma: Pod reinicia,<br/>Exit Code 137"]
     CPU --> SINTOMA2["Sintoma: latência sobe,<br/>processo continua respondendo"]
-    class MEM falha
+    class MEM neutro
     class CPU destaque
 ```
 

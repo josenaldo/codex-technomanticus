@@ -46,7 +46,7 @@ Repare no padrão: a banda inclusa cresce junto com o tamanho do plano, e em nen
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph DO["Conta DigitalOcean — uma linha por recurso"]
         D1["3x Droplet 4GB<br/>$XX/mês cada<br/>banda inclusa"]
         D2["1x Managed DB<br/>$XX/mês<br/>tier fixo"]
@@ -56,7 +56,7 @@ flowchart LR
     D2 --> T
     D3 --> T
 
-    class T ok
+    class T neutro
 ```
 
 ## O terror do egress AWS: mil dimensões, uma fatura ilegível
@@ -67,7 +67,7 @@ O caso mais didático é o egress. Data transfer *para dentro* da AWS é gratuit
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph AWS["Fatura AWS — N dimensões por recurso"]
         E1["EC2 instance-hour"]
         E2["EBS GB-mês"]
@@ -80,7 +80,7 @@ flowchart TD
     end
     E1 & E2 & E3 & E4 & E5 & E6 & E7 & E8 --> Q["? — só o Cost Explorer<br/>reconstrói o total com confiança"]
 
-    class Q falha
+    class Q neutro
 ```
 
 Nenhuma dessas linhas é cobrança "errada" ou abusiva — cada uma reflete um custo real de infraestrutura que a AWS está repassando de forma granular. O ponto não é que a AWS é desonesta, é que **granularidade de cobrança é o preço que você paga pela granularidade de controle**. Você pode, em tese, escolher exatamente quanto IOPS provisionar, exatamente qual classe de storage usar por objeto, exatamente que tier de NAT evitar. Essa liberdade de ajuste fino é real e valiosa — mas ela tem como contrapartida uma fatura que exige instrumentação para ser entendida.
@@ -143,7 +143,7 @@ Na AWS, a mesma arquitetura — 3 instâncias EC2, 1 RDS, um bucket S3 — nasce
 
 ```mermaid
 flowchart TB
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph Q1["Pergunta: 'quanto vou pagar mês que vem?'"]
         direction TB
@@ -153,7 +153,7 @@ flowchart TB
     DO_R --> DO_C["Confiança: alta,<br/>conhecida no ato da compra"]
     AWS_R --> AWS_C["Confiança: média,<br/>depende de comportamento real de uso"]
 
-    class DO_C ok
+    class DO_C neutro
     class AWS_C destaque
 ```
 
@@ -190,7 +190,8 @@ Juntando os fios da nota, o critério de decisão sobre qual modelo de precifica
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Você tem FinOps dedicado<br/>ou tempo de engenharia sobrando<br/>pra otimizar custo continuamente?"] -->|Não| B["Sua carga tem picos previsíveis<br/>ou é majoritariamente estável?"]
     A -->|Sim| C["Sua escala já justifica<br/>negociar desconto por volume?"]
@@ -199,8 +200,8 @@ flowchart TD
     C -->|Sim| F["AWS com RI/Savings Plans:<br/>desconto por volume supera<br/>a simplicidade do DO"]
     C -->|Ainda não| D
 
-    class D ok
-    class F ok
+    class D neutro
+    class F marca
     class E destaque
 ```
 

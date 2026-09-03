@@ -34,8 +34,8 @@ O Lazy Load corta o efeito dominó: carrega o pedido **agora** e deixa o resto c
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     P["pedido.getItens()"] --> PX{{"proxy da lista<br/>(ainda vazia)"}}
     PX -->|"1º acesso real<br/>(iterar, .size())"| Q["dispara SELECT itens"]
@@ -44,7 +44,7 @@ graph TD
     PX -.->|"sessão já fechada?"| EX["LazyInitializationException"]
 
     class PX neutro
-    class EX falha
+    class EX marca
     class Q destaque
 ```
 

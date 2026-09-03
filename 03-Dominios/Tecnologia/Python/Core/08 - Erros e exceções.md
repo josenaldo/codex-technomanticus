@@ -100,9 +100,9 @@ finally:
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["try: executa o bloco"] --> B{"Exceção levantada?"}
     B -- "Não" --> C["else: roda (só se NÃO houve exceção)"]
     B -- "Sim, tipo bate com algum except" --> D["except correspondente: trata a exceção"]
@@ -115,9 +115,9 @@ flowchart TB
     class A neutro
     class C neutro
     class D destaque
-    class E falha
+    class E marca
     class F destaque
-    class G falha
+    class G marca
 ```
 
 O papel de cada bloco:
@@ -192,7 +192,7 @@ Todas as exceções em Python descem de `BaseException`. O nível logo abaixo de
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     BE["BaseException"] --> SE["SystemExit — sys.exit()"]
@@ -219,10 +219,10 @@ flowchart TB
     EXC --> RE["RuntimeError"]
     RE --> NIE["NotImplementedError"]
 
-    class BE falha
-    class SE falha
-    class KI falha
-    class GE falha
+    class BE marca
+    class SE marca
+    class KI marca
+    class GE marca
     class EXC neutro
     class LE neutro
     class KE destaque

@@ -125,7 +125,7 @@ Repare no que **não** está aqui: nenhuma `Session`, nenhum `db.commit()`, nenh
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Fora["O que o domínio NÃO sabe"]
         HTTP["Requisição HTTP\n(FastAPI)"]
@@ -141,7 +141,7 @@ flowchart LR
     DB -.->|"persiste o resultado, mas não é conhecido por"| TAREFA
     JOB -.->|"chama, mas não é conhecido por"| TAREFA
 
-    class Dominio ok
+    class Dominio marca
     class Fora neutro
 ```
 
@@ -297,8 +297,8 @@ Voltando ao incidente de abertura — o handler e o job duplicando (ou, no caso 
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Antes["ANTES — regra espalhada em dois lugares"]
         H1["Handler FastAPI\nconcluir_tarefa()"] -->|"checa subtarefas\ninline, com SELECT direto"| DB1[("Banco")]
@@ -314,7 +314,7 @@ flowchart TB
     end
 
     class Antes destaque
-    class Depois ok
+    class Depois marca
     class DOM neutro
 ```
 

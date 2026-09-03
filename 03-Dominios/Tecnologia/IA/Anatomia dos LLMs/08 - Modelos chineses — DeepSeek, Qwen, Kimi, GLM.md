@@ -151,7 +151,6 @@ GLM é menos conhecido no Ocidente mas tem adoção significativa em empresas ch
 ```mermaid
 graph TD
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A{O que você precisa?} --> B[Raciocínio puro\nMatemática/lógica]
@@ -165,7 +164,7 @@ graph TD
     E --> I["DeepSeek V4 ou GLM-5.1\nambos MIT\nself-host com Ollama/vLLM"]
 
     class F neutro
-    class G ok
+    class G marca
     class H destaque
     class I marca
 ```

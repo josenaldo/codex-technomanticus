@@ -30,8 +30,8 @@ Pense assim: você contratou um desenvolvedor sênior para implementar uma featu
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     vago["Prompt vago\n'melhore a performance'"]
     preciso["Prompt preciso\n'findByCustomer tem N+1\nfixe com JOIN\nmantenha assinatura\ntestes devem passar'"]
 
@@ -44,8 +44,8 @@ flowchart TD
     vago --> dec_vago --> result_vago
     preciso --> dec_preciso --> result_preciso
 
-    class result_vago falha
-    class result_preciso ok
+    class result_vago neutro
+    class result_preciso marca
 ```
 
 > [!summary] Prompts eficazes minimizam as decisões que o agente precisa tomar. Cada lacuna que você deixa é uma decisão que o agente vai fazer — sem o contexto que você tem.

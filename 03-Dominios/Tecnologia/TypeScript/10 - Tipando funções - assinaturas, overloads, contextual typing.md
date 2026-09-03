@@ -259,8 +259,7 @@ O parâmetro `this` some completamente em runtime (é tipo-erased como todo o re
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     DEF["function f(this: Carrinho, item: string)"]
     COMP["Compilador TS\nverifica: this é Carrinho?"]
@@ -273,8 +272,8 @@ flowchart TD
     COMP --> ERR
     DEF --> RUN
 
-    class OK ok
-    class ERR falha
+    class OK marca
+    class ERR marca
     class RUN neutro
 ```
 
@@ -326,7 +325,7 @@ O mecanismo é simples: o compilador percorre as assinaturas de overload **de ci
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     CALL["processar(entrada)"]
     O1["Overload 1: processar(string) → string[]"]
@@ -339,8 +338,8 @@ flowchart TD
     O2 -->|"number? ✓ — usa este"| RET2["Retorno: number"]
     O2 -.->|"compilador usa p/ verificar corpo"| IMPL
 
-    class RET1 ok
-    class RET2 ok
+    class RET1 marca
+    class RET2 marca
     class IMPL neutro
 ```
 
@@ -456,7 +455,7 @@ Quando você chama `numeros.map(...)`, o TS já sabe que `T = number` (do tipo d
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     ARR["numeros: number[]"]
     MAP["Array<T>.map<U>(\n  cb: (value: T, ...) => U\n): U[]"]
     CB["(x) => x * 2"]
@@ -466,7 +465,7 @@ flowchart LR
     MAP -->|"tipo esperado do cb\n→ flui para dentro"| CB
     CB --> INF
 
-    class INF ok
+    class INF neutro
 ```
 
 > [!note] Leitura do diagrama

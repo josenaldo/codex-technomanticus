@@ -39,15 +39,15 @@ Repare na palavra **parcialmente**. O type checker prova ausência de *certas cl
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Código com<br/>tipos"] --> B{"Type checker<br/>(o inspetor)"}
     B -->|"prova OK"| C["Compila /<br/>roda"]
     B -->|"prova falha"| D["Erro de tipo<br/>ANTES de rodar"]
     C --> E["Restam: bugs<br/>de lógica, runtime,<br/>I/O, concorrência"]
     class B neutro
-    class D falha
+    class D marca
     class E destaque
 ```
 
@@ -66,8 +66,9 @@ Este eixo responde uma pergunta só: **em que momento o inspetor trabalha?**
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph EST["Estático — erro pego na build"]
         E1["Você escreve"] --> E2["Compila<br/>(inspetor roda)"]
         E2 -->|"tipo errado"| E3["Build falha<br/>na sua mesa"]
@@ -79,8 +80,8 @@ flowchart TB
         D2 -->|"linha não executa"| D4["Bug dorme<br/>no código"]
     end
     class E3 destaque
-    class D3 falha
-    class D4 falha
+    class D3 neutro
+    class D4 marca
 ```
 
 Leitura do diagrama: no estático, o erro de tipo é capturado antes de qualquer execução. No dinâmico, ele só aparece quando *aquela linha específica* roda — e a caixa D4 é o perigo silencioso: um ramo `if` raro pode esconder um `TypeError` por meses até alguém cair nele em produção.
@@ -148,14 +149,13 @@ E aqui está a parte bonita, o gancho com `[[11 - O paradigma lógico]]`: **o mo
 flowchart TB
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["let f = fun x -> x + 1"] --> B["Atribui incógnitas:<br/>x : 'a, f : 'a -> 'b"]
     B --> C["Gera restrições:<br/>'+' exige 'a = int<br/>resultado 'b = int"]
     C --> D["Unifica (Robinson):<br/>'a = int, 'b = int"]
     D --> E["Tipo principal:<br/>f : int -> int"]
     class C neutro
     class D marca
-    class E ok
+    class E marca
 ```
 
 Leitura do diagrama: o compilador começa cego (incógnitas `'a`, `'b`), coleta fatos do uso (`+` força inteiros), e resolve o sistema por unificação — exatamente o casamento de termos do paradigma lógico. O resultado não é uma adivinhação: é o tipo *mais geral* que satisfaz todas as restrições, provado.
@@ -173,8 +173,8 @@ Quando duas coisas "são do mesmo tipo"? Há duas respostas, e elas definem cult
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph NOM["Nominal (Java) — o nome manda"]
         N1["class Ponto2D<br/>{ x, y }"] -.->|"sem 'implements'"| N2["interface Coord"]
         N1 -.->|"INCOMPATÍVEL<br/>mesmo com x,y"| N2
@@ -183,8 +183,8 @@ flowchart TB
         S1["type Ponto2D<br/>{ x, y }"] ==>|"mesmo shape"| S2["type Coord<br/>{ x, y }"]
         S1 ==>|"COMPATÍVEL<br/>nome irrelevante"| S2
     end
-    class N2 falha
-    class S2 ok
+    class N2 neutro
+    class S2 marca
 ```
 
 Leitura do diagrama: à esquerda, `Ponto2D` tem exatamente os campos de `Coord` mas é **recusado** porque nunca declarou parentesco — o nome é tudo. À direita, o mesmo shape basta: TypeScript aceita pela forma, o nome é decorativo. Trade-off: estrutural facilita refactor e desacoplamento (menos boilerplate, Go não exige `implements`), mas permite *casamentos acidentais* — dois tipos com mesma forma e significados opostos colidem.
@@ -210,12 +210,12 @@ O lema é **"make illegal states unrepresentable"** — torne os estados ilegais
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Bool: pago?<br/>Bool: cancelado?"] -->|"4 combinações,<br/>1 ilegal"| B["Estado inválido<br/>EXPRESSÁVEL<br/>(precisa validar)"]
     C["enum:<br/>Pago | Cancelado<br/>| Pendente"] -->|"3 combinações,<br/>0 ilegais"| D["Estado inválido<br/>IMPOSSÍVEL<br/>(não compila)"]
-    class B falha
-    class D ok
+    class B neutro
+    class D marca
 ```
 
 Leitura do diagrama: dois booleanos geram 4 combinações, uma das quais é nonsense ("pago E cancelado") e exige validação manual eterna. O tipo soma admite só os 3 estados reais — o estado ilegal nem tem nome no sistema. O bug não é pego: ele é *prevenido por construção*.

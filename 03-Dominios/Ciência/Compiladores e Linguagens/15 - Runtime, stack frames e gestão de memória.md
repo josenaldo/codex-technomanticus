@@ -134,7 +134,6 @@ O compilador não escreve apenas o *corpo* da função. Ele gera automaticamente
 ```mermaid
 flowchart LR
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     A["CALL: empurra return address\nSP -= 8"] --> B["Prólogo:\npush RBP\nmov RBP, RSP\nsub RSP, N"]
     B --> C["Corpo da função\n(código gerado)"]
@@ -142,7 +141,7 @@ flowchart LR
     D --> E["Retorno ao chamador\nSP += 8"]
 
     class A neutro
-    class B ok
+    class B marca
     class C neutro
     class D marca
     class E neutro
@@ -293,7 +292,7 @@ Por que existem dois lugares para dados? Porque eles têm naturezas opostas.
 
 ```mermaid
 graph LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     subgraph "STACK — Pilha"
@@ -311,16 +310,16 @@ graph LR
         H5["Qualquer ordem\nde liberação"]
     end
 
-    class S1 ok
-    class S2 ok
-    class S3 ok
+    class S1 neutro
+    class S2 marca
+    class S3 marca
     class S4 destaque
     class S5 destaque
     class H1 marca
     class H2 marca
     class H3 destaque
-    class H4 ok
-    class H5 ok
+    class H4 marca
+    class H5 marca
 ```
 
 > [!info] Leitura do diagrama
@@ -400,7 +399,6 @@ A solução: o compilador detecta que `count` *escapa* do escopo de `make_counte
 flowchart TD
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["make_counter() é chamada\nframe criado na pilha"] --> B["'count = 0' criado\nno frame"]
     B --> C["'increment' é criada\ncapturando 'count'"]
     C --> D{"'count' escapa\ndo frame?"}
@@ -411,7 +409,7 @@ flowchart TD
 
     class A neutro
     class E marca
-    class F ok
+    class F marca
     class G marca
 ```
 

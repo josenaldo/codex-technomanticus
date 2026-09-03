@@ -41,8 +41,8 @@ Em [[02 - Análise de complexidade - Big-O]] você ordenou as classes de crescim
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph TRATAVEL["TRATÁVEL — polinomial"]
         direction TB
         A["O(1) constante"]
@@ -60,8 +60,8 @@ flowchart LR
     end
     TRATAVEL ==>|"a parede"| INTRATAVEL
 
-    class TRATAVEL ok
-    class INTRATAVEL falha
+    class TRATAVEL neutro
+    class INTRATAVEL marca
 ```
 
 **Leitura do diagrama:** tudo do lado verde compartilha uma propriedade: o expoente de n é **fixo** (1, 2, 3...). São os algoritmos polinomiais, e por convenção chamamos todos eles de "tratáveis". Tudo do lado vermelho tem n **no expoente** (2ⁿ) ou cresce ainda mais selvagemente (n!, nⁿ). A seta grossa entre os dois blocos — "a parede" — é a fronteira polinomial vs exponencial. Não é uma linha arbitrária: ela marca uma mudança de natureza no comportamento, não só de grau.
@@ -179,9 +179,8 @@ A relação intuitiva entre os quatro termos:
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph NPhard["NP-difícil — pelo menos tão difícil quanto NP-completo"]
         direction TB
@@ -193,11 +192,11 @@ flowchart TD
         FORA["NP-difícil mas NÃO em NP\n(TSP-otimização, halting problem)"]
     end
 
-    class P ok
+    class P marca
     class NPC destaque
-    class FORA falha
+    class FORA marca
     class NP neutro
-    class NPhard falha
+    class NPhard marca
 ```
 
 **Leitura do diagrama (intuitivo, assumindo P ≠ NP):** a caixa azul é **NP** — tudo que dá pra verificar rápido. Dentro dela, o verde **P** é o que também dá pra **resolver** rápido, e o laranja **NP-completo** é a fronteira mais difícil de NP. A interseção de NP-completo com NP-difícil são os problemas que são as duas coisas. O bloco vermelho de fora mostra que **NP-difícil transborda NP**: há problemas tão duros que nem são verificáveis em tempo polinomial (TSP-otimização) ou nem são computáveis (halting problem). Atenção: este é o mapa **se** P ≠ NP. Se um dia provarem P = NP, o verde engole o laranja e o desenho colapsa — é justamente isso que está em jogo.
@@ -226,8 +225,8 @@ Agora vire a lógica do avesso, e você tem o motor das provas de NP-dificuldade
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["instância de A\n(problema novo)"] -->|"transformação barata"| B["instância de B\n(problema conhecido)"]
     B --> SOLVE["algoritmo para B"]
@@ -235,7 +234,7 @@ flowchart LR
     RB -->|"traduz de volta"| RA["resposta de A"]
 
     class A destaque
-    class B ok
+    class B marca
     class SOLVE neutro
 ```
 
@@ -261,9 +260,8 @@ Esta é a parte mais útil da nota, e a que de fato distingue o engenheiro sêni
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     START["Problema parece NP-difícil"] --> Q1{"n é pequeno\ne fixo?"}
     Q1 -->|"sim"| EXP["Aceite o exponencial\nforça bruta / DP exponencial\n(ex.: Held-Karp O(2ⁿ·n²))"]
@@ -275,11 +273,11 @@ flowchart TD
     Q4 -->|"sim"| APPROX["Algoritmo de aproximação\nperto do ótimo, provado\n(ex.: 2-aprox vertex cover)"]
     Q4 -->|"não"| HEUR["Heurística / solver\nsem garantia, boa na prática\n(greedy, busca local, SA,\ngenéticos, SAT/MILP solver)"]
 
-    class START falha
+    class START marca
     class EXP neutro
     class FPT neutro
-    class SPECIAL ok
-    class APPROX ok
+    class SPECIAL marca
+    class APPROX marca
     class HEUR destaque
 ```
 

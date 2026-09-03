@@ -45,17 +45,17 @@ O outro lado da moeda — quanto a lentidão **afasta** — vem do próprio Goog
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["1s → 3s"] -->|"+32% de bounce"| B["3s → 5s"]
     B -->|"+90% de bounce"| C["5s → 6s"]
     C -->|"+106% de bounce"| D["6s → 10s"]
     D -->|"+123% de bounce"| E[Abandono]
     class A neutro
     class C destaque
-    class D falha
-    class E falha
+    class D marca
+    class E marca
 ```
 
 Quando o carregamento passa de 1 para 3 segundos, a probabilidade de o usuário abandonar sobe **32%**. De 1 para 5 segundos, **90%**. De 1 para 10 segundos, **123%**. A curva não é linear — ela acelera. A Deloitte encontrou o limiar cognitivo: **passados 1.000 ms (1 segundo), o usuário perde o foco na tarefa** que estava fazendo.

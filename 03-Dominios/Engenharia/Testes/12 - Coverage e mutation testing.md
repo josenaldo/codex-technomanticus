@@ -59,16 +59,16 @@ Um único teste com `vip = true` faz **line coverage de 100%** — todas as linh
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Teste: vip = true"] --> B{"if vip?"}
     B -->|"ramo true<br/>COBERTO"| C["preco = preco - 10"]
     B -.->|"ramo false<br/>NUNCA TESTADO"| D["pula o desconto"]
     C --> E["return preco"]
     D -.-> E
 
-    class C ok
-    class D falha
+    class C neutro
+    class D marca
 ```
 
 Lead-in: o diagrama mostra o mesmo `if` sob a ótica dos dois tipos de cobertura.
@@ -97,15 +97,15 @@ Esse teste roda o método inteiro. A ferramenta de coverage registra cada linha 
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Teste roda o método"] --> B["Linha foi EXECUTADA"]
     B --> C{"O teste<br/>VERIFICA o<br/>resultado?"}
     C -->|"sim, tem assert"| D["Linha protegida<br/>contra regressão"]
     C -->|"não, sem assert"| E["FALSO CONFORTO<br/>coverage verde,<br/>zero proteção"]
 
-    class D ok
-    class E falha
+    class D neutro
+    class E marca
 ```
 
 Lead-in: o caminho de uma linha "coberta" até saber se ela está, de fato, protegida.
@@ -124,9 +124,9 @@ O sintoma é o que chamo de **coverage theater**: testes que existem para o rela
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Gestão define meta:<br/>90% de coverage"] --> B["Time é cobrado<br/>pelo número"]
     B --> C["Caminho honesto:<br/>testar lógica de negócio"]
     B --> D["Caminho do teatro:<br/>asserções vazias,<br/>testar getters/DTOs"]
@@ -134,10 +134,10 @@ flowchart TD
     D --> F["Rápido, bate a meta,<br/>zero confiança real"]
     F --> G["Goodhart:<br/>a métrica deixou<br/>de medir qualidade"]
 
-    class D falha
-    class F falha
+    class D neutro
+    class F marca
     class G destaque
-    class C ok
+    class C marca
 ```
 
 Lead-in: como uma meta de coverage gera incentivos perversos.
@@ -195,8 +195,8 @@ Nem todo mutador vem ligado por padrão. `REMOVE_CONDITIONALS` — que apaga a c
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Código original<br/>+ suíte de testes"] --> B["Ferramenta injeta UM mutante<br/>ex: troca > por >="]
     B --> C["Roda a suíte<br/>contra o código mutado"]
@@ -205,8 +205,8 @@ flowchart TD
     D -->|"não"| F["Mutante SOBREVIVEU<br/>regressão real passaria<br/>despercebida aqui"]
     F --> G["Sinal: escreva/fortaleça<br/>a asserção neste ponto"]
 
-    class E ok
-    class F falha
+    class E neutro
+    class F marca
     class G destaque
 ```
 
@@ -324,13 +324,13 @@ O problema é que **detectar automaticamente se dois programas são semanticamen
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Mutante gerado"] --> B{"Muda o<br/>comportamento<br/>observável?"}
     B -->|"sim"| C["Mutante comum:<br/>morto ou sobrevivente<br/>é sinal real"]
     B -->|"não"| D["Mutante EQUIVALENTE:<br/>sobrevive sempre,<br/>não é falha da suíte"]
 
-    class C ok
+    class C neutro
     class D destaque
 ```
 
@@ -416,9 +416,9 @@ Cada degrau é uma afirmação mais forte. Coverage te leva até o degrau 3. Só
 
 ```mermaid
 flowchart BT
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     L1["1. A linha existe"] --> L2["2. A linha RODA<br/>→ line coverage"]
     L2 --> L3["3. Todos os CAMINHOS rodam<br/>→ branch coverage"]
     L3 --> L4["4. Mudar a linha QUEBRA um teste<br/>→ mutation testing"]
@@ -426,7 +426,7 @@ flowchart BT
     class L1 neutro
     class L2 destaque
     class L3 destaque
-    class L4 ok
+    class L4 marca
 ```
 
 Lead-in: a mesma pirâmide de garantias, agora como degraus visuais.

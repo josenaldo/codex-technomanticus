@@ -56,11 +56,11 @@ Em um dense, o FFN ativa **todos os seus neurônios** para cada token:
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Token: 'entanglement'"] --> B["Self-Attention\n(todos os heads)"]
     B --> C["FFN Dense\n100% dos neurônios\n~70B parâmetros"]
     C --> D["Representação\natualizada"]
-    class C falha
+    class C neutro
 ```
 
 Se o modelo tem 70B de parâmetros e ~65% deles estão nas FFNs, cada token ativa ~45B de parâmetros só no FFN. Simples, previsível, mas linearmente caro com o tamanho do modelo.
@@ -74,8 +74,8 @@ No MoE, cada FFN é substituída por um **banco de experts** — múltiplas FFNs
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["Token: 'entanglement'"] --> B["Self-Attention\n(igual ao dense)"]
     B --> C["Router\nrede linear pequena"]
     C -- "score: 0.81" --> D["Expert 7\n(ciência/física)"]
@@ -89,7 +89,7 @@ graph TD
     G -. "NÃO ativado" .-> H
     class F neutro
     class G neutro
-    class H ok
+    class H marca
 ```
 
 **Como o router decide?** É uma multiplicação de matriz: ele pega o vetor de representação do token (dimensão `d_model`, tipicamente 4096–8192) e multiplica por uma matriz de pesos `W_router` de dimensão `d_model × num_experts`. O resultado é um vetor de scores, um por expert. Os `top-K` experts (tipicamente K=2) são selecionados. Os outros são ignorados completamente — zero computação.
@@ -196,8 +196,8 @@ O maior equívoco sobre MoE: "como ativa poucos parâmetros por token, precisa d
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph "Dense 70B"
         A["VRAM usada:\n~40GB\nComputação/token:\n~70B params"]
     end
@@ -205,7 +205,7 @@ graph LR
         B["VRAM necessária:\n~120GB TOTAL\nComputação/token:\n~50B params ativos\n(outros 550B\ncaram na VRAM,\nnão computados)"]
     end
     class A neutro
-    class B falha
+    class B marca
 ```
 
 | Aspecto                  | Dense 70B                  | MoE 600B (ativo ~50B)                           |

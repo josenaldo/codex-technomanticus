@@ -62,7 +62,7 @@ No topo do drill-down está a **âncora** propriamente dita: o movimento da cama
 
 ```mermaid
 graph BT
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     C4["<b>Camada 4 — ferramentas</b><br/>'Java, Node.js, PostgreSQL, RabbitMQ.'<br/><br/>zero vantagem — todo mundo da vaga tem"]
@@ -74,7 +74,7 @@ graph BT
     C3 -->|"sobe: compare três<br/>empregos, ache o padrão"| C2
     C2 -->|"sobe: nomeie o padrão<br/>de forma que o leitor sinta o valor"| C1
 
-    class C4 falha
+    class C4 marca
     class C3 destaque
     class C2 destaque
     class C1 neutro

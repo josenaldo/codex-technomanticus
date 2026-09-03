@@ -37,6 +37,7 @@ Esse `panic` não veio de código seu — veio do runtime, que detectou a viola�
 
 ```mermaid
 flowchart TD
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["panic(valor)"] --> B["função corrente para de executar"]
@@ -52,7 +53,7 @@ flowchart TD
 
     class A falha
     class E destaque
-    class J falha
+    class J neutro
 ```
 
 O ponto central: **`panic` não é uma exceção que "voa" para qualquer `catch` mais próximo** — ele sobe função por função, executando cada `defer` pendente naquele nível antes de continuar subindo. Se nenhum `defer`, em nenhum nível da pilha daquela goroutine, chamar `recover()`, o processo inteiro termina — não só a goroutine que entrou em pânico. Isso é diferente de exceções em Java/Python, onde uma exceção não tratada numa thread secundária normalmente não derruba o processo todo; em Go, um `panic` não recuperado em **qualquer** goroutine mata o programa inteiro, goroutine principal incluída.

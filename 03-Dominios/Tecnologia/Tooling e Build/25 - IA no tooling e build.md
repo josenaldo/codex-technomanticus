@@ -491,8 +491,9 @@ O que torna o slopsquatting qualitativamente diferente do typosquatting clássic
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     LLM["LLM alucina\nnome de pacote\n(ex: vite-plugin-meu-plugin)"]
     ATCK["Atacante registra\no nome no npm\ncom payload malicioso"]
     AGT["Agente executa\nnpm install sem revisão"]
@@ -505,9 +506,9 @@ flowchart TD
     INF --> CI
 
     class LLM destaque
-    class ATCK falha
-    class INF falha
-    class CI falha
+    class ATCK neutro
+    class INF marca
+    class CI marca
     class AGT destaque
 ```
 

@@ -133,9 +133,9 @@ times_a.symmetric_difference(times_b)   # mesmo resultado
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph Uniao["União A | B"]
         direction TB
         U1["ana"] & U2["bruno"] & U3["carla"] & U4["diego"]
@@ -155,8 +155,8 @@ flowchart LR
 
     class Uniao neutro
     class Intersecao destaque
-    class Diferenca falha
-    class DifSimetrica falha
+    class Diferenca marca
+    class DifSimetrica marca
 ```
 
 A diferença prática entre operador e método fica clara quando o lado direito **não** é já um `set`:
@@ -207,8 +207,8 @@ Um `set`, por ser uma tabela hash, funciona diferente: para checar `x in conjunt
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     Q["x in colecao"] --> L{"colecao é list?"}
     L -->|"sim"| SC["Percorre item a item\naté achar ou esgotar\nO(n)"]
@@ -216,7 +216,7 @@ flowchart TB
 
     class Q neutro
     class L neutro
-    class SC falha
+    class SC marca
     class HS destaque
 ```
 

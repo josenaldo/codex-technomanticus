@@ -30,9 +30,7 @@ Este é o diagrama que todo o resto desta nota explica, linha por linha. Uma apl
 ```mermaid
 flowchart TB
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     User(("Usuário"))
 
@@ -91,12 +89,12 @@ flowchart TB
 
     class CF neutro
     class R53 neutro
-    class WAF falha
-    class Shield falha
+    class WAF marca
+    class Shield marca
     class RDSPrim destaque
     class RDSStandby destaque
-    class Cachea ok
-    class Cacheb ok
+    class Cachea marca
+    class Cacheb marca
     class S3 neutro
     class NAT marca
 ```
@@ -296,8 +294,8 @@ Uma decisão que atravessa a trilha inteira desde a nota 01 do galho 5 vale rele
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     User(("Usuário"))
     DNSdo["DNS (DO ou registrador)"]
@@ -323,7 +321,7 @@ flowchart TB
     User -.->|"assets estáticos,<br/>direto"| Spaces
 
     class DBdo destaque
-    class Cachedo ok
+    class Cachedo marca
     class Spaces neutro
 ```
 

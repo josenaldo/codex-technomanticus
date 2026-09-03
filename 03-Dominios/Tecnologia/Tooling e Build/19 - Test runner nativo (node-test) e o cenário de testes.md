@@ -220,8 +220,8 @@ node --test --test-isolation=process
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph "none — processo único"
         P0["Processo principal"]
         F0a["arquivo-a.test.ts"] --> P0
@@ -247,8 +247,8 @@ graph LR
 
     class W1 neutro
     class W2 neutro
-    class C1 falha
-    class C2 falha
+    class C1 marca
+    class C2 marca
 ```
 
 O trade-off: `worker` é mais rápido (menos overhead de fork), mas módulos com estado singleton podem vazar se o worker for reusado. `process` é mais caro, mas o isolamento é absoluto — cada arquivo começa em um processo limpo.
@@ -332,8 +332,8 @@ Mas há algo mais fundamental: o Vitest foi desenhado para ESM e TypeScript de v
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Jest (arquitetura legada)"
         JF["Arquivo .ts"]
         JB["Babel/SWC\n(transform separado)"]
@@ -350,8 +350,8 @@ graph LR
         VF --> VE --> VESM --> VW
     end
 
-    class JCJ falha
-    class VESM ok
+    class JCJ neutro
+    class VESM marca
 ```
 
 Esse diagrama explica por que o Jest tem problemas com ESM: ele converte tudo para CJS internamente antes de executar, o que quebra com pacotes ESM-only (como `p-limit@5+`, `chalk@5+`, `node-fetch@3+`). O Vitest simplesmente não faz essa conversão — ESM é o formato nativo.
@@ -572,7 +572,7 @@ Existem dois mecanismos para coletar coverage em Node.js:
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "Istanbul (instrumentation-based)"
         IS["Código fonte original"]
@@ -590,7 +590,7 @@ graph TD
         VS --> VR --> VM --> VO
     end
 
-    class IT falha
+    class IT marca
     class VR neutro
 ```
 
@@ -797,7 +797,7 @@ describe('math', () => {
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     START["Novo projeto ou\nmigrar um existente?"]
@@ -838,10 +838,10 @@ flowchart TD
     ESM_PAIN -->|Sim| MIG
     ESM_PAIN -->|Não| KEEP
 
-    class VT ok
+    class VT marca
     class NT neutro
     class BT destaque
-    class MIG ok
+    class MIG marca
 ```
 
 ---

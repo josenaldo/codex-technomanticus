@@ -63,7 +63,7 @@ O jeito mais direto de situar serverless é olhar para trás, para tudo que este
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     BM["Bare metal<br/>(servidor físico dedicado)"] --> VM["VM<br/>Galho 5<br/>(EC2 / Droplet)"]
@@ -71,7 +71,7 @@ flowchart LR
     EL --> CT["Container gerenciado<br/>Galho 12<br/>(ECS/Fargate, Kubernetes gerenciado)"]
     CT --> FN["Função serverless<br/>este galho<br/>(Lambda / DO Functions)"]
 
-    class BM falha
+    class BM marca
     class VM destaque
     class EL destaque
     class CT neutro

@@ -31,9 +31,9 @@ O ponto central que a maioria erra: essas duas opções não são intercambiáve
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["Ação do usuário"] --> B{"É reversível em segundos<br/>e de custo baixo?"}
     B -->|sim| C["Undo: executa na hora<br/>+ toast 'Desfazer'"]
     B -->|não, é destrutiva<br/>ou cara| D["Confirmação: modal explícito<br/>antes de executar"]
@@ -41,7 +41,7 @@ graph TD
     D -->|confirmou| F["Executa, sem volta"]
     class C neutro
     class D destaque
-    class F falha
+    class F marca
 ```
 
 **O mecanismo em uma frase:** confirmação e undo são dois mecanismos de segurança para dois tipos de risco diferentes — usar o mecanismo errado, ou os dois ao mesmo tempo, na maioria das vezes só produz fricção sem produzir segurança real.

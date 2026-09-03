@@ -37,8 +37,8 @@ Isso não é uma técnica avançada de type-level programming. É uma mudança d
 
 ```mermaid
 graph LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Modo_Defensivo["Modo defensivo"]
         L["Lógica"]
         T["Tipos (depois)"]
@@ -55,8 +55,8 @@ graph LR
         M --> C
     end
 
-    class C ok
-    class B falha
+    class C neutro
+    class B marca
 ```
 
 TypeScript tem um sistema de tipos suficientemente expressivo para implementar essa abordagem. Não é Haskell — há limitações — mas você chega surpreendentemente longe com as ferramentas que já viu nas notas anteriores. Esta nota mostra onde essas ferramentas convergem.
@@ -159,7 +159,6 @@ buscarPedidosDoUsuario("abc-123"); // ERRO: string crua não é UserId
 graph TD
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     S["string (structural)"]
     UID["UserId = string & { __brand: 'UserId' }"]
     PID["ProdutoId = string & { __brand: 'ProdutoId' }"]
@@ -175,7 +174,7 @@ graph TD
 
     class UID neutro
     class PID marca
-    class OID ok
+    class OID marca
 ```
 
 > [!note] A propriedade `__brand` nunca existe em runtime
@@ -361,7 +360,7 @@ Compare com o equivalente em try/catch: o erro é `unknown` (TS 4.0+) ou `any` (
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     F["criarPedido()\nretorna Result<Pedido, ErroPedido>"]
     CHK{"result.ok?"}
@@ -386,7 +385,7 @@ flowchart TD
     ERR --> E5
     ERR --> DEF
 
-    class VAL ok
+    class VAL neutro
     class DEF falha
 ```
 

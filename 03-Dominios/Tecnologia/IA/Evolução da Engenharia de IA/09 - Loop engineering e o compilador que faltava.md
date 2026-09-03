@@ -145,9 +145,9 @@ O que muda, degrau a degrau, não é só *o que* é checado — é **o veredito 
 
 ```mermaid
 flowchart BT
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     F["Formatter<br/>julga: whitespace<br/>veredito: ms · automático · externo"]
     L["Linter<br/>julga: estilo, idioma<br/>veredito: ms · automático · externo"]
     T["Type-checker<br/>julga: peças encaixam<br/>veredito: segundos · automático · externo"]
@@ -160,7 +160,7 @@ flowchart BT
     class L neutro
     class T neutro
     class TS destaque
-    class R falha
+    class R marca
 ```
 
 O check no topo da escada ainda faz o mesmo essencial que o check embaixo faz — pegar uma afirmação e forçá-la contra algo real, recusar deixá-la passar se não resistir. Mas ele precisa **esticar muito mais para tocar a realidade**, e o toque, quando finalmente chega lá, é menos certeiro do que o toque instantâneo do type-checker embaixo.

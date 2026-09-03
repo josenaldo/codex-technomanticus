@@ -165,15 +165,15 @@ A diferença entre `uv add` e `uv sync` é a diferença entre **decidir** e **re
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     A["pyproject.toml<br/>(faixas de versão)"] -->|"uv add pacote"| B["uv resolve o grafo<br/>completo + transitivas"]
     B --> C["uv.lock<br/>(versões exatas + hash)"]
     C -->|"uv sync"| D[".venv/<br/>ambiente instalado,<br/>reproduzível"]
     D -.->|"uv sync --locked<br/>em CI/produção"| E["Mesma árvore,<br/>qualquer máquina"]
 
     class C neutro
-    class E ok
+    class E marca
 ```
 
 > [!warning] `uv sync` sem `--locked` em CI é o mesmo erro do `poetry install --no-update` esquecido

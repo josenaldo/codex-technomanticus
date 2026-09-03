@@ -309,12 +309,12 @@ Como a decisão 5 desta nota já estabeleceu, `/readyz` só falha assim quando a
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Deployment<br/>Progressing=False"] --> B["ReplicaSet novo<br/>0/3 prontos"]
     B --> C["Pod novo<br/>readiness falha, HTTP 500"]
     C --> D["exec + wget /readyz<br/>password authentication failed"]
     D --> E["Secret desatualizado<br/>após rotação no cofre"]
-    class E falha
+    class E neutro
 ```
 
 ## O conjunto final de manifestos
@@ -471,8 +471,8 @@ O `Secret` com a senha do banco, deliberadamente, não entra neste bloco: sua cr
 
 ```mermaid
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph "Fora do cluster"
         PG[("Postgres gerenciado<br/>RDS/equivalente")]
@@ -514,7 +514,7 @@ graph TB
     REG -.->|"digest fixo"| P1
 
     class PG marca
-    class ING ok
+    class ING neutro
     class JOB destaque
 ```
 

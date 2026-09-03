@@ -93,7 +93,7 @@ A pergunta óbvia é: por que `struct{}` e não `bool`? Um map `map[string]bool`
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph BoolSet["map[string]bool"]
         direction TB
@@ -108,7 +108,7 @@ flowchart LR
         S3["carol → ausente, não uma entrada"]
     end
 
-    class BoolSet falha
+    class BoolSet neutro
     class StructSet destaque
 ```
 

@@ -32,7 +32,7 @@ Para equipes Node.js, o OWASP Top 10 é um roteiro mínimo: cada categoria tem p
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph Acesso["Controle de Acesso"]
@@ -54,16 +54,16 @@ flowchart LR
         A10["A10 · SSRF\n(fetch URL de usuário)"]
     end
 
-    class A01 falha
-    class A02 falha
-    class A03 falha
+    class A01 marca
+    class A02 marca
+    class A03 marca
     class A04 destaque
     class A05 destaque
     class A06 destaque
-    class A07 falha
+    class A07 marca
     class A08 destaque
     class A09 neutro
-    class A10 falha
+    class A10 marca
 ```
 
 O mapa acima agrupa as 10 categorias por natureza de risco: **Acesso** (quem pode ver o quê), **Dados** (proteção de informação em repouso e em trânsito), **Injeção e Integridade** (dados de usuário alterando lógica interna), e **Infraestrutura** (configuração, dependências e serviços de retaguarda). As categorias em vermelho têm maior impacto direto; as em âmbar são riscos de design e configuração; as em azul são falhas de visibilidade. Note que as categorias não são independentes: um A05 Misconfiguration (NODE_ENV=development em produção expondo stack traces) pode revelar detalhes internos que facilitam um A03 Injection. Mitigar A02 Crypto Failures (bcrypt em vez de MD5) reduz o impacto de um eventual A09 Logging Failure. Pense no Top 10 como camadas sobrepostas, não como itens de uma checklist sequencial.

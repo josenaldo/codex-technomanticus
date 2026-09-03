@@ -96,8 +96,8 @@ O erro não aparece em desenvolvimento com cenários simples. Aparece em produç
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph PIPE [".pipe() — sem propagação de erro"]
         direction LR
@@ -114,11 +114,11 @@ flowchart TD
         QD --> QE["Promise rejeita\ncom o erro"]
     end
 
-    class PIPE falha
-    class PIPELINE ok
-    class PE falha
+    class PIPE neutro
+    class PIPELINE marca
+    class PE marca
     class QD destaque
-    class QE ok
+    class QE marca
 ```
 
 Com `.pipe()`, um erro no `transform` dispara um evento `'error'` que fica sem handler — o `source` e o `destination` continuam abertos, acumulando file descriptors. Com `pipeline()`, o mesmo erro propaga `.destroy(err)` em todos os streams da cadeia antes de rejeitar a Promise.

@@ -26,7 +26,7 @@ A convenção mais consolidada de nomeação de evento segue o padrão **object-
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph SEM["Sem convenção — 5 nomes, 1 ação"]
         A1["Button Click"]
@@ -39,7 +39,7 @@ graph LR
         B1["checkout_cta_clicked"]
     end
     SEM -.->|"governança"| COM
-    class SEM falha
+    class SEM marca
     class COM neutro
 ```
 

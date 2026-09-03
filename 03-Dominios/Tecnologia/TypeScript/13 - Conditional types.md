@@ -40,8 +40,8 @@ A leitura de `T extends U ? X : Y` é: *"Se T for atribuível a U, o tipo result
 
 ```mermaid
 flowchart LR
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     T["T (tipo de entrada)"]
     Q{{"T extends U?"}}
     X["Resultado: X"]
@@ -51,8 +51,8 @@ flowchart LR
     Q -- "sim (T atribuível a U)" --> X
     Q -- "não" --> Y
 
-    class X ok
-    class Y falha
+    class X neutro
+    class Y marca
 ```
 
 Mas conditional types se tornam realmente interessantes quando `T` é um parâmetro de tipo genérico — porque aí o TypeScript não conhece `T` na hora em que você escreve o tipo. Ele adia a avaliação para quando o tipo for instanciado:
@@ -309,7 +309,6 @@ type TC4 = TypeCategory<string>;      // "primitive"
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
@@ -330,7 +329,7 @@ flowchart TD
     Q3 -- sim --> RO
     Q3 -- não --> RP
 
-    class RF ok
+    class RF marca
     class RA neutro
     class RO marca
     class RP destaque

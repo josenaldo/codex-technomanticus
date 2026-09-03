@@ -164,7 +164,7 @@ A árvore de decisão abaixo é o coração prático da nota. Repara que ela **c
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Start["Preciso guardar/buscar esse dado.<br/>Comeco no PostgreSQL."]
     Start --> Q1{"O Postgres ja resolve<br/>com indice/JSONB/extensao<br/>de forma boa o suficiente?"}
@@ -178,8 +178,8 @@ flowchart TD
     Q2 -->|"Relacoes profundas<br/>(amigo-de-amigo-de-amigo)"| Graph["Considere grafo (Neo4j)<br/>se joins recursivos<br/>doem de verdade"]
     Q2 -->|"Escrita massiva global,<br/>eventual consistency OK"| Wide["Considere coluna-larga<br/>(Cassandra/Scylla).<br/>Escala que poucos atingem"]
 
-    class Start ok
-    class Stay ok
+    class Start marca
+    class Stay marca
     class TS neutro
     class Vec neutro
 ```

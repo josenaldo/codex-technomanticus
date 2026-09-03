@@ -45,13 +45,13 @@ O diagrama abaixo mostra por que esses três conceitos não competem — eles se
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Carga cognitiva alta<br/>(momentânea, no indivíduo)"] -->|"sprint sem folga p/ revisar"| B["Aceitar código gerado<br/>sem entender de fato"]
     B -->|"repete a cada PR"| C["Débito cognitivo cresce<br/>(nível de projeto, no tempo)"]
     C -->|"ninguém entende o sistema<br/>o suficiente pra simplificar"| D["Débito técnico se acumula<br/>(no código)"]
     D -->|"código mais confuso exige<br/>mais esforço p/ entender cada mudança"| A
 
-    class C falha
+    class C neutro
 ```
 
 O ponto cego é o nó C: dá pra medir débito técnico (linter, cobertura de testes) e carga cognitiva (quantas coisas na tela agora), mas débito cognitivo não aparece em métrica nenhuma — só aparece quando alguém pergunta "por que isso funciona assim?" e a resposta é silêncio.

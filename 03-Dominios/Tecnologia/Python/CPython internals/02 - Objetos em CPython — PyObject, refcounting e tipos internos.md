@@ -184,9 +184,9 @@ print(c is d)     # False (na maioria dos casos) — cada um é um objeto NOVO
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     A["int criado (literal, aritmética, etc.)"] --> B{"Valor está entre -5 e 256?"}
     B -- "Sim" --> C["Devolve ponteiro pro objeto\njá pré-alocado no cache\n(is == True para valores iguais)"]
     B -- "Não" --> D["Aloca um NOVO objeto PyLongObject\n(is pode ser True ou False —\nNÃO confiar nisso)"]
@@ -194,7 +194,7 @@ flowchart TB
     class A neutro
     class B neutro
     class C destaque
-    class D falha
+    class D marca
 ```
 
 O CPython não documenta o intervalo exato como parte da especificação da linguagem — é um **detalhe de implementação** do CPython especificamente (código-fonte em [`Objects/longobject.c`](https://github.com/python/cpython/blob/main/Objects/longobject.c), macro `_PY_NSMALLPOSINTS`/`_PY_NSMALLNEGINTS`), não uma garantia da linguagem Python em geral. Outras implementações (PyPy, por exemplo) têm estratégias de cache diferentes ou inexistentes. Depender do comportamento de `is` para inteiros é, portanto, depender de um detalhe de implementação não-portável — mais um motivo, além da correção lógica, para nunca fazer isso em código de produção.

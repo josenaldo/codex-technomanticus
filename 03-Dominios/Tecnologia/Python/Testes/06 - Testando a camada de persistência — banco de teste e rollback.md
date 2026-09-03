@@ -115,8 +115,8 @@ O custo é real: subir um container Docker, mesmo com a imagem já baixada local
 
 ```mermaid
 flowchart LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph SQLITE["SQLite in-memory"]
         S1["sqlite:///:memory:"]
         S2["Pronto em microssegundos"]
@@ -135,9 +135,9 @@ flowchart LR
     P1 --> USO2["Testes de INTEGRAÇÃO que dependem\nde comportamento específico do banco"]
 
     class SQLITE neutro
-    class PG ok
+    class PG marca
     class USO1 neutro
-    class USO2 ok
+    class USO2 marca
 ```
 
 ## O padrão central: fixture de sessão com rollback automático

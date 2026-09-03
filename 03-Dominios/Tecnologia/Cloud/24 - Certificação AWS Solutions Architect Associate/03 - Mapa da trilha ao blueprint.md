@@ -33,9 +33,7 @@ Não é acaso. O [[03-Dominios/Tecnologia/Cloud/03 - Well-Architected Framework/
 ```mermaid
 flowchart LR
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     WA["Well-Architected Framework<br/>(galho 3)"]
     WA --> S["Pilar Segurança"]
@@ -50,9 +48,9 @@ flowchart LR
     C --> D4["Domínio 4<br/>Design Cost-Optimized<br/>20%"]
 
     class WA neutro
-    class D1 falha
+    class D1 marca
     class D2 marca
-    class D3 ok
+    class D3 marca
     class D4 destaque
 ```
 
@@ -109,7 +107,7 @@ Nenhum desses quatro grupos exige nota nova — exige *reler* quatro galhos já 
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     D1["Domínio 1 — Design Secure<br/>30% do exame"]
     D1 --> T1["Acesso a workloads"]
     D1 --> T2["Segurança de dados"]
@@ -123,7 +121,7 @@ flowchart TD
     T4 --> G4
     T4 --> G18
 
-    class D1 falha
+    class D1 neutro
 ```
 
 ## Segundo caso: o domínio Cost-Optimized (20%) e o galho que já resolve quase tudo

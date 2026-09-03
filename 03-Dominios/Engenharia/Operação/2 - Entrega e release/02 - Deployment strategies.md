@@ -38,7 +38,6 @@ Cada estratégia mexe em dois botões independentes: **quantas instâncias rodam
 
 ```mermaid
 graph LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
@@ -47,7 +46,7 @@ graph LR
     BG --> C["Canary<br/>1% → 5% → 25%<br/>→ 100%, gradual"]
     C --> S["Shadow<br/>0% de tráfego real<br/>(só espelho)"]
 
-    class R falha
+    class R marca
     class RU destaque
     class BG neutro
     class C neutro
@@ -132,15 +131,15 @@ Martin Fowler descreve o objetivo central: "reduce the risk of introducing a new
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     T0["t=0<br/>v2: 5% tráfego<br/>v1: 95% tráfego"] -->|"métricas OK<br/>por 10min"| T1["t=10min<br/>v2: 25%<br/>v1: 75%"]
     T1 -->|"métricas OK<br/>por 10min"| T2["t=20min<br/>v2: 50%<br/>v1: 50%"]
     T2 -->|"métricas OK<br/>por 10min"| T3["t=30min<br/>v2: 100%<br/>v1: 0%<br/>(promovido)"]
     T1 -.->|"métrica degradou →<br/>rollback automático"| ROLLBACK["v2: 0%<br/>volta pra v1"]
 
     class T3 neutro
-    class ROLLBACK falha
+    class ROLLBACK marca
 ```
 
 Um exemplo declarativo com Argo Rollouts (o controller mais usado para canary sofisticado em Kubernetes):

@@ -192,8 +192,6 @@ quadrantChart
 
 ```mermaid
 flowchart TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     AgentWant["Agente quer executar\nTool X com argumento Y"]
@@ -213,8 +211,8 @@ flowchart TD
     AskUser -- "sim" --> ExecAfterApproval
     AskUser -- "não" --> Abort
 
-    class DenyBlock falha
-    class AutoExec ok
+    class DenyBlock marca
+    class AutoExec marca
     class ExecAfterApproval neutro
     class Abort marca
 ```

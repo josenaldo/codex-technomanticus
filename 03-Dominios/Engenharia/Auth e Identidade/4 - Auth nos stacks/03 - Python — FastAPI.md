@@ -51,7 +51,7 @@ Não existe "registrar um middleware de auth global" — se uma rota não declar
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     R["Rota: GET /orders/me"] -->|"Depends"| CU["get_current_user(token)"]
     CU -->|"Depends"| OS["oauth2_scheme(request)"]
@@ -61,7 +61,7 @@ graph TD
     JWT -->|"claims válidas"| U["User"]
     JWT -->|"inválido/expirado"| ERR["HTTPException 401"]
 
-    class ERR falha
+    class ERR marca
     class U neutro
 ```
 

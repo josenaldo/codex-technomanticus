@@ -189,8 +189,8 @@ def listar_pedidos(config: dict = Depends(get_configuracao_tenant)):
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     REQ["Requisição HTTP\nheader X-Tenant-Id: loja-a"]
 
     subgraph Arvore["Árvore de dependências resolvida de baixo para cima"]
@@ -207,7 +207,7 @@ flowchart TB
     class REQ neutro
     class D1 neutro
     class D2 neutro
-    class HANDLER ok
+    class HANDLER marca
 ```
 
 Essa composição é o que permite construir peças pequenas e reaproveitáveis — `get_tenant_id` sozinho já é útil em qualquer rota que só precise saber qual tenant está fazendo a requisição, sem precisar da configuração completa. Times que crescem uma API FastAPI de verdade acabam com dezenas de dependências pequenas, compostas em árvores diferentes conforme o endpoint precisa de mais ou menos contexto — o mesmo princípio de composição que motiva funções pequenas em qualquer código, aplicado à camada de resolução de parâmetros.

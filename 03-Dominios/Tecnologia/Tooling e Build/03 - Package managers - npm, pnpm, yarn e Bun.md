@@ -783,7 +783,8 @@ Não existe resposta única — depende do contexto. Mas existem padrões claros
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Projeto novo?"]
     B["Monorepo?"]
     C["Velocidade é prioridade?"]
@@ -806,8 +807,8 @@ flowchart TD
     E -->|"Sem dor → manter"| J
     E -->|"Com dor (phantom deps, lentidão)"| F
 
-    class F ok
-    class G ok
+    class F neutro
+    class G marca
 ```
 
 ---

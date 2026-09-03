@@ -155,7 +155,7 @@ def dado_d():
 
 ```mermaid
 flowchart TB
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph SESSION["scope=session — roda 1x pra suíte inteira"]
@@ -181,7 +181,7 @@ flowchart TB
     F1 -->|"objeto NOVO"| T2
     F1 -->|"objeto NOVO"| T3
 
-    class SESSION ok
+    class SESSION marca
     class MODULE neutro
     class FUNCTION destaque
 ```

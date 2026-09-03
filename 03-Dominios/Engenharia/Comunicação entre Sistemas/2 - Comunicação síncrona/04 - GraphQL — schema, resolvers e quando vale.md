@@ -146,9 +146,9 @@ Repare a assinatura: todo resolver recebe `(parent, args, context, info)` — o 
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Q["Query.cart(id)"] -->|"resolver 1"| CART["Cart { id, total, ... }"]
     CART -->|"resolver 2"| BUYER["Cart.buyer → User"]
     CART -->|"resolver 3"| ITEMS["Cart.items → [CartItem]"]
@@ -156,8 +156,8 @@ graph TD
     ITEMS -->|"resolver 5 (por item)"| INV["CartItem.inventory → Inventory"]
     class Q neutro
     class ITEMS destaque
-    class PROD falha
-    class INV falha
+    class PROD marca
+    class INV marca
 ```
 
 O diagrama já denuncia o problema: se `Cart.items` devolve 10 itens, os resolvers `CartItem.product` e `CartItem.inventory` rodam **uma vez para cada item** — 10 chamadas ao resolver de produto, 10 ao de estoque, cada uma potencialmente disparando uma query SQL individual. É exatamente aqui que mora o problema mais citado (e mais mal-compreendido) de GraphQL em produção.

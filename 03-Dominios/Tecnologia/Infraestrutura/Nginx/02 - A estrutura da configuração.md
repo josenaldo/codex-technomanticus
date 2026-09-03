@@ -29,8 +29,8 @@ Vale marcar, porque é fonte comum de confusão para quem só conhece o caminho 
 
 ```mermaid
 graph TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     Main["main<br/>(topo do arquivo,<br/>fora de qualquer bloco)"]
     Main --> Events["events<br/>(I/O assíncrono dos workers)"]
@@ -47,7 +47,7 @@ graph TB
     Server2 --> Loc3["location /<br/>(rota do outro site)"]
 
     class Main destaque
-    class Http ok
+    class Http marca
     class Server1 neutro
     class Server2 neutro
 ```
@@ -157,8 +157,8 @@ Vale marcar precisamente onde a diferença entre "o que o autor esperava" e "o q
 
 ```mermaid
 graph TB
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "location / — sem proxy_set_header próprio"
         H1["Herda os 4 do server:<br/>Host, X-Real-IP,<br/>X-Forwarded-For, X-Forwarded-Proto"]
     end
@@ -167,8 +167,8 @@ graph TB
         H2["Os 4 herdados são<br/>DESCARTADOS por inteiro"] --> H3["Só Authorization<br/>chega ao backend"]
     end
 
-    class H1 ok
-    class H3 falha
+    class H1 neutro
+    class H3 marca
 ```
 
 > [!info] Baseline de versão

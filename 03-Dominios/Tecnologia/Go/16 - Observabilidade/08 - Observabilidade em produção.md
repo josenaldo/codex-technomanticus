@@ -111,8 +111,8 @@ Uma métrica Prometheus com labels não é um número — é uma **série tempor
 
 ```mermaid
 flowchart TB
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A["Label de baixa cardinalidade\nstatus: 5-10 valores\nmethod: 4-5 valores\npath (com template): 10-50 valores"] --> B["Séries: produto dos valores\n(centenas a poucos milhares)"]
     C["Label de alta cardinalidade\ntrace_id: bilhões de valores\nuser_id: milhões\nemail, IP, request path SEM template"] --> D["Séries: uma por evento\n(explosão sem limite)"]
@@ -121,9 +121,9 @@ flowchart TB
     D --> F["OOM / TSDB corrompido /\ncusto de storage inviável"]
 
     class B neutro
-    class D falha
+    class D marca
     class E destaque
-    class F falha
+    class F marca
 ```
 
 A regra prática que times de SRE convergiram, e que a própria documentação do Prometheus recomenda, chama-se **cardinality budget**: antes de adicionar uma label nova a uma métrica, pergunte "quantos valores distintos esse campo pode assumir, ao longo do tempo, em produção?". Um orçamento comum para produção é manter cada métrica abaixo de algumas centenas a poucos milhares de séries — nunca dezenas de milhões.

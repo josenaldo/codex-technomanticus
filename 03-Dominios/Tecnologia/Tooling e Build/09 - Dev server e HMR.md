@@ -31,8 +31,8 @@ Essa oposição de objetivos significa que **a estratégia certa para dev é rui
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph DEV["Ambiente de desenvolvimento"]
         D1["Objetivo: velocidade de feedback\n(ms por mudança)"]
         D2["Aceita: bundle grande, source maps inline,\nnão-minificado, sem tree-shaking"]
@@ -48,7 +48,7 @@ graph LR
     end
 
     class DEV neutro
-    class PROD falha
+    class PROD marca
 ```
 
 > [!info] Leitura do diagrama
@@ -104,7 +104,7 @@ O Vite resolve isso com o **pré-bundling de dependências**: antes de iniciar o
 
 ```mermaid
 flowchart TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     START["vite dev\n(primeira vez)"]
     CRAWL["Rolldown varre seu código\n(descoberta de imports bare)"]
@@ -119,7 +119,7 @@ flowchart TD
     CHANGE -->|sim| REBUILD --> CACHE
     CHANGE -->|não| SERVER
 
-    class CACHE ok
+    class CACHE marca
     class SERVER neutro
 ```
 
@@ -174,8 +174,8 @@ Com o Vite, o browser só precisa buscar **um único arquivo** — o módulo que
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph WEBPACK["HMR no webpack"]
         W1["Arquivo muda"]
         W2["Re-bundla chunk\n(arquivo + dependências)"]
@@ -193,7 +193,7 @@ graph LR
     end
 
     class WEBPACK destaque
-    class VITE ok
+    class VITE neutro
 ```
 
 ### A HMR API: `import.meta.hot`
@@ -244,7 +244,7 @@ Quando você salva um arquivo, o Vite precisa responder a uma pergunta: "quem ma
 
 ```mermaid
 graph TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["App.tsx\n(não tem accept())"]
     B["Layout.tsx\n(não tem accept())"]
     C["Counter.tsx\n✓ self-accepting\n(plugin React injetou accept())"]
@@ -254,7 +254,7 @@ graph TD
     B --> C
     C --> D
 
-    class C ok
+    class C neutro
 ```
 
 > [!info] Leitura do diagrama
@@ -394,7 +394,7 @@ O campo `mappings` usa o formato **VLQ Base64** (Variable Length Quantity) — u
 
 ```mermaid
 graph TD
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     subgraph INLINE["Inline\n(devSourcemap: true — Vite dev default)"]
@@ -421,7 +421,7 @@ graph TD
         H1 --> H3
     end
 
-    class INLINE ok
+    class INLINE marca
     class EXTERNAL neutro
     class HIDDEN destaque
 ```
@@ -501,9 +501,9 @@ Com o **Vite 8** (março de 2026), a VoidZero lançou o **Rolldown** como motor 
 
 ```mermaid
 graph LR
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph VITE7["Vite ≤ 7 (arquitetura dual)"]
         V7DEV["Dev:\nesbuild (Go)\n• pré-bundling de deps\n• transpila TS/JSX por request"]
         V7PROD["Prod:\nRollup (JS)\n• bundle completo\n• tree-shaking, code splitting\n• plugins do ecossistema"]
@@ -514,7 +514,7 @@ graph LR
 
     subgraph VITE8["Vite 8 (arquitetura unificada)"]
         V8["Rolldown (Rust)\n• pré-bundling de deps em dev\n• transpila TS/JSX em dev\n• bundle completo em prod\n• mesma semântica, mesma API\n• 10–30× mais rápido em build"]
-        class V8 ok
+        class V8 neutro
     end
 ```
 

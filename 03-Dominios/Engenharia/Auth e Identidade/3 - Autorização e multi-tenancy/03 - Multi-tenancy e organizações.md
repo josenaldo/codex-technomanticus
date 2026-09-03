@@ -36,13 +36,14 @@ Essa é a distinção que separa autenticação de **autorização multi-tenant*
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     A["Modelo ingênuo:<br/>users → projects direto"] -->|"cliente pede<br/>time compartilhado"| B["project_members<br/>(role por projeto)"]
     B -->|"segundo cliente<br/>chega"| C["Nada impede<br/>usuário da Empresa A<br/>ver projeto da Empresa B"]
     C -->|"causa raiz"| D["Nunca existiu uma entidade<br/>'organização' — só usuário<br/>e recurso, sem fronteira"]
 
-    class C falha
-    class D falha
+    class C neutro
+    class D marca
 ```
 
 O resto desta nota resolve essa lacuna: como modelar a organização como cidadã de primeira classe, e como blindar as três camadas onde a fronteira de tenant precisa ser reforçada — dados, identidade e propagação de contexto.

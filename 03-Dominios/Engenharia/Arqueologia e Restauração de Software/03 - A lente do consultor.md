@@ -40,9 +40,9 @@ Essa é a razão de o galho ser escrito nesta chave. Um livro de "trabalhar com 
 
 ```mermaid
 graph TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     Q["Assumindo um sistema<br/>de fora"] --> DD["1. Due diligence<br/>'vale a pena comprar?'"]
     Q --> H["2. Herança<br/>'vou manter isto adiante'"]
     Q --> R["3. Resgate<br/>'está pegando fogo AGORA'"]
@@ -51,7 +51,7 @@ graph TD
     R -->|"horas/dias · para o sangramento"| RE["Entregável:<br/>sistema estabilizado"]
     class DD neutro
     class H destaque
-    class R falha
+    class R marca
 ```
 
 A tabela a seguir é o mapa que você consulta no primeiro dia. O resto da nota destrincha cada linha.

@@ -64,7 +64,7 @@ Vale desmontar essa frase com cuidado, porque ela é fácil de ler rápido e per
 
 ```mermaid
 flowchart TB
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph A["Compartilhar memória (mutex)"]
         direction TB
@@ -80,7 +80,7 @@ flowchart TB
         C -->|"recebe, um de cada vez"| B3["Goroutine dona\n(processa em sequência)"]
     end
 
-    class M falha
+    class M marca
     class C neutro
 ```
 

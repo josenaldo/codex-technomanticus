@@ -31,8 +31,8 @@ Para quem já pensa em software como estados e transições, a analogia é diret
 
 ```mermaid
 stateDiagram-v2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     [*] --> FormularioEmail: gatilho - clicou "esqueci a senha"
     FormularioEmail --> Enviando: submeteu o e-mail
     Enviando --> EmailEnviado: e-mail existe na base
@@ -47,10 +47,10 @@ stateDiagram-v2
     ErroLinkExpirado --> FormularioEmail: pedir novo link
     Sucesso --> [*]
     class Sucesso neutro
-    class ErroEmailInexistente falha
-    class ErroRede falha
-    class ErroLinkExpirado falha
-    class ErroLinkJaUsado falha
+    class ErroEmailInexistente marca
+    class ErroRede marca
+    class ErroLinkExpirado marca
+    class ErroLinkJaUsado marca
 ```
 
 Note que o diagrama acima tem **quatro estados de erro** e só **um** caminho feliz completo. Isso não é exagero didático — é o tamanho real do problema de recuperação de senha quando desenhado por completo. Quem parte direto pro código, sem esse mapa, tipicamente implementa o caminho feliz e um `catch` genérico — o equivalente a colapsar quatro branches de uma state machine num `else` só, perdendo a informação de *qual* erro aconteceu e, portanto, a chance de dar uma mensagem específica ao usuário (ver heurística 9 de Nielsen, recuperação de erros, na [[03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental/03 - As 10 heurísticas de Nielsen|nota 03]]).

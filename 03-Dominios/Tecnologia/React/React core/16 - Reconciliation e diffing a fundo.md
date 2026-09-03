@@ -270,9 +270,9 @@ O trabalho do Fiber se divide em duas fases com características muito diferente
 
 ```mermaid
 graph LR
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph "Render Phase (interruptível)"
         R1["beginWork():\ndesce na árvore,\nchama funções de componente"] --> R2["completeWork():\nretorna para cima,\ncalcula efeitos"]
     end
@@ -288,7 +288,7 @@ graph LR
     class R1 neutro
     class R2 neutro
     class C1 destaque
-    class C2 falha
+    class C2 marca
     class C3 destaque
     class C4 neutro
 ```
@@ -326,8 +326,8 @@ O que dispara o processo todo é descrito em [[04 - Renderização - o que dispa
 
 ```mermaid
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     subgraph "Árvore ANTERIOR"
         OA["App"] --> OH["Header"]
         OA --> OL["Lista\n[key=1, key=2, key=3]"]
@@ -349,7 +349,7 @@ graph TB
     OI3 -. "REMOVIDO (key=3 sumiu)" .-> NI4
 
     class NI4 destaque
-    class OI3 falha
+    class OI3 neutro
 ```
 
 Neste exemplo:

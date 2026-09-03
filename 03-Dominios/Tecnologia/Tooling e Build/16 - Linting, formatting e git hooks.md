@@ -36,7 +36,7 @@ Hoje, em 2026, esse consenso se solidificou de formas diferentes: o Biome baniu 
 
 ```mermaid
 graph TD
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     SRC["Código-fonte"]
 
@@ -57,10 +57,10 @@ graph TD
     SRC --> L1 & L2 & L3 & L4
     SRC --> F1 & F2 & F3 & F4
 
-    class L1 falha
-    class L2 falha
-    class L3 falha
-    class L4 falha
+    class L1 marca
+    class L2 marca
+    class L3 marca
+    class L4 marca
     class F1 neutro
     class F2 neutro
     class F3 neutro
@@ -324,8 +324,8 @@ O `projectService: true` é a opção correta para novos projetos desde typescri
 
 ```mermaid
 flowchart LR
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     subgraph "project: './tsconfig.json' — legado"
         E1["ESLint cria tsc program\nindependente"]
         T1["TypeScript #1\n(editor)"]
@@ -339,8 +339,8 @@ flowchart LR
     T1 -.->|"não compartilha"| T2
     E2 --> T3
 
-    class T2 falha
-    class T3 ok
+    class T2 neutro
+    class T3 marca
 ```
 
 ---

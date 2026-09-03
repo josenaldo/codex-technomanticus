@@ -212,8 +212,8 @@ Esse é o motivo pelo qual `React.memo`, `useMemo` e `useCallback` formam um tri
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
     A[Pai re-renderiza] --> B{Props do filho mudaram?}
     B -->|Referência primitiva mudou| C[Filho re-renderiza ✓]
@@ -223,7 +223,7 @@ flowchart TD
 
     class C neutro
     class E neutro
-    class F falha
+    class F marca
     class D destaque
 ```
 

@@ -155,8 +155,8 @@ function Avatar() {
 
 ```mermaid
 graph TB
+    classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
     classDef destaque fill:#FFAA0024,stroke:#FFAA00,color:#E9ECF2
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
     subgraph SEM["❌ Sem Context — prop drilling"]
         A1[App\n user=...] -->|user| B1[Layout\n user=...]
         B1 -->|user| C1[Sidebar\n user=...]
@@ -173,7 +173,7 @@ graph TB
     end
 
     class SEM destaque
-    class COM ok
+    class COM neutro
 ```
 
 Os componentes intermediários deixam de carregar `user` na assinatura. A linha pontilhada mostra que `Avatar` acessa o contexto diretamente do Provider, pulando todos os níveis.

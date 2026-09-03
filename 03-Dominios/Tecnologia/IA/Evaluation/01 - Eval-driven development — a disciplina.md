@@ -58,9 +58,8 @@ O ciclo completo, do ponto de vista operacional:
 
 ```mermaid
 flowchart TD
+    classDef marca fill:#8855DF33,stroke:#8855DF,color:#E9ECF2
     classDef neutro fill:#1B2029,stroke:#4E5666,color:#C6CCD8
-    classDef ok fill:#4ADE8021,stroke:#4ADE80,color:#E9ECF2
-    classDef falha fill:#FF6B6B24,stroke:#FF6B6B,color:#E9ECF2
     R["📋 Definir rubrica\n+ critérios de qualidade"]
     G["🗂️ Coletar golden set\n(20–100 casos reais)"]
     B["📊 Baseline\nPrompt v1 → Score X"]
@@ -80,10 +79,10 @@ flowchart TD
 
     class R neutro
     class G neutro
-    class B ok
-    class P ok
-    class BUG falha
-    class ADD falha
+    class B marca
+    class P marca
+    class BUG marca
+    class ADD marca
 ```
 
 O ponto chave do diagrama: **bugs de produção não terminam o ciclo — eles entram nele**. Todo incidente vira caso no golden set, que vira regression test permanente. É assim que o dataset cresce organicamente e o sistema melhora com o tempo, em vez de acumular dívida silenciosa.
